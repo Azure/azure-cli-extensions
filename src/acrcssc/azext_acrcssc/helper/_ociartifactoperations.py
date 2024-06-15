@@ -19,7 +19,9 @@ from ._constants import (
     CONTINUOSPATCH_OCI_ARTIFACT_CONFIG,
     CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1,
     CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN,
-    CSSC_WORKFLOW_POLICY_REPOSITORY
+    CSSC_WORKFLOW_POLICY_REPOSITORY,
+    RESOURCE_GROUP,
+    SUBSCRIPTION
 )
 
 logger = get_logger(__name__)
@@ -63,8 +65,8 @@ def create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun
 def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):
     logger.debug("Entering delete_oci_artifact_continuous_patch with parameters %s %s", registry, dryrun)
     resourceid = parse_resource_id(registry.id)
-    resource_group = resourceid["resource_group"]
-    subscription = resourceid["subscription"]
+    resource_group = resourceid[RESOURCE_GROUP]
+    subscription = resourceid[SUBSCRIPTION]
 
     if dryrun:
         logger.warning("Dry run flag is set, no changes will be made")
@@ -90,8 +92,8 @@ def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):
 
 def _oras_client(cmd, registry):
     resourceid = parse_resource_id(registry.id)
-    resource_group = resourceid["resource_group"]
-    subscription = resourceid["subscription"]
+    resource_group = resourceid[RESOURCE_GROUP]
+    subscription = resourceid[SUBSCRIPTION]
 
     try:
         token = _get_acr_token(registry.name, resource_group, subscription)
@@ -101,9 +103,6 @@ def _oras_client(cmd, registry):
         raise AzCLIError("Failed to login to Artifact Store ACR %s: %s ", registry.name, exception)
 
     return client
-
-# def get_continuouspatch_oci_config():
-#     raise AzCLIError('TODO: Implement `get_continuouspatch_oci_config`')
 
 
 # Need to check on this method once, if there's alternative to this
@@ -144,7 +143,7 @@ def _get_acr_token(registry_name, resource_group, subscription):
                 " It looks like you do not have permissions. You need to have"
                 " the AcrPush role over the"
                 " registry in order to be able to upload to the new"
-                " Artifact store."
+                " artifact store."
             ) from error
 
     return token

@@ -23,8 +23,10 @@ from ._constants import (
     CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1,
     TMP_DRY_RUN_FILE_NAME,
     CONTINUOUS_PATCHING_WORKFLOW_NAME,
-    CSSC_WORKFLOW_POLICY_REPOSITORY)
-from azure.common import AzureHttpError
+    CSSC_WORKFLOW_POLICY_REPOSITORY,
+    TASK_RUN_STATUS_FAILED,
+    TASK_RUN_STATUS_SUCCESS,
+    TASK_RUN_STATUS_RUNNING)
 from azure.cli.core.azclierror import AzCLIError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.command_modules.acr._stream_utils import stream_logs
@@ -54,13 +56,11 @@ def create_update_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, 
     cssc_tasks_exists = check_continuous_task_exists(cmd, registry)
     if is_create_workflow:
         if cssc_tasks_exists:
-            logger.error(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task already exists. Use 'az acr supply-chain workflow update' command to perform updates ")
-            return
+            raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task already exists. Use 'az acr supply-chain workflow update' command to perform updates ")
         _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun)
     else:
         if not cssc_tasks_exists:
-            logger.error(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task does not exist")
-            return
+            raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task does not exist")
         _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun)
 
     if cssc_config_file is not None:
@@ -250,7 +250,7 @@ def _update_task_schedule(cmd, registry, cron_expression, resource_group_name, d
 
 def _delete_task(cmd, registry, task_name, dryrun):
     logger.debug("Entering delete_task")
-    resource_group = parse_resource_id(registry.id)["resource_group"]
+    resource_group = parse_resource_id(registry.id)[RESOURCE_GROUP]
 
     try:
         acr_tasks_client = cf_acr_tasks(cmd.cli_ctx)
@@ -402,7 +402,6 @@ def generate_logs(cmd, client,
     log_file_sas = None
     error_msg = "Could not get logs for ID: {}".format(run_id)
     try:
-        #acr_taskrun_client = cf_acr_taskruns(cmd.cli_ctx)
         response = client.get_log_sas_url(
             resource_group_name=resource_group_name,
             registry_name=registry_name,
@@ -417,8 +416,8 @@ def generate_logs(cmd, client,
     AppendBlobService = get_sdk(cmd.cli_ctx, ResourceType.DATA_STORAGE, 'blob#AppendBlobService')
     if not timeout:
         timeout = ACR_RUN_DEFAULT_TIMEOUT_IN_SEC
-    
-    run_status = "Running"
+
+    run_status = TASK_RUN_STATUS_RUNNING
     while _evaluate_task_run_nonterminal_state(run_status):
         run_status=_get_run_status(client, resource_group_name, registry_name, run_id)
         if(_evaluate_task_run_nonterminal_state(run_status)):
@@ -433,7 +432,7 @@ def generate_logs(cmd, client,
                     blob_name)
 
 def _evaluate_task_run_nonterminal_state(run_status):
-    return run_status != "Succeeded" and run_status != "Failed"
+    return run_status != TASK_RUN_STATUS_SUCCESS and run_status != TASK_RUN_STATUS_FAILED
 
 def _get_run_status(client, resource_group_name, registry_name, run_id):
     try:

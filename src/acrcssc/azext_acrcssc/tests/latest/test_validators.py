@@ -20,23 +20,18 @@ from unittest.mock import patch
 class AcrCsscCommandsTests(unittest.TestCase):
 
     def test_validate_cadence_valid(self):
-        # test_cases = [
-        #     ('1d', '2 12 */1 * *', datetime(2022, 1, 1, 12, 0, 0, tzinfo=timezone.utc), False),
-        #     ('5d', '2 12 */5 * *', datetime(2022, 1, 1, 12, 0, 0, tzinfo=timezone.utc), False),
-        #     ('1d', '2 12 */1 * *', datetime(2022, 1, 1, 12, 0, 0, tzinfo=timezone.utc), False),
-        #     ('1d', '58 11 */1 * *', datetime(2022, 1, 1, 12, 0, 0, tzinfo=timezone.utc), True),
-        #     ('1d', '1 13 */1 * *', datetime(2022, 1, 1, 12, 59, 0, tzinfo=timezone.utc), False),
-        #     ('1d', '57 12 */1 * *', datetime(2022, 1, 1, 12, 59, 0, tzinfo=timezone.utc), True)
-        # ]
-
-        test_cases = [('1d'),('10d')]
+        test_cases = [
+            ('1d' ),
+            ('5d'),
+            ('10d')
+        ]
 
         for timespan in test_cases:
             with self.subTest(timespan=timespan):
-                _validate_cadence(timespan)
+               _validate_cadence(timespan)
     
     def test_validate_cadence_invalid(self):
-        test_cases = [('df'),('12'),('dd'),('41d')]
+        test_cases = [('df'),('12'),('dd'),('41d'), ('21dd')]
 
         for timespan in test_cases:
             self.assertRaises(InvalidArgumentValueError, _validate_cadence, timespan)

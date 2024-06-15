@@ -9,8 +9,7 @@ from azure.cli.core.azclierror import AzCLIError
 class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
     @patch('azext_acrcssc.helper._ociartifactoperations._oras_client')
     @patch('azext_acrcssc.helper._ociartifactoperations.tempfile.NamedTemporaryFile')
-    @patch('azext_acrcssc.helper._ociartifactoperations.shutil.copyfileobj')
-    def test_create_oci_artifact_continuous_patch(self, mock_copyfileobj, mock_NamedTemporaryFile, mock_oras_client):
+    def test_create_oci_artifact_continuous_patch(self, mock_NamedTemporaryFile, mock_oras_client):
         # Mock the necessary dependencies
         cmd = self._setup_cmd()
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
@@ -63,12 +62,12 @@ class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
             yes=True
         )
         mock_logger.warning.assert_not_called()
+        mock_acr_repository_delete.assert_called_once()
 
     @mock.patch('azext_acrcssc.helper._ociartifactoperations._get_acr_token')
-    @mock.patch('azext_acrcssc.helper._ociartifactoperations.logger')
     @mock.patch('azext_acrcssc.helper._ociartifactoperations.parse_resource_id')
     @mock.patch('azext_acrcssc.helper._ociartifactoperations.acr_repository_delete')
-    def test_delete_oci_artifact_continuous_patch_dryrun(self, mock_acr_repository_delete, mock_parse_resource_id, mock_logger, mock_get_acr_token):
+    def test_delete_oci_artifact_continuous_patch_dryrun(self, mock_acr_repository_delete, mock_parse_resource_id, mock_get_acr_token):
         # Mock the necessary dependencies
         cmd = self._setup_cmd()
         registry = MagicMock()
