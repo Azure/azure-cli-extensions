@@ -165,7 +165,6 @@ def get_folder_id(dashboard, grafana_url, http_post_headers):
 
 
 def send_grafana_get(url, http_get_headers):
-
     r = requests.get(url, headers=http_get_headers)
     log_response(r)
     return (r.status_code, r.json())

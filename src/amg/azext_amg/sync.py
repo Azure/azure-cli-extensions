@@ -172,8 +172,12 @@ def sync(cmd, source, destination, folders_to_include=None, folders_to_exclude=N
                                                       json.dumps(payload), http_headers)
                 if status >= 400:
                     if 'name or UID already exists' in content.get('message', ''):
+                        (status, content) = send_grafana_get(f'{destination_endpoint}/api/library-elements/{library_panel_uid}',
+                                                             http_headers)
+
+                        payload["version"] = content["result"]["version"] # avoid version mismatch
                         (status, content) = send_grafana_patch(f'{destination_endpoint}/api/library-elements/{library_panel_uid}',
-                                            json.dumps(payload), http_headers)
+                                                               json.dumps(payload), http_headers)
                         if status >= 400:
                             logger.error(json.dumps(content))
                     else:
