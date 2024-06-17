@@ -29,7 +29,7 @@ from ._models_py3 import CloudErrorBody
 from ._models_py3 import ClusterUpgradeSettings
 from ._models_py3 import CompatibleVersions
 from ._models_py3 import Component
-from ._models_py3 import ComponentsByReleases
+from ._models_py3 import ComponentsByRelease
 from ._models_py3 import ContainerServiceLinuxProfile
 from ._models_py3 import ContainerServiceNetworkProfile
 from ._models_py3 import ContainerServiceNetworkProfileKubeProxyConfig
@@ -291,7 +291,7 @@ __all__ = [
     "ClusterUpgradeSettings",
     "CompatibleVersions",
     "Component",
-    "ComponentsByReleases",
+    "ComponentsByRelease",
     "ContainerServiceLinuxProfile",
     "ContainerServiceNetworkProfile",
     "ContainerServiceNetworkProfileKubeProxyConfig",

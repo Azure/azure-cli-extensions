@@ -1097,9 +1097,9 @@ class AgentPoolUpgradeProfile(_serialization.Model):
     :ivar upgrades: List of orchestrator types and versions available for upgrade.
     :vartype upgrades:
      list[~azure.mgmt.containerservice.v2024_04_02_preview.models.AgentPoolUpgradeProfilePropertiesUpgradesItem]
-    :ivar components_by_releases: components of given Kubernetes version.
+    :ivar components_by_releases: List of components grouped by kubernetes major.minor version.
     :vartype components_by_releases:
-     ~azure.mgmt.containerservice.v2024_04_02_preview.models.ComponentsByReleases
+     list[~azure.mgmt.containerservice.v2024_04_02_preview.models.ComponentsByRelease]
     :ivar latest_node_image_version: The latest AKS supported node image version.
     :vartype latest_node_image_version: str
     """
@@ -1119,7 +1119,7 @@ class AgentPoolUpgradeProfile(_serialization.Model):
         "kubernetes_version": {"key": "properties.kubernetesVersion", "type": "str"},
         "os_type": {"key": "properties.osType", "type": "str"},
         "upgrades": {"key": "properties.upgrades", "type": "[AgentPoolUpgradeProfilePropertiesUpgradesItem]"},
-        "components_by_releases": {"key": "properties.componentsByReleases", "type": "ComponentsByReleases"},
+        "components_by_releases": {"key": "properties.componentsByReleases", "type": "[ComponentsByRelease]"},
         "latest_node_image_version": {"key": "properties.latestNodeImageVersion", "type": "str"},
     }
 
@@ -1129,7 +1129,7 @@ class AgentPoolUpgradeProfile(_serialization.Model):
         kubernetes_version: str,
         os_type: Union[str, "_models.OSType"] = "Linux",
         upgrades: Optional[List["_models.AgentPoolUpgradeProfilePropertiesUpgradesItem"]] = None,
-        components_by_releases: Optional["_models.ComponentsByReleases"] = None,
+        components_by_releases: Optional[List["_models.ComponentsByRelease"]] = None,
         latest_node_image_version: Optional[str] = None,
         **kwargs: Any
     ) -> None:
@@ -1142,9 +1142,9 @@ class AgentPoolUpgradeProfile(_serialization.Model):
         :keyword upgrades: List of orchestrator types and versions available for upgrade.
         :paramtype upgrades:
          list[~azure.mgmt.containerservice.v2024_04_02_preview.models.AgentPoolUpgradeProfilePropertiesUpgradesItem]
-        :keyword components_by_releases: components of given Kubernetes version.
+        :keyword components_by_releases: List of components grouped by kubernetes major.minor version.
         :paramtype components_by_releases:
-         ~azure.mgmt.containerservice.v2024_04_02_preview.models.ComponentsByReleases
+         list[~azure.mgmt.containerservice.v2024_04_02_preview.models.ComponentsByRelease]
         :keyword latest_node_image_version: The latest AKS supported node image version.
         :paramtype latest_node_image_version: str
         """
@@ -1544,7 +1544,7 @@ class Component(_serialization.Model):
         self.has_breaking_changes = has_breaking_changes
 
 
-class ComponentsByReleases(_serialization.Model):
+class ComponentsByRelease(_serialization.Model):
     """components of given Kubernetes version.
 
     :ivar kubernetes_version: The Kubernetes version (major.minor).
@@ -7233,9 +7233,9 @@ class ManagedClusterPoolUpgradeProfile(_serialization.Model):
     :ivar upgrades: List of orchestrator types and versions available for upgrade.
     :vartype upgrades:
      list[~azure.mgmt.containerservice.v2024_04_02_preview.models.ManagedClusterPoolUpgradeProfileUpgradesItem]
-    :ivar components_by_releases: components of given Kubernetes version.
+    :ivar components_by_releases: List of components grouped by kubernetes major.minor version.
     :vartype components_by_releases:
-     ~azure.mgmt.containerservice.v2024_04_02_preview.models.ComponentsByReleases
+     list[~azure.mgmt.containerservice.v2024_04_02_preview.models.ComponentsByRelease]
     """
 
     _validation = {
@@ -7248,7 +7248,7 @@ class ManagedClusterPoolUpgradeProfile(_serialization.Model):
         "name": {"key": "name", "type": "str"},
         "os_type": {"key": "osType", "type": "str"},
         "upgrades": {"key": "upgrades", "type": "[ManagedClusterPoolUpgradeProfileUpgradesItem]"},
-        "components_by_releases": {"key": "componentsByReleases", "type": "ComponentsByReleases"},
+        "components_by_releases": {"key": "componentsByReleases", "type": "[ComponentsByRelease]"},
     }
 
     def __init__(
@@ -7258,7 +7258,7 @@ class ManagedClusterPoolUpgradeProfile(_serialization.Model):
         os_type: Union[str, "_models.OSType"] = "Linux",
         name: Optional[str] = None,
         upgrades: Optional[List["_models.ManagedClusterPoolUpgradeProfileUpgradesItem"]] = None,
-        components_by_releases: Optional["_models.ComponentsByReleases"] = None,
+        components_by_releases: Optional[List["_models.ComponentsByRelease"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -7272,9 +7272,9 @@ class ManagedClusterPoolUpgradeProfile(_serialization.Model):
         :keyword upgrades: List of orchestrator types and versions available for upgrade.
         :paramtype upgrades:
          list[~azure.mgmt.containerservice.v2024_04_02_preview.models.ManagedClusterPoolUpgradeProfileUpgradesItem]
-        :keyword components_by_releases: components of given Kubernetes version.
+        :keyword components_by_releases: List of components grouped by kubernetes major.minor version.
         :paramtype components_by_releases:
-         ~azure.mgmt.containerservice.v2024_04_02_preview.models.ComponentsByReleases
+         list[~azure.mgmt.containerservice.v2024_04_02_preview.models.ComponentsByRelease]
         """
         super().__init__(**kwargs)
         self.kubernetes_version = kubernetes_version
