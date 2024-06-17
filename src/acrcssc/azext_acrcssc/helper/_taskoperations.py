@@ -46,6 +46,7 @@ from ._utility import convert_timespan_to_cron, transform_cron_to_cadence, creat
 logger = get_logger(__name__)
 DEFAULT_CHUNK_SIZE = 1024 * 4
 
+
 def create_update_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, dryrun, defer_immediate_run, is_create_workflow=True):
     logger.debug("Entering continuousPatchV1_creation %s %s %s", cssc_config_file, dryrun, defer_immediate_run)
     resource_group = parse_resource_id(registry.id)[RESOURCE_GROUP]
@@ -395,13 +396,15 @@ def _is_vault_secret(cmd, credential):
         return keyvault_dns.upper() in credential.upper()
     return False
 
-def generate_logs(cmd, client,
-                run_id,
-                registry_name,
-                resource_group_name,
-                timeout=ACR_RUN_DEFAULT_TIMEOUT_IN_SEC,
-                no_format=False,
-                raise_error_on_failure=False):
+
+def generate_logs(cmd,
+                  client,
+                  run_id,
+                  registry_name,
+                  resource_group_name,
+                  timeout=ACR_RUN_DEFAULT_TIMEOUT_IN_SEC,
+                  no_format=False,
+                  raise_error_on_failure=False):
     log_file_sas = None
     error_msg = "Could not get logs for ID: {}".format(run_id)
     try:
@@ -422,20 +425,22 @@ def generate_logs(cmd, client,
 
     run_status = TASK_RUN_STATUS_RUNNING
     while _evaluate_task_run_nonterminal_state(run_status):
-        run_status=_get_run_status(client, resource_group_name, registry_name, run_id)
-        if(_evaluate_task_run_nonterminal_state(run_status)):
+        run_status = _get_run_status(client, resource_group_name, registry_name, run_id)
+        if _evaluate_task_run_nonterminal_state(run_status):
             logger.debug(f"Waiting for the task run to complete. Current status: {run_status}")
             time.sleep(2)
-    
+
     _download_logs(AppendBlobService(
-                     account_name=account_name,
-                     sas_token=sas_token,
-                     endpoint_suffix=endpoint_suffix),
-                 container_name,
-                    blob_name)
+        account_name=account_name,
+        sas_token=sas_token,
+        endpoint_suffix=endpoint_suffix),
+        container_name,
+        blob_name)
+
 
 def _evaluate_task_run_nonterminal_state(run_status):
     return run_status != TASK_RUN_STATUS_SUCCESS and run_status != TASK_RUN_STATUS_FAILED
+
 
 def _get_run_status(client, resource_group_name, registry_name, run_id):
     try:
@@ -443,6 +448,7 @@ def _get_run_status(client, resource_group_name, registry_name, run_id):
         return response.status
     except (AttributeError, CloudError):
         return None
+
 
 def _download_logs(blob_service,
                    container_name,
@@ -468,4 +474,3 @@ def _remove_internal_acr_statements(blob_content):
 
         if print_line:
             print(line)
-
