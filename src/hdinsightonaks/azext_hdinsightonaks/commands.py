@@ -13,7 +13,7 @@ from azure.cli.core.commands import CliCommandType
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
     hdinsightonaks_cluster_sdk = CliCommandType(
-        operations_tmpl='azure.cli.command_modules.hdinsightonaks.custom#{}')
+        operations_tmpl='azext_hdinsightonaks.custom#{}')
 
     with self.command_group('hdinsight-on-aks', hdinsightonaks_cluster_sdk) as g:
         g.command('cluster node-profile create', 'create_compute_node_profile')
