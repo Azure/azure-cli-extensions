@@ -150,7 +150,7 @@ def acr_cssc_dry_run(cmd, registry, config_file_path):
         return
     try:
         file_name = os.path.basename(config_file_path)
-        #config_folder_path = os.path.dirname(os.path.abspath(config_file_path))
+        # config_folder_path = os.path.dirname(os.path.abspath(config_file_path))
         tmp_folder = os.path.join(os.getcwd(), tempfile.mkdtemp(prefix="cli_temp_cssc"))
         print(f"Temporary directory created at: {tmp_folder}")
         create_temporary_dry_run_file(config_file_path, tmp_folder)
@@ -165,11 +165,14 @@ def acr_cssc_dry_run(cmd, registry, config_file_path):
             registry.name,
             resource_group_name)
 
-        # TO DO: Need to find alternate command to below (doesn't run due to dependency on az context)
-        # platform_os, platform_arch, platform_variant = get_validate_platform(cmd, None)
+        OS = acr_run_client.models.OS
+        Architecture = acr_run_client.models.Architecture
 
-        # TO DO: Need to find alternative to below
-        platform_os, platform_arch, platform_variant = "linux", None, None
+        # TODO: when the extension merges back into the acr module, we need to reuse the 'get_validate_platform()' from ACR modules (src\azure-cli\azure\cli\command_modules\acr\_utils.py)
+        platform_os = OS.linux.value
+        platform_arch = Architecture.amd64.value
+        platform_variant = None
+
         value_pair = [{"name": "CONFIGPATH", "value": f"{file_name}"}]
         request = acr_registries_task_client.models.FileTaskRunRequest(
             task_file_path=TMP_DRY_RUN_FILE_NAME,
