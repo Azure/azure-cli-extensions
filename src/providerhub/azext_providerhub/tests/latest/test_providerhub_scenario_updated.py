@@ -7,6 +7,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, StorageAccou
                                api_version_constraint)
 from azure.cli.testsdk.scenario_tests.decorators import AllowLargeResponse
 from azure.cli.core.azclierror import ValidationError
+from azure.core.exceptions import HttpResponseError
 
 
 class ProviderHubScenario(ScenarioTest):
@@ -201,7 +202,8 @@ class ProviderHubScenario(ScenarioTest):
     # EXAMPLE: /ProviderRegistrations/delete/ProviderRegistrations_Delete
     @ResourceGroupPreparer(name_prefix='cli_test_azure_providerhub_provider_registration')
     def test_step_provider_registration_delete(self, resource_group):
-        self.cmd('az providerhub provider-registration delete -y '
+        with self.assertRaises(HttpResponseError):
+            self.cmd('az providerhub provider-registration delete -y '
                 '--provider-namespace "{providerNamespace}" ')
 
     # EXAMPLE: /ResourceTypeRegistration/put/ResourceTypeRegistration_CreateOrUpdate
