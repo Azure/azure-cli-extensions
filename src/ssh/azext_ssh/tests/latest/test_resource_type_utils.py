@@ -12,7 +12,7 @@ from azext_ssh import ssh_info
 
 from azure.cli.core import azclierror
 
-'''
+
 class SshResourceTypeUtilsCommandTest(unittest.TestCase):
 
     @mock.patch('azext_ssh.resource_type_utils._list_types_of_resources_with_provided_name')
@@ -106,4 +106,3 @@ class SshResourceTypeUtilsCommandTest(unittest.TestCase):
 
     if __name__ == '__main__':
         unittest.main()
-'''

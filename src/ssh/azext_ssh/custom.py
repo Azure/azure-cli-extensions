@@ -35,9 +35,6 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
            ssh_client_folder=None, delete_credentials=False, resource_type=None, ssh_proxy_folder=None,
            winrdp=False, yes_without_prompt=False, ssh_args=None):
 
-    connectivity_utils.install_client_side_proxy(ssh_proxy_folder)
-    return
-
     # delete_credentials can only be used by Azure Portal to provide one-click experience on CloudShell.
     if delete_credentials and os.environ.get("AZUREPS_HOST_ENVIRONMENT") != "cloud-shell/1.0":
         raise azclierror.ArgumentUsageError("Can't use --delete-private-key outside an Azure Cloud Shell session.")
@@ -190,7 +187,7 @@ def _do_ssh_op(cmd, op_info, op_call):
 
     try:
         if op_info.is_arc():
-            op_info.proxy_path = connectivity_utils.get_client_side_proxy(op_info.ssh_proxy_folder)
+            op_info.proxy_path = connectivity_utils.install_client_side_proxy(op_info.ssh_proxy_folder)
             (op_info.relay_info, op_info.new_service_config) = connectivity_utils.get_relay_information(
                 cmd, op_info.resource_group_name, op_info.vm_name, op_info.resource_type,
                 cert_lifetime, op_info.port, op_info.yes_without_prompt)

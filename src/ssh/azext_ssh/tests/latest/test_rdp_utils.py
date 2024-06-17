@@ -10,7 +10,7 @@ from azext_ssh import rdp_utils
 from azext_ssh import ssh_info
 from azext_ssh import ssh_utils
 
-'''
+
 class RDPUtilsTest(unittest.TestCase):
     @mock.patch('os.environ.copy')
     @mock.patch.object(ssh_utils, 'get_ssh_client_path')
@@ -96,4 +96,3 @@ class RDPUtilsTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-'''

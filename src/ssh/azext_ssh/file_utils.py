@@ -84,4 +84,3 @@ def remove_invalid_characters_foldername(folder_name):
         if c not in const.WINDOWS_INVALID_FOLDERNAME_CHARS:
             new_foldername += c
     return new_foldername
-

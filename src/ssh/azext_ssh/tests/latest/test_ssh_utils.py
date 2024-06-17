@@ -9,7 +9,7 @@ import unittest
 from azext_ssh import ssh_utils
 from azext_ssh import ssh_info
 
-'''
+
 class SSHUtilsTests(unittest.TestCase):
     @mock.patch.object(ssh_utils, 'do_cleanup')
     @mock.patch.object(ssh_utils, '_check_ssh_logs_for_common_errors')
@@ -305,4 +305,3 @@ class SSHUtilsTests(unittest.TestCase):
         mock_isfile.return_value = False
 
         self.assertRaises(azclierror.UnclassifiedUserFault, ssh_utils.get_ssh_client_path)
-'''

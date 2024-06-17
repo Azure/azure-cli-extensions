@@ -8,7 +8,7 @@ from unittest import mock
 
 from azext_ssh import rsa_parser
 
-'''
+
 class RSAParserTest(unittest.TestCase):
     def test_rsa_parser_success(self):
         public_key_text = 'ssh-rsa ' + self._get_good_key()
@@ -84,4 +84,3 @@ class RSAParserTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-'''
