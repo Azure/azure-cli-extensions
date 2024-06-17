@@ -8,8 +8,17 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from ._history import *
-from ._list import *
-from ._rollback import *
-from ._run import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "hdinsight-on-aks cluster library",
+    is_preview=True,
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage the library of the cluster.
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]
