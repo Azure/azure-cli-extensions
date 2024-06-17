@@ -11,28 +11,28 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -s --environment-id
+      - -g -n --environment-id
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/environments/clitest000003?api-version=2024-03-01
   response:
     body:
       string: '{"type":"Microsoft.ApiCenter/services/workspaces/environments","properties":{"title":"test
-        environment","kind":"testing","customProperties":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/environments/clitest000003","name":"clitest000003","systemData":{"createdAt":"2024-05-24T07:15:53.5318894Z"}}'
+        environment","kind":"testing","customProperties":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/environments/clitest000003","name":"clitest000003","systemData":{"createdAt":"2024-06-17T06:06:39.999785Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
       cache-control:
       - no-cache
       content-length:
-      - '410'
+      - '409'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 May 2024 07:15:55 GMT
+      - Mon, 17 Jun 2024 06:06:42 GMT
       etag:
-      - 25008728-0000-0100-0000-66503ea90000
+      - 64013d68-0000-0100-0000-666fd2700000
       expires:
       - '-1'
       pragma:
@@ -45,8 +45,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: 7EA1E51170B846FC9A18742EDD07C9CE Ref B: MAA201060514025 Ref C: 2024-05-24T07:15:54Z'
+      - 'Ref A: 2AE6BBE678794788B668AF9A2FDA1E93 Ref B: MAA201060514031 Ref C: 2024-06-17T06:06:41Z'
       x-powered-by:
       - ASP.NET
     status:

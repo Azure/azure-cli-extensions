@@ -11,15 +11,15 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -s --api-id --summary
+      - -g -n --api-id --summary
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003?api-version=2024-03-01
   response:
     body:
       string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis","properties":{"title":"Echo
-        API","kind":"rest","externalDocumentation":[],"contacts":[],"customProperties":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003","name":"clitest000003","systemData":{"createdAt":"2024-05-24T07:51:18.6147194Z","lastModifiedAt":"2024-05-24T07:51:18.6147186Z"}}'
+        API","kind":"rest","externalDocumentation":[],"contacts":[],"customProperties":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003","name":"clitest000003","systemData":{"createdAt":"2024-06-17T06:00:43.8961437Z","lastModifiedAt":"2024-06-17T06:00:43.8961428Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
@@ -30,9 +30,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 May 2024 07:51:20 GMT
+      - Mon, 17 Jun 2024 06:00:46 GMT
       etag:
-      - 3000a440-0000-0100-0000-665046f60000
+      - da02ce98-0000-0100-0000-666fd10b0000
       expires:
       - '-1'
       pragma:
@@ -45,8 +45,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: 50F49179F1A044E1A8609DB3F1A0AFAD Ref B: MAA201060516029 Ref C: 2024-05-24T07:51:19Z'
+      - 'Ref A: 1F6A49907923422DB22888AFAB448672 Ref B: MAA201060516053 Ref C: 2024-06-17T06:00:45Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -69,15 +71,15 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g -s --api-id --summary
+      - -g -n --api-id --summary
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003?api-version=2024-03-01
   response:
     body:
       string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis","properties":{"title":"Echo
-        API","summary":"Basic REST API service","kind":"rest","externalDocumentation":[],"contacts":[],"customProperties":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003","name":"clitest000003","systemData":{"lastModifiedAt":"2024-05-24T07:51:23.5299336Z"}}'
+        API","summary":"Basic REST API service","kind":"rest","externalDocumentation":[],"contacts":[],"customProperties":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003","name":"clitest000003","systemData":{"lastModifiedAt":"2024-06-17T06:00:48.4600766Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
@@ -88,9 +90,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 May 2024 07:51:22 GMT
+      - Mon, 17 Jun 2024 06:00:48 GMT
       etag:
-      - 30003a41-0000-0100-0000-665046fb0000
+      - da021099-0000-0100-0000-666fd1100000
       expires:
       - '-1'
       pragma:
@@ -103,10 +105,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
       x-msedge-ref:
-      - 'Ref A: 439D1BD187E44E0A9320715AEDE0E910 Ref B: MAA201060516029 Ref C: 2024-05-24T07:51:21Z'
+      - 'Ref A: 13CFDACADB4F46A09475F7E483B414F2 Ref B: MAA201060516053 Ref C: 2024-06-17T06:00:47Z'
       x-powered-by:
       - ASP.NET
     status:

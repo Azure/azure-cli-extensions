@@ -15,15 +15,15 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g -s --api-id --title --type
+      - -g -n --api-id --title --type
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/cli000003?api-version=2024-03-01
   response:
     body:
       string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis","properties":{"title":"Echo
-        API","kind":"rest","externalDocumentation":[],"contacts":[],"customProperties":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/cli000003","name":"cli000003","systemData":{"createdAt":"2024-05-24T07:50:59.3799269Z","lastModifiedAt":"2024-05-24T07:50:59.3799259Z"}}'
+        API","kind":"rest","externalDocumentation":[],"contacts":[],"customProperties":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/cli000003","name":"cli000003","systemData":{"createdAt":"2024-06-17T06:01:07.7819472Z","lastModifiedAt":"2024-06-17T06:01:07.7819466Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
@@ -34,9 +34,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 May 2024 07:50:59 GMT
+      - Mon, 17 Jun 2024 06:01:07 GMT
       etag:
-      - 3000bd3e-0000-0100-0000-665046e30000
+      - da021c9a-0000-0100-0000-666fd1230000
       expires:
       - '-1'
       pragma:
@@ -49,10 +49,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
       x-msedge-ref:
-      - 'Ref A: 73675F9FA6514297956723A9D39BBF2E Ref B: MAA201060516009 Ref C: 2024-05-24T07:50:57Z'
+      - 'Ref A: 9B21481BB1C24B05BAB2B781B681673C Ref B: MAA201060513027 Ref C: 2024-06-17T06:01:06Z'
       x-powered-by:
       - ASP.NET
     status:

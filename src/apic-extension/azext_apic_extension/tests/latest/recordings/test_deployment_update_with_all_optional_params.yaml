@@ -11,16 +11,16 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -s --api-id --definition-id --environment-id --deployment-id --title --server
-        --description --state --custom-properties
+      - -g -n --api-id --definition-id --environment-id --deployment-id --title --server
+        --description --custom-properties
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000004/deployments/mock-deployment?api-version=2024-03-01
   response:
     body:
       string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis/deployments","properties":{"title":"test
-        deployment","environmentId":"/workspaces/default/environments/clitest000003","definitionId":"/workspaces/default/apis/clitest000004/versions/clitest000005/definitions/clitest000006","server":{"runtimeUri":["https://example.com"]},"customProperties":{},"recommended":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000004/deployments/clitest000007","name":"clitest000007","systemData":{"createdAt":"2024-05-17T05:03:38.7020373Z","lastModifiedAt":"2024-05-17T05:03:38.7020356Z"}}'
+        deployment","environmentId":"/workspaces/default/environments/clitest000003","definitionId":"/workspaces/default/apis/clitest000004/versions/clitest000005/definitions/clitest000006","server":{"runtimeUri":["https://example.com"]},"customProperties":{},"recommended":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000004/deployments/clitest000007","name":"clitest000007","systemData":{"createdAt":"2024-06-17T06:06:00.8508856Z","lastModifiedAt":"2024-06-17T06:06:00.8508843Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
@@ -31,9 +31,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 May 2024 05:03:42 GMT
+      - Mon, 17 Jun 2024 06:06:06 GMT
       etag:
-      - 4b012792-0000-0100-0000-6646e52a0000
+      - 8501de0d-0000-0100-0000-666fd2480000
       expires:
       - '-1'
       pragma:
@@ -46,8 +46,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: 2E0CB01190A347AB9D7DC30410062AAB Ref B: MAA201060515025 Ref C: 2024-05-17T05:03:42Z'
+      - 'Ref A: 17E2F6848C55451E86997C8C9F18EF10 Ref B: MAA201060515019 Ref C: 2024-06-17T06:06:05Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -57,8 +59,7 @@ interactions:
     body: '{"properties": {"customProperties": {"clitest000008": true}, "definitionId":
       "/workspaces/default/apis/clitest000004/versions/clitest000005/definitions/clitest000006",
       "description": "deployment description", "environmentId": "/workspaces/default/environments/clitest000003",
-      "server": {"runtimeUri": ["https://example2.com"]}, "state": "active", "title":
-      "updated deployment"}}'
+      "server": {"runtimeUri": ["https://example2.com"]}, "title": "updated deployment"}}'
     headers:
       Accept:
       - application/json
@@ -69,20 +70,20 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '378'
+      - '359'
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g -s --api-id --definition-id --environment-id --deployment-id --title --server
-        --description --state --custom-properties
+      - -g -n --api-id --definition-id --environment-id --deployment-id --title --server
+        --description --custom-properties
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000004/deployments/mock-deployment?api-version=2024-03-01
   response:
     body:
       string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis/deployments","properties":{"title":"updated
-        deployment","description":"deployment description","environmentId":"/workspaces/default/environments/clitest000003","definitionId":"/workspaces/default/apis/clitest000004/versions/clitest000005/definitions/clitest000006","server":{"runtimeUri":["https://example2.com"]},"customProperties":{"clitest000008":true},"recommended":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000004/deployments/clitest000007","name":"clitest000007","systemData":{"lastModifiedAt":"2024-05-17T05:03:45.5851056Z"}}'
+        deployment","description":"deployment description","environmentId":"/workspaces/default/environments/clitest000003","definitionId":"/workspaces/default/apis/clitest000004/versions/clitest000005/definitions/clitest000006","server":{"runtimeUri":["https://example2.com"]},"customProperties":{"clitest000008":true},"recommended":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000004/deployments/clitest000007","name":"clitest000007","systemData":{"lastModifiedAt":"2024-06-17T06:06:08.2508702Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
@@ -93,9 +94,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 May 2024 05:03:45 GMT
+      - Mon, 17 Jun 2024 06:06:08 GMT
       etag:
-      - 4b01ce93-0000-0100-0000-6646e5310000
+      - 8501e10e-0000-0100-0000-666fd2500000
       expires:
       - '-1'
       pragma:
@@ -108,10 +109,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
       x-msedge-ref:
-      - 'Ref A: BB7D7D2A30D74F56928007541C6D2794 Ref B: MAA201060515025 Ref C: 2024-05-17T05:03:43Z'
+      - 'Ref A: E077DF3C143648DCBA7CDCAC2764B4BF Ref B: MAA201060515019 Ref C: 2024-06-17T06:06:07Z'
       x-powered-by:
       - ASP.NET
     status:

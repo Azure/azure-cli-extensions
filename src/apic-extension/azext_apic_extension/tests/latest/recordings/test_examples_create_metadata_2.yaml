@@ -17,14 +17,14 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - --resource-group --service-name --name --schema --assignments
+      - --resource-group --service-name --metadata-name --schema --assignments
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/cli000003?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services/metadataSchemas","properties":{"assignedTo":[{"entity":"api","required":true,"deprecated":false},{"entity":"environment","required":true,"deprecated":false}],"schema":"{\"type\":\"string\",\"title\":\"testregion\",\"oneOf\":[{\"const\":\"Region1\",\"description\":\"\"},{\"const\":\"Region2\",\"description\":\"\"},{\"const\":\"Region3\",\"description\":\"\"}]}"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/cli000003","name":"cli000003","systemData":{"createdAt":"2024-05-24T07:00:44.9559411Z","lastModifiedAt":"2024-05-24T07:00:44.9559389Z"}}'
+      string: '{"type":"Microsoft.ApiCenter/services/metadataSchemas","properties":{"assignedTo":[{"entity":"api","required":true,"deprecated":false},{"entity":"environment","required":true,"deprecated":false}],"schema":"{\"type\":\"string\",\"title\":\"testregion\",\"oneOf\":[{\"const\":\"Region1\",\"description\":\"\"},{\"const\":\"Region2\",\"description\":\"\"},{\"const\":\"Region3\",\"description\":\"\"}]}"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/cli000003","name":"cli000003","systemData":{"createdAt":"2024-06-17T06:07:37.3897455Z","lastModifiedAt":"2024-06-17T06:07:37.3897449Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
@@ -35,9 +35,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 May 2024 07:00:44 GMT
+      - Mon, 17 Jun 2024 06:07:37 GMT
       etag:
-      - 21002e76-0000-0100-0000-66503b1c0000
+      - 660251a7-0000-0100-0000-666fd2a90000
       expires:
       - '-1'
       pragma:
@@ -50,10 +50,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
       x-msedge-ref:
-      - 'Ref A: F410C24032D94D5C9A19F60B3B30CA99 Ref B: MAA201060515009 Ref C: 2024-05-24T07:00:43Z'
+      - 'Ref A: 6B94D66A313A4111AA8A6386E772443B Ref B: MAA201060516009 Ref C: 2024-06-17T06:07:35Z'
       x-powered-by:
       - ASP.NET
     status:

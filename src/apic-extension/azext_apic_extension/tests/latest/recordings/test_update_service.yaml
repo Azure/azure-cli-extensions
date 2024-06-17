@@ -7,7 +7,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - apic service update
+      - apic update
       Connection:
       - keep-alive
       Content-Length:
@@ -15,27 +15,27 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g -s --tags
+      - -g -n --tags
       User-Agent:
       - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: PATCH
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services","location":"eastus","identity":{"type":"None"},"sku":{"name":"None"},"properties":{"dataApiHostname":"clitest000002.data.eastus.azure-apicenter.ms"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002","name":"clitest000002","tags":{"test":"value"},"systemData":{"lastModifiedAt":"2024-04-25T05:47:34.2771576Z"}}'
+      string: '{"type":"Microsoft.ApiCenter/services","location":"eastus","identity":{"type":"None"},"sku":{"name":"Free"},"properties":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002","name":"clitest000002","tags":{"test":"value"},"systemData":{"createdAt":"2024-06-17T06:13:30.9632558Z","lastModifiedAt":"2024-06-17T06:13:34.5924106Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
       cache-control:
       - no-cache
       content-length:
-      - '437'
+      - '416'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Apr 2024 05:47:35 GMT
+      - Mon, 17 Jun 2024 06:13:36 GMT
       etag:
-      - 74005a1e-0000-0100-0000-6629ee760000
+      - bb01b079-0000-0100-0000-666fd40e0000
       expires:
       - '-1'
       pragma:
@@ -48,10 +48,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
       x-msedge-ref:
-      - 'Ref A: DEF4CDC2694E41269679420F72147A72 Ref B: MAA201060516019 Ref C: 2024-04-25T05:47:32Z'
+      - 'Ref A: 9BA2DD794A844002848904B409154CA6 Ref B: MAA201060513035 Ref C: 2024-06-17T06:13:33Z'
       x-powered-by:
       - ASP.NET
     status:

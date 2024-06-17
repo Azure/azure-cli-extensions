@@ -13,9 +13,9 @@ interactions:
       Content-Length:
       - '0'
       ParameterSetName:
-      - -g -s --environment-id --yes
+      - -g -n --environment-id --yes
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/environments/clitest000003?api-version=2024-03-01
   response:
@@ -27,7 +27,7 @@ interactions:
       cache-control:
       - no-cache
       date:
-      - Fri, 17 May 2024 03:18:32 GMT
+      - Mon, 17 Jun 2024 06:06:06 GMT
       expires:
       - '-1'
       pragma:
@@ -39,9 +39,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
       x-msedge-ref:
-      - 'Ref A: 82423FE39C6A4EB9AAC95C7FBBA31DFB Ref B: MAA201060515009 Ref C: 2024-05-17T03:18:31Z'
+      - 'Ref A: 7E7DAF93016D4CA2BD0ACA075D6B7780 Ref B: MAA201060513017 Ref C: 2024-06-17T06:06:05Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -59,25 +61,26 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -s --environment-id
+      - -g -n --environment-id
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/environments/clitest000003?api-version=2024-03-01
   response:
     body:
-      string: '{"code":"404","message":"Subscription not found","target":"1756abc0-3554-4341-8d6a-46674962ea19"}'
+      string: '{"code":"404","message":"The environment with the specified ID does
+        not exist."}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
       cache-control:
       - no-cache
       content-length:
-      - '97'
+      - '80'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 17 May 2024 03:18:33 GMT
+      - Mon, 17 Jun 2024 06:06:08 GMT
       expires:
       - '-1'
       pragma:
@@ -90,8 +93,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: 0AB9961F9FCE43288FCCB8DC4D065468 Ref B: MAA201060516021 Ref C: 2024-05-17T03:18:33Z'
+      - 'Ref A: 605270C307824F60816348E50027010A Ref B: MAA201060515009 Ref C: 2024-06-17T06:06:08Z'
       x-powered-by:
       - ASP.NET
     status:

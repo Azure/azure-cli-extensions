@@ -11,15 +11,15 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --service-name --name --schema
+      - --resource-group --service-name --metadata-name --schema
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/clitest000003?api-version=2024-03-01
   response:
     body:
       string: '{"type":"Microsoft.ApiCenter/services/metadataSchemas","properties":{"assignedTo":[{"entity":"api","required":true,"deprecated":false},{"entity":"environment","required":true,"deprecated":false},{"entity":"deployment","required":true,"deprecated":false}],"schema":"{\"type\":\"boolean\",
-        \"title\":\"Public Facing\"}"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/clitest000003","name":"clitest000003","systemData":{"createdAt":"2024-05-24T07:00:36.7685938Z","lastModifiedAt":"2024-05-24T07:00:36.7685933Z"}}'
+        \"title\":\"Public Facing\"}"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/clitest000003","name":"clitest000003","systemData":{"createdAt":"2024-06-17T06:08:01.2493855Z","lastModifiedAt":"2024-06-17T06:08:01.2493846Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
@@ -30,9 +30,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 May 2024 07:00:38 GMT
+      - Mon, 17 Jun 2024 06:08:04 GMT
       etag:
-      - 21000c75-0000-0100-0000-66503b140000
+      - 66022daa-0000-0100-0000-666fd2c10000
       expires:
       - '-1'
       pragma:
@@ -45,8 +45,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: DAED2EC108DA4AB4B08E09ECF61A6BFE Ref B: MAA201060516027 Ref C: 2024-05-24T07:00:37Z'
+      - 'Ref A: E429D9C923F74789AD640192BE58456A Ref B: MAA201060513009 Ref C: 2024-06-17T06:08:03Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -71,15 +73,15 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - --resource-group --service-name --name --schema
+      - --resource-group --service-name --metadata-name --schema
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/clitest000003?api-version=2024-03-01
   response:
     body:
       string: '{"type":"Microsoft.ApiCenter/services/metadataSchemas","properties":{"assignedTo":[{"entity":"api","required":true,"deprecated":false},{"entity":"environment","required":true,"deprecated":false},{"entity":"deployment","required":true,"deprecated":false}],"schema":"{\"type\":
-        \"string\", \"title\":\"Last name\", \"pattern\": \"^[a-zA-Z0-9]+$\"}"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/clitest000003","name":"clitest000003","systemData":{"lastModifiedAt":"2024-05-24T07:00:41.1276936Z"}}'
+        \"string\", \"title\":\"Last name\", \"pattern\": \"^[a-zA-Z0-9]+$\"}"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/metadataSchemas/clitest000003","name":"clitest000003","systemData":{"lastModifiedAt":"2024-06-17T06:08:05.6760041Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
@@ -90,9 +92,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 May 2024 07:00:40 GMT
+      - Mon, 17 Jun 2024 06:08:05 GMT
       etag:
-      - 21009c75-0000-0100-0000-66503b190000
+      - 6602beaa-0000-0100-0000-666fd2c50000
       expires:
       - '-1'
       pragma:
@@ -105,10 +107,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
       x-msedge-ref:
-      - 'Ref A: E0883FD551BC47D498EB50FFE0D88569 Ref B: MAA201060516027 Ref C: 2024-05-24T07:00:39Z'
+      - 'Ref A: BC878E519675422B9E27E67AF32A7BFE Ref B: MAA201060513009 Ref C: 2024-06-17T06:08:04Z'
       x-powered-by:
       - ASP.NET
     status:

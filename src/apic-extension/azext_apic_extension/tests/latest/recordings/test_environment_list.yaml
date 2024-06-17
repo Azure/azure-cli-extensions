@@ -11,16 +11,16 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -s
+      - -g -n
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/environments?api-version=2024-03-01
   response:
     body:
       string: '{"value":[{"type":"Microsoft.ApiCenter/services/workspaces/environments","properties":{"title":"test
-        environment","kind":"testing","customProperties":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/environments/clitest000003","name":"clitest000003","systemData":{"createdAt":"2024-05-07T11:15:44.3847935Z"}},{"type":"Microsoft.ApiCenter/services/workspaces/environments","properties":{"title":"test
-        environment","kind":"testing","customProperties":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/environments/clitest000004","name":"clitest000004","systemData":{"createdAt":"2024-05-07T11:15:47.2404985Z"}}]}'
+        environment","kind":"testing","customProperties":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/environments/clitest000003","name":"clitest000003","systemData":{"createdAt":"2024-06-17T06:06:26.5834813Z"}},{"type":"Microsoft.ApiCenter/services/workspaces/environments","properties":{"title":"test
+        environment","kind":"testing","customProperties":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/environments/clitest000004","name":"clitest000004","systemData":{"createdAt":"2024-06-17T06:06:29.1445183Z"}}]}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
@@ -31,7 +31,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 07 May 2024 11:15:49 GMT
+      - Mon, 17 Jun 2024 06:06:30 GMT
       expires:
       - '-1'
       pragma:
@@ -44,8 +44,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: 3C6707A585C040FB859B3ED7F01D604C Ref B: MAA201060516047 Ref C: 2024-05-07T11:15:48Z'
+      - 'Ref A: 4C558CC9ED5842B8A675AFA193C69FCF Ref B: MAA201060514049 Ref C: 2024-06-17T06:06:30Z'
       x-powered-by:
       - ASP.NET
     status:

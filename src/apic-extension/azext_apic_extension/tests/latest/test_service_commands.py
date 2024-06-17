@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import time
 import unittest
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
@@ -39,6 +40,8 @@ class ServiceCommandsTests(ScenarioTest):
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     def test_show_service(self):
+        if self.is_live:
+            time.sleep(60) # Wait for service to finish provisioning, so dataApiHostname will be provided
         self.cmd('az apic show -g {rg} -n {s}', checks=[
             self.check('name', '{s}'),
             self.check('resourceGroup', '{rg}'),

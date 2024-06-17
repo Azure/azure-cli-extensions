@@ -11,7 +11,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -s --api-id --title --type --contacts --custom-properties --description
+      - -g -n --api-id --title --type --contacts --custom-properties --description
         --external-documentation --license --summary
       User-Agent:
       - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
@@ -20,20 +20,20 @@ interactions:
   response:
     body:
       string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis","properties":{"title":"Echo
-        API","kind":"rest","externalDocumentation":[],"contacts":[],"customProperties":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003","name":"clitest000003","systemData":{"createdAt":"2024-05-16T08:16:30.9912252Z","lastModifiedAt":"2024-05-16T08:16:30.9912236Z"}}'
+        API","kind":"rest","externalDocumentation":[],"contacts":[],"customProperties":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003","name":"clitest000003","systemData":{"createdAt":"2024-06-17T06:00:43.4797509Z","lastModifiedAt":"2024-06-17T06:00:43.47975Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
       cache-control:
       - no-cache
       content-length:
-      - '472'
+      - '470'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 May 2024 08:16:36 GMT
+      - Mon, 17 Jun 2024 06:00:48 GMT
       etag:
-      - 2900c52e-0000-0100-0000-6645c0de0000
+      - da02c798-0000-0100-0000-666fd10b0000
       expires:
       - '-1'
       pragma:
@@ -46,8 +46,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: 1F3926C9BD3A4C29AE0AFA8F9A518AE2 Ref B: MAA201060514021 Ref C: 2024-05-16T08:16:36Z'
+      - 'Ref A: 28D21E6D30034ADE933016D7DA1ABDD0 Ref B: MAA201060514017 Ref C: 2024-06-17T06:00:47Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -73,7 +75,7 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g -s --api-id --title --type --contacts --custom-properties --description
+      - -g -n --api-id --title --type --contacts --custom-properties --description
         --external-documentation --license --summary
       User-Agent:
       - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
@@ -83,7 +85,7 @@ interactions:
     body:
       string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis","properties":{"title":"test
         api 2","summary":"summary","description":"API description","kind":"rest","license":{"url":"example.com"},"externalDocumentation":[{"title":"onboarding
-        docs","url":"example.com"}],"contacts":[{"name":"test","url":"example.com","email":"contact@example.com"}],"customProperties":{"clitest000004":true}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003","name":"clitest000003","systemData":{"lastModifiedAt":"2024-05-16T08:16:39.058988Z"}}'
+        docs","url":"example.com"}],"contacts":[{"name":"test","url":"example.com","email":"contact@example.com"}],"customProperties":{"clitest000004":true}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003","name":"clitest000003","systemData":{"lastModifiedAt":"2024-06-17T06:00:50.598301Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
@@ -94,9 +96,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 16 May 2024 08:16:38 GMT
+      - Mon, 17 Jun 2024 06:00:49 GMT
       etag:
-      - 2900002f-0000-0100-0000-6645c0e70000
+      - da023899-0000-0100-0000-666fd1120000
       expires:
       - '-1'
       pragma:
@@ -109,10 +111,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
       x-msedge-ref:
-      - 'Ref A: 17A1767E072F49859F7582F5B02ABD27 Ref B: MAA201060514021 Ref C: 2024-05-16T08:16:37Z'
+      - 'Ref A: 14FFCD48C24844A9B402A52A9B69CB19 Ref B: MAA201060514017 Ref C: 2024-06-17T06:00:49Z'
       x-powered-by:
       - ASP.NET
     status:

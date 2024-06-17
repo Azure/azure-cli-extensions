@@ -7,15 +7,15 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - apic service delete
+      - apic delete
       Connection:
       - keep-alive
       Content-Length:
       - '0'
       ParameterSetName:
-      - -s -g --yes
+      - -n -g --yes
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: DELETE
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002?api-version=2024-03-01
   response:
@@ -29,7 +29,7 @@ interactions:
       content-length:
       - '0'
       date:
-      - Fri, 24 May 2024 05:46:44 GMT
+      - Mon, 17 Jun 2024 06:10:07 GMT
       expires:
       - '-1'
       pragma:
@@ -41,9 +41,11 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
       x-msedge-ref:
-      - 'Ref A: F1D92E654B8B4433932F49EA06343EDB Ref B: MAA201060515019 Ref C: 2024-05-24T05:46:40Z'
+      - 'Ref A: F5BBEB477B544D81956EDB628A912E19 Ref B: MAA201060513023 Ref C: 2024-06-17T06:10:03Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -57,13 +59,13 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - apic service show
+      - apic show
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -s
+      - -g -n
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002?api-version=2024-03-01
   response:
@@ -79,7 +81,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 24 May 2024 05:46:49 GMT
+      - Mon, 17 Jun 2024 06:10:09 GMT
       expires:
       - '-1'
       pragma:
@@ -93,7 +95,7 @@ interactions:
       x-ms-failure-cause:
       - gateway
       x-msedge-ref:
-      - 'Ref A: 473DD5C3618F432C9431573DEA3B5761 Ref B: MAA201060514023 Ref C: 2024-05-24T05:46:48Z'
+      - 'Ref A: FD67579A023545CB98CD3877E7E9A557 Ref B: MAA201060513017 Ref C: 2024-06-17T06:10:09Z'
     status:
       code: 404
       message: Not Found
