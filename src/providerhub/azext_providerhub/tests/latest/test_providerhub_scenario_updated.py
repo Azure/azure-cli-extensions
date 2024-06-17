@@ -172,7 +172,7 @@ class ProviderHubScenario(ScenarioTest):
                 '--incident-routing-team "RPaaS" '
                 '--provider-version "2.0" '
                 '--provider-namespace "{providerNamespace}" '
-                '--metadata bypassManifestValidation=true')
+                '--metadata {{\\"BypassManifestValidation\\":true}}')
 
 
     # EXAMPLE: /ProviderRegistrations/get/ProviderRegistrations_Get
