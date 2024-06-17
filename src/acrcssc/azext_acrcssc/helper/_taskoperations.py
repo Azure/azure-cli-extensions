@@ -56,11 +56,11 @@ def create_update_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, 
     cssc_tasks_exists = check_continuous_task_exists(cmd, registry)
     if is_create_workflow:
         if cssc_tasks_exists:
-            raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task already exists. Use 'az acr supply-chain workflow update' command to perform updates ")
+            raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task already exists. Use 'az acr supply-chain workflow update' command to perform updates.")
         _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun)
     else:
         if not cssc_tasks_exists:
-            raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task does not exist")
+            raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task does not exist. Use 'az acr supply-chain workflow create' command to create {CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow.")
         _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun)
 
     if cssc_config_file is not None:
@@ -146,7 +146,7 @@ def acr_cssc_dry_run(cmd, registry, config_file_path):
     logger.debug("Entering acr_cssc_dry_run with parameters: %s %s", registry, config_file_path)
 
     if config_file_path is None:
-        logger.warning("--config parameter is needed to perform dry-run check.")
+        logger.error("--config parameter is needed to perform dry-run check.")
         return
     try:
         file_name = os.path.basename(config_file_path)
@@ -209,7 +209,7 @@ def _trigger_task_run(cmd, registry, resource_group, task_name):
             registry.name,
             request))
     run_id = queued_run.run_id
-    print(f"Queued {CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task '{task_name}' with run ID: {run_id}")
+    print(f"Queued {CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task '{task_name}' with run ID: {run_id}. Use 'az acr task logs' to view the logs.")
 
 
 def _create_encoded_task(task_file):

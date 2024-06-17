@@ -86,7 +86,7 @@ def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):
         logger.debug("Call to acr_repository_delete completed successfully")
     except Exception as exception:
         logger.debug("%s", exception)
-        logger.error("Artifact: %s/%s:%s might not exist or attempt to delete failed.", CSSC_WORKFLOW_POLICY_REPOSITORY, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1)
+        logger.error("%s/%s:%s might not existing or attempt to delete failed. Please verify once the presence of repository before attempting to re-delete.", CSSC_WORKFLOW_POLICY_REPOSITORY, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1)
         raise
 
 
