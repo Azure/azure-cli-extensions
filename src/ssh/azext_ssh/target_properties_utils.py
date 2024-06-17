@@ -25,6 +25,10 @@ def handle_target_machine_properties(cmd, op_info):
         location = parse_location(properties, op_info.resource_type.lower())
         if location not in ["centralus", "eastus2", "westus", "northeurope", "northcentralus", "westcentralus"]:
             raise azclierror.InvalidArgumentValueError("The Bastion Developer SKU is not supported in the region of the target VM.")
+        nic_name = get_nic_name(properties)
+        get_ssh_associated_vnet(cmd, op_info.resource_group_name, nic_name)
+        
+        
 
     else:
         os_type, agent_version = None, None
@@ -120,7 +124,19 @@ def parse_location(properties, resource_type):
     if resource_type == "microsoft.compute/virtualmachines":
         return properties.location
 
-
+    
+def get_nic_name(properties):
+    try:
+            nic_id = properties.network_profile.network_interfaces[0].id
+            nic_name = nic_id.split('/')[-1]
+            return nic_name
+    except KeyError as e:
+        print(f"Key error: {e}")
+        return None
+    except IndexError as e:
+        print(f"Index error: {e}")
+        return None
+    
 # This function is used to check if the OS type is valid and if the authentication options are valid for that OS
 def check_valid_os_type(os_type, op_info):
     if os_type:
@@ -145,3 +161,16 @@ def check_valid_agent_version(agent_version, op_info):
                                "Please update to the latest version.", agent_version)
         except Exception:
             return
+        
+def get_ssh_associated_vnet(cmd, resource_group, nic_name):
+    from .aaz.latest.network.nic import Show
+    try:
+        nic = Show(cli_ctx=cmd.cli_ctx)(command_args={
+                "resource_group": resource_group,
+                "name": nic_name
+            })
+        print(nic)
+
+    except Exception:
+        print("Error")
+

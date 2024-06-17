@@ -52,11 +52,6 @@ class SSHSession():
                                   "Microsoft.AzureStackHCI/virtualMachines"]:
             return True
         return False
-    
-    def is_vm(self):
-        if self.resource_type in ["Microsoft.ScVmm/virtualMachines"]:
-            return True
-        return False
 
     def get_host(self):
         if not self.is_arc() and self.ip:

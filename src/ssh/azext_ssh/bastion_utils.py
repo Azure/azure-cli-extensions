@@ -39,7 +39,6 @@ class BastionSku(Enum):
 def show_bastion(cmd, op_info):
     from .aaz.latest.network.bastion import Show
     try:
-        from .aaz.latest.network.bastion import Show
         bastion = Show(cli_ctx=cmd.cli_ctx)(command_args={
             "resource_group": op_info.resource_group_name,
             "name": "northeurope-vm-vnet-bastion"
@@ -115,7 +114,6 @@ def ssh_bastion_host(cmd, op_info):
         op_info.port = 22
 
     target_resource_id = op_info.resource_id
-    _validate_resourceid(target_resource_id)
     
     bastion_endpoint = _get_data_pod(cmd, op_info.port, target_resource_id, bastion)
     tunnel_server = _get_tunnel(cmd, bastion, bastion_endpoint, target_resource_id, op_info.port)
@@ -144,12 +142,6 @@ def _is_ipconnect_request(bastion, target_ip_address):
         return True
 
     return False
-
-def _validate_resourceid(target_resource_id):
-    if not is_valid_resource_id(target_resource_id):
-        err_msg = "Please enter a valid resource ID. If this is not working, " \
-                  "try opening the JSON view of your resource (in the Overview tab), and copying the full resource ID."
-        raise InvalidArgumentValueError(err_msg)
 
 def _get_data_pod(cmd, port, target_resource_id, bastion):
     from azure.cli.core._profile import Profile
