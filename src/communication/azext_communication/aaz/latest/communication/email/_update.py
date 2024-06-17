@@ -360,7 +360,7 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         email_service_resource_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
+            flags={"required": True, "client_flatten": True},
         )
         email_service_resource_read.system_data = AAZObjectType(
             serialized_name="systemData",

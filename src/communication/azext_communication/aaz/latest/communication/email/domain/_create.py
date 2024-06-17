@@ -75,6 +75,7 @@ class Create(AAZCommand):
             arg_group="Parameters",
             help="The geo-location where the resource lives",
             required=True,
+            default="Global",
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
             ),
