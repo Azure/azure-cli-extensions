@@ -42,7 +42,7 @@ def show_bastion(cmd, op_info):
         from .aaz.latest.network.bastion import Show
         bastion = Show(cli_ctx=cmd.cli_ctx)(command_args={
             "resource_group": op_info.resource_group_name,
-            "name": "N-europe-test-vnet-bastion"
+            "name": "northeurope-vm-vnet-bastion"
         })
         return bastion
     except Exception:
