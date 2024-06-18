@@ -152,7 +152,7 @@ class TunnelServer:
             logger.info('Successfully connected to local server..')
             debugger_thread.join()
             web_socket_thread.join()
-        except Exception as ex:
+        except Exception as ex:  # pylint: disable=broad-except
             logger.info('Exception in handling client: %s', ex)
         finally:
             with self.connection_lock:
