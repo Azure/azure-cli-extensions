@@ -137,10 +137,9 @@ class ProviderHubScenario(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_azure_providerhub_operations')
     def test_step_operation_create(self, resource_group):
         self.cmd('az providerhub operation create '
-                '--contents "[{{\\"name\\":\\"Private.VPTest/Employees/Read\\",\\"display\\":{{\\"description\\":\\"Rea'
+                '--contents "[{{\\"name\\":\\"Private.VPTest/Employees/Read\\",\\"display\\":{{\\"default\\":{{\\"description\\":\\"Rea'
                 'd employees\\",\\"operation\\":\\"Gets/List employee resources\\",\\"provider\\":\\"Private.VPTest\\",'
-                '\\"resource\\":\\"Employees\\"}}}}]" --provider-namespace "{providerNamespace}"')
-
+                '\\"resource\\":\\"Employees\\"}}}}}}]" --provider-namespace "{providerNamespace}"')
 
     # EXAMPLE: /Operations/get/Operations_ListByProviderRegistration
     @AllowLargeResponse()

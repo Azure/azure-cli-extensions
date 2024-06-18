@@ -538,12 +538,24 @@ class Update(AAZCommand):
             if cls._schema_on_200 is not None:
                 return cls._schema_on_200
 
-            cls._schema_on_200 = AAZListType()
+            cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.Element = AAZObjectType()
+            _schema_on_200.contents = AAZListType()
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
 
-            _element = cls._schema_on_200.Element
+            contents = cls._schema_on_200.contents
+            contents.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.contents.Element
             _element.action_type = AAZStrType(
                 serialized_name="actionType",
             )
@@ -558,7 +570,7 @@ class Update(AAZCommand):
             )
             _element.origin = AAZStrType()
 
-            display = cls._schema_on_200.Element.display
+            display = cls._schema_on_200.contents.Element.display
             display.description = AAZStrType(
                 flags={"required": True},
             )

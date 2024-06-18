@@ -92,20 +92,9 @@ class Create(AAZCommand):
             options=["de"],
             help="Display information of the operation for de locale.",
         )
-        display.description = AAZStrArg(
-            options=["description"],
-            required=True,
-        )
-        display.operation = AAZStrArg(
-            options=["operation"],
-            required=True,
-        )
-        display.provider = AAZStrArg(
-            options=["provider"],
-            required=True,
-        )
-        display.resource = AAZStrArg(
-            options=["resource"],
+        display.default = AAZObjectArg(
+            options=["default"],
+            help="Display information of the operation.",
             required=True,
         )
         display.en = AAZObjectArg(
@@ -201,6 +190,24 @@ class Create(AAZCommand):
             required=True,
         )
         de.resource = AAZStrArg(
+            options=["resource"],
+            required=True,
+        )
+
+        default = cls._args_schema.contents.Element.display.default
+        default.description = AAZStrArg(
+            options=["description"],
+            required=True,
+        )
+        default.operation = AAZStrArg(
+            options=["operation"],
+            required=True,
+        )
+        default.provider = AAZStrArg(
+            options=["provider"],
+            required=True,
+        )
+        default.resource = AAZStrArg(
             options=["resource"],
             required=True,
         )
@@ -584,7 +591,7 @@ class Create(AAZCommand):
             if display is not None:
                 display.set_prop("cs", AAZObjectType, ".cs")
                 display.set_prop("de", AAZObjectType, ".de")
-                display.set_prop("default", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+                display.set_prop("default", AAZObjectType, ".default", typ_kwargs={"flags": {"required": True}})
                 display.set_prop("en", AAZObjectType, ".en")
                 display.set_prop("es", AAZObjectType, ".es")
                 display.set_prop("fr", AAZObjectType, ".fr")
