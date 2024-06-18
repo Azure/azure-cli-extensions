@@ -16,10 +16,10 @@ steps:
   - cmd: az login --identity 
   - cmd: |
         mcr.microsoft.com/azure-cli bash -c 'while read line;do \
-        IFS='/' read -r -a array1 <<< "$line"
-        IFS=':' read -r -a array2 <<< "${array1[1]}"
+        RegistryName="${line%%/*}"; \
+        Rest="${line#*/}"; \
+        IFS=':' read -r -a array2 <<< "${Rest}"
         IFS=',' read -r -a array3 <<< "${array2[1]}"
-        RegistryName=${array1[0]};
         RepoName=${array2[0]};
         OriginalTag=${array3[0]};
         TagName=${array3[1]};

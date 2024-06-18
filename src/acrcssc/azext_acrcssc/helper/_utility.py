@@ -66,3 +66,5 @@ def create_temporary_dry_run_file(file_location, tmp_folder):
 def delete_temporary_dry_run_file(tmp_folder):
     logger.debug("Deleting contents and directory %s", tmp_folder)
     shutil.rmtree(tmp_folder)
+
+

@@ -98,7 +98,6 @@ def _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
 def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dry_run):
     if schedule_cron_expression is not None:
         _update_task_schedule(cmd, registry, schedule_cron_expression, resource_group, dry_run)
-        print("Cadence has been successfully updated.")
 
 
 def _eval_trigger_run(cmd, registry, resource_group, defer_immediate_run):
@@ -242,10 +241,13 @@ def _update_task_schedule(cmd, registry, cron_expression, resource_group_name, d
     if dryrun:
         logger.debug("Dry run, skipping the update of the task schedule")
         return None
-
-    acr_task_client.begin_update(resource_group_name, registry.name,
+    try:
+        acr_task_client.begin_update(resource_group_name, registry.name,
                                  CONTINUOSPATCH_TASK_SCANREGISTRY_NAME,
                                  taskUpdateParameters)
+        print("Cadence has been successfully updated.")
+    except Exception as exception:
+        raise AzCLIError(f"Failed to update the task schedule: {exception}")
 
 
 def _delete_task(cmd, registry, task_name, dryrun):
@@ -299,25 +301,24 @@ def _delete_task_role_assignment(cli_ctx, acrtask_client, registry, resource_gro
 
 def _transform_task_list(tasks):
     transformed = []
-    for obj in tasks:
+    for task in tasks:
         transformed_obj = {
-            "creationDate": obj.creation_date,
-            "location": obj.location,
-            "name": obj.name,
-            "provisioningState": obj.provisioning_state,
-            "systemData": obj.system_data,
+            "creationDate": task.creation_date,
+            "location": task.location,
+            "name": task.name,
+            "provisioningState": task.provisioning_state,
+            "systemData": task.system_data,
             "cadence": None
         }
 
         # Extract cadence from trigger.timerTriggers if available
-        trigger = obj.trigger
+        trigger = task.trigger
         if trigger and trigger.timer_triggers:
             transformed_obj["cadence"] = transform_cron_to_cadence(trigger.timer_triggers[0].schedule)
-
+        
         transformed.append(transformed_obj)
 
     return transformed
-
 
 def _get_custom_registry_credentials(cmd,
                                      auth_mode=None,
