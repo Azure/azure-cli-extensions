@@ -46,6 +46,7 @@ from ._utility import convert_timespan_to_cron, transform_cron_to_cadence, creat
 logger = get_logger(__name__)
 DEFAULT_CHUNK_SIZE = 1024 * 4
 
+
 def create_update_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, dryrun, defer_immediate_run, is_create_workflow=True):
     logger.debug("Entering continuousPatchV1_creation %s %s %s", cssc_config_file, dryrun, defer_immediate_run)
     resource_group = parse_resource_id(registry.id)[RESOURCE_GROUP]
@@ -149,7 +150,7 @@ def acr_cssc_dry_run(cmd, registry, config_file_path):
         return
     try:
         file_name = os.path.basename(config_file_path)
-        #config_folder_path = os.path.dirname(os.path.abspath(config_file_path))
+        # config_folder_path = os.path.dirname(os.path.abspath(config_file_path))
         tmp_folder = os.path.join(os.getcwd(), tempfile.mkdtemp(prefix="cli_temp_cssc"))
         print(f"Temporary directory created at: {tmp_folder}")
         create_temporary_dry_run_file(config_file_path, tmp_folder)
@@ -164,11 +165,14 @@ def acr_cssc_dry_run(cmd, registry, config_file_path):
             registry.name,
             resource_group_name)
 
-        # TO DO: Need to find alternate command to below (doesn't run due to dependency on az context)
-        # platform_os, platform_arch, platform_variant = get_validate_platform(cmd, None)
+        OS = acr_run_client.models.OS
+        Architecture = acr_run_client.models.Architecture
 
-        # TO DO: Need to find alternative to below
-        platform_os, platform_arch, platform_variant = "linux", None, None
+        # TODO: when the extension merges back into the acr module, we need to reuse the 'get_validate_platform()' from ACR modules (src\azure-cli\azure\cli\command_modules\acr\_utils.py)
+        platform_os = OS.linux.value
+        platform_arch = Architecture.amd64.value
+        platform_variant = None
+
         value_pair = [{"name": "CONFIGPATH", "value": f"{file_name}"}]
         request = acr_registries_task_client.models.FileTaskRunRequest(
             task_file_path=TMP_DRY_RUN_FILE_NAME,
@@ -393,13 +397,15 @@ def _is_vault_secret(cmd, credential):
         return keyvault_dns.upper() in credential.upper()
     return False
 
-def generate_logs(cmd, client,
-                run_id,
-                registry_name,
-                resource_group_name,
-                timeout=ACR_RUN_DEFAULT_TIMEOUT_IN_SEC,
-                no_format=False,
-                raise_error_on_failure=False):
+
+def generate_logs(cmd,
+                  client,
+                  run_id,
+                  registry_name,
+                  resource_group_name,
+                  timeout=ACR_RUN_DEFAULT_TIMEOUT_IN_SEC,
+                  no_format=False,
+                  raise_error_on_failure=False):
     log_file_sas = None
     error_msg = "Could not get logs for ID: {}".format(run_id)
     try:
@@ -420,20 +426,22 @@ def generate_logs(cmd, client,
 
     run_status = TASK_RUN_STATUS_RUNNING
     while _evaluate_task_run_nonterminal_state(run_status):
-        run_status=_get_run_status(client, resource_group_name, registry_name, run_id)
-        if(_evaluate_task_run_nonterminal_state(run_status)):
+        run_status = _get_run_status(client, resource_group_name, registry_name, run_id)
+        if _evaluate_task_run_nonterminal_state(run_status):
             logger.debug(f"Waiting for the task run to complete. Current status: {run_status}")
             time.sleep(2)
-    
+
     _download_logs(AppendBlobService(
-                     account_name=account_name,
-                     sas_token=sas_token,
-                     endpoint_suffix=endpoint_suffix),
-                 container_name,
-                    blob_name)
+        account_name=account_name,
+        sas_token=sas_token,
+        endpoint_suffix=endpoint_suffix),
+        container_name,
+        blob_name)
+
 
 def _evaluate_task_run_nonterminal_state(run_status):
     return run_status != TASK_RUN_STATUS_SUCCESS and run_status != TASK_RUN_STATUS_FAILED
+
 
 def _get_run_status(client, resource_group_name, registry_name, run_id):
     try:
@@ -441,6 +449,7 @@ def _get_run_status(client, resource_group_name, registry_name, run_id):
         return response.status
     except (AttributeError, CloudError):
         return None
+
 
 def _download_logs(blob_service,
                    container_name,
@@ -466,4 +475,3 @@ def _remove_internal_acr_statements(blob_content):
 
         if print_line:
             print(line)
-
