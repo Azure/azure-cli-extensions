@@ -184,7 +184,6 @@ def validate_source_path(namespace):
     valued_args = [x for x in arguments if x]
     if len(valued_args) > 1:
         raise InvalidArgumentValueError('At most one of --artifact-path, --source-path must be provided.')
-    validate_path_exist(namespace.source_path, namespace.artifact_path)
 
 
 def validate_artifact_path(namespace):
@@ -197,7 +196,6 @@ def validate_artifact_path(namespace):
     if values is None:
         # ignore jar_file check
         return
-    validate_path_exist(namespace.source_path, namespace.artifact_path)
     file_size, spring_boot_version, spring_cloud_version, has_actuator, has_manifest, has_jar, has_class, ms_sdk_version, jdk_version = values
 
     tips = ", if you choose to ignore these errors, turn validation off with --disable-validation"
