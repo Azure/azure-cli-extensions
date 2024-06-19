@@ -734,7 +734,7 @@ def load_kube_config(kube_config, kube_context, skip_ssl_verification):
     except Exception as e:
         telemetry.set_exception(exception=e, fault_type=consts.Load_Kubeconfig_Fault_Type,
                                 summary='Problem loading the kubeconfig file')
-        raise FileOperationError("Problem loading the kubeconfig file." + str(e))
+        raise FileOperationError("Problem loading the kubeconfig file. " + str(e))
 
 
 def get_private_key(key_pair):
