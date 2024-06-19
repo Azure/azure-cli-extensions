@@ -171,4 +171,4 @@ def validate_path_exist(source_path, artifact_path):
     if source_path and not os.path.exists(source_path):
         raise InvalidArgumentValueError('source path {} does not exist.'.format(source_path))
     if artifact_path and not os.path.exists(artifact_path):
-        raise InvalidArgumentValueError('artifact path does not exist.')
+        raise InvalidArgumentValueError('artifact path {} does not exist.'.format(artifact_path))
