@@ -41,65 +41,26 @@ def show_bastion(cmd, op_info):
     try:
         bastion = Show(cli_ctx=cmd.cli_ctx)(command_args={
             "resource_group": op_info.resource_group_name,
-            "name": "northeurope-vm-vnet-bastion"
+            "name": "northeurope-vm-vnet-bastion" # Make sure op_info has the attribute 'bastion_name'
         })
+        print(bastion)
+        # Check if the IP configurations exist and are not empty
+        properties = bastion.get("properties", {})
+        ip_configurations = properties.get("ipConfigurations", [])
+
+        # Check if the IP configurations exist and are not empty
+        if ip_configurations:
+            print("IP Configurations:", ip_configurations)
+        else:
+            print("No IP configurations found.")
+
         return bastion
-    except Exception:
-        print("Error")
-    
+    except Exception as e:
+        print("Error:", str(e))
 
-def _get_ssh_path(ssh_command="ssh"):
-    import os
-
-    if platform.system() == "Windows":
-        arch_data = platform.architecture()
-        is_32bit = arch_data[0] == "32bit"
-        sys_path = "SysNative" if is_32bit else "System32"
-        system_root = os.environ["SystemRoot"]
-        system32_path = os.path.join(system_root, sys_path)
-        ssh_path = os.path.join(system32_path, "openSSH", (ssh_command + ".exe"))
-        logger.debug("Platform architecture: %s", str(arch_data))
-        logger.debug("System Root: %s", system_root)
-        logger.debug("Attempting to run ssh from path %s", ssh_path)
-
-        if not os.path.isfile(ssh_path):
-            raise ValidationError("Could not find " + ssh_command + ".exe. Is the OpenSSH client installed?")
-    elif platform.system() in ("Linux", "Darwin"):
-        import shutil
-
-        ssh_path = shutil.which(ssh_command)
-        if not ssh_path:
-            raise UnrecognizedArgumentError(f"{ssh_command} not found in path. Is the OpenSSH client installed?")
-    else:
-        err_msg = "Platform is not supported for this command. Supported platforms: Windows, Darwin, Linux"
-        raise UnrecognizedArgumentError(err_msg)
-
-    return ssh_path
 
 def _get_host(username, ip):
     return username + "@" + ip
-
-
-def _get_azext_module(extension_name, module_name):
-    try:
-        # adding the installed extension in the path
-        from azure.cli.core.extension.operations import add_extension_to_path
-        add_extension_to_path(extension_name)
-        # import the extension module
-        from importlib import import_module
-        azext_custom = import_module(module_name)
-        return azext_custom
-    except ImportError as ie:
-        raise CLIInternalError(ie) from ie
-
-
-def _build_args(cert_file, private_key_file):
-    private_key, certificate = [], []
-    if private_key_file:
-        private_key = ["-i", private_key_file]
-    if cert_file:
-        certificate = ["-o", "CertificateFile=" + cert_file]
-    return private_key + certificate
 
 def ssh_bastion_host(cmd, op_info):
     import os
@@ -122,8 +83,8 @@ def ssh_bastion_host(cmd, op_info):
     t.daemon = True
     t.start()
 
-    command = [_get_ssh_path(), _get_host(op_info.local_user, "localhost")]
-    command = command + _build_args(op_info.cert_file, op_info.private_key_file)
+    command = [ ssh_utils.get_ssh_client_path(), _get_host(op_info.local_user, "localhost")]
+    command = command + op_info.build_args()
     command = command + ["-p", str(tunnel_server.local_port)]
     command = command + ["-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null"]
     command = command + ["-o", "LogLevel=Error"]

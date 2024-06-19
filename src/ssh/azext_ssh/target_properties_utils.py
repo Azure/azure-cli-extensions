@@ -11,6 +11,9 @@ from knack import log
 from . import constants as const
 from . import bastion_utils
 
+
+
+
 logger = log.get_logger(__name__)
 
 
@@ -21,12 +24,21 @@ def handle_target_machine_properties(cmd, op_info):
     if properties:
         os_type = parse_os_type(properties, op_info.resource_type.lower())
         agent_version = parse_agent_version(properties, op_info.resource_type.lower())
-        op_info.resource_id = parse_resource_id(properties, op_info.resource_type.lower())
-        location = parse_location(properties, op_info.resource_type.lower())
-        if location not in ["centralus", "eastus2", "westus", "northeurope", "northcentralus", "westcentralus"]:
-            raise azclierror.InvalidArgumentValueError("The Bastion Developer SKU is not supported in the region of the target VM.")
-        nic_name = get_nic_name(properties)
-        get_ssh_associated_vnet(cmd, op_info.resource_group_name, nic_name)
+        if op_info.bastion:
+            location = parse_location(properties, op_info.resource_type.lower())
+            if location not in ["centralus", "eastus2", "westus", "northeurope", "northcentralus", "westcentralus"]:
+                raise azclierror.InvalidArgumentValueError("The Bastion Developer SKU is not supported in the region of the target VM.")
+            op_info.resource_id = parse_resource_id(properties, op_info.resource_type.lower())
+            nic_name = parse_nic_name(properties)
+            nic_info = _request_vm_network_interface_card(cmd, op_info.resource_group_name, nic_name)
+            vnet = parse_vnet(nic_info)
+            subscription_id = parse_subscription_id(nic_info)
+            bastion = _request_specified_bastion(cmd, subscription_id, vnet, op_info.resource_group_name)
+            print(bastion)
+            bastion_name = parse_bastion_name(bastion)
+            print(bastion_name)
+            
+            
         
         
 
@@ -83,6 +95,19 @@ def _request_connected_vmware_properties(cmd, resource_group_name, vm_name):
         return VMwarevSphereShow(cli_ctx=cmd.cli_ctx)(command_args=get_args)
     except Exception:
         return None
+    
+def _request_vm_network_interface_card(cmd, resource_group, nic_name):
+    from .aaz.latest.network.nic import Show
+    try:
+        nic = Show(cli_ctx=cmd.cli_ctx)(command_args={
+                "resource_group": resource_group,
+                "name": nic_name
+            })
+        return nic
+    except Exception:
+        print("Error")
+        return None
+
 
 
 def parse_os_type(properties, resource_type):
@@ -125,18 +150,42 @@ def parse_location(properties, resource_type):
         return properties.location
 
     
-def get_nic_name(properties):
+def parse_nic_name(properties):
     try:
-            nic_id = properties.network_profile.network_interfaces[0].id
-            nic_name = nic_id.split('/')[-1]
-            return nic_name
-    except KeyError as e:
-        print(f"Key error: {e}")
-        return None
-    except IndexError as e:
-        print(f"Index error: {e}")
+        nic_id = properties.network_profile.network_interfaces[0].id
+        nic_name = nic_id.split('/')[-1]
+        return nic_name
+    except Exception as e:
+        print(e)
         return None
     
+def parse_vnet(nic_info):
+    try:
+        vnet_id = nic_info['ipConfigurations'][0]['subnet']['id']
+        return vnet_id.split('/')[-3]
+
+    except (IndexError, KeyError, TypeError) as e:
+        print("Error:", e)
+        return None
+def parse_subscription_id(nic_info):
+    try:
+        return nic_info['id'].split('/')[2]
+    except KeyError:
+        return None
+    
+def parse_bastion_name(bastion_data):
+    try:
+        data = bastion_data.get('data', [])
+        if data and len(data) > 0:
+            bastion_name = data[0].get('name')
+            return bastion_name
+        else:
+            return None
+    except (KeyError, IndexError) as e:
+        print(f"Error parsing Bastion name: {e}")
+        return None
+
+
 # This function is used to check if the OS type is valid and if the authentication options are valid for that OS
 def check_valid_os_type(os_type, op_info):
     if os_type:
@@ -162,15 +211,47 @@ def check_valid_agent_version(agent_version, op_info):
         except Exception:
             return
         
-def get_ssh_associated_vnet(cmd, resource_group, nic_name):
-    from .aaz.latest.network.nic import Show
+def _get_azext_module(extension_name, module_name):
     try:
-        nic = Show(cli_ctx=cmd.cli_ctx)(command_args={
-                "resource_group": resource_group,
-                "name": nic_name
-            })
-        print(nic)
+        # adding the installed extension in the path
+        from azure.cli.core.extension.operations import add_extension_to_path
+        add_extension_to_path(extension_name)
+        # import the extension module
+        from importlib import import_module
+        azext_custom = import_module(module_name)
+        return azext_custom
+    except ImportError as ie:
+        raise CLIInternalError(ie) from ie
 
-    except Exception:
-        print("Error")
 
+RESOURCE_GRAPH_EXTENSION_NAME = 'resource-graph'
+RG_EXTENSION_MODULE = 'azext_resourcegraph.custom'
+RG_SDK_MODULE = 'azext_resourcegraph.vendored_sdks.resourcegraph._resource_graph_client'
+def _request_specified_bastion(cmd, subscription_id, vnet_id, resource_group):
+
+    RG_custom = _get_azext_module(RESOURCE_GRAPH_EXTENSION_NAME, RG_EXTENSION_MODULE)
+    RG_client = _get_azext_module(RESOURCE_GRAPH_EXTENSION_NAME, RG_SDK_MODULE)
+    client = RG_client.ResourceGraphClient(cmd.cli_ctx, subscription_id)
+
+    query = f"""
+    Resources
+    | where type =~ 'Microsoft.Network/bastionHosts' and 
+      (properties.ipConfigurations[0].properties.subnet.id startswith '/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{vnet_id}/' or 
+       properties.virtualNetwork.id =~ '/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{vnet_id}')
+    | project id, location, name, sku, properties, type, vnetid = '/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{vnet_id}'
+    | union (
+        Resources 
+        | where id =~ '/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{vnet_id}'
+        | mv-expand peering=properties.virtualNetworkPeerings limit 400
+        | project vnetid = tolower(tostring(peering.properties.remoteVirtualNetwork.id))
+        | join kind=inner (
+            Resources 
+            | where type =~ 'microsoft.network/bastionHosts'
+            | extend vnetid=tolower(extract('(.*/virtualnetworks/[^/]+)/', 1, tolower(tostring(properties.ipConfigurations[0].properties.subnet.id))))
+        ) on vnetid
+    )
+    """
+
+    response = RG_custom.execute_query(client, query, 10, 0, None, None, False, None)
+
+    return response
