@@ -6,7 +6,7 @@
 import colorama
 
 from azure.cli.core import telemetry
-from azure.cli.core import azclierror
+from azure.cli.core import azclierror 
 from knack import log
 from . import constants as const
 from . import bastion_utils
@@ -25,31 +25,27 @@ def handle_target_machine_properties(cmd, op_info):
         os_type = parse_os_type(properties, op_info.resource_type.lower())
         agent_version = parse_agent_version(properties, op_info.resource_type.lower())
         if op_info.bastion:
-            location = parse_location(properties, op_info.resource_type.lower())
-            if location not in ["centralus", "eastus2", "westus", "northeurope", "northcentralus", "westcentralus"]:
-                raise azclierror.InvalidArgumentValueError("The Bastion Developer SKU is not supported in the region of the target VM.")
-            op_info.resource_id = parse_resource_id(properties, op_info.resource_type.lower())
-            nic_name = parse_nic_name(properties)
-            nic_info = _request_vm_network_interface_card(cmd, op_info.resource_group_name, nic_name)
-            vnet = parse_vnet(nic_info)
-            subscription_id = parse_subscription_id(nic_info)
-            bastion = _request_specified_bastion(cmd, subscription_id, vnet, op_info.resource_group_name)
-            print(bastion)
-            bastion_name = parse_bastion_name(bastion)
-            print(bastion_name)
-            
-            
-        
-        
-
+            handle_bastion_properties(cmd, op_info, properties)
     else:
         os_type, agent_version = None, None
     check_valid_os_type(os_type, op_info)
     check_valid_agent_version(agent_version, op_info)
     return
 
+def handle_bastion_properties(cmd, op_info, properties):
+    check_valid_developer_sku_location(properties, op_info.resource_type.lower())
 
+    op_info.resource_id = parse_resource_id(properties)
+    subscription_id = parse_subscription_id(properties)
+    nic_name = parse_nic_name(properties)
 
+    nic_info = _request_vm_network_interface_card(cmd, op_info.resource_group_name, nic_name)
+
+    vnet = parse_vnet(nic_info)
+
+    bastion = _request_specified_bastion(cmd, subscription_id, vnet, op_info.resource_group_name)
+    op_info.bastion_name = parse_bastion_name(bastion)
+  
 def get_properties(cmd, resource_type, resource_group_name, vm_name):
     if resource_type == "microsoft.compute/virtualmachines":
         return _request_azure_vm_properties(cmd, resource_group_name, vm_name)
@@ -105,9 +101,7 @@ def _request_vm_network_interface_card(cmd, resource_group, nic_name):
             })
         return nic
     except Exception:
-        print("Error")
-        return None
-
+        raise azclierror.ClientRequestError("Failed to get VM's NIC information. Please try again later.")
 
 
 def parse_os_type(properties, resource_type):
@@ -142,12 +136,8 @@ def parse_agent_version(properties, resource_type):
 
             return properties.get("properties").get('guestAgentProfile').get('agentVersion')
 
-def parse_resource_id(properties, resource_type):
+def parse_resource_id(properties):
         return properties.id
-
-def parse_location(properties, resource_type):
-    if resource_type == "microsoft.compute/virtualmachines":
-        return properties.location
 
     
 def parse_nic_name(properties):
@@ -167,9 +157,11 @@ def parse_vnet(nic_info):
     except (IndexError, KeyError, TypeError) as e:
         print("Error:", e)
         return None
-def parse_subscription_id(nic_info):
+    
+def parse_subscription_id(properties):
     try:
-        return nic_info['id'].split('/')[2]
+        properties_id = properties.id
+        return properties_id.split('/')[2]
     except KeyError:
         return None
     
@@ -211,6 +203,15 @@ def check_valid_agent_version(agent_version, op_info):
         except Exception:
             return
         
+def check_valid_developer_sku_location(properties, resource_type):
+    if resource_type == "microsoft.compute/virtualmachines":
+        location = properties.location
+        if location not in ["centralus", "eastus2", "westus", "northeurope", "northcentralus", "westcentralus"]:
+            raise azclierror.InvalidArgumentValueError("The Bastion Developer SKU is not supported in the region of the target VM.")
+    else:
+        raise azclierror.InvalidArgumentValueError("The Bastion Developer SKU is not supported for this type of resource.")
+    
+
 def _get_azext_module(extension_name, module_name):
     try:
         # adding the installed extension in the path
@@ -224,15 +225,36 @@ def _get_azext_module(extension_name, module_name):
         raise CLIInternalError(ie) from ie
 
 
-RESOURCE_GRAPH_EXTENSION_NAME = 'resource-graph'
-RG_EXTENSION_MODULE = 'azext_resourcegraph.custom'
-RG_SDK_MODULE = 'azext_resourcegraph.vendored_sdks.resourcegraph._resource_graph_client'
+class AccessTokenCredential:  # pylint: disable=too-few-public-methods
+    """Simple access token authentication. Return the access token as-is.
+    """
+    def __init__(self, access_token):
+        self.access_token = access_token
+
+    def get_token(self, *scopes, **kwargs):  # pylint: disable=unused-argument
+        import time
+        from azure.cli.core.auth.util import AccessToken
+        # Assume the access token expires in 1 year / 31536000 seconds
+        return AccessToken(self.access_token, int(time.time()) + 31536000)
+    
 def _request_specified_bastion(cmd, subscription_id, vnet_id, resource_group):
+    from azure.core.credentials import TokenCredential
+    from azure.cli.core._profile import Profile
+
+    RESOURCE_GRAPH_EXTENSION_NAME = 'resource-graph'
+    RG_EXTENSION_MODULE = 'azext_resourcegraph.custom'
+    RG_SDK_MODULE = 'azext_resourcegraph.vendored_sdks.resourcegraph._resource_graph_client'
 
     RG_custom = _get_azext_module(RESOURCE_GRAPH_EXTENSION_NAME, RG_EXTENSION_MODULE)
     RG_client = _get_azext_module(RESOURCE_GRAPH_EXTENSION_NAME, RG_SDK_MODULE)
-    client = RG_client.ResourceGraphClient(cmd.cli_ctx, subscription_id)
 
+    try:
+        access_token = Profile(cli_ctx=cmd.cli_ctx).get_raw_token()[0][2].get("accessToken")
+        credentials = AccessTokenCredential(access_token)
+        client = RG_client.ResourceGraphClient(credentials, subscription_id)
+
+    except Exception:
+        raise azclierror.ClientRequestError(f"Failed to get access token. Make sure you are logged in.")
     query = f"""
     Resources
     | where type =~ 'Microsoft.Network/bastionHosts' and 
@@ -251,7 +273,10 @@ def _request_specified_bastion(cmd, subscription_id, vnet_id, resource_group):
         ) on vnetid
     )
     """
+    try: 
+        response = RG_custom.execute_query(client, query, 10, 0, None, None, False, None)
 
-    response = RG_custom.execute_query(client, query, 10, 0, None, None, False, None)
-
+    except Exception:
+        raise azclierror.ClientRequestError(f"Failed to get Bastion information. Please try again later.")
+    
     return response

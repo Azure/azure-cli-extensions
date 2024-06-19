@@ -41,26 +41,17 @@ def show_bastion(cmd, op_info):
     try:
         bastion = Show(cli_ctx=cmd.cli_ctx)(command_args={
             "resource_group": op_info.resource_group_name,
-            "name": "northeurope-vm-vnet-bastion" # Make sure op_info has the attribute 'bastion_name'
+            "name": op_info.bastion_name 
         })
-        print(bastion)
-        # Check if the IP configurations exist and are not empty
-        properties = bastion.get("properties", {})
-        ip_configurations = properties.get("ipConfigurations", [])
-
-        # Check if the IP configurations exist and are not empty
-        if ip_configurations:
-            print("IP Configurations:", ip_configurations)
-        else:
-            print("No IP configurations found.")
 
         return bastion
-    except Exception as e:
-        print("Error:", str(e))
+    except Exception:
+        raise CLIInternalError("Failed to get bastion information. Please try again later.")
 
 
 def _get_host(username, ip):
     return username + "@" + ip
+
 
 def ssh_bastion_host(cmd, op_info):
     import os
@@ -71,13 +62,14 @@ def ssh_bastion_host(cmd, op_info):
     if bastion['sku']['name'] not in [BastionSku.Developer.value, BastionSku.QuickConnect.value]:
         raise InvalidArgumentValueError("SSH to Bastion host is only supported for Developer and QuickConnect Skus.")
 
-    if not op_info.port:
-        op_info.port = 22
+    port = op_info.port
+    if not port:
+        port = 22
 
     target_resource_id = op_info.resource_id
     
-    bastion_endpoint = _get_data_pod(cmd, op_info.port, target_resource_id, bastion)
-    tunnel_server = _get_tunnel(cmd, bastion, bastion_endpoint, target_resource_id, op_info.port)
+    bastion_endpoint = _get_data_pod(cmd, port, target_resource_id, bastion)
+    tunnel_server = _get_tunnel(cmd, bastion, bastion_endpoint, target_resource_id, port)
     
     t = threading.Thread(target=_start_tunnel, args=(tunnel_server,))
     t.daemon = True
@@ -85,6 +77,7 @@ def ssh_bastion_host(cmd, op_info):
 
     command = [ ssh_utils.get_ssh_client_path(), _get_host(op_info.local_user, "localhost")]
     command = command + op_info.build_args()
+    print(op_info.build_args())
     command = command + ["-p", str(tunnel_server.local_port)]
     command = command + ["-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null"]
     command = command + ["-o", "LogLevel=Error"]
