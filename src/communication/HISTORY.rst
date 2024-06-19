@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.9.4
+++++++
+* Update the error code in the comment - Communication chat test scenario remove participant
+
 1.9.3
 ++++++
 * Update Email service create - Global as the default value for Location 
