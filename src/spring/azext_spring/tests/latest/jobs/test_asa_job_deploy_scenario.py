@@ -19,7 +19,7 @@ class JobDeploy(ScenarioTest):
         py_path = os.path.abspath(os.path.dirname(__file__))
         file_path = os.path.join(py_path, 'files/test1.jar').replace("\\", "/")
         self.kwargs.update({
-            'job': 'jobname',
+            'job': 'myjob',
             'serviceName': spring,
             'rg': resource_group,
             'file': file_path
