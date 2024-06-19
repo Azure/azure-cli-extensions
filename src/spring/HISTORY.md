@@ -2,7 +2,7 @@ Release History
 ===============
 1.24.5
 ---
-* Vaildate `artifact-path` and `source-path` before all steps in `az spring app deploy`, `az spring app deployment create` and `az spring job deploy` commands.
+* Verify that `artifact-path` and `source-path` exist before all steps in `az spring app deploy`, `az spring app deployment create` and `az spring job deploy` commands.
 
 1.24.4
 ---
