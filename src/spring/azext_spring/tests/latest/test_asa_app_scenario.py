@@ -109,7 +109,7 @@ class AppDeploy(ScenarioTest):
         ])
 
         # deploy unexist file, the fail is expected
-        with self.assertRaisesRegexp(CLIError, "artifact path does not exist."):
+        with self.assertRaisesRegexp(CLIError, "artifact path {} does not exist.".format(file_path)):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v3')
 
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
@@ -136,7 +136,7 @@ class AppDeploy(ScenarioTest):
         ])
 
         # deploy unexist file, the fail is expected
-        with self.assertRaisesRegexp(CLIError, "artifact path does not exist."):
+        with self.assertRaisesRegexp(CLIError, "artifact path {} does not exist.".format(file_path)):
             self.cmd('spring app deployment create -n green --app {app} -g {rg} -s {serviceName} --instance-count 2 --artifact-path {file}')
 
 
