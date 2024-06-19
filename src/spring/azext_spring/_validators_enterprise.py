@@ -28,7 +28,6 @@ from ._util_enterprise import (
 )
 from ._validators import (validate_instance_count, _parse_sku_name, _parse_jar_file)
 from .buildpack_binding import (DEFAULT_BUILD_SERVICE_NAME)
-from ._app_validator import validate_path_exist
 
 logger = get_logger(__name__)
 
