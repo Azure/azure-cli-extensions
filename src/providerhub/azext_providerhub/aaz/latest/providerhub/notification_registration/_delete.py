@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a notification registration.
+
+    :example: notification-registration delete
+        az providerhub notification-registration delete -y --name "{notificationRegistration}" --provider-namespace "{providerNamespace}"
     """
 
     _aaz_info = {

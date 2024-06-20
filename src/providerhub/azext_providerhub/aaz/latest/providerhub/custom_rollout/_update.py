@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update the rollout details.
+
+    :example: custom-rollout update
+        az providerhub custom-rollout update --provider-namespace "{providerNamespace}" --rollout-name "{customRolloutName}" --canary region="EastUS2EUAP" region="centraluseuap"
     """
 
     _aaz_info = {

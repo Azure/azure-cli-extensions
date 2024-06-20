@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List the list of the notification registrations for the given provider.
+
+    :example: notification-registration list
+        az providerhub notification-registration list --provider-namespace "{providerNamespace}"
     """
 
     _aaz_info = {

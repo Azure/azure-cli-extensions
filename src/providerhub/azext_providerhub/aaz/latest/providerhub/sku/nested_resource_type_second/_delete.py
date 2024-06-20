@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a resource type sku.
+
+    :example: sku nested-resource-type-second delete
+        az providerhub sku nested-resource-type-second delete -y --nested-resource-type-first "nestedResourceTypeFirst" --nested-resource-type-second "nestedResourceTypeSecond" --provider-namespace "{providerNamespace}" --resource-type "{resourceType}" --sku "{skuName}"
     """
 
     _aaz_info = {
@@ -43,13 +46,13 @@ class Delete(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.nested_resource_type_first = AAZStrArg(
-            options=["--nested-rt-first", "--nested-resource-type-first"],
+            options=["--nested-first", "--nested-resource-type-first"],
             help="The first child resource type.",
             required=True,
             id_part="child_name_2",
         )
         _args_schema.nested_resource_type_second = AAZStrArg(
-            options=["--nested-rt-second", "--nested-resource-type-second"],
+            options=["--nested-second", "--nested-resource-type-second"],
             help="The second child resource type.",
             required=True,
             id_part="child_name_3",

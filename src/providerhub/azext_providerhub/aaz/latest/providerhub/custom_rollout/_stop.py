@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Stop(AAZCommand):
     """Stops or cancels the custom rollout, if in progress.
+
+    :example: custom-rollout stop
+        az providerhub custom-rollout stop --provider-namespace "{providerNamespace}" --rollout-name "{customRolloutName}"
     """
 
     _aaz_info = {

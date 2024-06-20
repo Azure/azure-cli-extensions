@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a resource type.
+
+    :example: resource-type-registration create
+        az providerhub resource-type-registration create --endpoints [{api-versions:[2019-01-01],locations:[WestUS]}] --regionality "Regional" --provider-namespace "{providerNamespace}" --resource-type "extensionresourcetype"
     """
 
     _aaz_info = {

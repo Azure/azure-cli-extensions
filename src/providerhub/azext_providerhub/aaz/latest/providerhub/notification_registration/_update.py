@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a notification registration.
+
+    :example: notification-registration update
+        az providerhub notification-registration update --name "{notificationRegistration}" --included-events "*/write" "Microsoft.Contoso/employees/delete" --message-scope "RegisteredSubscriptions" --notification-endpoints [{notification-destination:/subscriptions/ac6bcfb5-3dc1-491f-95a6-646b89bf3e88/resourceGroups/mgmtexp-eastus/providers/Microsoft.EventHub/namespaces/unitedstates-mgmtexpint/eventhubs/armlinkednotifications,locations:[EastUS]}] --notification-mode "EventHub" --provider-namespace "{providerNamespace}"
     """
 
     _aaz_info = {

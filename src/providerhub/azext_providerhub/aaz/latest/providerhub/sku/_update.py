@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update the resource type skus in the given resource type.
+
+    :example: sku update
+        az providerhub sku update --sku-settings [{"name":"freeSku"}] --provider-namespace "{providerNamespace}" --resource-type "{resourceType}" --sku "{skuName}"
     """
 
     _aaz_info = {

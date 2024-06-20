@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create the resource type skus in the given resource type.
+
+    :example: sku create
+        az providerhub sku create --sku-settings [{"name":"freeSku"}] --provider-namespace "{providerNamespace}" --resource-type "{resourceType}" --sku "{skuName}"
     """
 
     _aaz_info = {

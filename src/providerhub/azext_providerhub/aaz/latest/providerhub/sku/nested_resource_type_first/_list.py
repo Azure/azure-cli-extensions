@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List the list of skus for the given resource type.
+
+    :example: sku nested-resource-type-first list
+        az providerhub sku nested-resource-type-first list --nested-resource-type-first "nestedResourceTypeFirst" --provider-namespace "{providerNamespace}" --resource-type "{resourceType}"
     """
 
     _aaz_info = {
@@ -43,7 +46,7 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.nested_resource_type_first = AAZStrArg(
-            options=["--nested-rt-first", "--nested-resource-type-first"],
+            options=["--nested-first", "--nested-resource-type-first"],
             help="The first child resource type.",
             required=True,
         )

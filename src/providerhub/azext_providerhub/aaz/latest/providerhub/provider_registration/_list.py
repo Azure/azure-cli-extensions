@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List the list of the provider registrations in the subscription.
+
+    :example: provider-registration list
+        az providerhub provider-registration list
     """
 
     _aaz_info = {

@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a resource type.
+
+    :example: resource-type-registration delete
+        az providerhub resource-type-registration delete -y --provider-namespace "{providerNamespace}" --resource-type "extensionresourcetype"
     """
 
     _aaz_info = {

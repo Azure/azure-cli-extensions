@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update the operation supported by the given provider.
+
+    :example: operation update
+        az providerhub operation update --contents "[{{\\"name\\":\\"Private.VPTest/Employees/Read\\",\\"display\\":{{\\"default\\":{{\\"description\\":\\"Read employees\\",\\"operation\\":\\"Gets/List employee resources\\",\\"provider\\":\\"Private.VPTest\\",\\"resource\\":\\"Employees\\"}}}}}}]" --provider-namespace "{providerNamespace}"
     """
 
     _aaz_info = {

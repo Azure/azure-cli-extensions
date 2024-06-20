@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a resource type.
+
+    :example: resource-type-registration update
+        az providerhub resource-type-registration update --endpoints [{api-versions:[2019-01-01],locations:[WestUS]}] --regionality "Regional" --provider-namespace "{providerNamespace}" --resource-type "extensionresourcetype"
     """
 
     _aaz_info = {
