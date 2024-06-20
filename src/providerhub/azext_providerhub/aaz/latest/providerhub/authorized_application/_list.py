@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List the list of the authorized applications in the provider namespace.
+
+    :example: authorized-application list
+        az providerhub authorized-application list --provider-namespace "{providerNamespace}"
     """
 
     _aaz_info = {

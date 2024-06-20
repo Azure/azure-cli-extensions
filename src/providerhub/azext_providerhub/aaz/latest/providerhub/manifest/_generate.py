@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Generate(AAZCommand):
     """Generates the manifest for the given provider.
+
+    :example: manifest generate
+        az az providerhub manifest generate --provider-namespace "{providerNamespace}"
     """
 
     _aaz_info = {

@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete an authorized application.
+
+    :example: authorized-application delete
+        az providerhub authorized-application delete -y -n "8b51e6a7-7814-42bd-aa17-3fb1837b3b7a" --provider-namespace "{providerNamespace}"
     """
 
     _aaz_info = {

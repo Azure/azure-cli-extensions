@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create the authorized application.
+
+    :example: authorized-application create
+        az providerhub authorized-application create -n "8b51e6a7-7814-42bd-aa17-3fb1837b3b7a" --data-authorizations "[{{role:ServiceOwner}}]" --provider-namespace "{providerNamespace}"
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the authorized application details.
+
+    :example: authorized-application show
+        az providerhub authorized-application show -n "8b51e6a7-7814-42bd-aa17-3fb1837b3b7a" --provider-namespace "{providerNamespace}"
     """
 
     _aaz_info = {

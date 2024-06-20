@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the custom rollout details.
+
+    :example: custom-rollout show
+        az providerhub custom-rollout show --provider-namespace "{providerNamespace}" --rollout-name "{customRolloutName}"
     """
 
     _aaz_info = {

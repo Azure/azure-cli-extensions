@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create the rollout details.
+
+    :example: custom-rollout create
+        az providerhub custom-rollout create --provider-namespace "{providerNamespace}" --rollout-name "{customRolloutName}" --canary region="EastUS2EUAP" region="centraluseuap"
     """
 
     _aaz_info = {
@@ -112,7 +115,7 @@ class Create(AAZCommand):
             help="The canary regions to apply the manifest.",
         )
         _args_schema.manifest_checkin_specification = AAZObjectArg(
-            options=["--manifest-checkin-specification"],
+            options=["--manifest-checkin-spec", "--manifest-checkin-specification"],
             arg_group="Specification",
             help="The manifest checkin specification.",
         )
@@ -121,20 +124,23 @@ class Create(AAZCommand):
             arg_group="Specification",
         )
         _args_schema.refresh_subscription_registration = AAZBoolArg(
-            options=["--refresh-subscription-registration"],
+            options=["--refresh-sub-reg", "--refresh-subscription-registration"],
             arg_group="Specification",
+            help="Determines if subscription registration should be refreshed.",
         )
         _args_schema.release_scopes = AAZListArg(
             options=["--release-scopes"],
             arg_group="Specification",
         )
         _args_schema.resource_type_registrations = AAZListArg(
-            options=["--resource-type-registrations"],
+            options=["--rt-regs", "--resource-type-registrations"],
             arg_group="Specification",
+            help="The resource type registrations.",
         )
         _args_schema.skip_release_scope_validation = AAZBoolArg(
-            options=["--skip-release-scope-validation"],
+            options=["--skip-validation", "--skip-release-scope-validation"],
             arg_group="Specification",
+            help="Determines if release scope validation should be skipped.",
         )
 
         auto_provision_config = cls._args_schema.auto_provision_config
@@ -157,13 +163,13 @@ class Create(AAZCommand):
 
         manifest_checkin_specification = cls._args_schema.manifest_checkin_specification
         manifest_checkin_specification.manifest_checkin_option = AAZStrArg(
-            options=["manifest-checkin-option"],
+            options=["checkin-option", "manifest-checkin-option"],
             help="The manifest checkin option.",
             default="DoNotAttemptAutomaticManifestCheckin",
             enum={"AttemptAutomaticManifestCheckin": "AttemptAutomaticManifestCheckin", "DoNotAttemptAutomaticManifestCheckin": "DoNotAttemptAutomaticManifestCheckin"},
         )
         manifest_checkin_specification.manifest_checkin_params = AAZObjectArg(
-            options=["manifest-checkin-params"],
+            options=["checkin-params", "manifest-checkin-params"],
             help="The manifest checkin params.",
         )
 

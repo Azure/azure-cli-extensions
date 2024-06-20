@@ -77,19 +77,19 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.error_response_message_options = AAZObjectArg(
-            options=["--error-response-message-options"],
+            options=["--message-options", "--error-response-message-options"],
             arg_group="Management",
             help="Options for error response messages.",
             nullable=True,
         )
         _args_schema.expedited_rollout_metadata = AAZObjectArg(
-            options=["--expedited-rollout-metadata"],
+            options=["--rollout-metadata", "--expedited-rollout-metadata"],
             arg_group="Management",
             help="Metadata for expedited rollout.",
             nullable=True,
         )
         _args_schema.expedited_rollout_submitters = AAZListArg(
-            options=["--expedited-rollout-submitters"],
+            options=["--rollout-submitters", "--expedited-rollout-submitters"],
             arg_group="Management",
             help="List of expedited rollout submitters.",
             nullable=True,
@@ -126,7 +126,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.profit_center_program_id = AAZStrArg(
-            options=["--profit-center-program-id"],
+            options=["--pc-program-id", "--profit-center-program-id"],
             arg_group="Management",
             help="The profit center program id for the subscription.",
             nullable=True,
@@ -268,14 +268,14 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.cross_tenant_token_validation = AAZStrArg(
-            options=["--cross-tenant-token-validation"],
+            options=["--token-validation", "--cross-tenant-token-validation"],
             arg_group="Properties",
             help="The cross tenant token validation.",
             nullable=True,
             enum={"EnsureSecureValidation": "EnsureSecureValidation", "PassthroughInsecureToken": "PassthroughInsecureToken"},
         )
         _args_schema.custom_manifest_version = AAZStrArg(
-            options=["--custom-manifest-version"],
+            options=["--custom-manifest-vers", "--custom-manifest-version"],
             arg_group="Properties",
             help="Custom manifest version.",
             nullable=True,
@@ -287,13 +287,13 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.enable_tenant_linked_notification = AAZBoolArg(
-            options=["--enable-tenant-linked-notification"],
+            options=["--enable-linked-notif", "--enable-tenant-linked-notification"],
             arg_group="Properties",
             help="The enable tenant linked notification.",
             nullable=True,
         )
         _args_schema.global_notification_endpoints = AAZListArg(
-            options=["--global-notification-endpoints"],
+            options=["--global-notif-endpoints", "--global-notification-endpoints"],
             arg_group="Properties",
             help="The global notification endpoints.",
             nullable=True,
@@ -361,7 +361,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.private_resource_provider_configuration = AAZObjectArg(
-            options=["--private-resource-provider-configuration"],
+            options=["--private-rp-config", "--private-resource-provider-configuration"],
             arg_group="Properties",
             help="The private resource provider configuration.",
             nullable=True,
@@ -405,19 +405,19 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.resource_group_lock_option_during_move = AAZObjectArg(
-            options=["--resource-group-lock-option-during-move"],
+            options=["--rg-lock-option", "--resource-group-lock-option-during-move"],
             arg_group="Properties",
             help="Resource group lock option during move.",
             nullable=True,
         )
         _args_schema.resource_hydration_accounts = AAZListArg(
-            options=["--resource-hydration-accounts"],
+            options=["--resc-hydration-accts", "--resource-hydration-accounts"],
             arg_group="Properties",
             help="resource hydration accounts",
             nullable=True,
         )
         _args_schema.resource_provider_authorization_rules = AAZObjectArg(
-            options=["--resource-provider-authorization-rules"],
+            options=["--rp-auth-rules", "--resource-provider-authorization-rules"],
             arg_group="Properties",
             help="The resource provider authorization rules.",
             nullable=True,
@@ -441,7 +441,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.template_deployment_options = AAZObjectArg(
-            options=["--template-deployment-options"],
+            options=["--tmplt-deploy-opt", "--template-deployment-options"],
             arg_group="Properties",
             help="The template deployment options.",
             nullable=True,
@@ -840,7 +840,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.subscription_state_override_actions = AAZListArg(
-            options=["--subscription-state-override-actions"],
+            options=["--override-actions", "--subscription-state-override-actions"],
             arg_group="SubscriptionLifecycleNotificationSpecifications",
             help="The subscription state override actions.",
             nullable=True,

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create the operation supported by the given provider.
+
+    :example: operation create
+        az providerhub operation create --contents "[{{\\"name\\":\\"Private.VPTest/Employees/Read\\",\\"display\\":{{\\"default\\":{{\\"description\\":\\"Read employees\\",\\"operation\\":\\"Gets/List employee resources\\",\\"provider\\":\\"Private.VPTest\\",\\"resource\\":\\"Employees\\"}}}}}}]" --provider-namespace "{providerNamespace}"
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the default rollout details.
+
+    :example: default-rollout show
+        az providerhub default-rollout show --provider-namespace "{providerNamespace}" --rollout-name "{defaultRolloutName}"
     """
 
     _aaz_info = {

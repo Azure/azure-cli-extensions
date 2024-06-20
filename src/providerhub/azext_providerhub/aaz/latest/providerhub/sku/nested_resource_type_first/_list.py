@@ -43,7 +43,7 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.nested_resource_type_first = AAZStrArg(
-            options=["--nested-resource-type-first"],
+            options=["--nested-rt-first", "--nested-resource-type-first"],
             help="The first child resource type.",
             required=True,
         )

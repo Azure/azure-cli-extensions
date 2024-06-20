@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create the rollout details.
+
+    :example: default-rollout create
+        az providerhub default-rollout create --provider-namespace "{providerNamespace}" --rollout-name "{defaultRolloutName}"
     """
 
     _aaz_info = {
@@ -61,14 +64,14 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.manifest_checkin_option = AAZStrArg(
-            options=["--manifest-checkin-option"],
+            options=["--checkin-option", "--manifest-checkin-option"],
             arg_group="ManifestCheckinSpecification",
             help="The manifest checkin option.",
             default="DoNotAttemptAutomaticManifestCheckin",
             enum={"AttemptAutomaticManifestCheckin": "AttemptAutomaticManifestCheckin", "DoNotAttemptAutomaticManifestCheckin": "DoNotAttemptAutomaticManifestCheckin"},
         )
         _args_schema.manifest_checkin_params = AAZObjectArg(
-            options=["--manifest-checkin-params"],
+            options=["--checkin-params", "--manifest-checkin-params"],
             arg_group="ManifestCheckinSpecification",
             help="The manifest checkin params.",
         )
@@ -172,16 +175,19 @@ class Create(AAZCommand):
             arg_group="Specification",
         )
         _args_schema.resource_type_registrations = AAZListArg(
-            options=["--resource-type-registrations"],
+            options=["--rt-regs", "--resource-type-registrations"],
             arg_group="Specification",
+            help="The resource type registrations.",
         )
         _args_schema.rest_of_the_world_group_one = AAZObjectArg(
-            options=["--rest-of-the-world-group-one"],
+            options=["--row1", "--rest-of-the-world-group-one"],
             arg_group="Specification",
+            help="The rest of the world group one options.",
         )
         _args_schema.rest_of_the_world_group_two = AAZObjectArg(
-            options=["--rest-of-the-world-group-two"],
+            options=["--row2", "--rest-of-the-world-group-two"],
             arg_group="Specification",
+            help="The rest of the world group two options.",
         )
 
         auto_provision_config = cls._args_schema.auto_provision_config

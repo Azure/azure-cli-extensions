@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete the rollout resource. Rollout must be in terminal state.
+
+    :example: default-rollout delete
+        az providerhub default-rollout delete -y --provider-namespace "{providerNamespace}" --rollout-name "{defaultRolloutName}"
     """
 
     _aaz_info = {

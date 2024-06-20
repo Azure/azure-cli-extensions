@@ -126,7 +126,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.manifest_checkin_specification = AAZObjectArg(
-            options=["--manifest-checkin-specification"],
+            options=["--manifest-checkin-spec", "--manifest-checkin-specification"],
             arg_group="Specification",
             help="The manifest checkin specification.",
             nullable=True,
@@ -137,8 +137,9 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.refresh_subscription_registration = AAZBoolArg(
-            options=["--refresh-subscription-registration"],
+            options=["--refresh-sub-reg", "--refresh-subscription-registration"],
             arg_group="Specification",
+            help="Determines if subscription registration should be refreshed.",
             nullable=True,
         )
         _args_schema.release_scopes = AAZListArg(
@@ -152,8 +153,9 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.skip_release_scope_validation = AAZBoolArg(
-            options=["--skip-release-scope-validation"],
+            options=["--skip-validation", "--skip-release-scope-validation"],
             arg_group="Specification",
+            help="Determines if release scope validation should be skipped.",
             nullable=True,
         )
 
@@ -180,13 +182,13 @@ class Update(AAZCommand):
 
         manifest_checkin_specification = cls._args_schema.manifest_checkin_specification
         manifest_checkin_specification.manifest_checkin_option = AAZStrArg(
-            options=["manifest-checkin-option"],
+            options=["checkin-option", "manifest-checkin-option"],
             help="The manifest checkin option.",
             nullable=True,
             enum={"AttemptAutomaticManifestCheckin": "AttemptAutomaticManifestCheckin", "DoNotAttemptAutomaticManifestCheckin": "DoNotAttemptAutomaticManifestCheckin"},
         )
         manifest_checkin_specification.manifest_checkin_params = AAZObjectArg(
-            options=["manifest-checkin-params"],
+            options=["checkin-params", "manifest-checkin-params"],
             help="The manifest checkin params.",
             nullable=True,
         )

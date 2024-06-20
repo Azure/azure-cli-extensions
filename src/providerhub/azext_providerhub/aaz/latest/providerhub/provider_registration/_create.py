@@ -72,17 +72,17 @@ class Create(AAZCommand):
             help="List of manifest owners for canary",
         )
         _args_schema.error_response_message_options = AAZObjectArg(
-            options=["--error-response-message-options"],
+            options=["--message-options", "--error-response-message-options"],
             arg_group="Management",
             help="Options for error response messages.",
         )
         _args_schema.expedited_rollout_metadata = AAZObjectArg(
-            options=["--expedited-rollout-metadata"],
+            options=["--rollout-metadata", "--expedited-rollout-metadata"],
             arg_group="Management",
             help="Metadata for expedited rollout.",
         )
         _args_schema.expedited_rollout_submitters = AAZListArg(
-            options=["--expedited-rollout-submitters"],
+            options=["--rollout-submitters", "--expedited-rollout-submitters"],
             arg_group="Management",
             help="List of expedited rollout submitters.",
         )
@@ -113,7 +113,7 @@ class Create(AAZCommand):
             help="The profit center code for the subscription.",
         )
         _args_schema.profit_center_program_id = AAZStrArg(
-            options=["--profit-center-program-id"],
+            options=["--pc-program-id", "--profit-center-program-id"],
             arg_group="Management",
             help="The profit center program id for the subscription.",
         )
@@ -223,13 +223,13 @@ class Create(AAZCommand):
             help="This allows a restrictive subscription type to have access to register and use the Resource Provider.",
         )
         _args_schema.cross_tenant_token_validation = AAZStrArg(
-            options=["--cross-tenant-token-validation"],
+            options=["--token-validation", "--cross-tenant-token-validation"],
             arg_group="Properties",
             help="The cross tenant token validation.",
             enum={"EnsureSecureValidation": "EnsureSecureValidation", "PassthroughInsecureToken": "PassthroughInsecureToken"},
         )
         _args_schema.custom_manifest_version = AAZStrArg(
-            options=["--custom-manifest-version"],
+            options=["--custom-manifest-vers", "--custom-manifest-version"],
             arg_group="Properties",
             help="Custom manifest version.",
         )
@@ -239,13 +239,13 @@ class Create(AAZCommand):
             help="The DSTS configuration.",
         )
         _args_schema.enable_tenant_linked_notification = AAZBoolArg(
-            options=["--enable-tenant-linked-notification"],
+            options=["--enable-linked-notif", "--enable-tenant-linked-notification"],
             arg_group="Properties",
             help="The enable tenant linked notification.",
             nullable=True,
         )
         _args_schema.global_notification_endpoints = AAZListArg(
-            options=["--global-notification-endpoints"],
+            options=["--global-notif-endpoints", "--global-notification-endpoints"],
             arg_group="Properties",
             help="The global notification endpoints.",
         )
@@ -260,12 +260,12 @@ class Create(AAZCommand):
             help="Legacy registrations.",
         )
         _args_schema.linked_notification_rules = AAZListArg(
-            options=["--linked-notification-rules"],
+            options=["--linked-notif-rules", "--linked-notification-rules"],
             arg_group="Properties",
             help="The linked notification rules.",
         )
         _args_schema.management_group_global_notification_endpoints = AAZListArg(
-            options=["--management-group-global-notification-endpoints"],
+            options=["--mg-notif-endpoints", "--management-group-global-notification-endpoints"],
             arg_group="Properties",
             help="Management groups global notification endpoints.",
         )
@@ -302,7 +302,7 @@ class Create(AAZCommand):
             help="Optional features.",
         )
         _args_schema.private_resource_provider_configuration = AAZObjectArg(
-            options=["--private-resource-provider-configuration"],
+            options=["--private-rp-config", "--private-resource-provider-configuration"],
             arg_group="Properties",
             help="The private resource provider configuration.",
         )
@@ -339,17 +339,17 @@ class Create(AAZCommand):
             help="The required features.",
         )
         _args_schema.resource_group_lock_option_during_move = AAZObjectArg(
-            options=["--resource-group-lock-option-during-move"],
+            options=["--rg-lock-option", "--resource-group-lock-option-during-move"],
             arg_group="Properties",
             help="Resource group lock option during move.",
         )
         _args_schema.resource_hydration_accounts = AAZListArg(
-            options=["--resource-hydration-accounts"],
+            options=["--resc-hydration-accts", "--resource-hydration-accounts"],
             arg_group="Properties",
             help="resource hydration accounts",
         )
         _args_schema.resource_provider_authorization_rules = AAZObjectArg(
-            options=["--resource-provider-authorization-rules"],
+            options=["--rp-auth-rules", "--resource-provider-authorization-rules"],
             arg_group="Properties",
             help="The resource provider authorization rules.",
         )
@@ -369,12 +369,12 @@ class Create(AAZCommand):
             help="The services.",
         )
         _args_schema.template_deployment_options = AAZObjectArg(
-            options=["--template-deployment-options"],
+            options=["--tmplt-deploy-opt", "--template-deployment-options"],
             arg_group="Properties",
             help="The template deployment options.",
         )
         _args_schema.token_auth_configuration = AAZObjectArg(
-            options=["--token-auth-configuration"],
+            options=["--token-auth-config", "--token-auth-configuration"],
             arg_group="Properties",
             help="The token auth configuration.",
         )
@@ -685,7 +685,7 @@ class Create(AAZCommand):
             help="The soft delete time to live.",
         )
         _args_schema.subscription_state_override_actions = AAZListArg(
-            options=["--subscription-state-override-actions"],
+            options=["--override-actions", "--subscription-state-override-actions"],
             arg_group="SubscriptionLifecycleNotificationSpecifications",
             help="The subscription state override actions.",
         )

@@ -110,7 +110,7 @@ class Update(AAZCommand):
             enum={"Direct": "Direct", "Hybrid": "Hybrid", "Managed": "Managed"},
         )
         _args_schema.add_resource_list_target_locations = AAZBoolArg(
-            options=["--add-resource-list-target-locations"],
+            options=["--add-target-locations", "--add-resource-list-target-locations"],
             arg_group="Properties",
             help="Add resource list target locations?",
             nullable=True,
@@ -118,12 +118,14 @@ class Update(AAZCommand):
         _args_schema.additional_options = AAZStrArg(
             options=["--additional-options"],
             arg_group="Properties",
+            help="The additional options.",
             nullable=True,
             enum={"ProtectedAsyncOperationPolling": "ProtectedAsyncOperationPolling", "ProtectedAsyncOperationPollingAuditOnly": "ProtectedAsyncOperationPollingAuditOnly"},
         )
         _args_schema.allow_empty_role_assignments = AAZBoolArg(
-            options=["--allow-empty-role-assignments"],
+            options=["--allow-empty-role", "--allow-empty-role-assignments"],
             arg_group="Properties",
+            help="Determines if empty role assignments are allowed.",
             nullable=True,
         )
         _args_schema.allowed_resource_names = AAZListArg(
@@ -132,7 +134,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.allowed_template_deployment_reference_actions = AAZListArg(
-            options=["--allowed-template-deployment-reference-actions"],
+            options=["--allowed-templ-actions", "--allowed-template-deployment-reference-actions"],
             arg_group="Properties",
             help="Allowed template deployment reference actions.",
             nullable=True,
@@ -149,8 +151,9 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.async_operation_resource_type_name = AAZStrArg(
-            options=["--async-operation-resource-type-name"],
+            options=["--async-op-rt-name", "--async-operation-resource-type-name"],
             arg_group="Properties",
+            help="The async operation resource type name.",
             nullable=True,
         )
         _args_schema.async_timeout_rules = AAZListArg(
@@ -180,6 +183,7 @@ class Update(AAZCommand):
         _args_schema.category = AAZStrArg(
             options=["--category"],
             arg_group="Properties",
+            help="The category.",
             nullable=True,
             enum={"FreeForm": "FreeForm", "Internal": "Internal", "None": "None", "PureProxy": "PureProxy"},
         )
@@ -196,7 +200,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.cross_tenant_token_validation = AAZStrArg(
-            options=["--cross-tenant-token-validation"],
+            options=["--token-validation", "--cross-tenant-token-validation"],
             arg_group="Properties",
             help="The cross tenant token validation.",
             nullable=True,
@@ -215,8 +219,9 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.disallowed_end_user_operations = AAZListArg(
-            options=["--disallowed-end-user-operations"],
+            options=["--disallowed-ops", "--disallowed-end-user-operations"],
             arg_group="Properties",
+            help="The disallowed end user operations.",
             nullable=True,
         )
         _args_schema.dsts_configuration = AAZObjectArg(
@@ -232,7 +237,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.enable_third_party_s2_s = AAZBoolArg(
-            options=["--enable-third-party-s2-s"],
+            options=["--enable-3p-s2s", "--enable-third-party-s2-s"],
             arg_group="Properties",
             help="Indicates whether third party s2s is enabled for this resource type.",
             nullable=True,
@@ -253,6 +258,7 @@ class Update(AAZCommand):
         _args_schema.frontdoor_request_mode = AAZStrArg(
             options=["--frontdoor-request-mode"],
             arg_group="Properties",
+            help="The frontdoor request mode.",
             nullable=True,
             enum={"NotSpecified": "NotSpecified", "UseManifest": "UseManifest"},
         )
@@ -277,6 +283,7 @@ class Update(AAZCommand):
         _args_schema.legacy_name = AAZStrArg(
             options=["--legacy-name"],
             arg_group="Properties",
+            help="The legacy name.",
             nullable=True,
         )
         _args_schema.legacy_names = AAZListArg(
@@ -297,8 +304,9 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.linked_notification_rules = AAZListArg(
-            options=["--linked-notification-rules"],
+            options=["--linked-notif-rules", "--linked-notification-rules"],
             arg_group="Properties",
+            help="The linked notification rules.",
             nullable=True,
         )
         _args_schema.linked_operation_rules = AAZListArg(
@@ -313,8 +321,9 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.managed_resource_group_configuration = AAZObjectArg(
-            options=["--managed-resource-group-configuration"],
+            options=["--managed-rg-config", "--managed-resource-group-configuration"],
             arg_group="Properties",
+            help="The managed resource group configuration.",
             nullable=True,
         )
         _args_schema.management = AAZObjectArg(
@@ -365,12 +374,14 @@ class Update(AAZCommand):
         _args_schema.policy_execution_type = AAZStrArg(
             options=["--policy-execution-type"],
             arg_group="Properties",
+            help="The policy execution type.",
             nullable=True,
             enum={"BypassPolicies": "BypassPolicies", "ExecutePolicies": "ExecutePolicies", "ExpectPartialPutRequests": "ExpectPartialPutRequests", "NotSpecified": "NotSpecified"},
         )
         _args_schema.private_endpoint_configuration = AAZObjectArg(
-            options=["--private-endpoint-configuration"],
+            options=["--priv-endpoint-config", "--private-endpoint-configuration"],
             arg_group="Properties",
+            help="The private endpoint config.",
             nullable=True,
         )
         _args_schema.quota_rule = AAZObjectArg(
@@ -398,8 +409,9 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.resource_concurrency_control_options = AAZDictArg(
-            options=["--resource-concurrency-control-options"],
+            options=["--concurrency-options", "--resource-concurrency-control-options"],
             arg_group="Properties",
+            help="The resource concurrency control options.",
             nullable=True,
         )
         _args_schema.resource_deletion_policy = AAZStrArg(
@@ -410,12 +422,13 @@ class Update(AAZCommand):
             enum={"CascadeDeleteAll": "CascadeDeleteAll", "CascadeDeleteProxyOnlyChildren": "CascadeDeleteProxyOnlyChildren", "NotSpecified": "NotSpecified"},
         )
         _args_schema.resource_graph_configuration = AAZObjectArg(
-            options=["--resource-graph-configuration"],
+            options=["--resource-graph-config", "--resource-graph-configuration"],
             arg_group="Properties",
+            help="The resource graph configuration.",
             nullable=True,
         )
         _args_schema.resource_management_options = AAZObjectArg(
-            options=["--resource-management-options"],
+            options=["--resource-mgmt-options", "--resource-management-options"],
             arg_group="Properties",
             help="Resource management options.",
             nullable=True,
@@ -427,13 +440,13 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.resource_provider_authorization_rules = AAZObjectArg(
-            options=["--resource-provider-authorization-rules"],
+            options=["--rp-auth-rules", "--resource-provider-authorization-rules"],
             arg_group="Properties",
             help="The resource provider authorization rules.",
             nullable=True,
         )
         _args_schema.resource_query_management = AAZObjectArg(
-            options=["--resource-query-management"],
+            options=["--resource-query-mgmt", "--resource-query-management"],
             arg_group="Properties",
             help="Resource query management options.",
             nullable=True,
@@ -441,11 +454,12 @@ class Update(AAZCommand):
         _args_schema.resource_sub_type = AAZStrArg(
             options=["--resource-sub-type"],
             arg_group="Properties",
+            help="The resource sub type.",
             nullable=True,
             enum={"AsyncOperation": "AsyncOperation", "NotSpecified": "NotSpecified"},
         )
         _args_schema.resource_type_common_attribute_management = AAZObjectArg(
-            options=["--resource-type-common-attribute-management"],
+            options=["--rt-common-mgmt", "--resource-type-common-attribute-management"],
             arg_group="Properties",
             help="Resource type common attribute management.",
             nullable=True,
@@ -453,6 +467,7 @@ class Update(AAZCommand):
         _args_schema.resource_validation = AAZStrArg(
             options=["--resource-validation"],
             arg_group="Properties",
+            help="The resource validation.",
             nullable=True,
             enum={"NotSpecified": "NotSpecified", "ProfaneWords": "ProfaneWords", "ReservedWords": "ReservedWords"},
         )
@@ -479,6 +494,7 @@ class Update(AAZCommand):
         _args_schema.sku_link = AAZStrArg(
             options=["--sku-link"],
             arg_group="Properties",
+            help="The sku link.",
             nullable=True,
         )
         _args_schema.subscription_state_rules = AAZListArg(
@@ -491,6 +507,7 @@ class Update(AAZCommand):
         _args_schema.supports_tags = AAZBoolArg(
             options=["--supports-tags"],
             arg_group="Properties",
+            help="Determines if tags are supported.",
             nullable=True,
         )
         _args_schema.swagger_specifications = AAZListArg(
@@ -507,8 +524,9 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.template_deployment_policy = AAZObjectArg(
-            options=["--template-deployment-policy"],
+            options=["--tmplt-deploy-policy", "--template-deployment-policy"],
             arg_group="Properties",
+            help="The template deployment policy.",
             nullable=True,
         )
         _args_schema.throttling_rules = AAZListArg(
@@ -1085,17 +1103,17 @@ class Update(AAZCommand):
             nullable=True,
         )
         management.error_response_message_options = AAZObjectArg(
-            options=["error-response-message-options"],
+            options=["message-options", "error-response-message-options"],
             help="Options for error response messages.",
             nullable=True,
         )
         management.expedited_rollout_metadata = AAZObjectArg(
-            options=["expedited-rollout-metadata"],
+            options=["rollout-metadata", "expedited-rollout-metadata"],
             help="Metadata for expedited rollout.",
             nullable=True,
         )
         management.expedited_rollout_submitters = AAZListArg(
-            options=["expedited-rollout-submitters"],
+            options=["rollout-submitters", "expedited-rollout-submitters"],
             help="List of expedited rollout submitters.",
             nullable=True,
         )
@@ -1126,7 +1144,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         management.profit_center_program_id = AAZStrArg(
-            options=["profit-center-program-id"],
+            options=["pc-program-id", "profit-center-program-id"],
             help="The profit center program id for the subscription.",
             nullable=True,
         )
@@ -1680,7 +1698,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.subscription_state_override_actions = AAZListArg(
-            options=["--subscription-state-override-actions"],
+            options=["--override-actions", "--subscription-state-override-actions"],
             arg_group="SubscriptionLifecycleNotificationSpecifications",
             help="The subscription state override actions.",
             nullable=True,
