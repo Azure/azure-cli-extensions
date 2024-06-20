@@ -233,17 +233,30 @@ def validate_enable_azure_container_storage_params(
 
             if storage_pool_option is None:
                 option_needed_by_dependent_params = []
-                if ephemeral_disk_volume_type is not None and not required_type_installed_for_nvme_perf_tier:
+                supported_option_needed = ''
+                if ephemeral_disk_volume_type is not None and not required_type_installed_for_disk_vol_type:
                     option_needed_by_dependent_params.append('--ephemeral-disk-volume-type')
+                    supported_option_needed = f'{CONST_STORAGE_POOL_OPTION_NVME} or {CONST_STORAGE_POOL_OPTION_SSD}'
                 if ephemeral_disk_nvme_perf_tier is not None and not required_type_installed_for_nvme_perf_tier:
                     option_needed_by_dependent_params.append('--ephemeral-disk-nvme-perf-tier')
+                    supported_option_needed = {CONST_STORAGE_POOL_OPTION_NVME}
 
                 if len(option_needed_by_dependent_params) > 0:
                     params_requiring_options = ', '.join(option_needed_by_dependent_params)
-                    raise RequiredArgumentMissingError(
-                        f'Cannot set {params_requiring_options} along with '
-                        '--enable-azure-container-storage when the corresponding storage pool option '
-                        'is not enabled. Define the value using --storage-pool-option.'
+                    raise ArgumentUsageError(
+                        f'Cannot set {params_requiring_options} along with --enable-azure-container-storage '
+                        f'when storage pool type: {CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK} option: '
+                        f'{supported_option_needed} is not enabled for Azure Container Storage. '
+                        'Enable the option using --storage-pool-option.'
+                    )
+            else:
+                if ephemeral_disk_nvme_perf_tier is not None and not required_type_installed_for_nvme_perf_tier and \
+                   storage_pool_option != CONST_STORAGE_POOL_OPTION_NVME:
+                    raise ArgumentUsageError(
+                        'Cannot set --ephemeral-disk-nvme-perf-tier along with --enable-azure-container-storage '
+                        f'when storage pool type: {CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK} option: '
+                        f'{CONST_STORAGE_POOL_OPTION_NVME} is not enabled for Azure Container Storage. '
+                        'Enable the option using --storage-pool-option.'
                     )
 
             if (storage_pool_name is not None or storage_pool_sku is not None or
