@@ -20,7 +20,7 @@ class Update(AAZCommand):
     :example: update log scrubbing
         az network front-door waf-policy update -g rg -n n1 --log-scrubbing "{scrubbing-rules:[{match-variable:QueryStringArgNames,selector-match-operator:EqualsAny}],state:Enabled}"
         az network front-door waf-policy update -g rg -n n1 --log-scrubbing scrubbing-rules[1]="{match-variable:RequestUri,selector-match-operator:Equals}"
-        az network front-door waf-policy update -g rg -n n1 --log-scrubbing "{scrubbing-rules:[{match-variable:RequestBodyJsonArgNames,selector-match-operator:EqualsAny}],state:Enabled}" scrubbing-rules[1]="{match-variable:RequestUri,selector-match-operator:EqualsAny}"
+        az network front-door waf-policy update -g rg -n n1 --log-scrubbing "{scrubbing-rules:[{match-variable:RequestBodyJsonArgNames,selector-match-operator:EqualsAny, state: Enabled}],state:Enabled}" scrubbing-rules[1]="{match-variable:RequestUri,selector-match-operator:EqualsAny, state:Disabled}"
     """
 
     _aaz_info = {
