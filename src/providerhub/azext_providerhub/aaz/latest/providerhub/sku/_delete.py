@@ -18,8 +18,8 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete a resource type sku.
 
-    :example: sku delete
-        az providerhub sku delete -y --provider-namespace "{providerNamespace}" --resource-type "{resourceType}" --sku "{skuName}"
+    :example: sku nested-resource-type-third delete
+        az providerhub sku nested-resource-type-third delete -y --nested-resource-type-first "nestedResourceTypeFirst" --nested-resource-type-second "nestedResourceTypeSecond" --nested-resource-type-third "nestedResourceTypeThird" --provider-namespace "{providerNamespace}" --resource-type "{resourceType}" --sku "{skuName}"
     """
 
     _aaz_info = {

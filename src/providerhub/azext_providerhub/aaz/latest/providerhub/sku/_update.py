@@ -17,8 +17,8 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update the resource type skus in the given resource type.
 
-    :example: sku update
-        az providerhub sku update --sku-settings [{"name":"freeSku"}] --provider-namespace "{providerNamespace}" --resource-type "{resourceType}" --sku "{skuName}"
+    :example: sku nested-resource-type-third update
+        az providerhub sku nested-resource-type-third update --nested-resource-type-first "nestedResourceTypeFirst" --nested-resource-type-second "nestedResourceTypeSecond" --nested-resource-type-third "nestedResourceTypeThird" --sku-settings [{"name":"freeSku","kind":"Standard","tier":"Tier1"},{"name":"premiumSku","costs":[{"meterId":"xxx"}],"kind":"Premium","tier":"Tier2"}] --provider-namespace "{providerNamespace}" --resource-type "{resourceType}" --sku "{skuName}"
     """
 
     _aaz_info = {
