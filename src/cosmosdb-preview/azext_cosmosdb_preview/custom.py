@@ -61,7 +61,8 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     FirewallRule,
     CosmosCassandraDataTransferDataSourceSink,
     CosmosSqlDataTransferDataSourceSink,
-    CosmosMongoDataTransferDataSourceSink
+    CosmosMongoDataTransferDataSourceSink,
+    CommandPostBody,
 )
 
 from azext_cosmosdb_preview._client_factory import (
@@ -427,6 +428,66 @@ def cli_cosmosdb_managed_cassandra_cluster_update(client,
         properties=cluster_properties)
 
     return client.begin_create_update(resource_group_name, cluster_name, cluster_resource_create_update_parameters)
+
+
+def cli_cosmosdb_managed_cassandra_cluster_invoke_command_async(client,
+                                                                resource_group_name,
+                                                                cluster_name,
+                                                                command_name,
+                                                                host,
+                                                                arguments=None,
+                                                                cassandra_stop_start=None,
+                                                                readwrite=None):
+
+    """Invokes an asynchronous command in Azure Managed Cassandra Cluster host"""
+
+    cluster_invoke_command = CommandPostBody(
+        command=command_name,
+        host=host,
+        arguments=arguments,
+        cassandra_stop_start=cassandra_stop_start,
+        readwrite=readwrite
+    )
+
+    command_id = ""
+    try:
+        res = client.begin_invoke_command_async(resource_group_name, cluster_name, cluster_invoke_command, polling=False)
+        command_id = res.result().output_file
+    except Exception as ex:
+        return _handle_exists_exception(ex.response)
+
+    json_res = {}
+    json_res['commandid'] = command_id
+    return json_res
+
+
+def cli_cosmosdb_managed_cassandra_cluster_get_command_async(client,
+                                                             resource_group_name,
+                                                             cluster_name,
+                                                             command_id):
+
+    """Get asynchronous command result using command id"""
+
+    try:
+        res = client.get_command_async(resource_group_name, cluster_name, command_id)
+    except Exception as ex:
+        return _handle_exists_exception(ex.response)
+
+    return res.value
+
+
+def cli_cosmosdb_managed_cassandra_cluster_list_commands_async(client,
+                                                               resource_group_name,
+                                                               cluster_name):
+
+    """Get all recent asynchronous commands results."""
+
+    try:
+        res = client.get_command_async(resource_group_name, cluster_name, "all")
+    except Exception as ex:
+        return _handle_exists_exception(ex.response)
+
+    return res.value
 
 
 def cli_cosmosdb_managed_cassandra_cluster_list(client,
