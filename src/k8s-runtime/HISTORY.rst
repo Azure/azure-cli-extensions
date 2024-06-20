@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.1
+++++++
+* Add RP registration check to networking resources
+
 1.0.0
 ++++++
 * Use stable API version `2024-03-01` for ARM API

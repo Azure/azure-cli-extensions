@@ -7,7 +7,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 
 class RouteRuleScenarioTests(ScenarioTest):
 
-    @ResourceGroupPreparer(location='westus')
+    @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_route_rule_basic(self, resource_group):
         self.kwargs.update({
             'front_door': self.create_random_name('clifrontdoor', 20),

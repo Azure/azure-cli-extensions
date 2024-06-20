@@ -149,9 +149,9 @@ def ssh_bastion_host(cmd, auth_type, target_resource_id, target_ip_address, reso
     if not resource_port:
         resource_port = 22
 
-    if bastion['sku']['name'] == BastionSku.Basic.value or bastion['sku']['name'] == BastionSku.Standard.value and \
+    if _is_sku_standard_or_higher(bastion['sku']['name']) is not True or \
        bastion['enableTunneling'] is not True:
-        raise ClientRequestError('Bastion Host SKU must be Standard and Native Client must be enabled.')
+        raise ClientRequestError('Bastion Host SKU must be Standard or Premium and Native Client must be enabled.')
 
     ip_connect = _is_ipconnect_request(bastion, target_ip_address)
     if ip_connect:
@@ -244,9 +244,9 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
     if not resource_port:
         resource_port = 3389
 
-    if bastion['sku']['name'] == BastionSku.Basic.value or bastion['sku']['name'] == BastionSku.Standard.value and \
+    if _is_sku_standard_or_higher(bastion['sku']['name']) is not True or \
        bastion['enableTunneling'] is not True:
-        raise ClientRequestError('Bastion Host SKU must be Standard and Native Client must be enabled.')
+        raise ClientRequestError('Bastion Host SKU must be Standard or Premium and Native Client must be enabled.')
 
     ip_connect = _is_ipconnect_request(bastion, target_ip_address)
 
@@ -319,17 +319,31 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
 
 
 def _is_ipconnect_request(bastion, target_ip_address):
-    if 'enableIpConnect' in bastion and bastion['enableIpConnect'] is True and target_ip_address:
-        return True
-
+    if target_ip_address:
+        if 'enableIpConnect' in bastion and bastion['enableIpConnect'] is True:
+            return True
+        err_msg = "`--target-ip-address` flag cannot be used when IpConnect is not enabled. " \
+                  "Please use --target-resource-id flag instead."
+        raise InvalidArgumentValueError(err_msg)
     return False
 
 
+def _is_sku_standard_or_higher(sku):
+    allowed_skus = {
+        BastionSku.Standard.value,
+        BastionSku.Premium.value
+    }
+    return sku in allowed_skus
+
+
 def handle_error_response(response):
-    errorMessage = json.loads(response.content).get('message', None)
-    if errorMessage:
-        raise ClientRequestError("Request failed with error: " + errorMessage)
-    raise ClientRequestError("Request to EncodingReservedUnitTypes v2 API endpoint failed.")
+    try:
+        errorMessage = json.loads(response.content).get('message', None)
+        if errorMessage:
+            raise ClientRequestError("Request failed with error: " + errorMessage)
+        raise ClientRequestError("Server could not process the request to generate RDP file.")
+    except json.JSONDecodeError:
+        raise ClientRequestError("Server could not process the request to generate RDP file.")
 
 
 def _validate_resourceid(target_resource_id):
@@ -384,9 +398,9 @@ def create_bastion_tunnel(cmd, target_resource_id, target_ip_address, resource_g
         "name": bastion_host_name
     })
 
-    if bastion['sku']['name'] == BastionSku.Basic.value or bastion['sku']['name'] == BastionSku.Standard.value and \
+    if _is_sku_standard_or_higher(bastion['sku']['name']) is not True or \
        bastion['enableTunneling'] is not True:
-        raise ClientRequestError('Bastion Host SKU must be Standard and Native Client must be enabled.')
+        raise ClientRequestError('Bastion Host SKU must be Standard or Premium and Native Client must be enabled.')
 
     ip_connect = _is_ipconnect_request(bastion, target_ip_address)
     if ip_connect:

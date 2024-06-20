@@ -101,6 +101,8 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     UnknownError,
 )
+from azure.cli.core.util import sdk_no_wait
+from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import get_file_json, read_file_content
@@ -703,26 +705,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return bool(self.raw_param.get('enable_cilium_dataplane'))
 
-    def get_enable_network_observability(self) -> Optional[bool]:
-        """Get the value of enable_network_observability
-
-        :return: bool or None
-        """
-        enable_network_observability = self.raw_param.get("enable_network_observability")
-        disable_network_observability = self.raw_param.get("disable_network_observability")
-        if enable_network_observability and disable_network_observability:
-            raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-network-observability and "
-                "--disable-network-observability at the same time."
-            )
-        if enable_network_observability is False and disable_network_observability is False:
-            return None
-        if enable_network_observability is not None:
-            return enable_network_observability
-        if disable_network_observability is not None:
-            return not disable_network_observability
-        return None
-
     def get_enable_advanced_network_observability(self) -> Optional[bool]:
         """Get the value of enable_advanced_network_observability
 
@@ -885,6 +867,22 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return self.raw_param.get("upgrade_override_until")
+
+    def get_if_match(self) -> Union[str, None]:
+        """Obtain the value of if_match.
+        :return: string or None
+        """
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return self.raw_param.get("if_match")
+
+    def get_if_none_match(self) -> Union[str, None]:
+        """Obtain the value of if_none_match.
+        :return: string or None
+        """
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return self.raw_param.get("if_none_match")
 
     def get_force_upgrade(self) -> Union[bool, None]:
         """Obtain the value of force_upgrade.
@@ -2403,6 +2401,14 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         enable_egress_gateway = self.raw_param.get("enable_egress_gateway", False)
         disable_egress_gateway = self.raw_param.get("disable_egress_gateway", False)
 
+        # disallow disable egress gateway on a cluser with no asm enabled
+        if disable_egress_gateway:
+            if new_profile is None or new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_DISABLED:
+                raise ArgumentUsageError(
+                    "Istio has not been enabled for this cluster, please refer to https://aka.ms/asm-aks-addon-docs "
+                    "for more details on enabling Azure Service Mesh."
+                )
+
         # deal with egress gateways
         if enable_egress_gateway and disable_egress_gateway:
             raise MutuallyExclusiveArgumentError(
@@ -2449,6 +2455,14 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         enable_ingress_gateway = self.raw_param.get("enable_ingress_gateway", False)
         disable_ingress_gateway = self.raw_param.get("disable_ingress_gateway", False)
         ingress_gateway_type = self.raw_param.get("ingress_gateway_type", None)
+
+        # disallow disable ingress gateway on a cluser with no asm enabled
+        if disable_ingress_gateway:
+            if new_profile is None or new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_DISABLED:
+                raise ArgumentUsageError(
+                    "Istio has not been enabled for this cluster, please refer to https://aka.ms/asm-aks-addon-docs "
+                    "for more details on enabling Azure Service Mesh."
+                )
 
         if enable_ingress_gateway and disable_ingress_gateway:
             raise MutuallyExclusiveArgumentError(
@@ -3003,11 +3017,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         else:
             network_profile.network_dataplane = self.context.get_network_dataplane()
 
-        network_observability = self.context.get_enable_network_observability()
-        if network_observability is not None:
-            network_profile.monitoring = self.models.NetworkMonitoring(  # pylint: disable=no-member
-                enabled=network_observability
-            )
         advanced_network_observability = self.context.get_enable_advanced_network_observability()
         if advanced_network_observability is not None:
             network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
@@ -4008,20 +4017,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             # --network-policy, it will be set to none by default and validation in aks rp will fail.
             mc.network_profile.network_policy = CONST_NETWORK_POLICY_CILIUM
 
-        return mc
-
-    def update_enable_network_observability_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update enable network observability of network profile for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        network_observability = self.context.get_enable_network_observability()
-        if network_observability is not None:
-            mc.network_profile.monitoring = self.models.NetworkMonitoring(  # pylint: disable=no-member
-                enabled=network_observability
-            )
         return mc
 
     def update_enable_advanced_network_observability_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -5254,8 +5249,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nodepool_taints_mc(mc)
         # update nodepool initialization taints
         mc = self.update_nodepool_initialization_taints_mc(mc)
-        # update network_observability in network_profile
-        mc = self.update_enable_network_observability_in_network_profile(mc)
         # update advanced_network_observability in network_profile
         mc = self.update_enable_advanced_network_observability_in_network_profile(mc)
         # update kubernetes support plan
@@ -5438,3 +5431,31 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     raise CLIError('App Routing must be enabled to attach keyvault.\n')
             else:
                 raise CLIError('Keyvault secrets provider addon must be enabled to attach keyvault.\n')
+
+    def put_mc(self, mc: ManagedCluster) -> ManagedCluster:
+        if self.check_is_postprocessing_required(mc):
+            # send request
+            poller = self.client.begin_create_or_update(
+                resource_group_name=self.context.get_resource_group_name(),
+                resource_name=self.context.get_name(),
+                parameters=mc,
+                if_match=self.context.get_if_match(),
+                if_none_match=self.context.get_if_none_match(),
+                headers=self.context.get_aks_custom_headers(),
+            )
+            self.immediate_processing_after_request(mc)
+            # poll until the result is returned
+            cluster = LongRunningOperation(self.cmd.cli_ctx)(poller)
+            self.postprocessing_after_mc_created(cluster)
+        else:
+            cluster = sdk_no_wait(
+                self.context.get_no_wait(),
+                self.client.begin_create_or_update,
+                resource_group_name=self.context.get_resource_group_name(),
+                resource_name=self.context.get_name(),
+                parameters=mc,
+                if_match=self.context.get_if_match(),
+                if_none_match=self.context.get_if_none_match(),
+                headers=self.context.get_aks_custom_headers(),
+            )
+        return cluster

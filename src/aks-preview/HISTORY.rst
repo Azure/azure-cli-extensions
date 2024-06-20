@@ -11,6 +11,18 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Vendor new SDK and bump API version to 2024-04-02-preview.
+
+5.0.0b1
+++++++++
+* [BREAKING CHANGE]: Remove --enable-network-observability and --disable-network-observability from aks create and update commands.
+* Update --enable-advanced-network-observability description to note additional costs and add missing flag to create command.
+* Change default value of `--vm-set-type` to VirtualMachines when `--vm-sizes` is set.
+
+4.0.0b5
+++++++++
+* Add warnings to `az aks mesh` commands for out of support asm revision in use.
+* Add etag support (--if-match, --if-none-match) to some aks commands for optimistic concurrency control.
 
 4.0.0b4
 ++++++++

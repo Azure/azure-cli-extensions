@@ -4271,6 +4271,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "k8s_version": create_version,
                 "upgrade_k8s_version": upgrade_version,
                 "ssh_key_value": self.generate_ssh_keys(),
+                "if_match": "*",
+                "if_none_match": "*",
             }
         )
 
@@ -4280,7 +4282,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--dns-name-prefix={dns_name_prefix} --node-count=1 "
             "--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} "
             "--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure "
-            "--kubernetes-version={k8s_version} --ssh-key-value={ssh_key_value}"
+            "--kubernetes-version={k8s_version} --ssh-key-value={ssh_key_value} --if-none-match={if_none_match}"
         )
         self.cmd(
             create_cmd,
@@ -4294,13 +4296,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # add Windows nodepool
         self.cmd(
-            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --os-type Windows --node-count=1",
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --os-type Windows --node-count=1 --if-none-match={if_none_match}",
             checks=[self.check("provisioningState", "Succeeded")],
         )
 
         # upgrade cluster control plane only
         self.cmd(
-            "aks upgrade --resource-group={resource_group} --name={name} --kubernetes-version={upgrade_k8s_version} --yes",
+            "aks upgrade --resource-group={resource_group} --name={name} --kubernetes-version={upgrade_k8s_version} --yes --if-match={if_match}",
             checks=[self.check("provisioningState", "Succeeded")],
         )
 
@@ -4308,7 +4310,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(
             "aks nodepool upgrade --resource-group={resource_group} --cluster-name={name} "
             "--name={nodepool2_name} --kubernetes-version={upgrade_k8s_version} "
-            "--aks-custom-headers WindowsContainerRuntime=containerd --yes",
+            "--aks-custom-headers WindowsContainerRuntime=containerd --yes --if-match={if_match}",
             checks=[self.check("provisioningState", "Succeeded")],
         )
 
@@ -4338,6 +4340,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "windows_admin_password": "replace-Password1234$",
                 "nodepool2_name": "npwin",
                 "ssh_key_value": self.generate_ssh_keys(),
+                "if_match": "*",
+                "if_none_match": "*",
             }
         )
 
@@ -4347,7 +4351,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--dns-name-prefix={dns_name_prefix} --node-count=1 "
             "--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} "
             "--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure "
-            "--ssh-key-value={ssh_key_value}"
+            "--ssh-key-value={ssh_key_value} --if-none-match={if_none_match}"
         )
         self.cmd(
             create_cmd,
@@ -4367,22 +4371,28 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # update Windows license type
         self.cmd(
-            "aks update --resource-group={resource_group} --name={name} --enable-ahub",
+            "aks update --resource-group={resource_group} --name={name} --enable-ahub --if-match={if_match}",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("windowsProfile.licenseType", "Windows_Server"),
             ],
         )
 
+        self.kwargs.update(
+            {
+                "if_match": "",
+            }
+        )
+
         # nodepool delete
         self.cmd(
-            "aks nodepool delete --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --no-wait",
+            "aks nodepool delete --resource-group={resource_group} --cluster-name={name} --name={nodepool2_name} --no-wait --if-match={if_match}",
             checks=[self.is_empty()],
         )
 
         # delete
         self.cmd(
-            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            "aks delete -g {resource_group} -n {name} --yes --no-wait --if-match={if_match}",
             checks=[self.is_empty()],
         )
 
@@ -12833,108 +12843,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         location="eastus",
         preserve_default_location=True,
     )
-    def test_aks_update_enable_network_observability(
-        self, resource_group, resource_group_location
-    ):
-        aks_name = self.create_random_name("cliakstest", 16)
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "ssh_key_value": self.generate_ssh_keys(),
-                "location": resource_group_location,
-            }
-        )
-
-        create_cmd = (
-            "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
-        )
-        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
-
-        # update to enable network observability
-        update_cmd = (
-            "aks update --resource-group={resource_group} --name={name} --enable-network-observability "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkObservabilityPreview "
-        )
-        self.cmd(
-            update_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.monitoring.enabled", True),
-            ],
-        )
-
-        # update to disable network observability
-        update_cmd_two = (
-            "aks update --resource-group={resource_group} --name={name} --disable-network-observability "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkObservabilityPreview "
-        )
-        self.cmd(
-            update_cmd_two,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.monitoring.enabled", False),
-            ],
-        )
-
-        # delete
-        self.cmd(
-            "aks delete -g {resource_group} -n {name} --yes --no-wait",
-            checks=[self.is_empty()],
-        )
-
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17,
-        name_prefix="clitest",
-        location="eastus",
-        preserve_default_location=True,
-    )
-    def test_aks_create_with_enable_network_observability(
-        self, resource_group, resource_group_location
-    ):
-        # reset the count so in replay mode the random names will start with 0
-        self.test_resources_count = 0
-        # kwargs for string formatting
-
-        aks_name = self.create_random_name("cliakstest", 16)
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "ssh_key_value": self.generate_ssh_keys(),
-                "location": resource_group_location,
-            }
-        )
-
-        # create
-        create_cmd = (
-            "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard --enable-network-observability "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkObservabilityPreview"
-        )
-        self.cmd(
-            create_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.monitoring.enabled", True),
-            ],
-        )
-
-        # delete
-        self.cmd(
-            "aks delete -g {resource_group} -n {name} --yes --no-wait",
-            checks=[self.is_empty()],
-        )
-
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17,
-        name_prefix="clitest",
-        location="eastus",
-        preserve_default_location=True,
-    )
     def test_aks_update_enable_advanced_network_observability(
         self, resource_group, resource_group_location
     ):
@@ -14687,3 +14595,34 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
             checks=[self.is_empty()],
         )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
+    def test_aks_get_upgrades(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            "ssh_key_value": self.generate_ssh_keys(),
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value}'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        get_upgrades_cmd = 'aks get-upgrades --resource-group={resource_group} --name={name} -o json'
+        upgrades = self.cmd(get_upgrades_cmd).get_output_in_json()
+        assert len(upgrades['controlPlaneProfile']['componentsByReleases']) > 0
+
+        get_nodepool_upgrades_cmd = 'aks nodepool get-upgrades --resource-group={resource_group} --cluster-name={name} --name=nodepool1 -o json'
+        nodepool_upgrades = self.cmd(get_nodepool_upgrades_cmd).get_output_in_json()
+        assert len(nodepool_upgrades['componentsByReleases']) > 0
+
+        delete_cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(delete_cmd, checks=[
+            self.is_empty()
+        ])
