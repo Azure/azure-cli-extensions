@@ -9,5 +9,5 @@
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-statements
 # pylint: disable=too-many-locals
-def load_command_table(self, _):
+def load_command_table(_):
     pass

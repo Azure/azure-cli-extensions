@@ -38,7 +38,7 @@ class ProviderHubCommandsLoader(AzCommandsLoader):
                 aaz_pkg_name=aaz.__name__,
                 args=args
             )
-        load_command_table(self, args)
+        load_command_table(args)
         return self.command_table
 
     def load_arguments(self, command):
