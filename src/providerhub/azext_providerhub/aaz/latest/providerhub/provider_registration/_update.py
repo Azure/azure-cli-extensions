@@ -311,13 +311,13 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.linked_notification_rules = AAZListArg(
-            options=["--linked-notification-rules"],
+            options=["--linked-notif-rules", "--linked-notification-rules"],
             arg_group="Properties",
             help="The linked notification rules.",
             nullable=True,
         )
         _args_schema.management_group_global_notification_endpoints = AAZListArg(
-            options=["--management-group-global-notification-endpoints"],
+            options=["--mg-notif-endpoints", "--management-group-global-notification-endpoints"],
             arg_group="Properties",
             help="Management groups global notification endpoints.",
             nullable=True,
@@ -447,7 +447,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.token_auth_configuration = AAZObjectArg(
-            options=["--token-auth-configuration"],
+            options=["--token-auth-config", "--token-auth-configuration"],
             arg_group="Properties",
             help="The token auth configuration.",
             nullable=True,

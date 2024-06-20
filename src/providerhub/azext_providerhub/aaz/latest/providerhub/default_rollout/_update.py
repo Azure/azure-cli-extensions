@@ -174,8 +174,9 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.resource_type_registrations = AAZListArg(
-            options=["--resource-type-registrations"],
+            options=["--rt-regs", "--resource-type-registrations"],
             arg_group="Specification",
+            help="The resource type registrations.",
             nullable=True,
         )
         _args_schema.rest_of_the_world_group_one = AAZObjectArg(

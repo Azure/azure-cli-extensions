@@ -415,7 +415,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.resource_deletion_policy = AAZStrArg(
-            options=["--resource-deletion-policy"],
+            options=["--deletion-policy", "--resource-deletion-policy"],
             arg_group="Properties",
             help="The resource deletion policy.",
             nullable=True,
@@ -537,7 +537,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.token_auth_configuration = AAZObjectArg(
-            options=["--token-auth-configuration"],
+            options=["--token-auth-config", "--token-auth-configuration"],
             arg_group="Properties",
             help="The token auth configuration.",
             nullable=True,
