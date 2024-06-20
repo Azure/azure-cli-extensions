@@ -14595,3 +14595,34 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
             checks=[self.is_empty()],
         )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix="clitest", location="westus2")
+    def test_aks_get_upgrades(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            "ssh_key_value": self.generate_ssh_keys(),
+        })
+
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value}'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded')
+        ])
+
+        get_upgrades_cmd = 'aks get-upgrades --resource-group={resource_group} --name={name} -o json'
+        upgrades = self.cmd(get_upgrades_cmd).get_output_in_json()
+        assert len(upgrades['controlPlaneProfile']['componentsByReleases']) > 0
+
+        get_nodepool_upgrades_cmd = 'aks nodepool get-upgrades --resource-group={resource_group} --cluster-name={name} --name=nodepool1 -o json'
+        nodepool_upgrades = self.cmd(get_nodepool_upgrades_cmd).get_output_in_json()
+        assert len(nodepool_upgrades['componentsByReleases']) > 0
+
+        delete_cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(delete_cmd, checks=[
+            self.is_empty()
+        ])
