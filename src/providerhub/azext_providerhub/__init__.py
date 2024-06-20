@@ -43,7 +43,7 @@ class ProviderHubCommandsLoader(AzCommandsLoader):
 
     def load_arguments(self, command):
         from azext_providerhub._params import load_arguments
-        load_arguments(self, command)
+        load_arguments(command)
 
 
 COMMAND_LOADER_CLS = ProviderHubCommandsLoader

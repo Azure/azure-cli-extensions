@@ -9,5 +9,5 @@
 # pylint: disable=too-many-statements
 
 
-def load_arguments(self, _):  # pylint: disable=unused-argument
+def load_arguments(_):  # pylint: disable=unused-argument
     pass
