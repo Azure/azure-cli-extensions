@@ -28,7 +28,7 @@ class DefaultApp:
         kwargs['addon_configs'] = self._load_addon_configs(**kwargs)
         return models.AppResourceProperties(**kwargs)
 
-    def _get_test_endpoint_auth_state(self, disable_test_endpoint_auth=False, **_):
+    def _get_test_endpoint_auth_state(self, disable_test_endpoint_auth=None, **_):
         disable = False
         if disable_test_endpoint_auth is not None:
             disable = disable_test_endpoint_auth
