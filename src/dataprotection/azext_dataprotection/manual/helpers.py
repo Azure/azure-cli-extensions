@@ -1027,7 +1027,6 @@ def transform_resource_guard_operation_request(cmd, _, operation):
 
         formatted_operation = None
         for operation_detail in resource_guard_mapping['properties']['resourceGuardOperationDetails']:
-            print(operation_detail)
             if operation_detail['vaultCriticalOperation'] == 'Microsoft.DataProtection/backupVaults' + critical_operation_map[str(operation)]:
                 formatted_operation = operation_detail['defaultResourceRequest']
                 break
