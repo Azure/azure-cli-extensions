@@ -22,6 +22,8 @@ from azure.cli.core.azclierror import ValidationError, InvalidArgumentValueError
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
 from msrestazure.tools import is_valid_resource_id
+from azure.cli.core.aaz import *
+
 from .aaz.latest.network.bastion import Create as _BastionCreate
 from . import custom
 from . import ssh_utils
@@ -35,6 +37,28 @@ class BastionSku(Enum):
     Standard = "Standard"
     Developer = "Developer"
     QuickConnect = "QuickConnect"
+
+def create_bastion(cmd, op_info, vnet_id):
+    from .aaz.latest.network.bastion import Create
+    try:
+        bastion_poller = Create(cli_ctx=cmd.cli_ctx)(command_args={
+            "resource_group": op_info.resource_group_name,
+            "name": f"{op_info.vm_name}-vnet-bastion",
+            "location": op_info.location,
+            "virtualNetworkId": vnet_id,  # Ensure this key matches what the API expects
+
+            "sku": "Developer",
+            "ipConfigurations": [],
+            "scale_units": 2,
+            "tags": {}
+        })
+        # Wait for the LRO to complete
+        bastion_result = bastion_poller.result()
+        print(bastion_result)
+        return bastion_result
+    except Exception as e:
+        raise CLIInternalError(f"Failed to create bastion information. Please try again later. Error: {str(e)}")
+
 
 def show_bastion(cmd, op_info):
     from .aaz.latest.network.bastion import Show
@@ -134,3 +158,18 @@ def _get_tunnel(cmd, bastion, bastion_endpoint, vm_id, resource_port, port=None)
 
 def _start_tunnel(tunnel_server):
     tunnel_server.start_server()
+
+
+
+class AccessTokenCredential:  # pylint: disable=too-few-public-methods
+    """Simple access token authentication. Return the access token as-is.
+    """
+    def __init__(self, access_token):
+        self.access_token = access_token
+
+    def get_token(self, *scopes, **kwargs):  # pylint: disable=unused-argument
+        import time
+        from azure.cli.core.auth.util import AccessToken
+        # Assume the access token expires in 1 year / 31536000 seconds
+        return AccessToken(self.access_token, int(time.time()) + 31536000)
+    

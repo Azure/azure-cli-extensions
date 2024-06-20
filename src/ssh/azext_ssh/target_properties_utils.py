@@ -33,7 +33,7 @@ def handle_target_machine_properties(cmd, op_info):
     return
 
 def handle_bastion_properties(cmd, op_info, properties):
-    check_valid_developer_sku_location(properties, op_info.resource_type.lower())
+    check_valid_developer_sku_location(properties, op_info.resource_type.lower(), op_info)
 
     op_info.resource_id = parse_resource_id(properties)
     subscription_id = parse_subscription_id(properties)
@@ -41,10 +41,14 @@ def handle_bastion_properties(cmd, op_info, properties):
 
     nic_info = _request_vm_network_interface_card(cmd, op_info.resource_group_name, nic_name)
 
-    vnet = parse_vnet(nic_info)
+    vnet_id, vnet_name= parse_vnet(nic_info)
 
-    bastion = _request_specified_bastion(cmd, subscription_id, vnet, op_info.resource_group_name)
-    op_info.bastion_name = parse_bastion_name(bastion)
+    bastion = _request_specified_bastion(cmd, subscription_id, vnet_name, op_info.resource_group_name)
+    if bastion['count'] == 0:
+        bastion = bastion_utils.create_bastion(cmd, op_info, vnet_id)
+        created = True
+    else:
+        op_info.bastion_name = parse_bastion_name(bastion)
   
 def get_properties(cmd, resource_type, resource_group_name, vm_name):
     if resource_type == "microsoft.compute/virtualmachines":
@@ -152,7 +156,7 @@ def parse_nic_name(properties):
 def parse_vnet(nic_info):
     try:
         vnet_id = nic_info['ipConfigurations'][0]['subnet']['id']
-        return vnet_id.split('/')[-3]
+        return vnet_id, vnet_id.split('/')[-3]
 
     except (IndexError, KeyError, TypeError) as e:
         print("Error:", e)
@@ -203,9 +207,10 @@ def check_valid_agent_version(agent_version, op_info):
         except Exception:
             return
         
-def check_valid_developer_sku_location(properties, resource_type):
+def check_valid_developer_sku_location(properties, resource_type, op_info):
     if resource_type == "microsoft.compute/virtualmachines":
         location = properties.location
+        op_info.location = location
         if location not in ["centralus", "eastus2", "westus", "northeurope", "northcentralus", "westcentralus"]:
             raise azclierror.InvalidArgumentValueError("The Bastion Developer SKU is not supported in the region of the target VM.")
     else:
@@ -238,7 +243,6 @@ class AccessTokenCredential:  # pylint: disable=too-few-public-methods
         return AccessToken(self.access_token, int(time.time()) + 31536000)
     
 def _request_specified_bastion(cmd, subscription_id, vnet_id, resource_group):
-    from azure.core.credentials import TokenCredential
     from azure.cli.core._profile import Profile
 
     RESOURCE_GRAPH_EXTENSION_NAME = 'resource-graph'
@@ -280,3 +284,4 @@ def _request_specified_bastion(cmd, subscription_id, vnet_id, resource_group):
         raise azclierror.ClientRequestError(f"Failed to get Bastion information. Please try again later.")
     
     return response
+
