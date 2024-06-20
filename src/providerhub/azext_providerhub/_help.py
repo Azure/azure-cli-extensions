@@ -8,5 +8,3 @@
 # regenerated.
 # --------------------------------------------------------------------------
 # pylint: disable=too-many-lines
-
-from knack.help_files import helps

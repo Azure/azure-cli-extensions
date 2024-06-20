@@ -14,7 +14,6 @@
 # pylint: disable=super-with-arguments
 
 from azure.cli.core import AzCommandsLoader
-from azext_providerhub._help import helps  # pylint: disable=unused-import
 
 
 class ProviderHubCommandsLoader(AzCommandsLoader):
@@ -41,7 +40,7 @@ class ProviderHubCommandsLoader(AzCommandsLoader):
             )
         load_command_table(self, args)
         return self.command_table
-    
+
     def load_arguments(self, command):
         from azext_providerhub._params import load_arguments
         load_arguments(self, command)
