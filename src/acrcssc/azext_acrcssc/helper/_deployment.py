@@ -16,13 +16,13 @@ from azure.mgmt.resource.resources.models import (
     Deployment
 )
 from knack.log import get_logger
-
+# pylint: disable=line-too-long
 logger = get_logger(__name__)
 
 
 def validate_and_deploy_template(cmd_ctx, registry, resource_group: str, deployment_name: str,
                                  template_file_name: str, parameters: dict, dryrun: Optional[bool] = False):
-    logger.debug('Working with resource group %s, template %s', resource_group, template_file_name)
+    logger.debug('Working with resource group %s, registry %s template %s', resource_group, registry, template_file_name)
 
     deployment_path = os.path.dirname(
         os.path.join(
@@ -44,7 +44,7 @@ def validate_and_deploy_template(cmd_ctx, registry, resource_group: str, deploym
 
         return deploy_template(cmd_ctx, resource_group, deployment_name, template)
     except Exception as exception:
-        logger.error('Failed to validate and deploy template: %s', exception)
+        logger.debug('Failed to validate and deploy template: %s', exception)
         raise AzCLIError('Failed to validate and deploy template: %s' % exception)
 
 

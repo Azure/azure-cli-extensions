@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """Constants used across the extension."""
-
+# pylint: disable=line-too-long
 from enum import Enum
 
 
@@ -35,12 +35,12 @@ CONTINUOSPATCH_DEPLOYMENT_NAME = "continuouspatchingdeployment"
 CONTINUOSPATCH_DEPLOYMENT_TEMPLATE = "CSSC-AutoImagePatching-encodedtasks.json"
 # listing all individual tasks that are requires for Continuous Patching to work
 CONTINUOSPATCH_TASK_PATCHIMAGE_NAME = "cssc-patch-image"
-CONTINUOUSPATCH_TASK_PATCHIMAGE_DESCRIPTION="This task will patch the OS vulnerabilities on a given image using Copacetic."
+CONTINUOUSPATCH_TASK_PATCHIMAGE_DESCRIPTION = "This task will patch the OS vulnerabilities on a given image using Copacetic."
 CONTINUOSPATCH_TASK_SCANIMAGE_NAME = "cssc-scan-image-schedule-patch"
-CONTINUOUSPATCH_TASK_SCANIMAGE_DESCRIPTION="This task will perform vulnerability OS scan on a given image using Trivy. If there are any vulnerabilities found, it will trigger the patching task using {CONTINUOSPATCH_TASK_PATCHIMAGE_NAME} task."
+CONTINUOUSPATCH_TASK_SCANIMAGE_DESCRIPTION = f"This task will perform vulnerability OS scan on a given image using Trivy. If there are any vulnerabilities found, it will trigger the patching task using {CONTINUOSPATCH_TASK_PATCHIMAGE_NAME} task."
 CONTINUOSPATCH_TASK_SCANREPO_NAME = "cssc-scan-repository-schedule-patch"
 CONTINUOSPATCH_TASK_SCANREGISTRY_NAME = "cssc-trigger-scan"
-CONTINUOUSPATCH_TASK_SCANREGISTRY_DESCRIPTION=f"This task will trigger the scan of the registry based on the cadence set during the creation. It will match the filter repositories set with config parameter and schedule vulnerability scan check using {CONTINUOSPATCH_TASK_SCANIMAGE_NAME} task."
+CONTINUOUSPATCH_TASK_SCANREGISTRY_DESCRIPTION = f"This task will trigger the scan of the registry based on the cadence set during the creation. It will match the filter repositories set with config parameter and schedule vulnerability scan check using {CONTINUOSPATCH_TASK_SCANIMAGE_NAME} task."
 CONTINUOUS_PATCHING_WORKFLOW_NAME = "continuouspatchv1"
 
 TASK_RUN_STATUS_FAILED = "Failed"

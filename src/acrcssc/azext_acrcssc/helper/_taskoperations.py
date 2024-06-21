@@ -2,14 +2,12 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long
+# pylint: disable=broad-exception-caught
 import base64
-from io import BytesIO
 import os
-from random import uniform
-import re
 import tempfile
 import time
-import colorama
 from knack.log import get_logger
 from ._constants import (
     CONTINUOSPATCH_DEPLOYMENT_NAME,
@@ -18,7 +16,6 @@ from ._constants import (
     CONTINUOSPATCH_TASK_DEFINITION,
     CONTINUOSPATCH_TASK_SCANREGISTRY_NAME,
     RESOURCE_GROUP,
-    CSSC_WORKFLOW_POLICY_REPOSITORY,
     CONTINUOSPATCH_OCI_ARTIFACT_CONFIG,
     CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1,
     TMP_DRY_RUN_FILE_NAME,
@@ -29,14 +26,13 @@ from ._constants import (
     TASK_RUN_STATUS_RUNNING)
 from azure.cli.core.azclierror import AzCLIError
 from azure.cli.core.commands import LongRunningOperation
-from azure.cli.command_modules.acr._stream_utils import stream_logs
-from azure.cli.command_modules.acr._stream_utils import _stream_logs, _blob_is_not_complete, _get_run_status
+from azure.cli.command_modules.acr._stream_utils import _get_run_status
 from azure.cli.command_modules.acr._constants import ACR_RUN_DEFAULT_TIMEOUT_IN_SEC
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.command_modules.acr._azure_utils import get_blob_info
 from azure.cli.command_modules.acr._utils import prepare_source_location
 from azure.mgmt.core.tools import parse_resource_id
-from azext_acrcssc._client_factory import cf_acr_tasks, cf_authorization, cf_acr_registries_tasks, cf_acr_runs, cf_acr_taskruns
+from azext_acrcssc._client_factory import cf_acr_tasks, cf_authorization, cf_acr_registries_tasks, cf_acr_runs
 from azext_acrcssc.helper._deployment import validate_and_deploy_template
 from azext_acrcssc.helper._ociartifactoperations import create_oci_artifact_continuous_patch, delete_oci_artifact_continuous_patch
 from azext_acrcssc._validators import check_continuous_task_exists
@@ -65,7 +61,7 @@ def create_update_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, 
         _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dryrun)
 
     if cssc_config_file is not None:
-        create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun)
+        create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun)
         logger.debug("Uploading of %s completed successfully.", cssc_config_file)
 
     _eval_trigger_run(cmd, registry, resource_group, defer_immediate_run)
@@ -78,7 +74,7 @@ def _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
         "taskSchedule": {"value": schedule_cron_expression}
     }
 
-    for task in CONTINUOSPATCH_TASK_DEFINITION.keys():
+    for task in CONTINUOSPATCH_TASK_DEFINITION:
         encoded_task = {"value": _create_encoded_task(CONTINUOSPATCH_TASK_DEFINITION[task]["template_file"])}
         param_name = CONTINUOSPATCH_TASK_DEFINITION[task]["parameter_name"]
         parameters[param_name] = encoded_task
@@ -103,7 +99,7 @@ def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
 
 def _eval_trigger_run(cmd, registry, resource_group, defer_immediate_run):
     if not defer_immediate_run:
-        logger.warning(f'Triggering the {CONTINUOSPATCH_TASK_SCANREGISTRY_NAME} to run immediately')
+        logger.warning('Triggering the %s to run immediately', CONTINUOSPATCH_TASK_SCANREGISTRY_NAME)
         # Seen Managed Identity taking time, see if there can be an alternative (one alternative is to schedule the cron expression with delay)
         # NEED TO SKIP THE TIME.SLEEP IN UNIT TEST CASE OR FIND AN ALTERNATIVE SOLUITION TO MI COMPLETE
         time.sleep(30)
@@ -122,7 +118,7 @@ def delete_continuous_patch_v1(cmd, registry, dryrun):
             logger.warning("Task %s deleted.", taskname)
 
     if not cssc_tasks_exists:
-        logger.warning(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task does not exist")
+        logger.warning("%s workflow task does not exist", CONTINUOUS_PATCHING_WORKFLOW_NAME)
 
     logger.warning("Deleting %s/%s:%s", CSSC_WORKFLOW_POLICY_REPOSITORY, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1)
     delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
@@ -132,7 +128,7 @@ def list_continuous_patch_v1(cmd, registry):
     logger.debug("Entering list_continuous_patch_v1")
 
     if not check_continuous_task_exists(cmd, registry):
-        logger.warning(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task does not exist. Run 'az acr supply-chain workflow create' to create workflow tasks")
+        logger.warning("%s workflow task does not exist. Run 'az acr supply-chain workflow create' to create workflow tasks", CONTINUOUS_PATCHING_WORKFLOW_NAME)
         return
 
     acr_task_client = cf_acr_tasks(cmd.cli_ctx)
@@ -229,7 +225,7 @@ def _create_encoded_task(task_file):
 
 
 def _update_task_schedule(cmd, registry, cron_expression, resource_group_name, dryrun):
-    logger.debug(f"converted cadence to cron_expression: {cron_expression}")
+    logger.debug("converted cadence to cron_expression: %s", cron_expression)
     acr_task_client = cf_acr_tasks(cmd.cli_ctx)
     taskUpdateParameters = acr_task_client.models.TaskUpdateParameters(
         trigger=acr_task_client.models.TriggerUpdateParameters(
@@ -247,8 +243,8 @@ def _update_task_schedule(cmd, registry, cron_expression, resource_group_name, d
         return None
     try:
         acr_task_client.begin_update(resource_group_name, registry.name,
-                                 CONTINUOSPATCH_TASK_SCANREGISTRY_NAME,
-                                 taskUpdateParameters)
+                                     CONTINUOSPATCH_TASK_SCANREGISTRY_NAME,
+                                     taskUpdateParameters)
         print("Cadence has been successfully updated.")
     except Exception as exception:
         raise AzCLIError(f"Failed to update the task schedule: {exception}")
@@ -261,19 +257,19 @@ def _delete_task(cmd, registry, task_name, dryrun):
     try:
         acr_tasks_client = cf_acr_tasks(cmd.cli_ctx)
         _delete_task_role_assignment(cmd.cli_ctx, acr_tasks_client, registry, resource_group, task_name, dryrun)
+
         if dryrun:
             logger.debug("Dry run, skipping deletion of the task: %s ", task_name)
             return None
-        else:
-            logger.debug(f"Deleting task {task_name}")
-            LongRunningOperation(cmd.cli_ctx)(
-                acr_tasks_client.begin_delete(
-                    resource_group,
-                    registry.name,
-                    task_name))
+        logger.debug("Deleting task %s", task_name)
+        LongRunningOperation(cmd.cli_ctx)(
+            acr_tasks_client.begin_delete(
+                resource_group,
+                registry.name,
+                task_name))
 
     except Exception as exception:
-        raise AzCLIError("Failed to delete task %s from registry %s : %s", task_name, registry.name, exception)
+        raise AzCLIError("Failed to delete task %s from registry %s : %s" % task_name, registry.name, exception)
 
     logger.debug("Task %s deleted successfully", task_name)
 
@@ -295,12 +291,11 @@ def _delete_task_role_assignment(cli_ctx, acrtask_client, registry, resource_gro
             if dryrun:
                 logger.debug("Dry run, skipping deletion of role assignments, task: %s, role name: %s", task_name, role.name)
                 return None
-            else:
-                logger.debug("Deleting role assignments of task %s from the registry", task_name)
-                role_client.role_assignments.delete(
-                    scope=registry.id,
-                    role_assignment_name=role.name
-                )
+            logger.debug("Deleting role assignments of task %s from the registry", task_name)
+            role_client.role_assignments.delete(
+                scope=registry.id,
+                role_assignment_name=role.name
+            )
 
 
 def _transform_task_list(tasks):
@@ -319,10 +314,10 @@ def _transform_task_list(tasks):
         trigger = task.trigger
         if trigger and trigger.timer_triggers:
             transformed_obj["cadence"] = transform_cron_to_cadence(trigger.timer_triggers[0].schedule)
-        
         transformed.append(transformed_obj)
 
     return transformed
+
 
 def _get_custom_registry_credentials(cmd,
                                      auth_mode=None,
@@ -339,12 +334,6 @@ def _get_custom_registry_credentials(cmd,
     :param str identity: The task managed identity used for the credential
     """
     acr_tasks_client = cf_acr_tasks(cmd.cli_ctx)
-    # Credentials, CustomRegistryCredentials, SourceRegistryCredentials, SecretObject, \
-    #     SecretObjectType = cf_acr_tasks.models.(
-    #         'Credentials', 'CustomRegistryCredentials', 'SourceRegistryCredentials', 'SecretObject',
-    #         'SecretObjectType',
-    #         operation_group='tasks')
-
     source_registry_credentials = None
     if auth_mode:
         source_registry_credentials = acr_tasks_client.models.SourceRegistryCredentials(
@@ -404,8 +393,7 @@ def generate_logs(cmd,
                   registry_name,
                   resource_group_name,
                   timeout=ACR_RUN_DEFAULT_TIMEOUT_IN_SEC,
-                  no_format=False,
-                  raise_error_on_failure=False):
+                  ):
     log_file_sas = None
     error_msg = "Could not get logs for ID: {}".format(run_id)
     try:
@@ -428,7 +416,7 @@ def generate_logs(cmd,
     while _evaluate_task_run_nonterminal_state(run_status):
         run_status = _get_run_status(client, resource_group_name, registry_name, run_id)
         if _evaluate_task_run_nonterminal_state(run_status):
-            logger.debug(f"Waiting for the task run to complete. Current status: {run_status}")
+            logger.debug("Waiting for the task run to complete. Current status: %s", run_status)
             time.sleep(2)
 
     _download_logs(AppendBlobService(

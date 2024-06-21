@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 """A module to handle ORAS calls to the registry."""
-
+# pylint: disable=line-too-long
 import os
 import tempfile
 import shutil
@@ -20,18 +20,17 @@ from ._constants import (
     CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1,
     CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN,
     CSSC_WORKFLOW_POLICY_REPOSITORY,
-    RESOURCE_GROUP,
     SUBSCRIPTION
 )
 
 logger = get_logger(__name__)
 
 
-def create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun):
-    logger.debug("Entering create_oci_artifact_continuouspatching with parameters: %s %s %s", registry, cssc_config_file, dryrun)
+def create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun):
+    logger.debug("Entering create_oci_artifact_continuouspatching with parameters: %s %s %s", registry.name, cssc_config_file, dryrun)
 
     try:
-        oras_client = _oras_client(cmd, registry)
+        oras_client = _oras_client(registry)
         # we might have to handle the tag lock/unlock for the cssc config file,
         # to make it harder for the user to change it by mistake
 
@@ -59,20 +58,20 @@ def create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun
         raise AzCLIError(f"Failed to push OCI artifact to ACR: {exception}")
     finally:
         oras_client.logout(hostname=str.lower(registry.login_server))
-        os.path.exists(temp_artifact_name) and os.remove(temp_artifact_name)
+        if os.path.exists(temp_artifact_name):
+            os.remove(temp_artifact_name)
 
 
 def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):
     logger.debug("Entering delete_oci_artifact_continuous_patch with parameters %s %s", registry, dryrun)
     resourceid = parse_resource_id(registry.id)
-    resource_group = resourceid[RESOURCE_GROUP]
     subscription = resourceid[SUBSCRIPTION]
 
     if dryrun:
         logger.warning("Dry run flag is set, no changes will be made")
         return
     try:
-        token = _get_acr_token(registry.name, resource_group, subscription)
+        token = _get_acr_token(registry.name, subscription)
 
         # Delete repository, removing only image isn't deleting the repository always (Bug)
         acr_repository_delete(
@@ -90,23 +89,22 @@ def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):
         raise
 
 
-def _oras_client(cmd, registry):
+def _oras_client(registry):
     resourceid = parse_resource_id(registry.id)
-    resource_group = resourceid[RESOURCE_GROUP]
     subscription = resourceid[SUBSCRIPTION]
 
     try:
-        token = _get_acr_token(registry.name, resource_group, subscription)
+        token = _get_acr_token(registry.name, subscription)
         client = OrasClient(hostname=str.lower(registry.login_server))
         client.login(BEARER_TOKEN_USERNAME, token)
     except Exception as exception:
-        raise AzCLIError("Failed to login to Artifact Store ACR %s: %s ", registry.name, exception)
+        raise AzCLIError("Failed to login to Artifact Store ACR %s: %s " % registry.name, exception)
 
     return client
 
 
 # Need to check on this method once, if there's alternative to this
-def _get_acr_token(registry_name, resource_group, subscription):
+def _get_acr_token(registry_name, subscription):
     logger.debug("Using CLI user credentials to log into %s", registry_name)
     acr_login_with_token_cmd = [
         str(shutil.which("az")),

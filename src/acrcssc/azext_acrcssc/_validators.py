@@ -2,14 +2,17 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long
+# pylint: disable=broad-exception-caught
 import json
 import os
 import re
 from knack.log import get_logger
-from .helper._constants import CONTINUOUSPATCH_CONFIG_SCHEMA_V1, CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT, CONTINUOSPATCH_ALL_TASK_NAMES, ERROR_MESSAGE_INVALID_TIMESPAN
+from .helper._constants import (CONTINUOUSPATCH_CONFIG_SCHEMA_V1, CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT,
+                                CONTINUOSPATCH_ALL_TASK_NAMES, ERROR_MESSAGE_INVALID_TIMESPAN, RESOURCE_GROUP)
 from .helper._constants import CSSCTaskTypes, ERROR_MESSAGE_INVALID_TASK, RECOMMENDATION_CADENCE
 from azure.mgmt.core.tools import (parse_resource_id)
-from azure.cli.core.azclierror import InvalidArgumentValueError, AzCLIError
+from azure.cli.core.azclierror import InvalidArgumentValueError
 from ._client_factory import cf_acr_tasks
 logger = get_logger(__name__)
 
@@ -39,7 +42,7 @@ def _validate_continuouspatch_json(config_path):
             config = json.load(f)
             validate(config, CONTINUOUSPATCH_CONFIG_SCHEMA_V1)
     except Exception as e:
-        logger.debug(f"Error validating the continuous patch config file: {e}")
+        logger.debug("Error validating the continuous patch config file: %s", e)
         raise InvalidArgumentValueError("File used for --config is not a valid config JSON file. Use --help to see the schema of the config file.")
     finally:
         f.close()
@@ -55,7 +58,7 @@ def check_continuous_task_exists(cmd, registry):
 def _check_task_exists(cmd, registry, task_name=""):
     acrtask_client = cf_acr_tasks(cmd.cli_ctx)
     resourceid = parse_resource_id(registry.id)
-    resource_group = resourceid["resource_group"]
+    resource_group = resourceid[RESOURCE_GROUP]
 
     try:
         task = acrtask_client.get(resource_group, registry.name, task_name)
@@ -82,37 +85,6 @@ def _validate_cadence(cadence):
     if unit == 'd' and value > 30:  # day of the month
         raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN, recommendation=RECOMMENDATION_CADENCE)
 
-# def validate_and_convert_timespan_to_cron(timespan, date_time=None, do_not_run_immediately=True):
-
-#     # Regex to look for pattern 1d, 2d, 3d, etc.
-#     match = re.match(r'(\d+)([d])', timespan)
-#     value = int(match.group(1))
-#     unit = match.group(2)
-
-#     if(date_time is None):
-#         date_time = datetime.now(timezone.utc)
-
-#     cron_hour = date_time.hour
-#     cron_minute = date_time.minute
-
-#     # commenting below logic to set offset, as we are manually triggerring the task in case it needs to be run immediately
-#     # offset_minute = 2
-#     # if do_not_run_immediately:
-#     #     difference_minute = date_time.minute - offset_minute
-#     #     cron_minute = difference_minute + 60 if difference_minute < 0 else difference_minute
-#     #     cron_hour = cron_hour - 1 if difference_minute < 0 else cron_hour
-#     # else:
-#     #     over_minute = date_time.minute + offset_minute
-#     #     cron_minute = over_minute - 60 if over_minute > 60 else over_minute
-#     #     cron_hour = cron_hour + 1 if over_minute > 60 else cron_hour
-
-#     if unit == 'd': #day of the month
-#         if value > 30:
-#             raise InvalidArgumentValueError(error_msg= ERROR_MESSAGE_INVALID_TIMESPAN)
-#         cron_expression = f'{cron_minute} {cron_hour} */{value} * *'
-
-#     return cron_expression
-
 
 def validate_inputs(cadence, config_file_path=None):
     _validate_cadence(cadence)
@@ -121,9 +93,8 @@ def validate_inputs(cadence, config_file_path=None):
 
 
 def validate_task_type(task_type):
-    if task_type in CSSCTaskTypes._value2member_map_:
-        if (task_type != CSSCTaskTypes.ContinuousPatchV1.value):
-            raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TASK)
+    if (task_type not in [item.value for item in CSSCTaskTypes]):
+        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TASK)
 
 
 def validate_cssc_optional_inputs(cssc_config_path, cadence):
