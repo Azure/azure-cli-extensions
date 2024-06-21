@@ -16,7 +16,6 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     DataCenterResourceProperties,
     ManagedCassandraManagedServiceIdentity,
     AuthenticationMethodLdapProperties,
-    ServiceResourceCreateUpdateParameters,
     MongoRoleDefinitionCreateUpdateParameters,
     MongoUserDefinitionCreateUpdateParameters,
     DatabaseAccountKind,
@@ -57,7 +56,12 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     ManagedServiceIdentityUserAssignedIdentity,
     CosmosCassandraDataTransferDataSourceSink,
     CosmosSqlDataTransferDataSourceSink,
-    CosmosMongoDataTransferDataSourceSink
+    CosmosMongoDataTransferDataSourceSink,
+    ServiceResourceCreateUpdateParameters,
+    ServiceResourceCreateUpdateProperties,
+    SqlDedicatedGatewayServiceResourceCreateUpdateProperties,
+    DedicatedGatewayType,
+    ServiceType
 )
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_mongocluster.models import (
@@ -634,13 +638,20 @@ def cli_cosmosdb_service_create(client,
                                 service_name,
                                 instance_count=1,
                                 instance_size="Cosmos.D4s",
-                                dedicated_gateway_type="IntegratedCache"):
-    params = ServiceResourceCreateUpdateParameters(service_type=service_kind,
+                                dedicated_gateway_type=DedicatedGatewayType.INTEGRATED_CACHE.value):
+        
+    if (service_kind == ServiceType.SQL_DEDICATED_GATEWAY.value):
+        properties = SqlDedicatedGatewayServiceResourceCreateUpdateProperties(instance_count=instance_count,
+                                                                        instance_size=instance_size,
+                                                                        dedicated_gateway_type=dedicated_gateway_type)
+    else:
+        properties = ServiceResourceCreateUpdateProperties(service_type=service_kind,
                                                    instance_count=instance_count,
                                                    instance_size=instance_size)
-    
-    if (service_kind == "SqlDedicatedGateway"):
-        params.properties.dedicated_gateway_type = dedicated_gateway_type
+
+    params = ServiceResourceCreateUpdateParameters(
+        properties=properties
+    )
 
     return client.begin_create(resource_group_name, account_name, service_name, create_update_parameters=params)
 
