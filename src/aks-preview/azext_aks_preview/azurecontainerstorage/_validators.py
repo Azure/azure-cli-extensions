@@ -5,6 +5,9 @@
 
 import re
 
+from azext_aks_preview._consts import (
+    CONST_DEFAULT_NODE_OS_TYPE
+)
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
     CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
@@ -38,7 +41,7 @@ elastic_san_supported_skus = [
 logger = get_logger(__name__)
 
 
-def validate_disable_azure_container_storage_params(
+def validate_disable_azure_container_storage_params(  # pylint: disable=too-many-branches
     storage_pool_type,
     storage_pool_name,
     storage_pool_sku,
@@ -169,7 +172,7 @@ def validate_disable_azure_container_storage_params(
             )
 
 
-def validate_enable_azure_container_storage_params(
+def validate_enable_azure_container_storage_params(  # pylint: disable=too-many-locals,too-many-branches
     storage_pool_type,
     storage_pool_name,
     storage_pool_sku,
@@ -261,6 +264,7 @@ def validate_enable_azure_container_storage_params(
 
             if (storage_pool_name is not None or storage_pool_sku is not None or
                 storage_pool_size is not None or nodepool_list is not None):
+                # pylint: disable=too-many-boolean-expressions
                 if (ephemeral_disk_volume_type is not None and
                     required_type_installed_for_disk_vol_type and ephemeral_disk_nvme_perf_tier is None) or \
                    (ephemeral_disk_volume_type is None and
@@ -356,6 +360,7 @@ def validate_enable_azure_container_storage_params(
                 f'{storage_pool_type} in the cluster.'
             )
 
+        # pylint: disable=too-many-boolean-expressions
         if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
            ephemeral_disk_volume_type is None and \
            ((is_ephemeralDisk_nvme_enabled and
@@ -448,14 +453,42 @@ def _validate_nodepools(
             'from the node pool and use node pools which has nodes with 4 or more cores and try again.'
         )
     else:
-        _validate_nodepool_names(nodepool_list, agentpool_details)
+        agentpool_names = []
+        for details in agentpool_details:
+            agentpool_names.append(details.get("name"))
+        if not nodepool_list:
+            agentpool_names_str = ', '.join(agentpool_names)
+            raise RequiredArgumentMissingError(
+                'Multiple node pools present. Please define the node pools on which you want '
+                'to enable Azure Container Storage using --azure-container-storage-nodepools.'
+                f'\nNode pools available in the cluster are: {agentpool_names_str}.'
+                '\nAborting Azure Container Storage operation.'
+            )
+        _validate_nodepool_names(nodepool_list, agentpool_names)
         nodepool_arr = nodepool_list.split(',')
 
     nvme_nodepool_found = False
+    available_node_count = 0
     for nodepool in nodepool_arr:
         for agentpool in agentpool_details:
             pool_name = agentpool.get("name")
             if nodepool == pool_name:
+                os_type = agentpool.get("os_type")
+                if os_type is not None and os_type.lower() != CONST_DEFAULT_NODE_OS_TYPE.lower():
+                    raise InvalidArgumentValueError(
+                        f'Azure Container Storage can be enabled only on {CONST_DEFAULT_NODE_OS_TYPE} nodepools. '
+                        f'Node pool: {pool_name}, os type: {os_type} does not meet the criteria.'
+                    )
+                mode = agentpool.get("mode")
+                node_taints = agentpool.get("node_taints")
+                if mode.lower() == "system" and node_taints is not None:
+                    critical_taint = "CriticalAddonsOnly=true:NoSchedule"
+                    if critical_taint.casefold() in (taint.casefold() for taint in node_taints):
+                        raise InvalidArgumentValueError(
+                            f'Unable to install Azure Container Storage on system nodepool: {pool_name} '
+                            f'since it has a taint {critical_taint}. Remove the taint from the node pool '
+                            'and retry the Azure Container Storage operation.'
+                        )
                 vm_size = agentpool.get("vm_size")
                 if vm_size is not None:
                     cpu_value = get_cores_from_sku(vm_size)
@@ -469,6 +502,14 @@ def _validate_nodepools(
                     if vm_size.lower().startswith('standard_l'):
                         nvme_nodepool_found = True
 
+                node_count = agentpool.get("count")
+                available_node_count = available_node_count + node_count
+
+    if available_node_count < 3:
+        raise UnknownError(
+            'Insufficient nodes present. Azure Container Storage requires atleast 3 nodes to be enabled.'
+        )
+
     if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
        storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME and \
        not nvme_nodepool_found:
@@ -481,7 +522,7 @@ def _validate_nodepools(
 # _validate_nodepool_names validates that the nodepool_list is a comma separated
 # string consisting of valid nodepool names i.e. a lower alphanumeric
 # characters and the first character should be lowercase letter.
-def _validate_nodepool_names(nodepool_names, agentpool_details):
+def _validate_nodepool_names(nodepool_names, agentpool_names):
     pattern = r'^[a-z][a-z0-9]*(?:,[a-z][a-z0-9]*)*$'
     if re.fullmatch(pattern, nodepool_names) is None:
         raise InvalidArgumentValueError(
@@ -490,10 +531,6 @@ def _validate_nodepool_names(nodepool_names, agentpool_details):
             "names without any spaces.\nA valid node pool name may only contain lowercase "
             "alphanumeric characters and must begin with a lowercase letter."
         )
-
-    agentpool_names = []
-    for details in agentpool_details:
-        agentpool_names.append(details.get("name"))
 
     nodepool_list = nodepool_names.split(',')
     for nodepool in nodepool_list:

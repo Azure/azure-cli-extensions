@@ -192,9 +192,14 @@ def get_extension_installed_and_cluster_configs(
                 )
                 cpu_value = config_settings.get("global.cli.resources.ioEngine.cpu", "1")
                 enable_ephemeral_bypass_annotation = (
-                    config_settings.get("global.cli.storagePool.ephemeralDisk.enableEphemeralBypassAnnotation", "False") == "True"
+                    config_settings.get(
+                        "global.cli.storagePool.ephemeralDisk.enableEphemeralBypassAnnotation", "False"
+                    ) == "True"
                 )
-                perf_tier = config_settings.get("global.cli.storagePool.ephemeralDisk.nvme.perfTier", CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD)
+                perf_tier = config_settings.get(
+                    "global.cli.storagePool.ephemeralDisk.nvme.perfTier",
+                    CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
+                )
 
                 if perf_tier.lower() == CONST_EPHEMERAL_NVME_PERF_TIER_BASIC.lower():
                     perf_tier = CONST_EPHEMERAL_NVME_PERF_TIER_BASIC
@@ -339,7 +344,10 @@ def get_desired_resource_value_args(
             updated_hugepages_number = 512
         elif (storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and
               storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME):
-            updated_core_value = _get_ephemeral_nvme_cpu_value_based_on_vm_size_perf_tier(nodepool_skus, ephemeral_nvme_perf_tier)
+            updated_core_value = _get_ephemeral_nvme_cpu_value_based_on_vm_size_perf_tier(
+                nodepool_skus,
+                ephemeral_nvme_perf_tier,
+            )
             updated_memory_value = 2
             updated_hugepages_value = 2
             updated_hugepages_number = 1024
@@ -501,7 +509,10 @@ def _get_current_resource_values(
         current_hugepages_number = 512
     if is_ephemeralDisk_nvme_enabled:
         if current_core_value is None and nodepool_skus is not None:
-            core_value = _get_ephemeral_nvme_cpu_value_based_on_vm_size_perf_tier(nodepool_skus, ephemeral_nvme_perf_tier)
+            core_value = _get_ephemeral_nvme_cpu_value_based_on_vm_size_perf_tier(
+                nodepool_skus,
+                ephemeral_nvme_perf_tier,
+            )
         current_memory_value = 2
         current_hugepages_value = 2
         current_hugepages_number = 1024

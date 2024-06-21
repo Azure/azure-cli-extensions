@@ -9,14 +9,11 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
-Pending
-+++++++
-* Vendor new SDK and bump API version to 2024-04-02-preview.
-
 5.0.0b2
 ++++++++
 * Add option `--ephemeral-disk-volume-type` to `az aks create` and `az aks update` for Azure Container Storage operations.
 * Add option `--azure-container-storage-perf-tier` to `az aks create` and `az aks update` to define resource tiers for Azure Container Storage performance.
+* Vendor new SDK and bump API version to 2024-04-02-preview.
 
 5.0.0b1
 ++++++++

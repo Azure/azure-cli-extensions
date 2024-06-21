@@ -297,7 +297,10 @@ def perform_enable_azure_container_storage(  # pylint: disable=too-many-statemen
                         existing_ephemeral_disk_volume_type.lower() == CONST_DISK_TYPE_PV_WITH_ANNOTATION.lower()
                     )
                     update_settings.append(
-                        {"global.cli.storagePool.ephemeralDisk.enableEphemeralBypassAnnotation": enable_ephemeral_bypass_annotation}
+                        {
+                            "global.cli.storagePool.ephemeralDisk.enableEphemeralBypassAnnotation":
+                            enable_ephemeral_bypass_annotation
+                        }
                     )
             else:
                 logger.error("AKS update to enable Azure Container Storage failed.\nError: %s", ex)
@@ -549,7 +552,7 @@ def perform_disable_azure_container_storage(  # pylint: disable=too-many-stateme
         resource_args = get_desired_resource_value_args(
             storage_pool_type,
             storage_pool_option,
-            ephemeral_nvme_perf_tier,
+            ephemeral_disk_nvme_perf_tier,
             current_core_value,
             is_azureDisk_enabled,
             is_elasticSan_enabled,

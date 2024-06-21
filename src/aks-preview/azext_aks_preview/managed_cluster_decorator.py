@@ -3347,13 +3347,26 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # read the azure container storage values passed
         pool_type = self.context.raw_param.get("enable_azure_container_storage")
         enable_azure_container_storage = pool_type is not None
+        ephemeral_disk_volume_type = self.context.raw_param.get("ephemeral_disk_volume_type")
+        ephemeral_disk_nvme_perf_tier = self.context.raw_param.get("ephemeral_disk_nvme_perf_tier")
+        if (ephemeral_disk_volume_type is not None or ephemeral_disk_nvme_perf_tier is not None) and \
+           not enable_azure_container_storage:
+            params_defined_arr = []
+            if ephemeral_disk_volume_type is not None:
+                params_defined_arr.append('--ephemeral-disk-volume-type')
+            if ephemeral_disk_nvme_perf_tier is not None:
+                params_defined_arr.append('--ephemeral-disk-nvme-perf-tier')
+
+            params_defined = 'and '.join(params_defined_arr)
+            raise RequiredArgumentMissingError(
+                f'Cannot set {params_defined} without the parameter --enable-azure-container-storage.'
+            )
+
         if enable_azure_container_storage:
             pool_name = self.context.raw_param.get("storage_pool_name")
             pool_option = self.context.raw_param.get("storage_pool_option")
             pool_sku = self.context.raw_param.get("storage_pool_sku")
             pool_size = self.context.raw_param.get("storage_pool_size")
-            ephemeral_disk_volume_type = self.context.raw_param.get("ephemeral_disk_volume_type")
-            ephemeral_disk_nvme_perf_tier = self.context.raw_param.get("ephemeral_disk_nvme_perf_tier")
             if not mc.agent_pool_profiles:
                 raise UnknownError("Encountered an unexpected error while getting the agent pools from the cluster.")
             agentpool = mc.agent_pool_profiles[0]
@@ -3361,6 +3374,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             pool_details = {}
             pool_details["name"] = agentpool.name
             pool_details["vm_size"] = agentpool.vm_size
+            pool_details["count"] = agentpool.count
+            pool_details["os_type"] = agentpool.os_type
+            pool_details["mode"] = agentpool.mode
+            pool_details["node_taints"] = agentpool.node_taints
             agentpool_details.append(pool_details)
             # Marking the only agentpool name as the valid nodepool for
             # installing Azure Container Storage during `az aks create`
@@ -4084,6 +4101,19 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 'and --disable-azure-container-storage together.'
             )
 
+        if (ephemeral_disk_volume_type is not None or ephemeral_disk_nvme_perf_tier is not None) and \
+           not enable_azure_container_storage:
+            params_defined_arr = []
+            if ephemeral_disk_volume_type is not None:
+                params_defined_arr.append('--ephemeral-disk-volume-type')
+            if ephemeral_disk_nvme_perf_tier is not None:
+                params_defined_arr.append('--ephemeral-disk-nvme-perf-tier')
+
+            params_defined = 'and '.join(params_defined_arr)
+            raise RequiredArgumentMissingError(
+                f'Cannot set {params_defined} without the parameter --enable-azure-container-storage.'
+            )
+
         # pylint: disable=too-many-nested-blocks
         if enable_azure_container_storage or disable_azure_container_storage:
             # Require the agent pool profiles for azure container storage
@@ -4124,8 +4154,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 for agentpool in mc.agent_pool_profiles:
                     pool_details = {}
                     pool_details["vm_size"] = agentpool.vm_size
+                    pool_details["count"] = agentpool.count
                     node_name = agentpool.name
                     pool_details["name"] = node_name
+                    pool_details["os_type"] = agentpool.os_type
+                    pool_details["mode"] = agentpool.mode
+                    pool_details["node_taints"] = agentpool.node_taints
                     if agentpool.node_labels is not None:
                         node_labels = agentpool.node_labels
                         if node_labels is not None and \
@@ -4142,7 +4176,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 # one nodepool exists, choose the only nodepool by default.
                 if not is_extension_installed:
                     if nodepool_list is None:
-                        nodepool_list = "nodepool1"
+                        nodepool_list = ""
                         if len(labelled_nodepool_arr) > 0:
                             nodepool_list = ','.join(labelled_nodepool_arr)
                         elif len(agentpool_details) == 1:
