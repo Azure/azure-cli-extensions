@@ -18,6 +18,10 @@ Pending
 * Add option `--azure-container-storage-perf-tier` to `az aks create` and `az aks update` to define resource tiers for Azure Container Storage performance.
 * Vendor new SDK and bump API version to 2024-04-02-preview.
 
+5.0.1b1
+++++++++
+* Only send soft initialization taints in request body when initialization taints are being added to a system node pool
+
 5.0.0b1
 ++++++++
 * [BREAKING CHANGE]: Remove --enable-network-observability and --disable-network-observability from aks create and update commands.
