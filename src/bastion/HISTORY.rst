@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.1
++++++
+* Added support for concurrent connections.
+
 1.0.0
 ++++++
 * Removing preview flag and update MFA documentation.

@@ -4,6 +4,9 @@ Release History
 ===============
 upcoming
 ++++++
+
+0.3.53
+++++++
 * 'az containerapp job update': Support command in extension
 * 'az containerapp job logs show': Support log streaming for job execution
 * 'az containerapp job replica list': Support list replicas of a job execution
