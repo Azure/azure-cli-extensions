@@ -417,7 +417,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
         # if this is for a system agent pool, we remove hard taints as they cannot be installed on system pools,
         # but we still want them on user pools
-        if self.agentpool and self.agentpool.mode == CONST_NODEPOOL_MODE_SYSTEM:
+        if self.agentpool and self.agentpool.mode == CONST_NODEPOOL_MODE_SYSTEM and node_init_taints:
             soft_taints_for_system_pool = []
             for init_taint in node_init_taints:
                 if ":noschedule" not in init_taint.lower():
