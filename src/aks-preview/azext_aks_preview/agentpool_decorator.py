@@ -31,6 +31,7 @@ from knack.prompting import prompt_y_n
 
 from azext_aks_preview._client_factory import cf_agent_pools
 from azext_aks_preview._consts import (
+    CONST_NODEPOOL_MODE_SYSTEM,
     CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
     CONST_VIRTUAL_MACHINE_SCALE_SETS,
     CONST_AVAILABILITY_SET,
@@ -414,7 +415,14 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             if self.agentpool and self.agentpool.node_initialization_taints is not None:
                 node_init_taints = self.agentpool.node_initialization_taints
 
-        # this parameter does not need validation
+        # if this is for a system agent pool, we remove hard taints as they cannot be installed on system pools,
+        # but we still want them on user pools
+        if self.agentpool and self.agentpool.mode == CONST_NODEPOOL_MODE_SYSTEM:
+            soft_taints_for_system_pool = []
+            for init_taint in node_init_taints:
+                if ":noschedule" not in init_taint.lower():
+                    soft_taints_for_system_pool.append(init_taint)
+            node_init_taints = soft_taints_for_system_pool
         return node_init_taints
 
     def get_drain_timeout(self):

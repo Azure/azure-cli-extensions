@@ -36,6 +36,7 @@ from azext_aks_preview._consts import (
     CONST_DNS_ZONE_CONTRIBUTOR_ROLE,
     CONST_ARTIFACT_SOURCE_CACHE,
     CONST_OUTBOUND_TYPE_NONE,
+    CONST_NODEPOOL_MODE_SYSTEM
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
@@ -3926,6 +3927,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 )
 
 
+def getSoftInitTaints(nodepool_initialization_taints):
+    return ["test"]
+
+
 class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
     def __init__(
         self, cmd: AzCliCommand, client: ContainerServiceClient, raw_parameters: Dict, resource_type: ResourceType
@@ -5018,7 +5023,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         nodepool_initialization_taints = self.context.get_nodepool_initialization_taints()
         if nodepool_initialization_taints is not None:
             for agent_profile in mc.agent_pool_profiles:
-                agent_profile.node_initialization_taints = nodepool_initialization_taints
+                if agent_profile.mode == CONST_NODEPOOL_MODE_SYSTEM:
+                    soft_init_taints = getSoftInitTaints(nodepool_initialization_taints)
+                    agent_profile.node_initialization_taints = soft_init_taints
+                else:
+                    agent_profile.node_initialization_taints = nodepool_initialization_taints
         return mc
 
     def update_cost_analysis(self, mc: ManagedCluster) -> ManagedCluster:

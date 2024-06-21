@@ -14233,9 +14233,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "taint1=value1:PreferNoSchedule,taint2=value2:PreferNoSchedule"
         )
         nodepool_init_taints = (
-            "initTaint1=value1:PreferNoSchedule,initTaint2=value2:PreferNoSchedule"
+            "initTaint1=value1:NoSchedule,initTaint2=value3:PreferNoSchedule"
         )
-        nodepool_taints2 = "taint1=value2:PreferNoSchedule"
+        nodepool_taints2 = "taint1=value2:NoSchedule,taint2=value3:PreferNoSchedule"
         nodepool_init_taints2 = "initTaint1=value2:PreferNoSchedule"
         self.kwargs.update(
             {
@@ -14280,10 +14280,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 ),
                 self.check(
                     "agentPoolProfiles[0].nodeInitializationTaints[0]",
-                    "initTaint1=value1:PreferNoSchedule",
-                ),
-                self.check(
-                    "agentPoolProfiles[0].nodeInitializationTaints[1]",
                     "initTaint2=value2:PreferNoSchedule",
                 ),
             ],
@@ -14306,7 +14302,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 ),
                 self.check(
                     "agentPoolProfiles[0].nodeInitializationTaints[0]",
-                    "initTaint1=value2:PreferNoSchedule",
+                    "initTaint2=value3:PreferNoSchedule",
                 ),
             ],
         )
