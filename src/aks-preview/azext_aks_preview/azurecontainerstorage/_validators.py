@@ -263,14 +263,14 @@ def validate_enable_azure_container_storage_params(  # pylint: disable=too-many-
                     )
 
             if (storage_pool_name is not None or storage_pool_sku is not None or
-                storage_pool_size is not None or nodepool_list is not None):
+               storage_pool_size is not None or nodepool_list is not None):
                 # pylint: disable=too-many-boolean-expressions
                 if (ephemeral_disk_volume_type is not None and
                     required_type_installed_for_disk_vol_type and ephemeral_disk_nvme_perf_tier is None) or \
-                   (ephemeral_disk_volume_type is None and
-                    ephemeral_disk_nvme_perf_tier is not None and required_type_installed_for_nvme_perf_tier) or \
-                   (ephemeral_disk_volume_type is not None and required_type_installed_for_disk_vol_type and
-                    ephemeral_disk_nvme_perf_tier is not None and required_type_installed_for_nvme_perf_tier):
+                    (ephemeral_disk_volume_type is None and
+                     ephemeral_disk_nvme_perf_tier is not None and required_type_installed_for_nvme_perf_tier) or \
+                    (ephemeral_disk_volume_type is not None and required_type_installed_for_disk_vol_type and
+                     ephemeral_disk_nvme_perf_tier is not None and required_type_installed_for_nvme_perf_tier):
                     enabled_options_arr = []
                     if is_ephemeralDisk_nvme_enabled:
                         enabled_options_arr.append(CONST_STORAGE_POOL_OPTION_NVME)
@@ -338,7 +338,6 @@ def validate_enable_azure_container_storage_params(  # pylint: disable=too-many-
                 'Cannot set --ephemeral-disk-nvme-perf-tier when --enable-azure-container-storage is not ephemeralDisk.'
             )
 
-
     _validate_storage_pool_size(storage_pool_size, storage_pool_type)
 
     _validate_nodepools(
@@ -364,7 +363,7 @@ def validate_enable_azure_container_storage_params(  # pylint: disable=too-many-
         if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and \
            ephemeral_disk_volume_type is None and \
            ((is_ephemeralDisk_nvme_enabled and
-            storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME and \
+            storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME and
             ephemeral_disk_nvme_perf_tier is None) or
             (is_ephemeralDisk_localssd_enabled and
                 storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD)):

@@ -108,7 +108,6 @@ def perform_enable_azure_container_storage(  # pylint: disable=too-many-statemen
                 storage_pool_type == CONST_STORAGE_POOL_TYPE_ELASTIC_SAN else \
                 CONST_STORAGE_POOL_DEFAULT_SIZE
 
-
         epheremaldisk_type = ""
         if storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK:
             if storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME:
@@ -552,7 +551,7 @@ def perform_disable_azure_container_storage(  # pylint: disable=too-many-stateme
         resource_args = get_desired_resource_value_args(
             storage_pool_type,
             storage_pool_option,
-            ephemeral_disk_nvme_perf_tier,
+            existing_ephemeral_nvme_perf_tier,
             current_core_value,
             is_azureDisk_enabled,
             is_elasticSan_enabled,
@@ -625,7 +624,7 @@ def perform_disable_azure_container_storage(  # pylint: disable=too-many-stateme
             update_settings.extend(
                 [
                     {
-                        "global.cli.storagePool.ephemeralDisk.enableEphemeralBypassAnnotation": 
+                        "global.cli.storagePool.ephemeralDisk.enableEphemeralBypassAnnotation":
                         reset_enable_ephemeral_bypass_annotation
                     },
                     {"global.cli.storagePool.ephemeralDisk.nvme.perfTier": existing_ephemeral_nvme_perf_tier},
