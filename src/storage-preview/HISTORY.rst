@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.0b2(2024-06-21)
+++++++++++++++++++
+* `az storage account migration start/show`: Remove as it has been GA in main repo
+
 1.0.0b1(2023-08-11)
 ++++++++++++++++++
 * `az storage account migration start/show`: Support start and show storage account migration
