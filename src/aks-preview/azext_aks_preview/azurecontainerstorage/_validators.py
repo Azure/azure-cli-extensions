@@ -410,7 +410,7 @@ def _validate_storage_pool_size(storage_pool_size, storage_pool_type):
             )
 
 
-def _validate_nodepools(
+def _validate_nodepools(  # pylint: disable=too-many-branches
     nodepool_list,
     agentpool_details,
     storage_pool_type,
@@ -431,12 +431,13 @@ def _validate_nodepools(
                 'in a cluster where Azure Container Storage is already installed.'
             )
 
-        for agentpool in agentpool_details:
-            node_labels = agentpool.get("node_labels")
-            if node_labels is not None and \
-               node_labels.get(CONST_ACSTOR_IO_ENGINE_LABEL_KEY) is not None:
-                nodepool_name = agentpool.get("name")
-                nodepool_arr.append(nodepool_name)
+        if agentpool_details is not None:
+            for agentpool in agentpool_details:
+                node_labels = agentpool.get("node_labels")
+                if node_labels is not None and \
+                   node_labels.get(CONST_ACSTOR_IO_ENGINE_LABEL_KEY) is not None:
+                    nodepool_name = agentpool.get("name")
+                    nodepool_arr.append(nodepool_name)
 
         if len(nodepool_arr) == 0:
             raise ArgumentUsageError(
@@ -453,8 +454,9 @@ def _validate_nodepools(
         )
     else:
         agentpool_names = []
-        for details in agentpool_details:
-            agentpool_names.append(details.get("name"))
+        if agentpool_details is not None:
+            for details in agentpool_details:
+                agentpool_names.append(details.get("name"))
         if not nodepool_list:
             agentpool_names_str = ', '.join(agentpool_names)
             raise RequiredArgumentMissingError(
@@ -480,7 +482,7 @@ def _validate_nodepools(
                     )
                 mode = agentpool.get("mode")
                 node_taints = agentpool.get("node_taints")
-                if mode.lower() == "system" and node_taints is not None:
+                if mode is not None and mode.lower() == "system" and node_taints is not None:
                     critical_taint = "CriticalAddonsOnly=true:NoSchedule"
                     if critical_taint.casefold() in (taint.casefold() for taint in node_taints):
                         raise InvalidArgumentValueError(
@@ -502,7 +504,8 @@ def _validate_nodepools(
                         nvme_nodepool_found = True
 
                 node_count = agentpool.get("count")
-                available_node_count = available_node_count + node_count
+                if node_count is not None:
+                    available_node_count = available_node_count + node_count
 
     if available_node_count < 3:
         raise UnknownError(
