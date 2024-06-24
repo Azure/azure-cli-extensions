@@ -38,24 +38,33 @@ class BastionSku(Enum):
     Developer = "Developer"
     QuickConnect = "QuickConnect"
 
-def create_bastion(cmd, op_info, vnet_id):
-    from .aaz.latest.network.bastion import Create
-    try:
-        bastion_poller = Create(cli_ctx=cmd.cli_ctx)(command_args={
-            "resource_group": op_info.resource_group_name,
-            "name": f"{op_info.vm_name}-vnet-bastion",
-            "location": op_info.location,
-            "virtualNetworkId": vnet_id,  # Ensure this key matches what the API expects
 
+
+class BastionCreate(_BastionCreate):
+    def create_bastion(self, command_args):
+        print("Starting handler")
+        command_args['ip_configurations'] = []
+
+        self._handler(command_args)
+        print("Done handler")
+
+
+def create_bastion(cmd, op_info, vnet_id):
+    try:
+        command_args = {
+            "location": op_info.location,
+            "name": f"{op_info.vm_name}-vnet-bastion",
+            "resource_group": op_info.resource_group_name,
             "sku": "Developer",
-            "ipConfigurations": [],
-            "scale_units": 2,
-            "tags": {}
-        })
-        # Wait for the LRO to complete
-        bastion_result = bastion_poller.result()
-        print(bastion_result)
-        return bastion_result
+            "virtual_network_id": vnet_id,
+            "ip_configurations": [] 
+
+        }
+        bastion_creator = BastionCreate(cli_ctx=cmd.cli_ctx)
+        bastion_creator.create_bastion(command_args)
+        
+        print("Bastion Host Created")
+        op_info.bastion_name = f"{op_info.vm_name}-vnet-bastion"
     except Exception as e:
         raise CLIInternalError(f"Failed to create bastion information. Please try again later. Error: {str(e)}")
 

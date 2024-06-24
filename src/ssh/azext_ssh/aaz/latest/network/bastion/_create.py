@@ -19,9 +19,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-01-01",
+        "version": "2023-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/bastionhosts/{}", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/bastionhosts/{}", "2023-11-01"],
         ]
     }
 
@@ -87,7 +87,7 @@ class Create(AAZCommand):
             options=["--sku"],
             help="SKU of this Bastion Host.",
             default="Standard",
-            enum={"Basic": "Basic", "Standard": "Standard"},
+            enum={"Basic": "Basic", "Developer": "Developer", "Standard": "Standard"},
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
@@ -127,7 +127,50 @@ class Create(AAZCommand):
 
         # define Arg Group "Parameters"
 
+        _args_schema = cls._args_schema
+        _args_schema.zones = AAZListArg(
+            options=["--zones"],
+            arg_group="Parameters",
+            help="A list of availability zones denoting where the resource needs to come from.",
+        )
+
+        zones = cls._args_schema.zones
+        zones.Element = AAZStrArg()
+
         # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.enable_kerberos = AAZBoolArg(
+            options=["--enable-kerberos"],
+            arg_group="Properties",
+            help="Enable/Disable Kerberos feature of the Bastion Host resource.",
+            default=False,
+        )
+        _args_schema.network_acls = AAZObjectArg(
+            options=["--network-acls"],
+            arg_group="Properties",
+        )
+        _args_schema.virtual_network = AAZObjectArg(
+            options=["--virtual-network"],
+            arg_group="Properties",
+            help="Reference to an existing virtual network required for Developer Bastion Host only.",
+        )
+        cls._build_args_sub_resource_create(_args_schema.virtual_network)
+
+        network_acls = cls._args_schema.network_acls
+        network_acls.ip_rules = AAZListArg(
+            options=["ip-rules"],
+            help="Sets the IP ACL rules for Developer Bastion Host.",
+        )
+
+        ip_rules = cls._args_schema.network_acls.ip_rules
+        ip_rules.Element = AAZObjectArg()
+
+        _element = cls._args_schema.network_acls.ip_rules.Element
+        _element.address_prefix = AAZStrArg(
+            options=["address-prefix"],
+            help="Specifies the IP or IP range in CIDR format. Only IPV4 address is allowed.",
+        )
         return cls._args_schema
 
     _args_sub_resource_create = None
@@ -229,7 +272,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2023-11-01",
                     required=True,
                 ),
             }
@@ -258,14 +301,18 @@ class Create(AAZCommand):
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("sku", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
+            _builder.set_prop("zones", AAZListType, ".zones")
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("disableCopyPaste", AAZBoolType, ".disable_copy_paste")
                 properties.set_prop("enableIpConnect", AAZBoolType, ".enable_ip_connect")
+                properties.set_prop("enableKerberos", AAZBoolType, ".enable_kerberos")
                 properties.set_prop("enableTunneling", AAZBoolType, ".enable_tunneling")
                 properties.set_prop("ipConfigurations", AAZListType, ".ip_configurations")
+                properties.set_prop("networkAcls", AAZObjectType, ".network_acls")
                 properties.set_prop("scaleUnits", AAZIntType, ".scale_units")
+                _CreateHelper._build_schema_sub_resource_create(properties.set_prop("virtualNetwork", AAZObjectType, ".virtual_network"))
 
             ip_configurations = _builder.get(".properties.ipConfigurations")
             if ip_configurations is not None:
@@ -283,6 +330,18 @@ class Create(AAZCommand):
                 _CreateHelper._build_schema_sub_resource_create(properties.set_prop("publicIPAddress", AAZObjectType, ".public_ip_address", typ_kwargs={"flags": {"required": True}}))
                 _CreateHelper._build_schema_sub_resource_create(properties.set_prop("subnet", AAZObjectType, ".subnet", typ_kwargs={"flags": {"required": True}}))
 
+            network_acls = _builder.get(".properties.networkAcls")
+            if network_acls is not None:
+                network_acls.set_prop("ipRules", AAZListType, ".ip_rules")
+
+            ip_rules = _builder.get(".properties.networkAcls.ipRules")
+            if ip_rules is not None:
+                ip_rules.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.networkAcls.ipRules[]")
+            if _elements is not None:
+                _elements.set_prop("addressPrefix", AAZStrType, ".address_prefix")
+
             sku = _builder.get(".sku")
             if sku is not None:
                 sku.set_prop("name", AAZStrType, ".sku")
@@ -290,6 +349,10 @@ class Create(AAZCommand):
             tags = _builder.get(".tags")
             if tags is not None:
                 tags.set_elements(AAZStrType, ".")
+
+            zones = _builder.get(".zones")
+            if zones is not None:
+                zones.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -327,6 +390,7 @@ class Create(AAZCommand):
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200_201.zones = AAZListType()
 
             properties = cls._schema_on_200_201.properties
             properties.disable_copy_paste = AAZBoolType(
@@ -341,6 +405,9 @@ class Create(AAZCommand):
             properties.enable_ip_connect = AAZBoolType(
                 serialized_name="enableIpConnect",
             )
+            properties.enable_kerberos = AAZBoolType(
+                serialized_name="enableKerberos",
+            )
             properties.enable_shareable_link = AAZBoolType(
                 serialized_name="enableShareableLink",
             )
@@ -350,6 +417,9 @@ class Create(AAZCommand):
             properties.ip_configurations = AAZListType(
                 serialized_name="ipConfigurations",
             )
+            properties.network_acls = AAZObjectType(
+                serialized_name="networkAcls",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -357,6 +427,10 @@ class Create(AAZCommand):
             properties.scale_units = AAZIntType(
                 serialized_name="scaleUnits",
             )
+            properties.virtual_network = AAZObjectType(
+                serialized_name="virtualNetwork",
+            )
+            _CreateHelper._build_schema_sub_resource_read(properties.virtual_network)
 
             ip_configurations = cls._schema_on_200_201.properties.ip_configurations
             ip_configurations.Element = AAZObjectType()
@@ -392,11 +466,27 @@ class Create(AAZCommand):
             )
             _CreateHelper._build_schema_sub_resource_read(properties.subnet)
 
+            network_acls = cls._schema_on_200_201.properties.network_acls
+            network_acls.ip_rules = AAZListType(
+                serialized_name="ipRules",
+            )
+
+            ip_rules = cls._schema_on_200_201.properties.network_acls.ip_rules
+            ip_rules.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.network_acls.ip_rules.Element
+            _element.address_prefix = AAZStrType(
+                serialized_name="addressPrefix",
+            )
+
             sku = cls._schema_on_200_201.sku
             sku.name = AAZStrType()
 
             tags = cls._schema_on_200_201.tags
             tags.Element = AAZStrType()
+
+            zones = cls._schema_on_200_201.zones
+            zones.Element = AAZStrType()
 
             return cls._schema_on_200_201
 

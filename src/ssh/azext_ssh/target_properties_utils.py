@@ -46,7 +46,6 @@ def handle_bastion_properties(cmd, op_info, properties):
     bastion = _request_specified_bastion(cmd, subscription_id, vnet_name, op_info.resource_group_name)
     if bastion['count'] == 0:
         bastion = bastion_utils.create_bastion(cmd, op_info, vnet_id)
-        created = True
     else:
         op_info.bastion_name = parse_bastion_name(bastion)
   
@@ -155,8 +154,10 @@ def parse_nic_name(properties):
     
 def parse_vnet(nic_info):
     try:
-        vnet_id = nic_info['ipConfigurations'][0]['subnet']['id']
-        return vnet_id, vnet_id.split('/')[-3]
+        subnet_id = nic_info['ipConfigurations'][0]['subnet']['id']
+        vnet_id = '/'.join(subnet_id.split('/')[:-2])
+
+        return vnet_id, vnet_id.split('/')[-1]
 
     except (IndexError, KeyError, TypeError) as e:
         print("Error:", e)
