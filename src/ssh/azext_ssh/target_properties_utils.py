@@ -45,6 +45,7 @@ def handle_bastion_properties(cmd, op_info, properties):
 
     bastion = _request_specified_bastion(cmd, subscription_id, vnet_name, op_info.resource_group_name)
     if bastion['count'] == 0:
+        print("No Bastion found in the same VNet. Creating a new Bastion Host.")
         bastion = bastion_utils.create_bastion(cmd, op_info, vnet_id)
     else:
         op_info.bastion_name = parse_bastion_name(bastion)

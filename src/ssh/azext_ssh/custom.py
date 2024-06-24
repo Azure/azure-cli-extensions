@@ -188,24 +188,36 @@ def _do_ssh_op(cmd, op_info, op_call):
     # Determine if Bastion should be used
     
     if op_info.bastion:
-        op_call = bastion_utils.ssh_bastion_host(cmd, op_info)
-   
-    try:
-        if op_info.is_arc():
-            op_info.proxy_path = connectivity_utils.get_client_side_proxy(op_info.ssh_proxy_folder)
-            (op_info.relay_info, op_info.new_service_config) = connectivity_utils.get_relay_information(
-                cmd, op_info.resource_group_name, op_info.vm_name, op_info.resource_type,
-                cert_lifetime, op_info.port, op_info.yes_without_prompt)
-        op_call(op_info, delete_keys, delete_cert)
-    except Exception as e:
-        if delete_keys or delete_cert:
-            logger.debug("An error occurred before operation concluded. Deleting generated keys: %s %s %s",
+        try:
+            bastion_utils.ssh_bastion_host(cmd, op_info)
+        except Exception as e:
+                if delete_keys or delete_cert:
+                    logger.debug("An error occurred before operation concluded. Deleting generated keys: %s %s %s",
+                                op_info.private_key_file + ', ' if delete_keys else "",
+                                op_info.public_key_file + ', ' if delete_keys else "",
+                                op_info.cert_file if delete_cert else "")
+                    ssh_utils.do_cleanup(delete_keys, delete_cert, op_info.delete_credentials, op_info.cert_file,
+                                        op_info.private_key_file, op_info.public_key_file)
+                raise e
+    else:
+        try:
+            if op_info.is_arc():
+                op_info.proxy_path = connectivity_utils.get_client_side_proxy(op_info.ssh_proxy_folder)
+                (op_info.relay_info, op_info.new_service_config) = connectivity_utils.get_relay_information(
+                    cmd, op_info.resource_group_name, op_info.vm_name, op_info.resource_type,
+                    cert_lifetime, op_info.port, op_info.yes_without_prompt)
+            op_call(op_info, delete_keys, delete_cert)
+        except Exception as e:
+            if delete_keys or delete_cert:
+                logger.debug("An error occurred before operation concluded. Deleting generated keys: %s %s %s",
                             op_info.private_key_file + ', ' if delete_keys else "",
                             op_info.public_key_file + ', ' if delete_keys else "",
                             op_info.cert_file if delete_cert else "")
-            ssh_utils.do_cleanup(delete_keys, delete_cert, op_info.delete_credentials, op_info.cert_file,
+                ssh_utils.do_cleanup(delete_keys, delete_cert, op_info.delete_credentials, op_info.cert_file,
                                     op_info.private_key_file, op_info.public_key_file)
-        raise e
+            raise e
+    if not op_info.bastion: 
+        op_call(op_info, delete_keys, delete_cert)
 
 
 def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder):

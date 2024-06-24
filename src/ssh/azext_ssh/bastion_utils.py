@@ -24,7 +24,7 @@ from knack.log import get_logger
 from msrestazure.tools import is_valid_resource_id
 from azure.cli.core.aaz import *
 
-from .aaz.latest.network.bastion import Create as _BastionCreate
+from .aaz.latest.network.bastion import Create 
 from . import custom
 from . import ssh_utils
 
@@ -38,35 +38,28 @@ class BastionSku(Enum):
     Developer = "Developer"
     QuickConnect = "QuickConnect"
 
-
-
-class BastionCreate(_BastionCreate):
-    def create_bastion(self, command_args):
-        print("Starting handler")
-        command_args['ip_configurations'] = []
-
-        self._handler(command_args)
-        print("Done handler")
-
-
 def create_bastion(cmd, op_info, vnet_id):
     try:
-        command_args = {
+        bastion_creator = Create(cli_ctx=cmd.cli_ctx)
+        bastion_args = {
             "location": op_info.location,
-            "name": f"{op_info.vm_name}-vnet-bastion",
+            "name": f"{op_info.vm_name}-vnet-bastionssh",
             "resource_group": op_info.resource_group_name,
             "sku": "Developer",
-            "virtual_network_id": vnet_id,
-            "ip_configurations": [] 
-
+            "virtual_network": {
+                "id": vnet_id
+            },
+            "ip_configurations": [],
+            "scale_units": 2,
+            "tags": {}
         }
-        bastion_creator = BastionCreate(cli_ctx=cmd.cli_ctx)
-        bastion_creator.create_bastion(command_args)
-        
-        print("Bastion Host Created")
+        result = bastion_creator(command_args=bastion_args)
+        if result: 
+            print(result)
         op_info.bastion_name = f"{op_info.vm_name}-vnet-bastion"
     except Exception as e:
-        raise CLIInternalError(f"Failed to create bastion information. Please try again later. Error: {str(e)}")
+        logger.error(f"Failed to create bastion. Error: {str(e)}")
+        raise ClientRequestError(f"Failed to create bastion information. Please try again later. Error: {str(e)}")
 
 
 def show_bastion(cmd, op_info):
