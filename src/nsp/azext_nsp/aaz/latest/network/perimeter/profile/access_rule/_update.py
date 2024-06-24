@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "network perimeter profile access-rule update",
 )
 class Update(AAZCommand):
-    """Updates a network access rule.
+    """Creates or updates a network access rule.
 
     :example: Update access rule
         az network perimeter profile access-rule update -n MyAccessRule --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup --address-prefixes "[10.10.0.0/16]"
     """
 
     _aaz_info = {
-        "version": "2023-07-01-preview",
+        "version": "2023-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/profiles/{}/accessrules/{}", "2023-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/profiles/{}/accessrules/{}", "2023-08-01-preview"],
         ]
     }
 
@@ -125,6 +125,12 @@ class Update(AAZCommand):
             help="Outbound rules phone number format.",
             nullable=True,
         )
+        _args_schema.service_tags = AAZListArg(
+            options=["--service-tags"],
+            arg_group="Properties",
+            help="Inbound rules service tag names.",
+            nullable=True,
+        )
         _args_schema.subscriptions = AAZListArg(
             options=["--subscriptions"],
             arg_group="Properties",
@@ -149,6 +155,11 @@ class Update(AAZCommand):
 
         phone_numbers = cls._args_schema.phone_numbers
         phone_numbers.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        service_tags = cls._args_schema.service_tags
+        service_tags.Element = AAZStrArg(
             nullable=True,
         )
 
@@ -251,7 +262,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01-preview",
+                    "api-version", "2023-08-01-preview",
                     required=True,
                 ),
             }
@@ -342,7 +353,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01-preview",
+                    "api-version", "2023-08-01-preview",
                     required=True,
                 ),
             }
@@ -402,7 +413,7 @@ class Update(AAZCommand):
             )
             _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("name", AAZStrType, ".access_rule_name")
-            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
@@ -412,6 +423,7 @@ class Update(AAZCommand):
                 properties.set_prop("emailAddresses", AAZListType, ".email_addresses")
                 properties.set_prop("fullyQualifiedDomainNames", AAZListType, ".fqdn")
                 properties.set_prop("phoneNumbers", AAZListType, ".phone_numbers")
+                properties.set_prop("serviceTags", AAZListType, ".service_tags")
                 properties.set_prop("subscriptions", AAZListType, ".subscriptions")
 
             address_prefixes = _builder.get(".properties.addressPrefixes")
@@ -429,6 +441,10 @@ class Update(AAZCommand):
             phone_numbers = _builder.get(".properties.phoneNumbers")
             if phone_numbers is not None:
                 phone_numbers.set_elements(AAZStrType, ".")
+
+            service_tags = _builder.get(".properties.serviceTags")
+            if service_tags is not None:
+                service_tags.set_elements(AAZStrType, ".")
 
             subscriptions = _builder.get(".properties.subscriptions")
             if subscriptions is not None:
@@ -477,7 +493,9 @@ class _UpdateHelper:
         )
         nsp_access_rule_read.location = AAZStrType()
         nsp_access_rule_read.name = AAZStrType()
-        nsp_access_rule_read.properties = AAZObjectType()
+        nsp_access_rule_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
         nsp_access_rule_read.tags = AAZDictType()
         nsp_access_rule_read.type = AAZStrType(
             flags={"read_only": True},
@@ -504,6 +522,9 @@ class _UpdateHelper:
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
+        )
+        properties.service_tags = AAZListType(
+            serialized_name="serviceTags",
         )
         properties.subscriptions = AAZListType()
 
@@ -533,6 +554,9 @@ class _UpdateHelper:
 
         phone_numbers = _schema_nsp_access_rule_read.properties.phone_numbers
         phone_numbers.Element = AAZStrType()
+
+        service_tags = _schema_nsp_access_rule_read.properties.service_tags
+        service_tags.Element = AAZStrType()
 
         subscriptions = _schema_nsp_access_rule_read.properties.subscriptions
         subscriptions.Element = AAZObjectType()
