@@ -698,6 +698,19 @@ class TestAppUpdate(BasicTest):
         resource = self.patch_app_resource
         self.assertEqual('w2', resource.properties.workload_profile_name)
 
+    def test_app_update_with_enable_test_endpoint_auth(self):
+        self._execute('rg', 'asc', 'app', workload_profile='w2')
+        resource = self.patch_app_resource
+        self.assertIsNone(resource.properties.test_endpoint_auth_state)
+
+        self._execute('rg', 'asc', 'app', workload_profile='w2', disable_test_endpoint_auth=False)
+        resource = self.patch_app_resource
+        self.assertEqual(models.TestEndpointAuthState.ENABLED, resource.properties.test_endpoint_auth_state)
+
+        self._execute('rg', 'asc', 'app', workload_profile='w2', disable_test_endpoint_auth=True)
+        resource = self.patch_app_resource
+        self.assertEqual(models.TestEndpointAuthState.DISABLED, resource.properties.test_endpoint_auth_state)
+
 
 class TestAppCreate(BasicTest):
     def __init__(self, methodName: str = ...):

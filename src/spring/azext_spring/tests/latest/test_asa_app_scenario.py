@@ -108,6 +108,11 @@ class AppCRUD(ScenarioTest):
             self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
         ])
 
+        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --session-max-age 1800',
+                 checks=[
+                     self.check('properties.testEndpointAuthState', "Enabled"),
+                ])
+
         # ingress only set session affinity
         self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --session-affinity Cookie --session-max-age 1800 '
                  '--disable-test-endpoint-auth',
@@ -124,6 +129,7 @@ class AppCRUD(ScenarioTest):
         # green deployment copy settings from active, but still accept input as highest priority
         self.cmd('spring app deployment create -n green --app {app} -g {rg} -s {serviceName} --instance-count 2', checks=[
             self.check('name', 'green'),
+            self.check('properties.testEndpointAuthState', None),
             self.check('properties.deploymentSettings.resourceRequests.cpu', '2'),
             self.check('properties.deploymentSettings.resourceRequests.memory', '1Gi'),
             self.check('properties.source.type', 'Jar'),
@@ -190,13 +196,27 @@ class AppCRUD(ScenarioTest):
             self.check('properties.testEndpointAuthState', "Enabled"),
         ])
 
-        # add actuator configs
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --custom-actuator-port 8080 --custom-actuator-path actuator '
-                 '--disable-test-endpoint-auth',
+        # The 'testEndpointAuthState' is enabled, update app without parameter disable-test-endpoint-auth
+        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --custom-actuator-port 8080 --custom-actuator-path actuator',
                  checks=[
                      self.check('properties.activeDeployment.properties.deploymentSettings.addonConfigs', {'appLiveView': {'actuatorPath': 'actuator', 'actuatorPort': 8080}}),
+                     self.check('properties.testEndpointAuthState', "Enabled"),
+                 ])
+
+        # Update actuator configs, and test endpoint auth
+        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --custom-actuator-port 8081 --custom-actuator-path actuator '
+                 '--disable-test-endpoint-auth',
+                 checks=[
+                     self.check('properties.activeDeployment.properties.deploymentSettings.addonConfigs', {'appLiveView': {'actuatorPath': 'actuator', 'actuatorPort': 8081}}),
                      self.check('properties.testEndpointAuthState', "Disabled"),
                  ])
+        # The 'testEndpointAuthState' is disabled, update app without parameter disable-test-endpoint-auth
+        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --custom-actuator-port 8082',
+                 checks=[
+                     self.check('properties.activeDeployment.properties.deploymentSettings.addonConfigs', {'appLiveView': {'actuatorPath': 'actuator', 'actuatorPort': 8082}}),
+                     self.check('properties.testEndpointAuthState', "Disabled"),
+                 ])
+
 
 class BlueGreenTest(ScenarioTest):
 

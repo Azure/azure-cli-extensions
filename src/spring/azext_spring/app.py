@@ -208,7 +208,7 @@ def app_update(cmd, client, resource_group, service, name,
                backend_protocol=None,
                client_auth_certs=None,
                workload_profile=None,
-               disable_test_endpoint_auth=False,
+               disable_test_endpoint_auth=None,
                # deployment.source
                runtime_version=None,
                jvm_options=None,

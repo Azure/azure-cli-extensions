@@ -24,15 +24,19 @@ class DefaultApp:
         kwargs['vnet_addons'] = self._load_vnet_addons(**kwargs)
         kwargs['ingress_settings'] = self._load_ingress_settings(**kwargs)
         kwargs['secrets'] = self._load_secrets_config(**kwargs)
-        kwargs['test_endpoint_auth_state'] = self._get_test_endpoint_auth_state(**kwargs)
+        if kwargs['disable_test_endpoint_auth'] is not None:
+            kwargs['test_endpoint_auth_state'] = self._get_test_endpoint_auth_state(**kwargs)
         kwargs['addon_configs'] = self._load_addon_configs(**kwargs)
-        return models.AppResourceProperties(**kwargs)
+        properties = models.AppResourceProperties(**kwargs)
 
-    def _get_test_endpoint_auth_state(self, disable_test_endpoint_auth=None, **_):
-        disable = False
-        if disable_test_endpoint_auth is not None:
-            disable = disable_test_endpoint_auth
-        return models.TestEndpointAuthState.DISABLED if disable else models.TestEndpointAuthState.ENABLED
+        # When execute app update without parameter 'disable_test_endpoint_auth', use 'None' instead of 'Enabled' for property test_endpoint_auth_state
+        if kwargs['disable_test_endpoint_auth'] is None:
+            properties.test_endpoint_auth_state = None
+
+        return properties
+
+    def _get_test_endpoint_auth_state(self, disable_test_endpoint_auth=False, **_):
+        return models.TestEndpointAuthState.DISABLED if disable_test_endpoint_auth else models.TestEndpointAuthState.ENABLED
 
     def _format_identity(self, system_assigned=None, user_assigned=None, **_):
         target_identity_type = self._get_identity_assign_type(system_assigned, user_assigned)
