@@ -9,12 +9,15 @@ import re
 from azure.cli.command_modules.acr.custom import acr_update_custom, acr_update_set
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.util import user_confirmation
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core.profiles import ResourceType
 from knack.util import CLIError
 
 from .vendored_sdks.containerregistry.v2024_01_01_preview.models import (
     NetworkRuleSet,
     Registry,
     RegistryUpdateParameters,
+    RoleAssignmentMode,
     Sku,
 )
 
@@ -57,6 +60,12 @@ def acr_create_preview(cmd,
 
     if re.match(r'\w*[A-Z]\w*', registry_name):
         raise InvalidArgumentValueError("argument error: Registry name must use only lowercase.")
+
+    if role_assignment_mode is None:
+        # fallback to vanilla client
+        client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_CONTAINERREGISTRY).registries
+    elif location == "eastus2euap" or location == "centraluseuap":
+        raise InvalidArgumentValueError("argument error: Role assignment mode is not applicable to registries in Canary regions.")
 
     registry = Registry(location=location, sku=Sku(name=sku), admin_user_enabled=admin_enabled,
                         zone_redundancy=zone_redundancy, tags=tags)
@@ -137,33 +146,40 @@ def acr_update_get_preview():
 
 
 def acr_update_set_preview(cmd, client, registry_name, resource_group_name=None, parameters=None):
+    if parameters is not None and parameters.role_assignment_mode is not None:
+        from azure.cli.command_modules.acr._utils import get_registry_by_name
+        registry, resource_group_name = get_registry_by_name(cmd.cli_ctx, registry_name, resource_group_name)
+        if registry.location == "eastus2euap" or registry.location == "centraluseuap":
+            raise InvalidArgumentValueError("argument error: Role assignment mode is not applicable to registries in Canary regions.")
+    else:
+        # fallback to vanilla client
+        client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_CONTAINERREGISTRY).registries
+
     return acr_update_set(cmd, client, registry_name, resource_group_name, parameters)
-
-
-def acr_list_preview(client, resource_group_name=None):
-    if resource_group_name:
-        return client.list_by_resource_group(resource_group_name)
-    return client.list()
 
 
 def acr_show_preview(cmd, client, registry_name, resource_group_name=None):
     from azure.cli.command_modules.acr._utils import get_resource_group_name_by_registry_name
     resource_group_name = get_resource_group_name_by_registry_name(cmd.cli_ctx, registry_name, resource_group_name)
-    return client.get(resource_group_name, registry_name)
+    try:
+        return client.get(resource_group_name, registry_name)
+    except:
+        # fallback to vanilla client
+        client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_CONTAINERREGISTRY).registries
+        return client.get(resource_group_name, registry_name)
 
 
-def _configure_role_assignment_mode(cmd, registry, role_assignment_mode, yes=False):
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azure.cli.core.profiles import ResourceType
-    from .vendored_sdks.containerregistry.v2024_01_01_preview.models import RoleAssignmentMode
-
-    feature_client = get_mgmt_service_client(
-        cmd.cli_ctx, ResourceType.MGMT_RESOURCE_FEATURES).features
+def _check_abac_afec(cli_ctx):
+    feature_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_RESOURCE_FEATURES).features
     feature_result = feature_client.get(
         resource_provider_namespace=ACR_RESOURCE_PROVIDER,
         feature_name=ACR_AFEC_ABAC_REPO_PERMISSION,
     )
-    if not (feature_result and feature_result.properties and feature_result.properties.state == "Registered"):
+    return feature_result and feature_result.properties and feature_result.properties.state == "Registered"
+
+
+def _configure_role_assignment_mode(cmd, registry, role_assignment_mode, yes=False):
+    if not _check_abac_afec(cmd.cli_ctx):
         raise CLIError(
             "usage error: ABAC-based repository permissions is only applicable to"
             " subscriptions registered with feature {}".format(
