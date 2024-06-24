@@ -3,6 +3,7 @@ alias:
   values:
     patchimagetask: cssc-patch-image
     DATE: $(date "+%Y-%m-%d")
+    cssc : mcr.microsoft.com/acr/cssc:56f0765
 steps:
   - id: print-inputs
     cmd: |
@@ -12,18 +13,19 @@ steps:
 
   - id: generate-trivy-report
     cmd: |
-      ghcr.io/aquasecurity/trivy image \
+      cssc trivy image \
       {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} \
       --vuln-type os \
       --ignore-unfixed \
       --format json \
       --output /workspace/data/vulnerability-report_trivy_$DATE.json
-  - cmd: mcr.microsoft.com/azure-cli bash -c 'jq "[.Results[].Vulnerabilities | length] | add" /workspace/data/vulnerability-report_trivy_$DATE.json > /workspace/data/vulCount.txt'
+  - cmd: cssc jq "[.Results[].Vulnerabilities | length] | add" /workspace/data/vulnerability-report_trivy_$DATE.json > /workspace/data/vulCount.txt
   - cmd: bash echo "Generated vulnerability report at /workspace/data/vulnerability-report_trivy_$DATE.json" 
   - cmd: az login --identity
   - cmd: bash echo "Vulnerabilities found for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} -> $(cat /workspace/data/vulCount.txt)"
   - cmd: | 
-      mcr.microsoft.com/azure-cli bash -c 'vulCount=$(cat /workspace/data/vulCount.txt) && \
+      az -c 'vulCount=$(cat /workspace/data/vulCount.txt) && \
       [ $vulCount -gt 0 ] && \
       az acr task run --name $patchimagetask --registry $RegistryName --set SOURCE_REPOSITORY={{.Values.SOURCE_REPOSITORY}} --set SOURCE_IMAGE_TAG={{.Values.SOURCE_IMAGE_ORIGINAL_TAG}} --no-wait \
       || echo "No vulnerability in the image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"'
+    entryPoint: /bin/bash
