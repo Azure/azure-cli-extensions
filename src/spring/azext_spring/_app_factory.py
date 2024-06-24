@@ -26,13 +26,7 @@ class DefaultApp:
         kwargs['secrets'] = self._load_secrets_config(**kwargs)
         kwargs['test_endpoint_auth_state'] = self._get_test_endpoint_auth_state(**kwargs)
         kwargs['addon_configs'] = self._load_addon_configs(**kwargs)
-        properties = models.AppResourceProperties(**kwargs)
-
-        # When execute app update without parameter 'disable_test_endpoint_auth', use 'None' instead of 'Enabled' for property test_endpoint_auth_state
-        if kwargs['disable_test_endpoint_auth'] is None:
-            properties.test_endpoint_auth_state = None
-
-        return properties
+        return models.AppResourceProperties(**kwargs)
 
     def _get_test_endpoint_auth_state(self, disable_test_endpoint_auth=None, **_):
         if disable_test_endpoint_auth is None:
