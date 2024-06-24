@@ -18,9 +18,9 @@ class Update(AAZCommand):
     """Update policy with specified rule set name within a resource group.
 
     :example: update log scrubbing
-        az network front-door waf-policy update -g rg -n n1 --log-scrubbing "{scrubbing-rules:[{match-variable:QueryStringArgNames,selector-match-operator:EqualsAny}],state:Enabled}"
+        az network front-door waf-policy update -g rg -n n1 --log-scrubbing "{scrubbing-rules:[{match-variable:QueryStringArgNames,selector-match-operator:EqualsAny,state:Disabled}],state:Enabled}"
         az network front-door waf-policy update -g rg -n n1 --log-scrubbing scrubbing-rules[1]="{match-variable:RequestUri,selector-match-operator:Equals}"
-        az network front-door waf-policy update -g rg -n n1 --log-scrubbing "{scrubbing-rules:[{match-variable:RequestBodyJsonArgNames,selector-match-operator:EqualsAny, state: Enabled}],state:Enabled}" scrubbing-rules[1]="{match-variable:RequestUri,selector-match-operator:EqualsAny, state:Disabled}"
+        az network front-door waf-policy update -g rg -n n1 --log-scrubbing "{scrubbing-rules:[{match-variable:RequestBodyJsonArgNames,selector-match-operator:EqualsAny}],state:Enabled}" scrubbing-rules[1]="{match-variable:RequestUri,selector-match-operator:EqualsAny}"
     """
 
     _aaz_info = {
