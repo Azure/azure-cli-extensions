@@ -390,6 +390,11 @@ def load_arguments(self, _):
                    help='A json file path indicates the certificates which would be loaded to app')
         c.argument('deployment_name', default='default',
                    help='Name of the default deployment.', validator=validate_name)
+        c.argument('disable_test_endpoint_auth',
+                   arg_type=get_three_state_flag(),
+                   options_list=['--disable-test-endpoint-auth', '--disable-tea'],
+                   help="If true, disable authentication of the app's test endpoint.",
+                   default=False)
 
     with self.argument_context('spring app update') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
@@ -409,6 +414,10 @@ def load_arguments(self, _):
         c.argument('deployment', options_list=['--deployment', '-d'],
                    help='Name of an existing deployment of the app. Default to the production deployment if not specified.',
                    validator=fulfill_deployment_param_or_warning)
+        c.argument('disable_test_endpoint_auth',
+                   arg_type=get_three_state_flag(),
+                   options_list=['--disable-test-endpoint-auth', '--disable-tea'],
+                   help="If true, disable authentication of the app's test endpoint.")
 
     with self.argument_context('spring app append-persistent-storage') as c:
         c.argument('storage_name', type=str,
@@ -533,10 +542,6 @@ def load_arguments(self, _):
                        help='A list of secret(s) for the app. Format "key[=value]" and separated by space.')
             c.argument('workload_profile', arg_group='StandardGen2',
                        help='The workload profile used in the managed environment. Default to "Consumption".')
-            c.argument('disable_test_endpoint_auth',
-                       arg_type=get_three_state_flag(),
-                       options_list=['--disable-test-endpoint-auth', '--disable-tea'],
-                       help="If true, disable authentication of the app's test endpoint.")
 
     for scope in ['spring app update', 'spring app deployment create', 'spring app deploy', 'spring app create']:
         with self.argument_context(scope) as c:

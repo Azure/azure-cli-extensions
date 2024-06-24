@@ -803,10 +803,10 @@ class TestAppCreate(BasicTest):
         self.assertEqual(default_config_server_id,
                     addon_configs['configServer']['resourceId'])
 
-    def test_app_with_enable_test_endpoint_auth(self):
+    def test_app_create_with_enable_test_endpoint_auth(self):
         self._execute('rg', 'asc', 'app', instance_count=1)
         resource = self.put_app_resource
-        self.assertEqual(models.TestEndpointAuthState.ENABLED, resource.properties.test_endpoint_auth_state)
+        self.assertIsNone(resource.properties.test_endpoint_auth_state)
 
         self._execute('rg', 'asc', 'app', instance_count=1, disable_test_endpoint_auth=False)
         resource = self.put_app_resource

@@ -57,7 +57,7 @@ def app_create(cmd, client, resource_group, service, name,
                bind_service_registry=None,
                bind_application_configuration_service=None,
                bind_config_server=None,
-               disable_test_endpoint_auth=False,
+               disable_test_endpoint_auth=None,
                # app.update
                enable_persistent_storage=None,
                persistent_storage=None,

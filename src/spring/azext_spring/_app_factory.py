@@ -24,8 +24,7 @@ class DefaultApp:
         kwargs['vnet_addons'] = self._load_vnet_addons(**kwargs)
         kwargs['ingress_settings'] = self._load_ingress_settings(**kwargs)
         kwargs['secrets'] = self._load_secrets_config(**kwargs)
-        if kwargs['disable_test_endpoint_auth'] is not None:
-            kwargs['test_endpoint_auth_state'] = self._get_test_endpoint_auth_state(**kwargs)
+        kwargs['test_endpoint_auth_state'] = self._get_test_endpoint_auth_state(**kwargs)
         kwargs['addon_configs'] = self._load_addon_configs(**kwargs)
         properties = models.AppResourceProperties(**kwargs)
 
@@ -35,7 +34,10 @@ class DefaultApp:
 
         return properties
 
-    def _get_test_endpoint_auth_state(self, disable_test_endpoint_auth=False, **_):
+    def _get_test_endpoint_auth_state(self, disable_test_endpoint_auth=None, **_):
+        if disable_test_endpoint_auth is None:
+            return None
+
         return models.TestEndpointAuthState.DISABLED if disable_test_endpoint_auth else models.TestEndpointAuthState.ENABLED
 
     def _format_identity(self, system_assigned=None, user_assigned=None, **_):
