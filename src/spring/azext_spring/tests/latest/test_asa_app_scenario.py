@@ -196,7 +196,7 @@ class AppCRUD(ScenarioTest):
             self.check('properties.testEndpointAuthState', "Enabled"),
         ])
 
-        # The 'testEndpointAuthState' is enabled, update app without parameter disable-test-endpoint-auth
+        # The property 'testEndpointAuthState' is enabled, update app without parameter 'disable-test-endpoint-auth'
         self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --custom-actuator-port 8080 --custom-actuator-path actuator',
                  checks=[
                      self.check('properties.activeDeployment.properties.deploymentSettings.addonConfigs', {'appLiveView': {'actuatorPath': 'actuator', 'actuatorPort': 8080}}),
@@ -210,7 +210,7 @@ class AppCRUD(ScenarioTest):
                      self.check('properties.activeDeployment.properties.deploymentSettings.addonConfigs', {'appLiveView': {'actuatorPath': 'actuator', 'actuatorPort': 8081}}),
                      self.check('properties.testEndpointAuthState', "Disabled"),
                  ])
-        # The 'testEndpointAuthState' is disabled, update app without parameter disable-test-endpoint-auth
+        # The property 'testEndpointAuthState' is disabled, update app without parameter 'disable-test-endpoint-auth'
         self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --custom-actuator-port 8082',
                  checks=[
                      self.check('properties.activeDeployment.properties.deploymentSettings.addonConfigs', {'appLiveView': {'actuatorPath': 'actuator', 'actuatorPort': 8082}}),
