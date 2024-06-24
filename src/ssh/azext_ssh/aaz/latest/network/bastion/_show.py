@@ -19,9 +19,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-01-01",
+        "version": "2023-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/bastionhosts/{}", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/bastionhosts/{}", "2023-11-01"],
         ]
     }
 
@@ -117,7 +117,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2023-11-01",
                     required=True,
                 ),
             }
@@ -166,6 +166,7 @@ class Show(AAZCommand):
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.zones = AAZListType()
 
             properties = cls._schema_on_200.properties
             properties.disable_copy_paste = AAZBoolType(
@@ -180,6 +181,9 @@ class Show(AAZCommand):
             properties.enable_ip_connect = AAZBoolType(
                 serialized_name="enableIpConnect",
             )
+            properties.enable_kerberos = AAZBoolType(
+                serialized_name="enableKerberos",
+            )
             properties.enable_shareable_link = AAZBoolType(
                 serialized_name="enableShareableLink",
             )
@@ -189,6 +193,9 @@ class Show(AAZCommand):
             properties.ip_configurations = AAZListType(
                 serialized_name="ipConfigurations",
             )
+            properties.network_acls = AAZObjectType(
+                serialized_name="networkAcls",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -196,6 +203,10 @@ class Show(AAZCommand):
             properties.scale_units = AAZIntType(
                 serialized_name="scaleUnits",
             )
+            properties.virtual_network = AAZObjectType(
+                serialized_name="virtualNetwork",
+            )
+            _ShowHelper._build_schema_sub_resource_read(properties.virtual_network)
 
             ip_configurations = cls._schema_on_200.properties.ip_configurations
             ip_configurations.Element = AAZObjectType()
@@ -231,11 +242,27 @@ class Show(AAZCommand):
             )
             _ShowHelper._build_schema_sub_resource_read(properties.subnet)
 
+            network_acls = cls._schema_on_200.properties.network_acls
+            network_acls.ip_rules = AAZListType(
+                serialized_name="ipRules",
+            )
+
+            ip_rules = cls._schema_on_200.properties.network_acls.ip_rules
+            ip_rules.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.network_acls.ip_rules.Element
+            _element.address_prefix = AAZStrType(
+                serialized_name="addressPrefix",
+            )
+
             sku = cls._schema_on_200.sku
             sku.name = AAZStrType()
 
             tags = cls._schema_on_200.tags
             tags.Element = AAZStrType()
+
+            zones = cls._schema_on_200.zones
+            zones.Element = AAZStrType()
 
             return cls._schema_on_200
 
