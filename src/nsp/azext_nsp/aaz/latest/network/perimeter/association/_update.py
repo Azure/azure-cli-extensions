@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "network perimeter association update",
 )
 class Update(AAZCommand):
-    """Creates or updates a NSP resource association.
+    """Updates a NSP resource association.
 
     :example: Update NSP Association
         az network perimeter association update --name MyAssociation --perimeter-name MyPerimeter --resource-group MyResourceGroup --access-mode Enforced --private-link-resource id="<PaaSArmID> --profile id="ProfileArmID"
