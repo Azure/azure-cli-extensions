@@ -10,15 +10,15 @@ from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
     CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
     CONST_ACSTOR_K8S_EXTENSION_NAME,
+    CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY,
+    CONST_DISK_TYPE_PV_WITH_ANNOTATION,
     CONST_EPHEMERAL_NVME_PERF_TIER_BASIC,
     CONST_EPHEMERAL_NVME_PERF_TIER_PREMIUM,
     CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD,
-    CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY,
     CONST_EXT_INSTALLATION_NAME,
     CONST_K8S_EXTENSION_CLIENT_FACTORY_MOD_NAME,
     CONST_K8S_EXTENSION_CUSTOM_MOD_NAME,
     CONST_K8S_EXTENSION_NAME,
-    CONST_DISK_TYPE_PV_WITH_ANNOTATION,
     CONST_STORAGE_POOL_OPTION_NVME,
     CONST_STORAGE_POOL_OPTION_SSD,
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
@@ -313,6 +313,7 @@ def get_desired_resource_value_args(
     is_elasticSan_enabled,
     is_ephemeralDisk_localssd_enabled,
     is_ephemeralDisk_nvme_enabled,
+    perf_tier_updated,
     nodepool_skus,
     is_enabling_op,
 ):
@@ -343,7 +344,8 @@ def get_desired_resource_value_args(
             updated_hugepages_value = 1
             updated_hugepages_number = 512
         elif (storage_pool_type == CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK and
-              storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME):
+              (storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME or
+               is_ephemeralDisk_nvme_enabled or perf_tier_updated)):
             updated_core_value = _get_ephemeral_nvme_cpu_value_based_on_vm_size_perf_tier(
                 nodepool_skus,
                 ephemeral_nvme_perf_tier,
@@ -352,11 +354,13 @@ def get_desired_resource_value_args(
             updated_hugepages_value = 2
             updated_hugepages_number = 1024
 
-        # We have decided the updated value based on the type we are enabling.
-        # Now, we compare and check if the current values are already greater
-        # than that and if so, we preserve the current values.
-        updated_core_value = current_core_value \
-            if current_core_value > updated_core_value else updated_core_value
+        if not perf_tier_updated:
+            # For an operation where we are not modifying the perf tiers for nvme,
+            # we have decided the updated value based on the type we are enabling.
+            # Now, we compare and check if the current values are already greater
+            # than that and if so, we preserve the current values.
+            updated_core_value = current_core_value \
+                if current_core_value > updated_core_value else updated_core_value
         updated_memory_value = current_memory_value \
             if current_memory_value > updated_memory_value else updated_memory_value
         updated_hugepages_value = current_hugepages_value \
@@ -437,9 +441,10 @@ def get_cores_from_sku(vm_size):
 
 def check_if_new_storagepool_creation_required(
     storage_pool_type,
-    storage_pool_option,
     ephemeral_disk_volume_type,
     ephemeral_disk_nvme_perf_tier,
+    existing_ephemeral_disk_volume_type,
+    existing_ephemeral_nvme_perf_tier,
     is_extension_installed,
     is_ephemeralDisk_nvme_enabled,
     is_ephemeralDisk_localssd_enabled,
@@ -447,14 +452,13 @@ def check_if_new_storagepool_creation_required(
     if not is_extension_installed or \
        not (is_ephemeralDisk_localssd_enabled or is_ephemeralDisk_nvme_enabled) or \
        storage_pool_type != CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK or \
-       (ephemeral_disk_nvme_perf_tier is None and ephemeral_disk_volume_type is None):
+       ((ephemeral_disk_volume_type is None or
+        (existing_ephemeral_nvme_perf_tier.lower() == ephemeral_disk_volume_type.lower())) and
+       (ephemeral_disk_nvme_perf_tier is None or
+        (existing_ephemeral_nvme_perf_tier.lower() == ephemeral_disk_nvme_perf_tier.lower()))):
         return True
 
-    if (storage_pool_option == CONST_STORAGE_POOL_OPTION_SSD and is_ephemeralDisk_localssd_enabled) or \
-       (storage_pool_option == CONST_STORAGE_POOL_OPTION_NVME and is_ephemeralDisk_nvme_enabled):
-        return False
-
-    return True
+    return False
 
 
 def _get_ephemeral_nvme_cpu_value_based_on_vm_size_perf_tier(nodepool_skus, perf_tier):

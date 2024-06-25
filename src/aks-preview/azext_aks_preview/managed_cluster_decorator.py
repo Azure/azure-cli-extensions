@@ -4206,13 +4206,23 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 )
 
                 if is_ephemeralDisk_nvme_enabled and ephemeral_disk_nvme_perf_tier is not None:
-                    msg = (
-                        "Changing ephemeralDisk NVMe performance tier may result in a temporary "
-                        "interruption to the applications using Azure Container Storage. Do you "
-                        "want to continue with this operation?"
+                    is_azure_container_storage_perf_tier_op_set = self.context.get_intermediate(
+                        "azure_container_storage_perf_tier_op_set",
+                        default_value="default",
                     )
-                    if not (self.context.get_yes() or prompt_y_n(msg, default="n")):
-                        raise DecoratorEarlyExitException()
+
+                    if is_azure_container_storage_perf_tier_op_set  == "default":
+                        msg = (
+                            "Changing ephemeralDisk NVMe performance tier may result in a temporary "
+                            "interruption to the applications using Azure Container Storage. Do you "
+                            "want to continue with this operation?"
+                        )
+
+                        if not (self.context.get_yes() or prompt_y_n(msg, default="n")):
+                            raise DecoratorEarlyExitException()
+
+                        self.context.set_intermediate("azure_container_storage_perf_tier_op_set", True, overwrite_exists=True)
+
                 # If the extension is already installed,
                 # we expect that the Azure Container Storage
                 # nodes are already labelled. Use those label
