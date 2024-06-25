@@ -4224,7 +4224,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         if not (self.context.get_yes() or prompt_y_n(msg, default="n")):
                             raise DecoratorEarlyExitException()
 
-                        self.context.set_intermediate("azure_container_storage_perf_tier_op_set", True, overwrite_exists=True)
+                        self.context.set_intermediate(
+                            "azure_container_storage_perf_tier_op_set",
+                            True,
+                            overwrite_exists=True
+                        )
 
                 # If the extension is already installed,
                 # we expect that the Azure Container Storage
