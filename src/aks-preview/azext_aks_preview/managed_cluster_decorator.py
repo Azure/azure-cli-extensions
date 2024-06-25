@@ -4206,6 +4206,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 )
 
                 if is_ephemeralDisk_nvme_enabled and ephemeral_disk_nvme_perf_tier is not None:
+                    # Adding this intermediate and check to ensure that the below
+                    # message prompt doesn't appear twice when aks-preview extension
+                    # is called from both update_mc_profile_preview and update_mc_profile_default.
                     is_azure_container_storage_perf_tier_op_set = self.context.get_intermediate(
                         "azure_container_storage_perf_tier_op_set",
                         default_value="default",
