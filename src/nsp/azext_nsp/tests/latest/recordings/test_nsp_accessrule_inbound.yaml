@@ -207,7 +207,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_inbound000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule_ip?api-version=2023-07-01-preview
   response:
     body:
-      string: '{"name":"TestNspAccessRule_ip","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_inbound000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule_ip","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Inbound","addressPrefixes":["10.10.0.0/16"],"fullyQualifiedDomainNames":[],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[]}}'
+      string: '{"name":"TestNspAccessRule_ip","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_inbound000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule_ip","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Inbound","addressPrefixes":["10.10.0.0/16"],"serviceTags": [],"fullyQualifiedDomainNames":[],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[]}}'
     headers:
       cache-control:
       - no-cache
@@ -300,7 +300,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_inbound000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule_subscription?api-version=2023-07-01-preview
   response:
     body:
-      string: '{"name":"TestNspAccessRule_subscription","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_inbound000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule_subscription","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Inbound","addressPrefixes":[],"fullyQualifiedDomainNames":[],"subscriptions":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000"}],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[]}}'
+      string: '{"name":"TestNspAccessRule_subscription","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_inbound000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule_subscription","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Inbound","addressPrefixes":[],"serviceTags": [],"fullyQualifiedDomainNames":[],"subscriptions":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000"}],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[]}}'
     headers:
       cache-control:
       - no-cache
@@ -395,7 +395,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_inbound000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule_email?api-version=2023-07-01-preview
   response:
     body:
-      string: '{"name":"TestNspAccessRule_email","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_inbound000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule_email","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"fullyQualifiedDomainNames":[],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":["abc@microsoft.com","bcd@microsoft.com"],"phoneNumbers":[]}}'
+      string: '{"name":"TestNspAccessRule_email","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_inbound000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule_email","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"serviceTags": [],"fullyQualifiedDomainNames":[],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":["abc@microsoft.com","bcd@microsoft.com"],"phoneNumbers":[]}}'
     headers:
       cache-control:
       - no-cache
@@ -488,7 +488,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_inbound000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule_sms?api-version=2023-07-01-preview
   response:
     body:
-      string: '{"name":"TestNspAccessRule_sms","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_inbound000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule_sms","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"fullyQualifiedDomainNames":[],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":["+91
+      string: '{"name":"TestNspAccessRule_sms","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_inbound000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule_sms","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"serviceTags": [],"fullyQualifiedDomainNames":[],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":["+91
         9898989898","+92 9898989898"]}}'
     headers:
       cache-control:

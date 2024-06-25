@@ -207,7 +207,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule?api-version=2023-07-01-preview
   response:
     body:
-      string: '{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"fullyQualifiedDomainNames":["www.abc.com","www.google.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[]}}'
+      string: '{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"serviceTags": [],"fullyQualifiedDomainNames":["www.abc.com","www.google.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[]}}'
     headers:
       cache-control:
       - no-cache
@@ -253,7 +253,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule?api-version=2023-07-01-preview
   response:
     body:
-      string: '{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"fullyQualifiedDomainNames":["www.abc.com","www.google.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[]}}'
+      string: '{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"serviceTags": [],"fullyQualifiedDomainNames":["www.abc.com","www.google.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[]}}'
     headers:
       cache-control:
       - no-cache
@@ -339,7 +339,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule?api-version=2023-07-01-preview
   response:
     body:
-      string: '{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"fullyQualifiedDomainNames":["www.abc.com","www.google.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[]}}'
+      string: '{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"serviceTags": [],"fullyQualifiedDomainNames":["www.abc.com","www.google.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[]}}'
     headers:
       cache-control:
       - no-cache
@@ -366,7 +366,7 @@ interactions:
       message: OK
 - request:
     body: '{"location": "eastus2euap", "name": "TestNspAccessRule", "properties":
-      {"addressPrefixes": [], "direction": "Outbound", "emailAddresses": [], "fullyQualifiedDomainNames":
+      {"addressPrefixes": [], "direction": "Outbound", "emailAddresses": [],"serviceTags": [], "fullyQualifiedDomainNames":
       ["www.abc.com"], "phoneNumbers": [], "subscriptions": []}}'
     headers:
       Accept:
@@ -389,7 +389,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule?api-version=2023-07-01-preview
   response:
     body:
-      string: '{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"fullyQualifiedDomainNames":["www.abc.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[]}}'
+      string: '{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"serviceTags": [], "serviceTags": [],"serviceTags": [],"serviceTags": [],"fullyQualifiedDomainNames":["www.abc.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[]}}'
     headers:
       cache-control:
       - no-cache
@@ -435,7 +435,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule?api-version=2023-07-01-preview
   response:
     body:
-      string: '{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"fullyQualifiedDomainNames":["www.abc.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[]}}'
+      string: '{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"serviceTags": [],"fullyQualifiedDomainNames":["www.abc.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[]}}'
     headers:
       cache-control:
       - no-cache
@@ -479,7 +479,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules?api-version=2023-07-01-preview
   response:
     body:
-      string: '{"nextLink":"","value":[{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"fullyQualifiedDomainNames":["www.abc.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[]}}]}'
+      string: '{"nextLink":"","value":[{"name":"TestNspAccessRule","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_nsp_accessrule_crud000001/providers/Microsoft.Network/networkSecurityPerimeters/TestNetworkSecurityPerimeter/profiles/TestNspProfile/accessRules/TestNspAccessRule","type":"Microsoft.Network/networkSecurityPerimeters/profiles/accessRules","properties":{"provisioningState":"Succeeded","direction":"Outbound","addressPrefixes":[],"serviceTags": [],"fullyQualifiedDomainNames":["www.abc.com"],"subscriptions":[],"networkSecurityPerimeters":[],"emailAddresses":[],"phoneNumbers":[]}}]}'
     headers:
       cache-control:
       - no-cache
