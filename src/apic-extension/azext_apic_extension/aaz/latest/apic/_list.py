@@ -176,6 +176,7 @@ class List(AAZCommand):
             _element.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
+            _element.sku = AAZObjectType()
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -225,6 +226,15 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+
+            sku = cls._schema_on_200.value.Element.sku
+            sku.capacity = AAZIntType()
+            sku.family = AAZStrType()
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
+            sku.size = AAZStrType()
+            sku.tier = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -349,6 +359,7 @@ class List(AAZCommand):
             _element.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
+            _element.sku = AAZObjectType()
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -398,6 +409,15 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+
+            sku = cls._schema_on_200.value.Element.sku
+            sku.capacity = AAZIntType()
+            sku.family = AAZStrType()
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
+            sku.size = AAZStrType()
+            sku.tier = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(

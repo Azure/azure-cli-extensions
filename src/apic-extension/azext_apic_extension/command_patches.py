@@ -46,7 +46,7 @@ from .aaz.latest.apic.metadata import (
     Create as CreateMetadata,
     Export as ExportMetadata
 )
-from .aaz.latest.apic import ImportFromApim
+from .aaz.latest.apic import ImportFromApim, Create as CreateService
 
 from azure.cli.core.aaz._arg import AAZStrArg, AAZListArg
 
@@ -64,6 +64,22 @@ class DefaultWorkspaceParameter:
     def pre_operations(self):
         args = self.ctx.args
         args.workspace_name = "default"
+
+
+# `az apic` commands
+class CreateServiceExtension(CreateService):
+    # pylint: disable=too-few-public-methods
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        # pylint: disable=protected-access
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        # temporary hide sku parameter as SKU has many fields and we needs more discussion on the UX
+        args_schema.sku_name._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.sku_name = "Free"
 
 
 # `az apic api` commands

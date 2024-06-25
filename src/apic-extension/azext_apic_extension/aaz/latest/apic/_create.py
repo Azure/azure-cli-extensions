@@ -96,6 +96,16 @@ class Create(AAZCommand):
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
+
+        # define Arg Group "Sku"
+
+        _args_schema = cls._args_schema
+        _args_schema.sku_name = AAZStrArg(
+            options=["--sku-name"],
+            arg_group="Sku",
+            help="The name of the SKU. E.g. P3. It is typically a letter+number code",
+            default="Free",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -190,6 +200,7 @@ class Create(AAZCommand):
             )
             _builder.set_prop("identity", AAZObjectType, ".identity")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("sku", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             identity = _builder.get(".identity")
@@ -200,6 +211,10 @@ class Create(AAZCommand):
             user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
             if user_assigned_identities is not None:
                 user_assigned_identities.set_elements(AAZObjectType, ".", typ_kwargs={"nullable": True})
+
+            sku = _builder.get(".sku")
+            if sku is not None:
+                sku.set_prop("name", AAZStrType, ".sku_name", typ_kwargs={"flags": {"required": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -238,6 +253,7 @@ class Create(AAZCommand):
             _schema_on_200_201.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
+            _schema_on_200_201.sku = AAZObjectType()
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -287,6 +303,15 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+
+            sku = cls._schema_on_200_201.sku
+            sku.capacity = AAZIntType()
+            sku.family = AAZStrType()
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
+            sku.size = AAZStrType()
+            sku.tier = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

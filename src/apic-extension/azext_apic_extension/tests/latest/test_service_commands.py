@@ -20,7 +20,25 @@ class ServiceCommandsTests(ScenarioTest):
         })
         self.cmd('az apic create -g {rg} --name {name}', checks=[
             self.check('name', '{name}'),
-            self.check('resourceGroup', '{rg}')
+            self.check('resourceGroup', '{rg}'),
+            self.check('sku.name', 'Free')
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
+    def test_create_service_multiple_times(self, resource_group):
+        self.kwargs.update({
+          'name': self.create_random_name(prefix='cli', length=24),
+          'rg': resource_group
+        })
+        self.cmd('az apic create -g {rg} --name {name}', checks=[
+            self.check('name', '{name}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('sku.name', 'Free')
+        ])
+        self.cmd('az apic create -g {rg} --name {name}', checks=[
+            self.check('name', '{name}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('sku.name', 'Free')
         ])
     
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
@@ -34,7 +52,8 @@ class ServiceCommandsTests(ScenarioTest):
             self.check('resourceGroup', '{rg}'),
             self.check('identity.type', 'SystemAssigned'),
             self.check('location', 'westeurope'),
-            self.check('tags.test', 'value')
+            self.check('tags.test', 'value'),
+            self.check('sku.name', 'Free')
         ])
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
@@ -45,7 +64,8 @@ class ServiceCommandsTests(ScenarioTest):
         self.cmd('az apic show -g {rg} -n {s}', checks=[
             self.check('name', '{s}'),
             self.check('resourceGroup', '{rg}'),
-            self.check('dataApiHostname', '{s}.data.eastus.azure-apicenter.ms')
+            self.check('dataApiHostname', '{s}.data.eastus.azure-apicenter.ms'),
+            self.check('sku.name', 'Free')
         ])
 
     @unittest.skip('The Control Plane API has bug')
@@ -64,7 +84,8 @@ class ServiceCommandsTests(ScenarioTest):
     def test_list_service_in_rg(self, service_name):
         self.cmd('az apic list -g {rg}', checks=[
             self.check('length(@)', 1),
-            self.check('@[0].name', service_name)
+            self.check('@[0].name', service_name),
+            self.check('@[0].sku.name', 'Free')
         ])
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)

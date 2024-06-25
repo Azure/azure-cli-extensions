@@ -171,6 +171,7 @@ class Show(AAZCommand):
             _schema_on_200.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
+            _schema_on_200.sku = AAZObjectType()
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -220,6 +221,15 @@ class Show(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+
+            sku = cls._schema_on_200.sku
+            sku.capacity = AAZIntType()
+            sku.family = AAZStrType()
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
+            sku.size = AAZStrType()
+            sku.tier = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
