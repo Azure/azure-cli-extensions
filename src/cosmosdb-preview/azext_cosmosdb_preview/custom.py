@@ -58,7 +58,6 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     CosmosSqlDataTransferDataSourceSink,
     CosmosMongoDataTransferDataSourceSink,
     ServiceResourceCreateUpdateParameters,
-    ServiceResourceCreateUpdateProperties,
     SqlDedicatedGatewayServiceResourceCreateUpdateProperties,
     DataTransferServiceResourceCreateUpdateProperties,
     GraphAPIComputeServiceResourceCreateUpdateProperties,
