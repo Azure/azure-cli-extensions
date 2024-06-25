@@ -23,7 +23,9 @@ from ._constants import (
     CSSC_WORKFLOW_POLICY_REPOSITORY,
     TASK_RUN_STATUS_FAILED,
     TASK_RUN_STATUS_SUCCESS,
-    TASK_RUN_STATUS_RUNNING)
+    TASK_RUN_STATUS_RUNNING,
+    CONTINUOUS_PATCH_WORKFLOW,
+    DESCRIPTION)
 from azure.cli.core.azclierror import AzCLIError
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.command_modules.acr._stream_utils import _get_run_status
@@ -146,9 +148,7 @@ def acr_cssc_dry_run(cmd, registry, config_file_path):
         return
     try:
         file_name = os.path.basename(config_file_path)
-        # config_folder_path = os.path.dirname(os.path.abspath(config_file_path))
         tmp_folder = os.path.join(os.getcwd(), tempfile.mkdtemp(prefix="cli_temp_cssc"))
-        print(f"Temporary directory created at: {tmp_folder}")
         create_temporary_dry_run_file(config_file_path, tmp_folder)
 
         resource_group_name = parse_resource_id(registry.id)[RESOURCE_GROUP]
@@ -199,7 +199,6 @@ def acr_cssc_dry_run(cmd, registry, config_file_path):
 
 def _trigger_task_run(cmd, registry, resource_group, task_name):
     acr_task_registries_client = cf_acr_registries_tasks(cmd.cli_ctx)
-    # check on the task.py file on acr's az cli on how to handle the model for other requests
     request = acr_task_registries_client.models.TaskRunRequest(
         task_id=f"{registry.id}/tasks/{task_name}")
     queued_run = LongRunningOperation(cmd.cli_ctx)(
@@ -307,7 +306,8 @@ def _transform_task_list(tasks):
             "name": task.name,
             "provisioningState": task.provisioning_state,
             "systemData": task.system_data,
-            "cadence": None
+            "cadence": None,
+            "description": CONTINUOUS_PATCH_WORKFLOW[task.name][DESCRIPTION]
         }
 
         # Extract cadence from trigger.timerTriggers if available
