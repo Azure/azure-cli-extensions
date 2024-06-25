@@ -4214,7 +4214,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         default_value="default",
                     )
 
-                    if is_azure_container_storage_perf_tier_op_set  == "default":
+                    if is_azure_container_storage_perf_tier_op_set == "default":
                         msg = (
                             "Changing ephemeralDisk NVMe performance tier may result in a temporary "
                             "interruption to the applications using Azure Container Storage. Do you "

@@ -341,7 +341,7 @@ def perform_disable_azure_container_storage(  # pylint: disable=too-many-stateme
     is_ephemeralDisk_nvme_enabled,
     current_core_value,
     existing_ephemeral_disk_volume_type=CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY,
-    existing_ephemeral_nvme_perf_tier=CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY,
+    existing_ephemeral_nvme_perf_tier=CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD,
     is_called_from_extension=False,
 ):
     # This will be set true only when aks-preview extension is used
@@ -376,8 +376,10 @@ def perform_disable_azure_container_storage(  # pylint: disable=too-many-stateme
         else:
             if is_ephemeralDisk_nvme_enabled:
                 pool_option = CONST_STORAGE_POOL_OPTION_NVME.lower()
+                storage_pool_option = CONST_STORAGE_POOL_OPTION_NVME
             elif is_ephemeralDisk_localssd_enabled:
                 pool_option = CONST_STORAGE_POOL_OPTION_SSD.lower()
+                storage_pool_option = CONST_STORAGE_POOL_OPTION_SSD
 
     # Step 1: Perform validation if accepted by user
     if perform_validation:
