@@ -2,6 +2,7 @@ version: v1.1.0
 alias:
   values:
     ScanReport : os-vulnerability-report_trivy_{{.Values.SOURCE_REPOSITORY}}_{{.Values.SOURCE_IMAGE_TAG}}_$(date "+%Y-%m-%d").json
+    cssc : mcr.microsoft.com/acr/cssc:56f0765
 steps:
   # Step #1: Perform the vulnerability scan
   - id: print-inputs
@@ -11,7 +12,7 @@ steps:
     cmd: bash mkdir ./data
   - id: generate-trivy-report
     cmd: |
-      ghcr.io/aquasecurity/trivy image \
+      cssc trivy image \
       {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} \
       --vuln-type os \
       --ignore-unfixed \
@@ -21,7 +22,7 @@ steps:
   # Step 2: Attach the vulnerability scan report to the image
   - id: upload-trivy-report
     cmd: |
-      ghcr.io/oras-project/oras:v1.1.0 attach \
+      cssc oras attach \
       --artifact-type vulnerabilityScan/report \
       {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} \
       ./data/$ScanReport
@@ -39,12 +40,13 @@ steps:
     cmd: bash ls -l /workspace/data
   
   # Step 3: Patch the image with Copacetic
-  - id: patch-with_copa
+  - id: patch-image
     cmd: |
-      ghcr.io/toddysm/cssc-framework/copacetic:1.0 \
-      {{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} \
-      $ScanReport \
-      {{.Values.SOURCE_IMAGE_TAG}}-patched
+      cssc copa patch \
+      -i "{{.Run.Registry}}/{{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}" \
+      -r ./data/$ScanReport \
+      -t "{{.Values.SOURCE_IMAGE_TAG}}-patched" \
+      --addr tcp://127.0.0.1:8888
     network: host
 
   - id: push-image

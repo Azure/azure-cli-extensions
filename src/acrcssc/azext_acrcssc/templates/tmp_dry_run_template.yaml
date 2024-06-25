@@ -2,6 +2,6 @@ version: v1.1.0
 steps:
   - id: acr-cli-filter
     cmd: |
-        mcr.microsoft.com/acr/acr-cli:0.11 cssc patch --dry-run --filter-policy-file {{.Values.CONFIGPATH}}
+    mcr.microsoft.com/acr/cssc:56f0765 cssc patch --dry-run --filter-policy-file {{.Values.CONFIGPATH}}
     env:
       - ACR_EXPERIMENTAL_CSSC=true
