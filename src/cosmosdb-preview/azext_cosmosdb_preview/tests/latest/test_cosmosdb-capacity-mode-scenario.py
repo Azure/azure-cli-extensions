@@ -15,14 +15,10 @@ class Cosmosdb_previewCapacityModeScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_sql_capacity_mode', location='eastus2')
     def test_cosmosdb_capacity_mode_account_create(self):
-        # col = self.create_random_name(prefix='cli', length=15)
-        # db_name = self.create_random_name(prefix='cli', length=15)
-        # Assumption: There exists a cosmosTest rg.
         self.kwargs.update({
-            'rg': 'abpairg',
-            'acc1': 'capacity-mode-test-38129749818',
-            'acc2': 'capacity-mode-test-38129749819',
-            'acc3': 'capacity-mode-test-38129749820',
+            'acc1': self.create_random_name(prefix='capacity-mode', length=20),
+            'acc2': self.create_random_name(prefix='capacity-mode', length=20),
+            'acc3': self.create_random_name(prefix='capacity-mode', length=20),
             'loc': 'eastus2',
             'tar': '0=1200 1=1200',
             'src': '2'
@@ -48,7 +44,7 @@ class Cosmosdb_previewCapacityModeScenarioTest(ScenarioTest):
         # delete account
         self.cmd('az cosmosdb delete -n {acc2} -g {rg} --yes')
 
-        # create serverless capacity mode account
+        # create default capacity mode account
         self.cmd('az cosmosdb create -n {acc3} -g {rg} --locations regionName="{loc}"')
         self.cmd('az cosmosdb show -n {acc3} -g {rg}', checks=[
             self.check('capacityMode', "Provisioned"),
@@ -65,8 +61,7 @@ class Cosmosdb_previewCapacityModeScenarioTest(ScenarioTest):
         # db_name = self.create_random_name(prefix='cli', length=15)
         # Assumption: There exists a cosmosTest rg.
         self.kwargs.update({
-            'rg': 'abpairg',
-            'acc1': 'capacity-mode-test-38129749821',
+            'acc1': self.create_random_name(prefix='capacity-mode', length=20),
             'loc': 'eastus2',
             'tar': '0=1200 1=1200',
             'src': '2'
