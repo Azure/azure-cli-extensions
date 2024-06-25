@@ -297,6 +297,43 @@ def restore_grafana(cmd, grafana_name, archive_file, components=None, remap_data
             destination_datasources=data_sources)
 
 
+def migrate_grafana(cmd, grafana_name, source_instance_ip, source_instance_token, components=None, directory=None, folders_to_include=None,
+                   folders_to_exclude=None, resource_group_name=None):
+    import os
+    from pathlib import Path
+    from .backup import backup
+
+    headers_src = {
+        "content-type": "application/json",
+        "authorization": "Bearer " + source_instance_token
+    }
+
+    archive_file = backup(grafana_name=grafana_name,
+                          grafana_url=source_instance_ip,
+                          backup_dir=directory or os.path.join(Path.cwd(), "_backup"),
+                          components=components,
+                          http_headers=headers_src,
+                          folders_to_include=folders_to_include,
+                          folders_to_exclude=folders_to_exclude)
+
+    from .restore import restore
+    _health_endpoint_reachable(cmd, grafana_name, resource_group_name=resource_group_name)
+
+    creds_dest = _get_data_plane_creds(cmd, api_key_or_token=None, subscription=None)
+    headers_dest = {
+        "content-type": "application/json",
+        "authorization": "Bearer " + creds_dest[1]
+    }
+    data_sources = list_data_sources(cmd, grafana_name, resource_group_name,
+                                        subscription=None)
+
+    restore(grafana_url=_get_grafana_endpoint(cmd, resource_group_name, grafana_name, subscription=None),
+            archive_file=archive_file,
+            components=components,
+            http_headers=headers_dest,
+            destination_datasources=data_sources)
+
+
 def sync_dashboard(cmd, source, destination, folders_to_include=None, folders_to_exclude=None,
                    dashboards_to_include=None, dashboards_to_exclude=None, dry_run=None):
     from .sync import sync

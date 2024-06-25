@@ -46,7 +46,7 @@ def backup(grafana_name, grafana_url, backup_dir, components, http_headers, **kw
         for backup_function in backup_functions.values():
             backup_function(grafana_url, backup_dir, timestamp, http_headers, **kwargs)
 
-    _archive(grafana_name, backup_dir, timestamp)
+    return _archive(grafana_name, backup_dir, timestamp)
 
 
 def _archive(grafana_name, backup_dir, timestamp):
@@ -71,6 +71,8 @@ def _archive(grafana_name, backup_dir, timestamp):
                 shutil.rmtree(os.path.abspath(os.path.join(file_path, os.pardir)))
     tar.close()
     logger.warning('Created archive at: %s', archive_file)
+
+    return archive_file
 
 
 # Save dashboards
