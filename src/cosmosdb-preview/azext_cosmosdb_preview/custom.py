@@ -642,11 +642,11 @@ def cli_cosmosdb_service_create(client,
                                 instance_count=1,
                                 instance_size="Cosmos.D4s",
                                 dedicated_gateway_type=DedicatedGatewayType.INTEGRATED_CACHE.value):
-        
+
     properties = get_service_properties(service_kind=service_kind,
                                         instance_size=instance_size,
                                         instance_count=instance_count)
-    
+
     if (service_kind == ServiceType.SQL_DEDICATED_GATEWAY.value):
         properties.dedicated_gateway_type = dedicated_gateway_type
 
@@ -664,7 +664,7 @@ def cli_cosmosdb_service_update(client,
                                 service_kind,
                                 instance_count,
                                 instance_size=None):
-    
+
     properties = get_service_properties(service_kind=service_kind,
                                         instance_size=instance_size,
                                         instance_count=instance_count)
@@ -675,24 +675,26 @@ def cli_cosmosdb_service_update(client,
 
     return client.begin_create(resource_group_name, account_name, service_name, create_update_parameters=params)
 
+
 def get_service_properties(service_kind,
-                                instance_count=1,
-                                instance_size="Cosmos.D4s"):
-    
+                           instance_count=1,
+                           instance_size="Cosmos.D4s"):
+
     if (service_kind == ServiceType.SQL_DEDICATED_GATEWAY.value):
         properties = SqlDedicatedGatewayServiceResourceCreateUpdateProperties(instance_count=instance_count,
-                                                                        instance_size=instance_size)
+                                                                              instance_size=instance_size)
     elif (service_kind == ServiceType.DATA_TRANSFER.value):
         properties = DataTransferServiceResourceCreateUpdateProperties(instance_count=instance_count,
-                                                                        instance_size=instance_size)
+                                                                       instance_size=instance_size)
     elif (service_kind == ServiceType.MATERIALIZED_VIEWS_BUILDER.value):
         properties = MaterializedViewsBuilderServiceResourceCreateUpdateProperties(instance_count=instance_count,
-                                                                        instance_size=instance_size)
+                                                                                   instance_size=instance_size)
     else:
         properties = GraphAPIComputeServiceResourceCreateUpdateProperties(instance_count=instance_count,
-                                                                        instance_size=instance_size)
-        
+                                                                          instance_size=instance_size)
+
     return properties
+
 
 def cli_cosmosdb_mongo_role_definition_create(client,
                                               resource_group_name,
