@@ -4,6 +4,13 @@ Release History
 ===============
 ===============
 
+##### 0.3.1
+++++++
+No new commands added.
+
+Existing commands updated:
+* perimeter profile access-rule: create (added servicetag based rules).
+
 ##### 0.3.0
 ++++++
 No new commands added or updated.
