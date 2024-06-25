@@ -20,6 +20,9 @@ class Create(AAZCommand):
     :example: Create IP based access rule
         az network perimeter profile access-rule create -n MyAccessRule --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup --address-prefixes "[10.10.0.0/16]"
 
+    :example: Create NSP based access rule
+        az network perimeter profile access-rule create -n MyAccessRule --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup --nsp "[{id:<NSP_ARM_ID>}]"
+
     :example: Create FQDN based access rule
         az network perimeter profile access-rule create -n MyAccessRule --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup --fqdn "['www.abc.com', 'www.google.com']" --direction "Outbound"
 
@@ -27,7 +30,7 @@ class Create(AAZCommand):
         az network perimeter profile access-rule create -n MyAccessRule --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup --subscriptions [0].id="<SubscriptionID1>" [1].id="<SubscriptionID2>"
 
     :example: Create ServiceTags based access rule
-        az network perimeter profile access-rule create -n MyAccessRule --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup --service-tags  "['st1'']" direction "Inbound"
+        az network perimeter profile access-rule create -n MyAccessRule --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup --service-tags  [st1,st2]
     """
 
     _aaz_info = {
