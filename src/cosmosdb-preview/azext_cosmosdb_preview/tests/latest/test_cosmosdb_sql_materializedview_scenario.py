@@ -21,9 +21,8 @@ class Cosmosdb_previewMaterialiedviewScenarioTest(ScenarioTest):
         mvDefenitionFilePath = os.path.join(TEST_DIR, mvDefinitionFile).replace("\\", "\\\\")
         print('Creating Materializedview enabled account')
         db_name = self.create_random_name(prefix='cli', length=15)
-        # Assumption: There exists a cosmosTest rg.
+        
         self.kwargs.update({
-            'rg': 'abpai-resources',
             'acc': 'mv-test-38129749813',
             'db_name': db_name,
             'col': src,

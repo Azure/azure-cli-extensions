@@ -8,6 +8,9 @@
 
 from ._models_py3 import ARMProxyResource
 from ._models_py3 import ARMResourceProperties
+from ._models_py3 import AccessRule
+from ._models_py3 import AccessRuleProperties
+from ._models_py3 import AccessRulePropertiesSubscriptionsItem
 from ._models_py3 import AccountKeyMetadata
 from ._models_py3 import AnalyticalStorageConfiguration
 from ._models_py3 import ApiProperties
@@ -24,6 +27,7 @@ from ._models_py3 import BackupSchedule
 from ._models_py3 import BaseCosmosDataTransferDataSourceSink
 from ._models_py3 import Capability
 from ._models_py3 import Capacity
+from ._models_py3 import CapacityModeChangeTransitionState
 from ._models_py3 import CassandraClusterDataCenterNodeItem
 from ._models_py3 import CassandraClusterPublicStatus
 from ._models_py3 import CassandraClusterPublicStatusDataCentersItem
@@ -49,8 +53,6 @@ from ._models_py3 import CassandraViewGetResults
 from ._models_py3 import CassandraViewListResult
 from ._models_py3 import CassandraViewResource
 from ._models_py3 import Certificate
-from ._models_py3 import CheckNameAvailabilityRequest
-from ._models_py3 import CheckNameAvailabilityResponse
 from ._models_py3 import ClientEncryptionIncludedPath
 from ._models_py3 import ClientEncryptionKeyCreateUpdateParameters
 from ._models_py3 import ClientEncryptionKeyGetPropertiesResource
@@ -69,7 +71,6 @@ from ._models_py3 import CompositePath
 from ._models_py3 import ComputedProperty
 from ._models_py3 import ConflictResolutionPolicy
 from ._models_py3 import ConnectionError
-from ._models_py3 import ConnectionString
 from ._models_py3 import ConsistencyPolicy
 from ._models_py3 import ContainerPartitionKey
 from ._models_py3 import ContinuousBackupInformation
@@ -90,6 +91,7 @@ from ._models_py3 import DataTransferJobGetResults
 from ._models_py3 import DataTransferJobProperties
 from ._models_py3 import DataTransferRegionalServiceResource
 from ._models_py3 import DataTransferServiceResource
+from ._models_py3 import DataTransferServiceResourceCreateUpdateProperties
 from ._models_py3 import DataTransferServiceResourceProperties
 from ._models_py3 import DatabaseAccountConnectionString
 from ._models_py3 import DatabaseAccountCreateUpdateParameters
@@ -111,10 +113,9 @@ from ._models_py3 import ExcludedPath
 from ._models_py3 import ExtendedResourceProperties
 from ._models_py3 import FailoverPolicies
 from ._models_py3 import FailoverPolicy
-from ._models_py3 import FirewallRule
-from ._models_py3 import FirewallRuleListResult
 from ._models_py3 import GraphAPIComputeRegionalServiceResource
 from ._models_py3 import GraphAPIComputeServiceResource
+from ._models_py3 import GraphAPIComputeServiceResourceCreateUpdateProperties
 from ._models_py3 import GraphAPIComputeServiceResourceProperties
 from ._models_py3 import GraphResource
 from ._models_py3 import GraphResourceCreateUpdateParameters
@@ -143,7 +144,6 @@ from ._models_py3 import KeyWrapMetadata
 from ._models_py3 import ListBackups
 from ._models_py3 import ListClusters
 from ._models_py3 import ListCommands
-from ._models_py3 import ListConnectionStringsResult
 from ._models_py3 import ListDataCenters
 from ._models_py3 import Location
 from ._models_py3 import LocationGetResult
@@ -157,6 +157,7 @@ from ._models_py3 import ManagedServiceIdentityUserAssignedIdentity
 from ._models_py3 import MaterializedViewDefinition
 from ._models_py3 import MaterializedViewsBuilderRegionalServiceResource
 from ._models_py3 import MaterializedViewsBuilderServiceResource
+from ._models_py3 import MaterializedViewsBuilderServiceResourceCreateUpdateProperties
 from ._models_py3 import MaterializedViewsBuilderServiceResourceProperties
 from ._models_py3 import MergeParameters
 from ._models_py3 import Metric
@@ -166,10 +167,6 @@ from ._models_py3 import MetricDefinitionsListResult
 from ._models_py3 import MetricListResult
 from ._models_py3 import MetricName
 from ._models_py3 import MetricValue
-from ._models_py3 import MongoCluster
-from ._models_py3 import MongoClusterListResult
-from ._models_py3 import MongoClusterRestoreParameters
-from ._models_py3 import MongoClusterUpdate
 from ._models_py3 import MongoDBCollectionCreateUpdateParameters
 from ._models_py3 import MongoDBCollectionGetPropertiesOptions
 from ._models_py3 import MongoDBCollectionGetPropertiesResource
@@ -191,8 +188,11 @@ from ._models_py3 import MongoRoleDefinitionListResult
 from ._models_py3 import MongoUserDefinitionCreateUpdateParameters
 from ._models_py3 import MongoUserDefinitionGetResults
 from ._models_py3 import MongoUserDefinitionListResult
-from ._models_py3 import NodeGroupProperties
-from ._models_py3 import NodeGroupSpec
+from ._models_py3 import NetworkSecurityPerimeter
+from ._models_py3 import NetworkSecurityPerimeterConfiguration
+from ._models_py3 import NetworkSecurityPerimeterConfigurationListResult
+from ._models_py3 import NetworkSecurityPerimeterConfigurationProperties
+from ._models_py3 import NetworkSecurityProfile
 from ._models_py3 import NotebookWorkspace
 from ._models_py3 import NotebookWorkspaceConnectionInfoResult
 from ._models_py3 import NotebookWorkspaceCreateUpdateParameters
@@ -226,14 +226,15 @@ from ._models_py3 import PrivateLinkResourceListResult
 from ._models_py3 import PrivateLinkServiceConnectionStateProperty
 from ._models_py3 import Privilege
 from ._models_py3 import PrivilegeResource
+from ._models_py3 import ProvisioningIssue
+from ._models_py3 import ProvisioningIssueProperties
 from ._models_py3 import ProxyResource
-from ._models_py3 import ProxyResourceAutoGenerated
 from ._models_py3 import RedistributeThroughputParameters
 from ._models_py3 import RedistributeThroughputPropertiesResource
 from ._models_py3 import RegionForOnlineOffline
 from ._models_py3 import RegionalServiceResource
 from ._models_py3 import Resource
-from ._models_py3 import ResourceAutoGenerated
+from ._models_py3 import ResourceAssociation
 from ._models_py3 import ResourceRestoreParameters
 from ._models_py3 import RestorableDatabaseAccountGetResult
 from ._models_py3 import RestorableDatabaseAccountsListResult
@@ -277,6 +278,7 @@ from ._models_py3 import Role
 from ._models_py3 import SeedNode
 from ._models_py3 import ServiceResource
 from ._models_py3 import ServiceResourceCreateUpdateParameters
+from ._models_py3 import ServiceResourceCreateUpdateProperties
 from ._models_py3 import ServiceResourceListResult
 from ._models_py3 import ServiceResourceProperties
 from ._models_py3 import SpatialSpec
@@ -294,6 +296,7 @@ from ._models_py3 import SqlDatabaseListResult
 from ._models_py3 import SqlDatabaseResource
 from ._models_py3 import SqlDedicatedGatewayRegionalServiceResource
 from ._models_py3 import SqlDedicatedGatewayServiceResource
+from ._models_py3 import SqlDedicatedGatewayServiceResourceCreateUpdateProperties
 from ._models_py3 import SqlDedicatedGatewayServiceResourceProperties
 from ._models_py3 import SqlRoleAssignmentCreateUpdateParameters
 from ._models_py3 import SqlRoleAssignmentGetResults
@@ -341,6 +344,7 @@ from ._models_py3 import Usage
 from ._models_py3 import UsagesResult
 from ._models_py3 import VirtualNetworkRule
 
+from ._cosmos_db_management_client_enums import AccessRuleDirection
 from ._cosmos_db_management_client_enums import AnalyticalStorageSchemaType
 from ._cosmos_db_management_client_enums import ApiType
 from ._cosmos_db_management_client_enums import AuthenticationMethod
@@ -350,7 +354,8 @@ from ._cosmos_db_management_client_enums import BackupPolicyMigrationStatus
 from ._cosmos_db_management_client_enums import BackupPolicyType
 from ._cosmos_db_management_client_enums import BackupState
 from ._cosmos_db_management_client_enums import BackupStorageRedundancy
-from ._cosmos_db_management_client_enums import CheckNameAvailabilityReason
+from ._cosmos_db_management_client_enums import CapacityMode
+from ._cosmos_db_management_client_enums import CapacityModeTransitionStatus
 from ._cosmos_db_management_client_enums import ClusterType
 from ._cosmos_db_management_client_enums import CommandStatus
 from ._cosmos_db_management_client_enums import CompositePathSortOrder
@@ -364,28 +369,29 @@ from ._cosmos_db_management_client_enums import DataTransferComponent
 from ._cosmos_db_management_client_enums import DataTransferJobMode
 from ._cosmos_db_management_client_enums import DataType
 from ._cosmos_db_management_client_enums import DatabaseAccountKind
+from ._cosmos_db_management_client_enums import DedicatedGatewayType
 from ._cosmos_db_management_client_enums import DefaultConsistencyLevel
 from ._cosmos_db_management_client_enums import DefaultPriorityLevel
 from ._cosmos_db_management_client_enums import EnableFullTextQuery
 from ._cosmos_db_management_client_enums import IndexKind
 from ._cosmos_db_management_client_enums import IndexingMode
+from ._cosmos_db_management_client_enums import IssueType
 from ._cosmos_db_management_client_enums import KeyKind
 from ._cosmos_db_management_client_enums import Kind
 from ._cosmos_db_management_client_enums import ManagedCassandraProvisioningState
 from ._cosmos_db_management_client_enums import ManagedCassandraResourceIdentityType
 from ._cosmos_db_management_client_enums import MinimalTlsVersion
-from ._cosmos_db_management_client_enums import MongoClusterStatus
 from ._cosmos_db_management_client_enums import MongoRoleDefinitionType
 from ._cosmos_db_management_client_enums import NetworkAclBypass
-from ._cosmos_db_management_client_enums import NodeKind
+from ._cosmos_db_management_client_enums import NetworkSecurityPerimeterConfigurationProvisioningState
 from ._cosmos_db_management_client_enums import NodeState
 from ._cosmos_db_management_client_enums import NodeStatus
 from ._cosmos_db_management_client_enums import NotebookWorkspaceName
 from ._cosmos_db_management_client_enums import OperationType
 from ._cosmos_db_management_client_enums import PartitionKind
 from ._cosmos_db_management_client_enums import PrimaryAggregationType
-from ._cosmos_db_management_client_enums import ProvisioningState
 from ._cosmos_db_management_client_enums import PublicNetworkAccess
+from ._cosmos_db_management_client_enums import ResourceAssociationAccessMode
 from ._cosmos_db_management_client_enums import ResourceIdentityType
 from ._cosmos_db_management_client_enums import RestoreMode
 from ._cosmos_db_management_client_enums import RoleDefinitionType
@@ -394,6 +400,7 @@ from ._cosmos_db_management_client_enums import ServerVersion
 from ._cosmos_db_management_client_enums import ServiceSize
 from ._cosmos_db_management_client_enums import ServiceStatus
 from ._cosmos_db_management_client_enums import ServiceType
+from ._cosmos_db_management_client_enums import Severity
 from ._cosmos_db_management_client_enums import SpatialType
 from ._cosmos_db_management_client_enums import Status
 from ._cosmos_db_management_client_enums import ThroughputPolicyType
@@ -408,6 +415,9 @@ from ._patch import patch_sdk as _patch_sdk
 __all__ = [
     "ARMProxyResource",
     "ARMResourceProperties",
+    "AccessRule",
+    "AccessRuleProperties",
+    "AccessRulePropertiesSubscriptionsItem",
     "AccountKeyMetadata",
     "AnalyticalStorageConfiguration",
     "ApiProperties",
@@ -424,6 +434,7 @@ __all__ = [
     "BaseCosmosDataTransferDataSourceSink",
     "Capability",
     "Capacity",
+    "CapacityModeChangeTransitionState",
     "CassandraClusterDataCenterNodeItem",
     "CassandraClusterPublicStatus",
     "CassandraClusterPublicStatusDataCentersItem",
@@ -449,8 +460,6 @@ __all__ = [
     "CassandraViewListResult",
     "CassandraViewResource",
     "Certificate",
-    "CheckNameAvailabilityRequest",
-    "CheckNameAvailabilityResponse",
     "ClientEncryptionIncludedPath",
     "ClientEncryptionKeyCreateUpdateParameters",
     "ClientEncryptionKeyGetPropertiesResource",
@@ -469,7 +478,6 @@ __all__ = [
     "ComputedProperty",
     "ConflictResolutionPolicy",
     "ConnectionError",
-    "ConnectionString",
     "ConsistencyPolicy",
     "ContainerPartitionKey",
     "ContinuousBackupInformation",
@@ -490,6 +498,7 @@ __all__ = [
     "DataTransferJobProperties",
     "DataTransferRegionalServiceResource",
     "DataTransferServiceResource",
+    "DataTransferServiceResourceCreateUpdateProperties",
     "DataTransferServiceResourceProperties",
     "DatabaseAccountConnectionString",
     "DatabaseAccountCreateUpdateParameters",
@@ -511,10 +520,9 @@ __all__ = [
     "ExtendedResourceProperties",
     "FailoverPolicies",
     "FailoverPolicy",
-    "FirewallRule",
-    "FirewallRuleListResult",
     "GraphAPIComputeRegionalServiceResource",
     "GraphAPIComputeServiceResource",
+    "GraphAPIComputeServiceResourceCreateUpdateProperties",
     "GraphAPIComputeServiceResourceProperties",
     "GraphResource",
     "GraphResourceCreateUpdateParameters",
@@ -543,7 +551,6 @@ __all__ = [
     "ListBackups",
     "ListClusters",
     "ListCommands",
-    "ListConnectionStringsResult",
     "ListDataCenters",
     "Location",
     "LocationGetResult",
@@ -557,6 +564,7 @@ __all__ = [
     "MaterializedViewDefinition",
     "MaterializedViewsBuilderRegionalServiceResource",
     "MaterializedViewsBuilderServiceResource",
+    "MaterializedViewsBuilderServiceResourceCreateUpdateProperties",
     "MaterializedViewsBuilderServiceResourceProperties",
     "MergeParameters",
     "Metric",
@@ -566,10 +574,6 @@ __all__ = [
     "MetricListResult",
     "MetricName",
     "MetricValue",
-    "MongoCluster",
-    "MongoClusterListResult",
-    "MongoClusterRestoreParameters",
-    "MongoClusterUpdate",
     "MongoDBCollectionCreateUpdateParameters",
     "MongoDBCollectionGetPropertiesOptions",
     "MongoDBCollectionGetPropertiesResource",
@@ -591,8 +595,11 @@ __all__ = [
     "MongoUserDefinitionCreateUpdateParameters",
     "MongoUserDefinitionGetResults",
     "MongoUserDefinitionListResult",
-    "NodeGroupProperties",
-    "NodeGroupSpec",
+    "NetworkSecurityPerimeter",
+    "NetworkSecurityPerimeterConfiguration",
+    "NetworkSecurityPerimeterConfigurationListResult",
+    "NetworkSecurityPerimeterConfigurationProperties",
+    "NetworkSecurityProfile",
     "NotebookWorkspace",
     "NotebookWorkspaceConnectionInfoResult",
     "NotebookWorkspaceCreateUpdateParameters",
@@ -626,14 +633,15 @@ __all__ = [
     "PrivateLinkServiceConnectionStateProperty",
     "Privilege",
     "PrivilegeResource",
+    "ProvisioningIssue",
+    "ProvisioningIssueProperties",
     "ProxyResource",
-    "ProxyResourceAutoGenerated",
     "RedistributeThroughputParameters",
     "RedistributeThroughputPropertiesResource",
     "RegionForOnlineOffline",
     "RegionalServiceResource",
     "Resource",
-    "ResourceAutoGenerated",
+    "ResourceAssociation",
     "ResourceRestoreParameters",
     "RestorableDatabaseAccountGetResult",
     "RestorableDatabaseAccountsListResult",
@@ -677,6 +685,7 @@ __all__ = [
     "SeedNode",
     "ServiceResource",
     "ServiceResourceCreateUpdateParameters",
+    "ServiceResourceCreateUpdateProperties",
     "ServiceResourceListResult",
     "ServiceResourceProperties",
     "SpatialSpec",
@@ -694,6 +703,7 @@ __all__ = [
     "SqlDatabaseResource",
     "SqlDedicatedGatewayRegionalServiceResource",
     "SqlDedicatedGatewayServiceResource",
+    "SqlDedicatedGatewayServiceResourceCreateUpdateProperties",
     "SqlDedicatedGatewayServiceResourceProperties",
     "SqlRoleAssignmentCreateUpdateParameters",
     "SqlRoleAssignmentGetResults",
@@ -740,6 +750,7 @@ __all__ = [
     "Usage",
     "UsagesResult",
     "VirtualNetworkRule",
+    "AccessRuleDirection",
     "AnalyticalStorageSchemaType",
     "ApiType",
     "AuthenticationMethod",
@@ -749,7 +760,8 @@ __all__ = [
     "BackupPolicyType",
     "BackupState",
     "BackupStorageRedundancy",
-    "CheckNameAvailabilityReason",
+    "CapacityMode",
+    "CapacityModeTransitionStatus",
     "ClusterType",
     "CommandStatus",
     "CompositePathSortOrder",
@@ -763,28 +775,29 @@ __all__ = [
     "DataTransferJobMode",
     "DataType",
     "DatabaseAccountKind",
+    "DedicatedGatewayType",
     "DefaultConsistencyLevel",
     "DefaultPriorityLevel",
     "EnableFullTextQuery",
     "IndexKind",
     "IndexingMode",
+    "IssueType",
     "KeyKind",
     "Kind",
     "ManagedCassandraProvisioningState",
     "ManagedCassandraResourceIdentityType",
     "MinimalTlsVersion",
-    "MongoClusterStatus",
     "MongoRoleDefinitionType",
     "NetworkAclBypass",
-    "NodeKind",
+    "NetworkSecurityPerimeterConfigurationProvisioningState",
     "NodeState",
     "NodeStatus",
     "NotebookWorkspaceName",
     "OperationType",
     "PartitionKind",
     "PrimaryAggregationType",
-    "ProvisioningState",
     "PublicNetworkAccess",
+    "ResourceAssociationAccessMode",
     "ResourceIdentityType",
     "RestoreMode",
     "RoleDefinitionType",
@@ -793,6 +806,7 @@ __all__ = [
     "ServiceSize",
     "ServiceStatus",
     "ServiceType",
+    "Severity",
     "SpatialType",
     "Status",
     "ThroughputPolicyType",
