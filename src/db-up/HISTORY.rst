@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.0.0b1 (2024-06-12)
+* Fix typos in the examples of commands az mysql up, az postgres up, and az sql up
+
 0.2.9 (2023-08-01)
 ++++++++++++++++++
 * Bump `psycopg2-binary` to 2.9.6 to support Python 3.11

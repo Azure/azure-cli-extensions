@@ -8,14 +8,15 @@ from typing import Dict, Any
 from urllib.parse import urlparse
 
 from azure.cli.core.azclierror import (
-    RequiredArgumentMissingError, ValidationError)
+    RequiredArgumentMissingError, ValidationError, InvalidArgumentValueError)
 from azure.cli.command_modules.containerapp.containerapp_job_decorator import ContainerAppJobCreateDecorator, \
     ContainerAppJobDecorator
 from azure.cli.command_modules.containerapp._utils import safe_get, _convert_object_from_snake_to_camel_case, \
     _object_to_dict, _remove_additional_attributes, _remove_readonly_attributes, clean_null_values, \
     _populate_secret_values, _add_or_update_tags, ensure_workload_profile_supported, _add_or_update_env_vars, \
     parse_env_var_flags, _remove_env_vars, _get_acr_cred, store_as_secret_and_return_secret_ref, \
-    parse_metadata_flags, parse_auth_flags, safe_set
+    parse_metadata_flags, parse_auth_flags, safe_set, _ensure_identity_resource_id
+from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.commands import AzCliCommand
 from azure.core.exceptions import DeserializationError, ResourceNotFoundError
 
@@ -328,7 +329,7 @@ class ContainerAppJobUpdateDecorator(ContainerAppJobDecorator):
                     if self.get_argument_parallelism():
                         event_trigger_config_def["parallelism"] = self.get_argument_parallelism()
                     # Scale
-                    if "scale" in event_trigger_config_def["scale"]:
+                    if "scale" not in event_trigger_config_def:
                         event_trigger_config_def["scale"] = {}
                     if self.get_argument_min_executions() is not None:
                         event_trigger_config_def["scale"]["minExecutions"] = self.get_argument_min_executions()
@@ -502,12 +503,24 @@ class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
     def construct_payload(self):
         super().construct_payload()
         self.set_up_extended_location()
+        if self.get_argument_scale_rule_identity():
+            scaleRules = safe_get(self.containerappjob_def, "properties", "configuration", "eventTriggerConfig", "scale", "rules", default=[])
+            if scaleRules and len(scaleRules) > 0:
+                identity = self.get_argument_scale_rule_identity().lower()
+                if identity != "system":
+                    subscription_id = get_subscription_id(self.cmd.cli_ctx)
+                    identity = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), identity)
+                self.containerappjob_def["properties"]["configuration"]["eventTriggerConfig"]["scale"]["rules"][0]["identity"] = identity
 
     def validate_arguments(self):
         super().validate_arguments()
         if self.get_argument_yaml() is None:
             if self.get_argument_trigger_type() is None:
                 raise RequiredArgumentMissingError('Usage error: --trigger-type is required')
+        if self.get_argument_scale_rule_type() and self.get_argument_scale_rule_identity():
+            scale_rule_type = self.get_argument_scale_rule_type().lower()
+            if scale_rule_type == "http" or scale_rule_type == "tcp":
+                raise InvalidArgumentValueError("--scale-rule-identity cannot be set when --scale-rule-type is 'http' or 'tcp'")
 
     def set_up_extended_location(self):
         if self.get_argument_environment_type() == CONNECTED_ENVIRONMENT_TYPE:
@@ -552,6 +565,9 @@ class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
     def get_argument_environment_type(self):
         return self.get_param("environment_type")
 
+    def get_argument_scale_rule_identity(self):
+        return self.get_param("scale_rule_identity")
+
     def set_argument_managed_env(self, managed_env):
         self.set_param("managed_env", managed_env)
 
@@ -563,3 +579,35 @@ class ContainerAppJobPreviewUpdateDecorator(ContainerAppJobUpdateDecorator):
     # pylint: disable=useless-super-delegation
     def construct_payload(self):
         super().construct_payload()
+
+    def validate_arguments(self):
+        super().validate_arguments()
+        if self.get_argument_scale_rule_type() and self.get_argument_scale_rule_identity():
+            scale_rule_type = self.get_argument_scale_rule_type().lower()
+            if scale_rule_type == "http" or scale_rule_type == "tcp":
+                raise InvalidArgumentValueError("--scale-rule-identity cannot be set when --scale-rule-type is 'http' or 'tcp'")
+
+    def set_up_trigger_configurations(self):
+        super().set_up_trigger_configurations()
+        identity = self.get_argument_scale_rule_identity()
+        if identity:
+            trigger_type = safe_get(self.containerappjob_def, "properties", "configuration", "triggerType")
+            if trigger_type == "Event":
+                existing_rules = safe_get(self.containerappjob_def, "properties", "configuration", "eventTriggerConfig", "scale", "rules", default=[])
+                if existing_rules and len(existing_rules) > 0:
+                    identity = self.get_argument_scale_rule_identity().lower()
+                    if identity != "system":
+                        subscription_id = get_subscription_id(self.cmd.cli_ctx)
+                        identity = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), identity)
+                    for rule in existing_rules:
+                        if rule["name"] == self.get_argument_scale_rule_name():
+                            rule["identity"] = identity
+                            break
+                    safe_set(self.new_containerappjob, "properties", "configuration", "eventTriggerConfig", "scale", "rules", value=existing_rules)
+
+    def should_update_trigger_configurations(self):
+        return super().should_update_trigger_configurations() \
+            or self.get_argument_scale_rule_identity()
+
+    def get_argument_scale_rule_identity(self):
+        return self.get_param("scale_rule_identity")

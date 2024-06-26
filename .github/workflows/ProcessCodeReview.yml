@@ -1,0 +1,115 @@
+name: Auto Review PR 
+
+on:
+  pull_request_target:
+      types: [opened, synchronize]
+      branches:
+        - main
+
+permissions: {}
+
+jobs:
+  pr-code-review:
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-code-review') }}
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+      contents: read
+    steps:
+      - name: Check Init Event
+        env:
+           action: ${{ toJSON(github.event.action) }}
+           label: ${{ toJSON(github.event.label) }}
+        run: |
+          echo start review module changed
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v3
+        with:
+           python-version: "3.11"
+      - name: Checkout CLI extension repo
+        uses: actions/checkout@master
+        with:
+          fetch-depth: 0 # checkout all branches
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}  # checkout pull request branch
+      - name: Show workdirectory after site cloned
+        run: |
+           pwd
+           ls
+      - name: Get Diff Modules
+        env:
+          bash_sha: ${{ github.event.pull_request.base.sha }}
+          base_branch: ${{ github.event.pull_request.base.ref }}
+          base_branch_pre: "upstream"
+          diff_sha: ${{ github.event.pull_request.head.sha }}
+          diff_branch: ${{ github.event.pull_request.head.ref }}
+          repo_full_name: ${{ github.event.pull_request.head.repo.full_name }}
+        run: |
+            set -x
+            git --version
+            git log --oneline | head -n 30
+            git branch -a
+            git fetch https://github.com/Azure/azure-cli-extensions.git "$base_branch":"$base_branch_pre"/"$base_branch"
+            git checkout "$base_branch_pre"/"$base_branch"
+            git log --oneline | head -n 30
+            git checkout "$diff_branch"
+            git log --oneline | head -n 30
+            git --no-pager diff --name-only --diff-filter=ACMRT "$base_branch_pre"/"$base_branch"..."$diff_branch" > changed_files
+            cat changed_files
+            echo "changed_module_list=$(cat changed_files | grep azext_ | awk -F"azext_" '{print $1}'| awk -F"/" '{print $2}' | sort | uniq | xargs)" >> $GITHUB_ENV
+      - name: Display Diff Modules
+        run: |
+            for mod in "$changed_module_list"
+            do
+              echo changed module: "${mod}"
+            done
+      - name: Check whether aaz-related Module
+        id: check_if_aaz_used
+        env:
+          pr_label_list: ${{ toJson(github.event.pull_request.labels.*.name) }}
+          result_path: "./review_result"
+          output_file: "is_aaz_check.txt"
+          survey_comment_file: "aaz_survey_comment.txt"
+          base_branch: ${{ github.event.pull_request.base.ref }}
+          base_branch_pre: "upstream"
+        run: |
+           set -ev
+           mkdir ${result_path}
+           git checkout "$base_branch_pre"/"$base_branch" -- scripts
+           python scripts/ci/codegen_cal.py --job check
+           ls ${result_path}
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-code-output
+          path: |
+            review_result
+          retention-days: 1
+  action-on-output:
+    needs: pr-code-review
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Download code review result
+        uses: actions/download-artifact@v4
+        with:
+          name: review-code-output
+      - name: Show workdirectory after result downloaded
+        run: |
+           pwd
+           ls
+      - name: Check comment file existence
+        id: check_survey_comment_file
+        uses: andstor/file-existence-action@v3
+        with:
+          files: "./aaz_survey_comment.txt"
+      - name: Comment survey on the pull request
+        if: steps.check_survey_comment_file.outputs.files_exists == 'true'
+        uses: mshick/add-pr-comment@v2
+        with:
+           repo-token: ${{ secrets.GITHUB_TOKEN }}
+           message-id: aazSurveyCommentBot
+           message-path: |
+            aaz_survey_comment.txt  

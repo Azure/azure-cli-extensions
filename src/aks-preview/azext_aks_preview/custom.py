@@ -639,6 +639,8 @@ def aks_create(
     storage_pool_size=None,
     storage_pool_sku=None,
     storage_pool_option=None,
+    ephemeral_disk_volume_type=None,
+    ephemeral_disk_nvme_perf_tier=None,
     node_provisioning_mode=None,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
     # trusted launch
@@ -846,6 +848,8 @@ def aks_update(
     storage_pool_sku=None,
     storage_pool_option=None,
     azure_container_storage_nodepools=None,
+    ephemeral_disk_volume_type=None,
+    ephemeral_disk_nvme_perf_tier=None,
     node_provisioning_mode=None,
     ssh_access=None,
     cluster_service_load_balancer_health_probe_mode=None,
