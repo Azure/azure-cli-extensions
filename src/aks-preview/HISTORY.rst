@@ -11,6 +11,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+5.0.0b2
+++++++++
+* Add option `--ephemeral-disk-volume-type` to `az aks create` and `az aks update` for Azure Container Storage operations.
+* Add option `--azure-container-storage-perf-tier` to `az aks create` and `az aks update` to define resource tiers for Azure Container Storage performance.
 * Vendor new SDK and bump API version to 2024-04-02-preview.
 
 5.0.0b1
@@ -18,6 +23,7 @@ Pending
 * [BREAKING CHANGE]: Remove --enable-network-observability and --disable-network-observability from aks create and update commands.
 * Update --enable-advanced-network-observability description to note additional costs and add missing flag to create command.
 * Change default value of `--vm-set-type` to VirtualMachines when `--vm-sizes` is set.
+
 
 4.0.0b5
 ++++++++
