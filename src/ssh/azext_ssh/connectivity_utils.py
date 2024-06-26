@@ -337,7 +337,7 @@ def _check_proxy_installation(install_dir, proxy_name):
             "Failed to install required SSH Arc Connectivity Proxy. "
             f"Couldn't find expected file {proxy_filepath}. Please try again.")
 
-    license_files = ["License.txt", "ThirdPartyNotice.txt"]
+    license_files = ["LICENSE.txt", "ThirdPartyNotice.txt"]
     for file in license_files:
         file_location = os.path.join(install_dir, file)
         if os.path.isfile(file_location):
