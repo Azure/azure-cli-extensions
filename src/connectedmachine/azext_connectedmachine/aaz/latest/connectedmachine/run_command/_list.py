@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "connectedmachine run-command list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """Get all the run commands of a non-Azure machine.

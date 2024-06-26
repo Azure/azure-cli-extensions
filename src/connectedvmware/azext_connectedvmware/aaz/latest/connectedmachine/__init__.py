@@ -8,17 +8,5 @@
 # pylint: skip-file
 # flake8: noqa
 
-from azure.cli.core.aaz import *
-
-
-@register_command_group(
-    "connectedmachine run-command",
-    is_preview=True,
-)
-class __CMDGroup(AAZCommandGroup):
-    """Manage run commands on an Azure Arc-Enabled Server.
-    """
-    pass
-
-
-__all__ = ["__CMDGroup"]
+from .__cmd_group import *
+from ._list import *

@@ -12,11 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "connectedmachine run-command",
-    is_preview=True,
+    "arc gateway",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage run commands on an Azure Arc-Enabled Server.
+    """Manage Gateway for Azure Arc Machines.
     """
     pass
 

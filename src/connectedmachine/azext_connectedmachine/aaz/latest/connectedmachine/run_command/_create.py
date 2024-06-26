@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "connectedmachine run-command create",
+    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a run command.
