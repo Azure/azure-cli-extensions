@@ -22,6 +22,8 @@ from azure.cli.core import azclierror
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
 from azure.cli.core.aaz import *
+from knack.prompting import prompt_y_n
+
 
 from .aaz.latest.network.bastion import Create 
 from . import ssh_utils
@@ -190,20 +192,16 @@ def handle_bastion_properties(cmd, op_info, properties):
     bastion = _request_specified_bastion(cmd, subscription_id, vnet_name, op_info.resource_group_name)
 
     if bastion['count'] == 0:
-        while True:
-            response = input("There is no Bastion Host in the VNet. Do you want to create a Bastion Host Developer Sku in the VNet? (y/n): ")
-            response = response.lower() 
+        prompt = (f"There is currently no Bastion associated with this VNet." 
+                    " Would you like to associate this VNet with Bastion Developer? To learn more,"
+                    " please visit learn.microsoft.com/en-us/azure/bastion/quickstart-developer-sku")
+        if not prompt_y_n(prompt):
+            raise azclierror.ClientRequestError("No Bastion Host found or created in the VNet.")
+        
+        create_bastion(cmd, op_info, vnet_id)
 
-            if response == 'y' or response == 'n':
-                break  
-            else:
-                print("Invalid input. Please enter 'y' for yes or 'n' for no.")  
-
-        if response == 'y':
-                bastion = create_bastion(cmd, op_info, vnet_id)
-        else:
-            raise azclierror.InvalidArgumentValueError("No Bastion Host found or created in the VNet.")
     else:
+        print("yes")
         op_info.bastion_name = parse_bastion_name(bastion)
 
 
@@ -296,6 +294,14 @@ class AccessTokenCredential:  # pylint: disable=too-few-public-methods
 def _request_specified_bastion(cmd, subscription_id, vnet_id, resource_group):
     from azure.cli.core._profile import Profile
 
+    # Initialize Resource Graph client for Azure queries specfically for Vnet -> Bastion relationship:
+    # This block dynamically loads the 'resource-graph' extension modules necessary for accessing the Azure Resource Graph. It then:
+    # 1. Retrieves the current user's Azure Active Directory access token from the CLI context.
+    # 2. Initializes the AccessTokenCredential with the retrieved token.
+    # 3. Creates an instance of the ResourceGraphClient using the authenticated credentials.
+    # The resulting client can then be used to perform resource queries across multiple Azure subscriptions,
+    # leveraging the Resource Graph extension to fetch detailed information the queried resource.
+
     RESOURCE_GRAPH_EXTENSION_NAME = 'resource-graph'
     RG_EXTENSION_MODULE = 'azext_resourcegraph.custom'
     RG_SDK_MODULE = 'azext_resourcegraph.vendored_sdks.resourcegraph._resource_graph_client'
@@ -332,7 +338,7 @@ def _request_specified_bastion(cmd, subscription_id, vnet_id, resource_group):
         response = RG_custom.execute_query(client, query, 10, 0, None, None, False, None)
 
     except Exception:
-        raise azclierror.ClientRequestError(f"Failed to get Bastion information. Please try again later.")
+        raise azclierror.ClientRequestError(f"Failed to find Bastion assocaited to VNet in the specified Subscription. Ensure the Bastion is not in a different subscription or resource group.")
     
     return response
 
