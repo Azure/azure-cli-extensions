@@ -4,12 +4,13 @@ Release History
 ===============
 ===============
 
-##### 0.3.1
+##### 0.4.0
 ++++++
 No new commands added.
+Commands for new api version 2023-08-01-preview added.
 
 Existing commands updated:
-* perimeter profile access-rule: create (added servicetag based rules).
+* perimeter profile access-rule: create,show,update (added servicetag based rules).
 
 ##### 0.3.0
 ++++++
