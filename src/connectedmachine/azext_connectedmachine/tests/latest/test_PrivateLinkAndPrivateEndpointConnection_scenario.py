@@ -39,20 +39,16 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
     def test_private_link(self):
         rand_string = 'test'
         self.kwargs.update({
-            'machine': 'testmachine',
-            'rg': 'ytongtest',
+            'machine': 'testmachine2',
+            'rg': 'ytongtest3',
             'scope': 'scope-' + rand_string,
             'vnet': 'vnet-' + rand_string,
             'subnet': 'subnet-' + rand_string,
             'private_endpoint': 'pe-' + rand_string,
             'private_endpoint_connection': 'pec-' + rand_string,
-            'location': 'centraluseuap',
+            'location': 'eastus2',
             'customScriptName': 'custom-' + rand_string,
         })
-
-        # Prepare network
-        self.cmd('az group create -n {rg} -l {location}',
-                    checks=self.check('name', '{rg}'))
 
         # Prepare network
         self.cmd('az network vnet create -n {vnet} -g {rg} -l {location} --subnet-name {subnet}',
