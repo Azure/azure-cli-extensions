@@ -93,17 +93,10 @@ class BackupInstanceCreateDeleteScenarioTest(ScenarioTest):
             'policyId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.DataProtection/backupVaults/clitest-bkp-vault-donotdelete/backupPolicies/blobpolicy',
             'storageAccountName': 'clitestsadonotdelete',
             'storageAccountId': '/subscriptions/38304e13-357e-405e-9e9a-220351dcce8c/resourceGroups/clitest-dpp-rg/providers/Microsoft.Storage/storageAccounts/clitestsadonotdelete',
-            'policyRuleName': "BackupWeekly"
+            'policyRuleName': "BackupWeekly",
+            'new_container_name': 'testcontainer'
         })
-        # Cleanup existing blob/containers in the storage account and create a new one
-        existing_containers = test.cmd('storage container list --account-name "{storageAccountName}" --auth-mode login').get_output_in_json()
-        for container in existing_containers:
-            container_name = container['name']
-            test.kwargs.update({"containerName": container_name})
-            test.cmd('storage container delete --name "{containerName}" --account-name "{storageAccountName}" --auth-mode login')
-        new_container_name = 'cont{}'.format(randint(0, 100))
-        test.kwargs.update({"new_container_name": new_container_name})
-        test.cmd(' storage container create --name "{new_container_name}" --account-name "{storageAccountName}" --auth-mode login')
+        test.cmd('storage container create --name "{new_container_name}" --account-name "{storageAccountName}" --auth-mode login')
 
         backup_config_json = test.cmd('az dataprotection backup-instance initialize-backupconfig --datasource-type "{dataSourceType}" '
                                       '--include-all-containers --storage-account-rg "{rg}" --storage-account-name "{storageAccountName}"').get_output_in_json()
@@ -135,3 +128,10 @@ class BackupInstanceCreateDeleteScenarioTest(ScenarioTest):
         adhoc_backup_response = test.cmd('az dataprotection backup-instance adhoc-backup '
                                          '-n "{backupInstanceName}" -g "{rg}" --vault-name "{vaultName}" --rule-name "{policyRuleName}"').get_output_in_json()
         test.kwargs.update({"jobId": adhoc_backup_response["jobId"]})
+
+        # Cleanup existing blob/containers in the storage account
+        existing_containers = test.cmd('storage container list --account-name "{storageAccountName}" --auth-mode login').get_output_in_json()
+        for container in existing_containers:
+            container_name = container['name']
+            test.kwargs.update({"containerName": container_name})
+            test.cmd('storage container delete --name "{containerName}" --account-name "{storageAccountName}" --auth-mode login')
