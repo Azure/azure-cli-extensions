@@ -661,7 +661,6 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
         :return: bool
         """
-        # how to allow enable but preserve existing logic
 
         # read the original value passed by the command
         enable_fips_image = self.raw_param.get("enable_fips_image", False)
