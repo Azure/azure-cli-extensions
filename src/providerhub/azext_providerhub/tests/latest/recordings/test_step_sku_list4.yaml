@@ -1,0 +1,49 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub sku nested-resource-type-third list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --nested-resource-type-first --nested-resource-type-second --nested-resource-type-third
+        --provider-namespace --resource-type
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourcetypeRegistrations/employees/resourcetypeRegistrations/nestedResourceTypeFirst/resourcetypeRegistrations/nestedResourceTypeSecond/resourcetypeRegistrations/nestedResourceTypeThird/skus?api-version=2024-04-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"skuSettings":[{"name":"freeSku","tier":"Tier1","kind":"Standard"},{"name":"premiumSku","tier":"Tier2","kind":"Premium","costs":[{"meterId":"xxx","quantity":0}]}]},"type":"Microsoft.ProviderHub/providerRegistrations/skus","name":"default","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-06-05T22:12:58.0502068Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-05T22:12:58.0502068Z"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '508'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 05 Jun 2024 22:48:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/62c5bec2-33fc-4cfa-b3e4-86e97092d846
+      x-msedge-ref:
+      - 'Ref A: 50A6C4136273431C8D25EC50BEFA2336 Ref B: DM2AA1091214035 Ref C: 2024-06-05T22:48:40Z'
+    status:
+      code: 200
+      message: OK
+version: 1

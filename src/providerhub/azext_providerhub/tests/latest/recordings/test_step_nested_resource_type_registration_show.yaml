@@ -1,0 +1,49 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub resource-type-registration show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --provider-namespace --resource-type
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourcetypeRegistrations/employees%2Fresourcetyperegistrations%2FnestedResourceTypeFirst?api-version=2024-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"name":"employees/nestedResourceTypeFirst","routingType":"Default","regionality":"Regional","endpoints":[{"kind":"Managed","extensions":[{"endpointUri":"https://contoso-test-extension-endpoint.com/","extensionCategories":["ResourceReadValidate","ResourceDeletionValidate"]}],"apiVersions":["2019-01-01"],"locations":["West
+        US"]}],"defaultApiVersion":"2019-01-01","enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"templateDeploymentOptions":{"preflightSupported":true,"preflightOptions":["DefaultValidationOnly"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourceTypeRegistrations/employees/resourceTypeRegistrations/nestedResourceTypeFirst","type":"Microsoft.ProviderHub/providerRegistrations/resourceTypeRegistrations","name":"employees/nestedResourceTypeFirst","kind":"Managed","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-06-05T21:57:51.5679529Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-05T21:57:51.5679529Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1164'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 06 Jun 2024 16:27:41 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/37aff673-e7f8-4341-8375-839032545049
+      x-msedge-ref:
+      - 'Ref A: 013D3ED950C74295899C562378F71A1D Ref B: DM2EDGE0406 Ref C: 2024-06-06T16:27:38Z'
+    status:
+      code: 200
+      message: OK
+version: 1
