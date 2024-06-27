@@ -3,6 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=no-self-use, no-member, too-many-lines, unused-argument, skip-file
+# pylint: disable=protected-access, too-few-public-methods, line-too-long
+
 from .aaz.latest.nginx.deployment.configuration._update import Update as _ConfigurationUpdate
 from azure.cli.core.aaz import *
 
