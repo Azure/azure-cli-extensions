@@ -5114,6 +5114,8 @@ configuration:
           reviewer: jsntcy
       - requestReview:
           reviewer: bebound
+      - requestReview:
+          reviewer: Pan-Qi
       - assignTo:
           users:
           - wangzelin007
@@ -6365,5 +6367,27 @@ configuration:
           - kairu-ms
           - AllyW
       description: '[PowerBI] Auto assign labels and reviewers based on PR title/description.'
+    - if:
+      - payloadType: Pull_Request
+      - isAction:
+          action: Opened
+      - or:
+        - titleContains:
+            pattern: 'k8s-runtime'
+            isRegex: True
+        - bodyContains:
+            pattern: 'k8s-runtime'
+            isRegex: True
+      then:
+      - addLabel:
+          label: Auto-Assign
+      - requestReview:
+          reviewer: yonzhan
+      - requestReview:
+          reviewer: ReaNAiveD
+      - assignTo:
+          users:
+          - ReaNAiveD
+      description: '[k8s-runtime] Auto assign labels and reviewers based on PR title/description.'
 onFailure: 
 onSuccess: 
