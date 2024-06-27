@@ -82,6 +82,8 @@ class SVICreate(_SVICreate):
                 properties.set_prop("environment", AAZStrType, ".environment", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("managedResourceGroupConfiguration", AAZObjectType)
                 properties.set_prop("sapProduct", AAZStrType, ".sap_product", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("managedResourcesNetworkAccessType", AAZStrType,
+                                    ".managed_resources_network_access_type")
 
             managed_resource_group_configuration = _builder.get(".properties.managedResourceGroupConfiguration")
             if managed_resource_group_configuration is not None:
