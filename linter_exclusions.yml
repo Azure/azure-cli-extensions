@@ -240,6 +240,23 @@ arcdata ad-connector update:
     secondary_domain_controllers:
       rule_exclusions:
       - option_length_too_long
+sql server-arc availability-group create:
+  parameters:
+    automated_backup_preference:
+      rule_exclusions:
+      - option_length_too_long
+    failure_condition_level:
+      rule_exclusions:
+      - option_length_too_long
+    listener_ipv4_addresses:
+      rule_exclusions:
+      - option_length_too_long
+    listener_ipv6_addresses:
+      rule_exclusions:
+      - option_length_too_long
+    required_synchronized_secondaries:
+      rule_exclusions:
+      - option_length_too_long
 sql mi-arc update:
   parameters:
     preferred_primary_replica:
@@ -2116,7 +2133,7 @@ networkcloud cluster create:
       rule_exclusions:
       - option_length_too_long
 networkcloud cluster update:
-  parameters:      
+  parameters:
     aggregator_or_single_rack_definition:
       rule_exclusions:
       - option_length_too_long
@@ -2130,26 +2147,26 @@ networkcloud cluster update:
       rule_exclusions:
       - option_length_too_long
 networkcloud cluster deploy:
-  parameters:      
+  parameters:
     skip_validations_for_machines:
       rule_exclusions:
       - option_length_too_long
 networkcloud clustermanager create:
-  parameters:  
+  parameters:
     managed_resource_group_configuration:
       rule_exclusions:
       - option_length_too_long
 networkcloud l3network create:
-  parameters:        
+  parameters:
     hybrid_aks_ipam_enabled:
       rule_exclusions:
       - option_length_too_long
 networkcloud virtualmachine create:
-  parameters:        
+  parameters:
     isolate_emulator_thread:
       rule_exclusions:
       - option_length_too_long
-networkcloud kubernetescluster create:  
+networkcloud kubernetescluster create:
   parameters:
     control_plane_node_configuration:
       rule_exclusions:
@@ -2160,12 +2177,12 @@ networkcloud kubernetescluster create:
     managed_resource_group_configuration:
       rule_exclusions:
       - option_length_too_long
-networkcloud kubernetescluster update:  
+networkcloud kubernetescluster update:
   parameters:
     control_plane_node_configuration:
       rule_exclusions:
       - option_length_too_long
-networkcloud kubernetescluster agentpool create:  
+networkcloud kubernetescluster agentpool create:
   parameters:
     attached_network_configuration:
       rule_exclusions:
@@ -2173,27 +2190,27 @@ networkcloud kubernetescluster agentpool create:
     kubernetes_cluster_name:
       rule_exclusions:
       - option_length_too_long
-networkcloud kubernetescluster agentpool delete:  
+networkcloud kubernetescluster agentpool delete:
   parameters:
     kubernetes_cluster_name:
       rule_exclusions:
       - option_length_too_long
-networkcloud kubernetescluster agentpool update:  
+networkcloud kubernetescluster agentpool update:
   parameters:
     kubernetes_cluster_name:
       rule_exclusions:
       - option_length_too_long
-networkcloud kubernetescluster agentpool list:  
+networkcloud kubernetescluster agentpool list:
   parameters:
     kubernetes_cluster_name:
       rule_exclusions:
       - option_length_too_long
-networkcloud kubernetescluster agentpool show:  
+networkcloud kubernetescluster agentpool show:
   parameters:
     kubernetes_cluster_name:
       rule_exclusions:
       - option_length_too_long
-networkcloud kubernetescluster agentpool wait:  
+networkcloud kubernetescluster agentpool wait:
   parameters:
     kubernetes_cluster_name:
       rule_exclusions:
@@ -2830,6 +2847,28 @@ stack-hci cluster create:
       rule_exclusions:
         - option_length_too_long
     aad_service_principal_object_id:
+      rule_exclusions:
+        - option_length_too_long
+stack-hci-vm network nsg rule create:
+  parameters:
+    destination_address_prefixes:
+      rule_exclusions:
+        - option_length_too_long
+    destination_port_ranges:
+      rule_exclusions:
+        - option_length_too_long
+    source_address_prefixes:
+      rule_exclusions:
+        - option_length_too_long
+stack-hci-vm network nsg rule update:
+  parameters:
+    destination_address_prefixes:
+      rule_exclusions:
+        - option_length_too_long
+    destination_port_ranges:
+      rule_exclusions:
+        - option_length_too_long
+    source_address_prefixes:
       rule_exclusions:
         - option_length_too_long
 storage account create:
