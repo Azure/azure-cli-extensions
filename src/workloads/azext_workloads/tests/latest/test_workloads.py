@@ -274,16 +274,39 @@ class WorkloadsScenario(ScenarioTest):
     @unittest.skip('recording file not getting generted properly throwing Subscription not found')
     def test_workloads_svi_discover(self):
         self.kwargs.update({
-            'name': 'C36',
+            'name': 'C13',
             'msi': os.path.join(TEST_DIR, 'MSI.json'),
-            'centralservervmid': '/subscriptions/49d64d54-e966-4c46-a868-1999802b762c/resourceGroups/CLI-TESTING/providers/Microsoft.Compute/virtualMachines/c36ascsvm'
+            'centralservervmid': '/subscriptions/49d64d54-e966-4c46-a868-1999802b762c/resourcegroups/ps_cli_tf_rg/providers/microsoft.compute/virtualmachines/c13ascsvm'
         })
 
-        self.cmd('workloads sap-virtual-instance create -g CLI-TESTING -n {name} --location eastus2euap --environment NonProd --sap-product S4HANA --central-server-vm {centralservervmid} --identity "{msi}"', checks=[
+        self.cmd('workloads sap-virtual-instance create -g PS_CLI_TF_RG -n {name} --location eastus --environment NonProd --sap-product S4HANA --central-server-vm {centralservervmid} --identity "{msi}"', checks=[
             self.check('name', '{name}'),
-            self.check('resourceGroup', 'CLI-TESTING'),
+            self.check('resourceGroup', 'PS_CLI_TF_RG'),
             self.check('sapProduct', 'S4HANA'),
             self.check('environment', 'NonProd'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('configuration.configurationType', 'Discovery')
+        ])
+    
+    @unittest.skip('recording file not getting generted properly throwing Subscription not found')
+    def test_workloads_svi_discover_custom(self):
+        self.kwargs.update({
+            'name': 'C13',
+            'msi': os.path.join(TEST_DIR, 'MSI.json'),
+            'centralservervmid': '/subscriptions/49d64d54-e966-4c46-a868-1999802b762c/resourcegroups/ps_cli_tf_rg/providers/microsoft.compute/virtualmachines/c13ascsvm',
+            'managedrgname': self.create_random_name(prefix='managedrg', length=15),
+            'managedrgsaname': self.create_random_name(prefix='managedrgsa', length=24),
+            'networkaccesstype': 'Private'
+        })
+
+        self.cmd('workloads sap-virtual-instance create -g PS_CLI_TF_RG -n {name} --location eastus --environment NonProd --sap-product S4HANA --central-server-vm {centralservervmid} --identity "{msi}" --managed-rg-name {managedrgname} --managed-rg-sa-name {managedrgsaname} --managed-resources-network-access-type {networkaccesstype}', checks=[
+            self.check('name', '{name}'),
+            self.check('resourceGroup', 'PS_CLI_TF_RG'),
+            self.check('sapProduct', 'S4HANA'),
+            self.check('environment', 'NonProd'),
+            self.check('managedResourceGroupConfiguration.name', '{managedrgname}'),
+            self.check('configuration.managedRgStorageAccountName', '{managedrgsaname}'),
+            self.check('managedResourcesNetworkAccessType', '{networkaccesstype}'),
             self.check('provisioningState', 'Succeeded'),
             self.check('configuration.configurationType', 'Discovery')
         ])
