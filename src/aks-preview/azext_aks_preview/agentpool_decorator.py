@@ -654,7 +654,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         else:
             vm_sizes = [self.get_node_vm_size()]
         return vm_sizes
-    
+
     # Overrides azure-cli command to allow changes after create
     def get_enable_fips_image(self) -> bool:
         """Obtain the value of enable_fips_image, default value is False.
@@ -667,7 +667,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         enable_fips_image = self.raw_param.get("enable_fips_image", False)
         # In create mode, try and read the property value corresponding to the parameter from the `agentpool` object
         if self.decorator_mode == DecoratorMode.CREATE:
-            if ( # should i check if enable is not true?
+            if (
                 self.agentpool and
                 hasattr(self.agentpool, "enable_fips") and      # backward compatibility
                 self.agentpool.enable_fips is not None
@@ -679,7 +679,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             raise MutuallyExclusiveArgumentError(
                 'Cannot specify "--enable-fips-image" and "--disable-fips-image" at the same time'
             )
-        
+
         return enable_fips_image
 
     def get_disable_fips_image(self) -> bool:
@@ -688,6 +688,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """
         # read the original value passed by the command
         return self.raw_param.get("disable_fips_image")
+
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -1124,7 +1125,7 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
             agentpool.security_profile.enable_vtpm = False
 
         return agentpool
-    
+
     def update_fips_image(self, agentpool: AgentPool) -> AgentPool:
         """Update fips image property for the AgentPool object.
         :return: the AgentPool object
