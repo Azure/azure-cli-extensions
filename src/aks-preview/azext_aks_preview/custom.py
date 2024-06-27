@@ -1383,6 +1383,8 @@ def aks_agentpool_update(
     disable_vtpm=False,
     if_match=None,
     if_none_match=None,
+    enable_fips_image=False,
+    disable_fips_image=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

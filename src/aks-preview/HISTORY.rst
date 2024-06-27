@@ -11,6 +11,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+5.0.0b2
+++++++++
+* Add support for mutable fips in agentpool update. (enable/disable flags)
 * Vendor new SDK and bump API version to 2024-04-02-preview.
 
 5.0.0b1
