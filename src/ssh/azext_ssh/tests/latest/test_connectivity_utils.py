@@ -138,16 +138,3 @@ class SshConnectivityUtilsCommandTest(unittest.TestCase):
         mock_dir.assert_called_once_with("/dir/proxy", "Failed to create client proxy directory \'/dir/proxy\'.")
         mock_download.assert_called_once_with("/dir/proxy", "sshProxy_linux_arm64_1_3_026973", "linux", "arm64")
         mock_check.assert_called_once_with("/dir/proxy", "sshProxy_linux_arm64_1_3_026973")
-
-    
-        
-
-
-    
-    
-    
-    
-
-
-
-
