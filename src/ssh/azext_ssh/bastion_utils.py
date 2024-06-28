@@ -76,11 +76,9 @@ def show_bastion(cmd, op_info):
 
 
 # ============================= SSH to Bastion Host Logic ============================= #
-def _get_host(username, ip):
-    return username + "@" + ip
 
 
-def ssh_bastion_host(cmd, op_info):
+def ssh_bastion_host(cmd, op_info, delete_keys, delete_cert):
 
     bastion = show_bastion(cmd, op_info)
 
@@ -91,7 +89,7 @@ def ssh_bastion_host(cmd, op_info):
         port = op_info.port
         if port != 22:
             raise azclierror.InvalidArgumentValueError("Custom Ports are not allowed for the Bastion Developer Sku. Please try again with port 22`.")
-    port =22 
+    port = 22 
 
     target_resource_id = op_info.resource_id
     
@@ -102,26 +100,19 @@ def ssh_bastion_host(cmd, op_info):
     t.daemon = True
     t.start()
 
-    command = [ ssh_utils.get_ssh_client_path(), _get_host(op_info.local_user, "localhost")]
-    command = command + op_info.build_args()
-    command = command + ["-p", str(tunnel_server.local_port)]
-    command = command + ["-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null"]
-    command = command + ["-o", "LogLevel=Error"]
-    logger.debug("Running ssh command %s", " ".join(command))
+    op_info.ssh_args.extend(["-p", str(tunnel_server.local_port),
+                         "-o", "StrictHostKeyChecking=no",
+                         "-o", "UserKnownHostsFile=/dev/null",
+                         "-o", "LogLevel=Error"])
+                         
 
     try:
-        subprocess.call(command, shell=platform.system() == "Windows")
+        subprocess.call(ssh_utils.start_ssh_connection(op_info, delete_keys, delete_cert))
     except Exception as ex:
         raise azclierror.CLIInternalError(ex) from ex
     finally:
         tunnel_server.cleanup()
 
-
-def _is_ipconnect_request(bastion, target_ip_address):
-    if 'enableIpConnect' in bastion and bastion['enableIpConnect'] is True and target_ip_address:
-        return True
-
-    return False
 
 def _get_data_pod(cmd, port, target_resource_id, bastion):
     from azure.cli.core._profile import Profile

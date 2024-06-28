@@ -56,6 +56,8 @@ class SSHSession():
         return False
 
     def get_host(self):
+        if self.bastion:
+            return self.local_user + "@localhost"
         if not self.is_arc() and self.ip:
             return self.ip
 
