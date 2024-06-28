@@ -45,8 +45,8 @@ subscription, resource group, and instance name.
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.azure_large_storage_instance_name = AAZStrArg(
-            options=["-n", "--name", "--azure-large-storage-instance-name"],
+        _args_schema.instance_name = AAZStrArg(
+            options=["-n", "--name", "--instance-name"],
             help="Name of the AzureLargeStorageInstance.",
             required=True,
             id_part="name",
@@ -118,7 +118,7 @@ subscription, resource group, and instance name.
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "azureLargeStorageInstanceName", self.ctx.args.azure_large_storage_instance_name,
+                    "azureLargeStorageInstanceName", self.ctx.args.instance_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

@@ -45,8 +45,8 @@ class Restart(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.azure_large_instance_name = AAZStrArg(
-            options=["--azure-large-instance-name"],
+        _args_schema.instance_name = AAZStrArg(
+            options=["-n", "--name", "--instance-name"],
             help="Name of the AzureLargeInstance.",
             required=True,
             id_part="name",
@@ -132,7 +132,7 @@ class Restart(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "azureLargeInstanceName", self.ctx.args.azure_large_instance_name,
+                    "azureLargeInstanceName", self.ctx.args.instance_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
