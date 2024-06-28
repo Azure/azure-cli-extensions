@@ -2330,7 +2330,7 @@ def aks_rotate_certs(cmd, client, resource_group_name, name, no_wait=True):     
     return sdk_no_wait(no_wait, client.begin_rotate_cluster_certificates, resource_group_name, name)
 
 
-def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
+def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements,
                    instance,
                    subscription_id,
                    resource_group_name,
@@ -2352,8 +2352,8 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    rotation_poll_interval=None,
                    dns_zone_resource_id=None,
                    dns_zone_resource_ids=None,
-                   no_wait=False,  # pylint: disable=unused-argument
-                ):
+                   no_wait=False,): # pylint: disable=unused-argument
+
     ManagedClusterAddonProfile = cmd.get_models(
         "ManagedClusterAddonProfile",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
