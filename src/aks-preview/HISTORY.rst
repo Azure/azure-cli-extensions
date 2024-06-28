@@ -14,8 +14,7 @@ Pending
 
 5.0.0b3
 ++++++++
-* Add option `--enable-high-log-scale-mode` to `az aks create --enable-addons monitoring` and `az aks enable-addons -a monitoring` .
-* Add option `--ampls-resource-id` to `az aks create --enable-addons monitoring` and `az aks enable-addons -a monitoring` .
+* Add support for mutable fips in agentpool update. (enable/disable flags)
 
 5.0.0b2
 ++++++++
