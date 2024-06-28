@@ -101,11 +101,7 @@ def enable_addons(
         rotation_poll_interval=rotation_poll_interval,
         no_wait=no_wait,
         dns_zone_resource_id=dns_zone_resource_id,
-        dns_zone_resource_ids=dns_zone_resource_ids,
-        enable_syslog=enable_syslog,
-        data_collection_settings=data_collection_settings,
-        ampls_resource_id=ampls_resource_id,
-        enable_high_log_scale_mode=enable_high_log_scale_mode
+        dns_zone_resource_ids=dns_zone_resource_ids
     )
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
@@ -210,8 +206,6 @@ def update_addons(
     dns_zone_resource_id=None,
     dns_zone_resource_ids=None,
     no_wait=False,  # pylint: disable=unused-argument
-    enable_syslog=False,  # pylint: disable=unused-argument
-    data_collection_settings=None,  # pylint: disable=unused-argument
 ):
     # parse the comma-separated addons argument
     addon_args = addons.split(',')
