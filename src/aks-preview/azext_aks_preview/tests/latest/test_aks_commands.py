@@ -4684,6 +4684,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+        # verify no flag no change
+        self.cmd(
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={node_pool_name} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MutableFipsPreview',
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableFips", True),
+            ],
+        )
+
         # verify same update no change
         self.cmd(
             "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={node_pool_name} "
@@ -4714,6 +4724,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--name={node_pool_name_second} "
             "--os-type Linux "
             '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MutableFipsPreview ',
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableFips", False),
+            ],
+        )
+
+        # verify no flag no change
+        self.cmd(
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={node_pool_name_second} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MutableFipsPreview',
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("enableFips", False),
