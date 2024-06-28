@@ -156,21 +156,26 @@ def privatecloud_identity_get(cmd, resource_group_name, private_cloud):
     }).get("identity")
 
 
-def privatecloud_rotate_nsxt_password():
-    from knack.prompting import prompt
-    msg = ROTATE_NSXT_PASSWORD_TERMS
-    prompt(msg)
-    # return client.private_clouds.begin_rotate_nsxt_password(resource_group_name=resource_group_name, private_cloud_name=private_cloud)
-
-
 def datastore_create():
     print('Please use "az vmware datastore netapp-volume create" or "az vmware datastore disk-pool-volume create" instead.')
 
 
-def script_execution_create(cmd, resource_group_name, private_cloud, name, timeout, script_cmdlet_id=None, parameters=None, hidden_parameters=None, failure_reason=None, retention=None, out=None, named_outputs: List[Tuple[str, str]] = None):
+def script_execution_create(cmd, resource_group_name, private_cloud, name, timeout, script_cmdlet_id=None, parameters=None, hidden_parameters=None, failure_reason=None, retention=None, out=None, named_outputs: List[Tuple[str, str]] = None, yes=False):
     from .aaz.latest.vmware.script_execution import Create
+    from knack.prompting import prompt_y_n
+
+    msg = 'Attention: {} actions and SLAs are supported for Microsoft approved partners only. Continue?'
     if named_outputs is not None:
         named_outputs = dict(named_outputs)
+    if script_cmdlet_id is not None and not yes and script_cmdlet_id.lower().find("scriptpackages/microsoft.avs.vmfs") > -1:
+        if not prompt_y_n(msg.format("Microsoft.AVS.VMFS"), default="n"):
+            return None
+    elif script_cmdlet_id is not None and not yes and script_cmdlet_id.lower().find("scriptpackages/microsoft.avs.nfs") > -1:
+        if not prompt_y_n(msg.format("Microsoft.AVS.NFS"), default="n"):
+            return None
+    elif script_cmdlet_id is not None and not yes and script_cmdlet_id.lower().find("scriptpackages/microsoft.avs.vvols") > -1:
+        if not prompt_y_n(msg.format("Microsoft.AVS.VVOLS"), default="n"):
+            return None
     return Create(cli_ctx=cmd.cli_ctx)(command_args={
         "private_cloud": private_cloud,
         "resource_group": resource_group_name,
