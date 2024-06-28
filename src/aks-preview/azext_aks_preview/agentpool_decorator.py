@@ -655,6 +655,39 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
             vm_sizes = [self.get_node_vm_size()]
         return vm_sizes
 
+    # Overrides azure-cli command to allow changes after create
+    def get_enable_fips_image(self) -> bool:
+        """Obtain the value of enable_fips_image, default value is False.
+
+        :return: bool
+        """
+
+        # read the original value passed by the command
+        enable_fips_image = self.raw_param.get("enable_fips_image", False)
+        # In create mode, try and read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                hasattr(self.agentpool, "enable_fips") and      # backward compatibility
+                self.agentpool.enable_fips is not None
+            ):
+                enable_fips_image = self.agentpool.enable_fips
+
+        # Verify both flags have not been set
+        if enable_fips_image and self.get_disable_fips_image():
+            raise MutuallyExclusiveArgumentError(
+                'Cannot specify "--enable-fips-image" and "--disable-fips-image" at the same time'
+            )
+
+        return enable_fips_image
+
+    def get_disable_fips_image(self) -> bool:
+        """Obtain the value of disable_fips_image.
+        :return: bool
+        """
+        # read the original value passed by the command
+        return self.raw_param.get("disable_fips_image")
+
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
     def __init__(
@@ -1092,6 +1125,21 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         return agentpool
 
+    def update_fips_image(self, agentpool: AgentPool) -> AgentPool:
+        """Update fips image property for the AgentPool object.
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        # Updates enable_fips property allowing switching of fips mode
+        if self.context.get_enable_fips_image():
+            agentpool.enable_fips = True
+
+        if self.context.get_disable_fips_image():
+            agentpool.enable_fips = False
+
+        return agentpool
+
     def update_agentpool_profile_preview(self, agentpools: List[AgentPool] = None) -> AgentPool:
         """The overall controller used to update the preview AgentPool profile.
 
@@ -1120,6 +1168,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update os sku
         agentpool = self.update_os_sku(agentpool)
+
+        # update fips image
+        agentpool = self.update_fips_image(agentpool)
 
         # update ssh access
         agentpool = self.update_ssh_access(agentpool)

@@ -1645,6 +1645,16 @@ def load_arguments(self, _):
         )
         c.argument("if_match")
         c.argument("if_none_match")
+        c.argument(
+            "enable_fips_image",
+            is_preview=True,
+            action="store_true"
+        )
+        c.argument(
+            "disable_fips_image",
+            is_preview=True,
+            action="store_true"
+        )
 
     with self.argument_context("aks nodepool upgrade") as c:
         c.argument("max_surge", validator=validate_max_surge)

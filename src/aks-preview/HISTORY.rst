@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+5.0.0b3
+++++++++
+* Add support for mutable fips in agentpool update. (enable/disable flags)
+
 5.0.0b2
 ++++++++
 * Add option `--ephemeral-disk-volume-type` to `az aks create` and `az aks update` for Azure Container Storage operations.
