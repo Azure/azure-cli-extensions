@@ -12,6 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+5.0.0b4
+++++++++
+* Add option `--enable-high-log-scale-mode` to `az aks create --enable-addons monitoring` and `az aks enable-addons -a monitoring` .
+* Add option `--ampls-resource-id` to `az aks create --enable-addons monitoring` and `az aks enable-addons -a monitoring` .
+
 5.0.0b3
 ++++++++
 * Add support for mutable fips in agentpool update. (enable/disable flags)
