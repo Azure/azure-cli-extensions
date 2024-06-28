@@ -2004,6 +2004,12 @@ helps['aks nodepool update'] = """
         - name: --if-none-match
           type: string
           short-summary: Set to '*' to allow a new node pool to be created, but to prevent updating an existing node pool. Other values will be ignored.
+        - name: --enable-fips-image
+          type: bool
+          short-summary: Switch to use FIPS-enabled OS on agent nodes.
+        - name: --disable-fips-image
+          type: bool
+          short-summary: Switch to use non-FIPS-enabled OS on agent nodes.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
