@@ -2236,9 +2236,6 @@ def aks_enable_addons(
         dns_zone_resource_id=dns_zone_resource_id,
         dns_zone_resource_ids=dns_zone_resource_ids,
         enable_syslog=enable_syslog,
-        data_collection_settings=data_collection_settings,
-        ampls_resource_id=ampls_resource_id,
-        enable_high_log_scale_mode=enable_high_log_scale_mode
     )
     if (
         CONST_MONITORING_ADDON_NAME in instance.addon_profiles and
@@ -2355,10 +2352,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    dns_zone_resource_id=None,
                    dns_zone_resource_ids=None,
                    no_wait=False,  # pylint: disable=unused-argument
-                   enable_syslog=False,
-                   data_collection_settings=None,
-                   ampls_resource_id=None,
-                   enable_high_log_scale_mode=False):
+                   enable_syslog=False,):
     ManagedClusterAddonProfile = cmd.get_models(
         "ManagedClusterAddonProfile",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
