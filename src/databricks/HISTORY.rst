@@ -2,7 +2,7 @@
 
 Release History
 ===============
-0.11.0
+1.0.0
 +++++
 az databricks workspace create/update: Add --access-connector to associate an Access Connector Resource with workspace.
 az databricks workspace create/update: Add --default-storage-firewall to set default storage firewall configuration information on workspace.
