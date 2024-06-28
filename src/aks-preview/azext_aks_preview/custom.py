@@ -2352,7 +2352,7 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    rotation_poll_interval=None,
                    dns_zone_resource_id=None,
                    dns_zone_resource_ids=None,
-                   no_wait=False,): # pylint: disable=unused-argument
+                   no_wait=False,):  # pylint: disable=unused-argument
 
     ManagedClusterAddonProfile = cmd.get_models(
         "ManagedClusterAddonProfile",
