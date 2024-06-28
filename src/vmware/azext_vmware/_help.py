@@ -205,7 +205,7 @@ helps['vmware private-cloud rotate-nsxt-password'] = """
     short-summary: Rotate the NSX-T Manager password.
     examples:
     - name: Rotate the NSX-T Manager password.
-      text: az vmware private-cloud rotate-nsxt-password
+      text: az vmware private-cloud rotate-nsxt-password --resource-group MyResourceGroup --private-cloud MyPrivateCloud
 """
 
 helps['vmware authorization create'] = """
@@ -296,6 +296,19 @@ helps['vmware datastore disk-pool-volume create'] = """
     examples:
     - name: Create a new Microsoft.StoragePool provided disk pool based iSCSI datastore.
       text: az vmware datastore disk-pool-volume create --name iSCSIDatastore1 --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud --target-id /subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/ResourceGroup1/providers/Microsoft.StoragePool/diskPools/mpio-diskpool/iscsiTargets/mpio-iscsi-target --lun-name lun0
+"""
+
+helps['vmware datastore elastic-san-volume'] = """
+    type: group
+    short-summary: Create an Elastic SAN volume in a private cloud cluster using Microsoft.ElasticSan provider.
+"""
+
+helps['vmware datastore elastic-san-volume create'] = """
+    type: command
+    short-summary: Create an Elastic SAN volume in a private cloud cluster using Microsoft.ElasticSan provider.
+    examples:
+    - name: Create a new Microsoft.ElasticSan provided Elastic SAN volume based datastore.
+      text: az vmware datastore elastic-san-volume create --name ElasticSANDatastore --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud --elastic-san-volume elasticsan
 """
 
 helps['vmware datastore show'] = """

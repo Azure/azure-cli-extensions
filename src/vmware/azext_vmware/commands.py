@@ -21,7 +21,6 @@ def load_command_table(self, _):
         g.custom_command('delete-cmk-encryption', 'privatecloud_deletecmkenryption', deprecate_info=g.deprecate(redirect='az vmware private-cloud disable-cmk-encryption', hide=True))
         g.custom_command('enable-cmk-encryption', 'privatecloud_addcmkencryption')
         g.custom_command('disable-cmk-encryption', 'privatecloud_deletecmkenryption')
-        g.custom_command('rotate-nsxt-password', 'privatecloud_rotate_nsxt_password')
 
     with self.command_group('vmware private-cloud identity') as g:
         g.custom_command('assign', 'privatecloud_identity_assign')
@@ -45,6 +44,10 @@ def load_command_table(self, _):
     with self.command_group('vmware datastore disk-pool-volume'):
         from .operations.datastore import DatastoreDiskPoolVolumeCreate
         self.command_table['vmware datastore disk-pool-volume create'] = DatastoreDiskPoolVolumeCreate(loader=self)
+
+    with self.command_group('vmware datastore elastic-san-volume'):
+        from .operations.datastore import DatastoreElasticVsanVolumeCreate
+        self.command_table['vmware datastore elastic-san-volume create'] = DatastoreElasticVsanVolumeCreate(loader=self)
 
     with self.command_group('vmware addon vr'):
         from .operations.addon import AddonVrCreate, AddonVrUpdate, AddonVrShow, AddonVrDelete
