@@ -201,7 +201,6 @@ def handle_bastion_properties(cmd, op_info, properties):
         create_bastion(cmd, op_info, vnet_id)
 
     else:
-        print("yes")
         op_info.bastion_name = parse_bastion_name(bastion)
 
 
