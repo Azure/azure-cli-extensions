@@ -12,23 +12,28 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "vmware private-cloud list-admin-credentials",
+    "vmware private-cloud rotate-nsxt-password",
+    confirmation="Any services connected using these credentials will stop working and may cause you to be locked out of your account.\n\nCheck if you're using your cloudadmin credentials for any connected services like backup and disaster recovery appliances, VMware HCX, or any vRealize suite products. Verify you're not using cloudadmin credentials for connected services before generating a new password.\n\nIf you are using cloudadmin for connected services, learn how you can setup a connection to an external identity source to create and manage new credentials for your connected services: https://docs.microsoft.com/en-us/azure/azure-vmware/configure-identity-source-vcenter\n\nPress Y to confirm no services are using my cloudadmin credentials to connect to vCenter",
 )
-class ListAdminCredentials(AAZCommand):
-    """List the admin credentials for the private cloud
+class RotateNsxtPassword(AAZCommand):
+    """Rotate the NSX-T Manager password
+
+    :example: Rotate the NSX-T password
+        az rotate-nsxt-password --resource-group MyResourceGroup --private-cloud MyPrivateCloud
     """
 
     _aaz_info = {
         "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/listadmincredentials", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/rotatensxtpassword", "2023-09-01"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -57,7 +62,7 @@ class ListAdminCredentials(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.PrivateCloudsListAdminCredentials(ctx=self.ctx)()
+        yield self.PrivateCloudsRotateNsxtPassword(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -68,25 +73,37 @@ class ListAdminCredentials(AAZCommand):
     def post_operations(self):
         pass
 
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
-
-    class PrivateCloudsListAdminCredentials(AAZHttpOperation):
+    class PrivateCloudsRotateNsxtPassword(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    None,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [204]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_204,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/listAdminCredentials",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AVS/privateClouds/{privateCloudName}/rotateNsxtPassword",
                 **self.url_parameters
             )
 
@@ -126,55 +143,12 @@ class ListAdminCredentials(AAZCommand):
             }
             return parameters
 
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.nsxt_password = AAZStrType(
-                serialized_name="nsxtPassword",
-                flags={"read_only": True},
-            )
-            _schema_on_200.nsxt_username = AAZStrType(
-                serialized_name="nsxtUsername",
-                flags={"read_only": True},
-            )
-            _schema_on_200.vcenter_password = AAZStrType(
-                serialized_name="vcenterPassword",
-                flags={"read_only": True},
-            )
-            _schema_on_200.vcenter_username = AAZStrType(
-                serialized_name="vcenterUsername",
-                flags={"read_only": True},
-            )
-
-            return cls._schema_on_200
+        def on_204(self, session):
+            pass
 
 
-class _ListAdminCredentialsHelper:
-    """Helper class for ListAdminCredentials"""
+class _RotateNsxtPasswordHelper:
+    """Helper class for RotateNsxtPassword"""
 
 
-__all__ = ["ListAdminCredentials"]
+__all__ = ["RotateNsxtPassword"]
