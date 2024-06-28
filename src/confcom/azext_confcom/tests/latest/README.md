@@ -132,4 +132,5 @@ Test Name | Image Used | Purpose
 ---|---|---
 test_invalid_input_path | mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64 | Input a path that does not exist for the pod.yaml file
 test_invalid_config_map_path | mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64 | Input a path that does not exist for the config-map.yaml file
-test_invalid_settings | mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64 | Input an invalid name for a custom settings file
+test_valid_settings | mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64 | Input a valid path for the pod.yaml with the default config file
+test_print_version | N/A | Print the version of the extension

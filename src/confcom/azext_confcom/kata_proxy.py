@@ -103,7 +103,8 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
             os.chmod(self.policy_bin, st.st_mode | stat.S_IXUSR)
 
     def kata_genpolicy(
-        self, yaml_path,
+        self,
+        yaml_path,
         config_map_file=None,
         outraw=False,
         print_policy=False,
