@@ -534,6 +534,8 @@ def aks_create(
     enable_msi_auth_for_monitoring=True,
     enable_syslog=False,
     data_collection_settings=None,
+    ampls_resource_id=None,
+    enable_high_log_scale_mode=False,
     aci_subnet_name=None,
     appgw_name=None,
     appgw_subnet_cidr=None,
@@ -2007,6 +2009,8 @@ def aks_addon_enable(
     dns_zone_resource_ids=None,
     enable_syslog=False,
     data_collection_settings=None,
+    ampls_resource_id=None,
+    enable_high_log_scale_mode=False
 ):
     return enable_addons(
         cmd,
@@ -2031,6 +2035,8 @@ def aks_addon_enable(
         dns_zone_resource_ids=dns_zone_resource_ids,
         enable_syslog=enable_syslog,
         data_collection_settings=data_collection_settings,
+        ampls_resource_id=ampls_resource_id,
+        enable_high_log_scale_mode=enable_high_log_scale_mode
     )
 
 
@@ -2061,6 +2067,8 @@ def aks_addon_update(
     dns_zone_resource_ids=None,
     enable_syslog=False,
     data_collection_settings=None,
+    ampls_resource_id=None,
+    enable_high_log_scale_mode=False
 ):
     instance = client.get(resource_group_name, name)
     addon_profiles = instance.addon_profiles
@@ -2110,6 +2118,8 @@ def aks_addon_update(
         dns_zone_resource_ids=dns_zone_resource_ids,
         enable_syslog=enable_syslog,
         data_collection_settings=data_collection_settings,
+        ampls_resource_id=ampls_resource_id,
+        enable_high_log_scale_mode=enable_high_log_scale_mode
     )
 
 
@@ -2144,6 +2154,8 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
                 create_dcra=True,
                 enable_syslog=False,
                 data_collection_settings=None,
+                ampls_resource_id=None,
+                enable_high_log_scale_mode=False
             )
     except TypeError:
         pass
@@ -2186,6 +2198,8 @@ def aks_enable_addons(
     dns_zone_resource_ids=None,
     enable_syslog=False,
     data_collection_settings=None,
+    ampls_resource_id=None,
+    enable_high_log_scale_mode=False,
     aks_custom_headers=None,
 ):
     headers = get_aks_custom_headers(aks_custom_headers)
@@ -2223,6 +2237,8 @@ def aks_enable_addons(
         dns_zone_resource_ids=dns_zone_resource_ids,
         enable_syslog=enable_syslog,
         data_collection_settings=data_collection_settings,
+        ampls_resource_id=ampls_resource_id,
+        enable_high_log_scale_mode=enable_high_log_scale_mode
     )
     if (
         CONST_MONITORING_ADDON_NAME in instance.addon_profiles and
@@ -2253,14 +2269,21 @@ def aks_enable_addons(
                 create_dcra=True,
                 enable_syslog=enable_syslog,
                 data_collection_settings=data_collection_settings,
+                ampls_resource_id=ampls_resource_id,
+                enable_high_log_scale_mode=enable_high_log_scale_mode
             )
         else:
             # monitoring addon will use legacy path
             if enable_syslog:
                 raise ArgumentUsageError(
                     "--enable-syslog can not be used without MSI auth.")
+            if enable_high_log_scale_mode:
+                raise ArgumentUsageError(
+                    "--enable-high-log-scale-mode can not be used without MSI auth.")
             if data_collection_settings is not None:
                 raise ArgumentUsageError("--data-collection-settings can not be used without MSI auth.")
+            if ampls_resource_id is not None:
+                raise ArgumentUsageError("--ampls-resource-id can not be used without MSI auth.")
             ensure_container_insights_for_monitoring(
                 cmd,
                 instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
@@ -2333,7 +2356,9 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    dns_zone_resource_ids=None,
                    no_wait=False,  # pylint: disable=unused-argument
                    enable_syslog=False,
-                   data_collection_settings=None):
+                   data_collection_settings=None,
+                   ampls_resource_id=None,
+                   enable_high_log_scale_mode=False):
     ManagedClusterAddonProfile = cmd.get_models(
         "ManagedClusterAddonProfile",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,

@@ -65,7 +65,9 @@ def enable_addons(
     dns_zone_resource_ids=None,
     enable_msi_auth_for_monitoring=True,
     enable_syslog=False,
-    data_collection_settings=None
+    data_collection_settings=None,
+    ampls_resource_id=None,
+    enable_high_log_scale_mode=False,
 ):
     instance = client.get(resource_group_name, name)
     # this is overwritten by _update_addons(), so the value needs to be recorded here
@@ -102,6 +104,8 @@ def enable_addons(
         dns_zone_resource_ids=dns_zone_resource_ids,
         enable_syslog=enable_syslog,
         data_collection_settings=data_collection_settings,
+        ampls_resource_id=ampls_resource_id,
+        enable_high_log_scale_mode=enable_high_log_scale_mode
     )
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
@@ -124,7 +128,9 @@ def enable_addons(
                 create_dcr=True,
                 create_dcra=True,
                 enable_syslog=enable_syslog,
-                data_collection_settings=data_collection_settings
+                data_collection_settings=data_collection_settings,
+                ampls_resource_id=ampls_resource_id,
+                enable_high_log_scale_mode=enable_high_log_scale_mode
             )
         else:
             # monitoring addon will use legacy path
