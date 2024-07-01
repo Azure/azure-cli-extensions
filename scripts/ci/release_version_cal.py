@@ -28,6 +28,7 @@ pr_label_list = [name.lower().strip().strip('"').strip("'") for name in json.loa
 
 DEFAULT_VERSION = "0.0.0"
 INIT_RELEASE_VERSION = "1.0.0b1"
+DEFAULT_MESSAGE = " - For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)"
 block_pr = 0
 
 cli_ext_path = get_ext_repo_paths()[0]
@@ -60,7 +61,7 @@ def extract_module_version_update_info(mod_update_info, mod):
     --- a/src/monitor-control-service/HISTORY.RST
     """
     mod_update_info["version_updated"] = False
-    module_py_update_pattern = re.compile(r"\+\+\+.*?src/%s/.*.py" % mod)
+    module_py_update_pattern = re.compile(r"\+\+\+.*?src/%s/.*?\.py" % mod)
     module_version_update_pattern = re.compile(r"\+\s?VERSION\s?\=\s?[\'\"]([0-9\.b]+)[\'\"]")
     isPyFile = False
     with open(diff_code_file, "r") as f:
@@ -295,7 +296,7 @@ def add_label_hint_message(comment_message):
     comment_message.append(" - Major/minor/patch/pre increment of version number is calculated by pull request "
                            "code changes automatically. "
                            "If needed, please add `major`/`minor`/`patch`/`pre` label to adjust it.")
-    comment_message.append(" - For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
+    comment_message.append(DEFAULT_MESSAGE)
 
 
 def save_comment_message(file_name, comment_message):
@@ -319,13 +320,13 @@ def main():
     comment_message = []
     modules_update_info = {}
     if len(changed_module_list) == 0:
-        comment_message.append("For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
+        comment_message.append(DEFAULT_MESSAGE)
         save_comment_message(output_file, comment_message)
         save_gh_output()
         return
     fill_module_update_info(modules_update_info)
     if len(modules_update_info) == 0:
-        comment_message.append("For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
+        comment_message.append(DEFAULT_MESSAGE)
         save_comment_message(output_file, comment_message)
         save_gh_output()
         return
@@ -335,7 +336,7 @@ def main():
         add_suggest_header(comment_message)
         add_label_hint_message(comment_message)
     else:
-        comment_message.append("For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
+        comment_message.append(DEFAULT_MESSAGE)
     print("comment_message:")
     print(comment_message)
     print("block_pr:", block_pr)
