@@ -7,6 +7,7 @@
 # pylint: disable=line-too-long
 import os
 import re
+import json
 from packaging.version import parse
 
 from azdev.utilities.path import get_cli_repo_path, get_ext_repo_paths
@@ -22,8 +23,8 @@ output_file = os.environ.get('output_file', None)
 changed_module_list = os.environ.get('changed_module_list', "").split()
 diff_code_file = os.environ.get('diff_code_file', "")
 print("diff_code_file:", diff_code_file)
-pr_label_list = os.environ.get('pr_label_list', "").split()
-pr_label_list = [name.lower().strip().strip('"').strip("'") for name in pr_label_list]
+pr_label_list = os.environ.get('pr_label_list', "")
+pr_label_list = [name.lower().strip().strip('"').strip("'") for name in json.loads(pr_label_list)]
 
 DEFAULT_VERSION = "0.0.0"
 INIT_RELEASE_VERSION = "1.0.0b1"
