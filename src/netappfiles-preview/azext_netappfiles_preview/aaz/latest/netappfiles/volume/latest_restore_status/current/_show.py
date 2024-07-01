@@ -12,17 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "netappfiles volume latest-backup-status current show",
-    is_preview=True,
+    "netappfiles volume latest-restore-status current show",
 )
 class Show(AAZCommand):
-    """Get the latest status of the backup for a volume
+    """List the latest status of the restore for a volume
     """
 
     _aaz_info = {
         "version": "2023-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/capacitypools/{}/volumes/{}/latestbackupstatus/current", "2023-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/capacitypools/{}/volumes/{}/latestrestorestatus/current", "2023-07-01-preview"],
         ]
     }
 
@@ -43,7 +42,7 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.account_name = AAZStrArg(
-            options=["-a", "--account-name"],
+            options=["--account-name"],
             help="The name of the NetApp account",
             required=True,
             id_part="name",
@@ -52,7 +51,7 @@ class Show(AAZCommand):
             ),
         )
         _args_schema.pool_name = AAZStrArg(
-            options=["-p", "--pool-name"],
+            options=["--pool-name"],
             help="The name of the capacity pool",
             required=True,
             id_part="child_name_1",
@@ -80,7 +79,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.BackupsGetLatestStatus(ctx=self.ctx)()
+        self.BackupsGetVolumeLatestRestoreStatus(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -92,10 +91,10 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         return result
 
-    class BackupsGetLatestStatus(AAZHttpOperation):
+    class BackupsGetVolumeLatestRestoreStatus(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -109,7 +108,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/capacityPools/{poolName}/volumes/{volumeName}/latestBackupStatus/current",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/capacityPools/{poolName}/volumes/{volumeName}/latestRestoreStatus/current",
                 **self.url_parameters
             )
 
@@ -191,14 +190,6 @@ class Show(AAZCommand):
             _schema_on_200.healthy = AAZBoolType(
                 flags={"read_only": True},
             )
-            _schema_on_200.last_transfer_size = AAZIntType(
-                serialized_name="lastTransferSize",
-                flags={"read_only": True},
-            )
-            _schema_on_200.last_transfer_type = AAZStrType(
-                serialized_name="lastTransferType",
-                flags={"read_only": True},
-            )
             _schema_on_200.mirror_state = AAZStrType(
                 serialized_name="mirrorState",
                 flags={"read_only": True},
@@ -209,10 +200,6 @@ class Show(AAZCommand):
             )
             _schema_on_200.total_transfer_bytes = AAZIntType(
                 serialized_name="totalTransferBytes",
-                flags={"read_only": True},
-            )
-            _schema_on_200.transfer_progress_bytes = AAZIntType(
-                serialized_name="transferProgressBytes",
                 flags={"read_only": True},
             )
             _schema_on_200.unhealthy_reason = AAZStrType(

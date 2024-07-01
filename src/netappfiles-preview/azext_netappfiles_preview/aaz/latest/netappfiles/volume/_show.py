@@ -13,16 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "netappfiles volume show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get the details of the specified volume
+
+    :example: Returns the properties of the given ANF volume
+        az netappfiles volume show -g mygroup --account-name myaccname --pool-name mypoolname --name myvolname
     """
 
     _aaz_info = {
-        "version": "2022-11-01-preview",
+        "version": "2023-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/capacitypools/{}/volumes/{}", "2022-11-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/capacitypools/{}/volumes/{}", "2023-07-01-preview"],
         ]
     }
 
@@ -151,7 +153,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-01-preview",
+                    "api-version", "2023-07-01-preview",
                     required=True,
                 ),
             }
@@ -236,6 +238,9 @@ class Show(AAZCommand):
             properties.cool_access = AAZBoolType(
                 serialized_name="coolAccess",
             )
+            properties.cool_access_retrieval_policy = AAZStrType(
+                serialized_name="coolAccessRetrievalPolicy",
+            )
             properties.coolness_period = AAZIntType(
                 serialized_name="coolnessPeriod",
             )
@@ -277,6 +282,11 @@ class Show(AAZCommand):
             )
             properties.file_system_id = AAZStrType(
                 serialized_name="fileSystemId",
+                flags={"read_only": True},
+            )
+            properties.inherited_size_in_bytes = AAZIntType(
+                serialized_name="inheritedSizeInBytes",
+                nullable=True,
                 flags={"read_only": True},
             )
             properties.is_default_quota_enabled = AAZBoolType(
@@ -343,6 +353,7 @@ class Show(AAZCommand):
             )
             properties.smb_access_based_enumeration = AAZStrType(
                 serialized_name="smbAccessBasedEnumeration",
+                nullable=True,
             )
             properties.smb_continuously_available = AAZBoolType(
                 serialized_name="smbContinuouslyAvailable",
@@ -421,6 +432,9 @@ class Show(AAZCommand):
             replication.endpoint_type = AAZStrType(
                 serialized_name="endpointType",
             )
+            replication.remote_path = AAZObjectType(
+                serialized_name="remotePath",
+            )
             replication.remote_volume_region = AAZStrType(
                 serialized_name="remoteVolumeRegion",
             )
@@ -430,9 +444,24 @@ class Show(AAZCommand):
             )
             replication.replication_id = AAZStrType(
                 serialized_name="replicationId",
+                flags={"read_only": True},
             )
             replication.replication_schedule = AAZStrType(
                 serialized_name="replicationSchedule",
+            )
+
+            remote_path = cls._schema_on_200.properties.data_protection.replication.remote_path
+            remote_path.external_host_name = AAZStrType(
+                serialized_name="externalHostName",
+                flags={"required": True},
+            )
+            remote_path.server_name = AAZStrType(
+                serialized_name="serverName",
+                flags={"required": True},
+            )
+            remote_path.volume_name = AAZStrType(
+                serialized_name="volumeName",
+                flags={"required": True},
             )
 
             snapshot = cls._schema_on_200.properties.data_protection.snapshot

@@ -12,12 +12,12 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "netappfiles volume",
+    "netappfiles volume latest-restore-status current",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage Azure NetApp Files (ANF) Volume Resources.
+    """Get the latest restore status of a volume
 
-    Generated Create update delete operations for Azure NetApp Files (ANF) Volumes
+    Get the latest status of the restore for a volume
     """
     pass
 

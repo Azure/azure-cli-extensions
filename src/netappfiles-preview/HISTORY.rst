@@ -2,6 +2,11 @@
 
 Release History
 ===============
+0.4.3
++++++
+Support for api-version 2023-07-01-preview
+Add command `netappfiles volume latest-restore-status current show` to show status of backup restore operation for volume
+
 0.4.2
 +++++
 Support for api-version 2022-11-01-preview
