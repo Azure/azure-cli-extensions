@@ -78,12 +78,12 @@ CONTINUOSPATCH_TASK_DEFINITION = {
     CONTINUOSPATCH_TASK_SCANIMAGE_NAME:
         {
             "parameter_name": "imageScanningEncodedTask",
-            "template_file": f"task/cssc_scan_image.yaml"
+            "template_file": "task/cssc_scan_image.yaml"
         },
     CONTINUOSPATCH_TASK_SCANREGISTRY_NAME:
         {
             "parameter_name": "registryScanningEncodedTask",
-            "template_file": f"task/cssc_trigger_workflow.yaml"
+            "template_file": "task/cssc_trigger_workflow.yaml"
         },
 }
 CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT = 1024 * 1024 * 10  # 10MB, we don't want to allow huge files

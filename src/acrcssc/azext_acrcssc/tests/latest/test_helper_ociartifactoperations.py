@@ -1,3 +1,8 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 import tempfile
 import unittest
 from unittest import mock
@@ -52,7 +57,7 @@ class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
 
         # Assert the function calls
         mock_parse_resource_id.assert_called_once_with(registry.id)
-        mock_get_acr_token.assert_called_once_with(registry.name, "test_rg", "test_subscription")
+        mock_get_acr_token.assert_called_once_with(registry.name, "test_subscription")
         mock_acr_repository_delete.assert_called_once_with(
             cmd=cmd,
             registry_name=registry.name,
@@ -108,7 +113,7 @@ class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
 
         # Assert the function calls
         mock_parse_resource_id.assert_called_once_with(registry.id)
-        mock_get_acr_token.assert_called_once_with(registry.name, "test_rg", "test_subscription")
+        mock_get_acr_token.assert_called_once_with(registry.name, "test_subscription")
         mock_logger.warning.assert_not_called()
 
     def _setup_cmd(self):

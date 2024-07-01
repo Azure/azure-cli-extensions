@@ -1,3 +1,8 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 import tempfile
 import unittest
 from unittest import mock
@@ -135,7 +140,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         mock_blob_service.get_blob_to_text.content.return_value = "sample text"
         mock_get_sdk.return_value = mock_blob_service
         # Call the function
-        generate_logs(cmd, client, run_id, registry_name, resource_group_name, timeout, no_format, raise_error_on_failure)
+        generate_logs(cmd, client, run_id, registry_name, resource_group_name, timeout)
 
         # Assert the function calls
         client.get_log_sas_url.assert_called_once_with(resource_group_name=resource_group_name, registry_name=registry_name, run_id=run_id)

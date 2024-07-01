@@ -25,7 +25,7 @@ class AcrcsscScenarioTest(ScenarioTest):
         })
 
         self.cmd('az acr create -g {rg} -n {registry} --sku Basic')
-        self.cmd('az acr supply-chain workflow create -g {rg} -t {taskType} -r {registry} --config {configpath} --cadence {cadence} --defer-immediate-run True'.format(**self.kwargs))
+        self.cmd('az acr supply-chain workflow create -g {rg} -t {taskType} -r {registry} --config {configpath} --cadence {cadence} --defer-immediate-run'.format(**self.kwargs))
         cssc_tasks = self.cmd('az acr supply-chain workflow show -g {rg} -t {taskType} -r {registry}').get_output_in_json()
         # Verify all the cssc tasks are created
         assert len(cssc_tasks) == 3
