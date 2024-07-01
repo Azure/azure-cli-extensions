@@ -2,6 +2,10 @@
 
 Release History
 ===============
+2.0.4
+++++++
+* Fix PostgreSQL connection string format
+
 2.0.3
 ++++++
 * Prompt confirmation when update PostgreSQL server
