@@ -65,7 +65,7 @@ def enable_storage_class(cmd: AzCliCommand, resource_uri: str):
                 type="SystemAssigned"
             ),
             extension_type=STORAGE_CLASS_EXTENSION_TYPE,
-            release_train="dev",
+            release_train="preview",
             configuration_settings={
                 "k8sRuntimeFpaObjectId": object_id,
             },
