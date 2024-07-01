@@ -2973,9 +2973,11 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # on the k8s version being used. The CLI should not be responsible
         # for setting default values and should pass properties as empty
         # unless specified by the user.
-        if (network_profile.network_plugin is not None and
+        if (
+            network_profile.network_plugin is not None and
             self.context.raw_param.get("network_plugin") is None and
-            self.context.decorator_mode == DecoratorMode.CREATE):
+            self.context.decorator_mode == DecoratorMode.CREATE
+        ):
             self.mc.network_profile.network_plugin = ""
 
         # set up pod_cidrs, service_cidrs and ip_families
