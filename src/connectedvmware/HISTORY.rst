@@ -4,7 +4,7 @@ Release History
 ===============
 1.1.1
 ++++++
-* `create-from-machines` : Search for BIOS IDs with both Little Endian and Big Endian format.
+* `create-from-machines` : Search for BIOS IDs with both Little Endian and Middle Endian format.
 
 1.1.0
 ++++++
