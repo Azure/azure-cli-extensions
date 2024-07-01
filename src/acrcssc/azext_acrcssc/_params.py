@@ -30,4 +30,3 @@ def load_arguments(self: AzCommandsLoader, _):
         c.argument("cadence", options_list=["--cadence"], help="Cadence to run the scan and patching task. E.g. `<n>d` where n is the number of days between each run.", required=True)
         c.argument("defer_immediate_run", options_list=["--defer-immediate-run"], help="Use this flag to defer immediately running of selected workflow task. Default value: false.", arg_type=get_three_state_flag(), required=False)
         c.argument("dryrun", options_list=["--dry-run"], help="Use this flag to see the qualifying repositories and tags that would be affected by the workflow. Default value: false. 'config' parameter is mandatory to provide with dry-run", arg_type=get_three_state_flag(), required=False)
-
