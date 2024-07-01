@@ -31,10 +31,10 @@ class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
         # Call the function
         with patch('os.path.exists', return_value=True), \
              patch('os.remove', return_value=True):
-             create_oci_artifact_continuous_patch(cmd, registry, cssc_config_file, dryrun)
+             create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun)
 
         # Assert that the necessary functions were called with the correct arguments
-        mock_oras_client.assert_called_once_with(cmd, registry)
+        mock_oras_client.assert_called_once_with(registry)
         oras_client.push.assert_called_once_with(target='csscpolicies/patchpolicy:v1', files=[temp_artifact.name])
 
     @mock.patch('azext_acrcssc.helper._ociartifactoperations._get_acr_token')
