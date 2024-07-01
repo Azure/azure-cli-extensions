@@ -65,3 +65,7 @@ Release History
 1.3.4
 ++++++
 * `az grafana dashboard sync`: use case-insensitive comparison for library panel folders
+
+1.3.5
+++++++
+* `az grafana dashboard sync`: fix version mismatch issue for library panel sync
