@@ -196,6 +196,7 @@ def _do_ssh_op(cmd, op_info, op_call):
                     (op_info.relay_info, op_info.new_service_config) = connectivity_utils.get_relay_information(
                         cmd, op_info.resource_group_name, op_info.vm_name, op_info.resource_type,
                         cert_lifetime, op_info.port, op_info.yes_without_prompt)
+                op_call(op_info, delete_keys, delete_cert)
     except Exception as e:
         if delete_keys or delete_cert:
             logger.debug("An error occurred before operation concluded. Deleting generated keys: %s %s %s",
@@ -205,7 +206,6 @@ def _do_ssh_op(cmd, op_info, op_call):
             ssh_utils.do_cleanup(delete_keys, delete_cert, op_info.delete_credentials, op_info.cert_file,
                                 op_info.private_key_file, op_info.public_key_file)
         raise e
-    op_call(op_info, delete_keys, delete_cert)
 
 
 
