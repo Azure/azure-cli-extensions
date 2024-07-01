@@ -82,12 +82,12 @@ def start_rdp_connection(ssh_info, delete_keys, delete_cert):
 
 
 def call_rdp(local_port):
-    from . import _process_helper
     if platform.system() == 'Windows':
         print_styled_text((Style.SUCCESS, "Launching Remote Desktop Connection"))
         print_styled_text((Style.IMPORTANT, "To close this session, close the Remote Desktop Connection window."))
         command = [_get_rdp_path(), f"/v:localhost:{local_port}"]
-        _process_helper.launch_and_wait(command)
+        process = subprocess.Popen(command)
+        process.wait()
 
 
 def is_local_port_open(local_port):
