@@ -105,13 +105,16 @@ def ssh_bastion_host(cmd, op_info, delete_keys, delete_cert):
                          "-o", "UserKnownHostsFile=/dev/null",
                          "-o", "LogLevel=Error"])
                          
-
     try:
-        subprocess.call(ssh_utils.start_ssh_connection(op_info, delete_keys, delete_cert))
+        ssh_thread = threading.Thread(target=ssh_utils.start_ssh_connection, args=(op_info, delete_keys, delete_cert))
+        ssh_thread.daemon = True
+        ssh_thread.start()
+
     except Exception as ex:
         raise azclierror.CLIInternalError(ex) from ex
     finally:
         tunnel_server.cleanup()
+        
 
 
 def _get_data_pod(cmd, port, target_resource_id, bastion):
