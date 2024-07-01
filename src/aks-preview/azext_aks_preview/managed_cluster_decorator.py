@@ -2968,6 +2968,16 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = super().set_up_network_profile(mc)
         network_profile = mc.network_profile
 
+        # network_plugin is typically defaulted to kubenet. AKS-RP is moving
+        # away from specifying this default in the API and making it based
+        # on the k8s version being used. The CLI should not be responsible
+        # for setting default values and should pass properties as empty
+        # unless specified by the user.
+        if (network_profile.network_plugin is not None and
+            self.context.raw_param.get("network_plugin") is None and
+            self.context.decorator_mode == DecoratorMode.CREATE):
+            self.mc.network_profile.network_plugin = ""
+
         # set up pod_cidrs, service_cidrs and ip_families
         (
             pod_cidrs,
