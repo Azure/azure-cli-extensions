@@ -53,27 +53,30 @@ def extract_module_history_update_info(mod_update_info, mod):
 def extract_module_version_update_info(mod_update_info, mod):
     """
     re pattern:
-    --- a/src/monitor-control-service/setup.py
-    +++ b/src/monitor-control-service/setup.py
+    --- a/src/monitor-control-service/*.py
+    +++ b/src/monitor-control-service/*.py
     -VERSION = '1.0.1'
     +VERSION = '1.1.1'
     --- a/src/monitor-control-service/HISTORY.RST
     """
-    mod_update_info["setup_updated"] = False
-    module_setup_update_pattern = re.compile(r"\+\+\+.*?src/%s/setup.py" % mod)
+    mod_update_info["version_updated"] = False
+    module_py_update_pattern = re.compile(r"\+\+\+.*?src/%s/.*.py" % mod)
     module_version_update_pattern = re.compile(r"\+\s?VERSION\s?\=\s?[\'\"]([0-9\.b]+)[\'\"]")
+    isPyFile = False
     with open(diff_code_file, "r") as f:
         for line in f:
-            if mod_update_info["setup_updated"]:
-                if line.find("---") == 0 or mod_update_info.get("version_diff", None):
-                    break
+            if isPyFile:
+                if line.find("---") == 0:
+                    isPyFile = False
+                    continue
                 mod_version_update_match = re.findall(module_version_update_pattern, line)
                 if mod_version_update_match and len(mod_version_update_match) == 1:
                     mod_update_info["version_diff"] = mod_version_update_match[0]
+                    mod_update_info["version_updated"] = True
             else:
-                mod_setup_update_match = re.findall(module_setup_update_pattern, line)
-                if mod_setup_update_match:
-                    mod_update_info["setup_updated"] = True
+                mod_py_update_match = re.findall(module_py_update_pattern, line)
+                if mod_py_update_match:
+                    isPyFile = True
 
 
 def extract_module_metadata_update_info(mod_update_info, mod):
@@ -206,7 +209,7 @@ def gen_history_comment_message(mod, mod_update_info, mod_message):
 
 def gen_version_comment_message(mod, mod_update_info, mod_message):
     global block_pr
-    if not mod_update_info["setup_updated"]:
+    if not mod_update_info["version_updated"]:
         if mod_update_info.get("version", None):
             mod_message.append(" - Update `VERSION` to `{0}` in `src/{1}/setup.py`".format(mod_update_info.get("version", "-"), mod))
     else:
@@ -227,7 +230,7 @@ def gen_preview_comment_message(mod, mod_update_info, mod_message):
     if mod_update_info.get("preview_tag", "-") == mod_update_info.get("preview_tag_diff", "-"):
         return
     preview_comment_message = " - "
-    if mod_update_info["setup_updated"] and mod_update_info.get("version_diff", None):
+    if mod_update_info["version_updated"] and mod_update_info.get("version_diff", None):
         block_pr = 1
         preview_comment_message += ":warning: "
     if mod_update_info.get("preview_tag", None) and mod_update_info.get("preview_tag_diff", None):
@@ -253,7 +256,7 @@ def gen_exp_comment_message(mod, mod_update_info, mod_message):
     if mod_update_info.get("exp_tag", "-") == mod_update_info.get("exp_tag_diff", "-"):
         return
     exp_comment_message = " - "
-    if mod_update_info["setup_updated"]:
+    if mod_update_info["version_updated"]:
         block_pr = 1
         exp_comment_message += ":warning: "
     if mod_update_info.get("exp_tag", None) and mod_update_info.get("exp_tag_diff", None):
