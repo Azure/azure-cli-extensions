@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.5.1
++++++
+* Added support for multi-user authentication for CMK encryption changes
+
 1.5.0
 +++++
 * Support for vaulted backup for AKS

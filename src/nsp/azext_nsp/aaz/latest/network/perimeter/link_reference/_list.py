@@ -190,7 +190,9 @@ class List(AAZCommand):
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )

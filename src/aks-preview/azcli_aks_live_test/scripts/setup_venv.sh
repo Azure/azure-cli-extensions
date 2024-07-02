@@ -67,14 +67,6 @@ installAZAKSTOOLFromLocal(){
     pip show az-aks-tool
 }
 
-# need to be executed in a venv
-installAZAKSTOOL(){
-    wheel_file="az_aks_tool-latest-py3-none-any.whl"
-    wheel_url="https://akspreview.blob.core.windows.net/azakstool/${wheel_file}"
-    curl -sLO "${wheel_url}"
-    installAZAKSTOOLFromLocal "${wheel_file}"
-}
-
 # need to be executed in a venv with kusto related modules installed
 removeKustoPTHFile(){
     pushd azEnv/lib/python"${PYTHON_VERSION}"/site-packages
@@ -149,13 +141,8 @@ if [[ -n ${setup_option} ]]; then
         installBuildTools
     elif [[ ${setup_option} == "setup-tool" ]]; then
         echo "Start to setup az-aks-tool!"
-        local_setup=${3:-"n"}
-        if [[ ${local_setup} == "y" ]]; then
-            wheel_file=${4:-"/az_aks_tool-latest-py3-none-any.whl"}
-            installAZAKSTOOLFromLocal "${wheel_file}"
-        else
-            installAZAKSTOOL
-        fi
+        wheel_file=${3:-$(find / -type f -name "az_aks_tool*" | head -n 1)}
+        installAZAKSTOOLFromLocal "${wheel_file}"
         removeKustoPTHFile
     elif [[ ${setup_option} == "setup-az" ]]; then
         echo "Start to setup azure-cli!"

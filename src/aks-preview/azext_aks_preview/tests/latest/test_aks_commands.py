@@ -4647,6 +4647,129 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus2euap"
+    )
+    def test_aks_create_update_fips_flow(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        node_pool_name = self.create_random_name("c", 6)
+        node_pool_name_second = self.create_random_name("c", 6)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "dns_name_prefix": self.create_random_name("cliaksdns", 16),
+                "location": resource_group_location,
+                "resource_type": "Microsoft.ContainerService/ManagedClusters",
+                "node_pool_name": node_pool_name,
+                "node_pool_name_second": node_pool_name_second,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # 1. create
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--nodepool-name {node_pool_name} -c 1 --enable-managed-identity "
+            "--ssh-key-value={ssh_key_value} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MutableFipsPreview '
+            "--enable-fips-image"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("agentPoolProfiles[0].enableFips", True),
+            ],
+        )
+
+        # verify no flag no change
+        self.cmd(
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={node_pool_name} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MutableFipsPreview',
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableFips", True),
+            ],
+        )
+
+        # verify same update no change
+        self.cmd(
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={node_pool_name} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MutableFipsPreview '
+            "--enable-fips-image",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableFips", True),
+            ],
+        )
+
+        # update nodepool1 to disable
+        self.cmd(
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={node_pool_name} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MutableFipsPreview '
+            "--disable-fips-image",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableFips", False),
+            ],
+        )
+
+        # 2. add nodepool2
+        self.cmd(
+            "aks nodepool add "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={node_pool_name_second} "
+            "--os-type Linux "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MutableFipsPreview ',
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableFips", False),
+            ],
+        )
+
+        # verify no flag no change
+        self.cmd(
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={node_pool_name_second} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MutableFipsPreview',
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableFips", False),
+            ],
+        )
+
+        # verify same update no change
+        self.cmd(
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={node_pool_name_second} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MutableFipsPreview '
+            "--disable-fips-image",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableFips", False),
+            ],
+        )
+
+        # update nodepool2 to enable
+        self.cmd(
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={node_pool_name_second} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MutableFipsPreview '
+            "--enable-fips-image",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableFips", True),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
     def test_aks_create_with_ahub(self, resource_group, resource_group_location):
@@ -10943,6 +11066,61 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
+    def test_aks_create_with_azurecontainerstorage_with_ephemeral_disk_parameters(
+        self, resource_group, resource_group_location
+    ):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+        aks_name = self.create_random_name("cliakstest", 16)
+
+        node_vm_size = "standard_l8s_v3"
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "resource_type": "Microsoft.ContainerService/ManagedClusters",
+                "ssh_key_value": self.generate_ssh_keys(),
+                "node_vm_size": node_vm_size,
+            }
+        )
+
+        # add k8s-extension extension for azurecontainerstorage operations.
+        self.cmd("extension add --name k8s-extension")
+
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} "
+            "--node-count 3 --enable-managed-identity --enable-azure-container-storage ephemeralDisk --storage-pool-option NVMe "
+            "--ephemeral-disk-volume-type EphemeralVolumeOnly --ephemeral-disk-nvme-perf-tier Premium --output=json"
+        )
+
+        # enabling azurecontainerstorage will not affect any field in the cluster.
+        # the only check we should perform is to verify that the cluster is provisioned successfully.
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        # delete
+        cmd = (
+            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait"
+        )
+        self.cmd(
+            cmd,
+            checks=[
+                self.is_empty(),
+            ],
+        )
+
+    # live only due to downloading k8s-extension extension
+    @live_only()
+    @AllowLargeResponse(8192)
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
     def test_aks_create_with_azurecontainerstorage_with_nodepool_name(
         self, resource_group, resource_group_location
     ):
@@ -11141,6 +11319,60 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update: enable-azure-container-storage
         update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
                      '--enable-azure-container-storage azureDisk'
+
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # Sleep for 5 mins before next operation,
+        # since azure container storage operations take
+        # some time to post process.
+        time.sleep(5 * 60)
+
+        # update: disable-azure-container-storage
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
+                     '--disable-azure-container-storage all'
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # delete
+        cmd = 'aks delete --resource-group={resource_group} --name={name} --yes --no-wait'
+        self.cmd(cmd, checks=[
+            self.is_empty(),
+        ])
+
+    @live_only()
+    @AllowLargeResponse(8192)
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_update_with_azurecontainerstorage_with_ephemeral_disk_parameters(self, resource_group, resource_group_location):
+        aks_name = self.create_random_name('cliakstest', 16)
+        node_vm_size = 'standard_l8s_v3'
+        self.kwargs.update({
+            'resource_group': resource_group,
+            'name': aks_name,
+            'location': resource_group_location,
+            'ssh_key_value': self.generate_ssh_keys(),
+            'node_vm_size': node_vm_size,
+        })
+
+        # add k8s-extension extension for azurecontainerstorage operations.
+        self.cmd('extension add --name k8s-extension')
+
+        # create: without enable-azure-container-storage
+        create_cmd = 'aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --node-count 3 --enable-managed-identity --output=json'
+        self.cmd(create_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+        ])
+
+        # enabling or disabling azurecontainerstorage will not affect any field in the cluster.
+        # the only check we should perform is to verify that the cluster is provisioned successfully.
+
+        # update: enable-azure-container-storage
+        update_cmd = 'aks update --resource-group={resource_group} --name={name} --yes --output=json ' \
+                     '--enable-azure-container-storage ephemeralDisk --storage-pool-option NVMe ' \
+                     '--ephemeral-disk-volume-type PersistentVolumeWithAnnotation ' \
+                     '--ephemeral-disk-nvme-perf-tier Standard'
 
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
