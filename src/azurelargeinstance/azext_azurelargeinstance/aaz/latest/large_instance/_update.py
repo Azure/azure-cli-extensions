@@ -19,7 +19,7 @@ class Update(AAZCommand):
 subscription, resource group, and instance name.
 
     :example: To add an Azure Large Instance tag
-        az large-instance update --subscription $SUBSCRIPTION_ID --instance-name=$INSTANCE_NAME --resource-group=$RESOURCE_GROUP --tags
+        az large-instance update --instance-name=$INSTANCE_NAME --resource-group=$RESOURCE_GROUP --tags newKey=value
     """
 
     _aaz_info = {
