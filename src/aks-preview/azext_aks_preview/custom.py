@@ -1889,6 +1889,7 @@ def aks_operation_list(cmd,
                        name,):
     return client.list(resource_group_name, name)
 
+
 def aks_operation_abort(cmd,   # pylint: disable=unused-argument
                         client,
                         resource_group_name,
@@ -1900,6 +1901,7 @@ def aks_operation_abort(cmd,   # pylint: disable=unused-argument
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
         operation_group="managed_clusters",
     )
+
 
     instance = client.get(resource_group_name, name)
     power_state = PowerState(code="Running")

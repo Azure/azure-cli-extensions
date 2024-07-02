@@ -73,8 +73,11 @@ def aks_machine_show_table_format(result):
 def aks_operation_show_table_format(result):
     def parser(entry):
         percentComplete = ""
-        if entry["percentComplete"]:
-            percentComplete = str(entry["percentComplete"]) + "%"
+        if entry["status"].lower() == "succeeded":
+            entry["percentComplete"] = "100"
+        if entry["percentComplete"] == "":
+            entry["percentComplete"] = "0"
+        percentComplete = str(entry["percentComplete"]) + "%"
         entry["percentComplete"] = percentComplete
         parsed = compile_jmes("""{
                 name: name,
@@ -85,6 +88,10 @@ def aks_operation_show_table_format(result):
             }""")
         return parsed.search(entry, Options(dict_cls=OrderedDict))
     return parser(result)
+
+
+def aks_operation_list_table_format(result):
+    return [aks_operation_show_table_format(r) for r in result]
 
 
 def aks_agentpool_show_table_format(result):
