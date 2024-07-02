@@ -205,9 +205,7 @@ class Create(AAZCommand):
             )
             _schema_on_200_201.location = AAZStrType()
             _schema_on_200_201.name = AAZStrType()
-            _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200_201.properties = AAZObjectType()
             _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
