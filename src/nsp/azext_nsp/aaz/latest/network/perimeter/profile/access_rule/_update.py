@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "network perimeter profile access-rule update",
 )
 class Update(AAZCommand):
-    """Updates a network access rule.
+    """Creates or updates a network access rule.
 
     :example: Update access rule
         az network perimeter profile access-rule update -n MyAccessRule --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup --address-prefixes "[10.10.0.0/16]"
@@ -203,7 +203,7 @@ class Update(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
     class NspAccessRulesGet(AAZHttpOperation):
