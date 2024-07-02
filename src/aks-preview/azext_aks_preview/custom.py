@@ -1883,6 +1883,7 @@ def aks_operation_show_latest(cmd,
         return client.get_by_agent_pool(resource_group_name, name, nodepool_name, "latest")
     return client.get(resource_group_name, name, "latest")
 
+
 def aks_operation_list(cmd,
                        client,
                        resource_group_name,
