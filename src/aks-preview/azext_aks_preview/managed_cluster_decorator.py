@@ -2975,8 +2975,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # unless specified by the user.
         if (
             network_profile.network_plugin is not None and
-            self.context.raw_param.get("network_plugin") is None and
-            self.context.decorator_mode == DecoratorMode.CREATE
+            self.context.raw_param.get("network_plugin") is None
         ):
             self.mc.network_profile.network_plugin = ""
 
