@@ -85,6 +85,60 @@ class AppDeploy(ScenarioTest):
         with self.assertRaisesRegexp(CLIError, "112404: Exit code 0: purposely stopped"):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v2 --runtime-version NetCore_31 --main-entry test')
 
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
+    @SpringAppNamePreparer()
+    def test_deploy_app_2(self, resource_group, spring, app):
+        py_path = os.path.abspath(os.path.dirname(__file__))
+        file_path = os.path.join(py_path, 'files/test1.jar').replace("\\", "/")
+        self.kwargs.update({
+            'app': app,
+            'serviceName': spring,
+            'rg': resource_group,
+            'file': file_path
+        })
+
+        self.cmd('spring app create -n {app} -g {rg} -s {serviceName} --cpu 2  --env "foo=bar" --runtime-version Java_11', checks=[
+            self.check('name', '{app}'),
+            self.check('properties.activeDeployment.name', 'default'),
+            self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.cpu', '2'),
+            self.check('properties.activeDeployment.sku.capacity', 1),
+            self.check('properties.activeDeployment.properties.source.type', 'Jar'),
+            self.check('properties.activeDeployment.properties.source.runtimeVersion', 'Java_11'),
+            self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
+        ])
+
+        # deploy unexist file, the fail is expected
+        with self.assertRaisesRegexp(CLIError, "artifact path {} does not exist.".format(file_path)):
+            self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v3')
+
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
+    @SpringAppNamePreparer()
+    def test_deploy_app_3(self, resource_group, spring, app):
+        py_path = os.path.abspath(os.path.dirname(__file__))
+        file_path = os.path.join(py_path, 'files/test1.jar').replace("\\", "/")
+        self.kwargs.update({
+            'app': app,
+            'serviceName': spring,
+            'rg': resource_group,
+            'file': file_path
+        })
+
+        self.cmd('spring app create -n {app} -g {rg} -s {serviceName} --cpu 2  --env "foo=bar" --runtime-version Java_11', checks=[
+            self.check('name', '{app}'),
+            self.check('properties.activeDeployment.name', 'default'),
+            self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.cpu', '2'),
+            self.check('properties.activeDeployment.sku.capacity', 1),
+            self.check('properties.activeDeployment.properties.source.type', 'Jar'),
+            self.check('properties.activeDeployment.properties.source.runtimeVersion', 'Java_11'),
+            self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
+        ])
+
+        # deploy unexist file, the fail is expected
+        with self.assertRaisesRegexp(CLIError, "artifact path {} does not exist.".format(file_path)):
+            self.cmd('spring app deployment create -n green --app {app} -g {rg} -s {serviceName} --instance-count 2 --artifact-path {file}')
+
 
 class AppCRUD(ScenarioTest):
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
