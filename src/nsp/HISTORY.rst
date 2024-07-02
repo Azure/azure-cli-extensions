@@ -4,7 +4,7 @@ Release History
 ===============
 ===============
 
-##### 2.0.0b1
+##### 1.0.0b2
 ++++++
 No new commands added. Flatten false the properties of the command output.
 
