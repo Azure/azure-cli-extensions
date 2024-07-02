@@ -4168,7 +4168,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_1.agent_pool_profiles = [ground_truth_agentpool_profile_1]
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
-    def test_set_up_network_profile_2(self):
+    def test_set_up_network_profile_preview(self):
         # custom value
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
