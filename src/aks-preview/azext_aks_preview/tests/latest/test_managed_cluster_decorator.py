@@ -5390,6 +5390,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         network_profile_1 = self.models.ContainerServiceNetworkProfile(
             load_balancer_sku="standard",
+            network_plugin=None,
         )
         identity_1 = self.models.ManagedClusterIdentity(type="SystemAssigned")
         storage_profile_1 = self.models.ManagedClusterStorageProfile(
