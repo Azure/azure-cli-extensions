@@ -14,7 +14,7 @@ class AzurelargeinstanceScenario(ScenarioTest):
     
     def test_list_azurelargeinstances_in_resourcegroup(self):
         self.kwargs.update({
-            'resource_group': 'DSM05A-T100'
+            'resource_group': 'DSM05A-T210'
         })
 
         self.cmd('az large-instance list --resource-group {resource_group}')
@@ -24,6 +24,6 @@ class AzurelargeinstanceScenario(ScenarioTest):
     
     def test_list_azurelargestorageinstances_in_resourcegroup(self):
         self.kwargs.update({
-            'resource_group': 'DSM05A-T100'
+            'resource_group': 'DSM05A-T210'
         })
         self.cmd('az large-storage-instance list --resource-group {resource_group}')

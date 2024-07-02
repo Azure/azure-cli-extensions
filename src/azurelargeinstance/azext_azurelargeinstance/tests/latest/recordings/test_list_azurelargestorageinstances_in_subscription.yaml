@@ -10,34 +10,73 @@ interactions:
       - large-storage-instance list
       Connection:
       - keep-alive
-      ParameterSetName:
-      - --subscription
       User-Agent:
-      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.11 (macOS-14.5-arm64-arm-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.AzureLargeInstance/azureLargeStorageInstances?api-version=2023-07-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.AzureLargeInstance/azureLargeStorageInstances?api-version=2024-04-10
   response:
     body:
-      string: '{"value":[]}'
+      string: "{\n  \"value\": [\n   {\n    \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bmsi-rg-canchliya/providers/Microsoft.BareMetalInfrastructure/bareMetalStorageInstances/testcmkbmsi\"\
+        ,\n    \"location\": \"centraluseuap\",\n    \"name\": \"testcmkbmsi\",\n\
+        \    \"tags\": {},\n    \"type\": \"Microsoft.BareMetalInfrastructure/bareMetalStorageInstances\"\
+        ,\n    \"systemData\": {},\n    \"properties\": {\n     \"azureBareMetalStorageInstanceUniqueIdentifier\"\
+        : \"bcb58551-e106-4b66-a9b9-d73db0bd07ad\",\n     \"storageProperties\": {\n\
+        \      \"provisioningState\": \"Succeeded\",\n      \"offeringType\": \"EPIC\"\
+        ,\n      \"storageType\": \"FC\",\n      \"generation\": \"Gen4.5\",\n   \
+        \   \"hardwareType\": \"NetApp\",\n      \"workloadType\": \"ODB\",\n    \
+        \  \"storageBillingProperties\": {\n       \"billingMode\": \"Internal\",\n\
+        \       \"azureBareMetalStorageInstanceSize\": \"n100\"\n      }\n     }\n\
+        \    }\n   },\n   {\n    \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DSM05A-T210/providers/Microsoft.BareMetalInfrastructure/bareMetalStorageInstances/alistorage\"\
+        ,\n    \"location\": \"centraluseuap\",\n    \"name\": \"alistorage\",\n \
+        \   \"tags\": {},\n    \"type\": \"Microsoft.AzureLargeInstance/azureLargeStorageInstances\"\
+        ,\n    \"systemData\": {},\n    \"properties\": {\n     \"azureBareMetalStorageInstanceUniqueIdentifier\"\
+        : \"a582472d-2a29-4c2b-a0d0-0ebd39e46904\",\n     \"storageProperties\": {\n\
+        \      \"provisioningState\": \"Accepted\",\n      \"offeringType\": \"EPIC\"\
+        ,\n      \"storageType\": \"FC\",\n      \"generation\": \"Gen4\",\n     \
+        \ \"hardwareType\": \"NetApp\",\n      \"workloadType\": \"ODB\",\n      \"\
+        storageBillingProperties\": {\n       \"billingMode\": \"PAYG\",\n       \"\
+        azureBareMetalStorageInstanceSize\": \"n100\"\n      }\n     }\n    }\n  \
+        \ },\n   {\n    \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DSM05A-T210/providers/Microsoft.BareMetalInfrastructure/bareMetalStorageInstances/dummyRN1\"\
+        ,\n    \"location\": \"centraluseuap\",\n    \"name\": \"dummyRN1\",\n   \
+        \ \"tags\": {},\n    \"type\": \"Microsoft.BareMetalInfrastructure/bareMetalStorageInstances\"\
+        ,\n    \"systemData\": {},\n    \"properties\": {\n     \"azureBareMetalStorageInstanceUniqueIdentifier\"\
+        : \"cfcffde1-63b3-46a4-9881-2e9f4e59ff8d\",\n     \"storageProperties\": {\n\
+        \      \"provisioningState\": \"Accepted\",\n      \"offeringType\": \"EPIC\"\
+        ,\n      \"storageType\": \"FC\",\n      \"generation\": \"Gen4.5\",\n   \
+        \   \"hardwareType\": \"NetApp\",\n      \"workloadType\": \"ODB\",\n    \
+        \  \"storageBillingProperties\": {\n       \"billingMode\": \"PAYG\",\n  \
+        \     \"azureBareMetalStorageInstanceSize\": \"n100\"\n      }\n     }\n \
+        \   }\n   },\n   {\n    \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testnewbillingmeters/providers/Microsoft.BareMetalInfrastructure/bareMetalStorageInstances/testnewbmsi\"\
+        ,\n    \"location\": \"centraluseuap\",\n    \"name\": \"testnewbmsi\",\n\
+        \    \"tags\": {},\n    \"type\": \"Microsoft.BareMetalInfrastructure/bareMetalStorageInstances\"\
+        ,\n    \"systemData\": {},\n    \"properties\": {\n     \"azureBareMetalStorageInstanceUniqueIdentifier\"\
+        : \"63a5dff1-317c-4537-8079-357a44405d10\",\n     \"storageProperties\": {\n\
+        \      \"provisioningState\": \"Succeeded\",\n      \"offeringType\": \"EPIC\"\
+        ,\n      \"storageType\": \"FC\",\n      \"generation\": \"4\",\n      \"\
+        hardwareType\": \"NetApp\",\n      \"workloadType\": \"ODB\",\n      \"storageBillingProperties\"\
+        : {\n       \"billingMode\": \"RI\",\n       \"azureBareMetalStorageInstanceSize\"\
+        : \"n100v3\"\n      }\n     }\n    }\n   }\n  ]\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '12'
+      - '3322'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Tue, 14 Nov 2023 06:52:02 GMT
+      - Fri, 07 Jun 2024 01:49:00 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 61B54FE50A64435B9284540D0BDDCB7B Ref B: CO6AA3150217047 Ref C: 2024-06-07T01:49:01Z'
     status:
       code: 200
       message: OK

@@ -15,16 +15,17 @@ from azure.cli.core.aaz import *
     "large-storage-instance update",
 )
 class Update(AAZCommand):
-    """Update the Tags field of a Azure Large Storage Instance for the specified subscription, resource group, and instance name.
+    """Update the Tags field of a Azure Large Storage Instance for the specified
+subscription, resource group, and instance name.
 
     :example: To add an Azure Large Storage Instance tag
         az large-storage-instance update --subscription $SUBSCRIPTION_ID --instance-name $INSTANCE_NAME --resource-group $RESOURCE_GROUP --tags newKey=value
     """
 
     _aaz_info = {
-        "version": "2023-07-20-preview",
+        "version": "2024-04-10",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargestorageinstances/{}", "2023-07-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargestorageinstances/{}", "2024-04-10"],
         ]
     }
 
@@ -63,7 +64,7 @@ class Update(AAZCommand):
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="TagsParameter",
-            help="Tags field of the AzureLargeInstance instance.",
+            help="Resource tags.",
         )
 
         tags = cls._args_schema.tags
@@ -135,7 +136,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-20-preview",
+                    "api-version", "2024-04-10",
                     required=True,
                 ),
             }
@@ -225,6 +226,7 @@ class Update(AAZCommand):
             )
             storage_properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             storage_properties.storage_billing_properties = AAZObjectType(
                 serialized_name="storageBillingProperties",
