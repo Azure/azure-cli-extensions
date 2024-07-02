@@ -2,9 +2,8 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, consider-using-f-string, logging-format-interpolation, inconsistent-return-statements, broad-except, bare-except, too-many-statements, too-many-locals, too-many-boolean-expressions, too-many-branches, too-many-nested-blocks, pointless-statement, expression-not-assigned, unbalanced-tuple-unpacking, unsupported-assignment-operation
+# pylint: disable=line-too-long, unused-argument, logging-fstring-interpolation, logging-not-lazy, consider-using-f-string, logging-format-interpolation, inconsistent-return-statements, broad-except, bare-except, too-many-statements, too-many-locals, too-many-boolean-expressions, too-many-branches, too-many-nested-blocks, pointless-statement, expression-not-assigned, unbalanced-tuple-unpacking, unsupported-assignment-operation
 
-import sys
 import time
 from urllib.parse import urlparse
 import json
@@ -15,7 +14,6 @@ from ._constants import DOTNET_COMPONENT_RESOURCE_TYPE
 
 
 from azure.cli.core import telemetry as telemetry_core
-from azure.cli.command_modules.containerapp._utils import safe_set, safe_get
 
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
@@ -32,7 +30,8 @@ from azure.cli.command_modules.containerapp.containerapp_decorator import BaseCo
 from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvDecorator
 from azure.cli.command_modules.containerapp._decorator_utils import load_yaml_file
 from azure.cli.command_modules.containerapp._github_oauth import get_github_access_token
-from azure.cli.command_modules.containerapp._utils import (_validate_subscription_registered,
+from azure.cli.command_modules.containerapp._utils import (safe_set,
+                                                           _validate_subscription_registered,
                                                            _convert_object_from_snake_to_camel_case,
                                                            _object_to_dict, _remove_additional_attributes,
                                                            raise_missing_token_suggestion,
@@ -73,9 +72,7 @@ from .daprcomponent_resiliency_decorator import (
 from .containerapp_env_telemetry_decorator import (
     ContainerappEnvTelemetryDataDogPreviewSetDecorator,
     ContainerappEnvTelemetryAppInsightsPreviewSetDecorator,
-    ContainerappEnvTelemetryOtlpPreviewSetDecorator,
-    APP_INSIGHTS_DEST,
-    DATA_DOG_DEST
+    ContainerappEnvTelemetryOtlpPreviewSetDecorator
 )
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
@@ -122,11 +119,12 @@ from ._constants import (CONTAINER_APPS_RP,
                          DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_QDRANT_IMAGE,
                          DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_WEAVIATE_IMAGE, DEV_WEAVIATE_CONTAINER_NAME, DEV_WEAVIATE_SERVICE_TYPE,
                          DEV_MILVUS_IMAGE, DEV_MILVUS_CONTAINER_NAME, DEV_MILVUS_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME,
-                         DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST, AZURE_FILE_STORAGE_TYPE, NFS_AZURE_FILE_STORAGE_TYPE,
+                         DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST,
                          JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA, JAVA_COMPONENT_ADMIN, JAVA_COMPONENT_NACOS)
 
 
 logger = get_logger(__name__)
+
 
 def list_all_services(cmd, environment_name, resource_group_name):
     services = list_containerapp(cmd, resource_group_name=resource_group_name, managed_env=environment_name)
@@ -731,7 +729,7 @@ def create_managed_environment(cmd,
                                hostname=None,
                                certificate_file=None,
                                certificate_password=None,
-                               certificate_identity = None,
+                               certificate_identity=None,
                                certificate_key_vault_url=None,
                                enable_workload_profiles=True,
                                mtls_enabled=None,
@@ -768,7 +766,7 @@ def update_managed_environment(cmd,
                                hostname=None,
                                certificate_file=None,
                                certificate_password=None,
-                               certificate_identity = None,
+                               certificate_identity=None,
                                certificate_key_vault_url=None,
                                tags=None,
                                workload_profile_type=None,
@@ -919,6 +917,7 @@ def create_containerappsjob(cmd,
                             scale_rule_name=None,
                             scale_rule_type=None,
                             scale_rule_auth=None,
+                            scale_rule_identity=None,
                             polling_interval=30,
                             min_executions=0,
                             max_executions=10,
@@ -971,6 +970,7 @@ def update_containerappsjob(cmd,
                             scale_rule_name=None,
                             scale_rule_type=None,
                             scale_rule_auth=None,
+                            scale_rule_identity=None,
                             polling_interval=None,
                             min_executions=None,
                             max_executions=None,
@@ -1356,7 +1356,7 @@ def list_certificates(cmd, name, resource_group_name, location=None, certificate
     return containerapp_env_certificate_list_decorator.list()
 
 
-def upload_certificate(cmd, name, resource_group_name, certificate_file=None, certificate_name=None, certificate_password=None, location=None, prompt=False, certificate_identity = None, certificate_key_vault_url=None):
+def upload_certificate(cmd, name, resource_group_name, certificate_file=None, certificate_name=None, certificate_password=None, location=None, prompt=False, certificate_identity=None, certificate_key_vault_url=None):
     raw_parameters = locals()
 
     containerapp_env_certificate_upload_decorator = ContainerappEnvCertificatePreviweUploadDecorator(
@@ -1435,8 +1435,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                       tags=None):
     from pycomposefile import ComposeFile
 
-    from azure.cli.command_modules.containerapp._compose_utils import (create_containerapps_compose_environment,
-                                                                       build_containerapp_from_compose_service,
+    from azure.cli.command_modules.containerapp._compose_utils import (build_containerapp_from_compose_service,
                                                                        check_supported_platform,
                                                                        warn_about_unsupported_elements,
                                                                        resolve_ingress_and_target_port,
@@ -1883,7 +1882,7 @@ def connected_env_create_or_update_dapr_component(cmd, resource_group_name, envi
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     yaml_dapr_component = load_yaml_file(yaml)
-    if type(yaml_dapr_component) != dict:  # pylint: disable=unidiomatic-typecheck
+    if not isinstance(yaml_dapr_component, dict):  # pylint: disable=unidiomatic-typecheck
         raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.')
 
     # Deserialize the yaml into a DaprComponent object. Need this since we're not using SDK
@@ -2162,7 +2161,7 @@ def assign_env_managed_identity(cmd, name, resource_group_name, system_assigned=
 
     # no changes to containerapp environment
     if (not is_system_identity_changed) and (not to_add_user_assigned_identity):
-        logger.warning("No managed identities changes to containerapp environment", old_user_identity)
+        logger.warning("No managed identities changes to containerapp environment")
         return managed_env_def
 
     if to_add_user_assigned_identity:
@@ -2436,6 +2435,7 @@ def show_admin_for_spring(cmd, java_component_name, environment_name, resource_g
 
 def delete_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, no_wait)
+
 
 def set_environment_telemetry_data_dog(cmd,
                                        name,
@@ -2820,6 +2820,7 @@ def create_or_update_java_logger(cmd, logger_name, logger_level, name, resource_
     return containerapp_java_logger_set_decorator.create_or_update()
 
 
+# pylint: disable=redefined-builtin
 def delete_java_logger(cmd, name, resource_group_name, logger_name=None, all=None, no_wait=False):
     raw_parameters = locals()
     containerapp_java_logger_decorator = ContainerappJavaLoggerDeleteDecorator(
@@ -2833,6 +2834,7 @@ def delete_java_logger(cmd, name, resource_group_name, logger_name=None, all=Non
     return containerapp_java_logger_decorator.delete()
 
 
+# pylint: disable=redefined-builtin
 def show_java_logger(cmd, name, resource_group_name, logger_name=None, all=None):
     raw_parameters = locals()
     containerapp_java_logger_decorator = ContainerappJavaLoggerDecorator(
@@ -2961,6 +2963,7 @@ def delete_session_pool(cmd,
 
     return r
 
+
 # session code interpreter commands
 def execute_session_code_interpreter(cmd,
                                      name,
@@ -2984,6 +2987,7 @@ def execute_session_code_interpreter(cmd,
 
     return r
 
+
 def upload_session_code_interpreter(cmd,
                                     name,
                                     resource_group_name,
@@ -3002,6 +3006,7 @@ def upload_session_code_interpreter(cmd,
     r = session_code_interpreter_decorator.upload()
 
     return r
+
 
 def show_file_content_session_code_interpreter(cmd,
                                                name,
@@ -3022,6 +3027,7 @@ def show_file_content_session_code_interpreter(cmd,
 
     return r
 
+
 def show_file_metadata_session_code_interpreter(cmd,
                                                 name,
                                                 resource_group_name,
@@ -3040,6 +3046,7 @@ def show_file_metadata_session_code_interpreter(cmd,
     r = session_code_interpreter_decorator.show_file_metadata()
 
     return r
+
 
 def list_files_session_code_interpreter(cmd,
                                         name,
@@ -3060,6 +3067,7 @@ def list_files_session_code_interpreter(cmd,
 
     return r
 
+
 def delete_file_session_code_interpreter(cmd,
                                          name,
                                          resource_group_name,
@@ -3079,6 +3087,7 @@ def delete_file_session_code_interpreter(cmd,
 
     return r
 
+
 def list_dotnet_components(cmd, environment_name, resource_group_name):
     raw_parameters = locals()
     dotnet_component_decorator = DotNetComponentDecorator(
@@ -3090,6 +3099,7 @@ def list_dotnet_components(cmd, environment_name, resource_group_name):
     return dotnet_component_decorator.list()
 
 
+# pylint: disable=protected-access
 def show_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name):
     raw_parameters = locals()
     dotnet_component_decorator = DotNetComponentDecorator(
@@ -3122,6 +3132,7 @@ def delete_dotnet_component(cmd, dotnet_component_name, environment_name, resour
     logger.warning("Successfully deleted DotNet Component '%s' in environment '%s' in resource group '%s'.", dotnet_component_name, environment_name, resource_group_name)
 
 
+# pylint: disable=useless-return, protected-access
 def create_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name, dotnet_component_type=DOTNET_COMPONENT_RESOURCE_TYPE, no_wait=False):
     raw_parameters = locals()
     dotnet_component_decorator = DotNetComponentDecorator(
