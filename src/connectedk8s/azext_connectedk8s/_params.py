@@ -9,7 +9,7 @@ from ._validators import override_client_request_id_header
 from argcomplete.completers import FilesCompleter
 from azure.cli.core.commands.parameters import get_location_type, get_enum_type, file_type, tags_type, get_three_state_flag
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
-from azext_connectedk8s._constants import Distribution_Enum_Values, Infrastructure_Enum_Values, Feature_Values, AHB_Enum_Values
+from azext_connectedk8s._constants import Distribution_Enum_Values, Infrastructure_Enum_Values, Feature_Values, AHB_Enum_Values, Connection_Type
 from knack.arguments import (CLIArgumentType, CaseInsensitiveList)
 
 from ._validators import validate_private_link_properties
@@ -51,6 +51,8 @@ def load_arguments(self, _):
         c.argument('container_log_path', help='Override the default container log path to enable fluent-bit logging')
         c.argument('skip_ssl_verification', action='store_true', help='Skip SSL verification for any cluster connection.')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+        c.argument('enable_gateway', options_list=['--enable_gateway'], help='pass this value to enable Arc Gateway')
+        c.argument('disable_gateway', options_list=['--disable_gateway'], help='pass this value to enable Arc Gateway')
 
     with self.argument_context('connectedk8s update') as c:
         c.argument('tags', tags_type)

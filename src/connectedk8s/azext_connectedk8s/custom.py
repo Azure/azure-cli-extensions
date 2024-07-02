@@ -40,7 +40,7 @@ from Crypto.Util import asn1
 from azext_connectedk8s._client_factory import cf_resource_groups
 from azext_connectedk8s._client_factory import resource_providers_client
 from azext_connectedk8s._client_factory import \
-    cf_connected_cluster_prev_2022_10_01, cf_connected_cluster_prev_2023_11_01
+    cf_connected_cluster_prev_2022_10_01, cf_connected_cluster_prev_2023_11_01, cf_connected_cluster_prev_2024_07_01
 from azext_connectedk8s._client_factory import cf_connectedmachine
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
@@ -65,7 +65,7 @@ logger = get_logger(__name__)
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='generic', infrastructure='generic',
                         disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600", enable_private_link=None, private_link_scope_resource_id=None,
-                        distribution_version=None, azure_hybrid_benefit=None, skip_ssl_verification=False, yes=False, container_log_path=None):
+                        distribution_version=None, azure_hybrid_benefit=None, skip_ssl_verification=False, yes=False, container_log_path=None, connection_type="direct"):
     logger.warning("This operation might take a while...\n")
 
     # changing cli config to push telemetry in 1 hr interval
@@ -137,6 +137,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None:
         client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
 
+    # Set preview client if the connection-type is provided. (TODO: To test whether overriding the client factory to 2024 will retain the 2023 private link feature as in the line above)
+    if connection_type is not None and connection_type == "gateway":
+        client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
+    
     # Checking whether optional extra values file has been provided.
     values_file = utils.get_values_file()
     if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
@@ -217,6 +221,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
             if storage_space_available is False:
                 logger.warning("There is no storage space available on your device and hence not saving cluster \
                     diagnostic check logs on your device")
+
+            # TODO: Add DP health check call
+             
 
     except Exception as e:
         telemetry.set_exception(exception="An exception has occured while trying to execute pre-onboarding diagnostic \
@@ -435,18 +442,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
         utils.add_helm_repo(kube_config, kube_context, helm_client_location)
 
-    # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else \
-        utils.get_helm_registry(cmd, config_dp_endpoint, release_train)
-
-    # Get azure-arc agent version for telemetry
-    azure_arc_agent_version = registry_path.split(':')[1]
-    telemetry.add_extension_event('connectedk8s',
-                                  {'Context.Default.AzureCLI.AgentVersion': azure_arc_agent_version})
-
-    # Get helm chart path
-    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location)
-
     # Generate public-private key pair
     try:
         key_pair = RSA.generate(4096)
@@ -477,8 +472,45 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
     put_cc_response = LongRunningOperation(cmd.cli_ctx)(put_cc_response)
     print("Azure resource provisioning has finished.")
+
     # Checking if custom locations rp is registered and fetching oid if it is registered
     enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id)
+
+    # Change: Calling DP for Helm values
+    # Retrieving Helm chart OCI Artifact location
+    helm_values_dp = utils.get_helm_values(cmd, config_dp_endpoint, release_train)
+
+    # Parses the helm_values_dp
+        #     {
+        #     "repositoryPath": "mcr.microsoft.com/azurearck8s/canary/stable/azure-arc-k8sagents:0.2.62",
+        #     "helmValuesContent": {
+        #         "global.subscriptionId": "ca3b2020-292e-4ebc-9939-0b52415846ef",
+        #         "global.resourceGroupName": "bs_testing",
+        #         "global.resourceName": "bs_oci",
+        #         "global.location": "westeurope",
+        #         "global.httpsProxy": "ClientKnown",
+        #         "global.httpProxy": "ClientKnown",
+        #         "global.noProxy": "ClientKnown",
+        #         "global.proxyCert": "ClientKnown",
+        #         "global.isCustomCert": "true",
+        #         "global.isProxyEnabled": "true",
+        #         "systemDefaultValues.fluent-bit.containerLogPath": "/sample/test/path"
+        #     },
+        #     "apiServerFlags": null
+        # }
+
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else \
+        helm_values_dp["repositoryPath"]
+        
+    # Get azure-arc agent version for telemetry
+    azure_arc_agent_version = registry_path.split(':')[1]
+    telemetry.add_extension_event('connectedk8s',
+                                  {'Context.Default.AzureCLI.AgentVersion': azure_arc_agent_version})
+
+    # Get helm chart path
+    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location)
+
+    # TODO: use a new helm_values file to construct the helm install cmd
 
     print("Starting to install Azure arc agents on the Kubernetes cluster.")
     # Install azure-arc agents
