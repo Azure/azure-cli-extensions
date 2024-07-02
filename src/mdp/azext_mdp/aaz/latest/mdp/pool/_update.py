@@ -69,8 +69,8 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="Defines how the machine will be handled once it executed a job.",
         )
-        _args_schema.dev_center_project_resource_id = AAZStrArg(
-            options=["--dev-center-project-resource-id"],
+        _args_schema.devcenter_project_resource_id = AAZStrArg(
+            options=["--devcenter-project-id", "--devcenter-project-resource-id"],
             arg_group="Properties",
             help="The resource id of the DevCenter Project the pool belongs to.",
         )
@@ -92,13 +92,6 @@ class Update(AAZCommand):
             options=["--organization-profile"],
             arg_group="Properties",
             help="Defines the organization in which the pool will be used.",
-        )
-        _args_schema.provisioning_state = AAZStrArg(
-            options=["--provisioning-state"],
-            arg_group="Properties",
-            help="The status of the current operation.",
-            nullable=True,
-            enum={"Accepted": "Accepted", "Canceled": "Canceled", "Deleting": "Deleting", "Failed": "Failed", "Provisioning": "Provisioning", "Succeeded": "Succeeded", "Updating": "Updating"},
         )
 
         agent_profile = cls._args_schema.agent_profile
@@ -689,11 +682,10 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("agentProfile", AAZObjectType, ".agent_profile", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("devCenterProjectResourceId", AAZStrType, ".dev_center_project_resource_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("devCenterProjectResourceId", AAZStrType, ".devcenter_project_resource_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("fabricProfile", AAZObjectType, ".fabric_profile", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("maximumConcurrency", AAZIntType, ".maximum_concurrency", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("organizationProfile", AAZObjectType, ".organization_profile", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("provisioningState", AAZStrType, ".provisioning_state")
 
             agent_profile = _builder.get(".properties.agentProfile")
             if agent_profile is not None:
