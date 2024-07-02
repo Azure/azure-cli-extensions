@@ -301,24 +301,16 @@ def migrate_grafana(cmd, grafana_name, source_instance_ip, source_instance_token
                    folders_to_exclude=None, resource_group_name=None):
     import os
     from pathlib import Path
-    from .backup import backup
+    from .migrate import migrate
 
+    # for source instance (backing up from)
     headers_src = {
         "content-type": "application/json",
         "authorization": "Bearer " + source_instance_token
     }
 
-    archive_file = backup(grafana_name=grafana_name,
-                          grafana_url=source_instance_ip,
-                          backup_dir=directory or os.path.join(Path.cwd(), "_backup"),
-                          components=components,
-                          http_headers=headers_src,
-                          folders_to_include=folders_to_include,
-                          folders_to_exclude=folders_to_exclude)
-
-    from .restore import restore
+    # for destination instance (restoring to)
     _health_endpoint_reachable(cmd, grafana_name, resource_group_name=resource_group_name)
-
     creds_dest = _get_data_plane_creds(cmd, api_key_or_token=None, subscription=None)
     headers_dest = {
         "content-type": "application/json",
@@ -327,11 +319,16 @@ def migrate_grafana(cmd, grafana_name, source_instance_ip, source_instance_token
     data_sources = list_data_sources(cmd, grafana_name, resource_group_name,
                                         subscription=None)
 
-    restore(grafana_url=_get_grafana_endpoint(cmd, resource_group_name, grafana_name, subscription=None),
-            archive_file=archive_file,
+    migrate(backup_grafana_name=grafana_name,
+            backup_url=source_instance_ip,
+            backup_directory=directory or os.path.join(Path.cwd(), "_backup"),
             components=components,
-            http_headers=headers_dest,
-            destination_datasources=data_sources)
+            backup_headers=headers_src,
+            restore_url=_get_grafana_endpoint(cmd, resource_group_name, grafana_name, subscription=None),
+            restore_headers=headers_dest,
+            data_sources=data_sources,
+            folders_to_include=folders_to_include,
+            folders_to_exclude=folders_to_exclude)
 
 
 def sync_dashboard(cmd, source, destination, folders_to_include=None, folders_to_exclude=None,
