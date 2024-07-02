@@ -842,7 +842,10 @@ Resources
     substring(u, 11, 2), substring(u, 9, 2), '-',
     substring(u, 16, 2), substring(u, 14, 2), '-',
     substring(u, 19))
-| project machineId=id, name, resourceGroup, vmUuidRev, kind
+| extend vmUuid=pack_array(u, vmUuidRev)
+| mv-expand vmUuid
+| extend vmUuid=tostring(vmUuid)
+| project machineId=id, name, resourceGroup, vmUuid, kind
 | join kind=inner (
 ConnectedVMwareVsphereResources
 | where type =~ 'Microsoft.ConnectedVMwareVsphere/VCenters/InventoryItems'
@@ -852,8 +855,8 @@ ConnectedVMwareVsphereResources
 | extend biosId = tolower(tostring(p['smbiosUuid']))
 | extend managedResourceId=tolower(tostring(p['managedResourceId']))
 | project inventoryId=id, biosId, managedResourceId
-) on $left.vmUuidRev == $right.biosId
-| project-away vmUuidRev
+) on $left.vmUuid == $right.biosId
+| project-away vmUuid
 """
     query = " ".join(query.splitlines())
 
