@@ -272,6 +272,9 @@ def load_command_table(self, _):
         g.custom_command(
             "show-latest", "aks_operation_show_latest", table_transformer=aks_operation_show_table_format
         )
+        g.custom_command(
+            "list", "aks_operation_list", table_transformer=aks_operation_show_table_format
+        )
 
     # AKS draft commands
     with self.command_group(

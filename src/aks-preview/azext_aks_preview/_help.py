@@ -2213,6 +2213,18 @@ helps['aks operation show-latest'] = """
           short-summary: Name of the resource group.
 """
 
+helps['aks operation list'] = """
+    type: command
+    short-summary: List all operations on managed Kubernetes cluster.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: The name of the managed cluster
+        - name: --resource-group -g
+          type: string
+          short-summary: Name of the resource group.
+"""
+
 helps['aks operation-abort'] = """
     type: command
     short-summary: Abort last running operation on managed cluster.
