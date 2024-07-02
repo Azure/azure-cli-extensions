@@ -190,7 +190,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002?api-version=2024-05-01
   response:
     body:
       string: '{"properties":{"managedResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-databricks000002-fuyf4ssbg05af","provisioningState":"Accepted","authorizations":[{"principalId":"9a74af6f-d153-4348-988a-e2672920bee9","roleDefinitionId":"8e3af657-a8ff-443c-a75c-2fe8c4bcb635"}],"createdBy":{"oid":"674368bb-7eaa-4100-aef7-138f65f50648","puid":"10032001C021F1B6","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"updatedBy":{"oid":"674368bb-7eaa-4100-aef7-138f65f50648","puid":"10032001C021F1B6","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"createdDateTime":"2023-03-15T01:39:11.4059485Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002","name":"databricks000002","type":"Microsoft.Databricks/workspaces","sku":{"name":"standard"},"location":"westus"}'
@@ -678,7 +678,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002?api-version=2024-05-01
   response:
     body:
       string: '{"properties":{"managedResourceGroupId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-databricks000002-fuyf4ssbg05af","parameters":{"enableFedRampCertification":{"type":"Bool","value":false},"enableNoPublicIp":{"type":"Bool","value":false},"natGatewayName":{"type":"String","value":"nat-gateway"},"prepareEncryption":{"type":"Bool","value":false},"publicIpName":{"type":"String","value":"nat-gw-public-ip"},"requireInfrastructureEncryption":{"type":"Bool","value":false},"resourceTags":{"type":"Object","value":{"application":"databricks","databricks-environment":"true"}},"storageAccountName":{"type":"String","value":"dbstoragernaw7u4ms2euw"},"storageAccountSkuName":{"type":"String","value":"Standard_GRS"},"vnetAddressPrefix":{"type":"String","value":"10.139"}},"provisioningState":"Succeeded","authorizations":[{"principalId":"9a74af6f-d153-4348-988a-e2672920bee9","roleDefinitionId":"8e3af657-a8ff-443c-a75c-2fe8c4bcb635"}],"createdBy":{"oid":"674368bb-7eaa-4100-aef7-138f65f50648","puid":"10032001C021F1B6","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"updatedBy":{"oid":"674368bb-7eaa-4100-aef7-138f65f50648","puid":"10032001C021F1B6","applicationId":"04b07795-8ddb-461a-bbee-02f9e1bf7b46"},"workspaceId":"2589639318157245","workspaceUrl":"adb-2589639318157245.5.azuredatabricks.net","createdDateTime":"2023-03-15T01:39:11.4059485Z"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002","name":"databricks000002","type":"Microsoft.Databricks/workspaces","sku":{"name":"standard"},"location":"westus"}'
@@ -730,7 +730,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2024-05-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003","name":"peering000003","properties":{"allowVirtualNetworkAccess":true,"allowForwardedTraffic":false,"allowGatewayTransit":false,"useRemoteGateways":false,"remoteVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Network/virtualNetworks/vnet000005"},"remoteAddressSpace":{"addressPrefixes":["10.0.0.0/16"]},"databricksVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-databricks000002-fuyf4ssbg05af/providers/Microsoft.Network/virtualNetworks/workers-vnet"},"databricksAddressSpace":{"addressPrefixes":["10.139.0.0/16"]},"peeringState":"Initiated","provisioningState":"Updating"}}
@@ -782,7 +782,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2024-05-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003","name":"peering000003","properties":{"allowVirtualNetworkAccess":true,"allowForwardedTraffic":false,"allowGatewayTransit":false,"useRemoteGateways":false,"remoteVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Network/virtualNetworks/vnet000005"},"remoteAddressSpace":{"addressPrefixes":["10.0.0.0/16"]},"databricksVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-databricks000002-fuyf4ssbg05af/providers/Microsoft.Network/virtualNetworks/workers-vnet"},"databricksAddressSpace":{"addressPrefixes":["10.139.0.0/16"]},"peeringState":"Initiated","provisioningState":"Succeeded"}}
@@ -834,7 +834,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2024-05-01
   response:
     body:
       string: '""
@@ -937,7 +937,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2024-05-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003","name":"peering000003","properties":{"allowVirtualNetworkAccess":true,"allowForwardedTraffic":false,"allowGatewayTransit":false,"useRemoteGateways":false,"remoteVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Network/virtualNetworks/vnet000005"},"remoteAddressSpace":{"addressPrefixes":["10.0.0.0/16"]},"databricksVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-databricks000002-fuyf4ssbg05af/providers/Microsoft.Network/virtualNetworks/workers-vnet"},"databricksAddressSpace":{"addressPrefixes":["10.139.0.0/16"]},"peeringState":"Initiated","provisioningState":"Updating"}}
@@ -989,7 +989,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2024-05-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003","name":"peering000003","properties":{"allowVirtualNetworkAccess":true,"allowForwardedTraffic":false,"allowGatewayTransit":false,"useRemoteGateways":false,"remoteVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Network/virtualNetworks/vnet000005"},"remoteAddressSpace":{"addressPrefixes":["10.0.0.0/16"]},"databricksVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-databricks000002-fuyf4ssbg05af/providers/Microsoft.Network/virtualNetworks/workers-vnet"},"databricksAddressSpace":{"addressPrefixes":["10.139.0.0/16"]},"peeringState":"Initiated","provisioningState":"Succeeded"}}
@@ -1039,7 +1039,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings?api-version=2024-05-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003","name":"peering000003","properties":{"allowVirtualNetworkAccess":true,"allowForwardedTraffic":false,"allowGatewayTransit":false,"useRemoteGateways":false,"remoteVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Network/virtualNetworks/vnet000005"},"remoteAddressSpace":{"addressPrefixes":["10.0.0.0/16"]},"databricksVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-databricks000002-fuyf4ssbg05af/providers/Microsoft.Network/virtualNetworks/workers-vnet"},"databricksAddressSpace":{"addressPrefixes":["10.139.0.0/16"]},"peeringState":"Initiated","provisioningState":"Succeeded"}}]}
@@ -1089,7 +1089,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2024-05-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003","name":"peering000003","properties":{"allowVirtualNetworkAccess":true,"allowForwardedTraffic":false,"allowGatewayTransit":false,"useRemoteGateways":false,"remoteVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Network/virtualNetworks/vnet000005"},"remoteAddressSpace":{"addressPrefixes":["10.0.0.0/16"]},"databricksVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-databricks000002-fuyf4ssbg05af/providers/Microsoft.Network/virtualNetworks/workers-vnet"},"databricksAddressSpace":{"addressPrefixes":["10.139.0.0/16"]},"peeringState":"Initiated","provisioningState":"Succeeded"}}
@@ -1139,7 +1139,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2024-05-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003","name":"peering000003","properties":{"allowVirtualNetworkAccess":true,"allowForwardedTraffic":false,"allowGatewayTransit":false,"useRemoteGateways":false,"remoteVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Network/virtualNetworks/vnet000005"},"remoteAddressSpace":{"addressPrefixes":["10.0.0.0/16"]},"databricksVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-databricks000002-fuyf4ssbg05af/providers/Microsoft.Network/virtualNetworks/workers-vnet"},"databricksAddressSpace":{"addressPrefixes":["10.139.0.0/16"]},"peeringState":"Initiated","provisioningState":"Succeeded"}}
@@ -1198,7 +1198,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2024-05-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003","name":"peering000003","properties":{"allowVirtualNetworkAccess":false,"allowForwardedTraffic":false,"allowGatewayTransit":true,"useRemoteGateways":false,"remoteVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Network/virtualNetworks/vnet000005"},"remoteAddressSpace":{"addressPrefixes":["10.0.0.0/16"]},"databricksVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-databricks000002-fuyf4ssbg05af/providers/Microsoft.Network/virtualNetworks/workers-vnet"},"databricksAddressSpace":{"addressPrefixes":["10.139.0.0/16"]},"peeringState":"Initiated","provisioningState":"Updating"}}
@@ -1250,7 +1250,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2024-05-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003","name":"peering000003","properties":{"allowVirtualNetworkAccess":false,"allowForwardedTraffic":false,"allowGatewayTransit":true,"useRemoteGateways":false,"remoteVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Network/virtualNetworks/vnet000005"},"remoteAddressSpace":{"addressPrefixes":["10.0.0.0/16"]},"databricksVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-databricks000002-fuyf4ssbg05af/providers/Microsoft.Network/virtualNetworks/workers-vnet"},"databricksAddressSpace":{"addressPrefixes":["10.139.0.0/16"]},"peeringState":"Initiated","provisioningState":"Succeeded"}}
@@ -1300,7 +1300,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2024-05-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003","name":"peering000003","properties":{"allowVirtualNetworkAccess":false,"allowForwardedTraffic":false,"allowGatewayTransit":true,"useRemoteGateways":false,"remoteVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Network/virtualNetworks/vnet000005"},"remoteAddressSpace":{"addressPrefixes":["10.0.0.0/16"]},"databricksVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-databricks000002-fuyf4ssbg05af/providers/Microsoft.Network/virtualNetworks/workers-vnet"},"databricksAddressSpace":{"addressPrefixes":["10.139.0.0/16"]},"peeringState":"Initiated","provisioningState":"Succeeded"}}
@@ -1359,7 +1359,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2024-05-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003","name":"peering000003","properties":{"allowVirtualNetworkAccess":false,"allowForwardedTraffic":false,"allowGatewayTransit":false,"useRemoteGateways":false,"remoteVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Network/virtualNetworks/vnet000005"},"remoteAddressSpace":{"addressPrefixes":["10.0.0.0/16"]},"databricksVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-databricks000002-fuyf4ssbg05af/providers/Microsoft.Network/virtualNetworks/workers-vnet"},"databricksAddressSpace":{"addressPrefixes":["10.139.0.0/16"]},"peeringState":"Initiated","provisioningState":"Updating"}}
@@ -1411,7 +1411,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2024-05-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003","name":"peering000003","properties":{"allowVirtualNetworkAccess":false,"allowForwardedTraffic":false,"allowGatewayTransit":false,"useRemoteGateways":false,"remoteVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Network/virtualNetworks/vnet000005"},"remoteAddressSpace":{"addressPrefixes":["10.0.0.0/16"]},"databricksVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-databricks000002-fuyf4ssbg05af/providers/Microsoft.Network/virtualNetworks/workers-vnet"},"databricksAddressSpace":{"addressPrefixes":["10.139.0.0/16"]},"peeringState":"Initiated","provisioningState":"Succeeded"}}
@@ -1690,7 +1690,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2024-05-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003","name":"peering000003","properties":{"allowVirtualNetworkAccess":false,"allowForwardedTraffic":false,"allowGatewayTransit":false,"useRemoteGateways":false,"remoteVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Network/virtualNetworks/vnet000005"},"remoteAddressSpace":{"addressPrefixes":["10.0.0.0/16"]},"databricksVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-databricks000002-fuyf4ssbg05af/providers/Microsoft.Network/virtualNetworks/workers-vnet"},"databricksAddressSpace":{"addressPrefixes":["10.139.0.0/16"]},"peeringState":"Connected","provisioningState":"Succeeded"}}
@@ -1940,7 +1940,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2024-05-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003","name":"peering000003","properties":{"allowVirtualNetworkAccess":false,"allowForwardedTraffic":false,"allowGatewayTransit":false,"useRemoteGateways":false,"remoteVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Network/virtualNetworks/vnet000005"},"remoteAddressSpace":{"addressPrefixes":["10.0.0.0/16"]},"databricksVirtualNetwork":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/databricks-rg-databricks000002-fuyf4ssbg05af/providers/Microsoft.Network/virtualNetworks/workers-vnet"},"databricksAddressSpace":{"addressPrefixes":["10.139.0.0/16"]},"peeringState":"Disconnected","provisioningState":"Succeeded"}}
@@ -1992,7 +1992,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings/peering000003?api-version=2024-05-01
   response:
     body:
       string: '""
@@ -2091,7 +2091,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.46.0 (AAZ) azsdk-python-core/1.24.0 Python/3.9.5 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings?api-version=2023-02-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_databricks_vnet000001/providers/Microsoft.Databricks/workspaces/databricks000002/virtualNetworkPeerings?api-version=2024-05-01
   response:
     body:
       string: '{"value":[]}

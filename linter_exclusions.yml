@@ -438,6 +438,16 @@ databox job mark-devices-shipped:
     deliver_package_details:
       rule_exclusions:
         - option_length_too_long
+databricks access-connector create:
+  parameters:
+    user_assigned_identities:
+      rule_exclusions:
+      - option_length_too_long
+databricks access-connector update:
+  parameters:
+    user_assigned_identities:
+      rule_exclusions:
+      - option_length_too_long
 databricks workspace create:
   parameters:
     managed_resource_group:
@@ -446,6 +456,20 @@ databricks workspace create:
     require_infrastructure_encryption:
       rule_exclusions:
       - option_length_too_long
+    default_storage_firewall:
+      rule_exclusions:
+        - option_length_too_long
+    enhanced_security_compliance:
+      rule_exclusions:
+        - option_length_too_long
+databricks workspace update:
+  parameters:
+    default_storage_firewall:
+      rule_exclusions:
+        - option_length_too_long
+    enhanced_security_compliance:
+      rule_exclusions:
+        - option_length_too_long
 databricks workspace vnet-peering create:
   parameters:
     allow_forwarded_traffic:

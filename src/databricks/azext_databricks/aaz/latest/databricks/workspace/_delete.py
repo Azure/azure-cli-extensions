@@ -23,9 +23,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-02-01",
+        "version": "2024-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}", "2023-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}", "2024-05-01"],
         ]
     }
 
@@ -58,6 +58,11 @@ class Delete(AAZCommand):
                 max_length=64,
                 min_length=3,
             ),
+        )
+        _args_schema.force_deletion = AAZBoolArg(
+            options=["--force-deletion"],
+            help="Optional parameter to retain default unity catalog data. By default the data will retained if Uc is enabled on the workspace.",
+            default=False,
         )
         return cls._args_schema
 
@@ -147,7 +152,10 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01",
+                    "forceDeletion", self.ctx.args.force_deletion,
+                ),
+                **self.serialize_query_param(
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }

@@ -2,6 +2,13 @@
 
 Release History
 ===============
+1.0.0
++++++
+az databricks workspace create/update: Add --access-connector to associate an Access Connector Resource with workspace.
+az databricks workspace create/update: Add --default-storage-firewall to set default storage firewall configuration information on workspace.
+az databricks workspace create/update: Add --enhanced-security-compliance to enable the Enhanced Security and Compliance on workspace.
+az databricks workspace delete: Add --force-deletion to delete all data on Uc enabled workspace.
+
 0.10.2
 +++++
 * az databricks workspace create/update: Add --disk-key-auto-rotation to enable the latest key version should be automatically.

@@ -19,15 +19,12 @@ class Update(AAZCommand):
 
     :example: Update a databricks accessConnector
         az databricks access-connector update --resource-group MyResourceGroup --name MyAccessConnector --location westus --identity-type SystemAssigned
-
-    :example: Update a databricks accessConnector with identities
-        az databricks access-connector update --resource-group MyResourceGroup --name MyAccessConnector --identity-type UserAssigned --user-assigned-identities {"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}":{}}
     """
 
     _aaz_info = {
-        "version": "2022-10-01-preview",
+        "version": "2024-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/accessconnectors/{}", "2022-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/accessconnectors/{}", "2024-05-01"],
         ]
     }
 
@@ -174,7 +171,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-10-01-preview",
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }
@@ -273,7 +270,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-10-01-preview",
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }
@@ -433,6 +430,13 @@ class _UpdateHelper:
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
+        properties.refered_by = AAZListType(
+            serialized_name="referedBy",
+            flags={"read_only": True},
+        )
+
+        refered_by = _schema_access_connector_read.properties.refered_by
+        refered_by.Element = AAZStrType()
 
         system_data = _schema_access_connector_read.system_data
         system_data.created_at = AAZStrType(

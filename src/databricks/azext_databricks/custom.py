@@ -23,6 +23,7 @@ def id_generator(size=13, chars=string.ascii_lowercase + string.digits):
 class DatabricksWorkspaceCreate(_DatabricksWorkspaceCreate):
 
     @classmethod
+    # pylint: disable=protected-access
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZResourceIdArgFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
@@ -36,7 +37,7 @@ class DatabricksWorkspaceCreate(_DatabricksWorkspaceCreate):
 
     def pre_operations(self):
         from msrestazure.tools import is_valid_resource_id, resource_id
-        """Parse managed resource_group which can be either resource group name or id, generate a randomized name if not provided"""
+        # """Parse managed resource_group which can be either resource group name or id, generate a randomized name if not provided"""
         args = self.ctx.args
         subscription_id = self.ctx.subscription_id
         workspace_name = args.name.to_serialized_data()
@@ -61,6 +62,7 @@ class DatabricksWorkspaceCreate(_DatabricksWorkspaceCreate):
 class DatabricksWorkspaceUpdate(_DatabricksWorkspaceUpdate):
 
     @classmethod
+    # pylint: disable=protected-access
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.disk_key_source._registered = False
@@ -78,6 +80,7 @@ class DatabricksWorkspaceUpdate(_DatabricksWorkspaceUpdate):
 class WorkspaceVnetPeeringCreate(_WorkspaceVnetPeeringCreate):
 
     @classmethod
+    # pylint: disable=protected-access
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZResourceIdArgFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
