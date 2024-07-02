@@ -2977,7 +2977,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             network_profile.network_plugin is not None and
             self.context.raw_param.get("network_plugin") is None
         ):
-            self.mc.network_profile.network_plugin = ""
+            network_profile.network_plugin = ""
 
         # set up pod_cidrs, service_cidrs and ip_families
         (
