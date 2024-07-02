@@ -53,6 +53,9 @@ def load_arguments(self, _):
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('enable_gateway', options_list=['--enable_gateway'], help='pass this value to enable Arc Gateway')
         c.argument('disable_gateway', options_list=['--disable_gateway'], help='pass this value to enable Arc Gateway')
+        c.argument('enable_oidc_issuer', arg_type=get_three_state_flag(), help="Enable creation of OIDC issuer url used for workload identity", is_preview=True)
+        c.argument('self_hosted_issuer', options_list=['--self-hosted-issuer'], help="Self hosted issuer url for public cloud clusters - AKS, GKE, EKS", is_preview=True)
+        c.argument('enable_workload_identity', arg_type=get_three_state_flag(), help="Enable workload identity webhook", is_preview=True)
 
     with self.argument_context('connectedk8s update') as c:
         c.argument('tags', tags_type)
@@ -71,6 +74,9 @@ def load_arguments(self, _):
         c.argument('container_log_path', help='Override the default container log path to enable fluent-bit logging')
         c.argument('skip_ssl_verification', action='store_true', help='Skip SSL verification for any cluster connection.')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
+        c.argument('enable_oidc_issuer', arg_type=get_three_state_flag(), help="Enable creation of OIDC issuer url used for workload identity", is_preview=True)
+        c.argument('self_hosted_issuer', options_list=['--self-hosted-issuer'], help="Self hosted issuer url for public cloud clusters - AKS, GKE, EKS", is_preview=True)
+        c.argument('enable_workload_identity', arg_type=get_three_state_flag(), help="Enable workload identity webhook", is_preview=True)
 
     with self.argument_context('connectedk8s upgrade') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
