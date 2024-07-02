@@ -135,8 +135,6 @@ def log_analytics_shared_key_client_factory(cli_ctx):
 
 
 def custom_location_client_factory(cli_ctx, api_version=None, subscription_id=None, **_):
-    from azure.cli.core.profiles import ResourceType
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_CUSTOMLOCATION, api_version=api_version,
                                    subscription_id=subscription_id).custom_locations

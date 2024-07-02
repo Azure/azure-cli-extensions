@@ -67,7 +67,9 @@ class ContainerAppJobsExecutionsLocationNotInStageTest(ScenarioTest):
                     replicaRetryLimit: 1
                     replicaTimeout: 100
                     scheduleTriggerConfig: null
-                    secrets: null
+                    secrets:
+                    - name: secret1
+                      value: 1
                     triggerType: Manual
                 template:
                     containers:
@@ -141,6 +143,7 @@ class ContainerAppJobsExecutionsLocationNotInStageTest(ScenarioTest):
             JMESPathCheck("properties.configuration.triggerType", "Manual", case_sensitive=False),
             JMESPathCheck('properties.configuration.replicaTimeout', 100),
             JMESPathCheck('properties.configuration.replicaRetryLimit', 1),
+            JMESPathCheck("length(properties.configuration.secrets)", 1),
             JMESPathCheck('properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
             JMESPathCheck('properties.template.containers[0].resources.cpu', "0.5"),
             JMESPathCheck('properties.template.containers[0].resources.memory', "1Gi"),
@@ -177,7 +180,10 @@ class ContainerAppJobsExecutionsLocationNotInStageTest(ScenarioTest):
                     replicaRetryLimit: 1
                     replicaTimeout: 200
                     scheduleTriggerConfig: null
-                    secrets: null
+                    secrets:
+                    - name: secret1
+                    - name: secret2
+                      value: 123
                     triggerType: Manual
                 template:
                     containers:
@@ -228,6 +234,7 @@ class ContainerAppJobsExecutionsLocationNotInStageTest(ScenarioTest):
             JMESPathCheck("properties.configuration.triggerType", "Manual", case_sensitive=False),
             JMESPathCheck('properties.configuration.replicaTimeout', 200),
             JMESPathCheck('properties.configuration.replicaRetryLimit', 1),
+            JMESPathCheck("length(properties.configuration.secrets)", 2),
             JMESPathCheck('properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
             JMESPathCheck('properties.template.containers[0].resources.cpu', "0.75"),
             JMESPathCheck('properties.template.containers[0].resources.memory', "1.5Gi"),
@@ -238,6 +245,16 @@ class ContainerAppJobsExecutionsLocationNotInStageTest(ScenarioTest):
             JMESPathCheck('properties.template.containers[0].volumeMounts[0].subPath', 'sub2'),
             JMESPathCheck('properties.template.containers[0].volumeMounts[0].mountPath', '/mnt/data'),
             JMESPathCheck('properties.template.containers[0].volumeMounts[0].volumeName', 'azure-files-volume'),
+        ])
+
+        self.cmd(f'containerapp job secret show -g {resource_group} -n {job} --secret-name secret1', checks=[
+            JMESPathCheck("name", 'secret1'),
+            JMESPathCheck("value", '1'),
+        ])
+
+        self.cmd(f'containerapp job secret show -g {resource_group} -n {job} --secret-name secret2', checks=[
+            JMESPathCheck("name", 'secret2'),
+            JMESPathCheck("value", '123'),
         ])
 
         # wait for provisioning state of job to be succeeded before updating
