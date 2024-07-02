@@ -8,6 +8,7 @@
 
 from ._operations import Operations
 from ._fleets_operations import FleetsOperations
+from ._auto_upgrade_profiles_operations import AutoUpgradeProfilesOperations
 from ._fleet_members_operations import FleetMembersOperations
 from ._update_runs_operations import UpdateRunsOperations
 from ._fleet_update_strategies_operations import FleetUpdateStrategiesOperations
@@ -19,6 +20,7 @@ from ._patch import patch_sdk as _patch_sdk
 __all__ = [
     "Operations",
     "FleetsOperations",
+    "AutoUpgradeProfilesOperations",
     "FleetMembersOperations",
     "UpdateRunsOperations",
     "FleetUpdateStrategiesOperations",
