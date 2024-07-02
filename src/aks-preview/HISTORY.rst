@@ -16,6 +16,7 @@ Pending
 5.0.0b4
 ++++++++
 * Add additional unit test cases for mutable fips flags in agentpool update.
+* Add `az operation list` command to list all operations of a specific managed cluster.
 
 5.0.0b3
 ++++++++
