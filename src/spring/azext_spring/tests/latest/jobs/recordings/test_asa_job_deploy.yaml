@@ -1,0 +1,204 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring job create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -s
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002?api-version=2024-05-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"9b9e547a4196418d96427d7fe1421e91","networkProfile":{"outboundIPs":{"publicIPs":["20.162.177.38","20.254.82.240"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"clitest000002.azuremicroservices.io","marketplaceResource":{"plan":"asa-ent-hr-mtr","publisher":"vmware-inc","product":"azure-spring-cloud-vmware-tanzu-2"}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"uksouth","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002","name":"clitest000002","systemData":{"createdBy":"v-muyaofeng@microsoft.com","createdByType":"User","createdAt":"2024-06-19T04:54:54.0896323Z","lastModifiedBy":"v-muyaofeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-19T04:54:54.0896323Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '947'
+      content-type:
+      - application/json
+      date:
+      - Wed, 19 Jun 2024 05:01:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: 4CA6CB34EF2D4906A7F467EED45E16F4 Ref B: TYO201151006034 Ref C: 2024-06-19T05:01:37Z'
+      x-rp-server-mvid:
+      - 16f8ed7c-99fe-42f5-98dc-7ba9e82d32d1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring job create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -s
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/jobs/myjob?api-version=2024-05-01-preview
+  response:
+    body:
+      string: '{"error":{"code":"NotFound","message":"Job not found.","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/jobs/myjob","details":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '230'
+      content-type:
+      - application/json
+      date:
+      - Wed, 19 Jun 2024 05:01:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 58002E6001B742868F4DD3B1F661E7BA Ref B: TYO201151004034 Ref C: 2024-06-19T05:01:39Z'
+      x-rp-server-mvid:
+      - 16f8ed7c-99fe-42f5-98dc-7ba9e82d32d1
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"properties": {"template": {"environmentVariables": [], "resourceRequests":
+      {"cpu": "1", "memory": "2Gi"}}, "managedComponentReferences": [], "triggerConfig":
+      {"triggerType": "Manual"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring job create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '187'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g -s
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/jobs/myjob?api-version=2024-05-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","triggerConfig":{"triggerType":"Manual"},"template":{"environmentVariables":[],"resourceRequests":{"cpu":"1","memory":"2Gi"}},"managedComponentReferences":[]},"type":"Microsoft.AppPlatform/Spring/jobs","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/jobs/myjob","name":"myjob","systemData":{"createdBy":"v-muyaofeng@microsoft.com","createdByType":"User","createdAt":"2024-06-19T05:01:42.0072873Z","lastModifiedBy":"v-muyaofeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-19T05:01:42.0072873Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '661'
+      content-type:
+      - application/json
+      date:
+      - Wed, 19 Jun 2024 05:01:43 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 7DE6AE5D3AED45DB9D3EBB3A8D500705 Ref B: TYO201100115025 Ref C: 2024-06-19T05:01:41Z'
+      x-rp-server-mvid:
+      - 16f8ed7c-99fe-42f5-98dc-7ba9e82d32d1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring job create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g -s
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/jobs/myjob?api-version=2024-05-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","triggerConfig":{"triggerType":"Manual"},"template":{"environmentVariables":[],"resourceRequests":{"cpu":"1","memory":"2Gi"}},"managedComponentReferences":[]},"type":"Microsoft.AppPlatform/Spring/jobs","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/jobs/myjob","name":"myjob","systemData":{"createdBy":"v-muyaofeng@microsoft.com","createdByType":"User","createdAt":"2024-06-19T05:01:42.0072873Z","lastModifiedBy":"v-muyaofeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-19T05:01:42.0072873Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '661'
+      content-type:
+      - application/json
+      date:
+      - Wed, 19 Jun 2024 05:01:45 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 8121A5E1437D4652AAB3271D1AB24773 Ref B: TYO201151005060 Ref C: 2024-06-19T05:01:44Z'
+      x-rp-server-mvid:
+      - 16f8ed7c-99fe-42f5-98dc-7ba9e82d32d1
+    status:
+      code: 200
+      message: OK
+version: 1

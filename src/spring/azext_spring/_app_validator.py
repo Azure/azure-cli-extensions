@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=too-few-public-methods, unused-argument, redefined-builtin
+import os.path
 from knack.log import get_logger
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from msrestazure.azure_exceptions import CloudError
@@ -104,12 +105,14 @@ def validate_deloy_path(cmd, namespace):
     arguments = [namespace.artifact_path, namespace.source_path, namespace.container_image]
     if all(not x for x in arguments):
         raise InvalidArgumentValueError('One of --artifact-path, --source-path, --container-image must be provided.')
+    validate_path_exist(namespace.source_path, namespace.artifact_path)
     _deploy_path_mutual_exclusive(arguments)
     _validate_container_registry(cmd, namespace)
 
 
 def validate_deloyment_create_path(cmd, namespace):
     arguments = [namespace.artifact_path, namespace.source_path, namespace.container_image]
+    validate_path_exist(namespace.source_path, namespace.artifact_path)
     _deploy_path_mutual_exclusive(arguments)
     _validate_container_registry(cmd, namespace)
 
@@ -162,3 +165,10 @@ def _validate_container_registry(cmd, namespace):
                 raise InvalidArgumentValueError(
                     "The instance without build service can only use '--container-image' to deploy."
                     " See more details in https://learn.microsoft.com/en-us/azure/spring-apps/how-to-deploy-with-custom-container-image?tabs=azure-cli")
+
+
+def validate_path_exist(source_path, artifact_path):
+    if source_path and not os.path.exists(source_path):
+        raise InvalidArgumentValueError('source path {} does not exist.'.format(source_path))
+    if artifact_path and not os.path.exists(artifact_path):
+        raise InvalidArgumentValueError('artifact path {} does not exist.'.format(artifact_path))
