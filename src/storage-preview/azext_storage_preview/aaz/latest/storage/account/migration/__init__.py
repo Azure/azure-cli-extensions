@@ -8,16 +8,6 @@
 # pylint: skip-file
 # flake8: noqa
 
-from azure.cli.core.aaz import *
-
-
-@register_command_group(
-    "storage account",
-)
-class __CMDGroup(AAZCommandGroup):
-    """Manage storage accounts.
-    """
-    pass
-
-
-__all__ = ["__CMDGroup"]
+from .__cmd_group import *
+from ._show import *
+from ._start import *
