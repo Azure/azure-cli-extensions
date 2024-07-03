@@ -51,6 +51,7 @@ from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity, ListClusterUserCredentialProperties
 from .vendored_sdks.preview_2022_10_01.models import ConnectedCluster as ConnectedClusterPreview
 from .vendored_sdks.preview_2022_10_01.models import ConnectedClusterPatch as ConnectedClusterPatchPreview
+from .vendored_sdks.preview_2024_07_01.models import ConnectedCluster as ConnectedCluster2024_07_01_Preview, OidcIssuerProfile, SecurityProfile, SecurityProfileWorkloadIdentity
 import sys
 import hashlib
 import re
@@ -139,7 +140,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
 
     # Set preview client if the connection-type is provided. (TODO: To test whether overriding the client factory to 2024 will retain the 2023 private link feature as in the line above)
-    if connection_type is not None and connection_type == "gateway":
+    if connection_type is not None and connection_type == "gateway" or enable_workload_identity or enable_oidc_issuer:
         client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
     
     # Checking whether optional extra values file has been provided.
@@ -390,7 +391,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
                 cc = generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra,
                                               enable_private_link, private_link_scope_resource_id,
-                                              distribution_version, azure_hybrid_benefit)
+                                              distribution_version, azure_hybrid_benefit, enable_oidc_issuer,
+                                              enable_workload_identity, self_hosted_issuer)
                 cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
                 cc_response = LongRunningOperation(cmd.cli_ctx)(cc_response)
                 # Disabling cluster-connect if private link is getting enabled
@@ -466,7 +468,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     # Generate request payload
     cc = generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra,
                                   enable_private_link, private_link_scope_resource_id, distribution_version,
-                                  azure_hybrid_benefit)
+                                  azure_hybrid_benefit, enable_oidc_issuer, enable_workload_identity, self_hosted_issuer)
 
     print("Azure resource provisioning has begun.")
     # Create connected cluster resource
@@ -522,6 +524,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                disable_auto_upgrade, enable_custom_locations, custom_locations_oid,
                                helm_client_location, enable_private_link, arm_metadata,
                                onboarding_timeout, container_log_path)
+    
+    # TODO: Add 2nd long running operation to wait for Agent State to reach terminal stage 
+    
     return put_cc_response
 
 
@@ -863,14 +868,15 @@ def check_arm64_node(api_response):
     return False
 
 
-def generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit):
+def generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, 
+                             distribution_version, azure_hybrid_benefit, enable_oidc_issuer, enable_workload_identity, self_hosted_issuer):
     # Create connected cluster resource object
     identity = ConnectedClusterIdentity(
         type="SystemAssigned"
     )
     if tags is None:
         tags = {}
-    cc = ConnectedCluster(
+    cc = ConnectedCluster2024_07_01_Preview(
         location=location,
         identity=identity,
         agent_public_key_certificate=public_key,
@@ -883,7 +889,7 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
         private_link_state = None
         if enable_private_link is not None:
             private_link_state = "Enabled" if enable_private_link is True else "Disabled"
-        cc = ConnectedClusterPreview(
+        cc = ConnectedCluster2024_07_01_Preview(
             location=location,
             identity=identity,
             agent_public_key_certificate=public_key,
@@ -895,6 +901,43 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
             azure_hybrid_benefit=azure_hybrid_benefit,
             distribution_version=distribution_version
         )
+    
+    if enable_oidc_issuer:
+        oidc_profile = OidcIssuerProfile(
+            enabled=True
+        )
+        if self_hosted_issuer != "":
+            oidc_profile.self_hosted_issuer_url = self_hosted_issuer
+        cc.oidc_issuer_profile = oidc_profile
+    
+    if enable_workload_identity:
+        security_profile = SecurityProfile(
+            workload_identity= SecurityProfileWorkloadIdentity(
+                enabled=True
+            )
+        )
+        cc.security_profile = security_profile
+
+    return cc
+
+def generate_reput_request_payload(cc, enable_oidc_issuer, enable_workload_identity, self_hosted_issuer):
+    # Update connected cluster resource object
+    if enable_oidc_issuer:
+        oidc_profile = OidcIssuerProfile(
+            enabled=True
+        )
+        if self_hosted_issuer != "":
+            oidc_profile.self_hosted_issuer_url = self_hosted_issuer
+        cc.oidc_issuer_profile = oidc_profile
+    
+    if enable_workload_identity:
+        security_profile = SecurityProfile(
+            workload_identity= SecurityProfileWorkloadIdentity(
+                enabled=True
+            )
+        )
+        cc.security_profile = security_profile
+
     return cc
 
 
@@ -975,6 +1018,11 @@ def get_connectedk8s(cmd, client, resource_group_name, cluster_name):
 def get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name):
     # Override preview client to show private link properties and cluster kind to customers
     client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
+    return client.get(resource_group_name, cluster_name)
+
+def get_connectedk8s_2024_07_01(cmd, resource_group_name, cluster_name):
+    # Override preview client to show private link properties and cluster kind to customers
+    client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
     return client.get(resource_group_name, cluster_name)
 
 
@@ -1163,14 +1211,14 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
     # Fetch Connected Cluster for agent version
-    connected_cluster = get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name)
+    connected_cluster = get_connectedk8s_2024_07_01(cmd, resource_group_name, cluster_name)
 
     if (connected_cluster is not None) and (connected_cluster.kind is not None) and (connected_cluster.kind.lower() == consts.Provisioned_Cluster_Kind):
         raise InvalidArgumentValueError(
             "Updating a Provisioned Cluster is not supported from the Connected Cluster CLI. Please use the 'az aksarc update' CLI command. https://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-update")
 
     # Set preview client as most of the patchable fields are available in preview api-version
-    client = cf_connected_cluster_prev_2022_10_01(cmd.cli_ctx, None)
+    client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
 
     # Patching the connected cluster ARM resource
     arm_properties_unset = (
@@ -1188,7 +1236,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     if proxy_params_unset and auto_upgrade is None and container_log_path is None and arm_properties_only_ahb_set:
         return patch_cc_response
 
-    if proxy_params_unset and not auto_upgrade and arm_properties_unset and not container_log_path and enable_oidc_issuer == None and enable_workload_identity == None and self_hosted_issuer == "":
+    if proxy_params_unset and not auto_upgrade and arm_properties_unset and not container_log_path and enable_oidc_issuer == None and enable_workload_identity == None:
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
     if (https_proxy or http_proxy or no_proxy) and disable_proxy:
@@ -1214,7 +1262,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
         client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location)
 
     # Fetch Connected Cluster for agent version
-    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
+    connected_cluster = get_connectedk8s_2024_07_01(cmd, client, resource_group_name, cluster_name)
 
     kubernetes_properties = {'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version}
 
@@ -1227,6 +1275,13 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
         kubernetes_properties['Context.Default.AzureCLI.KubernetesInfra'] = kubernetes_infra
 
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
+    
+    # Generate reput request payload
+    cc = generate_reput_request_payload(connected_cluster, enable_oidc_issuer, enable_workload_identity, self_hosted_issuer)
+
+    # Update connected cluster resource
+    reput_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, False)
+    reput_cc_response = LongRunningOperation(cmd.cli_ctx)(reput_cc_response)
 
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
@@ -1317,6 +1372,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
         pass
     if not arm_properties_unset:
         return patch_cc_response
+    return reput_cc_response
 
 
 def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None, skip_ssl_verification=False, arc_agent_version=None, upgrade_timeout="600"):
