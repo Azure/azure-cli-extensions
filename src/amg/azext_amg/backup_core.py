@@ -26,16 +26,13 @@ from .utils import search_annotations
 logger = get_logger(__name__)
 
 
-# Save dashboards
-def _save_dashboards(grafana_url, backup_dir, timestamp, http_headers, **kwargs):
-    folder_path = f'{backup_dir}/dashboards/{timestamp}'
-    log_file = f'dashboards_{timestamp}.txt'
-
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-
+def get_dashboards(grafana_url, http_headers, **kwargs):
     limit = 5000  # limit is 5000 above V6.2+
     current_page = 1
+
+    all_dashboards = []
+    
+    # Go through all the pages, we are unsure how many pages there are
     while True:
         dashboards = _get_all_dashboards_in_grafana(current_page, limit, grafana_url, http_headers)
 
@@ -58,8 +55,31 @@ def _save_dashboards(grafana_url, backup_dir, timestamp, http_headers, **kwargs)
         if len(dashboards) == 0:
             break
         current_page += 1
-        _get_individual_dashboard_setting_and_save(dashboards, folder_path, log_file, grafana_url, http_headers)
+        current_run_dashboards = _get_individual_dashboard_setting(dashboards, grafana_url, http_headers)
+        # add the previous list to the list where we added everything.
+        all_dashboards = all_dashboards + current_run_dashboards
         _print_an_empty_line()
+
+    return all_dashboards
+
+# Save dashboards
+# def _save_dashboards(grafana_url, backup_dir, timestamp, http_headers, **kwargs):
+#     folder_path = f'{backup_dir}/dashboards/{timestamp}'
+#     log_file = f'dashboards_{timestamp}.txt'
+
+#     if not os.path.exists(folder_path):
+#         os.makedirs(folder_path)
+
+#     dashboards = get_dashboards(grafana_url, http_headers, **kwargs)
+#     # now go through all the dashboards and save them
+#     for dashboard_content in dashboards:
+#         dashboard = dashboard_content['dashboard']
+#         board_uri = "uid/" + dashboard['uid']
+#         _save_dashboard_setting(dashboard['title'], board_uri, dashboard_content, folder_path)
+
+#         log_file_path = folder_path + '/' + log_file
+#         with open(log_file_path, 'w', encoding="utf8") as f:
+#             f.write(board_uri + '\t' + dashboard['title'] + '\n')
 
 
 def _get_all_dashboards_in_grafana(page, limit, grafana_url, http_headers):
@@ -77,31 +97,29 @@ def _get_all_dashboards_in_grafana(page, limit, grafana_url, http_headers):
     return []
 
 
-def _save_dashboard_setting(dashboard_name, file_name, dashboard_settings, folder_path):
-    file_path = _save_json(file_name, dashboard_settings, folder_path, 'dashboard')
-    logger.warning("Dashboard: \"%s\" is saved", dashboard_name)
-    logger.info("    -> %s", file_path)
+# def _save_dashboard_setting(dashboard_name, file_name, dashboard_settings, folder_path):
+#     file_path = _save_json(file_name, dashboard_settings, folder_path, 'dashboard')
+#     logger.warning("Dashboard: \"%s\" is saved", dashboard_name)
+#     logger.info("    -> %s", file_path)
 
 
-def _get_individual_dashboard_setting_and_save(dashboards, folder_path, log_file, grafana_url, http_headers):
-    file_path = folder_path + '/' + log_file
+def _get_individual_dashboard_setting(dashboards, grafana_url, http_headers):
+    all_individual_dashboards = []
     if dashboards:
-        with open(file_path, 'w', encoding="utf8") as f:
-            for board in dashboards:
-                board_uri = "uid/" + board['uid']
+        for board in dashboards:
+            board_uri = "uid/" + board['uid']
 
-                (status, content) = get_dashboard(board_uri, grafana_url, http_headers)
-                if status == 200:
-                    # do not back up provisioned dashboards
-                    if content['meta']['provisioned']:
-                        logger.warning("Dashboard: \"%s\" is provisioned, skipping...", board['title'])
-                        continue
-                    _save_dashboard_setting(
-                        board['title'],
-                        board_uri,
-                        content,
-                        folder_path)
-                    f.write(board_uri + '\t' + board['title'] + '\n')
+            (status, content) = get_dashboard(board_uri, grafana_url, http_headers)
+            if status == 200:
+                # do not back up provisioned dashboards
+                if content['meta']['provisioned']:
+                    logger.warning("Dashboard: \"%s\" is provisioned, skipping...", board['title'])
+                    continue
+
+                all_individual_dashboards.append(content)
+
+    return all_individual_dashboards
+
 
 
 # Save library panels

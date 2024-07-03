@@ -3,10 +3,12 @@ import datetime
 import tarfile
 import os
 import shutil
+import json
+import re
 
 from knack.log import get_logger
 
-from .backup_core import _save_dashboards, _save_library_panels, _save_folders, _save_snapshots, _save_annotations, _save_datasources
+from .backup_core import get_dashboards, _save_library_panels, _save_folders, _save_snapshots, _save_annotations, _save_datasources
 
 logger = get_logger(__name__)
 
@@ -58,3 +60,41 @@ def _archive(grafana_name, backup_dir, timestamp):
 
     return archive_file
 
+
+def _save_dashboards(grafana_url, backup_dir, timestamp, http_headers, **kwargs):
+    folder_path = f'{backup_dir}/dashboards/{timestamp}'
+    log_file = f'dashboards_{timestamp}.txt'
+
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    dashboards = get_dashboards(grafana_url, http_headers, **kwargs)
+    # now go through all the dashboards and save them
+    for dashboard_content in dashboards:
+        dashboard = dashboard_content['dashboard']
+        board_uri = "uid/" + dashboard['uid']
+        _save_dashboard_setting(dashboard['title'], board_uri, dashboard_content, folder_path)
+
+        log_file_path = folder_path + '/' + log_file
+        with open(log_file_path, 'w', encoding="utf8") as f:
+            f.write(board_uri + '\t' + dashboard['title'] + '\n')
+
+
+def _save_dashboard_setting(dashboard_name, file_name, dashboard_settings, folder_path):
+    file_path = _save_json(file_name, dashboard_settings, folder_path, 'dashboard')
+    logger.warning("Dashboard: \"%s\" is saved", dashboard_name)
+    logger.info("    -> %s", file_path)
+
+
+def _save_json(file_name, data, folder_path, extension, pretty_print=None):
+    pattern = "^db/|^uid/"
+    if re.match(pattern, file_name):
+        file_name = re.sub(pattern, '', file_name)
+
+    file_path = folder_path + '/' + file_name + '.' + extension
+    with open(file_path, 'w', encoding="utf8") as f:
+        if pretty_print:
+            f.write(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')))
+        else:
+            f.write(json.dumps(data))
+    return file_path
