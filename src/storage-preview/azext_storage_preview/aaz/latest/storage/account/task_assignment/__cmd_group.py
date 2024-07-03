@@ -8,6 +8,17 @@
 # pylint: skip-file
 # flake8: noqa
 
-from .__cmd_group import *
-from ._show import *
-from ._start import *
+from azure.cli.core.aaz import *
+
+
+@register_command_group(
+    "storage account task-assignment",
+    is_preview=True,
+)
+class __CMDGroup(AAZCommandGroup):
+    """Manage storage account task assignment.
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]
