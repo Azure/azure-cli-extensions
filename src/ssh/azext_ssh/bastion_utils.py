@@ -26,6 +26,8 @@ from knack.prompting import prompt_y_n
 
 
 from .aaz.latest.network.bastion import Create 
+from .vendored_sdks.resourcegraph._resource_graph_client import ResourceGraphClient
+from . import resource_graph_utils
 from . import ssh_utils
 
 logger = get_logger(__name__)
@@ -292,17 +294,10 @@ def _request_specified_bastion(cmd, subscription_id, vnet_id, resource_group):
     # The resulting client can then be used to perform resource queries across multiple Azure subscriptions,
     # leveraging the Resource Graph extension to fetch detailed information the queried resource.
 
-    RESOURCE_GRAPH_EXTENSION_NAME = 'resource-graph'
-    RG_EXTENSION_MODULE = 'azext_resourcegraph.custom'
-    RG_SDK_MODULE = 'azext_resourcegraph.vendored_sdks.resourcegraph._resource_graph_client'
-
-    RG_custom = _get_azext_module(RESOURCE_GRAPH_EXTENSION_NAME, RG_EXTENSION_MODULE)
-    RG_client = _get_azext_module(RESOURCE_GRAPH_EXTENSION_NAME, RG_SDK_MODULE)
-
     try:
         access_token = Profile(cli_ctx=cmd.cli_ctx).get_raw_token()[0][2].get("accessToken")
         credentials = AccessTokenCredential(access_token)
-        client = RG_client.ResourceGraphClient(credentials, subscription_id)
+        client = ResourceGraphClient(credentials, subscription_id)
 
     except Exception:
         raise azclierror.ClientRequestError(f"Failed to get access token. Ensure you are currently logged in using az login.")
@@ -325,8 +320,7 @@ def _request_specified_bastion(cmd, subscription_id, vnet_id, resource_group):
     )
     """
     try: 
-        response = RG_custom.execute_query(client, query, 10, 0, None, None, False, None)
-
+        response = resource_graph_utils.execute_query(client, query, 10, 0, None, None, False, None)
     except Exception:
         raise azclierror.ClientRequestError(f"Failed to find Bastion assocaited to VNet in the specified Subscription. Ensure the Bastion is not in a different subscription or resource group.")
     
