@@ -1,0 +1,54 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub custom-rollout list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --provider-namespace
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/customRollouts?api-version=2024-04-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"provisioningState":"Failed","specification":{"canary":{"regions":["eastUS2Euap","centralUSEuap","brazilUS","eastUSStg","southCentralUSStg"]},"refreshSubscriptionRegistration":false,"skipReleaseScopeValidation":false},"status":{"completedRegions":["eastUS2Euap","centralUSEuap","brazilUS"],"failedOrSkippedRegions":{"eastUSStg":{"code":"BadRequest","message":"The
+        manifest in canary region cannot be used for location eastUSStg, the supported
+        canary locations are centraluseuap,eastus2euap,brazilus."},"southCentralUSStg":{"code":"BadRequest","message":"The
+        manifest in canary region cannot be used for location southCentralUSStg, the
+        supported canary locations are centraluseuap,eastus2euap,brazilus."}}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/customRollouts/testrollout","type":"Microsoft.ProviderHub/providerRegistrations/customRollouts","name":"testrollout","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2023-10-27T19:10:44.6828543Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-27T19:10:44.6828543Z"}},{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["eastUS2Euap","centralUSEuap","brazilUS"]},"refreshSubscriptionRegistration":false,"skipReleaseScopeValidation":false},"status":{"completedRegions":["brazilUS","centralUSEuap","eastUS2Euap"],"failedOrSkippedRegions":{}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/customRollouts/testrolloutonly3regions","type":"Microsoft.ProviderHub/providerRegistrations/customRollouts","name":"testrolloutonly3regions","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2023-10-27T19:20:58.4679432Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-10-27T19:20:58.4679432Z"}},{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["eastus2euap"]},"refreshSubscriptionRegistration":false,"skipReleaseScopeValidation":false,"manifestCheckinSpecification":{"manifestCheckinOption":"AttemptAutomaticManifestCheckin","manifestCheckinParams":{"environment":"Prod"},"manifestCheckinSync":true}},"status":{"completedRegions":["eastus2euap"],"failedOrSkippedRegions":{},"manifestCheckinInfo":{"isCheckedIn":true,"statusMessage":"Manifest
+        is successfully merged. Use the Default/Custom rollout (http://aka.ms/rpaasrollout)
+        to roll out the manifest in ARM.","commitId":"acb80a5f38586c45c5fe21494bfeca8e503bfb28"}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/customRollouts/rolloutOpenPR","type":"Microsoft.ProviderHub/providerRegistrations/customRollouts","name":"rolloutOpenPR","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-01-11T23:05:36.7058281Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-01-11T23:05:36.7058281Z"}},{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["EastUS2EUAP","centraluseuap"]},"refreshSubscriptionRegistration":false,"skipReleaseScopeValidation":false},"status":{"completedRegions":["centraluseuap","EastUS2EUAP"],"failedOrSkippedRegions":{}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/customRollouts/canaryTesting01","type":"Microsoft.ProviderHub/providerRegistrations/customRollouts","name":"canaryTesting01","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-06-03T21:56:21.0990587Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-03T21:56:21.0990587Z"}},{"properties":{"provisioningState":"Succeeded","specification":{"canary":{"regions":["EastUS2EUAP","centraluseuap"]},"refreshSubscriptionRegistration":false,"skipReleaseScopeValidation":false},"status":{"completedRegions":["centraluseuap","EastUS2EUAP"],"failedOrSkippedRegions":{}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/customRollouts/testCLI","type":"Microsoft.ProviderHub/providerRegistrations/customRollouts","name":"testCLI","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-05-29T01:28:15.4699172Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-29T01:28:15.4699172Z"}},{"properties":{"provisioningState":"StorageProvisioningFailed","specification":{"canary":{"regions":["Eastus2euap","brazilus","centraluseuap"]},"refreshSubscriptionRegistration":false,"skipReleaseScopeValidation":false,"autoProvisionConfig":{"storage":true,"resourceGraph":true}},"status":{"completedRegions":[],"failedOrSkippedRegions":{"Eastus2euap":null,"brazilus":null,"centraluseuap":null}}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/customRollouts/testRollout","type":"Microsoft.ProviderHub/providerRegistrations/customRollouts","name":"testRollout","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-06-03T17:04:33.5308111Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-03T17:04:33.5308111Z"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5612'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 06 Jun 2024 16:35:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/8265e1f1-87c3-479c-bade-4899521bad4f
+      x-msedge-ref:
+      - 'Ref A: B33EC054BC274BA3ABA853FD0B616E4E Ref B: CH1AA2020620037 Ref C: 2024-06-06T16:35:49Z'
+    status:
+      code: 200
+      message: OK
+version: 1

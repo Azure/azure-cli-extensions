@@ -187,7 +187,7 @@ def _do_ssh_op(cmd, op_info, op_call):
 
     try:
         if op_info.is_arc():
-            op_info.proxy_path = connectivity_utils.get_client_side_proxy(op_info.ssh_proxy_folder)
+            op_info.proxy_path = connectivity_utils.install_client_side_proxy(op_info.ssh_proxy_folder)
             (op_info.relay_info, op_info.new_service_config) = connectivity_utils.get_relay_information(
                 cmd, op_info.resource_group_name, op_info.vm_name, op_info.resource_type,
                 cert_lifetime, op_info.port, op_info.yes_without_prompt)

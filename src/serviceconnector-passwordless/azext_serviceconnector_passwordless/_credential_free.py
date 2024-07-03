@@ -821,7 +821,7 @@ class PostgresFlexHandler(TargetHandler):
             'az account get-access-token --resource-type oss-rdbms').get('accessToken')
 
         # extension functions require the extension to be available, which is the case for postgres (default) database.
-        conn_string = "host={} user={} dbname=postgres password={} sslmode=require".format(
+        conn_string = "host={} user='{}' dbname=postgres password={} sslmode=require".format(
             self.host, self.admin_username, password)
         return conn_string
 
@@ -926,7 +926,7 @@ class PostgresSingleHandler(PostgresFlexHandler):
             'az account get-access-token --resource-type oss-rdbms').get('accessToken')
 
         # extension functions require the extension to be available, which is the case for postgres (default) database.
-        conn_string = "host={} user={} dbname={} password={} sslmode=require".format(
+        conn_string = "host={} user='{}' dbname='{}' password={} sslmode=require".format(
             self.host, self.admin_username + '@' + self.db_server, self.dbname, password)
         return conn_string
 
