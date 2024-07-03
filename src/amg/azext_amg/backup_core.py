@@ -26,7 +26,7 @@ from .utils import search_annotations
 logger = get_logger(__name__)
 
 
-def get_dashboards(grafana_url, http_headers, **kwargs):
+def get_all_dashboards(grafana_url, http_headers, **kwargs):
     limit = 5000  # limit is 5000 above V6.2+
     current_page = 1
 
@@ -61,25 +61,6 @@ def get_dashboards(grafana_url, http_headers, **kwargs):
         _print_an_empty_line()
 
     return all_dashboards
-
-# Save dashboards
-# def _save_dashboards(grafana_url, backup_dir, timestamp, http_headers, **kwargs):
-#     folder_path = f'{backup_dir}/dashboards/{timestamp}'
-#     log_file = f'dashboards_{timestamp}.txt'
-
-#     if not os.path.exists(folder_path):
-#         os.makedirs(folder_path)
-
-#     dashboards = get_dashboards(grafana_url, http_headers, **kwargs)
-#     # now go through all the dashboards and save them
-#     for dashboard_content in dashboards:
-#         dashboard = dashboard_content['dashboard']
-#         board_uri = "uid/" + dashboard['uid']
-#         _save_dashboard_setting(dashboard['title'], board_uri, dashboard_content, folder_path)
-
-#         log_file_path = folder_path + '/' + log_file
-#         with open(log_file_path, 'w', encoding="utf8") as f:
-#             f.write(board_uri + '\t' + dashboard['title'] + '\n')
 
 
 def _get_all_dashboards_in_grafana(page, limit, grafana_url, http_headers):

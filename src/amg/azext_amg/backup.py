@@ -8,7 +8,7 @@ import re
 
 from knack.log import get_logger
 
-from .backup_core import get_dashboards, _save_library_panels, _save_folders, _save_snapshots, _save_annotations, _save_datasources
+from .backup_core import get_all_dashboards, _save_library_panels, _save_folders, _save_snapshots, _save_annotations, _save_datasources
 
 logger = get_logger(__name__)
 
@@ -68,7 +68,7 @@ def _save_dashboards(grafana_url, backup_dir, timestamp, http_headers, **kwargs)
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
 
-    dashboards = get_dashboards(grafana_url, http_headers, **kwargs)
+    dashboards = get_all_dashboards(grafana_url, http_headers, **kwargs)
     # now go through all the dashboards and save them
     for dashboard_content in dashboards:
         dashboard = dashboard_content['dashboard']

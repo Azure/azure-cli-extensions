@@ -29,7 +29,7 @@ def restore(grafana_url, archive_file, components, http_headers, destination_dat
 
     restore_functions = collections.OrderedDict()
     restore_functions['folder'] = _create_folder
-    restore_functions['dashboard'] = _create_dashboard
+    restore_functions['dashboard'] = _load_and_create_dashboard
     restore_functions['library_panel'] = _create_library_panel
     restore_functions['snapshot'] = _create_snapshot
     restore_functions['annotation'] = _create_annotation
@@ -81,7 +81,7 @@ def _restore_components(grafana_url, restore_functions, tmpdir, components, http
 
 
 # Restore dashboards
-def _create_dashboard(grafana_url, file_path, http_headers):
+def _load_and_create_dashboard(grafana_url, file_path, http_headers):
     with open(file_path, 'r', encoding="utf8") as f:
         data = f.read()
 
@@ -104,6 +104,10 @@ def _create_dashboard(grafana_url, file_path, http_headers):
         (Style.SUCCESS, 'SUCCESS') if result[0] == 200 else (Style.ERROR, 'FAILURE')
     ])
     logger.info("status: %s, msg: %s", result[0], result[1])
+
+
+def create_dashboard():
+    pass
 
 
 # Restore Library Panel
