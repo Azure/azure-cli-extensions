@@ -12,11 +12,11 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * Add validation to `az aks create` and `az aks update` while modifying the `--ephemeral-disk-volume-type` and `--ephemeral-disk-nvme-perf-tier` values.
+* Add `az operation list` command to list all operations of a specific managed cluster.
 
 5.0.0b4
 ++++++++
 * Add additional unit test cases for mutable fips flags in agentpool update.
-* Add `az operation list` command to list all operations of a specific managed cluster.
 
 5.0.0b3
 ++++++++
