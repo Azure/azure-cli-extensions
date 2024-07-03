@@ -390,6 +390,11 @@ def load_arguments(self, _):
                    help='A json file path indicates the certificates which would be loaded to app')
         c.argument('deployment_name', default='default',
                    help='Name of the default deployment.', validator=validate_name)
+        c.argument('disable_test_endpoint_auth',
+                   arg_type=get_three_state_flag(),
+                   options_list=['--disable-test-endpoint-auth', '--disable-tea'],
+                   help="If true, disable authentication of the app's test endpoint.",
+                   default=False)
 
     with self.argument_context('spring app update') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
@@ -409,6 +414,10 @@ def load_arguments(self, _):
         c.argument('deployment', options_list=['--deployment', '-d'],
                    help='Name of an existing deployment of the app. Default to the production deployment if not specified.',
                    validator=fulfill_deployment_param_or_warning)
+        c.argument('disable_test_endpoint_auth',
+                   arg_type=get_three_state_flag(),
+                   options_list=['--disable-test-endpoint-auth', '--disable-tea'],
+                   help="If true, disable authentication of the app's test endpoint.")
 
     with self.argument_context('spring app append-persistent-storage') as c:
         c.argument('storage_name', type=str,
