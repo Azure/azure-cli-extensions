@@ -1903,7 +1903,6 @@ def aks_operation_abort(cmd,   # pylint: disable=unused-argument
         operation_group="managed_clusters",
     )
 
-
     instance = client.get(resource_group_name, name)
     power_state = PowerState(code="Running")
     if instance is None:
