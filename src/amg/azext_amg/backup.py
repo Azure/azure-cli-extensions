@@ -8,7 +8,7 @@ import re
 
 from knack.log import get_logger
 
-from .backup_core import get_all_dashboards, _save_library_panels, _save_folders, _save_snapshots, _save_annotations, _save_datasources
+from .backup_core import get_all_dashboards, get_all_library_panels, _save_folders, _save_snapshots, _save_annotations, _save_datasources
 
 logger = get_logger(__name__)
 
@@ -83,6 +83,36 @@ def _save_dashboards(grafana_url, backup_dir, timestamp, http_headers, **kwargs)
 def _save_dashboard_setting(dashboard_name, file_name, dashboard_settings, folder_path):
     file_path = _save_json(file_name, dashboard_settings, folder_path, 'dashboard')
     logger.warning("Dashboard: \"%s\" is saved", dashboard_name)
+    logger.info("    -> %s", file_path)
+
+
+# Save library panels
+def _save_library_panels(grafana_url, backup_dir, timestamp, http_headers, **kwargs):  # pylint: disable=unused-argument
+    folder_path = f'{backup_dir}/library_panels/{timestamp}'
+    log_file = f'library_panels_{timestamp}.txt'
+    log_file_path = folder_path + '/' + log_file
+
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    all_panels = get_all_library_panels(grafana_url, http_headers)
+    if not all_panels:
+        return
+
+    with open(log_file_path, 'w', encoding="utf8") as f:
+        for panel in all_panels:
+            panel_uri = panel['uid']
+            _save_library_panel_setting(
+                        panel['name'],
+                        panel_uri,
+                        panel,
+                        folder_path)
+            f.write(panel_uri + '\t' + panel['name'] + '\n')
+
+
+def _save_library_panel_setting(panel_name, file_name, library_panel_settings, folder_path):
+    file_path = _save_json(file_name, library_panel_settings, folder_path, 'library_panel')
+    logger.warning("Library Panel: \"%s\" is saved", panel_name)
     logger.info("    -> %s", file_path)
 
 

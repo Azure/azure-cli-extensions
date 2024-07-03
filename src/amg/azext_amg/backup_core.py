@@ -78,12 +78,6 @@ def _get_all_dashboards_in_grafana(page, limit, grafana_url, http_headers):
     return []
 
 
-# def _save_dashboard_setting(dashboard_name, file_name, dashboard_settings, folder_path):
-#     file_path = _save_json(file_name, dashboard_settings, folder_path, 'dashboard')
-#     logger.warning("Dashboard: \"%s\" is saved", dashboard_name)
-#     logger.info("    -> %s", file_path)
-
-
 def _get_individual_dashboard_setting(dashboards, grafana_url, http_headers):
     all_individual_dashboards = []
     if dashboards:
@@ -102,15 +96,8 @@ def _get_individual_dashboard_setting(dashboards, grafana_url, http_headers):
     return all_individual_dashboards
 
 
-
-# Save library panels
-def _save_library_panels(grafana_url, backup_dir, timestamp, http_headers, **kwargs):  # pylint: disable=unused-argument
-    folder_path = f'{backup_dir}/library_panels/{timestamp}'
-    log_file = f'library_panels_{timestamp}.txt'
-
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-
+def get_all_library_panels(grafana_url, http_headers):
+    all_panels = []
     current_page = 1
     while True:
         panels = _get_all_library_panels_in_grafana(current_page, grafana_url, http_headers)
@@ -119,8 +106,14 @@ def _save_library_panels(grafana_url, backup_dir, timestamp, http_headers, **kwa
         if len(panels) == 0:
             break
         current_page += 1
-        _get_individual_library_panel_setting_and_save(panels, folder_path, log_file, grafana_url, http_headers)
+
+        # don't log here, log later depending on backup versus migrate.
+
+        # Since we are not excluding anything. We can just add the panels to the list since this is all the data we need.
+        all_panels = all_panels + panels
         _print_an_empty_line()
+
+    return all_panels
 
 
 def _get_all_library_panels_in_grafana(page, grafana_url, http_headers):
@@ -133,29 +126,6 @@ def _get_all_library_panels_in_grafana(page, grafana_url, http_headers):
         return library_panels
     logger.warning("Get library panel FAILED, status: %s, msg: %s", status, content)
     return []
-
-
-def _save_library_panel_setting(panel_name, file_name, library_panel_settings, folder_path):
-    file_path = _save_json(file_name, library_panel_settings, folder_path, 'library_panel')
-    logger.warning("Library Panel: \"%s\" is saved", panel_name)
-    logger.info("    -> %s", file_path)
-
-
-def _get_individual_library_panel_setting_and_save(panels, folder_path, log_file, grafana_url, http_headers):
-    file_path = folder_path + '/' + log_file
-    if panels:
-        with open(file_path, 'w', encoding="utf8") as f:
-            for panel in panels:
-                panel_uri = panel['uid']
-
-                (status, content) = get_library_panel(panel_uri, grafana_url, http_headers)
-                if status == 200:
-                    _save_library_panel_setting(
-                        panel['name'],
-                        panel_uri,
-                        content['result'],
-                        folder_path)
-                    f.write(panel_uri + '\t' + panel['name'] + '\n')
 
 
 # Save snapshots
