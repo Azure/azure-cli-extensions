@@ -5,10 +5,12 @@ import os
 import shutil
 import json
 import re
+import random
+import string
 
 from knack.log import get_logger
 
-from .backup_core import get_all_dashboards, get_all_library_panels, _save_folders, _save_snapshots, _save_annotations, _save_datasources
+from .backup_core import get_all_dashboards, get_all_library_panels, _save_folders, get_all_snapshots, _save_annotations, _save_datasources
 
 logger = get_logger(__name__)
 
@@ -115,6 +117,26 @@ def _save_library_panel_setting(panel_name, file_name, library_panel_settings, f
     logger.warning("Library Panel: \"%s\" is saved", panel_name)
     logger.info("    -> %s", file_path)
 
+
+# Save snapshots
+def _save_snapshots(grafana_url, backup_dir, timestamp, http_headers, **kwargs):  # pylint: disable=unused-argument
+    folder_path = f'{backup_dir}/snapshots/{timestamp}'
+
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    all_snapshots = get_all_snapshots(grafana_url, http_headers)
+    for snapshot in all_snapshots:
+        # same thing as the metadata[name] from the list snapshots API.
+        _save_snapshot(snapshot['dashboard']['title'], snapshot, folder_path)
+
+
+def _save_snapshot(file_name, snapshot_setting, folder_path):
+    file_name = file_name.replace('/', '_')
+    random_suffix = "".join(random.choice(string.ascii_letters) for _ in range(6))
+    file_path = _save_json(file_name + "_" + random_suffix, snapshot_setting, folder_path, 'snapshot')
+    logger.warning("Snapshot: \"%s\" is saved", snapshot_setting.get('dashboard', {}).get("title"))
+    logger.info("    -> %s", file_path)
 
 def _save_json(file_name, data, folder_path, extension, pretty_print=None):
     pattern = "^db/|^uid/"

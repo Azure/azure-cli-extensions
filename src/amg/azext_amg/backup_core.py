@@ -128,50 +128,34 @@ def _get_all_library_panels_in_grafana(page, grafana_url, http_headers):
     return []
 
 
-# Save snapshots
-def _save_snapshots(grafana_url, backup_dir, timestamp, http_headers, **kwargs):  # pylint: disable=unused-argument
-    folder_path = f'{backup_dir}/snapshots/{timestamp}'
-
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-
-    _get_all_snapshots_and_save(folder_path, grafana_url, http_get_headers=http_headers)
-    _print_an_empty_line()
-
-
-def _save_snapshot(file_name, snapshot_setting, folder_path):
-    file_name = file_name.replace('/', '_')
-    random_suffix = "".join(random.choice(string.ascii_letters) for _ in range(6))
-    file_path = _save_json(file_name + "_" + random_suffix, snapshot_setting, folder_path, 'snapshot')
-    logger.warning("Snapshot: \"%s\" is saved", snapshot_setting.get('dashboard', {}).get("title"))
-    logger.info("    -> %s", file_path)
-
-
-def _get_single_snapshot_and_save(snapshot, grafana_url, http_get_headers, folder_path):
-    (status, content) = get_snapshot(snapshot['key'], grafana_url, http_get_headers)
-    if status == 200:
-        _save_snapshot(snapshot['name'], content, folder_path)
-    else:
-        logger.warning("Getting snapshot %s FAILED, status: %s, msg: %s", snapshot['name'], status, content)
-
-
-def _get_all_snapshots_and_save(folder_path, grafana_url, http_get_headers):
-    (status, content) = search_snapshot(grafana_url, http_get_headers)
+def get_all_snapshots(grafana_url, http_headers):
+    (status, content) = search_snapshot(grafana_url, http_headers)
 
     if status == 200:
-        snapshots = []
+        all_snapshots_metadata = []
         for snapshot in content:
             if not snapshot['external']:
-                snapshots.append(snapshot)
+                all_snapshots_metadata.append(snapshot)
             else:
                 logger.warning("External snapshot: %s is skipped", snapshot['name'])
 
-        logger.info("There are %s snapshots:", len(snapshots))
-        for snapshot in snapshots:
+        logger.info("There are %s snapshots:", len(all_snapshots_metadata))
+
+        all_snapshots = []
+        for snapshot in all_snapshots_metadata:
             logger.info(snapshot)
-            _get_single_snapshot_and_save(snapshot, grafana_url, http_get_headers, folder_path)
+
+            (individual_status, individual_content) = get_snapshot(snapshot['key'], grafana_url, http_headers)
+            if individual_status == 200:
+                all_snapshots.append(individual_content)
+            else:
+                logger.warning("Getting snapshot %s FAILED, status: %s, msg: %s", snapshot['name'], individual_status, individual_content)
+
+        return all_snapshots
     else:
         logger.warning("Query snapshot failed, status: %s, msg: %s", status, content)
+
+    return []
 
 
 # Save folders
