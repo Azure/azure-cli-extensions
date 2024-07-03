@@ -156,16 +156,22 @@ def _get_single_snapshot_and_save(snapshot, grafana_url, http_get_headers, folde
 
 
 def _get_all_snapshots_and_save(folder_path, grafana_url, http_get_headers):
-    status_code_and_content = search_snapshot(grafana_url, http_get_headers)
-    if status_code_and_content[0] == 200:
-        snapshots = status_code_and_content[1]
+    (status, content) = search_snapshot(grafana_url, http_get_headers)
+
+    if status == 200:
+        snapshots = []
+        for snapshot in content:
+            if not snapshot['external']:
+                snapshots.append(snapshot)
+            else:
+                logger.warning("External snapshot: %s is skipped", snapshot['name'])
+
         logger.info("There are %s snapshots:", len(snapshots))
         for snapshot in snapshots:
             logger.info(snapshot)
             _get_single_snapshot_and_save(snapshot, grafana_url, http_get_headers, folder_path)
     else:
-        logger.warning("Query snapshot failed, status: %s, msg: %s", status_code_and_content[0],
-                       status_code_and_content[1])
+        logger.warning("Query snapshot failed, status: %s, msg: %s", status, content)
 
 
 # Save folders
