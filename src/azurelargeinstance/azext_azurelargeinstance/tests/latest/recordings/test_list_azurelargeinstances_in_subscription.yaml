@@ -10,34 +10,53 @@ interactions:
       - large-instance list
       Connection:
       - keep-alive
-      ParameterSetName:
-      - --subscription
       User-Agent:
-      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.11 (macOS-14.5-arm64-arm-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.AzureLargeInstance/azureLargeInstances?api-version=2023-07-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.AzureLargeInstance/azureLargeInstances?api-version=2024-04-10
   response:
     body:
-      string: '{"value":[]}'
+      string: "{\n  \"value\": [\n   {\n    \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DSM05A-T210/providers/Microsoft.AzureLargeInstance/AzureLargeInstances/epiciotooltest1\"\
+        ,\n    \"location\": \"centraluseuap\",\n    \"name\": \"epiciotooltest1\"\
+        ,\n    \"tags\": {\n     \"t\": \"v\",\n     \"t2\": \"v2\"\n    },\n    \"\
+        type\": \"Microsoft.AzureLargeInstance/AzureLargeInstances\",\n    \"systemData\"\
+        : {\n     \"lastModifiedBy\": \"pratikkaria@microsoft.com\",\n     \"lastModifiedByType\"\
+        : \"User\",\n     \"lastModifiedAt\": \"2024-05-14T12:51:48.3075032Z\"\n \
+        \   },\n    \"properties\": {\n     \"azureLargeInstanceId\": \"5d177a4e-c221-4666-a5f4-171e815c9e98\"\
+        ,\n     \"powerState\": \"started\",\n     \"proximityPlacementGroup\": \"\
+        /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/DSM05A-T210/providers/Microsoft.Compute/proximityPlacementGroups/epiciotooltest1-ppg\"\
+        ,\n     \"hwRevision\": \"Rev 4.2\",\n     \"hardwareProfile\": {\n      \"\
+        hardwareType\": \"SDFLEX\",\n      \"azureLargeInstanceSize\": \"S448SE\"\n\
+        \     },\n     \"networkProfile\": {\n      \"networkInterfaces\": [\n   \
+        \    {\n        \"ipAddress\": \"10.100.0.91\"\n       }\n      ],\n     \
+        \ \"circuitId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/T210_DSM05-Circuits/providers/Microsoft.Network/expressRouteCircuits/T210_DSM05-10Gb\"\
+        \n     },\n     \"storageProfile\": {\n      \"nfsIpAddress\": \"10.20.211.91\"\
+        ,\n      \"osDisks\": [\n       {\n        \"name\": \"t210_rhel_boot_epiciotooltest1_vol_lun\"\
+        ,\n        \"diskSizeGB\": 50\n       }\n      ]\n     },\n     \"osProfile\"\
+        : {\n      \"computerName\": \"epiciotooltest1\",\n      \"osType\": \"RHEL\
+        \ 8.4\",\n      \"version\": \"8.4\"\n     },\n     \"provisioningState\"\
+        : \"Succeeded\"\n    }\n   }\n  ]\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '12'
+      - '1649'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Tue, 14 Nov 2023 06:52:03 GMT
+      - Fri, 07 Jun 2024 01:49:01 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 247F90064E3A40E7879C23747A0630E8 Ref B: CO6AA3150220023 Ref C: 2024-06-07T01:49:01Z'
     status:
       code: 200
       message: OK

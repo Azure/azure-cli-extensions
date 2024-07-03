@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.2
+++++++
+* Use `preview` release train storage class extension when enabling storage class service
+
 1.0.1
 ++++++
 * Add RP registration check to networking resources
