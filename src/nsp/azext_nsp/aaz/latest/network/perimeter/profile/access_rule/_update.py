@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "network perimeter profile access-rule update",
 )
 class Update(AAZCommand):
-    """Updates a network access rule.
+    """Creates or updates a network access rule.
 
     :example: Update access rule
         az network perimeter profile access-rule update -n MyAccessRule --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup --address-prefixes "[10.10.0.0/16]"
@@ -203,7 +203,7 @@ class Update(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
     class NspAccessRulesGet(AAZHttpOperation):
@@ -413,7 +413,7 @@ class Update(AAZCommand):
             )
             _builder.set_prop("location", AAZStrType, ".location")
             _builder.set_prop("name", AAZStrType, ".access_rule_name")
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
@@ -493,9 +493,7 @@ class _UpdateHelper:
         )
         nsp_access_rule_read.location = AAZStrType()
         nsp_access_rule_read.name = AAZStrType()
-        nsp_access_rule_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
+        nsp_access_rule_read.properties = AAZObjectType()
         nsp_access_rule_read.tags = AAZDictType()
         nsp_access_rule_read.type = AAZStrType(
             flags={"read_only": True},
