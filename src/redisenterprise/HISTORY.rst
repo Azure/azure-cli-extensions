@@ -2,7 +2,7 @@
 
 Release History
 ===============
-0.1.5
+1.0.0
 +++++++++
 - Added support for new enterprise SKU E1
 
