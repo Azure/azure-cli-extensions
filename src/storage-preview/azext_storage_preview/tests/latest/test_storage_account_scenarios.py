@@ -278,3 +278,20 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
         # other status would take days to months
         self.cmd('az storage account migration show -n default -g {rg} --account-name {sa}',
                  checks=[JMESPathCheck('migrationStatus', 'SubmittedForConversion')])
+
+    @ResourceGroupPreparer(location='eastus2euap')
+    def test_storage_account_task_assignment(self, resource_group):
+        self.kwargs.update({
+            'sa': self.create_random_name('sataskassignment', 24),
+            "task_name": self.create_random_name('task', 18),
+            "task_assignment_name": self.create_random_name('task_assignment', 24)
+        })
+        self.cmd('az storage account create -n {sa} -g {rg} -l eastus2euap')
+        task_id = self.cmd("az storage-actions task create -g {rg} -n {task_name} --identity {{type:SystemAssigned}} "
+                           "--tags {{key1:value1}} --action {{if:{{condition:\\'[[equals(AccessTier,\\'/Cool\\'/)]]\\',"
+                           "operations:[{{name:'SetBlobTier',parameters:{{tier:'Hot'}},"
+                           "onSuccess:'continue',onFailure:'break'}}]}},"
+                           "else:{{operations:[{{name:'DeleteBlob',onSuccess:'continue',onFailure:'break'}}]}}}} "
+                           "--description StorageTask1 --enabled true").get_output_in_json()["id"]
+        # self.cmd("az storage account task-assignment create -g {rg} -n {task_assignment_name} --account-name {sa} "
+        #          "--description 'My Storage task assignment'")

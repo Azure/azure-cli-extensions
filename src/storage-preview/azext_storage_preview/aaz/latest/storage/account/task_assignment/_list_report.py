@@ -57,7 +57,7 @@ class ListReport(AAZCommand):
             required=True,
         )
         _args_schema.storage_task_assignment_name = AAZStrArg(
-            options=["--storage-task-assignment-name"],
+            options=["-n", "--name", "--storage-task-assignment-name"],
             help="The name of the storage task assignment within the specified resource group. Storage task assignment names must be between 3 and 24 characters in length and use numbers and lower-case letters only.",
             required=True,
             fmt=AAZStrArgFormat(
