@@ -274,7 +274,7 @@ helps['vmware datastore create'] = """
 
 helps['vmware datastore netapp-volume'] = """
     type: group
-    short-summary: Create a new Microsoft.NetApp provided NetApp volume in a private cloud cluster.
+    short-summary: Manage NetApp volume resource.
 """
 
 helps['vmware datastore netapp-volume create'] = """
@@ -287,7 +287,7 @@ helps['vmware datastore netapp-volume create'] = """
 
 helps['vmware datastore disk-pool-volume'] = """
     type: group
-    short-summary: Create a VMFS datastore in a private cloud cluster using Microsoft.StoragePool provided iSCSI target.
+    short-summary: Manage disk pool volume resource.
 """
 
 helps['vmware datastore disk-pool-volume create'] = """
@@ -300,7 +300,7 @@ helps['vmware datastore disk-pool-volume create'] = """
 
 helps['vmware datastore elastic-san-volume'] = """
     type: group
-    short-summary: Create an Elastic SAN volume in a private cloud cluster using Microsoft.ElasticSan provider.
+    short-summary: Manage Elastic SAN volume resource.
 """
 
 helps['vmware datastore elastic-san-volume create'] = """
