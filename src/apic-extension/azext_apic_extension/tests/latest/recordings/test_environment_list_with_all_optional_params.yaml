@@ -1,0 +1,55 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic environment list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --filter
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/environments?$filter=name%20eq%20%27clitest000003%27&api-version=2024-03-01
+  response:
+    body:
+      string: '{"value":[{"type":"Microsoft.ApiCenter/services/workspaces/environments","properties":{"title":"test
+        environment","kind":"testing","customProperties":{}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/environments/clitest000003","name":"clitest000003","systemData":{"createdAt":"2024-06-17T06:04:10.0466202Z"}}]}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '422'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jun 2024 06:04:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 10DDADFEC276459FB3A850B4EBADDE06 Ref B: MAA201060515037 Ref C: 2024-06-17T06:04:14Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

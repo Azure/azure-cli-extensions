@@ -1,0 +1,58 @@
+interactions:
+- request:
+    body: '{"format": "inline", "specification": {"name": "openapi", "version": "3.0.0"},
+      "value": "{\"openapi\":\"3.0.1\",\"info\":{\"title\":\"httpbin.org\",\"description\":\"API
+      Management facade for a very handy and free online HTTP tool.\",\"version\":\"1.0\"}}"}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api definition import-specification
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '257'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --api-id --version-id --definition-id --format --value --specification
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000003/versions/clitest000004/definitions/clitest000005/importSpecification?api-version=2024-03-01
+  response:
+    body:
+      string: ''
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 17 Jun 2024 06:04:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 67206446009D4A85B6E155DA039592B4 Ref B: MAA201060514031 Ref C: 2024-06-17T06:04:35Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

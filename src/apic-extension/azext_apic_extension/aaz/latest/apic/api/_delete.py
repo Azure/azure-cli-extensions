@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete specified API.
 
     :example: Delete API
-        az apic api delete -g contoso-resources -s contoso --api-id echo-api
+        az apic api delete -g contoso-resources -n contoso --api-id echo-api
     """
 
     _aaz_info = {
@@ -60,8 +60,8 @@ class Delete(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-n", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

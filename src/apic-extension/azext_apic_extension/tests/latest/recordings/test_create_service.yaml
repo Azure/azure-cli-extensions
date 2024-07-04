@@ -7,7 +7,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - apic service create
+      - apic create
       Connection:
       - keep-alive
       ParameterSetName:
@@ -18,7 +18,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clirg000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001","name":"clirg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_create_service","date":"2024-04-25T05:46:56Z","module":"apic-extension"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001","name":"clirg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_create_service","date":"2024-06-17T06:09:44Z","module":"apic-extension"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -27,7 +27,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Apr 2024 05:47:05 GMT
+      - Mon, 17 Jun 2024 06:09:29 GMT
       expires:
       - '-1'
       pragma:
@@ -38,8 +38,10 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: FE43C70CE25C4A45A1D2A1F80B75D642 Ref B: MAA201060515053 Ref C: 2024-04-25T05:47:05Z'
+      - 'Ref A: 2100C3E33B2E4ACC806E49B4EFBD69C7 Ref B: MAA201060515027 Ref C: 2024-06-17T06:09:29Z'
     status:
       code: 200
       message: OK
@@ -51,7 +53,7 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - apic service create
+      - apic create
       Connection:
       - keep-alive
       Content-Length:
@@ -66,18 +68,18 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/cli000002?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services","location":"eastus","sku":{"name":"None"},"properties":{"dataApiHostname":"cli000002.data.eastus.azure-apicenter.ms","provisioningState":"InProgress"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/cli000002","name":"cli000002","tags":{},"systemData":{"createdAt":"2024-04-25T05:47:09.4451661Z","lastModifiedAt":"2024-04-25T05:47:09.4451443Z"}}'
+      string: '{"type":"Microsoft.ApiCenter/services","location":"eastus","sku":{"name":"Free"},"properties":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/cli000002","name":"cli000002","tags":{},"systemData":{"createdAt":"2024-06-17T06:09:33.9247632Z","lastModifiedAt":"2024-06-17T06:09:33.924756Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
       cache-control:
       - no-cache
       content-length:
-      - '460'
+      - '366'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Apr 2024 05:47:09 GMT
+      - Mon, 17 Jun 2024 06:09:34 GMT
       expires:
       - '-1'
       pragma:
@@ -90,10 +92,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '199'
       x-msedge-ref:
-      - 'Ref A: FCC75A00C6FC415899D258A5FA326F29 Ref B: MAA201060513053 Ref C: 2024-04-25T05:47:07Z'
+      - 'Ref A: AB91D452FB034142A73752354A35624F Ref B: MAA201060513033 Ref C: 2024-06-17T06:09:30Z'
       x-powered-by:
       - ASP.NET
     status:

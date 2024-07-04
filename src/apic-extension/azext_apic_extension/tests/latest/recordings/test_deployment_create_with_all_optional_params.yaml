@@ -1,0 +1,67 @@
+interactions:
+- request:
+    body: '{"properties": {"customProperties": {"clitest000007": true}, "definitionId":
+      "/workspaces/default/apis/clitest000004/versions/clitest000005/definitions/clitest000006",
+      "description": "deployment description", "environmentId": "/workspaces/default/environments/clitest000003",
+      "server": {"runtimeUri": ["https://example.com"]}, "title": "test deployment"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api deployment create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '355'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --api-id --definition-id --environment-id --deployment-id --title --server
+        --description --custom-properties
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000004/deployments/mock-deployment?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis/deployments","properties":{"title":"test
+        deployment","description":"deployment description","environmentId":"/workspaces/default/environments/clitest000003","definitionId":"/workspaces/default/apis/clitest000004/versions/clitest000005/definitions/clitest000006","server":{"runtimeUri":["https://example.com"]},"customProperties":{"clitest000007":true},"recommended":false},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/clitest000004/deployments/cli000008","name":"cli000008","systemData":{"createdAt":"2024-06-17T06:07:54.8364935Z","lastModifiedAt":"2024-06-17T06:07:54.8364757Z"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '751'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jun 2024 06:07:54 GMT
+      etag:
+      - 8501501a-0000-0100-0000-666fd2ba0000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: DBA7CB0069A14A9A80A0E6460B549DEA Ref B: MAA201060516053 Ref C: 2024-06-17T06:07:54Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,0 +1,73 @@
+interactions:
+- request:
+    body: '{"assignedTo": "api"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic metadata export
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '21'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --assignments --file-name
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/exportMetadataSchema?api-version=2024-03-01
+  response:
+    body:
+      string: '{"format":"json-schema","value":"{\"type\":\"object\",\"properties\":{\"Id\":{\"type\":\"string\"},\"Name\":{\"type\":\"string\"},\"WorkspaceName\":{\"type\":\"string\"},\"Title\":{\"type\":\"string\"},\"Summary\":{\"type\":\"string\"},\"Description\":{\"type\":\"string\"},\"Kind\":{\"type\":\"string\"},\"LifecycleStage\":{\"type\":\"string\",\"enum\":[\"design\",\"development\",\"testing\",\"preview\",\"production\",\"deprecated\",\"retired\"]},\"TermsOfService\":{\"type\":\"object\",\"properties\":{\"url\":{\"description\":\"URL
+        pointing to the terms of service.\",\"type\":\"string\",\"maxLength\":200,\"format\":\"uri\"}}},\"License\":{\"type\":\"object\",\"properties\":{\"name\":{\"description\":\"Name
+        of the license.\",\"type\":\"string\",\"maxLength\":50},\"url\":{\"description\":\"URL
+        pointing to the license details. The URL field is mutually exclusive of the
+        identifier field.\",\"type\":\"string\",\"maxLength\":200,\"format\":\"uri\"},\"identifier\":{\"description\":\"SPDX
+        license information for the API. The identifier field is mutually exclusive
+        of the URL field.\",\"type\":\"string\",\"maxLength\":200,\"format\":\"uri\"}}},\"ExternalDocumentation\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"title\":{\"description\":\"Title
+        of the documentation.\",\"type\":\"string\",\"maxLength\":50},\"description\":{\"description\":\"Description
+        of the documentation.\",\"type\":\"string\",\"maxLength\":1000},\"url\":{\"description\":\"URL
+        pointing to the documentation.\",\"type\":\"string\",\"maxLength\":200,\"format\":\"uri\"}}}},\"Contacts\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"name\":{\"description\":\"Name
+        of the contact.\",\"type\":\"string\",\"maxLength\":100},\"url\":{\"description\":\"URL
+        for the contact.\",\"type\":\"string\",\"maxLength\":200,\"format\":\"uri\"},\"email\":{\"description\":\"Email
+        address for the contact.\",\"type\":\"string\",\"maxLength\":100,\"format\":\"email\"}}}},\"CustomPropertiesData\":{},\"CatalogNameTypeSafe\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"Name\":{\"type\":\"string\"}}},\"CatalogName\":{\"type\":\"string\"},\"SubscriptionId\":{\"type\":\"string\"},\"SubscriptionIdTypeSafe\":{\"type\":\"string\"},\"ResourceGroupName\":{\"type\":\"string\"},\"ResourceGroupNameTypeSafe\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"Name\":{\"type\":\"string\"}}},\"ETag\":{\"type\":\"string\"},\"Created\":{\"type\":\"string\",\"format\":\"date-time\"},\"Updated\":{\"type\":\"string\",\"format\":\"date-time\"},\"CreatedBy\":{\"type\":\"string\"},\"UpdatedBy\":{\"type\":\"string\"},\"customProperties\":{\"type\":\"object\",\"properties\":{\"clitest000003\":{\"type\":\"boolean\",\"title\":\"Public
+        Facing\"}},\"unevaluatedProperties\":false,\"required\":[\"clitest000003\"]}}}"}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '2854'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jun 2024 06:07:14 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 2357567CDDB849F5AB52020BEAC42B01 Ref B: MAA201060514033 Ref C: 2024-06-17T06:07:13Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

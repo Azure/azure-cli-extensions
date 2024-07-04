@@ -7,25 +7,29 @@ interactions:
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - apic service delete
+      - apic delete
       Connection:
       - keep-alive
       Content-Length:
       - '0'
       ParameterSetName:
-      - -g -s --yes
+      - -g -n --yes
       User-Agent:
       - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002a?api-version=2024-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002?api-version=2024-03-01
   response:
     body:
       string: ''
     headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
       cache-control:
       - no-cache
+      content-length:
+      - '0'
       date:
-      - Thu, 25 Apr 2024 05:47:24 GMT
+      - Mon, 17 Jun 2024 06:09:35 GMT
       expires:
       - '-1'
       pragma:
@@ -37,10 +41,62 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
       x-msedge-ref:
-      - 'Ref A: 50BEA56C7F8448F2A9889B4487CB4C1A Ref B: MAA201060516021 Ref C: 2024-04-25T05:47:25Z'
+      - 'Ref A: 33D5C6F8D1C24FE4BB72EB6879335A23 Ref B: MAA201060516021 Ref C: 2024-06-17T06:09:30Z'
+      x-powered-by:
+      - ASP.NET
     status:
-      code: 204
-      message: No Content
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002?api-version=2024-03-01
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.ApiCenter/services/clitest000002''
+        under resource group ''clirg000001'' was not found. For more details please
+        go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '225'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jun 2024 06:09:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: 332954F186604806B8CF47A07B43897D Ref B: MAA201060514047 Ref C: 2024-06-17T06:09:36Z'
+    status:
+      code: 404
+      message: Not Found
 version: 1

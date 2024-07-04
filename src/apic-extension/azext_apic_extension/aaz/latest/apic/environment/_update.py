@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update existing environment.
 
     :example: Update environment
-        az apic environment update -g api-center-test -s contosoeuap --environment-id public --title "Public cloud"
+        az apic environment update -g api-center-test -n contosoeuap --environment-id public --title "Public cloud"
     """
 
     _aaz_info = {
@@ -61,8 +61,8 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-n", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

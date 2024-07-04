@@ -46,7 +46,9 @@ from .aaz.latest.apic.metadata import (
     Create as CreateMetadata,
     Export as ExportMetadata
 )
-from .aaz.latest.apic.service import ImportFromApim
+from .aaz.latest.apic import ImportFromApim, Create as CreateService
+
+from azure.cli.core.aaz._arg import AAZStrArg, AAZListArg
 
 
 class DefaultWorkspaceParameter:
@@ -62,6 +64,22 @@ class DefaultWorkspaceParameter:
     def pre_operations(self):
         args = self.ctx.args
         args.workspace_name = "default"
+
+
+# `az apic` commands
+class CreateServiceExtension(CreateService):
+    # pylint: disable=too-few-public-methods
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        # pylint: disable=protected-access
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        # temporary hide sku parameter as SKU has many fields and we needs more discussion on the UX
+        args_schema.sku_name._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.sku_name = "Free"
 
 
 # `az apic api` commands
@@ -99,7 +117,15 @@ class ExportAPIDefinitionExtension(DefaultWorkspaceParameter, ExportAPIDefinitio
 
 
 class ImportAPIDefinitionExtension(DefaultWorkspaceParameter, ImportAPIDefinition):
-    pass
+    # pylint: disable=too-few-public-methods
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        # pylint: disable=protected-access
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.format._required = True
+        args_schema.specification._required = True
+        args_schema.value._required = True
+        return args_schema
 
 
 class ListAPIDefinitionExtension(DefaultWorkspaceParameter, ListAPIDefinition):
@@ -137,7 +163,16 @@ class UpdateAPIVersionExtension(DefaultWorkspaceParameter, UpdateAPIVersion):
 
 # `az apic api deployment` commands
 class CreateAPIDeploymentExtension(DefaultWorkspaceParameter, CreateAPIDeployment):
-    pass
+    # pylint: disable=too-few-public-methods
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        # pylint: disable=protected-access
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.definition_id._required = True
+        args_schema.environment_id._required = True
+        args_schema.server._required = True
+        args_schema.title._required = True
+        return args_schema
 
 
 class DeleteAPIDeploymentExtension(DefaultWorkspaceParameter, DeleteAPIDeployment):
@@ -205,5 +240,58 @@ class ImportFromApimExtension(ImportFromApim):
     def _build_arguments_schema(cls, *args, **kwargs):
         # pylint: disable=protected-access
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.source_resource_ids._required = True
+        args_schema.source_resource_ids._required = False
+        args_schema.source_resource_ids._registered = False
+
+        args_schema.apim_subscription_id = AAZStrArg(
+            options=["--apim-subscription"],
+            help="The subscription id of the source APIM instance.",
+            required=False
+        )
+
+        args_schema.apim_resource_group = AAZStrArg(
+            options=["--apim-resource-group"],
+            help="The resource group of the source APIM instance.",
+            required=False
+        )
+
+        args_schema.apim_name = AAZStrArg(
+            options=["--apim-name"],
+            help="The name of the source APIM instance.",
+            required=True
+        )
+
+        args_schema.apim_apis = AAZListArg(
+            options=["--apim-apis"],
+            help="The APIs to be imported.",
+            required=True
+        )
+        args_schema.apim_apis.Element = AAZStrArg()
+
         return args_schema
+
+    def pre_operations(self):
+        super().pre_operations()
+        args = self.ctx.args
+
+        # compose sourceResourceIds property in the request body
+        # Use same subscription id and resource group as API Center by default
+        resource_group = args.resource_group
+        subscription_id = self.ctx.subscription_id
+
+        # Use user provided subscription id
+        if args.apim_subscription_id:
+            subscription_id = args.apim_subscription_id
+
+        # Use user provided resource group
+        if args.apim_resource_group:
+            resource_group = args.apim_resource_group
+
+        source_resource_ids = []
+        for item in args.apim_apis:
+            source_resource_ids.append(
+                f"/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/"
+                f"Microsoft.ApiManagement/service/{args.apim_name}/apis/{item}"
+            )
+
+        args.source_resource_ids = source_resource_ids

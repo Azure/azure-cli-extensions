@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a new API deployment or update an existing API deployment.
 
     :example: Create deployment
-        az apic api deployment create -g api-center-test -s contoso --deployment-id production --title "Production deployment" --description "Public cloud production deployment." --api-id echo-api --environment-id "/workspaces/default/environments/production" --definition-id "/workspaces/default/apis/echo-api/versions/2023-01-01/definitions/openapi" --server '{\"runtimeUri\":[\"https://example.com\"]}'
+        az apic api deployment create -g api-center-test -n contoso --deployment-id production --title "Production deployment" --description "Public cloud production deployment." --api-id echo-api --environment-id "/workspaces/default/environments/production" --definition-id "/workspaces/default/apis/echo-api/versions/2023-01-01/definitions/openapi" --server '{\"runtimeUri\":[\"https://example.com\"]}'
     """
 
     _aaz_info = {
@@ -68,8 +68,8 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-n", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,90}$",
@@ -120,12 +120,6 @@ class Create(AAZCommand):
             options=["--server"],
             arg_group="Properties",
             help="Server",
-        )
-        _args_schema.state = AAZStrArg(
-            options=["--state"],
-            arg_group="Properties",
-            help="State of API deployment.",
-            enum={"active": "active", "inactive": "inactive"},
         )
         _args_schema.title = AAZStrArg(
             options=["--title"],
@@ -262,7 +256,6 @@ class Create(AAZCommand):
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("environmentId", AAZStrType, ".environment_id")
                 properties.set_prop("server", AAZObjectType, ".server")
-                properties.set_prop("state", AAZStrType, ".state")
                 properties.set_prop("title", AAZStrType, ".title")
 
             custom_properties = _builder.get(".properties.customProperties")

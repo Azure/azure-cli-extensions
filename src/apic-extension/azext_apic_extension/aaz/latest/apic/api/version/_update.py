@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update existing API version.
 
     :example: Update API version
-        az apic api version update -g api-center-test -s contosoeuap --api-id echo-api --version-id 2023-01-01 --title "2023-01-01"
+        az apic api version update -g api-center-test -n contosoeuap --api-id echo-api --version-id 2023-01-01 --title "2023-01-01"
     """
 
     _aaz_info = {
@@ -61,8 +61,8 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-n", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

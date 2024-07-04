@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete specified API version
 
     :example: Delete API version
-        az apic api version delete -g api-center-test -s contosoeuap --api-id echo-api --version-id 2023-01-01
+        az apic api version delete -g api-center-test -n contosoeuap --api-id echo-api --version-id 2023-01-01
     """
 
     _aaz_info = {
@@ -60,8 +60,8 @@ class Delete(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-n", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

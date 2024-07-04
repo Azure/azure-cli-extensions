@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete specified API definition.
 
     :example: Delete API definition
-        az apic api definition delete -g api-center-test -s contosoeuap --api-id echo-api --version-id 2023-01-01 --definition-id "openapi"
+        az apic api definition delete -g api-center-test -n contosoeuap --api-id echo-api --version-id 2023-01-01 --definition-id "openapi"
     """
 
     _aaz_info = {
@@ -71,8 +71,8 @@ class Delete(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-n", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

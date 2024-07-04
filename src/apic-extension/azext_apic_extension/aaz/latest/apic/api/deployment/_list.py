@@ -18,7 +18,7 @@ class List(AAZCommand):
     """List a collection of API deployments.
 
     :example: List API deployments
-        az apic api deployment list -g api-center-test -s contoso --api-id echo-api
+        az apic api deployment list -g api-center-test -n contoso --api-id echo-api
     """
 
     _aaz_info = {
@@ -59,8 +59,8 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-n", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,90}$",
