@@ -3,9 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.profiles import get_sdk
-from .profiles import CUSTOM_DATA_STORAGE
-
 
 def build_table_output(result, projection):
 

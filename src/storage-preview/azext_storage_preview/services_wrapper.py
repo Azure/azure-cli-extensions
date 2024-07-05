@@ -9,7 +9,7 @@ from ._client_factory import generic_data_service_factory
 from .profiles import CUSTOM_DATA_STORAGE
 
 
-class ServiceProperties(object):
+class ServiceProperties:
     def __init__(self, cli_ctx, name, service, account_name=None, account_key=None, connection_string=None,
                  sas_token=None):
         self.cli_ctx = cli_ctx

@@ -6,7 +6,7 @@
 import threading
 
 
-class TokenUpdater(object):
+class TokenUpdater:
     """
     This class updates a given token_credential periodically using the provided callback function.
     It shows one way of making sure the credential does not become expired.
@@ -34,7 +34,7 @@ class TokenUpdater(object):
             seconds_left = (datetime.fromtimestamp(int(token['expires_on'])) - datetime.now()).seconds
         if seconds_left < 240:
             # acquired token expires in less than 4 mins
-            raise Exception("Acquired a token expiring in less than 4 minutes")
+            raise RuntimeError("Acquired a token expiring in less than 4 minutes")
 
         with self.lock:
             self.timer = threading.Timer(seconds_left - 240, self.timer_callback)
