@@ -2,6 +2,7 @@
 
 Release History
 ===============
+
 1.0.0b1(2023-08-11)
 ++++++++++++++++++
 * `az storage account migration start/show`: Support start and show storage account migration

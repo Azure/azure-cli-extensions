@@ -29,9 +29,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-12-13-preview",
+        "version": "2024-04-04-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devopsinfrastructure/pools/{}", "2023-12-13-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devopsinfrastructure/pools/{}", "2024-04-04-preview"],
         ]
     }
 
@@ -72,8 +72,8 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Defines how the machine will be handled once it executed a job.",
         )
-        _args_schema.dev_center_project_resource_id = AAZStrArg(
-            options=["--devcenter-project-resource-id", "--devcenter-project-id"],
+        _args_schema.devcenter_project_resource_id = AAZStrArg(
+            options=["--devcenter-project-id", "--devcenter-project-resource-id"],
             arg_group="Properties",
             help="The resource id of the DevCenter Project the pool belongs to.",
         )
@@ -96,12 +96,6 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Defines the organization in which the pool will be used.",
         )
-        _args_schema.provisioning_state = AAZStrArg(
-            options=["--provisioning-state"],
-            arg_group="Properties",
-            help="The status of the current operation.",
-            enum={"Accepted": "Accepted", "Canceled": "Canceled", "Deleting": "Deleting", "Failed": "Failed", "Provisioning": "Provisioning", "Succeeded": "Succeeded", "Updating": "Updating"},
-        )
 
         agent_profile = cls._args_schema.agent_profile
         agent_profile.stateful = AAZObjectArg(
@@ -116,12 +110,35 @@ class Create(AAZCommand):
             help="Defines pool buffer.",
             blank={},
         )
+        agent_profile.resource_predictions_profile = AAZObjectArg(
+            options=["resource-predictions-profile"],
+            help="Defines how the pool buffer/stand-by agents is provided.",
+        )
 
         stateful = cls._args_schema.agent_profile.stateful
+        stateful.grace_period_time_span = AAZStrArg(
+            options=["grace-period-time-span"],
+            help="How long should the machine be kept around after it ran a workload when there are no stand-by agents. The maximum is one week.",
+        )
         stateful.max_agent_lifetime = AAZStrArg(
             options=["max-agent-lifetime"],
             help="How long should stateful machines be kept around. The maximum is one week.",
-            required=True,
+        )
+
+        resource_predictions_profile = cls._args_schema.agent_profile.resource_predictions_profile
+        resource_predictions_profile.automatic = AAZObjectArg(
+            options=["automatic"],
+        )
+        resource_predictions_profile.manual = AAZObjectArg(
+            options=["manual"],
+            blank={},
+        )
+
+        automatic = cls._args_schema.agent_profile.resource_predictions_profile.automatic
+        automatic.prediction_preference = AAZStrArg(
+            options=["prediction-preference"],
+            help="Determines the balance between cost and performance.",
+            enum={"Balanced": "Balanced", "BestPerformance": "BestPerformance", "MoreCostEffective": "MoreCostEffective", "MorePerformance": "MorePerformance", "MostCostEffective": "MostCostEffective"},
         )
 
         fabric_profile = cls._args_schema.fabric_profile
@@ -169,7 +186,10 @@ class Create(AAZCommand):
         _element.resource_id = AAZStrArg(
             options=["resource-id"],
             help="The resource id of the image.",
-            required=True,
+        )
+        _element.well_known_image_name = AAZStrArg(
+            options=["well-known-image-name"],
+            help="The image to use from a well-known set of images made available to customers.",
         )
 
         aliases = cls._args_schema.fabric_profile.vmss.images.Element.aliases
@@ -220,18 +240,42 @@ class Create(AAZCommand):
         )
 
         storage_profile = cls._args_schema.fabric_profile.vmss.storage_profile
+        storage_profile.data_disks = AAZListArg(
+            options=["data-disks"],
+            help="A list of empty data disks to attach.",
+        )
         storage_profile.os_disk_storage_account_type = AAZStrArg(
             options=["os-disk-storage-account-type"],
             help="The Azure SKU name of the machines in the pool.",
             enum={"Premium": "Premium", "Standard": "Standard", "StandardSSD": "StandardSSD"},
         )
 
+        data_disks = cls._args_schema.fabric_profile.vmss.storage_profile.data_disks
+        data_disks.Element = AAZObjectArg()
+
+        _element = cls._args_schema.fabric_profile.vmss.storage_profile.data_disks.Element
+        _element.caching = AAZStrArg(
+            options=["caching"],
+            help="The type of caching to be enabled for the data disks. The default value for caching is readwrite. For information about the caching options see: https://blogs.msdn.microsoft.com/windowsazurestorage/2012/06/27/exploring-windows-azure-drives-disks-and-images/.",
+            enum={"None": "None", "ReadOnly": "ReadOnly", "ReadWrite": "ReadWrite"},
+        )
+        _element.disk_size_gi_b = AAZIntArg(
+            options=["disk-size-gi-b"],
+            help="The initial disk size in gigabytes.",
+        )
+        _element.drive_letter = AAZStrArg(
+            options=["drive-letter"],
+            help="The drive letter for the empty data disk. If not specified, it will be the first available letter.",
+        )
+        _element.storage_account_type = AAZStrArg(
+            options=["storage-account-type"],
+            help="The storage Account type to be used for the data disk. If omitted, the default is \"standard_lrs\".",
+            enum={"Premium_LRS": "Premium_LRS", "Premium_ZRS": "Premium_ZRS", "StandardSSD_LRS": "StandardSSD_LRS", "StandardSSD_ZRS": "StandardSSD_ZRS", "Standard_LRS": "Standard_LRS"},
+        )
+
         organization_profile = cls._args_schema.organization_profile
         organization_profile.azure_dev_ops = AAZObjectArg(
             options=["azure-dev-ops"],
-        )
-        organization_profile.git_hub = AAZObjectArg(
-            options=["git-hub"],
         )
 
         azure_dev_ops = cls._args_schema.organization_profile.azure_dev_ops
@@ -288,30 +332,6 @@ class Create(AAZCommand):
         users = cls._args_schema.organization_profile.azure_dev_ops.permission_profile.users
         users.Element = AAZStrArg()
 
-        git_hub = cls._args_schema.organization_profile.git_hub
-        git_hub.organizations = AAZListArg(
-            options=["organizations"],
-            help="The list of GitHub organizations/repositories the pool should be present in.",
-            required=True,
-        )
-
-        organizations = cls._args_schema.organization_profile.git_hub.organizations
-        organizations.Element = AAZObjectArg()
-
-        _element = cls._args_schema.organization_profile.git_hub.organizations.Element
-        _element.repositories = AAZListArg(
-            options=["repositories"],
-            help="Optional list of repositories in which the pool should be created.",
-        )
-        _element.url = AAZStrArg(
-            options=["url"],
-            help="The GitHub organization URL in which the pool should be created.",
-            required=True,
-        )
-
-        repositories = cls._args_schema.organization_profile.git_hub.organizations.Element.repositories
-        repositories.Element = AAZStrArg()
-
         # define Arg Group "Resource"
 
         _args_schema = cls._args_schema
@@ -339,7 +359,7 @@ class Create(AAZCommand):
             options=["type"],
             help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
             required=True,
-            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned, UserAssigned": "SystemAssigned, UserAssigned", "UserAssigned": "UserAssigned"},
+            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
         )
         identity.user_assigned_identities = AAZDictArg(
             options=["user-assigned-identities"],
@@ -348,6 +368,7 @@ class Create(AAZCommand):
 
         user_assigned_identities = cls._args_schema.identity.user_assigned_identities
         user_assigned_identities.Element = AAZObjectArg(
+            nullable=True,
             blank={},
         )
 
@@ -436,7 +457,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-12-13-preview",
+                    "api-version", "2024-04-04-preview",
                     required=True,
                 ),
             }
@@ -473,28 +494,40 @@ class Create(AAZCommand):
 
             user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
             if user_assigned_identities is not None:
-                user_assigned_identities.set_elements(AAZObjectType, ".")
+                user_assigned_identities.set_elements(AAZObjectType, ".", typ_kwargs={"nullable": True})
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("agentProfile", AAZObjectType, ".agent_profile", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("devCenterProjectResourceId", AAZStrType, ".dev_center_project_resource_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("devCenterProjectResourceId", AAZStrType, ".devcenter_project_resource_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("fabricProfile", AAZObjectType, ".fabric_profile", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("maximumConcurrency", AAZIntType, ".maximum_concurrency", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("organizationProfile", AAZObjectType, ".organization_profile", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("provisioningState", AAZStrType, ".provisioning_state")
 
             agent_profile = _builder.get(".properties.agentProfile")
             if agent_profile is not None:
                 agent_profile.set_const("kind", "Stateful", AAZStrType, ".stateful", typ_kwargs={"flags": {"required": True}})
                 agent_profile.set_const("kind", "Stateless", AAZStrType, ".stateless", typ_kwargs={"flags": {"required": True}})
                 agent_profile.set_prop("resourcePredictions", AAZObjectType, ".resource_predictions")
+                agent_profile.set_prop("resourcePredictionsProfile", AAZObjectType, ".resource_predictions_profile")
                 agent_profile.discriminate_by("kind", "Stateful")
                 agent_profile.discriminate_by("kind", "Stateless")
 
+            resource_predictions_profile = _builder.get(".properties.agentProfile.resourcePredictionsProfile")
+            if resource_predictions_profile is not None:
+                resource_predictions_profile.set_const("kind", "Automatic", AAZStrType, ".automatic", typ_kwargs={"flags": {"required": True}})
+                resource_predictions_profile.set_const("kind", "Manual", AAZStrType, ".manual", typ_kwargs={"flags": {"required": True}})
+                resource_predictions_profile.discriminate_by("kind", "Automatic")
+                resource_predictions_profile.discriminate_by("kind", "Manual")
+
+            disc_automatic = _builder.get(".properties.agentProfile.resourcePredictionsProfile{kind:Automatic}")
+            if disc_automatic is not None:
+                disc_automatic.set_prop("predictionPreference", AAZStrType, ".automatic.prediction_preference")
+
             disc_stateful = _builder.get(".properties.agentProfile{kind:Stateful}")
             if disc_stateful is not None:
-                disc_stateful.set_prop("maxAgentLifetime", AAZStrType, ".stateful.max_agent_lifetime", typ_kwargs={"flags": {"required": True}})
+                disc_stateful.set_prop("gracePeriodTimeSpan", AAZStrType, ".stateful.grace_period_time_span")
+                disc_stateful.set_prop("maxAgentLifetime", AAZStrType, ".stateful.max_agent_lifetime")
 
             fabric_profile = _builder.get(".properties.fabricProfile")
             if fabric_profile is not None:
@@ -517,7 +550,8 @@ class Create(AAZCommand):
             if _elements is not None:
                 _elements.set_prop("aliases", AAZListType, ".aliases")
                 _elements.set_prop("buffer", AAZStrType, ".buffer")
-                _elements.set_prop("resourceId", AAZStrType, ".resource_id", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("resourceId", AAZStrType, ".resource_id")
+                _elements.set_prop("wellKnownImageName", AAZStrType, ".well_known_image_name")
 
             aliases = _builder.get(".properties.fabricProfile{kind:Vmss}.images[].aliases")
             if aliases is not None:
@@ -548,12 +582,23 @@ class Create(AAZCommand):
 
             storage_profile = _builder.get(".properties.fabricProfile{kind:Vmss}.storageProfile")
             if storage_profile is not None:
+                storage_profile.set_prop("dataDisks", AAZListType, ".data_disks")
                 storage_profile.set_prop("osDiskStorageAccountType", AAZStrType, ".os_disk_storage_account_type")
+
+            data_disks = _builder.get(".properties.fabricProfile{kind:Vmss}.storageProfile.dataDisks")
+            if data_disks is not None:
+                data_disks.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.fabricProfile{kind:Vmss}.storageProfile.dataDisks[]")
+            if _elements is not None:
+                _elements.set_prop("caching", AAZStrType, ".caching")
+                _elements.set_prop("diskSizeGiB", AAZIntType, ".disk_size_gi_b")
+                _elements.set_prop("driveLetter", AAZStrType, ".drive_letter")
+                _elements.set_prop("storageAccountType", AAZStrType, ".storage_account_type")
 
             organization_profile = _builder.get(".properties.organizationProfile")
             if organization_profile is not None:
                 organization_profile.set_const("kind", "AzureDevOps", AAZStrType, ".azure_dev_ops", typ_kwargs={"flags": {"required": True}})
-                organization_profile.set_const("kind", "GitHub", AAZStrType, ".git_hub", typ_kwargs={"flags": {"required": True}})
                 organization_profile.discriminate_by("kind", "AzureDevOps")
                 organization_profile.discriminate_by("kind", "GitHub")
 
@@ -670,7 +715,9 @@ class Create(AAZCommand):
             )
 
             user_assigned_identities = cls._schema_on_200_201.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType()
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
 
             _element = cls._schema_on_200_201.identity.user_assigned_identities.Element
             _element.client_id = AAZStrType(
@@ -714,11 +761,26 @@ class Create(AAZCommand):
             agent_profile.resource_predictions = AAZObjectType(
                 serialized_name="resourcePredictions",
             )
+            agent_profile.resource_predictions_profile = AAZObjectType(
+                serialized_name="resourcePredictionsProfile",
+            )
+
+            resource_predictions_profile = cls._schema_on_200_201.properties.agent_profile.resource_predictions_profile
+            resource_predictions_profile.kind = AAZStrType(
+                flags={"required": True},
+            )
+
+            disc_automatic = cls._schema_on_200_201.properties.agent_profile.resource_predictions_profile.discriminate_by("kind", "Automatic")
+            disc_automatic.prediction_preference = AAZStrType(
+                serialized_name="predictionPreference",
+            )
 
             disc_stateful = cls._schema_on_200_201.properties.agent_profile.discriminate_by("kind", "Stateful")
+            disc_stateful.grace_period_time_span = AAZStrType(
+                serialized_name="gracePeriodTimeSpan",
+            )
             disc_stateful.max_agent_lifetime = AAZStrType(
                 serialized_name="maxAgentLifetime",
-                flags={"required": True},
             )
 
             fabric_profile = cls._schema_on_200_201.properties.fabric_profile
@@ -751,7 +813,9 @@ class Create(AAZCommand):
             _element.buffer = AAZStrType()
             _element.resource_id = AAZStrType(
                 serialized_name="resourceId",
-                flags={"required": True},
+            )
+            _element.well_known_image_name = AAZStrType(
+                serialized_name="wellKnownImageName",
             )
 
             aliases = cls._schema_on_200_201.properties.fabric_profile.discriminate_by("kind", "Vmss").images.Element.aliases
@@ -793,8 +857,26 @@ class Create(AAZCommand):
             )
 
             storage_profile = cls._schema_on_200_201.properties.fabric_profile.discriminate_by("kind", "Vmss").storage_profile
+            storage_profile.data_disks = AAZListType(
+                serialized_name="dataDisks",
+            )
             storage_profile.os_disk_storage_account_type = AAZStrType(
                 serialized_name="osDiskStorageAccountType",
+            )
+
+            data_disks = cls._schema_on_200_201.properties.fabric_profile.discriminate_by("kind", "Vmss").storage_profile.data_disks
+            data_disks.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.fabric_profile.discriminate_by("kind", "Vmss").storage_profile.data_disks.Element
+            _element.caching = AAZStrType()
+            _element.disk_size_gi_b = AAZIntType(
+                serialized_name="diskSizeGiB",
+            )
+            _element.drive_letter = AAZStrType(
+                serialized_name="driveLetter",
+            )
+            _element.storage_account_type = AAZStrType(
+                serialized_name="storageAccountType",
             )
 
             organization_profile = cls._schema_on_200_201.properties.organization_profile
