@@ -10,7 +10,7 @@ import string
 
 from knack.log import get_logger
 
-from .backup_core import get_all_dashboards, get_all_library_panels, _save_folders, get_all_snapshots, _save_annotations, _save_datasources
+from .backup_core import get_all_dashboards, get_all_library_panels, get_all_folders, get_all_snapshots, _save_annotations, _save_datasources
 
 logger = get_logger(__name__)
 
@@ -137,6 +137,41 @@ def _save_snapshot(file_name, snapshot_setting, folder_path):
     file_path = _save_json(file_name + "_" + random_suffix, snapshot_setting, folder_path, 'snapshot')
     logger.warning("Snapshot: \"%s\" is saved", snapshot_setting.get('dashboard', {}).get("title"))
     logger.info("    -> %s", file_path)
+
+
+# Save folders
+def _save_folders(grafana_url, backup_dir, timestamp, http_headers, **kwargs):
+    folder_path = f'{backup_dir}/folders/{timestamp}'
+    log_file = f'folders_{timestamp}.txt'
+
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    folders = get_all_folders(grafana_url, http_headers, **kwargs)
+
+    log_file_path = folder_path + '/' + log_file
+    with open(log_file_path, 'w+', encoding="utf8") as f:
+        for folder_set in folders:
+            (folder_settings, folder_permissions) = folder_set
+            folder_uri = "uid/" + folder_settings['uid']
+
+            _save_folder_setting(
+                folder_settings['title'],
+                folder_uri,
+                folder_settings,
+                folder_settings,
+                folder_path)
+            f.write(folder_uri + '\t' + folder_settings['title'] + '\n')
+
+
+def _save_folder_setting(folder_name, file_name, folder_settings, folder_permissions, folder_path):
+    file_path = _save_json(file_name, folder_settings, folder_path, 'folder')
+    logger.warning("Folder: \"%s\" is saved", folder_name)
+    logger.info("    -> %s", file_path)
+    file_path = _save_json(file_name, folder_permissions, folder_path, 'folder_permission')
+    logger.warning("Folder permissions: %s are saved", folder_name)
+    logger.info("    -> %s", file_path)
+
 
 def _save_json(file_name, data, folder_path, extension, pretty_print=None):
     pattern = "^db/|^uid/"

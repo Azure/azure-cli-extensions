@@ -158,14 +158,7 @@ def get_all_snapshots(grafana_url, http_headers):
     return []
 
 
-# Save folders
-def _save_folders(grafana_url, backup_dir, timestamp, http_headers, **kwargs):
-    folder_path = f'{backup_dir}/folders/{timestamp}'
-    log_file = f'folders_{timestamp}.txt'
-
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-
+def get_all_folders(grafana_url, http_headers, **kwargs):
     folders = _get_all_folders_in_grafana(grafana_url, http_get_headers=http_headers)
 
     # only include what users want
@@ -178,9 +171,20 @@ def _save_folders(grafana_url, backup_dir, timestamp, http_headers, **kwargs):
         folders_to_exclude = [f.lower() for f in folders_to_exclude]
         folders = [f for f in folders if f.get('title', '').lower() not in folders_to_exclude]
 
-    _print_an_empty_line()
-    _get_individual_folder_setting_and_save(folders, folder_path, log_file, grafana_url, http_get_headers=http_headers)
-    _print_an_empty_line()
+    individual_folders = []
+    for folder in folders:
+        folder_uri = "uid/" + folder['uid']
+
+        (status_folder_settings, content_folder_settings) = get_folder(folder['uid'], grafana_url, http_headers)
+        (status_folder_permissions, content_folder_permissions) = get_folder_permissions(folder['uid'],
+                                                                                         grafana_url,
+                                                                                         http_headers)
+        if status_folder_settings == 200 and status_folder_permissions == 200:
+            individual_folders.append((content_folder_settings, content_folder_permissions))
+        else:
+            logger.warning("Getting folder %s FAILED, settings status: %s, settings content: %s, permissions status: %s, permissions content: %s", folder['title'], status_folder_settings, content_folder_settings, status_folder_permissions, content_folder_permissions)
+
+    return individual_folders
 
 
 def _get_all_folders_in_grafana(grafana_url, http_get_headers):
@@ -195,36 +199,6 @@ def _get_all_folders_in_grafana(grafana_url, http_get_headers):
         return folders
     logger.warning("Get folders FAILED, status: %s, msg: %s", status, content)
     return []
-
-
-def _save_folder_setting(folder_name, file_name, folder_settings, folder_permissions, folder_path):
-    file_path = _save_json(file_name, folder_settings, folder_path, 'folder')
-    logger.warning("Folder: \"%s\" is saved", folder_name)
-    logger.info("    -> %s", file_path)
-    file_path = _save_json(file_name, folder_permissions, folder_path, 'folder_permission')
-    logger.warning("Folder permissions: %s are saved", folder_name)
-    logger.info("    -> %s", file_path)
-
-
-def _get_individual_folder_setting_and_save(folders, folder_path, log_file, grafana_url, http_get_headers):
-    file_path = folder_path + '/' + log_file
-    with open(file_path, 'w+', encoding="utf8") as f:
-        for folder in folders:
-            folder_uri = "uid/" + folder['uid']
-
-            (status_folder_settings, content_folder_settings) = get_folder(folder['uid'], grafana_url, http_get_headers)
-            (status_folder_permissions, content_folder_permissions) = get_folder_permissions(folder['uid'],
-                                                                                             grafana_url,
-                                                                                             http_get_headers)
-
-            if status_folder_settings == 200 and status_folder_permissions == 200:
-                _save_folder_setting(
-                    folder['title'],
-                    folder_uri,
-                    content_folder_settings,
-                    content_folder_permissions,
-                    folder_path)
-                f.write(folder_uri + '\t' + folder['title'] + '\n')
 
 
 # Save annotations
