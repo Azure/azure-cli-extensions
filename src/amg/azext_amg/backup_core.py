@@ -226,32 +226,13 @@ def get_all_annotations(grafana_url, http_headers):
     return all_annotations
 
 
-# Save data sources
-def _save_datasources(grafana_url, backup_dir, timestamp, http_headers, **kwargs):  # pylint: disable=unused-argument
-    folder_path = f'{backup_dir}/datasources/{timestamp}'
-
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-
-    _get_all_datasources_and_save(folder_path, grafana_url, http_get_headers=http_headers)
-    _print_an_empty_line()
-
-
-def _save_datasource(file_name, datasource_setting, folder_path):
-    file_path = _save_json(file_name, datasource_setting, folder_path, 'datasource')
-    logger.warning("Datasource: \"%s\" is saved", datasource_setting['name'])
-    logger.info("    -> %s", file_path)
-
-
-def _get_all_datasources_and_save(folder_path, grafana_url, http_get_headers):
-    status_code_and_content = search_datasource(grafana_url, http_get_headers)
+def get_all_datasources(grafana_url, http_headers):
+    status_code_and_content = search_datasource(grafana_url, http_headers)
     if status_code_and_content[0] == 200:
         datasources = status_code_and_content[1]
         logger.info("There are %s datasources:", len(datasources))
-        for datasource in datasources:
-            logger.info(datasource)
-            datasource_name = datasource['uid']
-            _save_datasource(datasource_name, datasource, folder_path)
+        return datasources
+
     else:
         logger.info("Query datasource FAILED, status: %s, msg: %s", status_code_and_content[0],
                     status_code_and_content[1])

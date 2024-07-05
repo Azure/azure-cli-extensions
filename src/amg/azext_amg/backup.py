@@ -10,7 +10,7 @@ import string
 
 from knack.log import get_logger
 
-from .backup_core import get_all_dashboards, get_all_library_panels, get_all_folders, get_all_snapshots, get_all_annotations, _save_datasources
+from .backup_core import get_all_dashboards, get_all_library_panels, get_all_folders, get_all_snapshots, get_all_annotations, get_all_datasources
 
 logger = get_logger(__name__)
 
@@ -190,6 +190,26 @@ def _save_annotation(file_name, annotation_setting, folder_path):
     logger.info(annotation_setting)
     file_path = _save_json(file_name, annotation_setting, folder_path, 'annotation')
     logger.warning("Annotation: \"%s\" is saved", annotation_setting.get('text'))
+    logger.info("    -> %s", file_path)
+
+
+# Save data sources
+def _save_datasources(grafana_url, backup_dir, timestamp, http_headers, **kwargs):  # pylint: disable=unused-argument
+    folder_path = f'{backup_dir}/datasources/{timestamp}'
+
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    all_datasources = get_all_datasources(grafana_url, http_headers)
+    for datasource in all_datasources:
+        datasource_name = datasource['uid']
+        _save_datasource(datasource_name, datasource, folder_path)
+
+
+def _save_datasource(file_name, datasource_setting, folder_path):
+    logger.info(datasource_setting)
+    file_path = _save_json(file_name, datasource_setting, folder_path, 'datasource')
+    logger.warning("Datasource: \"%s\" is saved", datasource_setting['name'])
     logger.info("    -> %s", file_path)
 
 
