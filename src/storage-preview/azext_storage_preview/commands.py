@@ -6,7 +6,7 @@
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.arm import show_exception_handler
 from ._client_factory import (cf_sa, blob_data_service_factory, adls_blob_data_service_factory,
-                              cf_share_client, cf_share_service, cf_share_file_client, cf_share_directory_client)
+                              cf_share_client, cf_share_file_client, cf_share_directory_client)
 from .profiles import (CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS, CUSTOM_MGMT_STORAGE,
                        CUSTOM_DATA_STORAGE_FILESHARE)
 
