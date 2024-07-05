@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.0b2(2024-07-05)
+++++++++++++++++++
+* Bump azure_mgmt_storage to 2023-05-01 for new features
+
 1.0.0b1(2023-08-11)
 ++++++++++++++++++
 * `az storage account migration start/show`: Support start and show storage account migration
