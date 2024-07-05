@@ -201,24 +201,8 @@ def _get_all_folders_in_grafana(grafana_url, http_get_headers):
     return []
 
 
-# Save annotations
-def _save_annotations(grafana_url, backup_dir, timestamp, http_headers, **kwargs):  # pylint: disable=unused-argument
-    folder_path = f'{backup_dir}/annotations/{timestamp}'
-
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-
-    _get_all_annotations_and_save(folder_path, grafana_url, http_get_headers=http_headers)
-    _print_an_empty_line()
-
-
-def _save_annotation(file_name, annotation_setting, folder_path):
-    file_path = _save_json(file_name, annotation_setting, folder_path, 'annotation')
-    logger.warning("Annotation: \"%s\" is saved", annotation_setting.get('text'))
-    logger.info("    -> %s", file_path)
-
-
-def _get_all_annotations_and_save(folder_path, grafana_url, http_get_headers):
+def get_all_annotations(grafana_url, http_headers):
+    all_annotations = []
     now = int(round(time.time() * 1000))
     one_month_in_ms = 31 * 24 * 60 * 60 * 1000
 
@@ -227,19 +211,19 @@ def _get_all_annotations_and_save(folder_path, grafana_url, http_get_headers):
     thirteen_months_retention = now - (13 * one_month_in_ms)
 
     while ts_from > thirteen_months_retention:
-        status_code_and_content = search_annotations(grafana_url, ts_from, ts_to, http_get_headers)
+        status_code_and_content = search_annotations(grafana_url, ts_from, ts_to, http_headers)
         if status_code_and_content[0] == 200:
             annotations_batch = status_code_and_content[1]
             logger.info("There are %s annotations:", len(annotations_batch))
-            for annotation in annotations_batch:
-                logger.info(annotation)
-                _save_annotation(str(annotation['id']), annotation, folder_path)
+            all_annotations = all_annotations + annotations_batch
         else:
             logger.warning("Query annotation FAILED, status: %s, msg: %s", status_code_and_content[0],
                            status_code_and_content[1])
 
         ts_to = ts_from
         ts_from = ts_from - one_month_in_ms
+
+    return all_annotations
 
 
 # Save data sources

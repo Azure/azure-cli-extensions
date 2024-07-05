@@ -10,7 +10,7 @@ import string
 
 from knack.log import get_logger
 
-from .backup_core import get_all_dashboards, get_all_library_panels, get_all_folders, get_all_snapshots, _save_annotations, _save_datasources
+from .backup_core import get_all_dashboards, get_all_library_panels, get_all_folders, get_all_snapshots, get_all_annotations, _save_datasources
 
 logger = get_logger(__name__)
 
@@ -170,6 +170,26 @@ def _save_folder_setting(folder_name, file_name, folder_settings, folder_permiss
     logger.info("    -> %s", file_path)
     file_path = _save_json(file_name, folder_permissions, folder_path, 'folder_permission')
     logger.warning("Folder permissions: %s are saved", folder_name)
+    logger.info("    -> %s", file_path)
+
+
+# Save annotations
+def _save_annotations(grafana_url, backup_dir, timestamp, http_headers, **kwargs):  # pylint: disable=unused-argument
+    folder_path = f'{backup_dir}/annotations/{timestamp}'
+
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    all_annotations = get_all_annotations(grafana_url, http_headers)
+    for annotation in all_annotations:
+        annotation_id = str(annotation['id'])
+        _save_annotation(annotation_id, annotation, folder_path)
+
+
+def _save_annotation(file_name, annotation_setting, folder_path):
+    logger.info(annotation_setting)
+    file_path = _save_json(file_name, annotation_setting, folder_path, 'annotation')
+    logger.warning("Annotation: \"%s\" is saved", annotation_setting.get('text'))
     logger.info("    -> %s", file_path)
 
 

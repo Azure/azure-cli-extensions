@@ -2,7 +2,7 @@ from knack.log import get_logger
 
 from .backup import backup
 from .restore import restore, create_dashboard
-from .backup_core import get_all_dashboards, get_all_library_panels, get_all_snapshots, get_all_folders
+from .backup_core import get_all_dashboards, get_all_library_panels, get_all_snapshots, get_all_folders, get_all_annotations
 
 logger = get_logger(__name__)
 
@@ -23,6 +23,9 @@ def migrate(backup_grafana_name, backup_url, backup_directory, components, backu
 
     # get the list of snapshots to backup
     # all_snapshots = get_all_snapshots(backup_url, backup_headers)
+
+    # get all the annotations
+    # all_annotations = get_all_annotations(backup_url, backup_headers)
 
     archive_file = backup(grafana_name=backup_grafana_name,
                           grafana_url=backup_url,
