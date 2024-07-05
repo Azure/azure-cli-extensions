@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 
-
 def build_table_output(result, projection):
 
     if not isinstance(result, list):
