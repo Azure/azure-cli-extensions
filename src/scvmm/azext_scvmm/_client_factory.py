@@ -75,6 +75,7 @@ def cf_vminstance_guest_agent(cli_ctx: AzCli, *_):
     """
     return cf_scvmm(cli_ctx).guest_agents
 
+
 def cf_machine(cli_ctx: AzCli, *_):
     """
     Client factory for machines.

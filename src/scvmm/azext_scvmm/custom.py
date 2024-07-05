@@ -1430,7 +1430,11 @@ def add_disk(
     disks_update = []
     vm = client.get(machine_id)
     vm: VirtualMachineInstance = vm
-    if vm.properties is not None and vm.properties.storage_profile is not None and vm.properties.storage_profile.disks is not None:
+    if (
+        vm.properties is not None
+        and vm.properties.storage_profile is not None
+        and vm.properties.storage_profile.disks is not None
+    ):
         for disk in vm.properties.storage_profile.disks:
             disk_update = VirtualDiskUpdate(
                 name=disk.name,
@@ -1502,7 +1506,11 @@ def update_disk(
     disk_found = False
     vm = client.get(machine_id)
     vm: VirtualMachineInstance = vm
-    if vm.properties is not None and vm.properties.storage_profile is not None and vm.properties.storage_profile.disks is not None:
+    if (
+        vm.properties is not None
+        and vm.properties.storage_profile is not None
+        and vm.properties.storage_profile.disks is not None
+    ):
         for disk in vm.properties.storage_profile.disks:
             disk_update = VirtualDiskUpdate(
                 name=disk.name,
@@ -1631,7 +1639,11 @@ def delete_disks(
     disks_update = []
     vm = client.get(machine_id)
     vm: VirtualMachineInstance = vm
-    if vm.properties is not None and vm.properties.storage_profile is not None and vm.properties.storage_profile.disks is not None:
+    if (
+        vm.properties is not None
+        and vm.properties.storage_profile is not None
+        and vm.properties.storage_profile.disks is not None
+    ):
         for disk in vm.properties.storage_profile.disks:
             if disk.name in disks_to_delete:
                 disks_to_delete[disk.name] = False
