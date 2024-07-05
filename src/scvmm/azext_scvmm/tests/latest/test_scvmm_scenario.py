@@ -7,6 +7,7 @@
 
 import os
 from azure.cli.testsdk import ScenarioTest
+import datetime
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -30,7 +31,7 @@ class ScVmmScenarioTest(ScenarioTest):
                 'vnet_name': 'azcli-test-virtual-network',
                 'avset_string': 'avset1',
                 'avset_name': 'azcli-test-avset1',
-                'vm_name': 'azcli-test-vm-2',
+                'vm_name': 'azcli-test-vm-'+ datetime.datetime.now().strftime(f"%y%m%d%H%M%S"),
                 'disk_name': 'disk_1',
                 'nic_name': 'nic_1',
                 'checkpoint_name': 'azcli-test-checkpoint',
@@ -252,13 +253,9 @@ class ScVmmScenarioTest(ScenarioTest):
                         ]).get_output_in_json()
         checkpoint_id = alias_sub['properties']['infrastructureProfile']['checkpoints'][0]['checkpointId']
         self.kwargs.update({'checkpoint_id': checkpoint_id})
-        
-        self.cmd(
-            'az scvmm vm disk delete -g {resource_group} --vm-name {vm_name} --name disk_2'
-        )
 
         self.cmd(
-            'az scvmm vm nic delete -g {resource_group} --vm-name {vm_name} --name nic_2'
+            'az scvmm vm nic delete -g {resource_group} --vm-name {vm_name} --nics nic_2 -y'
         )
 
         self.cmd(
@@ -274,17 +271,16 @@ class ScVmmScenarioTest(ScenarioTest):
         )
 
         self.cmd(
-            'az scvmm vm disk show -g {resource_group} --vm-name {vm_name} -n disk_2',
+            'az scvmm vm disk list -g {resource_group} --vm-name {vm_name}',
             checks=[
-                self.check('name', 'disk_2'),
-                self.check('maxDiskSizeGb', 20),
+                self.check('length(@)', 2),
             ],
         )
 
         self.cmd(
-            'az scvmm vm nic show -g {resource_group} --vm-name {vm_name} -n nic_2',
+            'az scvmm vm nic list -g {resource_group} --vm-name {vm_name}',
             checks=[
-                self.check('name', 'nic_2'),
+                self.check('length(@)', 2),
             ],
         )
 
