@@ -16,9 +16,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01",
+        "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/agents/{}", "2023-10-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/agents/{}", "2024-07-01"],
         ]
     }
 
@@ -72,7 +72,85 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="A description for the Agent.",
         )
+        _args_schema.upload_limit_schedule = AAZObjectArg(
+            options=["--upload-limit-schedule"],
+            arg_group="Properties",
+            help="The WAN-link upload limit schedule that applies to any Job Run the agent executes. Data plane operations (migrating files) are affected. Control plane operations ensure seamless migration functionality and are not limited by this schedule. The schedule is interpreted with the agent's local time.",
+        )
+
+        upload_limit_schedule = cls._args_schema.upload_limit_schedule
+        upload_limit_schedule.weekly_recurrences = AAZListArg(
+            options=["weekly-recurrences"],
+            help="The set of weekly repeating recurrences of the WAN-link upload limit schedule.",
+        )
+
+        weekly_recurrences = cls._args_schema.upload_limit_schedule.weekly_recurrences
+        weekly_recurrences.Element = AAZObjectArg()
+
+        _element = cls._args_schema.upload_limit_schedule.weekly_recurrences.Element
+        _element.days = AAZListArg(
+            options=["days"],
+            help="The set of days of week for the schedule recurrence. A day must not be specified more than once in a recurrence.",
+            required=True,
+        )
+        _element.end_time = AAZObjectArg(
+            options=["end-time"],
+            help="The end time of the schedule recurrence. Full hour and 30-minute intervals are supported.",
+            required=True,
+        )
+        cls._build_args_time_create(_element.end_time)
+        _element.limit_in_mbps = AAZIntArg(
+            options=["limit-in-mbps"],
+            help="The WAN-link upload bandwidth (maximum data transfer rate) in megabits per second. Value of 0 indicates no throughput is allowed and any running migration job is effectively paused for the duration of this recurrence. Only data plane operations are governed by this limit. Control plane operations ensure seamless functionality. The agent may exceed this limit with control messages, if necessary.",
+            required=True,
+            fmt=AAZIntArgFormat(
+                maximum=2147483647,
+                minimum=0,
+            ),
+        )
+        _element.start_time = AAZObjectArg(
+            options=["start-time"],
+            help="The start time of the schedule recurrence. Full hour and 30-minute intervals are supported.",
+            required=True,
+        )
+        cls._build_args_time_create(_element.start_time)
+
+        days = cls._args_schema.upload_limit_schedule.weekly_recurrences.Element.days
+        days.Element = AAZStrArg(
+            enum={"Friday": "Friday", "Monday": "Monday", "Saturday": "Saturday", "Sunday": "Sunday", "Thursday": "Thursday", "Tuesday": "Tuesday", "Wednesday": "Wednesday"},
+        )
         return cls._args_schema
+
+    _args_time_create = None
+
+    @classmethod
+    def _build_args_time_create(cls, _schema):
+        if cls._args_time_create is not None:
+            _schema.hour = cls._args_time_create.hour
+            _schema.minute = cls._args_time_create.minute
+            return
+
+        cls._args_time_create = AAZObjectArg()
+
+        time_create = cls._args_time_create
+        time_create.hour = AAZIntArg(
+            options=["hour"],
+            help="The hour element of the time. Allowed values range from 0 (start of the selected day) to 24 (end of the selected day). Hour value 24 cannot be combined with any other minute value but 0.",
+            required=True,
+            fmt=AAZIntArgFormat(
+                maximum=24,
+                minimum=0,
+            ),
+        )
+        time_create.minute = AAZIntArg(
+            options=["minute"],
+            help="The minute element of the time. Allowed values are 0 and 30. If not specified, its value defaults to 0.",
+            default=0,
+            enum={"0": 0, "30": 30},
+        )
+
+        _schema.hour = cls._args_time_create.hour
+        _schema.minute = cls._args_time_create.minute
 
     def _execute_operations(self):
         self.pre_operations()
@@ -143,7 +221,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
@@ -175,6 +253,26 @@ class Create(AAZCommand):
                 properties.set_prop("arcResourceId", AAZStrType, ".arc_resource_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("arcVmUuid", AAZStrType, ".arc_vm_uuid", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("description", AAZStrType, ".description")
+                properties.set_prop("uploadLimitSchedule", AAZObjectType, ".upload_limit_schedule")
+
+            upload_limit_schedule = _builder.get(".properties.uploadLimitSchedule")
+            if upload_limit_schedule is not None:
+                upload_limit_schedule.set_prop("weeklyRecurrences", AAZListType, ".weekly_recurrences")
+
+            weekly_recurrences = _builder.get(".properties.uploadLimitSchedule.weeklyRecurrences")
+            if weekly_recurrences is not None:
+                weekly_recurrences.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.uploadLimitSchedule.weeklyRecurrences[]")
+            if _elements is not None:
+                _elements.set_prop("days", AAZListType, ".days", typ_kwargs={"flags": {"required": True}})
+                _CreateHelper._build_schema_time_create(_elements.set_prop("endTime", AAZObjectType, ".end_time", typ_kwargs={"flags": {"required": True}}))
+                _elements.set_prop("limitInMbps", AAZIntType, ".limit_in_mbps", typ_kwargs={"flags": {"required": True}})
+                _CreateHelper._build_schema_time_create(_elements.set_prop("startTime", AAZObjectType, ".start_time", typ_kwargs={"flags": {"required": True}}))
+
+            days = _builder.get(".properties.uploadLimitSchedule.weeklyRecurrences[].days")
+            if days is not None:
+                days.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -255,6 +353,13 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.time_zone = AAZStrType(
+                serialized_name="timeZone",
+                flags={"read_only": True},
+            )
+            properties.upload_limit_schedule = AAZObjectType(
+                serialized_name="uploadLimitSchedule",
+            )
             properties.uptime_in_seconds = AAZIntType(
                 serialized_name="uptimeInSeconds",
                 flags={"read_only": True},
@@ -263,6 +368,36 @@ class Create(AAZCommand):
             error_details = cls._schema_on_200.properties.error_details
             error_details.code = AAZStrType()
             error_details.message = AAZStrType()
+
+            upload_limit_schedule = cls._schema_on_200.properties.upload_limit_schedule
+            upload_limit_schedule.weekly_recurrences = AAZListType(
+                serialized_name="weeklyRecurrences",
+            )
+
+            weekly_recurrences = cls._schema_on_200.properties.upload_limit_schedule.weekly_recurrences
+            weekly_recurrences.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.upload_limit_schedule.weekly_recurrences.Element
+            _element.days = AAZListType(
+                flags={"required": True},
+            )
+            _element.end_time = AAZObjectType(
+                serialized_name="endTime",
+                flags={"required": True},
+            )
+            _CreateHelper._build_schema_time_read(_element.end_time)
+            _element.limit_in_mbps = AAZIntType(
+                serialized_name="limitInMbps",
+                flags={"required": True},
+            )
+            _element.start_time = AAZObjectType(
+                serialized_name="startTime",
+                flags={"required": True},
+            )
+            _CreateHelper._build_schema_time_read(_element.start_time)
+
+            days = cls._schema_on_200.properties.upload_limit_schedule.weekly_recurrences.Element.days
+            days.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
@@ -289,6 +424,33 @@ class Create(AAZCommand):
 
 class _CreateHelper:
     """Helper class for Create"""
+
+    @classmethod
+    def _build_schema_time_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("hour", AAZIntType, ".hour", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("minute", AAZIntType, ".minute")
+
+    _schema_time_read = None
+
+    @classmethod
+    def _build_schema_time_read(cls, _schema):
+        if cls._schema_time_read is not None:
+            _schema.hour = cls._schema_time_read.hour
+            _schema.minute = cls._schema_time_read.minute
+            return
+
+        cls._schema_time_read = _schema_time_read = AAZObjectType()
+
+        time_read = _schema_time_read
+        time_read.hour = AAZIntType(
+            flags={"required": True},
+        )
+        time_read.minute = AAZIntType()
+
+        _schema.hour = cls._schema_time_read.hour
+        _schema.minute = cls._schema_time_read.minute
 
 
 __all__ = ["Create"]
