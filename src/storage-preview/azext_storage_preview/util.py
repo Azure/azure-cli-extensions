@@ -5,7 +5,7 @@
 
 
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from .profiles import CUSTOM_DATA_STORAGE_FILESHARE, CUSTOM_DATA_STORAGE_BLOB
 
 
@@ -102,7 +102,6 @@ def glob_files_remotely(cmd, client, share_name, pattern):
 
 
 def create_short_lived_blob_sas(cmd, account_name, account_key, container, blob):
-    from datetime import datetime, timedelta
     if cmd.supported_api_version(min_api='2017-04-17'):
         t_sas = cmd.get_models(
             'blob.sharedaccesssignature#BlobSharedAccessSignature')
@@ -116,7 +115,6 @@ def create_short_lived_blob_sas(cmd, account_name, account_key, container, blob)
 
 
 def create_short_lived_file_sas(cmd, account_name, account_key, share, directory_name, file_name):
-    from datetime import datetime, timedelta
     if cmd.supported_api_version(min_api='2017-04-17'):
         t_sas = cmd.get_models(
             'file.sharedaccesssignature#FileSharedAccessSignature')
@@ -133,7 +131,6 @@ def create_short_lived_file_sas(cmd, account_name, account_key, share, directory
 
 
 def create_short_lived_container_sas(cmd, account_name, account_key, container):
-    from datetime import datetime, timedelta
     if cmd.supported_api_version(min_api='2017-04-17'):
         t_sas = cmd.get_models(
             'blob.sharedaccesssignature#BlobSharedAccessSignature')
@@ -147,7 +144,6 @@ def create_short_lived_container_sas(cmd, account_name, account_key, container):
 
 
 def create_short_lived_share_sas(cmd, account_name, account_key, share):
-    from datetime import datetime, timedelta
     if cmd.supported_api_version(min_api='2017-04-17'):
         t_sas = cmd.get_models(
             'file.sharedaccesssignature#FileSharedAccessSignature')
@@ -244,7 +240,6 @@ def check_precondition_success(func):
 
 
 def create_short_lived_blob_sas_v2(cmd, account_name, account_key, container, blob):
-    from datetime import timedelta
 
     t_sas = cmd.get_models('_shared_access_signature#BlobSharedAccessSignature',
                            resource_type=CUSTOM_DATA_STORAGE_BLOB)
@@ -256,7 +251,6 @@ def create_short_lived_blob_sas_v2(cmd, account_name, account_key, container, bl
 
 
 def create_short_lived_file_sas_v2(cmd, account_name, account_key, share, directory_name, file_name):
-    from datetime import timedelta
 
     t_sas = cmd.get_models('_shared_access_signature#FileSharedAccessSignature',
                            resource_type=CUSTOM_DATA_STORAGE_FILESHARE)
@@ -269,7 +263,6 @@ def create_short_lived_file_sas_v2(cmd, account_name, account_key, share, direct
 
 
 def create_short_lived_container_sas_track2(cmd, account_name, account_key, container):
-    from datetime import timedelta
     t_generate_container_sas = cmd.get_models('_shared_access_signature#generate_container_sas',
                                               resource_type=CUSTOM_DATA_STORAGE_BLOB)
     expiry = (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -278,7 +271,6 @@ def create_short_lived_container_sas_track2(cmd, account_name, account_key, cont
 
 
 def create_short_lived_share_sas_track2(cmd, account_name, account_key, share):
-    from datetime import timedelta
     t_generate_share_sas = cmd.get_models('#generate_share_sas', resource_type=CUSTOM_DATA_STORAGE_FILESHARE)
     expiry = (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
     return t_generate_share_sas(account_name, share, account_key, permission='r', expiry=expiry,
