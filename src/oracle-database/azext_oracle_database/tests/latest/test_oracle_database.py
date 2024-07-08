@@ -10,17 +10,7 @@ import time
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
-from .. import (
-    try_manual,
-    raise_if,
-    calc_coverage
-)
 
-@try_manual
-def setup_scenario(test, rg):
-    pass
-
-@try_manual
 class OracleDatabaseScenario(ScenarioTest):
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')

@@ -11,4 +11,3 @@
 from .__cmd_group import *
 from ._action import *
 from ._list import *
-from ._show import *

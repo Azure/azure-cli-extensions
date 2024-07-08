@@ -12,7 +12,6 @@ from .__cmd_group import *
 from ._create import *
 from ._delete import *
 from ._failover import *
-from ._generate_wallet import *
 from ._list import *
 from ._restore import *
 from ._show import *

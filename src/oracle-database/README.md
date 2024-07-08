@@ -2,4 +2,13 @@
 This is an extension to Azure CLI to manage OracleDatabase resources.
 
 ## How to use ##
-Please add commands usage here.
+Install this extension using the below CLI command
+```
+az extension add --name oracle-database
+```
+
+### Included Features ###
+### Autonomous Databases ###
+```
+az oracle-database add --name confluent
+```
