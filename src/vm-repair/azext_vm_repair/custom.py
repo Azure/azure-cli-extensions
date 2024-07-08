@@ -650,8 +650,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
          # Wait for IP updated
         wait_ip_update_command = 'az network nic ip-config wait --updated -g {g} --nic-name {nic} -n ' \
                                 .format(g=resource_group_name, nic=primary_nic_name)
-        
-        current_ip_address = _call_az_command(wait_ip_update_command)
+        _call_az_command(wait_ip_update_command)
 
             
         # 4) Change things back. This will also invoke and wait for a VM restart.
