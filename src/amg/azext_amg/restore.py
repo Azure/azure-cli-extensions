@@ -74,6 +74,8 @@ def _restore_components(grafana_url, restore_functions, tmpdir, components, http
     if "folder" in exts:  # make "folder" be the first to restore, so dashboards can be positioned under a right folder
         exts.insert(0, exts.pop(exts.index("folder")))
 
+    # print(exts)
+    # huh weird: ['folder', 'library_panel', 'dashboard', 'library_panel', 'snapshot', 'annotation']
     for ext in exts:
         for file_path in glob(f'{tmpdir}/**/*.{ext}', recursive=True):
             logger.info('Restoring %s: %s', ext, file_path)
@@ -87,7 +89,11 @@ def _load_and_create_dashboard(grafana_url, file_path, http_headers):
 
     content = json.loads(data)
     content['dashboard']['id'] = None
+    
+    create_dashboard(grafana_url, content, http_headers)
 
+
+def create_dashboard(grafana_url, content, http_headers):
     payload = {
         'dashboard': content['dashboard'],
         'folderId': get_folder_id(content, grafana_url, http_post_headers=http_headers),
@@ -104,10 +110,6 @@ def _load_and_create_dashboard(grafana_url, file_path, http_headers):
         (Style.SUCCESS, 'SUCCESS') if result[0] == 200 else (Style.ERROR, 'FAILURE')
     ])
     logger.info("status: %s, msg: %s", result[0], result[1])
-
-
-def create_dashboard():
-    pass
 
 
 # Restore Library Panel
