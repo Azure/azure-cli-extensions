@@ -3,7 +3,7 @@ Release History
 ===============
 1.0.6
 ++++++
-Add while loop for ASG to check if the operation is done as the async 2rd operation will cancel the 1st call.
+Add CLI update wait for ASG to wait for the operation done as the async 2rd operation will cancel the 1st call.
 
 
 1.0.5
