@@ -619,7 +619,8 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
                 application_id_tokens = item['id'].split('/')
                 if application_id_tokens[-1] is not None:
                     application_names+=application_id_tokens[-1]+ " "
-        
+                    
+        logger.info('applicationSecurityGroups {application_names}...\n')
         
         # Dynamic | Static
         orig_ip_allocation_method = ip_config_object['privateIPAllocationMethod']
