@@ -8,6 +8,9 @@
 
 from ._models_py3 import APIServerAccessProfile
 from ._models_py3 import AgentProfile
+from ._models_py3 import AutoUpgradeNodeImageSelection
+from ._models_py3 import AutoUpgradeProfile
+from ._models_py3 import AutoUpgradeProfileListResult
 from ._models_py3 import ErrorAdditionalInfo
 from ._models_py3 import ErrorDetail
 from ._models_py3 import ErrorResponse
@@ -51,6 +54,8 @@ from ._models_py3 import UserAssignedIdentity
 from ._models_py3 import WaitStatus
 
 from ._container_service_fleet_mgmt_client_enums import ActionType
+from ._container_service_fleet_mgmt_client_enums import AutoUpgradeNodeImageSelectionType
+from ._container_service_fleet_mgmt_client_enums import AutoUpgradeProfileProvisioningState
 from ._container_service_fleet_mgmt_client_enums import CreatedByType
 from ._container_service_fleet_mgmt_client_enums import FleetMemberProvisioningState
 from ._container_service_fleet_mgmt_client_enums import FleetProvisioningState
@@ -62,6 +67,7 @@ from ._container_service_fleet_mgmt_client_enums import Origin
 from ._container_service_fleet_mgmt_client_enums import TargetType
 from ._container_service_fleet_mgmt_client_enums import UpdateRunProvisioningState
 from ._container_service_fleet_mgmt_client_enums import UpdateState
+from ._container_service_fleet_mgmt_client_enums import UpgradeChannel
 from ._patch import __all__ as _patch_all
 from ._patch import *  # pylint: disable=unused-wildcard-import
 from ._patch import patch_sdk as _patch_sdk
@@ -69,6 +75,9 @@ from ._patch import patch_sdk as _patch_sdk
 __all__ = [
     "APIServerAccessProfile",
     "AgentProfile",
+    "AutoUpgradeNodeImageSelection",
+    "AutoUpgradeProfile",
+    "AutoUpgradeProfileListResult",
     "ErrorAdditionalInfo",
     "ErrorDetail",
     "ErrorResponse",
@@ -111,6 +120,8 @@ __all__ = [
     "UserAssignedIdentity",
     "WaitStatus",
     "ActionType",
+    "AutoUpgradeNodeImageSelectionType",
+    "AutoUpgradeProfileProvisioningState",
     "CreatedByType",
     "FleetMemberProvisioningState",
     "FleetProvisioningState",
@@ -122,6 +133,7 @@ __all__ = [
     "TargetType",
     "UpdateRunProvisioningState",
     "UpdateState",
+    "UpgradeChannel",
 ]
 __all__.extend([p for p in _patch_all if p not in __all__])
 _patch_sdk()
