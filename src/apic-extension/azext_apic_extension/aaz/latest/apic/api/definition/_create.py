@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a new API definition or update an existing API definition.
 
     :example: Create API definition
-        az apic api definition create -g api-center-test -s contosoeuap --api-id echo-api --version-id 2023-01-01 --definition-id "openapi" --title "OpenAPI"
+        az apic api definition create -g api-center-test -n contosoeuap --api-id echo-api --version-id 2023-01-01 --definition-id "openapi" --title "OpenAPI"
     """
 
     _aaz_info = {
@@ -68,8 +68,8 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-n", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,90}$",
