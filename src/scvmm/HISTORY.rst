@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.1
+++++++
+* Security upgrades and fixes.
+
 1.0.0
 ++++++
 * First Stable version release.
