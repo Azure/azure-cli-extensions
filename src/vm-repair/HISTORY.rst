@@ -3,7 +3,8 @@ Release History
 ===============
 1.0.6
 ++++++
-Remove verbose log
+Add while loop for ASG to check if the operation is done as the async 2rd operation will cancel the 1st call.
+
 
 1.0.5
 ++++++
