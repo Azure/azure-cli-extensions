@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "oracle-database autonomous-database autonomous-database-backup",
+    "oracle-database database-system-shape",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Autonomous Databases Backup
+    """Database System Shapes
     """
     pass
 

@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "oracle-database autonomous-database autonomous-database-backup update",
+    "oracle-database autonomous-database backup update",
 )
 class Update(AAZCommand):
     """Update a AutonomousDatabaseBackup

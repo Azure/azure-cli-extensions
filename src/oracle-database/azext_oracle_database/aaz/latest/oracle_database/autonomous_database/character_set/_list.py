@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "oracle-database autonomous-database-national-character-set list",
+    "oracle-database autonomous-database character-set list",
 )
 class List(AAZCommand):
-    """List AutonomousDatabaseNationalCharacterSet resources by Location
+    """List AutonomousDatabaseCharacterSet resources by Location
     """
 
     _aaz_info = {
         "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/autonomousdatabasenationalcharactersets", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/autonomousdatabasecharactersets", "2023-09-01"],
         ]
     }
 
@@ -49,7 +49,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.AutonomousDatabaseNationalCharacterSetsListByLocation(ctx=self.ctx)()
+        self.AutonomousDatabaseCharacterSetsListByLocation(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -65,7 +65,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class AutonomousDatabaseNationalCharacterSetsListByLocation(AAZHttpOperation):
+    class AutonomousDatabaseCharacterSetsListByLocation(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -79,7 +79,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Oracle.Database/locations/{location}/autonomousDatabaseNationalCharacterSets",
+                "/subscriptions/{subscriptionId}/providers/Oracle.Database/locations/{location}/autonomousDatabaseCharacterSets",
                 **self.url_parameters
             )
 

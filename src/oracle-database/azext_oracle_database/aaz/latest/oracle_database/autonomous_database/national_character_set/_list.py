@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "oracle-database db-system-shape list",
+    "oracle-database autonomous-database national-character-set list",
 )
 class List(AAZCommand):
-    """List DbSystemShape resources by Location
+    """List AutonomousDatabaseNationalCharacterSet resources by Location
     """
 
     _aaz_info = {
         "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/dbsystemshapes", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/autonomousdatabasenationalcharactersets", "2023-09-01"],
         ]
     }
 
@@ -49,7 +49,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.DbSystemShapesListByLocation(ctx=self.ctx)()
+        self.AutonomousDatabaseNationalCharacterSetsListByLocation(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -65,7 +65,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class DbSystemShapesListByLocation(AAZHttpOperation):
+    class AutonomousDatabaseNationalCharacterSetsListByLocation(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -79,7 +79,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Oracle.Database/locations/{location}/dbSystemShapes",
+                "/subscriptions/{subscriptionId}/providers/Oracle.Database/locations/{location}/autonomousDatabaseNationalCharacterSets",
                 **self.url_parameters
             )
 
@@ -171,85 +171,9 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.available_core_count = AAZIntType(
-                serialized_name="availableCoreCount",
+            properties.character_set = AAZStrType(
+                serialized_name="characterSet",
                 flags={"required": True, "read_only": True},
-            )
-            properties.available_core_count_per_node = AAZIntType(
-                serialized_name="availableCoreCountPerNode",
-                flags={"read_only": True},
-            )
-            properties.available_data_storage_in_tbs = AAZIntType(
-                serialized_name="availableDataStorageInTbs",
-                flags={"read_only": True},
-            )
-            properties.available_data_storage_per_server_in_tbs = AAZFloatType(
-                serialized_name="availableDataStoragePerServerInTbs",
-                flags={"read_only": True},
-            )
-            properties.available_db_node_per_node_in_gbs = AAZIntType(
-                serialized_name="availableDbNodePerNodeInGbs",
-                flags={"read_only": True},
-            )
-            properties.available_db_node_storage_in_gbs = AAZIntType(
-                serialized_name="availableDbNodeStorageInGbs",
-                flags={"read_only": True},
-            )
-            properties.available_memory_in_gbs = AAZIntType(
-                serialized_name="availableMemoryInGbs",
-                flags={"read_only": True},
-            )
-            properties.available_memory_per_node_in_gbs = AAZIntType(
-                serialized_name="availableMemoryPerNodeInGbs",
-                flags={"read_only": True},
-            )
-            properties.core_count_increment = AAZIntType(
-                serialized_name="coreCountIncrement",
-                flags={"read_only": True},
-            )
-            properties.max_storage_count = AAZIntType(
-                serialized_name="maxStorageCount",
-                flags={"read_only": True},
-            )
-            properties.maximum_node_count = AAZIntType(
-                serialized_name="maximumNodeCount",
-                flags={"read_only": True},
-            )
-            properties.min_core_count_per_node = AAZIntType(
-                serialized_name="minCoreCountPerNode",
-                flags={"read_only": True},
-            )
-            properties.min_data_storage_in_tbs = AAZIntType(
-                serialized_name="minDataStorageInTbs",
-                flags={"read_only": True},
-            )
-            properties.min_db_node_storage_per_node_in_gbs = AAZIntType(
-                serialized_name="minDbNodeStoragePerNodeInGbs",
-                flags={"read_only": True},
-            )
-            properties.min_memory_per_node_in_gbs = AAZIntType(
-                serialized_name="minMemoryPerNodeInGbs",
-                flags={"read_only": True},
-            )
-            properties.min_storage_count = AAZIntType(
-                serialized_name="minStorageCount",
-                flags={"read_only": True},
-            )
-            properties.minimum_core_count = AAZIntType(
-                serialized_name="minimumCoreCount",
-                flags={"read_only": True},
-            )
-            properties.minimum_node_count = AAZIntType(
-                serialized_name="minimumNodeCount",
-                flags={"read_only": True},
-            )
-            properties.runtime_minimum_core_count = AAZIntType(
-                serialized_name="runtimeMinimumCoreCount",
-                flags={"read_only": True},
-            )
-            properties.shape_family = AAZStrType(
-                serialized_name="shapeFamily",
-                flags={"read_only": True},
             )
 
             system_data = cls._schema_on_200.value.Element.system_data

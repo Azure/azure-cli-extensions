@@ -12,22 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "oracle-database autonomous-database autonomous-database-backup wait",
+    "oracle-database database-system-shape list",
 )
-class Wait(AAZWaitCommand):
-    """Place the CLI in a waiting state until a condition is met.
+class List(AAZCommand):
+    """List DbSystemShape resources by Location
     """
 
     _aaz_info = {
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/autonomousdatabases/{}/autonomousdatabasebackups/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/dbsystemshapes", "2023-09-01"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -40,34 +42,14 @@ class Wait(AAZWaitCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.adbbackupid = AAZStrArg(
-            options=["-n", "--name", "--adbbackupid"],
-            help="AutonomousDatabaseBackup id",
-            required=True,
-            id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern=".*",
-            ),
-        )
-        _args_schema.autonomousdatabasename = AAZStrArg(
-            options=["--autonomousdatabasename"],
-            help="The database name.",
-            required=True,
-            id_part="name",
-            fmt=AAZStrArgFormat(
-                pattern=".*",
-                max_length=30,
-                min_length=1,
-            ),
-        )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
+        _args_schema.location = AAZResourceLocationArg(
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.AutonomousDatabaseBackupsGet(ctx=self.ctx)()
+        self.DbSystemShapesListByLocation(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -79,10 +61,11 @@ class Wait(AAZWaitCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class AutonomousDatabaseBackupsGet(AAZHttpOperation):
+    class DbSystemShapesListByLocation(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -96,7 +79,7 @@ class Wait(AAZWaitCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Oracle.Database/autonomousDatabases/{autonomousdatabasename}/autonomousDatabaseBackups/{adbbackupid}",
+                "/subscriptions/{subscriptionId}/providers/Oracle.Database/locations/{location}/dbSystemShapes",
                 **self.url_parameters
             )
 
@@ -112,15 +95,7 @@ class Wait(AAZWaitCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "adbbackupid", self.ctx.args.adbbackupid,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "autonomousdatabasename", self.ctx.args.autonomousdatabasename,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "location", self.ctx.args.location,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -167,82 +142,117 @@ class Wait(AAZWaitCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
+            _element.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _schema_on_200.system_data = AAZObjectType(
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
-            properties.autonomous_database_ocid = AAZStrType(
-                serialized_name="autonomousDatabaseOcid",
+            properties = cls._schema_on_200.value.Element.properties
+            properties.available_core_count = AAZIntType(
+                serialized_name="availableCoreCount",
+                flags={"required": True, "read_only": True},
             )
-            properties.backup_type = AAZStrType(
-                serialized_name="backupType",
-            )
-            properties.database_size_in_tbs = AAZFloatType(
-                serialized_name="databaseSizeInTbs",
+            properties.available_core_count_per_node = AAZIntType(
+                serialized_name="availableCoreCountPerNode",
                 flags={"read_only": True},
             )
-            properties.db_version = AAZStrType(
-                serialized_name="dbVersion",
+            properties.available_data_storage_in_tbs = AAZIntType(
+                serialized_name="availableDataStorageInTbs",
                 flags={"read_only": True},
             )
-            properties.display_name = AAZStrType(
-                serialized_name="displayName",
-            )
-            properties.is_automatic = AAZBoolType(
-                serialized_name="isAutomatic",
+            properties.available_data_storage_per_server_in_tbs = AAZFloatType(
+                serialized_name="availableDataStoragePerServerInTbs",
                 flags={"read_only": True},
             )
-            properties.is_restorable = AAZBoolType(
-                serialized_name="isRestorable",
+            properties.available_db_node_per_node_in_gbs = AAZIntType(
+                serialized_name="availableDbNodePerNodeInGbs",
                 flags={"read_only": True},
             )
-            properties.lifecycle_details = AAZStrType(
-                serialized_name="lifecycleDetails",
+            properties.available_db_node_storage_in_gbs = AAZIntType(
+                serialized_name="availableDbNodeStorageInGbs",
                 flags={"read_only": True},
             )
-            properties.lifecycle_state = AAZStrType(
-                serialized_name="lifecycleState",
-            )
-            properties.ocid = AAZStrType()
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
+            properties.available_memory_in_gbs = AAZIntType(
+                serialized_name="availableMemoryInGbs",
                 flags={"read_only": True},
             )
-            properties.retention_period_in_days = AAZIntType(
-                serialized_name="retentionPeriodInDays",
-            )
-            properties.size_in_tbs = AAZFloatType(
-                serialized_name="sizeInTbs",
+            properties.available_memory_per_node_in_gbs = AAZIntType(
+                serialized_name="availableMemoryPerNodeInGbs",
                 flags={"read_only": True},
             )
-            properties.time_available_til = AAZStrType(
-                serialized_name="timeAvailableTil",
+            properties.core_count_increment = AAZIntType(
+                serialized_name="coreCountIncrement",
                 flags={"read_only": True},
             )
-            properties.time_ended = AAZStrType(
-                serialized_name="timeEnded",
+            properties.max_storage_count = AAZIntType(
+                serialized_name="maxStorageCount",
                 flags={"read_only": True},
             )
-            properties.time_started = AAZStrType(
-                serialized_name="timeStarted",
+            properties.maximum_node_count = AAZIntType(
+                serialized_name="maximumNodeCount",
+                flags={"read_only": True},
+            )
+            properties.min_core_count_per_node = AAZIntType(
+                serialized_name="minCoreCountPerNode",
+                flags={"read_only": True},
+            )
+            properties.min_data_storage_in_tbs = AAZIntType(
+                serialized_name="minDataStorageInTbs",
+                flags={"read_only": True},
+            )
+            properties.min_db_node_storage_per_node_in_gbs = AAZIntType(
+                serialized_name="minDbNodeStoragePerNodeInGbs",
+                flags={"read_only": True},
+            )
+            properties.min_memory_per_node_in_gbs = AAZIntType(
+                serialized_name="minMemoryPerNodeInGbs",
+                flags={"read_only": True},
+            )
+            properties.min_storage_count = AAZIntType(
+                serialized_name="minStorageCount",
+                flags={"read_only": True},
+            )
+            properties.minimum_core_count = AAZIntType(
+                serialized_name="minimumCoreCount",
+                flags={"read_only": True},
+            )
+            properties.minimum_node_count = AAZIntType(
+                serialized_name="minimumNodeCount",
+                flags={"read_only": True},
+            )
+            properties.runtime_minimum_core_count = AAZIntType(
+                serialized_name="runtimeMinimumCoreCount",
+                flags={"read_only": True},
+            )
+            properties.shape_family = AAZStrType(
+                serialized_name="shapeFamily",
                 flags={"read_only": True},
             )
 
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -265,8 +275,8 @@ class Wait(AAZWaitCommand):
             return cls._schema_on_200
 
 
-class _WaitHelper:
-    """Helper class for Wait"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["Wait"]
+__all__ = ["List"]

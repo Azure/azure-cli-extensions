@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "oracle-database cloud-vm-cluster db-node",
+    "oracle-database autonomous-database version",
 )
 class __CMDGroup(AAZCommandGroup):
-    """DB Nodes
+    """Autonomous Databases Version
     """
     pass
 

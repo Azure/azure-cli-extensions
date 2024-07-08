@@ -14,11 +14,11 @@ class OracleDatabaseAdbsScenario(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_odba_rg')
     def test_oracledatabase_adbs(self, resource_group):
         subscription_id = self.get_subscription_id()
-        self.cmd('az oracle-database autonomous-db-version list --location eastus ')
+        self.cmd('az oracle-database autonomous-database version list --location eastus ')
         self.cmd('az oracle-database gi-version list --location eastus ')
-        self.cmd('az oracle-database autonomous-database-character-set list --location eastus ')
-        self.cmd('az oracle-database autonomous-database-national-character-set list --location eastus ')
-        self.cmd('az oracle-database db-system-shape list --location eastus ')
+        self.cmd('az oracle-database autonomous-database character-set list --location eastus ')
+        self.cmd('az oracle-database autonomous-database national-character-set list --location eastus ')
+        self.cmd('az oracle-database database-system-shape list --location eastus ')
         self.cmd('az oracle-database dns-private-zone list --location eastus ')
         self.cmd('az oracle-database dns-private-view list --location eastus ')
         self.cmd('az oracle-database autonomous-database create --location eastus '

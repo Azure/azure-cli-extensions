@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "oracle-database autonomous-database-character-set",
+    "oracle-database autonomous-database character-set",
 )
 class __CMDGroup(AAZCommandGroup):
     """Autonomous Databases Character Set

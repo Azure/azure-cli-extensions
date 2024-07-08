@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "oracle-database autonomous-database autonomous-database-backup delete",
+    "oracle-database autonomous-database backup delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):

@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "oracle-database cloud-vm-cluster db-node action",
+    "oracle-database cloud-vm-cluster database-node action",
 )
 class Action(AAZCommand):
     """VM actions on DbNode of VM Cluster by the provided filter

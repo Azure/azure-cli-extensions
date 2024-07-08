@@ -36,7 +36,7 @@ class OracleDatabaseScenario(ScenarioTest):
                          '--name OFake_PowerShellTestExaInfra ')
         self.cmd('az oracle-database cloud-exadata-infrastructure list '
                           '--resource-group PowerShellTestRg ')
-        self.cmd('az oracle-database cloud-exadata-infrastructure db-server list '
+        self.cmd('az oracle-database cloud-exadata-infrastructure database-server list '
                           '--cloudexadatainfrastructurename OFake_PowerShellTestExaInfra '
                           '--resource-group PowerShellTestRg ')
         self.cmd('az oracle-database cloud-vm-cluster create '

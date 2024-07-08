@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "oracle-database autonomous-db-version",
+    "oracle-database autonomous-database backup",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Autonomous Databases Version
+    """Autonomous Databases Backup
     """
     pass
 

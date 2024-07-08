@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "oracle-database autonomous-database-national-character-set",
+    "oracle-database cloud-exadata-infrastructure database-server",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Autonomous Databases National Character Set
+    """Cloud Exadata Infrastructures - Database Servers
     """
     pass
 

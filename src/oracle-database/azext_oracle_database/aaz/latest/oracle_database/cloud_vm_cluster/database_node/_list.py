@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "oracle-database cloud-vm-cluster db-node list",
+    "oracle-database cloud-vm-cluster database-node list",
 )
 class List(AAZCommand):
     """List DbNode resources by CloudVmCluster

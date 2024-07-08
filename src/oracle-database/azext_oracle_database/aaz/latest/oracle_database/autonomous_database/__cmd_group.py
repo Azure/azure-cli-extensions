@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "oracle-database autonomous-database",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Autonomous Databases
+    """Oracle Autonomous Databases
     """
     pass
 

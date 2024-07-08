@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "oracle-database db-system-shape",
+    "oracle-database cloud-vm-cluster database-node",
 )
 class __CMDGroup(AAZCommandGroup):
-    """DB System Shapes
+    """Database Nodes
     """
     pass
 

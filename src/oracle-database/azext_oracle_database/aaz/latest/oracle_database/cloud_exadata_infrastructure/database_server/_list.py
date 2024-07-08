@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "oracle-database autonomous-db-version list",
+    "oracle-database cloud-exadata-infrastructure database-server list",
 )
 class List(AAZCommand):
-    """List AutonomousDbVersion resources by Location
+    """List DbServer resources by CloudExadataInfrastructure
     """
 
     _aaz_info = {
         "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/oracle.database/locations/{}/autonomousdbversions", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/oracle.database/cloudexadatainfrastructures/{}/dbservers", "2023-09-01"],
         ]
     }
 
@@ -42,14 +42,22 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
+        _args_schema.cloudexadatainfrastructurename = AAZStrArg(
+            options=["--cloudexadatainfrastructurename"],
+            help="CloudExadataInfrastructure name",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern=".*",
+            ),
+        )
+        _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.AutonomousDatabaseVersionsListByLocation(ctx=self.ctx)()
+        self.DbServersListByCloudExadataInfrastructure(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -65,7 +73,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class AutonomousDatabaseVersionsListByLocation(AAZHttpOperation):
+    class DbServersListByCloudExadataInfrastructure(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -79,7 +87,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Oracle.Database/locations/{location}/autonomousDbVersions",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Oracle.Database/cloudExadataInfrastructures/{cloudexadatainfrastructurename}/dbServers",
                 **self.url_parameters
             )
 
@@ -95,7 +103,11 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "location", self.ctx.args.location,
+                    "cloudexadatainfrastructurename", self.ctx.args.cloudexadatainfrastructurename,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -171,28 +183,107 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.db_workload = AAZStrType(
-                serialized_name="dbWorkload",
-            )
-            properties.is_default_for_free = AAZBoolType(
-                serialized_name="isDefaultForFree",
+            properties.autonomous_virtual_machine_ids = AAZListType(
+                serialized_name="autonomousVirtualMachineIds",
                 flags={"read_only": True},
             )
-            properties.is_default_for_paid = AAZBoolType(
-                serialized_name="isDefaultForPaid",
+            properties.autonomous_vm_cluster_ids = AAZListType(
+                serialized_name="autonomousVmClusterIds",
                 flags={"read_only": True},
             )
-            properties.is_free_tier_enabled = AAZBoolType(
-                serialized_name="isFreeTierEnabled",
+            properties.compartment_id = AAZStrType(
+                serialized_name="compartmentId",
+            )
+            properties.cpu_core_count = AAZIntType(
+                serialized_name="cpuCoreCount",
                 flags={"read_only": True},
             )
-            properties.is_paid_enabled = AAZBoolType(
-                serialized_name="isPaidEnabled",
+            properties.db_node_ids = AAZListType(
+                serialized_name="dbNodeIds",
                 flags={"read_only": True},
             )
-            properties.version = AAZStrType(
-                flags={"required": True, "read_only": True},
+            properties.db_node_storage_size_in_gbs = AAZIntType(
+                serialized_name="dbNodeStorageSizeInGbs",
+                flags={"read_only": True},
             )
+            properties.db_server_patching_details = AAZObjectType(
+                serialized_name="dbServerPatchingDetails",
+            )
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
+                flags={"read_only": True},
+            )
+            properties.exadata_infrastructure_id = AAZStrType(
+                serialized_name="exadataInfrastructureId",
+            )
+            properties.lifecycle_details = AAZStrType(
+                serialized_name="lifecycleDetails",
+                flags={"read_only": True},
+            )
+            properties.lifecycle_state = AAZStrType(
+                serialized_name="lifecycleState",
+            )
+            properties.max_cpu_count = AAZIntType(
+                serialized_name="maxCpuCount",
+                flags={"read_only": True},
+            )
+            properties.max_db_node_storage_in_gbs = AAZIntType(
+                serialized_name="maxDbNodeStorageInGbs",
+                flags={"read_only": True},
+            )
+            properties.max_memory_in_gbs = AAZIntType(
+                serialized_name="maxMemoryInGbs",
+                flags={"read_only": True},
+            )
+            properties.memory_size_in_gbs = AAZIntType(
+                serialized_name="memorySizeInGbs",
+                flags={"read_only": True},
+            )
+            properties.ocid = AAZStrType()
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.shape = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.time_created = AAZStrType(
+                serialized_name="timeCreated",
+                flags={"read_only": True},
+            )
+            properties.vm_cluster_ids = AAZListType(
+                serialized_name="vmClusterIds",
+                flags={"read_only": True},
+            )
+
+            autonomous_virtual_machine_ids = cls._schema_on_200.value.Element.properties.autonomous_virtual_machine_ids
+            autonomous_virtual_machine_ids.Element = AAZStrType()
+
+            autonomous_vm_cluster_ids = cls._schema_on_200.value.Element.properties.autonomous_vm_cluster_ids
+            autonomous_vm_cluster_ids.Element = AAZStrType()
+
+            db_node_ids = cls._schema_on_200.value.Element.properties.db_node_ids
+            db_node_ids.Element = AAZStrType()
+
+            db_server_patching_details = cls._schema_on_200.value.Element.properties.db_server_patching_details
+            db_server_patching_details.estimated_patch_duration = AAZIntType(
+                serialized_name="estimatedPatchDuration",
+                flags={"read_only": True},
+            )
+            db_server_patching_details.patching_status = AAZStrType(
+                serialized_name="patchingStatus",
+            )
+            db_server_patching_details.time_patching_ended = AAZStrType(
+                serialized_name="timePatchingEnded",
+                flags={"read_only": True},
+            )
+            db_server_patching_details.time_patching_started = AAZStrType(
+                serialized_name="timePatchingStarted",
+                flags={"read_only": True},
+            )
+
+            vm_cluster_ids = cls._schema_on_200.value.Element.properties.vm_cluster_ids
+            vm_cluster_ids.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
