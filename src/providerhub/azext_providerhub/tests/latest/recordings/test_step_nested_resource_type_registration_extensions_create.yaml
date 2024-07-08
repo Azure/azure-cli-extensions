@@ -1,0 +1,60 @@
+interactions:
+- request:
+    body: '{"kind": "Managed", "properties": {"enableAsyncOperation": false, "endpoints":
+      [{"apiVersions": ["2019-01-01"], "extensions": [{"endpointUri": "https://contoso-test-extension-endpoint.com",
+      "extensionCategories": ["ResourceReadValidate", "ResourceDeletionValidate"]}],
+      "locations": ["WestUS"]}], "regionality": "Regional", "routingType": "ProxyOnly",
+      "templateDeploymentOptions": {"preflightOptions": ["DefaultValidationOnly",
+      "ContinueDeploymentOnFailure"], "preflightSupported": true}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub resource-type-registration create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '488'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --endpoints --regionality --routing-type --provider-namespace --enable-async-operation
+        --template-deployment-options --resource-type
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourcetypeRegistrations/employees%2Fresourcetyperegistrations%2FnestedResourceType?api-version=2024-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"name":"employees/nestedResourceType","routingType":"ProxyOnly","regionality":"Regional","endpoints":[{"kind":"Managed","extensions":[{"endpointUri":"https://contoso-test-extension-endpoint.com","extensionCategories":["ResourceReadValidate","ResourceDeletionValidate"]}],"apiVersions":["2019-01-01"],"locations":["WestUS"]}],"defaultApiVersion":"2019-01-01","enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"templateDeploymentOptions":{"preflightSupported":true,"preflightOptions":["DefaultValidationOnly","ContinueDeploymentOnFailure"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourceTypeRegistrations/employees/resourceTypeRegistrations/nestedResourceType","type":"Microsoft.ProviderHub/providerRegistrations/resourceTypeRegistrations","name":"employees/nestedResourceType","kind":"Managed","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-06-05T23:47:12.9041223Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-06T00:14:18.3760935Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1179'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 06 Jun 2024 00:14:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/740bdb4d-b870-4526-b296-dffe9e9035fc
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1194'
+      x-msedge-ref:
+      - 'Ref A: D7C9F166186F4B7DA31DDF30FCD6F545 Ref B: DM2AA1091214031 Ref C: 2024-06-06T00:14:18Z'
+    status:
+      code: 200
+      message: OK
+version: 1
