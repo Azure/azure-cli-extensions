@@ -648,7 +648,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         _call_az_command(update_ip_command)
         
          # Wait for IP updated
-        wait_ip_update_command = 'az network nic ip-config wait --updatede -g {g} --nic-name {nic} -n ' \
+        wait_ip_update_command = 'az network nic ip-config wait ----updated -g {g} --nic-name {nic} -n ' \
                                 .format(g=resource_group_name, nic=primary_nic_name)
         
         current_ip_address = _call_az_command(wait_ip_update_command)
