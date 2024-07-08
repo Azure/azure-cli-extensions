@@ -618,9 +618,11 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
             for item in ip_config_object[applicationSecurityGroups]:
                 application_id_tokens = item['id'].split('/')
                 if application_id_tokens[-1] is not None:
+
                     application_names+=application_id_tokens[-1]+ " "
-            logger.info('applicationSecurityGroups {application_names}...\n')    
-        
+                    
+        logger.info('applicationSecurityGroups {application_names}...\n')
+
         
         # Dynamic | Static
         orig_ip_allocation_method = ip_config_object['privateIPAllocationMethod']
@@ -644,7 +646,20 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
             update_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip}' \
                                 .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address)
         _call_az_command(update_ip_command)
-
+            # Check if IP is updated
+    while True:
+        get_current_ip_command = 'az network nic ip-config wait --updatede -g {g} --nic-name {nic} -n ' \
+                                .format(g=resource_group_name, nic=primary_nic_name)
+        
+        current_ip_address = _call_az_command(get_current_ip_command)
+        if current_ip_address == swap_ip_address:
+            logger.info('IP address updated successfully to {ip}\n'.format(ip=swap_ip_address))
+            break
+        else:
+            logger.info('IP address not updated yet. Waiting for a few minutes before retrying...\n')
+            time.sleep(300)
+            # Sleep for 5 minutes 
+            
         # 4) Change things back. This will also invoke and wait for a VM restart.
         logger.info('NIC reset is complete. Now reverting back to your original configuration...\n')
         # If user had dynamic config, change back to dynamic
