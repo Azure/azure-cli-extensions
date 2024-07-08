@@ -18,7 +18,7 @@ class ExportSpecification(AAZCommand):
     """Exports the API specification.
 
     :example: Export Specification
-        az apic api version definition export-specification -g api-center-test -s contosoeuap --api-id echo-api --version-id 2023-01-01 --definition-id default
+        az apic api definition export-specification -g api-center-test -n contosoeuap --api-id echo-api --version-id 2023-01-01 --definition-id default --file-name filename.json
     """
 
     _aaz_info = {
@@ -71,8 +71,8 @@ class ExportSpecification(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-n", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
