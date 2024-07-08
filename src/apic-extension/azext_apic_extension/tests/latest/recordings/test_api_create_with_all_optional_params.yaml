@@ -1,0 +1,69 @@
+interactions:
+- request:
+    body: '{"properties": {"contacts": [{"email": "contact@example.com", "name": "test",
+      "url": "example.com"}], "customProperties": {"clitest000003": true}, "description":
+      "API description", "externalDocumentation": [{"title": "onboarding docs", "url":
+      "example.com"}], "kind": "rest", "license": {"url": "example.com"}, "summary":
+      "summary", "title": "test api"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic api create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '354'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --api-id --title --type --contacts --custom-properties --description
+        --external-documentation --license --summary
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/cli000004?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services/workspaces/apis","properties":{"title":"test
+        api","summary":"summary","description":"API description","kind":"rest","license":{"url":"example.com"},"externalDocumentation":[{"title":"onboarding
+        docs","url":"example.com"}],"contacts":[{"name":"test","url":"example.com","email":"contact@example.com"}],"customProperties":{"clitest000003":true}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/workspaces/default/apis/cli000004","name":"cli000004","systemData":{"createdAt":"2024-06-17T06:01:05.6377877Z","lastModifiedAt":"2024-06-17T06:01:05.6377761Z"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '680'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 17 Jun 2024 06:01:05 GMT
+      etag:
+      - da020b9a-0000-0100-0000-666fd1210000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 65463DBC175045639714FEB0384BB4EF Ref B: MAA201060513047 Ref C: 2024-06-17T06:01:04Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

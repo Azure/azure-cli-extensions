@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a new network manager connectivity configuration
 
     :example: Create/Update Azure Virtual Network Manager Connectivity Configuration
-        az network manager connect-config create --configuration-name "myTestConnectivityConfig" --description "Sample Configuration" --applies-to-groups group-connectivity="None" is-global=false network-group-id="/subscriptions/subscriptionA/resourceGroups/myResourceGroup/providers/Microsoft.Network/networkManagers/testNetworkManager/networkManagerGroups/group1" use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub resource-id="subscriptions/subscriptionA/resourceGroups/myResourceGroup/providers/Micr osoft.Network/virtualNetworks/myTestConnectivityConfig" resource- type="Microsoft.Network/virtualNetworks" --is-global true --network-manager-name "testNetworkManager" --resource-group "myResourceGroup"
+        az network manager connect-config create --configuration-name "myTestConnectivityConfig" --description "Sample Configuration" --applies-to-group group-connectivity="None" is-global=false network-group-id="/subscriptions/subscriptionA/resourceGroups/myResourceGroup/providers/Microsoft.Network/networkManagers/testNetworkManager/networkManagerGroups/group1" use-hub-gateway=true --connectivity-topology "HubAndSpoke" --delete-existing-peering true --hub resource-id="subscriptions/subscriptionA/resourceGroups/myResourceGroup/providers/Micr osoft.Network/virtualNetworks/myTestConnectivityConfig" resource- type="Microsoft.Network/virtualNetworks" --is-global true --network-manager-name "testNetworkManager" --resource-group "myResourceGroup"
     """
 
     _aaz_info = {
@@ -63,6 +63,7 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.applies_to_groups = AAZListArg(
             options=["--applies-to-groups"],
+            singular_options=["--applies-to-group"],
             arg_group="Properties",
             help="Groups for configuration",
         )
@@ -85,6 +86,7 @@ class Create(AAZCommand):
         )
         _args_schema.hubs = AAZListArg(
             options=["--hubs"],
+            singular_options=["--hub"],
             arg_group="Properties",
             help="List of hubItems",
         )

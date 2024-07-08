@@ -11,38 +11,158 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --scope --filter
+      - --filter
       User-Agent:
-      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/discoverySolutions?$filter=ProblemClassificationId%20eq%20%2700000000-0000-0000-0000-000000000000%27&api-version=2023-09-01-preview
+    uri: https://management.azure.com/providers/Microsoft.Help/discoverySolutions?$filter=ProblemClassificationId%20eq%20%2700000000-0000-0000-0000-000000000000%27&api-version=2024-03-01-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.KeyVault/vaults/clitest000002/providers/Microsoft.Help/discoverySolutions/00000000-0000-0000-0000-000000000000","name":"00000000-0000-0000-0000-000000000000","type":"Microsoft.Help/discoverySolutions","properties":{"solutions":[{"solutionId":"StorageFailureTransactionInsight","solutionType":"Diagnostics","description":"Analyze
+      string: '{"value":[{"id":"/providers/Microsoft.Help/discoverySolutions/00000000-0000-0000-0000-000000000000","name":"00000000-0000-0000-0000-000000000000","type":"Microsoft.Help/discoverySolutions","properties":{"solutions":[{"solutionId":"StorageFailureTransactionInsight","solutionType":"Diagnostics","description":"Analyze
         storage failure transaction details","requiredInputs":["SapId","ResourceUri"]}]}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '533'
+      - '400'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 13 Oct 2023 16:57:03 GMT
+      - Tue, 14 May 2024 16:49:26 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 115CEDE1D7774B30BEEF5250C09BCC98 Ref B: MNZ221060619051 Ref C: 2024-05-14T16:49:27Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"IssueSummary": "I am not able to make rdp connection to the virtual machine",
+      "ServiceId": "6f16735c-b0ae-b275-ad3a-03479cfa1396"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help discovery-solution list-nlp
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '132'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --issue-summary --service-id
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Help/discoverSolutions?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/Microsoft.Help/discoverSolutions/92c2396d-b703-973f-1bca-2eea9425b21a","name":"92c2396d-b703-973f-1bca-2eea9425b21a","type":"Microsoft.Help/discoverSolutions","properties":{"problemClassificationId":"/providers/Microsoft.Support/services/6f16735c-b0ae-b275-ad3a-03479cfa1396/problemClassifications/92c2396d-b703-973f-1bca-2eea9425b21a","problemTitle":"Failure
+        to connect using RDP or SSH port","problemDescription":"Resolve issues related
+        to connecting via RDP or SSH not covered by other support topics","serviceId":"/providers/Microsoft.Support/services/6f16735c-b0ae-b275-ad3a-03479cfa1396","solutions":[{"solutionId":"1eee39b5-9658-4d27-bae9-131ce7cd47b0","solutionType":"SelfHelp","description":"Resolve
+        connectivity issues with your Windows VM","requiredInputs":[]},{"solutionId":"fa8c0cce-6458-403e-9df2-edd74afa2c19","solutionType":"Troubleshooters","description":"This
+        troubleshooter will guide to identify the root cause of VM Unavailable scenarios","requiredInputs":[]},{"solutionId":"39ce65d2-51b4-4068-af7e-4c245c9e5d2b","solutionType":"Troubleshooters","description":"This
+        guided troubleshooter will allow you to self-diagnose and resolve your performance
+        issue by checking for performance bottlenecks and guest OS configuration issues.
+        ","requiredInputs":[]}]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1306'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 14 May 2024 16:49:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 5AF27BE406304B0BB3E77178C89FD909 Ref B: MNZ221060618051 Ref C: 2024-05-14T16:49:27Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"IssueSummary": "I am not able to make rdp connection to the virtual machine",
+      "ServiceId": "6f16735c-b0ae-b275-ad3a-03479cfa1396"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - self-help discovery-solution list-nlp-subscription
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '132'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --issue-summary --service-id --subscription-id
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.0 (Windows-10-10.0.22621-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Help/discoverSolutions?api-version=2024-03-01-preview
+  response:
+    body:
+      string: '{"value":[{"id":"subscriptions/6bded6d5-a6af-43e1-96d3-bf71f6f5f8ba/providers/Microsoft.Help/discoverSolutions/92c2396d-b703-973f-1bca-2eea9425b21a","name":"92c2396d-b703-973f-1bca-2eea9425b21a","type":"Microsoft.Help/discoverSolutions","properties":{"problemClassificationId":"/providers/Microsoft.Support/services/6f16735c-b0ae-b275-ad3a-03479cfa1396/problemClassifications/92c2396d-b703-973f-1bca-2eea9425b21a","problemTitle":"Failure
+        to connect using RDP or SSH port","problemDescription":"Resolve issues related
+        to connecting via RDP or SSH not covered by other support topics","serviceId":"/providers/Microsoft.Support/services/6f16735c-b0ae-b275-ad3a-03479cfa1396","solutions":[{"solutionId":"1eee39b5-9658-4d27-bae9-131ce7cd47b0","solutionType":"SelfHelp","description":"Resolve
+        connectivity issues with your Windows VM","requiredInputs":[]},{"solutionId":"fa8c0cce-6458-403e-9df2-edd74afa2c19","solutionType":"Troubleshooters","description":"This
+        troubleshooter will guide to identify the root cause of VM Unavailable scenarios","requiredInputs":[]},{"solutionId":"39ce65d2-51b4-4068-af7e-4c245c9e5d2b","solutionType":"Troubleshooters","description":"This
+        guided troubleshooter will allow you to self-diagnose and resolve your performance
+        issue by checking for performance bottlenecks and guest OS configuration issues.
+        ","requiredInputs":[]}]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1356'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 14 May 2024 16:49:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: A115744AFEB0425B8CB59A38F305166A Ref B: MNZ221060608053 Ref C: 2024-05-14T16:49:29Z'
       x-powered-by:
       - ASP.NET
     status:

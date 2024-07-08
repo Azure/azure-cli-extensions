@@ -262,7 +262,7 @@ def create_extension_and_custom_location(test_cls, resource_group, connected_clu
         connected_cluster_id = connected_cluster.get('id')
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus2euap"
+            location = "eastus"
         extension = test_cls.cmd(f'az k8s-extension create'
                                  f' --resource-group {resource_group}'
                                  f' --name containerapp-ext'
@@ -485,6 +485,26 @@ def create_and_verify_containerapp_create_and_update(
             JMESPathCheck('length(@)', 0),
         ])
 
+def create_and_verify_containerapp_create_and_update_env_vars(test_cls, resource_group, name, source_path):
+    # Ensure that the Container App environment is created
+    env_name = test_cls.create_random_name(prefix='env', length=24)
+    create_containerapp_env(test_cls=test_cls, resource_group=resource_group, env_name=env_name)
+
+    # Create and verify Container App using cloud build
+    test_cls.cmd(f'containerapp create -g {resource_group} -n {name} --environment {env_name} --source \"{source_path}\" --env-vars "testkey1=value1" "testkey2=value2"')
+    test_cls.cmd(f'containerapp show -g {resource_group} -n {name}', checks=[
+        JMESPathCheck('properties.template.containers[0].env', [{'name': 'testkey1', 'value': 'value1'}, {'name': 'testkey2', 'value': 'value2'}])
+    ])
+
+    # Update and verify Container App using cloud build
+    test_cls.cmd(f'containerapp update -g {resource_group} -n {name} --source \"{source_path}\"')
+    test_cls.cmd(f'containerapp show -g {resource_group} -n {name}', checks=[
+        JMESPathCheck('properties.template.containers[0].name', name),
+        JMESPathCheck('properties.template.containers[0].env', [{'name': 'testkey1', 'value': 'value1'}, {'name': 'testkey2', 'value': 'value2'}])
+    ])
+
+    # Delete the Container App
+    test_cls.cmd('containerapp delete -g {} -n {} --yes'.format(resource_group, name))
 
 def _reformat_image(image):
     image = image.split("/")[-1]

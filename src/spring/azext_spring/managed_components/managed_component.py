@@ -2,32 +2,31 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
 from knack.util import CLIError
-from azure.core.exceptions import ResourceNotFoundError
+
 from ..application_configuration_service import DEFAULT_NAME as ACS_DEFAULT_NAME
 from ..gateway import DEFAULT_NAME as SCG_DEFAULT_NAME
 
-
 logger = get_logger(__name__)
-
 
 # Acs
 ACS = "application-configuration-service"
 ACS_INSTANCE_PREFIX = "application-configuration-service"
 
-
 # Flux
 FLUX = "flux-source-controller"
 FLUX_INSTANCE_PREFIX = "fluxcd-source-controller"
 
-
 # Scg
 SCG = "spring-cloud-gateway"
 
-
 # Scg operator
 SCG_OPERATOR = "spring-cloud-gateway-operator"
+
+# OSS Config Server
+CONFIG_SERVER = "config-server"
 
 
 class ManagedComponentInstance:  # pylint: disable=too-few-public-methods
@@ -158,11 +157,34 @@ class ScgOperator(ManagedComponent):
         return instances
 
 
+class ConfigServer(ManagedComponent):
+    def __init__(self):
+        super().__init__(CONFIG_SERVER)
+
+    def list_instances(self, client, resource_group, service):
+        try:
+            return self._list_instances(client, resource_group, service)
+        except ResourceNotFoundError:
+            raise CLIError("Failed to perform operations when Config Server is not enabled.")
+
+    def _list_instances(self, client, resource_group, service):
+        config_server_arm_resource = client.config_servers.get(resource_group, service)
+        instance_array = config_server_arm_resource.properties.instances
+        instances = []
+        if instance_array is not None and len(instance_array) > 0:
+            for i in instance_array:
+                instances.append(ManagedComponentInstance(i.name))
+        if len(instances) == 0:
+            logger.warning("No instance found for component {}.".format(self.name))
+        return instances
+
+
 supported_components = [
     Acs(),
     Flux(),
     Scg(),
     ScgOperator(),
+    ConfigServer(),
 ]
 
 

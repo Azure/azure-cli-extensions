@@ -25,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-06-01",
+        "version": "2023-03-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.insights/datacollectionrules", "2022-06-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.insights/datacollectionrules", "2022-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.insights/datacollectionrules", "2023-03-11"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.insights/datacollectionrules", "2023-03-11"],
         ]
     }
 
@@ -119,7 +119,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-06-01",
+                    "api-version", "2023-03-11",
                     required=True,
                 ),
             }
@@ -221,6 +221,9 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.agent_settings = AAZObjectType(
+                serialized_name="agentSettings",
+            )
             properties.data_collection_endpoint_id = AAZStrType(
                 serialized_name="dataCollectionEndpointId",
             )
@@ -232,6 +235,9 @@ class List(AAZCommand):
             )
             properties.description = AAZStrType()
             properties.destinations = AAZObjectType()
+            properties.endpoints = AAZObjectType(
+                flags={"read_only": True},
+            )
             properties.immutable_id = AAZStrType(
                 serialized_name="immutableId",
                 flags={"read_only": True},
@@ -243,9 +249,20 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.references = AAZObjectType()
             properties.stream_declarations = AAZDictType(
                 serialized_name="streamDeclarations",
             )
+
+            agent_settings = cls._schema_on_200.value.Element.properties.agent_settings
+            agent_settings.logs = AAZListType()
+
+            logs = cls._schema_on_200.value.Element.properties.agent_settings.logs
+            logs.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.agent_settings.logs.Element
+            _element.name = AAZStrType()
+            _element.value = AAZStrType()
 
             data_flows = cls._schema_on_200.value.Element.properties.data_flows
             data_flows.Element = AAZObjectType()
@@ -253,6 +270,9 @@ class List(AAZCommand):
             _element = cls._schema_on_200.value.Element.properties.data_flows.Element
             _element.built_in_transform = AAZStrType(
                 serialized_name="builtInTransform",
+            )
+            _element.capture_overflow = AAZBoolType(
+                serialized_name="captureOverflow",
             )
             _element.destinations = AAZListType()
             _element.output_stream = AAZStrType(
@@ -317,7 +337,7 @@ class List(AAZCommand):
                 serialized_name="extensionName",
                 flags={"required": True},
             )
-            _element.extension_settings = AAZObjectType(
+            _element.extension_settings = AAZFreeFormDictType(
                 serialized_name="extensionSettings",
             )
             _element.input_data_sources = AAZListType(
@@ -343,6 +363,9 @@ class List(AAZCommand):
             _element.streams = AAZListType(
                 flags={"required": True},
             )
+            _element.transform_kql = AAZStrType(
+                serialized_name="transformKql",
+            )
 
             log_directories = cls._schema_on_200.value.Element.properties.data_sources.iis_logs.Element.log_directories
             log_directories.Element = AAZStrType()
@@ -365,6 +388,9 @@ class List(AAZCommand):
             _element.settings = AAZObjectType()
             _element.streams = AAZListType(
                 flags={"required": True},
+            )
+            _element.transform_kql = AAZStrType(
+                serialized_name="transformKql",
             )
 
             file_patterns = cls._schema_on_200.value.Element.properties.data_sources.log_files.Element.file_patterns
@@ -394,6 +420,9 @@ class List(AAZCommand):
                 serialized_name="samplingFrequencyInSeconds",
             )
             _element.streams = AAZListType()
+            _element.transform_kql = AAZStrType(
+                serialized_name="transformKql",
+            )
 
             counter_specifiers = cls._schema_on_200.value.Element.properties.data_sources.performance_counters.Element.counter_specifiers
             counter_specifiers.Element = AAZStrType()
@@ -441,6 +470,9 @@ class List(AAZCommand):
             )
             _element.name = AAZStrType()
             _element.streams = AAZListType()
+            _element.transform_kql = AAZStrType(
+                serialized_name="transformKql",
+            )
 
             facility_names = cls._schema_on_200.value.Element.properties.data_sources.syslog.Element.facility_names
             facility_names.Element = AAZStrType()
@@ -457,6 +489,9 @@ class List(AAZCommand):
             _element = cls._schema_on_200.value.Element.properties.data_sources.windows_event_logs.Element
             _element.name = AAZStrType()
             _element.streams = AAZListType()
+            _element.transform_kql = AAZStrType(
+                serialized_name="transformKql",
+            )
             _element.x_path_queries = AAZListType(
                 serialized_name="xPathQueries",
             )
@@ -472,14 +507,23 @@ class List(AAZCommand):
 
             _element = cls._schema_on_200.value.Element.properties.data_sources.windows_firewall_logs.Element
             _element.name = AAZStrType()
+            _element.profile_filter = AAZListType(
+                serialized_name="profileFilter",
+            )
             _element.streams = AAZListType(
                 flags={"required": True},
             )
+
+            profile_filter = cls._schema_on_200.value.Element.properties.data_sources.windows_firewall_logs.Element.profile_filter
+            profile_filter.Element = AAZStrType()
 
             streams = cls._schema_on_200.value.Element.properties.data_sources.windows_firewall_logs.Element.streams
             streams.Element = AAZStrType()
 
             destinations = cls._schema_on_200.value.Element.properties.destinations
+            destinations.azure_data_explorer = AAZListType(
+                serialized_name="azureDataExplorer",
+            )
             destinations.azure_monitor_metrics = AAZObjectType(
                 serialized_name="azureMonitorMetrics",
             )
@@ -492,6 +536,9 @@ class List(AAZCommand):
             destinations.log_analytics = AAZListType(
                 serialized_name="logAnalytics",
             )
+            destinations.microsoft_fabric = AAZListType(
+                serialized_name="microsoftFabric",
+            )
             destinations.monitoring_accounts = AAZListType(
                 serialized_name="monitoringAccounts",
             )
@@ -503,6 +550,22 @@ class List(AAZCommand):
             )
             destinations.storage_tables_direct = AAZListType(
                 serialized_name="storageTablesDirect",
+            )
+
+            azure_data_explorer = cls._schema_on_200.value.Element.properties.destinations.azure_data_explorer
+            azure_data_explorer.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.destinations.azure_data_explorer.Element
+            _element.database_name = AAZStrType(
+                serialized_name="databaseName",
+            )
+            _element.ingestion_uri = AAZStrType(
+                serialized_name="ingestionUri",
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType()
+            _element.resource_id = AAZStrType(
+                serialized_name="resourceId",
             )
 
             azure_monitor_metrics = cls._schema_on_200.value.Element.properties.destinations.azure_monitor_metrics
@@ -539,6 +602,24 @@ class List(AAZCommand):
                 serialized_name="workspaceResourceId",
             )
 
+            microsoft_fabric = cls._schema_on_200.value.Element.properties.destinations.microsoft_fabric
+            microsoft_fabric.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.destinations.microsoft_fabric.Element
+            _element.artifact_id = AAZStrType(
+                serialized_name="artifactId",
+            )
+            _element.database_name = AAZStrType(
+                serialized_name="databaseName",
+            )
+            _element.ingestion_uri = AAZStrType(
+                serialized_name="ingestionUri",
+            )
+            _element.name = AAZStrType()
+            _element.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+            )
+
             monitoring_accounts = cls._schema_on_200.value.Element.properties.destinations.monitoring_accounts
             monitoring_accounts.Element = AAZObjectType()
 
@@ -572,14 +653,53 @@ class List(AAZCommand):
                 serialized_name="tableName",
             )
 
+            endpoints = cls._schema_on_200.value.Element.properties.endpoints
+            endpoints.logs_ingestion = AAZStrType(
+                serialized_name="logsIngestion",
+                flags={"read_only": True},
+            )
+            endpoints.metrics_ingestion = AAZStrType(
+                serialized_name="metricsIngestion",
+                flags={"read_only": True},
+            )
+
             metadata = cls._schema_on_200.value.Element.properties.metadata
             metadata.provisioned_by = AAZStrType(
                 serialized_name="provisionedBy",
                 flags={"read_only": True},
             )
+            metadata.provisioned_by_immutable_id = AAZStrType(
+                serialized_name="provisionedByImmutableId",
+                flags={"read_only": True},
+            )
             metadata.provisioned_by_resource_id = AAZStrType(
                 serialized_name="provisionedByResourceId",
                 flags={"read_only": True},
+            )
+
+            references = cls._schema_on_200.value.Element.properties.references
+            references.enrichment_data = AAZObjectType(
+                serialized_name="enrichmentData",
+            )
+
+            enrichment_data = cls._schema_on_200.value.Element.properties.references.enrichment_data
+            enrichment_data.storage_blobs = AAZListType(
+                serialized_name="storageBlobs",
+            )
+
+            storage_blobs = cls._schema_on_200.value.Element.properties.references.enrichment_data.storage_blobs
+            storage_blobs.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.references.enrichment_data.storage_blobs.Element
+            _element.blob_url = AAZStrType(
+                serialized_name="blobUrl",
+            )
+            _element.lookup_type = AAZStrType(
+                serialized_name="lookupType",
+            )
+            _element.name = AAZStrType()
+            _element.resource_id = AAZStrType(
+                serialized_name="resourceId",
             )
 
             stream_declarations = cls._schema_on_200.value.Element.properties.stream_declarations
@@ -660,7 +780,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-06-01",
+                    "api-version", "2023-03-11",
                     required=True,
                 ),
             }
@@ -762,6 +882,9 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.agent_settings = AAZObjectType(
+                serialized_name="agentSettings",
+            )
             properties.data_collection_endpoint_id = AAZStrType(
                 serialized_name="dataCollectionEndpointId",
             )
@@ -773,6 +896,9 @@ class List(AAZCommand):
             )
             properties.description = AAZStrType()
             properties.destinations = AAZObjectType()
+            properties.endpoints = AAZObjectType(
+                flags={"read_only": True},
+            )
             properties.immutable_id = AAZStrType(
                 serialized_name="immutableId",
                 flags={"read_only": True},
@@ -784,9 +910,20 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.references = AAZObjectType()
             properties.stream_declarations = AAZDictType(
                 serialized_name="streamDeclarations",
             )
+
+            agent_settings = cls._schema_on_200.value.Element.properties.agent_settings
+            agent_settings.logs = AAZListType()
+
+            logs = cls._schema_on_200.value.Element.properties.agent_settings.logs
+            logs.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.agent_settings.logs.Element
+            _element.name = AAZStrType()
+            _element.value = AAZStrType()
 
             data_flows = cls._schema_on_200.value.Element.properties.data_flows
             data_flows.Element = AAZObjectType()
@@ -794,6 +931,9 @@ class List(AAZCommand):
             _element = cls._schema_on_200.value.Element.properties.data_flows.Element
             _element.built_in_transform = AAZStrType(
                 serialized_name="builtInTransform",
+            )
+            _element.capture_overflow = AAZBoolType(
+                serialized_name="captureOverflow",
             )
             _element.destinations = AAZListType()
             _element.output_stream = AAZStrType(
@@ -858,7 +998,7 @@ class List(AAZCommand):
                 serialized_name="extensionName",
                 flags={"required": True},
             )
-            _element.extension_settings = AAZObjectType(
+            _element.extension_settings = AAZFreeFormDictType(
                 serialized_name="extensionSettings",
             )
             _element.input_data_sources = AAZListType(
@@ -884,6 +1024,9 @@ class List(AAZCommand):
             _element.streams = AAZListType(
                 flags={"required": True},
             )
+            _element.transform_kql = AAZStrType(
+                serialized_name="transformKql",
+            )
 
             log_directories = cls._schema_on_200.value.Element.properties.data_sources.iis_logs.Element.log_directories
             log_directories.Element = AAZStrType()
@@ -906,6 +1049,9 @@ class List(AAZCommand):
             _element.settings = AAZObjectType()
             _element.streams = AAZListType(
                 flags={"required": True},
+            )
+            _element.transform_kql = AAZStrType(
+                serialized_name="transformKql",
             )
 
             file_patterns = cls._schema_on_200.value.Element.properties.data_sources.log_files.Element.file_patterns
@@ -935,6 +1081,9 @@ class List(AAZCommand):
                 serialized_name="samplingFrequencyInSeconds",
             )
             _element.streams = AAZListType()
+            _element.transform_kql = AAZStrType(
+                serialized_name="transformKql",
+            )
 
             counter_specifiers = cls._schema_on_200.value.Element.properties.data_sources.performance_counters.Element.counter_specifiers
             counter_specifiers.Element = AAZStrType()
@@ -982,6 +1131,9 @@ class List(AAZCommand):
             )
             _element.name = AAZStrType()
             _element.streams = AAZListType()
+            _element.transform_kql = AAZStrType(
+                serialized_name="transformKql",
+            )
 
             facility_names = cls._schema_on_200.value.Element.properties.data_sources.syslog.Element.facility_names
             facility_names.Element = AAZStrType()
@@ -998,6 +1150,9 @@ class List(AAZCommand):
             _element = cls._schema_on_200.value.Element.properties.data_sources.windows_event_logs.Element
             _element.name = AAZStrType()
             _element.streams = AAZListType()
+            _element.transform_kql = AAZStrType(
+                serialized_name="transformKql",
+            )
             _element.x_path_queries = AAZListType(
                 serialized_name="xPathQueries",
             )
@@ -1013,14 +1168,23 @@ class List(AAZCommand):
 
             _element = cls._schema_on_200.value.Element.properties.data_sources.windows_firewall_logs.Element
             _element.name = AAZStrType()
+            _element.profile_filter = AAZListType(
+                serialized_name="profileFilter",
+            )
             _element.streams = AAZListType(
                 flags={"required": True},
             )
+
+            profile_filter = cls._schema_on_200.value.Element.properties.data_sources.windows_firewall_logs.Element.profile_filter
+            profile_filter.Element = AAZStrType()
 
             streams = cls._schema_on_200.value.Element.properties.data_sources.windows_firewall_logs.Element.streams
             streams.Element = AAZStrType()
 
             destinations = cls._schema_on_200.value.Element.properties.destinations
+            destinations.azure_data_explorer = AAZListType(
+                serialized_name="azureDataExplorer",
+            )
             destinations.azure_monitor_metrics = AAZObjectType(
                 serialized_name="azureMonitorMetrics",
             )
@@ -1033,6 +1197,9 @@ class List(AAZCommand):
             destinations.log_analytics = AAZListType(
                 serialized_name="logAnalytics",
             )
+            destinations.microsoft_fabric = AAZListType(
+                serialized_name="microsoftFabric",
+            )
             destinations.monitoring_accounts = AAZListType(
                 serialized_name="monitoringAccounts",
             )
@@ -1044,6 +1211,22 @@ class List(AAZCommand):
             )
             destinations.storage_tables_direct = AAZListType(
                 serialized_name="storageTablesDirect",
+            )
+
+            azure_data_explorer = cls._schema_on_200.value.Element.properties.destinations.azure_data_explorer
+            azure_data_explorer.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.destinations.azure_data_explorer.Element
+            _element.database_name = AAZStrType(
+                serialized_name="databaseName",
+            )
+            _element.ingestion_uri = AAZStrType(
+                serialized_name="ingestionUri",
+                flags={"read_only": True},
+            )
+            _element.name = AAZStrType()
+            _element.resource_id = AAZStrType(
+                serialized_name="resourceId",
             )
 
             azure_monitor_metrics = cls._schema_on_200.value.Element.properties.destinations.azure_monitor_metrics
@@ -1080,6 +1263,24 @@ class List(AAZCommand):
                 serialized_name="workspaceResourceId",
             )
 
+            microsoft_fabric = cls._schema_on_200.value.Element.properties.destinations.microsoft_fabric
+            microsoft_fabric.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.destinations.microsoft_fabric.Element
+            _element.artifact_id = AAZStrType(
+                serialized_name="artifactId",
+            )
+            _element.database_name = AAZStrType(
+                serialized_name="databaseName",
+            )
+            _element.ingestion_uri = AAZStrType(
+                serialized_name="ingestionUri",
+            )
+            _element.name = AAZStrType()
+            _element.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+            )
+
             monitoring_accounts = cls._schema_on_200.value.Element.properties.destinations.monitoring_accounts
             monitoring_accounts.Element = AAZObjectType()
 
@@ -1113,14 +1314,53 @@ class List(AAZCommand):
                 serialized_name="tableName",
             )
 
+            endpoints = cls._schema_on_200.value.Element.properties.endpoints
+            endpoints.logs_ingestion = AAZStrType(
+                serialized_name="logsIngestion",
+                flags={"read_only": True},
+            )
+            endpoints.metrics_ingestion = AAZStrType(
+                serialized_name="metricsIngestion",
+                flags={"read_only": True},
+            )
+
             metadata = cls._schema_on_200.value.Element.properties.metadata
             metadata.provisioned_by = AAZStrType(
                 serialized_name="provisionedBy",
                 flags={"read_only": True},
             )
+            metadata.provisioned_by_immutable_id = AAZStrType(
+                serialized_name="provisionedByImmutableId",
+                flags={"read_only": True},
+            )
             metadata.provisioned_by_resource_id = AAZStrType(
                 serialized_name="provisionedByResourceId",
                 flags={"read_only": True},
+            )
+
+            references = cls._schema_on_200.value.Element.properties.references
+            references.enrichment_data = AAZObjectType(
+                serialized_name="enrichmentData",
+            )
+
+            enrichment_data = cls._schema_on_200.value.Element.properties.references.enrichment_data
+            enrichment_data.storage_blobs = AAZListType(
+                serialized_name="storageBlobs",
+            )
+
+            storage_blobs = cls._schema_on_200.value.Element.properties.references.enrichment_data.storage_blobs
+            storage_blobs.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.references.enrichment_data.storage_blobs.Element
+            _element.blob_url = AAZStrType(
+                serialized_name="blobUrl",
+            )
+            _element.lookup_type = AAZStrType(
+                serialized_name="lookupType",
+            )
+            _element.name = AAZStrType()
+            _element.resource_id = AAZStrType(
+                serialized_name="resourceId",
             )
 
             stream_declarations = cls._schema_on_200.value.Element.properties.stream_declarations

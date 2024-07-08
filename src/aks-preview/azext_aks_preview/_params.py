@@ -73,6 +73,7 @@ from azext_aks_preview._consts import (
     CONST_NODE_OS_CHANNEL_UNMANAGED,
     CONST_NODEPOOL_MODE_SYSTEM,
     CONST_NODEPOOL_MODE_USER,
+    CONST_NODEPOOL_MODE_GATEWAY,
     CONST_NONE_UPGRADE_CHANNEL,
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_READONLY,
     CONST_NRG_LOCKDOWN_RESTRICTION_LEVEL_UNRESTRICTED,
@@ -84,6 +85,7 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_UBUNTU,
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
+    CONST_OS_SKU_WINDOWSANNUAL,
     CONST_PATCH_UPGRADE_CHANNEL,
     CONST_RAPID_UPGRADE_CHANNEL,
     CONST_RELATIVEMONTHLY_MAINTENANCE_SCHEDULE,
@@ -119,6 +121,7 @@ from azext_aks_preview._consts import (
     CONST_CLUSTER_SERVICE_HEALTH_PROBE_MODE_SHARED,
     CONST_ARTIFACT_SOURCE_DIRECT,
     CONST_ARTIFACT_SOURCE_CACHE,
+    CONST_OUTBOUND_TYPE_NONE,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -183,9 +186,15 @@ from azext_aks_preview._validators import (
     validate_artifact_streaming,
     validate_custom_endpoints,
     validate_bootstrap_container_registry_resource_id,
+    validate_gateway_prefix_size,
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
+    CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY,
+    CONST_DISK_TYPE_PV_WITH_ANNOTATION,
+    CONST_EPHEMERAL_NVME_PERF_TIER_BASIC,
+    CONST_EPHEMERAL_NVME_PERF_TIER_PREMIUM,
+    CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD,
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
@@ -209,7 +218,7 @@ node_eviction_policies = [
     CONST_SPOT_EVICTION_POLICY_DEALLOCATE,
 ]
 node_os_disk_types = [CONST_OS_DISK_TYPE_MANAGED, CONST_OS_DISK_TYPE_EPHEMERAL]
-node_mode_types = [CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER]
+node_mode_types = [CONST_NODEPOOL_MODE_SYSTEM, CONST_NODEPOOL_MODE_USER, CONST_NODEPOOL_MODE_GATEWAY]
 node_os_skus_create = [
     CONST_OS_SKU_AZURELINUX,
     CONST_OS_SKU_UBUNTU,
@@ -219,6 +228,7 @@ node_os_skus_create = [
 node_os_skus = node_os_skus_create + [
     CONST_OS_SKU_WINDOWS2019,
     CONST_OS_SKU_WINDOWS2022,
+    CONST_OS_SKU_WINDOWSANNUAL,
 ]
 node_os_skus_update = [CONST_OS_SKU_AZURELINUX, CONST_OS_SKU_UBUNTU]
 scale_down_modes = [CONST_SCALE_DOWN_MODE_DELETE, CONST_SCALE_DOWN_MODE_DEALLOCATE]
@@ -264,6 +274,7 @@ outbound_types = [
     CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+    CONST_OUTBOUND_TYPE_NONE,
 ]
 auto_upgrade_channels = [
     CONST_RAPID_UPGRADE_CHANNEL,
@@ -354,6 +365,17 @@ disable_storage_pool_options = [
     CONST_STORAGE_POOL_OPTION_NVME,
     CONST_STORAGE_POOL_OPTION_SSD,
     CONST_ACSTOR_ALL,
+]
+
+ephemeral_disk_volume_types = [
+    CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY,
+    CONST_DISK_TYPE_PV_WITH_ANNOTATION,
+]
+
+ephemeral_disk_nvme_perf_tiers = [
+    CONST_EPHEMERAL_NVME_PERF_TIER_BASIC,
+    CONST_EPHEMERAL_NVME_PERF_TIER_PREMIUM,
+    CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD,
 ]
 
 # consts for guardrails level
@@ -731,7 +753,6 @@ def load_arguments(self, _):
             "enable_azure_service_mesh",
             options_list=["--enable-azure-service-mesh", "--enable-asm"],
             action="store_true",
-            is_preview=True,
         )
         c.argument("revision", validator=validate_azure_service_mesh_revision)
         c.argument("image_cleaner_interval_hours", type=int)
@@ -787,10 +808,9 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
-            "enable_network_observability",
+            "enable_advanced_network_observability",
             action="store_true",
             is_preview=True,
-            help="enable network observability for cluster",
         )
         c.argument(
             "custom_ca_trust_certificates",
@@ -858,6 +878,7 @@ def load_arguments(self, _):
         c.argument("ksm_metric_annotations_allow_list")
         c.argument("grafana_resource_id", validator=validate_grafanaresourceid)
         c.argument("enable_windows_recording_rules", action="store_true")
+        c.argument("enable_azure_monitor_app_monitoring", is_preview=True, action="store_true")
         c.argument("enable_cost_analysis", is_preview=True, action="store_true")
         c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
         # azure container storage
@@ -883,6 +904,16 @@ def load_arguments(self, _):
             "storage_pool_option",
             arg_type=get_enum_type(storage_pool_options),
             help="set ephemeral disk storage pool option for azure container storage",
+        )
+        c.argument(
+            "ephemeral_disk_volume_type",
+            arg_type=get_enum_type(ephemeral_disk_volume_types),
+            help="set ephemeral disk volume type for azure container storage",
+        )
+        c.argument(
+            "ephemeral_disk_nvme_perf_tier",
+            arg_type=get_enum_type(ephemeral_disk_nvme_perf_tiers),
+            help="set ephemeral disk volume type for azure container storage",
         )
         c.argument(
             "node_provisioning_mode",
@@ -911,12 +942,17 @@ def load_arguments(self, _):
             is_preview=True,
             action="store_true"
         )
+        c.argument("enable_static_egress_gateway", is_preview=True, action="store_true")
 
         c.argument(
             "cluster_service_load_balancer_health_probe_mode",
             is_preview=True,
             arg_type=get_enum_type(health_probe_modes),
         )
+        c.argument("if_match")
+        c.argument("if_none_match")
+        # virtual machines
+        c.argument("vm_sizes", is_preview=True)
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1122,6 +1158,8 @@ def load_arguments(self, _):
             action="store_true",
         )
         c.argument("aks_custom_headers")
+        c.argument("if_match")
+        c.argument("if_none_match")
         # extensions
         # managed cluster
         c.argument(
@@ -1216,6 +1254,8 @@ def load_arguments(self, _):
             ),
         )
         c.argument("disable_azure_monitor_metrics", action="store_true")
+        c.argument("enable_azure_monitor_app_monitoring", action="store_true", is_preview=True)
+        c.argument("disable_azure_monitor_app_monitoring", action="store_true", is_preview=True)
         c.argument(
             "enable_vpa",
             action="store_true",
@@ -1260,16 +1300,14 @@ def load_arguments(self, _):
         c.argument("safeguards_version", help="The deployment safeguards version", is_preview=True)
         c.argument("safeguards_excluded_ns", is_preview=True)
         c.argument(
-            "enable_network_observability",
+            "enable_advanced_network_observability",
             action="store_true",
             is_preview=True,
-            help="enable network observability for cluster",
         )
         c.argument(
-            "disable_network_observability",
+            "disable_advanced_network_observability",
             action="store_true",
             is_preview=True,
-            help="disable network observability for cluster",
         )
         c.argument("enable_cost_analysis", is_preview=True, action="store_true")
         c.argument("disable_cost_analysis", is_preview=True, action="store_true")
@@ -1309,6 +1347,16 @@ def load_arguments(self, _):
             help="define the comma separated nodepool list to install azure container storage",
         )
         c.argument(
+            "ephemeral_disk_volume_type",
+            arg_type=get_enum_type(ephemeral_disk_volume_types),
+            help="set ephemeral disk volume type for azure container storage",
+        )
+        c.argument(
+            "ephemeral_disk_nvme_perf_tier",
+            arg_type=get_enum_type(ephemeral_disk_nvme_perf_tiers),
+            help="set ephemeral disk volume type for azure container storage",
+        )
+        c.argument(
             "node_provisioning_mode",
             is_preview=True,
             arg_type=get_enum_type(node_provisioning_modes),
@@ -1319,6 +1367,8 @@ def load_arguments(self, _):
         )
         # In update scenario, use emtpy str as default.
         c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
+        c.argument('enable_static_egress_gateway', is_preview=True, action='store_true')
+        c.argument('disable_static_egress_gateway', is_preview=True, action='store_true')
 
         c.argument(
             "cluster_service_load_balancer_health_probe_mode",
@@ -1339,6 +1389,12 @@ def load_arguments(self, _):
             help="Do not prompt for confirmation.",
             action="store_true",
         )
+        c.argument('enable_force_upgrade', action='store_true')
+        c.argument(
+            'disable_force_upgrade', action='store_true',
+            validator=validate_force_upgrade_disable_and_enable_parameters
+        )
+        c.argument('upgrade_override_until')
 
     with self.argument_context("aks scale") as c:
         c.argument(
@@ -1498,6 +1554,16 @@ def load_arguments(self, _):
             is_preview=True,
             action="store_true"
         )
+        c.argument("if_match")
+        c.argument("if_none_match")
+        c.argument(
+            "gateway_prefix_size",
+            type=int,
+            validator=validate_gateway_prefix_size,
+            is_preview=True,
+        )
+        # virtual machines
+        c.argument("vm_sizes", is_preview=True)
 
     with self.argument_context("aks nodepool update") as c:
         c.argument(
@@ -1577,6 +1643,18 @@ def load_arguments(self, _):
             is_preview=True,
             action="store_true"
         )
+        c.argument("if_match")
+        c.argument("if_none_match")
+        c.argument(
+            "enable_fips_image",
+            is_preview=True,
+            action="store_true"
+        )
+        c.argument(
+            "disable_fips_image",
+            is_preview=True,
+            action="store_true"
+        )
 
     with self.argument_context("aks nodepool upgrade") as c:
         c.argument("max_surge", validator=validate_max_surge)
@@ -1599,6 +1677,7 @@ def load_arguments(self, _):
             is_preview=True,
             help="delete an AKS nodepool by ignoring PodDisruptionBudget setting",
         )
+        c.argument("if_match")
 
     with self.argument_context("aks nodepool delete-machines") as c:
         c.argument(
@@ -1607,6 +1686,16 @@ def load_arguments(self, _):
             required=True,
             help="Space-separated machine names to delete.",
         )
+
+    with self.argument_context("aks nodepool manual-scale add") as c:
+        c.argument("vm_sizes", is_preview=True)
+
+    with self.argument_context("aks nodepool manual-scale update") as c:
+        c.argument("current_vm_sizes", is_preview=True)
+        c.argument("vm_sizes", is_preview=True)
+
+    with self.argument_context("aks nodepool manual-scale delete") as c:
+        c.argument("current_vm_sizes", is_preview=True)
 
     with self.argument_context("aks machine") as c:
         c.argument("cluster_name", help="The cluster name.")
@@ -1619,6 +1708,14 @@ def load_arguments(self, _):
     with self.argument_context("aks machine show") as c:
         c.argument(
             "machine_name", help="to display specific information for all machines."
+        )
+
+    with self.argument_context("aks operation") as c:
+        c.argument(
+            "nodepool_name",
+            required=False,
+            validator=validate_nodepool_name,
+            default="",
         )
 
     with self.argument_context("aks maintenanceconfiguration") as c:
@@ -2143,6 +2240,22 @@ def load_arguments(self, _):
     with self.argument_context("aks mesh upgrade start") as c:
         c.argument(
             "revision", validator=validate_azure_service_mesh_revision, required=True
+        )
+
+    with self.argument_context("aks mesh upgrade rollback") as c:
+        c.argument(
+            "yes",
+            options_list=["--yes", "-y"],
+            help="Do not prompt for confirmation.",
+            action="store_true"
+        )
+
+    with self.argument_context("aks mesh upgrade complete") as c:
+        c.argument(
+            "yes",
+            options_list=["--yes", "-y"],
+            help="Do not prompt for confirmation.",
+            action="store_true"
         )
 
     with self.argument_context("aks approuting enable") as c:

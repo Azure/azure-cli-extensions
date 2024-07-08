@@ -135,10 +135,8 @@ def acipolicygen_confcom(
         elif diff:
             exit_code = get_diff_outputs(policy, output_type == security_policy.OutputType.PRETTY_PRINT)
         elif arm_template and not (print_policy_to_terminal or outraw or outraw_pretty_print):
-            seccomp_profile_hashes = {x.get_id(): x.get_seccomp_profile_sha256() for x in policy.get_images()}
             result = inject_policy_into_template(arm_template, arm_template_parameters,
-                                                 policy.get_serialized_output(), count,
-                                                 seccomp_profile_hashes)
+                                                 policy.get_serialized_output(), count)
             if result:
                 # this is always going to be the unencoded policy
                 print(str_to_sha256(policy.get_serialized_output(OutputType.RAW)))

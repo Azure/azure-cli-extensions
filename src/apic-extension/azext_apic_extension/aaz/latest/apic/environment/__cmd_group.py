@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "apic environment",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Commands to manage Environments in API Center
+    """Commands to manage environments in API Center
     """
     pass
 

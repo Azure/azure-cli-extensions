@@ -323,6 +323,39 @@ class TestAppDeploy_Enterprise_Patch(BasicTest):
                          resource.properties.deployment_settings.addon_configs)
 
     @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
+    def test_app_deploy_actuator_enterprise(self, file_mock):
+        file_mock.return_value = mock.MagicMock()
+        deployment = self._get_deployment()
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path',
+                      custom_actuator_port='8888', custom_actuator_path='actuator-path')
+        resource = self.patch_deployment_resource
+        self.assertEqual({'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': 'actuator-path'}},
+                         resource.properties.deployment_settings.addon_configs)
+
+    @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
+    def test_app_deploy_actuator_acs_enterprise(self, file_mock):
+        file_mock.return_value = mock.MagicMock()
+        deployment = self._get_deployment()
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path',
+                      custom_actuator_port='8888', custom_actuator_path='actuator-path', config_file_patterns='my-pattern')
+        resource = self.patch_deployment_resource
+        self.assertEqual({'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': 'actuator-path'}, 'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}},
+                         resource.properties.deployment_settings.addon_configs)
+
+    @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
+    def test_app_deploy_actuator_port_enterprise(self, file_mock):
+        file_mock.return_value = mock.MagicMock()
+        deployment = self._get_deployment()
+        self._execute('rg', 'asc', 'app', deployment=deployment, artifact_path='my-path',
+                      custom_actuator_port='8888')
+        resource = self.patch_deployment_resource
+        self.assertEqual('BuildResult', resource.properties.source.type)
+        self.assertEqual(self.result_id, resource.properties.source.build_result_id)
+        self.assertIsNone(resource.properties.source.version)
+        self.assertEqual({'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': None}},
+                         resource.properties.deployment_settings.addon_configs)
+
+    @mock.patch('azext_spring._deployment_uploadable_factory.FileUpload.upload_and_build')
     def test_app_deploy_build_enterprise(self, file_mock):
         file_mock.return_value = mock.MagicMock()
         deployment = self._get_deployment()
@@ -552,6 +585,26 @@ class TestAppUpdate(BasicTest):
         self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'updated-pattern'}},
                          resource.properties.deployment_settings.addon_configs)
 
+    def test_app_update_in_enterprise_with_actuator(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        deployment = self._get_deployment(sku='Enterprise')
+        deployment.properties.deployment_settings.addon_configs = {
+            'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': 'actuator-path'}}
+        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, custom_actuator_port='8888', custom_actuator_path='updated-path')
+        resource = self.patch_deployment_resource
+        self.assertEqual({'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': 'updated-path'}},
+                         resource.properties.deployment_settings.addon_configs)
+
+    def test_app_update_in_enterprise_with_actuator_path(self):
+        client = self._get_basic_mock_client(sku='Enterprise')
+        deployment = self._get_deployment(sku='Enterprise')
+        deployment.properties.deployment_settings.addon_configs = {
+            'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': 'actuator-path'}}
+        self._execute('rg', 'asc', 'app', deployment=deployment, client=client, custom_actuator_path='updated-path')
+        resource = self.patch_deployment_resource
+        self.assertEqual({'appLiveView': { 'actuatorPort': None, 'actuatorPath': 'updated-path'}},
+                         resource.properties.deployment_settings.addon_configs)
+
     def test_app_update_clear_jvm_option_in_enterprise(self):
         client = self._get_basic_mock_client(sku='Enterprise')
         deployment = self._get_deployment(sku='Enterprise')
@@ -645,6 +698,19 @@ class TestAppUpdate(BasicTest):
         resource = self.patch_app_resource
         self.assertEqual('w2', resource.properties.workload_profile_name)
 
+    def test_app_update_with_enable_test_endpoint_auth(self):
+        self._execute('rg', 'asc', 'app', workload_profile='w2')
+        resource = self.patch_app_resource
+        self.assertIsNone(resource.properties.test_endpoint_auth_state)
+
+        self._execute('rg', 'asc', 'app', workload_profile='w2', disable_test_endpoint_auth=False)
+        resource = self.patch_app_resource
+        self.assertEqual(models.TestEndpointAuthState.ENABLED, resource.properties.test_endpoint_auth_state)
+
+        self._execute('rg', 'asc', 'app', workload_profile='w2', disable_test_endpoint_auth=True)
+        resource = self.patch_app_resource
+        self.assertEqual(models.TestEndpointAuthState.DISABLED, resource.properties.test_endpoint_auth_state)
+
 
 class TestAppCreate(BasicTest):
     def __init__(self, methodName: str = ...):
@@ -724,14 +790,31 @@ class TestAppCreate(BasicTest):
         client = self._get_basic_mock_client(sku='Enterprise')
         default_service_registry_id = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AppPlatform/Spring/asa/serviceRegistries/default'
         default_application_configuration_service_id = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AppPlatform/Spring/asa/configurationServices/default'
+        default_config_server_id = '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.AppPlatform/Spring/asa/configServers/default'
         self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1,
                       bind_service_registry=default_service_registry_id,
                       bind_application_configuration_service=default_application_configuration_service_id,
+                      bind_config_server=default_config_server_id,
                       client=client)
         addon_configs = self.put_app_resource.properties.addon_configs
         self.assertEqual(default_service_registry_id, addon_configs['serviceRegistry']['resourceId'])
         self.assertEqual(default_application_configuration_service_id,
                          addon_configs['applicationConfigurationService']['resourceId'])
+        self.assertEqual(default_config_server_id,
+                    addon_configs['configServer']['resourceId'])
+
+    def test_app_create_with_enable_test_endpoint_auth(self):
+        self._execute('rg', 'asc', 'app', instance_count=1)
+        resource = self.put_app_resource
+        self.assertIsNone(resource.properties.test_endpoint_auth_state)
+
+        self._execute('rg', 'asc', 'app', instance_count=1, disable_test_endpoint_auth=False)
+        resource = self.put_app_resource
+        self.assertEqual(models.TestEndpointAuthState.ENABLED, resource.properties.test_endpoint_auth_state)
+
+        self._execute('rg', 'asc', 'app', instance_count=1, disable_test_endpoint_auth=True)
+        resource = self.put_app_resource
+        self.assertEqual(models.TestEndpointAuthState.DISABLED, resource.properties.test_endpoint_auth_state)
 
     def test_app_with_persistent_storage(self):
         self._execute('rg', 'asc', 'app', cpu='500m', memory='2Gi', instance_count=1, enable_persistent_storage=True)
@@ -896,6 +979,21 @@ class TestDeploymentCreate(BasicTest):
         self.assertEqual({'applicationConfigurationService': {'configFilePatterns': 'my-pattern'}},
                          resource.properties.deployment_settings.addon_configs)
 
+    def test_create_deployment_with_actuator_in_enterprise(self):
+        deployment = self._get_deployment(sku='Enterprise')
+        client = self._get_basic_mock_client('Enterprise', deployment)
+        self._execute('rg', 'asc', 'app', 'green', client=client,  custom_actuator_port='8888', custom_actuator_path='actuator-path')
+        resource = self.put_deployment_resource
+        self.assertEqual({'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': 'actuator-path'}},
+                         resource.properties.deployment_settings.addon_configs)
+
+    def test_create_deployment_with_actuator_port_in_enterprise(self):
+        deployment = self._get_deployment(sku='Enterprise')
+        client = self._get_basic_mock_client('Enterprise', deployment)
+        self._execute('rg', 'asc', 'app', 'green', client=client,  custom_actuator_port='8888')
+        resource = self.put_deployment_resource
+        self.assertEqual({'appLiveView': { 'actuatorPort': '8888', 'actuatorPath': None }},
+                         resource.properties.deployment_settings.addon_configs)
 
 class RemoteDebugTest(BasicTest):
     def __init__(self, methodName: str = ...):

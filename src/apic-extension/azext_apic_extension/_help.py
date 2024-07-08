@@ -12,22 +12,23 @@ from knack.help_files import helps  # pylint: disable=unused-import
 
 helps['apic api register'] = """
     type: command
-    short-summary: Single Command for registering api, api version, api definition, import spec, create deployment provided a spec file.
+    short-summary: Registers a new API with version, definition, and associated deployments using the specification file as the source of truth. For now we only support OpenAPI JSON/YAML format.
     parameters:
       - name: --api-location -l
         type: string
-        short-summary: Location of spec file  .
+        short-summary: Location of spec file.
       - name: --resource-group -g
         type: string
         short-summary: Resource group name.
-      - name: --service -s
+      - name: --service-name -n
         type: string
         short-summary: APICenter Catalog or Service name.
-      - name: --environment-name -e
+      - name: --environment-id
         type: string
-        short-summary: Name of environment created before.
+        short-summary: Id of environment created before.
     examples:
       - name: Register api by providing spec file.
         text: |
-          az apic api register -g api-center-test -s contosoeuap --api-location "examples/cli-examples/spec-examples/openai.json" --environment-name public
+          az apic api register -g api-center-test -n contosoeuap --api-location "examples/cli-examples/spec-examples/openai.json" --environment-id public
+          az apic api register -g api-center-test -n contosoeuap --api-location "examples/cli-examples/spec-examples/openai.yml" --environment-id public
 """

@@ -21,7 +21,7 @@ def step_custom_rollout_create(test, checks=None):
     test.cmd('az providerhub custom-rollout create '
              '--provider-namespace "{providerNamespace}" '
              '--rollout-name "{customRolloutName}" '
-             '--canary regions="EastUS2EUAP" regions="centraluseuap"',
+             '--canary region="EastUS2EUAP" region="centraluseuap"',
              checks=[])
 
 
@@ -55,9 +55,7 @@ def step_default_rollout_create(test, checks=None):
         checks = []
     test.cmd('az providerhub default-rollout create '
              '--provider-namespace "{providerNamespace}" '
-             '--rollout-name "{defaultRolloutName}" '
-             '--rest-of-the-world-group-two wait-duration="PT2H" '
-             '--canary skip-regions="centraluseuap"',
+             '--rollout-name "{defaultRolloutName}" ',
              checks=checks)
 
 
@@ -147,7 +145,6 @@ def step_manifest_checkin(test, checks=None):
         checks = []
     test.cmd('az providerhub manifest checkin '
              '--environment "Prod" '
-             '--baseline-arm-manifest-location "EastUS2EUAP" '
              '--provider-namespace "{providerNamespace}"',
              checks=checks)
 
@@ -236,8 +233,7 @@ def step_resource_type_registration_create(test, checks=None):
     if checks is None:
         checks = []
     test.cmd('az providerhub resource-type-registration create '
-             '--endpoints api-versions="2020-01-01-preview" '
-             'locations="" required-features="Microsoft.Contoso/RPaaSSampleApp" '
+             '--endpoints "[{api-versions:[2019-01-01],locations:[global]}]" '
              '--regionality "Global" '
              '--routing-type "Proxyonly, Extension" '
              '--swagger-specifications api-versions="2020-01-01-preview" swagger-spec-folder-uri="https://github.com/Azure/azure-rest-api-specs-pr/blob/RPSaaSMaster/specification/contoso/resource-manager/Microsoft.Contoso/" '
