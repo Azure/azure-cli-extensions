@@ -21,7 +21,7 @@ SERVICES = {'blob', 'file'}
 AZCOPY_VERSION = '10.5.0'
 
 
-class AzCopy(object):
+class AzCopy:
     system_executable_path = {
         'Darwin': ['azcopy_darwin_amd64_{}'.format(AZCOPY_VERSION), 'azcopy'],
         'Linux': ['azcopy_linux_amd64_{}'.format(AZCOPY_VERSION), 'azcopy'],
@@ -55,7 +55,7 @@ class AzCopy(object):
         self.run_command(['sync', source, destination] + flags)
 
 
-class AzCopyCredentials(object):  # pylint: disable=too-few-public-methods
+class AzCopyCredentials:  # pylint: disable=too-few-public-methods
     def __init__(self, sas_token=None, token_info=None):
         self.sas_token = sas_token
         self.token_info = token_info
@@ -66,7 +66,7 @@ def login_auth_for_azcopy(cmd):
     try:
         token_info = _unserialize_non_msi_token_payload(token_info)
     except KeyError:  # unserialized MSI token payload
-        raise Exception('MSI auth not yet supported.')
+        raise RuntimeError('MSI auth not yet supported.')
     return AzCopyCredentials(token_info=token_info)
 
 
@@ -80,13 +80,13 @@ def blob_client_auth_for_azcopy(cmd, blob_client):
     try:
         token_info = _unserialize_non_msi_token_payload(token_info)
     except KeyError:  # unserialized MSI token payload
-        raise Exception('MSI auth not yet supported.')
+        raise RuntimeError('MSI auth not yet supported.')
     return AzCopyCredentials(token_info=token_info)
 
 
 def storage_client_auth_for_azcopy(cmd, client, service):
     if service not in SERVICES:
-        raise Exception('{} not one of: {}'.format(service, str(SERVICES)))
+        raise KeyError('{} not one of: {}'.format(service, str(SERVICES)))
 
     if client.sas_token:
         return AzCopyCredentials(sas_token=client.sas_token)

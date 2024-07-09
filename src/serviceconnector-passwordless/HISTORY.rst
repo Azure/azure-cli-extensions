@@ -2,6 +2,10 @@
 
 Release History
 ===============
+2.0.5
+++++++
+* Bump version
+
 2.0.4
 ++++++
 * Fix PostgreSQL connection string format

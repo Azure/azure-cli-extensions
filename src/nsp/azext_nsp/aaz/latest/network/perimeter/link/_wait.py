@@ -168,9 +168,7 @@ class Wait(AAZWaitCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200.properties = AAZObjectType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
