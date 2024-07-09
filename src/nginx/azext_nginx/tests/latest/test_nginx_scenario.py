@@ -13,7 +13,7 @@ class NginxScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='AZCLIDepTestRG_', random_name_length=34, location='eastus2')
     def test_nginx(self, resource_group):
         self.kwargs.update({
-            'deployment_name': 'azclitest-dep',
+            'deployment_name': 'azclitest-deployment',
             'location': 'eastus2',
             'rg': resource_group,
             'sku': 'preview_Monthly_gmz7xq9ge3py',
