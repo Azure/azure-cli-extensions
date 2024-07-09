@@ -8,7 +8,6 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 # pylint: disable=protected-access
-# pylint: disable=anomalous-backslash-in-string
 
 import os
 from knack.log import get_logger
