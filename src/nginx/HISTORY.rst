@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.0.0b5
+++++++
+* Fix configuration
+
 2.0.0b4
 ++++++
 * Use user-friendly SKU in example command for the deployment.
