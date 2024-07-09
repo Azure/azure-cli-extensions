@@ -392,7 +392,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                 cc = generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra,
                                               enable_private_link, private_link_scope_resource_id,
                                               distribution_version, azure_hybrid_benefit, enable_oidc_issuer,
-                                              enable_workload_identity, self_hosted_issuer)
+                                              enable_workload_identity)
                 cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
                 cc_response = LongRunningOperation(cmd.cli_ctx)(cc_response)
                 # Disabling cluster-connect if private link is getting enabled
@@ -440,6 +440,18 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         except Exception as e:  # pylint: disable=broad-except
             utils.arm_exception_handler(e, consts.Create_ResourceGroup_Fault_Type,
                                         'Failed to create the resource group')
+     
+    # Retrieving Helm chart OCI Artifact location
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else \
+        utils.get_helm_registry(cmd, config_dp_endpoint, release_train)
+
+    # Get azure-arc agent version for telemetry
+    azure_arc_agent_version = registry_path.split(':')[1]
+    telemetry.add_extension_event('connectedk8s',
+                                  {'Context.Default.AzureCLI.AgentVersion': azure_arc_agent_version})
+
+    # Get helm chart path
+    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location)
 
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
@@ -479,42 +491,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     # Checking if custom locations rp is registered and fetching oid if it is registered
     enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id)
 
-    # Change: Calling DP for Helm values
-    # Retrieving Helm chart OCI Artifact location
-    helm_values_dp = utils.get_helm_values(cmd, config_dp_endpoint, release_train)
-
-    # Parses the helm_values_dp
-        #     {
-        #     "repositoryPath": "mcr.microsoft.com/azurearck8s/canary/stable/azure-arc-k8sagents:0.2.62",
-        #     "helmValuesContent": {
-        #         "global.subscriptionId": "ca3b2020-292e-4ebc-9939-0b52415846ef",
-        #         "global.resourceGroupName": "bs_testing",
-        #         "global.resourceName": "bs_oci",
-        #         "global.location": "westeurope",
-        #         "global.httpsProxy": "ClientKnown",
-        #         "global.httpProxy": "ClientKnown",
-        #         "global.noProxy": "ClientKnown",
-        #         "global.proxyCert": "ClientKnown",
-        #         "global.isCustomCert": "true",
-        #         "global.isProxyEnabled": "true",
-        #         "systemDefaultValues.fluent-bit.containerLogPath": "/sample/test/path"
-        #     },
-        #     "apiServerFlags": null
-        # }
-
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else \
-        helm_values_dp["repositoryPath"]
-        
-    # Get azure-arc agent version for telemetry
-    azure_arc_agent_version = registry_path.split(':')[1]
-    telemetry.add_extension_event('connectedk8s',
-                                  {'Context.Default.AzureCLI.AgentVersion': azure_arc_agent_version})
-
-    # Get helm chart path
-    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location)
-
-    # TODO: use a new helm_values file to construct the helm install cmd
-
     print("Starting to install Azure arc agents on the Kubernetes cluster.")
     # Install azure-arc agents
     utils.helm_install_release(cmd.cli_ctx.cloud.endpoints.resource_manager, chart_path, subscription_id,
@@ -525,10 +501,38 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                helm_client_location, enable_private_link, arm_metadata,
                                onboarding_timeout, container_log_path)
     
-    # TODO: Add 2nd long running operation to wait for Agent State to reach terminal stage 
+    # Add 2nd long running operation to wait for Agent State to reach terminal stage with a default 20 minute timeout window 
+    # TODO: Update poll_for_agent_state method to check for agent state and not provisioning state when feedback loop is implemented
+    print("Waiting for Agent State to reach terminal state")
+    if not poll_for_agent_state(cmd, resource_group_name, cluster_name):
+        print("Timed out waiting for Agent State to reach terminal state")
+        return False
     
     return put_cc_response
 
+def poll_for_agent_state(cmd, resource_group_name, cluster_name, timeout_minutes=20, interval=5):
+    """
+    Polls for agent state to reach a terminal state with a timeout.
+
+    Args:
+        resource_group_name: Name of cluster's resource group
+        cluster_name: Name of cluster resource
+        timeout_minutes (int, optional): Timeout in minutes. Defaults to 10 minutes.
+        interval (float, optional): Time interval between attempts in seconds. Defaults to 1.
+    """
+
+    start_time = time.time()
+    while True:
+        connected_cluster = get_connectedk8s_2024_07_01(cmd, resource_group_name, cluster_name)
+        # Checking for provisioning state now as agent state feedback loop is not implemented
+        if connected_cluster.provisioning_state == "Succeeded" or connected_cluster.provisioning_state == "Failed":
+            print("Agent state has reached terminal state of: " + connected_cluster.provisioning_state)
+            return True
+        elapsed_time = time.time() - start_time
+        if elapsed_time >= timeout_minutes * 60:
+            print("Agent state has not reached terminal state within " + timeout_minutes + " minute timeout window: " + connected_cluster.provisioning_state)
+            return False
+        time.sleep(interval)
 
 def validate_existing_provisioned_cluster_for_reput(cluster_resource, kubernetes_distro, kubernetes_infra,
                                                     enable_private_link, private_link_scope_resource_id,
@@ -869,14 +873,14 @@ def check_arm64_node(api_response):
 
 
 def generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, 
-                             distribution_version, azure_hybrid_benefit, enable_oidc_issuer, enable_workload_identity, self_hosted_issuer):
+                             distribution_version, azure_hybrid_benefit, enable_oidc_issuer, enable_workload_identity, self_hosted_issuer = ""):
     # Create connected cluster resource object
     identity = ConnectedClusterIdentity(
         type="SystemAssigned"
     )
     if tags is None:
         tags = {}
-    cc = ConnectedCluster2024_07_01_Preview(
+    cc = ConnectedCluster(
         location=location,
         identity=identity,
         agent_public_key_certificate=public_key,
@@ -885,10 +889,28 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
         infrastructure=kubernetes_infra
     )
 
-    if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None:
+    if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None or enable_oidc_issuer or enable_workload_identity:
+        #Set additional parameters
         private_link_state = None
         if enable_private_link is not None:
             private_link_state = "Enabled" if enable_private_link is True else "Disabled"
+        
+        oidc_profile = None
+        if enable_oidc_issuer:
+            oidc_profile = OidcIssuerProfile(
+                enabled=True
+            )
+            if self_hosted_issuer != "":
+                oidc_profile.self_hosted_issuer_url = self_hosted_issuer
+        
+        security_profile = None
+        if enable_workload_identity:
+            security_profile = SecurityProfile(
+                workload_identity= SecurityProfileWorkloadIdentity(
+                    enabled=True
+                )
+            )
+        
         cc = ConnectedCluster2024_07_01_Preview(
             location=location,
             identity=identity,
@@ -899,24 +921,10 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
             private_link_scope_resource_id=private_link_scope_resource_id,
             private_link_state=private_link_state,
             azure_hybrid_benefit=azure_hybrid_benefit,
-            distribution_version=distribution_version
+            distribution_version=distribution_version,
+            oidc_issuer_profile=oidc_profile,
+            security_profile=security_profile
         )
-    
-    if enable_oidc_issuer:
-        oidc_profile = OidcIssuerProfile(
-            enabled=True
-        )
-        if self_hosted_issuer != "":
-            oidc_profile.self_hosted_issuer_url = self_hosted_issuer
-        cc.oidc_issuer_profile = oidc_profile
-    
-    if enable_workload_identity:
-        security_profile = SecurityProfile(
-            workload_identity= SecurityProfileWorkloadIdentity(
-                enabled=True
-            )
-        )
-        cc.security_profile = security_profile
 
     return cc
 
@@ -1262,7 +1270,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
         client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location)
 
     # Fetch Connected Cluster for agent version
-    connected_cluster = get_connectedk8s_2024_07_01(cmd, client, resource_group_name, cluster_name)
+    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
 
     kubernetes_properties = {'Context.Default.AzureCLI.KubernetesVersion': kubernetes_version}
 
@@ -1276,7 +1284,8 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
     
-    # Generate reput request payload
+    # Get the connected cluster resource using latest api version and generate reput request payload
+    connected_cluster = get_connectedk8s_2024_07_01(cmd, resource_group_name, cluster_name)
     cc = generate_reput_request_payload(connected_cluster, enable_oidc_issuer, enable_workload_identity, self_hosted_issuer)
 
     # Update connected cluster resource
@@ -1372,6 +1381,14 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
         pass
     if not arm_properties_unset:
         return patch_cc_response
+    
+    # Add 2nd long running operation to wait for Agent State to reach terminal stage with a default 20 minute timeout window 
+    # TODO: Update poll_for_agent_state method to check for agent state and not provisioning state when feedback loop is implemented
+    print("Hold for Agent State to reach terminal state")
+    if not poll_for_agent_state(cmd, resource_group_name, cluster_name):
+        print("Timed out waiting for Agent State to reach terminal state")
+        return False
+    
     return reput_cc_response
 
 
