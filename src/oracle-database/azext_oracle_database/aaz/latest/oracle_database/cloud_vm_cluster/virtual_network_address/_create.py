@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a VirtualNetworkAddress
+
+    :example: Create Virtual Network Address
+        az oracle-database cloud-vm-cluster virtual-network-address create --cloudvmclustername <VM cluster name> --resource-group <resource group> --name <vnet name> --ip-address <ip> --vm-ocid <ocid of the vm>
     """
 
     _aaz_info = {

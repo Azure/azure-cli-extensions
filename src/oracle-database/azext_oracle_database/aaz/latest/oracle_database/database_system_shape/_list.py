@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List DbSystemShape resources by Location
+
+    :example: List Database system shapes
+        az oracle-database database-system-shape list --location <location>
     """
 
     _aaz_info = {

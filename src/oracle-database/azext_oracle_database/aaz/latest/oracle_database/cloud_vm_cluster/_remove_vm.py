@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class RemoveVm(AAZCommand):
     """Remove VMs from the VM Cluster
+
+    :example: Remove VM from Cluster
+        az oracle-database cloud-vm-cluster remove-vm --cloudvmclustername <vmclustername> --resource-group <Resource group> --db-servers ['ocid1','ocid2']
     """
 
     _aaz_info = {

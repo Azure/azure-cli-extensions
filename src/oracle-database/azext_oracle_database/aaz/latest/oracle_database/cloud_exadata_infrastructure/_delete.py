@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a CloudExadataInfrastructure
+
+    :example: Exa Infra Delete
+        az oracle-database cloud-exadata-infrastructure delete --name <name> --resource-group <RG name>
     """
 
     _aaz_info = {

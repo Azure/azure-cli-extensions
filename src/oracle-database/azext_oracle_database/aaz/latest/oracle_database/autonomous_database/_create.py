@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a AutonomousDatabase
+
+    :example: Create an Autonomous database
+        az oracle-database autonomous-database create --location <location> --autonomousdatabasename <name> --resource-group <resource_group> --subnet-id /<subnet_id> --display-name <display_name> --compute-model ECPU --compute-count <compute_count> --data-storage-size-in-gbs <storage_size> --license-model <BringYourOwnLicense/LicenseIncluded> --db-workload <OLTP> --admin-password <password> --db-version 19c --character-set AL32UTF8 --ncharacter-set AL16UTF16 --vnet-id <virtual network id> --regular
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a CloudExadataInfrastructure
+
+    :example: Exa Infra Create
+        az oracle-database cloud-exadata-infrastructure create --name <name> --resource-group <RG name> --zones <2> --compute-count 2<> --display-name <display name> --shape Exadata.X9M --storage-count <2> --location <location>
     """
 
     _aaz_info = {

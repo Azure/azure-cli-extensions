@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a CloudExadataInfrastructure
+
+    :example: Get an Exa Infra
+        az oracle-database cloud-exadata-infrastructure show --name <name> --resource-group <RG name>
     """
 
     _aaz_info = {

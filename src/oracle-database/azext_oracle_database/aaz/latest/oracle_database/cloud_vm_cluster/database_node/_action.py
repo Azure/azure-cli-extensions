@@ -16,6 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Action(AAZCommand):
     """VM actions on DbNode of VM Cluster by the provided filter
+
+    :example: Action on Database Node - Start
+        az oracle-database cloud-vm-cluster database-node action --cloudvmclustername <VM Cluster Name> --resource-group <resource group> --dbnodeocid <db node ocid> --action Start
+
+    :example: Action on Database Node - Stop
+        az oracle-database cloud-vm-cluster database-node action --cloudvmclustername <VM Cluster Name> --resource-group <resource group> --dbnodeocid <db node ocid> --action Stop
     """
 
     _aaz_info = {

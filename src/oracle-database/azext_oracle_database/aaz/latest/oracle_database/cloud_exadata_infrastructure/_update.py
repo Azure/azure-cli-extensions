@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a CloudExadataInfrastructure
+
+    :example: Update Exa infra
+        az oracle-database cloud-exadata-infrastructure update --name <name> --resource-group <RG name> --tags {tagV1:tagK1>
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List CloudVmCluster resources by subscription ID
+
+    :example: List Vm Clusters
+        az oracle-database cloud-vm-cluster list --resource-group <resource group>
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List DnsPrivateView resources by Location
+
+    :example: List DNS Private Views
+        az oracle-database dns-private-view list --location <location>
     """
 
     _aaz_info = {

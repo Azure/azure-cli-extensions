@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class AddVm(AAZCommand):
     """Add VMs to the VM Cluster
+
+    :example: Add VMs to Cluster
+        az oracle-database cloud-vm-cluster add-vm --cloudvmclustername <vmclustername> --resource-group <Resource group> --db-servers ['ocid1','ocid2']
     """
 
     _aaz_info = {

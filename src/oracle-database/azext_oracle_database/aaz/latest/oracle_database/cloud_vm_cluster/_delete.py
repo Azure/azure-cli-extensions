@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a CloudVmCluster
+
+    :example: Delete VM Cluster
+        az oracle-database cloud-vm-cluster delete --name <name> --resource-group <resource group>
     """
 
     _aaz_info = {

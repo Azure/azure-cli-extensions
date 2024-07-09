@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a CloudVmCluster
+
+    :example: Update VM Cluster
+        az oracle-database cloud-vm-cluster update --cloudvmclustername <vmclustername> --resource-group <Resource group> --tags {tagv1:tagk1}
     """
 
     _aaz_info = {

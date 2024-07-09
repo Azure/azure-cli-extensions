@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List DbNode resources by CloudVmCluster
+
+    :example: List Db Nodes
+        az oracle-database cloud-vm-cluster database-node list --cloudvmclustername <VM Cluster Name> --resource-group <resource group>
     """
 
     _aaz_info = {

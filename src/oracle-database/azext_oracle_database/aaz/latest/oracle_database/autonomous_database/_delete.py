@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a AutonomousDatabase
+
+    :example: Delete an Autonomous database
+        az oracle-database autonomous-database delete --name <ADBS name> --resource-group <resource_group>
     """
 
     _aaz_info = {

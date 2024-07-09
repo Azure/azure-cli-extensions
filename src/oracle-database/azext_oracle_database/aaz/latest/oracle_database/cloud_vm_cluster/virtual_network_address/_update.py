@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a VirtualNetworkAddress
+
+    :example: Update Vnet address
+        az oracle-database cloud-vm-cluster virtual-network-address update --cloudvmclustername <VM cluster name> --resource-group <resource group> --name <vnet name>
     """
 
     _aaz_info = {

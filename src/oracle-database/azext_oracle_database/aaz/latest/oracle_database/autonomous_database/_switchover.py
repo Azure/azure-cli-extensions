@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Switchover(AAZCommand):
     """Perform switchover action on Autonomous Database
+
+    :example: Switchover
+        az oracle-database autonomous-database switchover --autonomousdatabasename <ADBS name> --resource-group <resource_group> --peer-db-id <id>
     """
 
     _aaz_info = {

@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a VirtualNetworkAddress
+
+    :example: Delete Virtual Network Address
+        az oracle-database cloud-vm-cluster virtual-network-address delete --cloudvmclustername <VM cluster name> --resource-group <resource group> --name <vnet name>
     """
 
     _aaz_info = {

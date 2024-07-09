@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a AutonomousDatabaseBackup
+
+    :example: ADBS Backup Update
+        az oracle-database autonomous-database backup create --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <id> --retention-period-in-days <days>
     """
 
     _aaz_info = {

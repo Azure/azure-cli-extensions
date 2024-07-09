@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List VirtualNetworkAddress resources by CloudVmCluster
+
+    :example: List Virtual Network Address
+        az oracle-database cloud-vm-cluster virtual-network-address list --cloudvmclustername <VM cluster name> --resource-group <resource group>
     """
 
     _aaz_info = {

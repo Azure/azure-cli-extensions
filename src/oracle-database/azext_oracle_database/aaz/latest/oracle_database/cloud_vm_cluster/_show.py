@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a CloudVmCluster
+
+    :example: Get a VM Cluster
+        az oracle-database cloud-vm-cluster show --cloudvmclustername <vmclustername> --resource-group <Resource group>
     """
 
     _aaz_info = {

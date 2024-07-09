@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Restore(AAZCommand):
     """Restores an Autonomous Database based on the provided request parameters.
+
+    :example: Restore Autonomous database
+        az oracle-database autonomous-database restore --autonomousdatabasename <ADBS name> --resource-group <resource_group> --timestamp <timestamp>
     """
 
     _aaz_info = {

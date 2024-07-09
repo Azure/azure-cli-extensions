@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a VirtualNetworkAddress
+
+    :example: Get Vnet address
+        az oracle-database cloud-vm-cluster virtual-network-address show --cloudvmclustername <VM cluster name> --resource-group <resource group> --name <vnet name>
     """
 
     _aaz_info = {

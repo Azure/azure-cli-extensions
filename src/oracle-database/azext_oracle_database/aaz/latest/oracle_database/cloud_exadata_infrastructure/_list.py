@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List CloudExadataInfrastructure resources by subscription ID
+
+    :example: List Exa Infra
+        az oracle-database cloud-exadata-infrastructure list --resource-group <RG name>
     """
 
     _aaz_info = {

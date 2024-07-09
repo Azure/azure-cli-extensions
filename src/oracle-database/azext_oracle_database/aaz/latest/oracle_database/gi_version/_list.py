@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List GiVersion resources by Location
+
+    :example: List Gi Version
+        az oracle-database gi-version list --location <location>
     """
 
     _aaz_info = {

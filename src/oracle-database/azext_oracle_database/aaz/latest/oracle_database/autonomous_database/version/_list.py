@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List AutonomousDbVersion resources by Location
+
+    :example: List ADBS versions
+        az oracle-database autonomous-database version list --location <location>
     """
 
     _aaz_info = {

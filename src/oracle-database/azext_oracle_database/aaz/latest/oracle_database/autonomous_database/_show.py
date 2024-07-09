@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a AutonomousDatabase
+
+    :example: Get Autonomous database
+        az oracle-database autonomous-database show --autonomousdatabasename <ADBS name> --resource-group <resource_group>
     """
 
     _aaz_info = {

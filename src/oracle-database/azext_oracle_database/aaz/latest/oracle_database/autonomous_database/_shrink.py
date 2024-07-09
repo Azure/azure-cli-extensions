@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Shrink(AAZCommand):
     """This operation shrinks the current allocated storage down to the current actual used data storage.
+
+    :example: Shrink
+        az oracle-database autonomous-database shrink --autonomousdatabasename <ADBS name> --resource-group <resource_group>
     """
 
     _aaz_info = {

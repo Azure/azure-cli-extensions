@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Failover(AAZCommand):
     """Perform failover action on Autonomous Database
+
+    :example: Failover
+        az oracle-database autonomous-database failover --autonomousdatabasename <ADBS name> --resource-group <resource_group> --peer-db-id <id>
     """
 
     _aaz_info = {

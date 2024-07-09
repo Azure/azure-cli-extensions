@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListPrivateIpAddress(AAZCommand):
     """List Private IP Addresses by the provided filter
+
+    :example: List Private IP Addresses
+        az oracle-database cloud-vm-cluster list-private-ip-address --cloudvmclustername <name> --resource-group <resource group> --subnet-id <subnet id> --vnic-id <vnic id>
     """
 
     _aaz_info = {

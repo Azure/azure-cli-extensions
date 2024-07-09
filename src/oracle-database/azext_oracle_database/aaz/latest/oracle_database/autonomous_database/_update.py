@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a AutonomousDatabase
+
+    :example: Update Autonomous database
+        az oracle-database autonomous-database update --autonomousdatabasename <ADBS name> --resource-group <resource_group> --tags {Tagkey:TagValue}
     """
 
     _aaz_info = {

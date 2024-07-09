@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a AutonomousDatabaseBackup
+
+    :example: Get ADBS Backup
+        az oracle-database autonomous-database backup show --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <id>
     """
 
     _aaz_info = {

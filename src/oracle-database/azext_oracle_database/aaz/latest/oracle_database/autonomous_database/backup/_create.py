@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a AutonomousDatabaseBackup
+
+    :example: ADBS Backup Create
+        az oracle-database autonomous-database backup create --autonomousdatabasename <ADBS name> --resource-group <resource_group> --adbbackupid <id> --display-name <display name> --retention-period-in-days <days>
     """
 
     _aaz_info = {
