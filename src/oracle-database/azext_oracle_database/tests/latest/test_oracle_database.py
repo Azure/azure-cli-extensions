@@ -40,7 +40,7 @@ class OracleDatabaseScenario(ScenarioTest):
                           '--cloudexadatainfrastructurename OFake_PowerShellTestExaInfra '
                           '--resource-group PowerShellTestRg ')
         self.cmd('az oracle-database cloud-vm-cluster create '
-                          '--cloud-exadata-infrastructure-id /subscriptions/dcb0912a-9b6f-46e3-a11b-5296913d89b5/resourceGroups/SDKTestRG/providers/Oracle.Database/cloudExadataInfrastructures/DemoExaInfra '
+                          '--cloud-exadata-infrastructure-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SDKTestRG/providers/Oracle.Database/cloudExadataInfrastructures/DemoExaInfra '
                           '--resource-group SDKTestRG '
                           '--location eastus '
                           '--cpu-core-count 6 '
@@ -57,8 +57,8 @@ class OracleDatabaseScenario(ScenarioTest):
                           '--license-model LicenseIncluded '
                           '--memory-size-in-gbs 60 '
                           '--ssh-public-keys \'ssh-rsa keykeykeykeykey generated-by-azure\' '
-                          '--subnet-id /subscriptions/dcb0912a-9b6f-46e3-a11b-5296913d89b5/resourceGroups/SDKTestRG/providers/Microsoft.Network/virtualNetworks/SDKVnet/subnets/SDKSubnet  '
+                          '--subnet-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SDKTestRG/providers/Microsoft.Network/virtualNetworks/SDKVnet/subnets/SDKSubnet  '
                           '--time-zone UTC '
-                          '--vnet-id /subscriptions/dcb0912a-9b6f-46e3-a11b-5296913d89b5/resourceGroups/SDKTestRG/providers/Microsoft.Network/virtualNetworks/SDKVnet '
+                          '--vnet-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SDKTestRG/providers/Microsoft.Network/virtualNetworks/SDKVnet '
                           '--no-wait ')
 

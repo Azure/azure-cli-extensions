@@ -26,13 +26,13 @@ class OracleDatabaseAdbsScenario(ScenarioTest):
         self.cmd('az oracle-database autonomous-database create --location eastus '
                 '--autonomousdatabasename ADBScli1 '
                 '--resource-group SDKTestRG '
-                '--subnet-id /subscriptions/dcb0912a-9b6f-46e3-a11b-5296913d89b5/resourceGroups/SDKTestRG/providers/Microsoft.Network/virtualNetworks/SDKVnet/subnets/SDKSubnet '
+                '--subnet-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SDKTestRG/providers/Microsoft.Network/virtualNetworks/SDKVnet/subnets/SDKSubnet '
                 '--display-name ADBScli1 '
                 '--compute-model ECPU --compute-count 2 '
                 '--data-storage-size-in-gbs 32 --license-model BringYourOwnLicense '
                 '--db-workload OLTP --admin-password TestPass#2024# '
                 '--db-version 19c --character-set AL32UTF8 --ncharacter-set AL16UTF16 '
-                '--vnet-id /subscriptions/dcb0912a-9b6f-46e3-a11b-5296913d89b5/resourceGroups/SDKTestRG/providers/Microsoft.Network/virtualNetworks/SDKVnet --regular --no-wait ')
+                '--vnet-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/SDKTestRG/providers/Microsoft.Network/virtualNetworks/SDKVnet --regular --no-wait ')
         self.cmd('az oracle-database autonomous-database delete '
                 '--autonomousdatabasename ADBScli '
                 '--resource-group SDKTestRG --yes --no-wait ')
