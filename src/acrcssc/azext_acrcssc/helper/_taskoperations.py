@@ -140,12 +140,14 @@ def list_continuous_patch_v1(cmd, registry):
     return filtered_cssc_tasks
 
 
-def acr_cssc_dry_run(cmd, registry, config_file_path):
+def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True):
     logger.debug("Entering acr_cssc_dry_run with parameters: %s %s", registry, config_file_path)
 
     if config_file_path is None:
         logger.error("--config parameter is needed to perform dry-run check.")
         return
+    if is_create and check_continuous_task_exists(cmd, registry):
+        raise AzCLIError(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task already exists. Use 'az acr supply-chain workflow update' command to perform updates.")
     try:
         file_name = os.path.basename(config_file_path)
         tmp_folder = os.path.join(os.getcwd(), tempfile.mkdtemp(prefix="cli_temp_cssc"))

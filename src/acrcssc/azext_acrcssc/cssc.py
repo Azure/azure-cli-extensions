@@ -39,7 +39,7 @@ def _perform_continuous_patch_operation(cmd,
 
     logger.debug('validations completed successfully.')
     if dryrun:
-        acr_cssc_dry_run(cmd, registry=registry, config_file_path=config)
+        acr_cssc_dry_run(cmd, registry=registry, config_file_path=config, is_create=is_create)
     else:
         create_update_continuous_patch_v1(cmd, registry, config, cadence, dryrun, defer_immediate_run, is_create)
 
