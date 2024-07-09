@@ -28,7 +28,7 @@ def restore(grafana_url, archive_file, components, http_headers, destination_dat
         raise ArgumentUsageError(f"failed to open {archive_file} as a tar file") from e
 
     restore_functions = collections.OrderedDict()
-    restore_functions['folder'] = _create_folder
+    restore_functions['folder'] = _load_and_create_folder
     restore_functions['dashboard'] = _load_and_create_dashboard
     restore_functions['library_panel'] = _create_library_panel
     restore_functions['snapshot'] = _create_snapshot
@@ -168,13 +168,19 @@ def _create_snapshot(grafana_url, file_path, http_headers):
 
 
 # Restore folders
-def _create_folder(grafana_url, file_path, http_headers):
+def _load_and_create_folder(grafana_url, file_path, http_headers):
     with open(file_path, 'r', encoding="utf8") as f:
         data = f.read()
 
     folder = json.loads(data)
-    result = send_grafana_post(f'{grafana_url}/api/folders', json.dumps(folder), http_headers)
+    create_folder(grafana_url, folder, http_headers)
+
+
+def create_folder(grafana_url, folder, http_headers):
+    content = json.dumps(folder)
+    result = send_grafana_post(f'{grafana_url}/api/folders', content, http_headers)
     folder_name = folder.get('title', '')
+
     # 412 means the folder already exists
     print_styled_text([
         (Style.WARNING, f'Create folder {folder_name}: '),
