@@ -70,7 +70,7 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.cloud_exadata_infrastructure_id = AAZResourceIdArg(
-            options=["--cloud-exadata-infrastructure-id"],
+            options=["--exa-infra-id", "--cloud-exadata-infrastructure-id"],
             arg_group="Properties",
             help="Cloud Exadata Infrastructure ID",
         )
@@ -89,22 +89,22 @@ class Create(AAZCommand):
             help="The number of CPU cores enabled on the cloud VM cluster.",
         )
         _args_schema.data_collection_options = AAZObjectArg(
-            options=["--data-collection-options"],
+            options=["--collection-options", "--data-collection-options"],
             arg_group="Properties",
             help="Indicates user preferences for the various diagnostic collection options for the VM cluster/Cloud VM cluster/VMBM DBCS.",
         )
         _args_schema.data_storage_percentage = AAZIntArg(
-            options=["--data-storage-percentage"],
+            options=["--storage-percent", "--data-storage-percentage"],
             arg_group="Properties",
-            help="The percentage assigned to DATA storage (user data and database files). The remaining percentage is assigned to RECO storage (database redo logs, archive logs, and recovery manager backups). Accepted values are 35, 40, 60 and 80. The default is 80 percent assigned to DATA storage. See [Storage Configuration](/Content/Database/Concepts/exaoverview.htm#Exadata) in the Exadata documentation for details on the impact of the configuration settings on storage. ",
+            help="The percentage assigned to DATA storage (user data and database files). The remaining percentage is assigned to RECO storage (database redo logs, archive logs, and recovery manager backups). Accepted values are 35, 40, 60 and 80. The default is 80 percent assigned to DATA storage. See [Storage Configuration](/Content/Database/Concepts/exaoverview.htm#Exadata) in the Exadata documentation for details on the impact of the configuration settings on storage.",
         )
         _args_schema.data_storage_size_in_tbs = AAZFloatArg(
-            options=["--data-storage-size-in-tbs"],
+            options=["--storage-tbs", "--data-storage-size-in-tbs"],
             arg_group="Properties",
             help="The data disk group size to be allocated in TBs.",
         )
         _args_schema.db_node_storage_size_in_gbs = AAZIntArg(
-            options=["--db-node-storage-size-in-gbs"],
+            options=["--node-storage-gbs", "--db-node-storage-size-in-gbs"],
             arg_group="Properties",
             help="The local node storage to be allocated in GBs.",
         )
@@ -142,15 +142,15 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.is_local_backup_enabled = AAZBoolArg(
-            options=["--is-local-backup-enabled"],
+            options=["--local-backup-enabled", "--is-local-backup-enabled"],
             arg_group="Properties",
-            help="If true, database backup on local Exadata storage is configured for the cloud VM cluster. If false, database backup on local Exadata storage is not available in the cloud VM cluster. ",
+            help="If true, database backup on local Exadata storage is configured for the cloud VM cluster. If false, database backup on local Exadata storage is not available in the cloud VM cluster.",
             default=False,
         )
         _args_schema.is_sparse_diskgroup_enabled = AAZBoolArg(
-            options=["--is-sparse-diskgroup-enabled"],
+            options=["--sparse-diskgroup", "--is-sparse-diskgroup-enabled"],
             arg_group="Properties",
-            help="If true, sparse disk group is configured for the cloud VM cluster. If false, sparse disk group is not created. ",
+            help="If true, sparse disk group is configured for the cloud VM cluster. If false, sparse disk group is not created.",
             default=False,
         )
         _args_schema.license_model = AAZStrArg(
@@ -180,7 +180,7 @@ class Create(AAZCommand):
             help="The TCP Single Client Access Name (SCAN) port. The default port is 1521.",
         )
         _args_schema.scan_listener_port_tcp_ssl = AAZIntArg(
-            options=["--scan-listener-port-tcp-ssl"],
+            options=["--scan-tcps-port", "--scan-listener-port-tcp-ssl"],
             arg_group="Properties",
             help="The TCPS Single Client Access Name (SCAN) port. The default port is 2484.",
         )

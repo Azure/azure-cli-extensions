@@ -46,7 +46,7 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.cloudexadatainfrastructurename = AAZStrArg(
-            options=["--cloudexadatainfrastructurename"],
+            options=["--exainfraname", "--cloudexadatainfrastructurename"],
             help="CloudExadataInfrastructure name",
             required=True,
             fmt=AAZStrArgFormat(

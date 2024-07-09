@@ -88,14 +88,14 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.autonomous_maintenance_schedule_type = AAZStrArg(
-            options=["--autonomous-maintenance-schedule-type"],
+            options=["--schedule-type", "--autonomous-maintenance-schedule-type"],
             arg_group="Properties",
             help="The maintenance schedule type of the Autonomous Database Serverless.",
             nullable=True,
             enum={"Early": "Early", "Regular": "Regular"},
         )
         _args_schema.backup_retention_period_in_days = AAZIntArg(
-            options=["--backup-retention-period-in-days"],
+            options=["--retention-days", "--backup-retention-period-in-days"],
             arg_group="Properties",
             help="Retention period, in days, for long-term backups",
             nullable=True,
@@ -127,7 +127,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.data_storage_size_in_gbs = AAZIntArg(
-            options=["--data-storage-size-in-gbs"],
+            options=["--storage-gbs", "--data-storage-size-in-gbs"],
             arg_group="Properties",
             help="The size, in gigabytes, of the data volume that will be created and attached to the database.",
             nullable=True,
@@ -137,7 +137,7 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.data_storage_size_in_tbs = AAZIntArg(
-            options=["--data-storage-size-in-tbs"],
+            options=["--storage-tbs", "--data-storage-size-in-tbs"],
             arg_group="Properties",
             help="The quantity of data in the database, in terabytes.",
             nullable=True,
@@ -164,25 +164,25 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.is_auto_scaling_enabled = AAZBoolArg(
-            options=["--is-auto-scaling-enabled"],
+            options=["--cpu-auto-scaling", "--is-auto-scaling-enabled"],
             arg_group="Properties",
             help="Indicates if auto scaling is enabled for the Autonomous Database CPU core count.",
             nullable=True,
         )
         _args_schema.is_auto_scaling_for_storage_enabled = AAZBoolArg(
-            options=["--is-auto-scaling-for-storage-enabled"],
+            options=["--store-auto-scaling", "--is-auto-scaling-for-storage-enabled"],
             arg_group="Properties",
             help="Indicates if auto scaling is enabled for the Autonomous Database storage.",
             nullable=True,
         )
         _args_schema.is_local_data_guard_enabled = AAZBoolArg(
-            options=["--is-local-data-guard-enabled"],
+            options=["--local-data-guard", "--is-local-data-guard-enabled"],
             arg_group="Properties",
             help="Indicates whether the Autonomous Database has local or called in-region Data Guard enabled.",
             nullable=True,
         )
         _args_schema.is_mtls_connection_required = AAZBoolArg(
-            options=["--is-mtls-connection-required"],
+            options=["--mtls-reqd", "--is-mtls-connection-required"],
             arg_group="Properties",
             help="Specifies if the Autonomous Database requires mTLS connections.",
             nullable=True,
@@ -195,7 +195,7 @@ class Update(AAZCommand):
             enum={"BringYourOwnLicense": "BringYourOwnLicense", "LicenseIncluded": "LicenseIncluded"},
         )
         _args_schema.local_adg_auto_failover_max_data_loss_limit = AAZIntArg(
-            options=["--local-adg-auto-failover-max-data-loss-limit"],
+            options=["--failover-limit", "--local-adg-auto-failover-max-data-loss-limit"],
             arg_group="Properties",
             help="Parameter that allows users to select an acceptable maximum data loss limit in seconds, up to which Automatic Failover will be triggered when necessary for a Local Autonomous Data Guard",
             nullable=True,
@@ -205,7 +205,7 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.long_term_backup_schedule = AAZObjectArg(
-            options=["--long-term-backup-schedule"],
+            options=["--backup-schedule", "--long-term-backup-schedule"],
             arg_group="Properties",
             help="Details for the long-term backup schedule.",
             nullable=True,

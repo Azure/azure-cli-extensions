@@ -89,13 +89,13 @@ class Create(AAZCommand):
             help="Autonomous Database ID",
         )
         _args_schema.autonomous_maintenance_schedule_type = AAZStrArg(
-            options=["--autonomous-maintenance-schedule-type"],
+            options=["--schedule-type", "--autonomous-maintenance-schedule-type"],
             arg_group="Properties",
             help="The maintenance schedule type of the Autonomous Database Serverless.",
             enum={"Early": "Early", "Regular": "Regular"},
         )
         _args_schema.backup_retention_period_in_days = AAZIntArg(
-            options=["--backup-retention-period-in-days"],
+            options=["--retention-days", "--backup-retention-period-in-days"],
             arg_group="Properties",
             help="Retention period, in days, for long-term backups",
         )
@@ -138,7 +138,7 @@ class Create(AAZCommand):
             help="Customer Contacts.",
         )
         _args_schema.data_storage_size_in_gbs = AAZIntArg(
-            options=["--data-storage-size-in-gbs"],
+            options=["--storage-gbs", "--data-storage-size-in-gbs"],
             arg_group="Properties",
             help="The size, in gigabytes, of the data volume that will be created and attached to the database.",
             fmt=AAZIntArgFormat(
@@ -147,7 +147,7 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.data_storage_size_in_tbs = AAZIntArg(
-            options=["--data-storage-size-in-tbs"],
+            options=["--storage-tbs", "--data-storage-size-in-tbs"],
             arg_group="Properties",
             help="The quantity of data in the database, in terabytes.",
             fmt=AAZIntArgFormat(
@@ -186,27 +186,27 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.is_auto_scaling_enabled = AAZBoolArg(
-            options=["--is-auto-scaling-enabled"],
+            options=["--cpu-auto-scaling", "--is-auto-scaling-enabled"],
             arg_group="Properties",
             help="Indicates if auto scaling is enabled for the Autonomous Database CPU core count.",
         )
         _args_schema.is_auto_scaling_for_storage_enabled = AAZBoolArg(
-            options=["--is-auto-scaling-for-storage-enabled"],
+            options=["--store-auto-scaling", "--is-auto-scaling-for-storage-enabled"],
             arg_group="Properties",
             help="Indicates if auto scaling is enabled for the Autonomous Database storage.",
         )
         _args_schema.is_local_data_guard_enabled = AAZBoolArg(
-            options=["--is-local-data-guard-enabled"],
+            options=["--local-data-guard", "--is-local-data-guard-enabled"],
             arg_group="Properties",
             help="Indicates whether the Autonomous Database has local or called in-region Data Guard enabled.",
         )
         _args_schema.is_mtls_connection_required = AAZBoolArg(
-            options=["--is-mtls-connection-required"],
+            options=["--mtls-reqd", "--is-mtls-connection-required"],
             arg_group="Properties",
             help="Specifies if the Autonomous Database requires mTLS connections.",
         )
         _args_schema.is_preview_version_with_service_terms_accepted = AAZBoolArg(
-            options=["--is-preview-version-with-service-terms-accepted"],
+            options=["--preview-accepted", "--is-preview-version-with-service-terms-accepted"],
             arg_group="Properties",
             help="Specifies if the Autonomous Database preview version is being provisioned.",
         )

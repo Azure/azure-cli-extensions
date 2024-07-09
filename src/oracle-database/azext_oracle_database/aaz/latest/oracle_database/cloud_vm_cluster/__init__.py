@@ -13,7 +13,6 @@ from ._add_vm import *
 from ._create import *
 from ._delete import *
 from ._list import *
-from ._list_private_ip_address import *
 from ._remove_vm import *
 from ._show import *
 from ._update import *

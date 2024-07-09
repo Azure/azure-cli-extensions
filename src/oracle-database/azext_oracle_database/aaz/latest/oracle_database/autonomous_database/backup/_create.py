@@ -76,7 +76,7 @@ class Create(AAZCommand):
             help="The user-friendly name for the backup. The name does not have to be unique.",
         )
         _args_schema.retention_period_in_days = AAZIntArg(
-            options=["--retention-period-in-days"],
+            options=["--retention-days", "--retention-period-in-days"],
             arg_group="Properties",
             help="Retention period, in days, for long-term backups.",
             fmt=AAZIntArgFormat(

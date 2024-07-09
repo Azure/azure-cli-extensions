@@ -75,19 +75,19 @@ class Update(AAZCommand):
             help="The number of CPU cores enabled on the cloud VM cluster.",
         )
         _args_schema.data_collection_options = AAZObjectArg(
-            options=["--data-collection-options"],
+            options=["--collection-options", "--data-collection-options"],
             arg_group="Properties",
             help="Indicates user preferences for the various diagnostic collection options for the VM cluster/Cloud VM cluster/VMBM DBCS.",
             nullable=True,
         )
         _args_schema.data_storage_size_in_tbs = AAZFloatArg(
-            options=["--data-storage-size-in-tbs"],
+            options=["--storage-tbs", "--data-storage-size-in-tbs"],
             arg_group="Properties",
             help="The data disk group size to be allocated in TBs.",
             nullable=True,
         )
         _args_schema.db_node_storage_size_in_gbs = AAZIntArg(
-            options=["--db-node-storage-size-in-gbs"],
+            options=["--node-storage-gbs", "--db-node-storage-size-in-gbs"],
             arg_group="Properties",
             help="The local node storage to be allocated in GBs.",
             nullable=True,

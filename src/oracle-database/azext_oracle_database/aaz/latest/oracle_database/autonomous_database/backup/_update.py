@@ -75,7 +75,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.retention_period_in_days = AAZIntArg(
-            options=["--retention-period-in-days"],
+            options=["--retention-days", "--retention-period-in-days"],
             arg_group="Properties",
             help="Retention period, in days, for long-term backups.",
             nullable=True,
