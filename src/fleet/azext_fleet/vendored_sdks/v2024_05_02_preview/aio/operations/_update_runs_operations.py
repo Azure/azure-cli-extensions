@@ -7,7 +7,8 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 from io import IOBase
-from typing import Any, AsyncIterable, Callable, Dict, IO, Optional, TypeVar, Union, cast, overload
+import sys
+from typing import Any, AsyncIterable, Callable, Dict, IO, Optional, Type, TypeVar, Union, cast, overload
 import urllib.parse
 
 from azure.core.async_paging import AsyncItemPaged, AsyncList
@@ -41,6 +42,10 @@ from ...operations._update_runs_operations import (
     build_stop_request,
 )
 
+if sys.version_info >= (3, 9):
+    from collections.abc import MutableMapping
+else:
+    from typing import MutableMapping  # type: ignore  # pylint: disable=ungrouped-imports
 T = TypeVar("T")
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
@@ -51,7 +56,7 @@ class UpdateRunsOperations:
         **DO NOT** instantiate this class directly.
 
         Instead, you should access the following operations through
-        :class:`~azure.mgmt.containerservicefleet.v2024_02_02_preview.aio.ContainerServiceFleetMgmtClient`'s
+        :class:`~azure.mgmt.containerservicefleet.v2024_05_02_preview.aio.ContainerServiceFleetMgmtClient`'s
         :attr:`update_runs` attribute.
     """
 
@@ -78,18 +83,18 @@ class UpdateRunsOperations:
         :type fleet_name: str
         :return: An iterator like instance of either UpdateRun or the result of cls(response)
         :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservicefleet.v2024_02_02_preview.models.UpdateRun]
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.containerservicefleet.v2024_05_02_preview.models.UpdateRun]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2024-02-02-preview")
+            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
         )
         cls: ClsType[_models.UpdateRunListResult] = kwargs.pop("cls", None)
 
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -168,10 +173,10 @@ class UpdateRunsOperations:
         :param update_run_name: The name of the UpdateRun resource. Required.
         :type update_run_name: str
         :return: UpdateRun or the result of cls(response)
-        :rtype: ~azure.mgmt.containerservicefleet.v2024_02_02_preview.models.UpdateRun
+        :rtype: ~azure.mgmt.containerservicefleet.v2024_05_02_preview.models.UpdateRun
         :raises ~azure.core.exceptions.HttpResponseError:
         """
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -183,7 +188,7 @@ class UpdateRunsOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2024-02-02-preview")
+            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
         )
         cls: ClsType[_models.UpdateRun] = kwargs.pop("cls", None)
 
@@ -228,7 +233,7 @@ class UpdateRunsOperations:
         if_none_match: Optional[str] = None,
         **kwargs: Any
     ) -> _models.UpdateRun:
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -240,7 +245,7 @@ class UpdateRunsOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2024-02-02-preview")
+            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.UpdateRun] = kwargs.pop("cls", None)
@@ -319,7 +324,7 @@ class UpdateRunsOperations:
         :param update_run_name: The name of the UpdateRun resource. Required.
         :type update_run_name: str
         :param resource: Resource create parameters. Required.
-        :type resource: ~azure.mgmt.containerservicefleet.v2024_02_02_preview.models.UpdateRun
+        :type resource: ~azure.mgmt.containerservicefleet.v2024_05_02_preview.models.UpdateRun
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -332,7 +337,7 @@ class UpdateRunsOperations:
         :return: An instance of AsyncLROPoller that returns either UpdateRun or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2024_02_02_preview.models.UpdateRun]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2024_05_02_preview.models.UpdateRun]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -372,7 +377,7 @@ class UpdateRunsOperations:
         :return: An instance of AsyncLROPoller that returns either UpdateRun or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2024_02_02_preview.models.UpdateRun]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2024_05_02_preview.models.UpdateRun]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -398,7 +403,7 @@ class UpdateRunsOperations:
         :type update_run_name: str
         :param resource: Resource create parameters. Is either a UpdateRun type or a IO[bytes] type.
          Required.
-        :type resource: ~azure.mgmt.containerservicefleet.v2024_02_02_preview.models.UpdateRun or
+        :type resource: ~azure.mgmt.containerservicefleet.v2024_05_02_preview.models.UpdateRun or
          IO[bytes]
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
@@ -409,14 +414,14 @@ class UpdateRunsOperations:
         :return: An instance of AsyncLROPoller that returns either UpdateRun or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2024_02_02_preview.models.UpdateRun]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2024_05_02_preview.models.UpdateRun]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2024-02-02-preview")
+            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.UpdateRun] = kwargs.pop("cls", None)
@@ -474,7 +479,7 @@ class UpdateRunsOperations:
         if_match: Optional[str] = None,
         **kwargs: Any
     ) -> None:
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -486,7 +491,7 @@ class UpdateRunsOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2024-02-02-preview")
+            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
 
@@ -517,8 +522,8 @@ class UpdateRunsOperations:
 
         response_headers = {}
         if response.status_code == 202:
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
             response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
-            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
 
         if cls:
             return cls(pipeline_response, None, response_headers)  # type: ignore
@@ -552,7 +557,7 @@ class UpdateRunsOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2024-02-02-preview")
+            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
         )
         cls: ClsType[None] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -602,7 +607,7 @@ class UpdateRunsOperations:
         if_match: Optional[str] = None,
         **kwargs: Any
     ) -> Optional[_models.UpdateRun]:
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -614,7 +619,7 @@ class UpdateRunsOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2024-02-02-preview")
+            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[Optional[_models.UpdateRun]] = kwargs.pop("cls", None)
@@ -661,8 +666,8 @@ class UpdateRunsOperations:
             deserialized = self._deserialize("UpdateRun", pipeline_response)
 
         if response.status_code == 202:
-            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
             response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
+            response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
 
         if cls:
             return cls(pipeline_response, deserialized, response_headers)  # type: ignore
@@ -691,7 +696,7 @@ class UpdateRunsOperations:
         :param update_run_name: The name of the UpdateRun resource. Required.
         :type update_run_name: str
         :param body: The content of the action request. Required.
-        :type body: ~azure.mgmt.containerservicefleet.v2024_02_02_preview.models.SkipProperties
+        :type body: ~azure.mgmt.containerservicefleet.v2024_05_02_preview.models.SkipProperties
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
         :type if_match: str
@@ -701,7 +706,7 @@ class UpdateRunsOperations:
         :return: An instance of AsyncLROPoller that returns either UpdateRun or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2024_02_02_preview.models.UpdateRun]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2024_05_02_preview.models.UpdateRun]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -737,7 +742,7 @@ class UpdateRunsOperations:
         :return: An instance of AsyncLROPoller that returns either UpdateRun or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2024_02_02_preview.models.UpdateRun]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2024_05_02_preview.models.UpdateRun]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
 
@@ -762,7 +767,7 @@ class UpdateRunsOperations:
         :type update_run_name: str
         :param body: The content of the action request. Is either a SkipProperties type or a IO[bytes]
          type. Required.
-        :type body: ~azure.mgmt.containerservicefleet.v2024_02_02_preview.models.SkipProperties or
+        :type body: ~azure.mgmt.containerservicefleet.v2024_05_02_preview.models.SkipProperties or
          IO[bytes]
         :param if_match: The request should only proceed if an entity matches this string. Default
          value is None.
@@ -770,14 +775,14 @@ class UpdateRunsOperations:
         :return: An instance of AsyncLROPoller that returns either UpdateRun or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2024_02_02_preview.models.UpdateRun]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2024_05_02_preview.models.UpdateRun]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2024-02-02-preview")
+            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
         )
         content_type: Optional[str] = kwargs.pop("content_type", _headers.pop("Content-Type", None))
         cls: ClsType[_models.UpdateRun] = kwargs.pop("cls", None)
@@ -833,7 +838,7 @@ class UpdateRunsOperations:
         if_match: Optional[str] = None,
         **kwargs: Any
     ) -> Optional[_models.UpdateRun]:
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -845,7 +850,7 @@ class UpdateRunsOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2024-02-02-preview")
+            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
         )
         cls: ClsType[Optional[_models.UpdateRun]] = kwargs.pop("cls", None)
 
@@ -880,8 +885,8 @@ class UpdateRunsOperations:
             deserialized = self._deserialize("UpdateRun", pipeline_response)
 
         if response.status_code == 202:
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
             response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
-            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
 
         if cls:
             return cls(pipeline_response, deserialized, response_headers)  # type: ignore
@@ -912,14 +917,14 @@ class UpdateRunsOperations:
         :return: An instance of AsyncLROPoller that returns either UpdateRun or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2024_02_02_preview.models.UpdateRun]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2024_05_02_preview.models.UpdateRun]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2024-02-02-preview")
+            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
         )
         cls: ClsType[_models.UpdateRun] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
@@ -972,7 +977,7 @@ class UpdateRunsOperations:
         if_match: Optional[str] = None,
         **kwargs: Any
     ) -> Optional[_models.UpdateRun]:
-        error_map = {
+        error_map: MutableMapping[int, Type[HttpResponseError]] = {
             401: ClientAuthenticationError,
             404: ResourceNotFoundError,
             409: ResourceExistsError,
@@ -984,7 +989,7 @@ class UpdateRunsOperations:
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2024-02-02-preview")
+            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
         )
         cls: ClsType[Optional[_models.UpdateRun]] = kwargs.pop("cls", None)
 
@@ -1019,8 +1024,8 @@ class UpdateRunsOperations:
             deserialized = self._deserialize("UpdateRun", pipeline_response)
 
         if response.status_code == 202:
+            response_headers["Location"] = self._deserialize("str", response.headers.get("Location"))
             response_headers["Retry-After"] = self._deserialize("int", response.headers.get("Retry-After"))
-            response_headers["location"] = self._deserialize("str", response.headers.get("location"))
 
         if cls:
             return cls(pipeline_response, deserialized, response_headers)  # type: ignore
@@ -1051,14 +1056,14 @@ class UpdateRunsOperations:
         :return: An instance of AsyncLROPoller that returns either UpdateRun or the result of
          cls(response)
         :rtype:
-         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2024_02_02_preview.models.UpdateRun]
+         ~azure.core.polling.AsyncLROPoller[~azure.mgmt.containerservicefleet.v2024_05_02_preview.models.UpdateRun]
         :raises ~azure.core.exceptions.HttpResponseError:
         """
         _headers = kwargs.pop("headers", {}) or {}
         _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
         api_version: str = kwargs.pop(
-            "api_version", _params.pop("api-version", self._api_version or "2024-02-02-preview")
+            "api_version", _params.pop("api-version", self._api_version or "2024-05-02-preview")
         )
         cls: ClsType[_models.UpdateRun] = kwargs.pop("cls", None)
         polling: Union[bool, AsyncPollingMethod] = kwargs.pop("polling", True)
