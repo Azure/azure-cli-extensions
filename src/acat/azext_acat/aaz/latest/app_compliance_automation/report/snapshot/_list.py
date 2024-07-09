@@ -29,7 +29,8 @@ class List(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 

@@ -80,7 +80,7 @@ class AcatReportScenario(ScenarioTest):
             'acat report download --report-name {report_name_snapshot} --download-type "ComplianceReport"')
         #  assest the downloaded file exists
         assert(os.path.isfile(ret.output[20:-2]))
-        
+
         report = self.cmd(
             'acat report show --report-name {report_name_snapshot}')
         assert(report.get_output_in_json()['lastTriggerTime'] != None)
@@ -97,7 +97,7 @@ class AcatReportScenario(ScenarioTest):
         assert(report.get_output_in_json()['lastTriggerTime'] != None)
         ret=self.cmd(
             'acat report get-control-assessments --report-name {report_name_snapshot}')
-        output=ret.get_output_in_json()
+        output = ret.get_output_in_json()["complianceResults"][0]["categories"]
         assert(output != None)
         assert(len(output) ==2)
         assert(output[0]['controlFamilies'] != None)
