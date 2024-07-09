@@ -8,7 +8,7 @@ from knack.log import get_logger
 from datetime import (datetime, timezone)
 import shutil
 from azure.cli.core.azclierror import InvalidArgumentValueError
-from ._constants import ERROR_MESSAGE_INVALID_TIMESPAN, TMP_DRY_RUN_FILE_NAME
+from ._constants import ERROR_MESSAGE_INVALID_TIMESPAN_VALUE, TMP_DRY_RUN_FILE_NAME
 
 logger = get_logger(__name__)
 
@@ -26,8 +26,8 @@ def convert_timespan_to_cron(cadence, date_time=None):
     cron_minute = date_time.minute
 
     if unit == 'd':  # day of the month
-        if value > 30:
-            raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN)
+        if value < 1 or value > 30:
+            raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE)
         cron_expression = f'{cron_minute} {cron_hour} */{value} * *'
 
     return cron_expression

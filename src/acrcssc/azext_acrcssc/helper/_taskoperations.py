@@ -207,7 +207,7 @@ def _trigger_task_run(cmd, registry, resource_group, task_name):
             registry.name,
             request))
     run_id = queued_run.run_id
-    print(f"Queued {CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task '{task_name}' with run ID: {run_id}. Use 'az acr task logs' to view the logs.")
+    print(f"Queued {CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task '{task_name}' with run ID: {run_id}. Use 'az acr task logs --registry {registry.name} --run-id {run_id}' to view the logs.")
 
 
 def _create_encoded_task(task_file):

@@ -8,8 +8,13 @@ import json
 import os
 import re
 from knack.log import get_logger
-from .helper._constants import (CONTINUOUSPATCH_CONFIG_SCHEMA_V1, CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT,
-                                CONTINUOSPATCH_ALL_TASK_NAMES, ERROR_MESSAGE_INVALID_TIMESPAN, RESOURCE_GROUP)
+from .helper._constants import (
+    CONTINUOUSPATCH_CONFIG_SCHEMA_V1,
+    CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT,
+    CONTINUOSPATCH_ALL_TASK_NAMES,
+    ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT,
+    ERROR_MESSAGE_INVALID_TIMESPAN_VALUE,
+    RESOURCE_GROUP)
 from .helper._constants import CSSCTaskTypes, ERROR_MESSAGE_INVALID_TASK, RECOMMENDATION_CADENCE
 from azure.mgmt.core.tools import (parse_resource_id)
 from azure.cli.core.azclierror import InvalidArgumentValueError
@@ -78,12 +83,12 @@ def _validate_cadence(cadence):
     # Extract the numeric value and unit from the timespan expression
     match = re.match(r'(\d+)(d)$', cadence)
     if not match:
-        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN, recommendation=RECOMMENDATION_CADENCE)
+        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT, recommendation=RECOMMENDATION_CADENCE)
     if match is not None:
         value = int(match.group(1))
         unit = match.group(2)
-    if unit == 'd' and value > 30:  # day of the month
-        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN, recommendation=RECOMMENDATION_CADENCE)
+    if unit == 'd' and (value < 1 or value > 30):  # day of the month
+        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE, recommendation=RECOMMENDATION_CADENCE)
 
 
 def validate_inputs(cadence, config_file_path=None):
