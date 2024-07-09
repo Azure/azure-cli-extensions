@@ -10,15 +10,14 @@
 
 from azure.cli.core.aaz import *
 
-
-class Show(AAZCommand):
+class DraftShow(AAZCommand):
     """List all intrusion detection configuration
     """
 
     _aaz_info = {
-        "version": "2022-01-01",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/firewallpolicies/{}", "2022-01-01", "properties.intrusionDetection.configuration"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/firewallpolicies/{}/firewallpolicyDrafts/default", "2023-09-01", "properties.intrusionDetection.configuration"],
         ]
     }
 
@@ -91,7 +90,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/firewallPolicies/{firewallPolicyName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/firewallPolicies/{firewallPolicyName}/firewallPolicyDrafts/default",
                 **self.url_parameters
             )
 
@@ -125,7 +124,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -199,42 +198,11 @@ class _ShowHelper:
             flags={"read_only": True},
         )
 
-        identity = _schema_firewall_policy_read.identity
-        identity.principal_id = AAZStrType(
-            serialized_name="principalId",
-            flags={"read_only": True},
-        )
-        identity.tenant_id = AAZStrType(
-            serialized_name="tenantId",
-            flags={"read_only": True},
-        )
-        identity.type = AAZStrType()
-        identity.user_assigned_identities = AAZDictType(
-            serialized_name="userAssignedIdentities",
-        )
-
-        user_assigned_identities = _schema_firewall_policy_read.identity.user_assigned_identities
-        user_assigned_identities.Element = AAZObjectType()
-
-        _element = _schema_firewall_policy_read.identity.user_assigned_identities.Element
-        _element.client_id = AAZStrType(
-            serialized_name="clientId",
-            flags={"read_only": True},
-        )
-        _element.principal_id = AAZStrType(
-            serialized_name="principalId",
-            flags={"read_only": True},
-        )
-
         properties = _schema_firewall_policy_read.properties
         properties.base_policy = AAZObjectType(
             serialized_name="basePolicy",
         )
-        cls._build_schema_sub_resource_read(properties.base_policy)
-        properties.child_policies = AAZListType(
-            serialized_name="childPolicies",
-            flags={"read_only": True},
-        )
+        
         properties.dns_settings = AAZObjectType(
             serialized_name="dnsSettings",
         )
@@ -265,13 +233,6 @@ class _ShowHelper:
         properties.threat_intel_whitelist = AAZObjectType(
             serialized_name="threatIntelWhitelist",
         )
-        properties.transport_security = AAZObjectType(
-            serialized_name="transportSecurity",
-        )
-
-        child_policies = _schema_firewall_policy_read.properties.child_policies
-        child_policies.Element = AAZObjectType()
-        cls._build_schema_sub_resource_read(child_policies.Element)
 
         dns_settings = _schema_firewall_policy_read.properties.dns_settings
         dns_settings.enable_proxy = AAZBoolType(
@@ -438,17 +399,6 @@ class _ShowHelper:
         ip_addresses = _schema_firewall_policy_read.properties.threat_intel_whitelist.ip_addresses
         ip_addresses.Element = AAZStrType()
 
-        transport_security = _schema_firewall_policy_read.properties.transport_security
-        transport_security.certificate_authority = AAZObjectType(
-            serialized_name="certificateAuthority",
-        )
-
-        certificate_authority = _schema_firewall_policy_read.properties.transport_security.certificate_authority
-        certificate_authority.key_vault_secret_id = AAZStrType(
-            serialized_name="keyVaultSecretId",
-        )
-        certificate_authority.name = AAZStrType()
-
         tags = _schema_firewall_policy_read.tags
         tags.Element = AAZStrType()
 
@@ -477,4 +427,4 @@ class _ShowHelper:
         _schema.id = cls._schema_sub_resource_read.id
 
 
-__all__ = ["Show"]
+__all__ = ["DraftShow"]
