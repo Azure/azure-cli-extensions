@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "app-compliance-automation report snapshot download",
+    "acat report snapshot download",
 )
 class Download(AAZCommand):
     """Download compliance needs from snapshot, like: Compliance Report, Resource List.
@@ -77,8 +77,8 @@ class Download(AAZCommand):
                 min_length=1,
             ),
         )
-        _args_schema.report_creator_tenant_id = AAZStrArg(
-            options=["--report-creator-tenant-id"],
+        _args_schema.tenant = AAZStrArg(
+            options=["--tenant"],
             arg_group="Parameters",
             help="Tenant id.",
         )
@@ -188,7 +188,7 @@ class Download(AAZCommand):
             )
             _builder.set_prop("downloadType", AAZStrType, ".download_type", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("offerGuid", AAZStrType, ".offer_guid")
-            _builder.set_prop("reportCreatorTenantId", AAZStrType, ".report_creator_tenant_id")
+            _builder.set_prop("reportCreatorTenantId", AAZStrType, ".tenant")
 
             return self.serialize_content(_content_value)
 

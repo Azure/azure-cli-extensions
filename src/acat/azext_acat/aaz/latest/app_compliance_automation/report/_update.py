@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "app-compliance-automation report update",
+    "acat report update",
 )
 class Update(AAZCommand):
-    """Update an exiting AppComplianceAutomation report.
+    """Update a new AppComplianceAutomation report or update an exiting AppComplianceAutomation report.
     """
 
     _aaz_info = {

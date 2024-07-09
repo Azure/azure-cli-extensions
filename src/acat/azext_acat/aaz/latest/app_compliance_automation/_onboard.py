@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "app-compliance-automation onboard",
+    "acat onboard",
 )
 class Onboard(AAZCommand):
     """Onboard given subscriptions to Microsoft.AppComplianceAutomation provider.

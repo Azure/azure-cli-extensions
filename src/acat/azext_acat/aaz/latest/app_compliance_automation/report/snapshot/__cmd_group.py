@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "app-compliance-automation report snapshot",
+    "acat report snapshot",
 )
 class __CMDGroup(AAZCommandGroup):
     """manage ACAT report snapshots

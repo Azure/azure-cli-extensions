@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "app-compliance-automation report snapshot list",
+    "acat report snapshot list",
 )
 class List(AAZCommand):
     """List the AppComplianceAutomation snapshot list.
@@ -71,8 +71,8 @@ class List(AAZCommand):
                 min_length=1,
             ),
         )
-        _args_schema.report_creator_tenant_id = AAZStrArg(
-            options=["--report-creator-tenant-id"],
+        _args_schema.tenant = AAZStrArg(
+            options=["--tenant"],
             help="The tenant id of the report creator.",
             fmt=AAZStrArgFormat(
                 min_length=1,
@@ -175,7 +175,7 @@ class List(AAZCommand):
                     "offerGuid", self.ctx.args.offer_guid,
                 ),
                 **self.serialize_query_param(
-                    "reportCreatorTenantId", self.ctx.args.report_creator_tenant_id,
+                    "reportCreatorTenantId", self.ctx.args.tenant,
                 ),
                 **self.serialize_query_param(
                     "api-version", "2024-06-27",

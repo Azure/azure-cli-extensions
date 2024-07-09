@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "app-compliance-automation report show",
+    "acat report show",
 )
 class Show(AAZCommand):
     """Get the AppComplianceAutomation report and its properties.

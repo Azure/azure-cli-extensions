@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "app-compliance-automation report webhook",
+    "acat report webhook",
 )
 class __CMDGroup(AAZCommandGroup):
     """manage ACAT report webhooks

@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "app-compliance-automation report create",
+    "acat report create",
 )
 class Create(AAZCommand):
     """Create a new AppComplianceAutomation report or update an exiting AppComplianceAutomation report.

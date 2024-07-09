@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "app-compliance-automation report",
+    "acat report",
 )
 class __CMDGroup(AAZCommandGroup):
-    """manage ACAT reports
+    """ Manage App Compliance Automation Tool reports.
     """
     pass
 

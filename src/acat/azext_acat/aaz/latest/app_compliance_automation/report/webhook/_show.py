@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "app-compliance-automation report webhook show",
+    "acat report webhook show",
 )
 class Show(AAZCommand):
     """Get the AppComplianceAutomation webhook and its properties.

@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "app-compliance-automation report delete",
+    "acat report delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):

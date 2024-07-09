@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "app-compliance-automation trigger-evaluation",
+    "acat trigger-evaluation",
 )
 class TriggerEvaluation(AAZCommand):
     """Trigger quick evaluation for the given subscriptions.

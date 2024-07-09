@@ -10,3 +10,4 @@
 
 from .__cmd_group import *
 from ._onboard import *
+from ._trigger_evaluation import *

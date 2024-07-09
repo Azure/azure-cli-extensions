@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "app-compliance-automation report webhook create",
+    "acat report webhook create",
 )
 class Create(AAZCommand):
     """Create a new AppComplianceAutomation webhook or update an exiting AppComplianceAutomation webhook.
@@ -67,10 +67,11 @@ class Create(AAZCommand):
             help="content type",
             enum={"application/json": "application/json"},
         )
-        _args_schema.enable_ssl_verification = AAZStrArg(
-            options=["--enable-ssl-verification"],
+        _args_schema.enable_ssl = AAZStrArg(
+            options=["--enable-ssl"],
             arg_group="Properties",
             help="whether to enable ssl verification",
+            default="true",
             enum={"false": "false", "true": "true"},
         )
         _args_schema.events = AAZListArg(
@@ -210,7 +211,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("contentType", AAZStrType, ".content_type")
-                properties.set_prop("enableSslVerification", AAZStrType, ".enable_ssl_verification")
+                properties.set_prop("enableSslVerification", AAZStrType, ".enable_ssl")
                 properties.set_prop("events", AAZListType, ".events")
                 properties.set_prop("payloadUrl", AAZStrType, ".payload_url")
                 properties.set_prop("sendAllEvents", AAZStrType, ".send_all_events")
