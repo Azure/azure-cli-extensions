@@ -65,6 +65,7 @@ class Create(AAZCommand):
             options=["--content-type-hidden"],
             arg_group="Properties",
             help="content type",
+            default="application/json",
             enum={"application/json": "application/json"},
         )
         _args_schema.enable_ssl = AAZStrArg(
@@ -75,16 +76,17 @@ class Create(AAZCommand):
             enum={"false": "false", "true": "true"},
         )
         _args_schema.events = AAZListArg(
-            options=["--events-hidden"],
+            options=["--events"],
             arg_group="Properties",
             help="under which event notification should be sent.",
+            default=[],
         )
         _args_schema.payload_url = AAZStrArg(
             options=["--payload-url"],
             arg_group="Properties",
             help="webhook payload url",
             fmt=AAZStrArgFormat(
-                pattern="^(http(s)?://)[\S]{0,64994}$",
+                pattern="^(http(s)?://)[\\S]{0,64994}$",
             ),
         )
         _args_schema.send_all_events = AAZStrArg(

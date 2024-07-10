@@ -350,10 +350,6 @@ class CreateAcatReportWebhook(_AcatCreateReportWebhook):
         from azure.cli.core.aaz import AAZListArg, AAZStrArg, AAZStrArgFormat
 
         args_schema.payload_url._required = True
-        args_schema.content_type._required = False
-        args_schema.content_type._registered = False
-        args_schema.events._required = False
-        args_schema.events._registered = False
         args_schema.send_all_events._required = False
         args_schema.send_all_events._registered = False
         args_schema.status._required = False
@@ -361,22 +357,6 @@ class CreateAcatReportWebhook(_AcatCreateReportWebhook):
         args_schema.update_webhook_key._required = False
         args_schema.update_webhook_key._registered = False
 
-        args_schema.content_type_with_default = AAZStrArg(
-            options=["--content-type"],
-            arg_group="Properties",
-            help="content type",
-            required=False,
-            enum={"application/json": "application/json"},
-            default="application/json",
-        )
-        args_schema.events_with_default = AAZListArg(
-            options=["--events"],
-            arg_group="Properties",
-            help="under which event notification should be sent.",
-            required=False,
-            default=[],
-        )
-        args_schema.events_with_default.Element = AAZStrArg()
         args_schema.trigger_mode = AAZStrArg(
             options=["--trigger-mode"],
             arg_group="Properties",
@@ -399,8 +379,6 @@ class CreateAcatReportWebhook(_AcatCreateReportWebhook):
         from azure.cli.core.aaz.utils import assign_aaz_list_arg
 
         args = self.ctx.args
-        args.content_type = args.content_type_with_default
-        args.events = assign_aaz_list_arg(args.events, args.events_with_default)
         args.status = args.status_with_default
         args.send_all_events = args.trigger_mode
 
@@ -464,8 +442,6 @@ class UpdateAcatReportWebhook(_AcatUpdateReportWebhook):
             help="Webhook status.",
             nullable=True,
             enum={"false": "Enabled", "true": "Disabled"},
-            # default="enalbe",
-            # blank="disable"
         )
         args_schema.payload_url_nullable = AAZStrArg(
             options=["--payload-url"],
