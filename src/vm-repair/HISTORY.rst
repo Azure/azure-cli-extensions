@@ -3,7 +3,7 @@ Release History
 ===============
 1.0.7
 ++++++
-add logs tracking and command adjustment
+az command adjustment
 
 1.0.6
 ++++++
