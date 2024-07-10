@@ -361,7 +361,7 @@ class CreateAcatReportWebhook(_AcatCreateReportWebhook):
             options=["--trigger-mode"],
             arg_group="Properties",
             help="whether to send notification under any event.",
-            default="all",
+            default="true",
             enum={"all": "true", "customize": "false"},
         )
 
@@ -369,9 +369,9 @@ class CreateAcatReportWebhook(_AcatCreateReportWebhook):
             options=["--disable"],
             arg_group="Properties",
             help="Webhook status.",
-            enum={"false": "enable", "true": "disable"},
-            default="enalbe",
-            blank="disable",
+            enum={"false": "Enabled", "true": "Disabled"},
+            default="Enalbed",
+            blank="Disabled",
         )
         return args_schema
 
@@ -401,14 +401,10 @@ class UpdateAcatReportWebhook(_AcatUpdateReportWebhook):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZListArg, AAZStrArg, AAZStrArgFormat
+        from azure.cli.core.aaz import AAZStrArg
 
         args_schema.send_all_events._required = False
         args_schema.send_all_events._registered = False
-        args_schema.events._required = False
-        args_schema.events._registered = False
-        args_schema.payload_url._required = False
-        args_schema.payload_url._registered = False
         args_schema.status._required = False
         args_schema.status._registered = False
         args_schema.update_webhook_key._required = False
@@ -420,44 +416,18 @@ class UpdateAcatReportWebhook(_AcatUpdateReportWebhook):
             help="whether to send notification under any event.",
             enum={"all": "true", "customize": "false"},
         )
-        args_schema.events_with_default = AAZListArg(
-            options=["--events"],
-            arg_group="Properties",
-            help="under which event notification should be sent.",
-        )
-        args_schema.events_with_default.Element = AAZStrArg(
-            enum={
-                "assessment_failure": "assessment_failure",
-                "generate_snapshot_failed": "generate_snapshot_failed",
-                "generate_snapshot_success": "generate_snapshot_success",
-                "report_configuration_changes": "report_configuration_changes",
-                "report_deletion": "report_deletion",
-            },
-        )
         args_schema.status_nullable = AAZStrArg(
             options=["--disable"],
             arg_group="Properties",
             help="Webhook status.",
             nullable=True,
             enum={"false": "Enabled", "true": "Disabled"},
-        )
-        args_schema.payload_url_nullable = AAZStrArg(
-            options=["--payload-url"],
-            arg_group="Properties",
-            help="webhook payload url",
-            nullable=True,
-            fmt=AAZStrArgFormat(
-                pattern=r"^(http(s)?://)[\S]{0,64994}$",
-            ),
+            blank="Disabled",
         )
         return args_schema
 
     def pre_operations(self):
-        from azure.cli.core.aaz.utils import assign_aaz_list_arg
-
         args = self.ctx.args
-        args.events = assign_aaz_list_arg(args.events, args.events_with_default)
-        args.payload_url = args.payload_url_nullable
         args.status = args.status_nullable
         args.send_all_events = args.trigger_mode
 
