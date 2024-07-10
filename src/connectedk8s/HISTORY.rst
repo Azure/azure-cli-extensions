@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.7.4
+++++++
+* Adding functionality for workload identity feature.
+* Cluster create and update waits for agent state 
+
 1.7.3
 ++++++
 * Skip helm archive download if helm is already installed.
