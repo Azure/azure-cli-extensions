@@ -32,7 +32,7 @@ def restore(grafana_url, archive_file, components, http_headers, destination_dat
     restore_functions['dashboard'] = _load_and_create_dashboard
     restore_functions['library_panel'] =_load_and_create_library_panel 
     restore_functions['snapshot'] = _load_and_create_snapshot
-    restore_functions['annotation'] = _create_annotation
+    restore_functions['annotation'] = _load_and_create_annotation
     restore_functions['datasource'] = _create_datasource
 
     with tarfile.open(name=archive_file, mode='r:gz') as tar:
@@ -200,11 +200,15 @@ def create_folder(grafana_url, folder, http_headers):
 
 
 # Restore annotations
-def _create_annotation(grafana_url, file_path, http_headers):
+def _load_and_create_annotation(grafana_url, file_path, http_headers):
     with open(file_path, 'r', encoding="utf8") as f:
         data = f.read()
 
     annotation = json.loads(data)
+    create_annotation(grafana_url, annotation, http_headers)
+
+
+def create_annotation(grafana_url, annotation, http_headers):
     result = send_grafana_post(f'{grafana_url}/api/annotations', json.dumps(annotation), http_headers)
     annotation_id = annotation['id']
     print_styled_text([

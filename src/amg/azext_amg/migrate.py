@@ -1,7 +1,7 @@
 from knack.log import get_logger
 
 from .backup import backup
-from .restore import restore, create_dashboard, create_folder, create_library_panel, create_snapshot
+from .restore import restore, create_dashboard, create_folder, create_library_panel, create_snapshot, create_annotation
 from .backup_core import get_all_dashboards, get_all_library_panels, get_all_snapshots, get_all_folders, get_all_annotations, get_all_datasources
 
 logger = get_logger(__name__)
@@ -46,8 +46,11 @@ def migrate(backup_grafana_name, backup_url, backup_directory, components, backu
     # for snapshot in all_snapshots:
     #     create_snapshot(restore_url, snapshot, restore_headers)
 
-    # get all the annotations
+    # # get all the annotations
     # all_annotations = get_all_annotations(backup_url, backup_headers)
+    # for annotation in all_annotations:
+    #     print("annotation: ", annotation)
+    #     create_annotation(restore_url, annotation, restore_headers)
 
 
 def _create_or_update_dashboard():
