@@ -2,6 +2,10 @@
 
 Release History
 ===============
+6.2.0
+++++++
+* Updating release version
+
 6.1.0
 ++++++
 * Added device update-admin-state support

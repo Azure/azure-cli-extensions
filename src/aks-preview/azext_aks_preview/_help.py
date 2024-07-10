@@ -233,9 +233,9 @@ helps['aks create'] = f"""
               Used together with the "azure" network plugin.
               Requires either --pod-subnet-id or --network-plugin-mode=overlay.
               This flag is deprecated in favor of --network-dataplane=cilium.
-        - name: --enable-network-observability
+        - name: --enable-advanced-network-observability
           type: bool
-          short-summary: Enable network observability on a cluster.
+          short-summary: Enable advanced network observability functionalities on a cluster. Note that enabling this will incur additional costs.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -353,7 +353,7 @@ helps['aks create'] = f"""
           short-summary: Public IP prefix ID used to assign public IPs to VMSS nodes.
         - name: --enable-managed-identity
           type: bool
-          short-summary: Using managed identity to manage cluster resource group. Default value is true, you can explicitly specify "--client-id" and "--secret" to disable managed identity.
+          short-summary: Using managed identity to manage cluster resource group. You can explicitly specify "--service-principal" and "--client-secret" to disable managed identity, otherwise it will be enabled.
         - name: --assign-identity
           type: string
           short-summary: Specify an existing user assigned identity to manage cluster resource group.
@@ -628,9 +628,18 @@ helps['aks create'] = f"""
         - name: --bootstrap-container-registry-resource-id
           type: string
           short-summary: Configure container registry resource ID. Must use "Cache" as bootstrap artifact source.
+        - name: --if-match
+          type: string
+          short-summary: The value provided will be compared to the ETag of the managed cluster, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new cluster.
+        - name: --if-none-match
+          type: string
+          short-summary: Set to '*' to allow a new cluster to be created, but to prevent updating an existing cluster. Other values will be ignored.
         - name: --enable-static-egress-gateway
           type: bool
           short-summary: Enable Static Egress Gateway addon to the cluster.
+        - name: --vm-sizes
+          type: string
+          short-summary: Comma-separated list of sizes. Must use VirtualMachines agent pool type.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -708,6 +717,8 @@ helps['aks create'] = f"""
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-app-monitoring
         - name: Create a kubernetes cluster with a nodepool having ip allocation mode set to "StaticBlock"
           text: az aks create -g MyResourceGroup -n MyManagedCluster --os-sku Ubuntu --max-pods MaxPodsPerNode --network-plugin azure --vnet-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/NodeSubnet --pod-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/PodSubnet --pod-ip-allocation-mode StaticBlock
+        - name: Create a kubernetes cluster with a VirtualMachines nodepool
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --vm-set-type VirtualMachines --vm-sizes "VMSize1,VMSize2" --node-count 3
 
 """
 
@@ -765,6 +776,12 @@ helps['aks upgrade'] = """
           type: string
           short-summary: Until when the cluster upgradeSettings overrides are effective.
           long-summary: It needs to be in a valid date-time format that's within the next 30 days. For example, 2023-04-01T13:00:00Z. Note that if --force-upgrade is set to true and --upgrade-override-until is not set, by default it will be set to 3 days from now.
+        - name: --if-match
+          type: string
+          short-summary: The value provided will be compared to the ETag of the managed cluster, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new cluster.
+        - name: --if-none-match
+          type: string
+          short-summary: Set to '*' to allow a new cluster to be created, but to prevent updating an existing cluster. Other values will be ignored.
     examples:
       - name: Upgrade a existing managed cluster to a managed cluster snapshot.
         text: az aks upgrade -g MyResourceGroup -n MyManagedCluster --cluster-snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedclustersnapshots/mysnapshot1"
@@ -885,6 +902,12 @@ helps['aks update'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --if-match
+          type: string
+          short-summary: The value provided will be compared to the ETag of the managed cluster, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new cluster.
+        - name: --if-none-match
+          type: string
+          short-summary: Set to '*' to allow a new cluster to be created, but to prevent updating an existing cluster. Other values will be ignored.
         - name: --auto-upgrade-channel
           type: string
           short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch, node-image or none, none means disable autoupgrade.
@@ -1190,15 +1213,9 @@ helps['aks update'] = """
         - name: --nodepool-labels
           type: string
           short-summary: The node labels for all node pool. See https://aka.ms/node-labels for syntax of labels.
-        - name: --enable-network-observability
-          type: bool
-          short-summary: Enable network observability on a cluster.
-        - name: --disable-network-observability
-          type: bool
-          short-summary: Disable network observability on a cluster
         - name: --enable-advanced-network-observability
           type: bool
-          short-summary: Enable advanced network observability functionalities on a cluster.
+          short-summary: Enable advanced network observability functionalities on a cluster. Note that enabling this will incur additional costs.
         - name: --disable-advanced-network-observability
           type: bool
           short-summary: Disable advanced network observability functionalities on a cluster
@@ -1826,9 +1843,18 @@ helps['aks nodepool add'] = """
         - name: --enable-vtpm
           type: bool
           short-summary: Enable vTPM on agent node pool. Must use VMSS agent pool type.
+        - name: --if-match
+          type: string
+          short-summary: The value provided will be compared to the ETag of the agentpool, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new agentpool.
+        - name: --if-none-match
+          type: string
+          short-summary: Set to '*' to allow a new agentpool to be created, but to prevent updating an existing agentpool. Other values will be ignored.
         - name: --gateway-prefix-size
           type: int
           short-summary: The size of Public IPPrefix attached to the Gateway-mode node pool. The node pool must be in Gateway mode.
+        - name: --vm-sizes
+          type: string
+          short-summary: Comma-separated list of sizes. Must use VirtualMachines agent pool type.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1846,6 +1872,8 @@ helps['aks nodepool add'] = """
           text: az aks nodepool add -g MyResourceGroup -n MyNodePool --cluster-name MyMC --host-group-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/hostGroups/myHostGroup --node-vm-size VMSize
         - name: Create a nodepool with ip allocation mode set to "StaticBlock" and using a pod subnet ID
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster  --os-sku Ubuntu --pod-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/MySubnet --pod-ip-allocation-mode StaticBlock
+        - name: Create a nodepool of type VirtualMachines
+          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --vm-set-type VirtualMachines --vm-sizes "Standard_D4s_v3,Standard_D8s_v3" --node-count 3
 """
 
 helps['aks nodepool scale'] = """
@@ -1885,6 +1913,12 @@ helps['aks nodepool upgrade'] = """
         - name: --snapshot-id
           type: string
           short-summary: The source snapshot id used to upgrade this nodepool. Must use VMSS agent pool type.
+        - name: --if-match
+          type: string
+          short-summary: The value provided will be compared to the ETag of the node pool, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new agentpool. For upgrade node image version requests this will be ignored.
+        - name: --if-none-match
+          type: string
+          short-summary: Set to '*' to allow a new node pool to be created, but to prevent updating an existing node pool. Other values will be ignored.
 """
 
 helps['aks nodepool update'] = """
@@ -1964,6 +1998,18 @@ helps['aks nodepool update'] = """
         - name: --disable-vtpm
           type: bool
           short-summary: Disable vTPM on an existing Trusted Launch enabled agent node pool.
+        - name: --if-match
+          type: string
+          short-summary: The value provided will be compared to the ETag of the node pool, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new agentpool.
+        - name: --if-none-match
+          type: string
+          short-summary: Set to '*' to allow a new node pool to be created, but to prevent updating an existing node pool. Other values will be ignored.
+        - name: --enable-fips-image
+          type: bool
+          short-summary: Switch to use FIPS-enabled OS on agent nodes.
+        - name: --disable-fips-image
+          type: bool
+          short-summary: Switch to use non-FIPS-enabled OS on agent nodes.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -2017,6 +2063,10 @@ helps['aks nodepool delete'] = """
         - name: --ignore-pod-disruption-budget -i
           type: bool
           short-summary: (PREVIEW) ignore-pod-disruption-budget deletes an existing nodepool without considering Pod Disruption Budget.
+        - name: --if-match
+          type: string
+          short-summary: The value provided will be compared to the ETag of the node pool, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new agentpool.
+
     examples:
         - name: Delete an agent pool with ignore-pod-disruption-budget
           text: az aks nodepool delete --resource-group MyResourceGroup --cluster-name MyManagedCluster --name nodepool1 --ignore-pod-disruption-budget=true
@@ -2044,6 +2094,47 @@ helps['aks nodepool delete-machines'] = """
     examples:
         - name: Delete specific machines in an agent pool
           text: az aks nodepool delete-machines -g myResourceGroup --nodepool-name nodepool1 --cluster-name myAKSCluster --machine-names machine1
+"""
+
+helps['aks nodepool manual-scale'] = """
+    type: group
+    short-summary: Commands to manage nodepool virtualMachineProfile.scale.manual.
+"""
+
+helps['aks nodepool manual-scale add'] = """
+    type: command
+    short-summary: Add a new manual to a VirtualMachines agentpool in the managed Kubernetes cluster.
+    parameters:
+        - name: --vm-sizes
+          type: string
+          short-summary: Comma-separated list of sizes in the manual.
+        - name: --node-count -c
+          type: int
+          short-summary: Number of nodes in the manual.
+"""
+
+helps['aks nodepool manual-scale update'] = """
+    type: command
+    short-summary: Update an existing manual of a VirtualMachines agentpool in the managed Kubernetes cluster.
+    parameters:
+        - name: --current-vm-sizes
+          type: string
+          short-summary: Comma-separated list of sizes in the manual to be updated.
+        - name: --vm-sizes
+          type: string
+          short-summary: Comma-separated list of new sizes.
+        - name: --node-count -c
+          type: int
+          short-summary: Number of nodes in the manual.
+"""
+
+helps['aks nodepool manual-scale delete'] = """
+    type: command
+    short-summary: Delete an existing manual to a VirtualMachines agentpool in the managed Kubernetes cluster.
+    parameters:
+        - name: --current-vm-sizes
+          type: string
+          short-summary: Comma-separated list of sizes in the manual to be deleted.
 """
 
 helps['aks machine'] = """
@@ -2082,6 +2173,44 @@ helps['aks machine show'] = """
    exmaples:
        - name: Get IP Addresses, Hostname for a specific machine in an agentpool
          text: az aks machine show --cluster-name <clusterName> --nodepool-name <apName> --machine-name <machineName>
+"""
+
+helps['aks operation'] = """
+    type: group
+    short-summary: Commands to manage and view operations on managed Kubernetes cluster.
+"""
+
+helps['aks operation show'] = """
+    type: command
+    short-summary: Show the details for a specific operation on managed Kubernetes cluster.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: The name of the managed cluster
+        - name: --nodepool-name
+          type: string
+          short-summary: The name of the nodepool.
+        - name: --resource-group -g
+          type: string
+          short-summary: Name of the resource group.
+        - name: --operation-id
+          type: string
+          short-summary: The ID of the operation.
+"""
+
+helps['aks operation show-latest'] = """
+    type: command
+    short-summary: Show the details for the latest operation on managed Kubernetes cluster.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: The name of the managed cluster
+        - name: --nodepool-name
+          type: string
+          short-summary: The name of the nodepool.
+        - name: --resource-group -g
+          type: string
+          short-summary: Name of the resource group.
 """
 
 helps['aks operation-abort'] = """
@@ -2780,8 +2909,8 @@ helps['aks draft generate-workflow'] = """
 
 helps['aks draft up'] = """
     type: command
-    short-summary: Set up GitHub OIDC and generate a GitHub workflow for automatic build and deploy to AKS
-    long-summary: This command combines `az aks draft setup-gh` and `az aks draft generate-workflow`.
+    short-summary: Run `az aks draft setup-gh` then `az aks draft generate-workflow`.
+    long-summary: This command combines `az aks draft setup-gh` and `az aks draft generate-workflow` to set up GitHub OIDC and generate a GitHub workflow for automatic build and deploy to AKS.
                   Before running this command, create a resource group, a container registry and a Kubernetes cluster on Azure and
                   link the three resources using `az aks update -n <cluster-name> -g <resource-group-name> --attach-acr <acr-name>`.
     parameters:

@@ -20,17 +20,23 @@ class Create(AAZCommand):
     :example: Create IP based access rule
         az network perimeter profile access-rule create -n MyAccessRule --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup --address-prefixes "[10.10.0.0/16]"
 
+    :example: Create NSP based access rule
+        az network perimeter profile access-rule create -n MyAccessRule --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup --nsp "[{id:<NSP_ARM_ID>}]"
+
     :example: Create FQDN based access rule
         az network perimeter profile access-rule create -n MyAccessRule --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup --fqdn "['www.abc.com', 'www.google.com']" --direction "Outbound"
 
     :example: Create Subscription based access rule
         az network perimeter profile access-rule create -n MyAccessRule --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup --subscriptions [0].id="<SubscriptionID1>" [1].id="<SubscriptionID2>"
+
+    :example: Create ServiceTags based access rule
+        az network perimeter profile access-rule create -n MyAccessRule --profile-name MyProfile --perimeter-name MyPerimeter -g MyResourceGroup --service-tags  [st1,st2]
     """
 
     _aaz_info = {
-        "version": "2023-07-01-preview",
+        "version": "2023-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/profiles/{}/accessrules/{}", "2023-07-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/profiles/{}/accessrules/{}", "2023-08-01-preview"],
         ]
     }
 
@@ -117,6 +123,11 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Outbound rules phone number format.",
         )
+        _args_schema.service_tags = AAZListArg(
+            options=["--service-tags"],
+            arg_group="Properties",
+            help="Inbound rules service tag names.",
+        )
         _args_schema.subscriptions = AAZListArg(
             options=["--subscriptions"],
             arg_group="Properties",
@@ -134,6 +145,9 @@ class Create(AAZCommand):
 
         phone_numbers = cls._args_schema.phone_numbers
         phone_numbers.Element = AAZStrArg()
+
+        service_tags = cls._args_schema.service_tags
+        service_tags.Element = AAZStrArg()
 
         subscriptions = cls._args_schema.subscriptions
         subscriptions.Element = AAZObjectArg()
@@ -159,7 +173,7 @@ class Create(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
     class NspAccessRulesCreateOrUpdate(AAZHttpOperation):
@@ -218,7 +232,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01-preview",
+                    "api-version", "2023-08-01-preview",
                     required=True,
                 ),
             }
@@ -255,6 +269,7 @@ class Create(AAZCommand):
                 properties.set_prop("emailAddresses", AAZListType, ".email_addresses")
                 properties.set_prop("fullyQualifiedDomainNames", AAZListType, ".fqdn")
                 properties.set_prop("phoneNumbers", AAZListType, ".phone_numbers")
+                properties.set_prop("serviceTags", AAZListType, ".service_tags")
                 properties.set_prop("subscriptions", AAZListType, ".subscriptions")
 
             address_prefixes = _builder.get(".properties.addressPrefixes")
@@ -272,6 +287,10 @@ class Create(AAZCommand):
             phone_numbers = _builder.get(".properties.phoneNumbers")
             if phone_numbers is not None:
                 phone_numbers.set_elements(AAZStrType, ".")
+
+            service_tags = _builder.get(".properties.serviceTags")
+            if service_tags is not None:
+                service_tags.set_elements(AAZStrType, ".")
 
             subscriptions = _builder.get(".properties.subscriptions")
             if subscriptions is not None:
@@ -338,6 +357,9 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.service_tags = AAZListType(
+                serialized_name="serviceTags",
+            )
             properties.subscriptions = AAZListType()
 
             address_prefixes = cls._schema_on_200_201.properties.address_prefixes
@@ -366,6 +388,9 @@ class Create(AAZCommand):
 
             phone_numbers = cls._schema_on_200_201.properties.phone_numbers
             phone_numbers.Element = AAZStrType()
+
+            service_tags = cls._schema_on_200_201.properties.service_tags
+            service_tags.Element = AAZStrType()
 
             subscriptions = cls._schema_on_200_201.properties.subscriptions
             subscriptions.Element = AAZObjectType()

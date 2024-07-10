@@ -70,6 +70,23 @@ def aks_machine_show_table_format(result):
     return parser(result)
 
 
+def aks_operation_show_table_format(result):
+    def parser(entry):
+        percentComplete = ""
+        if entry["percentComplete"]:
+            percentComplete = str(entry["percentComplete"]) + "%"
+        entry["percentComplete"] = percentComplete
+        parsed = compile_jmes("""{
+                name: name,
+                status: status,
+                startTime: startTime,
+                endTime: endTime,
+                percentComplete: percentComplete
+            }""")
+        return parsed.search(entry, Options(dict_cls=OrderedDict))
+    return parser(result)
+
+
 def aks_agentpool_show_table_format(result):
     """Format an agent pool as summary results for display with "-o table"."""
     return [_aks_agentpool_table_format(result)]
@@ -164,7 +181,7 @@ def flatten_version_table(release_info):
 def _custom_functions(preview_versions):
     class CustomFunctions(functions.Functions):  # pylint: disable=too-few-public-methods
 
-        @ functions.signature({'types': ['array']})
+        @functions.signature({'types': ['array']})
         def _func_sort_versions(self, versions):
             """Custom JMESPath `sort_versions` function that sorts an array of strings as software versions"""
             try:
@@ -173,7 +190,7 @@ def _custom_functions(preview_versions):
             except (TypeError, ValueError):
                 return versions
 
-        @ functions.signature({'types': ['array']})
+        @functions.signature({'types': ['array']})
         def _func_set_preview_array(self, versions):
             """Custom JMESPath `set_preview_array` function that suffixes preview version"""
             try:
@@ -183,7 +200,7 @@ def _custom_functions(preview_versions):
             except (TypeError, ValueError):
                 return versions
 
-        @ functions.signature({'types': ['string']})
+        @functions.signature({'types': ['string']})
         def _func_set_preview(self, version):
             """Custom JMESPath `set_preview` function that suffixes preview version"""
             try:
@@ -193,7 +210,7 @@ def _custom_functions(preview_versions):
             except (TypeError, ValueError):
                 return version
 
-        @ functions.signature({'types': ['object']})
+        @functions.signature({'types': ['object']})
         def _func_pprint_labels(self, labels):
             """Custom JMESPath `pprint_labels` function that pretty print labels"""
             if not labels:

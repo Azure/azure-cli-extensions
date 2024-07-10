@@ -15,16 +15,17 @@ from azure.cli.core.aaz import *
     "large-instance show",
 )
 class Show(AAZCommand):
-    """Get an Azure Large Instance for the specified subscription, resource group, and instance name.
+    """Get an Azure Large Instance for the specified subscription, resource group,
+and instance name.
 
     :example: To show details about an Azure Large Instance
         az large-instance show --subscription $SUBSCRIPTION_ID --instance-name $INSTANCE_NAME --resource-group $RESOURCE_GROUP
     """
 
     _aaz_info = {
-        "version": "2023-07-20-preview",
+        "version": "2024-04-10",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstances/{}", "2023-07-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstances/{}", "2024-04-10"],
         ]
     }
 
@@ -123,7 +124,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-20-preview",
+                    "api-version", "2024-04-10",
                     required=True,
                 ),
             }
@@ -194,9 +195,6 @@ class Show(AAZCommand):
             )
             properties.os_profile = AAZObjectType(
                 serialized_name="osProfile",
-            )
-            properties.partner_node_id = AAZStrType(
-                serialized_name="partnerNodeId",
             )
             properties.power_state = AAZStrType(
                 serialized_name="powerState",

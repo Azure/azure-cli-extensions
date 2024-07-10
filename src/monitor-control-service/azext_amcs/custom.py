@@ -12,6 +12,7 @@
 # pylint: disable=protected-access, line-too-long, too-many-branches, raise-missing-from, consider-using-f-string
 
 from collections import defaultdict
+from knack.util import to_snake_case
 from azure.cli.core.aaz import has_value, AAZStrArg
 from azure.cli.core.azclierror import ValidationError
 from azure.cli.core.commands.validators import validate_file_or_dict
@@ -128,14 +129,9 @@ class RuleCreate(_RuleCreate):
             else:
                 data = json_data
         for key in data:
-            if key == 'dataSources':
-                args.data_sources = data['dataSources']
-            if key == 'destinations':
-                args.destinations = data['destinations']
-            if key == 'dataFlows':
-                args.data_flows = data['dataFlows']
-            if key == "streamDeclarations":
-                args.stream_declarations = data["streamDeclarations"]
+            arg_key = to_snake_case(key)
+            if hasattr(args, arg_key):
+                setattr(args, arg_key, data[key])
 
 
 def process_data_flows_remain(args):
