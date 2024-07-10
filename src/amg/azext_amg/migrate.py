@@ -1,7 +1,7 @@
 from knack.log import get_logger
 
 from .backup import backup
-from .restore import restore, create_dashboard, create_folder
+from .restore import restore, create_dashboard, create_folder, create_library_panel
 from .backup_core import get_all_dashboards, get_all_library_panels, get_all_snapshots, get_all_folders, get_all_annotations, get_all_datasources
 
 logger = get_logger(__name__)
@@ -26,16 +26,16 @@ def migrate(backup_grafana_name, backup_url, backup_directory, components, backu
     # get all datasources
     # all_datasources = get_all_datasources(backup_url, backup_headers)
 
-    # get all folders
     # all_folders = get_all_folders(backup_url, backup_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
     # for folder in all_folders:
     #     content_folder_settings, content_folder_permissions = folder
     #     create_folder(restore_url, content_folder_settings, restore_headers)
 
     # all_library_panels = get_all_library_panels(backup_url, backup_headers)
-    # now go through all the library panels and save them, make sure to logger.warning()
+    # for library_panel in all_library_panels:
+    #     library_panel['id'] = None
+    #     create_library_panel(restore_url, library_panel, restore_headers)
 
-    # get the list of dashboards to backup
     # all_dashboards = get_all_dashboards(backup_url, backup_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
     # for dashboard in all_dashboards:
     #     dashboard['dashboard']['id'] = None

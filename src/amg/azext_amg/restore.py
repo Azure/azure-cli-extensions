@@ -30,7 +30,7 @@ def restore(grafana_url, archive_file, components, http_headers, destination_dat
     restore_functions = collections.OrderedDict()
     restore_functions['folder'] = _load_and_create_folder
     restore_functions['dashboard'] = _load_and_create_dashboard
-    restore_functions['library_panel'] = _create_library_panel
+    restore_functions['library_panel'] =_load_and_create_library_panel 
     restore_functions['snapshot'] = _create_snapshot
     restore_functions['annotation'] = _create_annotation
     restore_functions['datasource'] = _create_datasource
@@ -113,12 +113,18 @@ def create_dashboard(grafana_url, content, http_headers):
 
 
 # Restore Library Panel
-def _create_library_panel(grafana_url, file_path, http_headers):
+def _load_and_create_library_panel(grafana_url, file_path, http_headers):
     with open(file_path, 'r', encoding="utf8") as f:
         data = f.read()
 
     payload = json.loads(data)
     payload['id'] = None
+
+    create_library_panel(grafana_url, payload, http_headers)
+
+
+def create_library_panel(grafana_url, payload, http_headers):
+    # set the folder id of the library panel
     payload['folderId'] = get_folder_id(payload, grafana_url, http_post_headers=http_headers)
 
     datasources_missed = set()
