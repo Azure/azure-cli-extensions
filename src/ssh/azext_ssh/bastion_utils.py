@@ -155,20 +155,6 @@ def _start_tunnel(tunnel_server):
     tunnel_server.start_server()
 
 
-
-class AccessTokenCredential:  # pylint: disable=too-few-public-methods
-    """Simple access token authentication. Return the access token as-is.
-    """
-    def __init__(self, access_token):
-        self.access_token = access_token
-
-    def get_token(self, *scopes, **kwargs):  # pylint: disable=unused-argument
-        import time
-        from azure.cli.core.auth.util import AccessToken
-        # Assume the access token expires in 1 year / 31536000 seconds
-        return AccessToken(self.access_token, int(time.time()) + 31536000)
-    
-
 # =============================  Bastion Parsing Logic  ============================= #
 
 def handle_bastion_properties(cmd, op_info, properties):
@@ -254,19 +240,6 @@ def parse_bastion_name(bastion_data):
             return None
     except Exception:
         raise azclierror.CLIInternalError("Internal CLI Error: Failed to get Bastion information. Please try again later.")
-
-
-def _get_azext_module(extension_name, module_name):
-    try:
-        # adding the installed extension in the path
-        from azure.cli.core.extension.operations import add_extension_to_path
-        add_extension_to_path(extension_name)
-        # import the extension module
-        from importlib import import_module
-        azext_custom = import_module(module_name)
-        return azext_custom
-    except ImportError as ie:
-        raise azclierror.CLIInternalError(ie) from ie
 
 
 # ============================= Bastion Request Logic ============================= #
