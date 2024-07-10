@@ -294,4 +294,3 @@ helps['network firewall policy rule-collection-group draft collection rule'] = "
         Filter collection supports having a list of network rules or application rules.
         NatRule collection supports including a list of nat rules.
 """
-
