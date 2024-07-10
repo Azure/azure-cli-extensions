@@ -1,6 +1,10 @@
 
 Release History
 ===============
+1.0.7
+++++++
+add logs tracking and command adjustment
+
 1.0.6
 ++++++
 Add CLI update wait for ASG to wait for the operation done as the async 2rd operation will cancel the 1st call.
