@@ -53,7 +53,7 @@ def _validate_continuouspatch_json(config_path):
             config = json.load(f)
             validate(config, CONTINUOUSPATCH_CONFIG_SCHEMA_V1)
     except Exception as e:
-        logger.debug("Error validating the continuous patch config file: %s", e)
+        logger.debug(f"Error validating the continuous patch config file: {e}")
         raise InvalidArgumentValueError("File used for --config is not a valid config JSON file. Use --help to see the schema of the config file.")
     finally:
         f.close()
@@ -95,7 +95,7 @@ def _check_task_exists(cmd, registry, task_name=""):
     try:
         task = acrtask_client.get(resource_group, registry.name, task_name)
     except Exception as exception:
-        logger.debug("Failed to find task %s from registry %s : %s", task_name, registry.name, exception)
+        logger.debug(f"Failed to find task {task_name} from registry {registry.name} : {exception}")
         return False
 
     if task is not None:

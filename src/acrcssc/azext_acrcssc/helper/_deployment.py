@@ -22,7 +22,7 @@ logger = get_logger(__name__)
 
 def validate_and_deploy_template(cmd_ctx, registry, resource_group: str, deployment_name: str,
                                  template_file_name: str, parameters: dict, dryrun: Optional[bool] = False):
-    logger.debug('Working with resource group %s, registry %s template %s', resource_group, registry, template_file_name)
+    logger.debug(f'Working with resource group {resource_group}, registry {registry} template {template_file_name}')
 
     deployment_path = os.path.dirname(
         os.path.join(
@@ -44,8 +44,8 @@ def validate_and_deploy_template(cmd_ctx, registry, resource_group: str, deploym
 
         return deploy_template(cmd_ctx, resource_group, deployment_name, template)
     except Exception as exception:
-        logger.debug('Failed to validate and deploy template: %s', exception)
-        raise AzCLIError('Failed to validate and deploy template: %s' % exception)
+        logger.debug(f'Failed to validate and deploy template: {exception}')
+        raise AzCLIError(f'Failed to validate and deploy template: {exception}')
 
 
 def validate_template(cmd_ctx, resource_group, deployment_name, template):
@@ -82,29 +82,25 @@ def validate_template(cmd_ctx, resource_group, deployment_name, template):
         # Don't expect to hit this but it appeases mypy
         raise RuntimeError(f"Validation of template {template} failed.")
 
-    logger.debug("Validation Result %s", validation_res)
+    logger.debug(f"Validation Result {validation_res}")
     if validation_res.error:
         # Validation failed so don't even try to deploy
         logger.error(
             (
-                "Template for resource group %s has failed validation. The message"
-                " was: %s. See logs for additional details."
-            ),
-            resource_group,
-            validation_res.error.message,
+                f"Template for resource group {resource_group} has failed validation. The message"
+                " was: {validation_res.error.message}. See logs for additional details."
+            )
         )
         logger.debug(
             (
-                "Template for resource group %s failed validation."
-                " Full error details: %s"
-            ),
-            resource_group,
-            validation_res.error,
+                f"Template for resource group {resource_group} failed validation."
+                " Full error details: {validation_res.error}"
+            )
         )
         raise RuntimeError("Azure template validation failed.")
 
     # Validation succeeded so proceed with deployment
-    logger.debug("Successfully validated resources for %s", resource_group)
+    logger.debug("Successfully validated resources for {resource_group}")
 
 
 def deploy_template(cmd_ctx, resource_group, deployment_name, template):
@@ -134,20 +130,16 @@ def deploy_template(cmd_ctx, resource_group, deployment_name, template):
         depl_props = deployment.properties
     else:
         raise RuntimeError("The deployment has no properties.\nAborting")
-    logger.debug("Deployed: %s %s %s", deployment.name, deployment.id, depl_props)
+    logger.debug(f"Deployed: {deployment.name} {deployment.id} {depl_props}")
 
     if depl_props.provisioning_state != "Succeeded":
-        logger.debug("Failed to provision: %s", depl_props)
+        logger.debug(f"Failed to provision: {depl_props}")
         raise RuntimeError(
             "Deploy of template to resource group"
             f" {resource_group} proceeded but the provisioning"
             f" state returned is {depl_props.provisioning_state}."
             "\nAborting"
         )
-    logger.debug(
-        "Provisioning state of deployment %s : %s",
-        resource_group,
-        depl_props.provisioning_state,
-    )
+    logger.debug(f"Provisioning state of deployment {resource_group} : {depl_props.provisioning_state}")
 
     return depl_props.outputs

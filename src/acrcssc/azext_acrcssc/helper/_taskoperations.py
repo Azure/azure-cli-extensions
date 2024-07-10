@@ -47,12 +47,12 @@ DEFAULT_CHUNK_SIZE = 1024 * 4
 
 
 def create_update_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, dryrun, defer_immediate_run, is_create_workflow=True):
-    logger.debug("Entering continuousPatchV1_creation %s %s %s", cssc_config_file, dryrun, defer_immediate_run)
+    logger.debug(f"Entering continuousPatchV1_creation {cssc_config_file} {dryrun} {defer_immediate_run}")
     resource_group = parse_resource_id(registry.id)[RESOURCE_GROUP]
     schedule_cron_expression = None
     if cadence is not None:
         schedule_cron_expression = convert_timespan_to_cron(cadence)
-    logger.debug("converted cadence to cron expression: %s", schedule_cron_expression)
+    logger.debug(f"converted cadence to cron expression: {schedule_cron_expression}")
     cssc_tasks_exists = check_continuous_task_exists(cmd, registry)
     if is_create_workflow:
         if cssc_tasks_exists:
@@ -65,7 +65,7 @@ def create_update_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, 
 
     if cssc_config_file is not None:
         create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun)
-        logger.debug("Uploading of %s completed successfully.", cssc_config_file)
+        logger.debug(f"Uploading of {cssc_config_file} completed successfully.")
 
     _eval_trigger_run(cmd, registry, resource_group, defer_immediate_run)
 
@@ -92,7 +92,7 @@ def _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
         dry_run
     )
 
-    logger.warning("Deployment of %s tasks completed successfully.", CONTINUOUS_PATCHING_WORKFLOW_NAME)
+    logger.warning(f"Deployment of {CONTINUOUS_PATCHING_WORKFLOW_NAME} tasks completed successfully.")
 
 
 def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dry_run):
@@ -102,7 +102,7 @@ def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
 
 def _eval_trigger_run(cmd, registry, resource_group, defer_immediate_run):
     if not defer_immediate_run:
-        logger.warning('Triggering the %s to run immediately', CONTINUOSPATCH_TASK_SCANREGISTRY_NAME)
+        logger.warning(f'Triggering the {CONTINUOSPATCH_TASK_SCANREGISTRY_NAME} to run immediately')
         # Seen Managed Identity taking time, see if there can be an alternative (one alternative is to schedule the cron expression with delay)
         # NEED TO SKIP THE TIME.SLEEP IN UNIT TEST CASE OR FIND AN ALTERNATIVE SOLUITION TO MI COMPLETE
         time.sleep(30)
@@ -115,24 +115,24 @@ def delete_continuous_patch_v1(cmd, registry, dryrun):
     cssc_config_exists = check_continuous_task_config_exists(cmd, registry)
     if not dryrun and (cssc_tasks_exists or cssc_config_exists):
         cssc_tasks = ', '.join(CONTINUOSPATCH_ALL_TASK_NAMES)
-        logger.warning("All of these tasks will be deleted: %s", cssc_tasks)
+        logger.warning(f"All of these tasks will be deleted: {cssc_tasks}")
         for taskname in CONTINUOSPATCH_ALL_TASK_NAMES:
             # bug: if one of the deletion fails, the others will not be attempted, we need to attempt to delete all of them
             _delete_task(cmd, registry, taskname, dryrun)
-            logger.warning("Task %s deleted.", taskname)
+            logger.warning(f"Task {taskname} deleted.")
             
-        logger.warning("Deleting %s/%s:%s", CSSC_WORKFLOW_POLICY_REPOSITORY, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1)
+        logger.warning(f"Deleting {CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}")
         delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
 
     if not cssc_tasks_exists:
-        logger.warning("%s workflow does not exist", CONTINUOUS_PATCHING_WORKFLOW_NAME)
+        logger.warning(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow does not exist")
 
 
 def list_continuous_patch_v1(cmd, registry):
     logger.debug("Entering list_continuous_patch_v1")
 
     if not check_continuous_task_exists(cmd, registry):
-        logger.warning("%s workflow task does not exist. Run 'az acr supply-chain workflow create' to create workflow tasks", CONTINUOUS_PATCHING_WORKFLOW_NAME)
+        logger.warning(f"{CONTINUOUS_PATCHING_WORKFLOW_NAME} workflow task does not exist. Run 'az acr supply-chain workflow create' to create workflow tasks")
         return
 
     acr_task_client = cf_acr_tasks(cmd.cli_ctx)
@@ -143,7 +143,7 @@ def list_continuous_patch_v1(cmd, registry):
 
 
 def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True):
-    logger.debug("Entering acr_cssc_dry_run with parameters: %s %s", registry, config_file_path)
+    logger.debug(f"Entering acr_cssc_dry_run with parameters: {registry} {config_file_path}")
 
     if config_file_path is None:
         logger.error("--config parameter is needed to perform dry-run check.")
@@ -195,7 +195,7 @@ def acr_cssc_dry_run(cmd, registry, config_file_path, is_create=True):
             registry_name=registry.name,
             run_request=request))
         run_id = queued.run_id
-        logger.warning("Performing dry-run check for filter policy using acr task run id: %s", run_id)
+        logger.warning(f"Performing dry-run check for filter policy using acr task run id: {run_id}")
         return generate_logs(cmd, acr_run_client, run_id, registry.name, resource_group_name)
     finally:
         delete_temporary_dry_run_file(tmp_folder)
@@ -228,7 +228,7 @@ def _create_encoded_task(task_file):
 
 
 def _update_task_schedule(cmd, registry, cron_expression, resource_group_name, dryrun):
-    logger.debug("converted cadence to cron_expression: %s", cron_expression)
+    logger.debug(f"converted cadence to cron_expression: {cron_expression}")
     acr_task_client = cf_acr_tasks(cmd.cli_ctx)
     taskUpdateParameters = acr_task_client.models.TaskUpdateParameters(
         trigger=acr_task_client.models.TriggerUpdateParameters(
@@ -262,9 +262,9 @@ def _delete_task(cmd, registry, task_name, dryrun):
         _delete_task_role_assignment(cmd.cli_ctx, acr_tasks_client, registry, resource_group, task_name, dryrun)
 
         if dryrun:
-            logger.debug("Dry run, skipping deletion of the task: %s ", task_name)
+            logger.debug(f"Dry run, skipping deletion of the task: {task_name}")
             return None
-        logger.debug("Deleting task %s", task_name)
+        logger.debug(f"Deleting task {task_name}")
         LongRunningOperation(cmd.cli_ctx)(
             acr_tasks_client.begin_delete(
                 resource_group,
@@ -272,9 +272,9 @@ def _delete_task(cmd, registry, task_name, dryrun):
                 task_name))
 
     except Exception as exception:
-        raise AzCLIError("Failed to delete task %s from registry %s : %s" % task_name, registry.name, exception)
+        raise AzCLIError(f"Failed to delete task {task_name} from registry {registry.name} : {exception}")
 
-    logger.debug("Task %s deleted successfully", task_name)
+    logger.debug(f"Task {task_name} deleted successfully")
 
 
 def _delete_task_role_assignment(cli_ctx, acrtask_client, registry, resource_group, task_name, dryrun):
@@ -284,10 +284,10 @@ def _delete_task_role_assignment(cli_ctx, acrtask_client, registry, resource_gro
     try:
         task = acrtask_client.get(resource_group, registry.name, task_name)
     except ResourceNotFoundError:
-        logger.debug("Task %s does not exist in registry %s", task_name, registry.name)
+        logger.debug(f"Task {task_name} does not exist in registry {registry.name}")
         logger.debug("Continuing with deletion")
         return None
-    
+
     identity = task.identity
 
     if identity:
@@ -298,9 +298,9 @@ def _delete_task_role_assignment(cli_ctx, acrtask_client, registry, resource_gro
 
         for role in assigned_roles:
             if dryrun:
-                logger.debug("Dry run, skipping deletion of role assignments, task: %s, role name: %s", task_name, role.name)
+                logger.debug(f"Dry run, skipping deletion of role assignments, task: {task_name}, role name: {role.name}")
                 return None
-            logger.debug("Deleting role assignments of task %s from the registry", task_name)
+            logger.debug(f"Deleting role assignments of task {task_name} from the registry")
             role_client.role_assignments.delete(
                 scope=registry.id,
                 role_assignment_name=role.name
@@ -413,7 +413,7 @@ def generate_logs(cmd,
             run_id=run_id)
         log_file_sas = response.log_link
     except (AttributeError, CloudError) as e:
-        logger.debug("%s Exception: %s", error_msg, e)
+        logger.debug(f"{error_msg} Exception: {e}")
         raise AzCLIError(error_msg)
 
     account_name, endpoint_suffix, container_name, blob_name, sas_token = get_blob_info(
@@ -426,7 +426,7 @@ def generate_logs(cmd,
     while _evaluate_task_run_nonterminal_state(run_status):
         run_status = _get_run_status(client, resource_group_name, registry_name, run_id)
         if _evaluate_task_run_nonterminal_state(run_status):
-            logger.debug("Waiting for the task run to complete. Current status: %s", run_status)
+            logger.debug(f"Waiting for the task run to complete. Current status: {run_status}")
             time.sleep(2)
 
     _download_logs(AppendBlobService(
