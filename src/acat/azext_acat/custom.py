@@ -52,8 +52,8 @@ from .aaz.latest.acat.report.webhook import (
 logger = get_logger(__name__)
 
 
-@register_client("DupAadTokenClient")
-class AAZDupAadTokenClient(AAZMgmtClient):
+@register_client("AcatMgmtClient")
+class AAZAcatMgmtClient(AAZMgmtClient):
     @classmethod
     def _build_configuration(cls, ctx, credential, **kwargs):
         from azure.cli.core.auth.util import resource_to_scopes
@@ -75,7 +75,7 @@ class AAZDupAadTokenClient(AAZMgmtClient):
 
 class OnboardAcat(_AcatOnboard):
     class OnboardAcatWithDupAadToken(_AcatOnboard.ProviderActionsOnboard):
-        CLIENT_TYPE = "DupAadTokenClient"
+        CLIENT_TYPE = "AcatMgmtClient"
 
     def _execute_operations(self):
         self.pre_operations()
@@ -88,7 +88,7 @@ class TriggerEvaluation(_AcatTriggerEvaluation):
     class TriggerEvaluationWithDupAadToken(
         _AcatTriggerEvaluation.ProviderActionsTriggerEvaluation
     ):
-        CLIENT_TYPE = "DupAadTokenClient"
+        CLIENT_TYPE = "AcatMgmtClient"
 
     def _execute_operations(self):
         self.pre_operations()
@@ -98,7 +98,7 @@ class TriggerEvaluation(_AcatTriggerEvaluation):
 
 class ListAcatReport(_AcatListReport):
     class ListAcatReportWithDupAadToken(_AcatListReport.ReportList):
-        CLIENT_TYPE = "DupAadTokenClient"
+        CLIENT_TYPE = "AcatMgmtClient"
 
     def _execute_operations(self):
         self.pre_operations()
@@ -108,7 +108,7 @@ class ListAcatReport(_AcatListReport):
 
 class ShowAcatReport(_AcatShowReport):
     class ShowAcatReportWithDupAadToken(_AcatShowReport.ReportGet):
-        CLIENT_TYPE = "DupAadTokenClient"
+        CLIENT_TYPE = "AcatMgmtClient"
 
     def _execute_operations(self):
         self.pre_operations()
@@ -118,7 +118,7 @@ class ShowAcatReport(_AcatShowReport):
 
 class CreateAcatReport(_AcatCreateReport):
     class CreateAcatReportWithDupAadToken(_AcatCreateReport.ReportCreateOrUpdate):
-        CLIENT_TYPE = "DupAadTokenClient"
+        CLIENT_TYPE = "AcatMgmtClient"
 
     def _execute_operations(self):
         self.pre_operations()
@@ -167,7 +167,7 @@ class CreateAcatReport(_AcatCreateReport):
 
 class UpdateAcatReport(_AcatUpdateReport):
     class UpdateAcatReportWithDupAadToken(_AcatUpdateReport.ReportUpdate):
-        CLIENT_TYPE = "DupAadTokenClient"
+        CLIENT_TYPE = "AcatMgmtClient"
 
     def _execute_operations(self):
         self.pre_operations()
@@ -177,7 +177,7 @@ class UpdateAcatReport(_AcatUpdateReport):
 
 class DeleteAcatReport(_AcatDeleteReport):
     class DeleteAcatReportWithDupAadToken(_AcatDeleteReport.ReportDelete):
-        CLIENT_TYPE = "DupAadTokenClient"
+        CLIENT_TYPE = "AcatMgmtClient"
 
     def _execute_operations(self):
         self.pre_operations()
@@ -187,7 +187,7 @@ class DeleteAcatReport(_AcatDeleteReport):
 
 class DownloadAcatReport(_AcatDownloadSnapshot):
     class DownloadAcatReportWithDupAadToken(_AcatDownloadSnapshot.SnapshotDownload):
-        CLIENT_TYPE = "DupAadTokenClient"
+        CLIENT_TYPE = "AcatMgmtClient"
 
     def _execute_operations(self):
         self.pre_operations()
@@ -254,7 +254,7 @@ class DownloadAcatReport(_AcatDownloadSnapshot):
 
 class GetControlAssessment(_AcatListSnapshot):
     class GetControlAssessmentWithDupAadToken(_AcatListSnapshot.SnapshotList):
-        CLIENT_TYPE = "DupAadTokenClient"
+        CLIENT_TYPE = "AcatMgmtClient"
 
     def _execute_operations(self):
         self.pre_operations()
@@ -315,7 +315,7 @@ class GetControlAssessment(_AcatListSnapshot):
 
 class ListAcatReportWebhook(_AcatListReportWebhook):
     class ListAcatReportWebhookWithDupAadToken(_AcatListReportWebhook.WebhookList):
-        CLIENT_TYPE = "DupAadTokenClient"
+        CLIENT_TYPE = "AcatMgmtClient"
 
     def _execute_operations(self):
         self.pre_operations()
@@ -325,7 +325,7 @@ class ListAcatReportWebhook(_AcatListReportWebhook):
 
 class ShowAcatReportWebhook(_AcatShowReportWebhook):
     class ShowAcatReportWebhookWithDupAadToken(_AcatShowReportWebhook.WebhookGet):
-        CLIENT_TYPE = "DupAadTokenClient"
+        CLIENT_TYPE = "AcatMgmtClient"
 
     def _execute_operations(self):
         self.pre_operations()
@@ -337,7 +337,7 @@ class CreateAcatReportWebhook(_AcatCreateReportWebhook):
     class CreateAcatReportWebhookWithDupAadToken(
         _AcatCreateReportWebhook.WebhookCreateOrUpdate
     ):
-        CLIENT_TYPE = "DupAadTokenClient"
+        CLIENT_TYPE = "AcatMgmtClient"
 
     def _execute_operations(self):
         self.pre_operations()
@@ -437,7 +437,7 @@ class UpdateAcatReportWebhook(_AcatUpdateReportWebhook):
     class UpdateAcatReportWebhookWithDupAadToken(
         _AcatUpdateReportWebhook.WebhookUpdate
     ):
-        CLIENT_TYPE = "DupAadTokenClient"
+        CLIENT_TYPE = "AcatMgmtClient"
 
     def _execute_operations(self):
         self.pre_operations()
@@ -530,7 +530,7 @@ class DeleteAcatReportWebhook(_AcatDeleteReportWebhook):
     class DeleteAcatReportWebhookWithDupAadToken(
         _AcatDeleteReportWebhook.WebhookDelete
     ):
-        CLIENT_TYPE = "DupAadTokenClient"
+        CLIENT_TYPE = "AcatMgmtClient"
 
     def _execute_operations(self):
         self.pre_operations()
