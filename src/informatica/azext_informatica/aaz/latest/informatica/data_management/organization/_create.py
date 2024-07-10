@@ -50,8 +50,7 @@ class Create(AAZCommand):
                 pattern="^[a-zA-Z0-9_-]*$",
             ),
         )
-        _args_schema.rg = AAZResourceGroupNameArg(
-            options=["--rg"],
+        _args_schema.resource_group = AAZResourceGroupNameArg(
             help="Resource group name",
             required=True,
         )
@@ -237,7 +236,7 @@ class Create(AAZCommand):
             help="The geo-location where the resource lives",
             required=True,
             fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="rg",
+                resource_group_arg="resource_group",
             ),
         )
         _args_schema.tags = AAZDictArg(
@@ -317,7 +316,7 @@ class Create(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.rg,
+                    "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(

@@ -53,8 +53,7 @@ class Update(AAZCommand):
                 pattern="^[a-zA-Z0-9_-]*$",
             ),
         )
-        _args_schema.rg = AAZResourceGroupNameArg(
-            options=["--rg"],
+        _args_schema.resource_group = AAZResourceGroupNameArg(
             help="Resource group name",
             required=True,
         )
@@ -358,7 +357,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.rg,
+                    "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -461,7 +460,7 @@ class Update(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.rg,
+                    "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
