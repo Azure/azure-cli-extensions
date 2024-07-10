@@ -31,7 +31,7 @@ def restore(grafana_url, archive_file, components, http_headers, destination_dat
     restore_functions['folder'] = _load_and_create_folder
     restore_functions['dashboard'] = _load_and_create_dashboard
     restore_functions['library_panel'] =_load_and_create_library_panel 
-    restore_functions['snapshot'] = _create_snapshot
+    restore_functions['snapshot'] = _load_and_create_snapshot
     restore_functions['annotation'] = _create_annotation
     restore_functions['datasource'] = _create_datasource
 
@@ -154,11 +154,15 @@ def create_library_panel(grafana_url, payload, http_headers):
 
 
 # Restore snapshots
-def _create_snapshot(grafana_url, file_path, http_headers):
+def _load_and_create_snapshot(grafana_url, file_path, http_headers):
     with open(file_path, 'r', encoding="utf8") as f:
         data = f.read()
 
     snapshot = json.loads(data)
+    create_snapshot(grafana_url, snapshot, http_headers)
+    
+
+def create_snapshot(grafana_url, snapshot, http_headers):
     try:
         snapshot['name'] = snapshot['dashboard']['title']
     except KeyError:
