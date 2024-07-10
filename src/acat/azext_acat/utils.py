@@ -18,11 +18,6 @@ def ParseSubsFromResources(resourceList):
     return list(subs)
 
 
-def GetLocalTimeZone():
-    """Get local time zone"""
-    return str(datetime.datetime.now(datetime.timezone.utc).astimezone().tzinfo)
-
-
 def GetClosestFullHour():
     """Get closest full hour"""
     now = datetime.datetime.now()

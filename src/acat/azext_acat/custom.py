@@ -16,7 +16,6 @@ from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.aaz._client import AAZMgmtClient
 from .utils import (
     GetClosestFullHour,
-    GetLocalTimeZone,
     ParseSubsFromResources,
     saveArrayAsCsv,
 )
@@ -137,7 +136,7 @@ class CreateAcatReport(_AcatCreateReport):
             arg_group="Properties",
             help="""Report collection trigger time\'s time zone, the available list can be obtained by executing
             "Get-TimeZone -ListAvailable" in PowerShell. An example of valid timezone id is "Pacific Standard Time".""",
-            default=GetLocalTimeZone(),
+            default="UTC",
         )
         args_schema.trigger_time._required = False
         args_schema.trigger_time._registered = False
