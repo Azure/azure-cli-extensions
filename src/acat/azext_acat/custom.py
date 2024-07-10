@@ -257,8 +257,13 @@ class GetControlAssessment(_AcatListSnapshot):
         args_schema.compliance_status = AAZStrArg(
             options=["--compliance-status"],
             help="Compliance status.",
-            enum={"failed": "Failed", "succeeded": "Passed", "na": "Not Applicable"},
-            default="all",
+            enum={
+                "failed": "Failed",
+                "succeeded": "Passed",
+                "na": "Not Applicable",
+                "all": "Full Assessments",
+            },
+            default="Full Assessments",
         )
         return args_schema
 
@@ -276,7 +281,7 @@ class GetControlAssessment(_AcatListSnapshot):
                 f"No snapshot found for report {self.ctx.args.report_name}"
             )
         latestSnapshot = snapshots[0]
-        if self.ctx.args.compliance_status == "all":
+        if self.ctx.args.compliance_status == "Full Assessments":
             return latestSnapshot
         filteredCategories = [
             {
