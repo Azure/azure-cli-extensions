@@ -11,7 +11,7 @@
 
 import os
 from knack.log import get_logger
-from azure.cli.core.aaz import register_client, AAZClientConfiguration
+from azure.cli.core.aaz import register_client, AAZClientConfiguration, has_value
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.aaz._client import AAZMgmtClient
 from .utils import (
@@ -205,12 +205,12 @@ class DownloadAcatReport(_AcatDownloadSnapshot):
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
 
-        downloadType = str(self.ctx.args["downloadType"])
-        path = self.ctx.args["path"] or os.getcwd()
-        fname = self.ctx.args["name"] or downloadType
-        fullpath = os.path.join(path, fname) + (
-            ".pdf" if downloadType == "CompliancePdfReport" else ".csv"
-        )
+        args=self.ctx.args
+        downloadType = args.download_type.to_serialized_data()
+
+        fullpath = os.path.join(
+            args.path.to_serialized_data(), args.name.to_serialized_data()
+        ) + (".pdf" if downloadType == "CompliancePdfReport" else ".csv")
 
         if downloadType == "CompliancePdfReport":
             import urllib.request
@@ -237,6 +237,12 @@ class DownloadAcatReport(_AcatDownloadSnapshot):
                 f"No snapshot found for report {self.ctx.args.report_name}"
             )
         args.snapshot_name = snapshot_name
+        downloadType = args.download_type.to_serialized_data()
+
+        if not has_value(args.path):
+            args.path = os.getcwd()
+        if not has_value(args.name):
+            args.name = downloadType
 
 
 class GetControlAssessment(_AcatListSnapshot):
