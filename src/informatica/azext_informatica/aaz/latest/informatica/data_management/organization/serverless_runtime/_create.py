@@ -42,19 +42,21 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.organization_name = AAZStrArg(
-            options=["--organization-name"],
+        _args_schema.org_name = AAZStrArg(
+            options=["--org-name"],
             help="Name of the Organizations resource",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9_-]*$",
             ),
         )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
+        _args_schema.rg = AAZResourceGroupNameArg(
+            options=["--rg"],
+            help="Resource group name",
             required=True,
         )
-        _args_schema.serverless_runtime_name = AAZStrArg(
-            options=["-n", "--name", "--serverless-runtime-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="Name of the Serverless Runtime resource",
             required=True,
             fmt=AAZStrArgFormat(
@@ -65,13 +67,13 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.advanced_custom_properties = AAZListArg(
-            options=["--advanced-custom-properties"],
+        _args_schema.custom_props = AAZListArg(
+            options=["--custom-props"],
             arg_group="Properties",
             help="String KV pairs indicating Advanced custom properties.",
         )
-        _args_schema.application_type = AAZStrArg(
-            options=["--application-type"],
+        _args_schema.app_type = AAZStrArg(
+            options=["--app-type"],
             arg_group="Properties",
             help="Application type of the Serverless Runtime environment.",
             enum={"CDI": "CDI", "CDIE": "CDIE"},
@@ -86,8 +88,8 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="description of the serverless runtime.",
         )
-        _args_schema.execution_timeout = AAZStrArg(
-            options=["--execution-timeout"],
+        _args_schema.timeout = AAZStrArg(
+            options=["--timeout"],
             arg_group="Properties",
             help="Serverless Execution timeout",
         )
@@ -97,41 +99,41 @@ class Create(AAZCommand):
             help="Platform type of the Serverless Runtime.",
             enum={"AZURE": "AZURE"},
         )
-        _args_schema.serverless_account_location = AAZStrArg(
-            options=["--serverless-account-location"],
+        _args_schema.location = AAZStrArg(
+            options=["--location"],
             arg_group="Properties",
             help="Serverless account creation location",
         )
-        _args_schema.serverless_runtime_config = AAZObjectArg(
-            options=["--serverless-runtime-config"],
+        _args_schema.serverless_config = AAZObjectArg(
+            options=["--serverless-config"],
             arg_group="Properties",
-            help="Serverless config properties",
+            help="Serverless runtime config properties",
         )
-        _args_schema.serverless_runtime_network_profile = AAZObjectArg(
-            options=["--serverless-runtime-network-profile"],
+        _args_schema.network_profile = AAZObjectArg(
+            options=["--network-profile"],
             arg_group="Properties",
             help="Informatica Serverless Network profile properties.",
         )
-        _args_schema.serverless_runtime_tags = AAZListArg(
-            options=["--serverless-runtime-tags"],
+        _args_schema.serverless_tags = AAZListArg(
+            options=["--serverless-tags"],
             arg_group="Properties",
             help="Serverless Runtime Tags",
         )
-        _args_schema.serverless_runtime_user_context_properties = AAZObjectArg(
-            options=["--serverless-runtime-user-context-properties"],
+        _args_schema.user_context_props = AAZObjectArg(
+            options=["--user-context-props"],
             arg_group="Properties",
             help="Serverless runtime user context properties",
         )
-        _args_schema.supplementary_file_location = AAZStrArg(
-            options=["--supplementary-file-location"],
+        _args_schema.file_location = AAZStrArg(
+            options=["--file-location"],
             arg_group="Properties",
             help="Supplementary file location.",
         )
 
-        advanced_custom_properties = cls._args_schema.advanced_custom_properties
-        advanced_custom_properties.Element = AAZObjectArg()
+        custom_props = cls._args_schema.custom_props
+        custom_props.Element = AAZObjectArg()
 
-        _element = cls._args_schema.advanced_custom_properties.Element
+        _element = cls._args_schema.custom_props.Element
         _element.key = AAZStrArg(
             options=["key"],
             help="advanced custom properties key",
@@ -141,32 +143,32 @@ class Create(AAZCommand):
             help="advanced custom properties value",
         )
 
-        serverless_runtime_config = cls._args_schema.serverless_runtime_config
-        serverless_runtime_config.cdi_config_props = AAZListArg(
+        serverless_config = cls._args_schema.serverless_config
+        serverless_config.cdi_config_props = AAZListArg(
             options=["cdi-config-props"],
             help="The List of Informatica Serverless Runtime CDI Config Properties.",
         )
-        serverless_runtime_config.cdie_config_props = AAZListArg(
+        serverless_config.cdie_config_props = AAZListArg(
             options=["cdie-config-props"],
             help="The List of Informatica Serverless Runtime CDIE Config Properties.",
         )
 
-        cdi_config_props = cls._args_schema.serverless_runtime_config.cdi_config_props
+        cdi_config_props = cls._args_schema.serverless_config.cdi_config_props
         cdi_config_props.Element = AAZObjectArg()
         cls._build_args_cdi_config_props_create(cdi_config_props.Element)
 
-        cdie_config_props = cls._args_schema.serverless_runtime_config.cdie_config_props
+        cdie_config_props = cls._args_schema.serverless_config.cdie_config_props
         cdie_config_props.Element = AAZObjectArg()
         cls._build_args_cdi_config_props_create(cdie_config_props.Element)
 
-        serverless_runtime_network_profile = cls._args_schema.serverless_runtime_network_profile
-        serverless_runtime_network_profile.network_interface_configuration = AAZObjectArg(
+        network_profile = cls._args_schema.network_profile
+        network_profile.network_interface_configuration = AAZObjectArg(
             options=["network-interface-configuration"],
             help="Network Interface Configuration Profile",
             required=True,
         )
 
-        network_interface_configuration = cls._args_schema.serverless_runtime_network_profile.network_interface_configuration
+        network_interface_configuration = cls._args_schema.network_profile.network_interface_configuration
         network_interface_configuration.subnet_id = AAZResourceIdArg(
             options=["subnet-id"],
             help="Virtual network subnet resource id",
@@ -182,10 +184,10 @@ class Create(AAZCommand):
             help="Virtual network resource guid",
         )
 
-        serverless_runtime_tags = cls._args_schema.serverless_runtime_tags
-        serverless_runtime_tags.Element = AAZObjectArg()
+        serverless_tags = cls._args_schema.serverless_tags
+        serverless_tags.Element = AAZObjectArg()
 
-        _element = cls._args_schema.serverless_runtime_tags.Element
+        _element = cls._args_schema.serverless_tags.Element
         _element.name = AAZStrArg(
             options=["name"],
             help="The name (also known as the key) of the tag.",
@@ -195,8 +197,8 @@ class Create(AAZCommand):
             help="The value of the tag.",
         )
 
-        serverless_runtime_user_context_properties = cls._args_schema.serverless_runtime_user_context_properties
-        serverless_runtime_user_context_properties.user_context_token = AAZStrArg(
+        user_context_props = cls._args_schema.user_context_props
+        user_context_props.user_context_token = AAZStrArg(
             options=["user-context-token"],
             help="User context token for OBO flow.",
             required=True,
@@ -334,15 +336,15 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "organizationName", self.ctx.args.organization_name,
+                    "organizationName", self.ctx.args.org_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "resourceGroupName", self.ctx.args.rg,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "serverlessRuntimeName", self.ctx.args.serverless_runtime_name,
+                    "serverlessRuntimeName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -385,18 +387,18 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("advancedCustomProperties", AAZListType, ".advanced_custom_properties")
-                properties.set_prop("applicationType", AAZStrType, ".application_type")
+                properties.set_prop("advancedCustomProperties", AAZListType, ".custom_props")
+                properties.set_prop("applicationType", AAZStrType, ".app_type")
                 properties.set_prop("computeUnits", AAZStrType, ".compute_units")
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("executionTimeout", AAZStrType, ".execution_timeout")
+                properties.set_prop("executionTimeout", AAZStrType, ".timeout")
                 properties.set_prop("platform", AAZStrType, ".platform")
-                properties.set_prop("serverlessAccountLocation", AAZStrType, ".serverless_account_location", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("serverlessRuntimeConfig", AAZObjectType, ".serverless_runtime_config")
-                properties.set_prop("serverlessRuntimeNetworkProfile", AAZObjectType, ".serverless_runtime_network_profile")
-                properties.set_prop("serverlessRuntimeTags", AAZListType, ".serverless_runtime_tags")
-                properties.set_prop("serverlessRuntimeUserContextProperties", AAZObjectType, ".serverless_runtime_user_context_properties")
-                properties.set_prop("supplementaryFileLocation", AAZStrType, ".supplementary_file_location")
+                properties.set_prop("serverlessAccountLocation", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("serverlessRuntimeConfig", AAZObjectType, ".serverless_config")
+                properties.set_prop("serverlessRuntimeNetworkProfile", AAZObjectType, ".network_profile")
+                properties.set_prop("serverlessRuntimeTags", AAZListType, ".serverless_tags")
+                properties.set_prop("serverlessRuntimeUserContextProperties", AAZObjectType, ".user_context_props")
+                properties.set_prop("supplementaryFileLocation", AAZStrType, ".file_location")
 
             advanced_custom_properties = _builder.get(".properties.advancedCustomProperties")
             if advanced_custom_properties is not None:

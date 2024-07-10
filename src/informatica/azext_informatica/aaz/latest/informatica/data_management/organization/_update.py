@@ -44,8 +44,8 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.organization_name = AAZStrArg(
-            options=["-n", "--name", "--organization-name"],
+        _args_schema.org_name = AAZStrArg(
+            options=["-n", "--name", "--org-name"],
             help="Name of the Organizations resource",
             required=True,
             id_part="name",
@@ -53,7 +53,9 @@ class Update(AAZCommand):
                 pattern="^[a-zA-Z0-9_-]*$",
             ),
         )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
+        _args_schema.rg = AAZResourceGroupNameArg(
+            options=["--rg"],
+            help="Resource group name",
             required=True,
         )
 
@@ -323,11 +325,11 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "organizationName", self.ctx.args.organization_name,
+                    "organizationName", self.ctx.args.org_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "resourceGroupName", self.ctx.args.rg,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -422,11 +424,11 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "organizationName", self.ctx.args.organization_name,
+                    "organizationName", self.ctx.args.org_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
+                    "resourceGroupName", self.ctx.args.rg,
                     required=True,
                 ),
                 **self.serialize_url_param(
