@@ -129,15 +129,6 @@ class CreateAcatReport(_AcatCreateReport):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         from azure.cli.core.aaz import AAZDateTimeArg, AAZStrArg
 
-        args_schema.time_zone._required = False
-        args_schema.time_zone._registered = False
-        args_schema.time_zone_with_default = AAZStrArg(
-            options=["--time-zone"],
-            arg_group="Properties",
-            help="""Report collection trigger time\'s time zone, the available list can be obtained by executing
-            "Get-TimeZone -ListAvailable" in PowerShell. An example of valid timezone id is "Pacific Standard Time".""",
-            default="UTC",
-        )
         args_schema.trigger_time._required = False
         args_schema.trigger_time._registered = False
         args_schema.trigger_time_with_default = AAZDateTimeArg(
@@ -157,7 +148,6 @@ class CreateAcatReport(_AcatCreateReport):
         )
         LongRunningOperation(self.cli_ctx)(poller)
         args = self.ctx.args
-        args.time_zone = args.time_zone_with_default
         args.trigger_time = args.trigger_time_with_default
 
 

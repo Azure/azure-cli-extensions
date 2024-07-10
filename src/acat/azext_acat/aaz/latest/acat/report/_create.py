@@ -71,10 +71,11 @@ class Create(AAZCommand):
             help="The information of 'bring your own storage' binding to the report",
         )
         _args_schema.time_zone = AAZStrArg(
-            options=["--time-zone-hidden"],
+            options=["--time-zone"],
             arg_group="Properties",
             help="Report collection trigger time's time zone, the available list can be obtained by executing \"Get-TimeZone -ListAvailable\" in PowerShell. An example of valid timezone id is \"Pacific Standard Time\".",
             required=True,
+            default="UTC",
         )
         _args_schema.trigger_time = AAZDateTimeArg(
             options=["--trigger-time-hidden"],
