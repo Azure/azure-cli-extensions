@@ -110,10 +110,6 @@ class AcatReportScenario(ScenarioTest):
         report = self.cmd(
             'acat report create --report-name {report_name_no_snapshot} --resources {resources}  --time-zone "UTC"    --trigger-time "2021-09-01T00:00:00Z"')
         assert(report.get_output_in_json().get('lastTriggerTime',None) == None)
-        ret=self.cmd(
-            'acat report get-control-assessments --report-name {report_name_no_snapshot}')
-        print(ret)
-        output=ret.get_output_in_json()
-        assert(output != None)
-        assert(output=='No snapshot found')
+        self.cmd(
+            'acat report get-control-assessments --report-name {report_name_no_snapshot}', expect_failure=True)
         self.cmd('acat report delete --report-name {report_name_no_snapshot} --yes')

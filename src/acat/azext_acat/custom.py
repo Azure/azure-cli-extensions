@@ -68,7 +68,7 @@ class AAZAcatMgmtClient(AAZMgmtClient):
             credential_scopes=resource_to_scopes(
                 ctx.cli_ctx.cloud.endpoints.active_directory_resource_id
             ),
-            **kwargs
+            **kwargs,
         )
 
 
@@ -149,16 +149,13 @@ class CreateAcatReport(_AcatCreateReport):
         return args_schema
 
     def pre_operations(self):
-        cmd = OnboardAcat(cli_ctx=self.cli_ctx)
 
-        poller = cmd._handler(
-            {
-                "cmd": cmd,
+        poller = OnboardAcat(cli_ctx=self.cli_ctx)(
+            command_args={
                 "subscription_ids": ParseSubsFromResources(self.ctx.args.resources),
             }
         )
-        LongRunningOperation(cmd.cli_ctx, f"Starting {cmd.name}")(poller)
-
+        LongRunningOperation(self.cli_ctx)(poller)
         args = self.ctx.args
         args.time_zone = args.time_zone_with_default
         args.trigger_time = args.trigger_time_with_default
@@ -190,8 +187,6 @@ class DownloadAcatReport(_AcatDownloadSnapshot):
 
     def _execute_operations(self):
         self.pre_operations()
-        if self.ctx.args.snapshot_name is None:
-            yield f"No snapshot found for report {self.ctx.args.report_name}"
         yield self.DownloadAcatReportWithDupAadToken(ctx=self.ctx)()
         self.post_operations()
 
@@ -243,11 +238,14 @@ class DownloadAcatReport(_AcatDownloadSnapshot):
 
     def pre_operations(self):
         args = self.ctx.args
-        cmd = GetControlAssessment(cli_ctx=self.cli_ctx)
-        result = cmd._handler(
-            {"cmd": cmd, "report_name": args.report_name, "compliance_status": "all"}
+        result = GetControlAssessment(cli_ctx=self.cli_ctx)(
+            command_args={"report_name": args.report_name, "compliance_status": "all"}
         )
         snapshot_name = result["snapshotName"] if result is not None else None
+        if snapshot_name is None:
+            raise ValueError(
+                f"No snapshot found for report {self.ctx.args.report_name}"
+            )
         args.snapshot_name = snapshot_name
 
 
@@ -284,7 +282,9 @@ class GetControlAssessment(_AcatListSnapshot):
             self.ctx.vars.instance.value, client_flatten=True
         )
         if len(snapshots) == 0:
-            return "No snapshot found"
+            raise ValueError(
+                f"No snapshot found for report {self.ctx.args.report_name}"
+            )
         latestSnapshot = snapshots[0]
         if self.ctx.args.compliance_status == "all":
             return latestSnapshot
