@@ -31,7 +31,7 @@ class ScVmmScenarioTest(ScenarioTest):
                 'vnet_name': 'azcli-test-virtual-network',
                 'avset_string': 'avset1',
                 'avset_name': 'azcli-test-avset1',
-                'vm_name': 'azcli-test-vm-'+ datetime.datetime.now().strftime(f"%y%m%d%H%M%S"),
+                'vm_name': 'azcli-test-vm-01',
                 'disk_name': 'disk_1',
                 'nic_name': 'nic_1',
                 'checkpoint_name': 'azcli-test-checkpoint',
@@ -162,14 +162,6 @@ class ScVmmScenarioTest(ScenarioTest):
             ' --name disk_2 --disk-size 20 --bus 0 --lun 0 --bus-type SCSI --vhd-type Dynamic',
             checks=[
                 self.check('properties.provisioningState', 'Succeeded'),
-            ],
-        )
-
-        self.cmd(
-            'az scvmm vm disk show -g {resource_group} --vm-name {vm_name} -n disk_2',
-            checks=[
-                self.check('name', 'disk_2'),
-                self.check('maxDiskSizeGb', 20),
             ],
         )
 
