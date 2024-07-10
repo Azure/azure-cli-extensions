@@ -80,7 +80,7 @@ class Create(AAZCommand):
             help="under which event notification should be sent.",
         )
         _args_schema.payload_url = AAZStrArg(
-            options=["--payload-url-hidden"],
+            options=["--payload-url"],
             arg_group="Properties",
             help="webhook payload url",
             fmt=AAZStrArgFormat(

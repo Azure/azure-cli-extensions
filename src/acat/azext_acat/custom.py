@@ -380,15 +380,7 @@ class CreateAcatReportWebhook(_AcatCreateReportWebhook):
             default=[],
         )
         args_schema.events_with_default.Element = AAZStrArg()
-        args_schema.payload_url_required = AAZStrArg(
-            options=["--payload-url"],
-            arg_group="Properties",
-            help="webhook payload url",
-            required=True,
-            fmt=AAZStrArgFormat(
-                pattern=r"^(http(s)?://)[\S]{0,64994}$",
-            ),
-        )
+        args_schema.payload_url._required = True
         args_schema.trigger_mode = AAZStrArg(
             options=["--trigger-mode"],
             arg_group="Properties",
@@ -423,7 +415,6 @@ class CreateAcatReportWebhook(_AcatCreateReportWebhook):
         args = self.ctx.args
         args.content_type = args.content_type_with_default
         args.events = assign_aaz_list_arg(args.events, args.events_with_default)
-        args.payload_url = args.payload_url_required
         args.webhook_key = args.webhook_key_with_default
         args.status = args.status_with_default
         args.send_all_events = args.trigger_mode
