@@ -419,9 +419,11 @@ class CreateAcatReportWebhook(_AcatCreateReportWebhook):
         args.status = args.status_with_default
         args.send_all_events = args.trigger_mode
 
-        wKey = str(args.webhook_key)
-        hasValidWebhookKey = wKey != "Undefined" and len(wKey) > 0
-        args.update_webhook_key = "true" if hasValidWebhookKey else "false"
+        if has_value(args.webhook_key):
+            args.update_webhook_key = "true"
+        else:
+            args.webhook_key = ""
+            args.update_webhook_key = "false"
 
 
 class UpdateAcatReportWebhook(_AcatUpdateReportWebhook):
@@ -512,9 +514,10 @@ class UpdateAcatReportWebhook(_AcatUpdateReportWebhook):
         args.status = args.status_nullable
         args.send_all_events = args.trigger_mode
 
-        wKey = str(args.webhook_key)
-        hasValidWebhookKey = wKey != "Undefined" and len(wKey) > 0
-        args.update_webhook_key = "true" if hasValidWebhookKey else "false"
+        if has_value(args.webhook_key):
+            args.update_webhook_key = "true"
+        else:
+            args.update_webhook_key = "false"
 
 
 class DeleteAcatReportWebhook(_AcatDeleteReportWebhook):
