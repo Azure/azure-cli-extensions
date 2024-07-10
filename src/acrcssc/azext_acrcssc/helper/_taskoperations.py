@@ -33,11 +33,12 @@ from azure.cli.command_modules.acr._constants import ACR_RUN_DEFAULT_TIMEOUT_IN_
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.command_modules.acr._azure_utils import get_blob_info
 from azure.cli.command_modules.acr._utils import prepare_source_location
+from azure.core.exceptions import ResourceNotFoundError
 from azure.mgmt.core.tools import parse_resource_id
 from azext_acrcssc._client_factory import cf_acr_tasks, cf_authorization, cf_acr_registries_tasks, cf_acr_runs
 from azext_acrcssc.helper._deployment import validate_and_deploy_template
 from azext_acrcssc.helper._ociartifactoperations import create_oci_artifact_continuous_patch, delete_oci_artifact_continuous_patch
-from azext_acrcssc._validators import check_continuous_task_exists
+from azext_acrcssc._validators import check_continuous_task_exists, check_continuous_task_config_exists
 from msrestazure.azure_exceptions import CloudError
 from ._utility import convert_timespan_to_cron, transform_cron_to_cadence, create_temporary_dry_run_file, delete_temporary_dry_run_file
 
@@ -111,19 +112,20 @@ def _eval_trigger_run(cmd, registry, resource_group, defer_immediate_run):
 def delete_continuous_patch_v1(cmd, registry, dryrun):
     logger.debug("Entering delete_continuous_patch_v1")
     cssc_tasks_exists = check_continuous_task_exists(cmd, registry)
-    if not dryrun and cssc_tasks_exists:
+    cssc_config_exists = check_continuous_task_config_exists(cmd, registry)
+    if not dryrun and (cssc_tasks_exists or cssc_config_exists):
         cssc_tasks = ', '.join(CONTINUOSPATCH_ALL_TASK_NAMES)
         logger.warning("All of these tasks will be deleted: %s", cssc_tasks)
         for taskname in CONTINUOSPATCH_ALL_TASK_NAMES:
             # bug: if one of the deletion fails, the others will not be attempted, we need to attempt to delete all of them
             _delete_task(cmd, registry, taskname, dryrun)
             logger.warning("Task %s deleted.", taskname)
+            
+        logger.warning("Deleting %s/%s:%s", CSSC_WORKFLOW_POLICY_REPOSITORY, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1)
+        delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
 
     if not cssc_tasks_exists:
-        logger.warning("%s workflow task does not exist", CONTINUOUS_PATCHING_WORKFLOW_NAME)
-
-    logger.warning("Deleting %s/%s:%s", CSSC_WORKFLOW_POLICY_REPOSITORY, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1)
-    delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
+        logger.warning("%s workflow does not exist", CONTINUOUS_PATCHING_WORKFLOW_NAME)
 
 
 def list_continuous_patch_v1(cmd, registry):
@@ -279,7 +281,13 @@ def _delete_task_role_assignment(cli_ctx, acrtask_client, registry, resource_gro
     role_client = cf_authorization(cli_ctx)
     acrtask_client = cf_acr_tasks(cli_ctx)
 
-    task = acrtask_client.get(resource_group, registry.name, task_name)
+    try:
+        task = acrtask_client.get(resource_group, registry.name, task_name)
+    except ResourceNotFoundError:
+        logger.debug("Task %s does not exist in registry %s", task_name, registry.name)
+        logger.debug("Continuing with deletion")
+        return None
+    
     identity = task.identity
 
     if identity:

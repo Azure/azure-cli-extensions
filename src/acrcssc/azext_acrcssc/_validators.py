@@ -8,14 +8,20 @@ import json
 import os
 import re
 from knack.log import get_logger
+from azure.cli.command_modules.acr.repository import acr_repository_show
 from .helper._constants import (
+    BEARER_TOKEN_USERNAME,
+    CSSC_WORKFLOW_POLICY_REPOSITORY,
+    CONTINUOSPATCH_OCI_ARTIFACT_CONFIG,
     CONTINUOUSPATCH_CONFIG_SCHEMA_V1,
     CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT,
     CONTINUOSPATCH_ALL_TASK_NAMES,
     ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT,
     ERROR_MESSAGE_INVALID_TIMESPAN_VALUE,
-    RESOURCE_GROUP)
+    RESOURCE_GROUP,
+    SUBSCRIPTION)
 from .helper._constants import CSSCTaskTypes, ERROR_MESSAGE_INVALID_TASK, RECOMMENDATION_CADENCE
+from .helper._ociartifactoperations import _get_acr_token
 from azure.mgmt.core.tools import (parse_resource_id)
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from ._client_factory import cf_acr_tasks
@@ -58,6 +64,27 @@ def check_continuous_task_exists(cmd, registry):
     for task_name in CONTINUOSPATCH_ALL_TASK_NAMES:
         exists = exists or _check_task_exists(cmd, registry, task_name)
     return exists
+
+
+def check_continuous_task_config_exists(cmd, registry):
+    # A client cannot be used in this situation because the 'show registry/image'
+    # is a data plane operation and the az cli does not include the data plane API.
+    subscription = parse_resource_id(registry.id)[SUBSCRIPTION]
+    try:
+        token = _get_acr_token(registry.name, subscription)
+        acr_repository_show(
+            cmd=cmd,
+            registry_name=registry.name,
+            repository=f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}",
+            username=BEARER_TOKEN_USERNAME,
+            password=token)
+    except Exception as exception:
+        if hasattr(exception, 'status_code') and exception.status_code == 404:
+            return False
+        # report on the error only if we get something other than 404
+        logger.debug(f"Failed to find config {CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG} from registry {registry.name} : {exception}")
+        raise
+    return True
 
 
 def _check_task_exists(cmd, registry, task_name=""):
