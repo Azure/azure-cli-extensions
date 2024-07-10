@@ -127,7 +127,7 @@ class CreateAcatReport(_AcatCreateReport):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZDateTimeArg, AAZStrArg
+        from azure.cli.core.aaz import AAZDateTimeArg
 
         args_schema.trigger_time._required = False
         args_schema.trigger_time._registered = False
@@ -205,7 +205,7 @@ class DownloadAcatReport(_AcatDownloadSnapshot):
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
 
-        args=self.ctx.args
+        args = self.ctx.args
         downloadType = args.download_type.to_serialized_data()
 
         fullpath = os.path.join(
@@ -347,7 +347,7 @@ class CreateAcatReportWebhook(_AcatCreateReportWebhook):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        from azure.cli.core.aaz import AAZListArg, AAZStrArg, AAZStrArgFormat
+        from azure.cli.core.aaz import AAZStrArg
 
         args_schema.payload_url._required = True
         args_schema.send_all_events._required = False
@@ -376,8 +376,6 @@ class CreateAcatReportWebhook(_AcatCreateReportWebhook):
         return args_schema
 
     def pre_operations(self):
-        from azure.cli.core.aaz.utils import assign_aaz_list_arg
-
         args = self.ctx.args
         args.status = args.status_with_default
         args.send_all_events = args.trigger_mode
