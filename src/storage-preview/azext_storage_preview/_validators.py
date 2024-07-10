@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=protected-access, logging-format-interpolation
+# pylint: disable=protected-access, logging-format-interpolation, too-many-branches
 import os
 import argparse
 
@@ -888,8 +888,7 @@ def process_file_batch_source_parameters(cmd, namespace):
 
 
 def validate_source_uri(cmd, namespace):  # pylint: disable=too-many-statements
-    from .util import create_short_lived_blob_sas, create_short_lived_blob_sas_v2, \
-        create_short_lived_file_sas, create_short_lived_file_sas_v2
+    from .util import create_short_lived_blob_sas_v2, create_short_lived_file_sas_v2
     usage_string = \
         'Invalid usage: {}. Supply only one of the following argument sets to specify source:' \
         '\n\t   --source-uri [--source-sas]' \

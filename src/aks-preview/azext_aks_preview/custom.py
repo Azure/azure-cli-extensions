@@ -639,6 +639,8 @@ def aks_create(
     storage_pool_size=None,
     storage_pool_sku=None,
     storage_pool_option=None,
+    ephemeral_disk_volume_type=None,
+    ephemeral_disk_nvme_perf_tier=None,
     node_provisioning_mode=None,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
     # trusted launch
@@ -846,6 +848,8 @@ def aks_update(
     storage_pool_sku=None,
     storage_pool_option=None,
     azure_container_storage_nodepools=None,
+    ephemeral_disk_volume_type=None,
+    ephemeral_disk_nvme_perf_tier=None,
     node_provisioning_mode=None,
     ssh_access=None,
     cluster_service_load_balancer_health_probe_mode=None,
@@ -1383,6 +1387,8 @@ def aks_agentpool_update(
     disable_vtpm=False,
     if_match=None,
     if_none_match=None,
+    enable_fips_image=False,
+    disable_fips_image=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()

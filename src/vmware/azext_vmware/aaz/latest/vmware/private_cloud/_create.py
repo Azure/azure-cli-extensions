@@ -20,9 +20,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}", "2023-09-01"],
         ]
     }
 
@@ -82,7 +82,6 @@ class Create(AAZCommand):
             options=["--cluster-size"],
             arg_group="ManagementCluster",
             help="Number of hosts for the default management cluster. Minimum of 3 and maximum of 16.",
-            required=True,
         )
 
         # define Arg Group "PrivateCloud"
@@ -91,11 +90,11 @@ class Create(AAZCommand):
         _args_schema.identity = AAZObjectArg(
             options=["--identity"],
             arg_group="PrivateCloud",
-            help="The identity of the private cloud, if configured.",
+            help="The managed service identities assigned to this resource.",
         )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="PrivateCloud",
-            help="Resource location",
+            help="The geo-location where the resource lives",
             required=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
@@ -110,7 +109,8 @@ class Create(AAZCommand):
         identity = cls._args_schema.identity
         identity.type = AAZStrArg(
             options=["type"],
-            help="The type of identity used for the private cloud. The type 'SystemAssigned' refers to an implicitly created identity. The type 'None' will remove any identities from the Private Cloud.",
+            help="Type of managed service identity (either system assigned, or none).",
+            required=True,
             enum={"None": "None", "SystemAssigned": "SystemAssigned"},
         )
 
@@ -136,12 +136,11 @@ class Create(AAZCommand):
             options=["--network-block"],
             arg_group="Properties",
             help="The block of addresses should be unique across VNet in your subscription as well as on-premise. Make sure the CIDR format is conformed to (A.B.C.D/X) where A,B,C,D are between 0 and 255, and X is between 0 and 22",
-            required=True,
         )
         _args_schema.nsxt_password = AAZPasswordArg(
             options=["--nsxt-password"],
             arg_group="Properties",
-            help="NSX-T Manager password when the private cloud is created",
+            help="Optionally, set the NSX-T Manager password when the private cloud is created",
             blank=AAZPromptPasswordInput(
                 msg="NSX-T Manager Password:",
                 confirm=True,
@@ -150,11 +149,16 @@ class Create(AAZCommand):
         _args_schema.vcenter_password = AAZPasswordArg(
             options=["--vcenter-password"],
             arg_group="Properties",
-            help="vCenter admin password when the private cloud is created",
+            help="Optionally, set the vCenter admin password when the private cloud is created",
             blank=AAZPromptPasswordInput(
                 msg="vCenter Admin Password:",
                 confirm=True,
             ),
+        )
+        _args_schema.virtual_network_id = AAZResourceIdArg(
+            options=["--virtual-network-id"],
+            arg_group="Properties",
+            help="Azure resource ID of the virtual network",
         )
 
         extended_network_blocks = cls._args_schema.extended_network_blocks
@@ -166,7 +170,7 @@ class Create(AAZCommand):
         _args_schema.sku = AAZStrArg(
             options=["--sku"],
             arg_group="Sku",
-            help="The name of the SKU.",
+            help="The name of the SKU. E.g. P3. It is typically a letter+number code",
             required=True,
         )
         return cls._args_schema
@@ -252,7 +256,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -279,13 +283,13 @@ class Create(AAZCommand):
             )
             _builder.set_prop("identity", AAZObjectType, ".identity")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("sku", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             identity = _builder.get(".identity")
             if identity is not None:
-                identity.set_prop("type", AAZStrType, ".type")
+                identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -296,6 +300,7 @@ class Create(AAZCommand):
                 properties.set_prop("networkBlock", AAZStrType, ".network_block", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("nsxtPassword", AAZStrType, ".nsxt_password", typ_kwargs={"flags": {"secret": True}})
                 properties.set_prop("vcenterPassword", AAZStrType, ".vcenter_password", typ_kwargs={"flags": {"secret": True}})
+                properties.set_prop("virtualNetworkId", AAZStrType, ".virtual_network_id")
 
             availability = _builder.get(".properties.availability")
             if availability is not None:
@@ -309,7 +314,7 @@ class Create(AAZCommand):
 
             management_cluster = _builder.get(".properties.managementCluster")
             if management_cluster is not None:
-                management_cluster.set_prop("clusterSize", AAZIntType, ".cluster_size", typ_kwargs={"flags": {"required": True}})
+                management_cluster.set_prop("clusterSize", AAZIntType, ".cluster_size")
 
             sku = _builder.get(".sku")
             if sku is not None:
@@ -350,10 +355,14 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
             )
             _schema_on_200_201.sku = AAZObjectType(
                 flags={"required": True},
+            )
+            _schema_on_200_201.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
             )
             _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
@@ -369,12 +378,17 @@ class Create(AAZCommand):
                 serialized_name="tenantId",
                 flags={"read_only": True},
             )
-            identity.type = AAZStrType()
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
 
             properties = cls._schema_on_200_201.properties
             properties.availability = AAZObjectType()
             properties.circuit = AAZObjectType()
             _CreateHelper._build_schema_circuit_read(properties.circuit)
+            properties.dns_zone_type = AAZStrType(
+                serialized_name="dnsZoneType",
+            )
             properties.encryption = AAZObjectType()
             properties.endpoints = AAZObjectType()
             properties.extended_network_blocks = AAZListType(
@@ -402,7 +416,6 @@ class Create(AAZCommand):
             )
             properties.nsx_public_ip_quota_raised = AAZStrType(
                 serialized_name="nsxPublicIpQuotaRaised",
-                flags={"read_only": True},
             )
             properties.nsxt_certificate_thumbprint = AAZStrType(
                 serialized_name="nsxtCertificateThumbprint",
@@ -432,6 +445,9 @@ class Create(AAZCommand):
                 serialized_name="vcenterPassword",
                 flags={"secret": True},
             )
+            properties.virtual_network_id = AAZStrType(
+                serialized_name="virtualNetworkId",
+            )
             properties.vmotion_network = AAZStrType(
                 serialized_name="vmotionNetwork",
                 flags={"read_only": True},
@@ -460,7 +476,6 @@ class Create(AAZCommand):
             )
             key_vault_properties.key_state = AAZStrType(
                 serialized_name="keyState",
-                flags={"read_only": True},
             )
             key_vault_properties.key_vault_url = AAZStrType(
                 serialized_name="keyVaultUrl",
@@ -470,7 +485,6 @@ class Create(AAZCommand):
             )
             key_vault_properties.version_type = AAZStrType(
                 serialized_name="versionType",
-                flags={"read_only": True},
             )
 
             endpoints = cls._schema_on_200_201.properties.endpoints
@@ -478,8 +492,20 @@ class Create(AAZCommand):
                 serialized_name="hcxCloudManager",
                 flags={"read_only": True},
             )
+            endpoints.hcx_cloud_manager_ip = AAZStrType(
+                serialized_name="hcxCloudManagerIp",
+                flags={"read_only": True},
+            )
             endpoints.nsxt_manager = AAZStrType(
                 serialized_name="nsxtManager",
+                flags={"read_only": True},
+            )
+            endpoints.nsxt_manager_ip = AAZStrType(
+                serialized_name="nsxtManagerIp",
+                flags={"read_only": True},
+            )
+            endpoints.vcenter_ip = AAZStrType(
+                serialized_name="vcenterIp",
                 flags={"read_only": True},
             )
             endpoints.vcsa = AAZStrType(
@@ -496,37 +522,26 @@ class Create(AAZCommand):
             identity_sources.Element = AAZObjectType()
 
             _element = cls._schema_on_200_201.properties.identity_sources.Element
-            _element.alias = AAZStrType(
-                flags={"required": True},
-            )
+            _element.alias = AAZStrType()
             _element.base_group_dn = AAZStrType(
                 serialized_name="baseGroupDN",
-                flags={"required": True},
             )
             _element.base_user_dn = AAZStrType(
                 serialized_name="baseUserDN",
-                flags={"required": True},
             )
-            _element.domain = AAZStrType(
-                flags={"required": True},
-            )
-            _element.name = AAZStrType(
-                flags={"required": True},
-            )
+            _element.domain = AAZStrType()
+            _element.name = AAZStrType()
             _element.password = AAZStrType(
                 flags={"secret": True},
             )
             _element.primary_server = AAZStrType(
                 serialized_name="primaryServer",
-                flags={"required": True},
             )
             _element.secondary_server = AAZStrType(
                 serialized_name="secondaryServer",
             )
             _element.ssl = AAZStrType()
-            _element.username = AAZStrType(
-                flags={"secret": True},
-            )
+            _element.username = AAZStrType()
 
             management_cluster = cls._schema_on_200_201.properties.management_cluster
             management_cluster.cluster_id = AAZIntType(
@@ -535,20 +550,46 @@ class Create(AAZCommand):
             )
             management_cluster.cluster_size = AAZIntType(
                 serialized_name="clusterSize",
-                flags={"required": True},
             )
             management_cluster.hosts = AAZListType()
             management_cluster.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            management_cluster.vsan_datastore_name = AAZStrType(
+                serialized_name="vsanDatastoreName",
+            )
 
             hosts = cls._schema_on_200_201.properties.management_cluster.hosts
             hosts.Element = AAZStrType()
 
             sku = cls._schema_on_200_201.sku
+            sku.capacity = AAZIntType()
+            sku.family = AAZStrType()
             sku.name = AAZStrType(
                 flags={"required": True},
+            )
+            sku.size = AAZStrType()
+            sku.tier = AAZStrType()
+
+            system_data = cls._schema_on_200_201.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
             )
 
             tags = cls._schema_on_200_201.tags

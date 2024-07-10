@@ -6,9 +6,6 @@
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
 
-from azure.cli.core.commands import CliCommandType
-
-
 def load_command_table(self, _):
 
     with self.command_group('databricks workspace'):

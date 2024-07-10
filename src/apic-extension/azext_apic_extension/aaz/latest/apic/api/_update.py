@@ -18,10 +18,10 @@ class Update(AAZCommand):
     """Update existing API.
 
     :example: Update API
-        az apic api update -g contoso-resources -s contoso --api-id echo-api --summary "Basic REST API service"
+        az apic api update -g contoso-resources -n contoso --api-id echo-api --summary "Basic REST API service"
 
     :example: Update custom properties
-        az apic api update -g contoso-resources -s contoso --api-id echo-api --custom-properties '{\"public-facing\":true}'
+        az apic api update -g contoso-resources -n contoso --api-id echo-api --custom-properties '{\"public-facing\":true}'
     """
 
     _aaz_info = {
@@ -64,8 +64,8 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-n", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

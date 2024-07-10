@@ -15,20 +15,17 @@ from azure.cli.core.aaz import *
     "large-storage-instance list",
 )
 class List(AAZCommand):
-    """List a list of AzureLargeStorageInstances in the specified subscription. The operations returns various properties of each Azure LargeStorage instance.
-
-    :example: To list Azure Large Storage Instances in a subscription
-        az large-storage-instance list --subscription $SUBSCRIPTION_ID
+    """List a list of Azure Large Storage Instances in the specified subscription. The operations returns various properties of each Azure Large Storage instance.
 
     :example: To list Azure Large Storage Instances in a specific subscription and resource group
-        az azurelargestorageinstance list --subscription $SUBSCRIPTIONID --resource-group $RESOURCE_GROUP
+        az large-storage-instance list --subscription $SUBSCRIPTIONID --resource-group $RESOURCE_GROUP
     """
 
     _aaz_info = {
-        "version": "2023-07-20-preview",
+        "version": "2024-04-10",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.azurelargeinstance/azurelargestorageinstances", "2023-07-20-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargestorageinstances", "2023-07-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.azurelargeinstance/azurelargestorageinstances", "2024-04-10"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargestorageinstances", "2024-04-10"],
         ]
     }
 
@@ -119,7 +116,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-20-preview",
+                    "api-version", "2024-04-10",
                     required=True,
                 ),
             }
@@ -155,7 +152,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -200,6 +199,7 @@ class List(AAZCommand):
             )
             storage_properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             storage_properties.storage_billing_properties = AAZObjectType(
                 serialized_name="storageBillingProperties",
@@ -282,7 +282,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-20-preview",
+                    "api-version", "2024-04-10",
                     required=True,
                 ),
             }
@@ -318,7 +318,9 @@ class List(AAZCommand):
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -363,6 +365,7 @@ class List(AAZCommand):
             )
             storage_properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             storage_properties.storage_billing_properties = AAZObjectType(
                 serialized_name="storageBillingProperties",
