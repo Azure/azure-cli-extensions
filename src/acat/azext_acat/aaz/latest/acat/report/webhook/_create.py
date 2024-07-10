@@ -106,7 +106,7 @@ class Create(AAZCommand):
             enum={"false": "false", "true": "true"},
         )
         _args_schema.webhook_key = AAZStrArg(
-            options=["--webhook-key-hidden"],
+            options=["--secret"],
             arg_group="Properties",
             help="webhook secret token. If not set, this field value is null; otherwise, please set a string value.",
             fmt=AAZStrArgFormat(

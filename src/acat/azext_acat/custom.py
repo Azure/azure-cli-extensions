@@ -361,8 +361,6 @@ class CreateAcatReportWebhook(_AcatCreateReportWebhook):
         args_schema.status._registered = False
         args_schema.update_webhook_key._required = False
         args_schema.update_webhook_key._registered = False
-        args_schema.webhook_key._required = False
-        args_schema.webhook_key._registered = False
 
         args_schema.content_type_with_default = AAZStrArg(
             options=["--content-type"],
@@ -397,16 +395,6 @@ class CreateAcatReportWebhook(_AcatCreateReportWebhook):
             default="enalbe",
             blank="disable",
         )
-        args_schema.webhook_key_with_default = AAZStrArg(
-            options=["--secret"],
-            arg_group="Properties",
-            help="webhook secret token. If not set, this field value is null; otherwise, please set a string value.",
-            default="",
-            blank="",
-            fmt=AAZStrArgFormat(
-                pattern="^.{0,2048}$",
-            ),
-        )
         return args_schema
 
     def pre_operations(self):
@@ -415,7 +403,6 @@ class CreateAcatReportWebhook(_AcatCreateReportWebhook):
         args = self.ctx.args
         args.content_type = args.content_type_with_default
         args.events = assign_aaz_list_arg(args.events, args.events_with_default)
-        args.webhook_key = args.webhook_key_with_default
         args.status = args.status_with_default
         args.send_all_events = args.trigger_mode
 
@@ -444,8 +431,6 @@ class UpdateAcatReportWebhook(_AcatUpdateReportWebhook):
 
         args_schema.send_all_events._required = False
         args_schema.send_all_events._registered = False
-        args_schema.webhook_key._required = False
-        args_schema.webhook_key._registered = False
         args_schema.events._required = False
         args_schema.events._registered = False
         args_schema.payload_url._required = False
@@ -493,15 +478,6 @@ class UpdateAcatReportWebhook(_AcatUpdateReportWebhook):
                 pattern=r"^(http(s)?://)[\S]{0,64994}$",
             ),
         )
-        args_schema.webhook_key_with_default = AAZStrArg(
-            options=["--secret"],
-            arg_group="Properties",
-            help="webhook secret token. If not set, this field value is null; otherwise, please set a string value.",
-            nullable=True,
-            fmt=AAZStrArgFormat(
-                pattern="^.{0,2048}$",
-            ),
-        )
         return args_schema
 
     def pre_operations(self):
@@ -510,7 +486,6 @@ class UpdateAcatReportWebhook(_AcatUpdateReportWebhook):
         args = self.ctx.args
         args.events = assign_aaz_list_arg(args.events, args.events_with_default)
         args.payload_url = args.payload_url_nullable
-        args.webhook_key = args.webhook_key_with_default
         args.status = args.status_nullable
         args.send_all_events = args.trigger_mode
 
