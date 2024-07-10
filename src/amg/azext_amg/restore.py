@@ -33,7 +33,7 @@ def restore(grafana_url, archive_file, components, http_headers, destination_dat
     restore_functions['library_panel'] =_load_and_create_library_panel 
     restore_functions['snapshot'] = _load_and_create_snapshot
     restore_functions['annotation'] = _load_and_create_annotation
-    restore_functions['datasource'] = _create_datasource
+    restore_functions['datasource'] = _load_and_create_datasource
 
     with tarfile.open(name=archive_file, mode='r:gz') as tar:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -65,8 +65,7 @@ def _restore_components(grafana_url, restore_functions, tmpdir, components, http
             datasource = json.loads(data)
             source_datasources.append(datasource)
 
-        global uid_mapping  # pylint: disable=global-statement
-        uid_mapping = create_datasource_mapping(source_datasources, destination_datasources)
+        set_uid_mapping(source_datasources, destination_datasources)
 
     if "dashboard" in exts:  # dashboard restoration can't work if linked library panels don't exist
         exts.insert(0, "library_panel")
@@ -219,11 +218,15 @@ def create_annotation(grafana_url, annotation, http_headers):
 
 
 # Restore data sources
-def _create_datasource(grafana_url, file_path, http_headers):
+def _load_and_create_datasource(grafana_url, file_path, http_headers):
     with open(file_path, 'r', encoding="utf8") as f:
         data = f.read()
 
     datasource = json.loads(data)
+    create_datasource(grafana_url, datasource, http_headers)
+
+    
+def create_datasource(grafana_url, datasource, http_headers):
     result = send_grafana_post(f'{grafana_url}/api/datasources', json.dumps(datasource), http_headers)
     datasource_name = datasource['name']
     # 409 means the data source already exists
@@ -232,3 +235,8 @@ def _create_datasource(grafana_url, file_path, http_headers):
         (Style.SUCCESS, 'SUCCESS') if result[0] in [200, 409] else (Style.ERROR, 'FAILURE')
     ])
     logger.info("status: %s, msg: %s", result[0], result[1])
+
+
+def set_uid_mapping(source_datasources, destination_datasources):
+    global uid_mapping  # pylint: disable=global-statement
+    uid_mapping = create_datasource_mapping(source_datasources, destination_datasources)
