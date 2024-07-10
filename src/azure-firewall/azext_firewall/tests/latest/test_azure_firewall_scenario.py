@@ -314,7 +314,7 @@ class AzureFirewallScenario(ScenarioTest):
         # self.cmd('network firewall show -g {rg} -n {af}')
 
     @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_with_firewall_policy', location='westus2')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_with_firewall_policy', location='SwitzerlandNorth')
     def test_azure_firewall_with_firewall_policy(self, resource_group, resource_group_location):
         self.kwargs.update({
             'af': 'af1',
@@ -341,7 +341,7 @@ class AzureFirewallScenario(ScenarioTest):
         ])
         # self.cmd('network firewall create -g {rg} -n {af} --count 1 --sku AZFW_Hub --vhub clitestvhub --firewall-policy {policy}')
 
-        self.kwargs.update({'location': 'westus2'})
+        self.kwargs.update({'location': 'SwitzerlandNorth'})
 
         # test firewall policy with vnet firewall
         self.cmd('network firewall create -g {rg} -n {af2} -l {location} --firewall-policy {policy}')
@@ -363,7 +363,7 @@ class AzureFirewallScenario(ScenarioTest):
             self.check('name', '{policy2}')
         ])
 
-    @ResourceGroupPreparer(name_prefix='test_azure_firewall_with_firewall_policy_premium', location='westus2')
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_with_firewall_policy_premium', location='SwitzerlandNorth')
     def test_azure_firewall_with_firewall_policy_premium(self, resource_group, resource_group_location):
         self.kwargs.update({
             'policy2': 'myclipolicy2',
@@ -385,7 +385,7 @@ class AzureFirewallScenario(ScenarioTest):
         # self.cmd('network firewall policy update -g {rg} -n {policy2} --remove {id}',
         #          checks=[self.not_exists('identity')])
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_with_threat_intel_allowlist', location='westus2')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_with_threat_intel_allowlist', location='SwitzerlandNorth')
     def test_azure_firewall_policy_with_threat_intel_allowlist(self, resource_group, resource_group_location):
         self.kwargs.update({
             'collectiongroup': 'myclirulecollectiongroup',
@@ -697,7 +697,7 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network firewall policy delete --resource-group {rg} --name {policy} ')
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='westus2')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='SwitzerlandNorth')
     def test_azure_firewall_policy_rules_with_fqdns(self, resource_group, resource_group_location):
         self.kwargs.update({
             'collectiongroup': 'myclirulecollectiongroup',
@@ -774,7 +774,7 @@ class AzureFirewallScenario(ScenarioTest):
                  ])
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='westus2')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy', location='SwitzerlandNorth')
     def test_azure_firewall_policy_rules_with_ip_groups(self, resource_group, resource_group_location):
         self.kwargs.update({
             'collectiongroup': 'myclirulecollectiongroup',
@@ -908,7 +908,7 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd('network firewall policy delete -g {rg} --name {policy}')
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_explicit_proxy', location='westus2')
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_explicit_proxy', location='SwitzerlandNorth')
     def test_azure_firewall_policy_explicit_proxy(self, resource_group):
         self.kwargs.update({
             'policy_name': 'testFirewallPolicy',
@@ -982,7 +982,7 @@ class AzureFirewallScenario(ScenarioTest):
                  checks=self.check('sku.tier', 'Premium'))
 
     # BUG ISSUE: https://github.com/Azure/azure-cli-extensions/issues/4096
-    @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_update_premiumonlyproperty_issue', location='westus2')
+    @ResourceGroupPreparer(name_prefix='test_azure_firewall_policy_update_premiumonlyproperty_issue', location='SwitzerlandNorth')
     def test_azure_firewall_policy_update_premiumonlyproperty_issue(self, resource_group):
         self.kwargs.update({
             'policy': 'testpolicy'
@@ -1095,7 +1095,7 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd("network firewall policy delete -n {policy} -g {rg}")
 
     @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_draft', location='westus2')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_draft', location='SwitzerlandNorth')
     def test_azure_policy_draft(self, resource_group, resource_group_location):
         self.kwargs.update({
             'policy': 'myclipolicy',
@@ -1110,7 +1110,7 @@ class AzureFirewallScenario(ScenarioTest):
             self.check('name', '{policy}')
         ])
 
-        self.kwargs.update({'location': 'westus2'})
+        self.kwargs.update({'location': 'SwitzerlandNorth'})
         self.cmd('network firewall policy draft create -g {rg} --name {policy}', checks=[
             self.check('type', 'Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts'),
             self.check('name', '{policy}')
@@ -1203,7 +1203,7 @@ class AzureFirewallScenario(ScenarioTest):
 
 
     @AllowLargeResponse(size_kb=10240)
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_draft', location='westus2')
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_draft', location='SwitzerlandNorth')
     def test_azure_policy_rcg_draft(self, resource_group, resource_group_location):
         self.kwargs.update({
             'policy': 'myclipolicy',
@@ -1218,7 +1218,7 @@ class AzureFirewallScenario(ScenarioTest):
             self.check('name', '{policy}')
         ])
 
-        self.kwargs.update({'location': 'westus2'})
+        self.kwargs.update({'location': 'SwitzerlandNorth'})
         self.cmd('network firewall policy draft create -g {rg} --name {policy}', checks=[
             self.check('type', 'Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts'),
             self.check('name', '{policy}')
