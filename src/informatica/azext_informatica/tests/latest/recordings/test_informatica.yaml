@@ -1,0 +1,2214 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.0
+    method: GET
+    uri: https://aka.ms/azExtCmdTree
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - max-age=0, no-cache, no-store
+      connection:
+      - keep-alive
+      content-length:
+      - '0'
+      date:
+      - Wed, 10 Jul 2024 08:55:53 GMT
+      expires:
+      - Wed, 10 Jul 2024 08:55:53 GMT
+      location:
+      - https://azurecliextensionsync.blob.core.windows.net/cmd-index/extensionCommandTree.json
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:9b037ab9-fa5a-4c09-81bd-41ffa859f01e
+      server:
+      - Kestrel
+      strict-transport-security:
+      - max-age=31536000 ; includeSubDomains
+      x-response-cache-status:
+      - 'True'
+    status:
+      code: 301
+      message: Moved Permanently
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.32.0
+    method: GET
+    uri: https://azurecliextensionsync.blob.core.windows.net/cmd-index/extensionCommandTree.json
+  response:
+    body:
+      string: '{"account": {"subscription": {"rename": "account", "cancel": "account",
+        "enable": "account", "list": "account", "show": "account", "list-location":
+        "account"}, "tenant": {"list": "account"}, "alias": {"list": "account", "show":
+        "account", "create": "account", "delete": "account", "wait": "account"}, "accept-ownership-status":
+        "account", "create": "subscription"}, "acr": {"query": "acrquery", "import-pipeline":
+        {"create": "acrtransfer", "delete": "acrtransfer", "list": "acrtransfer",
+        "show": "acrtransfer"}, "export-pipeline": {"create": "acrtransfer", "delete":
+        "acrtransfer", "list": "acrtransfer", "show": "acrtransfer"}, "pipeline-run":
+        {"create": "acrtransfer", "delete": "acrtransfer", "list": "acrtransfer",
+        "show": "acrtransfer", "clean": "acrtransfer"}}, "ad": {"ds": {"list": "ad",
+        "show": "ad", "create": "ad", "update": "ad", "delete": "ad", "wait": "ad"}},
+        "adp": {"check-name-availability": "adp", "workspace": {"create": "adp", "delete":
+        "adp", "list": "adp", "show": "adp", "update": "adp", "wait": "adp"}, "account":
+        {"create": "adp", "delete": "adp", "list": "adp", "show": "adp", "update":
+        "adp", "wait": "adp", "data-pool": {"create": "adp", "delete": "adp", "list":
+        "adp", "show": "adp", "update": "adp", "wait": "adp"}}}, "vm": {"aem": {"set":
+        "aem", "delete": "aem", "verify": "aem"}, "repair": {"create": "vm-repair",
+        "restore": "vm-repair", "run": "vm-repair", "list-scripts": "vm-repair", "reset-nic":
+        "vm-repair", "repair-and-restore": "vm-repair"}}, "ai-examples": {"check-connection":
+        "ai-examples"}, "aks": {"browse": "aks-preview", "create": "aks-preview",
+        "update": "aks-preview", "get-upgrades": "aks-preview", "upgrade": "aks-preview",
+        "scale": "aks-preview", "delete": "aks-preview", "show": "aks-preview", "list":
+        "aks-preview", "enable-addons": "aks-preview", "disable-addons": "aks-preview",
+        "get-credentials": "aks-preview", "rotate-certs": "aks-preview", "stop": "aks-preview",
+        "start": "aks-preview", "wait": "aks-preview", "get-versions": "aks-preview",
+        "kollect": "aks-preview", "kanalyze": "aks-preview", "get-os-options": "aks-preview",
+        "operation-abort": "aks-preview", "maintenanceconfiguration": {"list": "aks-preview",
+        "show": "aks-preview", "add": "aks-preview", "update": "aks-preview", "delete":
+        "aks-preview"}, "addon": {"list-available": "aks-preview", "list": "aks-preview",
+        "show": "aks-preview", "enable": "aks-preview", "disable": "aks-preview",
+        "update": "aks-preview"}, "nodepool": {"list": "aks-preview", "show": "aks-preview",
+        "add": "aks-preview", "scale": "aks-preview", "upgrade": "aks-preview", "update":
+        "aks-preview", "delete": "aks-preview", "get-upgrades": "aks-preview", "stop":
+        "aks-preview", "start": "aks-preview", "operation-abort": "aks-preview", "delete-machines":
+        "aks-preview", "manual-scale": {"add": "aks-preview", "update": "aks-preview",
+        "delete": "aks-preview"}, "snapshot": {"list": "aks-preview", "show": "aks-preview",
+        "create": "aks-preview", "update": "aks-preview", "delete": "aks-preview"}},
+        "machine": {"list": "aks-preview", "show": "aks-preview"}, "operation": {"show":
+        "aks-preview", "show-latest": "aks-preview"}, "draft": {"create": "aks-preview",
+        "setup-gh": "aks-preview", "generate-workflow": "aks-preview", "up": "aks-preview",
+        "update": "aks-preview"}, "pod-identity": {"add": "aks-preview", "delete":
+        "aks-preview", "list": "aks-preview", "exception": {"add": "aks-preview",
+        "delete": "aks-preview", "update": "aks-preview", "list": "aks-preview"}},
+        "egress-endpoints": {"list": "aks-preview"}, "snapshot": {"list": "aks-preview",
+        "show": "aks-preview", "create": "aks-preview", "delete": "aks-preview"},
+        "trustedaccess": {"role": {"list": "aks-preview"}, "rolebinding": {"list":
+        "aks-preview", "show": "aks-preview", "create": "aks-preview", "update": "aks-preview",
+        "delete": "aks-preview"}}, "mesh": {"enable": "aks-preview", "disable": "aks-preview",
+        "enable-ingress-gateway": "aks-preview", "enable-egress-gateway": "aks-preview",
+        "disable-ingress-gateway": "aks-preview", "disable-egress-gateway": "aks-preview",
+        "get-revisions": "aks-preview", "get-upgrades": "aks-preview", "upgrade":
+        {"start": "aks-preview", "complete": "aks-preview", "rollback": "aks-preview"}},
+        "approuting": {"enable": "aks-preview", "disable": "aks-preview", "update":
+        "aks-preview", "zone": {"add": "aks-preview", "delete": "aks-preview", "update":
+        "aks-preview", "list": "aks-preview"}}, "check-network": {"outbound": "aks-preview"},
+        "app": {"up": "deploy-to-azure"}, "use-dev-spaces": "dev-spaces", "connection":
+        {"create": {"postgres": "serviceconnector-passwordless", "postgres-flexible":
+        "serviceconnector-passwordless", "mysql-flexible": "serviceconnector-passwordless",
+        "sql": "serviceconnector-passwordless"}}}, "aksarc": {"list": "aksarc", "show":
+        "aksarc", "create": "aksarc", "update": "aksarc", "get-upgrades": "aksarc",
+        "upgrade": "aksarc", "delete": "aksarc", "notice": "aksarc", "get-credentials":
+        "aksarc", "nodepool": {"list": "aksarc", "show": "aksarc", "add": "aksarc",
+        "delete": "aksarc", "scale": "aksarc", "update": "aksarc"}, "vnet": {"list":
+        "aksarc", "show": "aksarc", "create": "aksarc", "delete": "aksarc"}, "get-versions":
+        "aksarc", "vmsize": {"list": "aksarc"}, "logs": {"hci": "aksarc"}, "release":
+        {"download": "aksarc", "save": "aksarc"}}, "akshybrid": {"show": "akshybrid",
+        "create": "akshybrid", "update": "akshybrid", "get-upgrades": "akshybrid",
+        "upgrade": "akshybrid", "delete": "akshybrid", "notice": "akshybrid", "get-credentials":
+        "akshybrid", "nodepool": {"list": "akshybrid", "show": "akshybrid", "add":
+        "akshybrid", "delete": "akshybrid", "scale": "akshybrid"}, "vnet": {"list":
+        "akshybrid", "show": "akshybrid", "create": "akshybrid", "delete": "akshybrid"},
+        "get-versions": "akshybrid", "vmsize": {"list": "akshybrid"}}, "network":
+        {"alb": {"create": "alb", "delete": "alb", "list": "alb", "show": "alb", "update":
+        "alb", "wait": "alb", "frontend": {"create": "alb", "delete": "alb", "list":
+        "alb", "show": "alb", "update": "alb", "wait": "alb"}, "association": {"create":
+        "alb", "delete": "alb", "list": "alb", "show": "alb", "update": "alb", "wait":
+        "alb"}}, "firewall": {"create": "azure-firewall", "delete": "azure-firewall",
+        "learned-ip-prefix": "azure-firewall", "list": "azure-firewall", "list-fqdn-tags":
+        "azure-firewall", "show": "azure-firewall", "update": "azure-firewall", "wait":
+        "azure-firewall", "policy": {"create": "azure-firewall", "delete": "azure-firewall",
+        "list": "azure-firewall", "show": "azure-firewall", "update": "azure-firewall",
+        "wait": "azure-firewall", "rule-collection-group": {"create": "azure-firewall",
+        "delete": "azure-firewall", "list": "azure-firewall", "show": "azure-firewall",
+        "update": "azure-firewall", "wait": "azure-firewall", "collection": {"list":
+        "azure-firewall", "add-nat-collection": "azure-firewall", "add-filter-collection":
+        "azure-firewall", "remove": "azure-firewall", "rule": {"add": "azure-firewall",
+        "update": "azure-firewall", "remove": "azure-firewall"}}}, "intrusion-detection":
+        {"add": "azure-firewall", "remove": "azure-firewall", "list": "azure-firewall"}},
+        "threat-intel-allowlist": {"create": "azure-firewall", "update": "azure-firewall",
+        "show": "azure-firewall", "delete": "azure-firewall"}, "ip-config": {"create":
+        "azure-firewall", "list": "azure-firewall", "show": "azure-firewall", "delete":
+        "azure-firewall"}, "management-ip-config": {"show": "azure-firewall", "update":
+        "azure-firewall"}, "network-rule": {"create": "azure-firewall", "list": "azure-firewall",
+        "show": "azure-firewall", "delete": "azure-firewall", "collection": {"list":
+        "azure-firewall", "show": "azure-firewall", "delete": "azure-firewall"}},
+        "nat-rule": {"create": "azure-firewall", "list": "azure-firewall", "show":
+        "azure-firewall", "delete": "azure-firewall", "collection": {"list": "azure-firewall",
+        "show": "azure-firewall", "delete": "azure-firewall"}}, "application-rule":
+        {"create": "azure-firewall", "list": "azure-firewall", "show": "azure-firewall",
+        "delete": "azure-firewall", "collection": {"list": "azure-firewall", "show":
+        "azure-firewall", "delete": "azure-firewall"}}}, "bastion": {"create": "bastion",
+        "delete": "bastion", "list": "bastion", "show": "bastion", "update": "bastion",
+        "wait": "bastion", "ssh": "bastion", "rdp": "bastion", "tunnel": "bastion"},
+        "cross-connection": {"show": "express-route-cross-connection", "list-arp-tables":
+        "express-route-cross-connection", "list-route-tables": "express-route-cross-connection",
+        "summarize-route-table": "express-route-cross-connection", "list": "express-route-cross-connection",
+        "update": "express-route-cross-connection", "wait": "express-route-cross-connection",
+        "peering": {"create": "express-route-cross-connection", "delete": "express-route-cross-connection",
+        "show": "express-route-cross-connection", "list": "express-route-cross-connection",
+        "update": "express-route-cross-connection"}}, "front-door": {"waf-policy":
+        {"create": "front-door", "delete": "front-door", "list": "front-door", "show":
+        "front-door", "update": "front-door", "wait": "front-door", "managed-rules":
+        {"add": "front-door", "remove": "front-door", "list": "front-door", "override":
+        {"add": "front-door", "remove": "front-door", "list": "front-door"}, "exclusion":
+        {"add": "front-door", "remove": "front-door", "list": "front-door"}}, "managed-rule-definition":
+        {"list": "front-door"}, "rule": {"create": "front-door", "update": "front-door",
+        "delete": "front-door", "list": "front-door", "show": "front-door", "match-condition":
+        {"add": "front-door", "remove": "front-door", "list": "front-door"}}}, "show":
+        "front-door", "create": "front-door", "delete": "front-door", "list": "front-door",
+        "update": "front-door", "check-custom-domain": "front-door", "check-name-availability":
+        "front-door", "wait": "front-door", "purge-endpoint": "front-door", "backend-pool":
+        {"create": "front-door", "list": "front-door", "show": "front-door", "delete":
+        "front-door", "backend": {"add": "front-door", "update": "front-door", "list":
+        "front-door", "remove": "front-door"}}, "frontend-endpoint": {"create": "front-door",
+        "list": "front-door", "show": "front-door", "delete": "front-door", "disable-https":
+        "front-door", "enable-https": "front-door", "wait": "front-door"}, "probe":
+        {"create": "front-door", "list": "front-door", "show": "front-door", "delete":
+        "front-door", "update": "front-door"}, "load-balancing": {"create": "front-door",
+        "list": "front-door", "show": "front-door", "delete": "front-door", "update":
+        "front-door"}, "routing-rule": {"create": "front-door", "list": "front-door",
+        "show": "front-door", "delete": "front-door", "update": "front-door"}, "rules-engine":
+        {"show": "front-door", "list": "front-door", "delete": "front-door", "rule":
+        {"create": "front-door", "delete": "front-door", "show": "front-door", "list":
+        "front-door", "update": "front-door", "condition": {"add": "front-door", "remove":
+        "front-door", "list": "front-door"}, "action": {"add": "front-door", "remove":
+        "front-door", "list": "front-door"}}}}, "ip-group": {"create": "ip-group",
+        "update": "ip-group", "list": "ip-group", "delete": "ip-group", "show": "ip-group"},
+        "perimeter": {"create": "nsp", "delete": "nsp", "list": "nsp", "show": "nsp",
+        "link": {"create": "nsp", "delete": "nsp", "list": "nsp", "show": "nsp", "update":
+        "nsp", "wait": "nsp"}, "onboarded-resources": {"list": "nsp"}, "link-reference":
+        {"delete": "nsp", "list": "nsp", "show": "nsp", "wait": "nsp"}, "association":
+        {"create": "nsp", "delete": "nsp", "list": "nsp", "show": "nsp", "update":
+        "nsp", "wait": "nsp"}, "profile": {"create": "nsp", "delete": "nsp", "list":
+        "nsp", "show": "nsp", "access-rule": {"create": "nsp", "delete": "nsp", "list":
+        "nsp", "show": "nsp", "update": "nsp"}}}, "manager": {"create": "virtual-network-manager",
+        "delete": "virtual-network-manager", "list": "virtual-network-manager", "list-active-connectivity-config":
+        "virtual-network-manager", "list-active-security-admin-rule": "virtual-network-manager",
+        "list-deploy-status": "virtual-network-manager", "list-effective-connectivity-config":
+        "virtual-network-manager", "list-effective-security-admin-rule": "virtual-network-manager",
+        "post-commit": "virtual-network-manager", "show": "virtual-network-manager",
+        "update": "virtual-network-manager", "wait": "virtual-network-manager", "group":
+        {"create": "virtual-network-manager", "delete": "virtual-network-manager",
+        "list": "virtual-network-manager", "show": "virtual-network-manager", "update":
+        "virtual-network-manager", "wait": "virtual-network-manager", "static-member":
+        {"create": "virtual-network-manager", "delete": "virtual-network-manager",
+        "list": "virtual-network-manager", "show": "virtual-network-manager"}}, "routing-config":
+        {"create": "virtual-network-manager", "delete": "virtual-network-manager",
+        "list": "virtual-network-manager", "show": "virtual-network-manager", "update":
+        "virtual-network-manager", "wait": "virtual-network-manager", "rule-collection":
+        {"create": "virtual-network-manager", "delete": "virtual-network-manager",
+        "list": "virtual-network-manager", "show": "virtual-network-manager", "update":
+        "virtual-network-manager", "wait": "virtual-network-manager", "rule": {"create":
+        "virtual-network-manager", "delete": "virtual-network-manager", "list": "virtual-network-manager",
+        "show": "virtual-network-manager", "update": "virtual-network-manager", "wait":
+        "virtual-network-manager"}}}, "connect-config": {"create": "virtual-network-manager",
+        "delete": "virtual-network-manager", "list": "virtual-network-manager", "show":
+        "virtual-network-manager", "update": "virtual-network-manager", "wait": "virtual-network-manager"},
+        "security-admin-config": {"create": "virtual-network-manager", "delete": "virtual-network-manager",
+        "list": "virtual-network-manager", "show": "virtual-network-manager", "update":
+        "virtual-network-manager", "wait": "virtual-network-manager", "rule-collection":
+        {"create": "virtual-network-manager", "delete": "virtual-network-manager",
+        "list": "virtual-network-manager", "show": "virtual-network-manager", "update":
+        "virtual-network-manager", "wait": "virtual-network-manager", "rule": {"create":
+        "virtual-network-manager", "delete": "virtual-network-manager", "list": "virtual-network-manager",
+        "show": "virtual-network-manager", "update": "virtual-network-manager"}}},
+        "scope-connection": {"create": "virtual-network-manager", "delete": "virtual-network-manager",
+        "list": "virtual-network-manager", "show": "virtual-network-manager", "update":
+        "virtual-network-manager"}, "connection": {"subscription": {"create": "virtual-network-manager",
+        "delete": "virtual-network-manager", "list": "virtual-network-manager", "show":
+        "virtual-network-manager", "update": "virtual-network-manager"}, "management-group":
+        {"create": "virtual-network-manager", "delete": "virtual-network-manager",
+        "list": "virtual-network-manager", "show": "virtual-network-manager", "update":
+        "virtual-network-manager"}}}, "vnet": {"tap": {"create": "virtual-network-tap",
+        "delete": "virtual-network-tap", "list": "virtual-network-tap", "show": "virtual-network-tap",
+        "update": "virtual-network-tap"}}, "nic": {"vtap-config": {"create": "virtual-network-tap",
+        "delete": "virtual-network-tap", "list": "virtual-network-tap", "show": "virtual-network-tap"}},
+        "vhub": {"create": "virtual-wan", "delete": "virtual-wan", "list": "virtual-wan",
+        "show": "virtual-wan", "update": "virtual-wan", "wait": "virtual-wan", "routing-intent":
+        {"create": "virtual-wan", "delete": "virtual-wan", "list": "virtual-wan",
+        "show": "virtual-wan", "update": "virtual-wan", "wait": "virtual-wan"}, "route-map":
+        {"create": "virtual-wan", "delete": "virtual-wan", "get-inbound-routes": "virtual-wan",
+        "get-outbound-routes": "virtual-wan", "list": "virtual-wan", "show": "virtual-wan",
+        "update": "virtual-wan", "wait": "virtual-wan", "rule": {"add": "virtual-wan",
+        "delete": "virtual-wan", "list": "virtual-wan", "show": "virtual-wan", "wait":
+        "virtual-wan"}}, "connection": {"create": "virtual-wan", "delete": "virtual-wan",
+        "list": "virtual-wan", "show": "virtual-wan", "update": "virtual-wan", "wait":
+        "virtual-wan"}, "get-effective-routes": "virtual-wan", "bgpconnection": {"create":
+        "virtual-wan", "delete": "virtual-wan", "show": "virtual-wan", "list": "virtual-wan",
+        "update": "virtual-wan", "wait": "virtual-wan"}, "route": {"add": "virtual-wan",
+        "list": "virtual-wan", "remove": "virtual-wan", "reset": "virtual-wan"}, "route-table":
+        {"create": "virtual-wan", "update": "virtual-wan", "show": "virtual-wan",
+        "list": "virtual-wan", "delete": "virtual-wan", "wait": "virtual-wan", "route":
+        {"add": "virtual-wan", "list": "virtual-wan", "remove": "virtual-wan"}}},
+        "p2s-vpn-gateway": {"disconnect": "virtual-wan", "reset": "virtual-wan", "create":
+        "virtual-wan", "delete": "virtual-wan", "list": "virtual-wan", "show": "virtual-wan",
+        "update": "virtual-wan", "wait": "virtual-wan", "connection": {"list": "virtual-wan",
+        "show": "virtual-wan"}, "vpn-client": {"generate": "virtual-wan"}}, "vpn-gateway":
+        {"create": "virtual-wan", "delete": "virtual-wan", "list": "virtual-wan",
+        "show": "virtual-wan", "update": "virtual-wan", "wait": "virtual-wan", "nat-rule":
+        {"create": "virtual-wan", "delete": "virtual-wan", "list": "virtual-wan",
+        "show": "virtual-wan", "update": "virtual-wan", "wait": "virtual-wan"}, "connection":
+        {"packet-capture": {"start": "virtual-wan"}, "create": "virtual-wan", "list":
+        "virtual-wan", "show": "virtual-wan", "delete": "virtual-wan", "update": "virtual-wan",
+        "wait": "virtual-wan", "ipsec-policy": {"add": "virtual-wan", "list": "virtual-wan",
+        "remove": "virtual-wan"}, "vpn-site-link-conn": {"add": "virtual-wan", "remove":
+        "virtual-wan", "list": "virtual-wan", "ipsec-policy": {"add": "virtual-wan",
+        "list": "virtual-wan", "remove": "virtual-wan"}}}}, "vwan": {"create": "virtual-wan",
+        "delete": "virtual-wan", "show": "virtual-wan", "list": "virtual-wan", "update":
+        "virtual-wan"}, "vpn-site": {"create": "virtual-wan", "delete": "virtual-wan",
+        "list": "virtual-wan", "show": "virtual-wan", "update": "virtual-wan", "link":
+        {"add": "virtual-wan", "remove": "virtual-wan", "list": "virtual-wan"}, "download":
+        "virtual-wan"}, "vpn-server-config": {"create": "virtual-wan", "set": "virtual-wan",
+        "show": "virtual-wan", "delete": "virtual-wan", "list": "virtual-wan", "wait":
+        "virtual-wan", "ipsec-policy": {"add": "virtual-wan", "list": "virtual-wan",
+        "remove": "virtual-wan", "wait": "virtual-wan"}}}, "alerts-management": {"prometheus-rule-group":
+        {"create": "alertsmanagement", "delete": "alertsmanagement", "list": "alertsmanagement",
+        "show": "alertsmanagement", "update": "alertsmanagement"}}, "monitor": {"alert-processing-rule":
+        {"create": "alertsmanagement", "update": "alertsmanagement", "delete": "alertsmanagement",
+        "show": "alertsmanagement", "list": "alertsmanagement"}, "app-insights": {"migrate-to-new-pricing-model":
+        "application-insights", "workbook": {"create": "application-insights", "delete":
+        "application-insights", "list": "application-insights", "show": "application-insights",
+        "update": "application-insights", "identity": {"assign": "application-insights",
+        "remove": "application-insights"}, "revision": {"list": "application-insights",
+        "show": "application-insights"}}, "component": {"quotastatus": {"show": "application-insights"},
+        "billing": {"show": "application-insights", "update": "application-insights"},
+        "favorite": {"create": "application-insights", "delete": "application-insights",
+        "list": "application-insights", "show": "application-insights", "update":
+        "application-insights"}, "linked-storage": {"link": "application-insights",
+        "show": "application-insights", "unlink": "application-insights", "update":
+        "application-insights"}, "continues-export": {"delete": "application-insights",
+        "list": "application-insights", "show": "application-insights", "create":
+        "application-insights", "update": "application-insights"}, "create": "application-insights",
+        "update": "application-insights", "show": "application-insights", "delete":
+        "application-insights", "update-tags": "application-insights", "connect-webapp":
+        "application-insights", "connect-function": "application-insights"}, "api-key":
+        {"create": "application-insights", "delete": "application-insights", "show":
+        "application-insights"}, "my-workbook": {"list": "application-insights"},
+        "metrics": {"show": "application-insights", "get-metadata": "application-insights"},
+        "events": {"show": "application-insights"}, "query": "application-insights",
+        "web-test": {"list": "application-insights", "show": "application-insights",
+        "create": "application-insights", "update": "application-insights", "delete":
+        "application-insights"}}, "log-analytics": {"query": "log-analytics", "solution":
+        {"create": "log-analytics-solution", "delete": "log-analytics-solution", "list":
+        "log-analytics-solution", "show": "log-analytics-solution", "update": "log-analytics-solution",
+        "wait": "log-analytics-solution"}}, "data-collection": {"endpoint": {"create":
+        "monitor-control-service", "delete": "monitor-control-service", "list": "monitor-control-service",
+        "show": "monitor-control-service", "update": "monitor-control-service", "association":
+        {"list": "monitor-control-service"}}, "rule": {"create": "monitor-control-service",
+        "delete": "monitor-control-service", "list": "monitor-control-service", "show":
+        "monitor-control-service", "update": "monitor-control-service", "association":
+        {"create": "monitor-control-service", "delete": "monitor-control-service",
+        "list": "monitor-control-service", "list-by-resource": "monitor-control-service",
+        "show": "monitor-control-service", "update": "monitor-control-service"}, "data-flow":
+        {"list": "monitor-control-service", "add": "monitor-control-service"}, "log-analytics":
+        {"list": "monitor-control-service", "show": "monitor-control-service", "add":
+        "monitor-control-service", "delete": "monitor-control-service", "update":
+        "monitor-control-service"}, "performance-counter": {"list": "monitor-control-service",
+        "show": "monitor-control-service", "add": "monitor-control-service", "delete":
+        "monitor-control-service", "update": "monitor-control-service"}, "windows-event-log":
+        {"list": "monitor-control-service", "show": "monitor-control-service", "add":
+        "monitor-control-service", "delete": "monitor-control-service", "update":
+        "monitor-control-service"}, "syslog": {"list": "monitor-control-service",
+        "show": "monitor-control-service", "add": "monitor-control-service", "delete":
+        "monitor-control-service", "update": "monitor-control-service"}}}, "scheduled-query":
+        {"create": "scheduled-query", "delete": "scheduled-query", "list": "scheduled-query",
+        "show": "scheduled-query", "update": "scheduled-query"}}, "grafana": {"create":
+        "amg", "delete": "amg", "list": "amg", "show": "amg", "update": "amg", "backup":
+        "amg", "restore": "amg", "dashboard": {"create": "amg", "delete": "amg", "list":
+        "amg", "show": "amg", "update": "amg", "import": "amg", "sync": "amg"}, "data-source":
+        {"create": "amg", "list": "amg", "show": "amg", "delete": "amg", "query":
+        "amg", "update": "amg"}, "notification-channel": {"list": "amg", "show": "amg",
+        "create": "amg", "update": "amg", "delete": "amg", "test": "amg"}, "folder":
+        {"create": "amg", "list": "amg", "show": "amg", "delete": "amg", "update":
+        "amg"}, "user": {"list": "amg", "show": "amg", "actual-user": "amg"}, "api-key":
+        {"create": "amg", "list": "amg", "delete": "amg"}, "service-account": {"create":
+        "amg", "list": "amg", "show": "amg", "delete": "amg", "update": "amg", "token":
+        {"create": "amg", "list": "amg", "delete": "amg"}}}, "amlfs": {"archive":
+        "amlfs", "cancel-archive": "amlfs", "check-amlfs-subnet": "amlfs", "create":
+        "amlfs", "delete": "amlfs", "get-subnets-size": "amlfs", "list": "amlfs",
+        "show": "amlfs", "update": "amlfs", "wait": "amlfs"}, "aosm": {"publisher":
+        {"artifact-manifest": {"list": "aosm", "list-credential": "aosm", "show":
+        "aosm", "update-state": "aosm"}, "artifact-store": {"artifact": {"list": "aosm",
+        "version": {"list": "aosm", "update-state": "aosm"}}}, "network-function-definition":
+        {"version": {"list": "aosm", "show": "aosm", "update-state": "aosm"}}, "configuration-group-schema":
+        {"list": "aosm", "show": "aosm", "update-state": "aosm"}, "network-service-design":
+        {"version": {"list": "aosm", "show": "aosm", "update-state": "aosm"}}}, "nfd":
+        {"generate-config": "aosm", "build": "aosm", "publish": "aosm"}, "nsd": {"generate-config":
+        "aosm", "build": "aosm", "publish": "aosm"}}, "apic": {"create": "apic-extension",
+        "delete": "apic-extension", "import-from-apim": "apic-extension", "list":
+        "apic-extension", "show": "apic-extension", "update": "apic-extension", "api":
+        {"create": "apic-extension", "delete": "apic-extension", "list": "apic-extension",
+        "show": "apic-extension", "update": "apic-extension", "definition": {"create":
+        "apic-extension", "delete": "apic-extension", "export-specification": "apic-extension",
+        "import-specification": "apic-extension", "list": "apic-extension", "show":
+        "apic-extension", "update": "apic-extension"}, "version": {"create": "apic-extension",
+        "delete": "apic-extension", "list": "apic-extension", "show": "apic-extension",
+        "update": "apic-extension"}, "deployment": {"create": "apic-extension", "delete":
+        "apic-extension", "list": "apic-extension", "show": "apic-extension", "update":
+        "apic-extension"}, "register": "apic-extension"}, "environment": {"create":
+        "apic-extension", "delete": "apic-extension", "list": "apic-extension", "show":
+        "apic-extension", "update": "apic-extension"}, "metadata": {"create": "apic-extension",
+        "delete": "apic-extension", "export": "apic-extension", "list": "apic-extension",
+        "show": "apic-extension", "update": "apic-extension"}}, "appservice": {"kube":
+        {"show": "appservice-kube", "wait": "appservice-kube", "list": "appservice-kube",
+        "create": "appservice-kube", "update": "appservice-kube", "delete": "appservice-kube"},
+        "plan": {"create": "appservice-kube", "update": "appservice-kube", "show":
+        "appservice-kube", "list": "appservice-kube"}}, "webapp": {"list-runtimes":
+        "appservice-kube", "create": "appservice-kube", "show": "appservice-kube",
+        "scale": "appservice-kube", "restart": "appservice-kube", "update": "appservice-kube",
+        "config": {"ssl": {"bind": "appservice-kube", "unbind": "appservice-kube"}},
+        "deployment": {"source": {"config-zip": "appservice-kube"}}, "auth": {"show":
+        "authV2", "set": "authV2", "update": "authV2", "config-version": {"show":
+        "authV2", "revert": "authV2", "upgrade": "authV2"}, "microsoft": {"show":
+        "authV2", "update": "authV2"}, "facebook": {"show": "authV2", "update": "authV2"},
+        "github": {"show": "authV2", "update": "authV2"}, "google": {"show": "authV2",
+        "update": "authV2"}, "twitter": {"show": "authV2", "update": "authV2"}, "apple":
+        {"show": "authV2", "update": "authV2"}, "openid-connect": {"show": "authV2",
+        "add": "authV2", "update": "authV2", "remove": "authV2"}}, "auth-classic":
+        {"show": "authV2", "update": "authV2"}, "connection": {"create": {"postgres":
+        "serviceconnector-passwordless", "postgres-flexible": "serviceconnector-passwordless",
+        "mysql-flexible": "serviceconnector-passwordless", "sql": "serviceconnector-passwordless"}},
+        "scan": {"start": "webapp", "show-result": "webapp", "track": "webapp", "list-result":
+        "webapp", "stop": "webapp"}}, "functionapp": {"create": "appservice-kube",
+        "show": "appservice-kube", "restart": "appservice-kube", "config": {"container":
+        {"set": "appservice-kube"}}, "deployment": {"source": {"config-zip": "appservice-kube"}},
+        "app": {"up": "deploy-to-azure"}, "devops-pipeline": {"create": "functionapp"},
+        "connection": {"create": {"postgres": "serviceconnector-passwordless", "postgres-flexible":
+        "serviceconnector-passwordless", "mysql-flexible": "serviceconnector-passwordless",
+        "sql": "serviceconnector-passwordless"}}}, "arcappliance": {"notice": "arcappliance",
+        "logs": {"hci": "arcappliance", "vmware": "arcappliance", "scvmm": "arcappliance"},
+        "show": "arcappliance", "list": "arcappliance", "get-credentials": "arcappliance",
+        "get-upgrades": "arcappliance", "create": {"hci": "arcappliance", "vmware":
+        "arcappliance", "scvmm": "arcappliance"}, "delete": {"hci": "arcappliance",
+        "vmware": "arcappliance", "scvmm": "arcappliance"}, "createconfig": {"hci":
+        "arcappliance", "vmware": "arcappliance", "scvmm": "arcappliance"}, "troubleshoot":
+        {"command": {"hci": "arcappliance", "vmware": "arcappliance", "scvmm": "arcappliance"}},
+        "run": {"hci": "arcappliance", "vmware": "arcappliance", "scvmm": "arcappliance"},
+        "upgrade": {"hci": "arcappliance", "vmware": "arcappliance", "scvmm": "arcappliance"},
+        "validate": {"hci": "arcappliance", "vmware": "arcappliance", "scvmm": "arcappliance"},
+        "prepare": {"hci": "arcappliance", "vmware": "arcappliance", "scvmm": "arcappliance"},
+        "deploy": {"hci": "arcappliance", "vmware": "arcappliance", "scvmm": "arcappliance"},
+        "update-infracredentials": {"hci": "arcappliance", "vmware": "arcappliance",
+        "scvmm": "arcappliance"}}, "postgres": {"server-arc": {"create": "arcdata",
+        "delete": "arcdata", "restore": "arcdata", "show": "arcdata", "list": "arcdata",
+        "update": "arcdata", "endpoint": {"list": "arcdata"}}, "up": "db-up", "down":
+        "db-up", "show-connection-string": "db-up", "flexible-server": {"connect":
+        "rdbms-connect", "execute": "rdbms-connect"}}, "sql": {"db-arc": {"backups-policy":
+        {"set": "arcdata", "show": "arcdata", "delete": "arcdata"}, "restore": "arcdata"},
+        "server-arc": {"backups-policy": {"set": "arcdata", "show": "arcdata", "delete":
+        "arcdata"}, "availability-group": {"failover": "arcdata", "create": "arcdata"},
+        "extension": {"feature-flag": {"set": "arcdata", "delete": "arcdata", "show":
+        "arcdata"}, "set": "arcdata", "show": "arcdata"}}, "mi-arc": {"create": "arcdata",
+        "upgrade": "arcdata", "delete": "arcdata", "show": "arcdata", "get-mirroring-cert":
+        "arcdata", "list": "arcdata", "update": "arcdata", "reprovision-replica":
+        "arcdata", "endpoint": {"list": "arcdata"}, "config": {"init": "arcdata",
+        "patch": "arcdata", "add": "arcdata", "replace": "arcdata", "remove": "arcdata"}},
+        "midb-arc": {"restore": "arcdata"}, "instance-failover-group-arc": {"create":
+        "arcdata", "update": "arcdata", "delete": "arcdata", "show": "arcdata", "list":
+        "arcdata"}, "up": "db-up", "down": "db-up"}, "arcdata": {"dc": {"endpoint":
+        {"list": "arcdata"}, "upload": "arcdata", "update": "arcdata", "create": "arcdata",
+        "config": {"show": "arcdata", "list": "arcdata", "init": "arcdata", "patch":
+        "arcdata", "add": "arcdata", "replace": "arcdata", "remove": "arcdata"}, "status":
+        {"show": "arcdata"}, "upgrade": "arcdata", "list-upgrades": "arcdata", "delete":
+        "arcdata", "list": "arcdata", "export": "arcdata", "debug": {"copy-logs":
+        "arcdata", "dump": "arcdata", "restore-controldb-snapshot": "arcdata", "controldb-cdc":
+        "arcdata"}}, "resource-kind": {"list": "arcdata", "get": "arcdata"}, "ad-connector":
+        {"create": "arcdata", "update": "arcdata", "show": "arcdata", "delete": "arcdata",
+        "list": "arcdata"}}, "astronomer": {"organization": {"create": "astronomer",
+        "delete": "astronomer", "list": "astronomer", "show": "astronomer", "update":
+        "astronomer", "wait": "astronomer"}}, "attestation": {"create": "attestation",
+        "delete": "attestation", "get-default-by-location": "attestation", "list":
+        "attestation", "list-default": "attestation", "show": "attestation", "update":
+        "attestation", "policy": {"reset": "attestation", "set": "attestation", "show":
+        "attestation"}, "signer": {"add": "attestation", "list": "attestation", "remove":
+        "attestation"}}, "automanage": {"best-practice": {"list": "automanage", "show":
+        "automanage", "version": {"list": "automanage", "show": "automanage"}}, "configuration-profile":
+        {"create": "automanage", "delete": "automanage", "list": "automanage", "show":
+        "automanage", "update": "automanage", "version": {"create": "automanage",
+        "delete": "automanage", "list": "automanage", "show": "automanage", "update":
+        "automanage"}}, "service-principal": {"list": "automanage", "show-default":
+        "automanage"}, "configuration-profile-assignment": {"list": "automanage",
+        "cluster": {"create": "automanage", "delete": "automanage", "show": "automanage",
+        "update": "automanage", "report": {"list": "automanage", "show": "automanage"}},
+        "vm": {"create": "automanage", "delete": "automanage", "show": "automanage",
+        "update": "automanage", "report": {"list": "automanage", "show": "automanage"}},
+        "arc": {"create": "automanage", "delete": "automanage", "show": "automanage",
+        "update": "automanage", "report": {"list": "automanage", "show": "automanage"}}}},
+        "automation": {"python3-package": {"create": "automation", "delete": "automation",
+        "list": "automation", "show": "automation", "update": "automation"}, "source-control":
+        {"create": "automation", "delete": "automation", "list": "automation", "show":
+        "automation", "update": "automation", "sync-job": {"create": "automation",
+        "list": "automation", "show": "automation", "update": "automation", "stream":
+        {"list": "automation", "show": "automation"}}}, "runtime-environment": {"create":
+        "automation", "delete": "automation", "list": "automation", "show": "automation",
+        "update": "automation", "package": {"create": "automation", "delete": "automation",
+        "list": "automation", "show": "automation", "update": "automation"}}, "hrwg":
+        {"create": "automation", "delete": "automation", "list": "automation", "show":
+        "automation", "update": "automation", "hrw": {"create": "automation", "delete":
+        "automation", "list": "automation", "move": "automation", "show": "automation"}},
+        "configuration": {"create": "automation", "delete": "automation", "list":
+        "automation", "show": "automation", "show-content": "automation", "update":
+        "automation"}, "account": {"list-keys": "automation", "show-linked-workspace":
+        "automation", "list": "automation", "show": "automation", "create": "automation",
+        "update": "automation", "delete": "automation"}, "runbook": {"list": "automation",
+        "show": "automation", "create": "automation", "update": "automation", "delete":
+        "automation", "publish": "automation", "wait": "automation", "replace-content":
+        "automation", "revert-to-published": "automation", "start": "automation"},
+        "job": {"list": "automation", "show": "automation", "resume": "automation",
+        "stop": "automation", "suspend": "automation"}, "schedule": {"list": "automation",
+        "show": "automation", "create": "automation", "update": "automation", "delete":
+        "automation"}, "software-update-configuration": {"list": "automation", "show":
+        "automation", "create": "automation", "delete": "automation", "runs": {"list":
+        "automation", "show": "automation"}, "machine-runs": {"list": "automation",
+        "show": "automation"}}}, "batch": {"file": {"upload": "azure-batch-cli-extensions",
+        "download": "azure-batch-cli-extensions"}, "pool": {"create": "azure-batch-cli-extensions"},
+        "job": {"create": "azure-batch-cli-extensions"}}, "devops": {"admin": {"banner":
+        {"list": "azure-devops", "show": "azure-devops", "add": "azure-devops", "remove":
+        "azure-devops", "update": "azure-devops"}}, "login": "azure-devops", "logout":
+        "azure-devops", "configure": "azure-devops", "project": {"create": "azure-devops",
+        "delete": "azure-devops", "show": "azure-devops", "list": "azure-devops"},
+        "service-endpoint": {"list": "azure-devops", "show": "azure-devops", "create":
+        "azure-devops", "update": "azure-devops", "azurerm": {"create": "azure-devops"},
+        "github": {"create": "azure-devops"}, "delete": "azure-devops"}, "team": {"create":
+        "azure-devops", "delete": "azure-devops", "show": "azure-devops", "list":
+        "azure-devops", "list-member": "azure-devops", "update": "azure-devops"},
+        "invoke": "azure-devops", "user": {"list": "azure-devops", "show": "azure-devops",
+        "remove": "azure-devops", "update": "azure-devops", "add": "azure-devops"},
+        "extension": {"list": "azure-devops", "uninstall": "azure-devops", "install":
+        "azure-devops", "show": "azure-devops", "enable": "azure-devops", "disable":
+        "azure-devops", "search": "azure-devops"}, "security": {"group": {"list":
+        "azure-devops", "show": "azure-devops", "update": "azure-devops", "create":
+        "azure-devops", "delete": "azure-devops", "membership": {"list": "azure-devops",
+        "add": "azure-devops", "remove": "azure-devops"}}, "permission": {"list":
+        "azure-devops", "update": "azure-devops", "reset-all": "azure-devops", "reset":
+        "azure-devops", "show": "azure-devops", "namespace": {"list": "azure-devops",
+        "show": "azure-devops"}}}, "wiki": {"create": "azure-devops", "list": "azure-devops",
+        "show": "azure-devops", "delete": "azure-devops", "page": {"create": "azure-devops",
+        "update": "azure-devops", "show": "azure-devops", "delete": "azure-devops"}}},
+        "boards": {"work-item": {"show": "azure-devops", "create": "azure-devops",
+        "update": "azure-devops", "delete": "azure-devops", "relation": {"list-type":
+        "azure-devops", "add": "azure-devops", "remove": "azure-devops", "show": "azure-devops"}},
+        "query": "azure-devops", "iteration": {"team": {"list": "azure-devops", "list-work-items":
+        "azure-devops", "set-default-iteration": "azure-devops", "set-backlog-iteration":
+        "azure-devops", "show-default-iteration": "azure-devops", "show-backlog-iteration":
+        "azure-devops", "remove": "azure-devops", "add": "azure-devops"}, "project":
+        {"list": "azure-devops", "update": "azure-devops", "delete": "azure-devops",
+        "show": "azure-devops", "create": "azure-devops"}}, "area": {"project": {"list":
+        "azure-devops", "delete": "azure-devops", "create": "azure-devops", "update":
+        "azure-devops", "show": "azure-devops"}, "team": {"list": "azure-devops",
+        "add": "azure-devops", "remove": "azure-devops", "update": "azure-devops"}}},
+        "pipelines": {"create": "azure-devops", "update": "azure-devops", "list":
+        "azure-devops", "show": "azure-devops", "delete": "azure-devops", "run": "azure-devops",
+        "build": {"list": "azure-devops", "queue": "azure-devops", "show": "azure-devops",
+        "cancel": "azure-devops", "tag": {"list": "azure-devops", "add": "azure-devops",
+        "delete": "azure-devops"}, "definition": {"list": "azure-devops", "show":
+        "azure-devops"}}, "release": {"list": "azure-devops", "create": "azure-devops",
+        "show": "azure-devops", "definition": {"list": "azure-devops", "show": "azure-devops"}},
+        "runs": {"artifact": {"download": "azure-devops", "list": "azure-devops",
+        "upload": "azure-devops"}, "tag": {"add": "azure-devops", "list": "azure-devops",
+        "delete": "azure-devops"}, "list": "azure-devops", "show": "azure-devops"},
+        "pool": {"list": "azure-devops", "show": "azure-devops"}, "agent": {"list":
+        "azure-devops", "show": "azure-devops"}, "queue": {"list": "azure-devops",
+        "show": "azure-devops"}, "variable-group": {"create": "azure-devops", "show":
+        "azure-devops", "list": "azure-devops", "update": "azure-devops", "delete":
+        "azure-devops", "variable": {"create": "azure-devops", "list": "azure-devops",
+        "update": "azure-devops", "delete": "azure-devops"}}, "variable": {"create":
+        "azure-devops", "update": "azure-devops", "list": "azure-devops", "delete":
+        "azure-devops"}, "folder": {"create": "azure-devops", "delete": "azure-devops",
+        "list": "azure-devops", "update": "azure-devops"}}, "repos": {"create": "azure-devops",
+        "delete": "azure-devops", "list": "azure-devops", "show": "azure-devops",
+        "update": "azure-devops", "policy": {"list": "azure-devops", "show": "azure-devops",
+        "delete": "azure-devops", "create": "azure-devops", "update": "azure-devops",
+        "approver-count": {"create": "azure-devops", "update": "azure-devops"}, "merge-strategy":
+        {"create": "azure-devops", "update": "azure-devops"}, "build": {"create":
+        "azure-devops", "update": "azure-devops"}, "comment-required": {"create":
+        "azure-devops", "update": "azure-devops"}, "work-item-linking": {"create":
+        "azure-devops", "update": "azure-devops"}, "file-size": {"create": "azure-devops",
+        "update": "azure-devops"}, "required-reviewer": {"create": "azure-devops",
+        "update": "azure-devops"}, "case-enforcement": {"create": "azure-devops",
+        "update": "azure-devops"}}, "pr": {"create": "azure-devops", "update": "azure-devops",
+        "show": "azure-devops", "list": "azure-devops", "checkout": "azure-devops",
+        "reviewer": {"add": "azure-devops", "list": "azure-devops", "remove": "azure-devops"},
+        "work-item": {"add": "azure-devops", "list": "azure-devops", "remove": "azure-devops"},
+        "set-vote": "azure-devops", "policy": {"list": "azure-devops", "queue": "azure-devops"}},
+        "import": {"create": "azure-devops"}, "ref": {"create": "azure-devops", "delete":
+        "azure-devops", "list": "azure-devops", "lock": "azure-devops", "unlock":
+        "azure-devops"}}, "artifacts": {"universal": {"publish": "azure-devops", "download":
+        "azure-devops"}}, "iot": {"hub": {"query": "azure-iot", "invoke-device-method":
+        "azure-iot", "invoke-module-method": "azure-iot", "generate-sas-token": "azure-iot",
+        "monitor-events": "azure-iot", "monitor-feedback": "azure-iot", "device-identity":
+        {"create": "azure-iot", "show": "azure-iot", "list": "azure-iot", "delete":
+        "azure-iot", "update": "azure-iot", "renew-key": "azure-iot", "import": "azure-iot",
+        "export": "azure-iot", "children": {"add": "azure-iot", "remove": "azure-iot",
+        "list": "azure-iot"}, "parent": {"show": "azure-iot", "set": "azure-iot"},
+        "connection-string": {"show": "azure-iot"}}, "module-identity": {"create":
+        "azure-iot", "show": "azure-iot", "list": "azure-iot", "delete": "azure-iot",
+        "update": "azure-iot", "renew-key": "azure-iot", "connection-string": {"show":
+        "azure-iot"}}, "module-twin": {"show": "azure-iot", "replace": "azure-iot",
+        "update": "azure-iot"}, "device-twin": {"show": "azure-iot", "list": "azure-iot",
+        "replace": "azure-iot", "update": "azure-iot"}, "configuration": {"show-metric":
+        "azure-iot", "create": "azure-iot", "show": "azure-iot", "list": "azure-iot",
+        "delete": "azure-iot", "update": "azure-iot"}, "distributed-tracing": {"show":
+        "azure-iot", "update": "azure-iot"}, "connection-string": {"show": "azure-iot"},
+        "job": {"create": "azure-iot", "show": "azure-iot", "list": "azure-iot", "cancel":
+        "azure-iot"}, "digital-twin": {"invoke-command": "azure-iot", "show": "azure-iot",
+        "update": "azure-iot"}, "message-endpoint": {"show": "azure-iot", "list":
+        "azure-iot", "delete": "azure-iot", "create": {"eventhub": "azure-iot", "servicebus-queue":
+        "azure-iot", "servicebus-topic": "azure-iot", "cosmosdb-container": "azure-iot",
+        "storage-container": "azure-iot"}, "update": {"eventhub": "azure-iot", "servicebus-queue":
+        "azure-iot", "servicebus-topic": "azure-iot", "cosmosdb-container": "azure-iot",
+        "storage-container": "azure-iot"}}, "message-route": {"create": "azure-iot",
+        "show": "azure-iot", "list": "azure-iot", "delete": "azure-iot", "update":
+        "azure-iot", "test": "azure-iot", "fallback": {"show": "azure-iot", "set":
+        "azure-iot"}}, "state": {"export": "azure-iot", "import": "azure-iot", "migrate":
+        "azure-iot"}, "certificate": {"root-authority": {"show": "azure-iot", "set":
+        "azure-iot"}}}, "edge": {"set-modules": "azure-iot", "export-modules": "azure-iot",
+        "deployment": {"show-metric": "azure-iot", "create": "azure-iot", "show":
+        "azure-iot", "list": "azure-iot", "delete": "azure-iot", "update": "azure-iot"},
+        "devices": {"create": "azure-iot"}}, "device": {"send-d2c-message": "azure-iot",
+        "simulate": "azure-iot", "upload-file": "azure-iot", "c2d-message": {"complete":
+        "azure-iot", "abandon": "azure-iot", "reject": "azure-iot", "receive": "azure-iot",
+        "send": "azure-iot", "purge": "azure-iot"}, "registration": {"create": "azure-iot"}},
+        "dps": {"enrollment": {"create": "azure-iot", "list": "azure-iot", "show":
+        "azure-iot", "update": "azure-iot", "delete": "azure-iot", "registration":
+        {"show": "azure-iot", "delete": "azure-iot"}}, "enrollment-group": {"create":
+        "azure-iot", "list": "azure-iot", "show": "azure-iot", "update": "azure-iot",
+        "delete": "azure-iot", "compute-device-key": "azure-iot", "registration":
+        {"list": "azure-iot", "show": "azure-iot", "delete": "azure-iot"}}, "registration":
+        {"list": "azure-iot", "show": "azure-iot", "delete": "azure-iot"}, "connection-string":
+        {"show": "azure-iot"}}, "du": {"account": {"create": "azure-iot", "list":
+        "azure-iot", "show": "azure-iot", "delete": "azure-iot", "update": "azure-iot",
+        "wait": "azure-iot", "private-endpoint-connection": {"list": "azure-iot",
+        "show": "azure-iot", "set": "azure-iot", "delete": "azure-iot"}, "private-link-resource":
+        {"list": "azure-iot"}}, "instance": {"create": "azure-iot", "list": "azure-iot",
+        "show": "azure-iot", "delete": "azure-iot", "update": "azure-iot", "wait":
+        "azure-iot"}, "update": {"import": "azure-iot", "delete": "azure-iot", "list":
+        "azure-iot", "show": "azure-iot", "calculate-hash": "azure-iot", "stage":
+        "azure-iot", "file": {"list": "azure-iot", "show": "azure-iot"}, "init": {"v5":
+        "azure-iot"}}, "device": {"import": "azure-iot", "list": "azure-iot", "show":
+        "azure-iot", "module": {"show": "azure-iot"}, "compliance": {"show": "azure-iot"},
+        "group": {"list": "azure-iot", "show": "azure-iot", "delete": "azure-iot"},
+        "class": {"list": "azure-iot", "show": "azure-iot", "update": "azure-iot",
+        "delete": "azure-iot"}, "health": {"list": "azure-iot"}, "deployment": {"create":
+        "azure-iot", "show": "azure-iot", "list": "azure-iot", "delete": "azure-iot",
+        "retry": "azure-iot", "cancel": "azure-iot", "list-devices": "azure-iot"},
+        "log": {"collect": "azure-iot", "list": "azure-iot", "show": "azure-iot"}}},
+        "central": {"query": "azure-iot", "export": {"destination": {"list": "azure-iot",
+        "show": "azure-iot", "delete": "azure-iot", "create": "azure-iot", "update":
+        "azure-iot"}, "list": "azure-iot", "show": "azure-iot", "delete": "azure-iot",
+        "create": "azure-iot", "update": "azure-iot"}, "diagnostics": {"monitor-events":
+        "azure-iot", "validate-messages": "azure-iot", "monitor-properties": "azure-iot",
+        "validate-properties": "azure-iot", "registration-summary": "azure-iot"},
+        "user": {"create": "azure-iot", "update": "azure-iot", "list": "azure-iot",
+        "show": "azure-iot", "delete": "azure-iot"}, "api-token": {"create": "azure-iot",
+        "list": "azure-iot", "show": "azure-iot", "delete": "azure-iot"}, "device":
+        {"list": "azure-iot", "show": "azure-iot", "create": "azure-iot", "update":
+        "azure-iot", "delete": "azure-iot", "registration-info": "azure-iot", "show-credentials":
+        "azure-iot", "compute-device-key": "azure-iot", "manual-failover": "azure-iot",
+        "manual-failback": "azure-iot", "list-components": "azure-iot", "list-modules":
+        "azure-iot", "telemetry": {"show": "azure-iot"}, "attestation": {"show": "azure-iot",
+        "create": "azure-iot", "delete": "azure-iot", "update": "azure-iot"}, "twin":
+        {"show": "azure-iot", "update": "azure-iot", "replace": "azure-iot"}, "c2d-message":
+        {"purge": "azure-iot"}, "command": {"run": "azure-iot", "history": "azure-iot"},
+        "edge": {"children": {"list": "azure-iot", "add": "azure-iot", "remove": "azure-iot"},
+        "module": {"list": "azure-iot", "show": "azure-iot", "restart": "azure-iot"},
+        "manifest": {"show": "azure-iot"}}}, "device-template": {"list": "azure-iot",
+        "show": "azure-iot", "create": "azure-iot", "update": "azure-iot", "delete":
+        "azure-iot"}, "device-group": {"list": "azure-iot", "show": "azure-iot", "create":
+        "azure-iot", "update": "azure-iot", "delete": "azure-iot"}, "role": {"show":
+        "azure-iot", "list": "azure-iot"}, "file-upload-config": {"show": "azure-iot",
+        "delete": "azure-iot", "create": "azure-iot", "update": "azure-iot"}, "organization":
+        {"show": "azure-iot", "list": "azure-iot", "create": "azure-iot", "delete":
+        "azure-iot", "update": "azure-iot"}, "job": {"show": "azure-iot", "list":
+        "azure-iot", "create": "azure-iot", "stop": "azure-iot", "resume": "azure-iot",
+        "get-devices": "azure-iot", "rerun": "azure-iot"}, "enrollment-group": {"show":
+        "azure-iot", "list": "azure-iot", "create": "azure-iot", "delete": "azure-iot",
+        "update": "azure-iot", "verify-certificate": "azure-iot", "generate-verification-code":
+        "azure-iot"}, "scheduled-job": {"show": "azure-iot", "list": "azure-iot",
+        "create": "azure-iot", "delete": "azure-iot", "update": "azure-iot", "list-runs":
+        "azure-iot"}}, "ops": {"check": "azure-iot-ops", "init": "azure-iot-ops",
+        "delete": "azure-iot-ops", "verify-host": "azure-iot-ops", "support": {"create-bundle":
+        "azure-iot-ops"}, "mq": {"stats": "azure-iot-ops", "get-password-hash": "azure-iot-ops"},
+        "asset": {"create": "azure-iot-ops", "delete": "azure-iot-ops", "query": "azure-iot-ops",
+        "show": "azure-iot-ops", "update": "azure-iot-ops", "data-point": {"add":
+        "azure-iot-ops", "export": "azure-iot-ops", "import": "azure-iot-ops", "list":
+        "azure-iot-ops", "remove": "azure-iot-ops"}, "event": {"add": "azure-iot-ops",
+        "export": "azure-iot-ops", "import": "azure-iot-ops", "list": "azure-iot-ops",
+        "remove": "azure-iot-ops"}, "endpoint": {"create": "azure-iot-ops", "delete":
+        "azure-iot-ops", "query": "azure-iot-ops", "show": "azure-iot-ops", "update":
+        "azure-iot-ops", "certificate": {"add": "azure-iot-ops", "list": "azure-iot-ops",
+        "remove": "azure-iot-ops"}}}}}, "dt": {"create": "azure-iot", "show": "azure-iot",
+        "list": "azure-iot", "delete": "azure-iot", "wait": "azure-iot", "data-history":
+        {"connection": {"show": "azure-iot", "wait": "azure-iot", "list": "azure-iot",
+        "delete": "azure-iot", "create": {"adx": "azure-iot"}}}, "endpoint": {"show":
+        "azure-iot", "list": "azure-iot", "delete": "azure-iot", "wait": "azure-iot",
+        "create": {"eventgrid": "azure-iot", "servicebus": "azure-iot", "eventhub":
+        "azure-iot"}}, "route": {"show": "azure-iot", "list": "azure-iot", "delete":
+        "azure-iot", "create": "azure-iot"}, "identity": {"assign": "azure-iot", "remove":
+        "azure-iot", "show": "azure-iot"}, "role-assignment": {"create": "azure-iot",
+        "delete": "azure-iot", "list": "azure-iot"}, "twin": {"query": "azure-iot",
+        "create": "azure-iot", "show": "azure-iot", "update": "azure-iot", "delete":
+        "azure-iot", "delete-all": "azure-iot", "component": {"show": "azure-iot",
+        "update": "azure-iot"}, "relationship": {"create": "azure-iot", "show": "azure-iot",
+        "list": "azure-iot", "update": "azure-iot", "delete": "azure-iot", "delete-all":
+        "azure-iot"}, "telemetry": {"send": "azure-iot"}}, "model": {"create": "azure-iot",
+        "show": "azure-iot", "list": "azure-iot", "update": "azure-iot", "delete":
+        "azure-iot", "delete-all": "azure-iot"}, "network": {"private-link": {"show":
+        "azure-iot", "list": "azure-iot"}, "private-endpoint": {"connection": {"set":
+        "azure-iot", "show": "azure-iot", "list": "azure-iot", "delete": "azure-iot",
+        "wait": "azure-iot"}}}, "job": {"import": {"create": "azure-iot", "show":
+        "azure-iot", "list": "azure-iot", "delete": "azure-iot", "cancel": "azure-iot"},
+        "deletion": {"create": "azure-iot", "show": "azure-iot", "list": "azure-iot"}}},
+        "sphere": {"get-support-data": "azure-sphere", "show-sdk-version": "azure-sphere",
+        "catalog": {"list": "azure-sphere", "show": "azure-sphere", "delete": "azure-sphere",
+        "create": "azure-sphere", "download-error-report": "azure-sphere"}, "product":
+        {"list": "azure-sphere", "show": "azure-sphere", "create": "azure-sphere",
+        "update": "azure-sphere", "delete": "azure-sphere"}, "device-group": {"show":
+        "azure-sphere", "list": "azure-sphere", "create": "azure-sphere", "update":
+        "azure-sphere", "delete": "azure-sphere", "create-defaults": "azure-sphere"},
+        "image": {"list": "azure-sphere", "show": "azure-sphere", "add": "azure-sphere"},
+        "device": {"list": "azure-sphere", "show-count": "azure-sphere", "show": "azure-sphere",
+        "assign": "azure-sphere", "unassign": "azure-sphere", "claim": "azure-sphere",
+        "list-attached": "azure-sphere", "recover": "azure-sphere", "rescan-attached":
+        "azure-sphere", "show-attached": "azure-sphere", "show-os-version": "azure-sphere",
+        "restart": "azure-sphere", "show-deployment-status": "azure-sphere", "enable-development":
+        "azure-sphere", "enable-cloud-test": "azure-sphere", "app": {"show-status":
+        "azure-sphere", "show-quota": "azure-sphere", "show-memory-stats": "azure-sphere",
+        "start": "azure-sphere", "stop": "azure-sphere"}, "certificate": {"add": "azure-sphere",
+        "delete": "azure-sphere", "show": "azure-sphere", "list": "azure-sphere",
+        "show-quota": "azure-sphere"}, "capability": {"download": "azure-sphere",
+        "update": "azure-sphere", "show-attached": "azure-sphere", "apply": "azure-sphere"},
+        "image": {"list-installed": "azure-sphere", "list-targeted": "azure-sphere"},
+        "manufacturing-state": {"update": "azure-sphere", "show": "azure-sphere"},
+        "network": {"enable": "azure-sphere", "disable": "azure-sphere", "list-firewall-rules":
+        "azure-sphere", "list-interfaces": "azure-sphere", "show-diagnostics": "azure-sphere",
+        "show-status": "azure-sphere", "update-interface": "azure-sphere", "proxy":
+        {"apply": "azure-sphere", "disable": "azure-sphere", "enable": "azure-sphere",
+        "delete": "azure-sphere", "show": "azure-sphere"}}, "wifi": {"add": "azure-sphere",
+        "disable": "azure-sphere", "enable": "azure-sphere", "forget": "azure-sphere",
+        "list": "azure-sphere", "reload-config": "azure-sphere", "scan": "azure-sphere",
+        "show": "azure-sphere", "show-status": "azure-sphere"}, "sideload": {"set-deployment-timeout":
+        "azure-sphere", "show-deployment-timeout": "azure-sphere", "deploy": "azure-sphere",
+        "delete": "azure-sphere"}}, "ca-certificate": {"list": "azure-sphere", "download":
+        "azure-sphere", "download-chain": "azure-sphere", "download-proof": "azure-sphere"},
+        "deployment": {"show": "azure-sphere", "list": "azure-sphere", "create": "azure-sphere"},
+        "image-package": {"show": "azure-sphere"}, "hardware-definition": {"generate-header":
+        "azure-sphere", "test-header": "azure-sphere"}}, "large-instance": {"list":
+        "azurelargeinstance", "restart": "azurelargeinstance", "show": "azurelargeinstance",
+        "shutdown": "azurelargeinstance", "start": "azurelargeinstance", "update":
+        "azurelargeinstance"}, "large-storage-instance": {"list": "azurelargeinstance",
+        "show": "azurelargeinstance", "update": "azurelargeinstance"}, "azurestackhci":
+        {"image": {"list": "azurestackhci", "create": "azurestackhci", "update": "azurestackhci",
+        "delete": "azurestackhci", "show": "azurestackhci"}, "galleryimage": {"list":
+        "azurestackhci", "create": "azurestackhci", "update": "azurestackhci", "delete":
+        "azurestackhci", "show": "azurestackhci"}, "networkinterface": {"list": "azurestackhci",
+        "create": "azurestackhci", "update": "azurestackhci", "delete": "azurestackhci",
+        "show": "azurestackhci"}, "virtualharddisk": {"list": "azurestackhci", "create":
+        "azurestackhci", "update": "azurestackhci", "delete": "azurestackhci", "show":
+        "azurestackhci"}, "virtualmachine": {"list": "azurestackhci", "create": "azurestackhci",
+        "update": "azurestackhci", "delete": "azurestackhci", "show": "azurestackhci",
+        "start": "azurestackhci", "stop": "azurestackhci", "restart": "azurestackhci",
+        "vnic": {"add": "azurestackhci", "remove": "azurestackhci"}, "extension":
+        {"create": "azurestackhci", "show": "azurestackhci", "delete": "azurestackhci",
+        "list": "azurestackhci", "wait": "azurestackhci", "update": "azurestackhci"}},
+        "virtualnetwork": {"list": "azurestackhci", "create": "azurestackhci", "update":
+        "azurestackhci", "delete": "azurestackhci", "show": "azurestackhci"}, "storagepath":
+        {"list": "azurestackhci", "create": "azurestackhci", "update": "azurestackhci",
+        "delete": "azurestackhci", "show": "azurestackhci"}}, "baremetalinstance":
+        {"list": "baremetal-infrastructure", "show": "baremetal-infrastructure", "restart":
+        "baremetal-infrastructure", "start": "baremetal-infrastructure", "shutdown":
+        "baremetal-infrastructure", "update": "baremetal-infrastructure", "delete":
+        "baremetal-infrastructure"}, "billing-benefits": {"validate-purchase": "billing-benefits",
+        "reservation-order-aliases": {"create": "billing-benefits", "show": "billing-benefits",
+        "wait": "billing-benefits"}, "savings-plan": {"list": "billing-benefits"},
+        "savings-plan-order": {"elevate": "billing-benefits", "list": "billing-benefits",
+        "show": "billing-benefits", "savings-plan": {"list": "billing-benefits", "show":
+        "billing-benefits", "update": "billing-benefits", "validate-update": "billing-benefits"}},
+        "savings-plan-order-aliases": {"create": "billing-benefits", "show": "billing-benefits",
+        "wait": "billing-benefits"}}, "blueprint": {"create": "blueprint", "delete":
+        "blueprint", "list": "blueprint", "publish": "blueprint", "show": "blueprint",
+        "update": "blueprint", "version": {"delete": "blueprint", "list": "blueprint",
+        "show": "blueprint", "artifact": {"list": "blueprint", "show": "blueprint"}},
+        "assignment": {"create": "blueprint", "delete": "blueprint", "list": "blueprint",
+        "show": "blueprint", "update": "blueprint", "who": "blueprint", "wait": "blueprint"},
+        "artifact": {"delete": "blueprint", "list": "blueprint", "show": "blueprint",
+        "policy": {"create": "blueprint", "update": "blueprint"}, "role": {"create":
+        "blueprint", "update": "blueprint"}, "template": {"create": "blueprint", "update":
+        "blueprint"}}, "import": "blueprint", "export": "blueprint", "resource-group":
+        {"add": "blueprint", "update": "blueprint", "remove": "blueprint", "show":
+        "blueprint", "list": "blueprint"}}, "change-analysis": {"list": "change-analysis",
+        "list-by-resource": "change-analysis"}, "cli-translator": {"arm": {"translate":
+        "cli-translator"}}, "cloud-service": {"reimage": "cloud-service", "os-family":
+        {"list": "cloud-service", "show": "cloud-service"}, "os-version": {"list":
+        "cloud-service", "show": "cloud-service"}, "role-instance": {"reimage": "cloud-service",
+        "list": "cloud-service", "show": "cloud-service", "delete": "cloud-service",
+        "rebuild": "cloud-service", "restart": "cloud-service", "show-instance-view":
+        "cloud-service", "show-remote-desktop-file": "cloud-service"}, "role": {"list":
+        "cloud-service", "show": "cloud-service"}, "list": "cloud-service", "show":
+        "cloud-service", "create": "cloud-service", "update": "cloud-service", "delete":
+        "cloud-service", "delete-instance": "cloud-service", "list-all": "cloud-service",
+        "power-off": "cloud-service", "rebuild": "cloud-service", "restart": "cloud-service",
+        "show-instance-view": "cloud-service", "start": "cloud-service", "wait": "cloud-service",
+        "update-domain": {"list-update-domain": "cloud-service", "show-update-domain":
+        "cloud-service", "walk-update-domain": "cloud-service"}}, "command-change":
+        {"meta-diff": "command-change", "version-diff": "command-change"}, "communication":
+        {"create": "communication", "delete": "communication", "link-notification-hub":
+        "communication", "list": "communication", "list-key": "communication", "regenerate-key":
+        "communication", "show": "communication", "update": "communication", "wait":
+        "communication", "email": {"create": "communication", "delete": "communication",
+        "list": "communication", "show": "communication", "update": "communication",
+        "wait": "communication", "domain": {"cancel-verification": "communication",
+        "create": "communication", "delete": "communication", "initiate-verification":
+        "communication", "list": "communication", "show": "communication", "update":
+        "communication", "wait": "communication", "sender-username": {"create": "communication",
+        "delete": "communication", "list": "communication", "show": "communication",
+        "update": "communication"}}, "send": "communication"}, "identity": {"assign":
+        "communication", "remove": "communication", "show": "communication", "wait":
+        "communication", "user": {"create": "communication", "delete": "communication"},
+        "token": {"issue": "communication", "revoke": "communication", "get-for-teams-user":
+        "communication"}}, "user-identity": {"user": {"create": "communication", "delete":
+        "communication"}, "token": {"issue": "communication", "revoke": "communication",
+        "get-for-teams-user": "communication"}}, "sms": {"send": "communication"},
+        "phonenumber": {"list": "communication", "show": "communication"}, "chat":
+        {"thread": {"list": "communication", "create": "communication", "delete":
+        "communication", "update-topic": "communication"}, "participant": {"list":
+        "communication", "add": "communication", "remove": "communication"}, "message":
+        {"list": "communication", "send": "communication", "get": "communication",
+        "update": "communication", "delete": "communication", "receipt": {"list":
+        "communication", "send": "communication"}}}, "rooms": {"get": "communication",
+        "create": "communication", "update": "communication", "delete": "communication",
+        "list": "communication", "participant": {"get": "communication", "add-or-update":
+        "communication", "remove": "communication"}}}, "compute-diagnostic": {"spot-placement-recommender":
+        {"generate": "compute-diagnostic-rp"}}, "confcom": {"acipolicygen": "confcom",
+        "katapolicygen": "confcom"}, "confidentialledger": {"list": "confidentialledger",
+        "show": "confidentialledger", "create": "confidentialledger", "update": "confidentialledger",
+        "delete": "confidentialledger", "wait": "confidentialledger", "managedccfs":
+        {"create": "managedccfs", "delete": "managedccfs", "list": "managedccfs",
+        "show": "managedccfs", "update": "managedccfs", "wait": "managedccfs"}}, "confluent":
+        {"organization": {"create": "confluent", "create-role-binding": "confluent",
+        "create-user": "confluent", "delete": "confluent", "list": "confluent", "list-role-binding":
+        "confluent", "list-service-accounts": "confluent", "list-users": "confluent",
+        "show": "confluent", "update": "confluent", "wait": "confluent", "role-binding":
+        {"delete": "confluent"}, "environment": {"list": "confluent", "schema-registry-cluster":
+        {"list": "confluent", "show": "confluent"}, "cluster": {"create-api-key":
+        "confluent", "list": "confluent", "show": "confluent"}}, "api-key": {"delete":
+        "confluent"}}, "terms": {"list": "confluent"}, "offer-detail": {"show": "confluent"}},
+        "connectedk8s": {"connect": "connectedk8s", "update": "connectedk8s", "upgrade":
+        "connectedk8s", "delete": "connectedk8s", "enable-features": "connectedk8s",
+        "disable-features": "connectedk8s", "list": "connectedk8s", "show": "connectedk8s",
+        "proxy": "connectedk8s", "troubleshoot": "connectedk8s"}, "connectedmachine":
+        {"assess-patches": "connectedmachine", "delete": "connectedmachine", "install-patches":
+        "connectedmachine", "list": "connectedmachine", "show": "connectedmachine",
+        "update": "connectedmachine", "upgrade-extension": "connectedmachine", "run-command":
+        {"create": "connectedmachine", "delete": "connectedmachine", "list": "connectedmachine",
+        "show": "connectedmachine", "update": "connectedmachine", "wait": "connectedmachine"},
+        "private-link-resource": {"list": "connectedmachine", "show": "connectedmachine"},
+        "private-link-scope": {"create": "connectedmachine", "delete": "connectedmachine",
+        "list": "connectedmachine", "show": "connectedmachine", "update": "connectedmachine",
+        "wait": "connectedmachine", "network-security-perimeter-configuration": {"list":
+        "connectedmachine", "show": "connectedmachine"}, "update-tag": "connectedmachine"},
+        "private-endpoint-connection": {"delete": "connectedmachine", "list": "connectedmachine",
+        "show": "connectedmachine", "update": "connectedmachine", "wait": "connectedmachine"},
+        "license": {"create": "connectedmachine", "delete": "connectedmachine", "list":
+        "connectedmachine", "show": "connectedmachine", "update": "connectedmachine",
+        "wait": "connectedmachine"}, "extension": {"create": "connectedmachine", "delete":
+        "connectedmachine", "list": "connectedmachine", "show": "connectedmachine",
+        "update": "connectedmachine", "wait": "connectedmachine", "image": {"list":
+        "connectedmachine", "show": "connectedmachine"}}}, "connectedvmware": {"vcenter":
+        {"connect": "connectedvmware", "delete": "connectedvmware", "show": "connectedvmware",
+        "list": "connectedvmware", "inventory-item": {"show": "connectedvmware", "list":
+        "connectedvmware"}}, "resource-pool": {"create": "connectedvmware", "delete":
+        "connectedvmware", "show": "connectedvmware", "list": "connectedvmware"},
+        "cluster": {"create": "connectedvmware", "delete": "connectedvmware", "show":
+        "connectedvmware", "list": "connectedvmware"}, "datastore": {"create": "connectedvmware",
+        "delete": "connectedvmware", "show": "connectedvmware", "list": "connectedvmware"},
+        "host": {"create": "connectedvmware", "delete": "connectedvmware", "show":
+        "connectedvmware", "list": "connectedvmware"}, "virtual-network": {"create":
+        "connectedvmware", "delete": "connectedvmware", "show": "connectedvmware",
+        "list": "connectedvmware"}, "vm-template": {"create": "connectedvmware", "delete":
+        "connectedvmware", "show": "connectedvmware", "list": "connectedvmware"},
+        "vm": {"create": "connectedvmware", "create-from-machines": "connectedvmware",
+        "delete": "connectedvmware", "update": "connectedvmware", "show": "connectedvmware",
+        "start": "connectedvmware", "stop": "connectedvmware", "restart": "connectedvmware",
+        "nic": {"add": "connectedvmware", "update": "connectedvmware", "delete": "connectedvmware",
+        "show": "connectedvmware", "list": "connectedvmware"}, "disk": {"add": "connectedvmware",
+        "update": "connectedvmware", "delete": "connectedvmware", "show": "connectedvmware",
+        "list": "connectedvmware"}, "guest-agent": {"enable": "connectedvmware", "show":
+        "connectedvmware"}, "extension": {"list": "connectedvmware", "show": "connectedvmware",
+        "create": "connectedvmware", "update": "connectedvmware", "delete": "connectedvmware"}}},
+        "containerapp": {"show": "containerapp", "list": "containerapp", "create":
+        "containerapp", "update": "containerapp", "delete": "containerapp", "up":
+        "containerapp", "show-custom-domain-verification-id": "containerapp", "list-usages":
+        "containerapp", "replica": {"show": "containerapp", "list": "containerapp",
+        "count": "containerapp"}, "env": {"show": "containerapp", "list": "containerapp",
+        "create": "containerapp", "delete": "containerapp", "update": "containerapp",
+        "list-usages": "containerapp", "certificate": {"create": "containerapp", "upload":
+        "containerapp", "list": "containerapp", "delete": "containerapp"}, "dapr-component":
+        {"init": "containerapp", "resiliency": {"create": "containerapp", "update":
+        "containerapp", "delete": "containerapp", "show": "containerapp", "list":
+        "containerapp"}}, "identity": {"assign": "containerapp", "remove": "containerapp",
+        "show": "containerapp"}, "storage": {"show": "containerapp", "list": "containerapp",
+        "set": "containerapp", "remove": "containerapp"}, "telemetry": {"data-dog":
+        {"set": "containerapp", "delete": "containerapp", "show": "containerapp"},
+        "app-insights": {"set": "containerapp", "delete": "containerapp", "show":
+        "containerapp"}, "otlp": {"add": "containerapp", "update": "containerapp",
+        "remove": "containerapp", "show": "containerapp", "list": "containerapp"}},
+        "java-component": {"list": "containerapp", "spring-cloud-config": {"create":
+        "containerapp", "update": "containerapp", "show": "containerapp", "delete":
+        "containerapp"}, "spring-cloud-eureka": {"create": "containerapp", "update":
+        "containerapp", "show": "containerapp", "delete": "containerapp"}, "config-server-for-spring":
+        {"create": "containerapp", "update": "containerapp", "show": "containerapp",
+        "delete": "containerapp"}, "eureka-server-for-spring": {"create": "containerapp",
+        "update": "containerapp", "show": "containerapp", "delete": "containerapp"},
+        "nacos": {"create": "containerapp", "update": "containerapp", "show": "containerapp",
+        "delete": "containerapp"}, "admin-for-spring": {"create": "containerapp",
+        "update": "containerapp", "show": "containerapp", "delete": "containerapp"}},
+        "dotnet-component": {"list": "containerapp", "show": "containerapp", "create":
+        "containerapp", "delete": "containerapp"}}, "job": {"show": "containerapp",
+        "list": "containerapp", "create": "containerapp", "update": "containerapp",
+        "delete": "containerapp", "logs": {"show": "containerapp"}, "replica": {"list":
+        "containerapp"}}, "add-on": {"list": "containerapp", "redis": {"create": "containerapp",
+        "delete": "containerapp"}, "postgres": {"create": "containerapp", "delete":
+        "containerapp"}, "kafka": {"create": "containerapp", "delete": "containerapp"},
+        "mariadb": {"create": "containerapp", "delete": "containerapp"}, "qdrant":
+        {"create": "containerapp", "delete": "containerapp"}, "weaviate": {"create":
+        "containerapp", "delete": "containerapp"}, "milvus": {"create": "containerapp",
+        "delete": "containerapp"}}, "resiliency": {"create": "containerapp", "update":
+        "containerapp", "delete": "containerapp", "show": "containerapp", "list":
+        "containerapp"}, "github-action": {"add": "containerapp"}, "auth": {"show":
+        "containerapp", "update": "containerapp"}, "hostname": {"bind": "containerapp"},
+        "compose": {"create": "containerapp"}, "patch": {"list": "containerapp", "apply":
+        "containerapp", "interactive": "containerapp"}, "connected-env": {"show":
+        "containerapp", "list": "containerapp", "create": "containerapp", "delete":
+        "containerapp", "dapr-component": {"list": "containerapp", "show": "containerapp",
+        "set": "containerapp", "remove": "containerapp"}, "certificate": {"list":
+        "containerapp", "upload": "containerapp", "delete": "containerapp"}, "storage":
+        {"show": "containerapp", "list": "containerapp", "set": "containerapp", "remove":
+        "containerapp"}}, "sessionpool": {"show": "containerapp", "list": "containerapp",
+        "create": "containerapp", "update": "containerapp", "delete": "containerapp"},
+        "session": {"code-interpreter": {"execute": "containerapp", "upload-file":
+        "containerapp", "show-file-content": "containerapp", "show-file-metadata":
+        "containerapp", "list-files": "containerapp", "delete-file": "containerapp"}},
+        "java": {"logger": {"set": "containerapp", "delete": "containerapp", "show":
+        "containerapp"}}, "connection": {"create": {"postgres": "serviceconnector-passwordless",
+        "postgres-flexible": "serviceconnector-passwordless", "mysql-flexible": "serviceconnector-passwordless",
+        "sql": "serviceconnector-passwordless"}}}, "managed-cassandra": {"cluster":
+        {"create": "cosmosdb-preview", "update": "cosmosdb-preview", "backup": {"list":
+        "cosmosdb-preview", "show": "cosmosdb-preview"}, "list": "cosmosdb-preview",
+        "show": "cosmosdb-preview", "delete": "cosmosdb-preview", "deallocate": "cosmosdb-preview"},
+        "datacenter": {"create": "cosmosdb-preview", "update": "cosmosdb-preview",
+        "list": "cosmosdb-preview", "show": "cosmosdb-preview", "delete": "cosmosdb-preview"}},
+        "cosmosdb": {"service": {"create": "cosmosdb-preview", "update": "cosmosdb-preview",
+        "list": "cosmosdb-preview", "show": "cosmosdb-preview", "delete": "cosmosdb-preview"},
+        "mongodb": {"role": {"definition": {"create": "cosmosdb-preview", "update":
+        "cosmosdb-preview", "exists": "cosmosdb-preview", "list": "cosmosdb-preview",
+        "show": "cosmosdb-preview", "delete": "cosmosdb-preview"}}, "user": {"definition":
+        {"create": "cosmosdb-preview", "update": "cosmosdb-preview", "exists": "cosmosdb-preview",
+        "list": "cosmosdb-preview", "show": "cosmosdb-preview", "delete": "cosmosdb-preview"}},
+        "restorable-collection": {"list": "cosmosdb-preview"}, "collection": {"merge":
+        "cosmosdb-preview", "retrieve-partition-throughput": "cosmosdb-preview", "redistribute-partition-throughput":
+        "cosmosdb-preview", "restore": "cosmosdb-preview"}, "database": {"merge":
+        "cosmosdb-preview", "restore": "cosmosdb-preview"}}, "sql": {"container":
+        {"create": "cosmosdb-preview", "update": "cosmosdb-preview", "merge": "cosmosdb-preview",
+        "retrieve-partition-throughput": "cosmosdb-preview", "redistribute-partition-throughput":
+        "cosmosdb-preview", "restore": "cosmosdb-preview"}, "restorable-container":
+        {"list": "cosmosdb-preview"}, "database": {"merge": "cosmosdb-preview", "restore":
+        "cosmosdb-preview"}}, "restore": "cosmosdb-preview", "create": "cosmosdb-preview",
+        "update": "cosmosdb-preview", "list": "cosmosdb-preview", "show": "cosmosdb-preview",
+        "gremlin": {"restorable-database": {"list": "cosmosdb-preview"}, "restorable-graph":
+        {"list": "cosmosdb-preview"}, "restorable-resource": {"list": "cosmosdb-preview"},
+        "retrieve-latest-backup-time": "cosmosdb-preview", "database": {"restore":
+        "cosmosdb-preview"}, "graph": {"restore": "cosmosdb-preview"}}, "table": {"restorable-table":
+        {"list": "cosmosdb-preview"}, "restorable-resource": {"list": "cosmosdb-preview"},
+        "retrieve-latest-backup-time": "cosmosdb-preview", "restore": "cosmosdb-preview"},
+        "restorable-database-account": {"show": "cosmosdb-preview", "list": "cosmosdb-preview"},
+        "dts": {"copy": "cosmosdb-preview", "list": "cosmosdb-preview", "show": "cosmosdb-preview",
+        "pause": "cosmosdb-preview", "resume": "cosmosdb-preview", "cancel": "cosmosdb-preview"},
+        "copy": {"create": "cosmosdb-preview", "list": "cosmosdb-preview", "show":
+        "cosmosdb-preview", "pause": "cosmosdb-preview", "resume": "cosmosdb-preview",
+        "cancel": "cosmosdb-preview", "complete": "cosmosdb-preview"}, "mongocluster":
+        {"create": "cosmosdb-preview", "update": "cosmosdb-preview", "list": "cosmosdb-preview",
+        "show": "cosmosdb-preview", "delete": "cosmosdb-preview", "firewall": {"rule":
+        {"create": "cosmosdb-preview", "update": "cosmosdb-preview", "list": "cosmosdb-preview",
+        "show": "cosmosdb-preview", "delete": "cosmosdb-preview"}}}}, "costmanagement":
+        {"show-operation-result": "costmanagement", "export": {"list": "costmanagement",
+        "show": "costmanagement", "create": "costmanagement", "update": "costmanagement",
+        "delete": "costmanagement"}}, "csvmware": {"vm": {"create": "csvmware", "list":
+        "csvmware", "show": "csvmware", "update": "csvmware", "delete": "csvmware",
+        "start": "csvmware", "stop": "csvmware", "disk": {"add": "csvmware", "show":
+        "csvmware", "list": "csvmware", "delete": "csvmware"}, "nic": {"add": "csvmware",
+        "show": "csvmware", "list": "csvmware", "delete": "csvmware"}}, "vm-template":
+        {"show": "csvmware", "list": "csvmware"}, "virtual-network": {"show": "csvmware",
+        "list": "csvmware"}, "resource-pool": {"show": "csvmware", "list": "csvmware"},
+        "private-cloud": {"list": "csvmware", "show": "csvmware"}}, "custom-providers":
+        {"resource-provider": {"create": "custom-providers", "update": "custom-providers",
+        "delete": "custom-providers", "show": "custom-providers", "list": "custom-providers"}},
+        "customlocation": {"create": "customlocation", "show": "customlocation", "delete":
+        "customlocation", "list": "customlocation", "list-enabled-resource-types":
+        "customlocation", "update": "customlocation", "patch": "customlocation"},
+        "databox": {"job": {"cancel": "databox", "create": "databox", "delete": "databox",
+        "list": "databox", "list-credential": "databox", "mark-devices-shipped": "databox",
+        "show": "databox", "update": "databox"}}, "databricks": {"access-connector":
+        {"create": "databricks", "delete": "databricks", "list": "databricks", "show":
+        "databricks", "update": "databricks", "wait": "databricks"}, "workspace":
+        {"create": "databricks", "delete": "databricks", "list": "databricks", "show":
+        "databricks", "update": "databricks", "wait": "databricks", "outbound-endpoint":
+        {"list": "databricks"}, "private-link-resource": {"list": "databricks", "show":
+        "databricks"}, "vnet-peering": {"create": "databricks", "delete": "databricks",
+        "list": "databricks", "show": "databricks", "update": "databricks", "wait":
+        "databricks"}, "private-endpoint-connection": {"create": "databricks", "delete":
+        "databricks", "list": "databricks", "show": "databricks", "update": "databricks",
+        "wait": "databricks"}}}, "datadog": {"terms": {"list": "datadog", "create":
+        "datadog", "update": "datadog"}, "monitor": {"list": "datadog", "show": "datadog",
+        "create": "datadog", "update": "datadog", "delete": "datadog", "get-default-key":
+        "datadog", "list-api-key": "datadog", "list-host": "datadog", "list-linked-resource":
+        "datadog", "list-monitored-resource": "datadog", "refresh-set-password-link":
+        "datadog", "set-default-key": "datadog", "wait": "datadog"}, "tag-rule": {"list":
+        "datadog", "show": "datadog", "create": "datadog", "update": "datadog"}, "sso-config":
+        {"list": "datadog", "show": "datadog", "create": "datadog", "update": "datadog",
+        "wait": "datadog"}}, "datafactory": {"list": "datafactory", "show": "datafactory",
+        "create": "datafactory", "update": "datafactory", "delete": "datafactory",
+        "configure-factory-repo": "datafactory", "get-data-plane-access": "datafactory",
+        "get-git-hub-access-token": "datafactory", "activity-run": {"query-by-pipeline-run":
+        "datafactory"}, "dataset": {"list": "datafactory", "show": "datafactory",
+        "create": "datafactory", "update": "datafactory", "delete": "datafactory"},
+        "integration-runtime": {"list": "datafactory", "show": "datafactory", "linked-integration-runtime":
+        {"create": "datafactory"}, "managed": {"create": "datafactory"}, "self-hosted":
+        {"create": "datafactory"}, "update": "datafactory", "delete": "datafactory",
+        "get-connection-info": "datafactory", "get-monitoring-data": "datafactory",
+        "get-status": "datafactory", "list-auth-key": "datafactory", "regenerate-auth-key":
+        "datafactory", "remove-link": "datafactory", "start": "datafactory", "stop":
+        "datafactory", "sync-credentials": "datafactory", "upgrade": "datafactory",
+        "wait": "datafactory"}, "integration-runtime-node": {"show": "datafactory",
+        "update": "datafactory", "delete": "datafactory", "get-ip-address": "datafactory"},
+        "linked-service": {"list": "datafactory", "show": "datafactory", "create":
+        "datafactory", "update": "datafactory", "delete": "datafactory"}, "managed-private-endpoint":
+        {"list": "datafactory", "show": "datafactory", "create": "datafactory", "update":
+        "datafactory", "delete": "datafactory"}, "managed-virtual-network": {"list":
+        "datafactory", "show": "datafactory", "create": "datafactory", "update": "datafactory"},
+        "pipeline": {"list": "datafactory", "show": "datafactory", "create": "datafactory",
+        "update": "datafactory", "delete": "datafactory", "create-run": "datafactory"},
+        "pipeline-run": {"show": "datafactory", "cancel": "datafactory", "query-by-factory":
+        "datafactory"}, "trigger": {"list": "datafactory", "show": "datafactory",
+        "create": "datafactory", "update": "datafactory", "delete": "datafactory",
+        "get-event-subscription-status": "datafactory", "query-by-factory": "datafactory",
+        "start": "datafactory", "stop": "datafactory", "subscribe-to-event": "datafactory",
+        "unsubscribe-from-event": "datafactory", "wait": "datafactory"}, "trigger-run":
+        {"cancel": "datafactory", "query-by-factory": "datafactory", "rerun": "datafactory"},
+        "data-flow": {"show": "datafactory", "list": "datafactory", "delete": "datafactory",
+        "create": "datafactory", "update": "datafactory"}}, "datamigration": {"sql-db":
+        {"show": "datamigration", "create": "datamigration", "delete": "datamigration",
+        "cancel": "datamigration", "wait": "datamigration"}, "sql-managed-instance":
+        {"show": "datamigration", "create": "datamigration", "cancel": "datamigration",
+        "cutover": "datamigration", "wait": "datamigration"}, "sql-service": {"list":
+        "datamigration", "show": "datamigration", "create": "datamigration", "update":
+        "datamigration", "delete": "datamigration", "delete-node": "datamigration",
+        "list-auth-key": "datamigration", "list-integration-runtime-metric": "datamigration",
+        "list-migration": "datamigration", "regenerate-auth-key": "datamigration",
+        "wait": "datamigration"}, "sql-vm": {"show": "datamigration", "create": "datamigration",
+        "cancel": "datamigration", "cutover": "datamigration", "wait": "datamigration"},
+        "get-assessment": "datamigration", "performance-data-collection": "datamigration",
+        "get-sku-recommendation": "datamigration", "register-integration-runtime":
+        "datamigration", "login-migration": "datamigration", "tde-migration": "datamigration",
+        "sql-server-schema": "datamigration"}, "dataprotection": {"backup-policy":
+        {"create": "dataprotection", "delete": "dataprotection", "list": "dataprotection",
+        "show": "dataprotection", "update": "dataprotection", "get-default-policy-template":
+        "dataprotection", "trigger": {"create-schedule": "dataprotection", "set":
+        "dataprotection"}, "retention-rule": {"create-lifecycle": "dataprotection",
+        "set": "dataprotection", "remove": "dataprotection"}, "tag": {"create-absolute-criteria":
+        "dataprotection", "create-generic-criteria": "dataprotection", "set": "dataprotection",
+        "remove": "dataprotection"}}, "recovery-point": {"list": "dataprotection",
+        "show": "dataprotection"}, "restorable-time-range": {"find": "dataprotection"},
+        "backup-vault": {"create": "dataprotection", "delete": "dataprotection", "list":
+        "dataprotection", "show": "dataprotection", "update": "dataprotection", "wait":
+        "dataprotection", "resource-guard-mapping": {"create": "dataprotection", "delete":
+        "dataprotection", "show": "dataprotection"}, "list-from-resourcegraph": "dataprotection"},
+        "resource-guard": {"create": "dataprotection", "delete": "dataprotection",
+        "list": "dataprotection", "show": "dataprotection", "unlock": "dataprotection",
+        "update": "dataprotection", "list-protected-operations": "dataprotection"},
+        "backup-instance": {"adhoc-backup": "dataprotection", "create": "dataprotection",
+        "delete": "dataprotection", "list": "dataprotection", "resume-protection":
+        "dataprotection", "show": "dataprotection", "stop-protection": "dataprotection",
+        "suspend-backup": "dataprotection", "validate-for-backup": "dataprotection",
+        "validate-for-restore": "dataprotection", "wait": "dataprotection", "deleted-backup-instance":
+        {"list": "dataprotection", "show": "dataprotection", "undelete": "dataprotection"},
+        "restore": {"trigger": "dataprotection", "initialize-for-data-recovery": "dataprotection",
+        "initialize-for-data-recovery-as-files": "dataprotection", "initialize-for-item-recovery":
+        "dataprotection"}, "initialize-backupconfig": "dataprotection", "initialize-restoreconfig":
+        "dataprotection", "initialize": "dataprotection", "list-from-resourcegraph":
+        "dataprotection", "update-msi-permissions": "dataprotection", "update-policy":
+        "dataprotection", "update": "dataprotection"}, "job": {"list": "dataprotection",
+        "show": "dataprotection", "list-from-resourcegraph": "dataprotection"}}, "datashare":
+        {"list": "datashare", "show": "datashare", "create": "datashare", "delete":
+        "datashare", "list-synchronization": "datashare", "list-synchronization-detail":
+        "datashare", "wait": "datashare", "account": {"list": "datashare", "show":
+        "datashare", "create": "datashare", "update": "datashare", "delete": "datashare",
+        "wait": "datashare"}, "consumer-invitation": {"show": "datashare", "list-invitation":
+        "datashare", "reject-invitation": "datashare"}, "consumer-source-data-set":
+        {"list": "datashare"}, "data-set": {"list": "datashare", "show": "datashare",
+        "create": "datashare", "delete": "datashare", "wait": "datashare"}, "data-set-mapping":
+        {"list": "datashare", "show": "datashare", "create": "datashare", "delete":
+        "datashare"}, "email-registration": {"activate-email": "datashare", "register-email":
+        "datashare"}, "invitation": {"list": "datashare", "show": "datashare", "create":
+        "datashare", "delete": "datashare"}, "provider-share-subscription": {"list":
+        "datashare", "show": "datashare", "adjust": "datashare", "reinstate": "datashare",
+        "revoke": "datashare", "wait": "datashare"}, "share-subscription": {"list":
+        "datashare", "show": "datashare", "create": "datashare", "delete": "datashare",
+        "cancel-synchronization": "datashare", "list-source-share-synchronization-setting":
+        "datashare", "list-synchronization": "datashare", "list-synchronization-detail":
+        "datashare", "synchronize": "datashare", "wait": "datashare"}, "synchronization-setting":
+        {"list": "datashare", "show": "datashare", "create": "datashare", "delete":
+        "datashare", "wait": "datashare"}, "trigger": {"list": "datashare", "show":
+        "datashare", "create": "datashare", "delete": "datashare", "wait": "datashare"}},
+        "mysql": {"up": "db-up", "down": "db-up", "show-connection-string": "db-up",
+        "flexible-server": {"connect": "rdbms-connect", "execute": "rdbms-connect"}},
+        "container": {"app": {"up": "deploy-to-azure"}}, "desktopvirtualization":
+        {"applicationgroup": {"create": "desktopvirtualization", "delete": "desktopvirtualization",
+        "list": "desktopvirtualization", "show": "desktopvirtualization", "update":
+        "desktopvirtualization"}, "workspace": {"create": "desktopvirtualization",
+        "delete": "desktopvirtualization", "list": "desktopvirtualization", "show":
+        "desktopvirtualization", "update": "desktopvirtualization"}, "hostpool": {"create":
+        "desktopvirtualization", "delete": "desktopvirtualization", "list": "desktopvirtualization",
+        "retrieve-registration-token": "desktopvirtualization", "show": "desktopvirtualization",
+        "update": "desktopvirtualization"}}, "devcenter": {"admin": {"usage": {"list":
+        "devcenter"}, "gallery": {"create": "devcenter", "delete": "devcenter", "list":
+        "devcenter", "show": "devcenter", "wait": "devcenter"}, "devbox-definition":
+        {"create": "devcenter", "delete": "devcenter", "list": "devcenter", "show":
+        "devcenter", "update": "devcenter", "wait": "devcenter"}, "project-allowed-environment-type":
+        {"list": "devcenter", "show": "devcenter"}, "sku": {"list": "devcenter"},
+        "attached-network": {"create": "devcenter", "delete": "devcenter", "list":
+        "devcenter", "show": "devcenter", "wait": "devcenter"}, "schedule": {"create":
+        "devcenter", "delete": "devcenter", "list": "devcenter", "show": "devcenter",
+        "update": "devcenter", "wait": "devcenter"}, "plan": {"create": "devcenter",
+        "delete": "devcenter", "list": "devcenter", "show": "devcenter", "update":
+        "devcenter", "wait": "devcenter"}, "check-scoped-name-availability": {"execute":
+        "devcenter"}, "pool": {"create": "devcenter", "delete": "devcenter", "list":
+        "devcenter", "run-health-check": "devcenter", "show": "devcenter", "update":
+        "devcenter", "wait": "devcenter"}, "catalog": {"connect": "devcenter", "create":
+        "devcenter", "delete": "devcenter", "get-sync-error-detail": "devcenter",
+        "list": "devcenter", "show": "devcenter", "sync": "devcenter", "update": "devcenter",
+        "wait": "devcenter"}, "image": {"list": "devcenter", "show": "devcenter"},
+        "devcenter": {"create": "devcenter", "delete": "devcenter", "list": "devcenter",
+        "show": "devcenter", "update": "devcenter", "wait": "devcenter"}, "image-version":
+        {"list": "devcenter", "show": "devcenter"}, "check-name-availability": {"execute":
+        "devcenter"}, "network-connection": {"create": "devcenter", "delete": "devcenter",
+        "list": "devcenter", "list-health-check": "devcenter", "list-outbound-network-dependencies-endpoint":
+        "devcenter", "run-health-check": "devcenter", "show": "devcenter", "show-health-check":
+        "devcenter", "update": "devcenter", "wait": "devcenter"}, "environment-definition":
+        {"get-error-detail": "devcenter", "list": "devcenter", "show": "devcenter"},
+        "catalog-task": {"get-error-detail": "devcenter", "list": "devcenter", "show":
+        "devcenter"}, "environment-type": {"create": "devcenter", "delete": "devcenter",
+        "list": "devcenter", "show": "devcenter", "update": "devcenter"}, "project":
+        {"create": "devcenter", "delete": "devcenter", "get-inherited-setting": "devcenter",
+        "list": "devcenter", "show": "devcenter", "update": "devcenter", "wait": "devcenter"},
+        "project-catalog": {"connect": "devcenter", "create": "devcenter", "delete":
+        "devcenter", "get-sync-error-detail": "devcenter", "list": "devcenter", "show":
+        "devcenter", "sync": "devcenter", "update": "devcenter", "wait": "devcenter"},
+        "project-environment-definition": {"get-error-detail": "devcenter", "list":
+        "devcenter", "show": "devcenter"}, "project-environment-type": {"create":
+        "devcenter", "delete": "devcenter", "list": "devcenter", "show": "devcenter",
+        "update": "devcenter"}, "plan-member": {"create": "devcenter", "delete": "devcenter",
+        "list": "devcenter", "show": "devcenter", "update": "devcenter"}}, "dev":
+        {"project": {"list": "devcenter", "show": "devcenter"}, "pool": {"list": "devcenter",
+        "show": "devcenter"}, "schedule": {"list": "devcenter", "show": "devcenter"},
+        "dev-box": {"list": "devcenter", "show": "devcenter", "create": "devcenter",
+        "delete": "devcenter", "start": "devcenter", "stop": "devcenter", "restart":
+        "devcenter", "repair": "devcenter", "show-remote-connection": "devcenter",
+        "list-action": "devcenter", "show-action": "devcenter", "skip-action": "devcenter",
+        "delay-action": "devcenter", "delay-all-actions": "devcenter", "list-operation":
+        "devcenter", "show-operation": "devcenter"}, "environment": {"list": "devcenter",
+        "show": "devcenter", "create": "devcenter", "update": "devcenter", "deploy":
+        "devcenter", "delete": "devcenter", "list-operation": "devcenter", "show-operation":
+        "devcenter", "show-logs-by-operation": "devcenter", "show-action": "devcenter",
+        "list-action": "devcenter", "delay-action": "devcenter", "skip-action": "devcenter",
+        "show-outputs": "devcenter", "update-expiration-date": "devcenter"}, "catalog":
+        {"list": "devcenter", "show": "devcenter"}, "environment-definition": {"list":
+        "devcenter", "show": "devcenter"}, "environment-type": {"list": "devcenter"},
+        "customization-group": {"list": "devcenter", "show": "devcenter", "create":
+        "devcenter"}, "customization-task": {"list": "devcenter", "show": "devcenter",
+        "validate": "devcenter", "show-logs": "devcenter"}}}, "disk-pool": {"list":
+        "diskpool", "show": "diskpool", "create": "diskpool", "update": "diskpool",
+        "delete": "diskpool", "list-outbound-network-dependency-endpoint": "diskpool",
+        "redeploy": "diskpool", "start": "diskpool", "stop": "diskpool", "wait": "diskpool",
+        "list-skus": "diskpool", "list-zones": "diskpool", "iscsi-target": {"list":
+        "diskpool", "show": "diskpool", "create": "diskpool", "update": "diskpool",
+        "delete": "diskpool", "wait": "diskpool"}}, "dms": {"project": {"create":
+        "dms-preview", "task": {"create": "dms-preview", "cancel": "dms-preview",
+        "restart": "dms-preview", "stop": "dms-preview"}}}, "dnc": {"orchestrator-instance-service":
+        {"create": "dnc", "delete": "dnc", "show": "dnc", "wait": "dnc"}, "delegated-subnet-service":
+        {"create": "dnc", "delete": "dnc", "show": "dnc", "wait": "dnc"}, "controller":
+        {"create": "dnc", "delete": "dnc", "show": "dnc", "wait": "dnc"}}, "dns-resolver":
+        {"create": "dns-resolver", "delete": "dns-resolver", "list": "dns-resolver",
+        "list-by-virtual-network": "dns-resolver", "show": "dns-resolver", "update":
+        "dns-resolver", "wait": "dns-resolver", "vnet-link": {"create": "dns-resolver",
+        "delete": "dns-resolver", "list": "dns-resolver", "show": "dns-resolver",
+        "update": "dns-resolver", "wait": "dns-resolver"}, "forwarding-rule": {"create":
+        "dns-resolver", "delete": "dns-resolver", "list": "dns-resolver", "show":
+        "dns-resolver", "update": "dns-resolver"}, "outbound-endpoint": {"create":
+        "dns-resolver", "delete": "dns-resolver", "list": "dns-resolver", "show":
+        "dns-resolver", "update": "dns-resolver", "wait": "dns-resolver"}, "forwarding-ruleset":
+        {"create": "dns-resolver", "delete": "dns-resolver", "list": "dns-resolver",
+        "list-by-virtual-network": "dns-resolver", "show": "dns-resolver", "update":
+        "dns-resolver", "wait": "dns-resolver"}, "inbound-endpoint": {"create": "dns-resolver",
+        "delete": "dns-resolver", "list": "dns-resolver", "show": "dns-resolver",
+        "update": "dns-resolver", "wait": "dns-resolver"}}, "dynatrace": {"monitor":
+        {"create": "dynatrace", "delete": "dynatrace", "get-sso-detail": "dynatrace",
+        "get-vm-host-payload": "dynatrace", "list": "dynatrace", "list-app-service":
+        "dynatrace", "list-host": "dynatrace", "list-linkable-environment": "dynatrace",
+        "list-monitored-resource": "dynatrace", "show": "dynatrace", "update": "dynatrace",
+        "wait": "dynatrace", "tag-rule": {"create": "dynatrace", "delete": "dynatrace",
+        "list": "dynatrace", "show": "dynatrace", "update": "dynatrace", "wait": "dynatrace"},
+        "sso-config": {"create": "dynatrace", "list": "dynatrace", "show": "dynatrace",
+        "wait": "dynatrace"}}}, "edgeorder": {"order": {"show": "edgeorder", "list":
+        "edgeorder"}, "list-config": "edgeorder", "list-family": "edgeorder", "list-metadata":
+        "edgeorder", "address": {"show": "edgeorder", "create": "edgeorder", "update":
+        "edgeorder", "delete": "edgeorder", "wait": "edgeorder", "list": "edgeorder"},
+        "order-item": {"list": "edgeorder", "show": "edgeorder", "create": "edgeorder",
+        "update": "edgeorder", "delete": "edgeorder", "cancel": "edgeorder", "return":
+        "edgeorder", "wait": "edgeorder"}}, "edge-zones": {"extended-zone": {"list":
+        "edgezones", "register": "edgezones", "show": "edgezones", "unregister": "edgezones"}},
+        "elastic": {"get-organization-api-key": "elastic", "monitor": {"associate-traffic-filter":
+        "elastic", "create": "elastic", "create-and-associate-ip-filter": "elastic",
+        "create-and-associate-pl-filter": "elastic", "create-or-update-external-user":
+        "elastic", "delete": "elastic", "delete-traffic-filter": "elastic", "detach-and-delete-traffic-filter":
+        "elastic", "detach-traffic-filter": "elastic", "list": "elastic", "list-all-traffic-filter":
+        "elastic", "list-associated-traffic-filter": "elastic", "list-deployment-info":
+        "elastic", "list-resource": "elastic", "list-upgradable-version": "elastic",
+        "list-vm-host": "elastic", "show": "elastic", "update": "elastic", "update-vm-collection":
+        "elastic", "upgrade": "elastic", "vm-ingestion-detail": "elastic", "wait":
+        "elastic", "tag-rule": {"create": "elastic", "delete": "elastic", "list":
+        "elastic", "show": "elastic", "update": "elastic", "wait": "elastic"}}}, "elastic-san":
+        {"create": "elastic-san", "delete": "elastic-san", "list": "elastic-san",
+        "list-sku": "elastic-san", "show": "elastic-san", "update": "elastic-san",
+        "wait": "elastic-san", "volume-group": {"create": "elastic-san", "delete":
+        "elastic-san", "list": "elastic-san", "show": "elastic-san", "update": "elastic-san",
+        "wait": "elastic-san"}, "volume": {"create": "elastic-san", "delete": "elastic-san",
+        "list": "elastic-san", "show": "elastic-san", "update": "elastic-san", "wait":
+        "elastic-san", "snapshot": {"create": "elastic-san", "delete": "elastic-san",
+        "list": "elastic-san", "show": "elastic-san", "wait": "elastic-san"}}}, "eventgrid":
+        {"namespace": {"create": "eventgrid", "delete": "eventgrid", "list": "eventgrid",
+        "list-key": "eventgrid", "regenerate-key": "eventgrid", "show": "eventgrid",
+        "update": "eventgrid", "wait": "eventgrid", "permission-binding": {"create":
+        "eventgrid", "delete": "eventgrid", "list": "eventgrid", "show": "eventgrid",
+        "update": "eventgrid", "wait": "eventgrid"}, "ca-certificate": {"create":
+        "eventgrid", "delete": "eventgrid", "list": "eventgrid", "show": "eventgrid",
+        "update": "eventgrid", "wait": "eventgrid"}, "topic-space": {"create": "eventgrid",
+        "delete": "eventgrid", "list": "eventgrid", "show": "eventgrid", "update":
+        "eventgrid", "wait": "eventgrid"}, "topic": {"create": "eventgrid", "delete":
+        "eventgrid", "list": "eventgrid", "list-key": "eventgrid", "regenerate-key":
+        "eventgrid", "show": "eventgrid", "update": "eventgrid", "wait": "eventgrid",
+        "event-subscription": {"create": "eventgrid", "delete": "eventgrid", "list":
+        "eventgrid", "show": "eventgrid", "update": "eventgrid", "wait": "eventgrid"}},
+        "client": {"create": "eventgrid", "delete": "eventgrid", "list": "eventgrid",
+        "show": "eventgrid", "update": "eventgrid", "wait": "eventgrid"}, "client-group":
+        {"create": "eventgrid", "delete": "eventgrid", "list": "eventgrid", "show":
+        "eventgrid", "update": "eventgrid", "wait": "eventgrid"}}, "topic": {"show":
+        "eventgrid", "key": {"list": "eventgrid", "regenerate": "eventgrid"}, "delete":
+        "eventgrid", "list": "eventgrid", "create": "eventgrid", "update": "eventgrid",
+        "private-endpoint-connection": {"show": "eventgrid", "list": "eventgrid",
+        "delete": "eventgrid", "approve": "eventgrid", "reject": "eventgrid"}, "private-link-resource":
+        {"show": "eventgrid", "list": "eventgrid"}}, "extension-topic": {"show": "eventgrid"},
+        "domain": {"topic": {"show": "eventgrid", "list": "eventgrid", "delete": "eventgrid",
+        "create": "eventgrid"}, "show": "eventgrid", "key": {"list": "eventgrid",
+        "regenerate": "eventgrid"}, "list": "eventgrid", "create": "eventgrid", "delete":
+        "eventgrid", "update": "eventgrid", "private-endpoint-connection": {"show":
+        "eventgrid", "list": "eventgrid", "delete": "eventgrid", "approve": "eventgrid",
+        "reject": "eventgrid"}, "private-link-resource": {"show": "eventgrid", "list":
+        "eventgrid"}}, "system-topic": {"show": "eventgrid", "delete": "eventgrid",
+        "list": "eventgrid", "create": "eventgrid", "update": "eventgrid", "event-subscription":
+        {"show": "eventgrid", "delete": "eventgrid", "list": "eventgrid", "create":
+        "eventgrid", "update": "eventgrid"}}, "partner": {"registration": {"show":
+        "eventgrid", "delete": "eventgrid", "list": "eventgrid", "create": "eventgrid"},
+        "namespace": {"show": "eventgrid", "delete": "eventgrid", "list": "eventgrid",
+        "create": "eventgrid", "key": {"list": "eventgrid", "regenerate": "eventgrid"},
+        "event-channel": {"show": "eventgrid", "delete": "eventgrid", "list": "eventgrid",
+        "create": "eventgrid"}}, "topic": {"show": "eventgrid", "delete": "eventgrid",
+        "activate": "eventgrid", "deactivate": "eventgrid", "list": "eventgrid", "event-subscription":
+        {"show": "eventgrid", "delete": "eventgrid", "list": "eventgrid", "create":
+        "eventgrid", "update": "eventgrid"}}}, "event-subscription": {"create": "eventgrid",
+        "show": "eventgrid", "delete": "eventgrid", "list": "eventgrid", "update":
+        "eventgrid"}, "topic-type": {"list": "eventgrid", "show": "eventgrid", "list-event-types":
+        "eventgrid"}}, "firmwareanalysis": {"firmware": {"binary-hardening": "firmwareanalysis",
+        "create": "firmwareanalysis", "crypto-certificate": "firmwareanalysis", "crypto-key":
+        "firmwareanalysis", "cve": "firmwareanalysis", "delete": "firmwareanalysis",
+        "generate-filesystem-download-url": "firmwareanalysis", "list": "firmwareanalysis",
+        "password-hash": "firmwareanalysis", "sbom-component": "firmwareanalysis",
+        "show": "firmwareanalysis", "summary": "firmwareanalysis"}, "workspace": {"create":
+        "firmwareanalysis", "delete": "firmwareanalysis", "generate-upload-url": "firmwareanalysis",
+        "list": "firmwareanalysis", "show": "firmwareanalysis"}}, "fleet": {"create":
+        "fleet", "update": "fleet", "show": "fleet", "list": "fleet", "delete": "fleet",
+        "get-credentials": "fleet", "reconcile": "fleet", "wait": "fleet", "member":
+        {"create": "fleet", "update": "fleet", "delete": "fleet", "list": "fleet",
+        "show": "fleet", "reconcile": "fleet", "wait": "fleet"}, "updaterun": {"create":
+        "fleet", "show": "fleet", "list": "fleet", "delete": "fleet", "start": "fleet",
+        "stop": "fleet", "skip": "fleet", "wait": "fleet"}, "updatestrategy": {"create":
+        "fleet", "show": "fleet", "list": "fleet", "delete": "fleet", "wait": "fleet"}},
+        "fluid-relay": {"container": {"delete": "fluid-relay", "list": "fluid-relay",
+        "show": "fluid-relay"}, "server": {"create": "fluid-relay", "delete": "fluid-relay",
+        "list": "fluid-relay", "list-key": "fluid-relay", "regenerate-key": "fluid-relay",
+        "show": "fluid-relay", "update": "fluid-relay"}}, "footprint": {"profile":
+        {"list": "footprint", "show": "footprint", "create": "footprint", "update":
+        "footprint", "delete": "footprint"}, "measurement-endpoint": {"list": "footprint",
+        "show": "footprint", "create": "footprint", "update": "footprint", "delete":
+        "footprint"}, "measurement-endpoint-condition": {"list": "footprint", "show":
+        "footprint", "create": "footprint", "update": "footprint", "delete": "footprint"},
+        "experiment": {"list": "footprint", "show": "footprint", "create": "footprint",
+        "update": "footprint", "delete": "footprint"}}, "fzf": {"install": "fzf",
+        "group": "fzf", "location": "fzf", "subscription": "fzf"}, "gallery": {"service-artifact":
+        {"create": "gallery-service-artifact", "get": "gallery-service-artifact",
+        "list": "gallery-service-artifact", "update": "gallery-service-artifact",
+        "wait": "gallery-service-artifact"}}, "graph-services": {"account": {"create":
+        "graphservices", "delete": "graphservices", "list": "graphservices", "show":
+        "graphservices", "update": "graphservices", "wait": "graphservices"}}, "guestconfig":
+        {"guest-configuration-assignment": {"list": "guestconfig", "show": "guestconfig",
+        "create": "guestconfig", "update": "guestconfig", "delete": "guestconfig",
+        "wait": "guestconfig"}, "guest-configuration-assignment-report": {"list":
+        "guestconfig", "show": "guestconfig"}, "guest-configuration-hcrp-assignment":
+        {"list": "guestconfig", "show": "guestconfig", "create": "guestconfig", "update":
+        "guestconfig", "delete": "guestconfig", "wait": "guestconfig"}, "guest-configuration-hcrp-assignment-report":
+        {"list": "guestconfig", "show": "guestconfig"}}, "hack": {"create": "hack",
+        "show": "hack"}, "dedicated-hsm": {"list": "hardware-security-modules", "show":
+        "hardware-security-modules", "create": "hardware-security-modules", "update":
+        "hardware-security-modules", "delete": "hardware-security-modules", "list-outbound-network-dependency-endpoint":
+        "hardware-security-modules", "wait": "hardware-security-modules"}, "hdinsight-on-aks":
+        {"check-name-availability": "hdinsightonaks", "list-available-cluster-pool-version":
+        "hdinsightonaks", "list-available-cluster-version": "hdinsightonaks", "clusterpool":
+        {"create": "hdinsightonaks", "delete": "hdinsightonaks", "list": "hdinsightonaks",
+        "show": "hdinsightonaks", "update": "hdinsightonaks", "wait": "hdinsightonaks",
+        "upgrade": {"list": "hdinsightonaks", "run": "hdinsightonaks"}}, "cluster":
+        {"create": "hdinsightonaks", "delete": "hdinsightonaks", "list": "hdinsightonaks",
+        "list-service-config": "hdinsightonaks", "resize": "hdinsightonaks", "show":
+        "hdinsightonaks", "update": "hdinsightonaks", "wait": "hdinsightonaks", "upgrade":
+        {"list": "hdinsightonaks", "run": "hdinsightonaks"}, "job": {"list": "hdinsightonaks",
+        "run": "hdinsightonaks"}, "instance-view": {"list": "hdinsightonaks", "show":
+        "hdinsightonaks"}, "node-profile": {"create": "hdinsightonaks"}, "trino-hive-catalog":
+        {"create": "hdinsightonaks"}, "secret": {"create": "hdinsightonaks"}}}, "healthbot":
+        {"list": "healthbot", "show": "healthbot", "create": "healthbot", "update":
+        "healthbot", "delete": "healthbot", "wait": "healthbot"}, "healthcareapis":
+        {"service": {"list": "healthcareapis", "show": "healthcareapis", "create":
+        "healthcareapis", "update": "healthcareapis", "delete": "healthcareapis",
+        "wait": "healthcareapis"}, "acr": {"list": "healthcareapis", "add": "healthcareapis",
+        "reset": "healthcareapis", "remove": "healthcareapis"}, "operation-result":
+        {"show": "healthcareapis"}, "private-endpoint-connection": {"list": "healthcareapis",
+        "show": "healthcareapis", "create": "healthcareapis", "update": "healthcareapis",
+        "delete": "healthcareapis", "wait": "healthcareapis"}, "private-link-resource":
+        {"list": "healthcareapis", "show": "healthcareapis"}, "workspace": {"list":
+        "healthcareapis", "show": "healthcareapis", "create": "healthcareapis", "update":
+        "healthcareapis", "delete": "healthcareapis", "wait": "healthcareapis", "dicom-service":
+        {"list": "healthcareapis", "show": "healthcareapis", "create": "healthcareapis",
+        "update": "healthcareapis", "delete": "healthcareapis", "wait": "healthcareapis"},
+        "fhir-service": {"list": "healthcareapis", "show": "healthcareapis", "create":
+        "healthcareapis", "update": "healthcareapis", "delete": "healthcareapis",
+        "wait": "healthcareapis"}, "iot-connector": {"list": "healthcareapis", "show":
+        "healthcareapis", "create": "healthcareapis", "update": "healthcareapis",
+        "delete": "healthcareapis", "wait": "healthcareapis", "fhir-destination":
+        {"list": "healthcareapis", "show": "healthcareapis", "create": "healthcareapis",
+        "update": "healthcareapis", "delete": "healthcareapis", "wait": "healthcareapis"}},
+        "private-endpoint-connection": {"list": "healthcareapis", "show": "healthcareapis",
+        "create": "healthcareapis", "update": "healthcareapis", "delete": "healthcareapis",
+        "wait": "healthcareapis"}, "private-link-resource": {"list": "healthcareapis",
+        "show": "healthcareapis"}}}, "hpc-cache": {"skus": {"list": "hpc-cache"},
+        "usage-model": {"list": "hpc-cache"}, "create": "hpc-cache", "update": "hpc-cache",
+        "delete": "hpc-cache", "show": "hpc-cache", "list": "hpc-cache", "flush":
+        "hpc-cache", "start": "hpc-cache", "stop": "hpc-cache", "upgrade-firmware":
+        "hpc-cache", "wait": "hpc-cache", "blob-storage-target": {"add": "hpc-cache",
+        "update": "hpc-cache"}, "storage-target": {"remove": "hpc-cache", "show":
+        "hpc-cache", "list": "hpc-cache"}, "nfs-storage-target": {"add": "hpc-cache",
+        "update": "hpc-cache"}}, "hybridaks": {"list": "hybridaks", "show": "hybridaks",
+        "create": "hybridaks", "update": "hybridaks", "get-upgrades": "hybridaks",
+        "upgrade": "hybridaks", "delete": "hybridaks", "proxy": "hybridaks", "notice":
+        "hybridaks", "nodepool": {"list": "hybridaks", "show": "hybridaks", "add":
+        "hybridaks", "delete": "hybridaks", "scale": "hybridaks"}, "vnet": {"list":
+        "hybridaks", "show": "hybridaks", "create": "hybridaks", "delete": "hybridaks"}},
+        "image": {"copy": "image-copy-extension"}, "sig": {"create": "image-gallery",
+        "show-community": "image-gallery", "image-definition": {"show-community":
+        "image-gallery", "list-community": "image-gallery"}, "image-version": {"show-community":
+        "image-gallery", "list-community": "image-gallery"}, "share": {"enable-community":
+        "image-gallery"}}, "import-export": {"list": "import-export", "show": "import-export",
+        "create": "import-export", "update": "import-export", "delete": "import-export",
+        "bit-locker-key": {"list": "import-export"}, "location": {"list": "import-export",
+        "show": "import-export"}}, "init": "init", "internet-analyzer": {"profile":
+        {"create": "internet-analyzer", "update": "internet-analyzer", "delete": "internet-analyzer",
+        "list": "internet-analyzer", "show": "internet-analyzer"}, "preconfigured-endpoint":
+        {"list": "internet-analyzer"}, "test": {"create": "internet-analyzer", "update":
+        "internet-analyzer", "delete": "internet-analyzer", "list": "internet-analyzer",
+        "show": "internet-analyzer"}, "show-scorecard": "internet-analyzer", "show-timeseries":
+        "internet-analyzer"}, "k8s-configuration": {"flux": {"create": "k8s-configuration",
+        "update": "k8s-configuration", "list": "k8s-configuration", "show": "k8s-configuration",
+        "delete": "k8s-configuration", "kustomization": {"create": "k8s-configuration",
+        "update": "k8s-configuration", "delete": "k8s-configuration", "list": "k8s-configuration",
+        "show": "k8s-configuration"}, "deployed-object": {"list": "k8s-configuration",
+        "show": "k8s-configuration"}}, "list": "k8s-configuration", "show": "k8s-configuration",
+        "delete": "k8s-configuration"}, "k8s-extension": {"create": "k8s-extension",
+        "delete": "k8s-extension", "list": "k8s-extension", "show": "k8s-extension",
+        "update": "k8s-extension", "extension-types": {"list-by-location": "k8s-extension",
+        "show-by-location": "k8s-extension", "list-versions-by-location": "k8s-extension",
+        "show-version-by-location": "k8s-extension", "list-by-cluster": "k8s-extension",
+        "show-by-cluster": "k8s-extension", "list-versions-by-cluster": "k8s-extension",
+        "show-version-by-cluster": "k8s-extension"}}, "k8s-runtime": {"service": {"create":
+        "k8s-runtime", "delete": "k8s-runtime", "list": "k8s-runtime", "show": "k8s-runtime"},
+        "storage-class": {"create": "k8s-runtime", "delete": "k8s-runtime", "list":
+        "k8s-runtime", "show": "k8s-runtime", "update": "k8s-runtime", "wait": "k8s-runtime",
+        "enable": "k8s-runtime", "disable": "k8s-runtime"}, "bgp-peer": {"create":
+        "k8s-runtime", "delete": "k8s-runtime", "list": "k8s-runtime", "show": "k8s-runtime",
+        "update": "k8s-runtime", "wait": "k8s-runtime"}, "load-balancer": {"create":
+        "k8s-runtime", "delete": "k8s-runtime", "list": "k8s-runtime", "show": "k8s-runtime",
+        "update": "k8s-runtime", "wait": "k8s-runtime", "enable": "k8s-runtime", "disable":
+        "k8s-runtime"}}, "k8sconfiguration": {"create": "k8sconfiguration", "update":
+        "k8sconfiguration", "delete": "k8sconfiguration", "list": "k8sconfiguration",
+        "show": "k8sconfiguration"}, "kusto": {"attached-database-configuration":
+        {"list": "kusto", "show": "kusto", "create": "kusto", "update": "kusto", "delete":
+        "kusto", "wait": "kusto"}, "cluster": {"list": "kusto", "show": "kusto", "create":
+        "kusto", "update": "kusto", "delete": "kusto", "add-language-extension": "kusto",
+        "detach-follower-database": "kusto", "diagnose-virtual-network": "kusto",
+        "list-follower-database": "kusto", "list-language-extension": "kusto", "list-outbound-network-dependency-endpoint":
+        "kusto", "list-sku": "kusto", "remove-language-extension": "kusto", "start":
+        "kusto", "stop": "kusto", "wait": "kusto"}, "cluster-principal-assignment":
+        {"list": "kusto", "show": "kusto", "create": "kusto", "update": "kusto", "delete":
+        "kusto", "wait": "kusto"}, "data-connection": {"list": "kusto", "show": "kusto",
+        "event-grid": {"create": "kusto", "update": "kusto", "data-connection-validation":
+        "kusto"}, "event-hub": {"create": "kusto", "update": "kusto", "data-connection-validation":
+        "kusto"}, "iot-hub": {"create": "kusto", "update": "kusto", "data-connection-validation":
+        "kusto"}, "delete": "kusto", "wait": "kusto"}, "database": {"list": "kusto",
+        "show": "kusto", "create": "kusto", "update": "kusto", "delete": "kusto",
+        "add-principal": "kusto", "list-principal": "kusto", "remove-principal": "kusto",
+        "wait": "kusto"}, "database-principal-assignment": {"list": "kusto", "show":
+        "kusto", "create": "kusto", "update": "kusto", "delete": "kusto", "wait":
+        "kusto"}, "managed-private-endpoint": {"list": "kusto", "show": "kusto", "create":
+        "kusto", "update": "kusto", "delete": "kusto", "wait": "kusto"}, "operation-result":
+        {"show": "kusto"}, "operation-result-location": {"show": "kusto"}, "private-endpoint-connection":
+        {"list": "kusto", "show": "kusto", "create": "kusto", "update": "kusto", "delete":
+        "kusto", "wait": "kusto"}, "private-link-resource": {"list": "kusto", "show":
+        "kusto"}, "script": {"list": "kusto", "show": "kusto", "create": "kusto",
+        "update": "kusto", "delete": "kusto", "wait": "kusto"}}, "load": {"create":
+        "load", "delete": "load", "list": "load", "show": "load", "update": "load",
+        "wait": "load", "test": {"create": "load", "update": "load", "delete": "load",
+        "list": "load", "show": "load", "download-files": "load", "app-component":
+        {"add": "load", "list": "load", "remove": "load"}, "server-metric": {"list":
+        "load", "add": "load", "remove": "load"}, "file": {"upload": "load", "list":
+        "load", "delete": "load", "download": "load"}}, "test-run": {"create": "load",
+        "update": "load", "delete": "load", "list": "load", "show": "load", "download-files":
+        "load", "stop": "load", "app-component": {"add": "load", "list": "load", "remove":
+        "load"}, "server-metric": {"list": "load", "add": "load", "remove": "load"},
+        "metrics": {"get-namespaces": "load", "list": "load", "get-definitions": "load",
+        "get-dimensions": "load"}}}, "logic": {"integration-account": {"create": "logic",
+        "delete": "logic", "list": "logic", "list-callback-url": "logic", "show":
+        "logic", "update": "logic", "batch-configuration": {"create": "logic", "delete":
+        "logic", "list": "logic", "show": "logic", "update": "logic"}, "session":
+        {"create": "logic", "delete": "logic", "list": "logic", "show": "logic", "update":
+        "logic"}, "assembly": {"create": "logic", "delete": "logic", "list": "logic",
+        "show": "logic", "update": "logic"}, "partner": {"create": "logic", "delete":
+        "logic", "list": "logic", "show": "logic", "update": "logic"}, "map": {"create":
+        "logic", "delete": "logic", "list": "logic", "show": "logic", "update": "logic"},
+        "import": "logic"}, "workflow": {"create": "logic", "delete": "logic", "generate-upgraded-definition":
+        "logic", "list": "logic", "show": "logic", "update": "logic", "identity":
+        {"assign": "logic", "remove": "logic"}}}, "logz": {"monitor": {"list": "logz",
+        "show": "logz", "create": "logz", "update": "logz", "delete": "logz", "list-payload":
+        "logz", "list-resource": "logz", "list-role": "logz", "list-vm": "logz", "update-vm":
+        "logz", "wait": "logz"}, "rule": {"list": "logz", "show": "logz", "create":
+        "logz", "update": "logz", "delete": "logz"}, "sso": {"list": "logz", "show":
+        "logz", "create": "logz", "update": "logz", "wait": "logz"}, "sub-account":
+        {"list": "logz", "show": "logz", "create": "logz", "update": "logz", "delete":
+        "logz", "list-payload": "logz", "list-resource": "logz", "list-vm": "logz",
+        "update-vm": "logz", "wait": "logz"}, "sub-rule": {"list": "logz", "show":
+        "logz", "create": "logz", "update": "logz", "delete": "logz"}}, "maintenance":
+        {"public-configuration": {"list": "maintenance", "show": "maintenance"}, "scheduledevent":
+        {"acknowledge": "maintenance"}, "applyupdate": {"create": "maintenance", "create-or-update":
+        "maintenance", "create-or-update-parent": "maintenance", "list": "maintenance",
+        "show": "maintenance", "show-parent": "maintenance", "update": "maintenance"},
+        "assignment": {"create": "maintenance", "create-or-update-parent": "maintenance",
+        "create-or-update-resource-group": "maintenance", "create-or-update-subscription":
+        "maintenance", "delete": "maintenance", "delete-parent": "maintenance", "delete-resource-group":
+        "maintenance", "delete-subscription": "maintenance", "list": "maintenance",
+        "list-parent": "maintenance", "list-subscription": "maintenance", "show":
+        "maintenance", "show-parent": "maintenance", "show-resource-group": "maintenance",
+        "show-subscription": "maintenance", "update": "maintenance", "update-parent":
+        "maintenance", "update-resource-group": "maintenance", "update-subscription":
+        "maintenance"}, "configuration": {"create": "maintenance", "delete": "maintenance",
+        "list": "maintenance", "show": "maintenance", "update": "maintenance"}, "update":
+        {"list": "maintenance", "list-parent": "maintenance"}}, "networkfabric": {"taprule":
+        {"create": "managednetworkfabric", "delete": "managednetworkfabric", "list":
+        "managednetworkfabric", "resync": "managednetworkfabric", "show": "managednetworkfabric",
+        "update": "managednetworkfabric", "wait": "managednetworkfabric"}, "internetgatewayrule":
+        {"create": "managednetworkfabric", "delete": "managednetworkfabric", "list":
+        "managednetworkfabric", "show": "managednetworkfabric", "update": "managednetworkfabric",
+        "wait": "managednetworkfabric"}, "ipcommunity": {"create": "managednetworkfabric",
+        "delete": "managednetworkfabric", "list": "managednetworkfabric", "show":
+        "managednetworkfabric", "update": "managednetworkfabric", "wait": "managednetworkfabric"},
+        "tap": {"create": "managednetworkfabric", "delete": "managednetworkfabric",
+        "list": "managednetworkfabric", "resync": "managednetworkfabric", "show":
+        "managednetworkfabric", "update": "managednetworkfabric", "update-admin-state":
+        "managednetworkfabric", "wait": "managednetworkfabric"}, "nni": {"create":
+        "managednetworkfabric", "delete": "managednetworkfabric", "list": "managednetworkfabric",
+        "show": "managednetworkfabric", "update": "managednetworkfabric", "wait":
+        "managednetworkfabric"}, "internetgateway": {"list": "managednetworkfabric",
+        "show": "managednetworkfabric", "update": "managednetworkfabric", "wait":
+        "managednetworkfabric"}, "l2domain": {"create": "managednetworkfabric", "delete":
+        "managednetworkfabric", "list": "managednetworkfabric", "show": "managednetworkfabric",
+        "update": "managednetworkfabric", "update-admin-state": "managednetworkfabric",
+        "wait": "managednetworkfabric"}, "internalnetwork": {"create": "managednetworkfabric",
+        "delete": "managednetworkfabric", "list": "managednetworkfabric", "show":
+        "managednetworkfabric", "update": "managednetworkfabric", "wait": "managednetworkfabric"},
+        "externalnetwork": {"create": "managednetworkfabric", "delete": "managednetworkfabric",
+        "list": "managednetworkfabric", "show": "managednetworkfabric", "update":
+        "managednetworkfabric", "wait": "managednetworkfabric"}, "ipprefix": {"create":
+        "managednetworkfabric", "delete": "managednetworkfabric", "list": "managednetworkfabric",
+        "show": "managednetworkfabric", "update": "managednetworkfabric", "wait":
+        "managednetworkfabric"}, "npb": {"list": "managednetworkfabric", "show": "managednetworkfabric"},
+        "controller": {"create": "managednetworkfabric", "delete": "managednetworkfabric",
+        "list": "managednetworkfabric", "show": "managednetworkfabric", "update":
+        "managednetworkfabric", "wait": "managednetworkfabric"}, "ipextendedcommunity":
+        {"create": "managednetworkfabric", "delete": "managednetworkfabric", "list":
+        "managednetworkfabric", "show": "managednetworkfabric", "update": "managednetworkfabric",
+        "wait": "managednetworkfabric"}, "l3domain": {"create": "managednetworkfabric",
+        "delete": "managednetworkfabric", "list": "managednetworkfabric", "show":
+        "managednetworkfabric", "update": "managednetworkfabric", "update-admin-state":
+        "managednetworkfabric", "wait": "managednetworkfabric"}, "fabric": {"commit-configuration":
+        "managednetworkfabric", "create": "managednetworkfabric", "delete": "managednetworkfabric",
+        "deprovision": "managednetworkfabric", "list": "managednetworkfabric", "provision":
+        "managednetworkfabric", "show": "managednetworkfabric", "update": "managednetworkfabric",
+        "upgrade": "managednetworkfabric", "validate-configuration": "managednetworkfabric",
+        "wait": "managednetworkfabric"}, "interface": {"delete": "managednetworkfabric",
+        "list": "managednetworkfabric", "show": "managednetworkfabric", "update-admin-state":
+        "managednetworkfabric", "wait": "managednetworkfabric"}, "acl": {"create":
+        "managednetworkfabric", "delete": "managednetworkfabric", "list": "managednetworkfabric",
+        "show": "managednetworkfabric", "update": "managednetworkfabric", "wait":
+        "managednetworkfabric"}, "rack": {"list": "managednetworkfabric", "show":
+        "managednetworkfabric"}, "routepolicy": {"create": "managednetworkfabric",
+        "delete": "managednetworkfabric", "list": "managednetworkfabric", "show":
+        "managednetworkfabric", "update": "managednetworkfabric", "wait": "managednetworkfabric"},
+        "device": {"list": "managednetworkfabric", "run-ro": "managednetworkfabric",
+        "run-rw": "managednetworkfabric", "show": "managednetworkfabric", "update":
+        "managednetworkfabric", "update-admin-state": "managednetworkfabric", "upgrade":
+        "managednetworkfabric", "wait": "managednetworkfabric"}, "neighborgroup":
+        {"create": "managednetworkfabric", "delete": "managednetworkfabric", "list":
+        "managednetworkfabric", "show": "managednetworkfabric", "update": "managednetworkfabric",
+        "wait": "managednetworkfabric"}}, "managementpartner": {"delete": "managementpartner",
+        "create": "managementpartner", "update": "managementpartner", "show": "managementpartner"},
+        "mdp": {"usage": {"list": "mdp"}, "sku": {"list": "mdp"}, "pool": {"create":
+        "mdp", "delete": "mdp", "list": "mdp", "show": "mdp", "update": "mdp", "wait":
+        "mdp", "agent": {"list": "mdp"}}}, "mesh": {"service": {"list": "mesh", "show":
+        "mesh"}, "app": {"delete": "mesh", "list": "mesh", "show": "mesh"}, "secret":
+        {"delete": "mesh", "list": "mesh", "show": "mesh"}, "code-package-log": {"get":
+        "mesh"}, "network": {"delete": "mesh", "list": "mesh", "show": "mesh"}, "secretvalue":
+        {"delete": "mesh", "list": "mesh", "show": "mesh"}, "volume": {"delete": "mesh",
+        "list": "mesh", "show": "mesh", "create": "mesh"}, "gateway": {"delete": "mesh",
+        "list": "mesh", "show": "mesh"}, "service-replica": {"list": "mesh", "show":
+        "mesh"}, "deployment": {"create": "mesh"}, "generate": {"armtemplate": "mesh"}},
+        "remote-rendering-account": {"create": "mixed-reality", "delete": "mixed-reality",
+        "list": "mixed-reality", "show": "mixed-reality", "update": "mixed-reality",
+        "key": {"renew": "mixed-reality", "show": "mixed-reality"}}, "spatial-anchors-account":
+        {"create": "mixed-reality", "delete": "mixed-reality", "list": "mixed-reality",
+        "show": "mixed-reality", "update": "mixed-reality", "key": {"renew": "mixed-reality",
+        "show": "mixed-reality"}}, "mobile-network": {"create": "mobile-network",
+        "delete": "mobile-network", "list": "mobile-network", "show": "mobile-network",
+        "update": "mobile-network", "wait": "mobile-network", "service": {"create":
+        "mobile-network", "delete": "mobile-network", "list": "mobile-network", "show":
+        "mobile-network", "update": "mobile-network", "wait": "mobile-network"}, "pcdp":
+        {"create": "mobile-network", "delete": "mobile-network", "list": "mobile-network",
+        "show": "mobile-network", "update": "mobile-network", "wait": "mobile-network"},
+        "data-network": {"create": "mobile-network", "delete": "mobile-network", "list":
+        "mobile-network", "show": "mobile-network", "update": "mobile-network", "wait":
+        "mobile-network"}, "attached-data-network": {"create": "mobile-network", "delete":
+        "mobile-network", "list": "mobile-network", "show": "mobile-network", "update":
+        "mobile-network", "wait": "mobile-network"}, "slice": {"create": "mobile-network",
+        "delete": "mobile-network", "list": "mobile-network", "show": "mobile-network",
+        "update": "mobile-network", "wait": "mobile-network"}, "sim": {"create": "mobile-network",
+        "delete": "mobile-network", "list": "mobile-network", "show": "mobile-network",
+        "wait": "mobile-network", "policy": {"create": "mobile-network", "delete":
+        "mobile-network", "list": "mobile-network", "show": "mobile-network", "update":
+        "mobile-network", "wait": "mobile-network"}, "group": {"bulk-delete-sims":
+        "mobile-network", "bulk-upload-sims": "mobile-network", "create": "mobile-network",
+        "delete": "mobile-network", "list": "mobile-network", "show": "mobile-network",
+        "update": "mobile-network", "wait": "mobile-network"}}, "site": {"create":
+        "mobile-network", "delete": "mobile-network", "list": "mobile-network", "show":
+        "mobile-network", "update": "mobile-network", "wait": "mobile-network"}, "pccp":
+        {"collect-diagnostics-package": "mobile-network", "create": "mobile-network",
+        "delete": "mobile-network", "list": "mobile-network", "reinstall": "mobile-network",
+        "rollback": "mobile-network", "show": "mobile-network", "update": "mobile-network",
+        "wait": "mobile-network", "version": {"list": "mobile-network", "show": "mobile-network"}}},
+        "netappfiles": {"volume": {"create": "netappfiles-preview", "list": "netappfiles-preview",
+        "migrate-backup": "netappfiles-preview", "show": "netappfiles-preview", "update":
+        "netappfiles-preview", "wait": "netappfiles-preview", "latest-backup-status":
+        {"current": {"show": "netappfiles-preview"}}}, "account": {"backup-vault":
+        {"create": "netappfiles-preview", "delete": "netappfiles-preview", "list":
+        "netappfiles-preview", "show": "netappfiles-preview", "update": "netappfiles-preview",
+        "wait": "netappfiles-preview", "backup": {"create": "netappfiles-preview",
+        "delete": "netappfiles-preview", "list": "netappfiles-preview", "restore-file":
+        "netappfiles-preview", "show": "netappfiles-preview", "update": "netappfiles-preview",
+        "wait": "netappfiles-preview"}}}}, "network-analytics": {"data-product": {"add-user-role":
+        "network-analytics", "create": "network-analytics", "delete": "network-analytics",
+        "list": "network-analytics", "list-roles-assignment": "network-analytics",
+        "remove-user-role": "network-analytics", "show": "network-analytics", "wait":
+        "network-analytics"}}, "networkcloud": {"l2network": {"create": "networkcloud",
+        "delete": "networkcloud", "list": "networkcloud", "show": "networkcloud",
+        "update": "networkcloud", "wait": "networkcloud"}, "virtualmachine": {"create":
+        "networkcloud", "delete": "networkcloud", "list": "networkcloud", "power-off":
+        "networkcloud", "reimage": "networkcloud", "restart": "networkcloud", "show":
+        "networkcloud", "start": "networkcloud", "update": "networkcloud", "wait":
+        "networkcloud", "console": {"create": "networkcloud", "delete": "networkcloud",
+        "list": "networkcloud", "show": "networkcloud", "update": "networkcloud",
+        "wait": "networkcloud"}}, "racksku": {"list": "networkcloud", "show": "networkcloud"},
+        "trunkednetwork": {"create": "networkcloud", "delete": "networkcloud", "list":
+        "networkcloud", "show": "networkcloud", "update": "networkcloud", "wait":
+        "networkcloud"}, "baremetalmachine": {"cordon": "networkcloud", "list": "networkcloud",
+        "power-off": "networkcloud", "reimage": "networkcloud", "replace": "networkcloud",
+        "restart": "networkcloud", "run-command": "networkcloud", "run-data-extract":
+        "networkcloud", "run-read-command": "networkcloud", "show": "networkcloud",
+        "start": "networkcloud", "uncordon": "networkcloud", "update": "networkcloud",
+        "wait": "networkcloud"}, "storageappliance": {"disable-remote-vendor-management":
+        "networkcloud", "enable-remote-vendor-management": "networkcloud", "list":
+        "networkcloud", "show": "networkcloud", "update": "networkcloud", "wait":
+        "networkcloud"}, "kubernetescluster": {"create": "networkcloud", "delete":
+        "networkcloud", "list": "networkcloud", "restart-node": "networkcloud", "show":
+        "networkcloud", "update": "networkcloud", "wait": "networkcloud", "agentpool":
+        {"create": "networkcloud", "delete": "networkcloud", "list": "networkcloud",
+        "show": "networkcloud", "update": "networkcloud", "wait": "networkcloud"}},
+        "rack": {"list": "networkcloud", "show": "networkcloud", "update": "networkcloud",
+        "wait": "networkcloud"}, "clustermanager": {"create": "networkcloud", "delete":
+        "networkcloud", "list": "networkcloud", "show": "networkcloud", "update":
+        "networkcloud", "wait": "networkcloud"}, "l3network": {"create": "networkcloud",
+        "delete": "networkcloud", "list": "networkcloud", "show": "networkcloud",
+        "update": "networkcloud", "wait": "networkcloud"}, "volume": {"create": "networkcloud",
+        "delete": "networkcloud", "list": "networkcloud", "show": "networkcloud",
+        "update": "networkcloud", "wait": "networkcloud"}, "cluster": {"create": "networkcloud",
+        "delete": "networkcloud", "deploy": "networkcloud", "list": "networkcloud",
+        "scan-runtime": "networkcloud", "show": "networkcloud", "update": "networkcloud",
+        "update-version": "networkcloud", "wait": "networkcloud", "metricsconfiguration":
+        {"create": "networkcloud", "delete": "networkcloud", "list": "networkcloud",
+        "show": "networkcloud", "update": "networkcloud", "wait": "networkcloud"},
+        "bmckeyset": {"create": "networkcloud", "delete": "networkcloud", "list":
+        "networkcloud", "show": "networkcloud", "update": "networkcloud", "wait":
+        "networkcloud"}, "baremetalmachinekeyset": {"create": "networkcloud", "delete":
+        "networkcloud", "list": "networkcloud", "show": "networkcloud", "update":
+        "networkcloud", "wait": "networkcloud"}}, "cloudservicesnetwork": {"create":
+        "networkcloud", "delete": "networkcloud", "list": "networkcloud", "show":
+        "networkcloud", "update": "networkcloud", "wait": "networkcloud"}}, "new-relic":
+        {"plan": {"list": "new-relic"}, "monitor": {"create": "new-relic", "delete":
+        "new-relic", "get-billing-info": "new-relic", "get-metric-rule": "new-relic",
+        "get-metric-statu": "new-relic", "list": "new-relic", "list-app-service":
+        "new-relic", "list-connected-partner-resource": "new-relic", "list-host":
+        "new-relic", "list-linked-resource": "new-relic", "monitored-resource": "new-relic",
+        "show": "new-relic", "switch-billing": "new-relic", "vm-host-payload": "new-relic",
+        "wait": "new-relic", "tag-rule": {"create": "new-relic", "delete": "new-relic",
+        "list": "new-relic", "show": "new-relic", "update": "new-relic", "wait": "new-relic"},
+        "monitored-subscription": {"create": "new-relic", "delete": "new-relic", "show":
+        "new-relic", "update": "new-relic", "wait": "new-relic"}}, "organization":
+        {"list": "new-relic"}, "account": {"list": "new-relic"}}, "next": "next",
+        "nexusidentity": {"gen-keys": "nexusidentity"}, "nginx": {"deployment": {"create":
+        "nginx", "delete": "nginx", "list": "nginx", "show": "nginx", "update": "nginx",
+        "wait": "nginx", "certificate": {"create": "nginx", "delete": "nginx", "list":
+        "nginx", "show": "nginx", "update": "nginx", "wait": "nginx"}, "configuration":
+        {"analyze": "nginx", "create": "nginx", "delete": "nginx", "list": "nginx",
+        "show": "nginx", "update": "nginx", "wait": "nginx"}}}, "notification-hub":
+        {"check-availability": "notification-hub", "create": "notification-hub", "delete":
+        "notification-hub", "list": "notification-hub", "show": "notification-hub",
+        "update": "notification-hub", "credential": {"list": "notification-hub", "gcm":
+        {"update": "notification-hub"}, "adm": {"update": "notification-hub"}, "apns":
+        {"update": "notification-hub"}, "wns": {"update": "notification-hub"}, "mpns":
+        {"update": "notification-hub"}, "baidu": {"update": "notification-hub"}},
+        "namespace": {"check-availability": "notification-hub", "create": "notification-hub",
+        "delete": "notification-hub", "list": "notification-hub", "show": "notification-hub",
+        "update": "notification-hub", "wait": "notification-hub", "authorization-rule":
+        {"create": "notification-hub", "delete": "notification-hub", "list": "notification-hub",
+        "list-keys": "notification-hub", "regenerate-keys": "notification-hub", "show":
+        "notification-hub"}}, "authorization-rule": {"create": "notification-hub",
+        "delete": "notification-hub", "list": "notification-hub", "list-keys": "notification-hub",
+        "regenerate-keys": "notification-hub", "show": "notification-hub"}, "test-send":
+        "notification-hub"}, "offazure": {"hyperv": {"cluster": {"list": "offazure",
+        "show": "offazure"}, "host": {"list": "offazure", "show": "offazure"}, "machine":
+        {"list": "offazure", "show": "offazure"}, "run-as-account": {"list": "offazure",
+        "show": "offazure"}, "site": {"show": "offazure", "create": "offazure", "delete":
+        "offazure"}}, "vmware": {"machine": {"list": "offazure", "show": "offazure"},
+        "run-as-account": {"list": "offazure", "show": "offazure"}, "site": {"show":
+        "offazure", "create": "offazure", "delete": "offazure"}, "vcenter": {"list":
+        "offazure", "show": "offazure"}}}, "orbital": {"spacecraft": {"create": "orbital",
+        "delete": "orbital", "list": "orbital", "list-available-contact": "orbital",
+        "show": "orbital", "update": "orbital", "wait": "orbital", "contact": {"create":
+        "orbital", "delete": "orbital", "list": "orbital", "show": "orbital", "wait":
+        "orbital"}}, "contact-profile": {"create": "orbital", "delete": "orbital",
+        "list": "orbital", "show": "orbital", "update": "orbital", "wait": "orbital"},
+        "operation-result": {"show": "orbital"}, "available-ground-station": {"list":
+        "orbital", "show": "orbital"}}, "palo-alto": {"cloudngfw": {"firewall": {"create":
+        "palo-alto-networks", "delete": "palo-alto-networks", "list": "palo-alto-networks",
+        "save-log-profile": "palo-alto-networks", "show": "palo-alto-networks", "show-log-profile":
+        "palo-alto-networks", "show-support-info": "palo-alto-networks", "update":
+        "palo-alto-networks", "wait": "palo-alto-networks", "status": {"list": "palo-alto-networks",
+        "default": {"show": "palo-alto-networks"}}}, "local-rulestack": {"commit":
+        "palo-alto-networks", "create": "palo-alto-networks", "delete": "palo-alto-networks",
+        "list": "palo-alto-networks", "list-advanced-security-object": "palo-alto-networks",
+        "list-app-id": "palo-alto-networks", "list-country": "palo-alto-networks",
+        "list-firewall": "palo-alto-networks", "list-predefined-url-category": "palo-alto-networks",
+        "list-security-service": "palo-alto-networks", "revert": "palo-alto-networks",
+        "show": "palo-alto-networks", "show-change-log": "palo-alto-networks", "show-support-info":
+        "palo-alto-networks", "update": "palo-alto-networks", "wait": "palo-alto-networks",
+        "fqdnlist": {"create": "palo-alto-networks", "delete": "palo-alto-networks",
+        "list": "palo-alto-networks", "show": "palo-alto-networks", "wait": "palo-alto-networks"},
+        "prefixlist": {"create": "palo-alto-networks", "delete": "palo-alto-networks",
+        "list": "palo-alto-networks", "show": "palo-alto-networks", "wait": "palo-alto-networks"},
+        "certificate": {"create": "palo-alto-networks", "delete": "palo-alto-networks",
+        "list": "palo-alto-networks", "show": "palo-alto-networks", "wait": "palo-alto-networks"},
+        "local-rule": {"create": "palo-alto-networks", "delete": "palo-alto-networks",
+        "list": "palo-alto-networks", "refresh-counter": "palo-alto-networks", "reset-counter":
+        "palo-alto-networks", "show": "palo-alto-networks", "show-counter": "palo-alto-networks",
+        "wait": "palo-alto-networks"}}}}, "partnercenter": {"marketplace": {"offer":
+        {"create": "partnercenter", "show": "partnercenter", "list": "partnercenter",
+        "delete": "partnercenter", "publish": "partnercenter", "plan": {"create":
+        "partnercenter", "show": "partnercenter", "list": "partnercenter", "delete":
+        "partnercenter", "technical-configuration": {"show": "partnercenter", "package":
+        {"add": "partnercenter", "delete": "partnercenter"}}, "listing": {"show":
+        "partnercenter", "update": "partnercenter"}}, "listing": {"show": "partnercenter",
+        "update": "partnercenter", "contact": {"list": "partnercenter", "delete":
+        "partnercenter", "add": "partnercenter"}, "uri": {"list": "partnercenter",
+        "delete": "partnercenter", "add": "partnercenter"}, "media": {"list": "partnercenter",
+        "add": "partnercenter", "delete": "partnercenter"}}, "setup": {"show": "partnercenter",
+        "update": "partnercenter"}, "package": {"verify": "partnercenter", "build":
+        "partnercenter"}, "submission": {"show": "partnercenter", "list": "partnercenter",
+        "publish": "partnercenter"}}}}, "peering": {"legacy": {"list": "peering"},
+        "asn": {"list": "peering", "show": "peering", "create": "peering", "delete":
+        "peering"}, "location": {"list": "peering"}, "registered-asn": {"list": "peering",
+        "show": "peering", "create": "peering", "update": "peering", "delete": "peering"},
+        "registered-prefix": {"list": "peering", "show": "peering", "create": "peering",
+        "update": "peering", "delete": "peering"}, "peering": {"list": "peering",
+        "show": "peering", "create": "peering", "update": "peering", "delete": "peering"},
+        "received-route": {"list": "peering"}, "service": {"country": {"list": "peering"},
+        "location": {"list": "peering"}, "prefix": {"list": "peering", "show": "peering",
+        "create": "peering", "update": "peering", "delete": "peering"}, "provider":
+        {"list": "peering"}, "list": "peering", "show": "peering", "create": "peering",
+        "update": "peering", "delete": "peering"}}, "portal": {"dashboard": {"list":
+        "portal", "show": "portal", "create": "portal", "update": "portal", "delete":
+        "portal", "import": "portal"}}, "powerbi": {"list-auto-scale-v-core": "powerbidedicated",
+        "embedded-capacity": {"create": "powerbidedicated", "delete": "powerbidedicated",
+        "list": "powerbidedicated", "list-sku": "powerbidedicated", "show": "powerbidedicated",
+        "update": "powerbidedicated", "wait": "powerbidedicated"}}, "providerhub":
+        {"provider-registration": {"create": "providerhub", "delete": "providerhub",
+        "generate-operation": "providerhub", "list": "providerhub", "show": "providerhub",
+        "update": "providerhub", "wait": "providerhub", "resource-action": {"delete-resource":
+        "providerhub"}}, "authorized-application": {"create": "providerhub", "delete":
+        "providerhub", "list": "providerhub", "show": "providerhub", "update": "providerhub",
+        "wait": "providerhub"}, "default-rollout": {"create": "providerhub", "delete":
+        "providerhub", "list": "providerhub", "show": "providerhub", "stop": "providerhub",
+        "update": "providerhub", "wait": "providerhub"}, "resource-type-registration":
+        {"create": "providerhub", "delete": "providerhub", "list": "providerhub",
+        "show": "providerhub", "update": "providerhub", "wait": "providerhub"}, "sku":
+        {"create": "providerhub", "delete": "providerhub", "list": "providerhub",
+        "show": "providerhub", "update": "providerhub", "nested-resource-type-second":
+        {"create": "providerhub", "delete": "providerhub", "list": "providerhub",
+        "show": "providerhub", "update": "providerhub"}, "nested-resource-type-third":
+        {"create": "providerhub", "delete": "providerhub", "list": "providerhub",
+        "show": "providerhub", "update": "providerhub"}, "nested-resource-type-first":
+        {"create": "providerhub", "delete": "providerhub", "list": "providerhub",
+        "show": "providerhub", "update": "providerhub"}}, "custom-rollout": {"create":
+        "providerhub", "delete": "providerhub", "list": "providerhub", "show": "providerhub",
+        "stop": "providerhub", "update": "providerhub", "wait": "providerhub"}, "operation":
+        {"create": "providerhub", "delete": "providerhub", "list": "providerhub",
+        "update": "providerhub"}, "notification-registration": {"create": "providerhub",
+        "delete": "providerhub", "list": "providerhub", "show": "providerhub", "update":
+        "providerhub"}, "manifest": {"checkin": "providerhub", "generate": "providerhub"}},
+        "purview": {"account": {"list": "purview", "show": "purview", "create": "purview",
+        "update": "purview", "delete": "purview", "add-root-collection-admin": "purview",
+        "list-key": "purview", "wait": "purview"}, "default-account": {"show": "purview",
+        "remove": "purview", "set": "purview"}}, "quantum": {"workspace": {"create":
+        "quantum", "delete": "quantum", "list": "quantum", "show": "quantum", "set":
+        "quantum", "clear": "quantum", "quotas": "quantum", "keys": {"list": "quantum",
+        "regenerate": "quantum"}, "update": "quantum"}, "target": {"list": "quantum",
+        "show": "quantum", "set": "quantum", "clear": "quantum"}, "job": {"list":
+        "quantum", "show": "quantum", "submit": "quantum", "wait": "quantum", "output":
+        "quantum", "cancel": "quantum"}, "run": "quantum", "execute": "quantum", "offerings":
+        {"list": "quantum", "accept-terms": "quantum", "show-terms": "quantum"}},
+        "qumulo": {"storage": {"file-system": {"create": "qumulo", "delete": "qumulo",
+        "list": "qumulo", "show": "qumulo", "wait": "qumulo"}}}, "quota": {"create":
+        "quota", "list": "quota", "show": "quota", "update": "quota", "usage": {"list":
+        "quota", "show": "quota"}, "request": {"list": "quota", "show": "quota", "status":
+        {"list": "quota", "show": "quota"}}, "operation": {"list": "quota"}}, "redisenterprise":
+        {"create": "redisenterprise", "delete": "redisenterprise", "list": "redisenterprise",
+        "show": "redisenterprise", "update": "redisenterprise", "wait": "redisenterprise",
+        "operation-status": {"show": "redisenterprise"}, "database": {"create": "redisenterprise",
+        "delete": "redisenterprise", "export": "redisenterprise", "flush": "redisenterprise",
+        "force-unlink": "redisenterprise", "import": "redisenterprise", "list": "redisenterprise",
+        "list-keys": "redisenterprise", "regenerate-key": "redisenterprise", "show":
+        "redisenterprise", "update": "redisenterprise", "wait": "redisenterprise"}},
+        "reservations": {"calculate-exchange": "reservation", "exchange": "reservation",
+        "list": "reservation", "reservation-order": {"calculate": "reservation", "calculate-refund":
+        "reservation", "change-directory": "reservation", "list": "reservation", "purchase":
+        "reservation", "return": "reservation", "show": "reservation", "wait": "reservation"},
+        "catalog": {"show": "reservation"}, "reservation-order-id": {"list": "reservation"},
+        "reservation": {"archive": "reservation", "list": "reservation", "list-available-scope":
+        "reservation", "list-history": "reservation", "merge": "reservation", "show":
+        "reservation", "split": "reservation", "unarchive": "reservation", "update":
+        "reservation", "wait": "reservation"}}, "graph": {"query": "resource-graph",
+        "shared-query": {"create": "resource-graph", "list": "resource-graph", "delete":
+        "resource-graph", "show": "resource-graph"}}, "resource-mover": {"move-resource":
+        {"add": "resource-mover", "delete": "resource-mover", "list": "resource-mover",
+        "show": "resource-mover", "wait": "resource-mover"}, "move-collection": {"bulk-remove":
+        "resource-mover", "commit": "resource-mover", "create": "resource-mover",
+        "delete": "resource-mover", "discard": "resource-mover", "initiate-move":
+        "resource-mover", "list": "resource-mover", "list-required-for": "resource-mover",
+        "list-unresolved-dependency": "resource-mover", "prepare": "resource-mover",
+        "resolve-dependency": "resource-mover", "show": "resource-mover", "update":
+        "resource-mover", "wait": "resource-mover"}}, "hanainstance": {"create": "sap-hana",
+        "list": "sap-hana", "show": "sap-hana", "restart": "sap-hana", "start": "sap-hana",
+        "shutdown": "sap-hana", "update": "sap-hana", "delete": "sap-hana"}, "sapmonitor":
+        {"list": "sap-hana", "show": "sap-hana", "create": "sap-hana", "update": "sap-hana",
+        "delete": "sap-hana", "provider-instance": {"list": "sap-hana", "show": "sap-hana",
+        "create": "sap-hana", "delete": "sap-hana"}}, "scenario": {"guide": "scenario-guide"},
+        "scvmm": {"vmmserver": {"connect": "scvmm", "update": "scvmm", "delete": "scvmm",
+        "show": "scvmm", "list": "scvmm", "wait": "scvmm", "inventory-item": {"show":
+        "scvmm", "list": "scvmm"}}, "cloud": {"create": "scvmm", "update": "scvmm",
+        "delete": "scvmm", "show": "scvmm", "list": "scvmm", "wait": "scvmm"}, "virtual-network":
+        {"create": "scvmm", "update": "scvmm", "delete": "scvmm", "show": "scvmm",
+        "list": "scvmm", "wait": "scvmm"}, "vm-template": {"create": "scvmm", "update":
+        "scvmm", "delete": "scvmm", "show": "scvmm", "list": "scvmm", "wait": "scvmm"},
+        "vm": {"create": "scvmm", "delete": "scvmm", "update": "scvmm", "show": "scvmm",
+        "start": "scvmm", "stop": "scvmm", "restart": "scvmm", "create-checkpoint":
+        "scvmm", "delete-checkpoint": "scvmm", "restore-checkpoint": "scvmm", "wait":
+        "scvmm", "nic": {"add": "scvmm", "update": "scvmm", "delete": "scvmm", "show":
+        "scvmm", "list": "scvmm", "wait": "scvmm"}, "disk": {"add": "scvmm", "update":
+        "scvmm", "delete": "scvmm", "show": "scvmm", "list": "scvmm", "wait": "scvmm"},
+        "guest-agent": {"enable": "scvmm", "show": "scvmm"}, "extension": {"list":
+        "scvmm", "show": "scvmm", "create": "scvmm", "update": "scvmm", "delete":
+        "scvmm"}}, "avset": {"create": "scvmm", "update": "scvmm", "delete": "scvmm",
+        "show": "scvmm", "list": "scvmm", "wait": "scvmm"}}, "self-help": {"check-name-availability":
+        "self-help", "discovery-solution": {"list": "self-help", "list-nlp": "self-help",
+        "list-nlp-subscription": "self-help"}, "solution-self-help": {"show": "self-help"},
+        "solution": {"create": "self-help", "show": "self-help", "update": "self-help",
+        "wait": "self-help", "warmup": "self-help"}, "simplified-solution": {"create":
+        "self-help", "show": "self-help", "wait": "self-help"}, "troubleshooter":
+        {"continue": "self-help", "create": "self-help", "end": "self-help", "restart":
+        "self-help", "show": "self-help"}, "diagnostic": {"create": "self-help", "show":
+        "self-help", "wait": "self-help"}}, "sentinel": {"analytics-setting": {"create":
+        "sentinel", "delete": "sentinel", "list": "sentinel", "show": "sentinel",
+        "update": "sentinel"}, "watchlist": {"create": "sentinel", "delete": "sentinel",
+        "list": "sentinel", "show": "sentinel", "update": "sentinel"}, "bookmark":
+        {"create": "sentinel", "delete": "sentinel", "expand": "sentinel", "list":
+        "sentinel", "show": "sentinel", "update": "sentinel", "relation": {"create":
+        "sentinel", "delete": "sentinel", "list": "sentinel", "show": "sentinel",
+        "update": "sentinel"}}, "incident": {"create": "sentinel", "create-team":
+        "sentinel", "delete": "sentinel", "list": "sentinel", "list-alert": "sentinel",
+        "list-bookmark": "sentinel", "list-entity": "sentinel", "run-playbook": "sentinel",
+        "show": "sentinel", "update": "sentinel", "comment": {"create": "sentinel",
+        "delete": "sentinel", "list": "sentinel", "show": "sentinel", "update": "sentinel"},
+        "relation": {"create": "sentinel", "delete": "sentinel", "list": "sentinel",
+        "show": "sentinel", "update": "sentinel"}}, "automation-rule": {"create":
+        "sentinel", "delete": "sentinel", "list": "sentinel", "show": "sentinel",
+        "update": "sentinel"}, "setting": {"create": "sentinel", "delete": "sentinel",
+        "list": "sentinel", "show": "sentinel", "update": "sentinel"}, "source-control":
+        {"create": "sentinel", "delete": "sentinel", "list": "sentinel", "list-repository":
+        "sentinel", "show": "sentinel", "update": "sentinel"}, "enrichment": {"ip-geodata":
+        {"show": "sentinel"}, "domain-whois": {"show": "sentinel"}}, "entity-query":
+        {"create": "sentinel", "delete": "sentinel", "list": "sentinel", "show": "sentinel",
+        "update": "sentinel", "template": {"list": "sentinel", "show": "sentinel"}},
+        "onboarding-state": {"create": "sentinel", "delete": "sentinel", "list": "sentinel",
+        "show": "sentinel", "update": "sentinel"}, "alert-rule": {"create": "sentinel",
+        "delete": "sentinel", "list": "sentinel", "show": "sentinel", "update": "sentinel",
+        "template": {"list": "sentinel", "show": "sentinel"}, "action": {"create":
+        "sentinel", "delete": "sentinel", "list": "sentinel", "show": "sentinel",
+        "update": "sentinel"}}, "data-connector": {"connect": "sentinel", "create":
+        "sentinel", "delete": "sentinel", "disconnect": "sentinel", "list": "sentinel",
+        "show": "sentinel", "update": "sentinel"}, "threat-indicator": {"append-tag":
+        "sentinel", "create": "sentinel", "delete": "sentinel", "list": "sentinel",
+        "query": "sentinel", "replace-tag": "sentinel", "show": "sentinel", "update":
+        "sentinel", "metric": {"list": "sentinel"}}, "office-consent": {"delete":
+        "sentinel", "list": "sentinel", "show": "sentinel"}, "metadata": {"create":
+        "sentinel", "delete": "sentinel", "list": "sentinel", "show": "sentinel",
+        "update": "sentinel"}}, "serial-console": {"connect": "serial-console", "enable":
+        "serial-console", "disable": "serial-console", "send": {"nmi": "serial-console",
+        "reset": "serial-console", "sysrq": "serial-console"}}, "connection": {"create":
+        {"postgres": "serviceconnector-passwordless", "postgres-flexible": "serviceconnector-passwordless",
+        "mysql-flexible": "serviceconnector-passwordless", "sql": "serviceconnector-passwordless"}},
+        "spring": {"connection": {"create": {"postgres": "serviceconnector-passwordless",
+        "postgres-flexible": "serviceconnector-passwordless", "mysql-flexible": "serviceconnector-passwordless",
+        "sql": "serviceconnector-passwordless"}}, "create": "spring", "list-marketplace-plan":
+        "spring", "list-support-server-versions": "spring", "update": "spring", "delete":
+        "spring", "start": "spring", "stop": "spring", "list": "spring", "show": "spring",
+        "flush-virtualnetwork-dns-settings": "spring", "test-endpoint": {"enable":
+        "spring", "disable": "spring", "renew-key": "spring", "list": "spring"}, "eureka-server":
+        {"show": "spring", "enable": "spring", "disable": "spring"}, "config-server":
+        {"set": "spring", "clear": "spring", "show": "spring", "enable": "spring",
+        "disable": "spring", "create": "spring", "delete": "spring", "bind": "spring",
+        "unbind": "spring", "git": {"set": "spring", "repo": {"add": "spring", "remove":
+        "spring", "update": "spring", "list": "spring"}}}, "app": {"create": "spring",
+        "update": "spring", "set-deployment": "spring", "unset-deployment": "spring",
+        "scale": "spring", "show-deploy-log": "spring", "delete": "spring", "list":
+        "spring", "show": "spring", "start": "spring", "stop": "spring", "restart":
+        "spring", "logs": "spring", "append-persistent-storage": "spring", "append-loaded-public-certificate":
+        "spring", "connect": "spring", "enable-remote-debugging": "spring", "disable-remote-debugging":
+        "spring", "get-remote-debugging-config": "spring", "identity": {"assign":
+        "spring", "remove": "spring", "force-set": "spring", "show": "spring"}, "log":
+        {"tail": "spring"}, "deploy": "spring", "deployment": {"create": "spring",
+        "list": "spring", "show": "spring", "delete": "spring", "generate-heap-dump":
+        "spring", "generate-thread-dump": "spring", "start-jfr": "spring"}, "binding":
+        {"list": "spring", "show": "spring", "cosmos": {"add": "spring", "update":
+        "spring"}, "mysql": {"add": "spring", "update": "spring"}, "redis": {"add":
+        "spring", "update": "spring"}, "remove": "spring"}, "custom-domain": {"bind":
+        "spring", "show": "spring", "list": "spring", "update": "spring", "unbind":
+        "spring"}}, "storage": {"list": "spring", "show": "spring", "add": "spring",
+        "update": "spring", "remove": "spring", "list-persistent-storage": "spring"},
+        "certificate": {"add": "spring", "update": "spring", "show": "spring", "list":
+        "spring", "remove": "spring", "list-reference-app": "spring"}, "app-insights":
+        {"update": "spring", "show": "spring"}, "service-registry": {"show": "spring",
+        "bind": "spring", "unbind": "spring", "create": "spring", "delete": "spring"},
+        "dev-tool": {"show": "spring", "create": "spring", "update": "spring", "delete":
+        "spring"}, "application-live-view": {"show": "spring", "create": "spring",
+        "delete": "spring"}, "application-configuration-service": {"clear": "spring",
+        "show": "spring", "bind": "spring", "unbind": "spring", "create": "spring",
+        "update": "spring", "delete": "spring", "config": {"show": "spring"}, "git":
+        {"repo": {"add": "spring", "update": "spring", "remove": "spring", "list":
+        "spring"}}}, "gateway": {"show": "spring", "update": "spring", "clear": "spring",
+        "create": "spring", "delete": "spring", "restart": "spring", "sync-cert":
+        "spring", "custom-domain": {"show": "spring", "list": "spring", "bind": "spring",
+        "unbind": "spring", "update": "spring"}, "route-config": {"show": "spring",
+        "list": "spring", "create": "spring", "update": "spring", "remove": "spring"}},
+        "api-portal": {"show": "spring", "update": "spring", "clear": "spring", "create":
+        "spring", "delete": "spring", "custom-domain": {"show": "spring", "list":
+        "spring", "bind": "spring", "unbind": "spring", "update": "spring"}}, "application-accelerator":
+        {"show": "spring", "create": "spring", "delete": "spring", "predefined-accelerator":
+        {"list": "spring", "show": "spring", "disable": "spring", "enable": "spring"},
+        "customized-accelerator": {"list": "spring", "show": "spring", "create": "spring",
+        "update": "spring", "sync-cert": "spring", "delete": "spring"}}, "apm": {"create":
+        "spring", "update": "spring", "show": "spring", "list": "spring", "delete":
+        "spring", "list-support-types": "spring", "list-enabled-globally": "spring",
+        "enable-globally": "spring", "disable-globally": "spring"}, "build-service":
+        {"builder": {"create": "spring", "update": "spring", "show": "spring", "show-deployments":
+        "spring", "delete": "spring", "buildpack-binding": {"create": "spring", "set":
+        "spring", "show": "spring", "list": "spring", "delete": "spring"}}, "build":
+        {"create": "spring", "update": "spring", "show": "spring", "list": "spring",
+        "delete": "spring", "result": {"show": "spring", "list": "spring"}}, "update":
+        "spring", "show": "spring"}, "container-registry": {"create": "spring", "update":
+        "spring", "show": "spring", "list": "spring", "delete": "spring"}, "component":
+        {"logs": "spring", "list": "spring", "instance": {"list": "spring"}}, "private-dns-zone":
+        {"add": "spring", "update": "spring", "clean": "spring"}, "job": {"create":
+        "spring", "update": "spring", "delete": "spring", "show": "spring", "list":
+        "spring", "deploy": "spring", "start": "spring", "logs": "spring", "execution":
+        {"cancel": "spring", "show": "spring", "list": "spring", "instance": {"list":
+        "spring"}}}}, "spring-cloud": {"connection": {"create": {"postgres": "serviceconnector-passwordless",
+        "postgres-flexible": "serviceconnector-passwordless", "mysql-flexible": "serviceconnector-passwordless",
+        "sql": "serviceconnector-passwordless"}}, "create": "spring-cloud", "update":
+        "spring-cloud", "delete": "spring-cloud", "start": "spring-cloud", "stop":
+        "spring-cloud", "list": "spring-cloud", "show": "spring-cloud", "test-endpoint":
+        {"enable": "spring-cloud", "disable": "spring-cloud", "renew-key": "spring-cloud",
+        "list": "spring-cloud"}, "config-server": {"set": "spring-cloud", "clear":
+        "spring-cloud", "show": "spring-cloud", "git": {"set": "spring-cloud", "repo":
+        {"add": "spring-cloud", "remove": "spring-cloud", "update": "spring-cloud",
+        "list": "spring-cloud"}}}, "app": {"create": "spring-cloud", "update": "spring-cloud",
+        "deploy": "spring-cloud", "set-deployment": "spring-cloud", "unset-deployment":
+        "spring-cloud", "scale": "spring-cloud", "show-deploy-log": "spring-cloud",
+        "delete": "spring-cloud", "list": "spring-cloud", "show": "spring-cloud",
+        "start": "spring-cloud", "stop": "spring-cloud", "restart": "spring-cloud",
+        "logs": "spring-cloud", "append-persistent-storage": "spring-cloud", "append-loaded-public-certificate":
+        "spring-cloud", "identity": {"assign": "spring-cloud", "remove": "spring-cloud",
+        "force-set": "spring-cloud", "show": "spring-cloud"}, "log": {"tail": "spring-cloud"},
+        "deployment": {"create": "spring-cloud", "list": "spring-cloud", "show": "spring-cloud",
+        "delete": "spring-cloud", "generate-heap-dump": "spring-cloud", "generate-thread-dump":
+        "spring-cloud", "start-jfr": "spring-cloud"}, "binding": {"list": "spring-cloud",
+        "show": "spring-cloud", "cosmos": {"add": "spring-cloud", "update": "spring-cloud"},
+        "mysql": {"add": "spring-cloud", "update": "spring-cloud"}, "redis": {"add":
+        "spring-cloud", "update": "spring-cloud"}, "remove": "spring-cloud"}, "custom-domain":
+        {"bind": "spring-cloud", "show": "spring-cloud", "list": "spring-cloud", "update":
+        "spring-cloud", "unbind": "spring-cloud"}}, "storage": {"list": "spring-cloud",
+        "show": "spring-cloud", "add": "spring-cloud", "update": "spring-cloud", "remove":
+        "spring-cloud", "list-persistent-storage": "spring-cloud"}, "certificate":
+        {"add": "spring-cloud", "show": "spring-cloud", "list": "spring-cloud", "remove":
+        "spring-cloud", "list-reference-app": "spring-cloud"}, "app-insights": {"update":
+        "spring-cloud", "show": "spring-cloud"}, "service-registry": {"show": "spring-cloud",
+        "bind": "spring-cloud", "unbind": "spring-cloud"}, "application-configuration-service":
+        {"clear": "spring-cloud", "show": "spring-cloud", "bind": "spring-cloud",
+        "unbind": "spring-cloud", "git": {"repo": {"add": "spring-cloud", "update":
+        "spring-cloud", "remove": "spring-cloud", "list": "spring-cloud"}}}, "gateway":
+        {"show": "spring-cloud", "update": "spring-cloud", "clear": "spring-cloud",
+        "custom-domain": {"show": "spring-cloud", "list": "spring-cloud", "bind":
+        "spring-cloud", "unbind": "spring-cloud", "update": "spring-cloud"}, "route-config":
+        {"show": "spring-cloud", "list": "spring-cloud", "create": "spring-cloud",
+        "update": "spring-cloud", "remove": "spring-cloud"}}, "api-portal": {"show":
+        "spring-cloud", "update": "spring-cloud", "clear": "spring-cloud", "custom-domain":
+        {"show": "spring-cloud", "list": "spring-cloud", "bind": "spring-cloud", "unbind":
+        "spring-cloud", "update": "spring-cloud"}}, "build-service": {"builder": {"create":
+        "spring-cloud", "update": "spring-cloud", "show": "spring-cloud", "delete":
+        "spring-cloud", "buildpack-binding": {"create": "spring-cloud", "set": "spring-cloud",
+        "show": "spring-cloud", "list": "spring-cloud", "delete": "spring-cloud"}}}},
+        "site-recovery": {"recovery-plan": {"create": "site-recovery", "delete": "site-recovery",
+        "list": "site-recovery", "show": "site-recovery", "update": "site-recovery"},
+        "protection-container": {"create": "site-recovery", "list": "site-recovery",
+        "remove": "site-recovery", "show": "site-recovery", "switch-protection": "site-recovery",
+        "update": "site-recovery", "mapping": {"create": "site-recovery", "delete":
+        "site-recovery", "list": "site-recovery", "remove": "site-recovery", "show":
+        "site-recovery", "update": "site-recovery"}}, "protected-item": {"create":
+        "site-recovery", "delete": "site-recovery", "failover-commit": "site-recovery",
+        "list": "site-recovery", "planned-failover": "site-recovery", "remove": "site-recovery",
+        "reprotect": "site-recovery", "show": "site-recovery", "unplanned-failover":
+        "site-recovery", "update": "site-recovery"}, "policy": {"create": "site-recovery",
+        "delete": "site-recovery", "list": "site-recovery", "show": "site-recovery",
+        "update": "site-recovery"}, "protectable-item": {"list": "site-recovery",
+        "show": "site-recovery"}, "replication-eligibility": {"list": "site-recovery",
+        "show-default": "site-recovery"}, "recovery-services-provider": {"list": "site-recovery"},
+        "vault": {"list-appliance": "site-recovery", "list-migration-item": "site-recovery",
+        "list-network": "site-recovery", "list-network-mapping": "site-recovery",
+        "list-protected-item": "site-recovery", "list-protection-container": "site-recovery",
+        "list-protection-container-mapping": "site-recovery", "list-recovery-services-provider":
+        "site-recovery", "list-storage-classification": "site-recovery", "list-storage-classification-mapping":
+        "site-recovery", "list-v-center": "site-recovery", "show-supported-operating-system":
+        "site-recovery", "health": {"refresh-default": "site-recovery", "show": "site-recovery"}},
+        "logical-network": {"list": "site-recovery", "show": "site-recovery"}, "event":
+        {"list": "site-recovery", "show": "site-recovery"}, "alert-setting": {"create":
+        "site-recovery", "list": "site-recovery", "show": "site-recovery", "update":
+        "site-recovery"}, "vmware-site": {"machine": {"list": "site-recovery"}, "run-as-account":
+        {"list": "site-recovery"}}, "network": {"list": "site-recovery", "show": "site-recovery",
+        "mapping": {"create": "site-recovery", "delete": "site-recovery", "list":
+        "site-recovery", "show": "site-recovery", "update": "site-recovery"}}, "fabric":
+        {"create": "site-recovery", "delete": "site-recovery", "list": "site-recovery",
+        "remove": "site-recovery", "show": "site-recovery", "update": "site-recovery"},
+        "job": {"cancel": "site-recovery", "export": "site-recovery", "list": "site-recovery",
+        "restart": "site-recovery", "resume": "site-recovery", "show": "site-recovery"}},
+        "ssh": {"vm": "ssh", "config": "ssh", "cert": "ssh", "arc": "ssh"}, "stack-hci":
+        {"arc-setting": {"consent-and-install-default-extension": "stack-hci", "create":
+        "stack-hci", "create-identity": "stack-hci", "delete": "stack-hci", "generate-password":
+        "stack-hci", "initialize-disable-proces": "stack-hci", "list": "stack-hci",
+        "show": "stack-hci", "update": "stack-hci", "wait": "stack-hci"}, "cluster":
+        {"create": "stack-hci", "create-identity": "stack-hci", "delete": "stack-hci",
+        "extend-software-assurance-benefit": "stack-hci", "list": "stack-hci", "show":
+        "stack-hci", "update": "stack-hci", "wait": "stack-hci", "identity": {"assign":
+        "stack-hci", "remove": "stack-hci"}}, "extension": {"create": "stack-hci",
+        "delete": "stack-hci", "list": "stack-hci", "show": "stack-hci", "wait": "stack-hci"}},
+        "stack-hci-vm": {"image": {"list": "stack-hci-vm", "create": "stack-hci-vm",
+        "update": "stack-hci-vm", "delete": "stack-hci-vm", "show": "stack-hci-vm"},
+        "network": {"nic": {"list": "stack-hci-vm", "create": "stack-hci-vm", "update":
+        "stack-hci-vm", "delete": "stack-hci-vm", "show": "stack-hci-vm"}, "lnet":
+        {"list": "stack-hci-vm", "create": "stack-hci-vm", "update": "stack-hci-vm",
+        "delete": "stack-hci-vm", "show": "stack-hci-vm"}, "nsg": {"list": "stack-hci-vm",
+        "create": "stack-hci-vm", "update": "stack-hci-vm", "delete": "stack-hci-vm",
+        "show": "stack-hci-vm", "rule": {"list": "stack-hci-vm", "create": "stack-hci-vm",
+        "update": "stack-hci-vm", "delete": "stack-hci-vm", "show": "stack-hci-vm"}}},
+        "disk": {"list": "stack-hci-vm", "create": "stack-hci-vm", "update": "stack-hci-vm",
+        "delete": "stack-hci-vm", "show": "stack-hci-vm", "attach": "stack-hci-vm",
+        "detach": "stack-hci-vm"}, "list": "stack-hci-vm", "create": "stack-hci-vm",
+        "update": "stack-hci-vm", "delete": "stack-hci-vm", "show": "stack-hci-vm",
+        "start": "stack-hci-vm", "stop": "stack-hci-vm", "restart": "stack-hci-vm",
+        "pause": "stack-hci-vm", "save": "stack-hci-vm", "nic": {"add": "stack-hci-vm",
+        "remove": "stack-hci-vm"}, "storagepath": {"list": "stack-hci-vm", "create":
+        "stack-hci-vm", "update": "stack-hci-vm", "delete": "stack-hci-vm", "show":
+        "stack-hci-vm"}}, "standby-container-group-pool": {"create": "standbypool",
+        "delete": "standbypool", "list": "standbypool", "show": "standbypool", "update":
+        "standbypool", "wait": "standbypool"}, "standby-vm-pool": {"create": "standbypool",
+        "delete": "standbypool", "list": "standbypool", "show": "standbypool", "update":
+        "standbypool", "wait": "standbypool", "vm": {"list": "standbypool"}}, "staticwebapp":
+        {"dbconnection": {"create": "staticwebapp", "show": "staticwebapp", "delete":
+        "staticwebapp"}}, "storage-actions": {"task": {"create": "storage-actions",
+        "delete": "storage-actions", "list": "storage-actions", "list-assignment":
+        "storage-actions", "list-report": "storage-actions", "preview-action": "storage-actions",
+        "show": "storage-actions", "update": "storage-actions", "wait": "storage-actions"}},
+        "storage": {"blob": {"delete": "storage-blob-preview", "generate-sas": "storage-blob-preview",
+        "set-tier": "storage-blob-preview", "show": "storage-blob-preview", "copy":
+        {"start": "storage-blob-preview"}, "filter": "storage-blob-preview", "service-properties":
+        {"update": "storage-blob-preview"}, "tag": {"list": "storage-blob-preview",
+        "set": "storage-blob-preview"}, "access": {"set": "storage-preview", "update":
+        "storage-preview", "show": "storage-preview"}, "directory": {"create": "storage-preview",
+        "delete": "storage-preview", "move": "storage-preview", "show": "storage-preview",
+        "list": "storage-preview", "exists": "storage-preview", "metadata": {"show":
+        "storage-preview", "update": "storage-preview"}, "upload": "storage-preview",
+        "download": "storage-preview", "access": {"set": "storage-preview", "update":
+        "storage-preview", "show": "storage-preview"}}}, "container": {"generate-sas":
+        "storage-blob-preview"}, "account": {"migration": {"show": "storage-preview",
+        "start": "storage-preview"}, "create": "storage-preview", "update": "storage-preview"},
+        "azcopy": {"blob": {"upload": "storage-preview", "download": "storage-preview",
+        "delete": "storage-preview", "sync": "storage-preview"}, "run-command": "storage-preview"},
+        "share": {"list-handle": "storage-preview", "close-handle": "storage-preview"},
+        "directory": {"create": "storage-preview", "delete": "storage-preview", "show":
+        "storage-preview", "exists": "storage-preview", "metadata": {"show": "storage-preview",
+        "update": "storage-preview"}, "list": "storage-preview"}, "file": {"list":
+        "storage-preview", "delete": "storage-preview", "delete-batch": "storage-preview",
+        "resize": "storage-preview", "url": "storage-preview", "generate-sas": "storage-preview",
+        "show": "storage-preview", "update": "storage-preview", "exists": "storage-preview",
+        "metadata": {"show": "storage-preview", "update": "storage-preview"}, "copy":
+        {"start": "storage-preview", "cancel": "storage-preview", "start-batch": "storage-preview"},
+        "upload": "storage-preview", "upload-batch": "storage-preview", "download":
+        "storage-preview", "download-batch": "storage-preview"}}, "storage-mover":
+        {"create": "storage-mover", "delete": "storage-mover", "list": "storage-mover",
+        "show": "storage-mover", "update": "storage-mover", "wait": "storage-mover",
+        "endpoint": {"delete": "storage-mover", "list": "storage-mover", "show": "storage-mover",
+        "wait": "storage-mover", "create-for-storage-container": "storage-mover",
+        "create-for-storage-smb-file-share": "storage-mover", "create-for-nfs": "storage-mover",
+        "create-for-smb": "storage-mover", "update-for-storage-container": "storage-mover",
+        "update-for-storage-smb-file-share": "storage-mover", "update-for-nfs": "storage-mover",
+        "update-for-smb": "storage-mover"}, "job-definition": {"create": "storage-mover",
+        "delete": "storage-mover", "list": "storage-mover", "show": "storage-mover",
+        "start-job": "storage-mover", "stop-job": "storage-mover", "update": "storage-mover",
+        "wait": "storage-mover"}, "agent": {"list": "storage-mover", "show": "storage-mover",
+        "unregister": "storage-mover", "update": "storage-mover", "wait": "storage-mover"},
+        "project": {"create": "storage-mover", "delete": "storage-mover", "list":
+        "storage-mover", "show": "storage-mover", "update": "storage-mover", "wait":
+        "storage-mover"}, "job-run": {"list": "storage-mover", "show": "storage-mover"}},
+        "storagesync": {"check-name-availability": "storagesync", "sync-group": {"cloud-endpoint":
+        {"trigger-change-detection": "storagesync", "create": "storagesync", "delete":
+        "storagesync", "show": "storagesync", "list": "storagesync", "wait": "storagesync"},
+        "create": "storagesync", "delete": "storagesync", "show": "storagesync", "list":
+        "storagesync", "server-endpoint": {"create": "storagesync", "update": "storagesync",
+        "delete": "storagesync", "show": "storagesync", "list": "storagesync", "wait":
+        "storagesync"}}, "private-endpoint-connection": {"list": "storagesync"}, "create":
+        "storagesync", "delete": "storagesync", "show": "storagesync", "list": "storagesync",
+        "registered-server": {"delete": "storagesync", "show": "storagesync", "list":
+        "storagesync", "wait": "storagesync"}}, "stream-analytics": {"cluster": {"list":
+        "stream-analytics", "show": "stream-analytics", "create": "stream-analytics",
+        "update": "stream-analytics", "delete": "stream-analytics", "list-streaming-job":
+        "stream-analytics", "wait": "stream-analytics"}, "function": {"list": "stream-analytics",
+        "show": "stream-analytics", "create": "stream-analytics", "update": "stream-analytics",
+        "delete": "stream-analytics", "test": "stream-analytics", "wait": "stream-analytics",
+        "inspect": "stream-analytics"}, "input": {"list": "stream-analytics", "show":
+        "stream-analytics", "create": "stream-analytics", "update": "stream-analytics",
+        "delete": "stream-analytics", "test": "stream-analytics", "wait": "stream-analytics"},
+        "job": {"list": "stream-analytics", "show": "stream-analytics", "create":
+        "stream-analytics", "update": "stream-analytics", "delete": "stream-analytics",
+        "scale": "stream-analytics", "start": "stream-analytics", "stop": "stream-analytics",
+        "wait": "stream-analytics"}, "output": {"list": "stream-analytics", "show":
+        "stream-analytics", "create": "stream-analytics", "update": "stream-analytics",
+        "delete": "stream-analytics", "test": "stream-analytics", "wait": "stream-analytics"},
+        "private-endpoint": {"list": "stream-analytics", "show": "stream-analytics",
+        "create": "stream-analytics", "delete": "stream-analytics", "wait": "stream-analytics"},
+        "subscription": {"inspect": "stream-analytics"}, "transformation": {"show":
+        "stream-analytics", "create": "stream-analytics", "update": "stream-analytics"}},
+        "support": {"no-subscription": {"file-workspace": {"create": "support", "show":
+        "support"}, "chat-transcript": {"list": "support", "show": "support"}, "communication":
+        {"create": "support", "list": "support", "show": "support"}, "tickets": {"create":
+        "support", "list": "support", "show": "support", "update": "support"}, "file":
+        {"list": "support", "show": "support", "upload": "support"}}, "services":
+        {"list": "support", "show": "support", "problem-classifications": {"list":
+        "support", "show": "support"}}, "in-subscription": {"file-workspace": {"create":
+        "support", "show": "support"}, "chat-transcript": {"list": "support", "show":
+        "support"}, "communication": {"create": "support", "list": "support", "show":
+        "support"}, "tickets": {"create": "support", "list": "support", "show": "support",
+        "update": "support"}, "file": {"list": "support", "show": "support", "upload":
+        "support"}}}, "tsi": {"environment": {"delete": "timeseriesinsights", "list":
+        "timeseriesinsights", "show": "timeseriesinsights", "gen1": {"create": "timeseriesinsights",
+        "update": "timeseriesinsights"}, "gen2": {"create": "timeseriesinsights",
+        "update": "timeseriesinsights"}}, "reference-data-set": {"create": "timeseriesinsights",
+        "delete": "timeseriesinsights", "list": "timeseriesinsights", "show": "timeseriesinsights",
+        "update": "timeseriesinsights"}, "access-policy": {"create": "timeseriesinsights",
+        "delete": "timeseriesinsights", "list": "timeseriesinsights", "show": "timeseriesinsights",
+        "update": "timeseriesinsights"}, "event-source": {"list": "timeseriesinsights",
+        "show": "timeseriesinsights", "delete": "timeseriesinsights", "eventhub":
+        {"create": "timeseriesinsights", "update": "timeseriesinsights"}, "iothub":
+        {"create": "timeseriesinsights", "update": "timeseriesinsights"}}}, "network-function":
+        {"traffic-collector": {"create": "traffic-collector", "delete": "traffic-collector",
+        "list": "traffic-collector", "show": "traffic-collector", "update": "traffic-collector",
+        "wait": "traffic-collector", "collector-policy": {"create": "traffic-collector",
+        "delete": "traffic-collector", "list": "traffic-collector", "show": "traffic-collector",
+        "update": "traffic-collector", "wait": "traffic-collector"}}}, "trustedsigning":
+        {"check-name-availability": "trustedsigning", "create": "trustedsigning",
+        "delete": "trustedsigning", "list": "trustedsigning", "show": "trustedsigning",
+        "update": "trustedsigning", "wait": "trustedsigning", "certificate-profile":
+        {"create": "trustedsigning", "delete": "trustedsigning", "list": "trustedsigning",
+        "show": "trustedsigning", "wait": "trustedsigning"}}, "vmware": {"location":
+        {"check-quota-availability": "vmware", "check-trial-availability": "vmware"},
+        "global-reach-connection": {"create": "vmware", "delete": "vmware", "list":
+        "vmware", "show": "vmware", "wait": "vmware"}, "placement-policy": {"list":
+        "vmware", "show": "vmware", "vm": {"create": "vmware", "update": "vmware",
+        "delete": "vmware"}, "vm-host": {"create": "vmware", "update": "vmware", "delete":
+        "vmware"}}, "workload-network": {"port-mirroring": {"create": "vmware", "delete":
+        "vmware", "list": "vmware", "show": "vmware", "update": "vmware", "wait":
+        "vmware"}, "dns-service": {"create": "vmware", "delete": "vmware", "list":
+        "vmware", "show": "vmware", "update": "vmware", "wait": "vmware"}, "dhcp":
+        {"list": "vmware", "show": "vmware", "relay": {"create": "vmware", "update":
+        "vmware", "delete": "vmware"}, "server": {"create": "vmware", "update": "vmware",
+        "delete": "vmware"}}, "segment": {"create": "vmware", "delete": "vmware",
+        "list": "vmware", "show": "vmware", "update": "vmware", "wait": "vmware"},
+        "dns-zone": {"create": "vmware", "delete": "vmware", "list": "vmware", "show":
+        "vmware", "update": "vmware", "wait": "vmware"}, "vm-group": {"create": "vmware",
+        "delete": "vmware", "list": "vmware", "show": "vmware", "update": "vmware",
+        "wait": "vmware"}, "public-ip": {"create": "vmware", "delete": "vmware", "list":
+        "vmware", "show": "vmware", "wait": "vmware"}, "vm": {"list": "vmware", "show":
+        "vmware"}, "gateway": {"list": "vmware", "show": "vmware"}}, "addon": {"list":
+        "vmware", "vr": {"create": "vmware", "update": "vmware", "show": "vmware",
+        "delete": "vmware"}, "hcx": {"create": "vmware", "update": "vmware", "show":
+        "vmware", "delete": "vmware"}, "srm": {"create": "vmware", "update": "vmware",
+        "show": "vmware", "delete": "vmware"}, "arc": {"create": "vmware", "update":
+        "vmware", "show": "vmware", "delete": "vmware"}}, "private-cloud": {"create":
+        "vmware", "delete": "vmware", "list": "vmware", "list-admin-credentials":
+        "vmware", "rotate-vcenter-password": "vmware", "show": "vmware", "update":
+        "vmware", "wait": "vmware", "identity-source": {"create": "vmware", "delete":
+        "vmware", "list": "vmware", "show": "vmware", "update": "vmware", "wait":
+        "vmware"}, "enable-cmk-encryption": "vmware", "disable-cmk-encryption": "vmware",
+        "rotate-nsxt-password": "vmware", "identity": {"assign": "vmware", "remove":
+        "vmware", "show": "vmware"}}, "script-cmdlet": {"list": "vmware", "show":
+        "vmware"}, "script-execution": {"delete": "vmware", "list": "vmware", "show":
+        "vmware", "wait": "vmware", "create": "vmware"}, "cloud-link": {"create":
+        "vmware", "delete": "vmware", "list": "vmware", "show": "vmware", "update":
+        "vmware"}, "authorization": {"create": "vmware", "delete": "vmware", "list":
+        "vmware", "show": "vmware", "wait": "vmware"}, "hcx-enterprise-site": {"create":
+        "vmware", "delete": "vmware", "list": "vmware", "show": "vmware"}, "datastore":
+        {"delete": "vmware", "list": "vmware", "show": "vmware", "wait": "vmware",
+        "netapp-volume": {"create": "vmware"}, "disk-pool-volume": {"create": "vmware"}},
+        "cluster": {"create": "vmware", "delete": "vmware", "list": "vmware", "list-zones":
+        "vmware", "show": "vmware", "update": "vmware", "wait": "vmware"}, "vm": {"list":
+        "vmware", "restrict-movement": "vmware", "show": "vmware"}, "script-package":
+        {"list": "vmware", "show": "vmware"}}, "webpubsub": {"create": "webpubsub",
+        "delete": "webpubsub", "list": "webpubsub", "show": "webpubsub", "restart":
+        "webpubsub", "update": "webpubsub", "list-usage": "webpubsub", "list-skus":
+        "webpubsub", "key": {"show": "webpubsub", "regenerate": "webpubsub"}, "network-rule":
+        {"show": "webpubsub", "update": "webpubsub"}, "hub": {"delete": "webpubsub",
+        "update": "webpubsub", "create": "webpubsub", "show": "webpubsub", "list":
+        "webpubsub"}, "client": {"start": "webpubsub"}, "service": {"broadcast": "webpubsub",
+        "connection": {"exist": "webpubsub", "close": "webpubsub", "send": "webpubsub"},
+        "group": {"add-connection": "webpubsub", "remove-connection": "webpubsub",
+        "send": "webpubsub", "add-user": "webpubsub", "remove-user": "webpubsub"},
+        "user": {"send": "webpubsub", "exist": "webpubsub"}, "permission": {"grant":
+        "webpubsub", "revoke": "webpubsub", "check": "webpubsub"}}, "replica": {"create":
+        "webpubsub", "list": "webpubsub", "show": "webpubsub", "delete": "webpubsub"}},
+        "workloads": {"sap-availability-zone-detail": "workloads", "sap-disk-configuration":
+        "workloads", "sap-sizing-recommendation": "workloads", "sap-supported-sku":
+        "workloads", "sap-application-server-instance": {"list": "workloads", "show":
+        "workloads", "start": "workloads", "stop": "workloads", "update": "workloads",
+        "wait": "workloads"}, "sap-central-instance": {"list": "workloads", "show":
+        "workloads", "start": "workloads", "stop": "workloads", "update": "workloads",
+        "wait": "workloads"}, "sap-database-instance": {"list": "workloads", "show":
+        "workloads", "start": "workloads", "stop": "workloads", "update": "workloads",
+        "wait": "workloads"}, "monitor": {"create": "workloads", "delete": "workloads",
+        "list": "workloads", "show": "workloads", "update": "workloads", "wait": "workloads",
+        "provider-instance": {"create": "workloads", "delete": "workloads", "list":
+        "workloads", "show": "workloads", "wait": "workloads"}, "sap-landscape-monitor":
+        {"create": "workloads", "delete": "workloads", "list": "workloads", "show":
+        "workloads", "update": "workloads"}}, "sap-virtual-instance": {"create": "workloads",
+        "delete": "workloads", "list": "workloads", "show": "workloads", "start":
+        "workloads", "stop": "workloads", "update": "workloads", "wait": "workloads"}}}'
+    headers:
+      content-length:
+      - '172367'
+      content-md5:
+      - XJstcMV5L3rPv906Oeud2w==
+      content-type:
+      - application/json
+      date:
+      - Wed, 10 Jul 2024 08:55:54 GMT
+      etag:
+      - '0x8DCA03E132B3A76'
+      last-modified:
+      - Tue, 09 Jul 2024 17:39:24 GMT
+      server:
+      - Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0
+      x-ms-blob-type:
+      - BlockBlob
+      x-ms-lease-status:
+      - unlocked
+      x-ms-version:
+      - '2009-09-19'
+    status:
+      code: 200
+      message: OK
+version: 1
