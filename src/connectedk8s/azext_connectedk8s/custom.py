@@ -48,7 +48,7 @@ import azext_connectedk8s._clientproxyutils as clientproxyutils
 import azext_connectedk8s._troubleshootutils as troubleshootutils
 import azext_connectedk8s._precheckutils as precheckutils
 from glob import glob
-from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity, ListClusterUserCredentialProperties
+from .vendored_sdks.preview_2024_07_01.models import ConnectedCluster, ConnectedClusterIdentity, ListClusterUserCredentialProperties
 from .vendored_sdks.preview_2022_10_01.models import ConnectedCluster as ConnectedClusterPreview
 from .vendored_sdks.preview_2022_10_01.models import ConnectedClusterPatch as ConnectedClusterPatchPreview
 import sys
@@ -65,7 +65,7 @@ logger = get_logger(__name__)
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='generic', infrastructure='generic',
                         disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600", enable_private_link=None, private_link_scope_resource_id=None,
-                        distribution_version=None, azure_hybrid_benefit=None, skip_ssl_verification=False, yes=False, container_log_path=None, connection_type="direct"):
+                        distribution_version=None, azure_hybrid_benefit=None, skip_ssl_verification=False, yes=False, container_log_path=None, enable_gateway=False, gateway_resource_id=""):
     logger.warning("This operation might take a while...\n")
 
     # changing cli config to push telemetry in 1 hr interval
@@ -137,10 +137,19 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None:
         client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
 
-    # Set preview client if the connection-type is provided. (TODO: To test whether overriding the client factory to 2024 will retain the 2023 private link feature as in the line above)
-    if connection_type is not None and connection_type == "gateway":
+    # Set preview client to be July 01 2024 if the enable_gateway is enabled. 
+    # (TODO: To test whether overriding the client factory to 2024 will retain the 2023 private link feature as in the line above)
+    if enable_gateway:
         client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
     
+    # Check if the provided Gateway ARM ID is valid 
+    if enable_gateway is True:
+        gateway_armid_pattern = r"^/subscriptions/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/resourceGroups/[a-zA-Z0-9_-]+/providers/Microsoft\.HybridCompute/gateways/[a-zA-Z0-9_-]+$"
+        if re.match(gateway_armid_pattern, gateway_resource_id): 
+            logger.warning("The provided Gateway ArmID is valid.")
+        else:
+            raise InvalidArgumentValueError(str.format(consts.Gateway_ArmID_Is_Invalid, gateway_resource_id))
+
     # Checking whether optional extra values file has been provided.
     values_file = utils.get_values_file()
     if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
