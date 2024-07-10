@@ -503,10 +503,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     
     # Add 2nd long running operation to wait for Agent State to reach terminal stage with a default 20 minute timeout window 
     # TODO: Update poll_for_agent_state method to check for agent state and not provisioning state when feedback loop is implemented
-    print("Waiting for Agent State to reach terminal state")
-    if not poll_for_agent_state(cmd, resource_group_name, cluster_name):
-        print("Timed out waiting for Agent State to reach terminal state")
-        return False
+    if enable_oidc_issuer or enable_workload_identity:
+        print("Waiting for Agent State to reach terminal state")
+        if not poll_for_agent_state(cmd, resource_group_name, cluster_name):
+            print("Timed out waiting for Agent State to reach terminal state")
+            return False
     
     return put_cc_response
 
@@ -1384,10 +1385,11 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     
     # Add 2nd long running operation to wait for Agent State to reach terminal stage with a default 20 minute timeout window 
     # TODO: Update poll_for_agent_state method to check for agent state and not provisioning state when feedback loop is implemented
-    print("Hold for Agent State to reach terminal state")
-    if not poll_for_agent_state(cmd, resource_group_name, cluster_name):
-        print("Timed out waiting for Agent State to reach terminal state")
-        return False
+    if enable_oidc_issuer or enable_workload_identity:
+        print("Hold for Agent State to reach terminal state")
+        if not poll_for_agent_state(cmd, resource_group_name, cluster_name):
+            print("Timed out waiting for Agent State to reach terminal state")
+            return False
     
     return reput_cc_response
 
