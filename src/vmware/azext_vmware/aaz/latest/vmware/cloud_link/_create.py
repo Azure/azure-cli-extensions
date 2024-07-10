@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create a cloud link in a private cloud
 
     :example: Create a cloud link.
-        az vmware cloud-link create --resource-group group1 --private-cloud cloud1 --name cloudLink1 --linked-cloud "/subscriptions/12341234-1234-1234-1234-123412341234/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"
+        az vmware cloud-link create --resource-group group1 --private-cloud cloud1 --name cloudLink1 --linked-cloud "/subscriptions/12341234-1234-1234-1234-123412341234/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2
     """
 
     _aaz_info = {
-        "version": "2023-03-01",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/cloudlinks/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/cloudlinks/{}", "2023-09-01"],
         ]
     }
 
@@ -55,8 +55,11 @@ class Create(AAZCommand):
         )
         _args_schema.private_cloud = AAZStrArg(
             options=["-c", "--private-cloud"],
-            help="The name of the private cloud.",
+            help="Name of the private cloud",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[-\w\._]+$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -69,7 +72,6 @@ class Create(AAZCommand):
             options=["--linked-cloud"],
             arg_group="Properties",
             help="Identifier of the other private cloud participating in the link.",
-            required=True,
         )
         return cls._args_schema
 
@@ -158,7 +160,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -183,11 +185,11 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("linkedCloud", AAZStrType, ".linked_cloud", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("linkedCloud", AAZStrType, ".linked_cloud")
 
             return self.serialize_content(_content_value)
 
@@ -216,7 +218,11 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
+            )
+            _schema_on_200_201.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
             )
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
@@ -225,10 +231,31 @@ class Create(AAZCommand):
             properties = cls._schema_on_200_201.properties
             properties.linked_cloud = AAZStrType(
                 serialized_name="linkedCloud",
-                flags={"required": True},
             )
-            properties.status = AAZStrType(
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+            properties.status = AAZStrType()
+
+            system_data = cls._schema_on_200_201.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
             )
 
             return cls._schema_on_200_201

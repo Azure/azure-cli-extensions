@@ -17,19 +17,27 @@ interactions:
       ParameterSetName:
       - -g -c -n --linked-cloud
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks/cloudLink1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks/cloudLink1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks/cloudLink1","name":"cloudLink1","type":"Microsoft.AVS/privateClouds/cloudLinks","properties":{"status":"Active","linkedCloud":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '386'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:27:59 GMT
+      - Fri, 28 Jun 2024 20:04:30 GMT
       server:
       - Rocket
     status:
@@ -49,19 +57,27 @@ interactions:
       ParameterSetName:
       - -g -c
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks?api-version=2023-09-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks/cloudLink1","name":"cloudLink1","type":"Microsoft.AVS/privateClouds/cloudLinks","properties":{"status":"Active","linkedCloud":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"}}]}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '398'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:28:04 GMT
+      - Fri, 28 Jun 2024 20:04:32 GMT
       server:
       - Rocket
     status:
@@ -81,19 +97,27 @@ interactions:
       ParameterSetName:
       - -g -c -n
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks/cloudLink1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks/cloudLink1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks/cloudLink1","name":"cloudLink1","type":"Microsoft.AVS/privateClouds/cloudLinks","properties":{"status":"Active","linkedCloud":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '386'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:28:09 GMT
+      - Fri, 28 Jun 2024 20:04:35 GMT
       server:
       - Rocket
     status:
@@ -115,17 +139,27 @@ interactions:
       ParameterSetName:
       - -g -c -n --yes
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: DELETE
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks/cloudLink1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_hcx000001/providers/Microsoft.AVS/privateClouds/cloud1/cloudLinks/cloudLink1?api-version=2023-09-01
   response:
     body:
       string: ''
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '0'
+      content-type:
+      - application/json
       date:
-      - Wed, 20 Sep 2023 15:28:14 GMT
+      - Fri, 28 Jun 2024 20:04:37 GMT
       server:
       - Rocket
     status:

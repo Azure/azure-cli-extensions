@@ -19,9 +19,9 @@ class CheckTrialAvailability(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.avs/locations/{}/checktrialavailability", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.avs/locations/{}/checktrialavailability", "2023-09-01"],
         ]
     }
 
@@ -52,7 +52,7 @@ class CheckTrialAvailability(AAZCommand):
         _args_schema.sku = AAZStrArg(
             options=["--sku"],
             arg_group="Sku",
-            help="The name of the SKU.",
+            help="The name of the SKU. E.g. P3. It is typically a letter+number code",
         )
         return cls._args_schema
 
@@ -117,7 +117,7 @@ class CheckTrialAvailability(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -168,9 +168,7 @@ class CheckTrialAvailability(AAZCommand):
                 serialized_name="availableHosts",
                 flags={"read_only": True},
             )
-            _schema_on_200.status = AAZStrType(
-                flags={"read_only": True},
-            )
+            _schema_on_200.status = AAZStrType()
 
             return cls._schema_on_200
 

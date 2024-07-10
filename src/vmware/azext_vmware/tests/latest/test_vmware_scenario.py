@@ -55,13 +55,25 @@ class VmwareScenarioTest(ScenarioTest):
 
         # rotate passwords
         self.cmd('vmware private-cloud rotate-vcenter-password -g {rg} -c {privatecloud} --yes')
-        # self.cmd('vmware private-cloud rotate-nsxt-password')
+        self.cmd('vmware private-cloud rotate-nsxt-password -g {rg} -c {privatecloud} --yes')
 
         # update private cloud to changed default cluster size
         self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --cluster-size 4')
 
         # update private cloud to enable internet
         self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --internet Enabled')
+
+        # update private cloud to set vsan datastore name
+        self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --hosts [host1, host2, host3]')
+
+        # update private cloud to set management cluster hosts
+        self.cmd('vmware private-cloud update -g {rg} -n {privatecloud} --vsan-datastore-name test-name')
+
+        # list authorization
+        self.cmd('vmware authorization list -g {rg} -c {privatecloud}')
+
+        # show authorization
+        self.cmd('vmware authorization show -g {rg} -c {privatecloud} -n myauthname')
 
         # create authorization
         self.cmd('vmware authorization create -g {rg} -c {privatecloud} -n myauthname --express-route-id id')
@@ -82,9 +94,9 @@ class VmwareScenarioTest(ScenarioTest):
         self.assertEqual(count, 1, 'cluster count expected to be 1')
 
         # cluster create
-        self.cmd('vmware cluster create -g {rg} -c {privatecloud} -n {cluster} --sku av20 --size 3 --hosts {hosts}')
+        self.cmd('vmware cluster create -g {rg} -c {privatecloud} -n {cluster} --sku av20 --size 3 --hosts {hosts} --vsan-datastore-name datastore')
 
-        # cluster create without --hosts
+        # cluster create without --hosts and --vsan-datastore-name
         self.cmd('vmware cluster create -g {rg} -c {privatecloud} -n {cluster} --sku av20 --size 3')
 
         # cluster list should report 1

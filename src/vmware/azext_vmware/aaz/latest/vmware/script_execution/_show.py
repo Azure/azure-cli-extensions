@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/scriptexecutions/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/scriptexecutions/{}", "2023-09-01"],
         ]
     }
 
@@ -136,7 +136,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -176,7 +176,11 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
             )
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
@@ -199,7 +203,7 @@ class Show(AAZCommand):
             properties.information = AAZListType(
                 flags={"read_only": True},
             )
-            properties.named_outputs = AAZFreeFormDictType(
+            properties.named_outputs = AAZDictType(
                 serialized_name="namedOutputs",
             )
             properties.output = AAZListType()
@@ -237,6 +241,9 @@ class Show(AAZCommand):
             information = cls._schema_on_200.properties.information
             information.Element = AAZStrType()
 
+            named_outputs = cls._schema_on_200.properties.named_outputs
+            named_outputs.Element = AAZObjectType()
+
             output = cls._schema_on_200.properties.output
             output.Element = AAZStrType()
 
@@ -246,6 +253,26 @@ class Show(AAZCommand):
 
             warnings = cls._schema_on_200.properties.warnings
             warnings.Element = AAZStrType()
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
 
             return cls._schema_on_200
 
@@ -297,7 +324,9 @@ class _ShowHelper:
         )
 
         disc_credential = _schema_script_execution_parameter_read.discriminate_by("type", "Credential")
-        disc_credential.password = AAZStrType()
+        disc_credential.password = AAZStrType(
+            flags={"secret": True},
+        )
         disc_credential.username = AAZStrType()
 
         disc_secure_value = _schema_script_execution_parameter_read.discriminate_by("type", "SecureValue")

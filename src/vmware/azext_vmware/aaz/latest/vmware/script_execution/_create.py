@@ -16,9 +16,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/scriptexecutions/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/scriptexecutions/{}", "2023-09-01"],
         ]
     }
 
@@ -43,6 +43,9 @@ class Create(AAZCommand):
             options=["-c", "--private-cloud"],
             help="Name of the private cloud",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[-\w\._]+$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -70,7 +73,7 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Parameters that will be hidden/not visible to ARM, such as passwords and credentials",
         )
-        _args_schema.named_outputs = AAZFreeFormDictArg(
+        _args_schema.named_outputs = AAZDictArg(
             options=["--named-outputs"],
             arg_group="Properties",
             help="User-defined dictionary.",
@@ -100,12 +103,16 @@ class Create(AAZCommand):
             options=["--timeout"],
             arg_group="Properties",
             help="Time limit for execution",
-            required=True,
         )
 
         hidden_parameters = cls._args_schema.hidden_parameters
         hidden_parameters.Element = AAZObjectArg()
         cls._build_args_script_execution_parameter_create(hidden_parameters.Element)
+
+        named_outputs = cls._args_schema.named_outputs
+        named_outputs.Element = AAZObjectArg(
+            blank={},
+        )
 
         output = cls._args_schema.output
         output.Element = AAZStrArg()
@@ -145,7 +152,7 @@ class Create(AAZCommand):
         )
 
         credential = cls._args_script_execution_parameter_create.credential
-        credential.password = AAZStrArg(
+        credential.password = AAZPasswordArg(
             options=["password"],
             help="password for login",
         )
@@ -155,7 +162,7 @@ class Create(AAZCommand):
         )
 
         secure_value = cls._args_script_execution_parameter_create.secure_value
-        secure_value.secure_value = AAZStrArg(
+        secure_value.secure_value = AAZPasswordArg(
             options=["secure-value"],
             help="A secure value for the passed parameter, not to be stored in logs",
         )
@@ -256,7 +263,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -281,13 +288,13 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("failureReason", AAZStrType, ".failure_reason")
                 properties.set_prop("hiddenParameters", AAZListType, ".hidden_parameters")
-                properties.set_prop("namedOutputs", AAZFreeFormDictType, ".named_outputs")
+                properties.set_prop("namedOutputs", AAZDictType, ".named_outputs")
                 properties.set_prop("output", AAZListType, ".output")
                 properties.set_prop("parameters", AAZListType, ".parameters")
                 properties.set_prop("retention", AAZStrType, ".retention")
@@ -300,7 +307,7 @@ class Create(AAZCommand):
 
             named_outputs = _builder.get(".properties.namedOutputs")
             if named_outputs is not None:
-                named_outputs.set_anytype_elements(".")
+                named_outputs.set_elements(AAZObjectType, ".")
 
             output = _builder.get(".properties.output")
             if output is not None:
@@ -337,7 +344,11 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
+            )
+            _schema_on_200_201.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
             )
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
@@ -360,7 +371,7 @@ class Create(AAZCommand):
             properties.information = AAZListType(
                 flags={"read_only": True},
             )
-            properties.named_outputs = AAZFreeFormDictType(
+            properties.named_outputs = AAZDictType(
                 serialized_name="namedOutputs",
             )
             properties.output = AAZListType()
@@ -398,6 +409,9 @@ class Create(AAZCommand):
             information = cls._schema_on_200_201.properties.information
             information.Element = AAZStrType()
 
+            named_outputs = cls._schema_on_200_201.properties.named_outputs
+            named_outputs.Element = AAZObjectType()
+
             output = cls._schema_on_200_201.properties.output
             output.Element = AAZStrType()
 
@@ -407,6 +421,26 @@ class Create(AAZCommand):
 
             warnings = cls._schema_on_200_201.properties.warnings
             warnings.Element = AAZStrType()
+
+            system_data = cls._schema_on_200_201.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
 
             return cls._schema_on_200_201
 

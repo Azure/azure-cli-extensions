@@ -1,5 +1,19 @@
 # Release History
 
+## 7.0.0 (2024-06)
+
+- Update to AVS 2023-09-01 API
+- Add `az vmware datastore elastic-san-volume` command group
+- Add `az vmware iscsi-path` command group
+- Add `az vmware cloud-link wait` command
+- Add `--vsan-datastore-name` argument to `az vmware cluster create`
+- Add `--vsan-datastore-name` argument to `az vmware cluster update`
+- Add `--virtual-network-id` argument to `az vmware private-cloud create`
+- Add `--hosts`, `vsan-datastore-name`, `dns-zone-type` arguments to `az vmware private-cloud update`
+- Add `az vmware private-cloud rotate-nsxt-password`
+- [BREAKING CHANGE] Remove `--sku` argument from `az vmware cluster update` as sku cannot be modified after cluster creation
+- [BREAKING CHANGE] Add confirmation prompt to `az vmware script-execution create` if `--script-cmdlet-id` contains `scriptPackages/Microsoft.AVS.VMFS`, `scriptPackages/Microsoft.AVS.NFS`, or `scriptPackages/Microsoft.AVS.VVOLS`
+
 ## 6.0.1 (2023-12)
 
 - Fix `az vmware private-cloud list-admin-credentials` not returning `nsxtPassword` and `vcenterPassword`
