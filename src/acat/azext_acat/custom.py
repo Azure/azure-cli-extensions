@@ -349,12 +349,11 @@ class CreateAcatReportWebhook(_AcatCreateReportWebhook):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         from azure.cli.core.aaz import AAZListArg, AAZStrArg, AAZStrArgFormat
 
+        args_schema.payload_url._required = True
         args_schema.content_type._required = False
         args_schema.content_type._registered = False
         args_schema.events._required = False
         args_schema.events._registered = False
-        args_schema.payload_url._required = False
-        args_schema.payload_url._registered = False
         args_schema.send_all_events._required = False
         args_schema.send_all_events._registered = False
         args_schema.status._required = False
@@ -378,7 +377,6 @@ class CreateAcatReportWebhook(_AcatCreateReportWebhook):
             default=[],
         )
         args_schema.events_with_default.Element = AAZStrArg()
-        args_schema.payload_url._required = True
         args_schema.trigger_mode = AAZStrArg(
             options=["--trigger-mode"],
             arg_group="Properties",
