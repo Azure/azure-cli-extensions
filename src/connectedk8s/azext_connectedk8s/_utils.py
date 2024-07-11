@@ -654,8 +654,6 @@ def helm_install_release(resource_manager, chart_path, subscription_id, kubernet
         logger.warning("Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' to check if all the pods are in running state. A possible cause for pods stuck in pending state could be insufficient resources on the kubernetes cluster to onboard to arc.")
         raise CLIInternalError("Unable to install helm release: " + error_helm_install.decode("ascii"))
 
-# TODO: implement a new helm_release command where you just consume the dp_helm_values and run a for loop and end up creating the helm values command. 
-
 def get_release_namespace(kube_config, kube_context, helm_client_location, release_name='azure-arc'):
     cmd_helm_release = [helm_client_location, "list", "-a", "--all-namespaces", "--output", "json"]
     if kube_config:

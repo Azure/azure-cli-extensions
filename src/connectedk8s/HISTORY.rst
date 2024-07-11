@@ -3,8 +3,9 @@
 Release History
 ===============
 
-1.7.4
+1.8.0
 ++++++
+* New api version 2024-07-1-preview added
 * Adding functionality for workload identity feature.
 * Cluster create and update waits for agent state 
 

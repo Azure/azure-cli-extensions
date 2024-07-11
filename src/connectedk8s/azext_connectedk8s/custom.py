@@ -66,7 +66,7 @@ logger = get_logger(__name__)
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='generic', infrastructure='generic',
                         disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600", enable_private_link=None, private_link_scope_resource_id=None,
-                        distribution_version=None, azure_hybrid_benefit=None, skip_ssl_verification=False, yes=False, container_log_path=None, connection_type="direct",
+                        distribution_version=None, azure_hybrid_benefit=None, skip_ssl_verification=False, yes=False, container_log_path=None,
                         enable_oidc_issuer=False, enable_workload_identity=False, self_hosted_issuer=""):
     logger.warning("This operation might take a while...\n")
 
@@ -136,11 +136,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
     # Set preview client if latest preview properties are provided.
-    if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None:
-        client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
-
-    # Set preview client if the connection-type is provided. (TODO: To test whether overriding the client factory to 2024 will retain the 2023 private link feature as in the line above)
-    if connection_type is not None and connection_type == "gateway" or enable_workload_identity or enable_oidc_issuer:
+    if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None or enable_workload_identity or enable_oidc_issuer:
         client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
     
     # Checking whether optional extra values file has been provided.
@@ -223,9 +219,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
             if storage_space_available is False:
                 logger.warning("There is no storage space available on your device and hence not saving cluster \
                     diagnostic check logs on your device")
-
-            # TODO: Add DP health check call
-             
 
     except Exception as e:
         telemetry.set_exception(exception="An exception has occured while trying to execute pre-onboarding diagnostic \
@@ -1385,6 +1378,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     
     # Add 2nd long running operation to wait for Agent State to reach terminal stage with a default 20 minute timeout window 
     # TODO: Update poll_for_agent_state method to check for agent state and not provisioning state when feedback loop is implemented
+    # This condition will be hit after provisioning state 
     if enable_oidc_issuer or enable_workload_identity:
         print("Hold for Agent State to reach terminal state")
         if not poll_for_agent_state(cmd, resource_group_name, cluster_name):
