@@ -838,3 +838,18 @@ def get_metadata(arm_endpoint, api_version="2022-09-01"):
         print(msg, file=sys.stderr)
         print(f"Please ensure you have network connection. Error: {str(err)}", file=sys.stderr)
         arm_exception_handler(err, msg)
+
+def add_config_protected_settings(https_proxy, http_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings):
+    if container_log_path:
+        configuration_settings.setdefault("logging", {"container_log_path": container_log_path})
+    if any([https_proxy, http_proxy, no_proxy, proxy_cert]):
+        configuration_protected_settings.setdefault("proxy", {})
+        if https_proxy:
+            configuration_protected_settings["proxy"]["https_proxy"] = https_proxy
+        if http_proxy:
+            configuration_protected_settings["proxy"]["http_proxy"] = http_proxy
+        if no_proxy:
+            configuration_protected_settings["proxy"]["no_proxy"] = no_proxy
+        if proxy_cert:
+            configuration_protected_settings["proxy"]["proxy_cert"] = proxy_cert
+    return configuration_settings, configuration_protected_settings

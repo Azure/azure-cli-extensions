@@ -48,7 +48,7 @@ import azext_connectedk8s._clientproxyutils as clientproxyutils
 import azext_connectedk8s._troubleshootutils as troubleshootutils
 import azext_connectedk8s._precheckutils as precheckutils
 from glob import glob
-from .vendored_sdks.preview_2024_07_01.models import ConnectedCluster, ConnectedClusterIdentity, ListClusterUserCredentialProperties
+from .vendored_sdks.preview_2024_07_01.models import ConnectedCluster, ConnectedClusterIdentity, ListClusterUserCredentialProperties, ArcAgentryConfigurations, Gateway
 from .vendored_sdks.preview_2022_10_01.models import ConnectedCluster as ConnectedClusterPreview
 from .vendored_sdks.preview_2022_10_01.models import ConnectedClusterPatch as ConnectedClusterPatchPreview
 import sys
@@ -65,7 +65,8 @@ logger = get_logger(__name__)
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='generic', infrastructure='generic',
                         disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600", enable_private_link=None, private_link_scope_resource_id=None,
-                        distribution_version=None, azure_hybrid_benefit=None, skip_ssl_verification=False, yes=False, container_log_path=None, enable_gateway=False, gateway_resource_id=""):
+                        distribution_version=None, azure_hybrid_benefit=None, skip_ssl_verification=False, yes=False, container_log_path=None, enable_gateway=False, 
+                        gateway_resource_id="", configuration_settings=None, configuration_protected_settings=None):
     logger.warning("This operation might take a while...\n")
 
     # changing cli config to push telemetry in 1 hr interval
@@ -133,13 +134,23 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
+    configuration_settings, configuration_protected_settings = utils.add_config_protected_settings(http_proxy, https_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings)
+    arc_agent_configurations = None
+    if configuration_protected_settings is not None or configuration_settings is not None:
+        arc_agent_configurations = generate_arc_agent_configuration(configuration_settings, configuration_protected_settings)
+
     # Set preview client if latest preview properties are provided.
     if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None:
         client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
 
     # Set preview client to be July 01 2024 if the enable_gateway is enabled. 
     # (TODO: To test whether overriding the client factory to 2024 will retain the 2023 private link feature as in the line above)
+    gateway = None
     if enable_gateway:
+        gateway = Gateway(
+            enabled=True,
+            resource_id=gateway_resource_id
+        )
         client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
     
     # Check if the provided Gateway ARM ID is valid 
@@ -398,7 +409,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
                 cc = generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra,
                                               enable_private_link, private_link_scope_resource_id,
-                                              distribution_version, azure_hybrid_benefit)
+                                              distribution_version, azure_hybrid_benefit, arc_agent_configurations, gateway)
                 cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
                 cc_response = LongRunningOperation(cmd.cli_ctx)(cc_response)
                 # Disabling cluster-connect if private link is getting enabled
@@ -474,7 +485,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     # Generate request payload
     cc = generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra,
                                   enable_private_link, private_link_scope_resource_id, distribution_version,
-                                  azure_hybrid_benefit)
+                                  azure_hybrid_benefit, arc_agent_configurations, gateway)
 
     print("Azure resource provisioning has begun.")
     # Create connected cluster resource
@@ -870,8 +881,20 @@ def check_arm64_node(api_response):
                                            raise_error=False)
     return False
 
+def generate_arc_agent_configuration(configuration_settings, configuration_protected_settings):
+    arc_agent_configurations = []
+    for feature in set(list(configuration_settings.keys()) + list(configuration_protected_settings.keys())):
+        settings = configuration_settings.get(feature)
+        protected_settings = configuration_protected_settings.get(feature)
+        configuration = ArcAgentryConfigurations(
+            feature=feature,
+            settings=settings,
+            protected_settings=protected_settings
+        )
+        arc_agent_configurations.append(configuration)
+    return arc_agent_configurations
 
-def generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit):
+def generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit, arc_agent_configurations, gateway):
     # Create connected cluster resource object
     identity = ConnectedClusterIdentity(
         type="SystemAssigned"
@@ -886,6 +909,10 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
         distribution=kubernetes_distro,
         infrastructure=kubernetes_infra
     )
+    if arc_agent_configurations is not None:
+        cc.arc_agentry_configurations = arc_agent_configurations
+    if gateway is not None:
+        cc.gateway = gateway
 
     if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None:
         private_link_state = None

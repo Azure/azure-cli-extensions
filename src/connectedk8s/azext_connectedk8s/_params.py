@@ -13,6 +13,10 @@ from azext_connectedk8s._constants import Distribution_Enum_Values, Infrastructu
 from knack.arguments import (CLIArgumentType, CaseInsensitiveList)
 
 from ._validators import validate_private_link_properties
+from .action import (
+    AddConfigurationSettings,
+    AddConfigurationProtectedSettings,
+)
 
 features_types = CLIArgumentType(
     nargs='+',
@@ -53,6 +57,8 @@ def load_arguments(self, _):
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('enable_gateway', options_list=['--enable-gateway'], help='Pass this value to enable Arc Gateway.')
         c.argument('gateway_resource_id', options_list=['--gateway-resourceId'], help='ArmID of the Arc Gateway resource.')
+        c.argument('configuration_settings', options_list=['--configuration-settings', '--config'], action=AddConfigurationSettings, nargs='+', help='Configuration Settings as key=value pair.  Repeat parameter for each setting. Do not use this for secrets, as this value is returned in response.')
+        c.argument('configuration_protected_settings', options_list=['--config-protected-settings', '--config-protected'], action=AddConfigurationProtectedSettings, nargs='+', help='Configuration Protected Settings as key=value pair.  Repeat parameter for each setting.  Only the key is returned in response, the value is not.')
 
     with self.argument_context('connectedk8s update') as c:
         c.argument('tags', tags_type)
