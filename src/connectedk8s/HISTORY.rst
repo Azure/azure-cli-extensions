@@ -3,6 +3,18 @@
 Release History
 ===============
 
+1.7.3
+++++++
+* Skip helm archive download if helm is already installed.
+
+1.7.2
+++++++
+* Fixed Broken Import for Service Principal
+
+1.7.1
+++++++
+* Fixed PoP token for proxy command using service principal.
+
 1.7.0
 ++++++
 * Update helm binary download source.

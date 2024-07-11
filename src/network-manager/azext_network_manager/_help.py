@@ -45,65 +45,6 @@ helps['network manager update'] = """
             subscriptions: List of subscriptions.
 """
 
-helps['network manager connect-config create'] = """
-    type: command
-    short-summary: "Create a new network manager connectivity configuration."
-    parameters:
-      - name: --applies-to-groups
-        short-summary: "Groups for configuration"
-        long-summary: |
-            Usage: --applies-to-groups network-group-id=XX use-hub-gateway=XX is-global=XX group-connectivity=XX
-
-            network-group-id: Network group Id.
-            use-hub-gateway: Flag if need to use hub gateway. Only required if topology is Hub and Spoke.
-            is-global: Flag if global is supported. Only required if topology is Hub and Spoke.
-            group-connectivity: Group connectivity type. Only required if topology is Hub and Spoke. Allowed values: None, DirectlyConnected
-
-            Multiple actions can be specified by using more than one --applies-to-groups argument.
-      - name: --hub
-        short-summary: "The hub vnets"
-        long-summary: |
-            Usage: --hub resource-id=XX resource-type=XX
-
-            resource-id: Resource ID
-            resource-type: Resource type, suggested value(s): 'Microsoft.Network/virtualNetworks'
-
-    examples:
-      - name: Create/Update Azure Virtual Network Manager Connectivity Configuration
-        text: |-
-               az network manager connect-config create --configuration-name "myTestConnectivityConfig" --description \
-"Sample Configuration" --applies-to-groups group-connectivity="None" is-global=false \
-network-group-id="subscriptions/subscriptionA/resourceGroups/myResourceGroup/providers/Microsoft.Network/networkManager\
-s/testNetworkManager/networkManagerGroups/group1" use-hub-gateway=true --connectivity-topology "HubAndSpoke" \
---delete-existing-peering true --hub resource-id="subscriptions/subscriptionA/resource\
-Groups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myTestConnectivityConfig" resource-type="Microsoft.Network/virtualNetworks" \
---is-global true --network-manager-name "testNetworkManager" --resource-group "myResourceGroup"
-"""
-
-helps['network manager connect-config update'] = """
-    type: command
-    short-summary: "Update a new network manager connectivity configuration."
-    parameters:
-      - name: --applies-to-groups
-        short-summary: "Groups for configuration"
-        long-summary: |
-            Usage: --applies-to-groups network-group-id=XX use-hub-gateway=XX is-global=XX group-connectivity=XX
-
-            network-group-id: Network group Id.
-            use-hub-gateway: Flag if need to use hub gateway. Only required if topology is Hub and Spoke.
-            is-global: Flag if global is supported. Only required if topology is Hub and Spoke.
-            group-connectivity: Group connectivity type. Only required if topology is Hub and Spoke. Allowed values: None, DirectlyConnected
-
-            Multiple actions can be specified by using more than one --applies-to-groups argument.
-      - name: --hub
-        short-summary: "The hub vnets"
-        long-summary: |
-            Usage: --hub resource-id=XX resource-type=XX
-
-            resource-id: Resource ID
-            resource-type: Resource type, suggested value(s): 'Microsoft.Network/virtualNetworks'
-"""
-
 helps['network manager security-admin-config rule-collection create'] = """
     type: command
     short-summary: "Create a network manager security configuration admin rule collection."

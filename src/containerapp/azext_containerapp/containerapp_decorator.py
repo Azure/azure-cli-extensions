@@ -2,7 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except
+# pylint: disable=line-too-long, broad-except, logging-format-interpolation, too-many-branches, too-many-boolean-expressions, no-else-return, logging-fstring-interpolation, too-many-locals, expression-not-assigned, too-many-public-methods
+
+from copy import deepcopy
 from typing import Dict, Any
 from urllib.parse import urlparse
 
@@ -29,7 +31,8 @@ from azure.cli.command_modules.containerapp._utils import (store_as_secret_and_r
                                                            ensure_workload_profile_supported, _generate_secret_volume_name,
                                                            get_linker_client,
                                                            safe_get, _update_revision_env_secretrefs, _add_or_update_tags, _populate_secret_values,
-                                                           clean_null_values, _add_or_update_env_vars, _remove_env_vars, _get_acr_cred)
+                                                           clean_null_values, _add_or_update_env_vars, _remove_env_vars, _get_acr_cred, _ensure_identity_resource_id)
+from azure.cli.core.commands.client_factory import get_subscription_id
 
 from knack.log import get_logger
 from knack.util import CLIError
@@ -48,19 +51,22 @@ from ._models import (
     ScaleRule as ScaleRuleModel,
     Service as ServiceModel,
     Volume as VolumeModel,
-    VolumeMount as VolumeMountModel)
+    VolumeMount as VolumeMountModel,
+    RuntimeJava as RuntimeJavaModel)
 
 from ._decorator_utils import (create_deserializer,
                                process_loaded_yaml,
-                               load_yaml_file)
+                               load_yaml_file,
+                               infer_runtime_option)
 from ._utils import parse_service_bindings, check_unique_bindings
-from ._validators import validate_create
+from ._validators import validate_create, validate_runtime
 
 from ._constants import (HELLO_WORLD_IMAGE,
                          CONNECTED_ENVIRONMENT_TYPE,
                          CONNECTED_ENVIRONMENT_RESOURCE_TYPE,
                          MANAGED_ENVIRONMENT_TYPE,
-                         MANAGED_ENVIRONMENT_RESOURCE_TYPE, ACR_IMAGE_SUFFIX)
+                         MANAGED_ENVIRONMENT_RESOURCE_TYPE, ACR_IMAGE_SUFFIX,
+                         RUNTIME_JAVA)
 
 
 logger = get_logger(__name__)
@@ -306,22 +312,33 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             if not scale_rule_type:
                 scale_rule_type = "http"
             scale_rule_type = scale_rule_type.lower()
-            scale_rule_def = ScaleRuleModel
+            scale_rule_def = deepcopy(ScaleRuleModel)
             curr_metadata = {}
             if self.get_argument_scale_rule_http_concurrency():
-                if scale_rule_type in ('http', 'tcp'):
+                if scale_rule_type == 'http':
                     curr_metadata["concurrentRequests"] = str(self.get_argument_scale_rule_http_concurrency())
+                elif scale_rule_type == 'tcp':
+                    curr_metadata["concurrentConnections"] = str(self.get_argument_scale_rule_http_concurrency())
             metadata_def = parse_metadata_flags(self.get_argument_scale_rule_metadata(), curr_metadata)
             auth_def = parse_auth_flags(self.get_argument_scale_rule_auth())
             if scale_rule_type == "http":
                 scale_rule_def["name"] = self.get_argument_scale_rule_name()
                 scale_rule_def["custom"] = None
+                scale_rule_def["tcp"] = None
                 scale_rule_def["http"] = {}
                 scale_rule_def["http"]["metadata"] = metadata_def
                 scale_rule_def["http"]["auth"] = auth_def
+            elif scale_rule_type == "tcp":
+                scale_rule_def["name"] = self.get_argument_scale_rule_name()
+                scale_rule_def["custom"] = None
+                scale_rule_def["http"] = None
+                scale_rule_def["tcp"] = {}
+                scale_rule_def["tcp"]["metadata"] = metadata_def
+                scale_rule_def["tcp"]["auth"] = auth_def
             else:
                 scale_rule_def["name"] = self.get_argument_scale_rule_name()
                 scale_rule_def["http"] = None
+                scale_rule_def["tcp"] = None
                 scale_rule_def["custom"] = {}
                 scale_rule_def["custom"]["type"] = scale_rule_type
                 scale_rule_def["custom"]["metadata"] = metadata_def
@@ -415,7 +432,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
             logger.warning(
                 'Additional flags were passed along with --yaml. These flags will be ignored, and the configuration defined in the yaml will be used instead')
         yaml_containerapp = process_loaded_yaml(load_yaml_file(file_name))
-        if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
+        if not isinstance(yaml_containerapp, dict):  # pylint: disable=unidiomatic-typecheck
             raise ValidationError(
                 'Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
 
@@ -507,7 +524,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
 
     def set_up_existing_container_update(self):
         updating_existing_container = False
-        for c in self.new_containerapp["properties"]["template"]["containers"]:
+        for c in self.new_containerapp["properties"]["template"]["containers"]:  # pylint: disable=too-many-nested-blocks
             # Update existing container if container name matches the argument container name
             if self.should_update_existing_container(c):
                 updating_existing_container = True
@@ -574,7 +591,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
                             self.new_containerapp["properties"]["template"]["volumes"].append(volume_def)
                         c["volumeMounts"] = [volume_mount_def]
                     else:
-                        if len(c["volumeMounts"]) > 1:
+                        if len(c["volumeMounts"]) > 1:  # pylint: disable=no-else-raise
                             raise ValidationError(
                                 "Usage error: --secret-volume-mount can only be used with a container that has a single volume mount, to define multiple volumes and mounts please use --yaml")
                         else:
@@ -595,6 +612,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
 
 # decorator for preview create
 class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
+    # pylint: disable=useless-super-delegation
     def __init__(
         self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
     ):
@@ -624,12 +642,18 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         self.set_up_repo()
         if self.get_argument_max_inactive_revisions() is not None:
             safe_set(self.containerapp_def, "properties", "configuration", "maxInactiveRevisions", value=self.get_argument_max_inactive_revisions())
+        self.set_up_runtime()
 
     def validate_arguments(self):
         super().validate_arguments()
         validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(), self.get_argument_no_wait(), self.get_argument_source(), self.get_argument_artifact(), self.get_argument_repo(), self.get_argument_yaml(), self.get_argument_environment_type())
         if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
             raise InvalidArgumentValueError("--bind have multiple values, but --customized-keys only can be set when --bind is single.")
+        validate_runtime(self.get_argument_runtime(), self.get_argument_enable_java_metrics(), self.get_argument_enable_java_agent())
+        if self.get_argument_scale_rule_type() and self.get_argument_scale_rule_identity():
+            scale_rule_type = self.get_argument_scale_rule_type().lower()
+            if scale_rule_type == "http" or scale_rule_type == "tcp":
+                raise InvalidArgumentValueError("--scale-rule-identity cannot be set when --scale-rule-type is 'http' or 'tcp'")
 
     def set_up_source(self):
         from ._up_utils import (_validate_source_artifact_args)
@@ -644,7 +668,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
             self.set_argument_source(source)
 
         if source:
-            app, env = self._construct_app_and_env_for_source_or_repo()
+            app, _ = self._construct_app_and_env_for_source_or_repo()
             build_env_vars = self.get_argument_build_env_vars()
             dockerfile = "Dockerfile"
             # Uses local buildpacks, the Cloud Build or an ACR Task to generate image if Dockerfile was not provided by the user
@@ -938,6 +962,48 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         else:
             return ManagedEnvironmentPreviewClient
 
+    def set_up_runtime(self):
+        if self.should_set_up_runtime():
+            runtime_option = infer_runtime_option(self.get_argument_runtime(), self.get_argument_enable_java_metrics(), self.get_argument_enable_java_agent())
+            runtime_def = None  # default value for runtime_option == RUNTIME_GENERIC, set None to erase runtime info
+            if runtime_option == RUNTIME_JAVA:
+                if self.get_argument_enable_java_metrics() is None and self.get_argument_enable_java_agent() is None:
+                    runtime_def = {
+                        "java": {
+                            "enableMetrics": True
+                        }
+                    }
+                else:
+                    runtime_java_def = RuntimeJavaModel
+                    if self.get_argument_enable_java_metrics() is not None:
+                        runtime_java_def["enableMetrics"] = self.get_argument_enable_java_metrics()
+                    if self.get_argument_enable_java_agent() is not None:
+                        runtime_java_def["javaAgent"]["enabled"] = self.get_argument_enable_java_agent()
+                    runtime_def = {
+                        "java": runtime_java_def
+                    }
+            safe_set(self.containerapp_def, "properties", "configuration", "runtime", value=runtime_def)
+
+    # pylint: disable=unsupported-assignment-operation
+    def set_up_scale_rule(self):
+        scale_def = super().set_up_scale_rule()
+        if scale_def and scale_def["rules"] and scale_def["rules"][0] and scale_def["rules"][0]["custom"] and self.get_argument_scale_rule_identity():
+            identity = self.get_argument_scale_rule_identity().lower()
+            if identity != "system":
+                subscription_id = get_subscription_id(self.cmd.cli_ctx)
+                identity = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), identity)
+            scale_def["rules"][0]["custom"]["identity"] = identity
+        return scale_def
+
+    def should_set_up_runtime(self):
+        if self.get_argument_runtime() is not None:
+            return True
+        if self.get_argument_enable_java_metrics() is not None:
+            return True
+        if self.get_argument_enable_java_agent() is not None:
+            return True
+        return False
+
     def get_argument_environment_type(self):
         return self.get_param("environment_type")
 
@@ -980,6 +1046,18 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def get_argument_max_inactive_revisions(self):
         return self.get_param("max_inactive_revisions")
 
+    def get_argument_runtime(self):
+        return self.get_param("runtime")
+
+    def get_argument_enable_java_metrics(self):
+        return self.get_param("enable_java_metrics")
+
+    def get_argument_enable_java_agent(self):
+        return self.get_param("enable_java_agent")
+
+    def get_argument_scale_rule_identity(self):
+        return self.get_param("scale_rule_identity")
+
 
 # decorator for preview update
 class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
@@ -1010,15 +1088,32 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     def get_argument_build_env_vars(self):
         return self.get_param("build_env_vars")
 
+    def get_argument_runtime(self):
+        return self.get_param("runtime")
+
+    def get_argument_enable_java_metrics(self):
+        return self.get_param("enable_java_metrics")
+
+    def get_argument_enable_java_agent(self):
+        return self.get_param("enable_java_agent")
+
     # This argument is set when cloud build is used to build the image and this argument ensures that only one container with the new cloud build image is
     def get_argument_force_single_container_updates(self):
         return self.get_param("force_single_container_updates")
+
+    def get_argument_scale_rule_identity(self):
+        return self.get_param("scale_rule_identity")
 
     def validate_arguments(self):
         super().validate_arguments()
         if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
             raise InvalidArgumentValueError(
                 "--bind have multiple values, but --customized-keys only can be set when --bind is single.")
+        validate_runtime(self.get_argument_runtime(), self.get_argument_enable_java_metrics(), self.get_argument_enable_java_agent())
+        if self.get_argument_scale_rule_type() and self.get_argument_scale_rule_identity():
+            scale_rule_type = self.get_argument_scale_rule_type().lower()
+            if scale_rule_type == "http" or scale_rule_type == "tcp":
+                raise InvalidArgumentValueError("--scale-rule-identity cannot be set when --scale-rule-type is 'http' or 'tcp'")
 
     def construct_payload(self):
         super().construct_payload()
@@ -1027,6 +1122,16 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         self.set_up_source()
         if self.get_argument_max_inactive_revisions() is not None:
             safe_set(self.new_containerapp, "properties", "configuration", "maxInactiveRevisions", value=self.get_argument_max_inactive_revisions())
+        self.set_up_runtime()
+
+        if self.get_argument_scale_rule_name() and self.get_argument_scale_rule_identity():
+            custom_scale_rule = safe_get(self.new_containerapp, "properties", "template", "scale", "rules", default=[])
+            if custom_scale_rule and len(custom_scale_rule) > 0 and custom_scale_rule[0]["custom"]:
+                identity = self.get_argument_scale_rule_identity().lower()
+                if identity != "system":
+                    subscription_id = get_subscription_id(self.cmd.cli_ctx)
+                    identity = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), identity)
+                self.new_containerapp["properties"]["template"]["scale"]["rules"][0]["custom"]["identity"] = identity
 
     def set_up_source(self):
         from ._up_utils import (_validate_source_artifact_args)
@@ -1106,6 +1211,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         self.new_containerapp["properties"]["template"]["containers"] = containers
         # Update image in the container app
         self.new_containerapp["properties"]["template"]["containers"][0]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
+        self.new_containerapp["properties"]["template"]["containers"][0]["name"] = app.name
 
     def post_process(self, r):
         # Delete managed bindings
@@ -1222,9 +1328,41 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         # force_single_container_updates argument is set when cloud build is used to build the image and this argument ensures that only one container with the new cloud build image is present in the containerapp
         return c["name"].lower() == self.get_argument_container_name().lower() or self.get_argument_force_single_container_updates()
 
+    def set_up_runtime(self):
+        if self.should_set_up_runtime():
+            runtime_option = infer_runtime_option(self.get_argument_runtime(), self.get_argument_enable_java_metrics(), self.get_argument_enable_java_agent())
+            runtime_def = None  # default value for runtime_option == RUNTIME_GENERIC, set None to erase runtime info
+            if runtime_option == RUNTIME_JAVA:
+                runtime_java_def = {}
+                if self.get_argument_enable_java_metrics() is not None:
+                    runtime_java_def["enableMetrics"] = self.get_argument_enable_java_metrics()
+                else:
+                    try:
+                        runtime_java_def["enableMetrics"] = self.containerapp_def["properties"]["configuration"]["runtime"]["java"]["enableMetrics"]
+                    except TypeError:
+                        runtime_java_def["enableMetrics"] = True
+
+                if self.get_argument_enable_java_agent() is not None:
+                    safe_set(runtime_java_def, "javaAgent", "enabled", value=self.get_argument_enable_java_agent())
+                    if self.get_argument_enable_java_agent() is False:
+                        runtime_java_def["javaAgent"]["logging"] = {  # clear logger settings when disable java agent
+                            "loggerSettings": []
+                        }
+
+                runtime_def = {
+                    "java": runtime_java_def
+                }
+            safe_set(self.new_containerapp, "properties", "configuration", "runtime", value=runtime_def)
+
+    def should_set_up_runtime(self):
+        if self.get_argument_runtime() is not None or self.get_argument_enable_java_metrics() is not None or self.get_argument_enable_java_agent() is not None:
+            return True
+        return False
+
 
 # decorator for preview list
 class ContainerAppPreviewListDecorator(BaseContainerAppDecorator):
+    # pylint: disable=useless-super-delegation
     def __init__(
         self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str
     ):

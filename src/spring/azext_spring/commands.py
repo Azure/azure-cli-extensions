@@ -8,7 +8,7 @@ from azure.cli.core.commands import CliCommandType
 from azext_spring._utils import handle_asc_exception
 
 from ._client_factory import (cf_spring,
-                              cf_config_servers, cf_eureka_servers)
+                              cf_eureka_servers)
 from ._transformers import (transform_spring_table_output,
                             transform_app_table_output,
                             transform_spring_deployment_output,
@@ -33,6 +33,7 @@ from ._validators import validate_app_insights_command_not_supported_tier
 from ._marketplace import (transform_marketplace_plan_output)
 from ._validators_enterprise import (validate_gateway_update, validate_api_portal_update, validate_dev_tool_portal,
                                      validate_customized_accelerator, validate_pattern_for_show_acs_configs)
+from .jobs import job_validators
 from .managed_components.validators_managed_component import (validate_component_logs, validate_component_list, validate_instance_list)
 from ._app_managed_identity_validator import (validate_app_identity_remove_or_warning,
                                               validate_app_identity_assign_or_warning)
@@ -125,6 +126,11 @@ def load_command_table(self, _):
         client_factory=cf_spring
     )
 
+    job_cmd_group = CliCommandType(
+        operations_tmpl='azext_spring.jobs.job#{}',
+        client_factory=cf_spring
+    )
+
     with self.command_group('spring', custom_command_type=spring_routing_util,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('create', 'spring_create', supports_no_wait=True)
@@ -158,19 +164,23 @@ def load_command_table(self, _):
         g.custom_command('enable', 'eureka_enable')
         g.custom_command('disable', 'eureka_disable')
 
-    with self.command_group('spring config-server', client_factory=cf_config_servers,
+    with self.command_group('spring config-server',
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('set', 'config_set', supports_no_wait=True)
-        g.custom_command('clear', 'config_delete')
+        g.custom_command('clear', 'config_clear', confirmation=True)
         g.custom_show_command('show', 'config_get')
         g.custom_command('enable', 'config_enable')
         g.custom_command('disable', 'config_disable')
+        g.custom_command('create', 'config_create', is_preview=True)
+        g.custom_command('delete', 'config_delete', confirmation=True, is_preview=True)
+        g.custom_command('bind', 'config_bind', is_preview=True)
+        g.custom_command('unbind', 'config_unbind', confirmation=True, is_preview=True)
 
-    with self.command_group('spring config-server git', client_factory=cf_config_servers,
+    with self.command_group('spring config-server git',
                             supports_local_cache=True, exception_handler=handle_asc_exception) as g:
         g.custom_command('set', 'config_git_set')
         g.custom_command('repo add', 'config_repo_add')
-        g.custom_command('repo remove', 'config_repo_delete')
+        g.custom_command('repo remove', 'config_repo_delete', confirmation=True)
         g.custom_command('repo update', 'config_repo_update')
         g.custom_command('repo list', 'config_repo_list')
 
@@ -481,6 +491,33 @@ def load_command_table(self, _):
                             custom_command_type=managed_component_cmd_group,
                             exception_handler=handle_asc_exception) as g:
         g.custom_command('list', 'managed_component_instance_list', validator=validate_instance_list)
+
+    with self.command_group('spring private-dns-zone', custom_command_type=spring_routing_util,
+                            exception_handler=handle_asc_exception) as g:
+        g.custom_command('add', 'spring_private_dns_zone_add', supports_no_wait=True)
+        g.custom_command('update', 'spring_private_dns_zone_update', supports_no_wait=True)
+        g.custom_command('clean', 'spring_private_dns_zone_clean', supports_no_wait=True)
+
+    with self.command_group('spring job', custom_command_type=job_cmd_group,
+                            exception_handler=handle_asc_exception, is_preview=True) as g:
+        g.custom_command('create', 'job_create', validator=job_validators.validate_job_create)
+        g.custom_command('update', 'job_update', validator=job_validators.validate_job_update)
+        g.custom_command('delete', 'job_delete', validator=job_validators.validate_job_delete)
+        g.custom_show_command('show', 'job_get', validator=job_validators.validate_job_get)
+        g.custom_command('list', 'job_list', validator=job_validators.validate_job_list)
+        g.custom_command('deploy', 'job_deploy', supports_no_wait=True, validator=job_validators.validate_job_deploy)
+        g.custom_command('start', 'job_start', validator=job_validators.validate_job_start)
+        g.custom_command('logs', 'job_log_stream', validator=job_validators.validate_job_log_stream)
+
+    with self.command_group('spring job execution', custom_command_type=job_cmd_group,
+                            exception_handler=handle_asc_exception, is_preview=True) as g:
+        g.custom_command('cancel', 'job_execution_cancel', supports_no_wait=True, validator=job_validators.validate_job_execution_cancel)
+        g.custom_show_command('show', 'job_execution_get', validator=job_validators.validate_job_execution_get)
+        g.custom_command('list', 'job_execution_list', validator=job_validators.validate_job_execution_list)
+
+    with self.command_group('spring job execution instance', custom_command_type=job_cmd_group,
+                            exception_handler=handle_asc_exception, is_preview=True) as g:
+        g.custom_command('list', 'job_execution_instance_list', validator=job_validators.validate_job_execution_instance_list)
 
     with self.command_group('spring', exception_handler=handle_asc_exception):
         pass
