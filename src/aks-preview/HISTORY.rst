@@ -11,6 +11,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+5.0.0b5
+++++++++
+* Remove support for `az aks mesh` egress gateway commands.
 * Add validation to `az aks create` and `az aks update` while modifying the `--ephemeral-disk-volume-type` and `--ephemeral-disk-nvme-perf-tier` values.
 
 5.0.0b4
