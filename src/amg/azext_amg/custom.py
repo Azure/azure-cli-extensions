@@ -316,17 +316,11 @@ def migrate_grafana(cmd, grafana_name, source_instance_ip, source_instance_token
         "content-type": "application/json",
         "authorization": "Bearer " + creds_dest[1]
     }
-    data_sources = list_data_sources(cmd, grafana_name, resource_group_name,
-                                        subscription=None)
 
-    migrate(backup_grafana_name=grafana_name,
-            backup_url=source_instance_ip,
-            backup_directory=directory or os.path.join(Path.cwd(), "_backup"),
-            components=components,
+    migrate(backup_url=source_instance_ip,
             backup_headers=headers_src,
             restore_url=_get_grafana_endpoint(cmd, resource_group_name, grafana_name, subscription=None),
             restore_headers=headers_dest,
-            data_sources=data_sources,
             folders_to_include=folders_to_include,
             folders_to_exclude=folders_to_exclude)
 

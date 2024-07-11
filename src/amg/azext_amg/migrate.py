@@ -1,28 +1,12 @@
 from knack.log import get_logger
 
-from .backup import backup
-from .restore import restore, create_dashboard, create_folder, create_library_panel, create_snapshot, create_annotation, create_datasource, set_uid_mapping
+from .restore import create_dashboard, create_folder, create_library_panel, create_snapshot, create_annotation, create_datasource, set_uid_mapping
 from .backup_core import get_all_dashboards, get_all_library_panels, get_all_snapshots, get_all_folders, get_all_annotations, get_all_datasources
 
 logger = get_logger(__name__)
 
 
-def migrate(backup_grafana_name, backup_url, backup_directory, components, backup_headers,
-            restore_url, restore_headers, data_sources, folders_to_include=None, folders_to_exclude=None):
-    # archive_file = backup(grafana_name=backup_grafana_name,
-    #                       grafana_url=backup_url,
-    #                       backup_dir=backup_directory,
-    #                       components=components,
-    #                       http_headers=backup_headers,
-    #                       folders_to_include=folders_to_include,
-    #                       folders_to_exclude=folders_to_exclude)
-
-    # restore(grafana_url=restore_url,
-    #         archive_file=archive_file,
-    #         components=components,
-    #         http_headers=restore_headers,
-    #         destination_datasources=data_sources)
-
+def migrate(backup_url, backup_headers, restore_url, restore_headers, folders_to_include=None, folders_to_exclude=None):
     # get all datasources to be backedup
     all_datasources = get_all_datasources(backup_url, backup_headers)
     for datasource in all_datasources:
@@ -31,7 +15,6 @@ def migrate(backup_grafana_name, backup_url, backup_directory, components, backu
     restore_datasources = get_all_datasources(restore_url, restore_headers)
     # do the mapping from the backup to the restore.
     set_uid_mapping(all_datasources, restore_datasources)
-
 
     all_folders = get_all_folders(backup_url, backup_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
     for folder in all_folders:
