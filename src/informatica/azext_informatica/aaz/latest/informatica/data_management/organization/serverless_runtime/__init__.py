@@ -13,7 +13,6 @@ from ._check_dependency import *
 from ._create import *
 from ._delete import *
 from ._list import *
-from ._show import *
 from ._start_failed_serverless_runtime import *
 from ._update import *
 from ._wait import *

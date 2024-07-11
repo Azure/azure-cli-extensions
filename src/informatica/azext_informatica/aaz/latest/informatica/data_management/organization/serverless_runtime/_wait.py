@@ -164,138 +164,7 @@ class Wait(AAZWaitCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.advanced_custom_properties = AAZListType(
-                serialized_name="advancedCustomProperties",
-            )
-            properties.application_type = AAZStrType(
-                serialized_name="applicationType",
-            )
-            properties.compute_units = AAZStrType(
-                serialized_name="computeUnits",
-            )
-            properties.description = AAZStrType()
-            properties.execution_timeout = AAZStrType(
-                serialized_name="executionTimeout",
-            )
-            properties.platform = AAZStrType()
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.serverless_account_location = AAZStrType(
-                serialized_name="serverlessAccountLocation",
-                flags={"required": True},
-            )
-            properties.serverless_runtime_config = AAZObjectType(
-                serialized_name="serverlessRuntimeConfig",
-            )
-            properties.serverless_runtime_network_profile = AAZObjectType(
-                serialized_name="serverlessRuntimeNetworkProfile",
-            )
-            properties.serverless_runtime_tags = AAZListType(
-                serialized_name="serverlessRuntimeTags",
-            )
-            properties.serverless_runtime_user_context_properties = AAZObjectType(
-                serialized_name="serverlessRuntimeUserContextProperties",
-            )
-            properties.supplementary_file_location = AAZStrType(
-                serialized_name="supplementaryFileLocation",
-            )
-
-            advanced_custom_properties = cls._schema_on_200.properties.advanced_custom_properties
-            advanced_custom_properties.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.advanced_custom_properties.Element
-            _element.key = AAZStrType()
-            _element.value = AAZStrType()
-
-            serverless_runtime_config = cls._schema_on_200.properties.serverless_runtime_config
-            serverless_runtime_config.cdi_config_props = AAZListType(
-                serialized_name="cdiConfigProps",
-            )
-            serverless_runtime_config.cdie_config_props = AAZListType(
-                serialized_name="cdieConfigProps",
-            )
-
-            cdi_config_props = cls._schema_on_200.properties.serverless_runtime_config.cdi_config_props
-            cdi_config_props.Element = AAZObjectType()
-            _WaitHelper._build_schema_cdi_config_props_read(cdi_config_props.Element)
-
-            cdie_config_props = cls._schema_on_200.properties.serverless_runtime_config.cdie_config_props
-            cdie_config_props.Element = AAZObjectType()
-            _WaitHelper._build_schema_cdi_config_props_read(cdie_config_props.Element)
-
-            serverless_runtime_network_profile = cls._schema_on_200.properties.serverless_runtime_network_profile
-            serverless_runtime_network_profile.network_interface_configuration = AAZObjectType(
-                serialized_name="networkInterfaceConfiguration",
-                flags={"required": True},
-            )
-
-            network_interface_configuration = cls._schema_on_200.properties.serverless_runtime_network_profile.network_interface_configuration
-            network_interface_configuration.subnet_id = AAZStrType(
-                serialized_name="subnetId",
-                flags={"required": True},
-            )
-            network_interface_configuration.vnet_id = AAZStrType(
-                serialized_name="vnetId",
-                flags={"required": True},
-            )
-            network_interface_configuration.vnet_resource_guid = AAZStrType(
-                serialized_name="vnetResourceGuid",
-            )
-
-            serverless_runtime_tags = cls._schema_on_200.properties.serverless_runtime_tags
-            serverless_runtime_tags.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.serverless_runtime_tags.Element
-            _element.name = AAZStrType()
-            _element.value = AAZStrType()
-
-            serverless_runtime_user_context_properties = cls._schema_on_200.properties.serverless_runtime_user_context_properties
-            serverless_runtime_user_context_properties.user_context_token = AAZStrType(
-                serialized_name="userContextToken",
-                flags={"required": True},
-            )
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
+            _WaitHelper._build_schema_informatica_serverless_runtime_resource_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -356,6 +225,158 @@ class _WaitHelper:
         _schema.application_configs = cls._schema_cdi_config_props_read.application_configs
         _schema.engine_name = cls._schema_cdi_config_props_read.engine_name
         _schema.engine_version = cls._schema_cdi_config_props_read.engine_version
+
+    _schema_informatica_serverless_runtime_resource_read = None
+
+    @classmethod
+    def _build_schema_informatica_serverless_runtime_resource_read(cls, _schema):
+        if cls._schema_informatica_serverless_runtime_resource_read is not None:
+            _schema.id = cls._schema_informatica_serverless_runtime_resource_read.id
+            _schema.name = cls._schema_informatica_serverless_runtime_resource_read.name
+            _schema.properties = cls._schema_informatica_serverless_runtime_resource_read.properties
+            _schema.system_data = cls._schema_informatica_serverless_runtime_resource_read.system_data
+            _schema.type = cls._schema_informatica_serverless_runtime_resource_read.type
+            return
+
+        cls._schema_informatica_serverless_runtime_resource_read = _schema_informatica_serverless_runtime_resource_read = AAZObjectType()
+
+        informatica_serverless_runtime_resource_read = _schema_informatica_serverless_runtime_resource_read
+        informatica_serverless_runtime_resource_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        informatica_serverless_runtime_resource_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        informatica_serverless_runtime_resource_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        informatica_serverless_runtime_resource_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        informatica_serverless_runtime_resource_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_informatica_serverless_runtime_resource_read.properties
+        properties.advanced_custom_properties = AAZListType(
+            serialized_name="advancedCustomProperties",
+        )
+        properties.application_type = AAZStrType(
+            serialized_name="applicationType",
+        )
+        properties.compute_units = AAZStrType(
+            serialized_name="computeUnits",
+        )
+        properties.description = AAZStrType()
+        properties.execution_timeout = AAZStrType(
+            serialized_name="executionTimeout",
+        )
+        properties.platform = AAZStrType()
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.serverless_account_location = AAZStrType(
+            serialized_name="serverlessAccountLocation",
+            flags={"required": True},
+        )
+        properties.serverless_runtime_config = AAZObjectType(
+            serialized_name="serverlessRuntimeConfig",
+        )
+        properties.serverless_runtime_network_profile = AAZObjectType(
+            serialized_name="serverlessRuntimeNetworkProfile",
+        )
+        properties.serverless_runtime_tags = AAZListType(
+            serialized_name="serverlessRuntimeTags",
+        )
+        properties.serverless_runtime_user_context_properties = AAZObjectType(
+            serialized_name="serverlessRuntimeUserContextProperties",
+        )
+        properties.supplementary_file_location = AAZStrType(
+            serialized_name="supplementaryFileLocation",
+        )
+
+        advanced_custom_properties = _schema_informatica_serverless_runtime_resource_read.properties.advanced_custom_properties
+        advanced_custom_properties.Element = AAZObjectType()
+
+        _element = _schema_informatica_serverless_runtime_resource_read.properties.advanced_custom_properties.Element
+        _element.key = AAZStrType()
+        _element.value = AAZStrType()
+
+        serverless_runtime_config = _schema_informatica_serverless_runtime_resource_read.properties.serverless_runtime_config
+        serverless_runtime_config.cdi_config_props = AAZListType(
+            serialized_name="cdiConfigProps",
+        )
+        serverless_runtime_config.cdie_config_props = AAZListType(
+            serialized_name="cdieConfigProps",
+        )
+
+        cdi_config_props = _schema_informatica_serverless_runtime_resource_read.properties.serverless_runtime_config.cdi_config_props
+        cdi_config_props.Element = AAZObjectType()
+        cls._build_schema_cdi_config_props_read(cdi_config_props.Element)
+
+        cdie_config_props = _schema_informatica_serverless_runtime_resource_read.properties.serverless_runtime_config.cdie_config_props
+        cdie_config_props.Element = AAZObjectType()
+        cls._build_schema_cdi_config_props_read(cdie_config_props.Element)
+
+        serverless_runtime_network_profile = _schema_informatica_serverless_runtime_resource_read.properties.serverless_runtime_network_profile
+        serverless_runtime_network_profile.network_interface_configuration = AAZObjectType(
+            serialized_name="networkInterfaceConfiguration",
+            flags={"required": True},
+        )
+
+        network_interface_configuration = _schema_informatica_serverless_runtime_resource_read.properties.serverless_runtime_network_profile.network_interface_configuration
+        network_interface_configuration.subnet_id = AAZStrType(
+            serialized_name="subnetId",
+            flags={"required": True},
+        )
+        network_interface_configuration.vnet_id = AAZStrType(
+            serialized_name="vnetId",
+            flags={"required": True},
+        )
+        network_interface_configuration.vnet_resource_guid = AAZStrType(
+            serialized_name="vnetResourceGuid",
+        )
+
+        serverless_runtime_tags = _schema_informatica_serverless_runtime_resource_read.properties.serverless_runtime_tags
+        serverless_runtime_tags.Element = AAZObjectType()
+
+        _element = _schema_informatica_serverless_runtime_resource_read.properties.serverless_runtime_tags.Element
+        _element.name = AAZStrType()
+        _element.value = AAZStrType()
+
+        serverless_runtime_user_context_properties = _schema_informatica_serverless_runtime_resource_read.properties.serverless_runtime_user_context_properties
+        serverless_runtime_user_context_properties.user_context_token = AAZStrType(
+            serialized_name="userContextToken",
+            flags={"required": True},
+        )
+
+        system_data = _schema_informatica_serverless_runtime_resource_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        _schema.id = cls._schema_informatica_serverless_runtime_resource_read.id
+        _schema.name = cls._schema_informatica_serverless_runtime_resource_read.name
+        _schema.properties = cls._schema_informatica_serverless_runtime_resource_read.properties
+        _schema.system_data = cls._schema_informatica_serverless_runtime_resource_read.system_data
+        _schema.type = cls._schema_informatica_serverless_runtime_resource_read.type
 
 
 __all__ = ["Wait"]
