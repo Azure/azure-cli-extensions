@@ -13,14 +13,14 @@ class InformaticaScenario(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_informatica', location="westus2")
     def test_informatica(self, resource_group):
         self.kwargs.update({
-            'name': 'InformaticaResourceCLIExtTest',
+            'name': 'InformaticaResourceCLIExtTest3',
             'location': 'westus2',
             'sku': 'standard',
             'capacity': '1',
             'tier': 'standard',
             'type': 'Standard',
             'resource_group': 'InformaticaDemo',
-            'subscription': 'ce37d538-dfa3-49c3-b3cd-149b4b7db48a',
+            'subscription': '00000000-0000-0000-0000-000000000000',
             'sso_url': 'https://contoso.com/singlesignon',
             'org_name': 'InformaticaDemo',
             'serverless_runtime_name': 'demoRuntime',
