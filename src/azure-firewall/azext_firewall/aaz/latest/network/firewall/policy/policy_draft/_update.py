@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "network firewall policy update draft",
+    "network firewall policy draft update",
     is_preview=True,
 )
 
