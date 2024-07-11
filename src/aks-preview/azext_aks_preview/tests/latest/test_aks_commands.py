@@ -6117,6 +6117,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--network-plugin kubenet "
             "--enable-managed-identity "
             "--enable-pod-identity --enable-pod-identity-with-kubenet "
             "--ssh-key-value={ssh_key_value} "
@@ -6417,6 +6418,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--network-plugin kubenet "
             "--enable-managed-identity "
             "--enable-pod-identity --enable-pod-identity-with-kubenet "
             "--ssh-key-value={ssh_key_value} "
