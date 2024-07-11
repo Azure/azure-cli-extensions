@@ -15,7 +15,6 @@ from ._failover import *
 from ._list import *
 from ._restore import *
 from ._show import *
-from ._shrink import *
 from ._switchover import *
 from ._update import *
 from ._wait import *
