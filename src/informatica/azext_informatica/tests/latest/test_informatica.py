@@ -13,55 +13,67 @@ class InformaticaScenario(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_informatica', location="westus2")
     def test_informatica(self, resource_group):
         self.kwargs.update({
-            'name': 'test1',
+            'name': 'InformaticaResourceCLIExtTest',
             'location': 'westus2',
             'sku': 'standard',
             'capacity': '1',
             'tier': 'standard',
             'type': 'Standard',
-            'resource_group': 'srallurirg',
-            'subscription': 'ce37d538-dfa3-49c3-b3cd-149b4b7db48a'
+            'resource_group': 'InformaticaDemo',
+            'subscription': 'ce37d538-dfa3-49c3-b3cd-149b4b7db48a',
+            'sso_url': 'https://contoso.com/singlesignon',
+            'org_name': 'InformaticaDemo',
+            'serverless_runtime_name': 'demoRuntime',
+            'country': 'India',
+            'domain': '',
+            'business_phone': '',
+            'marketplace_subscription_id': 'c948d31a-c011-4b16-ce29-688c1565fc06',
+            'publisher_id': 'informatica',
+            'user_phone': '9876543210',
+            'user_upn': 'Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com',
+            'org_id': 'wtdmhlwhkvgqdumaehgfgiqcxgnqpx',
+            'informatica_region': 'US West1',
+            'office_address': 'sbttzwyajgdbsvipuiclbzvkcvwyil',
+            'link_token': '',
+            'offer_id': 'azurenativeinfaservces',
+            'plan_id': 'privatepreview-plan-cdi-free_00',
+            'plan_name': 'CDI Free - Private Preview',
+            'term_unit': 'P1Y',
+            'term_id': 'o73usof6rkyy',
+            'user_first_name': 'Test',
+            'user_last_name': 'Infa',
+            'user_email': 'Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com',
+            'user_upn': 'Test_Infa@mpliftrlogz20210811outlook.onmicrosoft.com',
+            'number_of_employee': 0,
+            'company_name': 'Microsoft',
+            'business': '',
+            'number_of_employees': 0,
+            'link_organization': '{}',
+            'tags': 'key8430=cagshqtjlxtqqhdwtchokvxszybp'
         })
 
-        # # Check Name Availability
-        # self.cmd('informatica check-name-availability --name {name} --location {location}', checks=[
-        #     self.check('nameAvailable', True)
-        # ])
-
-        # # Create Informatica
-        # self.cmd('informatica create --name {name} --location {location} --sku {sku} --capacity {capacity} --tier {tier} --resource-group {resource_group}', checks=[
-        #     self.check('name', '{name}'),
-        #     self.check('location', '{location}'),
-        #     self.check('sku', '{sku}'),
-        #     self.check('capacity', '{capacity}'),
-        #     self.check('tier', '{tier}'),
-        #     self.check('type', '{type}'),
-        #     self.check('provisioningState', 'Succeeded')
-        # ])
-
-        # # Get Informatica
-        # self.cmd('informatica show --name {name} --resource-group {resource_group}', checks=[
-        #     self.check('name', '{name}'),
-        #     self.check('location', '{location}'),
-        #     self.check('capacity', '{capacity}'),
-        #     self.check('tier', '{tier}'),
-        #     self.check('type', '{type}'),
-        #     self.check('provisioningState', 'Succeeded')
-        # ])
-
+        # Create Informatica Organization
+        self.cmd('az informatica data-management organization create --resource-group {resource_group} --org-name {name} --subscription {subscription} --location {location} --company-details \'{{"company-name": "{company_name}", "office-address": "{office_address}", "country": "{country}", "domain": "{domain}", "number-of-employees": {number_of_employee}}}\' --marketplace-details \'{{"marketplace-subscription-id": "{marketplace_subscription_id}", "offer-details": {{"offer-id": "{offer_id}", "plan-id": "{plan_id}", "plan-name": "{plan_name}", "publisher-id": "{publisher_id}", "term-unit": "{term_unit}", "term-id": "{term_id}"}}}}\' --user-details \'{{"first-name": "{user_first_name}", "last-name": "{user_last_name}", "email-address": "{user_email}", "upn": "{user_upn}", "phone-number": "{user_phone}"}}\' --informatica-properties \'{{"organization-id": "{org_id}", "organization-name": "{org_name}", "informatica-region": "{informatica_region}"}}\' --link-organization \'{{"token": "{link_token}"}}\'',
+            checks=[
+                self.check('name', '{name}'),
+                self.check('informaticaProperties.organizationName', '{org_name}'),
+                self.check('provisioningState', 'Succeeded')
+            ])
+        
         # List Informatica
-        self.cmd('az informatica data-management organization list --subscription {subscription} --resource-group {resource_group}')
+        checks = []
+        self.cmd('az informatica data-management organization list --subscription {subscription} --resource-group {resource_group}',
+        checks=checks)
 
-        # # Update Informatica
-        # self.cmd('informatica update --name {name} --resource-group {resource_group} --tags tag1=test1', checks=[
-        #     self.check('name', '{name}'),
-        #     self.check('location', '{location}'),
-        #     self.check('sku', '{sku}'),
-        #     self.check('capacity', '{capacity}'),
-        #     self.check('tier', '{tier}'),
-        #     self.check('type', '{type}'),
-        #     self.check('tags.tag1', 'test1')
-        # ])
+        # Show Informatica Organization
+        self.cmd('az informatica data-management organization show -g {resource_group} -n {name} --subscription {subscription}',
+                 checks=[
+                self.check('name', '{name}'),
+                self.check('informaticaProperties.organizationName', '{org_name}'),
+                self.check('provisioningState', 'Succeeded')
+            ])
 
-        # # Delete Informatica
-        # self.cmd('informatica delete --name {name} --resource-group {resource_group} --yes')
+        # Delete Informatica Organization
+        checks = []
+        self.cmd('az informatica data-management organization delete -n {org_name} -g {resource_group} --subscription {subscription} --yes',
+        checks = checks)
