@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class CheckDependency(AAZCommand):
     """Checks all dependencies for a serverless runtime resource
+
+    :example: Check All Dependencies for a Serverless Runtime Resource
+        az informatica data-management organization serverless-runtime check-dependency --resource-group demoResourceGroup --org-name demoOrgName --name demoServerlessRuntime
     """
 
     _aaz_info = {

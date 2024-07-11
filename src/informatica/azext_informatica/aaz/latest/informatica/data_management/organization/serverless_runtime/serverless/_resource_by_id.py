@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "informatica data-management organization serverless-runtime serverless resource-by-id",
 )
 class ResourceById(AAZCommand):
-    """Returns a serverless runtime resource by ID
+    """Return a serverless runtime resource by ID
+
+    :example: ServerlessRuntimes_ServerlessResourceById
+        az informatica data-management organization serverless-runtime serverless resource-by-id --resource-group demoResourceGroup --org-name demoOrgName --name demoServerlessRuntime
     """
 
     _aaz_info = {

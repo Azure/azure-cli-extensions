@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a InformaticaOrganizationResource
+
+    :example: Create or Update an Organization
+        az informatica data-management organization create -n demoOrg -g demoResourceGroup --subscription ae37d5a8-dff3-49a3-bfcd-139a4f7db98x -l westUS2
     """
 
     _aaz_info = {

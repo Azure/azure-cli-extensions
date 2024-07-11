@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "informatica data-management organization serverless-runtime show",
 )
 class Show(AAZCommand):
-    """Get a InformaticaServerlessRuntimeResource
+    """Get an InformaticaServerlessRuntimeResource
+
+    :example: ServerlessRuntimes_Get
+        az informatica data-management organization serverless-runtime show --resource-group demoResourceGroup --org-name demoOrgName --name demoServerlessRuntime
     """
 
     _aaz_info = {

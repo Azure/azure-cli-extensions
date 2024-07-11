@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List InformaticaServerlessRuntimeResource resources by InformaticaOrganizationResource
+
+    :example: List InformaticaServerlessRuntimeResource resources by InformaticaOrganizationResource
+        az informatica data-management organization serverless-runtime list --resource-group demoResourceGroup --org-name demoOrgName --subscription ae37d5a8-dff3-49a3-bfcd-139a4f7db98x
     """
 
     _aaz_info = {

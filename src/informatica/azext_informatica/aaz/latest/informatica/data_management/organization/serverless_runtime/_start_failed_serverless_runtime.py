@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class StartFailedServerlessRuntime(AAZCommand):
     """Starts a failed runtime resource
+
+    :example: Start a Failed Serverless Runtime
+        az informatica data-management organization serverless-runtime start-failed-serverless-runtime --resource-group rgopenapi --org-name 9M4 --name -25-G_
     """
 
     _aaz_info = {

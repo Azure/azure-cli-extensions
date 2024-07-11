@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a InformaticaOrganizationResource
+
+    :example: Delete Organizations
+        az informatica data-management organization delete -n demoOrg -g demoResourceGroup --subscription ae37d5a8-dff3-49a3-bfcd-139a4f7db98x
     """
 
     _aaz_info = {

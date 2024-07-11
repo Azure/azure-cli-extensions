@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class GetServerlessMetadatum(AAZCommand):
     """Gets Metadata of the serverless runtime environment.
+
+    :example: Get Serverless Metadata of the Organization
+        az informatica data-management organization get-serverless-metadatum -n demoOrg -g demoResourceGroup --subscription ae37d5a8-dff3-49a3-bfcd-139a4f7db98x
     """
 
     _aaz_info = {

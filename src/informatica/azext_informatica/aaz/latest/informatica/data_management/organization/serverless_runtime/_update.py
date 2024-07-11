@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a InformaticaServerlessRuntimeResource
+
+    :example: Update a Serverless Runtime
+        az informatica data-management organization serverless-runtime update --resource-group demoResourceGroup --org-name demoOrgName --name demoServerlessRuntime
     """
 
     _aaz_info = {

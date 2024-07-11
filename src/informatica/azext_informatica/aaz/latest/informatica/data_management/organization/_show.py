@@ -15,7 +15,10 @@ from azure.cli.core.aaz import *
     "informatica data-management organization show",
 )
 class Show(AAZCommand):
-    """Get a InformaticaOrganizationResource
+    """Get an InformaticaOrganizationResource
+
+    :example: Get an Informatica Organization
+        az informatica data-management organization show -g demoResourceGroup -n demoOrg
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a InformaticaOrganizationResource
+
+    :example: Update an Organization
+        az informatica data-management organization update -n demoOrg -g demoResourceGroup --subscription ae37d5a8-dff3-49a3-bfcd-139a4f7db98x
     """
 
     _aaz_info = {

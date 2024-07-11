@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a InformaticaServerlessRuntimeResource
+
+    :example: Delete Serverless Runtime
+        az informatica data-management organization serverless-runtime delete -n demoServerlessRuntime -g demoResourceGroup --subscription ae37d5a8-dff3-49a3-bfcd-139a4f7db98x --org-name demoOrgName
     """
 
     _aaz_info = {

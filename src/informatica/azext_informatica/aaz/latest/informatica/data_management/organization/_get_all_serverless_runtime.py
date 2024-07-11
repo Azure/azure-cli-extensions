@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class GetAllServerlessRuntime(AAZCommand):
     """Gets all serverless runtime resources in a given informatica organization resource.
+
+    :example: Get All Serverless Runtimes of the Organization
+        az informatica data-management organization get-all-serverless-runtime --resource-group rgopenapi --org-name t
     """
 
     _aaz_info = {
