@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "acat report update",
 )
 class Update(AAZCommand):
-    """Update a new AppComplianceAutomation report or update an exiting AppComplianceAutomation report.
+    """Update an exiting AppComplianceAutomation report.
     """
 
     _aaz_info = {
@@ -155,7 +155,7 @@ class Update(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
             if session.http_response.status_code in [200]:
@@ -164,7 +164,7 @@ class Update(AAZCommand):
                     session,
                     self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
