@@ -22,6 +22,10 @@ Pending
 * [BREAKING CHANGE]: Remove support for `az aks mesh` egress gateway commands.
 * Add validation to `az aks create` and `az aks update` while modifying the `--ephemeral-disk-volume-type` and `--ephemeral-disk-nvme-perf-tier` values.
 
+5.0.0b5
+++++++++
+* Add options `--tier` and `--k8s-support-plan` to `az aks upgrade` command to support enable/disable AKSLongTermSupport with upgrade operation.
+
 5.0.0b4
 ++++++++
 * Add additional unit test cases for mutable fips flags in agentpool update.

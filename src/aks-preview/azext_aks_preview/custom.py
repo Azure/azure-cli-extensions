@@ -61,6 +61,7 @@ from azext_aks_preview._consts import (
     CONST_AVAILABILITY_SET,
     CONST_MIN_NODE_IMAGE_VERSION,
     CONST_ARTIFACT_SOURCE_DIRECT,
+    CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM,
 )
 from azext_aks_preview._helpers import (
     check_is_private_link_cluster,
@@ -127,6 +128,7 @@ from azure.graphrbac.models import (
     PasswordCredential,
     ServicePrincipalCreateParameters,
 )
+from azure.mgmt.containerservice.models import KubernetesSupportPlan
 from dateutil.parser import parse
 from dateutil.relativedelta import relativedelta
 from knack.log import get_logger
@@ -1056,7 +1058,9 @@ def aks_upgrade(cmd,
                 upgrade_override_until=None,
                 yes=False,
                 if_match=None,
-                if_none_match=None):
+                if_none_match=None,
+                tier=None,
+                k8s_support_plan=None):
     msg = 'Kubernetes may be unavailable during cluster upgrades.\n Are you sure you want to perform this operation?'
     if not yes and not prompt_y_n(msg, default="n"):
         return None
@@ -1103,6 +1107,15 @@ def aks_upgrade(cmd,
         )
         mcsnapshot = get_cluster_snapshot_by_snapshot_id(cmd.cli_ctx, cluster_snapshot_id)
         kubernetes_version = mcsnapshot.managed_cluster_properties_read_only.kubernetes_version
+
+    if tier is not None:
+        instance.sku.tier = tier
+    if k8s_support_plan is not None:
+        instance.support_plan = k8s_support_plan
+
+    if (instance.support_plan == KubernetesSupportPlan.AKS_LONG_TERM_SUPPORT
+            and instance.tier is not None and instance.tier.lower() != CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM.lower()):
+        raise CLIError("AKS Long Term Support is only available for Premium tier clusters.")
 
     instance = _update_upgrade_settings(
         cmd,
