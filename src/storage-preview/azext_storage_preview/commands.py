@@ -213,3 +213,10 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                        exception_handler=file_related_exception_handler,
                                        transform=transform_file_show_result)
         g.storage_custom_command('download-batch', 'storage_file_download_batch', client_factory=cf_share_client)
+
+    with self.command_group('storage account task-assignment') as g:
+        from .operations.task_assignment import TaskAssignmentCreate, TaskAssignmentUpdate
+        self.command_table['storage account task-assignment create'] = TaskAssignmentCreate(loader=self)
+        self.command_table['storage account task-assignment update'] = TaskAssignmentUpdate(loader=self)
+
+
