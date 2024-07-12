@@ -7,25 +7,36 @@ logger = get_logger(__name__)
 
 
 def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, folders_to_include=None, folders_to_exclude=None):
+    datasources_created_summary = []
+    datasources_remapped_summary = []
     folders_created_summary = []
 
     # get all datasources to be backedup
     all_datasources = get_all_datasources(backup_url, backup_headers)
+    all_restore_datasources = get_all_datasources(restore_url, restore_headers)
+    # since in our remapping, we use the name and type to check if it is the same datasource.
+    restore_datasources_names = {(ds['name'], ds['type']) for ds in all_restore_datasources}
+
     for datasource in all_datasources:
-        create_datasource(restore_url, datasource, restore_headers)
+        if (datasource['name'], datasource['type']) not in restore_datasources_names:
+            if not dry_run:
+                create_datasource(restore_url, datasource, restore_headers)
+            datasources_created_summary.append(datasource['name'])
+        else:
+            logger.warning("Datasource %s already exists, remapping", datasource['name'])
+            datasources_remapped_summary.append(datasource['name'])
     # grab all the new datasources now. since we have created the datasources, we can now do the mapping.
-    restore_datasources = get_all_datasources(restore_url, restore_headers)
     # do the mapping from the backup to the restore.
-    set_uid_mapping(all_datasources, restore_datasources)
+    set_uid_mapping(all_datasources, all_restore_datasources)
 
     all_folders = get_all_folders(backup_url, backup_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
-    all_folders_restore = get_all_folders(backup_url, backup_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
-    restore_uids = {restore_content['uid'] for (restore_content, _) in all_folders_restore}
+    all_restore_folders = get_all_folders(backup_url, backup_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
+    restore_folder_uids = {restore_content['uid'] for (restore_content, _) in all_restore_folders}
 
     for folder in all_folders:
         content_folder_settings, content_folder_permissions = folder
         # create a folder if it does not exist
-        if content_folder_settings['uid'] not in restore_uids:
+        if content_folder_settings['uid'] not in restore_folder_uids:
             if not dry_run:
                 create_folder(restore_url, content_folder_settings, restore_headers)
             folders_created_summary.append(content_folder_settings['title'])
