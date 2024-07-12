@@ -70,6 +70,7 @@ def load_arguments(self, _):
     with self.argument_context("grafana migrate") as c:
         c.argument("source_instance_ip", options_list=["-s", "--src-ip"], help="Grafana instance IP to migrate from")
         c.argument("source_instance_token", options_list=["-t", "--src-token"], help="Grafana instance token to migrate from")
+        c.argument("dry_run", options_list=["-d", "--dry-run"], arg_type=get_three_state_flag(), help="preview changes w/o committing")
 
     with self.argument_context("grafana dashboard") as c:
         c.argument("uid", options_list=["--dashboard"], help="dashboard uid")
