@@ -136,10 +136,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
     # Set preview client if latest preview properties are provided.
-    if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None:
-        client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
-
-    if enable_workload_identity or enable_oidc_issuer:
+    if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None or enable_workload_identity or enable_oidc_issuer:
         client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
     
     # Checking whether optional extra values file has been provided.
