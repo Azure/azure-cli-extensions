@@ -152,11 +152,18 @@ class CreateAcatReport(_AcatCreateReport):
 
 
 class UpdateAcatReport(_AcatUpdateReport):
-    class UpdateAcatReportWithDupAadToken(_AcatUpdateReport.ReportUpdate):
+    class UpdateAcatReportWithDupAadToken(_AcatUpdateReport.ReportCreateOrUpdate):
+        CLIENT_TYPE = "AcatMgmtClient"
+    class GetAcatReportWithDupAadToken(_AcatUpdateReport.ReportGet):
         CLIENT_TYPE = "AcatMgmtClient"
 
     def _execute_operations(self):
         self.pre_operations()
+        self.GetAcatReportWithDupAadToken(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
+        self.InstanceUpdateByJson(ctx=self.ctx)()
+        self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
         yield self.UpdateAcatReportWithDupAadToken(ctx=self.ctx)()
         self.post_operations()
 
