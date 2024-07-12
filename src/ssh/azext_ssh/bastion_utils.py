@@ -85,7 +85,7 @@ def ssh_bastion_host(cmd, op_info, delete_keys, delete_cert):
     bastion = show_bastion(cmd, op_info)
 
     if bastion['sku']['name'] not in [BastionSku.Developer.value, BastionSku.QuickConnect.value]:
-        raise azclierror.InvalidArgumentValueError("SSH to Bastion host is only supported for Developer and QuickConnect Skus.")
+        raise azclierror.InvalidArgumentValueError("SSH to Bastion host is only supported for Developer Skus.")
 
     if op_info.port != None:
         port = op_info.port
@@ -96,6 +96,7 @@ def ssh_bastion_host(cmd, op_info, delete_keys, delete_cert):
     target_resource_id = op_info.resource_id
     
     bastion_endpoint = _get_data_pod(cmd, port, target_resource_id, bastion)
+    print(bastion_endpoint)
     tunnel_server = _get_tunnel(cmd, bastion, bastion_endpoint, target_resource_id, port)
     
     t = threading.Thread(target=_start_tunnel, args=(tunnel_server,))
@@ -123,6 +124,7 @@ def _get_data_pod(cmd, port, target_resource_id, bastion):
 
     profile = Profile(cli_ctx=cmd.cli_ctx)
     auth_token, _, _ = profile.get_raw_token()
+    
     content = {
         'resourceId': target_resource_id,
         'bastionResourceId': bastion['id'],
@@ -135,7 +137,7 @@ def _get_data_pod(cmd, port, target_resource_id, bastion):
     web_address = f"https://{bastion['dnsName']}/api/connection"
     response = requests.post(web_address, json=content, headers=headers,
                             verify=not should_disable_connection_verify())
-
+    
     return response.content.decode("utf-8")
 
 
