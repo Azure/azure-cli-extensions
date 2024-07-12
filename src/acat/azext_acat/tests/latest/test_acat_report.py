@@ -97,7 +97,7 @@ class AcatReportScenario(ScenarioTest):
         assert(report.get_output_in_json()['lastTriggerTime'] != None)
         ret=self.cmd(
             'acat report get-control-assessments --report-name {report_name_snapshot}')
-        output = ret.get_output_in_json()["complianceResults"][0]["categories"]
+        output = ret.get_output_in_json()[0]["complianceResults"][0]["categories"]
         assert(output != None)
         assert(len(output) ==2)
         assert(output[0]['controlFamilies'] != None)

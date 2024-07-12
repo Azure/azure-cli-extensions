@@ -228,10 +228,13 @@ class DownloadAcatReport(_AcatDownloadSnapshot):
 
     def pre_operations(self):
         args = self.ctx.args
-        result = GetControlAssessment(cli_ctx=self.cli_ctx)(
+        pagedResult = GetControlAssessment(cli_ctx=self.cli_ctx)(
             command_args={"report_name": args.report_name, "compliance_status": "all"}
         )
-        snapshot_name = result["snapshotName"] if result is not None else None
+        snapshot_name = None
+        for result in pagedResult:
+            snapshot_name = result["snapshotName"] if result is not None else None
+            break
         if snapshot_name is None:
             raise ValueError(
                 f"No snapshot found for report {self.ctx.args.report_name}"
