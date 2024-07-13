@@ -17,7 +17,7 @@ import uuid
 
 import requests
 from enum import Enum
-from azure.cli.core import azclierror 
+from azure.cli.core import azclierror
 
 from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
