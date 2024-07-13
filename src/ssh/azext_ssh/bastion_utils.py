@@ -73,7 +73,7 @@ def show_bastion(cmd, op_info):
 
         return bastion
     except Exception:
-        raise azclierror.CLIInternalError("Failed to get bastion information. Please try again later.")
+        raise azclierror.CLIInternalError("Failed to get Bastion information. Please try again later.")
 
 
 
@@ -85,7 +85,7 @@ def ssh_bastion_host(cmd, op_info, delete_keys, delete_cert):
     bastion = show_bastion(cmd, op_info)
 
     if bastion['sku']['name'] not in [BastionSku.Developer.value, BastionSku.QuickConnect.value]:
-        raise azclierror.InvalidArgumentValueError("SSH to Bastion host is only supported for Developer Skus.")
+        raise azclierror.InvalidArgumentValueError("SSH to Bastion host via Az CLI/PowerShell is only supported for Developer.")
 
     if op_info.port != None:
         port = op_info.port
@@ -306,7 +306,7 @@ def _request_specified_bastion(cmd, subscription_id, vnet_id, resource_group):
     try: 
         response = resource_graph_utils.execute_query(client, query, 10, 0, None, None, False, None)
     except Exception:
-        raise azclierror.ClientRequestError(f"Failed to find Bastion assocaited to VNet in the specified Subscription. Ensure the Bastion is not in a different subscription or resource group.")
+        raise azclierror.ClientRequestError(f"Failed to find Bastion assocaited to VNet in the specified subscription. Ensure the Bastion is not in a different subscription or resource group.")
     
     return response
 
