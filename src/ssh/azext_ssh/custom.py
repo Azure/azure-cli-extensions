@@ -160,13 +160,15 @@ def _do_ssh_op(cmd, op_info, op_call):
         if op_info.ssh_proxy_folder:
             logger.warning("Target machine is not an Arc Server, --ssh-proxy-folder value will be ignored.")
         op_info.ip = op_info.ip or ip_utils.get_ssh_ip(cmd, op_info.resource_group_name,
-                                                       op_info.vm_name, op_info.use_private_ip)
+                                                       op_info.vm_name, op_info.use_private_ip, op_info)
         if not op_info.ip:
-            if not op_info.use_private_ip:
+            if not op_info.use_private_ip and not op_info.bastion:
                 raise azclierror.ResourceNotFoundError(f"VM '{op_info.vm_name}' does not have a public "
                                                        "IP address to SSH to")
-            raise azclierror.ResourceNotFoundError("Internal Error. Couldn't determine the IP address.")
-
+            if op_info.bastion:
+                logger.info("Bastion Connection approved by user, attempting to connect through Developer Bastion.")
+            else:
+                raise azclierror.ResourceNotFoundError("Internal Error. Couldn't determine the IP address.")
     # Determine the appropriate authentication method
     delete_keys = False
     delete_cert = False

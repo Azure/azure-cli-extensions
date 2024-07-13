@@ -6,13 +6,15 @@
 from azure.cli.core.commands import client_factory
 from azure.cli.core import profiles
 from msrestazure import tools
+from knack.prompting import prompt_y_n
+
 
 from knack import log
 
 logger = log.get_logger(__name__)
 
 
-def get_ssh_ip(cmd, resource_group, vm_name, use_private_ip):
+def get_ssh_ip(cmd, resource_group, vm_name, use_private_ip, bastion):
     compute_client = client_factory.get_mgmt_service_client(cmd.cli_ctx, profiles.ResourceType.MGMT_COMPUTE)
     vm_client = compute_client.virtual_machines
     from .aaz.latest.network.public_ip import Show as PublicIpShow
@@ -20,7 +22,7 @@ def get_ssh_ip(cmd, resource_group, vm_name, use_private_ip):
 
     vm = vm_client.get(resource_group, vm_name)
 
-    private_ips = []
+    private_ips = [] 
 
     for nic_ref in vm.network_profile.network_interfaces:
         parsed_id = tools.parse_resource_id(nic_ref.id)
@@ -42,11 +44,20 @@ def get_ssh_ip(cmd, resource_group, vm_name, use_private_ip):
                 public_ip = PublicIpShow(cli_ctx=cmd.cli_ctx)(command_args=api_args)
                 if public_ip and public_ip.get("ipAddress", None):
                     return public_ip["ipAddress"]
+            else:
+                prompt = (f"There is no public IP associated with this VM." 
+                    " Would you like to connect to your VM through Developer Bastion? To learn more,"
+                    " please visit learn.microsoft.com/en-us/azure/bastion/quickstart-developer-sku")
+                if not prompt_y_n(prompt):
+                    logger.info("Connection through Developer Bastion was denied.")
+                else:
+                    bastion = True
+                    return None
             if ip_config.get("privateIPAddress", None):
                 private_ips.append(ip_config["privateIPAddress"])
 
     if len(private_ips) > 0:
-        logger.warning("No public IP detected, attempting private IP (you must bring your own connectivity).")
+        logger.warning("No public IP detected and connection through Developer Bastion was denied, attempting private IP (you must bring your own connectivity).")
         logger.warning("Use --prefer-private-ip to avoid this message.")
         return private_ips[0]
 
