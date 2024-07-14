@@ -557,7 +557,8 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
 
 
 def _generate_local_user(local_user, permission_scope=None, ssh_authorized_key=None,
-                         home_directory=None, has_shared_key=None, has_ssh_key=None, has_ssh_password=None):
+                         home_directory=None, has_shared_key=None, has_ssh_key=None, has_ssh_password=None,
+                         extended_groups=None, is_nfsv3_enabled=None, group_id=None, allow_acl_authorization=None):
     if permission_scope is not None:
         local_user.permission_scopes = permission_scope
     if ssh_authorized_key is not None:
@@ -570,25 +571,37 @@ def _generate_local_user(local_user, permission_scope=None, ssh_authorized_key=N
         local_user.has_ssh_key = has_ssh_key
     if has_ssh_password is not None:
         local_user.has_ssh_password = has_ssh_password
+    if extended_groups is not None:
+        local_user.extended_groups = extended_groups
+    if is_nfsv3_enabled is not None:
+        local_user.is_nf_sv3_enabled = is_nfsv3_enabled
+    if group_id is not None:
+        local_user.group_id = group_id
+    if allow_acl_authorization is not None:
+        local_user.allow_acl_authorization = allow_acl_authorization
 
 
 def create_local_user(cmd, client, resource_group_name, account_name, username, permission_scope=None, home_directory=None,
-                      has_shared_key=None, has_ssh_key=None, has_ssh_password=None, ssh_authorized_key=None, **kwargs):
+                      has_shared_key=None, has_ssh_key=None, has_ssh_password=None, ssh_authorized_key=None,
+                      extended_groups=None, is_nfsv3_enabled=None, group_id=None, allow_acl_authorization=None):
     LocalUser = cmd.get_models('LocalUser')
     local_user = LocalUser()
 
     _generate_local_user(local_user, permission_scope, ssh_authorized_key,
-                         home_directory, has_shared_key, has_ssh_key, has_ssh_password)
+                         home_directory, has_shared_key, has_ssh_key, has_ssh_password, extended_groups,
+                         is_nfsv3_enabled, group_id, allow_acl_authorization)
     return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
                                    username=username, properties=local_user)
 
 
 def update_local_user(cmd, client, resource_group_name, account_name, username, permission_scope=None,
                       home_directory=None, has_shared_key=None, has_ssh_key=None, has_ssh_password=None,
-                      ssh_authorized_key=None, **kwargs):
+                      ssh_authorized_key=None, extended_groups=None, is_nfsv3_enabled=None, group_id=None,
+                      allow_acl_authorization=None):
     local_user = client.get(resource_group_name, account_name, username)
 
     _generate_local_user(local_user, permission_scope, ssh_authorized_key,
-                         home_directory, has_shared_key, has_ssh_key, has_ssh_password)
+                         home_directory, has_shared_key, has_ssh_key, has_ssh_password, extended_groups,
+                         is_nfsv3_enabled, group_id, allow_acl_authorization)
     return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
                                    username=username, properties=local_user)
