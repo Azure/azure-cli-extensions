@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01",
+        "version": "2024-07-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/agents", "2023-10-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storagemover/storagemovers/{}/agents", "2024-07-01"],
         ]
     }
 
@@ -121,7 +121,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01",
+                    "api-version", "2024-07-01",
                     required=True,
                 ),
             }
@@ -225,6 +225,13 @@ class List(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.time_zone = AAZStrType(
+                serialized_name="timeZone",
+                flags={"read_only": True},
+            )
+            properties.upload_limit_schedule = AAZObjectType(
+                serialized_name="uploadLimitSchedule",
+            )
             properties.uptime_in_seconds = AAZIntType(
                 serialized_name="uptimeInSeconds",
                 flags={"read_only": True},
@@ -233,6 +240,36 @@ class List(AAZCommand):
             error_details = cls._schema_on_200.value.Element.properties.error_details
             error_details.code = AAZStrType()
             error_details.message = AAZStrType()
+
+            upload_limit_schedule = cls._schema_on_200.value.Element.properties.upload_limit_schedule
+            upload_limit_schedule.weekly_recurrences = AAZListType(
+                serialized_name="weeklyRecurrences",
+            )
+
+            weekly_recurrences = cls._schema_on_200.value.Element.properties.upload_limit_schedule.weekly_recurrences
+            weekly_recurrences.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.upload_limit_schedule.weekly_recurrences.Element
+            _element.days = AAZListType(
+                flags={"required": True},
+            )
+            _element.end_time = AAZObjectType(
+                serialized_name="endTime",
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_time_read(_element.end_time)
+            _element.limit_in_mbps = AAZIntType(
+                serialized_name="limitInMbps",
+                flags={"required": True},
+            )
+            _element.start_time = AAZObjectType(
+                serialized_name="startTime",
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_time_read(_element.start_time)
+
+            days = cls._schema_on_200.value.Element.properties.upload_limit_schedule.weekly_recurrences.Element.days
+            days.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -259,6 +296,26 @@ class List(AAZCommand):
 
 class _ListHelper:
     """Helper class for List"""
+
+    _schema_time_read = None
+
+    @classmethod
+    def _build_schema_time_read(cls, _schema):
+        if cls._schema_time_read is not None:
+            _schema.hour = cls._schema_time_read.hour
+            _schema.minute = cls._schema_time_read.minute
+            return
+
+        cls._schema_time_read = _schema_time_read = AAZObjectType()
+
+        time_read = _schema_time_read
+        time_read.hour = AAZIntType(
+            flags={"required": True},
+        )
+        time_read.minute = AAZIntType()
+
+        _schema.hour = cls._schema_time_read.hour
+        _schema.minute = cls._schema_time_read.minute
 
 
 __all__ = ["List"]

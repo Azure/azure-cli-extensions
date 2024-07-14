@@ -233,9 +233,9 @@ helps['aks create'] = f"""
               Used together with the "azure" network plugin.
               Requires either --pod-subnet-id or --network-plugin-mode=overlay.
               This flag is deprecated in favor of --network-dataplane=cilium.
-        - name: --enable-network-observability
+        - name: --enable-advanced-network-observability
           type: bool
-          short-summary: Enable network observability on a cluster.
+          short-summary: Enable advanced network observability functionalities on a cluster. Note that enabling this will incur additional costs.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -1213,15 +1213,9 @@ helps['aks update'] = """
         - name: --nodepool-labels
           type: string
           short-summary: The node labels for all node pool. See https://aka.ms/node-labels for syntax of labels.
-        - name: --enable-network-observability
-          type: bool
-          short-summary: Enable network observability on a cluster.
-        - name: --disable-network-observability
-          type: bool
-          short-summary: Disable network observability on a cluster
         - name: --enable-advanced-network-observability
           type: bool
-          short-summary: Enable advanced network observability functionalities on a cluster.
+          short-summary: Enable advanced network observability functionalities on a cluster. Note that enabling this will incur additional costs.
         - name: --disable-advanced-network-observability
           type: bool
           short-summary: Disable advanced network observability functionalities on a cluster
@@ -2010,6 +2004,12 @@ helps['aks nodepool update'] = """
         - name: --if-none-match
           type: string
           short-summary: Set to '*' to allow a new node pool to be created, but to prevent updating an existing node pool. Other values will be ignored.
+        - name: --enable-fips-image
+          type: bool
+          short-summary: Switch to use FIPS-enabled OS on agent nodes.
+        - name: --disable-fips-image
+          type: bool
+          short-summary: Switch to use non-FIPS-enabled OS on agent nodes.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -2909,8 +2909,8 @@ helps['aks draft generate-workflow'] = """
 
 helps['aks draft up'] = """
     type: command
-    short-summary: Set up GitHub OIDC and generate a GitHub workflow for automatic build and deploy to AKS
-    long-summary: This command combines `az aks draft setup-gh` and `az aks draft generate-workflow`.
+    short-summary: Run `az aks draft setup-gh` then `az aks draft generate-workflow`.
+    long-summary: This command combines `az aks draft setup-gh` and `az aks draft generate-workflow` to set up GitHub OIDC and generate a GitHub workflow for automatic build and deploy to AKS.
                   Before running this command, create a resource group, a container registry and a Kubernetes cluster on Azure and
                   link the three resources using `az aks update -n <cluster-name> -g <resource-group-name> --attach-acr <acr-name>`.
     parameters:

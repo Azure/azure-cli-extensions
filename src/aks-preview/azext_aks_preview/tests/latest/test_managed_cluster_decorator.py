@@ -944,71 +944,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_3.get_enable_cilium_dataplane(), False)
 
-    def test_mc_get_enable_network_observability(self):
-        # Default, not set.
-        ctx_1 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({}),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertEqual(ctx_1.get_enable_network_observability(), None)
-
-        # Flag set to True.
-        ctx_2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_network_observability": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertEqual(ctx_2.get_enable_network_observability(), True)
-
-        # Flag set to True.
-        ctx_3 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_network_observability": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        self.assertEqual(ctx_3.get_enable_network_observability(), True)
-
-        # Flag set to True and False.
-        ctx_4 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_network_observability": True,
-                    "disable_network_observability": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        # fail on get_enable_network_observability mutual exclusive error
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_4.get_enable_network_observability()
-
-        # Flag set to False.
-        ctx_5 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "disable_network_observability": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        self.assertEqual(ctx_5.get_enable_network_observability(), False)
-
     def test_mc_get_enable_advanced_network_observability(self):
         # Default, not set.
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -1102,6 +1037,37 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         # fail on managed identity not enabled
         with self.assertRaises(RequiredArgumentMissingError):
             self.assertEqual(ctx_2.get_enable_managed_identity(), False)
+
+        # custom value
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_managed_identity": None,
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_3.get_enable_managed_identity(), True)
+
+        # custom value
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_managed_identity": False,
+                }
+            ),
+            self.models,
+            DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_4.get_enable_managed_identity(), False)
+        mc_4 = self.models.ManagedCluster(location="test_location", identity=self.models.ManagedClusterIdentity(
+            type="SystemAssigned"
+        ))
+        ctx_4.attach_mc(mc_4)
+        self.assertEqual(ctx_4.get_enable_managed_identity(), False)
 
     def test_get_enable_pod_identity(self):
         # default
@@ -4202,7 +4168,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_1.agent_pool_profiles = [ground_truth_agentpool_profile_1]
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
-    def test_set_up_network_profile(self):
+    def test_set_up_network_profile_preview(self):
         # custom value
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
@@ -4248,6 +4214,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         network_profile_1.ip_families = ["IPv4", "IPv6"]
         network_profile_1.pod_cidrs = ["10.246.0.0/16", "2001:abcd::/64"]
         network_profile_1.service_cidrs = ["10.0.0.0/16", "2001:ffff::/108"]
+        network_profile_1.network_plugin = None
 
         load_balancer_profile_1 = self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
             managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
@@ -4260,6 +4227,36 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             location="test_location", network_profile=network_profile_1
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # custom value
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "network_plugin": "azure",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_network_profile(mc_2)
+
+        network_profile_2 = self.models.ContainerServiceNetworkProfile()
+        # TODO: remove this temp fix once aks-preview's dependency on core azure-cli is updated to 2.26.0
+        for attr_name, attr_value in vars(network_profile_2).items():
+            if (
+                not attr_name.startswith("_")
+                and attr_name not in ["additional_properties", "outbound_type"]
+                and attr_value is not None
+            ):
+                setattr(network_profile_2, attr_name, None)
+        network_profile_2.network_plugin = "azure"
+        network_profile_2.load_balancer_sku = CONST_LOAD_BALANCER_SKU_STANDARD
+
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location", network_profile=network_profile_2
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
     def test_set_up_api_server_access_profile(self):
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
@@ -5393,6 +5390,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         network_profile_1 = self.models.ContainerServiceNetworkProfile(
             load_balancer_sku="standard",
+            network_plugin=None,
         )
         identity_1 = self.models.ManagedClusterIdentity(type="SystemAssigned")
         storage_profile_1 = self.models.ManagedClusterStorageProfile(

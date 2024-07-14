@@ -5,6 +5,15 @@ Release History
 upcoming
 ++++++
 
+0.3.53
+++++++
+* 'az containerapp job update': Support command in extension
+* 'az containerapp job logs show': Support log streaming for job execution
+* 'az containerapp job replica list': Support list replicas of a job execution
+* 'az containerapp env update': Fix logs configuration about removing destination with `--logs-destination none`
+* 'az containerapp auth update': Fix AuthConfigSecretRefNotFound when setting secret
+* 'az containerapp job create/update': Support --scale-rule-identity for scale rule to authenticate to azure resource scaler
+
 0.3.52
 ++++++
 * 'az containerapp env java-component admin-for-spring': Support create/update/show/delete Admin for spring
