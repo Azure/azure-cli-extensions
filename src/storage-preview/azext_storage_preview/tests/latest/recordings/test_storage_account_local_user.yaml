@@ -1,0 +1,501 @@
+interactions:
+- request:
+    body: '{"properties": {"permissionScopes": [{"permissions": "r", "service": "blob",
+      "resourceName": "container1"}, {"permissions": "rw", "service": "file", "resourceName":
+      "share2"}], "homeDirectory": "home", "hasSharedKey": false, "hasSshKey": false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account local-user create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '245'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --account-name -g -n --home-directory --permission-scope --permission-scope
+        --has-ssh-key --has-shared-key
+      User-Agent:
+      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000003?api-version=2023-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000003","name":"cli000003","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1000,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-35768843-3402993082-3349108177-1000","hasSharedKey":false,"hasSshKey":false}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '564'
+      content-type:
+      - application/json
+      date:
+      - Sun, 14 Jul 2024 14:48:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/7af4202a-b6b0-478a-bf23-1c6a4a2e681d
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account local-user update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --account-name -g -n --home-directory --permission-scope
+      User-Agent:
+      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000003?api-version=2023-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000003","name":"cli000003","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1000,"hasSshPassword":false,"permissionScopes":[{"permissions":"r","service":"blob","resourceName":"container1"},{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home","sid":"S-1-2-0-35768843-3402993082-3349108177-1000","hasSharedKey":false,"hasSshKey":false}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '587'
+      content-type:
+      - application/json
+      date:
+      - Sun, 14 Jul 2024 14:48:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/0ae69660-06e9-4606-9c62-e2c9d578c019
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"permissionScopes": [{"permissions": "rw", "service": "file",
+      "resourceName": "share2"}], "homeDirectory": "home2", "hasSharedKey": false,
+      "hasSshKey": false, "hasSshPassword": false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account local-user update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '200'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --account-name -g -n --home-directory --permission-scope
+      User-Agent:
+      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000003?api-version=2023-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000003","name":"cli000003","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1000,"hasSshPassword":false,"permissionScopes":[{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home2","sid":"S-1-2-0-35768843-3402993082-3349108177-1000","hasSharedKey":false,"hasSshKey":false}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '523'
+      content-type:
+      - application/json
+      date:
+      - Sun, 14 Jul 2024 14:48:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/576bfded-25bd-48b2-b1b3-3320b1eba4ce
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account local-user list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --account-name -g
+      User-Agent:
+      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers?api-version=2023-05-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000003","name":"cli000003","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1000,"hasSshPassword":false,"permissionScopes":[{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home2","sid":"S-1-2-0-35768843-3402993082-3349108177-1000","hasSharedKey":false,"hasSshKey":false}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '535'
+      content-type:
+      - application/json
+      date:
+      - Sun, 14 Jul 2024 14:48:08 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/00642a19-46ea-4702-b8cb-278be9aca586
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account local-user show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --account-name -g -n
+      User-Agent:
+      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000003?api-version=2023-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000003","name":"cli000003","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1000,"hasSshPassword":false,"permissionScopes":[{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home2","sid":"S-1-2-0-35768843-3402993082-3349108177-1000","hasSharedKey":false,"hasSshKey":false}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '523'
+      content-type:
+      - application/json
+      date:
+      - Sun, 14 Jul 2024 14:48:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/2eb06043-f9ce-428a-b716-3f35d0a80fde
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account local-user update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --account-name -g -n --ssh-authorized-key
+      User-Agent:
+      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000003?api-version=2023-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000003","name":"cli000003","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1000,"hasSshPassword":false,"permissionScopes":[{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home2","sid":"S-1-2-0-35768843-3402993082-3349108177-1000","hasSharedKey":false,"hasSshKey":false}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '523'
+      content-type:
+      - application/json
+      date:
+      - Sun, 14 Jul 2024 14:48:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/fd1449b2-6df7-4989-816a-47041da41de8
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3748'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"permissionScopes": [{"permissions": "rw", "service": "file",
+      "resourceName": "share2"}], "homeDirectory": "home2", "sshAuthorizedKeys": [{"description":
+      "", "key": "ssh-rsa a2V5"}], "hasSharedKey": false, "hasSshKey": false, "hasSshPassword":
+      false}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account local-user update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '267'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --account-name -g -n --ssh-authorized-key
+      User-Agent:
+      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000003?api-version=2023-05-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localusers/cli000003","name":"cli000003","type":"Microsoft.Storage/storageAccounts/localUsers","properties":{"userId":1000,"hasSshPassword":false,"permissionScopes":[{"permissions":"rw","service":"file","resourceName":"share2"}],"homeDirectory":"home2","sshAuthorizedKeys":[{"description":"","key":"ssh-rsa
+        a2V5"}],"sid":"S-1-2-0-35768843-3402993082-3349108177-1000","hasSharedKey":false,"hasSshKey":false}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '585'
+      content-type:
+      - application/json
+      date:
+      - Sun, 14 Jul 2024 14:48:11 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/00231a04-9b78-4255-b9ae-f1d4bfb29bb0
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account local-user list-keys
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --account-name -g -n
+      User-Agent:
+      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000003/listKeys?api-version=2023-05-01
+  response:
+    body:
+      string: '{}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2'
+      content-type:
+      - application/json
+      date:
+      - Sun, 14 Jul 2024 14:48:13 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/343adaa6-007e-44f0-a8ce-5a667365e07d
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2998'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '198'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account local-user regenerate-password
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --account-name -g -n
+      User-Agent:
+      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000003/regeneratePassword?api-version=2023-05-01
+  response:
+    body:
+      string: '{"sshPassword":"+Q9wu50sWqMjI7cZDu9Wt/KRhfsZKoFC"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '50'
+      content-type:
+      - application/json
+      date:
+      - Sun, 14 Jul 2024 14:48:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/7b933c6d-b6f3-4d4a-9f27-6b5284f9b64e
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - storage account local-user delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --account-name -g -n
+      User-Agent:
+      - AZURECLI/2.62.0 (PIP) azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_storage_account_local_user000001/providers/Microsoft.Storage/storageAccounts/storagelocaluser000002/localUsers/cli000003?api-version=2023-05-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      content-type:
+      - text/plain; charset=utf-8
+      date:
+      - Sun, 14 Jul 2024 14:48:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-Azure-Storage-Resource-Provider/1.0,Microsoft-HTTPAPI/2.0 Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=54826b22-38d6-4fb2-bad9-b7b93a3e9c5a,objectId=a7250e3a-0e5e-48e2-9a34-45f1f5e1a91e/eastus2euap/82c9653d-0598-4187-850f-7755d854c202
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+    status:
+      code: 200
+      message: OK
+version: 1

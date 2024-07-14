@@ -10,6 +10,7 @@ import argparse
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands.validators import validate_key_value_pairs
 from azure.cli.core.profiles import get_sdk
+from azure.cli.core.azclierror import UnrecognizedArgumentError
 from knack.util import CLIError
 from knack.log import get_logger
 from ._client_factory import get_storage_data_service_client, blob_data_service_factory, cf_blob_service, \
@@ -998,3 +999,53 @@ def validate_share_close_handle(namespace):
         raise InvalidArgumentValueError("usage error: Please only specify either --handle-id or --close-all, not both.")
     if not namespace.close_all and not namespace.handle:
         raise InvalidArgumentValueError("usage error: Please specify either --handle-id or --close-all.")
+
+
+# pylint: disable=too-few-public-methods
+class PermissionScopeAddAction(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if not namespace.permission_scope:
+            namespace.permission_scope = []
+        PermissionScope = namespace._cmd.get_models('PermissionScope')
+        try:
+            permissions, service, resource_name = '', '', ''
+            for s in values:
+                k, v = s.split('=', 1)
+                if k == "permissions":
+                    permissions = v
+                elif k == "service":
+                    service = v
+                elif k == "resource-name":
+                    resource_name = v
+                else:
+                    raise UnrecognizedArgumentError(
+                        'key error: key must be one of permissions, service, resource-name for --permission-scope')
+        except (ValueError, TypeError, IndexError):
+            raise CLIError('usage error: --permission-scope [Key=Value ...]')
+        namespace.permission_scope.append(PermissionScope(
+            permissions=permissions,
+            service=service,
+            resource_name=resource_name
+        ))
+
+
+# pylint: disable=too-few-public-methods
+class SshPublicKeyAddAction(argparse._AppendAction):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if not namespace.ssh_authorized_key:
+            namespace.ssh_authorized_key = []
+        SshPublicKey = namespace._cmd.get_models('SshPublicKey')
+        try:
+            description, key = '', ''
+            for s in values:
+                k, v = s.split('=', 1)
+                if k == "description":
+                    description = v
+                elif k == "key":
+                    key = v
+                else:
+                    raise UnrecognizedArgumentError(
+                        'key error: key must be one of description, key for --ssh-authorized-key')
+        except (ValueError, TypeError, IndexError):
+            raise CLIError('usage error: --ssh-authorized-key [Key=Value ...]')
+        namespace.ssh_authorized_key.append(SshPublicKey(description=description, key=key))
