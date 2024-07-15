@@ -80,15 +80,10 @@ class NginxScenarioTest(ScenarioTest):
         self.kwargs['kv_secret_id'] = certificate['sid']
         self.kwargs['mi_principal_id'] = self.cmd('identity show --name {managed_identity} --resource-group {rg}').get_output_in_json()['principalId']
 
-
         with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
             self.cmd("role assignment create --role 'Key Vault Administrator' --assignee-object-id {identity_object_id} --scope {kv_resource_id} --assignee-principal-type 'ServicePrincipal'")
         if self.is_live:
             time.sleep(15)
-
-        # self.cmd("role assignment create --role 'Key Vault Administrator' --assignee-object-id {identity_object_id} --scope {kv_resource_id} --assignee-principal-type 'ServicePrincipal'")
-        # RBAC takes about 15 min to pass CI, local test can be changed to 15
-        # time.sleep(15)
         self.cmd('nginx deployment certificate create --certificate-name {cert_name} --deployment-name {deployment_name} --location {location} --resource-group {rg} --certificate-path /etc/nginx/test.cert --key-path /etc/nginx/test.key --key-vault-secret-id {kv_secret_id}', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['cert_name']),
