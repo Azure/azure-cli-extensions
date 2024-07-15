@@ -943,10 +943,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                        help='Indicates whether ssh key exists. Set it to false to remove existing SSH key.')
             c.argument('has_ssh_password', arg_type=get_three_state_flag(),
                        help='Indicates whether ssh password exists. Set it to false to remove existing SSH password.')
-            c.argument('extended_groups', nargs='+',
-                       help='Supplementary group membership. Only applicable for local users enabled for NFSv3 access.')
-            c.argument('is_nfsv3_enabled', arg_type=get_three_state_flag(),
-                       help='Indicates if the local user is enabled for access with NFSv3 protocol.')
             c.argument('group_id',
                        help='An identifier for associating a group of users.')
             c.argument('allow_acl_authorization', arg_type=get_three_state_flag(),
