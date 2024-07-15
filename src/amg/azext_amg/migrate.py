@@ -8,10 +8,14 @@ logger = get_logger(__name__)
 
 
 def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, folders_to_include=None, folders_to_exclude=None):
+    # TODO: refactor, make helper functions that this will call and just return the summaries.
     datasources_created_summary = []
     datasources_remapped_summary = []
     folders_created_summary = []
     library_panels_synced_summary = {}
+    dashboards_synced_summary = {}
+    snapshots_synced_summary = {}
+    annotations_synced_summary = []
 
     # get all datasources to be backedup
     all_datasources = get_all_datasources(backup_url, backup_headers)
@@ -66,22 +70,45 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, f
     # we don't backup provisioned dashboards, so we don't need to restore them
     for dashboard in all_dashboards:
         dashboard['dashboard']['id'] = None
-        # TODO: add the override flag.
-        create_dashboard(restore_url, dashboard, restore_headers)
+        # TODO: add the override flag, we don't need to delete & create, override will just do it.
+        if not dry_run:
+            create_dashboard(restore_url, dashboard, restore_headers)
+
+        folder_title = dashboard['meta']['folderTitle']
+        if folder_title not in dashboards_synced_summary:
+            dashboards_synced_summary[folder_title] = []
+        dashboards_synced_summary[folder_title].append(dashboard['dashboard']['title'])
 
     # get the list of snapshots to backup
     all_snapshots = get_all_snapshots(backup_url, backup_headers)
     for snapshot in all_snapshots:
-        create_snapshot(restore_url, snapshot, restore_headers)
+        if not dry_run:
+            create_snapshot(restore_url, snapshot, restore_headers)
+        
+        try:
+            snapshot_name = snapshot['dashboard']['title']
+        except KeyError:
+            snapshot_name = "Untitled Snapshot"
+
+        snapshot_folder_title = snapshot['meta']['folderTitle']
+        if snapshot_folder_title not in snapshots_synced_summary:
+            snapshots_synced_summary[snapshot_folder_title] = []
+        snapshots_synced_summary[snapshot_folder_title].append(snapshot_name)
 
     # get all the annotations
     all_annotations = get_all_annotations(backup_url, backup_headers)
     for annotation in all_annotations:
-        create_annotation(restore_url, annotation, restore_headers)
+        if not dry_run:
+            create_annotation(restore_url, annotation, restore_headers)
 
+        # can do text to get the text, annotations don't have titles.
+        # annotations_synced_summary.append(annotation['text'])
+        annotations_synced_summary.append(annotation['id'])
 
     output = [
         (Style.IMPORTANT, f"\n\nDry run: {dry_run if dry_run else False}\n"),
+        (Style.SUCCESS, "\n\nDatasources created:"),
+        (Style.PRIMARY, "\n    " + "\n    ".join(datasources_created_summary)),
         (Style.SUCCESS, "\n\nFolders created:"),
         (Style.PRIMARY, "\n    " + "\n    ".join(folders_created_summary)),
     ]
@@ -91,15 +118,18 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, f
         output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
         output.append((Style.SECONDARY, "\n        ".join(panels)))
 
-    # output.append((Style.SUCCESS, "\n\nDashboards synced:"))
-    # for folder, dashboards in dashboards_synced_summary.items():
-    #     output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
-    #     output.append((Style.SECONDARY, "\n        ".join(dashboards)))
+    output.append((Style.SUCCESS, "\n\nDashboards synced:"))
+    for folder, dashboards in dashboards_synced_summary.items():
+        output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
+        output.append((Style.SECONDARY, "\n        ".join(dashboards)))
 
-    # output.append((Style.WARNING, "\n\nDashboards skipped:"))
-    # for folder, dashboards in dashboards_skipped_summary.items():
-    #     output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
-    #     output.append((Style.SECONDARY, "\n        ".join(dashboards)))
+    output.append((Style.SUCCESS, "\n\nSnapshots synced:"))
+    for folder, snapshots in snapshots_synced_summary.items():
+        output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
+        output.append((Style.SECONDARY, "\n        ".join(snapshots)))
+
+    output.append((Style.SUCCESS, "\n\nAnnotations synced:"))
+    output.append((Style.PRIMARY, "\n    " + "\n    ".join(annotations_synced_summary)))
 
     print_styled_text(output)
 
