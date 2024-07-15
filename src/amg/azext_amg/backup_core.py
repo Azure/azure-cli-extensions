@@ -173,8 +173,6 @@ def get_all_folders(grafana_url, http_headers, **kwargs):
 
     individual_folders = []
     for folder in folders:
-        folder_uri = "uid/" + folder['uid']
-
         (status_folder_settings, content_folder_settings) = get_folder(folder['uid'], grafana_url, http_headers)
         (status_folder_permissions, content_folder_permissions) = get_folder_permissions(folder['uid'],
                                                                                          grafana_url,

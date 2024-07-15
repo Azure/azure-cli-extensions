@@ -1,4 +1,5 @@
 from knack.log import get_logger
+from azure.cli.core.style import print_styled_text, Style
 
 from .restore import create_dashboard, create_folder, create_library_panel, create_snapshot, create_annotation, create_datasource, set_uid_mapping
 from .backup_core import get_all_dashboards, get_all_library_panels, get_all_snapshots, get_all_folders, get_all_annotations, get_all_datasources
@@ -30,7 +31,7 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, f
     set_uid_mapping(all_datasources, all_restore_datasources)
 
     all_folders = get_all_folders(backup_url, backup_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
-    all_restore_folders = get_all_folders(backup_url, backup_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
+    all_restore_folders = get_all_folders(restore_url, restore_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
     restore_folder_uids = {restore_content['uid'] for (restore_content, _) in all_restore_folders}
 
     for folder in all_folders:
@@ -48,6 +49,7 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, f
         library_panel['id'] = None
         create_library_panel(restore_url, library_panel, restore_headers)
 
+    # we don't backup provisioned dashboards, so we don't need to restore them
     all_dashboards = get_all_dashboards(backup_url, backup_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
     for dashboard in all_dashboards:
         dashboard['dashboard']['id'] = None
@@ -62,3 +64,32 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, f
     all_annotations = get_all_annotations(backup_url, backup_headers)
     for annotation in all_annotations:
         create_annotation(restore_url, annotation, restore_headers)
+
+
+    output = [
+        (Style.IMPORTANT, f"\n\nDry run: {dry_run if dry_run else False}\n")
+        (Style.IMPORTANT, f"\nSummary:")
+        (Style.SUCCESS, "\n\nFolders created:"),
+        (Style.PRIMARY, "\n    " + "\n    ".join(folders_created_summary)),
+    ]
+
+    # output.append((Style.SUCCESS, "\n\nLibrary panels synced:"))
+    # for folder, panels in library_panels_synced_summary.items():
+    #     output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
+    #     output.append((Style.SECONDARY, "\n        ".join(panels)))
+
+    # output.append((Style.SUCCESS, "\n\nDashboards synced:"))
+    # for folder, dashboards in dashboards_synced_summary.items():
+    #     output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
+    #     output.append((Style.SECONDARY, "\n        ".join(dashboards)))
+
+    # output.append((Style.WARNING, "\n\nDashboards skipped:"))
+    # for folder, dashboards in dashboards_skipped_summary.items():
+    #     output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
+    #     output.append((Style.SECONDARY, "\n        ".join(dashboards)))
+
+    print_styled_text(output)
+
+
+def get_all_library_panels_from_dashboards():
+    pass
