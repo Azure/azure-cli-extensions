@@ -16,6 +16,7 @@ Pending
 ++++++++
 * Remove support for `az aks mesh` egress gateway commands.
 * Add validation to `az aks create` and `az aks update` while modifying the `--ephemeral-disk-volume-type` and `--ephemeral-disk-nvme-perf-tier` values.
+* Add `az operation list` command to list all operations of a specific managed cluster.
 
 5.0.0b4
 ++++++++

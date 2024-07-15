@@ -1884,6 +1884,13 @@ def aks_operation_show_latest(cmd,
     return client.get(resource_group_name, name, "latest")
 
 
+def aks_operation_list(cmd,
+                       client,
+                       resource_group_name,
+                       name,):
+    return client.list(resource_group_name, name)
+
+
 def aks_operation_abort(cmd,   # pylint: disable=unused-argument
                         client,
                         resource_group_name,

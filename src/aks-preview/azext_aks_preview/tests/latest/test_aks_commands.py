@@ -2453,6 +2453,17 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         assert operation_show["error"] is None
         assert operation_show["name"] == operation_id
 
+        list_cmd = (
+            "aks operation list "
+            "--resource-group={resource_group} --name={name} -o json"
+        )
+        operation_list = self.cmd(list_cmd).get_output_in_json()
+        assert len(operation_list) > 0
+        assert operation_list[0]["id"] == operation_show_latest["id"]
+        assert operation_list[0]["status"] == "Succeeded"
+        assert operation_list[0]["error"] is None
+        assert operation_list[0]["name"] == operation_id
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westcentralus"
@@ -14104,6 +14115,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # delete
         self.cmd('aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
+    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
