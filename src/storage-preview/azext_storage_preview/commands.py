@@ -218,5 +218,3 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         from .operations.task_assignment import TaskAssignmentCreate, TaskAssignmentUpdate
         self.command_table['storage account task-assignment create'] = TaskAssignmentCreate(loader=self)
         self.command_table['storage account task-assignment update'] = TaskAssignmentUpdate(loader=self)
-
-

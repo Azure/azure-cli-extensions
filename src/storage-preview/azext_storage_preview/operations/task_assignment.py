@@ -24,17 +24,17 @@ class TaskAssignmentCreate(_TaskAssignmentCreate):
                 start_on = args.execution_context.trigger.parameters.start_on
                 formatted_time = datetime.strptime(str(start_on), datatime_format)
                 args.execution_context.trigger.parameters.start_on = \
-                    formatted_time.strftime(datatime_format)[:-1]+"0Z"
+                    formatted_time.strftime(datatime_format)[:-1] + "0Z"
             if has_value(args.execution_context.trigger.parameters.start_from):
                 start_from = args.execution_context.trigger.parameters.start_from
                 formatted_time = datetime.strptime(str(start_from), datatime_format)
                 args.execution_context.trigger.parameters.start_from = \
-                    formatted_time.strftime(datatime_format)[:-1]+"0Z"
+                    formatted_time.strftime(datatime_format)[:-1] + "0Z"
             if has_value(args.execution_context.trigger.parameters.end_by):
                 end_by = args.execution_context.trigger.parameters.end_by
                 formatted_time = datetime.strptime(str(end_by), datatime_format)
                 args.execution_context.trigger.parameters.end_by = \
-                    formatted_time.strftime(datatime_format)[:-1]+"0Z"
+                    formatted_time.strftime(datatime_format)[:-1] + "0Z"
         except AAZUnknownFieldError:
             pass
 
@@ -47,16 +47,16 @@ class TaskAssignmentUpdate(_TaskAssignmentUpdate):
                 start_on = args.execution_context.trigger.parameters.start_on
                 formatted_time = datetime.strptime(str(start_on), datatime_format)
                 args.execution_context.trigger.parameters.start_on = \
-                    formatted_time.strftime(datatime_format)[:-1]+"0Z"
+                    formatted_time.strftime(datatime_format)[:-1] + "0Z"
             if has_value(args.execution_context.trigger.parameters.start_from):
                 start_from = args.execution_context.trigger.parameters.start_from
                 formatted_time = datetime.strptime(str(start_from), datatime_format)
                 args.execution_context.trigger.parameters.start_from = \
-                    formatted_time.strftime(datatime_format)[:-1]+"0Z"
+                    formatted_time.strftime(datatime_format)[:-1] + "0Z"
             if has_value(args.execution_context.trigger.parameters.end_by):
                 end_by = args.execution_context.trigger.parameters.end_by
                 formatted_time = datetime.strptime(str(end_by), datatime_format)
                 args.execution_context.trigger.parameters.end_by = \
-                    formatted_time.strftime(datatime_format)[:-1]+"0Z"
+                    formatted_time.strftime(datatime_format)[:-1] + "0Z"
         except AAZUnknownFieldError:
             pass

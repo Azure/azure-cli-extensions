@@ -288,30 +288,33 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
             "task_assignment_name": self.create_random_name('taskassignment', 24)
         })
         self.cmd('az storage account create -n {sa} -g {rg} -l eastus2euap')
-        task_id = self.cmd("az storage-actions task create -g {rg} -n {task_name} --identity {{type:SystemAssigned}} "
-                           "--tags {{key1:value1}} --action {{if:{{condition:\\'[[equals(AccessTier,\\'/Cool\\'/)]]\\',"
-                           "operations:[{{name:'SetBlobTier',parameters:{{tier:'Hot'}},"
-                           "onSuccess:'continue',onFailure:'break'}}]}},"
-                           "else:{{operations:[{{name:'DeleteBlob',onSuccess:'continue',onFailure:'break'}}]}}}} "
-                           "--description StorageTask1 --enabled true").get_output_in_json()["id"]
-        # server error
+
+        # need to create storage-actions task manually
+        # task_id = self.cmd("az storage-actions task create -g {rg} -n {task_name} --identity {{type:SystemAssigned}} "
+        #                    "--tags {{key1:value1}} --action {{if:{{condition:\\'
+        #                    [[equals(AccessTier,\\'/Cool\\'/)]]\\',"
+        #                    "operations:[{{name:'SetBlobTier',parameters:{{tier:'Hot'}},"
+        #                    "onSuccess:'continue',onFailure:'break'}}]}},"
+        #                    "else:{{operations:[{{name:'DeleteBlob',onSuccess:'continue',onFailure:'break'}}]}}}} "
+        #                    "--description StorageTask1 --enabled true").get_output_in_json()["id"]
+        task_id = 'taskid'
+        self.kwargs.update({"task_id": task_id})
+        # server error return accepted but also error
         with self.assertRaises(HttpResponseError):
             self.cmd("az storage account task-assignment create -g {rg} -n {task_assignment_name} --account-name {sa} "
-                     "--description 'My Storage task assignment' --enabled false --task-id '/subscriptions/"
-                     "0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/testtaskassignmentrg/providers/"
-                     "Microsoft.StorageActions/storageTasks/testtask1' --report {{prefix:container1}} "
+                     "--description 'My Storage task assignment' --enabled false --task-id '{task_id}' "
+                     "--report {{prefix:container1}} "
                      "--execution-context {{trigger:{{type:OnSchedule,parameters:"
-                     "{{start-from:\\'2024-07-14T21:52:47Z\\',"
-                     "end-by:\\'2024-08-04T21:52:47.203074Z\\',interval:10,interval-unit:Days}}}},"
+                     "{{start-from:\\'2024-08-14T21:52:47Z\\',"
+                     "end-by:\\'2024-09-04T21:52:47.203074Z\\',interval:10,interval-unit:Days}}}},"
                      "target:{{prefix:[prefix1,prefix2],exclude-prefix:[prefix3]}}}}")
         with self.assertRaises(HttpResponseError):
             self.cmd("az storage account task-assignment update -g {rg} -n {task_assignment_name} --account-name {sa} "
-                     "--description 'My Storage task assignment' --enabled false --task-id '/subscriptions/"
-                     "0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/testtaskassignmentrg/providers/"
-                     "Microsoft.StorageActions/storageTasks/testtask1' --report {{prefix:container1}} "
+                     "--description 'My Storage task assignment' --enabled false --task-id '{task_id}'"
+                     " --report {{prefix:container1}} "
                      "--execution-context {{trigger:{{type:OnSchedule,parameters:"
-                     "{{start-from:\\'2024-07-15T21:52:47Z\\',"
-                     "end-by:\\'2024-08-05T21:52:47.203074Z\\',interval:10,interval-unit:Days}}}},"
+                     "{{start-from:\\'2024-08-15T21:52:47Z\\',"
+                     "end-by:\\'2024-09-05T21:52:47.203074Z\\',interval:10,interval-unit:Days}}}},"
                      "target:{{prefix:[prefix1,prefix2],exclude-prefix:[prefix3]}}}}")
         self.cmd("az storage account task-assignment show -g {rg} -n {task_assignment_name} --account-name {sa}")
         self.cmd("az storage account task-assignment list -g {rg} --account-name {sa}")
