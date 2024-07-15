@@ -5,9 +5,10 @@
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-
+from unittest import mock
 import json
 import time
+
 class NginxScenarioTest(ScenarioTest):
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='AZCLIDepTestRG_', random_name_length=34, location='eastus2')
@@ -78,6 +79,12 @@ class NginxScenarioTest(ScenarioTest):
         certificate = self.cmd('keyvault certificate show --name {cert_name} --vault-name {kv_name}').get_output_in_json()
         self.kwargs['kv_secret_id'] = certificate['sid']
         self.kwargs['mi_principal_id'] = self.cmd('identity show --name {managed_identity} --resource-group {rg}').get_output_in_json()['principalId']
+
+
+        with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
+            self.cmd("role assignment create --role 'Key Vault Administrator' --assignee-object-id {identity_object_id} --scope {kv_resource_id} --assignee-principal-type 'ServicePrincipal'")
+        if self.is_live:
+            time.sleep(15)
 
         self.cmd("role assignment create --role 'Key Vault Administrator' --assignee-object-id {identity_object_id} --scope {kv_resource_id} --assignee-principal-type 'ServicePrincipal'")
         # RBAC takes about 15 min to pass CI, local test can be changed to 15
