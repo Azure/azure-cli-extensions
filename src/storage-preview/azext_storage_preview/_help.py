@@ -840,9 +840,10 @@ helps['storage account local-user list'] = """
     type: command
     short-summary: List local users for a storage account.
     examples:
-        - name: List local-user for a storage account
+        - name: List local-user for a storage account with name starting with test and only returning 3 results
           text: >
-              az storage account local-user list --account-name {account-name} -g {resource-group}
+              az storage account local-user list --account-name {account-name} -g {resource-group} 
+              --filter "startswith(name, test)" --maxpagesize 3
 """
 
 helps['storage account local-user show'] = """

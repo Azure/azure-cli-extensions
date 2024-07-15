@@ -290,7 +290,8 @@ class StorageAccountLocalUserTests(StorageScenarioMixin, ScenarioTest):
             'sa': storage_account,
             'rg': resource_group,
             'cmd': 'storage account local-user',
-            'username': username
+            'username': username,
+            'username2': self.create_random_name(prefix='notcli', length=24)
         })
 
         self.cmd('{cmd} create --account-name {sa} -g {rg} -n {username} --home-directory home '
@@ -331,6 +332,19 @@ class StorageAccountLocalUserTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('[0].sshAuthorizedKeys', None)
         )
 
+        self.cmd('{cmd} create --account-name {sa} -g {rg} -n {username2} --home-directory home '
+                 '--permission-scope permissions=r service=blob resource-name=container1 '
+                 '--permission-scope permissions=rw service=file resource-name=share2 '
+                 '--has-ssh-key false --has-shared-key false --group-id 2 '
+                 '--allow-acl-authorization true')
+
+        self.cmd('{cmd} list --account-name {sa} -g {rg}').assert_with_checks(
+            JMESPathCheck('length(@)', 2)
+        )
+        self.cmd('{cmd} list --account-name {sa} -g {rg} --filter "startswith(name, cli)"').assert_with_checks(
+            JMESPathCheck('length(@)', 1)
+        )
+
         self.cmd('{cmd} show --account-name {sa} -g {rg} -n {username}').assert_with_checks(
             JMESPathCheck('hasSshKey', False),
             JMESPathCheck('hasSshPassword', False),
@@ -355,3 +369,17 @@ class StorageAccountLocalUserTests(StorageScenarioMixin, ScenarioTest):
         )
 
         self.cmd('{cmd} delete --account-name {sa} -g {rg} -n {username}')
+
+        for i in range(5):
+            username = self.create_random_name(prefix='cli', length=24)
+            self.kwargs.update({
+                'username': username
+            })
+            self.cmd('{cmd} create --account-name {sa} -g {rg} -n {username} --home-directory home '
+                     '--permission-scope permissions=r service=blob resource-name=container1 '
+                     '--permission-scope permissions=rw service=file resource-name=share2 '
+                     '--has-ssh-key false --has-shared-key false --group-id 1 '
+                     '--allow-acl-authorization true')
+        self.cmd('{cmd} list --account-name {sa} -g {rg} --maxpagesize 3').assert_with_checks(
+            JMESPathCheck('length(@)', 3)
+        )
