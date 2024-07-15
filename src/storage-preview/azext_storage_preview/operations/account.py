@@ -428,8 +428,8 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
     if enable_files_adds is not None:
         ActiveDirectoryProperties = cmd.get_models('ActiveDirectoryProperties')
         if enable_files_adds:  # enable AD
-            if not(domain_name and net_bios_domain_name and forest_name and domain_guid and domain_sid and
-                   azure_storage_sid):
+            if not (domain_name and net_bios_domain_name and forest_name and domain_guid and domain_sid and
+                    azure_storage_sid):
                 raise CLIError("To enable ActiveDirectoryDomainServicesForFile, user must specify all of: "
                                "--domain-name, --net-bios-domain-name, --forest-name, --domain-guid, --domain-sid and "
                                "--azure_storage_sid arguments in Azure Active Directory Properties Argument group.")
@@ -554,3 +554,49 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
         params.is_local_user_enabled = enable_local_user
 
     return params
+
+
+def _generate_local_user(local_user, permission_scope=None, ssh_authorized_key=None,
+                         home_directory=None, has_shared_key=None, has_ssh_key=None, has_ssh_password=None,
+                         group_id=None, allow_acl_authorization=None):
+    if permission_scope is not None:
+        local_user.permission_scopes = permission_scope
+    if ssh_authorized_key is not None:
+        local_user.ssh_authorized_keys = ssh_authorized_key
+    if home_directory is not None:
+        local_user.home_directory = home_directory
+    if has_shared_key is not None:
+        local_user.has_shared_key = has_shared_key
+    if has_ssh_key is not None:
+        local_user.has_ssh_key = has_ssh_key
+    if has_ssh_password is not None:
+        local_user.has_ssh_password = has_ssh_password
+    if group_id is not None:
+        local_user.group_id = group_id
+    if allow_acl_authorization is not None:
+        local_user.allow_acl_authorization = allow_acl_authorization
+
+
+def create_local_user(cmd, client, resource_group_name, account_name, username, permission_scope=None, home_directory=None,
+                      has_shared_key=None, has_ssh_key=None, has_ssh_password=None, ssh_authorized_key=None,
+                      group_id=None, allow_acl_authorization=None):
+    LocalUser = cmd.get_models('LocalUser')
+    local_user = LocalUser()
+
+    _generate_local_user(local_user, permission_scope, ssh_authorized_key,
+                         home_directory, has_shared_key, has_ssh_key, has_ssh_password, group_id,
+                         allow_acl_authorization)
+    return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
+                                   username=username, properties=local_user)
+
+
+def update_local_user(cmd, client, resource_group_name, account_name, username, permission_scope=None,
+                      home_directory=None, has_shared_key=None, has_ssh_key=None, has_ssh_password=None,
+                      ssh_authorized_key=None, group_id=None, allow_acl_authorization=None):
+    local_user = client.get(resource_group_name, account_name, username)
+
+    _generate_local_user(local_user, permission_scope, ssh_authorized_key,
+                         home_directory, has_shared_key, has_ssh_key, has_ssh_password, group_id,
+                         allow_acl_authorization)
+    return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
+                                   username=username, properties=local_user)
