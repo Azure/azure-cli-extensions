@@ -5,6 +5,7 @@ Release History
 2.0.0b1
 +++++	
 * Add reconcile command from Network Security Perimeter API's and more payGo features. 2024/05/20-preview is used for aaz generation. Migrated to aaz.
+* Add gateway and setting command from Gateway and Setting API. 2024/05/20-preview is used for aaz generation.
 
 1.0.0b1
 +++++	
