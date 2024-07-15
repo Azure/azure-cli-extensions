@@ -4647,6 +4647,129 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus2euap"
+    )
+    def test_aks_create_update_fips_flow(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        node_pool_name = self.create_random_name("c", 6)
+        node_pool_name_second = self.create_random_name("c", 6)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "dns_name_prefix": self.create_random_name("cliaksdns", 16),
+                "location": resource_group_location,
+                "resource_type": "Microsoft.ContainerService/ManagedClusters",
+                "node_pool_name": node_pool_name,
+                "node_pool_name_second": node_pool_name_second,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # 1. create
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--nodepool-name {node_pool_name} -c 1 --enable-managed-identity "
+            "--ssh-key-value={ssh_key_value} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MutableFipsPreview '
+            "--enable-fips-image"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("agentPoolProfiles[0].enableFips", True),
+            ],
+        )
+
+        # verify no flag no change
+        self.cmd(
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={node_pool_name} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MutableFipsPreview',
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableFips", True),
+            ],
+        )
+
+        # verify same update no change
+        self.cmd(
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={node_pool_name} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MutableFipsPreview '
+            "--enable-fips-image",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableFips", True),
+            ],
+        )
+
+        # update nodepool1 to disable
+        self.cmd(
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={node_pool_name} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MutableFipsPreview '
+            "--disable-fips-image",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableFips", False),
+            ],
+        )
+
+        # 2. add nodepool2
+        self.cmd(
+            "aks nodepool add "
+            "--resource-group={resource_group} "
+            "--cluster-name={name} "
+            "--name={node_pool_name_second} "
+            "--os-type Linux "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MutableFipsPreview ',
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableFips", False),
+            ],
+        )
+
+        # verify no flag no change
+        self.cmd(
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={node_pool_name_second} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MutableFipsPreview',
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableFips", False),
+            ],
+        )
+
+        # verify same update no change
+        self.cmd(
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={node_pool_name_second} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MutableFipsPreview '
+            "--disable-fips-image",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableFips", False),
+            ],
+        )
+
+        # update nodepool2 to enable
+        self.cmd(
+            "aks nodepool update --resource-group={resource_group} --cluster-name={name} --name={node_pool_name_second} "
+            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/MutableFipsPreview '
+            "--enable-fips-image",
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("enableFips", True),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
     def test_aks_create_with_ahub(self, resource_group, resource_group_location):
@@ -5994,6 +6117,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--network-plugin kubenet "
             "--enable-managed-identity "
             "--enable-pod-identity --enable-pod-identity-with-kubenet "
             "--ssh-key-value={ssh_key_value} "
@@ -6294,6 +6418,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--network-plugin kubenet "
             "--enable-managed-identity "
             "--enable-pod-identity --enable-pod-identity-with-kubenet "
             "--ssh-key-value={ssh_key_value} "
@@ -12329,94 +12454,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="westus2"
-    )
-    def test_aks_azure_service_mesh_with_egress_gateway(
-        self, resource_group, resource_group_location
-    ):
-        """This test case exercises enabling and disabling an egress gateway.
-
-        It creates a cluster with azure service mesh profile. After that, we enable an egress
-        gateway, then disable it.
-        """
-
-        # reset the count so in replay mode the random names will start with 0
-        self.test_resources_count = 0
-        # kwargs for string formatting
-        aks_name = self.create_random_name("cliakstest", 16)
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "location": resource_group_location,
-                "ssh_key_value": self.generate_ssh_keys(),
-                "revision": self._get_asm_supported_revision(resource_group_location)
-            }
-        )
-
-        # create cluster with --enable-azure-service-mesh
-        create_cmd = (
-            "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureServiceMeshPreview "
-            "--ssh-key-value={ssh_key_value} "
-            "--enable-azure-service-mesh --revision={revision} --output=json"
-        )
-        self.cmd(
-            create_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("serviceMeshProfile.mode", "Istio"),
-            ],
-        )
-
-        # enable egress gateway
-        update_cmd = (
-            "aks mesh enable-egress-gateway --resource-group={resource_group} --name={name}"
-        )
-        try:
-            self.cmd(
-                update_cmd,
-                checks=[
-                    self.check("serviceMeshProfile.mode", "Istio"),
-                    self.check(
-                        "serviceMeshProfile.istio.components.egressGateways[0].enabled",
-                        True,
-                    ),
-                ],
-            )
-        except HttpResponseError as e:
-            # fails because egress gateway has been disabled
-            self.assertTrue(e.status_code == 400)
-
-        # disable egress gateway
-        try:
-            update_cmd = "aks mesh disable-egress-gateway --resource-group={resource_group} --name={name} --yes"
-            self.cmd(
-                update_cmd,
-                checks=[
-                    self.check("serviceMeshProfile.mode", "Istio"),
-                    self.check(
-                        "serviceMeshProfile.istio.components.egressGateways[0].enabled",
-                        None,
-                    ),
-                ],
-            )
-        except HttpResponseError as e:
-            # fails because egress gateway has been disabled
-            self.assertTrue(e.status_code == 400)
-
-        # delete the cluster
-        delete_cmd = (
-            "aks delete --resource-group={resource_group} --name={name} --yes --no-wait"
-        )
-        self.cmd(
-            delete_cmd,
-            checks=[
-                self.is_empty(),
-            ],
-        )
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(

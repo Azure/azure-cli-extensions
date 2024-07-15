@@ -18,13 +18,13 @@ class Export(AAZCommand):
     """Exports the metadata schema.
 
     :example: Export Metadata Schema assigned to api
-        az apic metadata export -g api-center-test -s contosoeuap --assignments api --file-name filename.json
+        az apic metadata export -g api-center-test -n contosoeuap --assignments api --file-name filename.json
 
     :example: Export Metadata Schema assigned to deployment
-        az apic metadata export -g api-center-test -s contosoeuap --assignments deployment --file-name filename.json
+        az apic metadata export -g api-center-test -n contosoeuap --assignments deployment --file-name filename.json
 
     :example: Export Metadata Schema assigned to environment
-        az apic metadata export -g api-center-test -s contosoeuap --assignments environment --file-name filename.json
+        az apic metadata export -g api-center-test -n contosoeuap --assignments environment --file-name filename.json
     """
 
     _aaz_info = {
@@ -55,7 +55,7 @@ class Export(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--name", "--service", "--service-name"],
+            options=["-n", "--service-name"],
             help="The name of the API Center service.",
             required=True,
             id_part="name",

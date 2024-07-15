@@ -2004,6 +2004,12 @@ helps['aks nodepool update'] = """
         - name: --if-none-match
           type: string
           short-summary: Set to '*' to allow a new node pool to be created, but to prevent updating an existing node pool. Other values will be ignored.
+        - name: --enable-fips-image
+          type: bool
+          short-summary: Switch to use FIPS-enabled OS on agent nodes.
+        - name: --disable-fips-image
+          type: bool
+          short-summary: Switch to use non-FIPS-enabled OS on agent nodes.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -2903,8 +2909,8 @@ helps['aks draft generate-workflow'] = """
 
 helps['aks draft up'] = """
     type: command
-    short-summary: Set up GitHub OIDC and generate a GitHub workflow for automatic build and deploy to AKS
-    long-summary: This command combines `az aks draft setup-gh` and `az aks draft generate-workflow`.
+    short-summary: Run `az aks draft setup-gh` then `az aks draft generate-workflow`.
+    long-summary: This command combines `az aks draft setup-gh` and `az aks draft generate-workflow` to set up GitHub OIDC and generate a GitHub workflow for automatic build and deploy to AKS.
                   Before running this command, create a resource group, a container registry and a Kubernetes cluster on Azure and
                   link the three resources using `az aks update -n <cluster-name> -g <resource-group-name> --attach-acr <acr-name>`.
     parameters:
@@ -3104,23 +3110,6 @@ helps['aks mesh upgrade rollback'] = """
         text: az aks mesh upgrade rollback --resource-group MyResourceGroup --name MyManagedCluster
 """
 
-helps['aks mesh enable-egress-gateway'] = """
-    type: command
-    short-summary: Enable an Azure Service Mesh egress gateway.
-    long-summary: This command enables an Azure Service Mesh egress gateway in given cluster.
-    examples:
-      - name: Enable an egress gateway.
-        text: az aks mesh enable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster
-"""
-
-helps['aks mesh disable-egress-gateway'] = """
-    type: command
-    short-summary: Disable an Azure Service Mesh egress gateway.
-    long-summary: This command disables an Azure Service Mesh egress gateway in given cluster.
-    examples:
-      - name: Disable an egress gateway.
-        text: az aks mesh disable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster
-"""
 
 helps['aks approuting'] = """
     type: group

@@ -22,9 +22,9 @@ class RestrictMovement(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}/virtualmachines/{}/restrictmovement", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}/virtualmachines/{}/restrictmovement", "2023-09-01"],
         ]
     }
 
@@ -68,9 +68,12 @@ class RestrictMovement(AAZCommand):
         )
         _args_schema.virtual_machine = AAZStrArg(
             options=["--virtual-machine"],
-            help="Virtual Machine identifier",
+            help="ID of the virtual machine.",
             required=True,
             id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                pattern="^[-\w\._]+$",
+            ),
         )
 
         # define Arg Group "RestrictMovement"
@@ -109,7 +112,7 @@ class RestrictMovement(AAZCommand):
                     session,
                     None,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -160,7 +163,7 @@ class RestrictMovement(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }

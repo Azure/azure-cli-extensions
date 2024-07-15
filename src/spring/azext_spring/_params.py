@@ -43,7 +43,7 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_create_app_binding_default_service_registry)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
-                             validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
+                             validate_cpu, validate_build_cpu, validate_memory, validate_build_memory, validate_path_exist,
                              fulfill_deployment_param_or_warning, active_deployment_exist_or_warning)
 from .log_stream.log_stream_validators import (validate_log_lines, validate_log_limit, validate_log_since)
 from ._app_managed_identity_validator import (validate_create_app_with_user_identity_or_warning,
@@ -390,6 +390,11 @@ def load_arguments(self, _):
                    help='A json file path indicates the certificates which would be loaded to app')
         c.argument('deployment_name', default='default',
                    help='Name of the default deployment.', validator=validate_name)
+        c.argument('disable_test_endpoint_auth',
+                   arg_type=get_three_state_flag(),
+                   options_list=['--disable-test-endpoint-auth', '--disable-tea'],
+                   help="If true, disable authentication of the app's test endpoint.",
+                   default=False)
 
     with self.argument_context('spring app update') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
@@ -409,6 +414,10 @@ def load_arguments(self, _):
         c.argument('deployment', options_list=['--deployment', '-d'],
                    help='Name of an existing deployment of the app. Default to the production deployment if not specified.',
                    validator=fulfill_deployment_param_or_warning)
+        c.argument('disable_test_endpoint_auth',
+                   arg_type=get_three_state_flag(),
+                   options_list=['--disable-test-endpoint-auth', '--disable-tea'],
+                   help="If true, disable authentication of the app's test endpoint.")
 
     with self.argument_context('spring app append-persistent-storage') as c:
         c.argument('storage_name', type=str,
@@ -1226,8 +1235,8 @@ def load_arguments(self, _):
         c.argument('build_env', build_env_type)
         c.argument('build_cpu', arg_type=build_cpu_type, default="1")
         c.argument('build_memory', arg_type=build_memory_type, default="2Gi")
-        c.argument('source_path', arg_type=source_path_type)
-        c.argument('artifact_path', help='Deploy the specified pre-built artifact (jar or netcore zip).')
+        c.argument('source_path', arg_type=source_path_type, validator=validate_path_exist)
+        c.argument('artifact_path', help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_path_exist)
         c.argument('disable_validation', arg_type=get_three_state_flag(), help='If true, disable jar validation.')
 
     for scope in ['job create', 'job update', 'job deploy', 'job start']:
