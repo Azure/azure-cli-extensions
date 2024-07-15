@@ -89,14 +89,14 @@ def _load_and_create_dashboard(grafana_url, file_path, http_headers):
     content = json.loads(data)
     content['dashboard']['id'] = None
     
-    create_dashboard(grafana_url, content, http_headers)
+    create_dashboard(grafana_url, content, http_headers, override=True)
 
 
-def create_dashboard(grafana_url, content, http_headers):
+def create_dashboard(grafana_url, content, http_headers, override=True):
     payload = {
         'dashboard': content['dashboard'],
         'folderId': get_folder_id(content, grafana_url, http_post_headers=http_headers),
-        'overwrite': True
+        'overwrite': override
     }
 
     datasources_missed = set()
