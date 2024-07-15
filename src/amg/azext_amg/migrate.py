@@ -11,6 +11,7 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, f
     datasources_created_summary = []
     datasources_remapped_summary = []
     folders_created_summary = []
+    library_panels_synced_summary = {}
 
     # get all datasources to be backedup
     all_datasources = get_all_datasources(backup_url, backup_headers)
@@ -44,15 +45,28 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, f
         else:
             logger.warning("Folder %s already exists, skipping", content_folder_settings['title'])
 
+    # get all the dashboards first, so we can get the library panels
+    all_dashboards = get_all_dashboards(backup_url, backup_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
+
     all_library_panels = get_all_library_panels(backup_url, backup_headers)
-    for library_panel in all_library_panels:
+    library_panels_uids_to_update = get_all_library_panels_uids_from_dashboards(all_dashboards)
+    # only update the library panels that are not included / excluded.
+    all_library_panels_filtered = [panel for panel in all_library_panels if panel['uid'] in library_panels_uids_to_update]
+    for library_panel in all_library_panels_filtered:
         library_panel['id'] = None
-        create_library_panel(restore_url, library_panel, restore_headers)
+        if not dry_run:
+            # in create_library_panel, it does the patch if the library panel already exists.
+            create_library_panel(restore_url, library_panel, restore_headers)
+
+        panel_folder_name = library_panel['meta']['folderName']
+        if panel_folder_name not in library_panels_synced_summary:
+            library_panels_synced_summary[panel_folder_name] = set()
+        library_panels_synced_summary[panel_folder_name].add(library_panel['name'])
 
     # we don't backup provisioned dashboards, so we don't need to restore them
-    all_dashboards = get_all_dashboards(backup_url, backup_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
     for dashboard in all_dashboards:
         dashboard['dashboard']['id'] = None
+        # TODO: add the override flag.
         create_dashboard(restore_url, dashboard, restore_headers)
 
     # get the list of snapshots to backup
@@ -67,16 +81,15 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, f
 
 
     output = [
-        (Style.IMPORTANT, f"\n\nDry run: {dry_run if dry_run else False}\n")
-        (Style.IMPORTANT, f"\nSummary:")
+        (Style.IMPORTANT, f"\n\nDry run: {dry_run if dry_run else False}\n"),
         (Style.SUCCESS, "\n\nFolders created:"),
         (Style.PRIMARY, "\n    " + "\n    ".join(folders_created_summary)),
     ]
 
-    # output.append((Style.SUCCESS, "\n\nLibrary panels synced:"))
-    # for folder, panels in library_panels_synced_summary.items():
-    #     output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
-    #     output.append((Style.SECONDARY, "\n        ".join(panels)))
+    output.append((Style.SUCCESS, "\n\nLibrary panels synced:"))
+    for folder, panels in library_panels_synced_summary.items():
+        output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
+        output.append((Style.SECONDARY, "\n        ".join(panels)))
 
     # output.append((Style.SUCCESS, "\n\nDashboards synced:"))
     # for folder, dashboards in dashboards_synced_summary.items():
@@ -91,5 +104,11 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, f
     print_styled_text(output)
 
 
-def get_all_library_panels_from_dashboards():
-    pass
+def get_all_library_panels_uids_from_dashboards(all_dashboards):
+    library_panels_uids_to_update = set()
+    for dashboard in all_dashboards:
+        for panel in dashboard['dashboard']['panels']:
+            if panel.get('libraryPanel'):
+                library_panels_uids_to_update.add(panel['libraryPanel']['uid'])
+
+    return library_panels_uids_to_update
