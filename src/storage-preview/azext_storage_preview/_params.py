@@ -15,7 +15,8 @@ from ._validators import (get_datetime_type, validate_metadata, validate_bypass,
                           validate_storage_data_plane_list, validate_immutability_arguments,
                           process_resource_group, validate_encryption_source,
                           get_permission_help_string, get_permission_validator,
-                          add_progress_callback, validate_share_close_handle)
+                          add_progress_callback, validate_share_close_handle,
+                          PermissionScopeAddAction, SshPublicKeyAddAction)
 
 from .profiles import CUSTOM_MGMT_STORAGE, CUSTOM_DATA_STORAGE_FILESHARE
 
@@ -909,3 +910,42 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
             c.extra('disallow_source_trailing_dot', arg_type=get_three_state_flag(), default=False, is_preview=True,
                     options_list=["--disallow-source-trailing-dot", "--disallow-src-trailing"],
                     help="If true, the trailing dot will be trimmed from the source URI. Default to False")
+
+    with self.argument_context('storage account local-user') as c:
+        c.argument('account_name', acct_name_type, options_list='--account-name', id_part=None)
+        c.argument('username', options_list=['--user-name', '--name', '-n'],
+                   help='The name of local user. The username must contain lowercase letters and numbers '
+                        'only. It must be unique only within the storage account.')
+
+    for item in ['create', 'update']:
+        with self.argument_context(f'storage account local-user {item}') as c:
+            c.argument('permission_scope', nargs='+', action=PermissionScopeAddAction,
+                       help='The permission scope argument list which includes the permissions, service, '
+                            'and resource_name.'
+                            'The permissions can be a combination of the below possible values: '
+                            'Read(r), Write (w), Delete (d), List (l), and Create (c). '
+                            'The service has possible values: blob, file. '
+                            'The resource-name is the container name or the file share name. '
+                            'Example: --permission-scope permissions=r service=blob resource-name=container1'
+                            'Can specify multiple permission scopes: '
+                            '--permission-scope permissions=rw service=blob resource-name=container1'
+                            '--permission-scope permissions=rwd service=file resource-name=share2')
+            c.argument('home_directory', help='The home directory.')
+            c.argument('ssh_authorized_key', nargs='+', action=SshPublicKeyAddAction,
+                       help='SSH authorized keys for SFTP. Includes an optional description and key. '
+                            'The key is the base64 encoded SSH public key , with format: '
+                            '<keyType> <keyData> e.g. ssh-rsa AAAABBBB.'
+                            'Example: --ssh_authorized_key description=description key="ssh-rsa AAAABBBB"'
+                            'or --ssh_authorized_key key="ssh-rsa AAAABBBB"')
+            c.argument('has_shared_key', arg_type=get_three_state_flag(),
+                       help='Indicates whether shared key exists. Set it to false to remove existing shared key.')
+            c.argument('has_ssh_key', arg_type=get_three_state_flag(),
+                       help='Indicates whether ssh key exists. Set it to false to remove existing SSH key.')
+            c.argument('has_ssh_password', arg_type=get_three_state_flag(),
+                       help='Indicates whether ssh password exists. Set it to false to remove existing SSH password.')
+            c.argument('group_id',
+                       help='An identifier for associating a group of users.')
+            c.argument('allow_acl_authorization', options_list=['--allow-acl-authorization', '--allow-acl-auth'],
+                       arg_type=get_three_state_flag(),
+                       help='Indicates whether ACL authorization is allowed for this user. '
+                            'Set it to false to disallow using ACL authorization.')
