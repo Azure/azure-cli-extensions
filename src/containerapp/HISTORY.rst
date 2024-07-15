@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* Update models to support new properties with --yaml for api-version 2024-02-02-preview
 
 0.3.53
 ++++++
