@@ -945,6 +945,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                        help='Indicates whether ssh password exists. Set it to false to remove existing SSH password.')
             c.argument('group_id',
                        help='An identifier for associating a group of users.')
-            c.argument('allow_acl_authorization', arg_type=get_three_state_flag(),
+            c.argument('allow_acl_authorization', options_list=['--allow-acl-authorization', '--allow-acl-auth'],
+                       arg_type=get_three_state_flag(),
                        help='Indicates whether ACL authorization is allowed for this user. '
                             'Set it to false to disallow using ACL authorization.')

@@ -842,7 +842,7 @@ helps['storage account local-user list'] = """
     examples:
         - name: List local-user for a storage account with name starting with test and only returning 3 results
           text: >
-              az storage account local-user list --account-name {account-name} -g {resource-group} 
+              az storage account local-user list --account-name {account-name} -g {resource-group}
               --filter "startswith(name, test)" --maxpagesize 3
 """
 
@@ -870,6 +870,6 @@ helps['storage account local-user regenerate-password'] = """
     examples:
         - name: Regenerate sshPassword for a local-user
           text: >
-              az storage account local-user regenerate-password --account-name {account-name} -g {resource-group} 
+              az storage account local-user regenerate-password --account-name {account-name} -g {resource-group}
               -n {username}
 """
