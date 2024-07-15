@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 import json
@@ -13,7 +13,7 @@ class NginxScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='AZCLIDepTestRG_', random_name_length=34, location='eastus2')
     def test_nginx(self, resource_group):
         self.kwargs.update({
-            'deployment_name': 'azclitest-deployment',
+            'deployment_name': 'azcli-deployment',
             'location': 'eastus2',
             'rg': resource_group,
             'sku': 'preview_Monthly_gmz7xq9ge3py',
@@ -81,7 +81,7 @@ class NginxScenarioTest(ScenarioTest):
 
         self.cmd("role assignment create --role 'Key Vault Administrator' --assignee-object-id {identity_object_id} --scope {kv_resource_id} --assignee-principal-type 'ServicePrincipal'")
         # RBAC takes about 15 min to pass CI, local test can be changed to 15
-        time.sleep(900)
+        time.sleep(15)
         self.cmd('nginx deployment certificate create --certificate-name {cert_name} --deployment-name {deployment_name} --location {location} --resource-group {rg} --certificate-path /etc/nginx/test.cert --key-path /etc/nginx/test.key --key-vault-secret-id {kv_secret_id}', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['cert_name']),
