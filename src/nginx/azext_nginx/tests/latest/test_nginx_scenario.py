@@ -9,7 +9,6 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 import json
 import time
 class NginxScenarioTest(ScenarioTest):
-    @live_only()
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='AZCLIDepTestRG_', random_name_length=34, location='eastus2')
     def test_nginx(self, resource_group):
@@ -81,7 +80,7 @@ class NginxScenarioTest(ScenarioTest):
         self.kwargs['mi_principal_id'] = self.cmd('identity show --name {managed_identity} --resource-group {rg}').get_output_in_json()['principalId']
 
         self.cmd("role assignment create --role 'Key Vault Administrator' --assignee-object-id {identity_object_id} --scope {kv_resource_id} --assignee-principal-type 'ServicePrincipal'")
-        time.sleep(30)
+        time.sleep(900)
         self.cmd('nginx deployment certificate create --certificate-name {cert_name} --deployment-name {deployment_name} --location {location} --resource-group {rg} --certificate-path /etc/nginx/test.cert --key-path /etc/nginx/test.key --key-vault-secret-id {kv_secret_id}', checks=[
             self.check('properties.provisioningState', 'Succeeded'),
             self.check('name', self.kwargs['cert_name']),
