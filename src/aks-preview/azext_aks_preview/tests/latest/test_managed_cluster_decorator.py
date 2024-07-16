@@ -3856,55 +3856,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             ),
         ))
 
-    def test_handle_egress_gateways_asm(self):
-        ctx_0 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_azure_service_mesh": True,
-                    "enable_egress_gateway": True
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        old_profile = self.models.ServiceMeshProfile(
-            mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
-            istio=self.models.IstioServiceMesh(),
-        )
-        new_profile, updated = ctx_0._handle_egress_gateways_asm(old_profile)
-        self.assertEqual(updated, True)
-        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-            mode="Istio",
-            istio=self.models.IstioServiceMesh(
-                components=self.models.IstioComponents(
-                    egress_gateways=[
-                        self.models.IstioEgressGateway(
-                            enabled=True
-                        )
-                    ]
-                )
-            ),
-        ))
-        # ASM was never enabled on the cluster
-        old_profile = self.models.ServiceMeshProfile(
-            mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
-        )
-        new_profile, updated = ctx_0._handle_egress_gateways_asm(old_profile)
-        self.assertEqual(updated, True)
-        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-            mode="Istio",
-            istio=self.models.IstioServiceMesh(
-                components=self.models.IstioComponents(
-                    egress_gateways=[
-                        self.models.IstioEgressGateway(
-                            enabled=True
-                        )
-                    ]
-                )
-            ),
-        ))
-
     def test_handle_pluginca_asm(self):
         ctx_0 = AKSPreviewManagedClusterContext(
             self.cmd,

@@ -3110,23 +3110,6 @@ helps['aks mesh upgrade rollback'] = """
         text: az aks mesh upgrade rollback --resource-group MyResourceGroup --name MyManagedCluster
 """
 
-helps['aks mesh enable-egress-gateway'] = """
-    type: command
-    short-summary: Enable an Azure Service Mesh egress gateway.
-    long-summary: This command enables an Azure Service Mesh egress gateway in given cluster.
-    examples:
-      - name: Enable an egress gateway.
-        text: az aks mesh enable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster
-"""
-
-helps['aks mesh disable-egress-gateway'] = """
-    type: command
-    short-summary: Disable an Azure Service Mesh egress gateway.
-    long-summary: This command disables an Azure Service Mesh egress gateway in given cluster.
-    examples:
-      - name: Disable an egress gateway.
-        text: az aks mesh disable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster
-"""
 
 helps['aks approuting'] = """
     type: group
