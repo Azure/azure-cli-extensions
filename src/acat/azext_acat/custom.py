@@ -154,6 +154,8 @@ class CreateAcatReport(_AcatCreateReport):
 class UpdateAcatReport(_AcatUpdateReport):
     class UpdateAcatReportWithDupAadToken(_AcatUpdateReport.ReportCreateOrUpdate):
         CLIENT_TYPE = "AcatMgmtClient"
+
+
     class GetAcatReportWithDupAadToken(_AcatUpdateReport.ReportGet):
         CLIENT_TYPE = "AcatMgmtClient"
 
