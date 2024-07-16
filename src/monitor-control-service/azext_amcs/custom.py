@@ -19,7 +19,7 @@ from azure.cli.core.commands.validators import validate_file_or_dict
 from azure.cli.command_modules.monitor.actions import AAZCustomListArg
 
 from .aaz.latest.monitor.data_collection.endpoint import Create as _EndpointCreate
-from .aaz.latest.monitor.data_collection.rule import Create as _RuleCreate, Update as _RuleUpdate, Show as RuleShow
+from .aaz.latest.monitor.data_collection.rule import Create as _RuleCreate, Update as _RuleUpdate
 
 
 class EndpointCreate(_EndpointCreate):

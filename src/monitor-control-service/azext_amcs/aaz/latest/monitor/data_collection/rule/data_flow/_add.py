@@ -55,6 +55,7 @@ class Add(AAZCommand):
         )
         _args_schema.data_flow_index = AAZIntArg(
             options=["--data-flow-index"],
+            help="data flow ind",
         )
         _args_schema.built_in_transform = AAZStrArg(
             options=["--built-in-transform"],
