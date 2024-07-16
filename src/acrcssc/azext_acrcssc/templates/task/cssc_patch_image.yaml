@@ -1,7 +1,7 @@
 version: v1.1.0
 alias:
   values:
-    ScanReport : os-vulnerability-report_trivy_{{.Values.SOURCE_REPOSITORY}}_{{.Values.SOURCE_IMAGE_TAG}}_$(date "+%Y-%m-%d").json
+    ScanReport : os-vulnerability-report_trivy_{{ regexReplaceAll "[^a-zA-Z0-9]" .Values.SOURCE_REPOSITORY "-" }}_{{.Values.SOURCE_IMAGE_TAG}}_$(date "+%Y-%m-%d").json
     cssc : mcr.microsoft.com/acr/cssc:56f0765
 steps:
   # Step #1: Perform the vulnerability scan
@@ -17,6 +17,8 @@ steps:
       --vuln-type os \
       --ignore-unfixed \
       --format json \
+      --timeout 30m \
+      --scanners vuln \
       --output /workspace/data/$ScanReport
 
   # Step 2: Attach the vulnerability scan report to the image
