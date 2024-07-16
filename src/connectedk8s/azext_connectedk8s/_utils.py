@@ -623,8 +623,8 @@ def helm_install_release(resource_manager, chart_path, kubernetes_distro, kubern
             logger.debug("'arcConfigEndpoint' doesn't exist under 'dataplaneEndpoints' in the ARM metadata.")
 
     # Add helmValues content response from DP
-    for key, value in helm_content_values.items():
-        cmd_helm_install.extend(["--set", "{}={}".format(key, value)])
+    for helm_param, helm_value in helm_content_values.items():
+        cmd_helm_install.extend(["--set", "{}={}".format(helm_param, helm_value)])
 
     # Add custom-locations related params
     if enable_custom_locations and not enable_private_link:
