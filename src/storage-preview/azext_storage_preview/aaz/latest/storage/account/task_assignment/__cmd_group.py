@@ -12,10 +12,11 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "storage account",
+    "storage account task-assignment",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage storage accounts.
+    """Manage storage account task assignment.
     """
     pass
 

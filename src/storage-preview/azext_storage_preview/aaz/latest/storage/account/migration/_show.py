@@ -13,10 +13,12 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "storage account migration show",
-    is_preview=True,
 )
 class Show(AAZCommand):
     """Get the status of the ongoing migration for the specified storage account.
+
+    :example: migration show
+        az storage account migration show --account-name "storage_account_name" -g "resource_group_name"
     """
 
     _aaz_info = {

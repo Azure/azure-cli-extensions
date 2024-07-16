@@ -6,6 +6,7 @@ Release History
 1.0.0b2(2024-07-15)
 ++++++++++++++++++
 * `az storage account local-user`: Support `--group-id` and `--allow-acl-authorization`. Support list paging and filtering
+* `az storage account task-assignment`: Support task-assignment
 
 1.0.0b1(2023-08-11)
 ++++++++++++++++++
