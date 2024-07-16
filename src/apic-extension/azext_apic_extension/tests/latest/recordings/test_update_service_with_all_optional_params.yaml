@@ -1,0 +1,115 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --tags --identity
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services","location":"eastus","sku":{"name":"Free"},"properties":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002","name":"clitest000002","tags":{},"systemData":{"createdAt":"2024-06-24T07:41:17.2805444Z","lastModifiedAt":"2024-06-24T07:41:17.280535Z"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '374'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 24 Jun 2024 07:41:20 GMT
+      etag:
+      - 1a0000aa-0000-0100-0000-6679231d0000
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: B83AEB98C6DD44B9B3E5394810480682 Ref B: MAA201060513051 Ref C: 2024-06-24T07:41:19Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}, "location": "eastus", "properties":
+      {}, "sku": {"name": "Free"}, "tags": {"test": "value"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '132'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --tags --identity
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services","location":"eastus","identity":{"type":"SystemAssigned","principalId":"994e5256-bca5-4bb4-8baf-45094cc2c011","tenantId":"f0348563-e707-449c-8685-c83d24eaf3c0"},"sku":{"name":"Free"},"properties":{"dataApiHostname":"clitest000002.data.eastus.azure-apicenter.ms"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002","name":"clitest000002","tags":{"test":"value"},"systemData":{"createdAt":"2024-06-24T07:41:17.2805444Z","lastModifiedAt":"2024-06-24T07:41:26.9585745Z"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '593'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 24 Jun 2024 07:41:29 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 3FC4D40800C4486AAC30325E943B8F6D Ref B: MAA201060513051 Ref C: 2024-06-24T07:41:20Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

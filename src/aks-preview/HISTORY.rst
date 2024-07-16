@@ -12,10 +12,19 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
-5.0.0b4
+6.0.0b2
 ++++++++
 * Add option `--enable-high-log-scale-mode` to `az aks create --enable-addons monitoring` and `az aks enable-addons -a monitoring` .
 * Add option `--ampls-resource-id` to `az aks create --enable-addons monitoring` and `az aks enable-addons -a monitoring` .
+
+6.0.0b1
+++++++++
+* Remove support for `az aks mesh` egress gateway commands.
+* Add validation to `az aks create` and `az aks update` while modifying the `--ephemeral-disk-volume-type` and `--ephemeral-disk-nvme-perf-tier` values.
+
+5.0.0b4
+++++++++
+* Add additional unit test cases for mutable fips flags in agentpool update.
 
 5.0.0b3
 ++++++++

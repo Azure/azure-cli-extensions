@@ -1,5 +1,13 @@
 Release History
 ===============
+1.25.0
+---
+* Add arguments `--disable-test-endpoint-auth` in `spring app create` and `spring app update`.
+
+1.24.5
+---
+* Verify that `--artifact-path` and `--source-path` exist before all steps in `az spring app deploy`, `az spring app deployment create` and `az spring job deploy` commands.
+
 1.24.4
 ---
 * Refine the error message when user failed to get job log streaming in command `az spring job logs`.
