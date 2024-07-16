@@ -78,6 +78,8 @@ def load_arguments(self, _):
         c.argument('skip_ssl_verification', action='store_true', help='Skip SSL verification for any cluster connection.')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('disable_gateway', options_list=['--disable_gateway'], help='pass this value to disable Arc Gateway')
+        c.argument('enable_gateway', options_list=['--enable-gateway'], help='Pass this value to enable Arc Gateway.')
+        c.argument('gateway_resource_id', options_list=['--gateway-resource-id'], help='ArmID of the Arc Gateway resource.')
 
     with self.argument_context('connectedk8s upgrade') as c:
         c.argument('cluster_name', options_list=['--name', '-n'], id_part='name', help='The name of the connected cluster.')
