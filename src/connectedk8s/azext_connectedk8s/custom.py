@@ -134,7 +134,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
-    configuration_settings, configuration_protected_settings = utils.add_config_protected_settings(http_proxy, https_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings)
+    configuration_settings, configuration_protected_settings, protected_helm_values = utils.add_config_protected_settings(http_proxy, https_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings)
     arc_agent_configurations = None
     if configuration_protected_settings is not None or configuration_settings is not None:
         arc_agent_configurations = generate_arc_agent_configuration(configuration_settings, configuration_protected_settings)
@@ -143,23 +143,19 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None:
         client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
 
-    # Set preview client to be July 01 2024 if the enable_gateway is enabled. 
-    # (TODO: To test whether overriding the client factory to 2024 will retain the 2023 private link feature as in the line above)
+    # Check if the provided Gateway ARM ID is valid
     gateway = None
     if enable_gateway:
-        gateway = Gateway(
-            enabled=True,
-            resource_id=gateway_resource_id
-        )
-        client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
-    
-    # Check if the provided Gateway ARM ID is valid 
-    if enable_gateway is True:
         gateway_armid_pattern = r"^/subscriptions/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/resourceGroups/[a-zA-Z0-9_-]+/providers/Microsoft\.HybridCompute/gateways/[a-zA-Z0-9_-]+$"
         if re.match(gateway_armid_pattern, gateway_resource_id): 
             logger.warning("The provided Gateway ArmID is valid.")
+            gateway = Gateway(
+                enabled=True,
+                resource_id=gateway_resource_id
+            )
+            client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
         else:
-            raise InvalidArgumentValueError(str.format(consts.Gateway_ArmID_Is_Invalid, gateway_resource_id))
+            raise InvalidArgumentValueError(str.format(consts.Gateway_ArmId_Is_Invalid, gateway_resource_id))
 
     # Checking whether optional extra values file has been provided.
     values_file = utils.get_values_file()
@@ -497,30 +493,16 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id)
 
     # Change: Calling DP for Helm values
-    # Retrieving Helm chart OCI Artifact location
-    helm_values_dp = utils.get_helm_values(cmd, config_dp_endpoint, release_train)
+    # Perform DP health check
+    _ = utils.health_check_dp(cmd, config_dp_endpoint)
 
-    # Parses the helm_values_dp
-        #     {
-        #     "repositoryPath": "mcr.microsoft.com/azurearck8s/canary/stable/azure-arc-k8sagents:0.2.62",
-        #     "helmValuesContent": {
-        #         "global.subscriptionId": "ca3b2020-292e-4ebc-9939-0b52415846ef",
-        #         "global.resourceGroupName": "bs_testing",
-        #         "global.resourceName": "bs_oci",
-        #         "global.location": "westeurope",
-        #         "global.httpsProxy": "ClientKnown",
-        #         "global.httpProxy": "ClientKnown",
-        #         "global.noProxy": "ClientKnown",
-        #         "global.proxyCert": "ClientKnown",
-        #         "global.isCustomCert": "true",
-        #         "global.isProxyEnabled": "true",
-        #         "systemDefaultValues.fluent-bit.containerLogPath": "/sample/test/path"
-        #     },
-        #     "apiServerFlags": null
-        # }
+    # Retrieving Helm chart OCI Artifact location
+    helm_values_dp = utils.get_helm_values(cmd, config_dp_endpoint, release_train, request_body=put_cc_response.as_dict())
 
     registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else \
         helm_values_dp["repositoryPath"]
+    
+    helm_content_values = helm_values_dp["helmValuesContent"]
         
     # Get azure-arc agent version for telemetry
     azure_arc_agent_version = registry_path.split(':')[1]
@@ -530,17 +512,16 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     # Get helm chart path
     chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location)
 
-    # TODO: use a new helm_values file to construct the helm install cmd
+    # Substitute any protected helm values as the value for that will be null
+    for helm_parameter, helm_value in protected_helm_values.items():
+        helm_content_values[helm_parameter] = helm_value
 
     print("Starting to install Azure arc agents on the Kubernetes cluster.")
     # Install azure-arc agents
-    utils.helm_install_release(cmd.cli_ctx.cloud.endpoints.resource_manager, chart_path, subscription_id,
-                               kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
-                               location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert,
-                               private_key_pem, kube_config, kube_context, no_wait, values_file, azure_cloud,
-                               disable_auto_upgrade, enable_custom_locations, custom_locations_oid,
-                               helm_client_location, enable_private_link, arm_metadata,
-                               onboarding_timeout, container_log_path)
+    utils.helm_install_release(cmd.cli_ctx.cloud.endpoints.resource_manager, chart_path, kubernetes_distro,
+                               kubernetes_infra, location, private_key_pem, kube_config, kube_context, no_wait,
+                               values_file, azure_cloud, enable_custom_locations, custom_locations_oid, helm_client_location,
+                               enable_private_link, arm_metadata, onboarding_timeout, helm_content_values)
     return put_cc_response
 
 
