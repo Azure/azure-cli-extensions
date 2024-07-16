@@ -865,6 +865,25 @@ def check_arm64_node(api_response):
                                            raise_error=False)
     return False
 
+def set_oidc_issuer_profile(enable_oidc_issuer, self_hosted_issuer = ""):
+    oidc_profile = None
+    if enable_oidc_issuer:
+            oidc_profile = OidcIssuerProfile(
+                enabled=True
+            )
+            if self_hosted_issuer != "":
+                oidc_profile.self_hosted_issuer_url = self_hosted_issuer
+    return oidc_profile
+
+def set_security_profile(enable_workload_identity):
+    security_profile = None
+    if enable_workload_identity:
+        security_profile = SecurityProfile(
+            workload_identity= SecurityProfileWorkloadIdentity(
+                enabled=True
+            )
+        )
+    return security_profile 
 
 def generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, 
                              distribution_version, azure_hybrid_benefit, enable_oidc_issuer, enable_workload_identity, self_hosted_issuer = ""):
@@ -889,21 +908,8 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
         if enable_private_link is not None:
             private_link_state = "Enabled" if enable_private_link is True else "Disabled"
         
-        oidc_profile = None
-        if enable_oidc_issuer:
-            oidc_profile = OidcIssuerProfile(
-                enabled=True
-            )
-            if self_hosted_issuer != "":
-                oidc_profile.self_hosted_issuer_url = self_hosted_issuer
-        
-        security_profile = None
-        if enable_workload_identity:
-            security_profile = SecurityProfile(
-                workload_identity= SecurityProfileWorkloadIdentity(
-                    enabled=True
-                )
-            )
+        oidc_profile = set_oidc_issuer_profile(enable_oidc_issuer, self_hosted_issuer)
+        security_profile = set_security_profile(enable_workload_identity)
         
         cc = ConnectedCluster2024_07_01_Preview(
             location=location,
@@ -924,22 +930,10 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
 
 def generate_reput_request_payload(cc, enable_oidc_issuer, enable_workload_identity, self_hosted_issuer):
     # Update connected cluster resource object
-    if enable_oidc_issuer:
-        oidc_profile = OidcIssuerProfile(
-            enabled=True
-        )
-        if self_hosted_issuer != "":
-            oidc_profile.self_hosted_issuer_url = self_hosted_issuer
-        cc.oidc_issuer_profile = oidc_profile
-    
-    if enable_workload_identity:
-        security_profile = SecurityProfile(
-            workload_identity= SecurityProfileWorkloadIdentity(
-                enabled=True
-            )
-        )
-        cc.security_profile = security_profile
-
+    oidc_profile = set_oidc_issuer_profile(enable_oidc_issuer, self_hosted_issuer)
+    security_profile = set_security_profile(enable_workload_identity)
+    cc.oidc_issuer_profile = oidc_profile
+    cc.security_profile = security_profile
     return cc
 
 
