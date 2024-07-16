@@ -39,12 +39,12 @@ def load_command_table(self, _):
 
     with self.command_group('monitor data-collection rule data-flow', monitor_control_service_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
-        g.custom_show_command('list', 'data_collection_rules_data_flows_list')
+        # g.custom_show_command('list', 'data_collection_rules_data_flows_list')
         g.custom_command('add', 'data_collection_rules_data_flows_add')
 
     with self.command_group('monitor data-collection rule log-analytics', monitor_control_service_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
-        g.custom_show_command('list', 'data_collection_rules_log_analytics_list')
+        # g.custom_show_command('list', 'data_collection_rules_log_analytics_list')
         g.custom_show_command('show', 'data_collection_rules_log_analytics_show')
         g.custom_command('add', 'data_collection_rules_log_analytics_add')
         g.custom_command('delete', 'data_collection_rules_log_analytics_delete')
@@ -53,7 +53,7 @@ def load_command_table(self, _):
     with self.command_group('monitor data-collection rule performance-counter',
                             monitor_control_service_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
-        g.custom_show_command('list', 'data_collection_rules_performance_counters_list')
+        # g.custom_show_command('list', 'data_collection_rules_performance_counters_list')
         g.custom_show_command('show', 'data_collection_rules_performance_counters_show')
         g.custom_command('add', 'data_collection_rules_performance_counters_add')
         g.custom_command('delete', 'data_collection_rules_performance_counters_delete')
@@ -62,7 +62,7 @@ def load_command_table(self, _):
     with self.command_group('monitor data-collection rule windows-event-log',
                             monitor_control_service_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
-        g.custom_show_command('list', 'data_collection_rules_windows_event_logs_list')
+        # g.custom_show_command('list', 'data_collection_rules_windows_event_logs_list')
         g.custom_show_command('show', 'data_collection_rules_windows_event_logs_show')
         g.custom_command('add', 'data_collection_rules_windows_event_logs_add')
         g.custom_command('delete', 'data_collection_rules_windows_event_logs_delete')
@@ -70,7 +70,7 @@ def load_command_table(self, _):
 
     with self.command_group('monitor data-collection rule syslog', monitor_control_service_data_collection_rule,
                             client_factory=cf_data_collection_rule) as g:
-        g.custom_show_command('list', 'data_collection_rules_syslog_list')
+        # g.custom_show_command('list', 'data_collection_rules_syslog_list')
         g.custom_show_command('show', 'data_collection_rules_syslog_show')
         g.custom_command('add', 'data_collection_rules_syslog_add')
         g.custom_command('delete', 'data_collection_rules_syslog_delete')
