@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+6.0.0b2
+++++++++
+* Remove support for `az aks get-os-options` command.
+
 6.0.0b1
 ++++++++
 * Remove support for `az aks mesh` egress gateway commands.

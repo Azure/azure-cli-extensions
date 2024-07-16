@@ -180,7 +180,6 @@ def load_command_table(self, _):
         # aks-preview only
         g.custom_command("kollect", "aks_kollect")
         g.custom_command("kanalyze", "aks_kanalyze")
-        g.custom_command("get-os-options", "aks_get_os_options")
         g.custom_command(
             "operation-abort", "aks_operation_abort", supports_no_wait=True
         )
