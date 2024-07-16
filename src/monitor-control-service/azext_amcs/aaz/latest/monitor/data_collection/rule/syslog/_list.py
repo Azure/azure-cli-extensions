@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List Syslog data sources.
+
+    :example: List Syslog data sources
+        az monitor data-collection rule syslog list --rule-name myCollectionRule --resource-group myResourceGroup
     """
 
     _aaz_info = {

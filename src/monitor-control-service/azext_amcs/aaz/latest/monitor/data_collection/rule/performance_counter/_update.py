@@ -12,21 +12,23 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "monitor data-collection rule windows-event-log list",
+    "monitor data-collection rule performance-counter update",
 )
-class List(AAZCommand):
-    """List Windows Event Log data sources
+class Update(AAZCommand):
+    """Update a Log performance counter data source.
 
-    :example: List Windows Event Log data sources
-        az monitor data-collection rule windows-event-log list --rule-name myCollectionRule --resource-group myResourceGroup
+    :example: Update a Log performance counter data source
+        az monitor data-collection rule performance-counter update --rule-name myCollectionRule --resource-group myResourceGroup --name team2ExtraCounters
     """
 
     _aaz_info = {
         "version": "2023-03-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.insights/datacollectionrules/{}", "2023-03-11", "properties.dataSources.windowsEventLogs"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.insights/datacollectionrules/{}", "2023-03-11", "properties.dataSources.performanceCounters[]"],
         ]
     }
+
+    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -53,11 +55,53 @@ class List(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+        _args_schema.counter_specifiers = AAZListArg(
+            options=["--counter-specifiers"],
+            help="A list of specifier names of the performance counters you want to collect. Use a wildcard (*) to collect a counter for all instances. To get a list of performance counters on Windows, run the command 'typeperf'.",
+            nullable=True,
+        )
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            help="A friendly name for the data source. This name should be unique across all data sources (regardless of type) within the data collection rule.",
+            required=True,
+        )
+        _args_schema.sampling_frequency_in_seconds = AAZIntArg(
+            options=["--sampling-frequency", "--sampling-frequency-in-seconds"],
+            help="The number of seconds between consecutive counter measurements (samples).",
+            nullable=True,
+        )
+        _args_schema.streams = AAZListArg(
+            options=["--streams"],
+            help="List of streams that this data source will be sent to. A stream indicates what schema will be used for this data and usually what table in Log Analytics the data will be sent to.",
+            nullable=True,
+        )
+        _args_schema.transform_kql = AAZStrArg(
+            options=["--transform-kql"],
+            help="The KQL query to transform the data source.",
+            nullable=True,
+        )
+
+        counter_specifiers = cls._args_schema.counter_specifiers
+        counter_specifiers.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        streams = cls._args_schema.streams
+        streams.Element = AAZStrArg(
+            nullable=True,
+            enum={"Microsoft-InsightsMetrics": "Microsoft-InsightsMetrics", "Microsoft-Perf": "Microsoft-Perf"},
+            enum_support_extension=True,
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
         self.DataCollectionRulesGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.selectors.subresource.required())
+        self.InstanceUpdateByJson(ctx=self.ctx)()
+        self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.selectors.subresource.required())
+        self.DataCollectionRulesCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -68,6 +112,14 @@ class List(AAZCommand):
     def post_operations(self):
         pass
 
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.selectors.subresource.required(), client_flatten=True)
         return result
@@ -76,11 +128,25 @@ class List(AAZCommand):
 
         def _get(self):
             result = self.ctx.vars.instance
-            return result.properties.dataSources.windowsEventLogs
+            result = result.properties.dataSources.performanceCounters
+            filters = enumerate(result)
+            filters = filter(
+                lambda e: e[1].name == self.ctx.args.name,
+                filters
+            )
+            idx = next(filters)[0]
+            return result[idx]
 
         def _set(self, value):
             result = self.ctx.vars.instance
-            result.properties.dataSources.windowsEventLogs = value
+            result = result.properties.dataSources.performanceCounters
+            filters = enumerate(result)
+            filters = filter(
+                lambda e: e[1].name == self.ctx.args.name,
+                filters
+            )
+            idx = next(filters, [len(result)])[0]
+            result[idx] = value
             return
 
     class DataCollectionRulesGet(AAZHttpOperation):
@@ -162,13 +228,143 @@ class List(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _ListHelper._build_schema_data_collection_rule_resource_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_data_collection_rule_resource_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
+    class DataCollectionRulesCreate(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
 
-class _ListHelper:
-    """Helper class for List"""
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200, 201]:
+                return self.on_200_201(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "PUT"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "dataCollectionRuleName", self.ctx.args.data_collection_rule_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2023-03-11",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                value=self.ctx.vars.instance,
+            )
+
+            return self.serialize_content(_content_value)
+
+        def on_200_201(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200_201
+            )
+
+        _schema_on_200_201 = None
+
+        @classmethod
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
+
+            cls._schema_on_200_201 = AAZObjectType()
+            _UpdateHelper._build_schema_data_collection_rule_resource_read(cls._schema_on_200_201)
+
+            return cls._schema_on_200_201
+
+    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self._update_instance(self.ctx.selectors.subresource.required())
+
+        def _update_instance(self, instance):
+            _instance_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                value=instance,
+                typ=AAZObjectType
+            )
+            _builder.set_prop("counterSpecifiers", AAZListType, ".counter_specifiers")
+            _builder.set_prop("name", AAZStrType, ".name")
+            _builder.set_prop("samplingFrequencyInSeconds", AAZIntType, ".sampling_frequency_in_seconds")
+            _builder.set_prop("streams", AAZListType, ".streams")
+            _builder.set_prop("transformKql", AAZStrType, ".transform_kql")
+
+            counter_specifiers = _builder.get(".counterSpecifiers")
+            if counter_specifiers is not None:
+                counter_specifiers.set_elements(AAZStrType, ".")
+
+            streams = _builder.get(".streams")
+            if streams is not None:
+                streams.set_elements(AAZStrType, ".")
+
+            return _instance_value
+
+    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self._update_instance_by_generic(
+                self.ctx.selectors.subresource.required(),
+                self.ctx.generic_update_args
+            )
+
+
+class _UpdateHelper:
+    """Helper class for Update"""
 
     _schema_data_collection_rule_resource_read = None
 
@@ -802,4 +998,4 @@ class _ListHelper:
         _schema.storage_account_resource_id = cls._schema_storage_blob_destination_read.storage_account_resource_id
 
 
-__all__ = ["List"]
+__all__ = ["Update"]

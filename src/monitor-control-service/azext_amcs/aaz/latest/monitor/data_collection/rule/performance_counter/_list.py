@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List Log performance counter data sources.
+
+    :example: List Log performance counter data sources
+        az monitor data-collection rule performance-counter list --rule-name myCollectionRule --resource-group myResourceGroup
     """
 
     _aaz_info = {

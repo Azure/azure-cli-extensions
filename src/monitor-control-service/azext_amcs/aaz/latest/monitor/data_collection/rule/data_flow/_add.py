@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "monitor data-collection rule windows-event-log list",
+    "monitor data-collection rule data-flow add",
 )
-class List(AAZCommand):
-    """List Windows Event Log data sources
+class Add(AAZCommand):
+    """Add a data flow.
 
-    :example: List Windows Event Log data sources
-        az monitor data-collection rule windows-event-log list --rule-name myCollectionRule --resource-group myResourceGroup
+    :example: Add a data flow
+        az monitor data-collection rule data-flow add --rule-name myCollectionRule --resource-group myResourceGroup --destinations XX3 XX4 --streams Microsoft-Perf Microsoft-WindowsEvent
     """
 
     _aaz_info = {
         "version": "2023-03-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.insights/datacollectionrules/{}", "2023-03-11", "properties.dataSources.windowsEventLogs"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.insights/datacollectionrules/{}", "2023-03-11", "properties.dataFlows[]"],
         ]
     }
 
@@ -53,11 +53,51 @@ class List(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+        _args_schema.data_flow_index = AAZIntArg(
+            options=["--data-flow-index"],
+        )
+        _args_schema.built_in_transform = AAZStrArg(
+            options=["--built-in-transform"],
+            help="The builtIn transform to transform stream data",
+        )
+        _args_schema.capture_overflow = AAZBoolArg(
+            options=["--capture-overflow"],
+            help="Flag to enable overflow column in LA destinations",
+        )
+        _args_schema.destinations = AAZListArg(
+            options=["--destinations"],
+            help="List of destinations for this data flow.",
+        )
+        _args_schema.output_stream = AAZStrArg(
+            options=["--output-stream"],
+            help="The output stream of the transform. Only required if the transform changes data to a different stream.",
+        )
+        _args_schema.streams = AAZListArg(
+            options=["--streams"],
+            help="List of streams for this data flow.",
+        )
+        _args_schema.transform_kql = AAZStrArg(
+            options=["--transform-kql"],
+            help="The KQL query to transform stream data.",
+        )
+
+        destinations = cls._args_schema.destinations
+        destinations.Element = AAZStrArg()
+
+        streams = cls._args_schema.streams
+        streams.Element = AAZStrArg(
+            enum={"Microsoft-Event": "Microsoft-Event", "Microsoft-InsightsMetrics": "Microsoft-InsightsMetrics", "Microsoft-Perf": "Microsoft-Perf", "Microsoft-Syslog": "Microsoft-Syslog", "Microsoft-WindowsEvent": "Microsoft-WindowsEvent"},
+            enum_support_extension=True,
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
         self.DataCollectionRulesGet(ctx=self.ctx)()
+        self.pre_instance_create()
+        self.InstanceCreateByJson(ctx=self.ctx)()
+        self.post_instance_create(self.ctx.selectors.subresource.required())
+        self.DataCollectionRulesCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -68,6 +108,14 @@ class List(AAZCommand):
     def post_operations(self):
         pass
 
+    @register_callback
+    def pre_instance_create(self):
+        pass
+
+    @register_callback
+    def post_instance_create(self, instance):
+        pass
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.selectors.subresource.required(), client_flatten=True)
         return result
@@ -76,11 +124,26 @@ class List(AAZCommand):
 
         def _get(self):
             result = self.ctx.vars.instance
-            return result.properties.dataSources.windowsEventLogs
+            result = result.properties.dataFlows
+            filters = enumerate(result)
+            filters = filter(
+                lambda e: e[0] == self.ctx.args.data_flow_index,
+                filters
+            )
+            idx = next(filters)[0]
+            return result[idx]
 
         def _set(self, value):
             result = self.ctx.vars.instance
-            result.properties.dataSources.windowsEventLogs = value
+            result = result.properties.dataFlows
+            filters = enumerate(result)
+            filters = filter(
+                lambda e: e[0] == self.ctx.args.data_flow_index,
+                filters
+            )
+            idx = next(filters, [len(result)])[0]
+            self.ctx.args.data_flow_index = idx
+            result[idx] = value
             return
 
     class DataCollectionRulesGet(AAZHttpOperation):
@@ -162,13 +225,135 @@ class List(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _ListHelper._build_schema_data_collection_rule_resource_read(cls._schema_on_200)
+            _AddHelper._build_schema_data_collection_rule_resource_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
+    class DataCollectionRulesCreate(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
 
-class _ListHelper:
-    """Helper class for List"""
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200, 201]:
+                return self.on_200_201(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Insights/dataCollectionRules/{dataCollectionRuleName}",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "PUT"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "dataCollectionRuleName", self.ctx.args.data_collection_rule_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2023-03-11",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                value=self.ctx.vars.instance,
+            )
+
+            return self.serialize_content(_content_value)
+
+        def on_200_201(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200_201
+            )
+
+        _schema_on_200_201 = None
+
+        @classmethod
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
+
+            cls._schema_on_200_201 = AAZObjectType()
+            _AddHelper._build_schema_data_collection_rule_resource_read(cls._schema_on_200_201)
+
+            return cls._schema_on_200_201
+
+    class InstanceCreateByJson(AAZJsonInstanceCreateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self.ctx.selectors.subresource.set(self._create_instance())
+
+        def _create_instance(self):
+            _instance_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType
+            )
+            _builder.set_prop("builtInTransform", AAZStrType, ".built_in_transform")
+            _builder.set_prop("captureOverflow", AAZBoolType, ".capture_overflow")
+            _builder.set_prop("destinations", AAZListType, ".destinations")
+            _builder.set_prop("outputStream", AAZStrType, ".output_stream")
+            _builder.set_prop("streams", AAZListType, ".streams")
+            _builder.set_prop("transformKql", AAZStrType, ".transform_kql")
+
+            destinations = _builder.get(".destinations")
+            if destinations is not None:
+                destinations.set_elements(AAZStrType, ".")
+
+            streams = _builder.get(".streams")
+            if streams is not None:
+                streams.set_elements(AAZStrType, ".")
+
+            return _instance_value
+
+
+class _AddHelper:
+    """Helper class for Add"""
 
     _schema_data_collection_rule_resource_read = None
 
@@ -802,4 +987,4 @@ class _ListHelper:
         _schema.storage_account_resource_id = cls._schema_storage_blob_destination_read.storage_account_resource_id
 
 
-__all__ = ["List"]
+__all__ = ["Add"]

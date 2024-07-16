@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List Log Analytics destinations of a data collection rule.
+
+    :example: List Log Analytics destinations of a data collection rule
+        az monitor data-collection rule log-analytics list --rule-name myCollectionRule --resource-group myResourceGroup
     """
 
     _aaz_info = {

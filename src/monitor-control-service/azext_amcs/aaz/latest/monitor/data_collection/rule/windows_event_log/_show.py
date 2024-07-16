@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "monitor data-collection rule windows-event-log list",
+    "monitor data-collection rule windows-event-log show",
 )
-class List(AAZCommand):
-    """List Windows Event Log data sources
+class Show(AAZCommand):
+    """Show a Windows Event Log data source.
 
-    :example: List Windows Event Log data sources
-        az monitor data-collection rule windows-event-log list --rule-name myCollectionRule --resource-group myResourceGroup
+    :example: Show a Windows Event Log data source
+        az monitor data-collection rule windows-event-log show --rule-name myCollectionRule --resource-group myResourceGroup --name appTeam1AppEvents
     """
 
     _aaz_info = {
         "version": "2023-03-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.insights/datacollectionrules/{}", "2023-03-11", "properties.dataSources.windowsEventLogs"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.insights/datacollectionrules/{}", "2023-03-11", "properties.dataSources.windowsEventLogs[]"],
         ]
     }
 
@@ -53,6 +53,11 @@ class List(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            help="A friendly name for the data source. This name should be unique across all data sources (regardless of type) within the data collection rule.",
+            required=True,
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -76,11 +81,25 @@ class List(AAZCommand):
 
         def _get(self):
             result = self.ctx.vars.instance
-            return result.properties.dataSources.windowsEventLogs
+            result = result.properties.dataSources.windowsEventLogs
+            filters = enumerate(result)
+            filters = filter(
+                lambda e: e[1].name == self.ctx.args.name,
+                filters
+            )
+            idx = next(filters)[0]
+            return result[idx]
 
         def _set(self, value):
             result = self.ctx.vars.instance
-            result.properties.dataSources.windowsEventLogs = value
+            result = result.properties.dataSources.windowsEventLogs
+            filters = enumerate(result)
+            filters = filter(
+                lambda e: e[1].name == self.ctx.args.name,
+                filters
+            )
+            idx = next(filters, [len(result)])[0]
+            result[idx] = value
             return
 
     class DataCollectionRulesGet(AAZHttpOperation):
@@ -162,13 +181,13 @@ class List(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _ListHelper._build_schema_data_collection_rule_resource_read(cls._schema_on_200)
+            _ShowHelper._build_schema_data_collection_rule_resource_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _ShowHelper:
+    """Helper class for Show"""
 
     _schema_data_collection_rule_resource_read = None
 
@@ -802,4 +821,4 @@ class _ListHelper:
         _schema.storage_account_resource_id = cls._schema_storage_blob_destination_read.storage_account_resource_id
 
 
-__all__ = ["List"]
+__all__ = ["Show"]
