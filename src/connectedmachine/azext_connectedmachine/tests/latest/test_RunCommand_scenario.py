@@ -44,7 +44,7 @@ class RunCommandScenarioTest(ScenarioTest):
             'machine': 'testmachine2',
             'rg': 'ytongtest2',
             'location': 'eastus2euap',
-            'subscription': 'b24cc8ee-df4f-48ac-94cf-46edf36b0fae',
+            'subscription': '00000000-0000-0000-0000-000000000000',
             'runcommand': 'myRunCommand',
         })
 
