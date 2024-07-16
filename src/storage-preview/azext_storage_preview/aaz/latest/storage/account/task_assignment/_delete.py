@@ -12,19 +12,18 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "storage account migration start",
+    "storage account task-assignment delete",
+    is_preview=True,
+    confirmation="Are you sure you want to perform this operation?",
 )
-class Start(AAZCommand):
-    """Account Migration request can be triggered for a storage account to change its redundancy level. The migration updates the non-zonal redundant storage account to a zonal redundant account or vice-versa in order to have better reliability and availability. Zone-redundant storage (ZRS) replicates your storage account synchronously across three Azure availability zones in the primary region.
-
-    :example: migration start
-        az storage account migration start --account-name "storage_account_name" -g "resource_group_name" --sku Standard_ZRS --name default --no-wait
+class Delete(AAZCommand):
+    """Delete the storage task assignment sub-resource
     """
 
     _aaz_info = {
-        "version": "2023-01-01",
+        "version": "2023-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storage/storageaccounts/{}/startaccountmigration", "2023-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.storage/storageaccounts/{}/storagetaskassignments/{}", "2023-05-01"],
         ]
     }
 
@@ -59,36 +58,22 @@ class Start(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Parameters"
-
-        _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["--name"],
-            arg_group="Parameters",
-            help="current value is 'default' for customer initiated migration",
-        )
-        _args_schema.type = AAZStrArg(
-            options=["--type"],
-            arg_group="Parameters",
-            help="SrpAccountMigrationType in ARM contract which is 'accountMigrations'",
-        )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.target_sku_name = AAZStrArg(
-            options=["--sku", "--target-sku-name"],
-            arg_group="Properties",
-            help="Target sku name for the account",
+        _args_schema.storage_task_assignment_name = AAZStrArg(
+            options=["-n", "--name", "--storage-task-assignment-name"],
+            help="The name of the storage task assignment within the specified resource group. Storage task assignment names must be between 3 and 24 characters in length and use numbers and lower-case letters only.",
             required=True,
-            enum={"Premium_LRS": "Premium_LRS", "Premium_ZRS": "Premium_ZRS", "Standard_GRS": "Standard_GRS", "Standard_GZRS": "Standard_GZRS", "Standard_LRS": "Standard_LRS", "Standard_RAGRS": "Standard_RAGRS", "Standard_RAGZRS": "Standard_RAGZRS", "Standard_ZRS": "Standard_ZRS"},
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-z0-9]{3,24}$",
+                max_length=24,
+                min_length=3,
+            ),
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.StorageAccountsCustomerInitiatedMigration(ctx=self.ctx)()
+        yield self.StorageTaskAssignmentsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -99,7 +84,7 @@ class Start(AAZCommand):
     def post_operations(self):
         pass
 
-    class StorageAccountsCustomerInitiatedMigration(AAZHttpOperation):
+    class StorageTaskAssignmentsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -109,16 +94,25 @@ class Start(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
+                    self.on_200_201,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200]:
+            if session.http_response.status_code in [204]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
+                    self.on_204,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200, 201]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -129,13 +123,13 @@ class Start(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/startAccountMigration",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/storageAccounts/{accountName}/storageTaskAssignments/{storageTaskAssignmentName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "DELETE"
 
         @property
         def error_format(self):
@@ -153,6 +147,10 @@ class Start(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
+                    "storageTaskAssignmentName", self.ctx.args.storage_task_assignment_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -163,44 +161,21 @@ class Start(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-01-01",
+                    "api-version", "2023-05-01",
                     required=True,
                 ),
             }
             return parameters
 
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-            }
-            return parameters
+        def on_204(self, session):
+            pass
 
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("name", AAZStrType, ".name")
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
-            _builder.set_prop("type", AAZStrType, ".type")
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("targetSkuName", AAZStrType, ".target_sku_name", typ_kwargs={"flags": {"required": True}})
-
-            return self.serialize_content(_content_value)
-
-        def on_200(self, session):
+        def on_200_201(self, session):
             pass
 
 
-class _StartHelper:
-    """Helper class for Start"""
+class _DeleteHelper:
+    """Helper class for Delete"""
 
 
-__all__ = ["Start"]
+__all__ = ["Delete"]
