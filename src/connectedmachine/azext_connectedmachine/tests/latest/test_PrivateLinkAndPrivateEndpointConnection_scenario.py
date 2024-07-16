@@ -114,7 +114,8 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
         self.kwargs['private_endpoint_connection_name'] = connection_list[0]['name']
 
         self.cmd('az connectedmachine private-endpoint-connection update '
-                '--connection-state "{{\\"description\\":\\"Rejected by AZ CLI\\", \\"status\\":\\"Rejected\\"}}" '
+                '--description "Rejected by AZ CLI" '
+                '--status "Rejected" '
                 '--name "{private_endpoint_connection_name}" '
                 '--resource-group "{rg}" '
                 '--scope-name "{scope}"',

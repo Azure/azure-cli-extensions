@@ -53,14 +53,14 @@ class GatewayAndSettingScenarioTest(ScenarioTest):
         parameters_string = '''[{"name":"param1","value":"value1"}]'''
         self.kwargs['parameters'] = json.dumps(parameters_string)
 
-        # self.cmd('az arc gateway create '
-        #         '--resource-group "{rg}" '
-        #         '--location "{location}" '
-        #         '--name "{gatewayName}" '
-        #         '--allowed-features *',
-        #         checks=[
-        #             self.check('name', '{gatewayName}')
-        #         ])
+        self.cmd('az arc gateway create '
+                '--resource-group "{rg}" '
+                '--location "{location}" '
+                '--name "{gatewayName}" '
+                '--allowed-features *',
+                checks=[
+                    self.check('name', '{gatewayName}')
+                ])
         
         self.cmd('az arc gateway list',
                 checks=[
@@ -71,7 +71,7 @@ class GatewayAndSettingScenarioTest(ScenarioTest):
                 '--resource-group "{rg}" '
                 '--name "{gatewayName}"',
                 checks=[
-                    self.check('length(@)', 1)
+                    self.check('length(@)', 10)
                 ])
 
         self.cmd('az connectedmachine setting update '
@@ -82,7 +82,7 @@ class GatewayAndSettingScenarioTest(ScenarioTest):
                 '--base-resource-name "workloadServer" '
                 '--settings-resource-name "default" '
                 '--gateway-resource-id "/subscriptions/b24cc8ee-df4f-48ac-94cf-46edf36b0fae/resourceGroups/manojamp/providers/Microsoft.HybridCompute/gateways/amkgw1" '              
-                '--name "{gatewayName}"',
+                '--name "default"',
                 checks=[]) 
 
         self.cmd('az arc gateway update '
@@ -92,7 +92,7 @@ class GatewayAndSettingScenarioTest(ScenarioTest):
                     self.check('resourceGroup','{newResourceGroup}')
                 ])
 
-        # self.cmd('az arc gateway delete '
-        #         '--resource-group "{rg}" '
-        #         '--name "{runcommand}" --yes',
-        #         checks=[])
+        self.cmd('az arc gateway delete '
+                '--resource-group "{rg}" '
+                '--name "{runcommand}" --yes',
+                checks=[])

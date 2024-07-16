@@ -34,8 +34,8 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
     def test_machine_and_extension(self):
         self.kwargs.update({
             'machine': 'testmachine2',
-            'rg': 'ytongtest2',
-            'location': 'eastus2euap',
+            'rg': 'ytongtest3',
+            'location': 'eastus2',
             'customScriptName': 'custom-test',
         })
 
