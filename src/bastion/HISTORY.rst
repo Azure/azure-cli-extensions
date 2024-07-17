@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.2
++++++
+* Remove redundant aad login commands from examples section.
+
 1.0.1
 +++++
 * Added support for concurrent connections.
