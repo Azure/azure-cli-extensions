@@ -202,18 +202,35 @@ def create_folder(grafana_url, folder, http_headers, overwrite):
     folder_name = folder.get('title', '')
 
     # 412 means the folder already exists and there is a version mismatch, so we should overwrite.
-    if result[0] == 412:
+    if result[0] == 412 and overwrite:
         result = send_grafana_put(f'{grafana_url}/api/folders/{folder["uid"]}', content, http_headers)
         print_styled_text([
             (Style.WARNING, f'Overwrite folder {folder_name}: '),
             (Style.SUCCESS, 'SUCCESS') if result[0] in [200] else (Style.ERROR, 'FAILURE')
         ])
     else:
-        print_styled_text([
+        to_print = [
             (Style.WARNING, f'Create folder {folder_name}: '),
             (Style.SUCCESS, 'SUCCESS') if result[0] in [200] else (Style.ERROR, 'FAILURE')
-        ])
+        ]
+
+        if result[0] == 412:
+            to_print.append((Style.ERROR, ' (version mismatch, please enable --overwrite if you want to overwrite it)'))
+
+        print_styled_text(to_print)
+
     logger.info("status: %s, msg: %s", result[0], result[1])
+
+    # return for the summary
+    return result[0] == 200
+
+
+def check_folder_exists(grafana_url, folder, http_headers):
+    if not folder.get('uid'):
+        return False
+
+    result = send_grafana_get(f'{grafana_url}/api/folders/{folder["uid"]}', http_headers)
+    return result[0] == 200
 
 
 # Restore annotations

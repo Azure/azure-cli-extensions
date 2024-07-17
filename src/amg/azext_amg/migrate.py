@@ -1,7 +1,7 @@
 from knack.log import get_logger
 from azure.cli.core.style import print_styled_text, Style
 
-from .restore import create_dashboard, create_folder, create_library_panel, create_snapshot, create_annotation, create_datasource, set_uid_mapping
+from .restore import create_dashboard, create_folder, create_library_panel, create_snapshot, create_annotation, create_datasource, set_uid_mapping, check_folder_exists
 from .backup_core import get_all_dashboards, get_all_library_panels, get_all_snapshots, get_all_folders, get_all_annotations, get_all_datasources
 
 logger = get_logger(__name__)
@@ -15,7 +15,7 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, o
 
     all_folders = get_all_folders(backup_url, backup_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
     all_restore_folders = get_all_folders(restore_url, restore_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
-    folders_created_summary = _migrate_folders(all_folders, all_restore_folders, restore_url, restore_headers, dry_run, overwrite)
+    (folders_created_summary, folders_overwrote_summary) = _migrate_folders(all_folders, all_restore_folders, restore_url, restore_headers, dry_run, overwrite)
 
     all_dashboards = get_all_dashboards(backup_url, backup_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
     all_library_panels = get_all_library_panels(backup_url, backup_headers)
@@ -29,39 +29,43 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, o
     all_annotations = get_all_annotations(backup_url, backup_headers)
     annotations_synced_summary = _migrate_annotations(all_annotations, restore_url, restore_headers, dry_run)
 
-    sync_status = "will be synced" if dry_run else "synced"
+    dry_run_status = "to be " if dry_run else ""
     output = [
         (Style.IMPORTANT, f"\n\nDry run: {dry_run if dry_run else False}\n"),
         (Style.IMPORTANT, f"Overwrite dashboards, folders, and library panels: {overwrite if overwrite else False}\n"),
     ]
 
     if len(datasources_created_summary) > 0:
-        output.append((Style.SUCCESS, "\n\nDatasources created:"))
+        output.append((Style.SUCCESS, f"\n\nDatasources {dry_run_status}created:"))
         output.append((Style.PRIMARY, "\n    " + "\n    ".join(datasources_created_summary)))
     if len(datasources_remapped_summary) > 0:
-        output.append((Style.SUCCESS, "\n\nDatasources remapped:"))
+        output.append((Style.SUCCESS, f"\n\nDatasources {dry_run_status}remapped:"))
         output.append((Style.PRIMARY, "\n    " + "\n    ".join(datasources_remapped_summary)))
 
     if len(folders_created_summary) > 0:
-        output.append((Style.SUCCESS, "\n\nFolders created:"))
+        output.append((Style.SUCCESS, f"\n\nFolders {dry_run_status}created:"))
         output.append((Style.PRIMARY, "\n    " + "\n    ".join(folders_created_summary)))
 
-    output.append((Style.SUCCESS, f"\n\nLibrary panels {sync_status}:"))
+    if len(folders_overwrote_summary) > 0:
+        output.append((Style.SUCCESS, f"\n\nFolders {dry_run_status}overwrote:"))
+        output.append((Style.PRIMARY, "\n    " + "\n    ".join(folders_overwrote_summary)))
+
+    output.append((Style.SUCCESS, f"\n\nLibrary panels {dry_run_status}updated:"))
     for folder, panels in library_panels_synced_summary.items():
         output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
         output.append((Style.SECONDARY, "\n        ".join(panels)))
 
-    output.append((Style.SUCCESS, f"\n\nDashboards {sync_status}:"))
+    output.append((Style.SUCCESS, f"\n\nDashboards {dry_run_status}updated:"))
     for folder, dashboards in dashboards_synced_summary.items():
         output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
         output.append((Style.SECONDARY, "\n        ".join(dashboards)))
 
-    output.append((Style.SUCCESS, f"\n\nSnapshots {sync_status}:"))
+    output.append((Style.SUCCESS, f"\n\nSnapshots {dry_run_status}updated:"))
     for folder, snapshots in snapshots_synced_summary.items():
         output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
         output.append((Style.SECONDARY, "\n        ".join(snapshots)))
 
-    output.append((Style.SUCCESS, f"\n\nAnnotations {sync_status} (by id):"))
+    output.append((Style.SUCCESS, f"\n\nAnnotations {dry_run_status}updated (by id):"))
     output.append((Style.PRIMARY, "\n    " + "\n    ".join(annotations_synced_summary)))
 
     print_styled_text(output)
@@ -91,6 +95,8 @@ def _migrate_datasources(all_datasources, all_restore_datasources, restore_url, 
 
 def _migrate_folders(all_folders, all_restore_folders, restore_url, restore_headers, dry_run, overwrite):
     folders_created_summary = []
+    folders_overwrote_summary = []
+
     restore_folder_uids = {restore_content['uid'] for (restore_content, _) in all_restore_folders}
     restore_folder_uids = set()
 
@@ -98,13 +104,25 @@ def _migrate_folders(all_folders, all_restore_folders, restore_url, restore_head
         content_folder_settings, content_folder_permissions = folder
         # create a folder if it does not exist
         if content_folder_settings['uid'] not in restore_folder_uids:
+            # Do this check before creation. 
+            exists_before = check_folder_exists(restore_url, content_folder_settings, restore_headers)
+
             if not dry_run:
-                # TODO: if uids match, but the folder title is different, we should update the folder title.
-                create_folder(restore_url, content_folder_settings, restore_headers, overwrite)
-            folders_created_summary.append(content_folder_settings['title'])
+                is_successful = create_folder(restore_url, content_folder_settings, restore_headers, overwrite)
+            else:
+                is_successful = True
+
+            # Make sure that it is successful to add it to the summary properly. dry_run just assume it will work.
+            if is_successful:
+                if exists_before:
+                    folders_overwrote_summary.append(content_folder_settings['title'])
+                else:
+                    folders_created_summary.append(content_folder_settings['title'])
+
+
         else:
             logger.warning("Folder %s already exists, skipping", content_folder_settings['title'])
-    return folders_created_summary
+    return folders_created_summary, folders_overwrote_summary
 
 
 def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels, restore_url, restore_headers, dry_run, overwrite):
