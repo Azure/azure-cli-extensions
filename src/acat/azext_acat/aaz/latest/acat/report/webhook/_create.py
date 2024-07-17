@@ -62,7 +62,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.content_type = AAZStrArg(
-            options=["--content-type-hidden"],
+            options=["--content-type"],
             arg_group="Properties",
             help="content type",
             default="application/json",
@@ -90,24 +90,24 @@ class Create(AAZCommand):
             ),
         )
         _args_schema.send_all_events = AAZStrArg(
-            options=["--send-all-events-hidden"],
+            options=["--send-all-events"],
             arg_group="Properties",
             help="whether to send notification under any event.",
             enum={"false": "false", "true": "true"},
         )
         _args_schema.status = AAZStrArg(
-            options=["--status-hidden"],
+            options=["--status"],
             arg_group="Properties",
             help="Webhook status.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.update_webhook_key = AAZStrArg(
-            options=["--update-webhook-key-hidden"],
+            options=["--update-webhook-key"],
             arg_group="Properties",
             help="whether to update webhookKey.",
             enum={"false": "false", "true": "true"},
         )
-        _args_schema.webhook_key = AAZStrArg(
+        _args_schema.secret = AAZStrArg(
             options=["--secret"],
             arg_group="Properties",
             help="webhook secret token. If not set, this field value is null; otherwise, please set a string value.",
@@ -219,7 +219,7 @@ class Create(AAZCommand):
                 properties.set_prop("sendAllEvents", AAZStrType, ".send_all_events")
                 properties.set_prop("status", AAZStrType, ".status")
                 properties.set_prop("updateWebhookKey", AAZStrType, ".update_webhook_key")
-                properties.set_prop("webhookKey", AAZStrType, ".webhook_key")
+                properties.set_prop("webhookKey", AAZStrType, ".secret")
 
             events = _builder.get(".properties.events")
             if events is not None:

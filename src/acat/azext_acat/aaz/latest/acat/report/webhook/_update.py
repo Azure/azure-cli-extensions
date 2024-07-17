@@ -74,26 +74,26 @@ class Update(AAZCommand):
             enum={"false": "false", "true": "true"},
         )
         _args_schema.events = AAZListArg(
-            options=["--events-hidden"],
+            options=["--events"],
             arg_group="Properties",
             help="under which event notification should be sent.",
         )
         _args_schema.payload_url = AAZStrArg(
-            options=["--payload-url-hidden"],
+            options=["--payload-url"],
             arg_group="Properties",
             help="webhook payload url",
             fmt=AAZStrArgFormat(
-                pattern="^(http(s)?://)[\S]{0,64994}$",
+                pattern="^(http(s)?://)[\\S]{0,64994}$",
             ),
         )
         _args_schema.send_all_events = AAZStrArg(
-            options=["--send-all-events-hidden"],
+            options=["--send-all-events"],
             arg_group="Properties",
             help="whether to send notification under any event.",
             enum={"false": "false", "true": "true"},
         )
         _args_schema.status = AAZStrArg(
-            options=["--status-hidden"],
+            options=["--status"],
             arg_group="Properties",
             help="Webhook status.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
@@ -104,7 +104,7 @@ class Update(AAZCommand):
             help="whether to update webhookKey.",
             enum={"false": "false", "true": "true"},
         )
-        _args_schema.webhook_key = AAZStrArg(
+        _args_schema.secret = AAZStrArg(
             options=["--secret"],
             arg_group="Properties",
             help="webhook secret token. If not set, this field value is null; otherwise, please set a string value.",
@@ -216,7 +216,7 @@ class Update(AAZCommand):
                 properties.set_prop("sendAllEvents", AAZStrType, ".send_all_events")
                 properties.set_prop("status", AAZStrType, ".status")
                 properties.set_prop("updateWebhookKey", AAZStrType, ".update_webhook_key")
-                properties.set_prop("webhookKey", AAZStrType, ".webhook_key")
+                properties.set_prop("webhookKey", AAZStrType, ".secret")
 
             events = _builder.get(".properties.events")
             if events is not None:

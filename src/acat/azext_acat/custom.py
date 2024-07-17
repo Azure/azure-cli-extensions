@@ -129,8 +129,8 @@ class CreateAcatReport(_AcatCreateReport):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         from azure.cli.core.aaz import AAZDateTimeArg
 
-        args_schema.trigger_time._required = False
-        args_schema.trigger_time._registered = False
+        args_schema.trigger_time_by_codegen._required = False
+        args_schema.trigger_time_by_codegen._registered = False
         args_schema.trigger_time_with_default = AAZDateTimeArg(
             options=["--trigger-time"],
             arg_group="Properties",
@@ -148,15 +148,23 @@ class CreateAcatReport(_AcatCreateReport):
         )
         LongRunningOperation(self.cli_ctx)(poller)
         args = self.ctx.args
-        args.trigger_time = args.trigger_time_with_default
+        args.trigger_time_by_codegen = args.trigger_time_with_default
 
 
 class UpdateAcatReport(_AcatUpdateReport):
-    class UpdateAcatReportWithDupAadToken(_AcatUpdateReport.ReportUpdate):
+    class UpdateAcatReportWithDupAadToken(_AcatUpdateReport.ReportCreateOrUpdate):
+        CLIENT_TYPE = "AcatMgmtClient"
+
+    class GetAcatReportWithDupAadToken(_AcatUpdateReport.ReportGet):
         CLIENT_TYPE = "AcatMgmtClient"
 
     def _execute_operations(self):
         self.pre_operations()
+        self.GetAcatReportWithDupAadToken(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
+        self.InstanceUpdateByJson(ctx=self.ctx)()
+        self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
         yield self.UpdateAcatReportWithDupAadToken(ctx=self.ctx)()
         self.post_operations()
 
@@ -228,10 +236,13 @@ class DownloadAcatReport(_AcatDownloadSnapshot):
 
     def pre_operations(self):
         args = self.ctx.args
-        result = GetControlAssessment(cli_ctx=self.cli_ctx)(
+        pagedResult = GetControlAssessment(cli_ctx=self.cli_ctx)(
             command_args={"report_name": args.report_name, "compliance_status": "all"}
         )
-        snapshot_name = result["snapshotName"] if result is not None else None
+        snapshot_name = None
+        for result in pagedResult:
+            snapshot_name = result["snapshotName"] if result is not None else None
+            break
         if snapshot_name is None:
             raise ValueError(
                 f"No snapshot found for report {self.ctx.args.report_name}"
@@ -273,22 +284,18 @@ class GetControlAssessment(_AcatListSnapshot):
         )
         return args_schema
 
-    def pre_operations(self):
-        args = self.ctx.args
-        args.top = 1
-        args.skip_token = "0"
-
     def _output(self, *args, **kwargs):
         snapshots = self.deserialize_output(
             self.ctx.vars.instance.value, client_flatten=True
         )
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         if len(snapshots) == 0:
             raise ValueError(
                 f"No snapshot found for report {self.ctx.args.report_name}"
             )
         latestSnapshot = snapshots[0]
         if self.ctx.args.compliance_status == "Full Assessments":
-            return latestSnapshot
+            return [latestSnapshot], next_link
         filteredCategories = [
             {
                 "categoryName": category["categoryName"],
@@ -310,7 +317,7 @@ class GetControlAssessment(_AcatListSnapshot):
             for category in latestSnapshot["complianceResults"][0]["categories"]
         ]
         latestSnapshot["complianceResults"][0]["categories"] = filteredCategories
-        return latestSnapshot
+        return [latestSnapshot], next_link
 
 
 class ListAcatReportWebhook(_AcatListReportWebhook):
@@ -380,10 +387,10 @@ class CreateAcatReportWebhook(_AcatCreateReportWebhook):
         args.status = args.status_with_default
         args.send_all_events = args.trigger_mode
 
-        if has_value(args.webhook_key):
+        if has_value(args.secret):
             args.update_webhook_key = "true"
         else:
-            args.webhook_key = ""
+            args.secret = ""
             args.update_webhook_key = "false"
 
 
@@ -431,7 +438,7 @@ class UpdateAcatReportWebhook(_AcatUpdateReportWebhook):
         args.status = args.status_nullable
         args.send_all_events = args.trigger_mode
 
-        if has_value(args.webhook_key):
+        if has_value(args.secret):
             args.update_webhook_key = "true"
         else:
             args.update_webhook_key = "false"

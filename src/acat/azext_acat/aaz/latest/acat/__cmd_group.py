@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "acat",
 )
 class __CMDGroup(AAZCommandGroup):
-    """ Manage App Compliance Automation Tool reports.
+    """ACAT command group
     """
     pass
 
