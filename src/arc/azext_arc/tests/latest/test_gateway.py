@@ -57,7 +57,7 @@ class GatewayScenarioTest(ScenarioTest):
                 '--resource-group "{rg}" '
                 '--name "{gatewayName}"',
                 checks=[
-                    self.check('resourceGroup','{newResourceGroup}')
+                    self.check('resourceGroup','{rg}')
                 ])
 
         self.cmd('az arc gateway delete '

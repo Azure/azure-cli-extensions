@@ -8,7 +8,7 @@ az extension add --name arc
 ```
 
 ### Included Features ###
-#### connectedmachine ####
+#### arc ####
 ##### Create #####
 ```
 az arc gateway create --resource-group "myResourceGroup" --location "eastus2euap" --name "myGateway" --allowed-features *
