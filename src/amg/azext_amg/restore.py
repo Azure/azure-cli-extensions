@@ -13,7 +13,7 @@ from azure.cli.core.azclierror import ArgumentUsageError
 from azure.cli.core.style import print_styled_text, Style
 from knack.log import get_logger
 
-from .utils import (get_folder_id, send_grafana_post, send_grafana_patch,
+from .utils import (get_folder_id, send_grafana_post, send_grafana_patch, send_grafana_put,
                     send_grafana_get, create_datasource_mapping, remap_datasource_uids)
 
 logger = get_logger(__name__)
@@ -119,10 +119,10 @@ def _load_and_create_library_panel(grafana_url, file_path, http_headers):
     payload = json.loads(data)
     payload['id'] = None
 
-    create_library_panel(grafana_url, payload, http_headers)
+    create_library_panel(grafana_url, payload, http_headers, override=True)
 
 
-def create_library_panel(grafana_url, payload, http_headers):
+def create_library_panel(grafana_url, payload, http_headers, override):
     # set the folder id of the library panel
     payload['folderId'] = get_folder_id(payload, grafana_url, http_post_headers=http_headers)
 
@@ -132,7 +132,8 @@ def create_library_panel(grafana_url, payload, http_headers):
     panel_name = payload.get('name', '')
 
     (status, content) = send_grafana_post(f'{grafana_url}/api/library-elements', json.dumps(payload), http_headers)
-    if status >= 400 and ('name or UID already exists' in content.get('message', '')):
+    # only patch if override is true.
+    if status >= 400 and ('name or UID already exists' in content.get('message', '')) and override:
         uid = payload['uid']
         panel_uri = f'{grafana_url}/api/library-elements/{uid}'
         (status, content) = send_grafana_get(panel_uri, http_headers)
@@ -145,10 +146,18 @@ def create_library_panel(grafana_url, payload, http_headers):
             }
             (status, content) = send_grafana_patch(f'{grafana_url}/api/library-elements/{uid}',
                                                    json.dumps(patch_payload), http_headers)
-    print_styled_text([
-        (Style.WARNING, f'Create library panel {panel_name}: '),
-        (Style.SUCCESS, 'SUCCESS') if status == 200 else (Style.ERROR, 'FAILURE')
-    ])
+
+        print_styled_text([
+            (Style.WARNING, f'Override library panel {panel_name}: '),
+            (Style.SUCCESS, 'SUCCESS') if status == 200 else (Style.ERROR, 'FAILURE')
+        ])
+
+    else:
+        print_styled_text([
+            (Style.WARNING, f'Create library panel {panel_name}: '),
+            (Style.SUCCESS, 'SUCCESS') if status == 200 else (Style.ERROR, 'FAILURE')
+        ])
+
     logger.info("status: %s, msg: %s", status, content)
 
 
@@ -182,19 +191,28 @@ def _load_and_create_folder(grafana_url, file_path, http_headers):
         data = f.read()
 
     folder = json.loads(data)
-    create_folder(grafana_url, folder, http_headers)
+    create_folder(grafana_url, folder, http_headers, override=True)
 
 
-def create_folder(grafana_url, folder, http_headers):
+def create_folder(grafana_url, folder, http_headers, override):
+    folder["overwrite"] = override
+
     content = json.dumps(folder)
     result = send_grafana_post(f'{grafana_url}/api/folders', content, http_headers)
     folder_name = folder.get('title', '')
 
-    # 412 means the folder already exists
-    print_styled_text([
-        (Style.WARNING, f'Create folder {folder_name}: '),
-        (Style.SUCCESS, 'SUCCESS') if result[0] in [200, 412] else (Style.ERROR, 'FAILURE')
-    ])
+    # 412 means the folder already exists and there is a version mismatch, so we should overwrite.
+    if result[0] == 412:
+        result = send_grafana_put(f'{grafana_url}/api/folders/{folder["uid"]}', content, http_headers)
+        print_styled_text([
+            (Style.WARNING, f'Overwrite folder {folder_name}: '),
+            (Style.SUCCESS, 'SUCCESS') if result[0] in [200] else (Style.ERROR, 'FAILURE')
+        ])
+    else:
+        print_styled_text([
+            (Style.WARNING, f'Create folder {folder_name}: '),
+            (Style.SUCCESS, 'SUCCESS') if result[0] in [200] else (Style.ERROR, 'FAILURE')
+        ])
     logger.info("status: %s, msg: %s", result[0], result[1])
 
 

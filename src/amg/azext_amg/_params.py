@@ -71,7 +71,7 @@ def load_arguments(self, _):
         c.argument("source_instance_ip", options_list=["-s", "--src-ip"], help="Grafana instance IP to migrate from")
         c.argument("source_instance_token", options_list=["-t", "--src-token"], help="Grafana instance token to migrate from")
         c.argument("dry_run", options_list=["-d", "--dry-run"], arg_type=get_three_state_flag(), help="Preview changes without committing. Takes priority over --override.")
-        c.argument("override", options_list=["--override"], arg_type=get_three_state_flag(), help="Override previous dashboards with the same uid with new ones")
+        c.argument("override", options_list=["--override"], arg_type=get_three_state_flag(), help="Override previous dashboards / library panels with the same uid with new ones")
 
     with self.argument_context("grafana dashboard") as c:
         c.argument("uid", options_list=["--dashboard"], help="dashboard uid")
