@@ -75,7 +75,7 @@ jobs:
         run: |
            set -ev
            mkdir ${result_path}
-           git checkout "$base_branch_pre"/"$base_branch" -- scripts/ci/codegen_cal.py
+           git checkout "$base_branch_pre"/"$base_branch" -- scripts
            python scripts/ci/codegen_cal.py --job check
            ls ${result_path}
       - name: Archive production artifacts
