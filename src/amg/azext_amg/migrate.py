@@ -19,7 +19,7 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, o
 
     all_dashboards = get_all_dashboards(backup_url, backup_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
     all_library_panels = get_all_library_panels(backup_url, backup_headers)
-    (library_panels_synced_summary, dashboards_synced_summary) = _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels, restore_url, restore_headers, dry_run, overwrite)
+    (library_panels_created_summary, library_panels_overwrote_summary, dashboards_synced_summary) = _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels, restore_url, restore_headers, dry_run, overwrite)
 
     # get the list of snapshots to backup
     all_snapshots = get_all_snapshots(backup_url, backup_headers)
@@ -50,8 +50,13 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, o
         output.append((Style.SUCCESS, f"\n\nFolders {dry_run_status}overwrote:"))
         output.append((Style.PRIMARY, "\n    " + "\n    ".join(folders_overwrote_summary)))
 
-    output.append((Style.SUCCESS, f"\n\nLibrary panels {dry_run_status}updated:"))
-    for folder, panels in library_panels_synced_summary.items():
+    output.append((Style.SUCCESS, f"\n\nLibrary panels {dry_run_status}created:"))
+    for folder, panels in library_panels_created_summary.items():
+        output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
+        output.append((Style.SECONDARY, "\n        ".join(panels)))
+
+    output.append((Style.SUCCESS, f"\n\nLibrary panels {dry_run_status}overwrote:"))
+    for folder, panels in library_panels_overwrote_summary.items():
         output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
         output.append((Style.SECONDARY, "\n        ".join(panels)))
 
@@ -126,23 +131,34 @@ def _migrate_folders(all_folders, all_restore_folders, restore_url, restore_head
 
 
 def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels, restore_url, restore_headers, dry_run, overwrite):
-    library_panels_synced_summary = {}
+    library_panels_created_summary = {}
+    library_panels_overwrote_summary = {}
     dashboards_synced_summary = {}
 
     library_panels_uids_to_update = _get_all_library_panels_uids_from_dashboards(all_dashboards)
     # only update the library panels that are not included / excluded.
     all_library_panels_filtered = [panel for panel in all_library_panels if panel['uid'] in library_panels_uids_to_update]
     for library_panel in all_library_panels_filtered:
+        exists_before = check_folder_exists(restore_url, library_panel, restore_headers)
+
         library_panel['id'] = None
         if not dry_run:
             # in create_library_panel, it does the patch if the library panel already exists.
-            # TODO: only overwrite, if people say force update.
-            create_library_panel(restore_url, library_panel, restore_headers, overwrite)
+            is_successful = create_library_panel(restore_url, library_panel, restore_headers, overwrite)
+        else:
+            is_successful = True
 
-        panel_folder_name = library_panel['meta']['folderName']
-        if panel_folder_name not in library_panels_synced_summary:
-            library_panels_synced_summary[panel_folder_name] = set()
-        library_panels_synced_summary[panel_folder_name].add(library_panel['name'])
+        if is_successful:
+            panel_folder_name = library_panel['meta']['folderName']
+            if exists_before:
+                if panel_folder_name not in library_panels_overwrote_summary:
+                    library_panels_overwrote_summary[panel_folder_name] = set()
+                library_panels_overwrote_summary[panel_folder_name].add(library_panel['name'])
+            else:
+                if panel_folder_name not in library_panels_created_summary:
+                    library_panels_created_summary[panel_folder_name] = set()
+                library_panels_created_summary[panel_folder_name].add(library_panel['name'])
+        
 
     # we don't backup provisioned dashboards, so we don't need to restore them
     for dashboard in all_dashboards:
@@ -156,7 +172,7 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels, r
             dashboards_synced_summary[folder_title] = []
         dashboards_synced_summary[folder_title].append(dashboard['dashboard']['title'])
 
-    return (library_panels_synced_summary, dashboards_synced_summary)
+    return (library_panels_created_summary, library_panels_overwrote_summary, dashboards_synced_summary)
 
 
 def _get_all_library_panels_uids_from_dashboards(all_dashboards):

@@ -133,24 +133,31 @@ def create_library_panel(grafana_url, payload, http_headers, overwrite):
 
     (status, content) = send_grafana_post(f'{grafana_url}/api/library-elements', json.dumps(payload), http_headers)
     # only patch if overwrite is true.
-    if status >= 400 and ('name or UID already exists' in content.get('message', '')) and overwrite:
-        uid = payload['uid']
-        panel_uri = f'{grafana_url}/api/library-elements/{uid}'
-        (status, content) = send_grafana_get(panel_uri, http_headers)
-        if status == 200:
-            patch_payload = {
-                'name': panel_name,
-                'model': payload['model'],
-                'version': content['result']['version'],
-                'kind': payload['kind']
-            }
-            (status, content) = send_grafana_patch(f'{grafana_url}/api/library-elements/{uid}',
-                                                   json.dumps(patch_payload), http_headers)
+    if status >= 400 and ('name or UID already exists' in content.get('message', '')):
+        if overwrite:
+            uid = payload['uid']
+            panel_uri = f'{grafana_url}/api/library-elements/{uid}'
+            (status, content) = send_grafana_get(panel_uri, http_headers)
+            if status == 200:
+                patch_payload = {
+                    'name': panel_name,
+                    'model': payload['model'],
+                    'version': content['result']['version'],
+                    'kind': payload['kind']
+                }
+                (status, content) = send_grafana_patch(f'{grafana_url}/api/library-elements/{uid}',
+                                                    json.dumps(patch_payload), http_headers)
 
-        print_styled_text([
-            (Style.WARNING, f'Overwrite library panel {panel_name}: '),
-            (Style.SUCCESS, 'SUCCESS') if status == 200 else (Style.ERROR, 'FAILURE')
-        ])
+            print_styled_text([
+                (Style.WARNING, f'Overwrite library panel {panel_name}: '),
+                (Style.SUCCESS, 'SUCCESS') if status == 200 else (Style.ERROR, 'FAILURE')
+            ])
+        else:
+            print_styled_text([
+                (Style.WARNING, f'Create library panel {panel_name}: '),
+                (Style.ERROR, 'FAILURE'),
+                (Style.ERROR, ' (name or UID already exists, please enable --overwrite if you want to overwrite it)')
+            ])
 
     else:
         print_styled_text([
@@ -159,6 +166,12 @@ def create_library_panel(grafana_url, payload, http_headers, overwrite):
         ])
 
     logger.info("status: %s, msg: %s", status, content)
+    return status == 200
+
+
+def check_library_panel_exists(grafana_url, payload, http_headers):
+    result = send_grafana_get(f'{grafana_url}/api/library-elements/{payload["uid"]}', http_headers)
+    return result[0] == 200
 
 
 # Restore snapshots
