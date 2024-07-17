@@ -1,0 +1,171 @@
+interactions:
+- request:
+    body: '{"location": "westus2", "properties": {"dataFlows": [{"destinations": ["azureMonitorMetrics-default"],
+      "streams": ["Microsoft-InsightsMetrics"]}], "dataSources": {"performanceCounters":
+      [{"counterSpecifiers": ["\\Processor Information(_Total)\\% Processor Time"],
+      "name": "perfCounter01", "samplingFrequencyInSeconds": 60, "streams": ["Microsoft-InsightsMetrics"]}]},
+      "destinations": {"azureMonitorMetrics": {"name": "azureMonitorMetrics-default"}},
+      "streamDeclarations": {"Custom-stream-1": {"columns": [{"name": "TimeGenerated",
+      "type": "datetime"}, {"name": "coord", "type": "dynamic"}, {"name": "weather",
+      "type": "dynamic"}, {"name": "base", "type": "string"}, {"name": "main", "type":
+      "dynamic"}, {"name": "visibility", "type": "int"}, {"name": "wind", "type":
+      "dynamic"}, {"name": "clouds", "type": "dynamic"}, {"name": "dt", "type": "int"},
+      {"name": "sys", "type": "dynamic"}, {"name": "timezone", "type": "int"}, {"name":
+      "id", "type": "int"}, {"name": "name", "type": "string"}, {"name": "cod", "type":
+      "int"}]}}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor data-collection rule create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1024'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --location --name --rule-file
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule_json_arg000001/providers/Microsoft.Insights/dataCollectionRules/testrule?api-version=2023-03-11
+  response:
+    body:
+      string: '{"properties":{"immutableId":"dcr-941883637bb14e91b671dee6904ad5db","streamDeclarations":{"Custom-stream-1":{"columns":[{"name":"TimeGenerated","type":"datetime"},{"name":"coord","type":"dynamic"},{"name":"weather","type":"dynamic"},{"name":"base","type":"string"},{"name":"main","type":"dynamic"},{"name":"visibility","type":"int"},{"name":"wind","type":"dynamic"},{"name":"clouds","type":"dynamic"},{"name":"dt","type":"int"},{"name":"sys","type":"dynamic"},{"name":"timezone","type":"int"},{"name":"id","type":"int"},{"name":"name","type":"string"},{"name":"cod","type":"int"}]}},"dataSources":{"performanceCounters":[{"streams":["Microsoft-InsightsMetrics"],"samplingFrequencyInSeconds":60,"counterSpecifiers":["\\Processor
+        Information(_Total)\\% Processor Time"],"name":"perfCounter01"}]},"destinations":{"azureMonitorMetrics":{"name":"azureMonitorMetrics-default"}},"dataFlows":[{"streams":["Microsoft-InsightsMetrics"],"destinations":["azureMonitorMetrics-default"]}],"provisioningState":"Succeeded"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule_json_arg000001/providers/Microsoft.Insights/dataCollectionRules/testrule","name":"testrule","type":"Microsoft.Insights/dataCollectionRules","etag":"\"0100438d-0000-0800-0000-66963db00000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2024-07-16T09:30:24.3931241Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-16T09:30:24.3931241Z"}}'
+    headers:
+      api-supported-versions:
+      - 2019-11-01-preview, 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11,
+        2024-03-11
+      cache-control:
+      - no-cache
+      content-length:
+      - '1544'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 16 Jul 2024 09:30:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2bbfbac8-e1b0-44af-b9c6-3a40669d37e3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '149'
+      x-msedge-ref:
+      - 'Ref A: 5FE14A1E462740CD9FDEC3935D31806D Ref B: TYO201100117039 Ref C: 2024-07-16T09:30:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor data-collection rule delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g -n -y
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule_json_arg000001/providers/Microsoft.Insights/dataCollectionRules/testrule?deleteAssociations=false&api-version=2023-03-11
+  response:
+    body:
+      string: ''
+    headers:
+      api-supported-versions:
+      - 2019-11-01-preview, 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11,
+        2024-03-11
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Tue, 16 Jul 2024 09:30:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:2bbfbac8-e1b0-44af-b9c6-3a40669d37e3
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: C02A33E7F3974AA892FEB2BDE8D2CE52 Ref B: TYO201100114049 Ref C: 2024-07-16T09:30:26Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - monitor data-collection rule list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule_json_arg000001/providers/Microsoft.Insights/dataCollectionRules?api-version=2023-03-11
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 16 Jul 2024 09:30:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 9F66244FE90241B991D850ADAA2DAABF Ref B: TYO201151003011 Ref C: 2024-07-16T09:30:29Z'
+    status:
+      code: 200
+      message: OK
+version: 1

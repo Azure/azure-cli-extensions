@@ -12,7 +12,7 @@ manifest = '''
   "datasourceType": "Microsoft.DBforMySQL/flexibleServers",
   "allowedRestoreModes": [ "RecoveryPointBased" ],
   "allowedRestoreTargetTypes": [ "RestoreAsFiles" ],
-  "itemLevelRecoveyEnabled": false,
+  "itemLevelRecoveryEnabled": false,
   "addBackupDatasourceParametersList": false,
   "addDataStoreParametersList": false,
   "friendlyNameRequired": false,

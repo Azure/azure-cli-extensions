@@ -12,6 +12,65 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+6.0.0b1
+++++++++
+* Remove support for `az aks mesh` egress gateway commands.
+* Add validation to `az aks create` and `az aks update` while modifying the `--ephemeral-disk-volume-type` and `--ephemeral-disk-nvme-perf-tier` values.
+
+5.0.0b4
+++++++++
+* Add additional unit test cases for mutable fips flags in agentpool update.
+
+5.0.0b3
+++++++++
+* Add support for mutable fips in agentpool update. (enable/disable flags)
+
+5.0.0b2
+++++++++
+* Add option `--ephemeral-disk-volume-type` to `az aks create` and `az aks update` for Azure Container Storage operations.
+* Add option `--azure-container-storage-perf-tier` to `az aks create` and `az aks update` to define resource tiers for Azure Container Storage performance.
+* Vendor new SDK and bump API version to 2024-04-02-preview.
+
+5.0.0b1
+++++++++
+* [BREAKING CHANGE]: Remove --enable-network-observability and --disable-network-observability from aks create and update commands.
+* Update --enable-advanced-network-observability description to note additional costs and add missing flag to create command.
+* Change default value of `--vm-set-type` to VirtualMachines when `--vm-sizes` is set.
+
+
+4.0.0b5
+++++++++
+* Add warnings to `az aks mesh` commands for out of support asm revision in use.
+* Add etag support (--if-match, --if-none-match) to some aks commands for optimistic concurrency control.
+
+4.0.0b4
+++++++++
+* Add `--vm-sizes` to `az aks create` and `az aks nodepool add`.
+* Add `az aks nodepool manual-scale add/update/delete` commands.
+
+4.0.0b3
++++++++
+* Leave only one role assignment for automatic sku clusters.
+    * "Azure Kubernetes Service RBAC Cluster Admin"
+
+4.0.0b2
++++++++
+* Improve Windows OutboundNat test case by removing Windows OSSKU limitation
+* `az aks create/update`: add support for new outbound type none
+* Add `az operation show` command to show the details of a specific operation.
+* Add `az operation show-latest` command to show the details of the latest operation.
+
+4.0.0b1
++++++++
+* [BREAKING CHANGE]: `az aks create`: Specifying `--enable-managed-identity` and `--service-principal`/`--client-secret` at the same time will cause a `MutuallyExclusiveArgumentError`
+* [BREAKING CHANGE]: `az aks create`: Change the default value of option `--enable-managed-identity` from `True` to `False`
+* `az aks create`: When options `--service-principal` and `--client-secret` are not specified at the same time, CLI will backfill the value of `--enable-managed-identity` to `True` to maintain the same behavior as before (that is, create an cluster with managed system assigned identity by default)
+
+3.0.0b13
+++++++++
+* Set disable local accounts to true when creating an automatic cluster
+* Add option `--enable-advanced-network-observability`, `--disable-advanced-network-observability` to `az aks create/update`
+
 3.0.0b12
 ++++++++
 * Create three default role assignments for automatic sku clusters.

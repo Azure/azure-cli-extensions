@@ -2,6 +2,30 @@
 
 Release History
 ===============
+2.0.5
+++++++
+* Bump version
+
+2.0.4
+++++++
+* Fix PostgreSQL connection string format
+
+2.0.3
+++++++
+* Prompt confirmation when update PostgreSQL server
+
+2.0.2
+++++++
+* Fix no attribute error
+
+2.0.1
+++++++
+* Fix old api-version issue
+
+2.0.0
+++++++
+* Update to be compatible with Azure CLI 2.60.0
+
 1.0.3
 ++++++
 * Fix no attribute error

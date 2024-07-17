@@ -1,0 +1,59 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub provider-registration list
+      Connection:
+      - keep-alive
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations?api-version=2024-04-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"privateResourceProviderConfiguration":{"allowedSubscriptions":["81ddc363-4b54-4223-833d-16b2a424d8a0"]},"provisioningState":"Succeeded","namespace":"Private.VPTest","providerVersion":"2.0","providerType":"Internal,
+        Hidden","management":{"manifestOwners":["SPARTA-PlatformServiceAdministrator"],"incidentRoutingService":"Resource
+        Provider Service as a Service","incidentRoutingTeam":"RPaaS","incidentContactEmail":"rpaascore@microsoft.com","serviceTreeInfos":[{"serviceId":"d1b7d8ba-05e2-48e6-90d6-d781b99c6e69","componentId":"d1b7d8ba-05e2-48e6-90d6-d781b99c6e69"}]},"capabilities":[{"quotaId":"CSP_2015-05-01","effect":"Allow"},{"quotaId":"CSP_MG_2017-12-01","effect":"Allow"}],"metadata":null,"tokenAuthConfiguration":{"authenticationScheme":"PoP","signedRequestScope":"ResourceUri","disableCertificateAuthenticationFallback":false}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest","type":"Microsoft.ProviderHub/providerRegistrations","name":"Private.VPTest","kind":"Managed","systemData":{"createdBy":"vpourhashem@microsoft.com","createdByType":"User","createdAt":"2022-11-16T00:05:06.5154703Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-03T22:48:22.0394426Z"}},{"properties":{"providerHubMetadata":{"providerAuthorizations":[{"applicationId":"","roleDefinitionId":""}],"providerAuthentication":{"allowedAudiences":[]}},"privateResourceProviderConfiguration":{"allowedSubscriptions":["30205494-33df-4393-8705-6d27798c4381"]},"provisioningState":"Failed","namespace":"Private.Gauri","providerVersion":"2.0","providerType":"Internal,
+        Hidden","management":{"manifestOwners":["SPARTA-PlatformServiceAdministrator","RPAAS-PlatformServiceAdministrator"],"incidentRoutingService":"sampleService","incidentRoutingTeam":"sampleTeam","incidentContactEmail":"alalani@microsoft.com","serviceTreeInfos":[{"serviceId":"5eb0b46d-bf43-4fef-a148-0d740e595d62","componentId":"5eb0b46d-bf43-4fef-a148-0d740e595d62"}]},"capabilities":[{"quotaId":"CSP_2015-05-01","effect":"Allow"},{"quotaId":"CSP_MG_2017-12-01","effect":"Allow"}],"metadata":null,"tokenAuthConfiguration":{"authenticationScheme":"PoP","signedRequestScope":"ResourceUri","disableCertificateAuthenticationFallback":false}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.Gauri","type":"Microsoft.ProviderHub/providerRegistrations","name":"Private.Gauri","kind":"Managed","tags":{},"systemData":{"createdBy":"vpourhashem@microsoft.com","createdByType":"User","createdAt":"2023-11-08T21:25:11.1619476Z","lastModifiedBy":"vpourhashem@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-11-08T21:25:11.1619476Z"}},{"properties":{"providerHubMetadata":{"providerAuthorizations":[{"applicationId":"","roleDefinitionId":""}]},"privateResourceProviderConfiguration":{"allowedSubscriptions":["70aad6c5-69f0-4905-87b8-f8700e08e2dd"]},"provisioningState":"Succeeded","namespace":"Private.AkhilaBugBashRP","providerVersion":"2.0","providerType":"Internal,
+        Hidden","management":{"manifestOwners":["SPARTA-PlatformServiceAdministrator","RPAAS-PlatformServiceAdministrator"],"incidentRoutingService":"Resource
+        Provider Service as a Service","incidentRoutingTeam":"RPaaS","incidentContactEmail":"RPaaSHot@microsoft.com","serviceTreeInfos":[{"serviceId":"d1b7d8ba-05e2-48e6-90d6-d781b99c6e69","componentId":"d1b7d8ba-05e2-48e6-90d6-d781b99c6e69"}]},"capabilities":[{"quotaId":"CSP_2015-05-01","effect":"Allow"},{"quotaId":"CSP_MG_2017-12-01","effect":"Allow"}],"metadata":{"BypassManifestValidation":false},"tokenAuthConfiguration":{"authenticationScheme":"PoP","signedRequestScope":"ResourceUri","disableCertificateAuthenticationFallback":false}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.AkhilaBugBashRP","type":"Microsoft.ProviderHub/providerRegistrations","name":"Private.AkhilaBugBashRP","kind":"Managed","systemData":{"createdBy":"akhilailla@microsoft.com","createdByType":"User","createdAt":"2024-04-17T18:19:50.131565Z","lastModifiedBy":"akhilailla@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-04-17T18:19:50.131565Z"}},{"properties":{"providerHubMetadata":{"providerAuthorizations":[{"applicationId":"","roleDefinitionId":""}]},"privateResourceProviderConfiguration":{"allowedSubscriptions":["81ddc363-4b54-4223-833d-16b2a424d8a0"]},"provisioningState":"Succeeded","namespace":"Private.NatalieTestRP","providerVersion":"2.0","providerType":"Internal,
+        Hidden","management":{"manifestOwners":["SPARTA-PlatformServiceAdministrator","RPAAS-PlatformServiceAdministrator"],"incidentRoutingService":"Resource
+        Provider Service as a Service","incidentRoutingTeam":"RPaaS","incidentContactEmail":"RPaaSHot@microsoft.com","serviceTreeInfos":[{"serviceId":"d1b7d8ba-05e2-48e6-90d6-d781b99c6e69","componentId":"d1b7d8ba-05e2-48e6-90d6-d781b99c6e69"}]},"capabilities":[{"quotaId":"CSP_2015-05-01","effect":"Allow"},{"quotaId":"CSP_MG_2017-12-01","effect":"Allow"}],"metadata":{"BypassManifestValidation":false},"tokenAuthConfiguration":{"authenticationScheme":"PoP","signedRequestScope":"ResourceUri","disableCertificateAuthenticationFallback":false}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.NatalieTestRP","type":"Microsoft.ProviderHub/providerRegistrations","name":"Private.NatalieTestRP","kind":"Managed","systemData":{"createdBy":"nataliezoz@microsoft.com","createdByType":"User","createdAt":"2024-04-17T18:25:23.6827065Z","lastModifiedBy":"nataliezoz@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-04-17T18:25:23.6827065Z"}},{"properties":{"providerHubMetadata":{"providerAuthorizations":[{"applicationId":"","roleDefinitionId":""}]},"privateResourceProviderConfiguration":{"allowedSubscriptions":["70aad6c5-69f0-4905-87b8-f8700e08e2dd"]},"provisioningState":"Succeeded","namespace":"Private.VikashjRP","providerVersion":"2.0","providerType":"Internal,
+        Hidden","management":{"manifestOwners":["SPARTA-PlatformServiceAdministrator","RPAAS-PlatformServiceAdministrator"],"incidentRoutingService":"Resource
+        Provider Service as a Service","incidentRoutingTeam":"RPaaS","incidentContactEmail":"RPaaSHot@microsoft.com","serviceTreeInfos":[{"serviceId":"d1b7d8ba-05e2-48e6-90d6-d781b99c6e69","componentId":"d1b7d8ba-05e2-48e6-90d6-d781b99c6e69"}]},"capabilities":[{"quotaId":"CSP_2015-05-01","effect":"Allow"},{"quotaId":"CSP_MG_2017-12-01","effect":"Allow"}],"metadata":{"BypassManifestValidation":true},"tokenAuthConfiguration":{"authenticationScheme":"PoP","signedRequestScope":"ResourceUri","disableCertificateAuthenticationFallback":false}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VikashjRP","type":"Microsoft.ProviderHub/providerRegistrations","name":"Private.VikashjRP","kind":"Managed","systemData":{"createdBy":"vikashj@microsoft.com","createdByType":"User","createdAt":"2024-04-17T18:31:57.0624357Z","lastModifiedBy":"vikashj@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-04-17T18:31:57.0624357Z"}},{"properties":{"providerHubMetadata":{"providerAuthorizations":[{"applicationId":"","roleDefinitionId":""}]},"privateResourceProviderConfiguration":{"allowedSubscriptions":["81ddc363-4b54-4223-833d-16b2a424d8a0"]},"provisioningState":"Succeeded","namespace":"Private.GerardoGoBugBash","providerVersion":"2.0","providerType":"Internal,
+        Hidden","management":{"manifestOwners":["SPARTA-PlatformServiceAdministrator","RPAAS-PlatformServiceAdministrator"],"incidentRoutingService":"Resource
+        Provider Service as a Service","incidentRoutingTeam":"RPaaS","incidentContactEmail":"RPaaSHot@microsoft.com","serviceTreeInfos":[{"serviceId":"d1b7d8ba-05e2-48e6-90d6-d781b99c6e69","componentId":"d1b7d8ba-05e2-48e6-90d6-d781b99c6e69"}]},"capabilities":[{"quotaId":"CSP_2015-05-01","effect":"Allow"},{"quotaId":"CSP_MG_2017-12-01","effect":"Allow"}],"metadata":{"BypassManifestValidation":true},"tokenAuthConfiguration":{"authenticationScheme":"PoP","signedRequestScope":"ResourceUri","disableCertificateAuthenticationFallback":false}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.GerardoGoBugBash","type":"Microsoft.ProviderHub/providerRegistrations","name":"Private.GerardoGoBugBash","kind":"Managed","systemData":{"createdBy":"gerardogo@microsoft.com","createdByType":"User","createdAt":"2024-04-17T18:55:50.1277625Z","lastModifiedBy":"gerardogo@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-04-17T18:55:50.1277625Z"}},{"properties":{"privateResourceProviderConfiguration":{"allowedSubscriptions":["81ddc363-4b54-4223-833d-16b2a424d8a0"]},"provisioningState":"Succeeded","namespace":"Private.CLI","providerVersion":"2.0","providerType":"Internal,
+        Hidden","management":{"manifestOwners":["SPARTA-PlatformServiceAdministrator","RPAAS-PlatformServiceAdministrator"],"incidentRoutingService":"Resource
+        Provider Service as a Service","incidentRoutingTeam":"RPaaS","incidentContactEmail":"rpaascore@microsoft.com","serviceTreeInfos":[{"serviceId":"d1b7d8ba-05e2-48e6-90d6-d781b99c6e69"}]},"capabilities":[{"quotaId":"CSP_2015-05-01","effect":"Allow"},{"quotaId":"CSP_MG_2017-12-01","effect":"Allow"}],"metadata":null,"tokenAuthConfiguration":{"authenticationScheme":"PoP","signedRequestScope":"ResourceUri","disableCertificateAuthenticationFallback":false}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.CLI","type":"Microsoft.ProviderHub/providerRegistrations","name":"Private.CLI","kind":"Managed","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-05-01T21:18:32.1096725Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-01T21:18:32.1096725Z"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '10074'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jun 2024 20:47:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/edcc518b-81e7-4677-a878-488c04006c96
+      x-msedge-ref:
+      - 'Ref A: 6CE3F6A50AED4031978C97EEAA15CE15 Ref B: DM2EDGE0905 Ref C: 2024-06-04T20:47:18Z'
+    status:
+      code: 200
+      message: OK
+version: 1

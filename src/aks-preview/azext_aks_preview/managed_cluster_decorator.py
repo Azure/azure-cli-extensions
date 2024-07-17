@@ -35,6 +35,7 @@ from azext_aks_preview._consts import (
     CONST_PRIVATE_DNS_ZONE_CONTRIBUTOR_ROLE,
     CONST_DNS_ZONE_CONTRIBUTOR_ROLE,
     CONST_ARTIFACT_SOURCE_CACHE,
+    CONST_OUTBOUND_TYPE_NONE,
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
@@ -100,6 +101,8 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     UnknownError,
 )
+from azure.cli.core.util import sdk_no_wait
+from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import get_file_json, read_file_content
@@ -336,6 +339,39 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             return True
         return enable_msi_auth_for_monitoring
 
+    def _get_disable_local_accounts(self, enable_validation: bool = False) -> bool:
+        """Internal function to obtain the value of disable_local_accounts.
+
+        This function supports the option of enable_validation. When enabled, if both disable_local_accounts and
+        enable_local_accounts are specified, raise a MutuallyExclusiveArgumentError.
+
+        :return: bool
+        """
+        # read the original value passed by the command
+        disable_local_accounts = self.raw_param.get("disable_local_accounts")
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.mc and
+                hasattr(self.mc, "disable_local_accounts") and      # backward compatibility
+                self.mc.disable_local_accounts is not None
+            ):
+                disable_local_accounts = self.mc.disable_local_accounts
+            sku_name = self.get_sku_name()
+            if sku_name == CONST_MANAGED_CLUSTER_SKU_NAME_AUTOMATIC:
+                disable_local_accounts = True
+
+        # this parameter does not need dynamic completion
+        # validation
+        if enable_validation:
+            if self.decorator_mode == DecoratorMode.UPDATE:
+                if disable_local_accounts and self._get_enable_local_accounts(enable_validation=False):
+                    raise MutuallyExclusiveArgumentError(
+                        "Cannot specify --disable-local-accounts and "
+                        "--enable-local-accounts at the same time."
+                    )
+        return disable_local_accounts
+
     def _get_outbound_type(
         self,
         enable_validation: bool = False,
@@ -385,9 +421,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if (
             self.decorator_mode == DecoratorMode.CREATE and
             not read_from_mc and
-            outbound_type != CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY and
-            outbound_type != CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY and
-            outbound_type != CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING
+            outbound_type not in [
+                CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
+                CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
+                CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
+                CONST_OUTBOUND_TYPE_NONE]
         ):
             outbound_type = CONST_OUTBOUND_TYPE_LOAD_BALANCER
             skuName = self.get_sku_name()
@@ -667,24 +705,24 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return bool(self.raw_param.get('enable_cilium_dataplane'))
 
-    def get_enable_network_observability(self) -> Optional[bool]:
-        """Get the value of enable_network_observability
+    def get_enable_advanced_network_observability(self) -> Optional[bool]:
+        """Get the value of enable_advanced_network_observability
 
         :return: bool or None
         """
-        enable_network_observability = self.raw_param.get("enable_network_observability")
-        disable_network_observability = self.raw_param.get("disable_network_observability")
-        if enable_network_observability and disable_network_observability:
+        enable_advanced_network_observability = self.raw_param.get("enable_advanced_network_observability")
+        disable_advanced_network_observability = self.raw_param.get("disable_advanced_network_observability")
+        if enable_advanced_network_observability and disable_advanced_network_observability:
             raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-network-observability and "
-                "--disable-network-observability at the same time."
+                "Cannot specify --enable-advanced-network-observability and "
+                "--disable-advanced-network-observability at the same time."
             )
-        if enable_network_observability is False and disable_network_observability is False:
+        if enable_advanced_network_observability is False and disable_advanced_network_observability is False:
             return None
-        if enable_network_observability is not None:
-            return enable_network_observability
-        if disable_network_observability is not None:
-            return not disable_network_observability
+        if enable_advanced_network_observability is not None:
+            return enable_advanced_network_observability
+        if disable_advanced_network_observability is not None:
+            return not disable_advanced_network_observability
         return None
 
     def get_load_balancer_managed_outbound_ip_count(self) -> Union[int, None]:
@@ -830,6 +868,22 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # this parameter does not need validation
         return self.raw_param.get("upgrade_override_until")
 
+    def get_if_match(self) -> Union[str, None]:
+        """Obtain the value of if_match.
+        :return: string or None
+        """
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return self.raw_param.get("if_match")
+
+    def get_if_none_match(self) -> Union[str, None]:
+        """Obtain the value of if_none_match.
+        :return: string or None
+        """
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return self.raw_param.get("if_none_match")
+
     def get_force_upgrade(self) -> Union[bool, None]:
         """Obtain the value of force_upgrade.
         :return: bool or None
@@ -930,9 +984,44 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: bool
         """
-        enable_managed_identity = super()._get_enable_managed_identity(enable_validation, read_only)
-        # additional validation
+        # read the original value passed by the command
+        enable_managed_identity = self.raw_param.get("enable_managed_identity")
+        # In create mode, try to read the property value corresponding to the parameter from the `mc` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if self.mc and self.mc.identity:
+                enable_managed_identity = check_is_msi_cluster(self.mc)
+
+        # skip dynamic completion & validation if option read_only is specified
+        if read_only:
+            return enable_managed_identity
+
+        # dynamic completion for create mode only
+        if self.decorator_mode == DecoratorMode.CREATE:
+            # if user does not specify service principal or client secret,
+            # backfill the value of enable_managed_identity to True
+            (
+                service_principal,
+                client_secret,
+            ) = self._get_service_principal_and_client_secret(read_only=True)
+            if not (service_principal or client_secret) and not enable_managed_identity:
+                enable_managed_identity = True
+
+        # validation
         if enable_validation:
+            if self.decorator_mode == DecoratorMode.CREATE:
+                (
+                    service_principal,
+                    client_secret,
+                ) = self._get_service_principal_and_client_secret(read_only=True)
+                if (service_principal or client_secret) and enable_managed_identity:
+                    raise MutuallyExclusiveArgumentError(
+                        "Cannot specify --enable-managed-identity and --service-principal/--client-secret at same time"
+                    )
+            if not enable_managed_identity and self._get_assign_identity(enable_validation=False):
+                raise RequiredArgumentMissingError(
+                    "--assign-identity can only be specified when --enable-managed-identity is specified"
+                )
+            # additional validation in aks-preview
             if self.decorator_mode == DecoratorMode.CREATE:
                 if not enable_managed_identity and self._get_enable_pod_identity(enable_validation=False):
                     raise RequiredArgumentMissingError(
@@ -2312,6 +2401,14 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         enable_egress_gateway = self.raw_param.get("enable_egress_gateway", False)
         disable_egress_gateway = self.raw_param.get("disable_egress_gateway", False)
 
+        # disallow disable egress gateway on a cluser with no asm enabled
+        if disable_egress_gateway:
+            if new_profile is None or new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_DISABLED:
+                raise ArgumentUsageError(
+                    "Istio has not been enabled for this cluster, please refer to https://aka.ms/asm-aks-addon-docs "
+                    "for more details on enabling Azure Service Mesh."
+                )
+
         # deal with egress gateways
         if enable_egress_gateway and disable_egress_gateway:
             raise MutuallyExclusiveArgumentError(
@@ -2358,6 +2455,14 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         enable_ingress_gateway = self.raw_param.get("enable_ingress_gateway", False)
         disable_ingress_gateway = self.raw_param.get("disable_ingress_gateway", False)
         ingress_gateway_type = self.raw_param.get("ingress_gateway_type", None)
+
+        # disallow disable ingress gateway on a cluser with no asm enabled
+        if disable_ingress_gateway:
+            if new_profile is None or new_profile.mode == CONST_AZURE_SERVICE_MESH_MODE_DISABLED:
+                raise ArgumentUsageError(
+                    "Istio has not been enabled for this cluster, please refer to https://aka.ms/asm-aks-addon-docs "
+                    "for more details on enabling Azure Service Mesh."
+                )
 
         if enable_ingress_gateway and disable_ingress_gateway:
             raise MutuallyExclusiveArgumentError(
@@ -2863,6 +2968,17 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = super().set_up_network_profile(mc)
         network_profile = mc.network_profile
 
+        # network_plugin is typically defaulted to kubenet. AKS-RP is moving
+        # away from specifying this default in the API and making it based
+        # on the k8s version being used. The CLI should not be responsible
+        # for setting default values and should pass properties as empty
+        # unless specified by the user.
+        if (
+            network_profile.network_plugin is not None and
+            self.context.raw_param.get("network_plugin") is None
+        ):
+            network_profile.network_plugin = None
+
         # set up pod_cidrs, service_cidrs and ip_families
         (
             pod_cidrs,
@@ -2912,10 +3028,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         else:
             network_profile.network_dataplane = self.context.get_network_dataplane()
 
-        network_observability = self.context.get_enable_network_observability()
-        if network_observability is not None:
-            network_profile.monitoring = self.models.NetworkMonitoring(  # pylint: disable=no-member
-                enabled=network_observability
+        advanced_network_observability = self.context.get_enable_advanced_network_observability()
+        if advanced_network_observability is not None:
+            network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
+                observability=self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
+                    enabled=advanced_network_observability
+                )
             )
         return mc
 
@@ -3240,6 +3358,21 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # read the azure container storage values passed
         pool_type = self.context.raw_param.get("enable_azure_container_storage")
         enable_azure_container_storage = pool_type is not None
+        ephemeral_disk_volume_type = self.context.raw_param.get("ephemeral_disk_volume_type")
+        ephemeral_disk_nvme_perf_tier = self.context.raw_param.get("ephemeral_disk_nvme_perf_tier")
+        if (ephemeral_disk_volume_type is not None or ephemeral_disk_nvme_perf_tier is not None) and \
+           not enable_azure_container_storage:
+            params_defined_arr = []
+            if ephemeral_disk_volume_type is not None:
+                params_defined_arr.append('--ephemeral-disk-volume-type')
+            if ephemeral_disk_nvme_perf_tier is not None:
+                params_defined_arr.append('--ephemeral-disk-nvme-perf-tier')
+
+            params_defined = 'and '.join(params_defined_arr)
+            raise RequiredArgumentMissingError(
+                f'Cannot set {params_defined} without the parameter --enable-azure-container-storage.'
+            )
+
         if enable_azure_container_storage:
             pool_name = self.context.raw_param.get("storage_pool_name")
             pool_option = self.context.raw_param.get("storage_pool_option")
@@ -3252,6 +3385,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             pool_details = {}
             pool_details["name"] = agentpool.name
             pool_details["vm_size"] = agentpool.vm_size
+            pool_details["count"] = agentpool.count
+            pool_details["os_type"] = agentpool.os_type
+            pool_details["mode"] = agentpool.mode
+            pool_details["node_taints"] = agentpool.node_taints
             agentpool_details.append(pool_details)
             # Marking the only agentpool name as the valid nodepool for
             # installing Azure Container Storage during `az aks create`
@@ -3260,6 +3397,15 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             from azext_aks_preview.azurecontainerstorage._validators import (
                 validate_enable_azure_container_storage_params
             )
+            from azext_aks_preview.azurecontainerstorage._consts import (
+                CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
+                CONST_ACSTOR_IO_ENGINE_LABEL_VAL,
+                CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY,
+                CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD,
+            )
+
+            default_ephemeral_disk_volume_type = CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY
+            default_ephemeral_disk_nvme_perf_tier = CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
             validate_enable_azure_container_storage_params(
                 pool_type,
                 pool_name,
@@ -3273,13 +3419,13 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 False,
                 False,
                 False,
+                ephemeral_disk_volume_type,
+                ephemeral_disk_nvme_perf_tier,
+                default_ephemeral_disk_volume_type,
+                default_ephemeral_disk_nvme_perf_tier,
             )
 
             # Setup Azure Container Storage labels on the nodepool
-            from azext_aks_preview.azurecontainerstorage._consts import (
-                CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
-                CONST_ACSTOR_IO_ENGINE_LABEL_VAL
-            )
             nodepool_labels = agentpool.node_labels
             if nodepool_labels is None:
                 nodepool_labels = {}
@@ -3289,6 +3435,16 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             # set intermediates
             self.context.set_intermediate("enable_azure_container_storage", True, overwrite_exists=True)
             self.context.set_intermediate("azure_container_storage_nodepools", nodepool_list, overwrite_exists=True)
+            self.context.set_intermediate(
+                "current_ephemeral_nvme_perf_tier",
+                default_ephemeral_disk_nvme_perf_tier,
+                overwrite_exists=True
+            )
+            self.context.set_intermediate(
+                "existing_ephemeral_disk_volume_type",
+                default_ephemeral_disk_volume_type,
+                overwrite_exists=True
+            )
 
         return mc
 
@@ -3732,6 +3888,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             pool_option = self.context.raw_param.get("storage_pool_option")
             pool_sku = self.context.raw_param.get("storage_pool_sku")
             pool_size = self.context.raw_param.get("storage_pool_size")
+            ephemeral_disk_volume_type = self.context.raw_param.get("ephemeral_disk_volume_type")
+            ephemeral_disk_nvme_perf_tier = self.context.raw_param.get("ephemeral_disk_nvme_perf_tier")
+            existing_ephemeral_disk_volume_type = self.context.get_intermediate("existing_ephemeral_disk_volume_type")
+            existing_ephemeral_nvme_perf_tier = self.context.get_intermediate("current_ephemeral_nvme_perf_tier")
             kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
             node_resource_group = cluster.node_resource_group
             agent_pool_vm_sizes = []
@@ -3753,7 +3913,11 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 pool_sku,
                 pool_option,
                 agent_pool_vm_sizes,
+                ephemeral_disk_volume_type,
+                ephemeral_disk_nvme_perf_tier,
                 True,
+                existing_ephemeral_disk_volume_type,
+                existing_ephemeral_nvme_perf_tier,
                 is_called_from_extension=True,
             )
 
@@ -3767,20 +3931,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 self.context.external_functions._add_role_assignment_executor_new(  # type: ignore # pylint: disable=protected-access
                     self.cmd,
                     "Azure Kubernetes Service RBAC Cluster Admin",
-                    user["id"],
-                    scope=cluster.id,
-                    resolve_assignee=False,
-                )
-                self.context.external_functions._add_role_assignment_executor_new(  # type: ignore # pylint: disable=protected-access
-                    self.cmd,
-                    "Azure Kubernetes Service RBAC Admin",
-                    user["id"],
-                    scope=cluster.id,
-                    resolve_assignee=False,
-                )
-                self.context.external_functions._add_role_assignment_executor_new(  # type: ignore # pylint: disable=protected-access
-                    self.cmd,
-                    "Azure Kubernetes Service Cluster User Role",
                     user["id"],
                     scope=cluster.id,
                     resolve_assignee=False,
@@ -3926,17 +4076,19 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
-    def update_enable_network_observability_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update enable network observability of network profile for the ManagedCluster object.
+    def update_enable_advanced_network_observability_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update enable advanced network observability of network profile for the ManagedCluster object.
 
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
 
-        network_observability = self.context.get_enable_network_observability()
-        if network_observability is not None:
-            mc.network_profile.monitoring = self.models.NetworkMonitoring(  # pylint: disable=no-member
-                enabled=network_observability
+        advanced_network_observability = self.context.get_enable_advanced_network_observability()
+        if advanced_network_observability is not None:
+            mc.network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
+                observability=self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
+                    enabled=advanced_network_observability
+                )
             )
         return mc
 
@@ -3952,10 +4104,25 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         enable_azure_container_storage = enable_pool_type is not None
         disable_azure_container_storage = disable_pool_type is not None
         nodepool_list = self.context.raw_param.get("azure_container_storage_nodepools")
+        ephemeral_disk_volume_type = self.context.raw_param.get("ephemeral_disk_volume_type")
+        ephemeral_disk_nvme_perf_tier = self.context.raw_param.get("ephemeral_disk_nvme_perf_tier")
         if enable_azure_container_storage and disable_azure_container_storage:
             raise MutuallyExclusiveArgumentError(
                 'Conflicting flags. Cannot set --enable-azure-container-storage '
                 'and --disable-azure-container-storage together.'
+            )
+
+        if (ephemeral_disk_volume_type is not None or ephemeral_disk_nvme_perf_tier is not None) and \
+           not enable_azure_container_storage:
+            params_defined_arr = []
+            if ephemeral_disk_volume_type is not None:
+                params_defined_arr.append('--ephemeral-disk-volume-type')
+            if ephemeral_disk_nvme_perf_tier is not None:
+                params_defined_arr.append('--ephemeral-disk-nvme-perf-tier')
+
+            params_defined = 'and '.join(params_defined_arr)
+            raise RequiredArgumentMissingError(
+                f'Cannot set {params_defined} without the parameter --enable-azure-container-storage.'
             )
 
         # pylint: disable=too-many-nested-blocks
@@ -3980,6 +4147,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 is_ephemeralDisk_localssd_enabled,
                 is_ephemeralDisk_nvme_enabled,
                 current_core_value,
+                existing_ephemeral_disk_volume_type,
+                existing_perf_tier,
             ) = get_extension_installed_and_cluster_configs(
                 self.cmd,
                 self.context.get_resource_group_name(),
@@ -3996,8 +4165,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 for agentpool in mc.agent_pool_profiles:
                     pool_details = {}
                     pool_details["vm_size"] = agentpool.vm_size
+                    pool_details["count"] = agentpool.count
                     node_name = agentpool.name
                     pool_details["name"] = node_name
+                    pool_details["os_type"] = agentpool.os_type
+                    pool_details["mode"] = agentpool.mode
+                    pool_details["node_taints"] = agentpool.node_taints
                     if agentpool.node_labels is not None:
                         node_labels = agentpool.node_labels
                         if node_labels is not None and \
@@ -4014,7 +4187,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 # one nodepool exists, choose the only nodepool by default.
                 if not is_extension_installed:
                     if nodepool_list is None:
-                        nodepool_list = "nodepool1"
+                        nodepool_list = ""
                         if len(labelled_nodepool_arr) > 0:
                             nodepool_list = ','.join(labelled_nodepool_arr)
                         elif len(agentpool_details) == 1:
@@ -4037,7 +4210,36 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     is_elasticSan_enabled,
                     is_ephemeralDisk_localssd_enabled,
                     is_ephemeralDisk_nvme_enabled,
+                    ephemeral_disk_volume_type,
+                    ephemeral_disk_nvme_perf_tier,
+                    existing_ephemeral_disk_volume_type,
+                    existing_perf_tier,
                 )
+
+                if is_ephemeralDisk_nvme_enabled and ephemeral_disk_nvme_perf_tier is not None:
+                    # Adding this intermediate and check to ensure that the below
+                    # message prompt doesn't appear twice when aks-preview extension
+                    # is called from both update_mc_profile_preview and update_mc_profile_default.
+                    is_azure_container_storage_perf_tier_op_set = self.context.get_intermediate(
+                        "azure_container_storage_perf_tier_op_set",
+                        default_value="default",
+                    )
+
+                    if is_azure_container_storage_perf_tier_op_set == "default":
+                        msg = (
+                            "Changing ephemeralDisk NVMe performance tier may result in a temporary "
+                            "interruption to the applications using Azure Container Storage. Do you "
+                            "want to continue with this operation?"
+                        )
+
+                        if not (self.context.get_yes() or prompt_y_n(msg, default="n")):
+                            raise DecoratorEarlyExitException()
+
+                        self.context.set_intermediate(
+                            "azure_container_storage_perf_tier_op_set",
+                            True,
+                            overwrite_exists=True
+                        )
 
                 # If the extension is already installed,
                 # we expect that the Azure Container Storage
@@ -4064,6 +4266,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 # set intermediates
                 self.context.set_intermediate("azure_container_storage_nodepools", nodepool_list, overwrite_exists=True)
                 self.context.set_intermediate("enable_azure_container_storage", True, overwrite_exists=True)
+
             if disable_azure_container_storage:
                 from azext_aks_preview.azurecontainerstorage._validators import (
                     validate_disable_azure_container_storage_params
@@ -4080,6 +4283,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     is_elasticSan_enabled,
                     is_ephemeralDisk_localssd_enabled,
                     is_ephemeralDisk_nvme_enabled,
+                    ephemeral_disk_volume_type,
+                    ephemeral_disk_nvme_perf_tier,
                 )
 
                 is_pre_disable_validate_set = self.context.get_intermediate(
@@ -4127,6 +4332,17 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             self.context.set_intermediate("is_extension_installed", is_extension_installed, overwrite_exists=True)
             self.context.set_intermediate("is_azureDisk_enabled", is_azureDisk_enabled, overwrite_exists=True)
             self.context.set_intermediate("is_elasticSan_enabled", is_elasticSan_enabled, overwrite_exists=True)
+            self.context.set_intermediate("current_core_value", current_core_value, overwrite_exists=True)
+            self.context.set_intermediate(
+                "current_ephemeral_nvme_perf_tier",
+                existing_perf_tier,
+                overwrite_exists=True
+            )
+            self.context.set_intermediate(
+                "existing_ephemeral_disk_volume_type",
+                existing_ephemeral_disk_volume_type,
+                overwrite_exists=True
+            )
             self.context.set_intermediate(
                 "is_ephemeralDisk_nvme_enabled",
                 is_ephemeralDisk_nvme_enabled,
@@ -4137,7 +4353,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 is_ephemeralDisk_localssd_enabled,
                 overwrite_exists=True
             )
-            self.context.set_intermediate("current_core_value", current_core_value, overwrite_exists=True)
 
         return mc
 
@@ -5154,8 +5369,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nodepool_taints_mc(mc)
         # update nodepool initialization taints
         mc = self.update_nodepool_initialization_taints_mc(mc)
-        # update network_observability in network_profile
-        mc = self.update_enable_network_observability_in_network_profile(mc)
+        # update advanced_network_observability in network_profile
+        mc = self.update_enable_advanced_network_observability_in_network_profile(mc)
         # update kubernetes support plan
         mc = self.update_k8s_support_plan(mc)
         # update metrics profile
@@ -5213,6 +5428,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         is_ephemeralDisk_localssd_enabled = self.context.get_intermediate("is_ephemeralDisk_localssd_enabled")
         is_ephemeralDisk_nvme_enabled = self.context.get_intermediate("is_ephemeralDisk_nvme_enabled")
         current_core_value = self.context.get_intermediate("current_core_value")
+        existing_ephemeral_disk_volume_type = self.context.get_intermediate("existing_ephemeral_disk_volume_type")
+        existing_ephemeral_nvme_perf_tier = self.context.get_intermediate("current_ephemeral_nvme_perf_tier")
         pool_option = self.context.raw_param.get("storage_pool_option")
 
         # enable azure container storage
@@ -5228,6 +5445,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             pool_sku = self.context.raw_param.get("storage_pool_sku")
             pool_size = self.context.raw_param.get("storage_pool_size")
             nodepool_list = self.context.get_intermediate("azure_container_storage_nodepools")
+            ephemeral_disk_volume_type = self.context.raw_param.get("ephemeral_disk_volume_type")
+            ephemeral_disk_nvme_perf_tier = self.context.raw_param.get("ephemeral_disk_nvme_perf_tier")
             kubelet_identity_object_id = cluster.identity_profile["kubeletidentity"].object_id
             acstor_nodepool_skus = []
             for agentpool_profile in cluster.agent_pool_profiles:
@@ -5247,7 +5466,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 pool_sku,
                 pool_option,
                 acstor_nodepool_skus,
+                ephemeral_disk_volume_type,
+                ephemeral_disk_nvme_perf_tier,
                 False,
+                existing_ephemeral_disk_volume_type,
+                existing_ephemeral_nvme_perf_tier,
                 is_extension_installed,
                 is_azureDisk_enabled,
                 is_elasticSan_enabled,
@@ -5277,6 +5500,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 is_ephemeralDisk_localssd_enabled,
                 is_ephemeralDisk_nvme_enabled,
                 current_core_value,
+                existing_ephemeral_disk_volume_type,
+                existing_ephemeral_nvme_perf_tier,
                 is_called_from_extension=True,
             )
 
@@ -5336,3 +5561,31 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     raise CLIError('App Routing must be enabled to attach keyvault.\n')
             else:
                 raise CLIError('Keyvault secrets provider addon must be enabled to attach keyvault.\n')
+
+    def put_mc(self, mc: ManagedCluster) -> ManagedCluster:
+        if self.check_is_postprocessing_required(mc):
+            # send request
+            poller = self.client.begin_create_or_update(
+                resource_group_name=self.context.get_resource_group_name(),
+                resource_name=self.context.get_name(),
+                parameters=mc,
+                if_match=self.context.get_if_match(),
+                if_none_match=self.context.get_if_none_match(),
+                headers=self.context.get_aks_custom_headers(),
+            )
+            self.immediate_processing_after_request(mc)
+            # poll until the result is returned
+            cluster = LongRunningOperation(self.cmd.cli_ctx)(poller)
+            self.postprocessing_after_mc_created(cluster)
+        else:
+            cluster = sdk_no_wait(
+                self.context.get_no_wait(),
+                self.client.begin_create_or_update,
+                resource_group_name=self.context.get_resource_group_name(),
+                resource_name=self.context.get_name(),
+                parameters=mc,
+                if_match=self.context.get_if_match(),
+                if_none_match=self.context.get_if_none_match(),
+                headers=self.context.get_aks_custom_headers(),
+            )
+        return cluster

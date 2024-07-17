@@ -13,19 +13,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations?api-version=2023-09-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcpConfigurations1","name":"dhcp1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dhcpConfigurations","properties":{"dhcpType":"SERVER","displayName":"dhcpConfigurations1","segments":["segment1","segment2"],"revision":1}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcpConfigurations1","name":"dhcp1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dhcpConfigurations","properties":{"dhcpType":"SERVER","displayName":"dhcpConfigurations1","segments":["segment1","segment2"],"revision":1,"serverAddress":"40.1.5.1/24","leaseTime":86400}}]}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '410'
+      - '458'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:29:35 GMT
+      - Fri, 28 Jun 2024 20:05:17 GMT
       server:
       - Rocket
     status:
@@ -45,19 +53,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --dhcp
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcp1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcp1?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcpConfigurations1","name":"dhcp1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dhcpConfigurations","properties":{"dhcpType":"SERVER","displayName":"dhcpConfigurations1","segments":["segment1","segment2"],"revision":1}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcpConfigurations1","name":"dhcp1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dhcpConfigurations","properties":{"dhcpType":"SERVER","displayName":"dhcpConfigurations1","segments":["segment1","segment2"],"revision":1,"serverAddress":"40.1.5.1/24","leaseTime":86400}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '398'
+      - '446'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:29:39 GMT
+      - Fri, 28 Jun 2024 20:05:20 GMT
       server:
       - Rocket
     status:
@@ -82,19 +98,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --dhcp --display-name --revision --server-addresses
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcp1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcp1?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcpConfigurations1","name":"dhcp1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dhcpConfigurations","properties":{"dhcpType":"SERVER","displayName":"dhcpConfigurations1","segments":["segment1","segment2"],"revision":1}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcpConfigurations1","name":"dhcp1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dhcpConfigurations","properties":{"dhcpType":"SERVER","displayName":"dhcpConfigurations1","segments":["segment1","segment2"],"revision":1,"serverAddress":"40.1.5.1/24","leaseTime":86400}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '398'
+      - '446'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:29:44 GMT
+      - Fri, 28 Jun 2024 20:05:22 GMT
       server:
       - Rocket
     status:
@@ -116,17 +140,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --dhcp --yes
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: DELETE
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcp1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcp1?api-version=2023-09-01
   response:
     body:
       string: ''
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '0'
+      content-type:
+      - application/json
       date:
-      - Wed, 20 Sep 2023 15:29:50 GMT
+      - Fri, 28 Jun 2024 20:05:24 GMT
       server:
       - Rocket
     status:
@@ -146,19 +180,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --dhcp --display-name --revision --server-addresses
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcp1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcp1?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcpConfigurations1","name":"dhcp1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dhcpConfigurations","properties":{"dhcpType":"SERVER","displayName":"dhcpConfigurations1","segments":["segment1","segment2"],"revision":1}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcpConfigurations1","name":"dhcp1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dhcpConfigurations","properties":{"dhcpType":"SERVER","displayName":"dhcpConfigurations1","segments":["segment1","segment2"],"revision":1,"serverAddress":"40.1.5.1/24","leaseTime":86400}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '398'
+      - '446'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:29:55 GMT
+      - Fri, 28 Jun 2024 20:05:27 GMT
       server:
       - Rocket
     status:
@@ -183,19 +225,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --dhcp --display-name --revision --server-addresses
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcp1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcp1?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcpConfigurations1","name":"dhcp1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dhcpConfigurations","properties":{"dhcpType":"SERVER","displayName":"dhcpConfigurations1","segments":["segment1","segment2"],"revision":1}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcpConfigurations1","name":"dhcp1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dhcpConfigurations","properties":{"dhcpType":"SERVER","displayName":"dhcpConfigurations1","segments":["segment1","segment2"],"revision":1,"serverAddress":"40.1.5.1/24","leaseTime":86400}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '398'
+      - '446'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:29:55 GMT
+      - Fri, 28 Jun 2024 20:05:27 GMT
       server:
       - Rocket
     status:
@@ -221,19 +271,27 @@ interactions:
       - --resource-group --private-cloud --dhcp --display-name --revision --server-address
         --lease-time
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcp1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcp1?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcpConfigurations1","name":"dhcp1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dhcpConfigurations","properties":{"dhcpType":"SERVER","displayName":"dhcpConfigurations1","segments":["segment1","segment2"],"revision":1}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcpConfigurations1","name":"dhcp1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dhcpConfigurations","properties":{"dhcpType":"SERVER","displayName":"dhcpConfigurations1","segments":["segment1","segment2"],"revision":1,"serverAddress":"40.1.5.1/24","leaseTime":86400}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '398'
+      - '446'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:30:00 GMT
+      - Fri, 28 Jun 2024 20:05:30 GMT
       server:
       - Rocket
     status:
@@ -255,17 +313,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --dhcp --yes
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: DELETE
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcp1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcp1?api-version=2023-09-01
   response:
     body:
       string: ''
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '0'
+      content-type:
+      - application/json
       date:
-      - Wed, 20 Sep 2023 15:30:05 GMT
+      - Fri, 28 Jun 2024 20:05:32 GMT
       server:
       - Rocket
     status:
@@ -286,19 +354,27 @@ interactions:
       - --resource-group --private-cloud --dhcp --display-name --revision --server-address
         --lease-time
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcp1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcp1?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcpConfigurations1","name":"dhcp1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dhcpConfigurations","properties":{"dhcpType":"SERVER","displayName":"dhcpConfigurations1","segments":["segment1","segment2"],"revision":1}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcpConfigurations1","name":"dhcp1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dhcpConfigurations","properties":{"dhcpType":"SERVER","displayName":"dhcpConfigurations1","segments":["segment1","segment2"],"revision":1,"serverAddress":"40.1.5.1/24","leaseTime":86400}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '398'
+      - '446'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:30:10 GMT
+      - Fri, 28 Jun 2024 20:05:35 GMT
       server:
       - Rocket
     status:
@@ -324,19 +400,27 @@ interactions:
       - --resource-group --private-cloud --dhcp --display-name --revision --server-address
         --lease-time
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcp1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcp1?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcpConfigurations1","name":"dhcp1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dhcpConfigurations","properties":{"dhcpType":"SERVER","displayName":"dhcpConfigurations1","segments":["segment1","segment2"],"revision":1}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dhcpConfigurations/dhcpConfigurations1","name":"dhcp1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dhcpConfigurations","properties":{"dhcpType":"SERVER","displayName":"dhcpConfigurations1","segments":["segment1","segment2"],"revision":1,"serverAddress":"40.1.5.1/24","leaseTime":86400}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '398'
+      - '446'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:30:10 GMT
+      - Fri, 28 Jun 2024 20:05:35 GMT
       server:
       - Rocket
     status:
@@ -356,19 +440,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsServices?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsServices?api-version=2023-09-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsServices/dnsService1","name":"portMirroring1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dnsServices","properties":{"displayName":"dnsService1","dnsServiceIp":"5.5.5.5","defaultDnsZone":"defaultDnsZone1","fqdnZones":["fqdnZone1"],"logLevel":"INFO","status":"SUCCESS","revision":1}}]}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '457'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:30:15 GMT
+      - Fri, 28 Jun 2024 20:05:38 GMT
       server:
       - Rocket
     status:
@@ -388,19 +480,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --dns-service
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsServices/dnsService1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsServices/dnsService1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsServices/dnsService1","name":"portMirroring1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dnsServices","properties":{"displayName":"dnsService1","dnsServiceIp":"5.5.5.5","defaultDnsZone":"defaultDnsZone1","fqdnZones":["fqdnZone1"],"logLevel":"INFO","status":"SUCCESS","revision":1}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '445'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:30:19 GMT
+      - Fri, 28 Jun 2024 20:05:40 GMT
       server:
       - Rocket
     status:
@@ -427,19 +527,27 @@ interactions:
       - --resource-group --private-cloud --dns-service --display-name --dns-service-ip
         --default-dns-zone --fqdn-zones --log-level --revision
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsServices/dnsService1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsServices/dnsService1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsServices/dnsService1","name":"dnsService1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dnsServices","properties":{"displayName":"dnsService1","dnsServiceIp":"5.5.5.5","defaultDnsZone":"defaultDnsZone1","fqdnZones":["fqdnZone1"],"logLevel":"INFO","status":"SUCCESS","revision":1}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '442'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:30:24 GMT
+      - Fri, 28 Jun 2024 20:05:42 GMT
       server:
       - Rocket
     status:
@@ -460,19 +568,27 @@ interactions:
       - --resource-group --private-cloud --dns-service --display-name --dns-service-ip
         --default-dns-zone --fqdn-zones --log-level --revision
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsServices/dnsService1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsServices/dnsService1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsServices/dnsService1","name":"portMirroring1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dnsServices","properties":{"displayName":"dnsService1","dnsServiceIp":"5.5.5.5","defaultDnsZone":"defaultDnsZone1","fqdnZones":["fqdnZone1"],"logLevel":"INFO","status":"SUCCESS","revision":1}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '445'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:30:29 GMT
+      - Fri, 28 Jun 2024 20:05:44 GMT
       server:
       - Rocket
     status:
@@ -481,7 +597,7 @@ interactions:
 - request:
     body: '{"properties": {"defaultDnsZone": "defaultDnsZone1", "displayName": "testDisplayName",
       "dnsServiceIp": "5.5.5.5", "fqdnZones": ["fqdnZone1"], "logLevel": "INFO", "revision":
-      1}}'
+      1, "status": "SUCCESS"}}'
     headers:
       Accept:
       - application/json
@@ -492,26 +608,34 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '177'
+      - '198'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group --private-cloud --dns-service --display-name --dns-service-ip
         --default-dns-zone --fqdn-zones --log-level --revision
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsServices/dnsService1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsServices/dnsService1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsServices/dnsService1","name":"dnsService1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dnsServices","properties":{"displayName":"dnsService1","dnsServiceIp":"5.5.5.5","defaultDnsZone":"defaultDnsZone1","fqdnZones":["fqdnZone1"],"logLevel":"INFO","status":"SUCCESS","revision":1}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '442'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:30:29 GMT
+      - Fri, 28 Jun 2024 20:05:44 GMT
       server:
       - Rocket
     status:
@@ -533,17 +657,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --dns-service --yes
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: DELETE
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsServices/dnsService1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsServices/dnsService1?api-version=2023-09-01
   response:
     body:
       string: ''
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '0'
+      content-type:
+      - application/json
       date:
-      - Wed, 20 Sep 2023 15:30:34 GMT
+      - Fri, 28 Jun 2024 20:05:47 GMT
       server:
       - Rocket
     status:
@@ -563,19 +697,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsZones?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsZones?api-version=2023-09-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsZones/dnsZone1","name":"portMirroring1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dnsZones","properties":{"displayName":"dnsZone1","dnsServerIps":["1.1.1.1"],"sourceIp":"8.8.8.8","dnsServices":0,"revision":1}}]}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '386'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:30:39 GMT
+      - Fri, 28 Jun 2024 20:05:50 GMT
       server:
       - Rocket
     status:
@@ -595,19 +737,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --dns-zone
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsZones/dnsZone1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsZones/dnsZone1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsZones/dnsZone1","name":"portMirroring1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dnsZones","properties":{"displayName":"dnsZone1","dnsServerIps":["1.1.1.1"],"sourceIp":"8.8.8.8","dnsServices":0,"revision":1}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '374'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:30:44 GMT
+      - Fri, 28 Jun 2024 20:05:53 GMT
       server:
       - Rocket
     status:
@@ -633,19 +783,27 @@ interactions:
       - --resource-group --private-cloud --dns-zone --display-name --domain --dns-server-ips
         --source-ip --dns-services --revision
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsZones/dnsZone1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsZones/dnsZone1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsZones/dnsZone1","name":"dnsZone1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dnsZones","properties":{"displayName":"dnsZone1","dnsServerIps":["1.1.1.1"],"sourceIp":"8.8.8.8","dnsServices":0,"revision":1}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '368'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:30:48 GMT
+      - Fri, 28 Jun 2024 20:05:55 GMT
       server:
       - Rocket
     status:
@@ -666,19 +824,27 @@ interactions:
       - --resource-group --private-cloud --dns-zone --display-name --domain --dns-server-ips
         --source-ip --dns-services --revision
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsZones/dnsZone1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsZones/dnsZone1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsZones/dnsZone1","name":"portMirroring1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dnsZones","properties":{"displayName":"dnsZone1","dnsServerIps":["1.1.1.1"],"sourceIp":"8.8.8.8","dnsServices":0,"revision":1}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '374'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:30:53 GMT
+      - Fri, 28 Jun 2024 20:05:57 GMT
       server:
       - Rocket
     status:
@@ -704,19 +870,27 @@ interactions:
       - --resource-group --private-cloud --dns-zone --display-name --domain --dns-server-ips
         --source-ip --dns-services --revision
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsZones/dnsZone1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsZones/dnsZone1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsZones/dnsZone1","name":"dnsZone1","type":"Microsoft.AVS/privateClouds/workloadNetworks/dnsZones","properties":{"displayName":"dnsZone1","dnsServerIps":["1.1.1.1"],"sourceIp":"8.8.8.8","dnsServices":0,"revision":1}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '368'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:30:53 GMT
+      - Fri, 28 Jun 2024 20:05:57 GMT
       server:
       - Rocket
     status:
@@ -738,17 +912,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --dns-zone --yes
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: DELETE
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsZones/dnsZone1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/dnsZones/dnsZone1?api-version=2023-09-01
   response:
     body:
       string: ''
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '0'
+      content-type:
+      - application/json
       date:
-      - Wed, 20 Sep 2023 15:30:58 GMT
+      - Fri, 28 Jun 2024 20:06:00 GMT
       server:
       - Rocket
     status:
@@ -768,19 +952,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/portMirroringProfiles?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/portMirroringProfiles?api-version=2023-09-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/portMirroringProfiles/portMirroring1","name":"cloud1","type":"Microsoft.AVS/privateClouds/workloadNetworks/portMirroringProfiles","properties":{"displayName":"portMirroring1","direction":"BIDIRECTIONAL","source":"vmGroup1","destination":"vmGroup2","status":"SUCCESS","revision":1}}]}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '444'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:31:03 GMT
+      - Fri, 28 Jun 2024 20:06:02 GMT
       server:
       - Rocket
     status:
@@ -800,19 +992,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --port-mirroring
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/portMirroringProfiles/portMirroring1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/portMirroringProfiles/portMirroring1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/portMirroringProfiles/portMirroring1","name":"portMirroring1","type":"Microsoft.AVS/privateClouds/workloadNetworks/portMirroringProfiles","properties":{"displayName":"portMirroring1","direction":"BIDIRECTIONAL","source":"vmGroup1","destination":"vmGroup2","status":"SUCCESS","revision":1}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '440'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:31:08 GMT
+      - Fri, 28 Jun 2024 20:06:05 GMT
       server:
       - Rocket
     status:
@@ -838,19 +1038,27 @@ interactions:
       - --resource-group --private-cloud --port-mirroring --display-name --direction
         --source --destination --revision
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/portMirroringProfiles/portMirroring1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/portMirroringProfiles/portMirroring1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/portMirroringProfiles/portMirroring1","name":"portMirroring1","type":"Microsoft.AVS/privateClouds/workloadNetworks/portMirroringProfiles","properties":{"displayName":"portMirroring1","direction":"BIDIRECTIONAL","source":"vmGroup1","destination":"vmGroup2","status":"SUCCESS","revision":1}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '440'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:31:13 GMT
+      - Fri, 28 Jun 2024 20:06:08 GMT
       server:
       - Rocket
     status:
@@ -871,19 +1079,27 @@ interactions:
       - --resource-group --private-cloud --port-mirroring --display-name --direction
         --source --destination --revision
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/portMirroringProfiles/portMirroring1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/portMirroringProfiles/portMirroring1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/portMirroringProfiles/portMirroring1","name":"portMirroring1","type":"Microsoft.AVS/privateClouds/workloadNetworks/portMirroringProfiles","properties":{"displayName":"portMirroring1","direction":"BIDIRECTIONAL","source":"vmGroup1","destination":"vmGroup2","status":"SUCCESS","revision":1}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '440'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:31:18 GMT
+      - Fri, 28 Jun 2024 20:06:10 GMT
       server:
       - Rocket
     status:
@@ -891,7 +1107,8 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"destination": "vmGroup2", "direction": "BIDIRECTIONAL",
-      "displayName": "testDisplayName", "revision": 1, "source": "vmGroup1"}}'
+      "displayName": "testDisplayName", "revision": 1, "source": "vmGroup1", "status":
+      "SUCCESS"}}'
     headers:
       Accept:
       - application/json
@@ -902,26 +1119,34 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '144'
+      - '165'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group --private-cloud --port-mirroring --display-name --direction
         --source --destination --revision
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/portMirroringProfiles/portMirroring1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/portMirroringProfiles/portMirroring1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/portMirroringProfiles/portMirroring1","name":"portMirroring1","type":"Microsoft.AVS/privateClouds/workloadNetworks/portMirroringProfiles","properties":{"displayName":"portMirroring1","direction":"BIDIRECTIONAL","source":"vmGroup1","destination":"vmGroup2","status":"SUCCESS","revision":1}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '440'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:31:18 GMT
+      - Fri, 28 Jun 2024 20:06:10 GMT
       server:
       - Rocket
     status:
@@ -943,17 +1168,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --port-mirroring --yes
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: DELETE
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/portMirroringProfiles/portMirroring1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/portMirroringProfiles/portMirroring1?api-version=2023-09-01
   response:
     body:
       string: ''
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '0'
+      content-type:
+      - application/json
       date:
-      - Wed, 20 Sep 2023 15:31:22 GMT
+      - Fri, 28 Jun 2024 20:06:13 GMT
       server:
       - Rocket
     status:
@@ -973,19 +1208,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/segments?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/segments?api-version=2023-09-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/segments/segment1","name":"segment1","type":"Microsoft.AVS/privateClouds/workloadNetworks/segments","properties":{"displayName":"segment1","connectedGateway":"/infra/tier-1s/gateway","subnet":{"dhcpRanges":["40.20.0.0-40.20.0.1"],"gatewayAddress":"40.20.20.20/16"},"portVif":[{"portName":"vm1"}],"status":"SUCCESS","revision":1}}]}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '492'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:31:27 GMT
+      - Fri, 28 Jun 2024 20:06:15 GMT
       server:
       - Rocket
     status:
@@ -1005,19 +1248,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --segment
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/segments/segment1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/segments/segment1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/segments/segment1","name":"segment1","type":"Microsoft.AVS/privateClouds/workloadNetworks/segments","properties":{"displayName":"segment1","connectedGateway":"/infra/tier-1s/gateway","subnet":{"dhcpRanges":["40.20.0.0-40.20.0.1"],"gatewayAddress":"40.20.20.20/16"},"portVif":[{"portName":"vm1"}],"status":"SUCCESS","revision":1}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '480'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:31:32 GMT
+      - Fri, 28 Jun 2024 20:06:18 GMT
       server:
       - Rocket
     status:
@@ -1044,19 +1295,27 @@ interactions:
       - --resource-group --private-cloud --segment --display-name --connected-gateway
         --revision --dhcp-ranges --gateway-address
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/segments/segment1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/segments/segment1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/segments/segment1","name":"segment1","type":"Microsoft.AVS/privateClouds/workloadNetworks/segments","properties":{"displayName":"segment1","connectedGateway":"/infra/tier-1s/gateway","subnet":{"dhcpRanges":["40.20.0.0-40.20.0.1"],"gatewayAddress":"40.20.20.20/16"},"status":"SUCCESS","revision":1}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '449'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:31:37 GMT
+      - Fri, 28 Jun 2024 20:06:20 GMT
       server:
       - Rocket
     status:
@@ -1077,19 +1336,27 @@ interactions:
       - --resource-group --private-cloud --segment --display-name --connected-gateway
         --revision --dhcp-ranges --gateway-address
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/segments/segment1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/segments/segment1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/segments/segment1","name":"segment1","type":"Microsoft.AVS/privateClouds/workloadNetworks/segments","properties":{"displayName":"segment1","connectedGateway":"/infra/tier-1s/gateway","subnet":{"dhcpRanges":["40.20.0.0-40.20.0.1"],"gatewayAddress":"40.20.20.20/16"},"portVif":[{"portName":"vm1"}],"status":"SUCCESS","revision":1}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '480'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:31:42 GMT
+      - Fri, 28 Jun 2024 20:06:23 GMT
       server:
       - Rocket
     status:
@@ -1097,8 +1364,8 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"connectedGateway": "/infra/tier-1s/gateway", "displayName":
-      "testDisplayName", "revision": 1, "subnet": {"dhcpRanges": ["40.20.0.0", "40.20.0.1"],
-      "gatewayAddress": "40.20.20.20/16"}}}'
+      "testDisplayName", "revision": 1, "status": "SUCCESS", "subnet": {"dhcpRanges":
+      ["40.20.0.0", "40.20.0.1"], "gatewayAddress": "40.20.20.20/16"}}}'
     headers:
       Accept:
       - application/json
@@ -1109,26 +1376,34 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '201'
+      - '222'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group --private-cloud --segment --display-name --connected-gateway
         --revision --dhcp-ranges --gateway-address
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/segments/segment1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/segments/segment1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/segments/segment1","name":"segment1","type":"Microsoft.AVS/privateClouds/workloadNetworks/segments","properties":{"displayName":"segment1","connectedGateway":"/infra/tier-1s/gateway","subnet":{"dhcpRanges":["40.20.0.0-40.20.0.1"],"gatewayAddress":"40.20.20.20/16"},"status":"SUCCESS","revision":1}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '449'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:31:42 GMT
+      - Fri, 28 Jun 2024 20:06:23 GMT
       server:
       - Rocket
     status:
@@ -1150,17 +1425,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --segment --yes
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: DELETE
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/segments/segment1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/segments/segment1?api-version=2023-09-01
   response:
     body:
       string: ''
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '0'
+      content-type:
+      - application/json
       date:
-      - Wed, 20 Sep 2023 15:31:47 GMT
+      - Fri, 28 Jun 2024 20:06:25 GMT
       server:
       - Rocket
     status:
@@ -1180,19 +1465,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/publicIPs?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/publicIPs?api-version=2023-09-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/publicIPs/publicIP1","name":"publicIP1","type":"Microsoft.AVS/privateClouds/workloadNetworks/publicIPs","properties":{"displayName":"publicIP1","publicIPBlock":"20.20.40.50/32"}}]}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '341'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:31:52 GMT
+      - Fri, 28 Jun 2024 20:06:28 GMT
       server:
       - Rocket
     status:
@@ -1212,19 +1505,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --public-ip
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/publicIPs/publicIP1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/publicIPs/publicIP1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/publicIPs/publicIP1","name":"publicIP1","type":"Microsoft.AVS/privateClouds/workloadNetworks/publicIPs","properties":{"displayName":"publicIP1","publicIPBlock":"20.20.40.50/32"}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '329'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:31:57 GMT
+      - Fri, 28 Jun 2024 20:06:30 GMT
       server:
       - Rocket
     status:
@@ -1249,19 +1550,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --public-ip --display-name --number-of-public-ips
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/publicIPs/publicIP1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/publicIPs/publicIP1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/publicIPs/publicIP1","name":"publicIP1","type":"Microsoft.AVS/privateClouds/workloadNetworks/publicIPs","properties":{"displayName":"publicIP1","publicIPBlock":"20.20.40.50/32"}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '329'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:32:02 GMT
+      - Fri, 28 Jun 2024 20:06:33 GMT
       server:
       - Rocket
     status:
@@ -1283,17 +1592,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --public-ip --yes
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: DELETE
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/publicIPs/publicIP1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/publicIPs/publicIP1?api-version=2023-09-01
   response:
     body:
       string: ''
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '0'
+      content-type:
+      - application/json
       date:
-      - Wed, 20 Sep 2023 15:32:07 GMT
+      - Fri, 28 Jun 2024 20:06:35 GMT
       server:
       - Rocket
     status:
@@ -1313,19 +1632,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/vmGroups?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/vmGroups?api-version=2023-09-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/vmGroups/vmGroup1","name":"cloud1","type":"Microsoft.AVS/privateClouds/workloadNetworks/vmGroups","properties":{"displayName":"vmGroup1","members":["564d43da-fefc-2a3b-1d92-42855622fa50"],"status":"SUCCESS","revision":1}}]}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '384'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:32:12 GMT
+      - Fri, 28 Jun 2024 20:06:38 GMT
       server:
       - Rocket
     status:
@@ -1345,19 +1672,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --vm-group
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/vmGroups/vmGroup1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/vmGroups/vmGroup1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/vmGroups/vmGroup1","name":"cloud1","type":"Microsoft.AVS/privateClouds/workloadNetworks/vmGroups","properties":{"displayName":"vmGroup1","members":["564d43da-fefc-2a3b-1d92-42855622fa50"],"status":"SUCCESS","revision":1}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '372'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:32:17 GMT
+      - Fri, 28 Jun 2024 20:06:40 GMT
       server:
       - Rocket
     status:
@@ -1382,19 +1717,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --vm-group --display-name --members --revision
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/vmGroups/vmGroup1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/vmGroups/vmGroup1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/vmGroups/vmGroup1","name":"vmGroup1","type":"Microsoft.AVS/privateClouds/workloadNetworks/vmGroups","properties":{"displayName":"vmGroup1","members":["564d43da-fefc-2a3b-1d92-42855622fa50"],"status":"SUCCESS","revision":1}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '374'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:32:22 GMT
+      - Fri, 28 Jun 2024 20:06:42 GMT
       server:
       - Rocket
     status:
@@ -1414,19 +1757,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --vm-group --display-name --members --revision
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/vmGroups/vmGroup1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/vmGroups/vmGroup1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/vmGroups/vmGroup1","name":"cloud1","type":"Microsoft.AVS/privateClouds/workloadNetworks/vmGroups","properties":{"displayName":"vmGroup1","members":["564d43da-fefc-2a3b-1d92-42855622fa50"],"status":"SUCCESS","revision":1}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '372'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:32:27 GMT
+      - Fri, 28 Jun 2024 20:06:44 GMT
       server:
       - Rocket
     status:
@@ -1434,7 +1785,7 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"displayName": "testDisplayName", "members": ["564d43da-fefc-2a3b-1d92-42855622fa50"],
-      "revision": 1}}'
+      "revision": 1, "status": "SUCCESS"}}'
     headers:
       Accept:
       - application/json
@@ -1445,25 +1796,33 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '118'
+      - '139'
       Content-Type:
       - application/json
       ParameterSetName:
       - --resource-group --private-cloud --vm-group --display-name --members --revision
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/vmGroups/vmGroup1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/vmGroups/vmGroup1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/vmGroups/vmGroup1","name":"vmGroup1","type":"Microsoft.AVS/privateClouds/workloadNetworks/vmGroups","properties":{"displayName":"vmGroup1","members":["564d43da-fefc-2a3b-1d92-42855622fa50"],"status":"SUCCESS","revision":1}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '374'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:32:27 GMT
+      - Fri, 28 Jun 2024 20:06:45 GMT
       server:
       - Rocket
     status:
@@ -1485,17 +1844,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --vm-group --yes
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: DELETE
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/vmGroups/vmGroup1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/vmGroups/vmGroup1?api-version=2023-09-01
   response:
     body:
       string: ''
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '0'
+      content-type:
+      - application/json
       date:
-      - Wed, 20 Sep 2023 15:32:32 GMT
+      - Fri, 28 Jun 2024 20:06:48 GMT
       server:
       - Rocket
     status:
@@ -1515,19 +1884,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/virtualMachines?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/virtualMachines?api-version=2023-09-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/virtualMachines/vm1","name":"vm1","type":"Microsoft.AVS/privateClouds/workloadNetworks/virtualMachines","properties":{"displayName":"vm1","vmType":"REGULAR"}}]}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '321'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:32:37 GMT
+      - Fri, 28 Jun 2024 20:06:50 GMT
       server:
       - Rocket
     status:
@@ -1547,19 +1924,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --virtual-machine
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/virtualMachines/vm1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/virtualMachines/vm1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/virtualMachines/vm1","name":"vm1","type":"Microsoft.AVS/privateClouds/workloadNetworks/virtualMachines","properties":{"displayName":"vm1","vmType":"REGULAR"}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '309'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:32:42 GMT
+      - Fri, 28 Jun 2024 20:06:53 GMT
       server:
       - Rocket
     status:
@@ -1579,19 +1964,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/gateways?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/gateways?api-version=2023-09-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/gateways/gateway1","name":"gateway1","type":"Microsoft.AVS/privateClouds/workloadNetworks/segments","properties":{"displayName":"gateway1","path":"/infra/tier-1s/gateway1"}}]}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '336'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:32:47 GMT
+      - Fri, 28 Jun 2024 20:06:55 GMT
       server:
       - Rocket
     status:
@@ -1611,19 +2004,27 @@ interactions:
       ParameterSetName:
       - --resource-group --private-cloud --gateway
       User-Agent:
-      - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.29.3 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost:8888/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/gateways/gateway1?api-version=2023-03-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_workload_network000001/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/gateways/gateway1?api-version=2023-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/workloadNetworks/default/gateways/gateway1","name":"gateway1","type":"Microsoft.AVS/privateClouds/workloadNetworks/gateways","properties":{"displayName":"gateway1","path":"/infra/tier-1s/gateway1"}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '324'
       content-type:
       - application/json
       date:
-      - Wed, 20 Sep 2023 15:32:51 GMT
+      - Fri, 28 Jun 2024 20:06:57 GMT
       server:
       - Rocket
     status:

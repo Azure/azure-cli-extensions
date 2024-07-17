@@ -782,6 +782,7 @@ class LinuxARMManagedDiskCreateRestoreTest(LiveScenarioTest):
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
         
+@pytest.mark.ResetNic        
 class ResetNICWithASG(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')

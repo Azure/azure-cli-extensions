@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/galleries/{}/images/{}/versions/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/galleries/{}/images/{}/versions/{}", "2024-05-01-preview"],
         ]
     }
 
@@ -71,6 +71,11 @@ class Show(AAZCommand):
             help="The name of the image.",
             required=True,
             id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-.]{0,78}[a-zA-Z0-9]$",
+                max_length=80,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -80,6 +85,11 @@ class Show(AAZCommand):
             help="The version of the image.",
             required=True,
             id_part="child_name_3",
+            fmt=AAZStrArgFormat(
+                pattern="^[0-9]{1,10}[.][0-9]{1,10}[.][0-9]{1,10}$",
+                max_length=32,
+                min_length=5,
+            ),
         )
         return cls._args_schema
 
@@ -124,7 +134,7 @@ class Show(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -160,7 +170,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }

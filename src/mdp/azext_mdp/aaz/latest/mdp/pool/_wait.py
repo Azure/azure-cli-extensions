@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devopsinfrastructure/pools/{}", "2023-12-13-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devopsinfrastructure/pools/{}", "2024-04-04-preview"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-12-13-preview",
+                    "api-version", "2024-04-04-preview",
                     required=True,
                 ),
             }
@@ -191,7 +191,9 @@ class Wait(AAZWaitCommand):
             )
 
             user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType()
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
 
             _element = cls._schema_on_200.identity.user_assigned_identities.Element
             _element.client_id = AAZStrType(
@@ -235,11 +237,26 @@ class Wait(AAZWaitCommand):
             agent_profile.resource_predictions = AAZObjectType(
                 serialized_name="resourcePredictions",
             )
+            agent_profile.resource_predictions_profile = AAZObjectType(
+                serialized_name="resourcePredictionsProfile",
+            )
+
+            resource_predictions_profile = cls._schema_on_200.properties.agent_profile.resource_predictions_profile
+            resource_predictions_profile.kind = AAZStrType(
+                flags={"required": True},
+            )
+
+            disc_automatic = cls._schema_on_200.properties.agent_profile.resource_predictions_profile.discriminate_by("kind", "Automatic")
+            disc_automatic.prediction_preference = AAZStrType(
+                serialized_name="predictionPreference",
+            )
 
             disc_stateful = cls._schema_on_200.properties.agent_profile.discriminate_by("kind", "Stateful")
+            disc_stateful.grace_period_time_span = AAZStrType(
+                serialized_name="gracePeriodTimeSpan",
+            )
             disc_stateful.max_agent_lifetime = AAZStrType(
                 serialized_name="maxAgentLifetime",
-                flags={"required": True},
             )
 
             fabric_profile = cls._schema_on_200.properties.fabric_profile
@@ -272,7 +289,9 @@ class Wait(AAZWaitCommand):
             _element.buffer = AAZStrType()
             _element.resource_id = AAZStrType(
                 serialized_name="resourceId",
-                flags={"required": True},
+            )
+            _element.well_known_image_name = AAZStrType(
+                serialized_name="wellKnownImageName",
             )
 
             aliases = cls._schema_on_200.properties.fabric_profile.discriminate_by("kind", "Vmss").images.Element.aliases
@@ -314,8 +333,26 @@ class Wait(AAZWaitCommand):
             )
 
             storage_profile = cls._schema_on_200.properties.fabric_profile.discriminate_by("kind", "Vmss").storage_profile
+            storage_profile.data_disks = AAZListType(
+                serialized_name="dataDisks",
+            )
             storage_profile.os_disk_storage_account_type = AAZStrType(
                 serialized_name="osDiskStorageAccountType",
+            )
+
+            data_disks = cls._schema_on_200.properties.fabric_profile.discriminate_by("kind", "Vmss").storage_profile.data_disks
+            data_disks.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.fabric_profile.discriminate_by("kind", "Vmss").storage_profile.data_disks.Element
+            _element.caching = AAZStrType()
+            _element.disk_size_gi_b = AAZIntType(
+                serialized_name="diskSizeGiB",
+            )
+            _element.drive_letter = AAZStrType(
+                serialized_name="driveLetter",
+            )
+            _element.storage_account_type = AAZStrType(
+                serialized_name="storageAccountType",
             )
 
             organization_profile = cls._schema_on_200.properties.organization_profile
