@@ -1,5 +1,9 @@
 Release History
 ===============
+2.1.0
+-----
+* New '--resource-tag' parameter that allows the client to specify a resource tag that will hold a value to be used as the port number for SSH connections.
+
 2.0.4
 -----
 * Install Arc SSH Proxy from MAR
