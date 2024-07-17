@@ -14,7 +14,7 @@ Pending
 
 7.0.0b1
 ++++++++
-* [Breaking Change]: Remove support for `az aks get-os-options` command.
+* [BREAKING CHANGE]: Remove support for `az aks get-os-options` command.
 
 6.0.0b1
 ++++++++
