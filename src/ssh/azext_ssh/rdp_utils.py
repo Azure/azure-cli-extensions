@@ -88,8 +88,7 @@ def call_rdp(local_port):
         command = [_get_rdp_path(), f"/v:localhost:{local_port}"]
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         # process.wait() doesn't work correctly when 32bit python is installed on 64bit machines
-        _= process.communicate()
-
+        _ = process.communicate()
 
 
 def is_local_port_open(local_port):
