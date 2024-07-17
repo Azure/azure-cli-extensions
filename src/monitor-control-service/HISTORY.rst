@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.2.0
+++++++
+* Update api-version to `2023-03-11` for sub cmds of `az monitor data-collection rule`
+
 1.1.0
 ++++++
 * Update api-version to `2023-03-11`

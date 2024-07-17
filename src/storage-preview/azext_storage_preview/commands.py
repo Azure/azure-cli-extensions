@@ -237,3 +237,8 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
         g.show_command('show', 'get')
         g.command('list-keys', 'list_keys')
         g.command('regenerate-password', 'regenerate_password')
+
+    with self.command_group('storage account task-assignment') as g:
+        from .operations.task_assignment import TaskAssignmentCreate, TaskAssignmentUpdate
+        self.command_table['storage account task-assignment create'] = TaskAssignmentCreate(loader=self)
+        self.command_table['storage account task-assignment update'] = TaskAssignmentUpdate(loader=self)

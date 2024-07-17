@@ -17,6 +17,11 @@ from azext_aks_preview.tests.latest.custom_preparers import (
 )
 from azext_aks_preview.tests.latest.recording_processors import KeyReplacer
 from azure.cli.command_modules.acs._format import version_to_tuple
+from azure.cli.command_modules.acs._helpers import (
+    get_shared_control_plane_identity,
+    get_shared_kubelet_identity,
+    use_shared_identity,
+)
 from azure.cli.core.azclierror import ClientRequestError
 from azure.core.exceptions import (HttpResponseError)
 from azure.cli.testsdk import CliTestError, ScenarioTest, live_only
@@ -37,17 +42,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     def _get_versions(self, location):
         """Return the previous and current Kubernetes minor release versions, such as ("1.11.6", "1.12.4")."""
-        versions = self.cmd(
-            "az aks get-versions -l {} --query 'values[*].patchVersions.keys(@)[]'".format(
-                location
-            )
+        supported_versions = self.cmd(
+            "az aks get-versions -l {} --query 'values[*].patchVersions.keys(@)[]'".format(location)
         ).get_output_in_json()
-        # sort by semantic version, from newest to oldest
-        versions = sorted(versions, key=version_to_tuple, reverse=True)
-        upgrade_version = versions[0]
+        sorted_supported_versions = sorted(supported_versions, key=version_to_tuple, reverse=True)
+        upgrade_version = sorted_supported_versions[0]
         # find the first version that doesn't start with the latest major.minor.
-        prefix = upgrade_version[: upgrade_version.rfind(".")]
-        create_version = next(x for x in versions if not x.startswith(prefix))
+        prefix = upgrade_version[:upgrade_version.rfind('.')]
+        create_version = next(x for x in sorted_supported_versions if not x.startswith(prefix))
         return create_version, upgrade_version
 
     def _get_version_in_range(
@@ -85,6 +87,69 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # sort by semantic version, from newest to oldest
         lts_versions = sorted(lts_versions, key=lambda x: list(map(int, x.split("."))), reverse=True)
         return lts_versions[0] if lts_versions else None
+
+    def _get_user_assigned_identity(
+        self,
+        resource_group,
+        designated_identity=None,
+        excluded_identity=None,
+        use_for_kubelet=False,
+        paired_control_plane_identity=None,
+        kubelet_identity_index_shift=0,
+    ):
+        # If designated_identity is provided, it will be used.
+        if designated_identity:
+            return designated_identity
+        # If the environment variable USE_SHARED_IDENTITY is set, the shared identity will be used.
+        if use_shared_identity():
+            return (
+                get_shared_kubelet_identity(
+                    excluded_identity=excluded_identity,
+                    shared_control_plane_identity=paired_control_plane_identity,
+                    index_shift=kubelet_identity_index_shift,
+                )
+                if use_for_kubelet
+                else get_shared_control_plane_identity(
+                    excluded_identity=excluded_identity,
+                )
+            )
+        # Otherwise, a new user-assigned identity will be created.
+        identity_name = self.create_random_name("cli", 16)
+        identity = self.cmd(
+            "az identity create -g {} -n {}".format(resource_group, identity_name)
+        ).get_output_in_json()
+        return identity.get("id")
+
+    def _get_principal_id_of_user_assigned_identity(self, identity_id):
+        return self.cmd(
+            "identity show --ids {}".format(identity_id)
+        ).get_output_in_json()["principalId"]
+
+    def _get_client_id_of_user_assigned_identity(self, identity_id):
+        return self.cmd(
+            "identity show --ids {}".format(identity_id)
+        ).get_output_in_json()["clientId"]
+
+    def _get_test_identity_resource_id(self) -> str:
+        return os.getenv("IDENTITY_RESOURCE_ID")
+
+    def _get_test_identity_object_id(self) -> str:
+        test_identity_object_id = os.getenv("AZURE_CLI_LIVE_TEST_IDENTITY_OBJECT_ID")
+        if test_identity_object_id:
+            return os.getenv("AZURE_CLI_LIVE_TEST_IDENTITY_OBJECT_ID")
+        identity_resource_id = self._get_test_identity_resource_id()
+        # test executed in CI mode
+        if identity_resource_id:
+            test_identity_object_id = self._get_principal_id_of_user_assigned_identity(
+                identity_resource_id
+            )
+        # test executed in local mode
+        else:
+            test_identity_object_id = self.cmd(
+                "az ad signed-in-user show"
+            ).get_output_in_json()["id"]
+        os.environ["AZURE_CLI_LIVE_TEST_IDENTITY_OBJECT_ID"] = test_identity_object_id
+        return test_identity_object_id
 
     def _sort_revisions(self, revisions):
         def _convert_revision_to_semver(rev):
@@ -2848,7 +2913,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="eastus",
-        preserve_default_location=True,
     )
     def test_aks_nodepool_add_with_disable_windows_outbound_nat(
         self, resource_group, resource_group_location
@@ -3753,7 +3817,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="westcentralus",
-        preserve_default_location=True,
     )
     def test_aks_snapshot(self, resource_group, resource_group_location):
         print(resource_group_location)
@@ -3870,7 +3933,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="westcentralus",
-        preserve_default_location=True,
     )
     def test_aks_snapshot_upgrade(self, resource_group, resource_group_location):
         print(resource_group_location)
@@ -4000,7 +4062,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="westcentralus",
-        preserve_default_location=True,
     )
     def test_aks_snapshot_update(self, resource_group, resource_group_location):
         print(resource_group_location)
@@ -4128,7 +4189,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="eastus",
-        preserve_default_location=True,
     )
     def test_aks_skip_gpu_driver_install(self, resource_group, resource_group_location):
         print(resource_group_location)
@@ -4864,7 +4924,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks update --resource-group={resource_group} --name={name} --enable-managed-identity --yes",
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("identity.type", "SystemAssigned"),
+                self.check("identity.type", "UserAssigned" if use_shared_identity() else "SystemAssigned"),
             ],
         )
 
@@ -5020,7 +5080,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks update --resource-group={resource_group} --name={name} --enable-managed-identity --yes",
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("identity.type", "SystemAssigned"),
+                self.check("identity.type", "UserAssigned" if use_shared_identity() else "SystemAssigned"),
             ],
         )
 
@@ -5424,9 +5484,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         if user_assigned_identity:
-            uai_cmd = f"identity create -g {resource_group} -n {aks_name}_uai"
-            resp = self.cmd(uai_cmd).get_output_in_json()
-            identity_id = resp["id"]
+            identity_id = self._get_user_assigned_identity(resource_group)
             print("********************")
             print(f"identity_id: {identity_id}")
             print("********************")
@@ -6086,14 +6144,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # create identity
-        create_identity = (
-            "identity create --resource-group={resource_group} --name={identity_name}"
-        )
-        identity = self.cmd(
-            create_identity, checks=[self.check("name", identity_name)]
-        ).get_output_in_json()
-        identity_id = identity["principalId"]
-        identity_resource_id = identity["id"]
+        identity_resource_id = self._get_user_assigned_identity(resource_group)
+        identity_id = self._get_principal_id_of_user_assigned_identity(identity_resource_id)
         assert identity_id is not None
         self.kwargs.update(
             {
@@ -6445,17 +6497,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             }
         )
 
-        # create identity
-        cmd = "identity create --resource-group={resource_group} --name={identity_name} --location={location}"
-        application_identity = self.cmd(
-            cmd, checks=[self.check("name", identity_name)]
-        ).get_output_in_json()
-        self.kwargs.update(
-            {
-                "application_identity_id": application_identity["id"],
-            }
-        )
-
         # create
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
@@ -6465,12 +6506,25 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--ssh-key-value={ssh_key_value} "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnablePodIdentityPreview"
         )
-        self.cmd(
+        mc = self.cmd(
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("podIdentityProfile.enabled", True),
             ],
+        ).get_output_in_json()
+        control_plane_identity = None
+        if use_shared_identity():
+            control_plane_identity = list(mc["identity"]["userAssignedIdentities"].keys())[0]
+
+        # create identity
+        application_identity_id = self._get_user_assigned_identity(resource_group, use_for_kubelet=True, paired_control_plane_identity=control_plane_identity)
+        application_identity_client_id = self._get_client_id_of_user_assigned_identity(application_identity_id)
+        application_identity_principal_id = self._get_principal_id_of_user_assigned_identity(application_identity_id)
+        self.kwargs.update(
+            {
+                "application_identity_id": application_identity_id,
+            }
         )
 
         # pod identity: add
@@ -6497,15 +6551,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 ),
                 self.check(
                     "podIdentityProfile.userAssignedIdentities[0].identity.clientId",
-                    application_identity["clientId"],
+                    application_identity_client_id,
                 ),
                 self.check(
                     "podIdentityProfile.userAssignedIdentities[0].identity.objectId",
-                    application_identity["principalId"],
+                    application_identity_principal_id,
                 ),
                 self.check(
                     "podIdentityProfile.userAssignedIdentities[0].identity.resourceId",
-                    application_identity["id"],
+                    application_identity_id,
+                    case_sensitive=False,
                 ),
             ],
         )
@@ -6555,15 +6610,16 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 ),
                 self.check(
                     "podIdentityProfile.userAssignedIdentities[0].identity.clientId",
-                    application_identity["clientId"],
+                    application_identity_client_id,
                 ),
                 self.check(
                     "podIdentityProfile.userAssignedIdentities[0].identity.objectId",
-                    application_identity["principalId"],
+                    application_identity_principal_id,
                 ),
                 self.check(
                     "podIdentityProfile.userAssignedIdentities[0].identity.resourceId",
-                    application_identity["id"],
+                    application_identity_id,
+                    case_sensitive=False,
                 ),
             ],
         )
@@ -6665,12 +6721,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # create control plane identity
-        control_plane_identity = "identity create --resource-group={resource_group} --name={control_plane_identity_name}"
-        c_identity = self.cmd(
-            control_plane_identity,
-            checks=[self.check("name", control_plane_identity_name)],
-        ).get_output_in_json()
-        control_plane_identity_resource_id = c_identity["id"]
+        control_plane_identity_resource_id = self._get_user_assigned_identity(resource_group)
         assert control_plane_identity_resource_id is not None
         self.kwargs.update(
             {
@@ -6679,11 +6730,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # create kubelet identity
-        kubelet_identity = "identity create --resource-group={resource_group} --name={kubelet_identity_name}"
-        k_identity = self.cmd(
-            kubelet_identity, checks=[self.check("name", kubelet_identity_name)]
-        ).get_output_in_json()
-        kubelet_identity_resource_id = k_identity["id"]
+        kubelet_identity_resource_id = self._get_user_assigned_identity(
+            resource_group,
+            use_for_kubelet=True,
+            paired_control_plane_identity=control_plane_identity_resource_id,
+        )
         assert kubelet_identity_resource_id is not None
         self.kwargs.update(
             {
@@ -6712,11 +6763,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # create new kubelet identity
-        new_kubelet_identity = "identity create --resource-group={resource_group} --name={new_kubelet_identity_name}"
-        new_identity = self.cmd(
-            new_kubelet_identity, checks=[self.check("name", new_kubelet_identity_name)]
-        ).get_output_in_json()
-        new_kubelet_identity_resource_id = new_identity["id"]
+        new_kubelet_identity_resource_id = self._get_user_assigned_identity(
+            resource_group,
+            use_for_kubelet=True,
+            paired_control_plane_identity=control_plane_identity_resource_id,
+            kubelet_identity_index_shift=1,
+        )
         assert new_kubelet_identity_resource_id is not None
         self.kwargs.update(
             {
@@ -6790,7 +6842,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="uksouth",
         preserve_default_location=True,
     )
     def test_aks_enable_utlra_ssd(self, resource_group, resource_group_location):
@@ -7104,7 +7156,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="centraluseuap",
-        preserve_default_location=True,
     )
     def test_aks_create_with_overlay_network_plugin_mode(
         self, resource_group, resource_group_location
@@ -7150,7 +7201,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="eastus",
-        preserve_default_location=True,
     )
     def test_aks_create_with_network_dataplane_cilium(
         self, resource_group, resource_group_location
@@ -7200,7 +7250,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="centraluseuap",
-        preserve_default_location=True,
     )
     def test_aks_create_with_enable_cilium_dataplane(
         self, resource_group, resource_group_location
@@ -7248,7 +7297,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="centraluseuap",
-        preserve_default_location=True,
     )
     def test_aks_create_dualstack_with_default_network(
         self, resource_group, resource_group_location
@@ -7453,7 +7501,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="centraluseuap",
-        preserve_default_location=True,
     )
     def test_aks_create_and_update_ipv6_count(
         self, resource_group, resource_group_location
@@ -7545,7 +7592,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="westcentralus",
-        preserve_default_location=True,
     )
     def test_aks_azure_cni_overlay_migration(
         self, resource_group, resource_group_location
@@ -7608,7 +7654,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="eastus",
-        preserve_default_location=True,
     )
     def test_aks_azure_cni_overlay_migration_from_kubenet(
         self, resource_group, resource_group_location
@@ -7670,7 +7715,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="eastus",
-        preserve_default_location=True,
     )
     def test_aks_migrate_cluster_to_cilium_dataplane(
         self, resource_group, resource_group_location
@@ -7729,7 +7773,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="centraluseuap",
-        preserve_default_location=True,
     )
     def test_aks_create_or_update_with_load_balancer_backend_pool_type(
         self, resource_group, resource_group_location
@@ -7782,7 +7825,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="centraluseuap",
-        preserve_default_location=True,
     )
     def test_aks_create_or_update_with_health_probe_mode(
         self, resource_group, resource_group_location
@@ -8906,10 +8948,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # create user-assigned identity
-        create_identity = "identity create --resource-group={resource_group} --name={identity_name} -o json"
-        identity = self.cmd(create_identity).get_output_in_json()
-        identity_id = identity["id"]
-        identity_object_id = identity["principalId"]
+        identity_id = self._get_user_assigned_identity(resource_group)
+        identity_object_id = self._get_principal_id_of_user_assigned_identity(identity_id)
         assert identity_id is not None
         assert identity_object_id is not None
         self.kwargs.update(
@@ -8921,12 +8961,20 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create key vault and key
         create_keyvault = (
-            "keyvault create --resource-group={resource_group} --name={kv_name} -o json"
+            "keyvault create --resource-group={resource_group} --name={kv_name} --enable-rbac-authorization=false --no-self-perms -o json"
         )
         self.cmd(
             create_keyvault,
             checks=[self.check("properties.provisioningState", "Succeeded")],
         )
+
+        # set access policy for test identity
+        test_identity_object_id = self._get_test_identity_object_id()
+        test_identity_access_policy = 'keyvault set-policy --resource-group={resource_group} --name={kv_name} ' \
+                                      '--key-permissions all --object-id ' + test_identity_object_id
+        self.cmd(test_identity_access_policy, checks=[
+            self.check('properties.provisioningState', 'Succeeded')
+        ])
 
         create_key = "keyvault key create -n kms --vault-name {kv_name} -o json"
         key = self.cmd(
@@ -9029,10 +9077,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # create user-assigned identity
-        create_identity = "identity create --resource-group={resource_group} --name={identity_name} -o json"
-        identity = self.cmd(create_identity).get_output_in_json()
-        identity_id = identity["id"]
-        identity_object_id = identity["principalId"]
+        identity_id = self._get_user_assigned_identity(resource_group)
+        identity_object_id = self._get_principal_id_of_user_assigned_identity(identity_id)
         assert identity_id is not None
         assert identity_object_id is not None
         self.kwargs.update(
@@ -9044,12 +9090,20 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create key vault and key
         create_keyvault = (
-            "keyvault create --resource-group={resource_group} --name={kv_name} -o json"
+            "keyvault create --resource-group={resource_group} --name={kv_name} --enable-rbac-authorization=false --no-self-perms -o json"
         )
         self.cmd(
             create_keyvault,
             checks=[self.check("properties.provisioningState", "Succeeded")],
         )
+
+        # set access policy for test identity
+        test_identity_object_id = self._get_test_identity_object_id()
+        test_identity_access_policy = 'keyvault set-policy --resource-group={resource_group} --name={kv_name} ' \
+                                      '--key-permissions all --object-id ' + test_identity_object_id
+        self.cmd(test_identity_access_policy, checks=[
+            self.check('properties.provisioningState', 'Succeeded')
+        ])
 
         create_key = "keyvault key create -n kms --vault-name {kv_name} -o json"
         key = self.cmd(
@@ -9119,7 +9173,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="centraluseuap",
-        preserve_default_location=True,
     )
     def test_aks_create_with_azurekeyvaultkms_private_key_vault(
         self, resource_group, resource_group_location
@@ -9138,10 +9191,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # create user-assigned identity
-        create_identity = "identity create --resource-group={resource_group} --name={identity_name} -o json"
-        identity = self.cmd(create_identity).get_output_in_json()
-        identity_id = identity["id"]
-        identity_object_id = identity["principalId"]
+        identity_id = self._get_user_assigned_identity(resource_group)
+        identity_object_id = self._get_principal_id_of_user_assigned_identity(identity_id)
         assert identity_id is not None
         assert identity_object_id is not None
         self.kwargs.update(
@@ -9153,7 +9204,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create key vault and key
         create_keyvault = (
-            "keyvault create --resource-group={resource_group} --name={kv_name} -o json"
+            "keyvault create --resource-group={resource_group} --name={kv_name} --enable-rbac-authorization=false --no-self-perms -o json"
         )
         kv = self.cmd(
             create_keyvault,
@@ -9166,6 +9217,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "kv_resource_id": kv_resource_id,
             }
         )
+
+        # set access policy for test identity
+        test_identity_object_id = self._get_test_identity_object_id()
+        test_identity_access_policy = 'keyvault set-policy --resource-group={resource_group} --name={kv_name} ' \
+                                      '--key-permissions all --object-id ' + test_identity_object_id
+        self.cmd(test_identity_access_policy, checks=[
+            self.check('properties.provisioningState', 'Succeeded')
+        ])
 
         create_key = "keyvault key create -n kms --vault-name {kv_name} -o json"
         key = self.cmd(
@@ -9291,7 +9350,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="centraluseuap",
-        preserve_default_location=True,
     )
     def test_aks_update_with_azurekeyvaultkms_private_key_vault(
         self, resource_group, resource_group_location
@@ -9310,10 +9368,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # create user-assigned identity
-        create_identity = "identity create --resource-group={resource_group} --name={identity_name} -o json"
-        identity = self.cmd(create_identity).get_output_in_json()
-        identity_id = identity["id"]
-        identity_object_id = identity["principalId"]
+        identity_id = self._get_user_assigned_identity(resource_group)
+        identity_object_id = self._get_principal_id_of_user_assigned_identity(identity_id)
         assert identity_id is not None
         assert identity_object_id is not None
         self.kwargs.update(
@@ -9325,7 +9381,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create key vault and key
         create_keyvault = (
-            "keyvault create --resource-group={resource_group} --name={kv_name} -o json"
+            "keyvault create --resource-group={resource_group} --name={kv_name} --enable-rbac-authorization=false --no-self-perms -o json"
         )
         kv = self.cmd(
             create_keyvault,
@@ -9338,6 +9394,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "kv_resource_id": kv_resource_id,
             }
         )
+
+        # set access policy for test identity
+        test_identity_object_id = self._get_test_identity_object_id()
+        test_identity_access_policy = 'keyvault set-policy --resource-group={resource_group} --name={kv_name} ' \
+                                      '--key-permissions all --object-id ' + test_identity_object_id
+        self.cmd(test_identity_access_policy, checks=[
+            self.check('properties.provisioningState', 'Succeeded')
+        ])
 
         create_key = "keyvault key create -n kms --vault-name {kv_name} -o json"
         key = self.cmd(
@@ -9427,7 +9491,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="centraluseuap",
-        preserve_default_location=True,
     )
     def test_aks_create_with_azurekeyvaultkms_private_cluster_v1_private_key_vault(
         self, resource_group, resource_group_location
@@ -9446,10 +9509,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # create user-assigned identity
-        create_identity = "identity create --resource-group={resource_group} --name={identity_name} -o json"
-        identity = self.cmd(create_identity).get_output_in_json()
-        identity_id = identity["id"]
-        identity_object_id = identity["principalId"]
+        identity_id = self._get_user_assigned_identity(resource_group)
+        identity_object_id = self._get_principal_id_of_user_assigned_identity(identity_id)
         assert identity_id is not None
         assert identity_object_id is not None
         self.kwargs.update(
@@ -9461,7 +9522,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create key vault and key
         create_keyvault = (
-            "keyvault create --resource-group={resource_group} --name={kv_name} -o json"
+            "keyvault create --resource-group={resource_group} --name={kv_name} --enable-rbac-authorization=false --no-self-perms -o json"
         )
         kv = self.cmd(
             create_keyvault,
@@ -9474,6 +9535,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "kv_resource_id": kv_resource_id,
             }
         )
+
+        # set access policy for test identity
+        test_identity_object_id = self._get_test_identity_object_id()
+        test_identity_access_policy = 'keyvault set-policy --resource-group={resource_group} --name={kv_name} ' \
+                                      '--key-permissions all --object-id ' + test_identity_object_id
+        self.cmd(test_identity_access_policy, checks=[
+            self.check('properties.provisioningState', 'Succeeded')
+        ])
 
         create_key = "keyvault key create -n kms --vault-name {kv_name} -o json"
         key = self.cmd(
@@ -9616,10 +9685,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # create user-assigned identity
-        create_identity = "identity create --resource-group={resource_group} --name={identity_name} -o json"
-        identity = self.cmd(create_identity).get_output_in_json()
-        identity_id = identity["id"]
-        identity_object_id = identity["principalId"]
+        identity_id = self._get_user_assigned_identity(resource_group)
+        identity_object_id = self._get_principal_id_of_user_assigned_identity(identity_id)
         assert identity_id is not None
         assert identity_object_id is not None
         self.kwargs.update(
@@ -9631,12 +9698,20 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create key vault and key
         create_keyvault = (
-            "keyvault create --resource-group={resource_group} --name={kv_name} -o json"
+            "keyvault create --resource-group={resource_group} --name={kv_name} --enable-rbac-authorization=false --no-self-perms -o json"
         )
         self.cmd(
             create_keyvault,
             checks=[self.check("properties.provisioningState", "Succeeded")],
         )
+
+        # set access policy for test identity
+        test_identity_object_id = self._get_test_identity_object_id()
+        test_identity_access_policy = 'keyvault set-policy --resource-group={resource_group} --name={kv_name} ' \
+                                      '--key-permissions all --object-id ' + test_identity_object_id
+        self.cmd(test_identity_access_policy, checks=[
+            self.check('properties.provisioningState', 'Succeeded')
+        ])
 
         create_key = "keyvault key create -n kms --vault-name {kv_name} -o json"
         key = self.cmd(
@@ -9706,7 +9781,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="westcentralus",
-        preserve_default_location=True,
     )
     def test_aks_create_and_update_with_csi_drivers_extensibility(
         self, resource_group, resource_group_location
@@ -9811,7 +9885,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="westcentralus",
-        preserve_default_location=True,
     )
     def test_aks_create_with_standard_csi_drivers(
         self, resource_group, resource_group_location
@@ -9869,7 +9942,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="centraluseuap",
-        preserve_default_location=True,
     )
     def test_aks_create_with_standard_blob_csi_driver(
         self, resource_group, resource_group_location
@@ -9921,7 +9993,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="centraluseuap",
-        preserve_default_location=True,
     )
     def test_aks_create_and_update_with_blob_csi_driver(
         self, resource_group, resource_group_location
@@ -10020,7 +10091,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="centraluseuap",
-        preserve_default_location=True,
     )
     def test_aks_create_with_csi_driver_v2(
         self, resource_group, resource_group_location
@@ -10065,7 +10135,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="centraluseuap",
-        preserve_default_location=True,
     )
     def test_aks_create_and_update_csi_driver_to_v2(
         self, resource_group, resource_group_location
@@ -10170,7 +10239,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="centraluseuap",
-        preserve_default_location=True,
     )
     def test_aks_create_with_apiserver_vnet_integration_public(
         self, resource_group, resource_group_location
@@ -10657,14 +10725,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         # Get the object ID of the service principal
-        show_acct_cmd = "account show"
-        authenticated_acct = self.cmd(show_acct_cmd).get_output_in_json()
-        sp_name = authenticated_acct["user"]["name"]
-        show_sp_cmd = f"ad sp show --id {sp_name}"
-        sp = self.cmd(
-            show_sp_cmd, checks=[self.check("appId", sp_name)]
-        ).get_output_in_json()
-        sp_oid = sp["id"]
+        sp_oid = self._get_test_identity_object_id()
         print(f"objectid of service principal is {sp_oid}")
 
         # Install kubectl (for setting up service principal permissions, and required by the 'kollect' command).
@@ -10788,7 +10849,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="uksouth",
         preserve_default_location=True,
     )
     def test_aks_availability_zones(self, resource_group, resource_group_location):
@@ -11025,8 +11086,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
 
         create_cmd = (
-            "aks create --resource-group={resource_group} --name={name} --location={location} --ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} "
-            "--node-count 3 --enable-azure-monitor-app-monitoring --output=json"
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-vm-size={node_vm_size} --node-count 3 "
+            "--enable-azure-monitor-app-monitoring "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview"
         )
         self.cmd(
             create_cmd,
@@ -11306,7 +11369,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # update: enable-azure-monitor-app-monitoring
         update_cmd = (
-            'aks update --resource-group={resource_group} --name={name} --yes --output=json --enable-azure-monitor-app-monitoring'
+            "aks update --resource-group={resource_group} --name={name} --yes --output=json --enable-azure-monitor-app-monitoring "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview"
         )
         self.cmd(update_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
@@ -11317,7 +11381,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # update: disable-azure-monitor-app-monitoring
         update_cmd = (
-            'aks update --resource-group={resource_group} --name={name} --yes --output=json --disable-azure-monitor-app-monitoring'
+            "aks update --resource-group={resource_group} --name={name} --yes --output=json --disable-azure-monitor-app-monitoring "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AzureMonitorAppMonitoringPreview"
         )
 
         self.cmd(update_cmd, checks=[
@@ -13028,7 +13093,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="eastus",
-        preserve_default_location=True,
     )
     def test_aks_update_enable_advanced_network_observability(
         self, resource_group, resource_group_location
@@ -13086,7 +13150,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="eastus",
-        preserve_default_location=True,
     )
     def test_aks_create_with_enable_advanced_network_observability(
         self, resource_group, resource_group_location
@@ -13130,7 +13193,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="westcentralus",
-        preserve_default_location=True,
     )
     def test_aks_create_with_enable_cost_analysis(
         self, resource_group, resource_group_location
@@ -13174,7 +13236,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="westcentralus",
-        preserve_default_location=True,
     )
     def test_aks_update_enable_cost_analysis(
         self, resource_group, resource_group_location
@@ -13237,7 +13298,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="westcentralus",
-        preserve_default_location=True,
     )
     def test_aks_create_node_provisioning_mode_manual(
         self, resource_group, resource_group_location
@@ -13281,7 +13341,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="westcentralus",
-        preserve_default_location=True,
     )
     def test_aks_update_node_provisioning_mode_manual(
         self, resource_group, resource_group_location
@@ -13333,7 +13392,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="eastus",
-        preserve_default_location=True,
     )
     def test_aks_create_with_custom_headers(
         self, resource_group, resource_group_location
@@ -13444,7 +13502,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="eastus",
-        preserve_default_location=True,
     )
     def test_aks_approuting_enable_disable(
         self, resource_group, resource_group_location
@@ -13506,7 +13563,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="eastus",
-        preserve_default_location=True,
     )
     def test_aks_approuting_enable_with_keyvault_secrets_provider_addon_and_keyvault_id(
         self, resource_group, resource_group_location
@@ -13574,7 +13630,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="eastus",
-        preserve_default_location=True,
     )
     def test_aks_approuting_update(self, resource_group, resource_group_location):
         """This test case exercises updating app routing addon in an AKS cluster."""
@@ -13688,7 +13743,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="eastus",
-        preserve_default_location=True,
     )
     def test_aks_approuting_update_with_monitoring_addon_enabled(self, resource_group, resource_group_location):
         """This test case exercises updating app routing addon in an AKS cluster with monitoring addon enabled."""
@@ -13761,7 +13815,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="eastus",
-        preserve_default_location=True,
     )
     def test_aks_approuting_zone_add_delete_list(
         self, resource_group, resource_group_location
@@ -13884,7 +13937,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="eastus",
-        preserve_default_location=True,
     )
     def test_aks_approuting_zone_update(self, resource_group, resource_group_location):
         """This test case exercises updating zones to app routing addon in an AKS cluster."""
@@ -14018,8 +14070,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest',
-                                    location='westus2', preserve_default_location=True)
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_create_with_enable_ai_toolchain_operator(self, resource_group,
                                                           resource_group_location):
         # reset the count so in replay mode the random names will start with 0
@@ -14049,8 +14100,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest',
-                                    location='westus2', preserve_default_location=True)
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_update_with_enable_ai_toolchain_operator(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
@@ -14150,7 +14200,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="centraluseuap",
-        preserve_default_location=True,
     )
     def test_aks_create_with_pod_ip_allocation_mode_static_block(
         self, resource_group, resource_group_location
@@ -14245,8 +14294,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
     @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest',
-                                    location='westus2', preserve_default_location=True)
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
     def test_aks_check_network(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
@@ -14563,23 +14611,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_dns_record_cmd)
 
         # create identity
-        create_cluster_idenity_cmd = (
-            "identity create --name {cluster_identity_name} --resource-group {resource_group} -o json"
-        )
-        cluster_idenity = self.cmd(create_cluster_idenity_cmd).get_output_in_json()
-        cluster_identity_id = cluster_idenity["id"]
+        cluster_identity_id = self._get_user_assigned_identity(resource_group)
         assert cluster_identity_id is not None
         self.kwargs.update(
             {
                 "cluster_identity_id": cluster_identity_id,
             }
         )
-        create_kubelet_idenity_cmd = (
-            "identity create --name {kubelet_identity_name} --resource-group {resource_group} -o json"
-        )
-        kubelet_identity = self.cmd(create_kubelet_idenity_cmd).get_output_in_json()
-        kubelet_identity_id = kubelet_identity["id"]
-        kubelet_identity_principal_id = kubelet_identity["principalId"]
+        kubelet_identity_id = self._get_user_assigned_identity(resource_group, use_for_kubelet=True, paired_control_plane_identity=cluster_identity_id)
+        kubelet_identity_principal_id = self._get_principal_id_of_user_assigned_identity(kubelet_identity_id)
         assert kubelet_identity_id is not None
         assert kubelet_identity_principal_id is not None
         self.kwargs.update(
@@ -14698,7 +14738,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         random_name_length=17,
         name_prefix="clitest",
         location="centraluseuap",
-        preserve_default_location=True,
     )
     def test_aks_and_agentpool_with_static_egress_gateway(
         self, resource_group, resource_group_location
