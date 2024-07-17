@@ -780,8 +780,90 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
 
     restore(cmd, vm_name, resource_group_name, copy_disk_name, repair_vm_id, yes=True)
 
-    command.message = 'fstab script has been applied to the source VM. A new repair VM \'{n}\' was created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
+    command.message = 'fstab script with telemtry has been applied to the source VM. A new repair VM \'{n}\' was created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
         'The repairs were complete using the fstab script and the repair VM was then deleted. ' \
+        'The repair disk was restored to the source VM. ' \
+        .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name)
+
+    command.set_status_success()
+    if command.error_stack_trace:
+        logger.debug(command.error_stack_trace)
+    # Generate return object and log errors if needed
+    return_dict = command.init_return_dict()
+
+    logger.info('\n%s\n', command.message)
+
+    return return_dict
+
+
+def repair_button(cmd, vm_name, resource_group_name, button_command, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
+    from datetime import datetime
+    import secrets
+    import string
+
+    # Init command helper object
+    command = command_helper(logger, cmd, 'vm repair repair-and-restore')
+
+    password_length = 30
+    password_characters = string.ascii_lowercase + string.digits + string.ascii_uppercase
+    repair_password = ''.join(secrets.choice(password_characters) for i in range(password_length))
+
+    username_length = 20
+    username_characters = string.ascii_lowercase + string.digits
+    repair_username = ''.join(secrets.choice(username_characters) for i in range(username_length))
+
+    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    repair_vm_name = ('repair-' + vm_name)[:14] + '_'
+    copy_disk_name = vm_name + '-DiskCopy-' + timestamp
+    repair_group_name = 'repair-' + vm_name + '-' + timestamp
+    existing_rg = _check_existing_rg(repair_group_name)
+
+    create_out = create(cmd, vm_name, resource_group_name, repair_password, repair_username, repair_vm_name=repair_vm_name, copy_disk_name=copy_disk_name, repair_group_name=repair_group_name, associate_public_ip=False, yes=True)
+
+    # log create_out
+    logger.info('create_out: %s', create_out)
+
+    repair_vm_name = create_out['repair_vm_name']
+    copy_disk_name = create_out['copied_disk_name']
+    repair_group_name = create_out['repair_resource_group']
+
+    logger.info('Running initrd run command')
+
+    try:
+        run_out = run(cmd, repair_vm_name, repair_group_name, run_id='linux-alar2', parameters=[ button_command, "initiator=SELFHELP"])
+
+    except Exception:
+        command.set_status_error()
+        command.error_stack_trace = traceback.format_exc()
+        command.error_message = "Command failed when running initrd script."
+        command.message = "Command failed when running initrd script."
+        if existing_rg:
+            _clean_up_resources(repair_group_name, confirm=True)
+        else:
+            _clean_up_resources(repair_group_name, confirm=False)
+        return
+
+    # log run_out
+    logger.info('run_out: %s', run_out)
+
+    if run_out['script_status'] == 'ERROR':
+        logger.error('initrd script returned an error.')
+        if existing_rg:
+            _clean_up_resources(repair_group_name, confirm=True)
+        else:
+            _clean_up_resources(repair_group_name, confirm=False)
+        return
+
+    logger.info('Running restore command')
+    show_vm_id = 'az vm show -g {g} -n {n} --query id -o tsv' \
+        .format(g=repair_group_name, n=repair_vm_name)
+
+    repair_vm_id = _call_az_command(show_vm_id)
+
+    restore(cmd, vm_name, resource_group_name, copy_disk_name, repair_vm_id, yes=True)
+
+    command.message = button_command+' script with telemtry has been applied to the source VM. A new repair VM \'{n}\' was created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
+        'The repairs were complete using the initrd script and the repair VM was then deleted. ' \
         'The repair disk was restored to the source VM. ' \
         .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name)
 
