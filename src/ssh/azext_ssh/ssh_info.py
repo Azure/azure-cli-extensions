@@ -88,7 +88,7 @@ class ConfigSession():
     def __init__(self, config_path, resource_group_name, vm_name, ssh_ip,
                  public_key_file, private_key_file, overwrite, use_private_ip,
                  local_user, cert_file, port, resource_type, credentials_folder,
-                 ssh_proxy_folder, ssh_client_folder, yes_without_prompt, resource_tag=None):
+                 ssh_proxy_folder, ssh_client_folder, yes_without_prompt, resource_tag):
         self.config_path = os.path.abspath(config_path)
         self.resource_group_name = resource_group_name
         self.vm_name = vm_name

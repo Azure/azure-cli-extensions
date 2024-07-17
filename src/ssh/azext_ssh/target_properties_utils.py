@@ -38,6 +38,7 @@ def get_properties(cmd, resource_type, resource_group_name, vm_name):
         return _request_arc_server_properties(cmd, resource_group_name, vm_name)
     if resource_type == "microsoft.connectedvmwarevsphere/virtualmachines":
         return _request_connected_vmware_properties(cmd, resource_group_name, vm_name)
+    return None
 
 
 # This function is used to get the properties needed from an Azure VM
@@ -94,6 +95,7 @@ def parse_os_type(properties, resource_type):
     elif resource_type == "microsoft.connectedvmwarevsphere/virtualmachines":
         if properties.get("osProfile") and properties.get("osProfile").get("osType"):
             return properties.get("osProfile").get("osType")
+    return None
 
 
 def parse_agent_version(properties, resource_type):
@@ -115,10 +117,10 @@ def parse_tags(properties, resource_type):
     if resource_type == "microsoft.compute/virtualmachines":
         if properties.tags:
             return properties.tags
-
-    else:
+    elif resource_type == "microsoft.hybridcompute/machines":
         if properties.get('tags'):
             return properties.get('tags')
+    return None
 
 
 # This function is used to check if the OS type is valid and if the authentication options are valid for that OS
@@ -149,15 +151,13 @@ def check_valid_agent_version(agent_version, op_info):
 
 # This function is used to set the resource tags and configure the port number from the resource tag
 def handle_resource_tags_utils(tags, op_info):
-    set_azure_resource_tags(tags, op_info)
-    configure_port_from_resource_tag(op_info)
 
-
-def set_azure_resource_tags(tags, op_info):
     if tags:
         op_info.azure_resource_tags = tags
     else:
         op_info.azure_resource_tags = {}
+
+    configure_port_from_resource_tag(op_info)
 
 
 # This function is used to configure the port number from the resource tag and validate the port number
@@ -173,31 +173,32 @@ def configure_port_from_resource_tag(op_info):
     if op_info.port:
         return
 
-    # Validating the port number and setting the port to the port value from the resource tag
-    def validate_and_set_port(tag_name="SSHPort"):
-        port_num = op_info.azure_resource_tags.get(tag_name)
-        if port_num:
-            try:
-                if isinstance(port_num, str):
-                    port_num = int(port_num)  # Convert to int if it's a string
-                if 1 <= port_num <= 65535:
-                    op_info.port = port_num
-                else:
-                    raise ValueError
-            except (ValueError, TypeError):
-                raise azclierror.InvalidArgumentValueError(
-                    f"Port '{port_num}' from resource tag '{tag_name}' is not supported by this command. "
-                    "Port numbers must not be empty, must not contain letters or special characters, "
-                    "and cannot exceed 65535 port value. Please contact your administrator to correct "
-                    "the resource tag value or use the --port parameter. ")
-
     if op_info.resource_tag:
         if op_info.resource_tag in op_info.azure_resource_tags:
-            validate_and_set_port(op_info.resource_tag)
+            validate_and_set_port(op_info, op_info.resource_tag)
         else:
             raise azclierror.InvalidArgumentValueError(
                 f"Resource tag name '{op_info.resource_tag}' cannot be found. "
                 "Contact your administrator to ensure the tag is valid.")
 
     elif "SSHPort" in op_info.azure_resource_tags:
-        validate_and_set_port()
+        validate_and_set_port(op_info)
+
+
+# Validating the port number and setting the port to the port value from the resource tag
+def validate_and_set_port(op_info, tag_name="SSHPort"):
+    port_num = op_info.azure_resource_tags.get(tag_name)
+    if port_num:
+        try:
+            if isinstance(port_num, str):
+                port_num = int(port_num)  # Convert to int if it's a string
+            if 1 <= port_num <= 65535:
+                op_info.port = port_num
+            else:
+                raise ValueError
+        except (ValueError, TypeError):
+            raise azclierror.InvalidArgumentValueError(
+                f"Port '{port_num}' from resource tag '{tag_name}' is not supported by this command. "
+                "Port numbers must not be empty, must not contain letters or special characters, "
+                "and cannot exceed 65535 port value. Please contact your administrator to correct "
+                "the resource tag value or use the --port parameter. ")

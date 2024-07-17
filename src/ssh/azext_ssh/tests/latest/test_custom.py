@@ -377,7 +377,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_ip.assert_not_called()
         mock_get_mod_exp.assert_called_once_with("public")
         mock_write_cert.assert_called_once_with("certificate", "public-aadcert.pub")
-        mock_op.assert_called_once_with(op_info, False, True)
+        mock_op.assert_called_once_with(op_info, False, True)   
 
     @mock.patch('azext_ssh.custom._check_or_create_public_private_files')
     @mock.patch('azext_ssh.ip_utils.get_ssh_ip')
@@ -386,7 +386,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_op = mock.Mock()
         mock_ip.return_value = "1.2.3.4"
 
-        op_info = ssh_info.ConfigSession("config", "rg", "vm", None, None, None, False, False, "username", None, None, "Microsoft.Compute/virtualMachines", None, None, None, False)
+        op_info = ssh_info.ConfigSession("config", "rg", "vm", None, None, None, False, False, "username", None, None, "Microsoft.Compute/virtualMachines", None, None, None, False, None)
         op_info.public_key_file = "publicfile"
         op_info.private_key_file = "privatefile"
         op_info.cert_file = "cert"
