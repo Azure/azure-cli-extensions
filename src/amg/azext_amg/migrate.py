@@ -7,7 +7,7 @@ from .backup_core import get_all_dashboards, get_all_library_panels, get_all_sna
 logger = get_logger(__name__)
 
 
-def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, override_dashboards, folders_to_include=None, folders_to_exclude=None):
+def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, overwrite, folders_to_include=None, folders_to_exclude=None):
     # get all datasources to be backedup
     all_datasources = get_all_datasources(backup_url, backup_headers)
     all_restore_datasources = get_all_datasources(restore_url, restore_headers)
@@ -15,11 +15,11 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, o
 
     all_folders = get_all_folders(backup_url, backup_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
     all_restore_folders = get_all_folders(restore_url, restore_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
-    folders_created_summary = _migrate_folders(all_folders, all_restore_folders, restore_url, restore_headers, dry_run, override_dashboards)
+    folders_created_summary = _migrate_folders(all_folders, all_restore_folders, restore_url, restore_headers, dry_run, overwrite)
 
     all_dashboards = get_all_dashboards(backup_url, backup_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
     all_library_panels = get_all_library_panels(backup_url, backup_headers)
-    (library_panels_synced_summary, dashboards_synced_summary) = _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels, restore_url, restore_headers, dry_run, override_dashboards)
+    (library_panels_synced_summary, dashboards_synced_summary) = _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels, restore_url, restore_headers, dry_run, overwrite)
 
     # get the list of snapshots to backup
     all_snapshots = get_all_snapshots(backup_url, backup_headers)
@@ -32,7 +32,7 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, o
     sync_status = "will be synced" if dry_run else "synced"
     output = [
         (Style.IMPORTANT, f"\n\nDry run: {dry_run if dry_run else False}\n"),
-        (Style.IMPORTANT, f"Override dashboards: {override_dashboards if override_dashboards else False}\n"),
+        (Style.IMPORTANT, f"Overwrite dashboards, folders, and library panels: {overwrite if overwrite else False}\n"),
     ]
 
     if len(datasources_created_summary) > 0:
@@ -89,7 +89,7 @@ def _migrate_datasources(all_datasources, all_restore_datasources, restore_url, 
     return (datasources_created_summary, datasources_remapped_summary)
 
 
-def _migrate_folders(all_folders, all_restore_folders, restore_url, restore_headers, dry_run, override):
+def _migrate_folders(all_folders, all_restore_folders, restore_url, restore_headers, dry_run, overwrite):
     folders_created_summary = []
     restore_folder_uids = {restore_content['uid'] for (restore_content, _) in all_restore_folders}
     restore_folder_uids = set()
@@ -100,14 +100,14 @@ def _migrate_folders(all_folders, all_restore_folders, restore_url, restore_head
         if content_folder_settings['uid'] not in restore_folder_uids:
             if not dry_run:
                 # TODO: if uids match, but the folder title is different, we should update the folder title.
-                create_folder(restore_url, content_folder_settings, restore_headers, override)
+                create_folder(restore_url, content_folder_settings, restore_headers, overwrite)
             folders_created_summary.append(content_folder_settings['title'])
         else:
             logger.warning("Folder %s already exists, skipping", content_folder_settings['title'])
     return folders_created_summary
 
 
-def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels, restore_url, restore_headers, dry_run, override_dashboards):
+def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels, restore_url, restore_headers, dry_run, overwrite):
     library_panels_synced_summary = {}
     dashboards_synced_summary = {}
 
@@ -118,8 +118,8 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels, r
         library_panel['id'] = None
         if not dry_run:
             # in create_library_panel, it does the patch if the library panel already exists.
-            # TODO: only override, if people say force update.
-            create_library_panel(restore_url, library_panel, restore_headers, override_dashboards)
+            # TODO: only overwrite, if people say force update.
+            create_library_panel(restore_url, library_panel, restore_headers, overwrite)
 
         panel_folder_name = library_panel['meta']['folderName']
         if panel_folder_name not in library_panels_synced_summary:
@@ -129,9 +129,9 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels, r
     # we don't backup provisioned dashboards, so we don't need to restore them
     for dashboard in all_dashboards:
         dashboard['dashboard']['id'] = None
-        # Override takes care of delete & create.
+        # Overwrite takes care of delete & create.
         if not dry_run:
-            create_dashboard(restore_url, dashboard, restore_headers, override_dashboards)
+            create_dashboard(restore_url, dashboard, restore_headers, overwrite)
 
         folder_title = dashboard['meta']['folderTitle']
         if folder_title not in dashboards_synced_summary:

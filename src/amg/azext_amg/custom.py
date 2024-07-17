@@ -297,7 +297,7 @@ def restore_grafana(cmd, grafana_name, archive_file, components=None, remap_data
             destination_datasources=data_sources)
 
 
-def migrate_grafana(cmd, grafana_name, source_instance_ip, source_instance_token, dry_run=False, override=False, folders_to_include=None,
+def migrate_grafana(cmd, grafana_name, source_instance_ip, source_instance_token, dry_run=False, overwrite=False, folders_to_include=None,
                    folders_to_exclude=None, resource_group_name=None):
     import os
     from pathlib import Path
@@ -322,7 +322,7 @@ def migrate_grafana(cmd, grafana_name, source_instance_ip, source_instance_token
             restore_url=_get_grafana_endpoint(cmd, resource_group_name, grafana_name, subscription=None),
             restore_headers=headers_dest,
             dry_run=dry_run,
-            override_dashboards=override,
+            overwrite=overwrite,
             folders_to_include=folders_to_include,
             folders_to_exclude=folders_to_exclude)
 

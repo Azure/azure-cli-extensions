@@ -89,14 +89,14 @@ def _load_and_create_dashboard(grafana_url, file_path, http_headers):
     content = json.loads(data)
     content['dashboard']['id'] = None
     
-    create_dashboard(grafana_url, content, http_headers, override=True)
+    create_dashboard(grafana_url, content, http_headers, overwrite=True)
 
 
-def create_dashboard(grafana_url, content, http_headers, override=True):
+def create_dashboard(grafana_url, content, http_headers, overwrite):
     payload = {
         'dashboard': content['dashboard'],
         'folderId': get_folder_id(content, grafana_url, http_post_headers=http_headers),
-        'overwrite': override
+        'overwrite': overwrite
     }
 
     datasources_missed = set()
@@ -119,10 +119,10 @@ def _load_and_create_library_panel(grafana_url, file_path, http_headers):
     payload = json.loads(data)
     payload['id'] = None
 
-    create_library_panel(grafana_url, payload, http_headers, override=True)
+    create_library_panel(grafana_url, payload, http_headers, overwrite=True)
 
 
-def create_library_panel(grafana_url, payload, http_headers, override):
+def create_library_panel(grafana_url, payload, http_headers, overwrite):
     # set the folder id of the library panel
     payload['folderId'] = get_folder_id(payload, grafana_url, http_post_headers=http_headers)
 
@@ -132,8 +132,8 @@ def create_library_panel(grafana_url, payload, http_headers, override):
     panel_name = payload.get('name', '')
 
     (status, content) = send_grafana_post(f'{grafana_url}/api/library-elements', json.dumps(payload), http_headers)
-    # only patch if override is true.
-    if status >= 400 and ('name or UID already exists' in content.get('message', '')) and override:
+    # only patch if overwrite is true.
+    if status >= 400 and ('name or UID already exists' in content.get('message', '')) and overwrite:
         uid = payload['uid']
         panel_uri = f'{grafana_url}/api/library-elements/{uid}'
         (status, content) = send_grafana_get(panel_uri, http_headers)
@@ -148,7 +148,7 @@ def create_library_panel(grafana_url, payload, http_headers, override):
                                                    json.dumps(patch_payload), http_headers)
 
         print_styled_text([
-            (Style.WARNING, f'Override library panel {panel_name}: '),
+            (Style.WARNING, f'Overwrite library panel {panel_name}: '),
             (Style.SUCCESS, 'SUCCESS') if status == 200 else (Style.ERROR, 'FAILURE')
         ])
 
@@ -191,11 +191,11 @@ def _load_and_create_folder(grafana_url, file_path, http_headers):
         data = f.read()
 
     folder = json.loads(data)
-    create_folder(grafana_url, folder, http_headers, override=True)
+    create_folder(grafana_url, folder, http_headers, overwrite=True)
 
 
-def create_folder(grafana_url, folder, http_headers, override):
-    folder["overwrite"] = override
+def create_folder(grafana_url, folder, http_headers, overwrite):
+    folder["overwrite"] = overwrite
 
     content = json.dumps(folder)
     result = send_grafana_post(f'{grafana_url}/api/folders', content, http_headers)
