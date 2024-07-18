@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.7.4
+++++++
+* Upgrading to v0.2.1 of ArcK8sDiagnoser
+* Fix Style and Linter issues.
+
 1.7.3
 ++++++
 * Skip helm archive download if helm is already installed.
