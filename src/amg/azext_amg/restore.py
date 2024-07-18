@@ -104,11 +104,22 @@ def create_dashboard(grafana_url, content, http_headers, overwrite):
 
     result = send_grafana_post(f'{grafana_url}/api/dashboards/db', json.dumps(payload), http_headers)
     dashboard_title = content['dashboard'].get('title', '')
-    print_styled_text([
+
+    to_print = [
         (Style.WARNING, f'Create dashboard {dashboard_title}: '),
         (Style.SUCCESS, 'SUCCESS') if result[0] == 200 else (Style.ERROR, 'FAILURE')
-    ])
+    ]
+    if result[0] == 412:
+        to_print.append((Style.ERROR, ' (version mismatch, please enable --overwrite if you want to overwrite it)'))
+
+    print_styled_text(to_print)
     logger.info("status: %s, msg: %s", result[0], result[1])
+    return result[0] == 200
+
+
+def check_dashboard_exists(grafana_url, payload, http_headers):
+    result = send_grafana_get(f'{grafana_url}/api/dashboards/uid/{payload["dashboard"]["uid"]}', http_headers)
+    return result[0] == 200
 
 
 # Restore Library Panel

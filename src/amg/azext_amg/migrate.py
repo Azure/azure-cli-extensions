@@ -1,7 +1,7 @@
 from knack.log import get_logger
 from azure.cli.core.style import print_styled_text, Style
 
-from .restore import create_dashboard, create_folder, create_library_panel, create_snapshot, create_annotation, create_datasource, set_uid_mapping, check_folder_exists
+from .restore import create_dashboard, create_folder, create_library_panel, create_snapshot, create_annotation, create_datasource, set_uid_mapping, check_folder_exists, check_library_panel_exists, check_dashboard_exists
 from .backup_core import get_all_dashboards, get_all_library_panels, get_all_snapshots, get_all_folders, get_all_annotations, get_all_datasources
 
 logger = get_logger(__name__)
@@ -19,7 +19,7 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, o
 
     all_dashboards = get_all_dashboards(backup_url, backup_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
     all_library_panels = get_all_library_panels(backup_url, backup_headers)
-    (library_panels_created_summary, library_panels_overwrote_summary, dashboards_synced_summary) = _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels, restore_url, restore_headers, dry_run, overwrite)
+    (library_panels_created_summary, library_panels_overwrote_summary, dashboards_created_summary, dashboards_overwrote_summary) = _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels, restore_url, restore_headers, dry_run, overwrite)
 
     # get the list of snapshots to backup
     all_snapshots = get_all_snapshots(backup_url, backup_headers)
@@ -60,16 +60,23 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, o
         output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
         output.append((Style.SECONDARY, "\n        ".join(panels)))
 
-    output.append((Style.SUCCESS, f"\n\nDashboards {dry_run_status}updated:"))
-    for folder, dashboards in dashboards_synced_summary.items():
+    output.append((Style.SUCCESS, f"\n\nDashboards {dry_run_status}created:"))
+    for folder, dashboards in dashboards_created_summary.items():
         output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
         output.append((Style.SECONDARY, "\n        ".join(dashboards)))
 
+    output.append((Style.SUCCESS, f"\n\nDashboards {dry_run_status}overwrote:"))
+    for folder, dashboards in dashboards_overwrote_summary.items():
+        output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
+        output.append((Style.SECONDARY, "\n        ".join(dashboards)))
+
+    # TODO: I think the snapshots auto overwrites. Need to check. It doesn't create new ones.
     output.append((Style.SUCCESS, f"\n\nSnapshots {dry_run_status}updated:"))
     for folder, snapshots in snapshots_synced_summary.items():
         output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
         output.append((Style.SECONDARY, "\n        ".join(snapshots)))
 
+    # TODO: check if annotations auto overwrites.
     output.append((Style.SUCCESS, f"\n\nAnnotations {dry_run_status}updated (by id):"))
     output.append((Style.PRIMARY, "\n    " + "\n    ".join(annotations_synced_summary)))
 
@@ -133,13 +140,14 @@ def _migrate_folders(all_folders, all_restore_folders, restore_url, restore_head
 def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels, restore_url, restore_headers, dry_run, overwrite):
     library_panels_created_summary = {}
     library_panels_overwrote_summary = {}
-    dashboards_synced_summary = {}
+    dashboards_created_summary = {}
+    dashboards_overwrote_summary = {}
 
     library_panels_uids_to_update = _get_all_library_panels_uids_from_dashboards(all_dashboards)
     # only update the library panels that are not included / excluded.
     all_library_panels_filtered = [panel for panel in all_library_panels if panel['uid'] in library_panels_uids_to_update]
     for library_panel in all_library_panels_filtered:
-        exists_before = check_folder_exists(restore_url, library_panel, restore_headers)
+        exists_before = check_library_panel_exists(restore_url, library_panel, restore_headers)
 
         library_panel['id'] = None
         if not dry_run:
@@ -162,17 +170,27 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels, r
 
     # we don't backup provisioned dashboards, so we don't need to restore them
     for dashboard in all_dashboards:
+        exists_before = check_dashboard_exists(restore_url, dashboard, restore_headers)
+
         dashboard['dashboard']['id'] = None
         # Overwrite takes care of delete & create.
         if not dry_run:
-            create_dashboard(restore_url, dashboard, restore_headers, overwrite)
+            is_successful = create_dashboard(restore_url, dashboard, restore_headers, overwrite)
+        else:
+            is_successful = True
 
-        folder_title = dashboard['meta']['folderTitle']
-        if folder_title not in dashboards_synced_summary:
-            dashboards_synced_summary[folder_title] = []
-        dashboards_synced_summary[folder_title].append(dashboard['dashboard']['title'])
+        if is_successful:
+            folder_title = dashboard['meta']['folderTitle']
+            if exists_before:
+                if folder_title not in dashboards_overwrote_summary:
+                    dashboards_overwrote_summary[folder_title] = []
+                dashboards_overwrote_summary[folder_title].append(dashboard['dashboard']['title'])
+            else:
+                if folder_title not in dashboards_created_summary:
+                    dashboards_created_summary[folder_title] = []
+                dashboards_created_summary[folder_title].append(dashboard['dashboard']['title'])
 
-    return (library_panels_created_summary, library_panels_overwrote_summary, dashboards_synced_summary)
+    return (library_panels_created_summary, library_panels_overwrote_summary, dashboards_created_summary, dashboards_overwrote_summary)
 
 
 def _get_all_library_panels_uids_from_dashboards(all_dashboards):
