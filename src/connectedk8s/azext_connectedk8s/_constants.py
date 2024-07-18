@@ -232,6 +232,7 @@ Outbound_Network_Connectivity_Check = "outbound_network_connectivity_check.txt"
 Outbound_Network_Connectivity_Check_for_onboarding = "outbound_network_connectivity_check_for_onboarding.txt"
 Outbound_Network_Connectivity_Check_for_cluster_connect = "outbound_network_connectivity_check_for_cluster_connect.txt"
 Events_of_Incomplete_Diagnoser_Job = "diagnoser_failure_events.txt"
+
 # Connect Precheck Diagnoser constants
 Cluster_Diagnostic_Checks_Job_Registry_Path = \
     "mcr.microsoft.com/azurearck8s/helmchart/stable/clusterdiagnosticchecks:0.2.1"
@@ -251,6 +252,7 @@ Cluster_Diagnostic_Prechecks_Failed = "Cluster diagnostic prechecks failed"
 Cluster_Diagnostic_Prechecks_Incomplete = "Cluster diagnostic prechecks failed to complete"
 Cluster_Diagnostic_Checks_Pod_Description_Save_Failed = 'Failed to save cluster diagnostic checks pod description'
 Cluster_Diagnostic_Checks_Job_Log_Save_Failed = 'Failed to save cluster diagnostic checks job log'
+
 # Diagnostic Results Name
 Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity"
 Outbound_Connectivity_Check_Failed_For_Cluster_Connect = \

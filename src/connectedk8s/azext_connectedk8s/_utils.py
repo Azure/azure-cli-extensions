@@ -60,7 +60,7 @@ def validate_connect_rp_location(cmd, location):
         providerDetails = resourceClient.get('Microsoft.Kubernetes')
     except Exception as e:  # pylint: disable=broad-except
         arm_exception_handler(e, consts.Get_ResourceProvider_Fault_Type, 'Failed to fetch resource provider details')
-    
+
     for resourceTypes in providerDetails.resource_types:
         if resourceTypes.resource_type == 'connectedClusters':
             rp_locations = [location.replace(" ", "").lower() for location in resourceTypes.locations]
@@ -1061,6 +1061,7 @@ def get_metadata(arm_endpoint, api_version="2022-09-01"):
         print(msg, file=sys.stderr)
         print(f"Please ensure you have network connection. Error: {str(err)}", file=sys.stderr)
         arm_exception_handler(err, msg)
+
 
 def get_utctimestring():
     return time.strftime("%Y-%m-%dT%H-%M-%SZ", time.gmtime())

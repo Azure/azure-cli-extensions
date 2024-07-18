@@ -59,7 +59,7 @@ logger = get_logger(__name__)
 # pylint: disable=too-many-locals
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-statements
-# pylint: disable=line-too-long 
+# pylint: disable=line-too-long
 
 
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlation_id=None, https_proxy="",
@@ -98,7 +98,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         else get_subscription_id(cmd.cli_ctx)
     if custom_token_passed is True:
         onboarding_tenant_id = os.getenv('AZURE_TENANT_ID')
-    else:   
+    else:
         account = Profile().get_subscription(subscription_id)
         onboarding_tenant_id = account['homeTenantId']
 
@@ -265,8 +265,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     if lowbandwidth is False:
         print("Step: {}: The required pre-checks for onboarding have succeeded.".format(utils.get_utctimestring()))
     else:
-        print("Step: {}: Skipped onboarding pre-checks for AKS-HCI low bandwidth scenario. "\
-            "Continuing...".format(utils.get_utctimestring()))
+        print("Step: {}: Skipped onboarding pre-checks for AKS-HCI low bandwidth scenario. "
+              "Continuing...".format(utils.get_utctimestring()))
 
     if not required_node_exists:
         telemetry.set_user_fault()
@@ -497,7 +497,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
     put_cc_response = LongRunningOperation(cmd.cli_ctx)(put_cc_response)
     print("Step: {}: Azure resource provisioning has finished.".format(utils.get_utctimestring()))
-    
+
     # Checking if custom locations rp is registered and fetching oid if it is registered
     enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id)
 
@@ -511,7 +511,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                helm_client_location, enable_private_link, arm_metadata,
                                onboarding_timeout, container_log_path)
     print("Step: {}: Helm install of Azure arc agents Release ended.".format(utils.get_utctimestring()))
-    
+
     return put_cc_response
 
 
@@ -1138,7 +1138,7 @@ def delete_connectedk8s(cmd, client, resource_group_name, cluster_name, kube_con
 
     # Deleting the azure-arc agents
     utils.delete_arc_agents(release_namespace, kube_config, kube_context, helm_client_location, is_arm64_cluster)
-    
+
     print("Step: {}: Delete of Connected Cluster ended.".format(utils.get_utctimestring()))
 
 
@@ -2574,8 +2574,8 @@ def client_side_proxy(cmd,
 
 
 def check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id):
-    print("Step: {}: Checking Microsoft.ExtendedLocation RP Registration state for this Subscription, and get OID, " \
-        "if registered ".format(utils.get_utctimestring()))
+    print("Step: {}: Checking Microsoft.ExtendedLocation RP Registration state for this Subscription, and get OID, "
+          "if registered ".format(utils.get_utctimestring()))
     enable_custom_locations = True
     custom_locations_oid = ""
     try:

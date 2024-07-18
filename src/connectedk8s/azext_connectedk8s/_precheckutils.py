@@ -6,13 +6,14 @@
 import os
 import shutil
 import subprocess
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
 import time
+import datetime
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 import json
-from kubernetes import client, config, watch, utils
+from kubernetes import client as kubeclient, config, watch, utils
 from knack.util import CLIError
 from knack.log import get_logger
 from knack.prompting import NoTTYException, prompt_y_n
@@ -25,7 +26,6 @@ from msrest.exceptions import ValidationError as MSRestValidationError
 from kubernetes.client.rest import ApiException
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as azext_utils
-from kubernetes import client as kube_client
 from azure.cli.core import get_default_cli
 from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, \
     AzureResponseError, AzureInternalError, ValidationError
@@ -34,11 +34,6 @@ from pydoc import cli
 from logging import exception
 import yaml
 import json
-import datetime
-from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
-import shutil
-from knack.log import get_logger
-from azure.cli.core import telemetry
 import azext_connectedk8s._constants as consts
 logger = get_logger(__name__)
 # pylint: disable=unused-argument, too-many-locals, too-many-branches, too-many-statements, line-too-long
@@ -164,7 +159,7 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
                                                 consts.Pre_Onboarding_Helm_Charts_Release_Name, False)
 
         print("Step: {}: Chart path for Cluster Diagnostic Checks Job: {}".format(azext_utils.get_utctimestring(),
-                                                                                chart_path))
+                                                                                  chart_path))
         print("Step: {}: Creating Cluster Diagnostic Checks job".format(azext_utils.get_utctimestring()))
         helm_install_release_cluster_diagnostic_checks(chart_path, location, http_proxy, https_proxy, no_proxy,
                                                        proxy_cert, azure_cloud, kube_config, kube_context,
@@ -176,7 +171,7 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
         is_job_scheduled = False
         # To watch for changes in pods' states till it reach completed state or exit if it takes more than 180 seconds
         for job in w.stream(batchv1_api_instance.list_namespaced_job, namespace='azure-arc-release',
-                              label_selector="", timeout_seconds=60):
+                            label_selector="", timeout_seconds=60):
             logger.debug("Watching Cluster Diagnostic Checks Job to reach completed state")
             try:
                 # Checking if job get scheduled or not
@@ -184,19 +179,17 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
                     is_job_scheduled = True
 
                 if job["object"].metadata.name == "cluster-diagnostic-checks-job":
-                    if job["object"].status.failed != None and job["object"].status.failed >= 3:
+                    if job["object"].status.failed is not None and job["object"].status.failed >= 3:
                         logger.debug("Cluster Diagnostic Checks job Failed")
                         w.stop()
                         break
-                    elif job["object"].status.conditions != None and \
+                    elif job["object"].status.conditions is not None and \
                         job["object"].status.conditions[0].type == "Complete":
-                            is_job_complete = True
-                            logger.debug("Cluster Diagnostic Checks Job reached completed state")
-                            w.stop()
+                        is_job_complete = True
+                        logger.debug("Cluster Diagnostic Checks Job reached completed state")
+                        w.stop()
             except Exception:
                 logger.debug("Caught Exception, executing Cluster Diagnostic Checks job: ", Exception)
-                continue
-            else:
                 continue
 
         # If job is not completed then we will save the pod description for debugging
@@ -217,7 +210,8 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
             logger.debug("Cluster diagnostic Job couldn't be scheduled.  Deleting the helm release in the cluster")
             Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
             return
-        elif (is_job_scheduled is True and is_job_complete is False):
+
+        if (is_job_scheduled is True and is_job_complete is False):
             # Job was scheduled successfully, but didn't complete. We will fetch the logs and delete helm release.
             logger.debug("Cluster Diagnostic Checks Job Failed.  Fetch results and delete Helm release in the cluster")
 
@@ -268,7 +262,7 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
                 fault_type=consts.Cluster_Diagnostic_Checks_Job_Not_Complete,
                 summary="Couldn't complete Cluster Diagnostic Checks Job after scheduling in the cluster")
             logger.warning("Cluster diagnostics job didn't reach completed state in the kubernetes cluster. The "
-                            "possible reasons can be resource constraints on the cluster.\n")
+                           "possible reasons can be resource constraints on the cluster.\n")
 
         # Clearing all the resources after fetching the cluster diagnostic checks container logs
         Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
