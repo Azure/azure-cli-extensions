@@ -779,7 +779,7 @@ class ContainerappEnvLocationNotInStageScenarioTest(ScenarioTest):
 
         logs_workspace_id = self.cmd('monitor log-analytics workspace create -g {} -n {} -l eastus'.format(resource_group, logs_workspace_name)).get_output_in_json()["customerId"]
         logs_workspace_key = self.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
-
+        # create env with log-analytics
         self.cmd('containerapp env create -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
 
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
@@ -793,9 +793,19 @@ class ContainerappEnvLocationNotInStageScenarioTest(ScenarioTest):
             JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
             JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.customerId', logs_workspace_id),
         ])
+        # update env log destination to none
+        self.cmd('containerapp env update -g {} -n {} --logs-destination none'.format(resource_group, env_name), checks=[
+            JMESPathCheck('properties.appLogsConfiguration.destination', None),
+        ])
+        # update env log destination from log-analytics to none
+        self.cmd('containerapp env update -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key), checks=[
+            JMESPathCheck('properties.appLogsConfiguration.destination', "log-analytics"),
+            JMESPathCheck('properties.appLogsConfiguration.logAnalyticsConfiguration.customerId', logs_workspace_id),
+        ])
 
         storage_account_name = self.create_random_name(prefix='cappstorage', length=24)
         storage_account = self.cmd('storage account create -g {} -n {} --https-only'.format(resource_group, storage_account_name)).get_output_in_json()["id"]
+        # update env log destination from none to azure-monitor
         self.cmd('containerapp env update -g {} -n {} --logs-destination azure-monitor --storage-account {}'.format(resource_group, env_name, storage_account))
 
         env = self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
@@ -806,14 +816,14 @@ class ContainerappEnvLocationNotInStageScenarioTest(ScenarioTest):
         diagnostic_settings = self.cmd('monitor diagnostic-settings show --name diagnosticsettings --resource {}'.format(env["id"])).get_output_in_json()
 
         self.assertEqual(storage_account in diagnostic_settings["storageAccountId"], True)
-
+        # update env log destination from azure-monitor to none
         self.cmd('containerapp env update -g {} -n {} --logs-destination none'.format(resource_group, env_name))
 
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[
             JMESPathCheck('name', env_name),
             JMESPathCheck('properties.appLogsConfiguration.destination', None),
         ])
-
+        # update env log destination from none to log-analytics
         self.cmd('containerapp env update -g {} -n {} --logs-workspace-id {} --logs-workspace-key {} --logs-destination log-analytics'.format(resource_group, env_name, logs_workspace_id, logs_workspace_key))
 
         self.cmd('containerapp env show -n {} -g {}'.format(env_name, resource_group), checks=[

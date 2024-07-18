@@ -22,9 +22,9 @@ class Start(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-20-preview",
+        "version": "2024-04-10",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstances/{}/start", "2023-07-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstances/{}/start", "2024-04-10"],
         ]
     }
 
@@ -140,7 +140,7 @@ class Start(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-20-preview",
+                    "api-version", "2024-04-10",
                     required=True,
                 ),
             }
@@ -215,6 +215,9 @@ class _StartHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZObjectType(
+            flags={"read_only": True},
+        )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )

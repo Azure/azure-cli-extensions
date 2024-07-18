@@ -3,6 +3,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long, broad-except, logging-format-interpolation
 
 
 from knack.log import get_logger
@@ -140,7 +141,7 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
             return self.client.list_files(
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
-                path=self.get_argument_path(), 
+                path=self.get_argument_path(),
                 session_pool_endpoint=self.get_sessionpool_endpoint())
         except Exception as e:
             handle_raw_exception(e)
@@ -150,7 +151,7 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
             return self.client.delete_file(
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
-                filename=self.get_argument_filename(), 
+                filename=self.get_argument_filename(),
                 session_pool_endpoint=self.get_sessionpool_endpoint(),
                 no_wait=self.get_argument_no_wait())
         except Exception as e:
