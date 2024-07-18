@@ -25,6 +25,10 @@ from knack.log import get_logger
 from msrestazure.tools import is_valid_resource_id
 from .BastionServiceConstants import BastionSku
 from .aaz.latest.network.bastion import Create as _BastionCreate
+from azure.identity import AzureCliCredential
+from azure.mgmt.resourcegraph import ResourceGraphClient
+from azure.mgmt.compute import ComputeManagementClient
+from azure.mgmt.resourcegraph.models import QueryRequest
 
 
 logger = get_logger(__name__)
@@ -288,6 +292,54 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
             launch_and_wait(command)
             tunnel_server.cleanup()
         else:
+            # Authenticate using Azure CLI
+            credential = AzureCliCredential()
+
+            # Subscription ID
+            subscription_id = "1ab4107d-2306-43ab-a9e0-b55b8cd8c345"
+
+            # Resource Group and VM name
+            resource_group_name = "testtej-rg"
+            vm_name = "windowsvmtestin1"
+
+            # Initialize Resource Graph client
+            resource_graph_client = ResourceGraphClient(credential)
+
+            # Query to get the VM resource
+            query = f"""
+            Resources
+            | where type == 'microsoft.compute/virtualmachines'
+            | where name == '{vm_name}'
+            | project id, name, resourceGroup
+            """
+
+            query_request = QueryRequest(
+                subscriptions=[subscription_id],
+                query=query
+            )
+
+            query_response = resource_graph_client.resources(query_request)
+
+            # Extract the VM ID from the query response
+            vm_id = None
+            for result in query_response.data:
+                if result['name'] == vm_name and result['resourceGroup'] == resource_group_name:
+                    vm_id = result['id']
+                    break
+
+            if vm_id:
+                # Initialize Compute Management client
+                compute_client = ComputeManagementClient(credential, subscription_id)
+
+                # Get the VM instance
+                vm_instance = compute_client.virtual_machines.get(resource_group_name, vm_name)
+
+                # Retrieve the hostname from the OS profile
+                hostname = vm_instance.os_profile.computer_name
+                print("Hostname:", hostname)
+            else:
+                print(f"VM {vm_name} not found in resource group {resource_group_name}.")
+
             access_token = Profile(cli_ctx=cmd.cli_ctx).get_raw_token()[0][2].get("accessToken")
             logger.debug("Response %s", access_token)
             web_address = f"https://{bastion_endpoint}/api/rdpfile?resourceId={target_resource_id}&format=rdp" \
