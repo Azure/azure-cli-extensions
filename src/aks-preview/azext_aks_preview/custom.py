@@ -2524,10 +2524,6 @@ def aks_get_versions(cmd, client, location):    # pylint: disable=unused-argumen
     return client.list_kubernetes_versions(location)
 
 
-def aks_get_os_options(cmd, client, location):    # pylint: disable=unused-argument
-    return client.get_os_options(location, resource_type='managedClusters')
-
-
 def get_aks_custom_headers(aks_custom_headers=None):
     headers = {}
     if aks_custom_headers is not None:
