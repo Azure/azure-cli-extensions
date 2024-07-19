@@ -66,8 +66,37 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             if version > min_version and version < max_version:
                 return version
         return ""
+    
+    def _get_first_non_LTS_supported_higher_version(self, location: str, input_version: str) -> str:
+        """Return the first non-LTS version which is greater than the given version."""
+        data = self.cmd(
+            "az aks get-versions -l {}".format(
+                location
+            )
+        ).get_output_in_json()
 
-    def _get_lts_version(self, location):
+        supported_versions = []
+        for version_block in data.get("values", []):
+            caps = version_block.get("capabilities", {})
+            sps = caps.get("supportPlan", [])
+            isSupportedNonLTSVersion = True
+            for sp in sps:
+                if sp == "AKSLongTermSupport":
+                    isSupportedNonLTSVersion = False
+                    break
+            if isSupportedNonLTSVersion:
+                supported_versions.append(version_block.get("version", ""))
+                
+        # remove empty strings
+        supported_versions = [x for x in supported_versions if x]
+        # sort by semantic version, from oldest to newest
+        supported_versions = sorted(supported_versions, key=version_to_tuple, reverse=False)
+        for v in supported_versions:
+            if v > input_version:
+                return v
+        return ""
+
+    def _get_latest_lts_version(self, location):
         """Return the latest LTS version in the given location."""
         data = self.cmd(
             "az aks get-versions -l {}".format(
@@ -3371,7 +3400,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
         aks_name = self.create_random_name("cliakstest", 16)
-        lst_version = self._get_lts_version(resource_group_location)
+        lst_version = self._get_latest_lts_version(resource_group_location)
         self.kwargs.update(
             {
                 "resource_group": resource_group,
@@ -12857,7 +12886,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
         aks_name = self.create_random_name("cliakstest", 16)
-        lst_version = self._get_lts_version(resource_group_location)
+        lst_version = self._get_latest_lts_version(resource_group_location)
         self.kwargs.update(
             {
                 "resource_group": resource_group,
@@ -12897,7 +12926,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     def test_aks_update_with_premium_sku(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
         self.test_resources_count = 0
-        lst_version = self._get_lts_version(resource_group_location)
+        lst_version = self._get_latest_lts_version(resource_group_location)
         aks_name = self.create_random_name("cliakstest", 16)
         self.kwargs.update(
             {
@@ -14689,6 +14718,69 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # delete
         self.cmd(
             'aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
+
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_create_with_tier_switch(self, resource_group, resource_group_location):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        aks_name = self.create_random_name("cliakstest", 16)
+        lts_version = "1.27"
+        non_lts_version = self._get_first_non_LTS_supported_higher_version(resource_group_location, lts_version)
+
+        if non_lts_version == "" or lts_version == "":
+            # no version meet test requirements, skip
+            return        
+
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "location": resource_group_location,
+                "k8s_version": lts_version,
+                "upgrade_k8s_version": non_lts_version,
+            }
+        )
+
+        # create LTS cluster
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --tier premium --k8s-support-plan AKSLongTermSupport -k {k8s_version}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("sku.name", "Base"),
+                self.check("sku.tier", "Premium"),
+                self.check("supportPlan", "AKSLongTermSupport"),
+            ],
+        )
+
+        # upgrade to next supported version and disable LTS
+        upgrade_cmd = (
+            "aks upgrade --resource-group={resource_group} --name={name} "
+            "--tier standard --k8s-support-plan KubernetesOfficial -k {upgrade_k8s_version} --yes"
+        )
+
+        self.cmd(
+            upgrade_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("sku.tier", "Standard"),
+                self.check("supportPlan", "KubernetesOfficial"),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(

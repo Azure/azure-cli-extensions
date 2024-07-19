@@ -13,6 +13,10 @@ Pending
 +++++++
 * Update the minimum required cli core version to `2.61.0`.
 
+7.0.0b2
+++++++++
+* Add options `--tier` and `--k8s-support-plan` to `az aks upgrade` command to support enable/disable AKSLongTermSupport with upgrade operation.
+
 7.0.0b1
 ++++++++
 * [BREAKING CHANGE]: Remove support for `az aks get-os-options` command.
