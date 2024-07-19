@@ -416,7 +416,7 @@ class MysqlFlexibleHandler(TargetHandler):
                 telemetry.set_exception(ex, "Connect-Db-Close-Fail")
                 raise ex from e
 
-    def get_connection_string(self):
+    def get_connection_string(self, dbname):
         password = run_cli_cmd(
             'az account get-access-token --resource-type oss-rdbms').get('accessToken')
 
@@ -606,7 +606,7 @@ class SqlHandler(TargetHandler):
                 self.ip = search_ip.group(1)
             raise AzureConnectionError("Fail to connect sql." + str(e)) from e
 
-    def get_connection_string(self):
+    def get_connection_string(self, dbname):
         token_bytes = run_cli_cmd(
             'az account get-access-token --output json --resource https://database.windows.net/').get('accessToken').encode('utf-16-le')
 
@@ -710,7 +710,8 @@ class PostgresFlexHandler(TargetHandler):
 
         try:
             logger.warning("Connecting to database...")
-            self.create_aad_user_in_pg(connection_string, query_list)
+            self.create_aad_user_in_pg(connection_string, query_list[0:1])
+            self.create_aad_user_in_pg(self.get_connection_string(self.dbname), query_list[1:])
         except AzureConnectionError as e:
             logger.warning(e)
             if 'password authentication failed' in str(e):
@@ -801,8 +802,6 @@ class PostgresFlexHandler(TargetHandler):
 
         conn.autocommit = True
         cursor = conn.cursor()
-        logger.warning("Adding new Microsoft Entra user %s to database...",
-                       self.aad_username)
         for execution_query in query_list:
             if execution_query:
                 try:
@@ -816,13 +815,13 @@ class PostgresFlexHandler(TargetHandler):
         cursor.close()
         conn.close()
 
-    def get_connection_string(self):
+    def get_connection_string(self, dbname="postgres"):
         password = run_cli_cmd(
             'az account get-access-token --resource-type oss-rdbms').get('accessToken')
 
         # extension functions require the extension to be available, which is the case for postgres (default) database.
-        conn_string = "host={} user='{}' dbname=postgres password={} sslmode=require".format(
-            self.host, self.admin_username, password)
+        conn_string = "host={} user='{}' dbname={} password={} sslmode=require".format(
+            self.host, self.admin_username, dbname, password)
         return conn_string
 
     def get_create_query(self):
@@ -840,7 +839,10 @@ class PostgresFlexHandler(TargetHandler):
             'GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "{}";'.format(
                 self.aad_username),
             'GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO "{}";'.format(
-                self.aad_username)]
+                self.aad_username),
+            'GRANT CREATE ON SCHEMA public TO "{}";'.format(
+                self.aad_username)
+        ]
 
 
 class PostgresSingleHandler(PostgresFlexHandler):
@@ -921,7 +923,7 @@ class PostgresSingleHandler(PostgresFlexHandler):
                 logger.warning(
                     "Can't remove firewall rule %s. Please manually delete it to avoid security issue. %s", ip_name, str(e))
 
-    def get_connection_string(self):
+    def get_connection_string(self, dbname):
         password = run_cli_cmd(
             'az account get-access-token --resource-type oss-rdbms').get('accessToken')
 
