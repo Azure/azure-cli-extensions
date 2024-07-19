@@ -39,7 +39,7 @@ def _perform_continuous_patch_operation(cmd,
 
     logger.debug('validations completed successfully.')
     if dryrun:
-        acr_cssc_dry_run(cmd, registry=registry, config_file_path=config)
+        acr_cssc_dry_run(cmd, registry=registry, config_file_path=config, is_create=is_create)
     else:
         create_update_continuous_patch_v1(cmd, registry, config, cadence, dryrun, defer_immediate_run, is_create)
 
@@ -53,12 +53,7 @@ def create_acrcssc(cmd,
                    dryrun=False,
                    defer_immediate_run=False):
     '''Create a continuous patch task in the registry.'''
-    logger.debug("Entering create_acrcssc with parameters: %s %s %s %s %s",
-                 registry_name,
-                 workflow_type,
-                 config,
-                 cadence,
-                 dryrun)
+    logger.debug(f"Entering create_acrcssc with parameters: {registry_name} {workflow_type} {config} {cadence} {dryrun}")
     _perform_continuous_patch_operation(cmd,
                                         resource_group_name,
                                         registry_name,
@@ -78,13 +73,7 @@ def update_acrcssc(cmd,
                    dryrun=False,
                    defer_immediate_run=False):
     '''Update a continuous patch task in the registry.'''
-    logger.debug('Entering update_acrcssc with parameters: %s %s %s %s %s %s',
-                 registry_name,
-                 workflow_type,
-                 config,
-                 cadence,
-                 dryrun,
-                 defer_immediate_run)
+    logger.debug(f'Entering update_acrcssc with parameters: {registry_name} {workflow_type} {config} {cadence} {dryrun} {defer_immediate_run}')
     _perform_continuous_patch_operation(cmd,
                                         resource_group_name,
                                         registry_name,
@@ -100,7 +89,7 @@ def delete_acrcssc(cmd,
                    registry_name,
                    workflow_type):
     '''Delete a continuous patch task in the registry.'''
-    logger.debug("Entering delete_acrcssc with parameters: %s %s %s", resource_group_name, registry_name, workflow_type)
+    logger.debug(f"Entering delete_acrcssc with parameters: {resource_group_name} {registry_name} {workflow_type}")
 
     validate_task_type(workflow_type)
     acr_client_registries = cf_acr_registries(cmd.cli_ctx, None)
@@ -119,7 +108,7 @@ def show_acrcssc(cmd,
                  registry_name,
                  workflow_type):
     '''Show a continuous patch task in the registry.'''
-    logger.debug('Entering show_acrcssc with parameters: %s %s', registry_name, workflow_type)
+    logger.debug(f'Entering show_acrcssc with parameters: {registry_name} {workflow_type}')
 
     acr_client_registries = cf_acr_registries(cmd.cli_ctx, None)
     registry = acr_client_registries.get(resource_group_name, registry_name)

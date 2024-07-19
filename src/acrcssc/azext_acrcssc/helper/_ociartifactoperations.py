@@ -27,7 +27,7 @@ logger = get_logger(__name__)
 
 
 def create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun):
-    logger.debug("Entering create_oci_artifact_continuouspatching with parameters: %s %s %s", registry.name, cssc_config_file, dryrun)
+    logger.debug(f"Entering create_oci_artifact_continuouspatching with parameters: {registry.name} {cssc_config_file} {dryrun}")
 
     try:
         oras_client = _oras_client(registry)
@@ -63,7 +63,7 @@ def create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun):
 
 
 def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):
-    logger.debug("Entering delete_oci_artifact_continuous_patch with parameters %s %s", registry, dryrun)
+    logger.debug(f"Entering delete_oci_artifact_continuous_patch with parameters {registry} {dryrun}")
     resourceid = parse_resource_id(registry.id)
     subscription = resourceid[SUBSCRIPTION]
 
@@ -78,14 +78,13 @@ def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):
             cmd=cmd,
             registry_name=registry.name,
             repository=f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}",
-            # image=f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}",
             username=BEARER_TOKEN_USERNAME,
             password=token,
             yes=not dryrun)
         logger.debug("Call to acr_repository_delete completed successfully")
     except Exception as exception:
-        logger.debug("%s", exception)
-        logger.error("%s/%s:%s might not existing or attempt to delete failed.", CSSC_WORKFLOW_POLICY_REPOSITORY, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG, CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1)
+        logger.debug(exception)
+        logger.error(f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1} might not exist or attempt to delete failed.")
         raise
 
 
@@ -98,14 +97,14 @@ def _oras_client(registry):
         client = OrasClient(hostname=str.lower(registry.login_server))
         client.login(BEARER_TOKEN_USERNAME, token)
     except Exception as exception:
-        raise AzCLIError("Failed to login to Artifact Store ACR %s: %s " % registry.name, exception)
+        raise AzCLIError(f"Failed to login to Artifact Store ACR {registry.name}: {exception}")
 
     return client
 
 
 # Need to check on this method once, if there's alternative to this
 def _get_acr_token(registry_name, subscription):
-    logger.debug("Using CLI user credentials to log into %s", registry_name)
+    logger.debug(f"Using CLI user credentials to log into {registry_name}")
     acr_login_with_token_cmd = [
         str(shutil.which("az")),
         "acr", "login",
