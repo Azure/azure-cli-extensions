@@ -38,6 +38,7 @@ class SSHSession():
         self.relay_info = None
         self.new_service_config = False
         self.bastion_name = None
+        self.bastion_rsg = None
 
         self.yes_without_prompt = yes_without_prompt
         self.public_key_file = os.path.abspath(public_key_file) if public_key_file else None

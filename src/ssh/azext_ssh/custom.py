@@ -61,7 +61,6 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
                                       ssh_client_folder, ssh_args, delete_credentials, resource_type,
                                       ssh_proxy_folder, credentials_folder, winrdp, yes_without_prompt, bastion)
     ssh_session.resource_type = resource_type_utils.decide_resource_type(cmd, ssh_session)
-    target_properties_utils.handle_target_machine_properties(cmd, ssh_session)
 
 
     _do_ssh_op(cmd, ssh_session, op_call)
@@ -85,7 +84,6 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
     op_call = ssh_utils.write_ssh_config
 
     config_session.resource_type = resource_type_utils.decide_resource_type(cmd, config_session)
-    target_properties_utils.handle_target_machine_properties(cmd, config_session)
 
     # if the folder doesn't exist, this extension won't create a new one.
     config_folder = os.path.dirname(config_session.config_path)
@@ -159,16 +157,20 @@ def _do_ssh_op(cmd, op_info, op_call):
     if not op_info.is_arc():
         if op_info.ssh_proxy_folder:
             logger.warning("Target machine is not an Arc Server, --ssh-proxy-folder value will be ignored.")
-        op_info.ip = op_info.ip or ip_utils.get_ssh_ip(cmd, op_info.resource_group_name,
+        if op_info.ip:
+            if op_info.bastion:
+                logger.warning("Bastion Developer Sku is not supported using Public IP. Ignoring --bastion.")
+                op_info.bastion = False
+        else:
+            op_info.ip, nic = ip_utils.get_ssh_ip(cmd, op_info.resource_group_name,
                                                        op_info.vm_name, op_info.use_private_ip, op_info)
         if not op_info.ip:
             if not op_info.use_private_ip and not op_info.bastion:
                 raise azclierror.ResourceNotFoundError(f"VM '{op_info.vm_name}' does not have a public "
                                                        "IP address to SSH to")
-            if op_info.bastion:
-                logger.info("Bastion Connection approved by user, attempting to connect through Developer Bastion.")
-            else:
-                raise azclierror.ResourceNotFoundError("Internal Error. Couldn't determine the IP address.")
+        if op_info.bastion:
+            bastion_utils.validate_no_custome_port(op_info)
+            bastion_utils.handle_bastion_properties(cmd, op_info, nic)
     # Determine the appropriate authentication method
     delete_keys = False
     delete_cert = False

@@ -33,21 +33,26 @@ from . import ssh_utils
 logger = get_logger(__name__)
 
 
-class BastionSku(Enum):
-
+class BastionSku():
     Basic = "Basic"
     Standard = "Standard"
     Developer = "Developer"
     QuickConnect = "QuickConnect"
+    ValidLocation = ["centraluseuap", "eastus2euap", "westus", "northeurope", "northcentralus", "westcentralus"]
+    QuickStartLink = "https://learn.microsoft.com/azure/bastion/quickstart-developer-sku"
+    ConfigLink = "https://learn.microsoft.com/azure/bastion/configuration-settings"
+    ValidSshPort = "22"
+    ResourcePort = 22
+
 
 # ============================= Put Call to create a bastion Developer Sku============================= #
-def create_bastion(cmd, op_info, vnet_id, vnet_name, vnet_resource_group):
+def create_bastion(cmd, op_info, vnet_id, vnet_name, bastion_resource_group):
     try:
         bastion_creator = Create(cli_ctx=cmd.cli_ctx)
         bastion_args = {
             "location": op_info.location,
             "name": f"{vnet_name}-bastion",
-            "resource_group": vnet_resource_group,
+            "resource_group": bastion_resource_group,
             "sku": "Developer",
             "virtual_network": {
                 "id": vnet_id
@@ -57,8 +62,9 @@ def create_bastion(cmd, op_info, vnet_id, vnet_name, vnet_resource_group):
             "tags": {}
         }
         result = bastion_creator(command_args=bastion_args)
-         
         op_info.bastion_name = f"{vnet_name}-bastion"
+        op_info.bastion_rsg = bastion_resource_group
+
     except Exception as e:
         raise azclierror.ClientRequestError(f"Failed to create bastion information")
 
@@ -66,14 +72,16 @@ def create_bastion(cmd, op_info, vnet_id, vnet_name, vnet_resource_group):
 def show_bastion(cmd, op_info):
     from .aaz.latest.network.bastion import Show
     try:
+        print(op_info.bastion_rsg)
+        print(op_info.bastion_name)
         bastion = Show(cli_ctx=cmd.cli_ctx)(command_args={
-            "resource_group": op_info.resource_group_name,
+            "resource_group": op_info.bastion_rsg,
             "name": op_info.bastion_name 
         })
 
         return bastion
-    except Exception:
-        raise azclierror.CLIInternalError("Failed to get Bastion information. Please try again later.")
+    except Exception as e:
+        raise azclierror.CLIInternalError("Fetching Error: Failed to get Bastion information. Please try again later.", e) from e
 
 
 
@@ -84,15 +92,11 @@ def ssh_bastion_host(cmd, op_info, delete_keys, delete_cert):
 
     bastion = show_bastion(cmd, op_info)
 
-    if bastion['sku']['name'] not in [BastionSku.Developer.value, BastionSku.QuickConnect.value]:
+    if bastion['sku']['name'] != BastionSku.Developer:
         raise azclierror.InvalidArgumentValueError("SSH to Bastion host via Az CLI/PowerShell is only supported for Developer.")
 
-    if op_info.port != None:
-        port = op_info.port
-        if port != 22:
-            raise azclierror.InvalidArgumentValueError("Custom Ports are not allowed for the Bastion Developer Sku. Please try again with port 22`.")
-    port = 22 
 
+    port = BastionSku.ResourcePort
     target_resource_id = op_info.resource_id
     
     bastion_endpoint = _get_data_pod(cmd, port, target_resource_id, bastion)
@@ -138,20 +142,28 @@ def _get_data_pod(cmd, port, target_resource_id, bastion):
     
     return response.content.decode("utf-8")
 
-
+def validate_no_custome_port(op_info):
+    if op_info.port != None:
+        raise azclierror.InvalidArgumentValueError("Custom Ports are not allowed for the Bastion Developer Sku.")
+    op_info.port = None
 
 
 # ============================= Tunnel Logic ============================= #
 def _get_tunnel(cmd, bastion, bastion_endpoint, vm_id, resource_port, port=None):
-    from .tunnel import TunnelServer
-    # BASTION_EXTENSION_NAME = "bastion"
-    # BASTION_EXTENSION_MODULE = "azext_bastion.tunnel"
-    # azbastion = _get_azext_module(BASTION_EXTENSION_NAME, BASTION_EXTENSION_MODULE)
+    #from .tunnel import TunnelServer
+    BASTION_EXTENSION_NAME = "bastion"
+    BASTION_EXTENSION_MODULE = "azext_bastion.tunnel"
+    azbastion = _get_azext_module(BASTION_EXTENSION_NAME, BASTION_EXTENSION_MODULE)
 
-    if port is None:
+    if port is None:  
         port = 0  # will auto-select a free port from 1024-65535
-    # tunnel_server = azbastion.TunnelServer(cmd.cli_ctx, "localhost", port, bastion, bastion_endpoint, vm_id, resource_port)
-    tunnel_server = TunnelServer(cmd.cli_ctx, "localhost", port, bastion, bastion_endpoint, vm_id, resource_port)   
+
+    # In the case we ever dont want to import the tunnel server
+    #from .tunnel import TunnelServer
+    #tunnel_server = TunnelServer(cmd.cli_ctx, "localhost", port, bastion, bastion_endpoint, vm_id, resource_port)   
+
+    tunnel_server = azbastion.TunnelServer(cmd.cli_ctx, "localhost", port, bastion, bastion_endpoint, vm_id, resource_port)
+
     return tunnel_server
 
 def _start_tunnel(tunnel_server):
@@ -171,49 +183,55 @@ def _get_azext_module(extension_name, module_name):
         raise CLIInternalError(ie) from ie
 # =============================  Bastion Parsing Logic  ============================= #
 
-def handle_bastion_properties(cmd, op_info, properties):
-    check_valid_developer_sku_location(properties, op_info.resource_type.lower(), op_info)
+def handle_bastion_properties(cmd, op_info, nic):
+    if not nic:
+        raise azclierror.ClientRequestError("Error fetching the Network Interface of the specified Virtual Machine.")
+    
+    check_valid_developer_sku_location(nic, op_info.resource_type.lower(), op_info)
 
-    op_info.resource_id = parse_resource_id(properties)
+    op_info.resource_id = parse_resource_id(nic)
 
-    nic_name = parse_nic_name(properties)
-    nic_info = _request_vm_network_interface_card(cmd, op_info.resource_group_name, nic_name)
+    vnet_id, vnet_name= parse_vnet(nic)
 
-    vnet_id, vnet_name= parse_vnet(nic_info)
-    vnet_subscription_id_code, vnet_resource_group = parse_full_vnet_id(vnet_id)
+    nic_subscription_id, bastion_resource_group = parse_nic_rs_groupand_id(nic)
 
-    bastion = _request_specified_bastion(cmd, vnet_subscription_id_code, vnet_name, vnet_resource_group)
+    bastion = _request_specified_bastion(cmd, nic_subscription_id, vnet_id)
 
     if bastion['count'] == 0:
         prompt = (f"There is currently no Bastion associated with this VNet." 
                     " Would you like to associate this VNet with Bastion Developer? To learn more,"
-                    " please visit learn.microsoft.com/en-us/azure/bastion/quickstart-developer-sku")
+                    f" please visit {BastionSku.QuickStartLink}")
         if not prompt_y_n(prompt):
             raise azclierror.ClientRequestError("No Bastion Host found or created in the VNet.")
         
-        create_bastion(cmd, op_info, vnet_id, vnet_name, vnet_resource_group)
+        create_bastion(cmd, op_info, vnet_id, vnet_name, bastion_resource_group)
 
     else:
         op_info.bastion_name = parse_bastion_name(bastion)
+        op_info.bastion_rsg = bastion_resource_group
+        print("This is my bastion name: ", op_info.bastion_name)
+        print("This is my bastion rsg: ", op_info.bastion_rsg)
 
 
-def check_valid_developer_sku_location(properties, resource_type, op_info):
-    if resource_type == "microsoft.compute/virtualmachines":
-        location = properties.location
+def check_valid_developer_sku_location(nic, resource_type, op_info):
+    if resource_type.lower() == "microsoft.compute/virtualmachines":
+        location = nic.get('location')
         op_info.location = location
-        if location not in ["centralus", "eastus2", "westus", "northeurope", "northcentralus", "westcentralus"]:
-            raise azclierror.InvalidArgumentValueError("The Bastion Developer SKU is not supported in the region of the target VM.")
+        if location not in BastionSku.ValidLocation:
+            raise azclierror.InvalidArgumentValueError("The Bastion Developer SKU is not supported in the region of the target VM. "
+                                                       f"Learn more about Bastion Developer SKU at {BastionSku.ConfigLink}")
     else:
         raise azclierror.InvalidArgumentValueError("The Bastion Developer SKU is not supported for this type of resource.")
 
-
-def parse_nic_name(properties):
+def parse_nic_rs_groupand_id(nic):
     try:
-        nic_id = properties.network_profile.network_interfaces[0].id
-        nic_name = nic_id.split('/')[-1]
-        return nic_name
+        resource_id = nic['id']
+        parts = resource_id.split('/')
+        subscription_id = parts[2]
+        resource_group = parts[4]
     except Exception:
-        raise azclierror.CLIInternalError("Internal CLI Error: Failed to get NIC information. Please try again later.")
+        raise azclierror.CLIInternalError("Internal CLI Error: Failed to get subscription ID and resource group from Network Interface. Please try again later.")
+    return subscription_id, resource_group
 
 
 def parse_vnet(nic_info):
@@ -224,15 +242,6 @@ def parse_vnet(nic_info):
 
     except Exception:
         raise azclierror.CLIInternalError("Internal CLI Error: Failed to get VNet information. Please try again later.")
-
-def parse_full_vnet_id(vnet_id):
-    try:
-        vnet_id_parts = vnet_id.split('/')
-        vnet_id_code = vnet_id_parts[2]
-        vnet_resource_group = vnet_id_parts[4]
-        return vnet_id_code, vnet_resource_group
-    except Exception as e:
-        raise azclierror.CLIInternalError("Internal CLI Error: Failed to get VNet information. Please try again later.") from e
 
 
 def parse_bastion_name(bastion_data):
@@ -246,13 +255,13 @@ def parse_bastion_name(bastion_data):
     except Exception:
         raise azclierror.CLIInternalError("Internal CLI Error: Failed to get Bastion information. Please try again later.")
 
-def parse_resource_id(properties):
-        try:
-            id = properties.id
-        except Exception:
 
-            raise azclierror.CLIInternalError("Internal CLI Error: Failed to get resource ID. Please try again later.")
-        return id
+def parse_resource_id(nic):
+    try:
+        vm_id = nic['virtualMachine']['id']
+    except Exception:
+        raise azclierror.CLIInternalError("Internal CLI Error: Failed to get resource ID. Please try again later.")
+    return vm_id
 # ============================= Bastion Request Logic ============================= #
 class AccessTokenCredential:  # pylint: disable=too-few-public-methods
     """Simple access token authentication. Return the access token as-is.
@@ -267,7 +276,7 @@ class AccessTokenCredential:  # pylint: disable=too-few-public-methods
         return AccessToken(self.access_token, int(time.time()) + 31536000)
 
 
-def _request_specified_bastion(cmd, subscription_id, vnet_id, resource_group):
+def _request_specified_bastion(cmd, subscription_id, vnet_id ):
     from azure.cli.core._profile import Profile
 
     # Initialize Resource Graph client for Azure queries specfically for Vnet -> Bastion relationship:
@@ -287,38 +296,27 @@ def _request_specified_bastion(cmd, subscription_id, vnet_id, resource_group):
         raise azclierror.ClientRequestError(f"Failed to get access token. Ensure you are currently logged in using az login.")
     query = f"""
     Resources
-    | where type =~ 'Microsoft.Network/bastionHosts' and 
-      (properties.ipConfigurations[0].properties.subnet.id startswith '/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{vnet_id}/' or 
-       properties.virtualNetwork.id =~ '/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{vnet_id}')
-    | project id, location, name, sku, properties, type, vnetid = '/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{vnet_id}'
+    | where type =~ 'Microsoft.Network/bastionHosts'
+    and (properties.ipConfigurations[0].properties.subnet.id startswith '{vnet_id}/' 
+    or properties.virtualNetwork.id =~ '{vnet_id}')
+    | project id, location, name, sku, properties, type, vnetid = '{vnet_id}'
     | union (
-        Resources 
-        | where id =~ '/subscriptions/{subscription_id}/resourceGroups/{resource_group}/providers/Microsoft.Network/virtualNetworks/{vnet_id}'
+        Resources
+        | where id =~ '{vnet_id}'
+        | where type =~ 'Microsoft.Network/virtualNetworks' and id contains '/virtualNetworks/{vnet_id}'
         | mv-expand peering=properties.virtualNetworkPeerings limit 400
         | project vnetid = tolower(tostring(peering.properties.remoteVirtualNetwork.id))
         | join kind=inner (
-            Resources 
-            | where type =~ 'microsoft.network/bastionHosts'
+            Resources
+            | where type =~ 'Microsoft.Network/bastionHosts'
             | extend vnetid=tolower(extract('(.*/virtualnetworks/[^/]+)/', 1, tolower(tostring(properties.ipConfigurations[0].properties.subnet.id))))
         ) on vnetid
     )
     """
+
     try: 
         response = resource_graph_utils.execute_query(client, query, 10, 0, None, None, False, None)
     except Exception:
         raise azclierror.ClientRequestError(f"Failed to find Bastion assocaited to VNet in the specified subscription. Ensure the Bastion is not in a different subscription or resource group.")
     
     return response
-
-def _request_vm_network_interface_card(cmd, resource_group, nic_name):
-    from .aaz.latest.network.nic import Show
-    try:
-        nic = Show(cli_ctx=cmd.cli_ctx)(command_args={
-                "resource_group": resource_group,
-                "name": nic_name
-            })
-        return nic
-    except Exception:
-        raise azclierror.ClientRequestError("Failed to get VM's NIC information. Please try again later.")
-
-
