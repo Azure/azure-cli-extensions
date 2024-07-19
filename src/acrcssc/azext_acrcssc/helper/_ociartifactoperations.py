@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 """A module to handle ORAS calls to the registry."""
 # pylint: disable=line-too-long
+# pylint: disable=logging-fstring-interpolation
 import os
 import tempfile
 import shutil

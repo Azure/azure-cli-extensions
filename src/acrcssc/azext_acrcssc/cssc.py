@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
+# pylint: disable=logging-fstring-interpolation
 from knack.log import get_logger
 from .helper._constants import CONTINUOUS_PATCHING_WORKFLOW_NAME
 from .helper._taskoperations import (

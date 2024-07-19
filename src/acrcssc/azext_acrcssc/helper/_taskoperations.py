@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 # pylint: disable=broad-exception-caught
+# pylint: disable=logging-fstring-interpolation
 import base64
 import os
 import tempfile
@@ -120,7 +121,6 @@ def delete_continuous_patch_v1(cmd, registry, dryrun):
             # bug: if one of the deletion fails, the others will not be attempted, we need to attempt to delete all of them
             _delete_task(cmd, registry, taskname, dryrun)
             logger.warning(f"Task {taskname} deleted.")
-
         logger.warning(f"Deleting {CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}")
         delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
 

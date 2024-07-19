@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 # pylint: disable=broad-exception-caught
+# pylint: disable=logging-fstring-interpolation
 import json
 import os
 import re

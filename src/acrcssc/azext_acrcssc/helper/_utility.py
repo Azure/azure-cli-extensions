@@ -11,6 +11,7 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 from ._constants import ERROR_MESSAGE_INVALID_TIMESPAN_VALUE, TMP_DRY_RUN_FILE_NAME
 
 logger = get_logger(__name__)
+# pylint: disable=logging-fstring-interpolation
 
 
 def convert_timespan_to_cron(cadence, date_time=None):

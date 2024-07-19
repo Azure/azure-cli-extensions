@@ -17,6 +17,7 @@ from azure.mgmt.resource.resources.models import (
 )
 from knack.log import get_logger
 # pylint: disable=line-too-long
+# pylint: disable=logging-fstring-interpolation
 logger = get_logger(__name__)
 
 
