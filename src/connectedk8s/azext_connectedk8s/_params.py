@@ -73,7 +73,7 @@ def load_arguments(self, _):
         c.argument('skip_ssl_verification', action='store_true', help='Skip SSL verification for any cluster connection.')
         c.argument('yes', options_list=['--yes', '-y'], help='Do not prompt for confirmation.', action='store_true')
         c.argument('enable_oidc_issuer', arg_type=get_three_state_flag(), help="Enable creation of OIDC issuer url used for workload identity", is_preview=True)
-        c.argument('self_hosted_issuer', help="Self hosted issuer url for public cloud clusters - AKS, GKE, EKS", is_preview=True)
+        c.argument('self_hosted_issuer',options_list=["--self-hosted-issuer"], help="Self hosted issuer url for public cloud clusters - AKS, GKE, EKS", is_preview=True)
         c.argument('enable_workload_identity', options_list=["--enable-workload-identity", "--enable-wi"], arg_type=get_three_state_flag(), help="Enable workload identity webhook", is_preview=True)
 
     with self.argument_context('connectedk8s upgrade') as c:
