@@ -20,6 +20,8 @@ def load_arguments(self, _):
         c.argument('cert_file', options_list=['--certificate-file', '-c'],
                    help='Path to a certificate file used for authentication when using local user credentials.')
         c.argument('port', options_list=['--port'], help='SSH port')
+        c.argument('resource_tag', options_list=['--resource-tag'],
+                   help='"Use to specify a resource tag for the SSH connection port value."')
         c.argument('resource_type', options_list=['--resource-type'],
                    help=('Resource type should be either Microsoft.Compute/virtualMachines, '
                          'Microsoft.HybridCompute/machines, '
@@ -57,6 +59,8 @@ def load_arguments(self, _):
         c.argument('credentials_folder', options_list=['--keys-destination-folder', '--keys-dest-folder'],
                    help='Folder where new generated keys will be stored.')
         c.argument('port', options_list=['--port'], help='SSH Port')
+        c.argument('resource_tag', options_list=['--resource-tag'], help='Use to specify a resource tag '
+                   'for the SSH connection port value.')
         c.argument('resource_type', options_list=['--resource-type'],
                    help=('Resource type should be either Microsoft.Compute/virtualMachines, '
                          'Microsoft.HybridCompute/machines, '
@@ -91,6 +95,8 @@ def load_arguments(self, _):
                    help='The username for a local user')
         c.argument('cert_file', options_list=['--certificate-file', '-c'], help='Path to certificate file')
         c.argument('port', options_list=['--port'], help='Port to connect to on the remote host.')
+        c.argument('resource_tag', options_list=['--resource-tag'], help='Use to specify a resource tag '
+                   'for the SSH connection port value.')
         c.argument('resource_type', options_list=['--resource-type'],
                    help=('Resource type should be either Microsoft.HybridCompute/machines '
                          'or Microsoft.ConnectedVMwareSphere/virtualMachines.'),
