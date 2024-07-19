@@ -48,9 +48,9 @@ helps['connectedk8s update'] = """
     - name: Disable auto-upgrade of agents
       text: az connectedk8s update -g resourceGroupName -n connectedClusterName --auto-upgrade false
     - name: Update a connected kubernetes cluster with oidc issuer and the workload identity webhook enabled.
-      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --enable-oidc-issuer --enable-workload-identity
+      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --enable-oidc-issuer --enable-workload-identity
     - name: Update a connected kubernetes cluster with oidc issuer enabled using a self hosted issuer url for public cloud cluster.
-      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --enable-oidc-issuer --self-hosted-issuer aksissuerurl
+      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --enable-oidc-issuer --self-hosted-issuer aksissuerurl
 """
 
 helps['connectedk8s upgrade'] = """
