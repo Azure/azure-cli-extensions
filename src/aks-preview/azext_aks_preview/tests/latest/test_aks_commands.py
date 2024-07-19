@@ -67,7 +67,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 return version
         return ""
     
-    def _get_first_supported_higher_version(self, location: str, input_version: str) -> str:
+    def _get_first_non_LTS_supported_higher_version(self, location: str, input_version: str) -> str:
         """Return the first non-LTS version which is greater than the given version."""
         data = self.cmd(
             "az aks get-versions -l {}".format(
@@ -79,10 +79,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         for version_block in data.get("values", []):
             caps = version_block.get("capabilities", {})
             sps = caps.get("supportPlan", [])
+            isSupportedNonLTSVersion = True
             for sp in sps:
-                if sp == "KubernetesOfficial":
-                    supported_versions.append(version_block.get("version", ""))
+                if sp == "AKSLongTermSupport":
+                    isSupportedNonLTSVersion = False
                     break
+            if isSupportedNonLTSVersion:
+                supported_versions.append(version_block.get("version", ""))
                 
         # remove empty strings
         supported_versions = [x for x in supported_versions if x]
@@ -14726,7 +14729,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.test_resources_count = 0
         aks_name = self.create_random_name("cliakstest", 16)
         lts_version = "1.27"
-        non_lts_version = self._get_first_supported_higher_version(resource_group_location, lts_version)
+        non_lts_version = self._get_first_non_LTS_supported_higher_version(resource_group_location, lts_version)
 
         if non_lts_version == "" or lts_version == "":
             # no version meet test requirements, skip

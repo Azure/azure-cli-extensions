@@ -13,6 +13,10 @@ Pending
 +++++++
 * Update the minimum required cli core version to `2.61.0`.
 
+7.0.0b2
+++++++++
+* Add options `--tier` and `--k8s-support-plan` to `az aks upgrade` command to support enable/disable AKSLongTermSupport with upgrade operation.
+
 7.0.0b1
 ++++++++
 * [BREAKING CHANGE]: Remove support for `az aks get-os-options` command.
@@ -21,10 +25,6 @@ Pending
 ++++++++
 * [BREAKING CHANGE]: Remove support for `az aks mesh` egress gateway commands.
 * Add validation to `az aks create` and `az aks update` while modifying the `--ephemeral-disk-volume-type` and `--ephemeral-disk-nvme-perf-tier` values.
-
-5.0.0b5
-++++++++
-* Add options `--tier` and `--k8s-support-plan` to `az aks upgrade` command to support enable/disable AKSLongTermSupport with upgrade operation.
 
 5.0.0b4
 ++++++++
