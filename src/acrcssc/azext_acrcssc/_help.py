@@ -22,7 +22,7 @@ helps['acr supply-chain workflow create'] = """
     examples:
         - name: Create acr supply chain workflow
           text: az acr supply-chain workflow create -r $MyRegistry -g $MyResourceGroup \
-                --type continuouspatchv1 --cadence 1d --config path-to-config-file --dry-run false
+                --type continuouspatchv1 --cadence 1d --config path-to-config-file
 """
 helps['acr supply-chain workflow update'] = """
     type: command
@@ -30,7 +30,7 @@ helps['acr supply-chain workflow update'] = """
     examples:
         - name: Updates acr supply chain workflow
           text: az acr supply-chain workflow update -r $MyRegistry -g $MyResourceGroup --type \
-                continuouspatchv1 --cadence 1d --config path-to-config-file --dry-run false
+                continuouspatchv1 --cadence 1d --config path-to-config-file
 """
 
 helps['acr supply-chain workflow show'] = """
