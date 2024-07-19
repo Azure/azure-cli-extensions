@@ -87,17 +87,19 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         mock_convert_timespan_to_cron.assert_called_once_with("2d")
         mock_create_oci_artifact_continuous_patch.not_called()
 
+    @mock.patch("azext_acrcssc.helper._taskoperations.check_continuous_task_config_exists")
     @mock.patch('azext_acrcssc.helper._taskoperations.delete_oci_artifact_continuous_patch')
     @mock.patch("azext_acrcssc.helper._taskoperations.parse_resource_id")
     @mock.patch("azext_acrcssc.helper._taskoperations.check_continuous_task_exists")
     @mock.patch('azext_acrcssc.helper._taskoperations.cf_acr_tasks')
     @mock.patch('azext_acrcssc.helper._taskoperations.cf_authorization')
-    def test_delete_continuous_patch_v1(self, mock_cf_authorization, mock_cf_acr_tasks, mock_check_continuoustask_exists, mock_parse_resource_id, mock_delete_oci_artifact_continuous_patch):
+    def test_delete_continuous_patch_v1(self, mock_cf_authorization, mock_cf_acr_tasks, mock_check_continuoustask_exists, mock_parse_resource_id, mock_delete_oci_artifact_continuous_patch, mock_check_continuous_task_config_exists):
         # Mock the necessary dependencies
         cmd = self._setup_cmd()
         mock_registry = mock.MagicMock()
         mock_dryrun = False
         mock_check_continuoustask_exists.return_value = True
+        mock_check_continuous_task_config_exists.return_value = True
         mock_registry.id = 'registry_id'
         mock_resource_group = mock.MagicMock()
         mock_resource_group.name = 'resource_group_name'
