@@ -21,13 +21,25 @@ steps:
       --timeout 30m \
       --scanners vuln \
       --output /workspace/data/vulnerability-report_trivy_$DATE.json
+
   - cmd: cssc jq 'if .Results == null or (.Results | length) == 0 then 0 else [.Results[] | select(.Vulnerabilities != null) | .Vulnerabilities | length] | add end' /workspace/data/vulnerability-report_trivy_$DATE.json > /workspace/data/vulCount.txt
-  - cmd: bash echo "Generated vulnerability report at /workspace/data/vulnerability-report_trivy_$DATE.json" 
+  - cmd: cssc jq 'if .Metadata.OS.EOSL == null then false else .Metadata.OS.EOSL end' /workspace/data/vulnerability-report_trivy_$DATE.json > /workspace/data/eosl.txt
+  - cmd: |        
+        bash -c 'echo "Vulnerabilities found for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} -> $(cat /workspace/data/vulCount.txt)"'
+        bash -c 'echo "EOSL for the image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} -> $(cat /workspace/data/eosl.txt)"'
+
   - cmd: az login --identity
-  - cmd: bash echo "Vulnerabilities found for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} -> $(cat /workspace/data/vulCount.txt)"
-  - cmd: | 
-      az -c 'vulCount=$(cat /workspace/data/vulCount.txt) && \
-      [ $vulCount -gt 0 ] && \
-      az acr task run --name $patchimagetask --registry $RegistryName --set SOURCE_REPOSITORY={{.Values.SOURCE_REPOSITORY}} --set SOURCE_IMAGE_TAG={{.Values.SOURCE_IMAGE_ORIGINAL_TAG}} --no-wait \
-      || echo "No vulnerability in the image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"'
+  - cmd: |
+      az -c '
+      vulCount=$(cat /workspace/data/vulCount.txt) && \
+      eoslValue=$(cat /workspace/data/eosl.txt) && \
+      if ! [[ "$vulCount" =~ ^[0-9]+$ ]]; then vulCount=0; fi && \
+      if [ "$eoslValue" = "true" ]; then \
+        echo "PATCHING will be skipped as EOSL is $eoslValue for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"; \
+      elif [ $vulCount -gt 0 ]; then \
+          echo "Scheduling patching task"; \
+          az acr task run --name $patchimagetask --registry $RegistryName --set SOURCE_REPOSITORY={{.Values.SOURCE_REPOSITORY}} --set SOURCE_IMAGE_TAG={{.Values.SOURCE_IMAGE_ORIGINAL_TAG}} --no-wait; \
+        else \
+          echo "PATCHING will be skipped as no vulnerability found in the image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"; \
+      fi'
     entryPoint: /bin/bash
