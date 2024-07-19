@@ -235,7 +235,7 @@ Events_of_Incomplete_Diagnoser_Job = "diagnoser_failure_events.txt"
 
 # Connect Precheck Diagnoser constants
 Cluster_Diagnostic_Checks_Job_Registry_Path = \
-    "mcr.microsoft.com/azurearck8s/helmchart/stable/clusterdiagnosticchecks:0.2.1"
+    "mcr.microsoft.com/azurearck8s/helmchart/stable/clusterdiagnosticchecks:0.2.2"
 Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type = \
     "Error while installing cluster diagnostic checks helm release"
 Cluster_Diagnostic_Checks_Execution_Failed_Fault_Type = "Error occured while executing cluster diagnostic checks"

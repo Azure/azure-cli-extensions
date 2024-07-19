@@ -6,14 +6,13 @@
 import os
 import shutil
 import subprocess
-from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
+from subprocess import Popen, PIPE
 import time
-import datetime
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 import json
-from kubernetes import client as kubeclient, config, watch, utils
+from kubernetes import client, config, watch, utils
 from knack.util import CLIError
 from knack.log import get_logger
 from knack.prompting import NoTTYException, prompt_y_n
@@ -26,6 +25,7 @@ from msrest.exceptions import ValidationError as MSRestValidationError
 from kubernetes.client.rest import ApiException
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as azext_utils
+from kubernetes import client as kube_client
 from azure.cli.core import get_default_cli
 from azure.cli.core.azclierror import CLIInternalError, ClientRequestError, ArgumentUsageError, ManualInterrupt, \
     AzureResponseError, AzureInternalError, ValidationError
@@ -34,6 +34,11 @@ from pydoc import cli
 from logging import exception
 import yaml
 import json
+import datetime
+from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
+import shutil
+from knack.log import get_logger
+from azure.cli.core import telemetry
 import azext_connectedk8s._constants as consts
 logger = get_logger(__name__)
 # pylint: disable=unused-argument, too-many-locals, too-many-branches, too-many-statements, line-too-long
