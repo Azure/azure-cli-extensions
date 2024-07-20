@@ -51,10 +51,10 @@ from .exceptions import AzCommandError, RunScriptNotFoundForIdError, SupportingR
 logger = get_logger(__name__)
 
 
-def reuse(cmd, vm_name, resource_group_name, repair_vm_name, copy_disk_name=None, repair_group_name, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False,  yes=False):
+def reuse(cmd, vm_name, resource_group_name, repair_vm_name, repair_group_name, copy_disk_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False,  yes=False):
 
     # log all the parameters
-    logger.debug('vm repair reuse command parameters: vm_name: %s, resource_group_name: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s', vm_name, resource_group_name, repair_password, repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, yes)
+    logger.debug('vm repair reuse command parameters: vm_name: %s, resource_group_name: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s', vm_name, resource_group_name, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, yes)
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair reuse')
@@ -75,8 +75,7 @@ def reuse(cmd, vm_name, resource_group_name, repair_vm_name, copy_disk_name=None
         architecture_type = _fetch_architecture(source_vm)
 
         # Set up base create vm command
-        vm_exists_cmd = 'az vm list -g {repair_group_name} --query "[?name==\'{repair_vm_name}\']" -o tsv'
-                    .format(repair_group_name=repair_group_name, repair_vm_name=repair_vm_name)
+        vm_exists_cmd = 'az vm list -g {repair_group_name} --query "[?name==\'{repair_vm_name}\']" -o tsv'.format(repair_group_name=repair_group_name, repair_vm_name=repair_vm_name)
 
         reuse_vm = _call_az_command(vm_exists_cmd)
 
@@ -84,10 +83,12 @@ def reuse(cmd, vm_name, resource_group_name, repair_vm_name, copy_disk_name=None
             raise Exception('Reuse not applicable, cannot find VM')
         else:
             # detach all data disks
-            get_vm_command = 'az vm show -g {resource_group} -n {vm_name} --query 'storageProfile.dataDisks' -o json'\
+            logger.info('Fetching data disks attached to reusable repair vm.\n')
+            get_vm_command = 'az vm show -g {resource_group} -n {vm_name} --query storageProfile.dataDisks -o json'\
             .format(resource_group=repair_group_name, vm_name=repair_vm_name)
-            
+
             data_disks = json.loads(_call_az_command(get_vm_command))
+            logger.info('Detaching data disks attached to reusable repair vm.\n')
 
             # Detach each data disk
             for disk in data_disks:
@@ -95,15 +96,19 @@ def reuse(cmd, vm_name, resource_group_name, repair_vm_name, copy_disk_name=None
                 detach_disk_command = f"az vm disk detach --resource-group {repair_group_name} --vm-name {repair_vm_name} --name {disk_name}"
                 _call_az_command(detach_disk_command)
                 print(f"Detached disk: {disk_name}")
-        
+
         # MANAGED DISK
         if is_managed:
-            logger.info('Source VM uses managed disks. Creating repair VM with managed disks.\n')
+            logger.info('Source VM uses managed disks. Reusing repair VM with managed disks.\n')
 
             # Copy OS disk command
             disk_sku, location, os_type, hyperV_generation = _fetch_disk_info(resource_group_name, target_disk_name)
+            os_disk_id_cmd = 'az disk show -g {g} --name {s} --query id -o tsv' \
+                                .format(g=resource_group_name, s=target_disk_name)
+            os_disk_id = _call_az_command(os_disk_id_cmd).strip('\n')
+
             copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --sku {sku} --location {loc} --os-type {os_type} --query id -o tsv' \
-                                .format(g=resource_group_name, n=copy_disk_name, s=target_disk_name, sku=disk_sku, loc=location, os_type=os_type)
+                                .format(g=repair_group_name, n=copy_disk_name, s=os_disk_id, sku=disk_sku, loc=location, os_type=os_type)
 
             # Only add hyperV variable when available
             if hyperV_generation:
@@ -119,12 +124,16 @@ def reuse(cmd, vm_name, resource_group_name, repair_vm_name, copy_disk_name=None
             logger.info('Copying OS disk of source VM...')
             copy_disk_id = _call_az_command(copy_disk_command).strip('\n')
 
+            # wait a few seconds
+            import time
+            time.sleep(10)
+
             attach_disk_command = "az vm disk attach -g {g} --name {disk_id} --vm-name {vm_name} ".format(g=repair_group_name, disk_id=copy_disk_id, vm_name=repair_vm_name)
             _call_az_command(attach_disk_command)
 
         # UNMANAGED DISK
         else:
-            logger.info('Source VM uses unmanaged disks. Creating repair VM with unmanaged disks.\n')
+            logger.info('Source VM uses unmanaged disks. Reusing repair VM with unmanaged disks.\n')
             os_disk_uri = source_vm.storage_profile.os_disk.vhd.uri
             copy_disk_name = copy_disk_name + '.vhd'
             storage_account = StorageResourceIdentifier(cmd.cli_ctx.cloud, os_disk_uri)
@@ -208,10 +217,6 @@ def reuse(cmd, vm_name, resource_group_name, repair_vm_name, copy_disk_name=None
     if not command.is_status_success():
         command.set_status_error()
         return_dict = command.init_return_dict()
-        if existing_rg:
-            _clean_up_resources(repair_group_name, confirm=True)
-        else:
-            _clean_up_resources(repair_group_name, confirm=False)
     else:
         created_resources.append(copy_disk_id)
         command.message = 'Your repair VM \'{n}\' is in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
@@ -220,16 +225,9 @@ def reuse(cmd, vm_name, resource_group_name, repair_vm_name, copy_disk_name=None
                           .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name, rg=resource_group_name, source_vm=vm_name)
         return_dict = command.init_return_dict()
         # Add additional custom return properties
-        return_dict['repair_vm_name'] = repair_vm_name
-        return_dict['copied_disk_name'] = copy_disk_name
-        return_dict['copied_disk_uri'] = copy_disk_id
-        return_dict['repair_resource_group'] = repair_group_name
-        return_dict['resource_tag'] = resource_tag
-        return_dict['created_resources'] = created_resources
 
         logger.info('\n%s\n', command.message)
     return return_dict
-
 
 def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu',  yes=False):
 
