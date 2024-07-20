@@ -14,8 +14,8 @@ az vm repair restore -g $problemRG -n $problemVm --repair-vm-id $repairVmId --ve
 
 foreach ($vm in $vms) {
 
-    az vm repair reuse -g problemRG -n $vm --repair-group-name $repairGroup --repair-vm-name $repairVm --verbose
+    az vm repair reuse -g $problemRG -n $vm --repair-group-name $repairGroup --repair-vm-name $repairVm --verbose
     az vm repair run -g $repairGroup -n $repairVm --run-id win-crowdstrike-fix-bootloop --verbose
-    az vm repair restore -g problemRG -n $vm --repair-vm-id $repairVmId --verbose
+    az vm repair restore -g $problemRG -n $vm --repair-vm-id $repairVmId --verbose
 
 }
