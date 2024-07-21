@@ -969,6 +969,7 @@ class Update(AAZCommand):
                 disc_application_rule.set_prop("targetUrls", AAZListType, ".application_rule.target_urls")
                 disc_application_rule.set_prop("terminateTLS", AAZBoolType, ".application_rule.terminate_tls")
                 disc_application_rule.set_prop("webCategories", AAZListType, ".application_rule.web_categories")
+                disc_application_rule.set_prop("httpHeadersToInsert", AAZListType, ".application_rule.http_headers_to_insert")
 
             destination_addresses = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:ApplicationRule}.destinationAddresses")
             if destination_addresses is not None:
@@ -1378,6 +1379,9 @@ class _UpdateHelper:
         disc_application_rule.web_categories = AAZListType(
             serialized_name="webCategories",
         )
+        disc_application_rule.http_headers_to_insert = AAZListType(
+            serialized_name="httpHeadersToInsert",
+        )
 
         destination_addresses = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").destination_addresses
         destination_addresses.Element = AAZStrType()
@@ -1409,6 +1413,18 @@ class _UpdateHelper:
         web_categories = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").web_categories
         web_categories.Element = AAZStrType()
 
+        http_headers_to_insert = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").http_headers_to_insert
+        http_headers_to_insert.Element = AAZObjectType()
+
+        _element = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").http_headers_to_insert.Element
+        _element.header_name = AAZStrType(
+            serialized_name="headerName",
+        )
+        _element.header_value = AAZStrType(
+            serialized_name="headerValue",
+        )
+
+        
         disc_nat_rule = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "NatRule")
         disc_nat_rule.destination_addresses = AAZListType(
             serialized_name="destinationAddresses",
