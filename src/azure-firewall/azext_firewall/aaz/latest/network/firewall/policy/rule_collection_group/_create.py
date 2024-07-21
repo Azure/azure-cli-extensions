@@ -213,6 +213,11 @@ class Create(AAZCommand):
             options=["web-categories"],
             help="List of destination azure web categories.",
         )
+        application_rule.http_headers_to_insert = AAZListArg(
+            options=["http-headers-to-insert"],
+            help="List of HTTP/S headers to insert.",
+        )
+        
 
         destination_addresses = cls._args_firewall_policy_rule_create.application_rule.destination_addresses
         destination_addresses.Element = AAZStrArg()
@@ -252,6 +257,20 @@ class Create(AAZCommand):
 
         web_categories = cls._args_firewall_policy_rule_create.application_rule.web_categories
         web_categories.Element = AAZStrArg()
+
+        http_headers_to_insert = cls._args_firewall_policy_rule_create.application_rule.http_headers_to_insert
+        http_headers_to_insert.Element = AAZObjectArg()
+
+        _element = cls._args_firewall_policy_rule_create.application_rule.http_headers_to_insert.Element
+        _element.header_name = AAZStrArg(
+            options=["header-name"],
+            help="Name of the header",
+        )
+        _element.header_value = AAZStrArg(
+            options=["header-value"],
+            help="Value of the header",
+        )
+
 
         nat_rule = cls._args_firewall_policy_rule_create.nat_rule
         nat_rule.destination_addresses = AAZListArg(
