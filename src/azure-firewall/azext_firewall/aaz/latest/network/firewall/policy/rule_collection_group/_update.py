@@ -157,39 +157,56 @@ class Update(AAZCommand):
         application_rule = cls._args_schema.rule_collections.Element.firewall_policy_filter_rule_collection.rules.Element.application_rule
         application_rule.destination_addresses = AAZListArg(
             options=["destination-addresses"],
+            help="List of destination IP addresses or Service Tags.",
             nullable=True,
         )
         application_rule.fqdn_tags = AAZListArg(
             options=["fqdn-tags"],
+            help="List of FQDN Tags for this rule.",
             nullable=True,
         )
         application_rule.protocols = AAZListArg(
             options=["protocols"],
+            help="Array of Application Protocols.",
             nullable=True,
         )
         application_rule.source_addresses = AAZListArg(
             options=["source-addresses"],
+            help="List of source IP addresses for this rule.",
             nullable=True,
         )
         application_rule.source_ip_groups = AAZListArg(
             options=["source-ip-groups"],
+            help="List of source IpGroups for this rule.",
             nullable=True,
         )
         application_rule.target_fqdns = AAZListArg(
             options=["target-fqdns"],
+            help="List of FQDNs for this rule.",
             nullable=True,
         )
         application_rule.target_urls = AAZListArg(
             options=["target-urls"],
+            help="List of Urls for this rule condition.",
             nullable=True,
         )
         application_rule.terminate_tls = AAZBoolArg(
             options=["terminate-tls"],
+            help="Terminate TLS connections for this rule.",
             nullable=True,
         )
         application_rule.web_categories = AAZListArg(
             options=["web-categories"],
+            help="List of destination azure web categories.",
             nullable=True,
+        )
+        application_rule.http_headers_to_insert = AAZListArg(
+            options=["http-headers-to-insert"],
+            help="List of HTTP/S headers to insert.",
+        )
+        application_rule.http_headers_to_insert = AAZListArg(
+            options=["http-headers-to-insert"],
+            help="List of HTTP/S headers to insert.",
         )
 
         destination_addresses = cls._args_schema.rule_collections.Element.firewall_policy_filter_rule_collection.rules.Element.application_rule.destination_addresses
@@ -246,6 +263,22 @@ class Update(AAZCommand):
         web_categories.Element = AAZStrArg(
             nullable=True,
         )
+
+        http_headers_to_insert = cls._args_schema.rule_collections.Element.firewall_policy_filter_rule_collection.rules.Element.application_rule.http_headers_to_insert
+        http_headers_to_insert.Element = AAZStrArg(
+            nullable=True,
+        )
+     
+        _element = cls._args_firewall_policy_rule_create.application_rule.http_headers_to_insert.Element
+        _element.header_name = AAZStrArg(
+            options=["header-name"],
+            help="Name of the header"
+        )
+        _element.header_value = AAZStrArg(
+            options=["header-value"],
+            help="Value of the header"
+        )
+
 
         nat_rule = cls._args_schema.rule_collections.Element.firewall_policy_filter_rule_collection.rules.Element.nat_rule
         nat_rule.destination_addresses = AAZListArg(
