@@ -65,9 +65,10 @@ logger = get_logger(__name__)
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlation_id=None, https_proxy="",
                         http_proxy="", no_proxy="", proxy_cert="", location=None, kube_config=None, kube_context=None,
                         no_wait=False, tags=None, distribution='generic', infrastructure='generic',
-                        disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600", enable_private_link=None,
-                        private_link_scope_resource_id=None, distribution_version=None, azure_hybrid_benefit=None,
-                        skip_ssl_verification=False, yes=False, container_log_path=None):
+                        disable_auto_upgrade=False, cl_oid=None,
+                        onboarding_timeout=consts.DEFAULT_MAX_ONBOARDING_TIMEOUT_HELMVALUE_SECONDS,
+                        enable_private_link=None, private_link_scope_resource_id=None, distribution_version=None,
+                        azure_hybrid_benefit=None, skip_ssl_verification=False, yes=False, container_log_path=None):
     logger.warning("This operation might take a while...\n")
     # changing cli config to push telemetry in 1 hr interval
     try:

@@ -5,8 +5,9 @@ Release History
 
 1.7.4
 ++++++
-* Upgrading to v0.2.1 of ArcK8sDiagnoser
+* Upgrading to v0.2.2 of ArcK8sDiagnoser
 * Fix Style and Linter issues.
+* Increase Max Timeout for Onboarding Helm Install to 20 mins (from 10).
 
 1.7.3
 ++++++

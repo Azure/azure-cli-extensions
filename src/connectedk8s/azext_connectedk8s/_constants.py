@@ -268,6 +268,10 @@ DEFAULT_REQUEST_TIMEOUT = 10  # seconds
 RELEASE_DATE_WINDOWS = 'release12-01-23'
 RELEASE_DATE_LINUX = 'release12-01-23'
 CSP_REFRESH_TIME = 300
+
+# Default timeout in seconds for Onboarding Helm Install
+DEFAULT_MAX_ONBOARDING_TIMEOUT_HELMVALUE_SECONDS = "1200"
+
 # URL constants
 CSP_Storage_Url = "https://k8sconnectcsp.azureedge.net"
 CSP_Storage_Url_Mooncake = "https://k8sconnectcsp.blob.core.chinacloudapi.cn"
