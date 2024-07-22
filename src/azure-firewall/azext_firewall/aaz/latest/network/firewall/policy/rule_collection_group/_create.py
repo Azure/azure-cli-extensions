@@ -260,7 +260,7 @@ class Create(AAZCommand):
 
         http_headers_to_insert = cls._args_firewall_policy_rule_create.application_rule.http_headers_to_insert
         http_headers_to_insert.Element = AAZObjectArg()
-
+        
         _element = cls._args_firewall_policy_rule_create.application_rule.http_headers_to_insert.Element
         _element.header_name = AAZStrArg(
             options=["header-name"],

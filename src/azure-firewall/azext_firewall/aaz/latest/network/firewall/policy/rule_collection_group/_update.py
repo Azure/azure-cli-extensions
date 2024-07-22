@@ -1466,6 +1466,7 @@ class _UpdateHelper:
         source_ip_groups = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "NatRule").source_ip_groups
         source_ip_groups.Element = AAZStrType()
 
+
         disc_network_rule = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "NetworkRule")
         disc_network_rule.destination_addresses = AAZListType(
             serialized_name="destinationAddresses",
