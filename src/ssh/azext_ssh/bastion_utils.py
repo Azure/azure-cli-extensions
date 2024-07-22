@@ -63,6 +63,8 @@ def create_bastion(cmd, op_info, vnet_id, vnet_name, bastion_resource_group):
         raise azclierror.ClientRequestError(f"Failed to create bastion information: {e}") from e
 
 # ================================ Get call for current bastion ====================================================#
+
+
 def show_bastion(cmd, op_info):
     from .aaz.latest.network.bastion import Show
     try:
