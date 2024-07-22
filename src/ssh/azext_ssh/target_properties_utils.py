@@ -6,13 +6,10 @@
 import colorama
 
 from azure.cli.core import telemetry
-from azure.cli.core import azclierror 
+from azure.cli.core import azclierror
 from knack import log
 from . import constants as const
-from . import bastion_utils 
-
-
-
+from . import bastion_utils
 
 logger = log.get_logger(__name__)
 
@@ -30,9 +27,8 @@ def handle_target_machine_properties(cmd, op_info):
         os_type, agent_version = None, None
     check_valid_os_type(os_type, op_info)
     check_valid_agent_version(agent_version, op_info)
-    return
 
-  
+
 def get_properties(cmd, resource_type, resource_group_name, vm_name):
     if resource_type == "microsoft.compute/virtualmachines":
         return _request_azure_vm_properties(cmd, resource_group_name, vm_name)
@@ -132,8 +128,10 @@ def check_valid_agent_version(agent_version, op_info):
         try:
             major, minor, _, _ = agent_version.split('.', 4)
             if int(major) < const.AGENT_MINIMUM_VERSION_MAJOR or int(minor) < const.AGENT_MINIMUM_VERSION_MINOR:
-                logger.warning("The version of the Arc Agent, %s running on the target machine "
-                               "is not compatible with this version of the ssh extension. "
-                               "Please update to the latest version.", agent_version)
+                logger.warning(
+                    "The version of the Arc Agent, %s running on the target machine "
+                    "is not compatible with this version of the ssh extension. "
+                    "Please update to the latest version.", agent_version
+                )
         except Exception:
             return

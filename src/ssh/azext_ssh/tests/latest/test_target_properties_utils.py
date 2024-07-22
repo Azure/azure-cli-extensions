@@ -7,7 +7,7 @@ from azext_ssh.ssh_info import SSHSession
 class TestTargetPropertiesUtils(unittest.TestCase):
     def setUp(self):
         self.cmd = mock.Mock()
-        self.op_info = SSHSession("rg", "vm", None, None, None, False, None, None, None, None, [], False, "Microsoft.Compute/virtualMachines", None, None, False, False)
+        self.op_info = SSHSession("rg", "vm", None, None, None, False, None, None, None, None, [], False, "Microsoft.Compute/virtualMachines", None, None, False, False, False)
 
     # ================================ Azure Requests  Test Cases ================================ #
 

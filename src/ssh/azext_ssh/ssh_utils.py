@@ -93,9 +93,10 @@ def start_ssh_connection(op_info, delete_keys, delete_cert):
         telemetry.add_extension_event('ssh', ssh_connection_data)
         # Even if something fails between the creation of the credentials and the end of the ssh connection, we
         # want to make sure that all credentials are cleaned up.
-        
-        do_cleanup(delete_keys, delete_cert, op_info.delete_credentials,
-                   op_info.cert_file, op_info.private_key_file, op_info.public_key_file)
+        do_cleanup(
+            delete_keys, delete_cert, op_info.delete_credentials,
+            op_info.cert_file, op_info.private_key_file, op_info.public_key_file
+        )
 
 
 def write_ssh_config(config_info, delete_keys, delete_cert):
