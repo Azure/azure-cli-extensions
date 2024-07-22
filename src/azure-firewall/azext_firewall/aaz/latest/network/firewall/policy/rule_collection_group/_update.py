@@ -204,10 +204,6 @@ class Update(AAZCommand):
             options=["http-headers-to-insert"],
             help="List of HTTP/S headers to insert.",
         )
-        application_rule.http_headers_to_insert = AAZListArg(
-            options=["http-headers-to-insert"],
-            help="List of HTTP/S headers to insert.",
-        )
 
         destination_addresses = cls._args_schema.rule_collections.Element.firewall_policy_filter_rule_collection.rules.Element.application_rule.destination_addresses
         destination_addresses.Element = AAZStrArg(
@@ -487,6 +483,10 @@ class Update(AAZCommand):
             options=["web-categories"],
             nullable=True,
         )
+        application_rule.http_headers_to_insert = AAZListArg(
+            options=["http-headers-to-insert"],
+            help="List of HTTP/S headers to insert.",
+        )
 
         destination_addresses = cls._args_schema.rule_collections.Element.firewall_policy_nat_rule_collection.rules.Element.application_rule.destination_addresses
         destination_addresses.Element = AAZStrArg(
@@ -542,6 +542,12 @@ class Update(AAZCommand):
         web_categories.Element = AAZStrArg(
             nullable=True,
         )
+
+        http_headers_to_insert = cls._args_schema.rule_collections.Element.firewall_policy_nat_rule_collection.rules.Element.application_rule.http_headers_to_insert
+        http_headers_to_insert.Element = AAZStrArg(
+            nullable=True,
+        )
+        
 
         nat_rule = cls._args_schema.rule_collections.Element.firewall_policy_nat_rule_collection.rules.Element.nat_rule
         nat_rule.destination_addresses = AAZListArg(
@@ -1008,6 +1014,15 @@ class Update(AAZCommand):
             if web_categories is not None:
                 web_categories.set_elements(AAZStrType, ".")
 
+            http_headers_to_insert = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:ApplicationRule}.httpHeadersToInsert")
+            if http_headers_to_insert is not None:
+                http_headers_to_insert.set_elements(AAZStrType, ".")
+
+            _elements = _builder.get("{ruleType:ApplicationRule}.httpHeadersToInsert[]")
+            if _elements is not None:
+                _elements.set_prop("headerName", AAZStrType, ".header_name")
+                _elements.set_prop("headerValue", AAZStrType, ".header_value")
+
             disc_nat_rule = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:NatRule}")
             if disc_nat_rule is not None:
                 disc_nat_rule.set_prop("destinationAddresses", AAZListType, ".nat_rule.destination_addresses")
@@ -1112,6 +1127,7 @@ class Update(AAZCommand):
                 disc_application_rule.set_prop("targetUrls", AAZListType, ".application_rule.target_urls")
                 disc_application_rule.set_prop("terminateTLS", AAZBoolType, ".application_rule.terminate_tls")
                 disc_application_rule.set_prop("webCategories", AAZListType, ".application_rule.web_categories")
+                disc_application_rule.set_prop("httpHeadersToInsert", AAZListType, ".application_rule.http_headers_to_insert")
 
             destination_addresses = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:ApplicationRule}.destinationAddresses")
             if destination_addresses is not None:
@@ -1149,6 +1165,15 @@ class Update(AAZCommand):
             web_categories = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:ApplicationRule}.webCategories")
             if web_categories is not None:
                 web_categories.set_elements(AAZStrType, ".")
+
+            http_headers_to_insert = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:ApplicationRule}.httpHeadersToInsert")
+            if http_headers_to_insert is not None:
+                http_headers_to_insert.set_elements(AAZStrType, ".")
+
+            _elements = _builder.get("{ruleType:ApplicationRule}.httpHeadersToInsert[]")
+            if _elements is not None:
+                _elements.set_prop("headerName", AAZStrType, ".header_name")
+                _elements.set_prop("headerValue", AAZStrType, ".header_value")
 
             disc_nat_rule = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:NatRule}")
             if disc_nat_rule is not None:
@@ -1385,7 +1410,7 @@ class _UpdateHelper:
 
         destination_addresses = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").destination_addresses
         destination_addresses.Element = AAZStrType()
-
+ 
         fqdn_tags = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").fqdn_tags
         fqdn_tags.Element = AAZStrType()
 
