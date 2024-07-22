@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.0.2
+1.1.0
 ++++++
 * `az network firewall policy draft create/update/show`: support policy draft commands
 * `az network firewall policy rule collection group draft create/update/show`: support rule collection group draft commands
