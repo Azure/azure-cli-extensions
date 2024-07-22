@@ -1176,12 +1176,19 @@ def update_connected_cluster_internal(client, resource_group_name, cluster_name,
 def update_connected_cluster(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="", proxy_cert="",
                              disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None, tags=None,
                              distribution=None, distribution_version=None, azure_hybrid_benefit=None, skip_ssl_verification=False, yes=False, 
-                             container_log_path=None, enable_oidc_issuer =None, enable_workload_identity=None, self_hosted_issuer=""):
+                             container_log_path=None, enable_oidc_issuer=None, enable_workload_identity=None, self_hosted_issuer="",
+                             disable_workload_identity=None):
 
     # Prompt for confirmation for few parameters
     if azure_hybrid_benefit == "True":
         confirmation_message = "I confirm I have an eligible Windows Server license with Azure Hybrid Benefit to apply this benefit to AKS on HCI or Windows Server. Visit https://aka.ms/ahb-aks for details"
         utils.user_confirmation(confirmation_message, yes)
+    
+    # Validation for the workload identity webhook parameter
+    if enable_workload_identity != None and disable_workload_identity != None:
+        raise InvalidArgumentValueError("Do not specify both enable-workload-identity and disable-workload-identity at the same time.")
+    if disable_workload_identity == True:
+        enable_workload_identity = False
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
