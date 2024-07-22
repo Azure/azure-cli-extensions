@@ -45,16 +45,18 @@ from .repair_utils import (
     _check_n_start_vm,
     _check_existing_rg,
     _fetch_architecture,
-    _select_distro_linux_Arm64
+    _select_distro_linux_Arm64,
+    _fetch_vm_security_profile_parameters,
+    _fetch_osdisk_security_profile_parameters,    
+    _fetch_compatible_windows_os_urn_v2
 )
 from .exceptions import AzCommandError, RunScriptNotFoundForIdError, SupportingResourceNotFoundError, CommandCanceledByUserError
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False):
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, encrypted_vm_recovery_password="", enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False):
 
-    logger.Warning("This is test from local")
-    # log all the parameters
+    # log all the parameters not logging the bitlocker key
     logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s', vm_name, resource_group_name, repair_password, repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes)
 
     # Init command helper object
@@ -89,8 +91,11 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             else:
                 os_image_urn = _select_distro_linux(distro)
         else:
-            os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
-            os_type = 'Windows'
+            if encrypted_vm_recovery_password:
+                os_image_urn = _fetch_compatible_windows_os_urn_v2(source_vm)
+            else:
+                os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
+            os_type = 'Windows'         
 
         # Set up base create vm command
         if is_linux:
@@ -110,6 +115,18 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         if source_vm.zones:
             zone = source_vm.zones[0]
             create_repair_vm_command += ' --zone {zone}'.format(zone=zone)
+
+        if encrypted_vm_recovery_password:
+            # For confidential VM and Trusted VM security tags some of the SKU expects the right security type, secure_boot_enabled and vtpm_enabled
+            logger.debug('Fetching VM security profile...')
+            vm_security_params = _fetch_vm_security_profile_parameters(source_vm)
+            if vm_security_params:
+                create_repair_vm_command += vm_security_params
+
+            logger.debug('Fetching OS Disk security profile...')
+            osdisk_security_params = _fetch_osdisk_security_profile_parameters(source_vm)
+            if osdisk_security_params:
+                create_repair_vm_command += osdisk_security_params
 
         # Create new resource group
         existing_rg = _check_existing_rg(repair_group_name)
@@ -152,7 +169,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             if not is_linux and unlock_encrypted_vm:
                 # windows with encryption
                 _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username)
-                _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux)
+                _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux, encrypted_vm_recovery_password)
 
             if is_linux and unlock_encrypted_vm:
                 # linux with encryption
