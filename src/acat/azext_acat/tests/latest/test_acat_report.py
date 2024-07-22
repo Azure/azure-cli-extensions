@@ -17,7 +17,7 @@ class AcatReportScenario(ScenarioTest):
             'report_name_create': 'CLI_test_report_create',
             'report_name_update': 'CLI_test_report_update',
             'report_name_delete': 'CLI_test_report_delete',
-            'report_name_snapshot': 'crstatustest-prod-20240617200351',
+            'report_name_snapshot': 'Demo',
             'report_name_no_snapshot': 'CLI_test_report_no_snapshot',
             'offer_guid': 'b8a0a0a0-0000-0000-0000-000000000000',
             'resources': '[{"resource-id":"/subscriptions/f744fbde-a95f-437e-8fcf-38f9324e3d9c/resourceGroups/HQTESTRG/providers/Microsoft.Compute/disks/hqtestvm_OsDisk_1_90a1250135fa4cbca9b99f553b80fa08"}]'
@@ -97,7 +97,7 @@ class AcatReportScenario(ScenarioTest):
         assert(report.get_output_in_json()['lastTriggerTime'] != None)
         ret=self.cmd(
             'acat report get-control-assessments --report-name {report_name_snapshot}')
-        output = ret.get_output_in_json()["complianceResults"][0]["categories"]
+        output = ret.get_output_in_json()[0]["complianceResults"][0]["categories"]
         assert(output != None)
         assert(len(output) ==2)
         assert(output[0]['controlFamilies'] != None)
