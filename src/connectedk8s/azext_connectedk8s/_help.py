@@ -51,6 +51,8 @@ helps['connectedk8s update'] = """
       text: az connectedk8s update -g resourceGroupName -n connectedClusterName --enable-oidc-issuer --enable-workload-identity
     - name: Update a connected kubernetes cluster with oidc issuer enabled using a self hosted issuer url for public cloud cluster.
       text: az connectedk8s update -g resourceGroupName -n connectedClusterName --enable-oidc-issuer --self-hosted-issuer aksissuerurl
+    - name: Disable the workload identity webhook on a connected kubernetes cluster.
+      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --disable-workload-identity
 """
 
 helps['connectedk8s upgrade'] = """
