@@ -407,11 +407,11 @@ def _secret_tag_check(resource_group_name, copy_disk_name, secreturl):
         _call_az_command(set_tag_command)
 
 
-def _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux):
+def _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux, encrypted_vm_recovery_password):
     logger.info('Unlocking attached copied disk...')
     if is_linux:
         return _unlock_mount_linux_encrypted_disk(repair_vm_name, repair_group_name)
-    return _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name)
+    return _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name, encrypted_vm_recovery_password)
 
 
 def _unlock_singlepass_encrypted_disk_fallback(source_vm, resource_group_name, repair_vm_name, repair_group_name, copy_disk_name, is_linux):
@@ -462,10 +462,13 @@ def _unlock_mount_linux_encrypted_disk(repair_vm_name, repair_group_name):
     return _invoke_run_command(LINUX_RUN_SCRIPT_NAME, repair_vm_name, repair_group_name, True)
 
 
-def _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name):
+def _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name, encrypted_vm_recovery_password):
     # Unlocks the disk using the phasephrase and mounts it on the repair VM.
     WINDOWS_RUN_SCRIPT_NAME = 'win-mount-encrypted-disk.ps1'
-    return _invoke_run_command(WINDOWS_RUN_SCRIPT_NAME, repair_vm_name, repair_group_name, False)
+    BITLOCKER_RECOVERY_PARAMS = None
+    if encrypted_vm_recovery_password is None:
+        BITLOCKER_RECOVERY_PARAMS = ['-bitlockerkey', encrypted_vm_recovery_password]
+    return _invoke_run_command(WINDOWS_RUN_SCRIPT_NAME, repair_vm_name, repair_group_name, False, parameters=BITLOCKER_RECOVERY_PARAMS)
 
 
 def _fetch_compatible_windows_os_urn(source_vm):
@@ -694,8 +697,8 @@ def _get_function_param_dict(frame):
     return values
 
 
-def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux):
-    stdout, stderr = _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux)
+def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux, encrypted_vm_recovery_password):
+    stdout, stderr = _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux, encrypted_vm_recovery_password)
     logger.debug('Unlock script STDOUT:\n%s', stdout)
     if stderr:
         logger.warning('Encryption unlock script error was generated:\n%s', stderr)

@@ -1,3 +1,6 @@
+param (
+    [string]$bitlockerkey=$null
+)
 Write-Output "Finding volume with 'Bek Volume' file system label"
 $bekVolume = Get-Volume | Where-Object {$_.FileSystemLabel -eq 'Bek Volume'}
 if ($bekVolume)
@@ -29,7 +32,8 @@ if ($bekFile)
     $bekFilePath = $bekFile.FullName
     Write-Output "Found $bekFilePath"
 }
-else {
+if ($bitlockerkey)
+{
     Write-Output "No *.BEK file found on drive $($bekPartition.DriveLetter)"
     Exit 1
 }
@@ -42,7 +46,15 @@ if ($encryptedVolume)
     $driveLetter = $encryptedVolume.MountPoint
     Write-Output "Found encrypted volume with drive letter $driveLetter"
     Write-Output "Unlocking encrypted drive $driveLetter"
-    $result = Unlock-BitLocker -MountPoint $driveLetter -RecoveryKeyPath $bekFilePath
+    if ($bitlockerkey)
+    {
+        $result = Unlock-BitLocker -MountPoint $driveLetter -RecoveryKey $bitlockerkey
+    }
+    else
+    {
+        $result = Unlock-BitLocker -MountPoint $driveLetter -RecoveryKeyPath $bekFilePath
+    }
+    ##$result = Unlock-BitLocker -MountPoint $driveLetter -RecoveryKeyPath $bekFilePath
     if ($result)
     {
         if ($result.LockStatus -eq 'Unlocked')
