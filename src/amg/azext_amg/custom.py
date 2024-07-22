@@ -570,10 +570,10 @@ def delete_folder(cmd, grafana_name, folder, resource_group_name=None, api_key_o
 
 def _find_folder(cmd, resource_group_name, grafana_name, folder, api_key_or_token=None):
     response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders/" + folder,
-                                raise_for_error_status=False, api_key_or_token=api_key_or_token)
+                             raise_for_error_status=False, api_key_or_token=api_key_or_token)
     if response.status_code >= 400:
         response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders",
-                                    api_key_or_token=api_key_or_token)
+                                 api_key_or_token=api_key_or_token)
         if response.status_code >= 400:
             raise ArgumentUsageError(f"Couldn't find the folder '{folder}'. Ex: {response.status_code}")
         result = json.loads(response.content)
@@ -582,7 +582,7 @@ def _find_folder(cmd, resource_group_name, grafana_name, folder, api_key_or_toke
             raise ArgumentUsageError(f"Couldn't find the folder '{folder}'. Ex: {response.status_code}")
         if len(result) > 1:
             raise ArgumentUsageError((f"More than one folder has the same title of '{folder}'. Please use other "
-                                        f"unique identifiers"))
+                                     f"unique identifiers"))
         return result[0]
     return json.loads(response.content)
 
