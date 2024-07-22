@@ -923,7 +923,7 @@ class PostgresSingleHandler(PostgresFlexHandler):
                 logger.warning(
                     "Can't remove firewall rule %s. Please manually delete it to avoid security issue. %s", ip_name, str(e))
 
-    def get_connection_string(self, dbname):
+    def get_connection_string(self, dbname=""):
         password = run_cli_cmd(
             'az account get-access-token --resource-type oss-rdbms').get('accessToken')
 
