@@ -9,10 +9,6 @@ from azure.cli.core import telemetry
 from azure.cli.core import azclierror 
 from knack import log
 from . import constants as const
-from . import bastion_utils 
-
-
-
 
 logger = log.get_logger(__name__)
 
@@ -24,8 +20,6 @@ def handle_target_machine_properties(cmd, op_info):
     if properties:
         os_type = parse_os_type(properties, op_info.resource_type.lower())
         agent_version = parse_agent_version(properties, op_info.resource_type.lower())
-        if op_info.bastion:
-            bastion_utils.handle_bastion_properties(cmd, op_info, properties)
     else:
         os_type, agent_version = None, None
     check_valid_os_type(os_type, op_info)

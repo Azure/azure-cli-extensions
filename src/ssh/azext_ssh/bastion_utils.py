@@ -7,25 +7,16 @@
 # pylint: disable=too-many-statements
 # pylint: disable=protected-access
 
-import platform
-import subprocess
-import tempfile
-import threading
-import time
-import json
-import uuid
 
-import requests
-from enum import Enum
+import threading
+
 from azure.cli.core import azclierror
 
-from azure.cli.core.commands.client_factory import get_subscription_id
 from knack.log import get_logger
-from azure.cli.core.aaz import *
 from knack.prompting import prompt_y_n
 
 
-from .aaz.latest.network.bastion import Create 
+from .aaz.latest.network.bastion import Create
 from .vendored_sdks.resourcegraph._resource_graph_client import ResourceGraphClient
 from . import resource_graph_utils
 from . import ssh_utils
@@ -41,47 +32,51 @@ class BastionSku():
     ValidLocation = ["centraluseuap", "eastus2euap", "westus", "northeurope", "northcentralus", "westcentralus"]
     QuickStartLink = "https://learn.microsoft.com/azure/bastion/quickstart-developer-sku"
     ConfigLink = "https://learn.microsoft.com/azure/bastion/configuration-settings"
-    ValidSshPort = "22"
+    TunnelPort = 0
     ResourcePort = 22
 
 
 # ============================= Put Call to create a bastion Developer Sku============================= #
 def create_bastion(cmd, op_info, vnet_id, vnet_name, bastion_resource_group):
+    bastion_creator = Create(cli_ctx=cmd.cli_ctx)
+    bastion_name = f"{vnet_name}-bastion"
+    bastion_args = {
+        "location": op_info.location,
+        "name": bastion_name,
+        "resource_group": bastion_resource_group,
+        "sku": "Developer",
+        "virtual_network": {
+            "id": vnet_id
+        },
+        "ip_configurations": [],
+        "scale_units": 2,
+        "tags": {}
+    }
     try:
-        bastion_creator = Create(cli_ctx=cmd.cli_ctx)
-        bastion_args = {
-            "location": op_info.location,
-            "name": f"{vnet_name}-bastion",
-            "resource_group": bastion_resource_group,
-            "sku": "Developer",
-            "virtual_network": {
-                "id": vnet_id
-            },
-            "ip_configurations": [],
-            "scale_units": 2,
-            "tags": {}
-        }
-        result = bastion_creator(command_args=bastion_args)
-        op_info.bastion_name = f"{vnet_name}-bastion"
-        op_info.bastion_rsg = bastion_resource_group
+        poller = bastion_creator(command_args=bastion_args)
+        result = poller.result()
+        if result:
+            logger.warning("Bastion Host created successfully.")
+            op_info.bastion_name = result.get("name", bastion_name)
+            op_info.bastion_rsg = result.get("resourceGroup", bastion_resource_group)
 
     except Exception as e:
-        raise azclierror.ClientRequestError(f"Failed to create bastion information")
+        raise azclierror.ClientRequestError(f"Failed to create bastion information: {e}") from e
 
-#============================================== Get call for current bastion ====================================================#
+# ================================ Get call for current bastion ====================================================#
 def show_bastion(cmd, op_info):
     from .aaz.latest.network.bastion import Show
     try:
-        print(op_info.bastion_rsg)
-        print(op_info.bastion_name)
         bastion = Show(cli_ctx=cmd.cli_ctx)(command_args={
+            "name": op_info.bastion_name,
             "resource_group": op_info.bastion_rsg,
-            "name": op_info.bastion_name 
         })
-
         return bastion
+
     except Exception as e:
-        raise azclierror.CLIInternalError("Fetching Error: Failed to get Bastion information. Please try again later.", e) from e
+        raise azclierror.CLIInternalError(
+            "Fetching Error: Failed to get Bastion information. Please try again later.", e
+        )from e
 
 
 
@@ -100,6 +95,7 @@ def ssh_bastion_host(cmd, op_info, delete_keys, delete_cert):
     target_resource_id = op_info.resource_id
     
     bastion_endpoint = _get_data_pod(cmd, port, target_resource_id, bastion)
+
     tunnel_server = _get_tunnel(cmd, bastion, bastion_endpoint, target_resource_id, port)
     
     t = threading.Thread(target=_start_tunnel, args=(tunnel_server,))
@@ -110,7 +106,6 @@ def ssh_bastion_host(cmd, op_info, delete_keys, delete_cert):
                          "-o", "StrictHostKeyChecking=no",
                          "-o", "UserKnownHostsFile=/dev/null",
                          "-o", "LogLevel=Error"])
-                         
 
     try:
         ssh_utils.start_ssh_connection(op_info, delete_keys, delete_cert)
@@ -130,7 +125,7 @@ def _get_data_pod(cmd, port, target_resource_id, bastion):
     content = {
         'resourceId': target_resource_id,
         'bastionResourceId': bastion['id'],
-        'vmPort': port,
+        'vmPort': str(port),
         'azToken': auth_token[1],
         'connectionType': 'nativeclient'
     }
@@ -155,14 +150,15 @@ def _get_tunnel(cmd, bastion, bastion_endpoint, vm_id, resource_port, port=None)
     BASTION_EXTENSION_MODULE = "azext_bastion.tunnel"
     azbastion = _get_azext_module(BASTION_EXTENSION_NAME, BASTION_EXTENSION_MODULE)
 
-    if port is None:  
-        port = 0  # will auto-select a free port from 1024-65535
-
     # In the case we ever dont want to import the tunnel server
-    #from .tunnel import TunnelServer
-    #tunnel_server = TunnelServer(cmd.cli_ctx, "localhost", port, bastion, bastion_endpoint, vm_id, resource_port)   
+    port = BastionSku.TunnelPort
+    # from .tunnel import TunnelServer
+    # tunnel_server = TunnelServer(cmd.cli_ctx, "localhost", port, bastion, bastion_endpoint, vm_id, resource_port)
 
-    tunnel_server = azbastion.TunnelServer(cmd.cli_ctx, "localhost", port, bastion, bastion_endpoint, vm_id, resource_port)
+    # The zero is the port number which will be auto-selected from 1024-65535
+    tunnel_server = azbastion.TunnelServer(
+        cmd.cli_ctx, "localhost", port, bastion, bastion_endpoint, vm_id, resource_port
+    )
 
     return tunnel_server
 
@@ -186,31 +182,27 @@ def _get_azext_module(extension_name, module_name):
 def handle_bastion_properties(cmd, op_info, nic):
     if not nic:
         raise azclierror.ClientRequestError("Error fetching the Network Interface of the specified Virtual Machine.")
-    
     check_valid_developer_sku_location(nic, op_info.resource_type.lower(), op_info)
 
     op_info.resource_id = parse_resource_id(nic)
 
-    vnet_id, vnet_name= parse_vnet(nic)
-
+    vnet_id, vnet_name = parse_vnet(nic)
     nic_subscription_id, bastion_resource_group = parse_nic_rs_groupand_id(nic)
-
-    bastion = _request_specified_bastion(cmd, nic_subscription_id, vnet_id)
-
-    if bastion['count'] == 0:
-        prompt = (f"There is currently no Bastion associated with this VNet." 
-                    " Would you like to associate this VNet with Bastion Developer? To learn more,"
-                    f" please visit {BastionSku.QuickStartLink}")
+    query_response = _request_specified_bastion(cmd, nic_subscription_id, vnet_id)
+    if query_response['count'] == 0:
+        prompt = (
+            f"There is currently no Bastion associated with this VNet."
+            " Would you like to associate this VNet with Bastion Developer? To learn more,"
+            f" please visit {BastionSku.QuickStartLink}"
+        )
         if not prompt_y_n(prompt):
             raise azclierror.ClientRequestError("No Bastion Host found or created in the VNet.")
         
         create_bastion(cmd, op_info, vnet_id, vnet_name, bastion_resource_group)
 
     else:
-        op_info.bastion_name = parse_bastion_name(bastion)
+        op_info.bastion_name = parse_bastion_name(query_response)
         op_info.bastion_rsg = bastion_resource_group
-        print("This is my bastion name: ", op_info.bastion_name)
-        print("This is my bastion rsg: ", op_info.bastion_rsg)
 
 
 def check_valid_developer_sku_location(nic, resource_type, op_info):
@@ -293,7 +285,9 @@ def _request_specified_bastion(cmd, subscription_id, vnet_id ):
         client = ResourceGraphClient(credentials, subscription_id)
 
     except Exception:
-        raise azclierror.ClientRequestError(f"Failed to get access token. Ensure you are currently logged in using az login.")
+        raise azclierror.ClientRequestError(
+            "Failed to get access token. Ensure you are currently logged in using az login."
+        )
     query = f"""
     Resources
     | where type =~ 'Microsoft.Network/bastionHosts'

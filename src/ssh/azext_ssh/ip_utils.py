@@ -32,6 +32,7 @@ def get_ssh_ip(cmd, resource_group, vm_name, use_private_ip, op_info):
             'resource_group': parsed_id['resource_group']
         }
         nic = InterfaceShow(cli_ctx=cmd.cli_ctx)(command_args=get_args)
+        op_info.network_interface = nic
         for ip_config in nic["ipConfigurations"]:
             if use_private_ip and ip_config.get("privateIPAddress", None):
                 return ip_config["privateIPAddress"], nic
