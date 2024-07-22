@@ -7,35 +7,45 @@ if ($bekVolume)
 {
     Write-Output "BEK volume UniqueId: $($bekVolume.UniqueId)"
 }
+elseif ($bitlockerkey)
+{
+    Write-Output "No BEK volume found but BitLocker key provided"
+}
 else {
     Write-Output "No volume found with 'Bek Volume' file system label"
     Exit 1
 }
 
+$bekFilePath = $null
 $bekPartitionDriveLetter = 'K'
-Write-Output "Setting BEK partition drive letter to $bekPartitionDriveLetter"
-$bekVolume | Get-Partition | Set-Partition -NewDriveLetter $bekPartitionDriveLetter
-$bekPartition = $bekVolume | Get-Partition
-if ($bekPartition.DriveLetter -eq $bekPartitionDriveLetter)
-{
-    Write-Output "BEK partition drive letter successfully set to $($bekPartition.DriveLetter)"
-}
-else {
-    Write-Output "Failed to set BEK partition drive letter to $bekPartitionDriveLetter"
-    Exit 1
-}
+if ($bekVolume) {
+    Write-Output "Setting BEK partition drive letter to $bekPartitionDriveLetter"
+    $bekVolume | Get-Partition | Set-Partition -NewDriveLetter $bekPartitionDriveLetter
+    $bekPartition = $bekVolume | Get-Partition
+    if ($bekPartition.DriveLetter -eq $bekPartitionDriveLetter)
+    {
+        Write-Output "BEK partition drive letter successfully set to $($bekPartition.DriveLetter)"
+    }
+    else {
+        Write-Output "Failed to set BEK partition drive letter to $bekPartitionDriveLetter"
+        Exit 1
+    }
 
-Write-Output "Finding *.BEK file on drive $($bekPartition.DriveLetter)"
-$bekFile = Get-ChildItem -Path "$($bekPartition.DriveLetter):\*.BEK" -Hidden
-if ($bekFile)
-{
-    $bekFilePath = $bekFile.FullName
-    Write-Output "Found $bekFilePath"
-}
-if ($bitlockerkey)
-{
-    Write-Output "No *.BEK file found on drive $($bekPartition.DriveLetter)"
-    Exit 1
+    Write-Output "Finding *.BEK file on drive $($bekPartition.DriveLetter)"
+    $bekFile = Get-ChildItem -Path "$($bekPartition.DriveLetter):\*.BEK" -Hidden
+    if ($bekFile)
+    {
+        $bekFilePath = $bekFile.FullName
+        Write-Output "Found $bekFilePath"
+    }
+    elseif ($bitlockerkey)
+    {
+        Write-Output "No *.BEK file found on drive $($bekPartition.DriveLetter) but BitLocker key provided"
+    }
+    else {
+        Write-Output "No *.BEK file found on drive $($bekPartition.DriveLetter)"
+        Exit 1
+    }
 }
 
 Write-Output "Finding encrypted volume"
@@ -50,11 +60,15 @@ if ($encryptedVolume)
     {
         $result = Unlock-BitLocker -MountPoint $driveLetter -RecoveryKey $bitlockerkey
     }
-    else
+    elseif ($bekFilePath)
     {
         $result = Unlock-BitLocker -MountPoint $driveLetter -RecoveryKeyPath $bekFilePath
     }
-    ##$result = Unlock-BitLocker -MountPoint $driveLetter -RecoveryKeyPath $bekFilePath
+    else
+    {
+        Write-Output "No BitLocker key or BEK file provided"
+        Exit 1
+    }
     if ($result)
     {
         if ($result.LockStatus -eq 'Unlocked')

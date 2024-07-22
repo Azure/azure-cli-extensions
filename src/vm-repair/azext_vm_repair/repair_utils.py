@@ -466,7 +466,7 @@ def _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name, encr
     # Unlocks the disk using the phasephrase and mounts it on the repair VM.
     WINDOWS_RUN_SCRIPT_NAME = 'win-mount-encrypted-disk.ps1'
     BITLOCKER_RECOVERY_PARAMS = None
-    if encrypted_vm_recovery_password is None:
+    if encrypted_vm_recovery_password:
         BITLOCKER_RECOVERY_PARAMS = ['-bitlockerkey', encrypted_vm_recovery_password]
     return _invoke_run_command(WINDOWS_RUN_SCRIPT_NAME, repair_vm_name, repair_group_name, False, parameters=BITLOCKER_RECOVERY_PARAMS)
 
