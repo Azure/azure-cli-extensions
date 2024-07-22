@@ -70,13 +70,13 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, o
         output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
         output.append((Style.SECONDARY, "\n        ".join(dashboards)))
 
-    # TODO: I think the snapshots auto overwrites. Need to check. It doesn't create new ones.
+    # TODO: snapshots don't auto update, it creates a new one.
     output.append((Style.SUCCESS, f"\n\nSnapshots {dry_run_status}updated:"))
     for folder, snapshots in snapshots_synced_summary.items():
         output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
         output.append((Style.SECONDARY, "\n        ".join(snapshots)))
 
-    # TODO: check if annotations auto overwrites.
+    # TODO: annotations don't auto update, it creates a new one.
     output.append((Style.SUCCESS, f"\n\nAnnotations {dry_run_status}updated (by id):"))
     output.append((Style.PRIMARY, "\n    " + "\n    ".join(annotations_synced_summary)))
 
