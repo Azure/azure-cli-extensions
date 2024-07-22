@@ -2905,6 +2905,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # Note: No need to check for mutually exclusive parameter with enable-static-egress-gateway here
         # because it's already checked in get_enable_static_egress_gateway
         return self.raw_param.get("disable_static_egress_gateway")
+
     def get_enable_imds_restriction(self) -> bool:
         """Obtain the value of enable_imds_restriction.
 
@@ -3655,7 +3656,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         # Default is disabled so no need to worry about that here
         return mc
-    
+
     def set_up_imds_restriction(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
 
@@ -5347,7 +5348,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
-        original_imds_restriction = 'IMDS' # default value is IMDS
+        original_imds_restriction = 'IMDS'  # default value is IMDS
         if mc.network_profile and mc.network_profile.pod_link_local_access:
             original_imds_restriction = mc.network_profile.pod_link_local_access
         target_imds_restriction = ''
@@ -5357,7 +5358,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if self.context.get_disable_imds_restriction():
             mc.network_profile.pod_link_local_access = CONST_IMDS_RESTRICTION_DISABLED
             target_imds_restriction = CONST_IMDS_RESTRICTION_DISABLED
-        
+
         if target_imds_restriction != '' and original_imds_restriction != target_imds_restriction:
             target_behavior = ("enabled" if target_imds_restriction == CONST_IMDS_RESTRICTION_ENABLED else "disabled")
             msg = (
@@ -5365,7 +5366,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 "This change will take effect after you upgrade the cluster. Proceed?"
             )
             if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
-                raise DecoratorEarlyExitException()        
+                raise DecoratorEarlyExitException()
         return mc
 
     def update_mc_profile_preview(self) -> ManagedCluster:
