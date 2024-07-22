@@ -23,7 +23,7 @@ def get_ssh_ip(cmd, resource_group, vm_name, use_private_ip, op_info):
 
     vm = vm_client.get(resource_group, vm_name)
 
-    private_ips = [] 
+    private_ips = []
 
     for nic_ref in vm.network_profile.network_interfaces:
         parsed_id = tools.parse_resource_id(nic_ref.id)
@@ -35,7 +35,7 @@ def get_ssh_ip(cmd, resource_group, vm_name, use_private_ip, op_info):
         op_info.network_interface = nic
         for ip_config in nic["ipConfigurations"]:
             if use_private_ip and ip_config.get("privateIPAddress", None):
-                return ip_config["privateIPAddress"], nic
+                return ip_config["privateIPAddress"]
             public_ip_ref = ip_config.get("publicIPAddress", None)
             if public_ip_ref and public_ip_ref.get("id", None):
                 parsed_ip_id = tools.parse_resource_id(public_ip_ref["id"])
@@ -45,22 +45,27 @@ def get_ssh_ip(cmd, resource_group, vm_name, use_private_ip, op_info):
                 }
                 public_ip = PublicIpShow(cli_ctx=cmd.cli_ctx)(command_args=api_args)
                 if public_ip and public_ip.get("ipAddress", None):
-                    return public_ip["ipAddress"], nic
+                    return public_ip["ipAddress"]
             else:
                 if not op_info.bastion:
-                    prompt = (f"There is no public IP associated with this VM." 
-                    " Would you like to connect to your VM through Developer Bastion? To learn more,"
-                    f" please visit {bastion_utils.BastionSku.QuickStartLink}")
+                    prompt = (
+                        f"There is no public IP associated with this VM."
+                        " Would you like to connect to your VM through Developer Bastion? To learn more,"
+                        f" please visit {bastion_utils.BastionSku.QuickStartLink}"
+                    )
                     if prompt_y_n(prompt):
-                        op_info.bastion  = True
+                        op_info.bastion = True
                         logger.warning("Use --bastion to avoid this message.")
-                        return None, nic
+                        return None
             if ip_config.get("privateIPAddress", None):
                 private_ips.append(ip_config["privateIPAddress"])
 
     if len(private_ips) > 0 and not op_info.bastion:
-        logger.warning("No public IP detected and connection through Developer Bastion was denied, attempting private IP (you must bring your own connectivity).")
+        logger.warning(
+            "No public IP detected and connection through Developer Bastion was denied,"
+            " attempting private IP (you must bring your own connectivity)."
+        )
         logger.warning("Use --prefer-private-ip to avoid this message.")
-        return private_ips[0], nic
+        return private_ips[0]
 
     return None, nic

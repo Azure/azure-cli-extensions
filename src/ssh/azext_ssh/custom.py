@@ -61,8 +61,7 @@ def ssh_vm(cmd, resource_group_name=None, vm_name=None, ssh_ip=None, public_key_
                                       ssh_client_folder, ssh_args, delete_credentials, resource_type,
                                       ssh_proxy_folder, credentials_folder, winrdp, yes_without_prompt, bastion)
     ssh_session.resource_type = resource_type_utils.decide_resource_type(cmd, ssh_session)
-
-
+    target_properties_utils.handle_target_machine_properties(cmd, ssh_session)
     _do_ssh_op(cmd, ssh_session, op_call)
 
 
@@ -84,6 +83,7 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
     op_call = ssh_utils.write_ssh_config
 
     config_session.resource_type = resource_type_utils.decide_resource_type(cmd, config_session)
+    target_properties_utils.handle_target_machine_properties(cmd, config_session)
 
     # if the folder doesn't exist, this extension won't create a new one.
     config_folder = os.path.dirname(config_session.config_path)
@@ -102,7 +102,6 @@ def ssh_config(cmd, config_path, resource_group_name=None, vm_name=None, ssh_ip=
                 raise azclierror.RequiredArgumentMissingError("Can't create default folder for generated keys. "
                                                               "Please provide --keys-destination-folder.")
         config_session.credentials_folder = os.path.join(config_folder, os.path.join("az_ssh_config", folder_name))
-
 
     _do_ssh_op(cmd, config_session, op_call)
 
@@ -152,6 +151,7 @@ def ssh_arc(cmd, resource_group_name=None, vm_name=None, public_key_file=None, p
            False, local_user, cert_file, port, ssh_client_folder, delete_credentials,
            resource_type, ssh_proxy_folder, winrdp, yes_without_prompt, ssh_args)
 
+
 def _do_ssh_op(cmd, op_info, op_call):
     # Determine the IP address for non-Arc machines
     if not op_info.is_arc():
@@ -175,7 +175,7 @@ def _do_ssh_op(cmd, op_info, op_call):
     delete_keys = False
     delete_cert = False
     cert_lifetime = None
-
+    # If user provides a local user, use the provided credentials for authentication
     if not op_info.local_user:
         delete_cert = True
         op_info.public_key_file, op_info.private_key_file, delete_keys = \
@@ -184,36 +184,32 @@ def _do_ssh_op(cmd, op_info, op_call):
         op_info.cert_file, op_info.local_user = _get_and_write_certificate(cmd, op_info.public_key_file,
                                                                            None, op_info.ssh_client_folder)
         if op_info.is_arc():
+            # pylint: disable=broad-except
             try:
                 cert_lifetime = ssh_utils.get_certificate_lifetime(op_info.cert_file,
                                                                    op_info.ssh_client_folder).total_seconds()
             except Exception as e:
                 logger.warning("Couldn't determine certificate expiration. Error: %s", str(e))
-    # Determine if Bastion should be used
     try:
-        if op_info.bastion:
-                bastion_utils.ssh_bastion_host(cmd, op_info, delete_keys, delete_cert)
+        if op_info.bastion and not op_info.is_arc():
+            bastion_utils.ssh_bastion_host(cmd, op_info, delete_keys, delete_cert)
 
         if op_info.is_arc():
-            op_info.proxy_path = connectivity_utils.install_client_side_proxy(op_info.ssh_proxy_folder)
-            (op_info.relay_info, op_info.new_service_config) = connectivity_utils.get_relay_information(
-                cmd, op_info.resource_group_name, op_info.vm_name, op_info.resource_type,
-                cert_lifetime, op_info.port, op_info.yes_without_prompt
-            )
+                    op_info.proxy_path = connectivity_utils.install_client_side_proxy(op_info.ssh_proxy_folder)
+                    (op_info.relay_info, op_info.new_service_config) = connectivity_utils.get_relay_information(
+                        cmd, op_info.resource_group_name, op_info.vm_name, op_info.resource_type,
+                        cert_lifetime, op_info.port, op_info.yes_without_prompt)
     except Exception as e:
         if delete_keys or delete_cert:
-            logger.debug(
-                "An error occured before operation concluded. Deleting generated keys: %s %s %s",
-                op_info.private_key_file + ', ' if delete_keys else "",
-                op_info.public_key_file + ', ' if delete_keys else "",
-                op_info.cert_file if delete_cert else ""
-            )
-            ssh_utils.do_cleanup(
-                delete_keys, delete_cert, op_info.delete_credentials,
-                op_info.cert_file, op_info.private_key_file, op_info.public_key_file
-            )
+            logger.debug("An error occured before operation concluded. Deleting generated keys: %s %s %s",
+                        op_info.private_key_file + ', ' if delete_keys else "",
+                        op_info.public_key_file + ', ' if delete_keys else "",
+                        op_info.cert_file if delete_cert else "")
+            ssh_utils.do_cleanup(delete_keys, delete_cert, op_info.delete_credentials, op_info.cert_file,
+                                op_info.private_key_file, op_info.public_key_file)
         raise e
-
+    if not op_info.bastion:
+        op_call(op_info, delete_keys, delete_cert)
 
 
 def _get_and_write_certificate(cmd, public_key_file, cert_file, ssh_client_folder):
