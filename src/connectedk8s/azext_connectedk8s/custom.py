@@ -40,7 +40,7 @@ from Crypto.Util import asn1
 from azext_connectedk8s._client_factory import cf_resource_groups
 from azext_connectedk8s._client_factory import resource_providers_client
 from azext_connectedk8s._client_factory import \
-    cf_connected_cluster_prev_2022_10_01, cf_connected_cluster_prev_2023_11_01
+    cf_connected_cluster_prev_2022_10_01, cf_connected_cluster_prev_2023_11_01, cf_connected_cluster_prev_2024_07_01
 from azext_connectedk8s._client_factory import cf_connectedmachine
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
@@ -48,7 +48,7 @@ import azext_connectedk8s._clientproxyutils as clientproxyutils
 import azext_connectedk8s._troubleshootutils as troubleshootutils
 import azext_connectedk8s._precheckutils as precheckutils
 from glob import glob
-from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity, ListClusterUserCredentialProperties
+from .vendored_sdks.preview_2024_07_01.models import ConnectedCluster, ConnectedClusterIdentity, ListClusterUserCredentialProperties, ArcAgentryConfigurations, Gateway
 from .vendored_sdks.preview_2022_10_01.models import ConnectedCluster as ConnectedClusterPreview
 from .vendored_sdks.preview_2022_10_01.models import ConnectedClusterPatch as ConnectedClusterPatchPreview
 import sys
@@ -65,7 +65,8 @@ logger = get_logger(__name__)
 def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlation_id=None, https_proxy="", http_proxy="", no_proxy="", proxy_cert="", location=None,
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='generic', infrastructure='generic',
                         disable_auto_upgrade=False, cl_oid=None, onboarding_timeout="600", enable_private_link=None, private_link_scope_resource_id=None,
-                        distribution_version=None, azure_hybrid_benefit=None, skip_ssl_verification=False, yes=False, container_log_path=None):
+                        distribution_version=None, azure_hybrid_benefit=None, skip_ssl_verification=False, yes=False, container_log_path=None, enable_gateway=False, 
+                        gateway_resource_id="", configuration_settings=None, configuration_protected_settings=None):
     logger.warning("This operation might take a while...\n")
 
     # changing cli config to push telemetry in 1 hr interval
@@ -133,9 +134,28 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
+    configuration_settings, configuration_protected_settings, protected_helm_values = utils.add_config_protected_settings(http_proxy, https_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings)
+    arc_agent_configurations = None
+    if configuration_protected_settings is not None or configuration_settings is not None:
+        arc_agent_configurations = generate_arc_agent_configuration(configuration_settings, configuration_protected_settings)
+
     # Set preview client if latest preview properties are provided.
     if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None:
         client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
+
+    # Check if the provided Gateway ARM ID is valid
+    gateway = None
+    if enable_gateway:
+        gateway_armid_pattern = r"^/subscriptions/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/resourceGroups/[a-zA-Z0-9_-]+/providers/Microsoft\.HybridCompute/gateways/[a-zA-Z0-9_-]+$"
+        if re.match(gateway_armid_pattern, gateway_resource_id): 
+            logger.warning("The provided Gateway ArmID is valid.")
+            gateway = Gateway(
+                enabled=True,
+                resource_id=gateway_resource_id
+            )
+            client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
+        else:
+            raise InvalidArgumentValueError(str.format(consts.Gateway_ArmId_Is_Invalid, gateway_resource_id))
 
     # Checking whether optional extra values file has been provided.
     values_file = utils.get_values_file()
@@ -217,6 +237,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
             if storage_space_available is False:
                 logger.warning("There is no storage space available on your device and hence not saving cluster \
                     diagnostic check logs on your device")
+
+            # TODO: Add DP health check call
+             
 
     except Exception as e:
         telemetry.set_exception(exception="An exception has occured while trying to execute pre-onboarding diagnostic \
@@ -382,7 +405,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
                 cc = generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra,
                                               enable_private_link, private_link_scope_resource_id,
-                                              distribution_version, azure_hybrid_benefit)
+                                              distribution_version, azure_hybrid_benefit, arc_agent_configurations, gateway)
                 cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
                 cc_response = LongRunningOperation(cmd.cli_ctx)(cc_response)
                 # Disabling cluster-connect if private link is getting enabled
@@ -435,18 +458,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
         utils.add_helm_repo(kube_config, kube_context, helm_client_location)
 
-    # Retrieving Helm chart OCI Artifact location
-    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else \
-        utils.get_helm_registry(cmd, config_dp_endpoint, release_train)
-
-    # Get azure-arc agent version for telemetry
-    azure_arc_agent_version = registry_path.split(':')[1]
-    telemetry.add_extension_event('connectedk8s',
-                                  {'Context.Default.AzureCLI.AgentVersion': azure_arc_agent_version})
-
-    # Get helm chart path
-    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location)
-
     # Generate public-private key pair
     try:
         key_pair = RSA.generate(4096)
@@ -470,25 +481,47 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     # Generate request payload
     cc = generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra,
                                   enable_private_link, private_link_scope_resource_id, distribution_version,
-                                  azure_hybrid_benefit)
+                                  azure_hybrid_benefit, arc_agent_configurations, gateway)
 
     print("Azure resource provisioning has begun.")
     # Create connected cluster resource
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
     put_cc_response = LongRunningOperation(cmd.cli_ctx)(put_cc_response)
     print("Azure resource provisioning has finished.")
+
     # Checking if custom locations rp is registered and fetching oid if it is registered
     enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id)
 
+    # Change: Calling DP for Helm values
+    # Perform DP health check
+    _ = utils.health_check_dp(cmd, config_dp_endpoint)
+
+    # Retrieving Helm chart OCI Artifact location
+    helm_values_dp = utils.get_helm_values(cmd, config_dp_endpoint, release_train, request_body=put_cc_response.as_dict())
+
+    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else \
+        helm_values_dp["repositoryPath"]
+    
+    helm_content_values = helm_values_dp["helmValuesContent"]
+        
+    # Get azure-arc agent version for telemetry
+    azure_arc_agent_version = registry_path.split(':')[1]
+    telemetry.add_extension_event('connectedk8s',
+                                  {'Context.Default.AzureCLI.AgentVersion': azure_arc_agent_version})
+
+    # Get helm chart path
+    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location)
+
+    # Substitute any protected helm values as the value for that will be null
+    for helm_parameter, helm_value in protected_helm_values.items():
+        helm_content_values[helm_parameter] = helm_value
+
     print("Starting to install Azure arc agents on the Kubernetes cluster.")
     # Install azure-arc agents
-    utils.helm_install_release(cmd.cli_ctx.cloud.endpoints.resource_manager, chart_path, subscription_id,
-                               kubernetes_distro, kubernetes_infra, resource_group_name, cluster_name,
-                               location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert,
-                               private_key_pem, kube_config, kube_context, no_wait, values_file, azure_cloud,
-                               disable_auto_upgrade, enable_custom_locations, custom_locations_oid,
-                               helm_client_location, enable_private_link, arm_metadata,
-                               onboarding_timeout, container_log_path)
+    utils.helm_install_release(cmd.cli_ctx.cloud.endpoints.resource_manager, chart_path, kubernetes_distro,
+                               kubernetes_infra, location, private_key_pem, kube_config, kube_context, no_wait,
+                               values_file, azure_cloud, enable_custom_locations, custom_locations_oid, helm_client_location,
+                               enable_private_link, arm_metadata, onboarding_timeout, helm_content_values)
     return put_cc_response
 
 
@@ -829,8 +862,20 @@ def check_arm64_node(api_response):
                                            raise_error=False)
     return False
 
+def generate_arc_agent_configuration(configuration_settings, configuration_protected_settings):
+    arc_agent_configurations = []
+    for feature in set(list(configuration_settings.keys()) + list(configuration_protected_settings.keys())):
+        settings = configuration_settings.get(feature)
+        protected_settings = configuration_protected_settings.get(feature)
+        configuration = ArcAgentryConfigurations(
+            feature=feature,
+            settings=settings,
+            protected_settings=protected_settings
+        )
+        arc_agent_configurations.append(configuration)
+    return arc_agent_configurations
 
-def generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit):
+def generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id, distribution_version, azure_hybrid_benefit, arc_agent_configurations, gateway):
     # Create connected cluster resource object
     identity = ConnectedClusterIdentity(
         type="SystemAssigned"
@@ -845,6 +890,10 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
         distribution=kubernetes_distro,
         infrastructure=kubernetes_infra
     )
+    if arc_agent_configurations is not None:
+        cc.arc_agentry_configurations = arc_agent_configurations
+    if gateway is not None:
+        cc.gateway = gateway
 
     if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None:
         private_link_state = None

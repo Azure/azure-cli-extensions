@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.8.0
+++++++
+* Add support for api version 07-01-2024
+* Add support for Arc Gateway feature
+
 1.7.3
 ++++++
 * Skip helm archive download if helm is already installed.
