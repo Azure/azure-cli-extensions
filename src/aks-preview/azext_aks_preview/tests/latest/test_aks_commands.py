@@ -5184,30 +5184,27 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
     # live only due to workspace is not mocked
-    # gangams: commenting this test for now since it has dependency on azure-cli 2.62.0 which is not available in the current release
-    # @live_only()
-    # @AllowLargeResponse()
-    # @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    # def test_aks_create_with_private_cluster_with_monitoring_aad_auth_msi_with_ampls(self, resource_group, resource_group_location,):
-    #     aks_name = self.create_random_name('cliakstest', 16)
-    #     self.create_new_cluster_with_monitoring_aad_auth(resource_group, resource_group_location, aks_name, user_assigned_identity=False, syslog_enabled=False, data_collection_settings=None, use_ampls=True)
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_private_cluster_with_monitoring_aad_auth_msi_with_ampls(self, resource_group, resource_group_location,):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.create_new_cluster_with_monitoring_aad_auth(resource_group, resource_group_location, aks_name, user_assigned_identity=False, syslog_enabled=False, data_collection_settings=None, use_ampls=True)
 
-    # gangams: commenting this test for now since it has dependency on azure-cli 2.62.0 which is not available in the current release
     # live only due to workspace is not mocked
-    # @live_only()
-    # @AllowLargeResponse()
-    # @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    # def test_aks_create_with_monitoring_aad_auth_with_highlogscale(self, resource_group, resource_group_location,):
-    #     aks_name = self.create_random_name('cliakstest', 16)
-    #     self.create_new_cluster_with_monitoring_aad_auth(resource_group, resource_group_location, aks_name, user_assigned_identity=False, syslog_enabled=False, data_collection_settings=None, use_ampls=False, highlogscale_mode_enabled=True)
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_monitoring_aad_auth_with_highlogscale(self, resource_group, resource_group_location,):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.create_new_cluster_with_monitoring_aad_auth(resource_group, resource_group_location, aks_name, user_assigned_identity=False, syslog_enabled=False, data_collection_settings=None, use_ampls=False, highlogscale_mode_enabled=True)
 
-    # gangams: commenting this test since it has dependency on azure-cli 2.62.0 which is not available in the current release
-    # @live_only()
-    # @AllowLargeResponse()
-    # @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
-    # def test_aks_create_with_private_cluster_with_monitoring_aad_auth_msi_with_ampls_with_highlogscale(self, resource_group, resource_group_location,):
-    #     aks_name = self.create_random_name('cliakstest', 16)
-    #     self.create_new_cluster_with_monitoring_aad_auth(resource_group, resource_group_location, aks_name, user_assigned_identity=False, syslog_enabled=False, data_collection_settings=None, use_ampls=True, highlogscale_mode_enabled=True)
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
+    def test_aks_create_with_private_cluster_with_monitoring_aad_auth_msi_with_ampls_with_highlogscale(self, resource_group, resource_group_location,):
+        aks_name = self.create_random_name('cliakstest', 16)
+        self.create_new_cluster_with_monitoring_aad_auth(resource_group, resource_group_location, aks_name, user_assigned_identity=False, syslog_enabled=False, data_collection_settings=None, use_ampls=True, highlogscale_mode_enabled=True)
 
 
 
