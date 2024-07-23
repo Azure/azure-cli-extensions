@@ -12,6 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * Update the minimum required cli core version to `2.61.0`.
+* Add option `--enable-imds-restriction --disable-imds-restriction` to `az aks create` and `az aks update`. 
 
 7.0.0b1
 ++++++++
