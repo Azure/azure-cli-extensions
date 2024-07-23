@@ -101,3 +101,12 @@ helps['vm repair repair-and-restore'] = """
           text: >
             az vm repair repair-and-restore --name vmrepairtest --resource-group MyResourceGroup --verbose
 """
+
+helps['vm repair reuse'] = """
+    type: command
+    short-summary: Reuse existing vm as your repair VM.
+    examples:
+        - name: reuse.
+          text: >
+            az vm repair reuse --name vmrepairtest --resource-group MyResourceGroup --verbose
+"""
