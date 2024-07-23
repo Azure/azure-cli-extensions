@@ -375,10 +375,10 @@ def add_helm_repo(kube_config, kube_context, helm_client_location):
                                 summary='Failed to add helm repository')
         raise CLIInternalError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
 
-def get_helm_registry(cmd, config_dp_endpoint, release_train_custom=None):
+def get_helm_values(cmd, config_dp_endpoint, release_train_custom=None, request_body=None):
     # Setting uri
-    api_version = "2019-11-01-preview"
-    chart_location_url_segment = "azure-arc-k8sagents/GetLatestHelmPackagePath?api-version={}".format(api_version)
+    api_version = "2024-07-01-preview"
+    chart_location_url_segment = "azure-arc-k8sagents/GetHelmSettings?api-version={}".format(api_version)
     release_train = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
     chart_location_url = "{}/{}".format(config_dp_endpoint, chart_location_url_segment)
     if release_train_custom:
@@ -389,24 +389,43 @@ def get_helm_registry(cmd, config_dp_endpoint, release_train_custom=None):
     if os.getenv('AZURE_ACCESS_TOKEN'):
         headers = ["Authorization=Bearer {}".format(os.getenv('AZURE_ACCESS_TOKEN'))]
     # Sending request with retries
-    r = send_request_with_retries(cmd.cli_ctx, 'post', chart_location_url, headers=headers, fault_type=consts.Get_HelmRegistery_Path_Fault_Type, summary='Error while fetching helm chart registry path', uri_parameters=uri_parameters, resource=resource)
+    r = send_request_with_retries(cmd.cli_ctx, 'post', chart_location_url, headers=headers, fault_type=consts.Get_HelmRegistery_Path_Fault_Type, summary='Error while fetching helm chart registry path', uri_parameters=uri_parameters, resource=resource, request_body=request_body)
     if r.content:
         try:
-            return r.json().get('repositoryPath')
+            return r.json()
         except Exception as e:
             telemetry.set_exception(exception=e, fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
-                                    summary='Error while fetching helm chart registry path')
-            raise CLIInternalError("Error while fetching helm chart registry path from JSON response: " + str(e))
+                                    summary='Error while fetching helm values from DP')
+            raise CLIInternalError("Error while fetching helm values from DP from JSON response: " + str(e))
     else:
         telemetry.set_exception(exception='No content in response', fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
                                 summary='No content in acr path response')
         raise CLIInternalError("No content was found in helm registry path response.")
 
+def health_check_dp(cmd, config_dp_endpoint):
+    # Setting uri
+    api_version = "2024-07-01-preview"
+    chart_location_url_segment = "azure-arc-k8sagents/healthCheck?api-version={}".format(api_version)
+    chart_location_url = "{}/{}".format(config_dp_endpoint, chart_location_url_segment)
+    uri_parameters = []
+    resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
+    headers = None
+    if os.getenv('AZURE_ACCESS_TOKEN'):
+        headers = ["Authorization=Bearer {}".format(os.getenv('AZURE_ACCESS_TOKEN'))]
+    # Sending request with retries
+    r = send_request_with_retries(cmd.cli_ctx, 'post', chart_location_url, headers=headers, fault_type=consts.Get_HelmRegistery_Path_Fault_Type, summary='Error while performing DP health check', uri_parameters=uri_parameters, resource=resource)
+    if r.status_code == 200:
+        print("Health check for DP is successful.")
+        return True
+    else:
+        telemetry.set_exception(exception="Error while performing DP health check", fault_type=consts.DP_Health_Check,
+                                    summary='Error while performing DP health check')
+        raise CLIInternalError("Error while performing DP health check")
 
-def send_request_with_retries(cli_ctx, method, url, headers, fault_type, summary, uri_parameters=None, resource=None, retry_count=5, retry_delay=3):
+def send_request_with_retries(cli_ctx, method, url, headers, fault_type, summary, uri_parameters=None, resource=None, retry_count=5, retry_delay=3, request_body=None):
     for i in range(retry_count):
         try:
-            response = send_raw_request(cli_ctx, method, url, headers=headers, uri_parameters=uri_parameters, resource=resource)
+            response = send_raw_request(cli_ctx, method, url, headers=headers, uri_parameters=uri_parameters, resource=resource, body=request_body)
             return response
         except Exception as e:
             if i == retry_count - 1:
@@ -564,20 +583,13 @@ def cleanup_release_install_namespace_if_exists():
 
 
 # DO NOT use this method for re-put scenarios. This method involves new NS creation for helm release. For re-put scenarios, brownfield scenario needs to be handled where helm release still stays in default NS
-def helm_install_release(resource_manager, chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name,
-                         cluster_name, location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
-                         kube_config, kube_context, no_wait, values_file, cloud_name, disable_auto_upgrade, enable_custom_locations,
-                         custom_locations_oid, helm_client_location, enable_private_link, arm_metadata, onboarding_timeout="600",
-                         container_log_path=None):
+def helm_install_release(resource_manager, chart_path, kubernetes_distro, kubernetes_infra, location, private_key_pem,
+                         kube_config, kube_context, no_wait, values_file, cloud_name, enable_custom_locations, custom_locations_oid,
+                         helm_client_location, enable_private_link, arm_metadata, onboarding_timeout="600", helm_content_values=None):
 
     cmd_helm_install = [helm_client_location, "upgrade", "--install", "azure-arc", chart_path,
-                        "--set", "global.subscriptionId={}".format(subscription_id),
                         "--set", "global.kubernetesDistro={}".format(kubernetes_distro),
                         "--set", "global.kubernetesInfra={}".format(kubernetes_infra),
-                        "--set", "global.resourceGroupName={}".format(resource_group_name),
-                        "--set", "global.resourceName={}".format(cluster_name),
-                        "--set", "global.location={}".format(location),
-                        "--set", "global.tenantId={}".format(onboarding_tenant_id),
                         "--set", "global.onboardingPrivateKey={}".format(private_key_pem),
                         "--set", "systemDefaultValues.spnOnboarding=false",
                         "--set", "global.azureEnvironment={}".format(cloud_name),
@@ -610,6 +622,9 @@ def helm_install_release(resource_manager, chart_path, subscription_id, kubernet
         else:
             logger.debug("'arcConfigEndpoint' doesn't exist under 'dataplaneEndpoints' in the ARM metadata.")
 
+    # Add helmValues content response from DP
+    cmd_helm_install = parse_helm_values(helm_content_values, cmd_helm=cmd_helm_install)
+
     # Add custom-locations related params
     if enable_custom_locations and not enable_private_link:
         cmd_helm_install.extend(["--set", "systemDefaultValues.customLocations.enabled=true"])
@@ -620,21 +635,6 @@ def helm_install_release(resource_manager, chart_path, subscription_id, kubernet
     # To set some other helm parameters through file
     if values_file:
         cmd_helm_install.extend(["-f", values_file])
-    if disable_auto_upgrade:
-        cmd_helm_install.extend(["--set", "systemDefaultValues.azureArcAgents.autoUpdate={}".format("false")])
-    if https_proxy:
-        cmd_helm_install.extend(["--set", "global.httpsProxy={}".format(https_proxy)])
-    if http_proxy:
-        cmd_helm_install.extend(["--set", "global.httpProxy={}".format(http_proxy)])
-    if no_proxy:
-        cmd_helm_install.extend(["--set", "global.noProxy={}".format(no_proxy)])
-    if proxy_cert:
-        cmd_helm_install.extend(["--set-file", "global.proxyCert={}".format(proxy_cert)])
-        cmd_helm_install.extend(["--set", "global.isCustomCert={}".format(True)])
-    if https_proxy or http_proxy or no_proxy:
-        cmd_helm_install.extend(["--set", "global.isProxyEnabled={}".format(True)])
-    if container_log_path is not None:
-        cmd_helm_install.extend(["--set", "systemDefaultValues.fluent-bit.containerLogPath={}".format(container_log_path)])
     if kube_config:
         cmd_helm_install.extend(["--kubeconfig", kube_config])
     if kube_context:
@@ -836,3 +836,32 @@ def get_metadata(arm_endpoint, api_version="2022-09-01"):
         print(msg, file=sys.stderr)
         print(f"Please ensure you have network connection. Error: {str(err)}", file=sys.stderr)
         arm_exception_handler(err, msg)
+
+def add_config_protected_settings(https_proxy, http_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings):
+    protected_helm_values = {}
+    if container_log_path:
+        configuration_settings.setdefault("logging", {"container_log_path": container_log_path})
+    if any([https_proxy, http_proxy, no_proxy, proxy_cert]):
+        configuration_protected_settings.setdefault("proxy", {})
+        if https_proxy:
+            configuration_protected_settings["proxy"]["https_proxy"] = https_proxy
+            protected_helm_values["global.httpsProxy"] = https_proxy
+        if http_proxy:
+            configuration_protected_settings["proxy"]["http_proxy"] = http_proxy
+            protected_helm_values["global.httpProxy"] = http_proxy
+        if no_proxy:
+            configuration_protected_settings["proxy"]["no_proxy"] = no_proxy
+            protected_helm_values["global.noProxy"] = no_proxy
+        if proxy_cert:
+            configuration_protected_settings["proxy"]["proxy_cert"] = proxy_cert
+            protected_helm_values["global.proxyCert"] = proxy_cert
+    return configuration_settings, configuration_protected_settings, protected_helm_values
+
+def parse_helm_values(helm_content_values, cmd_helm):
+    for helm_param, helm_value in helm_content_values.items():
+        if helm_param == "global.proxyCert":
+            cmd_helm.extend(["--set-file", "{}={}".format(helm_param, helm_value)])
+            continue
+        cmd_helm.extend(["--set", "{}={}".format(helm_param, helm_value)])
+    
+    return cmd_helm
