@@ -3389,6 +3389,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             pool_details["os_type"] = agentpool.os_type
             pool_details["mode"] = agentpool.mode
             pool_details["node_taints"] = agentpool.node_taints
+            pool_details["zoned"] = agentpool.availability_zones is not None
             agentpool_details.append(pool_details)
             # Marking the only agentpool name as the valid nodepool for
             # installing Azure Container Storage during `az aks create`
@@ -4171,6 +4172,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     pool_details["os_type"] = agentpool.os_type
                     pool_details["mode"] = agentpool.mode
                     pool_details["node_taints"] = agentpool.node_taints
+                    pool_details["zoned"] = agentpool.availability_zones is not None
                     if agentpool.node_labels is not None:
                         node_labels = agentpool.node_labels
                         if node_labels is not None and \
@@ -4299,10 +4301,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     pre_disable_validate = False
 
                     msg = (
-                        "Disabling Azure Container Storage will forcefully delete all the storagepools in the cluster "
-                        "and affect the applications using these storagepools. Forceful deletion of storagepools can "
+                        "Disabling Azure Container Storage will forcefully delete all the storage pools in the cluster "
+                        "and affect the applications using these storage pools. Forceful deletion of storage pools can "
                         "also lead to leaking of storage resources which are being consumed. Do you want to validate "
-                        "whether any of the storagepools are being used before disabling Azure Container Storage?"
+                        "whether any of the storage pools are being used before disabling Azure Container Storage?"
                     )
 
                     from azext_aks_preview.azurecontainerstorage._consts import (
@@ -4310,11 +4312,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     )
                     if disable_pool_type != CONST_ACSTOR_ALL:
                         msg = (
-                            f"Disabling Azure Container Storage for storagepool type {disable_pool_type} "
-                            "will forcefully delete all the storagepools of the same type and affect the "
-                            "applications using these storagepools. Forceful deletion of storagepools can "
+                            f"Disabling Azure Container Storage for storage pool type {disable_pool_type} "
+                            "will forcefully delete all the storage pools of the same type and affect the "
+                            "applications using these storage pools. Forceful deletion of storage pools can "
                             "also lead to leaking of storage resources which are being consumed. Do you want to "
-                            f"validate whether any of the storagepools of type {disable_pool_type} are being used "
+                            f"validate whether any of the storage pools of type {disable_pool_type} are being used "
                             "before disabling Azure Container Storage?"
                         )
                     if self.context.get_yes() or prompt_y_n(msg, default="y"):
