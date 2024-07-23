@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.8.1
+1.9.0
 ++++++
 * Upgrading to v0.2.2 of ArcK8sDiagnoser
 * Fix Style and Linter issues.
