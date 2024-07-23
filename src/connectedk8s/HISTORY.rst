@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.9.0
+++++++
+* Added support for arc gateway feature.
+
 1.8.0
 ++++++
 * New api version 2024-07-1-preview added

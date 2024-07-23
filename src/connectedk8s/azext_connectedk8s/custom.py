@@ -1358,6 +1358,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     # Update connected cluster resource
     reput_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, False)
     reput_cc_response = LongRunningOperation(cmd.cli_ctx)(reput_cc_response)
+    dp_request_payload = reput_cc_response.result()
 
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
@@ -1369,7 +1370,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     _ = utils.health_check_dp(cmd, config_dp_endpoint)
 
     # Retrieving Helm chart OCI Artifact location
-    helm_values_dp = utils.get_helm_values(cmd, config_dp_endpoint, release_train, request_body=json.dumps(result))
+    helm_values_dp = utils.get_helm_values(cmd, config_dp_endpoint, release_train, request_body=json.dumps(dp_request_payload))
 
     registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else \
         helm_values_dp["repositoryPath"]
