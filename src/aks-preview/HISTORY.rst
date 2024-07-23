@@ -13,6 +13,11 @@ Pending
 +++++++
 * Update the minimum required cli core version to `2.61.0`.
 
+7.0.0b2
+++++++++
+* Introduce valdations to `az aks create` and `az aks update` while using PremiumV2 disk during enabling Azure Container Storage.
+* Delete the Azure Container Storage installation after failure to prevent retries.
+
 7.0.0b1
 ++++++++
 * [BREAKING CHANGE]: Remove support for `az aks get-os-options` command.
