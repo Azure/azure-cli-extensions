@@ -3962,6 +3962,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--nodepool-name {nodepool_name} "
             "--node-count 1 "
             "-k {upgrade_k8s_version} "
+            "--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure "
             "--ssh-key-value={ssh_key_value} -o json"
         )
         response = self.cmd(
@@ -4023,6 +4024,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--nodepool-name {nodepool_name} "
             "--node-count 1 "
             "-k {k8s_version} "
+            "--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure "
             "--ssh-key-value={ssh_key_value} -o json"
         )
         self.cmd(
