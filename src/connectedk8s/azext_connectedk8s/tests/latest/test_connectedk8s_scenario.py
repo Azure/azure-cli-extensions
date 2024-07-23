@@ -181,6 +181,73 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         # delete the kube config
         os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
+        
+    @live_only()
+    @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
+    def test_connect_withoidcandworkloadidentity(self,resource_group):
+        managed_cluster_name = self.create_random_name(prefix='test-connect', length=24)
+        kubeconfig = "%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
+        self.kwargs.update({
+            'rg': resource_group,
+            'name': self.create_random_name(prefix='cc-', length=12),
+            'kubeconfig': kubeconfig,
+            'managed_cluster_name': managed_cluster_name,
+            'location': CONFIG['location']
+        })
+
+        # scenario - oidc issuer and workload identity enabled
+        self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
+        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
+        self.cmd('connectedk8s connect -n {name} -g {rg} -l {location} --tags foo=doo --enable-oidc-issuer \
+            --enable-workload-identity --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin')
+        self.cmd('connectedk8s show -g {rg} -n {name}', checks=[
+            self.check('tags.foo', 'doo'),
+            self.check('name', '{name}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('oidcIssuerProfile.enabled', True),
+            self.check('securityProfile.workloadIndentity.enabled', True)
+        ])
+
+        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context \
+            {managed_cluster_name}-admin -y')
+        self.cmd('aks delete -g {rg} -n {managed_cluster_name} -y')
+
+        # delete the kube config
+        os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
+        
+    @live_only()
+    @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
+    def test_connect_withoidcandselfhostedissuer(self,resource_group):
+        managed_cluster_name = self.create_random_name(prefix='test-connect', length=24)
+        kubeconfig = "%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
+        self.kwargs.update({
+            'rg': resource_group,
+            'name': self.create_random_name(prefix='cc-', length=12),
+            'kubeconfig': kubeconfig,
+            'managed_cluster_name': managed_cluster_name,
+            'location': CONFIG['location']
+        })
+
+        # scenario - oidc issuer enabled and self hosted issuer url set
+        self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
+        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
+        self.cmd('connectedk8s connect -n {name} -g {rg} -l {location} --tags foo=doo --enable-oidc-issuer \
+            --self-hosted-issuer "https://oidcissuer-selfhosted.azure.net/" --kube-config {kubeconfig} \
+            --kube-context {managed_cluster_name}-admin')
+        self.cmd('connectedk8s show -g {rg} -n {name}', checks=[
+            self.check('tags.foo', 'doo'),
+            self.check('name', '{name}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('oidcIssuerProfile.enabled', True),
+            self.check('oidcIssuerProfile.selfHostedIssuerUrl', 'https://oidcissuer-selfhosted.azure.net/')
+        ])
+
+        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context \
+            {managed_cluster_name}-admin -y')
+        self.cmd('aks delete -g {rg} -n {managed_cluster_name} -y')
+
+        # delete the kube config
+        os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
 
     @live_only()
     @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
@@ -547,6 +614,28 @@ only supported when auto-upgrade is set to false"):
             self.check('name', '{name}'),
             self.check('resourceGroup', '{rg}'),
             self.check('tags.foo', 'moo')
+        ])
+        
+        # scenario - oidc issuer and workload identity enabled
+        self.cmd('connectedk8s update -n {name} -g {rg} --enable-oidc-issuer \
+            --enable-workload-identity --kube-config {kubeconfig} \
+            --kube-context {managed_cluster_name}-admin')
+        self.cmd('connectedk8s show -g {rg} -n {name}', checks=[
+            self.check('name', '{name}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('oidcIssuerProfile.enabled', True),
+            self.check('securityProfile.workloadIndentity.enabled', True)
+        ])
+        
+        # scenario - oidc issuer enabled and self hosted issuer url set
+        self.cmd('connectedk8s update -n {name} -g {rg} --enable-oidc-issuer \
+            --self-hosted-issuer "https://oidcissuer-selfhosted.azure.net/" --kube-config {kubeconfig} \
+            --kube-context {managed_cluster_name}-admin')
+        self.cmd('connectedk8s show -g {rg} -n {name}', checks=[
+            self.check('name', '{name}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('oidcIssuerProfile.enabled', True),
+            self.check('oidcIssuerProfile.selfHostedIssuerUrl', 'https://oidcissuer-selfhosted.azure.net/')
         ])
 
         self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context \

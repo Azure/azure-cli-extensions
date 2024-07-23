@@ -375,7 +375,6 @@ def add_helm_repo(kube_config, kube_context, helm_client_location):
                                 summary='Failed to add helm repository')
         raise CLIInternalError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
 
-
 def get_helm_registry(cmd, config_dp_endpoint, release_train_custom=None):
     # Setting uri
     api_version = "2019-11-01-preview"
@@ -654,7 +653,6 @@ def helm_install_release(resource_manager, chart_path, subscription_id, kubernet
                                 summary='Unable to install helm release')
         logger.warning("Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' to check if all the pods are in running state. A possible cause for pods stuck in pending state could be insufficient resources on the kubernetes cluster to onboard to arc.")
         raise CLIInternalError("Unable to install helm release: " + error_helm_install.decode("ascii"))
-
 
 def get_release_namespace(kube_config, kube_context, helm_client_location, release_name='azure-arc'):
     cmd_helm_release = [helm_client_location, "list", "-a", "--all-namespaces", "--output", "json"]
