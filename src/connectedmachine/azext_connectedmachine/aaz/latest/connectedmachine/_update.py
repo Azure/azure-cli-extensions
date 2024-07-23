@@ -154,13 +154,13 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.parent_cluster_resource_id = AAZStrArg(
-            options=["--parent-cluster-resource-id"],
+            options=["--parent-cluster-id", "--parent-cluster-resource-id"],
             arg_group="Properties",
             help="The resource id of the parent cluster (Azure HCI) this machine is assigned to, if any.",
             nullable=True,
         )
         _args_schema.private_link_scope_resource_id = AAZStrArg(
-            options=["--private-link-scope-resource-id"],
+            options=["--private-link-scope-id", "--private-link-scope-resource-id"],
             arg_group="Properties",
             help="The resource id of the private link scope this machine is assigned to, if any.",
             nullable=True,

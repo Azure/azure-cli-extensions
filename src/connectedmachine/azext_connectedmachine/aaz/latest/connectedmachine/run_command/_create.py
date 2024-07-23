@@ -77,9 +77,9 @@ class Create(AAZCommand):
             default=False,
         )
         _args_schema.error_blob_managed_identity = AAZObjectArg(
-            options=["--error-blob-managed-identity"],
+            options=["--error-blob-id", "--error-blob-managed-identity"],
             arg_group="Properties",
-            help="User-assigned managed identity that has access to errorBlobUri storage blob. Use an empty object in case of system-assigned identity. Make sure managed identity has been given access to blob's container with 'Storage Blob Data Contributor' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged ",
+            help="User-assigned managed identity that has access to errorBlobUri storage blob. Use an empty object in case of system-assigned identity. Make sure managed identity has been given access to blob's container with 'Storage Blob Data Contributor' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged",
         )
         cls._build_args_run_command_managed_identity_create(_args_schema.error_blob_managed_identity)
         _args_schema.error_blob_uri = AAZStrArg(
@@ -88,9 +88,9 @@ class Create(AAZCommand):
             help="Specifies the Azure storage blob where script error stream will be uploaded. Use a SAS URI with read, append, create, write access OR use managed identity to provide the VM access to the blob. Refer errorBlobManagedIdentity parameter.",
         )
         _args_schema.output_blob_managed_identity = AAZObjectArg(
-            options=["--output-blob-managed-identity"],
+            options=["--output-blob-id", "--output-blob-managed-identity"],
             arg_group="Properties",
-            help="User-assigned managed identity that has access to outputBlobUri storage blob. Use an empty object in case of system-assigned identity. Make sure managed identity has been given access to blob's container with 'Storage Blob Data Contributor' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged ",
+            help="User-assigned managed identity that has access to outputBlobUri storage blob. Use an empty object in case of system-assigned identity. Make sure managed identity has been given access to blob's container with 'Storage Blob Data Contributor' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged",
         )
         cls._build_args_run_command_managed_identity_create(_args_schema.output_blob_managed_identity)
         _args_schema.output_blob_uri = AAZStrArg(
@@ -171,7 +171,7 @@ class Create(AAZCommand):
             help="Specifies the script download location. It can be either SAS URI of an Azure storage blob with read access or public URI.",
         )
         _args_schema.script_uri_managed_identity = AAZObjectArg(
-            options=["--script-uri-managed-identity"],
+            options=["--script-uri-id", "--script-uri-managed-identity"],
             arg_group="Source",
             help="User-assigned managed identity that has access to scriptUri in case of Azure storage blob. Use an empty object in case of system-assigned identity. Make sure the Azure storage blob exists, and managed identity has been given access to blob's container with 'Storage Blob Data Reader' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged.",
         )
