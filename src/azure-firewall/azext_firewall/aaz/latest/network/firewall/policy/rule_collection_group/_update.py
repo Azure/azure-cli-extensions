@@ -110,6 +110,7 @@ class Update(AAZCommand):
             ),
         )
 
+        # define firewall_policy_filter_rule_collection
         firewall_policy_filter_rule_collection = cls._args_schema.rule_collections.Element.firewall_policy_filter_rule_collection
         firewall_policy_filter_rule_collection.action = AAZObjectArg(
             options=["action"],
@@ -154,6 +155,7 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        # define app rule in firewall_policy_filter_rule_collection
         application_rule = cls._args_schema.rule_collections.Element.firewall_policy_filter_rule_collection.rules.Element.application_rule
         application_rule.destination_addresses = AAZListArg(
             options=["destination-addresses"],
@@ -261,7 +263,7 @@ class Update(AAZCommand):
         )
 
         http_headers_to_insert = cls._args_schema.rule_collections.Element.firewall_policy_filter_rule_collection.rules.Element.application_rule.http_headers_to_insert
-        http_headers_to_insert.Element = AAZStrArg(
+        http_headers_to_insert.Element = AAZObjectArg(
             nullable=True,
         )
      
@@ -275,7 +277,7 @@ class Update(AAZCommand):
             help="Value of the header"
         )
 
-
+        # define NAT rule in firewall_policy_filter_rule_collection
         nat_rule = cls._args_schema.rule_collections.Element.firewall_policy_filter_rule_collection.rules.Element.nat_rule
         nat_rule.destination_addresses = AAZListArg(
             options=["destination-addresses"],
@@ -336,6 +338,7 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        # define network rule in firewall_policy_filter_rule_collection
         network_rule = cls._args_schema.rule_collections.Element.firewall_policy_filter_rule_collection.rules.Element.network_rule
         network_rule.destination_addresses = AAZListArg(
             options=["destination-addresses"],
@@ -402,6 +405,7 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        # define firewall_policy_nat_rule_collection
         firewall_policy_nat_rule_collection = cls._args_schema.rule_collections.Element.firewall_policy_nat_rule_collection
         firewall_policy_nat_rule_collection.action = AAZObjectArg(
             options=["action"],
@@ -446,6 +450,7 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        # define app rule in firewall_policy_nat_rule_collection
         application_rule = cls._args_schema.rule_collections.Element.firewall_policy_nat_rule_collection.rules.Element.application_rule
         application_rule.destination_addresses = AAZListArg(
             options=["destination-addresses"],
@@ -544,11 +549,21 @@ class Update(AAZCommand):
         )
 
         http_headers_to_insert = cls._args_schema.rule_collections.Element.firewall_policy_nat_rule_collection.rules.Element.application_rule.http_headers_to_insert
-        http_headers_to_insert.Element = AAZStrArg(
+        http_headers_to_insert.Element = AAZObjectArg(
             nullable=True,
         )
-        
 
+        _element = cls._args_schema.rule_collections.Element.firewall_policy_nat_rule_collection.rules.Element.application_rule.http_headers_to_insert.Element
+        _element.header_name = AAZStrArg(
+            options=["header-name"],
+            help="Name of the header",
+        )
+        _element.header_value = AAZStrArg(
+            options=["header-value"],
+            help="Value of the header",
+        )
+        
+        # define NAT rule in firewall_policy_nat_rule_collection
         nat_rule = cls._args_schema.rule_collections.Element.firewall_policy_nat_rule_collection.rules.Element.nat_rule
         nat_rule.destination_addresses = AAZListArg(
             options=["destination-addresses"],
@@ -609,6 +624,7 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        # define network rule in firewall_policy_nat_rule_collection
         network_rule = cls._args_schema.rule_collections.Element.firewall_policy_nat_rule_collection.rules.Element.network_rule
         network_rule.destination_addresses = AAZListArg(
             options=["destination-addresses"],
@@ -1016,7 +1032,7 @@ class Update(AAZCommand):
 
             http_headers_to_insert = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:ApplicationRule}.httpHeadersToInsert")
             if http_headers_to_insert is not None:
-                http_headers_to_insert.set_elements(AAZStrType, ".")
+                http_headers_to_insert.set_elements(AAZObjectType, ".")
 
             _elements = _builder.get("{ruleType:ApplicationRule}.httpHeadersToInsert[]")
             if _elements is not None:
