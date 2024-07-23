@@ -1,6 +1,11 @@
 
 Release History
 ===============
+1.0.8
+++++++
+Add option `--no` to skip public IP creation during `az vm repair create` command.
+Fixed public ip resource name when passing `--yes` option.
+
 1.0.7
 ++++++
 az command adjustment
