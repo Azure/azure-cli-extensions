@@ -792,7 +792,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         self.cmd('containerapp env delete -g {} -n {} -y --no-wait'.format(resource_group, env_name))
 
         enabled_env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
-        self.cmd('containerapp env create -g {} -n {} --public-network-access Disabled'.format(
+        self.cmd('containerapp env create -g {} -n {} --public-network-access Disabled --logs-destination none'.format(
             resource_group, enabled_env_name),
                  checks=[
                      JMESPathCheck('properties.publicNetworkAccess', 'Disabled'),
