@@ -40,7 +40,7 @@ from Crypto.Util import asn1
 from azext_connectedk8s._client_factory import cf_resource_groups
 from azext_connectedk8s._client_factory import resource_providers_client
 from azext_connectedk8s._client_factory import \
-    cf_connected_cluster_prev_2022_10_01, cf_connected_cluster_prev_2023_11_01
+    cf_connected_cluster_prev_2022_10_01, cf_connected_cluster_prev_2023_11_01, cf_connected_cluster_prev_2024_07_01
 from azext_connectedk8s._client_factory import cf_connectedmachine
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as utils
@@ -51,6 +51,8 @@ from glob import glob
 from .vendored_sdks.models import ConnectedCluster, ConnectedClusterIdentity, ListClusterUserCredentialProperties
 from .vendored_sdks.preview_2022_10_01.models import ConnectedCluster as ConnectedClusterPreview
 from .vendored_sdks.preview_2022_10_01.models import ConnectedClusterPatch as ConnectedClusterPatchPreview
+from .vendored_sdks.preview_2024_07_01.models import ConnectedCluster as \
+    ConnectedCluster2024_07_01_Preview, OidcIssuerProfile, SecurityProfile, SecurityProfileWorkloadIdentity
 import sys
 import hashlib
 import re
@@ -68,7 +70,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                         disable_auto_upgrade=False, cl_oid=None,
                         onboarding_timeout=consts.DEFAULT_MAX_ONBOARDING_TIMEOUT_HELMVALUE_SECONDS,
                         enable_private_link=None, private_link_scope_resource_id=None, distribution_version=None,
-                        azure_hybrid_benefit=None, skip_ssl_verification=False, yes=False, container_log_path=None):
+                        azure_hybrid_benefit=None, skip_ssl_verification=False, yes=False, container_log_path=None,
+                        enable_oidc_issuer=False, enable_workload_identity=False, self_hosted_issuer=""):
     logger.warning("This operation might take a while...\n")
     # changing cli config to push telemetry in 1 hr interval
     try:
@@ -138,9 +141,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
     # Set preview client if latest preview properties are provided.
-    if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None:
-        client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
-
+    if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None \
+        or enable_workload_identity or enable_oidc_issuer:
+        client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
+    
     # Checking whether optional extra values file has been provided.
     values_file = utils.get_values_file()
     if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
@@ -401,7 +405,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
                 cc = generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra,
                                               enable_private_link, private_link_scope_resource_id,
-                                              distribution_version, azure_hybrid_benefit)
+                                              distribution_version, azure_hybrid_benefit, enable_oidc_issuer,
+                                              enable_workload_identity)
                 cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
                 cc_response = LongRunningOperation(cmd.cli_ctx)(cc_response)
                 # Disabling cluster-connect if private link is getting enabled
@@ -450,11 +455,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         except Exception as e:  # pylint: disable=broad-except
             utils.arm_exception_handler(e, consts.Create_ResourceGroup_Fault_Type,
                                         'Failed to create the resource group')
-
-    # Adding helm repo
-    if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
-        utils.add_helm_repo(kube_config, kube_context, helm_client_location)
-
+     
     # Retrieving Helm chart OCI Artifact location
     registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else \
         utils.get_helm_registry(cmd, config_dp_endpoint, release_train)
@@ -467,7 +468,12 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     # Get helm chart path
     chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location)
 
+    # Adding helm repo
+    if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
+        utils.add_helm_repo(kube_config, kube_context, helm_client_location)
+
     print("Step: {}: Generating Public-Private Key pair".format(utils.get_utctimestring()))
+
     # Generate public-private key pair
     try:
         key_pair = RSA.generate(4096)
@@ -492,7 +498,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     # Generate request payload
     cc = generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra,
                                   enable_private_link, private_link_scope_resource_id, distribution_version,
-                                  azure_hybrid_benefit)
+                                  azure_hybrid_benefit, enable_oidc_issuer, enable_workload_identity,
+                                  self_hosted_issuer)
 
     print("Step: {}: Azure resource provisioning has begun.".format(utils.get_utctimestring()))
     # Create connected cluster resource
@@ -513,9 +520,43 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                helm_client_location, enable_private_link, arm_metadata,
                                onboarding_timeout, container_log_path)
     print("Step: {}: Helm install of Azure arc agents Release ended.".format(utils.get_utctimestring()))
-
+    
+    # Add 2nd long running operation to wait for Agent State to reach terminal stage with a default 20 minute timeout
+    # window 
+    # TODO: Update poll_for_agent_state method to check for agent state and not provisioning state when feedback loop
+    # is implemented
+    if enable_oidc_issuer or enable_workload_identity:
+        print("Waiting for Agent State to reach terminal state")
+        if not poll_for_agent_state(cmd, resource_group_name, cluster_name):
+            print("Timed out waiting for Agent State to reach terminal state")
+            return False
+    
     return put_cc_response
 
+def poll_for_agent_state(cmd, resource_group_name, cluster_name, timeout_minutes=20, interval=5):
+    """
+    Polls for agent state to reach a terminal state with a timeout.
+
+    Args:
+        resource_group_name: Name of cluster's resource group
+        cluster_name: Name of cluster resource
+        timeout_minutes (int, optional): Timeout in minutes. Defaults to 10 minutes.
+        interval (float, optional): Time interval between attempts in seconds. Defaults to 1.
+    """
+
+    start_time = time.time()
+    while True:
+        connected_cluster = get_connectedk8s_2024_07_01(cmd, resource_group_name, cluster_name)
+        # Checking for provisioning state now as agent state feedback loop is not implemented
+        if connected_cluster.provisioning_state == "Succeeded" or connected_cluster.provisioning_state == "Failed":
+            print("Agent state has reached terminal state of: " + connected_cluster.provisioning_state)
+            return True
+        elapsed_time = time.time() - start_time
+        if elapsed_time >= timeout_minutes * 60:
+            print("Agent state has not reached terminal state within " + timeout_minutes + " minute timeout window: " +
+                  connected_cluster.provisioning_state)
+            return False
+        time.sleep(interval)
 
 def validate_existing_provisioned_cluster_for_reput(cluster_resource, kubernetes_distro, kubernetes_infra,
                                                     enable_private_link, private_link_scope_resource_id,
@@ -897,9 +938,29 @@ def check_arm64_node(api_response):
             raise_error=False)
     return False
 
+def set_oidc_issuer_profile(enable_oidc_issuer, self_hosted_issuer = ""):
+    oidc_profile = None
+    if enable_oidc_issuer:
+            oidc_profile = OidcIssuerProfile(
+                enabled=True
+            )
+            if self_hosted_issuer != "":
+                oidc_profile.self_hosted_issuer_url = self_hosted_issuer
+    return oidc_profile
+
+def set_security_profile(enable_workload_identity):
+    security_profile = None
+    if enable_workload_identity:
+        security_profile = SecurityProfile(
+            workload_identity= SecurityProfileWorkloadIdentity(
+                enabled=True
+            )
+        )
+    return security_profile 
 
 def generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link,
-                             private_link_scope_resource_id, distribution_version, azure_hybrid_benefit):
+                             private_link_scope_resource_id, distribution_version, azure_hybrid_benefit,
+                             enable_oidc_issuer, enable_workload_identity, self_hosted_issuer = ""):
     # Create connected cluster resource object
     identity = ConnectedClusterIdentity(type="SystemAssigned")
     if tags is None:
@@ -913,11 +974,17 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
         infrastructure=kubernetes_infra
     )
 
-    if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None:
+    if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None \
+        or enable_oidc_issuer or enable_workload_identity:
+        #Set additional parameters
         private_link_state = None
         if enable_private_link is not None:
             private_link_state = "Enabled" if enable_private_link is True else "Disabled"
-        cc = ConnectedClusterPreview(
+        
+        oidc_profile = set_oidc_issuer_profile(enable_oidc_issuer, self_hosted_issuer)
+        security_profile = set_security_profile(enable_workload_identity)
+        
+        cc = ConnectedCluster2024_07_01_Preview(
             location=location,
             identity=identity,
             agent_public_key_certificate=public_key,
@@ -927,8 +994,19 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
             private_link_scope_resource_id=private_link_scope_resource_id,
             private_link_state=private_link_state,
             azure_hybrid_benefit=azure_hybrid_benefit,
-            distribution_version=distribution_version
+            distribution_version=distribution_version,
+            oidc_issuer_profile=oidc_profile,
+            security_profile=security_profile
         )
+
+    return cc
+
+def generate_reput_request_payload(cc, enable_oidc_issuer, enable_workload_identity, self_hosted_issuer):
+    # Update connected cluster resource object
+    oidc_profile = set_oidc_issuer_profile(enable_oidc_issuer, self_hosted_issuer)
+    security_profile = set_security_profile(enable_workload_identity)
+    cc.oidc_issuer_profile = oidc_profile
+    cc.security_profile = security_profile
     return cc
 
 
@@ -1001,8 +1079,9 @@ def get_server_address(kube_config, kube_context):
 
 
 def get_connectedk8s(cmd, client, resource_group_name, cluster_name):
-    # Override preview client to show private link properties and cluster kind to customers
-    client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
+    # Override preview client to show private link properties, workload identity properties, and cluster kind to
+    # customers
+    client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
     return client.get(resource_group_name, cluster_name)
 
 
@@ -1011,10 +1090,17 @@ def get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name):
     client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
     return client.get(resource_group_name, cluster_name)
 
+def get_connectedk8s_2024_07_01(cmd, resource_group_name, cluster_name):
+    # Override preview client to show private link properties, workload identity properties, and cluster kind to
+    # customers
+    client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
+    return client.get(resource_group_name, cluster_name)
+
 
 def list_connectedk8s(cmd, client, resource_group_name=None):
-    # Override preview client to show private link properties and cluster kind to customers
-    client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
+    # Override preview client to show private link properties, workload identity properties, and cluster kind to
+    # customers
+    client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
     if not resource_group_name:
         return client.list_by_subscription()
     return client.list_by_resource_group(resource_group_name)
@@ -1189,13 +1275,21 @@ def update_connected_cluster_internal(client, resource_group_name, cluster_name,
 def update_connected_cluster(cmd, client, resource_group_name, cluster_name, https_proxy="", http_proxy="", no_proxy="",
                              proxy_cert="", disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None,
                              tags=None, distribution=None, distribution_version=None, azure_hybrid_benefit=None,
-                             skip_ssl_verification=False, yes=False, container_log_path=None):
+                             skip_ssl_verification=False, yes=False, container_log_path=None, enable_oidc_issuer=None,
+                             enable_workload_identity=None, self_hosted_issuer="", disable_workload_identity=None):
 
     # Prompt for confirmation for few parameters
     if azure_hybrid_benefit == "True":
         confirmation_message = "I confirm I have an eligible Windows Server license with Azure Hybrid Benefit to " \
             "apply this benefit to AKS on HCI or Windows Server. Visit https://aka.ms/ahb-aks for details"
         utils.user_confirmation(confirmation_message, yes)
+    
+    # Validation for the workload identity webhook parameter
+    if enable_workload_identity != None and disable_workload_identity != None:
+        raise InvalidArgumentValueError("Do not specify both enable-workload-identity and disable-workload-identity " +
+                                        "at the same time.")
+    if disable_workload_identity == True:
+        enable_workload_identity = False
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
@@ -1223,7 +1317,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
     # Fetch Connected Cluster for agent version
-    connected_cluster = get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name)
+    connected_cluster = get_connectedk8s_2024_07_01(cmd, resource_group_name, cluster_name)
 
     if (connected_cluster is not None) and (connected_cluster.kind is not None) and \
             (connected_cluster.kind.lower() == consts.Provisioned_Cluster_Kind):
@@ -1232,7 +1326,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
         raise InvalidArgumentValueError(err_msg)
 
     # Set preview client as most of the patchable fields are available in preview api-version
-    client = cf_connected_cluster_prev_2022_10_01(cmd.cli_ctx, None)
+    client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
 
     # Patching the connected cluster ARM resource
     arm_properties_unset = (
@@ -1250,7 +1344,8 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     if proxy_params_unset and auto_upgrade is None and container_log_path is None and arm_properties_only_ahb_set:
         return patch_cc_response
 
-    if proxy_params_unset and not auto_upgrade and arm_properties_unset and not container_log_path:
+    if proxy_params_unset and not auto_upgrade and arm_properties_unset and not container_log_path and \
+        enable_oidc_issuer == None and enable_workload_identity == None:
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
     if (https_proxy or http_proxy or no_proxy) and disable_proxy:
@@ -1289,6 +1384,15 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
         kubernetes_properties['Context.Default.AzureCLI.KubernetesInfra'] = kubernetes_infra
 
     telemetry.add_extension_event('connectedk8s', kubernetes_properties)
+    
+    # Get the connected cluster resource using latest api version and generate reput request payload
+    connected_cluster = get_connectedk8s_2024_07_01(cmd, resource_group_name, cluster_name)
+    cc = generate_reput_request_payload(connected_cluster, enable_oidc_issuer, enable_workload_identity,
+                                        self_hosted_issuer)
+
+    # Update connected cluster resource
+    reput_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, False)
+    reput_cc_response = LongRunningOperation(cmd.cli_ctx)(reput_cc_response)
 
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
@@ -1384,6 +1488,19 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
         pass
     if not arm_properties_unset:
         return patch_cc_response
+    
+    # Add 2nd long running operation to wait for Agent State to reach terminal stage with a default 20 minute 
+    # timeout window 
+    # TODO: Update poll_for_agent_state method to check for agent state and not provisioning state when feedback loop 
+    # is implemented
+    # This condition will be hit after provisioning state 
+    if enable_oidc_issuer or enable_workload_identity:
+        print("Hold for Agent State to reach terminal state")
+        if not poll_for_agent_state(cmd, resource_group_name, cluster_name):
+            print("Timed out waiting for Agent State to reach terminal state")
+            return False
+    
+    return reput_cc_response
 
 
 def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=None, kube_context=None,
@@ -1607,7 +1724,8 @@ def upgrade_agents(cmd, client, resource_group_name, cluster_name, kube_config=N
     return str.format(consts.Upgrade_Agent_Success, connected_cluster.name)
 
 
-def validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context, helm_client_location):
+def validate_release_namespace(client, cluster_name, resource_group_name, kube_config, kube_context,
+                               helm_client_location):
     # Check Release Existance
     release_namespace = utils.get_release_namespace(kube_config, kube_context, helm_client_location)
     if release_namespace:
@@ -2336,7 +2454,8 @@ def client_side_proxy_wrapper(cmd,
                     break
 
             if creds == '':
-                telemetry.set_exception(exception='Credentials of user not found.', fault_type=consts.Creds_NotFound_Fault_Type,
+                telemetry.set_exception(exception='Credentials of user not found.',
+                                        fault_type=consts.Creds_NotFound_Fault_Type,
                                         summary='Unable to find creds of user')
                 raise UnclassifiedUserFault("Credentials of user not found.")
 

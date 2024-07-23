@@ -523,7 +523,6 @@ def add_helm_repo(kube_config, kube_context, helm_client_location):
         raise CLIInternalError(
             "Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
 
-
 def get_helm_registry(cmd, config_dp_endpoint, release_train_custom=None):
     print("Step: {}: Getting HelmPackagePath from Arc DataPlane".format(get_utctimestring()))
     # Setting uri
@@ -864,7 +863,6 @@ def helm_install_release(resource_manager, chart_path, subscription_id, kubernet
             "state could be insufficient resources on the kubernetes cluster to onboard to arc."
         logger.warning(warn_msg)
         raise CLIInternalError("Unable to install helm release: " + error_helm_install.decode("ascii"))
-
 
 def get_release_namespace(kube_config, kube_context, helm_client_location, release_name='azure-arc'):
     print("Step: {}: Get namespace of release: {}".format(get_utctimestring(), release_name))

@@ -3,11 +3,17 @@
 Release History
 ===============
 
-1.7.4
+1.8.1
 ++++++
 * Upgrading to v0.2.2 of ArcK8sDiagnoser
 * Fix Style and Linter issues.
 * Increase Max Timeout for Onboarding Helm Install to 20 mins (from 10).
+
+1.8.0
+++++++
+* New api version 2024-07-1-preview added
+* Adding functionality for workload identity feature.
+* Cluster create and update waits for agent state 
 
 1.7.3
 ++++++
