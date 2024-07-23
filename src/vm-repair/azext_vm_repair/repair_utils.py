@@ -499,11 +499,12 @@ def _fetch_compatible_windows_os_urn(source_vm):
 
 def _fetch_compatible_windows_os_urn_v2(source_vm):
     location = source_vm.location
-    if source_vm.storage_profile is not None or source_vm.storage_profile.image_reference is not None or source_vm.storage_profile.image_reference.sku is not None or source_vm.storage_profile.image_reference.sku.endswith("gen2") or source_vm.storage_profile.image_reference.sku.endswith("g2") :
-        logger.debug('Fetched Urns for sku: %s', source_vm.storage_profile.image_reference.sku)
-        fetch_urn_command = 'az vm image list -s "2019-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2019-datacenter-smalldisk-g2\'].urn | reverse(sort(@))" -o json'.format(loc=location)
+    # We will prefer to fetch image using source vm sku, that we match the CVM requirements. 
+    if source_vm.storage_profile is not None or source_vm.storage_profile.image_reference is not None or source_vm.storage_profile.image_reference.sku is not None:
+        fetch_urn_command = 'az vm image list -s {sku} -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'{sku}\'].urn | reverse(sort(@))" -o json'.format(loc=location, sku=source_vm.storage_profile.image_reference.sku)
     else:
-        fetch_urn_command = 'az vm image list -s "2016-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2016-Datacenter\'].urn | reverse(sort(@))" -o json'.format(loc=location, )
+        # If source SKU not available then defaulting 2022 datacenter image. Also narrowing on gen 2 as CVMs require Gen2.
+        fetch_urn_command = 'az vm image list -s "2022-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2022-datacenter-core-smalldisk-g2\'].urn | reverse(sort(@))" -o json'.format(loc=location)
 
     logger.info('Fetching compatible Windows OS images from gallery...')
     urns = loads(_call_az_command(fetch_urn_command))
@@ -513,15 +514,7 @@ def _fetch_compatible_windows_os_urn_v2(source_vm):
         raise WindowsOsNotAvailableError()
 
     logger.debug('Fetched Urns:\n%s', urns)
-    # temp fix to mitigate Windows disk signature collision error
-    os_image_ref = source_vm.storage_profile.image_reference
-    if os_image_ref and isinstance(os_image_ref.version, str) and os_image_ref.version in urns[0]:
-        if len(urns) < 2:
-            logger.debug('Avoiding Win2016 latest image due to expected disk collision. But no other image available.')
-            raise WindowsOsNotAvailableError()
-        logger.debug('Returning Urn 1 to avoid disk collision error: %s', urns[1])
-        return urns[1]
-    logger.debug('Returning Urn 0: %s', urns[0])
+    logger.debug('Defaulting to first image available. Returning Urn 0: %s', urns[0])
     return urns[0]
 
 
@@ -777,26 +770,6 @@ def _fetch_non_standard_security_type(source_vm):
         return
     
     return source_vm.security_profile.security_type
-
-def _fetch_secure_boot_enabled(source_vm):
-    """
-    Returns secure boot enabled.
-    """
-    if source_vm.security_profile.uefi_settings is not None:
-        if source_vm.security_profile.uefi_settings.secure_boot_enabled is not None:
-            return source_vm.security_profile.uefi_settings.secure_boot_enabled
-    
-    return
-
-def _fetch_v_tpm_enabled(source_vm):
-    """
-    Returns virtual tpm enabled.
-    """
-    if source_vm.security_profile.uefi_settings is not None:
-        if source_vm.security_profile.uefi_settings.v_tpm_enabled is not None:
-            return source_vm.security_profile.uefi_settings.v_tpm_enabled
-    
-    return
 
 def _fetch_vm_security_profile_parameters(source_vm):
     create_repair_vm_command = ''
