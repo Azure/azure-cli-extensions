@@ -375,6 +375,7 @@ def add_helm_repo(kube_config, kube_context, helm_client_location):
                                 summary='Failed to add helm repository')
         raise CLIInternalError("Unable to add repository {} to helm: ".format(repo_url) + error_helm_repo.decode("ascii"))
 
+
 def get_helm_values(cmd, config_dp_endpoint, release_train_custom=None, request_body=None):
     # Setting uri
     api_version = "2024-07-01-preview"
@@ -402,6 +403,7 @@ def get_helm_values(cmd, config_dp_endpoint, release_train_custom=None, request_
                                 summary='No content in acr path response')
         raise CLIInternalError("No content was found in helm registry path response.")
 
+
 def health_check_dp(cmd, config_dp_endpoint):
     # Setting uri
     api_version = "2024-07-01-preview"
@@ -419,8 +421,9 @@ def health_check_dp(cmd, config_dp_endpoint):
         return True
     else:
         telemetry.set_exception(exception="Error while performing DP health check", fault_type=consts.DP_Health_Check,
-                                    summary='Error while performing DP health check')
+                                summary='Error while performing DP health check')
         raise CLIInternalError("Error while performing DP health check")
+
 
 def send_request_with_retries(cli_ctx, method, url, headers, fault_type, summary, uri_parameters=None, resource=None, retry_count=5, retry_delay=3, request_body=None):
     for i in range(retry_count):
@@ -654,6 +657,7 @@ def helm_install_release(resource_manager, chart_path, kubernetes_distro, kubern
         logger.warning("Please check if the azure-arc namespace was deployed and run 'kubectl get pods -n azure-arc' to check if all the pods are in running state. A possible cause for pods stuck in pending state could be insufficient resources on the kubernetes cluster to onboard to arc.")
         raise CLIInternalError("Unable to install helm release: " + error_helm_install.decode("ascii"))
 
+
 def get_release_namespace(kube_config, kube_context, helm_client_location, release_name='azure-arc'):
     cmd_helm_release = [helm_client_location, "list", "-a", "--all-namespaces", "--output", "json"]
     if kube_config:
@@ -837,6 +841,7 @@ def get_metadata(arm_endpoint, api_version="2022-09-01"):
         print(f"Please ensure you have network connection. Error: {str(err)}", file=sys.stderr)
         arm_exception_handler(err, msg)
 
+
 def add_config_protected_settings(https_proxy, http_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings):
     protected_helm_values = {}
     if container_log_path:
@@ -857,11 +862,12 @@ def add_config_protected_settings(https_proxy, http_proxy, no_proxy, proxy_cert,
             protected_helm_values["global.proxyCert"] = proxy_cert
     return configuration_settings, configuration_protected_settings, protected_helm_values
 
+
 def parse_helm_values(helm_content_values, cmd_helm):
     for helm_param, helm_value in helm_content_values.items():
         if helm_param == "global.proxyCert":
             cmd_helm.extend(["--set-file", "{}={}".format(helm_param, helm_value)])
             continue
         cmd_helm.extend(["--set", "{}={}".format(helm_param, helm_value)])
-    
+
     return cmd_helm

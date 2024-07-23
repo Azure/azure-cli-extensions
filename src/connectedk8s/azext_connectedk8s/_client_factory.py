@@ -64,6 +64,7 @@ def cf_connectedk8s_prev_2023_11_01(cli_ctx, *_):
 def cf_connected_cluster_prev_2023_11_01(cli_ctx, _):
     return cf_connectedk8s_prev_2023_11_01(cli_ctx).connected_cluster
 
+
 def cf_connectedk8s_prev_2024_07_01(cli_ctx, *_):
     from azext_connectedk8s.vendored_sdks.preview_2024_07_01 import ConnectedKubernetesClient
     if os.getenv(consts.Azure_Access_Token_Variable):
@@ -77,6 +78,7 @@ def cf_connectedk8s_prev_2024_07_01(cli_ctx, *_):
 
 def cf_connected_cluster_prev_2024_07_01(cli_ctx, _):
     return cf_connectedk8s_prev_2024_07_01(cli_ctx).connected_cluster
+
 
 def cf_connectedmachine(cli_ctx, subscription_id):
     from azure.mgmt.hybridcompute import HybridComputeManagementClient

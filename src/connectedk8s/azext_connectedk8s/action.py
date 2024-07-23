@@ -6,6 +6,7 @@
 import argparse
 from azure.cli.core.azclierror import ArgumentUsageError
 
+
 # pylint: disable=protected-access, too-few-public-methods
 class AddConfigurationSettings(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
@@ -27,9 +28,9 @@ class AddConfigurationSettings(argparse._AppendAction):
                                          format(option_string)) from ex
         setattr(namespace, self.dest, config_settings)
 
+
 # pylint: disable=protected-access, too-few-public-methods
 class AddConfigurationProtectedSettings(argparse._AppendAction):
-
     def __call__(self, parser, namespace, values, option_string=None):
         prot_settings = getattr(namespace, self.dest, None)
         if prot_settings is None:
