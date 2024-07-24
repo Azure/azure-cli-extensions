@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update operation to update a license.
 
     :example: Sample command for license update
-        az connectedmachine license create --name licenseName --resource-group myResourceGroup --location 'eastus2euap' --license-type 'ESU' --state 'Deactivated' --target 'Windows Server 2012' --edition 'Datacenter' --type 'pCore' --processors 16 --subscription mySubscription
+        az connectedmachine license update --name licenseName --resource-group myResourceGroup --location 'eastus2euap' --license-type 'ESU' --state 'Deactivated' --target 'Windows Server 2012' --edition 'Datacenter' --type 'pCore' --processors 16 --subscription mySubscription
     """
 
     _aaz_info = {
