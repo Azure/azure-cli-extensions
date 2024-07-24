@@ -11,8 +11,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+
+7.0.0b2
+++++++++
 * Update the minimum required cli core version to `2.61.0`.
 * Add option `--enable-imds-restriction --disable-imds-restriction` to `az aks create` and `az aks update`. 
+* Introduce valdations to `az aks create` and `az aks update` while using PremiumV2 disk during enabling Azure Container Storage.
+* Delete the Azure Container Storage installation after failure to prevent retries.
 
 7.0.0b1
 ++++++++
