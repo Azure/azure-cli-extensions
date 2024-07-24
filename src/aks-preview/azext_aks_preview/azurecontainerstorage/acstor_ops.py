@@ -218,6 +218,7 @@ def perform_enable_azure_container_storage(  # pylint: disable=too-many-statemen
     ]
 
     update_after_exception = False
+    delete_extension = False
     try:
         if is_extension_installed:
             result = k8s_extension_custom_mod.update_k8s_extension(
@@ -260,6 +261,7 @@ def perform_enable_azure_container_storage(  # pylint: disable=too-many-statemen
                 "Please run `az aks update` along with `--enable-azure-container-storage` "
                 "to enable Azure Container Storage."
             )
+            delete_extension = True
         else:
             if is_extension_installed:
                 update_after_exception = True
@@ -310,8 +312,20 @@ def perform_enable_azure_container_storage(  # pylint: disable=too-many-statemen
                     )
             else:
                 logger.error("AKS update to enable Azure Container Storage failed.\nError: %s", ex)
+                delete_extension = True
 
-    if is_storagepool_create_op_required or update_after_exception:
+    if delete_extension:
+        k8s_extension_custom_mod.delete_k8s_extension(
+            cmd,
+            client,
+            resource_group,
+            cluster_name,
+            CONST_EXT_INSTALLATION_NAME,
+            "managedClusters",
+            yes=True,
+            no_wait=True,
+        )
+    elif is_storagepool_create_op_required or update_after_exception:
         k8s_extension_custom_mod.update_k8s_extension(
             cmd,
             client,
