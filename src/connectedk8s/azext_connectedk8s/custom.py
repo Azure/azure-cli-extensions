@@ -1365,7 +1365,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     # Update connected cluster resource
     reput_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, False)
     reput_cc_response = LongRunningOperation(cmd.cli_ctx)(reput_cc_response)
-    dp_request_payload = json.dumps(reput_cc_response.result().as_dict())
+    dp_request_payload = json.dumps(reput_cc_response.result().serialize())
 
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
