@@ -1,6 +1,10 @@
 param (
     [Parameter(Mandatory=$false)][string]$bitlockerkey
 )
+
+Write-Output "Bringing disks online if they are already offline"
+Get-Disk | where {$_.OperationalStatus -ne 'Online'} | Set-Disk -IsOffline $false
+
 Write-Output "Finding volume with 'Bek Volume' file system label"
 $bekVolume = Get-Volume | Where-Object {$_.FileSystemLabel -eq 'Bek Volume'}
 if ($bekVolume)
