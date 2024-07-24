@@ -382,6 +382,11 @@ def get_helm_values(cmd, config_dp_endpoint, release_train_custom=None, request_
     chart_location_url_segment = "azure-arc-k8sagents/GetHelmSettings?api-version={}".format(api_version)
     release_train = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
     chart_location_url = "{}/{}".format(config_dp_endpoint, chart_location_url_segment)
+    dp_request_identity = request_body.identity
+    request_body = request_body.serialize()
+    request_body["identity"]["tenantId"] = dp_request_identity.tenant_id
+    request_body["identity"]["principalId"] = dp_request_identity.principal_id
+    request_body = json.dumps(request_body)
     if release_train_custom:
         release_train = release_train_custom
     uri_parameters = ["releaseTrain={}".format(release_train)]
@@ -417,7 +422,6 @@ def health_check_dp(cmd, config_dp_endpoint):
     # Sending request with retries
     r = send_request_with_retries(cmd.cli_ctx, 'post', chart_location_url, headers=headers, fault_type=consts.Get_HelmRegistery_Path_Fault_Type, summary='Error while performing DP health check', uri_parameters=uri_parameters, resource=resource)
     if r.status_code == 200:
-        print("Health check for DP is successful.")
         return True
     else:
         telemetry.set_exception(exception="Error while performing DP health check", fault_type=consts.DP_Health_Check,
@@ -840,27 +844,6 @@ def get_metadata(arm_endpoint, api_version="2022-09-01"):
         print(msg, file=sys.stderr)
         print(f"Please ensure you have network connection. Error: {str(err)}", file=sys.stderr)
         arm_exception_handler(err, msg)
-
-
-def add_config_protected_settings(https_proxy, http_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings):
-    protected_helm_values = {}
-    if container_log_path:
-        configuration_settings.setdefault("logging", {"container_log_path": container_log_path})
-    if any([https_proxy, http_proxy, no_proxy, proxy_cert]):
-        configuration_protected_settings.setdefault("proxy", {})
-        if https_proxy:
-            configuration_protected_settings["proxy"]["https_proxy"] = https_proxy
-            protected_helm_values["global.httpsProxy"] = https_proxy
-        if http_proxy:
-            configuration_protected_settings["proxy"]["http_proxy"] = http_proxy
-            protected_helm_values["global.httpProxy"] = http_proxy
-        if no_proxy:
-            configuration_protected_settings["proxy"]["no_proxy"] = no_proxy
-            protected_helm_values["global.noProxy"] = no_proxy
-        if proxy_cert:
-            configuration_protected_settings["proxy"]["proxy_cert"] = proxy_cert
-            protected_helm_values["global.proxyCert"] = proxy_cert
-    return configuration_settings, configuration_protected_settings, protected_helm_values
 
 
 def parse_helm_values(helm_content_values, cmd_helm):

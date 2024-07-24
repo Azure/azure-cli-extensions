@@ -49,10 +49,6 @@ def override_client_request_id_header(cmd, namespace):
 def validate_gateway_properties(namespace):
     if namespace.enable_gateway is False and namespace.gateway_resource_id != "":
         raise ArgumentUsageError("Conflicting gateway parameters received. The parameter '--gateway-resource-id' should not be set only if '--enable-gateway' is set to true.")
-    if namespace.enable_gateway is True and namespace.gateway_resource_id != "":
-        gateway_armid_pattern = r"^/subscriptions/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/resourceGroups/[a-zA-Z0-9_-]+/providers/Microsoft\.HybridCompute/gateways/[a-zA-Z0-9_-]+$"
-        if not re.match(gateway_armid_pattern, namespace.gateway_resource_id):
-            raise InvalidArgumentValueError(str.format(consts.Gateway_ArmId_Is_Invalid, namespace.gateway_resource_id))
     if namespace.enable_gateway is True and namespace.gateway_resource_id == "":
         raise ArgumentUsageError("The parameter '--gateway-resource-id' was not provided. It is mandatory to pass this parameter for enabling gateway on the connected cluster resource.")
 

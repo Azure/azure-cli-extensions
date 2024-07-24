@@ -140,7 +140,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
-    configuration_settings, configuration_protected_settings, protected_helm_values = utils.add_config_protected_settings(http_proxy, https_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings)
+    configuration_settings, configuration_protected_settings, protected_helm_values = add_config_protected_settings(http_proxy, https_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings)
     arc_agentry_configurations = None
     if configuration_protected_settings is not None or configuration_settings is not None:
         arc_agentry_configurations = generate_arc_agent_configuration(configuration_settings, configuration_protected_settings)
@@ -483,7 +483,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
     put_cc_response = LongRunningOperation(cmd.cli_ctx)(put_cc_response)
     print("Azure resource provisioning has finished.")
-    dp_request_payload = json.dumps(put_cc_response.result().serialize())
+    dp_request_payload = put_cc_response.result()
 
     # Checking if custom locations rp is registered and fetching oid if it is registered
     enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id)
@@ -1264,7 +1264,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
-    configuration_settings, configuration_protected_settings, protected_helm_values = utils.add_config_protected_settings(http_proxy, https_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings)
+    configuration_settings, configuration_protected_settings, protected_helm_values = add_config_protected_settings(http_proxy, https_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings)
     arc_agentry_configurations = None
     if configuration_protected_settings is not None or configuration_settings is not None:
         arc_agentry_configurations = generate_arc_agent_configuration(configuration_settings, configuration_protected_settings)
@@ -1354,7 +1354,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     # Update connected cluster resource
     reput_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, False)
     reput_cc_response = LongRunningOperation(cmd.cli_ctx)(reput_cc_response)
-    dp_request_payload = json.dumps(reput_cc_response.result().serialize())
+    dp_request_payload = reput_cc_response.result()
 
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
@@ -2885,3 +2885,33 @@ def check_operation_support(operation_name, agent_version):
                                 fault_type=consts.Operation_Not_Supported_Fault_Type, summary=error_summary)
         raise ClientRequestError(
             error_summary, recommendation="Please upgrade to the latest version of the Agents using 'az connectedk8s upgrade -g <rg_name> -n <cluster_name>'.")
+
+
+def add_config_protected_settings(https_proxy, http_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings):
+    protected_helm_values = {}
+    if container_log_path:
+        configuration_settings.setdefault("logging", {"container_log_path": container_log_path})
+    if any([https_proxy, http_proxy, no_proxy, proxy_cert]):
+        configuration_protected_settings.setdefault("proxy", {})
+        if https_proxy:
+            configuration_protected_settings["proxy"]["https_proxy"] = https_proxy
+        if http_proxy:
+            configuration_protected_settings["proxy"]["http_proxy"] = http_proxy
+        if no_proxy:
+            configuration_protected_settings["proxy"]["no_proxy"] = no_proxy
+        if proxy_cert:
+            configuration_protected_settings["proxy"]["proxy_cert"] = proxy_cert
+    
+    for feature, protected_settings in configuration_protected_settings.items():
+        if feature == "proxy":
+            for setting, value in protected_settings.items():
+                if setting == "https_proxy":
+                    protected_helm_values["global.httpsProxy"] = value
+                if setting == "http_proxy":
+                    protected_helm_values["global.httpProxy"] = value
+                if setting == "no_proxy":
+                    protected_helm_values["global.noProxy"] = value
+                if setting == "proxy_cert":
+                    protected_helm_values["global.proxyCert"] = value
+
+    return configuration_settings, configuration_protected_settings, protected_helm_values
