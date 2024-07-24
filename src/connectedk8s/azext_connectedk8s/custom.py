@@ -141,9 +141,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
     configuration_settings, configuration_protected_settings, protected_helm_values = utils.add_config_protected_settings(http_proxy, https_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings)
-    arc_agent_configurations = None
+    arc_agentry_configurations = None
     if configuration_protected_settings is not None or configuration_settings is not None:
-        arc_agent_configurations = generate_arc_agent_configuration(configuration_settings, configuration_protected_settings)
+        arc_agentry_configurations = generate_arc_agent_configuration(configuration_settings, configuration_protected_settings)
         client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
 
     # Set preview client if latest preview properties are provided.
@@ -408,7 +408,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                 cc = generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra,
                                               enable_private_link, private_link_scope_resource_id,
                                               distribution_version, azure_hybrid_benefit, enable_oidc_issuer,
-                                              enable_workload_identity, gateway, arc_agent_configurations)
+                                              enable_workload_identity, gateway, arc_agentry_configurations)
                 cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
                 cc_response = LongRunningOperation(cmd.cli_ctx)(cc_response)
                 # Disabling cluster-connect if private link is getting enabled
@@ -481,7 +481,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     cc = generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra,
                                   enable_private_link, private_link_scope_resource_id, distribution_version,
                                   azure_hybrid_benefit, enable_oidc_issuer, enable_workload_identity, gateway,
-                                  arc_agent_configurations, self_hosted_issuer)
+                                  arc_agentry_configurations, self_hosted_issuer)
 
     print("Azure resource provisioning has begun.")
     # Create connected cluster resource
@@ -920,7 +920,7 @@ def set_security_profile(enable_workload_identity):
 
 
 def generate_arc_agent_configuration(configuration_settings, configuration_protected_settings):
-    arc_agent_configurations = []
+    arc_agentry_configurations = []
     for feature in set(list(configuration_settings.keys()) + list(configuration_protected_settings.keys())):
         settings = configuration_settings.get(feature)
         protected_settings = configuration_protected_settings.get(feature)
@@ -929,13 +929,13 @@ def generate_arc_agent_configuration(configuration_settings, configuration_prote
             settings=settings,
             protected_settings=protected_settings
         )
-        arc_agent_configurations.append(configuration)
-    return arc_agent_configurations
+        arc_agentry_configurations.append(configuration)
+    return arc_agentry_configurations
 
 
 def generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id,
                              distribution_version, azure_hybrid_benefit, enable_oidc_issuer, enable_workload_identity, gateway,
-                             arc_agent_configurations, self_hosted_issuer=""):
+                             arc_agentry_configurations, self_hosted_issuer=""):
     # Create connected cluster resource object
     identity = ConnectedClusterIdentity(
         type="SystemAssigned"
@@ -951,7 +951,7 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
         infrastructure=kubernetes_infra
     )
 
-    if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None or enable_oidc_issuer or enable_workload_identity or gateway is not None or arc_agent_configurations is not None:
+    if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None or enable_oidc_issuer or enable_workload_identity or gateway is not None or arc_agentry_configurations is not None:
         # Set additional parameters
         private_link_state = None
         if enable_private_link is not None:
@@ -974,20 +974,20 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
             oidc_issuer_profile=oidc_profile,
             security_profile=security_profile,
             gateway=gateway,
-            arc_agentry_configurations=arc_agent_configurations
+            arc_agentry_configurations=arc_agentry_configurations
         )
 
     return cc
 
 
-def generate_reput_request_payload(cc, enable_oidc_issuer, enable_workload_identity, self_hosted_issuer, gateway, arc_agent_configurations):
+def generate_reput_request_payload(cc, enable_oidc_issuer, enable_workload_identity, self_hosted_issuer, gateway, arc_agentry_configurations):
     # Update connected cluster resource object
     oidc_profile = set_oidc_issuer_profile(enable_oidc_issuer, self_hosted_issuer)
     security_profile = set_security_profile(enable_workload_identity)
     cc.oidc_issuer_profile = oidc_profile
     cc.security_profile = security_profile
     cc.gateway = gateway
-    cc.arc_agent_configurations = arc_agent_configurations
+    cc.arc_agentry_configurations = arc_agentry_configurations
     return cc
 
 
@@ -1276,9 +1276,9 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
     configuration_settings, configuration_protected_settings, protected_helm_values = utils.add_config_protected_settings(http_proxy, https_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings)
-    arc_agent_configurations = None
+    arc_agentry_configurations = None
     if configuration_protected_settings is not None or configuration_settings is not None:
-        arc_agent_configurations = generate_arc_agent_configuration(configuration_settings, configuration_protected_settings)
+        arc_agentry_configurations = generate_arc_agent_configuration(configuration_settings, configuration_protected_settings)
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s_2024_07_01(cmd, resource_group_name, cluster_name)
@@ -1360,7 +1360,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
     # Get the connected cluster resource using latest api version and generate reput request payload
     connected_cluster = get_connectedk8s_2024_07_01(cmd, resource_group_name, cluster_name)
-    cc = generate_reput_request_payload(connected_cluster, enable_oidc_issuer, enable_workload_identity, self_hosted_issuer, gateway, arc_agent_configurations)
+    cc = generate_reput_request_payload(connected_cluster, enable_oidc_issuer, enable_workload_identity, self_hosted_issuer, gateway, arc_agentry_configurations)
 
     # Update connected cluster resource
     reput_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, False)
