@@ -488,7 +488,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     put_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
     put_cc_response = LongRunningOperation(cmd.cli_ctx)(put_cc_response)
     print("Azure resource provisioning has finished.")
-    result = put_cc_response.result()
+    dp_request_payload = json.dumps(put_cc_response.result().as_dict())
 
     # Checking if custom locations rp is registered and fetching oid if it is registered
     enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id)
@@ -497,7 +497,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     _ = utils.health_check_dp(cmd, config_dp_endpoint)
 
     # Retrieving Helm chart OCI Artifact location
-    helm_values_dp = utils.get_helm_values(cmd, config_dp_endpoint, release_train, request_body=json.dumps(result))
+    helm_values_dp = utils.get_helm_values(cmd, config_dp_endpoint, release_train, request_body=dp_request_payload)
 
     registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else \
         helm_values_dp["repositoryPath"]
@@ -974,7 +974,7 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
             oidc_issuer_profile=oidc_profile,
             security_profile=security_profile,
             gateway=gateway,
-            arc_agent_configurations=arc_agent_configurations
+            arc_agentry_configurations=arc_agent_configurations
         )
 
     return cc
@@ -1365,7 +1365,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     # Update connected cluster resource
     reput_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, False)
     reput_cc_response = LongRunningOperation(cmd.cli_ctx)(reput_cc_response)
-    dp_request_payload = reput_cc_response.result()
+    dp_request_payload = json.dumps(reput_cc_response.result().as_dict())
 
     # Adding helm repo
     if os.getenv('HELMREPONAME') and os.getenv('HELMREPOURL'):
@@ -1377,7 +1377,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     _ = utils.health_check_dp(cmd, config_dp_endpoint)
 
     # Retrieving Helm chart OCI Artifact location
-    helm_values_dp = utils.get_helm_values(cmd, config_dp_endpoint, release_train, request_body=json.dumps(dp_request_payload))
+    helm_values_dp = utils.get_helm_values(cmd, config_dp_endpoint, release_train, request_body=dp_request_payload)
 
     registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else \
         helm_values_dp["repositoryPath"]
