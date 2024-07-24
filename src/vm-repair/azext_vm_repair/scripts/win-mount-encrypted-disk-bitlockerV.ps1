@@ -1,5 +1,5 @@
 param (
-    [Parameter(Mandatory=$true)][string]$bitlockerkey
+    [Parameter(Mandatory=$false)][string]$bitlockerkey
 )
 Write-Output "Finding volume with 'Bek Volume' file system label"
 $bekVolume = Get-Volume | Where-Object {$_.FileSystemLabel -eq 'Bek Volume'}

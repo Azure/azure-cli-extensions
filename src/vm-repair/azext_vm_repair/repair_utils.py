@@ -499,15 +499,21 @@ def _fetch_compatible_windows_os_urn(source_vm):
 
 def _fetch_compatible_windows_os_urn_v2(source_vm):
     location = source_vm.location
-    # We will prefer to fetch image using source vm sku, that we match the CVM requirements. 
-    if source_vm.storage_profile is not None or source_vm.storage_profile.image_reference is not None or source_vm.storage_profile.image_reference.sku is not None:
-        fetch_urn_command = 'az vm image list -s {sku} -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'{sku}\'].urn | reverse(sort(@))" -o json'.format(loc=location, sku=source_vm.storage_profile.image_reference.sku)
-    else:
-        # If source SKU not available then defaulting 2022 datacenter image. Also narrowing on gen 2 as CVMs require Gen2.
-        fetch_urn_command = 'az vm image list -s "2022-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2022-datacenter-core-smalldisk-g2\'].urn | reverse(sort(@))" -o json'.format(loc=location)
 
-    logger.info('Fetching compatible Windows OS images from gallery...')
-    urns = loads(_call_az_command(fetch_urn_command))
+    # We will prefer to fetch image using source vm sku, that we match the CVM requirements. 
+    if source_vm.storage_profile is not None and source_vm.storage_profile.image_reference is not None:
+        sku=source_vm.storage_profile.image_reference.sku 
+        offer=source_vm.storage_profile.image_reference.offer
+        publisher=source_vm.storage_profile.image_reference.publisher
+        fetch_urn_command = 'az vm image list -s {sku} -f {offer} -p {publisher} -l {loc} --verbose --all --query "[?sku==\'{sku}\'].urn | reverse(sort(@))" -o json'.format(loc=location,sku=sku,offer=offer,publisher=publisher)
+        logger.info('Fetching compatible Windows OS images from gallery...')
+        urns = loads(_call_az_command(fetch_urn_command))
+
+    if not urns or len(urns) == 0:
+        # If source SKU not available then defaulting 2022 datacenter image.
+        fetch_urn_command = 'az vm image list -s "2022-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2022-datacenter\'].urn | reverse(sort(@))" -o json'.format(loc=location)
+        logger.info('Fetching compatible Windows OS images from gallery for 2022 Datacenter...')
+        urns = loads(_call_az_command(fetch_urn_command))
 
     # No OS images available for Windows2016
     if not urns:
@@ -726,6 +732,7 @@ def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux, encryp
     logger.debug('Unlock script STDOUT:\n%s', stdout)
     if stderr:
         logger.warning('Encryption unlock script error was generated:\n%s', stderr)
+        raise Exception('Unexpected error occured while unlocking encrypted disk.')
 
 
 def _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username, fix_uuid=False):
