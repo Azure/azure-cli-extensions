@@ -152,15 +152,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     gateway = None
     if enable_gateway:
-        gateway_armid_pattern = r"^/subscriptions/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/resourceGroups/[a-zA-Z0-9_-]+/providers/Microsoft\.HybridCompute/gateways/[a-zA-Z0-9_-]+$"
-        if re.match(gateway_armid_pattern, gateway_resource_id):
-            logger.warning("The provided Gateway ArmID is valid.")
-            gateway = Gateway(
-                enabled=True,
-                resource_id=gateway_resource_id
-            )
-        else:
-            raise InvalidArgumentValueError(str.format(consts.Gateway_ArmId_Is_Invalid, gateway_resource_id))
+        gateway = Gateway(
+            enabled=True,
+            resource_id=gateway_resource_id
+        )
 
     # Checking whether optional extra values file has been provided.
     values_file = utils.get_values_file()
@@ -1245,12 +1240,6 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
         raise InvalidArgumentValueError("Do not specify both enable-workload-identity and disable-workload-identity at the same time.")
     if disable_workload_identity is True:
         enable_workload_identity = False
-
-    # Validation for the gateway parameter
-    if enable_gateway and disable_gateway:
-        raise InvalidArgumentValueError("Do not specify both enable-gateway and disable-gateway at the same time.")
-    if enable_gateway and gateway_resource_id == "":
-        raise RequiredArgumentMissingError("gateway-resource-id is required when enable-gateway is specified.")
 
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
