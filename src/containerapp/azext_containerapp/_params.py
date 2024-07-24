@@ -163,7 +163,7 @@ def load_arguments(self, _):
 
     with self.argument_context('containerapp env') as c:
         c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']),
-               help="Allow or block all public traffic", is_preview=True)
+                   help="Allow or block all public traffic", is_preview=True)
 
     with self.argument_context('containerapp env', arg_group='Custom Domain') as c:
         c.argument('certificate_identity', options_list=['--custom-domain-certificate-identity', '--certificate-identity'],
