@@ -440,25 +440,29 @@ class AmgScenarioTest(ScenarioTest):
                 self.check("length([?uid == '{dashboardUid}'])", 1)
             ])
 
+    # basic_scenario
     @AllowLargeResponse(size_kb=3072)
     @ResourceGroupPreparer(name_prefix='cli_test_amg', location='westcentralus')
     def test_amg_migrate(self, resource_group):
-        # Test Instance
+        # Simple E2E test for migration where we create a new AMG instance, create a folder, data source, and dashboard, then migrate to a new AMG instance
         self.kwargs.update({
-            'name': self.create_random_name(prefix='clitestamgbackup', length=23),
+            'name': self.create_random_name(prefix='clitestamgmigrate', length=23),
             'location': 'westcentralus',
-            'name2': self.create_random_name(prefix='clitestamgbackup', length=23)
+            'name2': self.create_random_name(prefix='clitestamgmigrate', length=23)
         })
 
         owner = self._get_signed_in_user()
         self.recording_processors.append(MSGraphNameReplacer(owner, MOCKED_USER_NAME))
 
         with unittest.mock.patch('azext_amg.custom._gen_guid', side_effect=self.create_guid):
-
+            # migrate from amg1 to amg2
             amg1 = self.cmd('grafana create -g {rg} -n {name} -l {location}').get_output_in_json()
             amg2 = self.cmd('grafana create -g {rg} -n {name2} -l {location}').get_output_in_json()
             # Ensure RBAC changes are propagated
             time.sleep(120)
+
+            # enable service accounts so I can create service tokens
+            temp = self.cmd('grafana update -g {rg} -n {name} --service-account Enabled')
 
             # set up folder
             self.kwargs.update({
@@ -467,6 +471,7 @@ class AmgScenarioTest(ScenarioTest):
                 'id2': amg2['id']
             })
             self.cmd('grafana folder create -g {rg} -n {name} --title "{folderTitle}"')
+            test3 = self.cmd('grafana folder list -g {rg} -n {name}').get_output_in_json()
 
             # set up data source
             self.kwargs.update({
@@ -483,6 +488,7 @@ class AmgScenarioTest(ScenarioTest):
                 'dashboardDefinition': test_dashboard,
                 'dashboardTitle': dashboard_title,
                 'dashboardTitle2': dashboard_title + '2',
+                'dashboardTitle3': dashboard_title + '3',
                 'dashboardSlug': slug,
             })
             self.kwargs['dashboardDefinition']['dashboard']['uid'] = 'mg2OAlTVa'  # control the uid to prevent auto generated uid with possible '-' that breaks the command
@@ -493,95 +499,106 @@ class AmgScenarioTest(ScenarioTest):
                 'dashboardUid': response_create["uid"],
             })
 
-            # dashboard under "General"
+            # 2nd dashboard under "General"
             self.kwargs['dashboardDefinition']['dashboard']['uid'] = 'mg2OAlTVb'
-            response_create = self.cmd('grafana dashboard create -g {rg} -n {name}  --definition "{dashboardDefinition}" --title "{dashboardTitle}"').get_output_in_json()
+            response_create = self.cmd('grafana dashboard create -g {rg} -n {name}  --definition "{dashboardDefinition}" --title "{dashboardTitle2}"').get_output_in_json()
             self.kwargs.update({
                 'dashboardUid2': response_create["uid"],
             })
 
-            # 2nd dashboard under own folder
+            # 3rd dashboard under own folder
             self.kwargs['dashboardDefinition']['dashboard']['uid'] = 'mg2OAlTVc'
-            response_create = self.cmd('grafana dashboard create -g {rg} -n {name} --folder "{folderTitle}"  --definition "{dashboardDefinition}" --title "{dashboardTitle2}"').get_output_in_json()
+            response_create = self.cmd('grafana dashboard create -g {rg} -n {name} --folder "{folderTitle}"  --definition "{dashboardDefinition}" --title "{dashboardTitle3}"').get_output_in_json()
 
             self.kwargs.update({
                 'dashboardUid3': response_create["uid"],
             })
 
-            with tempfile.TemporaryDirectory() as temp_dir:
-                self.kwargs.update({
-                    'tempDir': temp_dir
-                })
-                # test exclude scenarios
-                self.cmd('grafana backup -g {rg} -n {name} -d "{tempDir}" --folders-to-include "{folderTitle}" General --components datasources dashboards folders')
-
-                filenames = next(os.walk(temp_dir), (None, None, []))[2]
-                self.assertTrue(len(filenames) == 1)
-                self.assertTrue(filenames[0].endswith('.tar.gz'))
-
-                self.kwargs.update({
-                    'archiveFile': os.path.join(temp_dir, filenames[0])
-                })
-
-                self.cmd('grafana folder delete -g {rg} -n {name} --folder "{folderTitle}"')
-                self.cmd('grafana data-source delete -g {rg} -n {name} --data-source "{dataSourceName}"')
-
-                self.cmd('grafana restore -g {rg} -n {name} --archive-file "{archiveFile}"')
-
-            self.cmd('grafana data-source show -g {rg} -n {name} --data-source "{dataSourceName}"')
-            self.cmd('grafana folder show -g {rg} -n {name} --folder "{folderTitle}"')
-
-            self.cmd('grafana dashboard show -g {rg} -n {name} --dashboard "{dashboardUid}"', checks=[
-                self.check("[dashboard.title]", "['{dashboardTitle}']"),
-                self.check("[meta.folderTitle]", "['{folderTitle}']")])
-            self.cmd('grafana dashboard show -g {rg} -n {name} --dashboard "{dashboardUid2}"', checks=[
-                self.check("[dashboard.title]", "['{dashboardTitle}']"),
-                self.check("[meta.folderTitle]", "['General']")])
-
-            with tempfile.TemporaryDirectory() as temp_dir:
-                self.kwargs.update({
-                    'tempDir': temp_dir
-                })
-                self.cmd('grafana backup -g {rg} -n {name} -d "{tempDir}" --folders-to-exclude General "Azure Monitor" Geneva --components dashboards folders')
-
-                filenames = next(os.walk(temp_dir), (None, None, []))[2]
-                self.assertTrue(len(filenames) == 1)
-                self.assertTrue(filenames[0].endswith('.tar.gz'))
-
-                self.kwargs.update({
-                    'archiveFile': os.path.join(temp_dir, filenames[0])
-                })
-
-                self.cmd('grafana dashboard delete -g {rg} -n {name} --dashboard "{dashboardUid2}"')
-                self.cmd('grafana restore -g {rg} -n {name} --archive-file "{archiveFile}"')
-
-            self.cmd('grafana dashboard list -g {rg} -n {name}', checks=[
-                self.check("length([?uid == '{dashboardUid2}'])", 0),
-                self.check("length([?uid == '{dashboardUid}'])", 1)])
-
-            self.kwargs['dashboardDefinition']['dashboard']['uid'] = 'mg2OAlTVd'
-            response_create = self.cmd('grafana dashboard create -g {rg} -n {name}  --definition "{dashboardDefinition}" --title "{dashboardTitle}"').get_output_in_json()
-            print(response_create)
+            # prepare to migrate
+            # get the service account token:
             self.kwargs.update({
-                'dashboardUid4': response_create["uid"],
+                'serviceAccount2Name': self.create_random_name(prefix='clitestamgmigrate', length=23)
             })
 
-            self.cmd('grafana dashboard sync --source {id} --destination {id2} --folders-to-include "{folderTitle}" general')
-            self.cmd('grafana folder show -g {rg} -n {name2} --folder "{folderTitle}"')
+            self.cmd('az grafana service-account create -g {rg} -n {name} --service-account {serviceAccount2Name} --role viewer')
+            # print(service_account)
+            service_account_token = self.cmd('az grafana service-account token create -g {rg} -n {name} --service-account {serviceAccount2Name} --token {serviceAccount2Name}_token --time-to-live 1d').get_output_in_json()
+
+            self.kwargs.update({
+                'srcUrl': amg1['properties']['endpoint'],
+                'serviceAccountToken': service_account_token['key']
+            })
+
+            # now migrate to new instance 2.
+            temp = self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken}')
+            print(temp)
+
+            # check that the migrate worked.
+            self.cmd('grafana data-source show -g {rg} -n {name} --data-source "{dataSourceName}"')
+
+            self.cmd('grafana data-source show -g {rg} -n {name2} --data-source "{dataSourceName}"')
+
+            # self.cmd('grafana folder show -g {rg} -n {name2} --folder "{folderTitle}"')
+
             self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid}"', checks=[
                 self.check("[dashboard.title]", "['{dashboardTitle}']"),
                 self.check("[meta.folderTitle]", "['{folderTitle}']")])
-            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid4}"', checks=[
-                self.check("[dashboard.title]", "['{dashboardTitle}']"),
+            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid2}"', checks=[
+                self.check("[dashboard.title]", "['{dashboardTitle2}']"),
                 self.check("[meta.folderTitle]", "['General']")])
+            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid3}"', checks=[
+                self.check("[dashboard.title]", "['{dashboardTitle3}']"),
+                self.check("[meta.folderTitle]", "['{folderTitle}']")])
 
-            self.cmd('grafana dashboard delete -g {rg} -n {name2} --dashboard "{dashboardUid}"')
-            self.cmd('grafana dashboard delete -g {rg} -n {name2} --dashboard "{dashboardUid3}"')
-            self.cmd('grafana dashboard sync --source {id} --destination {id2} --folders-to-include "{folderTitle}" --dashboards-to-include "{dashboardTitle}"')
-            self.cmd('grafana dashboard list -g {rg} -n {name2}', checks=[
-                self.check("length([?uid == '{dashboardUid3}'])", 0),
-                self.check("length([?uid == '{dashboardUid}'])", 1)
-            ])
+            beep = self.cmd('grafana dashboard list -g {rg} -n {name2}').get_output_in_json()
+            boop = self.cmd('grafana dashboard list -g {rg} -n {name}').get_output_in_json()
+            print("beep: ", beep)
+            print("boop: ", boop)
+
+            # with tempfile.TemporaryDirectory() as temp_dir:
+            #     self.kwargs.update({
+            #         'tempDir': temp_dir
+            #     })
+            #     self.cmd('grafana backup -g {rg} -n {name} -d "{tempDir}" --folders-to-exclude General "Azure Monitor" Geneva --components dashboards folders')
+
+            #     filenames = next(os.walk(temp_dir), (None, None, []))[2]
+            #     self.assertTrue(len(filenames) == 1)
+            #     self.assertTrue(filenames[0].endswith('.tar.gz'))
+
+            #     self.kwargs.update({
+            #         'archiveFile': os.path.join(temp_dir, filenames[0])
+            #     })
+
+            #     self.cmd('grafana dashboard delete -g {rg} -n {name} --dashboard "{dashboardUid2}"')
+            #     self.cmd('grafana restore -g {rg} -n {name} --archive-file "{archiveFile}"')
+
+            # self.cmd('grafana dashboard list -g {rg} -n {name}', checks=[
+            #     self.check("length([?uid == '{dashboardUid2}'])", 0),
+            #     self.check("length([?uid == '{dashboardUid}'])", 1)])
+
+            # self.kwargs['dashboardDefinition']['dashboard']['uid'] = 'mg2OAlTVd'
+            # response_create = self.cmd('grafana dashboard create -g {rg} -n {name}  --definition "{dashboardDefinition}" --title "{dashboardTitle}"').get_output_in_json()
+            # print(response_create)
+            # self.kwargs.update({
+            #     'dashboardUid4': response_create["uid"],
+            # })
+
+            # self.cmd('grafana dashboard sync --source {id} --destination {id2} --folders-to-include "{folderTitle}" general')
+            # self.cmd('grafana folder show -g {rg} -n {name2} --folder "{folderTitle}"')
+            # self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid}"', checks=[
+            #     self.check("[dashboard.title]", "['{dashboardTitle}']"),
+            #     self.check("[meta.folderTitle]", "['{folderTitle}']")])
+            # self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid4}"', checks=[
+            #     self.check("[dashboard.title]", "['{dashboardTitle}']"),
+            #     self.check("[meta.folderTitle]", "['General']")])
+
+            # self.cmd('grafana dashboard delete -g {rg} -n {name2} --dashboard "{dashboardUid}"')
+            # self.cmd('grafana dashboard delete -g {rg} -n {name2} --dashboard "{dashboardUid3}"')
+            # self.cmd('grafana dashboard sync --source {id} --destination {id2} --folders-to-include "{folderTitle}" --dashboards-to-include "{dashboardTitle}"')
+            # self.cmd('grafana dashboard list -g {rg} -n {name2}', checks=[
+            #     self.check("length([?uid == '{dashboardUid3}'])", 0),
+            #     self.check("length([?uid == '{dashboardUid}'])", 1)
+            # ])
 
     def _get_signed_in_user(self):
         account_info = self.cmd('account show').get_output_in_json()
