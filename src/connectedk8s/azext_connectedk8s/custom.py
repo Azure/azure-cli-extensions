@@ -510,6 +510,9 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     # Substitute any protected helm values as the value for that will be null
     for helm_parameter, helm_value in protected_helm_values.items():
         helm_content_values[helm_parameter] = helm_value
+    
+    if disable_auto_upgrade:
+        helm_content_values["systemDefaultValues.azureArcAgents.autoUpdate"] = "false"
 
     print("Starting to install Azure arc agents on the Kubernetes cluster.")
     # Install azure-arc agents
@@ -916,6 +919,13 @@ def set_security_profile(enable_workload_identity):
 
 def generate_arc_agent_configuration(configuration_settings, configuration_protected_settings):
     arc_agentry_configurations = []
+
+    # Initialize configuration_settings and configuration_protected_settings if they are None
+    if configuration_settings is None:
+        configuration_settings = {}
+    if configuration_protected_settings is None:
+        configuration_protected_settings = {}
+
     for feature in set(list(configuration_settings.keys()) + list(configuration_protected_settings.keys())):
         settings = configuration_settings.get(feature)
         protected_settings = configuration_protected_settings.get(feature)
@@ -1380,6 +1390,9 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     # Substitute any protected helm values as the value for that will be null
     for helm_parameter, helm_value in protected_helm_values.items():
         helm_content_values[helm_parameter] = helm_value
+    
+    if auto_upgrade is not None:
+        helm_content_values["systemDefaultValues.azureArcAgents.autoUpdate"] = auto_upgrade
 
     # Set agent version in registry path
     if connected_cluster.agent_version is not None:
@@ -2889,6 +2902,11 @@ def check_operation_support(operation_name, agent_version):
 
 def add_config_protected_settings(https_proxy, http_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings):
     protected_helm_values = {}
+
+    # Initialize configuration_protected_settings if it is None
+    if configuration_protected_settings is None:
+        configuration_protected_settings = {}
+    
     if container_log_path:
         configuration_settings.setdefault("logging", {"container_log_path": container_log_path})
     if any([https_proxy, http_proxy, no_proxy, proxy_cert]):
