@@ -67,7 +67,7 @@ CONTINUOUS_PATCH_WORKFLOW = {
 ERROR_MESSAGE_INVALID_TASK = "Workflow type is invalid"
 ERROR_MESSAGE_INVALID_TIMESPAN_VALUE = "Cadence value is invalid. "
 ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT = "Cadence format is invalid. "
-RECOMMENDATION_CADENCE = "Cadence must be in the format of <number><unit> where unit is d for days. Example: 1d"
+RECOMMENDATION_CADENCE = "Cadence must be in the format of <number><unit> where unit is d for days. Example: 1d. Max value for d is 30d."
 # this dictionary can be expanded to handle more configuration of the tasks regarding continuous patching
 # if this gets out of hand, or more types of tasks are supported, this should be a class on its own
 CONTINUOSPATCH_TASK_DEFINITION = {
