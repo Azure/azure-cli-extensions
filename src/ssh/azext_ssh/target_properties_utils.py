@@ -193,7 +193,7 @@ def validate_and_set_port(op_info, tag_name="SSHPort"):
             if isinstance(port_num, str):
                 port_num = int(port_num)  # Convert to int if it's a string
             if 1 <= port_num <= 65535:
-                op_info.port = port_num
+                op_info.port = str(port_num)  # Ensure port is set as a string
             else:
                 raise ValueError
         except (ValueError, TypeError):
