@@ -383,9 +383,11 @@ def get_helm_values(cmd, config_dp_endpoint, release_train_custom=None, request_
     release_train = os.getenv('RELEASETRAIN') if os.getenv('RELEASETRAIN') else 'stable'
     chart_location_url = "{}/{}".format(config_dp_endpoint, chart_location_url_segment)
     dp_request_identity = request_body.identity
+    id = request_body.id
     request_body = request_body.serialize()
     request_body["identity"]["tenantId"] = dp_request_identity.tenant_id
     request_body["identity"]["principalId"] = dp_request_identity.principal_id
+    request_body["id"] = id
     request_body = json.dumps(request_body)
     if release_train_custom:
         release_train = release_train_custom
