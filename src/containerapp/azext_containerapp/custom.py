@@ -738,7 +738,8 @@ def create_managed_environment(cmd,
                                no_wait=False,
                                logs_dynamic_json_columns=False,
                                system_assigned=False,
-                               user_assigned=None):
+                               user_assigned=None,
+                               public_network_access=None):
     raw_parameters = locals()
     containerapp_env_create_decorator = ContainerappEnvPreviewCreateDecorator(
         cmd=cmd,
@@ -776,7 +777,8 @@ def update_managed_environment(cmd,
                                mtls_enabled=None,
                                p2p_encryption_enabled=None,
                                no_wait=False,
-                               logs_dynamic_json_columns=None):
+                               logs_dynamic_json_columns=None,
+                               public_network_access=None):
     raw_parameters = locals()
     containerapp_env_update_decorator = ContainerappEnvPreviewUpdateDecorator(
         cmd=cmd,

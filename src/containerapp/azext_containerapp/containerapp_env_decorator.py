@@ -48,6 +48,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
         self.set_up_infrastructure_resource_group()
         self.set_up_dynamic_json_columns()
         self.set_up_managed_identity()
+        self.set_up_public_network_access()
 
     def validate_arguments(self):
         super().validate_arguments()
@@ -71,6 +72,11 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
         # validate mtls and p2p traffic encryption
         if self.get_argument_p2p_encryption_enabled() is False and self.get_argument_mtls_enabled() is True:
             raise ValidationError("Cannot use '--enable-mtls' with '--enable-peer-to-peer-encryption False'")
+
+    def set_up_public_network_access(self):
+        if self.get_argument_public_network_access():
+            safe_set(self.managed_env_def, "properties", "publicNetworkAccess",
+                     value=self.get_argument_public_network_access())
 
     def set_up_dynamic_json_columns(self):
         if self.get_argument_logs_destination() == "log-analytics" and self.get_argument_logs_dynamic_json_columns() is not None:
@@ -189,6 +195,9 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
     def get_argument_p2p_encryption_enabled(self):
         return self.get_param("p2p_encryption_enabled")
 
+    def get_argument_public_network_access(self):
+        return self.get_param("public_network_access")
+
 
 class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
     def validate_arguments(self):
@@ -206,6 +215,11 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
         super().construct_payload()
 
         self.set_up_peer_to_peer_encryption()
+        self.set_up_public_network_access()
+
+    def set_up_public_network_access(self):
+        if self.get_argument_public_network_access():
+            safe_set(self.managed_env_def, "properties", "publicNetworkAccess", value=self.get_argument_public_network_access())
 
     def set_up_app_log_configuration(self):
         logs_destination = self.get_argument_logs_destination()
@@ -269,3 +283,6 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
 
     def get_argument_p2p_encryption_enabled(self):
         return self.get_param("p2p_encryption_enabled")
+
+    def get_argument_public_network_access(self):
+        return self.get_param("public_network_access")

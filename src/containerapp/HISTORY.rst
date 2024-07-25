@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp env create/update': Support `--public-network-access` to allow or block public network
 
 0.3.53
 ++++++
