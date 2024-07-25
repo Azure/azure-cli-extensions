@@ -174,6 +174,7 @@ def get_all_folders(grafana_url, http_headers, **kwargs):
     individual_folders = []
     for folder in folders:
         (status_folder_settings, content_folder_settings) = get_folder(folder['uid'], grafana_url, http_headers)
+        # TODO: get_folder_permissions usually requires admin permission but we don't save the permissions in backup or migrate. Figure out what to do.
         (status_folder_permissions, content_folder_permissions) = get_folder_permissions(folder['uid'],
                                                                                          grafana_url,
                                                                                          http_headers)

@@ -440,7 +440,6 @@ class AmgScenarioTest(ScenarioTest):
                 self.check("length([?uid == '{dashboardUid}'])", 1)
             ])
 
-    # basic_scenario
     @AllowLargeResponse(size_kb=3072)
     @ResourceGroupPreparer(name_prefix='cli_test_amg', location='westcentralus')
     def test_amg_migrate(self, resource_group):
@@ -520,8 +519,8 @@ class AmgScenarioTest(ScenarioTest):
                 'serviceAccount2Name': self.create_random_name(prefix='clitestamgmigrate', length=23)
             })
 
-            self.cmd('az grafana service-account create -g {rg} -n {name} --service-account {serviceAccount2Name} --role viewer')
-            # print(service_account)
+            # Note: the admin role is required to copy folders since we cannot view folder permissions unless admin. We don't use folder permissions though.
+            self.cmd('az grafana service-account create -g {rg} -n {name} --service-account {serviceAccount2Name} --role admin')
             service_account_token = self.cmd('az grafana service-account token create -g {rg} -n {name} --service-account {serviceAccount2Name} --token {serviceAccount2Name}_token --time-to-live 1d').get_output_in_json()
 
             self.kwargs.update({
@@ -534,12 +533,22 @@ class AmgScenarioTest(ScenarioTest):
             print(temp)
 
             # check that the migrate worked.
+            # migrate shouldn't have modified the first instance.
             self.cmd('grafana data-source show -g {rg} -n {name} --data-source "{dataSourceName}"')
+            self.cmd('grafana folder show -g {rg} -n {name} --folder "{folderTitle}"')
+            self.cmd('grafana dashboard show -g {rg} -n {name} --dashboard "{dashboardUid}"', checks=[
+                self.check("[dashboard.title]", "['{dashboardTitle}']"),
+                self.check("[meta.folderTitle]", "['{folderTitle}']")])
+            self.cmd('grafana dashboard show -g {rg} -n {name} --dashboard "{dashboardUid2}"', checks=[
+                self.check("[dashboard.title]", "['{dashboardTitle2}']"),
+                self.check("[meta.folderTitle]", "['General']")])
+            self.cmd('grafana dashboard show -g {rg} -n {name} --dashboard "{dashboardUid3}"', checks=[
+                self.check("[dashboard.title]", "['{dashboardTitle3}']"),
+                self.check("[meta.folderTitle]", "['{folderTitle}']")])
 
+            # the new things should exist.
             self.cmd('grafana data-source show -g {rg} -n {name2} --data-source "{dataSourceName}"')
-
-            # self.cmd('grafana folder show -g {rg} -n {name2} --folder "{folderTitle}"')
-
+            self.cmd('grafana folder show -g {rg} -n {name2} --folder "{folderTitle}"')
             self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid}"', checks=[
                 self.check("[dashboard.title]", "['{dashboardTitle}']"),
                 self.check("[meta.folderTitle]", "['{folderTitle}']")])
@@ -550,55 +559,7 @@ class AmgScenarioTest(ScenarioTest):
                 self.check("[dashboard.title]", "['{dashboardTitle3}']"),
                 self.check("[meta.folderTitle]", "['{folderTitle}']")])
 
-            beep = self.cmd('grafana dashboard list -g {rg} -n {name2}').get_output_in_json()
-            boop = self.cmd('grafana dashboard list -g {rg} -n {name}').get_output_in_json()
-            print("beep: ", beep)
-            print("boop: ", boop)
-
-            # with tempfile.TemporaryDirectory() as temp_dir:
-            #     self.kwargs.update({
-            #         'tempDir': temp_dir
-            #     })
-            #     self.cmd('grafana backup -g {rg} -n {name} -d "{tempDir}" --folders-to-exclude General "Azure Monitor" Geneva --components dashboards folders')
-
-            #     filenames = next(os.walk(temp_dir), (None, None, []))[2]
-            #     self.assertTrue(len(filenames) == 1)
-            #     self.assertTrue(filenames[0].endswith('.tar.gz'))
-
-            #     self.kwargs.update({
-            #         'archiveFile': os.path.join(temp_dir, filenames[0])
-            #     })
-
-            #     self.cmd('grafana dashboard delete -g {rg} -n {name} --dashboard "{dashboardUid2}"')
-            #     self.cmd('grafana restore -g {rg} -n {name} --archive-file "{archiveFile}"')
-
-            # self.cmd('grafana dashboard list -g {rg} -n {name}', checks=[
-            #     self.check("length([?uid == '{dashboardUid2}'])", 0),
-            #     self.check("length([?uid == '{dashboardUid}'])", 1)])
-
-            # self.kwargs['dashboardDefinition']['dashboard']['uid'] = 'mg2OAlTVd'
-            # response_create = self.cmd('grafana dashboard create -g {rg} -n {name}  --definition "{dashboardDefinition}" --title "{dashboardTitle}"').get_output_in_json()
-            # print(response_create)
-            # self.kwargs.update({
-            #     'dashboardUid4': response_create["uid"],
-            # })
-
-            # self.cmd('grafana dashboard sync --source {id} --destination {id2} --folders-to-include "{folderTitle}" general')
-            # self.cmd('grafana folder show -g {rg} -n {name2} --folder "{folderTitle}"')
-            # self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid}"', checks=[
-            #     self.check("[dashboard.title]", "['{dashboardTitle}']"),
-            #     self.check("[meta.folderTitle]", "['{folderTitle}']")])
-            # self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid4}"', checks=[
-            #     self.check("[dashboard.title]", "['{dashboardTitle}']"),
-            #     self.check("[meta.folderTitle]", "['General']")])
-
-            # self.cmd('grafana dashboard delete -g {rg} -n {name2} --dashboard "{dashboardUid}"')
-            # self.cmd('grafana dashboard delete -g {rg} -n {name2} --dashboard "{dashboardUid3}"')
-            # self.cmd('grafana dashboard sync --source {id} --destination {id2} --folders-to-include "{folderTitle}" --dashboards-to-include "{dashboardTitle}"')
-            # self.cmd('grafana dashboard list -g {rg} -n {name2}', checks=[
-            #     self.check("length([?uid == '{dashboardUid3}'])", 0),
-            #     self.check("length([?uid == '{dashboardUid}'])", 1)
-            # ])
+            # TODO: add snapshots / annotations once duplication problem is fixed.
 
     def _get_signed_in_user(self):
         account_info = self.cmd('account show').get_output_in_json()
