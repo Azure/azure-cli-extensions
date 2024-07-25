@@ -653,6 +653,8 @@ def aks_create(
     enable_static_egress_gateway=False,
     # virtualmachines
     vm_sizes=None,
+    # IMDS restriction
+    enable_imds_restriction=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -858,6 +860,9 @@ def aks_update(
     # Static Egress Gateway
     enable_static_egress_gateway=False,
     disable_static_egress_gateway=False,
+    # IMDS restriction
+    enable_imds_restriction=False,
+    disable_imds_restriction=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1818,7 +1823,7 @@ def aks_agentpool_manual_scale_update(cmd,    # pylint: disable=unused-argument
             break
     if not manual_exists:
         raise InvalidArgumentValueError(
-            f"Manual with sizes {','.join(current_vm_sizes)} doesn't exist in node pool {nodepool_name}"
+            f"Manual with sizes {current_vm_sizes} doesn't exist in node pool {nodepool_name}"
         )
 
     return sdk_no_wait(
@@ -2522,10 +2527,6 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
 
 def aks_get_versions(cmd, client, location):    # pylint: disable=unused-argument
     return client.list_kubernetes_versions(location)
-
-
-def aks_get_os_options(cmd, client, location):    # pylint: disable=unused-argument
-    return client.get_os_options(location, resource_type='managedClusters')
 
 
 def get_aks_custom_headers(aks_custom_headers=None):
