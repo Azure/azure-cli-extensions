@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.8.0
+++++++
+* New api version 2024-07-1-preview added
+* Adding functionality for workload identity feature.
+* Cluster create and update waits for agent state 
+
 1.7.3
 ++++++
 * Skip helm archive download if helm is already installed.
