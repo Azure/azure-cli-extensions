@@ -12,7 +12,7 @@ import unittest
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, MSGraphNameReplacer, MOCKED_USER_NAME)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
-from .test_definitions import (test_data_source, test_notification_channel, test_dashboard)
+from .test_definitions import (test_data_source, test_notification_channel, test_dashboard, test_dashboard_with_datasource)
 from .recording_processors import ApiKeyServiceAccountTokenReplacer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -25,7 +25,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
             ApiKeyServiceAccountTokenReplacer()
         ])
 
-    def setup_migrate_instances(self):
+    def _setup_migrate_instances(self):
         # migrate from amg1 to amg2
         amg1 = self.cmd('grafana create -g {rg} -n {name} -l {location}').get_output_in_json()
         amg2 = self.cmd('grafana create -g {rg} -n {name2} -l {location}').get_output_in_json()
@@ -50,7 +50,10 @@ class AmgMigrateScenarioTest(ScenarioTest):
             'dataSourceDefinition': test_data_source,
             'dataSourceName': test_data_source["name"]
         })
-        self.cmd('grafana data-source create -g {rg} -n {name} --definition "{dataSourceDefinition}"')
+        ds1 = self.cmd('grafana data-source create -g {rg} -n {name} --definition "{dataSourceDefinition}"').get_output_in_json()
+        self.kwargs.update({
+            'amg1_datasource_uid': ds1['datasource']['uid']
+        })
 
         # create dashboard
         dashboard_title = test_dashboard["dashboard"]["title"]
@@ -81,7 +84,6 @@ class AmgMigrateScenarioTest(ScenarioTest):
         # 3rd dashboard under own folder
         self.kwargs['dashboardDefinition']['dashboard']['uid'] = 'mg2OAlTVc'
         response_create = self.cmd('grafana dashboard create -g {rg} -n {name} --folder "{folderTitle}"  --definition "{dashboardDefinition}" --title "{dashboardTitle3}"').get_output_in_json()
-
         self.kwargs.update({
             'dashboardUid3': response_create["uid"],
         })
@@ -102,7 +104,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
         self.recording_processors.append(MSGraphNameReplacer(owner, MOCKED_USER_NAME))
 
         with unittest.mock.patch('azext_amg.custom._gen_guid', side_effect=self.create_guid):
-            amg1, amg2 = self.setup_migrate_instances()
+            amg1, amg2 = self._setup_migrate_instances()
            
             # prepare to migrate
             # get the service account token:
@@ -119,21 +121,20 @@ class AmgMigrateScenarioTest(ScenarioTest):
                 'serviceAccountToken': service_account_token['key']
             })
 
+            data_source_list_output = self.cmd('grafana data-source list -g {rg} -n {name2}').get_output_in_json()
+            folder_list_output = self.cmd('grafana folder list -g {rg} -n {name2}').get_output_in_json()
+            dashboard_list_output = self.cmd('grafana dashboard list -g {rg} -n {name2}').get_output_in_json()
+
             # now migrate to new instance 2.
             self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken} --dry-run')
 
-            # check that the migrate worked.
-            self.cmd('grafana data-source show -g {rg} -n {name2} --data-source "{dataSourceName}"')
-            self.cmd('grafana folder show -g {rg} -n {name2} --folder "{folderTitle}"')
-            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid}"', checks=[
-                self.check("[dashboard.title]", "['{dashboardTitle}']"),
-                self.check("[meta.folderTitle]", "['{folderTitle}']")])
-            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid2}"', checks=[
-                self.check("[dashboard.title]", "['{dashboardTitle2}']"),
-                self.check("[meta.folderTitle]", "['General']")])
-            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid3}"', checks=[
-                self.check("[dashboard.title]", "['{dashboardTitle3}']"),
-                self.check("[meta.folderTitle]", "['{folderTitle}']")])
+            data_source_list_output_after = self.cmd('grafana data-source list -g {rg} -n {name2}').get_output_in_json()
+            folder_list_output_after = self.cmd('grafana folder list -g {rg} -n {name2}').get_output_in_json()
+            dashboard_list_output_after = self.cmd('grafana dashboard list -g {rg} -n {name2}').get_output_in_json()
+
+            self.assertTrue(data_source_list_output == data_source_list_output_after)
+            self.assertTrue(folder_list_output == folder_list_output_after)
+            self.assertTrue(dashboard_list_output == dashboard_list_output_after)
 
 
     @AllowLargeResponse(size_kb=3072)
@@ -150,7 +151,14 @@ class AmgMigrateScenarioTest(ScenarioTest):
         self.recording_processors.append(MSGraphNameReplacer(owner, MOCKED_USER_NAME))
 
         with unittest.mock.patch('azext_amg.custom._gen_guid', side_effect=self.create_guid):
-            amg1, amg2 = self.setup_migrate_instances()
+            amg1, amg2 = self._setup_migrate_instances()
+
+            # recreate the second dashboard in amg2:
+            self.kwargs['dashboardDefinition']['dashboard']['uid'] = 'mg2OAlTVz'
+            response_create = self.cmd('grafana dashboard create -g {rg} -n {name2}  --definition "{dashboardDefinition}" --title "{dashboardTitle2}"').get_output_in_json()
+            self.kwargs.update({
+                'dashboardUid2_amg2': response_create["uid"],
+            })
            
             # prepare to migrate
             # get the service account token:
@@ -170,18 +178,18 @@ class AmgMigrateScenarioTest(ScenarioTest):
             # now migrate to new instance 2.
             self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken}')
 
-            # check that the migrate worked.
-            self.cmd('grafana data-source show -g {rg} -n {name2} --data-source "{dataSourceName}"')
-            self.cmd('grafana folder show -g {rg} -n {name2} --folder "{folderTitle}"')
-            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid}"', checks=[
-                self.check("[dashboard.title]", "['{dashboardTitle}']"),
-                self.check("[meta.folderTitle]", "['{folderTitle}']")])
+            # the uid shouldn't be updated since we didn't overwrite.
             self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid2}"', checks=[
                 self.check("[dashboard.title]", "['{dashboardTitle2}']"),
+                self.check("[dashboard.uid]", "['{dashboardUid2_amg2}']"),
                 self.check("[meta.folderTitle]", "['General']")])
-            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid3}"', checks=[
-                self.check("[dashboard.title]", "['{dashboardTitle3}']"),
-                self.check("[meta.folderTitle]", "['{folderTitle}']")])
+
+            self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken} --overwrite')
+            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid2}"', checks=[
+                self.check("[dashboard.title]", "['{dashboardTitle2}']"),
+                self.check("[dashboard.uid]", "['{dashboardUid2}']"),
+                self.check("[meta.folderTitle]", "['General']")])
+
 
 
     @AllowLargeResponse(size_kb=3072)
@@ -198,8 +206,25 @@ class AmgMigrateScenarioTest(ScenarioTest):
         self.recording_processors.append(MSGraphNameReplacer(owner, MOCKED_USER_NAME))
 
         with unittest.mock.patch('azext_amg.custom._gen_guid', side_effect=self.create_guid):
-            amg1, amg2 = self.setup_migrate_instances()
-           
+            amg1, amg2 = self._setup_migrate_instances()
+
+            dashboard_title = test_dashboard_with_datasource["dashboard"]["title"]
+            self.kwargs.update({
+                'dashboardDefinitionDatasource': test_dashboard_with_datasource,
+                'dashboardTitle4': dashboard_title + '4'
+            })
+            self.kwargs['dashboardDefinitionDatasource']['dashboard']['uid'] = 'mg2OAlTVd'  # control the uid to prevent auto generated uid with possible '-' that breaks the command
+
+            response_create = self.cmd('grafana dashboard create -g {rg} -n {name}  --definition "{dashboardDefinitionDatasource}" --title "{dashboardTitle4}"').get_output_in_json()
+            self.kwargs.update({
+                'dashboardUid4': response_create["uid"],
+            })
+
+            ds2 = self.cmd('grafana data-source create -g {rg} -n {name} --definition "{dataSourceDefinition}"').get_output_in_json()
+            self.kwargs.update({
+                'amg2_datasource_uid': ds2['datasource']['uid']
+            })
+
             # prepare to migrate
             # get the service account token:
             self.kwargs.update({
@@ -218,17 +243,9 @@ class AmgMigrateScenarioTest(ScenarioTest):
             # now migrate to new instance 2.
             self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken}')
 
-            # check that the migrate worked.
-            self.cmd('grafana data-source show -g {rg} -n {name2} --data-source "{dataSourceName}"')
-            self.cmd('grafana folder show -g {rg} -n {name2} --folder "{folderTitle}"')
-            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid}"', checks=[
-                self.check("[dashboard.title]", "['{dashboardTitle}']"),
-                self.check("[meta.folderTitle]", "['{folderTitle}']")])
-            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid2}"', checks=[
-                self.check("[dashboard.title]", "['{dashboardTitle2}']"),
-                self.check("[meta.folderTitle]", "['General']")])
-            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid3}"', checks=[
-                self.check("[dashboard.title]", "['{dashboardTitle3}']"),
+            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid4}"', checks=[
+                self.check("[dashboard.title]", "['{dashboardTitle4}']"),
+                self.check("[dashboard.panels[0].datasource.uid]", "['{amg2_datasource_uid}']"),
                 self.check("[meta.folderTitle]", "['{folderTitle}']")])
 
 
@@ -247,7 +264,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
 
         with unittest.mock.patch('azext_amg.custom._gen_guid', side_effect=self.create_guid):
             # migrate from amg1 to amg2
-            amg1, amg2 = self.setup_migrate_instances()
+            amg1, amg2 = self._setup_migrate_instances()
          
             # prepare to migrate
             # get the service account token:
