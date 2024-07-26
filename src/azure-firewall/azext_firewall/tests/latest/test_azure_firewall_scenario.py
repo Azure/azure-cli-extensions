@@ -1093,3 +1093,251 @@ class AzureFirewallScenario(ScenarioTest):
             ])
 
         self.cmd("network firewall policy delete -n {policy} -g {rg}")
+
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_draft', location='westus2')
+    def test_azure_policy_draft(self, resource_group, resource_group_location):
+        self.kwargs.update({
+            'policy': 'myclipolicy',
+            'rg': resource_group,
+            'ipconfig': 'myipconfig1',
+            'location': resource_group_location,
+            'collectiongroup': 'myclirulecollectiongroup',
+            'collection_group_priority': 10000
+        })        
+        self.cmd('network firewall policy create -g {rg} -n {policy} -l {location} --sku Premium --idps-mode Off', checks=[
+            self.check('type', 'Microsoft.Network/FirewallPolicies'),
+            self.check('name', '{policy}')
+        ])
+
+        self.kwargs.update({'location': 'westus2'})
+        self.cmd('network firewall policy draft create -g {rg} --policy-name {policy}', checks=[
+            self.check('type', 'Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts'),
+            self.check('name', '{policy}')
+        ])
+
+        self.cmd(
+            'network firewall policy draft update -g {rg} --policy-name {policy} --threat-intel-mode Deny --idps-mode Alert',
+            checks=[
+                self.check('type', 'Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts'),
+                self.check('threatIntelMode', 'Deny'),
+                self.check('name', '{policy}'),
+                self.check('intrusionDetection.mode', 'Alert')
+                 ])
+
+        self.cmd('network firewall policy draft intrusion-detection add -g {rg} --policy-name {policy} --mode Deny --signature-id 10001 --private-ranges 167.220.204.0/24 167.221.205.101/32',
+                 checks=[
+                     self.check('bypassTrafficSettings', []),
+                     self.check('length(signatureOverrides)', 1),
+                     self.check('signatureOverrides[0]', {'id': '10001', 'mode': 'Deny'}),
+                     self.check('privateRanges[0]', "167.220.204.0/24"),
+                     self.check('privateRanges[1]', "167.221.205.101/32")
+                 ])
+
+        self.cmd('network firewall policy draft intrusion-detection add -g {rg} --policy-name {policy} --mode Alert --signature-id 20001 --private-ranges 167.220.208.0/24 167.221.205.102/32',
+                 checks=[
+                     self.check('bypassTrafficSettings', []),
+                     self.check('length(signatureOverrides)', 2),
+                     self.check('signatureOverrides[0]', {'id': '10001', 'mode': 'Deny'}),
+                     self.check('signatureOverrides[1]', {'id': '20001', 'mode': 'Alert'}),
+                     self.check('privateRanges[0]', "167.220.208.0/24"),
+                     self.check('privateRanges[1]', "167.221.205.102/32")
+                 ])
+
+        self.cmd('network firewall policy draft intrusion-detection add -g {rg} --policy-name {policy} '
+                 '--rule-name bypass-rule-1 '
+                 '--rule-protocol TCP '
+                 '--rule-src-addresses 10.0.0.12 10.0.0.15 '
+                 '--rule-dest-addresses 192.168.0.103 192.168.0.104 '
+                 '--rule-dest-ports 8080 9090 5432',
+                 checks=[
+                     self.check('length(bypassTrafficSettings)', 1),
+                     self.check('bypassTrafficSettings[0].description', None),
+                     self.check('bypassTrafficSettings[0].destinationAddresses', ['192.168.0.103', '192.168.0.104']),
+                     self.check('bypassTrafficSettings[0].destinationIpGroups', None),
+                     self.check('bypassTrafficSettings[0].protocol', 'TCP'),
+                     self.check('bypassTrafficSettings[0].destinationPorts', ['8080', '9090', '5432']),
+                     self.check('length(signatureOverrides)', 2),
+                     self.check('signatureOverrides[0]', {'id': '10001', 'mode': 'Deny'}),
+                     self.check('signatureOverrides[1]', {'id': '20001', 'mode': 'Alert'}),
+                 ])
+
+        self.cmd('network firewall policy draft intrusion-detection list -g {rg} --policy-name {policy}',
+                 checks=[
+                     self.check('length(bypassTrafficSettings)', 1),
+                     self.check('length(signatureOverrides)', 2),
+                     self.check('length(privateRanges)', 2)
+                 ])
+
+        self.cmd('network firewall policy draft intrusion-detection remove -g {rg} --policy-name {policy} '
+                 '--rule-name bypass-rule-1 '
+                 '--signature-id 10001')
+
+        self.cmd('network firewall policy draft intrusion-detection list -g {rg} --policy-name {policy}',
+                 checks=[
+                     self.check('length(bypassTrafficSettings)', 0),
+                     self.check('length(signatureOverrides)', 1),
+                     self.check('length(privateRanges)', 2)
+                 ])
+
+        self.cmd('network firewall policy show -g {rg} -n {policy}',
+                 checks=[
+                     self.check('threatIntelMode', 'Alert')
+                 ])
+
+        self.cmd('network firewall policy deploy -g {rg} --name {policy}')
+
+        self.cmd('network firewall policy show -g {rg} -n {policy}',
+                 checks=[
+                     self.check('threatIntelMode', 'Deny')
+                 ])
+
+        self.cmd('network firewall policy intrusion-detection list -g {rg} --policy-name {policy}',
+                 checks=[
+                     self.check('length(bypassTrafficSettings)', 0),
+                     self.check('length(signatureOverrides)', 1),
+                     self.check('length(privateRanges)', 2)
+                 ])
+
+        self.cmd('network firewall policy delete -g {rg} --name {policy}')
+
+
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_draft', location='westus2')
+    def test_azure_policy_rcg_draft(self, resource_group, resource_group_location):
+        self.kwargs.update({
+            'policy': 'myclipolicy',
+            'rg': resource_group,
+            'ipconfig': 'myipconfig1',
+            'location': resource_group_location,
+            'collectiongroup': 'myclirulecollectiongroup',
+            'collection_group_priority': 10000
+        })        
+        self.cmd('network firewall policy create -g {rg} -n {policy} -l {location}', checks=[
+            self.check('type', 'Microsoft.Network/FirewallPolicies'),
+            self.check('name', '{policy}')
+        ])
+
+        self.kwargs.update({'location': 'westus2'})
+        self.cmd('network firewall policy draft create -g {rg} --policy-name {policy}', checks=[
+            self.check('type', 'Microsoft.Network/FirewallPolicies/FirewallPolicyDrafts'),
+            self.check('name', '{policy}')
+        ])
+
+        self.cmd('network firewall policy rule-collection-group create -g {rg} --priority {collection_group_priority} --policy-name {policy} --name {collectiongroup}', checks=[
+            self.check('type', 'Microsoft.Network/FirewallPolicies/RuleCollectionGroups'),
+            self.check('name', '{collectiongroup}')
+            ])
+
+        self.cmd('network firewall policy rule-collection-group draft create -g {rg} --rule-collection-group-name {collectiongroup} --priority 150 --policy-name {policy}', checks=[
+            self.check('type', 'Microsoft.Network/FirewallPolicies/RuleCollectionGroups/RuleCollectionGroupDrafts'),
+            self.check('name', '{collectiongroup}'),
+            self.check('priority', 150)
+        ])
+
+        self.cmd('network firewall policy rule-collection-group draft update -g {rg} --policy-name {policy}  --rule-collection-group-name {collectiongroup} --priority 12000', checks=[
+            self.check('priority', 12000)
+        ])
+
+        self.cmd('network firewall policy rule-collection-group draft show -g {rg} --policy-name {policy} --rule-collection-group-name {collectiongroup}', checks=[
+            self.check('priority', 12000)
+        ])
+
+        self.cmd('az network firewall policy rule-collection-group draft collection add-nat-collection -n nat-collection \
+                 --policy-name {policy} --rule-collection-group-name {collectiongroup} -g {rg} --collection-priority 10005 \
+                 --action DNAT --rule-name network-rule --description "test" \
+                 --destination-addresses "202.120.36.15" --source-addresses "202.120.36.13" "202.120.36.14" \
+                 --translated-address 128.1.1.1 --translated-port 1234 \
+                 --destination-ports 12000 --ip-protocols TCP UDP', checks=[
+            self.check('length(ruleCollections)', 1),
+            self.check('ruleCollections[0].ruleCollectionType', "FirewallPolicyNatRuleCollection"),
+            self.check('ruleCollections[0].name', "nat-collection")
+        ])
+
+        self.cmd('network firewall policy rule-collection-group draft collection add-filter-collection -g {rg} --policy-name {policy} \
+                 --rule-collection-group-name {collectiongroup} -n filter-collection-1 --collection-priority 13000 \
+                 --action Allow --rule-name network-rule --rule-type NetworkRule \
+                 --description "test" --destination-addresses "202.120.36.15" --source-addresses "202.120.36.13" "202.120.36.14" \
+                 --destination-ports 12003 12004 --ip-protocols Any ICMP', checks=[
+            self.check('length(ruleCollections)', 2),
+            self.check('ruleCollections[1].ruleCollectionType', "FirewallPolicyFilterRuleCollection"),
+            self.check('ruleCollections[1].name', "filter-collection-1")
+        ])
+
+        self.cmd('network firewall policy rule-collection-group draft collection add-filter-collection -g {rg} --policy-name {policy} \
+                 --rule-collection-group-name {collectiongroup} -n filter-collection-2 --collection-priority 14000 \
+                 --action Allow --rule-name application-rule --rule-type ApplicationRule \
+                 --description "test" --destination-addresses "202.120.36.15" "202.120.36.16" --source-addresses "202.120.36.13" "202.120.36.14" --protocols Http=12800 Https=12801 \
+                 --fqdn-tags AzureBackup HDInsight '
+                 '--target-urls www.google.com www.bing.com '
+                 '--enable-tls-inspection true',
+                 checks=[
+                     self.check('length(ruleCollections)', 3),
+                     self.check('ruleCollections[2].ruleCollectionType', "FirewallPolicyFilterRuleCollection"),
+                     self.check('ruleCollections[2].name', "filter-collection-2"),
+                     self.check('ruleCollections[2].rules[0].ruleType', 'ApplicationRule'),
+                     self.check('ruleCollections[2].rules[0].terminateTLS', True),
+                     self.check('ruleCollections[2].rules[0].targetUrls', ['www.google.com', 'www.bing.com'])
+                 ])
+
+        self.cmd('az network firewall policy rule-collection-group draft collection add-nat-collection -n nat-collection-2 \
+                                 --policy-name {policy} --rule-collection-group-name {collectiongroup} -g {rg} --collection-priority 1000 \
+                                 --action DNAT --rule-name network-rule --description "test" \
+                                 --destination-addresses "202.120.36.15" --source-addresses "202.120.36.13" "202.120.36.14" \
+                                 --translated-fqdn www.google.com --translated-port 1234 \
+                                 --destination-ports 12000 --ip-protocols TCP UDP', checks=[
+            self.check('length(ruleCollections)', 4),
+            self.check('ruleCollections[3].ruleCollectionType', "FirewallPolicyNatRuleCollection"),
+            self.check('ruleCollections[3].name', "nat-collection-2")
+        ])
+
+        self.cmd('network firewall policy rule-collection-group draft collection rule add -g {rg} --policy-name {policy} '
+                 '--rule-collection-group-name {collectiongroup} --collection-name filter-collection-2 --name application-rule-2 '
+                 '--rule-type ApplicationRule --description "test" --source-addresses 202.120.36.13 202.120.36.14 '
+                 '--destination-addresses 202.120.36.15 202.120.36.16 --protocols Http=12800 Https=12801 --target-fqdns www.bing.com',
+                 checks=[
+                     self.check('length(ruleCollections[2].rules)', 2),
+                 ])
+        
+        self.cmd('network firewall policy rule-collection-group draft collection rule update -g {rg} --policy-name {policy} '
+                 '--rule-collection-group-name {collectiongroup} --collection-name filter-collection-2 --name application-rule-2 '
+                 '--description "test" --source-addresses 202.120.36.13 202.120.36.14 '
+                 '--destination-addresses 202.120.36.15 202.120.36.16 --protocols Http=12800 Https=12801 --target-fqdns www.bing.com',
+                 checks=[
+                     self.check('length(ruleCollections[2].rules)', 2),
+                 ])
+
+        self.cmd('network firewall policy rule-collection-group draft collection list -g {rg} --policy-name {policy} \
+                 --rule-collection-group-name {collectiongroup}', checks=[
+            self.check('length(@)', 4)
+        ])
+
+        self.cmd('network firewall policy rule-collection-group draft collection rule remove -g {rg} --policy-name {policy} \
+                 --rule-collection-group-name {collectiongroup} --collection-name filter-collection-1 --name network-rule-2', checks=[
+            self.check('length(ruleCollections[1].rules)', 1),
+            self.check('ruleCollections[1].rules[0].name', 'network-rule')
+        ])
+
+        self.cmd('network firewall policy rule-collection-group draft collection remove -g {rg} --policy-name {policy} \
+                 --rule-collection-group-name {collectiongroup} --name filter-collection-1', checks=[
+            self.check('length(ruleCollections)', 3)
+        ])
+
+        self.cmd('network firewall policy rule-collection-group draft show -g {rg} --policy-name {policy} --rule-collection-group-name {collectiongroup}',
+                  checks=[
+            self.check('length(ruleCollections[1].rules)', 2),
+            self.check('ruleCollections[1].rules[0].name', 'application-rule'),
+            self.check('length(ruleCollections)', 3)
+        ])
+
+        self.cmd('network firewall policy deploy -g {rg} --name {policy}')
+
+        self.cmd('network firewall policy rule-collection-group show -g {rg} --policy-name {policy} --name {collectiongroup}',
+                  checks=[
+            self.check('length(ruleCollections[1].rules)', 2),
+            self.check('ruleCollections[1].rules[0].name', 'application-rule'),
+            self.check('length(ruleCollections)', 3)
+        ])
+
+        self.cmd('network firewall policy delete -g {rg} --name {policy}')
+

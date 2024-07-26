@@ -18,10 +18,15 @@ from ._client_factory import network_client_factory
 from .aaz.latest.network.firewall import Create as _AzureFirewallCreate, Update as _AzureFirewallUpdate, \
     Show as _AzureFirewallShow
 from .aaz.latest.network.firewall.policy import Create as _AzureFirewallPoliciesCreate, \
-    Update as _AzureFirewallPoliciesUpdate
+    Update as _AzureFirewallPoliciesUpdate, Deploy as _AzureFirewallPoliciesDeploy
 from .aaz.latest.network.firewall.policy.rule_collection_group import Create as _RuleCollectionGroupCreate, \
     Update as _RuleCollectionGroupUpdate
-from .aaz.latest.network.firewall.policy.intrusion_detection import Show as _IntrusionDetectionShow
+from .aaz.latest.network.firewall.policy.intrusion_detection import Show as _PolicyIntrusionDetectionShow
+from .aaz.latest.network.firewall.policy.draft.intrusion_detection import Show as _PolicyDraftIntrusionDetectionShow
+from .aaz.latest.network.firewall.policy.draft import Create as _AzureFirewallPolicyDraftsCreate, \
+    Update as _AzureFirewallPolicyDraftsUpdate
+from .aaz.latest.network.firewall.policy.rule_collection_group.draft import Create as _RuleCollectionGroupDraftCreate, \
+    Update as _RuleCollectionGroupDraftUpdate
 
 logger = get_logger(__name__)
 
@@ -675,7 +680,6 @@ def create_af_application_rule(cmd, resource_group_name, azure_firewall_name, co
 
 @register_command(
     "network firewall threat-intel-allowlist create",
-    is_preview=True,
 )
 class ThreatIntelAllowListCreate(_AzureFirewallUpdate):
     """Create an Azure Firewall Threat Intelligence Allow List.
@@ -731,7 +735,6 @@ class ThreatIntelAllowListCreate(_AzureFirewallUpdate):
 
 @register_command(
     "network firewall threat-intel-allowlist update",
-    is_preview=True,
 )
 class ThreatIntelAllowListUpdate(_AzureFirewallUpdate):
     """Update Azure Firewall Threat Intelligence Allow List.
@@ -789,7 +792,6 @@ class ThreatIntelAllowListUpdate(_AzureFirewallUpdate):
 
 @register_command(
     "network firewall threat-intel-allowlist show",
-    is_preview=True,
 )
 class ThreatIntelAllowListShow(_AzureFirewallShow):
     """
@@ -809,7 +811,6 @@ class ThreatIntelAllowListShow(_AzureFirewallShow):
 
 @register_command(
     "network firewall threat-intel-allowlist delete",
-    is_preview=True,
 )
 class ThreatIntelAllowListDelete(_AzureFirewallUpdate):
     """
@@ -908,7 +909,7 @@ class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
             args.user_assigned_identities = None
 
 
-class IntrusionDetectionAdd(_AzureFirewallPoliciesUpdate):
+class AzureFirewallPolicyIntrusionDetectionAdd(_AzureFirewallPoliciesUpdate):
     """
     Add overrided intrusion signature or a bypass rule or private ranges list for intrusion detection
     """
@@ -1019,9 +1020,8 @@ class IntrusionDetectionAdd(_AzureFirewallPoliciesUpdate):
 
 @register_command(
     "network firewall policy intrusion-detection list",
-    is_preview=True,
 )
-class IntrusionDetectionList(_IntrusionDetectionShow):
+class AzureFirewallPolicyIntrusionDetectionList(_PolicyIntrusionDetectionShow):
     """
     List all intrusion detection configuration
     """
@@ -1039,7 +1039,7 @@ class IntrusionDetectionList(_IntrusionDetectionShow):
             self.ctx.vars.instance.properties.intrusion_detection.configuration, client_flatten=True)
 
 
-class IntrusionDetectionRemove(_AzureFirewallPoliciesUpdate):
+class AzureFirewallPolicyIntrusionDetectionRemove(_AzureFirewallPoliciesUpdate):
     """
     Remove overrided intrusion signature or a bypass rule
     """
@@ -1058,6 +1058,215 @@ class IntrusionDetectionRemove(_AzureFirewallPoliciesUpdate):
             help="Name of the bypass traffic rule"
         )
         args_schema.user_assigned_identities._registered = False
+        return args_schema
+
+    def pre_instance_update(self, instance):
+        from azure.cli.core.azclierror import RequiredArgumentMissingError, InvalidArgumentValueError
+        args = self.ctx.args
+        if not has_value(instance.properties.intrusion_detection):
+            raise RequiredArgumentMissingError(
+                'Intrusion detection mode is not set. Setting it by update command first')
+
+        if has_value(args.signature_id):
+            signatures = instance.properties.intrusion_detection.configuration.signature_overrides
+            new_signatures = [s for s in signatures if s.id != args.signature_id]
+            if len(signatures) == len(new_signatures):
+                raise InvalidArgumentValueError(f"Signature ID {args.signature_id} doesn't exist")
+            instance.properties.intrusion_detection.configuration.signature_overrides = new_signatures
+
+        if has_value(args.bypass_rule_name):
+            bypass_settings = instance.properties.intrusion_detection.configuration.bypass_traffic_settings
+            new_bypass_settings = [s for s in bypass_settings if s.name != args.bypass_rule_name]
+            if len(bypass_settings) == len(new_bypass_settings):
+                raise InvalidArgumentValueError(f"Bypass rule with name {args.bypass_rule_name} doesn't exist")
+            instance.properties.intrusion_detection.configuration.bypass_traffic_settings = new_bypass_settings
+
+    def _output(self, *args, **kwargs):
+        return self.deserialize_output(
+            self.ctx.vars.instance.properties.intrusion_detection.configuration, client_flatten=True)
+
+
+class AzureFirewallPolicyDraftsCreate(_AzureFirewallPolicyDraftsCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.base_policy._fmt = AAZResourceIdArgFormat(
+            template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network"
+                     "/firewallPolicies/{}",
+        )
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if has_value(args.dns_servers):
+            if not has_value(args.enable_dns_proxy):
+                args.enable_dns_proxy = False
+
+
+class AzureFirewallPolicyDraftsUpdate(_AzureFirewallPolicyDraftsUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.configuration._registered = False
+        return args_schema
+
+
+class AzureFirewallPoliciesDeploy(_AzureFirewallPoliciesDeploy):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        return args_schema
+
+
+class AzureFirewallPolicyDraftIntrusionDetectionAdd(_AzureFirewallPolicyDraftsUpdate):
+    """
+    Add overrided intrusion signature or a bypass rule or private ranges list for intrusion detection
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg, AAZListArg, AAZArgEnum, AAZResourceIdArg, AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.policy_name._options = ['--policy-name']
+        args_schema.signature_id = AAZStrArg(
+            options=['--signature-id'],
+            help="Signature id."
+        )
+        args_schema.signature_mode = AAZStrArg(
+            options=['--mode'],
+            help="The signature state"
+        )
+        args_schema.signature_mode.enum = AAZArgEnum({'Off': 'off', 'Alert': 'Alert', 'Deny': 'Deny'})
+        args_schema.bypass_rule_name = AAZStrArg(
+            options=['--rule-name'],
+            help="Name of the bypass traffic rule"
+        )
+        args_schema.bypass_rule_description = AAZStrArg(
+            options=['--rule-description'],
+            help="Description of the bypass traffic rule"
+        )
+        args_schema.bypass_rule_protocol = AAZStrArg(
+            options=['--rule-protocol'],
+            help="The rule bypass protocol"
+        )
+        args_schema.bypass_rule_protocol.enum = AAZArgEnum({'TCP': 'TCP', 'UDP': 'UDP', 'ICMP': 'ICMP', 'Any': 'Any'})
+        args_schema.bypass_rule_source_addresses = AAZListArg(
+            options=['--rule-src-addresses'],
+            help="Space-separated list of source IP addresses or ranges for this rule"
+        )
+        args_schema.bypass_rule_source_addresses.Element = AAZStrArg()
+        args_schema.bypass_rule_destination_addresses = AAZListArg(
+            options=['--rule-dest-addresses'],
+            help="Space-separated list of destination IP addresses or ranges for this rule"
+        )
+        args_schema.bypass_rule_destination_addresses.Element = AAZStrArg()
+        args_schema.bypass_rule_destination_ports = AAZListArg(
+            options=['--rule-dest-ports'],
+            help="Space-separated list of destination ports or ranges"
+        )
+        args_schema.bypass_rule_destination_ports.Element = AAZStrArg()
+        args_schema.bypass_rule_source_ip_groups = AAZListArg(
+            options=['--rule-src-ip-groups'],
+            help="Space-separated list of source IpGroups"
+        )
+        args_schema.bypass_rule_source_ip_groups.Element = AAZStrArg()
+        args_schema.bypass_rule_destination_ip_groups = AAZListArg(
+            options=['--rule-dest-ip-groups'],
+            help="Space-separated list of destination IpGroups for this rule"
+        )
+        args_schema.bypass_rule_destination_ip_groups.Element = AAZResourceIdArg(
+            fmt=AAZResourceIdArgFormat(
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/ipGroups/{}"
+            )
+        )
+
+        return args_schema
+
+    def pre_instance_update(self, instance):
+        from azure.cli.core.azclierror import RequiredArgumentMissingError, InvalidArgumentValueError
+        args = self.ctx.args
+        if not has_value(instance.properties.intrusion_detection):
+            raise RequiredArgumentMissingError(
+                'Intrusion detection mode is not set. Setting it by update command first')
+
+        if has_value(args.signature_id) and has_value(args.signature_mode):
+            signature_override = {
+                'id': args.signature_id,
+                'mode': args.signature_mode
+            }
+            if has_value(instance.properties.intrusion_detection.configuration):
+                for overrided_signature in instance.properties.intrusion_detection.configuration.signature_overrides:
+                    if overrided_signature.id == args.signature_id:
+                        raise InvalidArgumentValueError(
+                            f'Signature ID {args.signature_id} exists. Delete it first or try update instead')
+                instance.properties.intrusion_detection.configuration.signature_overrides.append(signature_override)
+            else:
+                instance.properties.intrusion_detection.configuration = {
+                    'signatureOverrides': [signature_override]
+                }
+
+        if has_value(args.bypass_rule_name):
+            bypass_traffic = {
+                'name': args.bypass_rule_name,
+                'description': args.bypass_rule_description,
+                'protocol': args.bypass_rule_protocol,
+                'sourceAddresses': args.bypass_rule_source_addresses,
+                'destinationAddresses': args.bypass_rule_destination_addresses,
+                'destinationPorts': args.bypass_rule_destination_ports,
+                'sourceIpGroups': args.bypass_rule_source_ip_groups,
+                'destinationIpGroups': args.bypass_rule_destination_ip_groups,
+            }
+            instance.properties.intrusion_detection.configuration.bypass_traffic_settings.append(bypass_traffic)
+
+        if has_value(args.private_ranges):
+            instance.properties.intrusion_detection.configuration.private_ranges = args.private_ranges
+
+    def _output(self, *args, **kwargs):
+        return self.deserialize_output(
+            self.ctx.vars.instance.properties.intrusion_detection.configuration, client_flatten=True)
+
+
+@register_command(
+    "network firewall policy draft intrusion-detection list",
+    is_preview=True,
+)
+class AzureFirewallPolicyDraftIntrusionDetectionList(_PolicyDraftIntrusionDetectionShow):
+    """
+    List all intrusion detection configuration
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.policy_name._options = ['--policy-name']
+        return args_schema
+
+    def _output(self, *args, **kwargs):
+        if not has_value(self.ctx.vars.instance.properties.intrusion_detection.configuration):
+            return []
+        return self.deserialize_output(
+            self.ctx.vars.instance.properties.intrusion_detection.configuration, client_flatten=True)
+
+
+class AzureFirewallPolicyDraftIntrusionDetectionRemove(_AzureFirewallPolicyDraftsUpdate):
+    """
+    Remove overrided intrusion signature or a bypass rule
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.policy_name._options = ['--policy-name']
+        args_schema.signature_id = AAZStrArg(
+            options=['--signature-id'],
+            help="Signature id."
+        )
+        args_schema.bypass_rule_name = AAZStrArg(
+            options=['--rule-name'],
+            help="Name of the bypass traffic rule"
+        )
         return args_schema
 
     def pre_instance_update(self, instance):
@@ -1116,11 +1325,40 @@ class RuleCollectionGroupUpdate(_RuleCollectionGroupUpdate):
             instance.properties.priority = args.priority
 
 
+class RuleCollectionGroupDraftCreate(_RuleCollectionGroupDraftCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.priority._required = True
+        args_schema.rule_collections._registered = False
+        return args_schema
+
+
+class RuleCollectionGroupDraftUpdate(_RuleCollectionGroupDraftUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg, AAZDictArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            help="Space-separated tags: key[=value] [key[=value] ...].",
+        )
+        args_schema.tags.Element = AAZStrArg()
+        args_schema.rule_collections._registered = False
+        return args_schema
+
+    def pre_instance_update(self, instance):
+        args = self.ctx.args
+        if has_value(args.tags):
+            instance.tags = args.tags
+        if has_value(args.priority):
+            instance.properties.priority = args.priority
+
+
 @register_command(
     "network firewall policy rule-collection-group collection add-nat-collection",
-    is_preview=True,
 )
-class NatCollectionAdd(_RuleCollectionGroupUpdate):
+class RuleCollectionGroupNatCollectionAdd(_RuleCollectionGroupUpdate):
     """
     Add a NAT collection into an Azure firewall policy rule collection group.
 
@@ -1272,9 +1510,8 @@ class NatCollectionAdd(_RuleCollectionGroupUpdate):
 
 @register_command(
     "network firewall policy rule-collection-group collection add-filter-collection",
-    is_preview=True,
 )
-class FilterCollectionAdd(_RuleCollectionGroupUpdate):
+class RuleCollectionGroupFilterCollectionAdd(_RuleCollectionGroupUpdate):
     """
     Add a filter collection into an Azure firewall policy rule collection group.
 
@@ -1400,7 +1637,6 @@ class FilterCollectionAdd(_RuleCollectionGroupUpdate):
             options=['--enable-tls-inspection', '--enable-tls-insp'],
             help="Enable flag to terminate TLS connection for this rule",
             default=False,
-            is_preview=True,
             arg_group="Application Rule"
         )
         args_schema.fqdn_tags = AAZListArg(
@@ -1424,7 +1660,6 @@ class FilterCollectionAdd(_RuleCollectionGroupUpdate):
         args_schema.target_urls = AAZListArg(
             options=["--target-urls"],
             help="Space-separated list of target urls for this rule.",
-            is_preview=True,
             arg_group="Application Rule"
         )
         args_schema.target_urls.Element = AAZStrArg()
@@ -1501,9 +1736,8 @@ class FilterCollectionAdd(_RuleCollectionGroupUpdate):
 
 @register_command(
     "network firewall policy rule-collection-group collection remove",
-    is_preview=True,
 )
-class CollectionRemove(_RuleCollectionGroupUpdate):
+class RuleCollectionGroupCollectionRemove(_RuleCollectionGroupUpdate):
     """
     Remove a rule collection from an Azure firewall policy rule collection group.
     """
@@ -1555,9 +1789,8 @@ class CollectionRemove(_RuleCollectionGroupUpdate):
 
 @register_command(
     "network firewall policy rule-collection-group collection rule add",
-    is_preview=True,
 )
-class FilterRuleAdd(_RuleCollectionGroupUpdate):
+class RuleCollectionGroupFilterRuleAdd(_RuleCollectionGroupUpdate):
     """
     Add a rule into an Azure firewall policy rule collection.
     """
@@ -1589,7 +1822,6 @@ class FilterRuleAdd(_RuleCollectionGroupUpdate):
             options=['--enable-tls-inspection', '--enable-tls-insp'],
             help="Enable flag to terminate TLS connection for this rule",
             default=False,
-            is_preview=True,
             arg_group="Application Rule"
         )
         args_schema.fqdn_tags = AAZListArg(
@@ -1613,7 +1845,6 @@ class FilterRuleAdd(_RuleCollectionGroupUpdate):
         args_schema.target_urls = AAZListArg(
             options=["--target-urls"],
             help="Space-separated list of target urls for this rule.",
-            is_preview=True,
             arg_group="Application Rule"
         )
         args_schema.target_urls.Element = AAZStrArg()
@@ -1786,9 +2017,8 @@ class FilterRuleAdd(_RuleCollectionGroupUpdate):
 
 @register_command(
     "network firewall policy rule-collection-group collection rule remove",
-    is_preview=True,
 )
-class FilterRuleRemove(_RuleCollectionGroupUpdate):
+class RuleCollectionGroupFilterRuleRemove(_RuleCollectionGroupUpdate):
     """
     Remove a rule from an Azure firewall policy rule collection.
         Filter collection supports having a list of network rules or application rules.
@@ -1853,9 +2083,8 @@ class FilterRuleRemove(_RuleCollectionGroupUpdate):
 
 @register_command(
     "network firewall policy rule-collection-group collection rule update",
-    is_preview=True,
 )
-class FilterRuleUpdate(_RuleCollectionGroupUpdate):
+class RuleCollectionGroupFilterRuleUpdate(_RuleCollectionGroupUpdate):
     """
     Update a rule of an Azure firewall policy rule collection.
         Filter collection supports having a list of network rules or application rules.
@@ -1895,7 +2124,6 @@ class FilterRuleUpdate(_RuleCollectionGroupUpdate):
             options=['--enable-tls-inspection', '--enable-tls-insp'],
             help="Enable flag to terminate TLS connection for this rule",
             default=False,
-            is_preview=True,
             arg_group="Application Rule"
         )
         args_schema.fqdn_tags = AAZListArg(
@@ -1919,7 +2147,6 @@ class FilterRuleUpdate(_RuleCollectionGroupUpdate):
         args_schema.target_urls = AAZListArg(
             options=["--target-urls"],
             help="Space-separated list of target urls for this rule.",
-            is_preview=True,
             arg_group="Application Rule"
         )
         args_schema.target_urls.Element = AAZStrArg()
@@ -2012,6 +2239,925 @@ class FilterRuleUpdate(_RuleCollectionGroupUpdate):
         args = self.ctx.args
         args.rule_name = args.name
         args.name = args.rcg_name
+
+    def pre_instance_update(self, instance):
+        args = self.ctx.args
+        target_rule_collection = None
+        for rule_collection in instance.properties.rule_collections:
+            if rule_collection.name == args.collection_name:
+                target_rule_collection = rule_collection
+
+        if target_rule_collection is None:
+            raise UserFault("Cannot find corresponding rule, please check parameters")
+
+        new_rule = None
+        for i, rule in enumerate(target_rule_collection.rules):
+            if args.rule_name == rule.name:
+                if rule.rule_type == "NetworkRule":
+                    new_rule = {
+                        'name': args.rule_name,
+                        'description': args.description if has_value(args.description) else rule.description,
+                        'rule_type': 'NetworkRule',
+                        'ip_protocols': args.ip_protocols if has_value(args.ip_protocols) else rule.ip_protocols,
+                        'source_addresses': args.source_addresses if has_value(args.source_addresses) else rule.source_addresses,
+                        'destination_addresses': args.destination_addresses if has_value(args.destination_addresses) else rule.destination_addresses,
+                        'destination_ports': args.destination_ports if has_value(args.destination_ports) else rule.destination_ports,
+                        'source_ip_groups': args.source_ip_groups if has_value(args.source_ip_groups) else rule.source_ip_groups,
+                        'destination_ip_groups': args.destination_ip_groups if has_value(args.destination_ip_groups) else rule.destination_ip_groups,
+                        'destination_fqdns': args.destination_fqdns if has_value(args.destination_fqdns) else rule.destination_fqdns
+                    }
+                elif rule.rule_type == 'ApplicationRule':
+                    protocols = rule.protocols
+                    if has_value(args.protocols):
+                        protocols = list(
+                            map(lambda x: {'protocol_type': x[0], 'port': int(x[1])},
+                                args.protocols.to_serialized_data().items()))
+                    new_rule = {
+                        'name': args.rule_name,
+                        'description': args.description if has_value(args.description) else rule.description,
+                        'rule_type': 'ApplicationRule',
+                        'source_addresses': args.source_addresses if has_value(args.source_addresses) else rule.source_addresses,
+                        'protocols': protocols,
+                        'destination_addresses': args.destination_addresses if has_value(args.destination_addresses) else rule.destination_addresses,
+                        'fqdn_tags': args.fqdn_tags if has_value(args.fqdn_tags) else rule.fqdn_tags,
+                        'target_fqdns': args.target_fqdns if has_value(args.target_fqdns) else rule.target_fqdns,
+                        'target_urls': args.target_urls if has_value(args.target_urls) else rule.target_urls,
+                        'source_ip_groups': args.source_ip_groups if has_value(args.source_ip_groups) else rule.source_ip_groups,
+                        'terminate_tls': args.enable_tls_inspection if has_value(args.enable_tls_inspection) else rule.enable_tls_inspection,
+                        'web_categories': args.web_categories if has_value(args.web_categories) else rule.web_categories
+                    }
+                elif rule.rule_type == 'NatRule':
+                    new_rule = {
+                        'name': args.rule_name,
+                        'description': args.description if has_value(args.description) else rule.description,
+                        'rule_type': 'NatRule',
+                        'ip_protocols': args.ip_protocols if has_value(args.ip_protocols) else rule.ip_protocols,
+                        'source_addresses': args.source_addresses if has_value(args.source_addresses) else rule.source_addresses,
+                        'destination_addresses': args.destination_addresses if has_value(args.destination_addresses) else rule.destination_addresses,
+                        'destination_ports': args.destination_ports if has_value(args.destination_ports) else rule.destination_ports,
+                        'translated_address': args.translated_address if has_value(args.translated_address) else rule.translated_address,
+                        'translated_fqdn': args.translated_fqdn if has_value(args.translated_fqdn) else rule.translated_fqdn,
+                        'translated_port': args.translated_port if has_value(args.translated_port) else rule.translated_port,
+                        'source_ip_groups': args.source_ip_groups if has_value(args.source_ip_groups) else rule.source_ip_groups
+                    }
+                else:
+                    raise ServiceError(f'Undefined rule_type : {rule.rule_type}')
+                if new_rule is not None:
+                    target_rule_collection.rules[i] = new_rule
+        if new_rule is None:
+            raise UserFault(f'{args.rule_name} does not exist!!!')
+
+
+@register_command(
+    "network firewall policy rule-collection-group draft collection add-nat-collection",
+    is_preview=True,
+)
+class RuleCollectionGroupDraftNatCollectionAdd(_RuleCollectionGroupDraftUpdate):
+    """
+    Add a NAT collection into an Azure firewall policy rule collection group draft.
+
+    :example: Add a NAT collection into the rule collection group draft
+        az network firewall policy rule-collection-group draft collection add-nat-collection -n
+        nat_collection --collection-priority 10003 --policy-name {policy} -g {rg} --rule-collection-
+        group-name {collectiongroup} --action DNAT --rule-name network_rule --description "test"
+        --destination-addresses "202.120.36.15" --source-addresses "202.120.36.13" "202.120.36.14"
+        --translated-address 128.1.1.1 --translated-port 1234 --destination-ports 12000 12001 --ip-
+        protocols TCP UDP
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg, AAZListArg, AAZArgEnum, AAZResourceIdArg, AAZResourceIdArgFormat, \
+            AAZIntArg, AAZIntArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.name._required = True
+        args_schema.name._options = ['--name', '-n']
+        args_schema.name.help = 'The name of the collection in Firewall Policy Rule Collection Group.'
+        args_schema.name._arg_group = ""
+        args_schema.name._id_part = None
+        args_schema.policy_name._id_part = None
+        args_schema.collection_priority = AAZIntArg(
+            options=["--collection-priority"],
+            arg_group="",
+            help="The priority of the rule in Firewall Policy Rule Collection Group.",
+            required=True,
+            fmt=AAZIntArgFormat(
+                maximum=65000,
+                minimum=100,
+            ),
+        )
+        args_schema.nat_action = AAZStrArg(
+            options=["--action"],
+            help="The action type of a rule collection.",
+        )
+        args_schema.nat_action.enum = AAZArgEnum({'DNAT': 'DNAT', 'SNAT': 'SNAT'})
+        args_schema.ip_protocols = AAZListArg(
+            options=["--ip-protocols"],
+            help="Space-separated list of IP protocols. This argument is supported for Nat and Network Rule. ",
+            required=True,
+            arg_group="Common Rule",
+        )
+        args_schema.ip_protocols.Element = AAZStrArg()
+        args_schema.ip_protocols.enum = AAZArgEnum({'TCP': 'TCP', 'UDP': 'UDP', 'Any': 'Any', 'ICMP': 'ICMP'})
+        args_schema.description = AAZStrArg(
+            options=["--description"],
+            help="The description of rule.",
+            arg_group="Common Rule"
+        )
+        args_schema.destination_addresses = AAZListArg(
+            options=["--destination-addresses", "--dest-addr"],
+            help="Space-separated list of destination IP addresses.",
+            arg_group="Common Rule"
+        )
+        args_schema.destination_addresses.Element = AAZStrArg()
+        args_schema.destination_ports = AAZListArg(
+            options=["--destination-ports"],
+            help="Space-separated list of destination ports. This argument is supported for Nat and Network Rule.",
+            arg_group="Common Rule"
+        )
+        args_schema.destination_ports.Element = AAZStrArg()
+        args_schema.rule_name = AAZStrArg(
+            options=["--rule-name"],
+            help="The name of rule.",
+            arg_group="Common Rule"
+        )
+        args_schema.source_addresses = AAZListArg(
+            options=["--source-addresses"],
+            help="Space-separated list of source IP ddresses.",
+            arg_group="Common Rule"
+        )
+        args_schema.source_addresses.Element = AAZStrArg()
+        args_schema.source_ip_groups = AAZListArg(
+            options=["--source-ip-groups"],
+            help="Space-separated list of name or resource id of source IpGroups.",
+            arg_group="Common Rule"
+        )
+        args_schema.source_ip_groups.Element = AAZResourceIdArg(
+            fmt=AAZResourceIdArgFormat(
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/ipGroups/{}"
+            )
+        )
+        args_schema.translated_address = AAZStrArg(
+            options=["--translated-address"],
+            help="Translated address for this NAT rule collection.",
+            arg_group="Nat Rule"
+        )
+        args_schema.translated_fqdn = AAZStrArg(
+            options=["--translated-fqdn"],
+            help="Translated FQDN for this NAT rule collection.",
+            arg_group="Nat Rule"
+        )
+        args_schema.translated_port = AAZStrArg(
+            options=["--translated-port"],
+            help="Translated port for this NAT rule collection.",
+            arg_group="Nat Rule"
+        )
+        args_schema.rule_collection_name = AAZStrArg(
+            help="The name of the rule collection.",
+        )
+        args_schema.rule_collection_name._registered = False
+        args_schema.priority._registered = False
+        args_schema.rule_collections._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.rule_collection_name = args.name
+
+    def pre_instance_update(self, instance):
+        args = self.ctx.args
+        nat_rule = {
+            'name': args.rule_name,
+            'description': args.description,
+            'rule_type': 'NatRule',
+            'ip_protocols': args.ip_protocols,
+            'source_addresses': args.source_addresses,
+            'destination_addresses': args.destination_addresses,
+            'destination_ports': args.destination_ports,
+            'translated_address': args.translated_address,
+            'translated_fqdn': args.translated_fqdn,
+            'translated_port': args.translated_port,
+            'source_ip_groups': args.source_ip_groups
+        }
+        rule_collection = {
+            'name': args.rule_collection_name,
+            'priority': args.collection_priority,
+            'rule_collection_type': 'FirewallPolicyNatRuleCollection',
+            'action': {
+                'type': args.nat_action
+            },
+            'rules': [nat_rule]
+        }
+        instance.properties.rule_collections.append(rule_collection)
+
+    def _output(self, *args, **kwargs):
+        return {'ruleCollections': self.deserialize_output(self.ctx.vars.instance.properties.rule_collections,
+                                                           client_flatten=True)}
+
+
+@register_command(
+    "network firewall policy rule-collection-group draft collection add-filter-collection",
+    is_preview=True,
+)
+class RuleCollectionGroupDraftFilterCollectionAdd(_RuleCollectionGroupDraftUpdate):
+    """
+    Add a filter collection into an Azure firewall policy rule collection group draft.
+
+    :example: Add a filter collection with Network rule into the rule collection group draft
+        az network firewall policy rule-collection-group draft collection add-filter-collection -g {rg}
+        --policy-name {policy} --rule-collection-group-name {collectiongroup} --name
+        filter_collection --action Allow --rule-name network_rule --rule-type NetworkRule
+        --description "test" --destination-addresses "202.120.36.15" --source-addresses
+        "202.120.36.13" "202.120.36.14" --destination-ports 12003 12004 --ip-protocols TCP UDP
+        --collection-priority 11002
+
+    :example: Add a filter collection with Application rule into the rule collection group draft
+        az network firewall policy rule-collection-group draft collection add-filter-collection -g {rg}
+        --policy-name {policy} --rule-collection-group-name {collectiongroup} --name
+        filter_collection --action Allow --rule-name application_rule --rule-type ApplicationRule
+        --description "test" --destination-addresses "202.120.36.15" "202.120.36.16" --source-
+        addresses "202.120.36.13" "202.120.36.14" --protocols Http=12800 Https=12801 --fqdn-tags
+        AzureBackup HDInsight --collection-priority 11100
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg, AAZListArg, AAZArgEnum, AAZBoolArg, AAZDictArg, AAZResourceIdArg, \
+            AAZResourceIdArgFormat, AAZIntArg, AAZIntArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.name._required = True
+        args_schema.name._options = ['--name', '-n']
+        args_schema.name.help = 'The name of the collection in Firewall Policy Rule Collection Group.'
+        args_schema.name._arg_group = ""
+        args_schema.name._id_part = None
+        args_schema.policy_name._id_part = None
+        args_schema.collection_priority = AAZIntArg(
+            options=["--collection-priority"],
+            arg_group="",
+            help="The priority of the rule in Firewall Policy Rule Collection Group.",
+            required=True,
+            fmt=AAZIntArgFormat(
+                maximum=65000,
+                minimum=100,
+            ),
+        )
+        args_schema.filter_action = AAZStrArg(
+            options=["--action"],
+            help="The action type of a rule collection.",
+        )
+        args_schema.filter_action.enum = AAZArgEnum({'Allow': 'Allow', 'Deny': 'Deny'})
+        args_schema.ip_protocols = AAZListArg(
+            options=["--ip-protocols"],
+            help="Space-separated list of IP protocols. This argument is supported for Nat and Network Rule. ",
+            arg_group="Common Rule",
+        )
+        args_schema.ip_protocols.Element = AAZStrArg()
+        args_schema.ip_protocols.enum = AAZArgEnum({'TCP': 'TCP', 'UDP': 'UDP', 'Any': 'Any', 'ICMP': 'ICMP'})
+        args_schema.description = AAZStrArg(
+            options=["--description"],
+            help="The description of rule.",
+            arg_group="Common Rule"
+        )
+        args_schema.destination_addresses = AAZListArg(
+            options=["--destination-addresses", "--dest-addr"],
+            help="Space-separated list of destination IP addresses.",
+            arg_group="Common Rule"
+        )
+        args_schema.destination_addresses.Element = AAZStrArg()
+        args_schema.destination_ports = AAZListArg(
+            options=["--destination-ports"],
+            help="Space-separated list of destination ports. This argument is supported for Nat and Network Rule.",
+            arg_group="Common Rule"
+        )
+        args_schema.destination_ports.Element = AAZStrArg()
+        args_schema.rule_name = AAZStrArg(
+            options=["--rule-name"],
+            help="The name of rule.",
+            arg_group="Common Rule"
+        )
+        args_schema.rule_type = AAZStrArg(
+            options=["--rule-type"],
+            help="The type of rule.",
+            arg_group="Common Rule"
+        )
+        args_schema.rule_type.enum = AAZArgEnum({'ApplicationRule': 'ApplicationRule',
+                                                 'NetworkRule': 'NetworkRule',
+                                                 'NatRule': 'NatRule'})
+        args_schema.source_addresses = AAZListArg(
+            options=["--source-addresses"],
+            help="Space-separated list of source IP ddresses.",
+            arg_group="Common Rule"
+        )
+        args_schema.source_addresses.Element = AAZStrArg()
+        args_schema.source_ip_groups = AAZListArg(
+            options=["--source-ip-groups"],
+            help="Space-separated list of name or resource id of source IpGroups.",
+            arg_group="Common Rule"
+        )
+        args_schema.source_ip_groups.Element = AAZResourceIdArg(
+            fmt=AAZResourceIdArgFormat(
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/ipGroups/{}"
+            )
+        )
+        args_schema.destination_ip_groups = AAZListArg(
+            options=['--destination-ip-groups', '--dest-ipg'],
+            help="Space-separated list of name or resource id of destination IpGroups.",
+            arg_group="Network Rule"
+        )
+        args_schema.destination_ip_groups.Element = AAZResourceIdArg(
+            fmt=AAZResourceIdArgFormat(
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/ipGroups/{}"
+            )
+        )
+        args_schema.destination_fqdns = AAZListArg(
+            options=["--destination-fqdns"],
+            help="Space-separated list of destination FQDNs.",
+            arg_group="Network Rule"
+        )
+        args_schema.destination_fqdns.Element = AAZStrArg()
+        args_schema.enable_tls_inspection = AAZBoolArg(
+            options=['--enable-tls-inspection', '--enable-tls-insp'],
+            help="Enable flag to terminate TLS connection for this rule",
+            default=False,
+            arg_group="Application Rule"
+        )
+        args_schema.fqdn_tags = AAZListArg(
+            options=["--fqdn-tags"],
+            help="Space-separated list of FQDN tags for this rule.",
+            arg_group="Application Rule"
+        )
+        args_schema.fqdn_tags.Element = AAZStrArg()
+        args_schema.protocols = AAZDictArg(
+            options=["--protocols"],
+            help="Space-separated list of protocols and port numbers to use, in PROTOCOL=PORT format.",
+            arg_group="Application Rule"
+        )
+        args_schema.protocols.Element = AAZStrArg()
+        args_schema.target_fqdns = AAZListArg(
+            options=["--target-fqdns"],
+            help="Space-separated list of FQDNs for this rule.",
+            arg_group="Application Rule"
+        )
+        args_schema.target_fqdns.Element = AAZStrArg()
+        args_schema.target_urls = AAZListArg(
+            options=["--target-urls"],
+            help="Space-separated list of target urls for this rule.",
+            arg_group="Application Rule"
+        )
+        args_schema.target_urls.Element = AAZStrArg()
+        args_schema.web_categories = AAZListArg(
+            options=["--web-categories"],
+            help="Space-separated list of web categories for this rule.",
+            arg_group="Application Rule"
+        )
+        args_schema.web_categories.Element = AAZStrArg()
+        args_schema.rule_collection_name = AAZStrArg(
+            help="The name of the rule collection.",
+        )
+        args_schema.rule_collection_name._registered = False
+        args_schema.priority._registered = False
+        args_schema.rule_collections._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.rule_collection_name = args.name
+
+    def pre_instance_update(self, instance):
+        args = self.ctx.args
+        if has_value(args.target_fqdns) and has_value(args.fqdn_tags):
+            raise ArgumentUsageError('usage error: --target-fqdns | --fqdn-tags')
+
+        if args.rule_type == 'NetworkRule':
+            rule = {
+                'name': args.rule_name,
+                'description': args.description,
+                'rule_type': 'NetworkRule',
+                'ip_protocols': args.ip_protocols,
+                'source_addresses': args.source_addresses,
+                'destination_addresses': args.destination_addresses,
+                'destination_ports': args.destination_ports,
+                'source_ip_groups': args.source_ip_groups,
+                'destination_ip_groups': args.destination_ip_groups,
+                'destination_fqdns': args.destination_fqdns
+            }
+        else:
+            protocols = []
+            if has_value(args.protocols):
+                protocols = list(map(lambda x: {'protocol_type': x[0], 'port': int(x[1])}, args.protocols.to_serialized_data().items()))
+            rule = {
+                'name': args.rule_name,
+                'description': args.description,
+                'rule_type': 'ApplicationRule',
+                'source_addresses': args.source_addresses,
+                'protocols': protocols,
+                'destination_addresses': args.destination_addresses,
+                'fqdn_tags': args.fqdn_tags,
+                'target_fqdns': args.target_fqdns,
+                'target_urls': args.target_urls,
+                'source_ip_groups': args.source_ip_groups,
+                'terminate_tls': args.enable_tls_inspection,
+                'web_categories': args.web_categories
+            }
+        rule_collection = {
+            'name': args.rule_collection_name,
+            'priority': args.collection_priority,
+            'rule_collection_type': 'FirewallPolicyFilterRuleCollection',
+            'action': {
+                'type': args.filter_action
+            },
+            'rules': [rule]
+        }
+        instance.properties.rule_collections.append(rule_collection)
+
+    def _output(self, *args, **kwargs):
+        return {'ruleCollections': self.deserialize_output(self.ctx.vars.instance.properties.rule_collections,
+                                                           client_flatten=True)}
+
+
+@register_command(
+    "network firewall policy rule-collection-group draft collection remove",
+    is_preview=True,
+)
+class RuleCollectionGroupDraftCollectionRemove(_RuleCollectionGroupDraftUpdate):
+    """
+    Remove a rule collection from an Azure firewall policy rule collection group draft.
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.name._required = True
+        args_schema.name.help = 'The name of the collection in Firewall Policy Rule Collection Group.'
+        args_schema.name._arg_group = ""
+        args_schema.name._id_part = None
+        args_schema.policy_name._id_part = None
+        args_schema.rule_collection_name = AAZStrArg(
+            help="The name of the rule collection.",
+        )
+        args_schema.rule_collection_name._registered = False
+        args_schema.priority._registered = False
+        args_schema.rule_collections._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.rule_collection_name = args.name
+
+    def pre_instance_update(self, instance):
+        args = self.ctx.args
+        removed_rule_collection = None
+        for rule_collection in instance.properties.rule_collections:
+            if rule_collection.name == args.rule_collection_name:
+                removed_rule_collection = rule_collection
+
+        if removed_rule_collection is not None:
+            new_rule_collections = copy.deepcopy(instance.properties.rule_collections.to_serialized_data())
+            new_rule_collections.remove(removed_rule_collection.to_serialized_data())
+            instance.properties.rule_collections = new_rule_collections
+
+    def _output(self, *args, **kwargs):
+        return {'ruleCollections': self.deserialize_output(self.ctx.vars.instance.properties.rule_collections,
+                                                           client_flatten=True)}
+
+
+@register_command(
+    "network firewall policy rule-collection-group draft collection rule add",
+    is_preview=True,
+)
+class RuleCollectionGroupDraftFilterRuleAdd(_RuleCollectionGroupDraftUpdate):
+    """
+    Add a rule into an Azure firewall policy draft rule collection.
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg, AAZListArg, AAZArgEnum, AAZBoolArg, AAZDictArg, AAZResourceIdArg, \
+            AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.name._required = True
+        args_schema.name._options = ['--name', '-n']
+        args_schema.name.help = 'The name of rule.'
+        args_schema.name._arg_group = 'Common Rule'
+        args_schema.name._id_part = None
+        args_schema.policy_name._id_part = None
+        args_schema.collection_name = AAZStrArg(
+            options=["--collection-name"],
+            help="The name of the rule collection in Firewall Policy Rule Collection Group.",
+            required=True,
+            arg_group="",
+        )
+        args_schema.enable_tls_inspection = AAZBoolArg(
+            options=['--enable-tls-inspection', '--enable-tls-insp'],
+            help="Enable flag to terminate TLS connection for this rule",
+            default=False,
+            arg_group="Application Rule"
+        )
+        args_schema.fqdn_tags = AAZListArg(
+            options=["--fqdn-tags"],
+            help="Space-separated list of FQDN tags for this rule.",
+            arg_group="Application Rule"
+        )
+        args_schema.fqdn_tags.Element = AAZStrArg()
+        args_schema.protocols = AAZDictArg(
+            options=["--protocols"],
+            help="Space-separated list of protocols and port numbers to use, in PROTOCOL=PORT format.",
+            arg_group="Application Rule"
+        )
+        args_schema.protocols.Element = AAZStrArg()
+        args_schema.target_fqdns = AAZListArg(
+            options=["--target-fqdns"],
+            help="Space-separated list of FQDNs for this rule.",
+            arg_group="Application Rule"
+        )
+        args_schema.target_fqdns.Element = AAZStrArg()
+        args_schema.target_urls = AAZListArg(
+            options=["--target-urls"],
+            help="Space-separated list of target urls for this rule.",
+            arg_group="Application Rule"
+        )
+        args_schema.target_urls.Element = AAZStrArg()
+        args_schema.web_categories = AAZListArg(
+            options=["--web-categories"],
+            help="Space-separated list of web categories for this rule.",
+            arg_group="Application Rule"
+        )
+        args_schema.web_categories.Element = AAZStrArg()
+        args_schema.ip_protocols = AAZListArg(
+            options=["--ip-protocols"],
+            help="Space-separated list of IP protocols. This argument is supported for Nat and Network Rule. ",
+            arg_group="Common Rule",
+        )
+        args_schema.ip_protocols.Element = AAZStrArg()
+        args_schema.ip_protocols.enum = AAZArgEnum({'TCP': 'TCP', 'UDP': 'UDP', 'Any': 'Any', 'ICMP': 'ICMP'})
+        args_schema.description = AAZStrArg(
+            options=["--description"],
+            help="The description of rule.",
+            arg_group="Common Rule"
+        )
+        args_schema.destination_addresses = AAZListArg(
+            options=["--destination-addresses", "--dest-addr"],
+            help="Space-separated list of destination IP addresses.",
+            arg_group="Common Rule"
+        )
+        args_schema.destination_addresses.Element = AAZStrArg()
+        args_schema.destination_ports = AAZListArg(
+            options=["--destination-ports"],
+            help="Space-separated list of destination ports. This argument is supported for Nat and Network Rule.",
+            arg_group="Common Rule"
+        )
+        args_schema.destination_ports.Element = AAZStrArg()
+        args_schema.rule_type = AAZStrArg(
+            options=["--rule-type"],
+            help="The type of rule.",
+            required=True,
+            arg_group="Common Rule"
+        )
+        args_schema.rule_type.enum = AAZArgEnum({'ApplicationRule': 'ApplicationRule',
+                                                 'NetworkRule': 'NetworkRule',
+                                                 'NatRule': 'NatRule'})
+        args_schema.source_addresses = AAZListArg(
+            options=["--source-addresses"],
+            help="Space-separated list of source IP ddresses.",
+            arg_group="Common Rule"
+        )
+        args_schema.source_addresses.Element = AAZStrArg()
+        args_schema.source_ip_groups = AAZListArg(
+            options=["--source-ip-groups"],
+            help="Space-separated list of name or resource id of source IpGroups.",
+            arg_group="Common Rule"
+        )
+        args_schema.source_ip_groups.Element = AAZResourceIdArg(
+            fmt=AAZResourceIdArgFormat(
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/ipGroups/{}"
+            )
+        )
+        args_schema.translated_address = AAZStrArg(
+            options=["--translated-address"],
+            help="Translated address for this NAT rule collection.",
+            arg_group="Nat Rule"
+        )
+        args_schema.translated_fqdn = AAZStrArg(
+            options=["--translated-fqdn"],
+            help="Translated FQDN for this NAT rule collection.",
+            arg_group="Nat Rule"
+        )
+        args_schema.translated_port = AAZStrArg(
+            options=["--translated-port"],
+            help="Translated port for this NAT rule collection.",
+            arg_group="Nat Rule"
+        )
+        args_schema.destination_ip_groups = AAZListArg(
+            options=['--destination-ip-groups', '--dest-ipg'],
+            help="Space-separated list of name or resource id of destination IpGroups.",
+            arg_group="Network Rule"
+        )
+        args_schema.destination_ip_groups.Element = AAZResourceIdArg(
+            fmt=AAZResourceIdArgFormat(
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/ipGroups/{}"
+            )
+        )
+        args_schema.destination_fqdns = AAZListArg(
+            options=["--destination-fqdns"],
+            help="Space-separated list of destination FQDNs.",
+            arg_group="Network Rule"
+        )
+        args_schema.destination_fqdns.Element = AAZStrArg()
+        args_schema.rule_name = AAZStrArg(
+            help="The name of rule.",
+        )
+        args_schema.rule_name._registered = False
+        args_schema.priority._registered = False
+        args_schema.rule_collections._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.rule_name = args.name
+
+    def pre_instance_update(self, instance):
+        args = self.ctx.args
+        target_rule_collection = None
+        for rule_collection in instance.properties.rule_collections:
+            if rule_collection.name == args.collection_name:
+                target_rule_collection = rule_collection
+
+        if target_rule_collection is None:
+            raise CLIError("Cannot find corresponding rule.")
+
+        if target_rule_collection.rule_collection_type == "FirewallPolicyFilterRuleCollection" and args.rule_type == 'NatRule':
+            raise CLIError("FirewallPolicyFilterRule doesn't support Nat rule.")
+
+        if target_rule_collection.rule_collection_type == "FirewallPolicyNatRuleCollection" and args.rule_type in ['NetworkRule', 'ApplicationRule']:
+            raise CLIError("FirewallPolicyNatRule supports neither Network rule nor Application rule.")
+
+        rule = None
+        if args.rule_type == "NetworkRule":
+            rule = {
+                'name': args.rule_name,
+                'description': args.description,
+                'rule_type': 'NetworkRule',
+                'ip_protocols': args.ip_protocols,
+                'source_addresses': args.source_addresses,
+                'destination_addresses': args.destination_addresses,
+                'destination_ports': args.destination_ports,
+                'source_ip_groups': args.source_ip_groups,
+                'destination_ip_groups': args.destination_ip_groups,
+                'destination_fqdns': args.destination_fqdns
+            }
+        elif args.rule_type == 'ApplicationRule':
+            protocols = []
+            if has_value(args.protocols):
+                protocols = list(
+                    map(lambda x: {'protocol_type': x[0], 'port': int(x[1])}, args.protocols.to_serialized_data().items()))
+            rule = {
+                'name': args.rule_name,
+                'description': args.description,
+                'rule_type': 'ApplicationRule',
+                'source_addresses': args.source_addresses,
+                'protocols': protocols,
+                'destination_addresses': args.destination_addresses,
+                'fqdn_tags': args.fqdn_tags,
+                'target_fqdns': args.target_fqdns,
+                'target_urls': args.target_urls,
+                'source_ip_groups': args.source_ip_groups,
+                'terminate_tls': args.enable_tls_inspection,
+                'web_categories': args.web_categories
+            }
+
+        elif args.rule_type == 'NatRule':
+            rule = {
+                'name': args.rule_name,
+                'description': args.description,
+                'rule_type': 'NatRule',
+                'ip_protocols': args.ip_protocols,
+                'source_addresses': args.source_addresses,
+                'destination_addresses': args.destination_addresses,
+                'destination_ports': args.destination_ports,
+                'translated_address': args.translated_address,
+                'translated_fqdn': args.translated_fqdn,
+                'translated_port': args.translated_port,
+                'source_ip_groups': args.source_ip_groups
+            }
+
+        target_rule_collection.rules.append(rule)
+
+
+@register_command(
+    "network firewall policy rule-collection-group draft collection rule remove",
+    is_preview=True,
+)
+class RuleCollectionGroupDraftFilterRuleRemove(_RuleCollectionGroupDraftUpdate):
+    """
+    Remove a rule from an Azure firewall policy rule collection draft.
+        Filter collection supports having a list of network rules or application rules.
+        NatRule collection supports including a list of nat rules.
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.name._required = True
+        args_schema.name._options = ['--name', '-n']
+        args_schema.name.help = 'The name of rule.'
+        args_schema.name._arg_group = 'Common Rule'
+        args_schema.name._id_part = None
+        args_schema.policy_name._id_part = None
+        args_schema.collection_name = AAZStrArg(
+            options=["--collection-name"],
+            help="The name of the rule collection in Firewall Policy Rule Collection Group.",
+            required=True,
+            arg_group="",
+        )
+
+        args_schema.rule_name = AAZStrArg(
+            help="The name of rule.",
+        )
+        args_schema.rule_name._registered = False
+        args_schema.priority._registered = False
+        args_schema.rule_collections._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.rule_name = args.name
+
+    def pre_instance_update(self, instance):
+        args = self.ctx.args
+        target_rule_collection = None
+        for rule_collection in instance.properties.rule_collections:
+            if rule_collection.name == args.collection_name:
+                target_rule_collection = rule_collection
+
+        if target_rule_collection is None:
+            raise CLIError("Cannot find corresponding rule collection.")
+
+        removed_rule = None
+        for rule in target_rule_collection.rules:
+            if rule.name == args.rule_name:
+                removed_rule = rule
+
+        if removed_rule is not None:
+            new_rules = copy.deepcopy(target_rule_collection.rules.to_serialized_data())
+            new_rules.remove(removed_rule.to_serialized_data())
+            target_rule_collection.rules = new_rules
+
+
+@register_command(
+    "network firewall policy rule-collection-group draft collection rule update",
+    is_preview=True,
+)
+class RuleCollectionGroupDraftFilterRuleUpdate(_RuleCollectionGroupDraftUpdate):
+    """
+    Update a rule of an Azure firewall policy rule collection.
+        Filter collection supports having a list of network rules or application rules.
+        NatRule collection supports including a list of nat rules.
+
+    :example: Update a rule of an Azure firewall policy rule collection.
+        az network firewall policy rule-collection-group draft collection rule update -g {rg} --policy-
+        name {policy} --rule-collection-group-name {rcg} --collection-name {cn} -n {rule_name}
+        --target-fqdns XXX
+
+    """
+
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZStrArg, AAZBoolArg, AAZListArg, AAZDictArg, AAZArgEnum, AAZResourceIdArg, \
+            AAZResourceIdArgFormat
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.name._required = True
+        args_schema.name._options = ['--name', '-n']
+        args_schema.name.help = 'The name of rule.'
+        args_schema.name._arg_group = 'Common Rule'
+        args_schema.name._id_part = None
+        args_schema.policy_name._id_part = None
+        args_schema.collection_name = AAZStrArg(
+            options=["--collection-name"],
+            help="The name of the rule collection in Firewall Policy Rule Collection Group.",
+            required=True,
+            arg_group="",
+        )
+
+        args_schema.enable_tls_inspection = AAZBoolArg(
+            options=['--enable-tls-inspection', '--enable-tls-insp'],
+            help="Enable flag to terminate TLS connection for this rule",
+            default=False,
+            arg_group="Application Rule"
+        )
+        args_schema.fqdn_tags = AAZListArg(
+            options=["--fqdn-tags"],
+            help="Space-separated list of FQDN tags for this rule.",
+            arg_group="Application Rule"
+        )
+        args_schema.fqdn_tags.Element = AAZStrArg()
+        args_schema.protocols = AAZDictArg(
+            options=["--protocols"],
+            help="Space-separated list of protocols and port numbers to use, in PROTOCOL=PORT format.",
+            arg_group="Application Rule"
+        )
+        args_schema.protocols.Element = AAZStrArg()
+        args_schema.target_fqdns = AAZListArg(
+            options=["--target-fqdns"],
+            help="Space-separated list of FQDNs for this rule.",
+            arg_group="Application Rule"
+        )
+        args_schema.target_fqdns.Element = AAZStrArg()
+        args_schema.target_urls = AAZListArg(
+            options=["--target-urls"],
+            help="Space-separated list of target urls for this rule.",
+            arg_group="Application Rule"
+        )
+        args_schema.target_urls.Element = AAZStrArg()
+        args_schema.web_categories = AAZListArg(
+            options=["--web-categories"],
+            help="Space-separated list of web categories for this rule.",
+            arg_group="Application Rule"
+        )
+        args_schema.web_categories.Element = AAZStrArg()
+        args_schema.ip_protocols = AAZListArg(
+            options=["--ip-protocols"],
+            help="Space-separated list of IP protocols. This argument is supported for Nat and Network Rule. ",
+            arg_group="Common Rule",
+        )
+        args_schema.ip_protocols.Element = AAZStrArg()
+        args_schema.ip_protocols.enum = AAZArgEnum({'TCP': 'TCP', 'UDP': 'UDP', 'Any': 'Any', 'ICMP': 'ICMP'})
+        args_schema.description = AAZStrArg(
+            options=["--description"],
+            help="The description of rule.",
+            arg_group="Common Rule"
+        )
+        args_schema.destination_addresses = AAZListArg(
+            options=["--destination-addresses", "--dest-addr"],
+            help="Space-separated list of destination IP addresses.",
+            arg_group="Common Rule"
+        )
+        args_schema.destination_addresses.Element = AAZStrArg()
+        args_schema.destination_ports = AAZListArg(
+            options=["--destination-ports"],
+            help="Space-separated list of destination ports. This argument is supported for Nat and Network Rule.",
+            arg_group="Common Rule"
+        )
+        args_schema.destination_ports.Element = AAZStrArg()
+        args_schema.source_addresses = AAZListArg(
+            options=["--source-addresses"],
+            help="Space-separated list of source IP ddresses.",
+            arg_group="Common Rule"
+        )
+        args_schema.source_addresses.Element = AAZStrArg()
+        args_schema.source_ip_groups = AAZListArg(
+            options=["--source-ip-groups"],
+            help="Space-separated list of name or resource id of source IpGroups.",
+            arg_group="Common Rule"
+        )
+        args_schema.source_ip_groups.Element = AAZResourceIdArg(
+            fmt=AAZResourceIdArgFormat(
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/ipGroups/{}"
+            )
+        )
+        args_schema.translated_address = AAZStrArg(
+            options=["--translated-address"],
+            help="Translated address for this NAT rule collection.",
+            arg_group="Nat Rule"
+        )
+        args_schema.translated_fqdn = AAZStrArg(
+            options=["--translated-fqdn"],
+            help="Translated FQDN for this NAT rule collection.",
+            arg_group="Nat Rule"
+        )
+        args_schema.translated_port = AAZStrArg(
+            options=["--translated-port"],
+            help="Translated port for this NAT rule collection.",
+            arg_group="Nat Rule"
+        )
+        args_schema.destination_ip_groups = AAZListArg(
+            options=['--destination-ip-groups', '--dest-ipg'],
+            help="Space-separated list of name or resource id of destination IpGroups.",
+            arg_group="Network Rule"
+        )
+        args_schema.destination_ip_groups.Element = AAZResourceIdArg(
+            fmt=AAZResourceIdArgFormat(
+                template="/subscriptions/{subscription}/resourceGroups/{resource_group}/providers/Microsoft.Network/ipGroups/{}"
+            )
+        )
+        args_schema.destination_fqdns = AAZListArg(
+            options=["--destination-fqdns"],
+            help="Space-separated list of destination FQDNs.",
+            arg_group="Network Rule"
+        )
+        args_schema.destination_fqdns.Element = AAZStrArg()
+        args_schema.rule_name = AAZStrArg(
+            help="The name of rule.",
+        )
+        args_schema.rule_name._registered = False
+        args_schema.priority._registered = False
+        args_schema.rule_collections._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.rule_name = args.name
 
     def pre_instance_update(self, instance):
         args = self.ctx.args
