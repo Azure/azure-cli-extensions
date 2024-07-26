@@ -3,13 +3,14 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=protected-access, logging-format-interpolation
+# pylint: disable=protected-access, logging-format-interpolation, too-many-branches
 import os
 import argparse
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands.validators import validate_key_value_pairs
 from azure.cli.core.profiles import get_sdk
+from azure.cli.core.azclierror import UnrecognizedArgumentError
 from knack.util import CLIError
 from knack.log import get_logger
 from ._client_factory import get_storage_data_service_client, blob_data_service_factory, cf_blob_service, \
@@ -668,14 +669,18 @@ class PermissionScopeAddAction(argparse._AppendAction):
         try:
             permissions, service, resource_name = '', '', ''
             for s in values:
-                if "permissions" in s:
-                    permissions = s.split('=')[1]
-                elif "service" in s:
-                    service = s.split('=')[1]
-                elif "resource-name" in s:
-                    resource_name = s.split('=')[1]
-        except (ValueError, TypeError):
-            raise CLIError('usage error: --permission-scope VARIABLE OPERATOR VALUE')
+                k, v = s.split('=', 1)
+                if k == "permissions":
+                    permissions = v
+                elif k == "service":
+                    service = v
+                elif k == "resource-name":
+                    resource_name = v
+                else:
+                    raise UnrecognizedArgumentError(
+                        'key error: key must be one of permissions, service, resource-name for --permission-scope')
+        except (ValueError, TypeError, IndexError):
+            raise CLIError('usage error: --permission-scope [Key=Value ...]')
         namespace.permission_scope.append(PermissionScope(
             permissions=permissions,
             service=service,
@@ -691,13 +696,17 @@ class SshPublicKeyAddAction(argparse._AppendAction):
         SshPublicKey = namespace._cmd.get_models('SshPublicKey')
         try:
             description, key = '', ''
-            for k in values:
-                if "description" in k:
-                    description = k.split('=')[1]
-                elif "key" in k:
-                    key = k.split('=')[1]
-        except (ValueError, TypeError):
-            raise CLIError('usage error: --ssh-authorized-key VARIABLE OPERATOR VALUE')
+            for s in values:
+                k, v = s.split('=', 1)
+                if k == "description":
+                    description = v
+                elif k == "key":
+                    key = v
+                else:
+                    raise UnrecognizedArgumentError(
+                        'key error: key must be one of description, key for --ssh-authorized-key')
+        except (ValueError, TypeError, IndexError):
+            raise CLIError('usage error: --ssh-authorized-key [Key=Value ...]')
         namespace.ssh_authorized_key.append(SshPublicKey(description=description, key=key))
 
 
@@ -888,8 +897,7 @@ def process_file_batch_source_parameters(cmd, namespace):
 
 
 def validate_source_uri(cmd, namespace):  # pylint: disable=too-many-statements
-    from .util import create_short_lived_blob_sas, create_short_lived_blob_sas_v2, \
-        create_short_lived_file_sas, create_short_lived_file_sas_v2
+    from .util import create_short_lived_blob_sas_v2, create_short_lived_file_sas_v2
     usage_string = \
         'Invalid usage: {}. Supply only one of the following argument sets to specify source:' \
         '\n\t   --source-uri [--source-sas]' \

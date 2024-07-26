@@ -21,9 +21,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}", "2023-09-01"],
         ]
     }
 
@@ -57,7 +57,7 @@ class Update(AAZCommand):
         )
         _args_schema.private_cloud = AAZStrArg(
             options=["-c", "--private-cloud"],
-            help="The name of the private cloud.",
+            help="Name of the private cloud",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -83,6 +83,12 @@ class Update(AAZCommand):
             help="The hosts",
             nullable=True,
         )
+        _args_schema.vsan_datastore_name = AAZStrArg(
+            options=["--vsan-datastore-name"],
+            arg_group="Properties",
+            help="Name of the vsan datastore associated with the cluster",
+            nullable=True,
+        )
 
         hosts = cls._args_schema.hosts
         hosts.Element = AAZStrArg(
@@ -90,13 +96,6 @@ class Update(AAZCommand):
         )
 
         # define Arg Group "Sku"
-
-        _args_schema = cls._args_schema
-        _args_schema.sku = AAZStrArg(
-            options=["--sku"],
-            arg_group="Sku",
-            help="The name of the SKU.",
-        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -181,7 +180,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -284,7 +283,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -343,20 +342,16 @@ class Update(AAZCommand):
                 typ=AAZObjectType
             )
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("sku", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("clusterSize", AAZIntType, ".cluster_size")
                 properties.set_prop("hosts", AAZListType, ".hosts")
+                properties.set_prop("vsanDatastoreName", AAZStrType, ".vsan_datastore_name")
 
             hosts = _builder.get(".properties.hosts")
             if hosts is not None:
                 hosts.set_elements(AAZStrType, ".")
-
-            sku = _builder.get(".sku")
-            if sku is not None:
-                sku.set_prop("name", AAZStrType, ".sku", typ_kwargs={"flags": {"required": True}})
 
             return _instance_value
 
@@ -381,6 +376,7 @@ class _UpdateHelper:
             _schema.name = cls._schema_cluster_read.name
             _schema.properties = cls._schema_cluster_read.properties
             _schema.sku = cls._schema_cluster_read.sku
+            _schema.system_data = cls._schema_cluster_read.system_data
             _schema.type = cls._schema_cluster_read.type
             return
 
@@ -399,6 +395,10 @@ class _UpdateHelper:
         cluster_read.sku = AAZObjectType(
             flags={"required": True},
         )
+        cluster_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
         cluster_read.type = AAZStrType(
             flags={"read_only": True},
         )
@@ -416,19 +416,47 @@ class _UpdateHelper:
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
+        properties.vsan_datastore_name = AAZStrType(
+            serialized_name="vsanDatastoreName",
+        )
 
         hosts = _schema_cluster_read.properties.hosts
         hosts.Element = AAZStrType()
 
         sku = _schema_cluster_read.sku
+        sku.capacity = AAZIntType()
+        sku.family = AAZStrType()
         sku.name = AAZStrType(
             flags={"required": True},
+        )
+        sku.size = AAZStrType()
+        sku.tier = AAZStrType()
+
+        system_data = _schema_cluster_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
         )
 
         _schema.id = cls._schema_cluster_read.id
         _schema.name = cls._schema_cluster_read.name
         _schema.properties = cls._schema_cluster_read.properties
         _schema.sku = cls._schema_cluster_read.sku
+        _schema.system_data = cls._schema_cluster_read.system_data
         _schema.type = cls._schema_cluster_read.type
 
 
