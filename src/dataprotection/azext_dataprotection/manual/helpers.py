@@ -6,6 +6,7 @@
 # pylint: disable=line-too-long
 # pylint: disable=unnecessary-list-index-lookup
 # pylint: disable=unidiomatic-typecheck
+# pylint: disable=possibly-used-before-assignment
 
 import uuid
 import re
