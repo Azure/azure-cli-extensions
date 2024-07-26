@@ -44,7 +44,8 @@ critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContaine
                           "DataProtectionStopProtection": "/backupInstances/stopProtection/action",
                           "DataProtectionSuspendBackup": "/backupInstances/suspendBackups/action",
                           "DataProtectionRestore": "/backupInstances/restore/action",
-                          "DataProtectionModifyEncryptionSettings": "/write#modifyEncryptionSettings"}
+                          "DataProtectionModifyEncryptionSettings": "/write#modifyEncryptionSettings",
+                          "DataProtectionModifyBackupInstance": "/backupInstances/write"}
 
 
 datasource_map = {
