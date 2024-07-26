@@ -48,7 +48,7 @@ def override_client_request_id_header(cmd, namespace):
 
 def validate_gateway_properties(namespace):
     if namespace.enable_gateway is False and namespace.gateway_resource_id != "":
-        raise ArgumentUsageError("Conflicting gateway parameters received. The parameter '--gateway-resource-id' should not be set only if '--enable-gateway' is set to true.")
+        raise ArgumentUsageError("Conflicting gateway parameters received. The parameter '--gateway-resource-id' should be set only if '--enable-gateway' is set to true.")
     if namespace.enable_gateway is True and namespace.gateway_resource_id == "":
         raise ArgumentUsageError("The parameter '--gateway-resource-id' was not provided. It is mandatory to pass this parameter for enabling gateway on the connected cluster resource.")
 
