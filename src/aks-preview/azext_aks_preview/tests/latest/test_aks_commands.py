@@ -3962,6 +3962,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--nodepool-name {nodepool_name} "
             "--node-count 1 "
             "-k {upgrade_k8s_version} "
+            "--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure "
             "--ssh-key-value={ssh_key_value} -o json"
         )
         response = self.cmd(
@@ -4023,6 +4024,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--nodepool-name {nodepool_name} "
             "--node-count 1 "
             "-k {k8s_version} "
+            "--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure "
             "--ssh-key-value={ssh_key_value} -o json"
         )
         self.cmd(
@@ -14849,3 +14851,62 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(delete_cmd, checks=[
             self.is_empty()
         ])
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="centraluseuap",
+    )
+    def test_aks_enable_imds_restriction(
+        self, resource_group, resource_group_location
+    ):
+        _, create_version = self._get_versions(resource_group_location)
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "k8s_version": create_version,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} "
+            "--kubernetes-version={k8s_version} "
+            "--enable-imds-restriction "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/IMDSRestrictionPreview"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check('provisioningState', 'Succeeded'),
+                self.check(
+                    'networkProfile.podLinkLocalAccess', 'None'
+                ),
+            ],
+        )
+
+        # update -- disable imds restriction
+        update_cmd = (
+            "aks update --resource-group {resource_group} --name {name} "
+            "--disable-imds-restriction --yes "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/IMDSRestrictionPreview "
+            "-o json"
+        )
+        self.cmd(update_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check(
+                'networkProfile.podLinkLocalAccess', 'IMDS'
+            ),
+        ])
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
