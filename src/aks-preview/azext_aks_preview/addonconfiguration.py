@@ -398,6 +398,7 @@ def add_ingress_appgw_addon_role_assignment(result, cmd):
     service_principal_msi_id = None
     # Check if service principal exists, if it does, assign permissions to service principal
     # Else, provide permissions to MSI
+    is_service_principal = False
     if (
             hasattr(result, 'service_principal_profile') and
             hasattr(result.service_principal_profile, 'client_id') and
