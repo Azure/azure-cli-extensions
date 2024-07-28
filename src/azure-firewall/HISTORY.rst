@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.0.1
+1.1.0
 ++++++
 * `network firewall policy rule-collection-group collection rule add/update"`: Add parameter `--http-headers-to-insert`
 
