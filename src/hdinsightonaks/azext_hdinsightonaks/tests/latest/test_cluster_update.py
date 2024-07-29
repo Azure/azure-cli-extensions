@@ -6,14 +6,14 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-from .testUtil import autoScale_config_str, authorization_info
+from .testUtil import authorization_info_version11
 from azure.cli.testsdk import ScenarioTest
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class TestUpdateCluster(ScenarioTest):
-    location = 'westus3'
+    location = 'eastus2'
     resourceGroup = "hilocli-test"
     clusterPoolName = "hilopool"
 
@@ -22,7 +22,7 @@ class TestUpdateCluster(ScenarioTest):
             "rg": self.resourceGroup,
             "loc": self.location,
             "poolName": self.clusterPoolName,
-            "clusterName": "hilo-vjkn4d55e7cby",
+            "clusterName": "hilo-clicluster513",
             "clusterType": "Spark",
             'config_path': os.path.join(TEST_DIR, 'config.json'),
             # Create a cluster node-profile object.
@@ -30,9 +30,9 @@ class TestUpdateCluster(ScenarioTest):
         })
 
         # If there is no existing cluster to test, use the following code to create the cluster.
-        # spark_versions = self.cmd('az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Spark\']"').get_output_in_json()
-        # create_command = 'az hdinsight-on-aks cluster create -n {clusterName} --cluster-pool-name {poolName} -g {rg} -l {loc} --cluster-type {clusterType} --spark-storage-url abfs://testspark@yuchenhilostorage.dfs.core.windows.net/ --cluster-version ' + spark_versions[0]["clusterVersion"] + ' --oss-version ' + spark_versions[0]["ossVersion"] + ' --nodes ' + '{computeNodeProfile}' +' '+ authorization_info()
-        # self.cmd(create_command)
+        spark_versions = self.cmd('az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Spark\']"').get_output_in_json()
+        create_command = 'az hdinsight-on-aks cluster create -n {clusterName} --cluster-pool-name {poolName} -g {rg} -l {loc} --cluster-type {clusterType} --spark-storage-url abfs://testspark@hilostorage.dfs.core.windows.net/ --cluster-version ' + spark_versions[0]["clusterVersion"] + ' --oss-version ' + spark_versions[0]["ossVersion"] + ' --nodes ' + '{computeNodeProfile}' +' '+ authorization_info_version11()
+        self.cmd(create_command)
 
         # Test update a cluster's service config.
         self.cmd('az hdinsight-on-aks cluster update -n {clusterName} --cluster-pool-name {poolName} -g {rg} --service-configs-profiles @"{config_path}"', checks=[

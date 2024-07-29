@@ -19,13 +19,13 @@ class Run(AAZCommand):
     """Upgrade a cluster.
 
     :example: Upgrade a cluster, use command 'az hdinsight-on-aks cluster upgrade list' get upgrades list.
-        az hdinsight-on-aks cluster upgrade run --cluster-pool-name {poolName} -g {rg} --cluster-name {clusterName} --hotfix-upgrade component-name=$upgrades[0]["componentName"] target-build-number=$upgrades[0]["targetBuildNumber"] target-cluster-version=$upgrades[0]["targetClusterVersion"] target-oss-version= $upgrades[0]["targetOssVersion"]
+        az hdinsight-on-aks cluster upgrade run -g {resourcesGroup} --cluster-pool-name {poolName} --cluster-name {clusterName} --hotfix-upgrade component-name={componentName} target-build-number={targetBuildNumber} target-cluster-version={targetClusterVersion} target-oss-version={targetOssVersion}
     """
 
     _aaz_info = {
-        "version": "2023-11-01-preview",
+        "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}/upgrade", "2023-11-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}/upgrade", "2024-05-01-preview"],
         ]
     }
 
@@ -70,9 +70,37 @@ class Run(AAZCommand):
             arg_group="Properties",
             blank={},
         )
+        _args_schema.in_place_upgrade = AAZObjectArg(
+            options=["--in-place-upgrade"],
+            arg_group="Properties",
+            help="Properties of in-place upgrading cluster.",
+        )
         _args_schema.hotfix_upgrade = AAZObjectArg(
             options=["--hotfix-upgrade"],
             arg_group="Properties",
+            help="Properties of upgrading cluster's hotfix.",
+        )
+        _args_schema.patch_version_upgrade = AAZObjectArg(
+            options=["--patch-version-upgrade"],
+            arg_group="Properties",
+        )
+
+        in_place_upgrade = cls._args_schema.in_place_upgrade
+        in_place_upgrade.component_name = AAZStrArg(
+            options=["component-name"],
+            help="Name of component to be upgraded.",
+        )
+        in_place_upgrade.target_build_number = AAZStrArg(
+            options=["target-build-number"],
+            help="Target build number of component to be upgraded.",
+        )
+        in_place_upgrade.target_cluster_version = AAZStrArg(
+            options=["target-cluster-version"],
+            help="Target cluster version of component to be upgraded.",
+        )
+        in_place_upgrade.target_oss_version = AAZStrArg(
+            options=["target-oss-version"],
+            help="Target OSS version of component to be upgraded.",
         )
 
         hotfix_upgrade = cls._args_schema.hotfix_upgrade
@@ -89,6 +117,24 @@ class Run(AAZCommand):
             help="Target cluster version of component to be upgraded.",
         )
         hotfix_upgrade.target_oss_version = AAZStrArg(
+            options=["target-oss-version"],
+            help="Target OSS version of component to be upgraded.",
+        )
+
+        patch_version_upgrade = cls._args_schema.patch_version_upgrade
+        patch_version_upgrade.component_name = AAZStrArg(
+            options=["component-name"],
+            help="Name of component to be upgraded.",
+        )
+        patch_version_upgrade.target_build_number = AAZStrArg(
+            options=["target-build-number"],
+            help="Target build number of component to be upgraded.",
+        )
+        patch_version_upgrade.target_cluster_version = AAZStrArg(
+            options=["target-cluster-version"],
+            help="Target cluster version of component to be upgraded.",
+        )
+        patch_version_upgrade.target_oss_version = AAZStrArg(
             options=["target-oss-version"],
             help="Target OSS version of component to be upgraded.",
         )
@@ -179,7 +225,7 @@ class Run(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -209,9 +255,20 @@ class Run(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_const("upgradeType", "AKSPatchUpgrade", AAZStrType, ".aks_patch_upgrade", typ_kwargs={"flags": {"required": True}})
+                properties.set_const("upgradeType", "ClusterInPlaceUpgradeProperties", AAZStrType, ".in_place_upgrade", typ_kwargs={"flags": {"required": True}})
                 properties.set_const("upgradeType", "HotfixUpgrade", AAZStrType, ".hotfix_upgrade", typ_kwargs={"flags": {"required": True}})
+                properties.set_const("upgradeType", "PatchVersionUpgrade", AAZStrType, ".patch_version_upgrade", typ_kwargs={"flags": {"required": True}})
                 properties.discriminate_by("upgradeType", "AKSPatchUpgrade")
+                properties.discriminate_by("upgradeType", "ClusterInPlaceUpgradeProperties")
                 properties.discriminate_by("upgradeType", "HotfixUpgrade")
+                properties.discriminate_by("upgradeType", "PatchVersionUpgrade")
+
+            disc_cluster_in_place_upgrade_properties = _builder.get(".properties{upgradeType:ClusterInPlaceUpgradeProperties}")
+            if disc_cluster_in_place_upgrade_properties is not None:
+                disc_cluster_in_place_upgrade_properties.set_prop("componentName", AAZStrType, ".in_place_upgrade.component_name")
+                disc_cluster_in_place_upgrade_properties.set_prop("targetBuildNumber", AAZStrType, ".in_place_upgrade.target_build_number")
+                disc_cluster_in_place_upgrade_properties.set_prop("targetClusterVersion", AAZStrType, ".in_place_upgrade.target_cluster_version")
+                disc_cluster_in_place_upgrade_properties.set_prop("targetOssVersion", AAZStrType, ".in_place_upgrade.target_oss_version")
 
             disc_hotfix_upgrade = _builder.get(".properties{upgradeType:HotfixUpgrade}")
             if disc_hotfix_upgrade is not None:
@@ -219,6 +276,13 @@ class Run(AAZCommand):
                 disc_hotfix_upgrade.set_prop("targetBuildNumber", AAZStrType, ".hotfix_upgrade.target_build_number")
                 disc_hotfix_upgrade.set_prop("targetClusterVersion", AAZStrType, ".hotfix_upgrade.target_cluster_version")
                 disc_hotfix_upgrade.set_prop("targetOssVersion", AAZStrType, ".hotfix_upgrade.target_oss_version")
+
+            disc_patch_version_upgrade = _builder.get(".properties{upgradeType:PatchVersionUpgrade}")
+            if disc_patch_version_upgrade is not None:
+                disc_patch_version_upgrade.set_prop("componentName", AAZStrType, ".patch_version_upgrade.component_name")
+                disc_patch_version_upgrade.set_prop("targetBuildNumber", AAZStrType, ".patch_version_upgrade.target_build_number")
+                disc_patch_version_upgrade.set_prop("targetClusterVersion", AAZStrType, ".patch_version_upgrade.target_cluster_version")
+                disc_patch_version_upgrade.set_prop("targetOssVersion", AAZStrType, ".patch_version_upgrade.target_oss_version")
 
             return self.serialize_content(_content_value)
 
@@ -314,7 +378,6 @@ class Run(AAZCommand):
             cluster_profile.identity_profile = AAZObjectType(
                 serialized_name="identityProfile",
             )
-            _RunHelper._build_schema_identity_profile_read(cluster_profile.identity_profile)
             cluster_profile.kafka_profile = AAZObjectType(
                 serialized_name="kafkaProfile",
             )
@@ -323,6 +386,9 @@ class Run(AAZCommand):
             )
             cluster_profile.log_analytics_profile = AAZObjectType(
                 serialized_name="logAnalyticsProfile",
+            )
+            cluster_profile.managed_identity_profile = AAZObjectType(
+                serialized_name="managedIdentityProfile",
             )
             cluster_profile.oss_version = AAZStrType(
                 serialized_name="ossVersion",
@@ -595,11 +661,21 @@ class Run(AAZCommand):
                 flags={"secret": True},
             )
 
-            kafka_profile = cls._schema_on_200.properties.cluster_profile.kafka_profile
-            kafka_profile.cluster_identity = AAZObjectType(
-                serialized_name="clusterIdentity",
+            identity_profile = cls._schema_on_200.properties.cluster_profile.identity_profile
+            identity_profile.msi_client_id = AAZStrType(
+                serialized_name="msiClientId",
+                flags={"required": True},
             )
-            _RunHelper._build_schema_identity_profile_read(kafka_profile.cluster_identity)
+            identity_profile.msi_object_id = AAZStrType(
+                serialized_name="msiObjectId",
+                flags={"required": True},
+            )
+            identity_profile.msi_resource_id = AAZStrType(
+                serialized_name="msiResourceId",
+                flags={"required": True},
+            )
+
+            kafka_profile = cls._schema_on_200.properties.cluster_profile.kafka_profile
             kafka_profile.connectivity_endpoints = AAZObjectType(
                 serialized_name="connectivityEndpoints",
             )
@@ -655,6 +731,32 @@ class Run(AAZCommand):
             )
             application_logs.std_out_enabled = AAZBoolType(
                 serialized_name="stdOutEnabled",
+            )
+
+            managed_identity_profile = cls._schema_on_200.properties.cluster_profile.managed_identity_profile
+            managed_identity_profile.identity_list = AAZListType(
+                serialized_name="identityList",
+                flags={"required": True},
+            )
+
+            identity_list = cls._schema_on_200.properties.cluster_profile.managed_identity_profile.identity_list
+            identity_list.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.cluster_profile.managed_identity_profile.identity_list.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"required": True},
+            )
+            _element.object_id = AAZStrType(
+                serialized_name="objectId",
+                flags={"required": True},
+            )
+            _element.resource_id = AAZStrType(
+                serialized_name="resourceId",
+                flags={"required": True},
+            )
+            _element.type = AAZStrType(
+                flags={"required": True},
             )
 
             prometheus_profile = cls._schema_on_200.properties.cluster_profile.prometheus_profile
@@ -868,6 +970,9 @@ class Run(AAZCommand):
                 serialized_name="podPrefix",
                 flags={"read_only": True},
             )
+            ssh_profile.vm_size = AAZStrType(
+                serialized_name="vmSize",
+            )
 
             trino_profile = cls._schema_on_200.properties.cluster_profile.trino_profile
             trino_profile.catalog_options = AAZObjectType(
@@ -953,9 +1058,15 @@ class Run(AAZCommand):
             _RunHelper._build_schema_trino_debug_config_read(worker.debug)
 
             compute_profile = cls._schema_on_200.properties.compute_profile
+            compute_profile.availability_zones = AAZListType(
+                serialized_name="availabilityZones",
+            )
             compute_profile.nodes = AAZListType(
                 flags={"required": True},
             )
+
+            availability_zones = cls._schema_on_200.properties.compute_profile.availability_zones
+            availability_zones.Element = AAZStrType()
 
             nodes = cls._schema_on_200.properties.compute_profile.nodes
             nodes.Element = AAZObjectType()
@@ -1022,36 +1133,6 @@ class _RunHelper:
 
         _schema.cpu = cls._schema_compute_resource_definition_read.cpu
         _schema.memory = cls._schema_compute_resource_definition_read.memory
-
-    _schema_identity_profile_read = None
-
-    @classmethod
-    def _build_schema_identity_profile_read(cls, _schema):
-        if cls._schema_identity_profile_read is not None:
-            _schema.msi_client_id = cls._schema_identity_profile_read.msi_client_id
-            _schema.msi_object_id = cls._schema_identity_profile_read.msi_object_id
-            _schema.msi_resource_id = cls._schema_identity_profile_read.msi_resource_id
-            return
-
-        cls._schema_identity_profile_read = _schema_identity_profile_read = AAZObjectType()
-
-        identity_profile_read = _schema_identity_profile_read
-        identity_profile_read.msi_client_id = AAZStrType(
-            serialized_name="msiClientId",
-            flags={"required": True},
-        )
-        identity_profile_read.msi_object_id = AAZStrType(
-            serialized_name="msiObjectId",
-            flags={"required": True},
-        )
-        identity_profile_read.msi_resource_id = AAZStrType(
-            serialized_name="msiResourceId",
-            flags={"required": True},
-        )
-
-        _schema.msi_client_id = cls._schema_identity_profile_read.msi_client_id
-        _schema.msi_object_id = cls._schema_identity_profile_read.msi_object_id
-        _schema.msi_resource_id = cls._schema_identity_profile_read.msi_resource_id
 
     _schema_trino_debug_config_read = None
 

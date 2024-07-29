@@ -12,20 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "hdinsight-on-aks cluster upgrade list",
+    "hdinsight-on-aks cluster upgrade history",
     is_preview=True,
 )
-class List(AAZCommand):
-    """List a cluster available upgrades.
+class History(AAZCommand):
+    """List a list of upgrade history.
 
-    :example: List the cluster available upgrades.
-        az hdinsight-on-aks cluster upgrade list -g {resourcesGroup} --cluster-pool-name {poolName} --cluster-name {clusterName}
+    :example: List the upgrade records of the cluster.
+        az hdinsight-on-aks cluster upgrade history -g {resourcesGroup} --cluster-pool-name {poolName} --cluster-name {clusterName}
     """
 
     _aaz_info = {
         "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}/availableupgrades", "2024-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}/upgradehistories", "2024-05-01-preview"],
         ]
     }
 
@@ -63,7 +63,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ClusterAvailableUpgradesList(ctx=self.ctx)()
+        self.ClusterUpgradeHistoriesList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -79,7 +79,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class ClusterAvailableUpgradesList(AAZHttpOperation):
+    class ClusterUpgradeHistoriesList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -93,7 +93,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HDInsight/clusterpools/{clusterPoolName}/clusters/{clusterName}/availableUpgrades",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HDInsight/clusterpools/{clusterPoolName}/clusters/{clusterName}/upgradeHistories",
                 **self.url_parameters
             )
 
@@ -166,6 +166,7 @@ class List(AAZCommand):
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
+                flags={"read_only": True},
             )
             _schema_on_200.value = AAZListType(
                 flags={"required": True},
@@ -182,7 +183,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -193,63 +194,54 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.upgrade_result = AAZStrType(
+                serialized_name="upgradeResult",
+                flags={"required": True},
+            )
             properties.upgrade_type = AAZStrType(
                 serialized_name="upgradeType",
                 flags={"required": True},
             )
+            properties.utc_time = AAZStrType(
+                serialized_name="utcTime",
+                flags={"required": True},
+            )
 
             disc_aks_patch_upgrade = cls._schema_on_200.value.Element.properties.discriminate_by("upgrade_type", "AKSPatchUpgrade")
-            disc_aks_patch_upgrade.current_version = AAZStrType(
-                serialized_name="currentVersion",
+            disc_aks_patch_upgrade.new_version = AAZStrType(
+                serialized_name="newVersion",
             )
-            disc_aks_patch_upgrade.current_version_status = AAZStrType(
-                serialized_name="currentVersionStatus",
-            )
-            disc_aks_patch_upgrade.latest_version = AAZStrType(
-                serialized_name="latestVersion",
+            disc_aks_patch_upgrade.original_version = AAZStrType(
+                serialized_name="originalVersion",
             )
 
-            disc_cluster_available_in_place_upgrade_properties = cls._schema_on_200.value.Element.properties.discriminate_by("upgrade_type", "ClusterAvailableInPlaceUpgradeProperties")
-            disc_cluster_available_in_place_upgrade_properties.component_name = AAZStrType(
+            disc_cluster_in_place_upgrade_history_properties = cls._schema_on_200.value.Element.properties.discriminate_by("upgrade_type", "ClusterInPlaceUpgradeHistoryProperties")
+            disc_cluster_in_place_upgrade_history_properties.component_name = AAZStrType(
                 serialized_name="componentName",
             )
-            disc_cluster_available_in_place_upgrade_properties.created_time = AAZStrType(
-                serialized_name="createdTime",
-            )
-            disc_cluster_available_in_place_upgrade_properties.description = AAZStrType()
-            disc_cluster_available_in_place_upgrade_properties.extended_properties = AAZStrType(
-                serialized_name="extendedProperties",
-            )
-            disc_cluster_available_in_place_upgrade_properties.severity = AAZStrType()
-            disc_cluster_available_in_place_upgrade_properties.source_build_number = AAZStrType(
+            disc_cluster_in_place_upgrade_history_properties.severity = AAZStrType()
+            disc_cluster_in_place_upgrade_history_properties.source_build_number = AAZStrType(
                 serialized_name="sourceBuildNumber",
             )
-            disc_cluster_available_in_place_upgrade_properties.source_cluster_version = AAZStrType(
+            disc_cluster_in_place_upgrade_history_properties.source_cluster_version = AAZStrType(
                 serialized_name="sourceClusterVersion",
             )
-            disc_cluster_available_in_place_upgrade_properties.source_oss_version = AAZStrType(
+            disc_cluster_in_place_upgrade_history_properties.source_oss_version = AAZStrType(
                 serialized_name="sourceOssVersion",
             )
-            disc_cluster_available_in_place_upgrade_properties.target_build_number = AAZStrType(
+            disc_cluster_in_place_upgrade_history_properties.target_build_number = AAZStrType(
                 serialized_name="targetBuildNumber",
             )
-            disc_cluster_available_in_place_upgrade_properties.target_cluster_version = AAZStrType(
+            disc_cluster_in_place_upgrade_history_properties.target_cluster_version = AAZStrType(
                 serialized_name="targetClusterVersion",
             )
-            disc_cluster_available_in_place_upgrade_properties.target_oss_version = AAZStrType(
+            disc_cluster_in_place_upgrade_history_properties.target_oss_version = AAZStrType(
                 serialized_name="targetOssVersion",
             )
 
             disc_hotfix_upgrade = cls._schema_on_200.value.Element.properties.discriminate_by("upgrade_type", "HotfixUpgrade")
             disc_hotfix_upgrade.component_name = AAZStrType(
                 serialized_name="componentName",
-            )
-            disc_hotfix_upgrade.created_time = AAZStrType(
-                serialized_name="createdTime",
-            )
-            disc_hotfix_upgrade.description = AAZStrType()
-            disc_hotfix_upgrade.extended_properties = AAZStrType(
-                serialized_name="extendedProperties",
             )
             disc_hotfix_upgrade.severity = AAZStrType()
             disc_hotfix_upgrade.source_build_number = AAZStrType(
@@ -271,16 +263,33 @@ class List(AAZCommand):
                 serialized_name="targetOssVersion",
             )
 
+            disc_hotfix_upgrade_rollback = cls._schema_on_200.value.Element.properties.discriminate_by("upgrade_type", "HotfixUpgradeRollback")
+            disc_hotfix_upgrade_rollback.component_name = AAZStrType(
+                serialized_name="componentName",
+            )
+            disc_hotfix_upgrade_rollback.severity = AAZStrType()
+            disc_hotfix_upgrade_rollback.source_build_number = AAZStrType(
+                serialized_name="sourceBuildNumber",
+            )
+            disc_hotfix_upgrade_rollback.source_cluster_version = AAZStrType(
+                serialized_name="sourceClusterVersion",
+            )
+            disc_hotfix_upgrade_rollback.source_oss_version = AAZStrType(
+                serialized_name="sourceOssVersion",
+            )
+            disc_hotfix_upgrade_rollback.target_build_number = AAZStrType(
+                serialized_name="targetBuildNumber",
+            )
+            disc_hotfix_upgrade_rollback.target_cluster_version = AAZStrType(
+                serialized_name="targetClusterVersion",
+            )
+            disc_hotfix_upgrade_rollback.target_oss_version = AAZStrType(
+                serialized_name="targetOssVersion",
+            )
+
             disc_patch_version_upgrade = cls._schema_on_200.value.Element.properties.discriminate_by("upgrade_type", "PatchVersionUpgrade")
             disc_patch_version_upgrade.component_name = AAZStrType(
                 serialized_name="componentName",
-            )
-            disc_patch_version_upgrade.created_time = AAZStrType(
-                serialized_name="createdTime",
-            )
-            disc_patch_version_upgrade.description = AAZStrType()
-            disc_patch_version_upgrade.extended_properties = AAZStrType(
-                serialized_name="extendedProperties",
             )
             disc_patch_version_upgrade.severity = AAZStrType()
             disc_patch_version_upgrade.source_build_number = AAZStrType(
@@ -299,6 +308,30 @@ class List(AAZCommand):
                 serialized_name="targetClusterVersion",
             )
             disc_patch_version_upgrade.target_oss_version = AAZStrType(
+                serialized_name="targetOssVersion",
+            )
+
+            disc_patch_version_upgrade_rollback = cls._schema_on_200.value.Element.properties.discriminate_by("upgrade_type", "PatchVersionUpgradeRollback")
+            disc_patch_version_upgrade_rollback.component_name = AAZStrType(
+                serialized_name="componentName",
+            )
+            disc_patch_version_upgrade_rollback.severity = AAZStrType()
+            disc_patch_version_upgrade_rollback.source_build_number = AAZStrType(
+                serialized_name="sourceBuildNumber",
+            )
+            disc_patch_version_upgrade_rollback.source_cluster_version = AAZStrType(
+                serialized_name="sourceClusterVersion",
+            )
+            disc_patch_version_upgrade_rollback.source_oss_version = AAZStrType(
+                serialized_name="sourceOssVersion",
+            )
+            disc_patch_version_upgrade_rollback.target_build_number = AAZStrType(
+                serialized_name="targetBuildNumber",
+            )
+            disc_patch_version_upgrade_rollback.target_cluster_version = AAZStrType(
+                serialized_name="targetClusterVersion",
+            )
+            disc_patch_version_upgrade_rollback.target_oss_version = AAZStrType(
                 serialized_name="targetOssVersion",
             )
 
@@ -325,8 +358,8 @@ class List(AAZCommand):
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _HistoryHelper:
+    """Helper class for History"""
 
 
-__all__ = ["List"]
+__all__ = ["History"]
