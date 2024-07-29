@@ -12,20 +12,23 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "hdinsight-on-aks list-available-cluster-pool-version",
+    "hdinsight-on-aks cluster library list",
     is_preview=True,
 )
-class ListAvailableClusterPoolVersion(AAZCommand):
-    """List a list of available cluster pool versions.
+class List(AAZCommand):
+    """List all libraries of HDInsight on AKS cluster.
 
-    :example: Returns a list of available cluster pool versions.
-        az hdinsight-on-aks list-available-cluster-pool-version -l westus3
+    :example: List all custom libraries on the cluster.
+        az hdinsight-on-aks cluster library list --cluster-name {clustername} -g {resourcesGroup} --cluster-pool-name {clusterpoolname} --debug --category custom
+
+    :example: List all predefined libraries on the cluster.
+        az hdinsight-on-aks cluster library list --cluster-name {clustername} -g {resourcesGroup} --cluster-pool-name {clusterpoolname} --debug --category predefined
     """
 
     _aaz_info = {
         "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hdinsight/locations/{}/availableclusterpoolversions", "2024-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}/libraries", "2024-05-01-preview"],
         ]
     }
 
@@ -46,14 +49,30 @@ class ListAvailableClusterPoolVersion(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
+        _args_schema.cluster_name = AAZStrArg(
+            options=["--cluster-name"],
+            help="The name of the HDInsight cluster.",
             required=True,
+        )
+        _args_schema.cluster_pool_name = AAZStrArg(
+            options=["--cluster-pool-name"],
+            help="The name of the cluster pool.",
+            required=True,
+        )
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            required=True,
+        )
+        _args_schema.category = AAZStrArg(
+            options=["--category"],
+            help="The system query option to filter libraries returned in the response. Allowed value is 'custom' or 'predefined'.",
+            required=True,
+            enum={"custom": "custom", "predefined": "predefined"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.AvailableClusterPoolVersionsListByLocation(ctx=self.ctx)()
+        self.ClusterLibrariesList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -69,7 +88,7 @@ class ListAvailableClusterPoolVersion(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class AvailableClusterPoolVersionsListByLocation(AAZHttpOperation):
+    class ClusterLibrariesList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -83,7 +102,7 @@ class ListAvailableClusterPoolVersion(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.HDInsight/locations/{location}/availableClusterPoolVersions",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HDInsight/clusterpools/{clusterPoolName}/clusters/{clusterName}/libraries",
                 **self.url_parameters
             )
 
@@ -99,7 +118,15 @@ class ListAvailableClusterPoolVersion(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "location", self.ctx.args.location,
+                    "clusterName", self.ctx.args.cluster_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "clusterPoolName", self.ctx.args.cluster_pool_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -112,6 +139,10 @@ class ListAvailableClusterPoolVersion(AAZCommand):
         @property
         def query_parameters(self):
             parameters = {
+                **self.serialize_query_param(
+                    "$category", self.ctx.args.category,
+                    required=True,
+                ),
                 **self.serialize_query_param(
                     "api-version", "2024-05-01-preview",
                     required=True,
@@ -150,7 +181,9 @@ class ListAvailableClusterPoolVersion(AAZCommand):
                 serialized_name="nextLink",
                 flags={"read_only": True},
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -163,7 +196,7 @@ class ListAvailableClusterPoolVersion(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -174,15 +207,35 @@ class ListAvailableClusterPoolVersion(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.aks_version = AAZStrType(
-                serialized_name="aksVersion",
+            properties.message = AAZStrType(
+                flags={"read_only": True},
             )
-            properties.cluster_pool_version = AAZStrType(
-                serialized_name="clusterPoolVersion",
+            properties.remarks = AAZStrType()
+            properties.status = AAZStrType(
+                flags={"read_only": True},
             )
-            properties.is_preview = AAZBoolType(
-                serialized_name="isPreview",
+            properties.timestamp = AAZStrType(
+                flags={"read_only": True},
             )
+            properties.type = AAZStrType(
+                flags={"required": True},
+            )
+
+            disc_maven = cls._schema_on_200.value.Element.properties.discriminate_by("type", "maven")
+            disc_maven.group_id = AAZStrType(
+                serialized_name="groupId",
+                flags={"required": True},
+            )
+            disc_maven.name = AAZStrType(
+                flags={"required": True},
+            )
+            disc_maven.version = AAZStrType()
+
+            disc_pypi = cls._schema_on_200.value.Element.properties.discriminate_by("type", "pypi")
+            disc_pypi.name = AAZStrType(
+                flags={"required": True},
+            )
+            disc_pypi.version = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -207,8 +260,8 @@ class ListAvailableClusterPoolVersion(AAZCommand):
             return cls._schema_on_200
 
 
-class _ListAvailableClusterPoolVersionHelper:
-    """Helper class for ListAvailableClusterPoolVersion"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["ListAvailableClusterPoolVersion"]
+__all__ = ["List"]

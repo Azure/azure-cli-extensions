@@ -12,20 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "hdinsight-on-aks list-available-cluster-pool-version",
+    "hdinsight-on-aks clusterpool upgrade history",
     is_preview=True,
 )
-class ListAvailableClusterPoolVersion(AAZCommand):
-    """List a list of available cluster pool versions.
+class History(AAZCommand):
+    """List a list of upgrade history.
 
-    :example: Returns a list of available cluster pool versions.
-        az hdinsight-on-aks list-available-cluster-pool-version -l westus3
+    :example: List the upgrade records of the clusterpool.
+        az hdinsight-on-aks clusterpool upgrade history --g {RG} -n {poolName}
     """
 
     _aaz_info = {
         "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hdinsight/locations/{}/availableclusterpoolversions", "2024-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/upgradehistories", "2024-05-01-preview"],
         ]
     }
 
@@ -46,14 +46,19 @@ class ListAvailableClusterPoolVersion(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
+        _args_schema.cluster_pool_name = AAZStrArg(
+            options=["--cluster-pool-name"],
+            help="The name of the cluster pool.",
+            required=True,
+        )
+        _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.AvailableClusterPoolVersionsListByLocation(ctx=self.ctx)()
+        self.ClusterPoolUpgradeHistoriesList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -69,7 +74,7 @@ class ListAvailableClusterPoolVersion(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class AvailableClusterPoolVersionsListByLocation(AAZHttpOperation):
+    class ClusterPoolUpgradeHistoriesList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -83,7 +88,7 @@ class ListAvailableClusterPoolVersion(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.HDInsight/locations/{location}/availableClusterPoolVersions",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HDInsight/clusterpools/{clusterPoolName}/upgradeHistories",
                 **self.url_parameters
             )
 
@@ -99,7 +104,11 @@ class ListAvailableClusterPoolVersion(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "location", self.ctx.args.location,
+                    "clusterPoolName", self.ctx.args.cluster_pool_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -150,7 +159,9 @@ class ListAvailableClusterPoolVersion(AAZCommand):
                 serialized_name="nextLink",
                 flags={"read_only": True},
             )
-            _schema_on_200.value = AAZListType()
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
 
             value = cls._schema_on_200.value
             value.Element = AAZObjectType()
@@ -163,7 +174,7 @@ class ListAvailableClusterPoolVersion(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -174,14 +185,36 @@ class ListAvailableClusterPoolVersion(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.aks_version = AAZStrType(
-                serialized_name="aksVersion",
+            properties.upgrade_result = AAZStrType(
+                serialized_name="upgradeResult",
+                flags={"required": True},
             )
-            properties.cluster_pool_version = AAZStrType(
-                serialized_name="clusterPoolVersion",
+            properties.upgrade_type = AAZStrType(
+                serialized_name="upgradeType",
+                flags={"required": True},
             )
-            properties.is_preview = AAZBoolType(
-                serialized_name="isPreview",
+            properties.utc_time = AAZStrType(
+                serialized_name="utcTime",
+                flags={"required": True},
+            )
+
+            disc_aks_patch_upgrade = cls._schema_on_200.value.Element.properties.discriminate_by("upgrade_type", "AKSPatchUpgrade")
+            disc_aks_patch_upgrade.new_version = AAZStrType(
+                serialized_name="newVersion",
+            )
+            disc_aks_patch_upgrade.original_version = AAZStrType(
+                serialized_name="originalVersion",
+            )
+            disc_aks_patch_upgrade.upgrade_all_cluster_nodes = AAZBoolType(
+                serialized_name="upgradeAllClusterNodes",
+            )
+            disc_aks_patch_upgrade.upgrade_cluster_pool = AAZBoolType(
+                serialized_name="upgradeClusterPool",
+            )
+
+            disc_node_os_upgrade = cls._schema_on_200.value.Element.properties.discriminate_by("upgrade_type", "NodeOsUpgrade")
+            disc_node_os_upgrade.new_node_os = AAZStrType(
+                serialized_name="newNodeOs",
             )
 
             system_data = cls._schema_on_200.value.Element.system_data
@@ -207,8 +240,8 @@ class ListAvailableClusterPoolVersion(AAZCommand):
             return cls._schema_on_200
 
 
-class _ListAvailableClusterPoolVersionHelper:
-    """Helper class for ListAvailableClusterPoolVersion"""
+class _HistoryHelper:
+    """Helper class for History"""
 
 
-__all__ = ["ListAvailableClusterPoolVersion"]
+__all__ = ["History"]

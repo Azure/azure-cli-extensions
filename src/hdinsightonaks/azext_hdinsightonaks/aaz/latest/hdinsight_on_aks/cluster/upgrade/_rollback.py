@@ -12,28 +12,28 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "hdinsight-on-aks cluster list",
+    "hdinsight-on-aks cluster upgrade rollback",
     is_preview=True,
 )
-class List(AAZCommand):
-    """List the HDInsight cluster pools under a resource group.
+class Rollback(AAZCommand):
+    """Manual rollback upgrade for a cluster.
 
-    :example: List all cluster in a cluster pool.
-        az hdinsight-on-aks cluster list --cluster-pool-name {poolName}-g {RG}
+    :example: Rollback the upgrade to a cluster.
+        az hdinsight-on-aks cluster upgrade rollback -g {resourcesGroup} --cluster-pool-name {poolName} --cluster-name {clusterName} --upgrade-history {history string}
     """
 
     _aaz_info = {
         "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters", "2024-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}/rollback", "2024-05-01-preview"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
+    AZ_SUPPORT_NO_WAIT = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -46,19 +46,36 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.cluster_name = AAZStrArg(
+            options=["--cluster-name"],
+            help="The name of the HDInsight cluster.",
+            required=True,
+            id_part="child_name_1",
+        )
         _args_schema.cluster_pool_name = AAZStrArg(
             options=["--cluster-pool-name"],
             help="The name of the cluster pool.",
             required=True,
+            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            required=True,
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.upgrade_history = AAZStrArg(
+            options=["--upgrade-history"],
+            arg_group="Properties",
+            help="A specific upgrade history to rollback",
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.ClustersListByClusterPoolName(ctx=self.ctx)()
+        yield self.ClustersUpgradeManualRollback(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -70,31 +87,46 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class ClustersListByClusterPoolName(AAZHttpOperation):
+    class ClustersUpgradeManualRollback(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HDInsight/clusterpools/{clusterPoolName}/clusters",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HDInsight/clusterpools/{clusterPoolName}/clusters/{clusterName}/rollback",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -103,6 +135,10 @@ class List(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "clusterName", self.ctx.args.cluster_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "clusterPoolName", self.ctx.args.cluster_pool_name,
                     required=True,
@@ -132,10 +168,28 @@ class List(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("upgradeHistory", AAZStrType, ".upgrade_history", typ_kwargs={"flags": {"required": True}})
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -155,38 +209,28 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.value = AAZListType()
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.location = AAZStrType(
+            _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
-            _element.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.properties = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _element.system_data = AAZObjectType(
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.tags = AAZDictType()
-            _element.type = AAZStrType(
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
+            properties = cls._schema_on_200.properties
             properties.cluster_profile = AAZObjectType(
                 serialized_name="clusterProfile",
                 flags={"required": True},
@@ -211,7 +255,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
-            cluster_profile = cls._schema_on_200.value.Element.properties.cluster_profile
+            cluster_profile = cls._schema_on_200.properties.cluster_profile
             cluster_profile.authorization_profile = AAZObjectType(
                 serialized_name="authorizationProfile",
                 flags={"required": True},
@@ -286,7 +330,7 @@ class List(AAZCommand):
                 serialized_name="trinoProfile",
             )
 
-            authorization_profile = cls._schema_on_200.value.Element.properties.cluster_profile.authorization_profile
+            authorization_profile = cls._schema_on_200.properties.cluster_profile.authorization_profile
             authorization_profile.group_ids = AAZListType(
                 serialized_name="groupIds",
             )
@@ -294,13 +338,13 @@ class List(AAZCommand):
                 serialized_name="userIds",
             )
 
-            group_ids = cls._schema_on_200.value.Element.properties.cluster_profile.authorization_profile.group_ids
+            group_ids = cls._schema_on_200.properties.cluster_profile.authorization_profile.group_ids
             group_ids.Element = AAZStrType()
 
-            user_ids = cls._schema_on_200.value.Element.properties.cluster_profile.authorization_profile.user_ids
+            user_ids = cls._schema_on_200.properties.cluster_profile.authorization_profile.user_ids
             user_ids.Element = AAZStrType()
 
-            autoscale_profile = cls._schema_on_200.value.Element.properties.cluster_profile.autoscale_profile
+            autoscale_profile = cls._schema_on_200.properties.cluster_profile.autoscale_profile
             autoscale_profile.autoscale_type = AAZStrType(
                 serialized_name="autoscaleType",
             )
@@ -317,7 +361,7 @@ class List(AAZCommand):
                 serialized_name="scheduleBasedConfig",
             )
 
-            load_based_config = cls._schema_on_200.value.Element.properties.cluster_profile.autoscale_profile.load_based_config
+            load_based_config = cls._schema_on_200.properties.cluster_profile.autoscale_profile.load_based_config
             load_based_config.cooldown_period = AAZIntType(
                 serialized_name="cooldownPeriod",
             )
@@ -337,10 +381,10 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            scaling_rules = cls._schema_on_200.value.Element.properties.cluster_profile.autoscale_profile.load_based_config.scaling_rules
+            scaling_rules = cls._schema_on_200.properties.cluster_profile.autoscale_profile.load_based_config.scaling_rules
             scaling_rules.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.cluster_profile.autoscale_profile.load_based_config.scaling_rules.Element
+            _element = cls._schema_on_200.properties.cluster_profile.autoscale_profile.load_based_config.scaling_rules.Element
             _element.action_type = AAZStrType(
                 serialized_name="actionType",
                 flags={"required": True},
@@ -358,7 +402,7 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            comparison_rule = cls._schema_on_200.value.Element.properties.cluster_profile.autoscale_profile.load_based_config.scaling_rules.Element.comparison_rule
+            comparison_rule = cls._schema_on_200.properties.cluster_profile.autoscale_profile.load_based_config.scaling_rules.Element.comparison_rule
             comparison_rule.operator = AAZStrType(
                 flags={"required": True},
             )
@@ -366,7 +410,7 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            schedule_based_config = cls._schema_on_200.value.Element.properties.cluster_profile.autoscale_profile.schedule_based_config
+            schedule_based_config = cls._schema_on_200.properties.cluster_profile.autoscale_profile.schedule_based_config
             schedule_based_config.default_count = AAZIntType(
                 serialized_name="defaultCount",
                 flags={"required": True},
@@ -379,10 +423,10 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            schedules = cls._schema_on_200.value.Element.properties.cluster_profile.autoscale_profile.schedule_based_config.schedules
+            schedules = cls._schema_on_200.properties.cluster_profile.autoscale_profile.schedule_based_config.schedules
             schedules.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.cluster_profile.autoscale_profile.schedule_based_config.schedules.Element
+            _element = cls._schema_on_200.properties.cluster_profile.autoscale_profile.schedule_based_config.schedules.Element
             _element.count = AAZIntType(
                 flags={"required": True},
             )
@@ -398,10 +442,10 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            days = cls._schema_on_200.value.Element.properties.cluster_profile.autoscale_profile.schedule_based_config.schedules.Element.days
+            days = cls._schema_on_200.properties.cluster_profile.autoscale_profile.schedule_based_config.schedules.Element.days
             days.Element = AAZStrType()
 
-            cluster_access_profile = cls._schema_on_200.value.Element.properties.cluster_profile.cluster_access_profile
+            cluster_access_profile = cls._schema_on_200.properties.cluster_profile.cluster_access_profile
             cluster_access_profile.enable_internal_ingress = AAZBoolType(
                 serialized_name="enableInternalIngress",
                 flags={"required": True},
@@ -411,23 +455,23 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
 
-            components = cls._schema_on_200.value.Element.properties.cluster_profile.components
+            components = cls._schema_on_200.properties.cluster_profile.components
             components.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.cluster_profile.components.Element
+            _element = cls._schema_on_200.properties.cluster_profile.components.Element
             _element.name = AAZStrType()
             _element.version = AAZStrType()
 
-            connectivity_profile = cls._schema_on_200.value.Element.properties.cluster_profile.connectivity_profile
+            connectivity_profile = cls._schema_on_200.properties.cluster_profile.connectivity_profile
             connectivity_profile.ssh = AAZListType()
             connectivity_profile.web = AAZObjectType(
                 flags={"required": True},
             )
 
-            ssh = cls._schema_on_200.value.Element.properties.cluster_profile.connectivity_profile.ssh
+            ssh = cls._schema_on_200.properties.cluster_profile.connectivity_profile.ssh
             ssh.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.cluster_profile.connectivity_profile.ssh.Element
+            _element = cls._schema_on_200.properties.cluster_profile.connectivity_profile.ssh.Element
             _element.endpoint = AAZStrType(
                 flags={"required": True},
             )
@@ -435,7 +479,7 @@ class List(AAZCommand):
                 serialized_name="privateSshEndpoint",
             )
 
-            web = cls._schema_on_200.value.Element.properties.cluster_profile.connectivity_profile.web
+            web = cls._schema_on_200.properties.cluster_profile.connectivity_profile.web
             web.fqdn = AAZStrType(
                 flags={"required": True},
             )
@@ -443,7 +487,7 @@ class List(AAZCommand):
                 serialized_name="privateFqdn",
             )
 
-            flink_profile = cls._schema_on_200.value.Element.properties.cluster_profile.flink_profile
+            flink_profile = cls._schema_on_200.properties.cluster_profile.flink_profile
             flink_profile.catalog_options = AAZObjectType(
                 serialized_name="catalogOptions",
             )
@@ -453,12 +497,12 @@ class List(AAZCommand):
             flink_profile.history_server = AAZObjectType(
                 serialized_name="historyServer",
             )
-            _ListHelper._build_schema_compute_resource_definition_read(flink_profile.history_server)
+            _RollbackHelper._build_schema_compute_resource_definition_read(flink_profile.history_server)
             flink_profile.job_manager = AAZObjectType(
                 serialized_name="jobManager",
                 flags={"required": True},
             )
-            _ListHelper._build_schema_compute_resource_definition_read(flink_profile.job_manager)
+            _RollbackHelper._build_schema_compute_resource_definition_read(flink_profile.job_manager)
             flink_profile.job_spec = AAZObjectType(
                 serialized_name="jobSpec",
             )
@@ -472,12 +516,12 @@ class List(AAZCommand):
                 serialized_name="taskManager",
                 flags={"required": True},
             )
-            _ListHelper._build_schema_compute_resource_definition_read(flink_profile.task_manager)
+            _RollbackHelper._build_schema_compute_resource_definition_read(flink_profile.task_manager)
 
-            catalog_options = cls._schema_on_200.value.Element.properties.cluster_profile.flink_profile.catalog_options
+            catalog_options = cls._schema_on_200.properties.cluster_profile.flink_profile.catalog_options
             catalog_options.hive = AAZObjectType()
 
-            hive = cls._schema_on_200.value.Element.properties.cluster_profile.flink_profile.catalog_options.hive
+            hive = cls._schema_on_200.properties.cluster_profile.flink_profile.catalog_options.hive
             hive.metastore_db_connection_authentication_mode = AAZStrType(
                 serialized_name="metastoreDbConnectionAuthenticationMode",
             )
@@ -492,7 +536,7 @@ class List(AAZCommand):
                 serialized_name="metastoreDbConnectionUserName",
             )
 
-            job_spec = cls._schema_on_200.value.Element.properties.cluster_profile.flink_profile.job_spec
+            job_spec = cls._schema_on_200.properties.cluster_profile.flink_profile.job_spec
             job_spec.args = AAZStrType()
             job_spec.entry_class = AAZStrType(
                 serialized_name="entryClass",
@@ -513,7 +557,7 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            storage = cls._schema_on_200.value.Element.properties.cluster_profile.flink_profile.storage
+            storage = cls._schema_on_200.properties.cluster_profile.flink_profile.storage
             storage.storage_uri = AAZStrType(
                 serialized_name="storageUri",
                 flags={"required": True},
@@ -522,7 +566,7 @@ class List(AAZCommand):
                 flags={"secret": True},
             )
 
-            identity_profile = cls._schema_on_200.value.Element.properties.cluster_profile.identity_profile
+            identity_profile = cls._schema_on_200.properties.cluster_profile.identity_profile
             identity_profile.msi_client_id = AAZStrType(
                 serialized_name="msiClientId",
                 flags={"required": True},
@@ -536,7 +580,7 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            kafka_profile = cls._schema_on_200.value.Element.properties.cluster_profile.kafka_profile
+            kafka_profile = cls._schema_on_200.properties.cluster_profile.kafka_profile
             kafka_profile.connectivity_endpoints = AAZObjectType(
                 serialized_name="connectivityEndpoints",
             )
@@ -554,7 +598,7 @@ class List(AAZCommand):
                 serialized_name="remoteStorageUri",
             )
 
-            connectivity_endpoints = cls._schema_on_200.value.Element.properties.cluster_profile.kafka_profile.connectivity_endpoints
+            connectivity_endpoints = cls._schema_on_200.properties.cluster_profile.kafka_profile.connectivity_endpoints
             connectivity_endpoints.bootstrap_server_endpoint = AAZStrType(
                 serialized_name="bootstrapServerEndpoint",
             )
@@ -562,10 +606,10 @@ class List(AAZCommand):
                 serialized_name="brokerEndpoints",
             )
 
-            broker_endpoints = cls._schema_on_200.value.Element.properties.cluster_profile.kafka_profile.connectivity_endpoints.broker_endpoints
+            broker_endpoints = cls._schema_on_200.properties.cluster_profile.kafka_profile.connectivity_endpoints.broker_endpoints
             broker_endpoints.Element = AAZStrType()
 
-            disk_storage = cls._schema_on_200.value.Element.properties.cluster_profile.kafka_profile.disk_storage
+            disk_storage = cls._schema_on_200.properties.cluster_profile.kafka_profile.disk_storage
             disk_storage.data_disk_size = AAZIntType(
                 serialized_name="dataDiskSize",
                 flags={"required": True},
@@ -575,7 +619,7 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            log_analytics_profile = cls._schema_on_200.value.Element.properties.cluster_profile.log_analytics_profile
+            log_analytics_profile = cls._schema_on_200.properties.cluster_profile.log_analytics_profile
             log_analytics_profile.application_logs = AAZObjectType(
                 serialized_name="applicationLogs",
             )
@@ -586,7 +630,7 @@ class List(AAZCommand):
                 serialized_name="metricsEnabled",
             )
 
-            application_logs = cls._schema_on_200.value.Element.properties.cluster_profile.log_analytics_profile.application_logs
+            application_logs = cls._schema_on_200.properties.cluster_profile.log_analytics_profile.application_logs
             application_logs.std_error_enabled = AAZBoolType(
                 serialized_name="stdErrorEnabled",
             )
@@ -594,16 +638,16 @@ class List(AAZCommand):
                 serialized_name="stdOutEnabled",
             )
 
-            managed_identity_profile = cls._schema_on_200.value.Element.properties.cluster_profile.managed_identity_profile
+            managed_identity_profile = cls._schema_on_200.properties.cluster_profile.managed_identity_profile
             managed_identity_profile.identity_list = AAZListType(
                 serialized_name="identityList",
                 flags={"required": True},
             )
 
-            identity_list = cls._schema_on_200.value.Element.properties.cluster_profile.managed_identity_profile.identity_list
+            identity_list = cls._schema_on_200.properties.cluster_profile.managed_identity_profile.identity_list
             identity_list.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.cluster_profile.managed_identity_profile.identity_list.Element
+            _element = cls._schema_on_200.properties.cluster_profile.managed_identity_profile.identity_list.Element
             _element.client_id = AAZStrType(
                 serialized_name="clientId",
                 flags={"required": True},
@@ -620,17 +664,17 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            prometheus_profile = cls._schema_on_200.value.Element.properties.cluster_profile.prometheus_profile
+            prometheus_profile = cls._schema_on_200.properties.cluster_profile.prometheus_profile
             prometheus_profile.enabled = AAZBoolType(
                 flags={"required": True},
             )
 
-            ranger_plugin_profile = cls._schema_on_200.value.Element.properties.cluster_profile.ranger_plugin_profile
+            ranger_plugin_profile = cls._schema_on_200.properties.cluster_profile.ranger_plugin_profile
             ranger_plugin_profile.enabled = AAZBoolType(
                 flags={"required": True},
             )
 
-            ranger_profile = cls._schema_on_200.value.Element.properties.cluster_profile.ranger_profile
+            ranger_profile = cls._schema_on_200.properties.cluster_profile.ranger_profile
             ranger_profile.ranger_admin = AAZObjectType(
                 serialized_name="rangerAdmin",
                 flags={"required": True},
@@ -643,7 +687,7 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            ranger_admin = cls._schema_on_200.value.Element.properties.cluster_profile.ranger_profile.ranger_admin
+            ranger_admin = cls._schema_on_200.properties.cluster_profile.ranger_profile.ranger_admin
             ranger_admin.admins = AAZListType(
                 flags={"required": True},
             )
@@ -651,10 +695,10 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            admins = cls._schema_on_200.value.Element.properties.cluster_profile.ranger_profile.ranger_admin.admins
+            admins = cls._schema_on_200.properties.cluster_profile.ranger_profile.ranger_admin.admins
             admins.Element = AAZStrType()
 
-            database = cls._schema_on_200.value.Element.properties.cluster_profile.ranger_profile.ranger_admin.database
+            database = cls._schema_on_200.properties.cluster_profile.ranger_profile.ranger_admin.database
             database.host = AAZStrType(
                 flags={"required": True},
             )
@@ -666,12 +710,12 @@ class List(AAZCommand):
             )
             database.username = AAZStrType()
 
-            ranger_audit = cls._schema_on_200.value.Element.properties.cluster_profile.ranger_profile.ranger_audit
+            ranger_audit = cls._schema_on_200.properties.cluster_profile.ranger_profile.ranger_audit
             ranger_audit.storage_account = AAZStrType(
                 serialized_name="storageAccount",
             )
 
-            ranger_usersync = cls._schema_on_200.value.Element.properties.cluster_profile.ranger_profile.ranger_usersync
+            ranger_usersync = cls._schema_on_200.properties.cluster_profile.ranger_profile.ranger_usersync
             ranger_usersync.enabled = AAZBoolType()
             ranger_usersync.groups = AAZListType()
             ranger_usersync.mode = AAZStrType()
@@ -680,16 +724,16 @@ class List(AAZCommand):
             )
             ranger_usersync.users = AAZListType()
 
-            groups = cls._schema_on_200.value.Element.properties.cluster_profile.ranger_profile.ranger_usersync.groups
+            groups = cls._schema_on_200.properties.cluster_profile.ranger_profile.ranger_usersync.groups
             groups.Element = AAZStrType()
 
-            users = cls._schema_on_200.value.Element.properties.cluster_profile.ranger_profile.ranger_usersync.users
+            users = cls._schema_on_200.properties.cluster_profile.ranger_profile.ranger_usersync.users
             users.Element = AAZStrType()
 
-            script_action_profiles = cls._schema_on_200.value.Element.properties.cluster_profile.script_action_profiles
+            script_action_profiles = cls._schema_on_200.properties.cluster_profile.script_action_profiles
             script_action_profiles.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.cluster_profile.script_action_profiles.Element
+            _element = cls._schema_on_200.properties.cluster_profile.script_action_profiles.Element
             _element.name = AAZStrType(
                 flags={"required": True},
             )
@@ -710,20 +754,20 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            services = cls._schema_on_200.value.Element.properties.cluster_profile.script_action_profiles.Element.services
+            services = cls._schema_on_200.properties.cluster_profile.script_action_profiles.Element.services
             services.Element = AAZStrType()
 
-            secrets_profile = cls._schema_on_200.value.Element.properties.cluster_profile.secrets_profile
+            secrets_profile = cls._schema_on_200.properties.cluster_profile.secrets_profile
             secrets_profile.key_vault_resource_id = AAZStrType(
                 serialized_name="keyVaultResourceId",
                 flags={"required": True},
             )
             secrets_profile.secrets = AAZListType()
 
-            secrets = cls._schema_on_200.value.Element.properties.cluster_profile.secrets_profile.secrets
+            secrets = cls._schema_on_200.properties.cluster_profile.secrets_profile.secrets
             secrets.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.cluster_profile.secrets_profile.secrets.Element
+            _element = cls._schema_on_200.properties.cluster_profile.secrets_profile.secrets.Element
             _element.key_vault_object_name = AAZStrType(
                 serialized_name="keyVaultObjectName",
                 flags={"required": True},
@@ -737,10 +781,10 @@ class List(AAZCommand):
             )
             _element.version = AAZStrType()
 
-            service_configs_profiles = cls._schema_on_200.value.Element.properties.cluster_profile.service_configs_profiles
+            service_configs_profiles = cls._schema_on_200.properties.cluster_profile.service_configs_profiles
             service_configs_profiles.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.cluster_profile.service_configs_profiles.Element
+            _element = cls._schema_on_200.properties.cluster_profile.service_configs_profiles.Element
             _element.configs = AAZListType(
                 flags={"required": True},
             )
@@ -749,10 +793,10 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            configs = cls._schema_on_200.value.Element.properties.cluster_profile.service_configs_profiles.Element.configs
+            configs = cls._schema_on_200.properties.cluster_profile.service_configs_profiles.Element.configs
             configs.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.cluster_profile.service_configs_profiles.Element.configs.Element
+            _element = cls._schema_on_200.properties.cluster_profile.service_configs_profiles.Element.configs.Element
             _element.component = AAZStrType(
                 flags={"required": True},
             )
@@ -760,10 +804,10 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            files = cls._schema_on_200.value.Element.properties.cluster_profile.service_configs_profiles.Element.configs.Element.files
+            files = cls._schema_on_200.properties.cluster_profile.service_configs_profiles.Element.configs.Element.files
             files.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.cluster_profile.service_configs_profiles.Element.configs.Element.files.Element
+            _element = cls._schema_on_200.properties.cluster_profile.service_configs_profiles.Element.configs.Element.files.Element
             _element.content = AAZStrType()
             _element.encoding = AAZStrType()
             _element.file_name = AAZStrType(
@@ -773,10 +817,10 @@ class List(AAZCommand):
             _element.path = AAZStrType()
             _element.values = AAZDictType()
 
-            values = cls._schema_on_200.value.Element.properties.cluster_profile.service_configs_profiles.Element.configs.Element.files.Element.values
+            values = cls._schema_on_200.properties.cluster_profile.service_configs_profiles.Element.configs.Element.files.Element.values
             values.Element = AAZStrType()
 
-            spark_profile = cls._schema_on_200.value.Element.properties.cluster_profile.spark_profile
+            spark_profile = cls._schema_on_200.properties.cluster_profile.spark_profile
             spark_profile.default_storage_url = AAZStrType(
                 serialized_name="defaultStorageUrl",
             )
@@ -787,7 +831,7 @@ class List(AAZCommand):
                 serialized_name="userPluginsSpec",
             )
 
-            metastore_spec = cls._schema_on_200.value.Element.properties.cluster_profile.spark_profile.metastore_spec
+            metastore_spec = cls._schema_on_200.properties.cluster_profile.spark_profile.metastore_spec
             metastore_spec.db_connection_authentication_mode = AAZStrType(
                 serialized_name="dbConnectionAuthenticationMode",
             )
@@ -812,18 +856,18 @@ class List(AAZCommand):
                 serialized_name="thriftUrl",
             )
 
-            user_plugins_spec = cls._schema_on_200.value.Element.properties.cluster_profile.spark_profile.user_plugins_spec
+            user_plugins_spec = cls._schema_on_200.properties.cluster_profile.spark_profile.user_plugins_spec
             user_plugins_spec.plugins = AAZListType()
 
-            plugins = cls._schema_on_200.value.Element.properties.cluster_profile.spark_profile.user_plugins_spec.plugins
+            plugins = cls._schema_on_200.properties.cluster_profile.spark_profile.user_plugins_spec.plugins
             plugins.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.cluster_profile.spark_profile.user_plugins_spec.plugins.Element
+            _element = cls._schema_on_200.properties.cluster_profile.spark_profile.user_plugins_spec.plugins.Element
             _element.path = AAZStrType(
                 flags={"required": True},
             )
 
-            ssh_profile = cls._schema_on_200.value.Element.properties.cluster_profile.ssh_profile
+            ssh_profile = cls._schema_on_200.properties.cluster_profile.ssh_profile
             ssh_profile.count = AAZIntType(
                 flags={"required": True},
             )
@@ -835,7 +879,7 @@ class List(AAZCommand):
                 serialized_name="vmSize",
             )
 
-            trino_profile = cls._schema_on_200.value.Element.properties.cluster_profile.trino_profile
+            trino_profile = cls._schema_on_200.properties.cluster_profile.trino_profile
             trino_profile.catalog_options = AAZObjectType(
                 serialized_name="catalogOptions",
             )
@@ -848,13 +892,13 @@ class List(AAZCommand):
             )
             trino_profile.worker = AAZObjectType()
 
-            catalog_options = cls._schema_on_200.value.Element.properties.cluster_profile.trino_profile.catalog_options
+            catalog_options = cls._schema_on_200.properties.cluster_profile.trino_profile.catalog_options
             catalog_options.hive = AAZListType()
 
-            hive = cls._schema_on_200.value.Element.properties.cluster_profile.trino_profile.catalog_options.hive
+            hive = cls._schema_on_200.properties.cluster_profile.trino_profile.catalog_options.hive
             hive.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.cluster_profile.trino_profile.catalog_options.hive.Element
+            _element = cls._schema_on_200.properties.cluster_profile.trino_profile.catalog_options.hive.Element
             _element.catalog_name = AAZStrType(
                 serialized_name="catalogName",
                 flags={"required": True},
@@ -877,30 +921,30 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            coordinator = cls._schema_on_200.value.Element.properties.cluster_profile.trino_profile.coordinator
+            coordinator = cls._schema_on_200.properties.cluster_profile.trino_profile.coordinator
             coordinator.debug = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _ListHelper._build_schema_trino_debug_config_read(coordinator.debug)
+            _RollbackHelper._build_schema_trino_debug_config_read(coordinator.debug)
             coordinator.high_availability_enabled = AAZBoolType(
                 serialized_name="highAvailabilityEnabled",
             )
 
-            user_plugins_spec = cls._schema_on_200.value.Element.properties.cluster_profile.trino_profile.user_plugins_spec
+            user_plugins_spec = cls._schema_on_200.properties.cluster_profile.trino_profile.user_plugins_spec
             user_plugins_spec.plugins = AAZListType()
 
-            plugins = cls._schema_on_200.value.Element.properties.cluster_profile.trino_profile.user_plugins_spec.plugins
+            plugins = cls._schema_on_200.properties.cluster_profile.trino_profile.user_plugins_spec.plugins
             plugins.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.cluster_profile.trino_profile.user_plugins_spec.plugins.Element
+            _element = cls._schema_on_200.properties.cluster_profile.trino_profile.user_plugins_spec.plugins.Element
             _element.enabled = AAZBoolType()
             _element.name = AAZStrType()
             _element.path = AAZStrType()
 
-            user_telemetry_spec = cls._schema_on_200.value.Element.properties.cluster_profile.trino_profile.user_telemetry_spec
+            user_telemetry_spec = cls._schema_on_200.properties.cluster_profile.trino_profile.user_telemetry_spec
             user_telemetry_spec.storage = AAZObjectType()
 
-            storage = cls._schema_on_200.value.Element.properties.cluster_profile.trino_profile.user_telemetry_spec.storage
+            storage = cls._schema_on_200.properties.cluster_profile.trino_profile.user_telemetry_spec.storage
             storage.hivecatalog_name = AAZStrType(
                 serialized_name="hivecatalogName",
             )
@@ -912,13 +956,13 @@ class List(AAZCommand):
             )
             storage.path = AAZStrType()
 
-            worker = cls._schema_on_200.value.Element.properties.cluster_profile.trino_profile.worker
+            worker = cls._schema_on_200.properties.cluster_profile.trino_profile.worker
             worker.debug = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _ListHelper._build_schema_trino_debug_config_read(worker.debug)
+            _RollbackHelper._build_schema_trino_debug_config_read(worker.debug)
 
-            compute_profile = cls._schema_on_200.value.Element.properties.compute_profile
+            compute_profile = cls._schema_on_200.properties.compute_profile
             compute_profile.availability_zones = AAZListType(
                 serialized_name="availabilityZones",
             )
@@ -926,13 +970,13 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            availability_zones = cls._schema_on_200.value.Element.properties.compute_profile.availability_zones
+            availability_zones = cls._schema_on_200.properties.compute_profile.availability_zones
             availability_zones.Element = AAZStrType()
 
-            nodes = cls._schema_on_200.value.Element.properties.compute_profile.nodes
+            nodes = cls._schema_on_200.properties.compute_profile.nodes
             nodes.Element = AAZObjectType()
 
-            _element = cls._schema_on_200.value.Element.properties.compute_profile.nodes.Element
+            _element = cls._schema_on_200.properties.compute_profile.nodes.Element
             _element.count = AAZIntType(
                 flags={"required": True},
             )
@@ -944,7 +988,7 @@ class List(AAZCommand):
                 flags={"required": True},
             )
 
-            system_data = cls._schema_on_200.value.Element.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -964,14 +1008,14 @@ class List(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.value.Element.tags
+            tags = cls._schema_on_200.tags
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _RollbackHelper:
+    """Helper class for Rollback"""
 
     _schema_compute_resource_definition_read = None
 
@@ -1017,4 +1061,4 @@ class _ListHelper:
         _schema.suspend = cls._schema_trino_debug_config_read.suspend
 
 
-__all__ = ["List"]
+__all__ = ["Rollback"]
