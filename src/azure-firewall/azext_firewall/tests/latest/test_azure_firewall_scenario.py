@@ -1093,24 +1093,25 @@ class AzureFirewallScenario(ScenarioTest):
             ])
 
         self.cmd("network firewall policy delete -n {policy} -g {rg}")
-    
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_app_rules_with_custom_headers', location="westus")
+
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_app_rules_with_custom_headers', location="westus2")
     def test_azure_firewall_policy_app_rules_with_custom_headers(self, resource_group):
         self.kwargs.update({
+            'location': "westus2",
+            'rg': resource_group,
             'policy_name': 'policy1',
             'rule_collection_group_name': 'RCG1',
             'rule_collection_name': 'RC1',
             'app_rule_name_1': 'app-rule1',
             'header_name_1': 'MyHeaderName',
             'header_value_1': 'MyHeaderValue',
-            'name_app_rule2': 'app-rule2',
+            'app_rule_name_2': 'app-rule2',
             'header_name_2': 'MyHeaderName2',
-            'header_value_2': 'MyHeaderValue2'
+            'header_value_2': 'MyHeaderValue2',
+            'header_name_3': 'MyHeaderName3',
+            'header_value_3': 'MyHeaderValue3'
         })
         
-        import pdb;
-        pdb.set_trace()
-
         # Create policy
         self.cmd('network firewall policy create -g {rg} -n {policy_name} -l {location} --sku Premium --idps-mode Off', 
             checks=[
@@ -1119,7 +1120,7 @@ class AzureFirewallScenario(ScenarioTest):
         ])
 
         # Create RCG
-        self.cmd('network firewall policy rule-collection-group create -g {rg} --priority {collection_group_priority} --policy-name {policy_name} -n {rule_collection_group_name}', 
+        self.cmd('network firewall policy rule-collection-group create -g {rg} --priority 400 --policy-name {policy_name} -n {rule_collection_group_name}', 
                 checks=[
                     self.check('type', 'Microsoft.Network/FirewallPolicies/RuleCollectionGroups'),
                     self.check('name', '{rule_collection_group_name}')
@@ -1137,22 +1138,22 @@ class AzureFirewallScenario(ScenarioTest):
                     self.check('ruleCollections[0].name', "{rule_collection_name}"),
                     self.check('length(ruleCollections[0].rules)', 1),
                     self.check('ruleCollections[0].rules[0].name', '{app_rule_name_1}'),
-                    self.check('ruleCollections[0].rules[0].httpHeadersToInsert.headerName', "{header_name_1}"),
-                    self.check('ruleCollections[0].rules[0].httpHeadersToInsert.headerValue', "{header_value_1}")
+                    self.check('ruleCollections[0].rules[0].httpHeadersToInsert[0].headerName', "{header_name_1}"),
+                    self.check('ruleCollections[0].rules[0].httpHeadersToInsert[0].headerValue', "{header_value_1}")
                 ])
 
-        # Add a new app rule with custom headers to RC
         self.cmd('network firewall policy rule-collection-group collection rule add -g {rg} --policy-name {policy_name} \
                 --rule-collection-group-name {rule_collection_group_name} --collection-name {rule_collection_name} --name {app_rule_name_2} \
-                --rule-type ApplicationRule --source-addresses 202.120.22.11 202.120.11.11 \
-                --destination-addresses 10.120.36.11 10.120.22.22 --target-urls microsoft.com \
-                --http-headers-to-insert header-name={header_name_2} header-value={header_value_2}',
+                --rule-type ApplicationRule --description "test" --source-addresses 202.120.22.11 202.120.11.11 \
+                --destination-addresses 10.120.36.11 --protocols Http=12800 --target-fqdns microsoft.com \
+                --http-headers-to-insert {header_name_2}={header_value_2} {header_name_3}={header_value_3}',
                 checks=[
                     self.check('length(ruleCollections[0].rules)',2),
                     self.check('ruleCollections[0].rules[1].name', '{app_rule_name_2}'),
-                    self.check('ruleCollections[0].rules[1].httpHeadersToInsert.headerName', "{header_name_2}"),
-                    self.check('ruleCollections[0].rules[1].httpHeadersToInsert.headerValue', "{header_value_2}")
-                
+                    self.check('ruleCollections[0].rules[1].httpHeadersToInsert[0].headerName', "{header_name_2}"),
+                    self.check('ruleCollections[0].rules[1].httpHeadersToInsert[0].headerValue', "{header_value_2}"),
+                    self.check('ruleCollections[0].rules[1].httpHeadersToInsert[1].headerName', "{header_name_3}"),
+                    self.check('ruleCollections[0].rules[1].httpHeadersToInsert[1].headerValue', "{header_value_3}")
             ])      
 
         # delete Rule
@@ -1164,15 +1165,15 @@ class AzureFirewallScenario(ScenarioTest):
                 ])
 
         # delete RC
-        self.cmd('network firewall policy rule-collection-group collection remove -g {rg} --policy-name {policy} \
+        self.cmd('network firewall policy rule-collection-group collection remove -g {rg} --policy-name {policy_name} \
                  --rule-collection-group-name {rule_collection_group_name} --name {rule_collection_name}', 
                  checks=[
             self.check('length(ruleCollections)', 0)
         ])
 
         # delete RCG
-        self.cmd('network firewall policy rule-collection-group delete -g {rg} --policy-name {policy} --name {rule_collection_group_name} -y')
-        self.cmd('network firewall policy rule-collection-group list -g {rg} --policy-name {policy}', 
+        self.cmd('network firewall policy rule-collection-group delete -g {rg} --policy-name {policy_name} --name {rule_collection_group_name} -y')
+        self.cmd('network firewall policy rule-collection-group list -g {rg} --policy-name {policy_name}', 
         checks=[
             self.check('length(@)', 0)
         ])
