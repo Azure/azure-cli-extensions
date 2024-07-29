@@ -6,33 +6,33 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-from .testUtil import flink_config_str
-from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
+from .testUtil import flink_config_str, authorization_info_version12
+from azure.cli.testsdk import ScenarioTest
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
-class TestRunFlinkJob(ScenarioTest):
-    location = 'westus3'
+class TestFlinkJob(ScenarioTest):
+    location = 'West US 3 '
     resourceGroup = "hilocli-test"
-    clusterPoolName = "hilopool"
+    clusterPoolName = "hilopoolwus3"
 
     def test_flink_job(self):
         self.kwargs.update({
             "rg": self.resourceGroup,
             "loc": self.location,
             "poolName": self.clusterPoolName,
-            "clusterName": "cluster2024311163924",
+            "clusterName": "cli-flink12",
             "clusterType": "Flink",
             "computeNodeProfile": self.cmd('az hdinsight-on-aks cluster node-profile create --count 5 --node-type Worker --vm-size Standard_D16a_v4').get_output_in_json(),
             "storageUri": "abfs://testflinkjob@hiloclistorage.dfs.core.windows.net",
         })
 
         # If there is no existing cluster to test, use the following code to create the cluster.
-        # flink_versions = self.cmd('az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Flink\']"').get_output_in_json()
+        # flink_versions = self.cmd('az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Flink\' && clusterPoolVersion==\'1.2\']"').get_output_in_json()
         # create_command = 'az hdinsight-on-aks cluster create  -n {clusterName} --cluster-pool-name {poolName} -g {rg} -l {loc} --cluster-type {clusterType} --cluster-version ' \
         #       + flink_versions[0]["clusterVersion"] + ' --oss-version ' + flink_versions[0]["ossVersion"] + ' --nodes ' + '{computeNodeProfile}' \
-        #         +' '+ authorization_info() + " " + flink_config_str() + ' --flink-storage-uri {storageUri}'
+        #         +' '+ authorization_info_version12() + " " + flink_config_str() + ' --flink-storage-uri {storageUri}'
         # self.cmd(create_command)
 
         # Use bellow command manually add a job to the flink cluster.
