@@ -153,9 +153,17 @@ class AmgMigrateScenarioTest(ScenarioTest):
         with unittest.mock.patch('azext_amg.custom._gen_guid', side_effect=self.create_guid):
             amg1, amg2 = self._setup_migrate_instances()
 
-            # recreate the second dashboard in amg2:
-            self.kwargs['dashboardDefinition']['dashboard']['uid'] = 'mg2OAlTVz'
-            response_create = self.cmd('grafana dashboard create -g {rg} -n {name2}  --definition "{dashboardDefinition}" --title "{dashboardTitle2}"').get_output_in_json()
+            test_dashboard2 = test_dashboard
+            test_dashboard2["dashboard"]["title"] = test_dashboard2["dashboard"]["title"] + '2_amg'
+            dashboard_title = test_dashboard["dashboard"]["title"]
+            self.kwargs.update({
+                'dashboardTitle2_amg': dashboard_title,
+                'dashboardDefinition2': test_dashboard2
+            })
+
+            # recreate the second dashboard in amg2: keeping the same uid
+            self.kwargs['dashboardDefinition']['dashboard']['uid'] = 'mg2OAlTVb'
+            response_create = self.cmd('grafana dashboard create -g {rg} -n {name2}  --definition "{dashboardDefinition2}" --title "{dashboardTitle2_amg}"').get_output_in_json()
             self.kwargs.update({
                 'dashboardUid2_amg2': response_create["uid"],
             })
@@ -175,19 +183,26 @@ class AmgMigrateScenarioTest(ScenarioTest):
                 'serviceAccountToken': service_account_token['key']
             })
 
+            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid2_amg2}"', checks=[
+                self.check("[dashboard.title]", "['{dashboardTitle2_amg}']"),
+                self.check("[dashboard.uid]", "['{dashboardUid2_amg2}']"),
+                self.check("[meta.folderTitle]", "['General']")])
+                
             # now migrate to new instance 2.
             self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken}')
 
             # the uid shouldn't be updated since we didn't overwrite.
-            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid2}"', checks=[
-                self.check("[dashboard.title]", "['{dashboardTitle2}']"),
+            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid2_amg2}"', checks=[
+                self.check("[dashboard.title]", "['{dashboardTitle2_amg}']"),
                 self.check("[dashboard.uid]", "['{dashboardUid2_amg2}']"),
                 self.check("[meta.folderTitle]", "['General']")])
 
             self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken} --overwrite')
-            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid2}"', checks=[
+
+            # the uid should stay the same, but the title & other properies should be updated.
+            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid2_amg2}"', checks=[
                 self.check("[dashboard.title]", "['{dashboardTitle2}']"),
-                self.check("[dashboard.uid]", "['{dashboardUid2}']"),
+                self.check("[dashboard.uid]", "['{dashboardUid2_amg2}']"),
                 self.check("[meta.folderTitle]", "['General']")])
 
 
@@ -220,7 +235,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
                 'dashboardUid4': response_create["uid"],
             })
 
-            ds2 = self.cmd('grafana data-source create -g {rg} -n {name} --definition "{dataSourceDefinition}"').get_output_in_json()
+            ds2 = self.cmd('grafana data-source create -g {rg} -n {name2} --definition "{dataSourceDefinition}"').get_output_in_json()
             self.kwargs.update({
                 'amg2_datasource_uid': ds2['datasource']['uid']
             })
@@ -246,7 +261,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
             self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid4}"', checks=[
                 self.check("[dashboard.title]", "['{dashboardTitle4}']"),
                 self.check("[dashboard.panels[0].datasource.uid]", "['{amg2_datasource_uid}']"),
-                self.check("[meta.folderTitle]", "['{folderTitle}']")])
+                self.check("[meta.folderTitle]", "['General']")])
 
 
     @AllowLargeResponse(size_kb=3072)

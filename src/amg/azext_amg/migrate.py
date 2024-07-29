@@ -175,7 +175,18 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels, r
         dashboard['dashboard']['id'] = None
         # Overwrite takes care of delete & create.
         if not dry_run:
-            is_successful = create_dashboard(restore_url, dashboard, restore_headers, overwrite)
+            # there is a weird edge case where if the version is the same, it will overwrite even if false.
+            # so if the uid are the same, then without overwrite, it will overwrite if the version is the same.
+            # this logic doesn't apply to library panel since it is handled via PATCH.
+            if exists_before and not overwrite:
+                dashboard_title = dashboard['dashboard'].get('title', '')
+                print_styled_text([
+                    (Style.WARNING, f'Create dashboard {dashboard_title}: '),
+                    (Style.ERROR, 'FAILURE (dashboard already exists. Enable --overwrite)')
+                ])
+                is_successful = False
+            else:
+                is_successful = create_dashboard(restore_url, dashboard, restore_headers, overwrite)
         else:
             is_successful = True
 
@@ -196,6 +207,9 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels, r
 def _get_all_library_panels_uids_from_dashboards(all_dashboards):
     library_panels_uids_to_update = set()
     for dashboard in all_dashboards:
+        if ('dashboard' not in dashboard) or ('panels' not in dashboard['dashboard']):
+            continue
+
         for panel in dashboard['dashboard']['panels']:
             if panel.get('libraryPanel'):
                 library_panels_uids_to_update.add(panel['libraryPanel']['uid'])

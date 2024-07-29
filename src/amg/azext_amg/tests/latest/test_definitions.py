@@ -5,6 +5,7 @@
 
 test_data_source = {
     "access": "proxy",
+    "uid": "bdpe79jidbwu8c",
     "jsonData": {
         "azureAuthType": "msi",
         "subscriptionId": ""
