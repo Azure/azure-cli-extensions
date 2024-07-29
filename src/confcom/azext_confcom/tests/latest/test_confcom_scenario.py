@@ -575,8 +575,8 @@ class CustomJsonParsing(unittest.TestCase):
             aci_policy.populate_policy_content_for_all_images()
             layers = aci_policy.get_images()[0]._layers
             expected_layers = [
-                "0b69f91b136ad63a510c03b03e16ca56696868643918549e0271473f39f104f1",
-                "13e566df4074c2107b765d3d16aede04a79281a99839a05fa693d679e6e33413"
+                "5e7ea0fd847ed540d08972f79a6db00784ad6e8bdd46376e8b06d91487dae543",
+                "6aa20e05a8d57ef7b0cb2f8e6aa06745a83646c448c8955bce3cf3a077ae9219"
             ]
             self.assertEqual(len(layers), len(expected_layers))
             for i in range(len(expected_layers)):
@@ -601,7 +601,7 @@ class CustomJsonParsing(unittest.TestCase):
 
             self.assertEqual(
                 image.id,
-                "sha256:378a3707f10cca088b84a8d6d550ee2636053761d4e033579e765e65bca287d8",
+                "sha256:e1a4f833f1188caab3b5c436fde5b23567b682a333bb7075d5ef23a5e1291da2",
             )
 
     def test_infrastructure_svn(self):
