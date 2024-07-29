@@ -128,6 +128,9 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('vault_name', vault_name_type)
         c.argument('policy_id', type=str, help="specify the ID of the new policy with which backup instance will be associated with.")
+        c.argument('resource_guard_operation_requests', options_list=['--resource-guard-operation-requests', '--operation-requests'],
+                   type=str, nargs='+', help='Critical operation request which is protected by the resourceGuard.')
+        c.argument('tenant_id', type=str, help='ID of the tenant if the Resource Guard protecting the vault exists in a different tenant.')
 
     with self.argument_context('dataprotection backup-policy get-default-policy-template') as c:
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
