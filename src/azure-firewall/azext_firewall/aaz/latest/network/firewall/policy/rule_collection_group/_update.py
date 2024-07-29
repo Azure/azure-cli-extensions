@@ -205,6 +205,7 @@ class Update(AAZCommand):
         application_rule.http_headers_to_insert = AAZListArg(
             options=["http-headers-to-insert"],
             help="List of HTTP/S headers to insert.",
+            nullable=True,
         )
 
         destination_addresses = cls._args_schema.rule_collections.Element.firewall_policy_filter_rule_collection.rules.Element.application_rule.destination_addresses
@@ -267,7 +268,7 @@ class Update(AAZCommand):
             nullable=True,
         )
      
-        _element = cls._args_firewall_policy_rule_create.application_rule.http_headers_to_insert.Element
+        _element = cls._args_schema.rule_collections.Element.firewall_policy_filter_rule_collection.rules.Element.application_rule.http_headers_to_insert.Element
         _element.header_name = AAZStrArg(
             options=["header-name"],
             help="Name of the header"
@@ -488,7 +489,7 @@ class Update(AAZCommand):
             options=["web-categories"],
             nullable=True,
         )
-        application_rule.http_headers_to_insert = AAZListArg(
+        application_rule.http_headers_to_insert = AAZDictArg(
             options=["http-headers-to-insert"],
             help="List of HTTP/S headers to insert.",
         )
