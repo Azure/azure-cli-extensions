@@ -45,10 +45,9 @@ def load_command_table(self, args):
         g.custom_command('delete', 'delete_containerappsjob', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp env certificate') as g:
-        g.custom_command('create', 'create_managed_certificate', is_preview=True)
         g.custom_command('upload', 'upload_certificate')
-        g.custom_command('list', 'list_certificates', is_preview=True)
-        g.custom_command('delete', 'delete_certificate', confirmation=True, exception_handler=ex_handler_factory(), is_preview=True)
+        g.custom_command('list', 'list_certificates')
+        g.custom_command('delete', 'delete_certificate', confirmation=True, exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp env dapr-component') as g:
         g.custom_command('init', 'init_dapr_components', is_preview=True)

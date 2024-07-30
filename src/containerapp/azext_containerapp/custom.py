@@ -1297,22 +1297,6 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
     return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, environment_type=environment_type)
 
 
-def create_managed_certificate(cmd, name, resource_group_name, hostname, validation_method, certificate_name=None):
-    if certificate_name and not check_managed_cert_name_availability(cmd, resource_group_name, name, certificate_name):
-        raise ValidationError(f"Certificate name '{certificate_name}' is not available.")
-    cert_name = certificate_name
-    while not cert_name:
-        cert_name = generate_randomized_managed_cert_name(hostname, resource_group_name)
-        if not check_managed_cert_name_availability(cmd, resource_group_name, name, certificate_name):
-            cert_name = None
-    certificate_envelop = prepare_managed_certificate_envelop(cmd, name, resource_group_name, hostname, validation_method.upper())
-    try:
-        r = ManagedEnvironmentPreviewClient.create_or_update_managed_certificate(cmd, resource_group_name, name, cert_name, certificate_envelop, True, validation_method.upper() == 'TXT')
-        return r
-    except Exception as e:
-        handle_raw_exception(e)
-
-
 def list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None, managed_certificates_only=False, private_key_certificates_only=False):
     raw_parameters = locals()
 
