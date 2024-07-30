@@ -10,8 +10,6 @@ import json
 import requests
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
-from ._constants import DOTNET_COMPONENT_RESOURCE_TYPE
-
 
 from azure.cli.core import telemetry as telemetry_core
 
@@ -86,7 +84,6 @@ from ._clients import (
     GitHubActionPreviewClient,
     ContainerAppPreviewClient,
     AuthPreviewClient,
-    SubscriptionPreviewClient,
     StoragePreviewClient,
     ContainerAppsJobPreviewClient,
     ContainerAppsResiliencyPreviewClient,
@@ -120,7 +117,7 @@ from ._constants import (CONTAINER_APPS_RP,
                          DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_WEAVIATE_IMAGE, DEV_WEAVIATE_CONTAINER_NAME, DEV_WEAVIATE_SERVICE_TYPE,
                          DEV_MILVUS_IMAGE, DEV_MILVUS_CONTAINER_NAME, DEV_MILVUS_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME,
                          DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST,
-                         JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA, JAVA_COMPONENT_ADMIN, JAVA_COMPONENT_NACOS)
+                         JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA, JAVA_COMPONENT_ADMIN, JAVA_COMPONENT_NACOS, DOTNET_COMPONENT_RESOURCE_TYPE)
 
 
 logger = get_logger(__name__)
@@ -666,33 +663,6 @@ def list_containerapp(cmd, resource_group_name=None, managed_env=None, environme
     containerapp_list_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
     return containerapp_list_decorator.list()
-
-
-def show_custom_domain_verification_id(cmd):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-    try:
-        r = SubscriptionPreviewClient.show_custom_domain_verification_id(cmd)
-        return r
-    except CLIError as e:
-        handle_raw_exception(e)
-
-
-def list_usages(cmd, location):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-    try:
-        r = SubscriptionPreviewClient.list_usages(cmd, location)
-        return r
-    except CLIError as e:
-        handle_raw_exception(e)
-
-
-def list_environment_usages(cmd, resource_group_name, name):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-    try:
-        r = ManagedEnvironmentPreviewClient.list_usages(cmd, resource_group_name, name)
-        return r
-    except CLIError as e:
-        handle_raw_exception(e)
 
 
 def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
