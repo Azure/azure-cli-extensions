@@ -510,9 +510,6 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     # Substitute any protected helm values as the value for that will be null
     for helm_parameter, helm_value in protected_helm_values.items():
         helm_content_values[helm_parameter] = helm_value
-    
-    if disable_auto_upgrade:
-        helm_content_values["systemDefaultValues.azureArcAgents.autoUpdate"] = "false"
 
     print("Starting to install Azure arc agents on the Kubernetes cluster.")
     # Install azure-arc agents
