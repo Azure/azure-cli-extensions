@@ -20,9 +20,15 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, o
     all_restore_folders = get_all_folders(restore_url, restore_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
     (folders_created_summary, folders_overwrote_summary) = _migrate_folders(all_folders, all_restore_folders, restore_url, restore_headers, dry_run, overwrite)
 
+    valid_folder_uids = set(folder[0]['uid'] for folder in all_folders + all_restore_folders)
     all_dashboards = get_all_dashboards(backup_url, backup_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
     all_library_panels = get_all_library_panels(backup_url, backup_headers)
-    (library_panels_created_summary, library_panels_overwrote_summary, dashboards_created_summary, dashboards_overwrote_summary) = _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels, restore_url, restore_headers, dry_run, overwrite)
+    if folders_to_exclude is None or 'General' not in folders_to_exclude:
+        # edge case for general folder. The uid is empty string.
+        valid_folder_uids.add('')
+
+    all_library_panels_filtered = [panel for panel in all_library_panels if panel['folderUid'] in valid_folder_uids]
+    (library_panels_created_summary, library_panels_overwrote_summary, dashboards_created_summary, dashboards_overwrote_summary) = _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels_filtered, restore_url, restore_headers, dry_run, overwrite)
 
     # get the list of snapshots to backup
     all_snapshots = get_all_snapshots(backup_url, backup_headers)
@@ -141,15 +147,13 @@ def _migrate_folders(all_folders, all_restore_folders, restore_url, restore_head
     return folders_created_summary, folders_overwrote_summary
 
 
-def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels, restore_url, restore_headers, dry_run, overwrite):
+def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels_filtered, restore_url, restore_headers, dry_run, overwrite):
     library_panels_created_summary = {}
     library_panels_overwrote_summary = {}
     dashboards_created_summary = {}
     dashboards_overwrote_summary = {}
 
-    library_panels_uids_to_update = _get_all_library_panels_uids_from_dashboards(all_dashboards)
     # only update the library panels that are not included / excluded.
-    all_library_panels_filtered = [panel for panel in all_library_panels if panel['uid'] in library_panels_uids_to_update]
     for library_panel in all_library_panels_filtered:
         exists_before = check_library_panel_exists(restore_url, library_panel, restore_headers)
 
@@ -175,6 +179,8 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels, r
     # we don't backup provisioned dashboards, so we don't need to restore them
     for dashboard in all_dashboards:
         exists_before = check_dashboard_exists(restore_url, dashboard, restore_headers)
+
+        # Skipping making/updating dashboard if the library panel it relies on is not being updated.
 
         dashboard['dashboard']['id'] = None
         # Overwrite takes care of delete & create.
