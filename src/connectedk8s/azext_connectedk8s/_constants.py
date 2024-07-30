@@ -6,11 +6,27 @@
 
 # pylint: disable=line-too-long
 
-Distribution_Enum_Values = ["generic", "openshift", "rancher_rke", "kind", "k3s", "minikube", "gke", "eks", "aks", "aks_management", "aks_workload", "capz", "aks_engine", "tkg", "canonical", "karbon", "aks_edge_k3s", "aks_edge_k8s"]
-Infrastructure_Enum_Values = ["generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub", "azure_stack_edge", "vsphere", "windows_server", "Windows 11 Enterprise", "Windows 11 Enterprise N", "Windows 11 IoT Enterprise", "Windows 11 Pro", "Windows 10 Enterprise", "Windows 10 Enterprise N", "Windows 10 Enterprise LTSC 2021", "Windows 10 Enterprise N LTSC 2021", "Windows 10 IoT Enterprise", "Windows 10 IoT Enterprise LTSC 2021", "Windows 10 Pro", "Windows 10 Enterprise LTSC 2019", "Windows 10 Enterprise N LTSC 2019", "Windows 10 IoT Enterprise LTSC 2019", "Windows Server 2022", "Windows Server 2022 Datacenter", "Windows Server 2022 Standard", "Windows Server 2019", "Windows Server 2019 Datacenter", "Windows Server 2019 Standard", "Windows 10 IoT Enterprise", "LTSCWindows 10 Enterprise LTSC"]
+Distribution_Enum_Values = ["generic", "openshift", "rancher_rke", "kind", "k3s", "minikube", "gke", "eks", "aks",
+                            "aks_management", "aks_workload", "capz", "aks_engine", "tkg", "canonical", "karbon",
+                            "aks_edge_k3s", "aks_edge_k8s"]
+Infrastructure_Enum_Values = ["generic", "azure", "aws", "gcp", "azure_stack_hci", "azure_stack_hub",
+                              "azure_stack_edge", "vsphere", "windows_server", "Windows 11 Enterprise",
+                              "Windows 11 Enterprise N", "Windows 11 IoT Enterprise", "Windows 11 Pro",
+                              "Windows 10 Enterprise", "Windows 10 Enterprise N", "Windows 10 Enterprise LTSC 2021",
+                              "Windows 10 Enterprise N LTSC 2021", "Windows 10 IoT Enterprise",
+                              "Windows 10 IoT Enterprise LTSC 2021", "Windows 10 Pro",
+                              "Windows 10 Enterprise LTSC 2019", "Windows 10 Enterprise N LTSC 2019",
+                              "Windows 10 IoT Enterprise LTSC 2019", "Windows Server 2022",
+                              "Windows Server 2022 Datacenter", "Windows Server 2022 Standard", "Windows Server 2019",
+                              "Windows Server 2019 Datacenter", "Windows Server 2019 Standard",
+                              "Windows 10 IoT Enterprise", "LTSCWindows 10 Enterprise LTSC"]
 AHB_Enum_Values = ["True", "False", "NotApplicable"]
 Feature_Values = ["cluster-connect", "azure-rbac", "custom-locations"]
-CRD_FOR_FORCE_DELETE = ["arccertificates.clusterconfig.azure.com", "azureclusteridentityrequests.clusterconfig.azure.com", "azureextensionidentities.clusterconfig.azure.com", "connectedclusters.arc.azure.com", "customlocationsettings.clusterconfig.azure.com", "extensionconfigs.clusterconfig.azure.com", "gitconfigs.clusterconfig.azure.com"]
+CRD_FOR_FORCE_DELETE = \
+    ["arccertificates.clusterconfig.azure.com", "azureclusteridentityrequests.clusterconfig.azure.com",
+     "azureextensionidentities.clusterconfig.azure.com", "connectedclusters.arc.azure.com",
+     "customlocationsettings.clusterconfig.azure.com", "extensionconfigs.clusterconfig.azure.com",
+     "gitconfigs.clusterconfig.azure.com"]
 Helm_Install_Release_Userfault_Messages = ['forbidden', 'timed out waiting for the condition', 'connection refused']
 Custom_Locations_Provider_Namespace = 'Microsoft.ExtendedLocation'
 Connected_Cluster_Provider_Namespace = 'Microsoft.Kubernetes'
@@ -27,8 +43,12 @@ USGovCloud_OriginalName = 'AZUREUSGOVERNMENT'
 Dogfood_RMEndpoint = 'https://api-dogfood.resources.windows-int.net/'
 Client_Request_Id_Header = 'x-ms-client-request-id'
 Default_Onboarding_Source_Tracking_Guid = "77ade16b-0f55-403b-b7d2-739554a897f2"
-Custom_Token_Environments_Fault_Type_Sub_Id = 'custom-token-environment-error-sub-id'
-Custom_Token_Environments_Fault_Type_Tenant_Id = 'custom-token-environment-error-tenant-id'
+Custom_Access_Token_Env_Var_Sub_Id_Missing_Fault_Type = \
+    'Required environment variable SubscriptionId not set, for custom Azure access token'
+Custom_Access_Token_Env_Var_Tenant_Id_Missing_Fault_Type = \
+    'Required environment variable TenantId not set, for custom Azure access token'
+Custom_Token_Env_Var_Sub_Id_Missing_Fault_Type = \
+    'Required environment variable \'AZURE_SUBSCRIPTION_ID\' is not set, when using Custom Acces Token.'
 Release_Install_Namespace = "azure-arc-release"
 Helm_Environment_File_Fault_Type = 'helm-environment-file-error'
 Invalid_Location_Fault_Type = 'location-validation-error'
@@ -69,7 +89,9 @@ Get_Kubernetes_Namespace_Fault_Type = 'kubernetes-get-namespace-error'
 Get_Kubernetes_Helm_Release_Namespace_Fault_Type = 'kubernetes-get-helm-release-namespace-error'
 Delete_Kubernetes_Helm_Release_Namespace_Fault_Type = 'kubernetes-delete-helm-release-namespace-error'
 Update_Agent_Success = 'Agents for Connected Cluster {} have been updated successfully'
-Update_Agent_Failure = 'Error while updating agents. Please run \"kubectl get pods -n azure-arc\" to check the pods in case of timeout error. Error: {}'
+Update_Agent_Failure = \
+    'Error while updating agents. Please run \"kubectl get pods -n azure-arc\" to check the pods in case of timeout ' \
+    'error. Error: {}'
 Get_Credentials_Failed_Fault_Type = 'failed-to-get-list-cluster-user-credentials'
 Failed_To_Merge_Credentials_Fault_Type = "failed-to-merge-credentials"
 Kubeconfig_Failed_To_Load_Fault_Type = "failed-to-load-kubeconfig-file"
@@ -97,15 +119,20 @@ Client_Proxy_Port_Fault_Type = "Client proxy port was in use."
 Unsupported_Fault_Type = "Error while checking operating system.Unsupported OS detected."
 Helm_Unsupported_OS_Fault_Type = "helm-client-unsupported-os-error."
 Port_Check_Fault_Type = "Error while checking if port is in use."
-Kubeconfig_Failed_To_Load_Fault_Type = "failed-to-load-kubeconfig-file"
 Proxy_Cert_Path_Does_Not_Exist_Fault_Type = 'proxy-cert-path-does-not-exist-error'
 Proxy_Cert_Path_Does_Not_Exist_Error = 'Proxy cert path {} does not exist. Please check the path provided'
 Get_Kubernetes_Infra_Fault_Type = 'kubernetes-get-infrastructure-error'
-No_Param_Error = 'No parmeters were specified with update command. Please run az connectedk8s update --help to check parameters available for update'
-EnableProxy_Conflict_Error = 'Conflict detected: --disable-proxy can not be set with --https-proxy, --http-proxy, --proxy-skip-range and --proxy-cert at the same time. Please run az connectedk8s update --help for more information about the parameters'
+No_Param_Error = \
+    'No parmeters were specified with update command. Please run az connectedk8s update --help to check parameters ' \
+    'available for update'
+EnableProxy_Conflict_Error = \
+    'Conflict detected: --disable-proxy can not be set with --https-proxy, --http-proxy, --proxy-skip-range and ' \
+    '--proxy-cert at the same time. Please run az connectedk8s update --help for more information about the parameters'
 Manual_Upgrade_Called_In_Auto_Update_Enabled = 'Manual Upgrade was called while in auto_Update enabled mode'
 Upgrade_Agent_Success = 'Agents for Connected Cluster {} have been upgraded successfully'
-Upgrade_Agent_Failure = 'Error while upgrading agents. Please run \"kubectl get pods -n azure-arc\" to check the pods in case of timeout error. Error: {}'
+Upgrade_Agent_Failure = \
+    'Error while upgrading agents. Please run \"kubectl get pods -n azure-arc\" to check the pods in case of ' \
+    'timeout error. Error: {}'
 Release_Namespace_Not_Found = 'Error while getting azure-arc releasenamespace'
 Get_Helm_Values_Failed = 'Error while doing helm get values azure-arc'
 Helm_Existing_User_Supplied_Value_Get_Fault = 'Error while loading the user supplied helm values'
@@ -116,17 +143,22 @@ Kubernetes_Node_Type_Fetch_Fault_OS = 'Error while trying to find a linux node f
 Kubernetes_Node_Type_Fetch_Fault_Arch = 'Error while trying to find an arm64 node for scheduling pods'
 Linux_Node_Not_Exists = 'Kubernetes cluster doesnt have linux node'
 Operate_RG_Cluster_Name_Conflict = 'The provided cluster name and rg correspond to different cluster being operated on'
-Custom_Locations_Registration_Check_Fault_Type = "Error while checking resource provider registration of custom locations."
+Custom_Locations_Registration_Check_Fault_Type = \
+    "Error while checking resource provider registration of custom locations."
 Custom_Locations_OID_Fetch_Fault_Type_CLOid_None = "Error while fetching oid for custom locations. CL_Oid is None"
 Custom_Locations_OID_Fetch_Fault_Type_Exception = "Exception while fetching oid for custom locations."
 Successfully_Enabled_Features = 'Successsfully enabled features: {} for the Connected Cluster {}'
 Successfully_Disabled_Features = 'Successsfully disabled features: {} for the Connected Cluster {}'
-Error_enabling_Features = 'Error while updating agents for enabling features. Please run \"kubectl get pods -n azure-arc\" to check the pods in case of timeout error. Error: {}'
-Error_disabling_Features = 'Error while updating agents for disabling features. Please run \"kubectl get pods -n azure-arc\" to check the pods in case of timeout error. Error: {}'
+Error_enabling_Features = \
+    'Error while updating agents for enabling features. Please run \"kubectl get pods -n azure-arc\" to check the ' \
+    'pods in case of timeout error. Error: {}'
+Error_disabling_Features = 'Error while updating agents for disabling features. Please run \"kubectl get pods -n ' \
+    'azure-arc\" to check the pods in case of timeout error. Error: {}'
 Proxy_Kubeconfig_During_Deletion_Fault_Type = 'Encountered proxy kubeconfig during deletion.'
 Cannot_Create_ClusterRoleBindings_Fault_Type = 'Cannot create cluster role bindings on this Kubernets cluster'
 CC_Provider_Namespace_Not_Registered_Fault_Type = "Connected Cluster Provider MS.K8 namespace not registered"
-Default_Namespace_Does_Not_Exist_Fault_Type = "The default namespace defined in the kubeconfig doesn't exist on the kubernetes cluster."
+Default_Namespace_Does_Not_Exist_Fault_Type = \
+    "The default namespace defined in the kubeconfig doesn't exist on the kubernetes cluster."
 KAP_1P_Server_App_Scope = "6256c85f-0aad-4d50-b960-e6e9b21efe35/.default"
 KAP_1P_Server_AppId = "6256c85f-0aad-4d50-b960-e6e9b21efe35"
 Get_PublicKey_Info_Fault_Type = 'Error while fetching the PoP publickey information from client proxy'
@@ -188,7 +220,7 @@ Arc_Deployment_Logs = "arc_deployment_logs"
 Arc_Diagnostic_Logs = "arc_diagnostic_logs"
 Pre_Onboarding_Check_Logs = "pre_onboarding_check_logs"
 Pre_Onboarding_Helm_Charts_Folder_Name = 'PreOnboardingChecksCharts'
-Pre_Onboarding_Helm_Charts_Release_Name = 'cluster-diagnostic-checks'
+Pre_Onboarding_Helm_Charts_Release_Name = 'clusterdiagnosticchecks'
 Describe_Non_Ready_Arc_Agents = "describe_non_ready_arc_agents"
 Agent_State = "agent_state.txt"
 Arc_Agents_Events = "arc_agent_events.txt"
@@ -200,14 +232,19 @@ Outbound_Network_Connectivity_Check = "outbound_network_connectivity_check.txt"
 Outbound_Network_Connectivity_Check_for_onboarding = "outbound_network_connectivity_check_for_onboarding.txt"
 Outbound_Network_Connectivity_Check_for_cluster_connect = "outbound_network_connectivity_check_for_cluster_connect.txt"
 Events_of_Incomplete_Diagnoser_Job = "diagnoser_failure_events.txt"
+
 # Connect Precheck Diagnoser constants
-Cluster_Diagnostic_Checks_Job_Registry_Path = "mcr.microsoft.com/azurearck8s/helmchart/stable/clusterdiagnosticchecks:0.1.2"
-Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type = "Error while installing cluster diagnostic checks helm release"
+Cluster_Diagnostic_Checks_Job_Registry_Path = \
+    "mcr.microsoft.com/azurearck8s/helmchart/stable/clusterdiagnosticchecks:0.2.2"
+Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type = \
+    "Error while installing cluster diagnostic checks helm release"
 Cluster_Diagnostic_Checks_Execution_Failed_Fault_Type = "Error occured while executing cluster diagnostic checks"
-Cluster_Diagnostic_Checks_Release_Cleanup_Failed = "Error occured while cleaning up the cluster diagnostic checks helm release"
+Cluster_Diagnostic_Checks_Release_Cleanup_Failed = \
+    "Error occured while cleaning up the cluster diagnostic checks helm release"
 Cluster_Diagnostic_Checks_Job_Not_Scheduled = 'Unable to schedule cluster-diagnostic-checks job'
 Cluster_Diagnostic_Checks_Job_Not_Complete = 'Unable to complete cluster-diagnostic-checks job after scheduling'
-Pre_Onboarding_Diagnostic_Checks_Execution_Failed = 'Exception occured while trying to execute pre-onboarding diagnostic checks'
+Pre_Onboarding_Diagnostic_Checks_Execution_Failed = \
+    'Exception occured while trying to execute pre-onboarding diagnostic checks'
 Outbound_Connectivity_Check_Failed = "Outbound network connectivity check failed"
 Outbound_Connectivity_Check_Failed_For_Onboarding = "Outbound network connectivity check failed for onboarding"
 DNS_Check_Failed = "DNS Resolution failed"
@@ -215,9 +252,11 @@ Cluster_Diagnostic_Prechecks_Failed = "Cluster diagnostic prechecks failed"
 Cluster_Diagnostic_Prechecks_Incomplete = "Cluster diagnostic prechecks failed to complete"
 Cluster_Diagnostic_Checks_Pod_Description_Save_Failed = 'Failed to save cluster diagnostic checks pod description'
 Cluster_Diagnostic_Checks_Job_Log_Save_Failed = 'Failed to save cluster diagnostic checks job log'
+
 # Diagnostic Results Name
 Outbound_Connectivity_Check_Result_String = "Outbound Network Connectivity"
-Outbound_Connectivity_Check_Failed_For_Cluster_Connect = "Outbound network connectivity check failed for Cluster Connect"
+Outbound_Connectivity_Check_Failed_For_Cluster_Connect = \
+    "Outbound network connectivity check failed for Cluster Connect"
 DNS_Check_Result_String = "DNS Result:"
 AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION = '2.30.0'
 CLIENT_PROXY_VERSION = '1.3.022011'
@@ -229,6 +268,10 @@ DEFAULT_REQUEST_TIMEOUT = 10  # seconds
 RELEASE_DATE_WINDOWS = 'release12-01-23'
 RELEASE_DATE_LINUX = 'release12-01-23'
 CSP_REFRESH_TIME = 300
+
+# Default timeout in seconds for Onboarding Helm Install
+DEFAULT_MAX_ONBOARDING_TIMEOUT_HELMVALUE_SECONDS = "1200"
+
 # URL constants
 CSP_Storage_Url = "https://k8sconnectcsp.azureedge.net"
 CSP_Storage_Url_Mooncake = "https://k8sconnectcsp.blob.core.chinacloudapi.cn"
@@ -241,5 +284,21 @@ Provisioned_Cluster_Kind = 'provisionedcluster'
 Helm_Values_Fetch_isProxyEnabled_Failed_Fault_Type = "Helm Values Fetch isProxyEnabled Failed"
 Helm_Values_Fetch_isCustomCert_Failed_Fault_Type = "Helm Values Fetch isCustomCert Failed"
 Helm_Values_Fetch_proxyCert_Failed_Fault_Type = "Helm Values Fetch proxyCert Failed"
-Onboarding_PreRequisites_Url = "'https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-"\
+Doc_Onboarding_PreRequisites_Url = "'https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-"\
     "connect-cluster?tabs=azure-cli%2Cazure-cloud#prerequisites'"
+Doc_Network_Requirements_Url = \
+    "https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/network-requirements?tabs=azure-cloud"
+Doc_Quick_Start_NW_Requirements_Url = \
+    "https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?" \
+    "tabs=azure-cli#meet-network-requirements"
+Doc_Quick_Start_Outbound_Proxy_Url = \
+    "https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/quickstart-connect-cluster?" \
+    "tabs=azure-cli#connect-using-an-outbound-proxy-server"
+Doc_Provisioned_Cluster_Delete_Url = \
+    "https://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-delete"
+Doc_Provisioned_Cluster_Update_Url = \
+    "https://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-update"
+Doc_Provisioned_Cluster_Upgrade_Url = \
+    "https://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-upgrade"
+Doc_Agent_Version_Support_Policy_Url = \
+    "https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/agent-upgrade#version-support-policy"
