@@ -11,6 +11,9 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, o
     # get all datasources to be backedup
     all_datasources = get_all_datasources(backup_url, backup_headers)
     all_restore_datasources = get_all_datasources(restore_url, restore_headers)
+    if (all_restore_datasources is None) or (all_datasources is None):
+        logger.error("ABORTING!! Datasources are not found. Please check the URLs, headers, or api key/service token. Try running with --verbose.")
+        return
     (datasources_created_summary, datasources_remapped_summary) = _migrate_datasources(all_datasources, all_restore_datasources, restore_url, restore_headers, dry_run)
 
     all_folders = get_all_folders(backup_url, backup_headers, folders_to_include=folders_to_include, folders_to_exclude=folders_to_exclude)
@@ -37,6 +40,7 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, o
 
     if len(datasources_created_summary) > 0:
         output.append((Style.SUCCESS, f"\n\nDatasources {dry_run_status}created:"))
+        output.append((Style.IMPORTANT, f"\nDatasources were created, make sure to manually input credentials for those datasources in Grafana (if you have to)."))
         output.append((Style.PRIMARY, "\n    " + "\n    ".join(datasources_created_summary)))
     if len(datasources_remapped_summary) > 0:
         output.append((Style.SUCCESS, f"\n\nDatasources {dry_run_status}remapped:"))
