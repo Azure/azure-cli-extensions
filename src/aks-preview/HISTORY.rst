@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Add option `--advanced-networking-observability-tls-management None`, `--advanced-networking-observability-tls-management Managed` to `az aks create/update`
 
 7.0.0b2
 ++++++++

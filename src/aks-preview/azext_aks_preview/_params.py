@@ -122,6 +122,8 @@ from azext_aks_preview._consts import (
     CONST_ARTIFACT_SOURCE_DIRECT,
     CONST_ARTIFACT_SOURCE_CACHE,
     CONST_OUTBOUND_TYPE_NONE,
+    CONST_TLS_MANAGEMENT_MANAGED,
+    CONST_TLS_MANAGEMENT_NONE,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -397,6 +399,11 @@ health_probe_modes = [
 bootstrap_artifact_source_types = [
     CONST_ARTIFACT_SOURCE_DIRECT,
     CONST_ARTIFACT_SOURCE_CACHE,
+]
+
+tls_management_types = [
+  CONST_TLS_MANAGEMENT_MANAGED,
+  CONST_TLS_MANAGEMENT_NONE,
 ]
 
 
@@ -811,6 +818,15 @@ def load_arguments(self, _):
             "enable_advanced_network_observability",
             action="store_true",
             is_preview=True,
+        )
+        c.argument(
+            "advanced_networking_observability_tls_management",
+            is_preview=True,
+            arg_type=get_enum_type(tls_management_types),
+            help=(
+                'Management of TLS certificates for querying network flow logs via the flow log endpoint for Advanced Networking observability clusters.'
+                'Valid values are "Managed" and "None". If not specified, the default is Managed.'
+            )
         )
         c.argument(
             "custom_ca_trust_certificates",
@@ -1309,6 +1325,15 @@ def load_arguments(self, _):
             "disable_advanced_network_observability",
             action="store_true",
             is_preview=True,
+        )
+        c.argument(
+            "advanced_networking_observability_tls_management",
+            is_preview=True,
+            arg_type=get_enum_type(tls_management_types),
+            help=(
+                'Management of TLS certificates for querying network flow logs via the flow log endpoint for Advanced Networking observability clusters.'
+                'Valid values are "Managed" and "None". If not specified, the default is Managed.'
+            )
         )
         c.argument("enable_cost_analysis", is_preview=True, action="store_true")
         c.argument("disable_cost_analysis", is_preview=True, action="store_true")

@@ -726,6 +726,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if disable_advanced_network_observability is not None:
             return not disable_advanced_network_observability
         return None
+    
+    def get_advanced_networking_observability_tls_management(self) -> Union[str, None]:
+        """Obtain the value of advanced_networking_observability_tls_management.
+        
+        :return str or None
+        """
+        return self.raw_param.get("advanced_networking_observability_tls_management")
 
     def get_load_balancer_managed_outbound_ip_count(self) -> Union[int, None]:
         """Obtain the value of load_balancer_managed_outbound_ip_count.
@@ -3053,7 +3060,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         if advanced_network_observability is not None:
             network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
                 observability=self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
-                    enabled=advanced_network_observability
+                    enabled=advanced_network_observability,
+                    tlsManagement=self.context.get_advanced_networking_observability_tls_management(),
                 )
             )
         return mc
@@ -4122,6 +4130,22 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     enabled=advanced_network_observability
                 )
             )
+        return mc
+
+    def update_advanced_networking_observability_tls_management_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update advanced network observability tls mangement of network profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        advanced_networking_observability_tls_management = self.context.get_advanced_networking_observability_tls_management()
+        if advanced_networking_observability_tls_management is not None:
+            if mc.network_profile.advanced_networking is not None:
+                if mc.network_profile.advanced_networking.observability is not None:
+                    if mc.network_profile.advanced_networking.observability.enabled:
+                        # set tls management only if advanced network observability is enabled
+                        mc.network_profile.advanced_networking.observability.tls_management = advanced_networking_observability_tls_management
         return mc
 
     # pylint: disable=too-many-statements,too-many-locals,too-many-branches
@@ -5432,6 +5456,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nodepool_initialization_taints_mc(mc)
         # update advanced_network_observability in network_profile
         mc = self.update_enable_advanced_network_observability_in_network_profile(mc)
+        # update advanced_networking_observability_tls_management in network_profile
+        mc = self.update_advanced_networking_observability_tls_management_in_network_profile
         # update kubernetes support plan
         mc = self.update_k8s_support_plan(mc)
         # update metrics profile
