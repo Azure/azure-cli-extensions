@@ -106,7 +106,8 @@ def _migrate_datasources(all_datasources, all_restore_datasources, restore_url, 
                 create_datasource(restore_url, datasource, restore_headers)
             datasources_created_summary.append(datasource['name'])
         else:
-            logger.warning("Datasource %s already exists, remapping", datasource['name'])
+            if not dry_run:
+                logger.warning("Datasource %s already exists, remapping", datasource['name'])
             datasources_remapped_summary.append(datasource['name'])
     # grab all the new datasources now. since we have created the datasources, we can now do the mapping.
     # do the mapping from the backup to the restore.
