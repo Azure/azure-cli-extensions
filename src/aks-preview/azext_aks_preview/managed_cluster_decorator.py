@@ -3767,7 +3767,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             ):
                 raise ArgumentUsageError(
                     f"The --ampls-resource-id and --enable-high-log-scale-mode options are only available in Azure CLI "
-                    "version 2.63.0 and later. Your current Azure CLI version is {core_version}. Please upgrade your "
+                    f"version 2.63.0 and later. Your current Azure CLI version is {core_version}. Please upgrade your "
                     "Azure CLI."
                 )
 
