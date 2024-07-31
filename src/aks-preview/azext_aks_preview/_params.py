@@ -402,8 +402,8 @@ bootstrap_artifact_source_types = [
 ]
 
 tls_management_types = [
-  CONST_TLS_MANAGEMENT_MANAGED,
-  CONST_TLS_MANAGEMENT_NONE,
+    CONST_TLS_MANAGEMENT_MANAGED,
+    CONST_TLS_MANAGEMENT_NONE,
 ]
 
 
@@ -824,7 +824,7 @@ def load_arguments(self, _):
             is_preview=True,
             arg_type=get_enum_type(tls_management_types),
             help=(
-                'Management of TLS certificates for querying network flow logs via the flow log endpoint for Advanced Networking observability clusters.'
+                'Management of TLS certificates for querying network flow logs via the flow log endpoint.'
                 'Valid values are "Managed" and "None". If not specified, the default is Managed.'
             )
         )
@@ -1331,7 +1331,7 @@ def load_arguments(self, _):
             is_preview=True,
             arg_type=get_enum_type(tls_management_types),
             help=(
-                'Management of TLS certificates for querying network flow logs via the flow log endpoint for Advanced Networking observability clusters.'
+                'Management of TLS certificates for querying network flow logs via the flow log endpoint.'
                 'Valid values are "Managed" and "None". If not specified, the default is Managed.'
             )
         )
