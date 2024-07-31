@@ -14194,6 +14194,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # delete
         self.cmd('aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
+    # live only due to the case is likely to fail in playback mode
+    @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
