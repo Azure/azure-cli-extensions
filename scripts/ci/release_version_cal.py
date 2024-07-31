@@ -18,7 +18,10 @@ from util import get_index_data
 
 base_meta_path = os.environ.get('base_meta_path', None)
 diff_meta_path = os.environ.get('diff_meta_path', None)
+result_path = os.environ.get('result_path', None)
 output_file = os.environ.get('output_file', None)
+add_labels_file = os.environ.get('add_labels_file', None)
+remove_labels_file = os.environ.get('remove_labels_file', None)
 
 changed_module_list = os.environ.get('changed_module_list', "").split()
 diff_code_file = os.environ.get('diff_code_file', "")
@@ -28,6 +31,7 @@ pr_label_list = [name.lower().strip().strip('"').strip("'") for name in json.loa
 
 DEFAULT_VERSION = "0.0.0"
 INIT_RELEASE_VERSION = "1.0.0b1"
+DEFAULT_MESSAGE = " - For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)"
 block_pr = 0
 
 cli_ext_path = get_ext_repo_paths()[0]
@@ -292,18 +296,31 @@ def add_label_hint_message(comment_message):
     comment_message.append(" - Major/minor/patch/pre increment of version number is calculated by pull request "
                            "code changes automatically. "
                            "If needed, please add `major`/`minor`/`patch`/`pre` label to adjust it.")
-    comment_message.append(" - For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
+    comment_message.append(DEFAULT_MESSAGE)
 
 
-def save_comment_message(file_name, comment_message):
-    with open(os.path.join(cli_ext_path, file_name), "w") as f:
+def save_comment_message(comment_message):
+    with open(result_path + "/" + output_file, "w") as f:
         for line in comment_message:
             f.write(line + "\n")
 
 
-def save_gh_output():
+def save_label_output():
     with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
         print(f'BlockPR={block_pr}', file=fh)
+    add_label_dict = {
+        "labels": ["release-version-block"]
+    }
+    removed_label = "release-version-block"
+    if block_pr == 0:
+        with open(result_path + "/" + remove_labels_file, "w") as f:
+            f.write(removed_label + "\n")
+    else:
+        # add block label and empty release label file
+        with open(result_path + "/" + add_labels_file, "w") as f:
+            json.dump(add_label_dict, f)
+        with open(result_path + "/" + remove_labels_file, "w") as f:
+            pass
 
 
 def main():
@@ -316,15 +333,15 @@ def main():
     comment_message = []
     modules_update_info = {}
     if len(changed_module_list) == 0:
-        comment_message.append("For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
-        save_comment_message(output_file, comment_message)
-        save_gh_output()
+        comment_message.append(DEFAULT_MESSAGE)
+        save_comment_message(comment_message)
+        save_label_output()
         return
     fill_module_update_info(modules_update_info)
     if len(modules_update_info) == 0:
-        comment_message.append("For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
-        save_comment_message(output_file, comment_message)
-        save_gh_output()
+        comment_message.append(DEFAULT_MESSAGE)
+        save_comment_message(comment_message)
+        save_label_output()
         return
     for mod, update_info in modules_update_info.items():
         gen_comment_message(mod, update_info, comment_message)
@@ -332,12 +349,12 @@ def main():
         add_suggest_header(comment_message)
         add_label_hint_message(comment_message)
     else:
-        comment_message.append("For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
+        comment_message.append(DEFAULT_MESSAGE)
     print("comment_message:")
     print(comment_message)
     print("block_pr:", block_pr)
-    save_comment_message(output_file, comment_message)
-    save_gh_output()
+    save_comment_message(comment_message)
+    save_label_output()
 
 
 if __name__ == '__main__':
