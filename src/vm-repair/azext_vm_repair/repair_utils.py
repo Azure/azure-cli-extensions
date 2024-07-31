@@ -497,15 +497,16 @@ def _fetch_compatible_windows_os_urn(source_vm):
     logger.debug('Returning Urn 0: %s', urns[0])
     return urns[0]
 
+
 def _fetch_compatible_windows_os_urn_v2(source_vm):
     location = source_vm.location
 
-    # We will prefer to fetch image using source vm sku, that we match the CVM requirements. 
+    # We will prefer to fetch image using source vm sku, that we match the CVM requirements.
     if source_vm.storage_profile is not None and source_vm.storage_profile.image_reference is not None:
-        sku=source_vm.storage_profile.image_reference.sku 
-        offer=source_vm.storage_profile.image_reference.offer
-        publisher=source_vm.storage_profile.image_reference.publisher
-        fetch_urn_command = 'az vm image list -s {sku} -f {offer} -p {publisher} -l {loc} --verbose --all --query "[?sku==\'{sku}\'].urn | reverse(sort(@))" -o json'.format(loc=location,sku=sku,offer=offer,publisher=publisher)
+        sku = source_vm.storage_profile.image_reference.sku
+        offer = source_vm.storage_profile.image_reference.offer
+        publisher = source_vm.storage_profile.image_reference.publisher
+        fetch_urn_command = 'az vm image list -s {sku} -f {offer} -p {publisher} -l {loc} --verbose --all --query "[?sku==\'{sku}\'].urn | reverse(sort(@))" -o json'.format(loc = location, sku = sku, offer = offer, publisher = publisher)
         logger.info('Fetching compatible Windows OS images from gallery...')
         urns = loads(_call_az_command(fetch_urn_command))
 
@@ -521,6 +522,7 @@ def _fetch_compatible_windows_os_urn_v2(source_vm):
     logger.debug('Fetched Urns:\n%s', urns)
     logger.debug('Defaulting to first image available. Returning Urn 0: %s', urns[0])
     return urns[0]
+
 
 def _select_distro_linux(distro):
     image_lookup = {
@@ -764,41 +766,39 @@ def _fetch_architecture(source_vm):
 
     return architecture[0][0]
 
+
 def _fetch_non_standard_security_type(source_vm):
     """
     Returns security type if security type is not standard and needs to be set.
     """
     if source_vm.security_profile is None or source_vm.security_profile.security_type is None:
         return
-
-    if source_vm.security_profile.security_type.lower() == "standard" : 
+    if source_vm.security_profile.security_type.lower() == "standard" :
         return
-
     return source_vm.security_profile.security_type
+
 
 def _fetch_vm_security_profile_parameters(source_vm):
     create_repair_vm_command = ''
     non_standard_security_type = _fetch_non_standard_security_type(source_vm)
     if non_standard_security_type is None:
         return create_repair_vm_command
-
-    create_repair_vm_command += ' --security-type {securityType}'.format(securityType=non_standard_security_type)
-
+    create_repair_vm_command += ' --security-type {securityType}'.format(securityType = non_standard_security_type)
     if source_vm.security_profile.uefi_settings is not None:
         if source_vm.security_profile.uefi_settings.secure_boot_enabled is not None:
-            create_repair_vm_command += ' --enable-secure-boot {enableSecureBoot}'.format(enableSecureBoot=source_vm.security_profile.uefi_settings.secure_boot_enabled)
+            create_repair_vm_command += ' --enable-secure-boot {enableSecureBoot}'.format(enableSecureBoot = source_vm.security_profile.uefi_settings.secure_boot_enabled)
 
         if source_vm.security_profile.uefi_settings.v_tpm_enabled is not None:
-            create_repair_vm_command += ' --enable-vtpm {enableVTpm}'.format(enableVTpm=source_vm.security_profile.uefi_settings.v_tpm_enabled)  
-
+            create_repair_vm_command += ' --enable-vtpm {enableVTpm}'.format(enableVTpm = source_vm.security_profile.uefi_settings.v_tpm_enabled)  
     return create_repair_vm_command
+
 
 def _fetch_osdisk_security_profile_parameters(source_vm):
     create_repair_vm_command = ''
     if source_vm.storage_profile.os_disk.managed_disk is not None and source_vm.storage_profile.os_disk.managed_disk.security_profile is not None:
-        create_repair_vm_command += ' --os-disk-security-encryption-type {val}'.format(val=source_vm.storage_profile.os_disk.managed_disk.security_profile.security_encryption_type)
+        create_repair_vm_command += ' --os-disk-security-encryption-type {val}'.format(val = source_vm.storage_profile.os_disk.managed_disk.security_profile.security_encryption_type)
 
         if source_vm.storage_profile.os_disk.managed_disk.security_profile.disk_encryption_set is not None:
-            create_repair_vm_command += ' --os-disk-secure-vm-disk-encryption-set {val}'.format(val=source_vm.storage_profile.os_disk.managed_disk.security_profile.disk_encryption_set.id)
+            create_repair_vm_command += ' --os-disk-secure-vm-disk-encryption-set {val}'.format(val = source_vm.storage_profile.os_disk.managed_disk.security_profile.disk_encryption_set.id)
 
     return create_repair_vm_command
