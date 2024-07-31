@@ -632,6 +632,8 @@ def load_arguments(self, _):
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)
+        c.argument("enable_high_log_scale_mode", arg_type=get_three_state_flag(), is_preview=True)
+        c.argument("ampls_resource_id", is_preview=True)
         c.argument("aci_subnet_name")
         c.argument("appgw_name", arg_group="Application Gateway")
         c.argument("appgw_subnet_cidr", arg_group="Application Gateway")
@@ -953,6 +955,7 @@ def load_arguments(self, _):
         c.argument("if_none_match")
         # virtual machines
         c.argument("vm_sizes", is_preview=True)
+        c.argument("enable_imds_restriction", action="store_true", is_preview=True)
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1322,7 +1325,7 @@ def load_arguments(self, _):
         c.argument(
             "disable_azure_container_storage",
             arg_type=get_enum_type(disable_storage_pool_types),
-            help="disable azure container storage or any one of the storagepool types",
+            help="disable azure container storage or any one of the storage pool types",
         )
         c.argument(
             "storage_pool_name",
@@ -1369,6 +1372,8 @@ def load_arguments(self, _):
         c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
         c.argument('enable_static_egress_gateway', is_preview=True, action='store_true')
         c.argument('disable_static_egress_gateway', is_preview=True, action='store_true')
+        c.argument("enable_imds_restriction", action="store_true", is_preview=True)
+        c.argument("disable_imds_restriction", action="store_true", is_preview=True)
 
         c.argument(
             "cluster_service_load_balancer_health_probe_mode",
@@ -1853,6 +1858,8 @@ def load_arguments(self, _):
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)
+        c.argument("enable_high_log_scale_mode", arg_type=get_three_state_flag(), is_preview=True)
+        c.argument("ampls_resource_id", is_preview=True)
         c.argument(
             "dns_zone_resource_id",
             deprecate_info=c.deprecate(
@@ -1908,6 +1915,8 @@ def load_arguments(self, _):
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)
+        c.argument("enable_high_log_scale_mode", arg_type=get_three_state_flag(), is_preview=True)
+        c.argument("ampls_resource_id", is_preview=True)
         c.argument(
             "dns_zone_resource_id",
             deprecate_info=c.deprecate(
@@ -1946,6 +1955,8 @@ def load_arguments(self, _):
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)
+        c.argument("enable_high_log_scale_mode", arg_type=get_three_state_flag(), is_preview=True)
+        c.argument("ampls_resource_id", is_preview=True)
         c.argument(
             "dns_zone_resource_id",
             deprecate_info=c.deprecate(

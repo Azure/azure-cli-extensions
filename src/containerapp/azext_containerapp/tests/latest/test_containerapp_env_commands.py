@@ -760,6 +760,46 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         self.assertGreater(usages[0]["limit"], 0)
         self.assertGreaterEqual(usages[0]["usage"], 0)
 
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_env_public_network_access(self, resource_group):
+        location = TEST_LOCATION
+        self.cmd('configure --defaults location={}'.format(location))
+
+        env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+
+        self.cmd(
+            'containerapp env create -g {} -n {} --logs-destination none'.format(resource_group, env_name))
+
+        containerapp_env = self.cmd(
+            'containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd(
+                'containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('properties.publicNetworkAccess', 'Enabled'),
+        ])
+
+        self.cmd('containerapp env update -g {} -n {} --public-network-access Disabled'.format(
+            resource_group, env_name),
+                 checks=[
+                     JMESPathCheck('properties.publicNetworkAccess', 'Disabled'),
+                 ])
+
+        self.cmd('containerapp env delete -g {} -n {} -y --no-wait'.format(resource_group, env_name))
+
+        enabled_env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        self.cmd('containerapp env create -g {} -n {} --public-network-access Disabled --logs-destination none'.format(
+            resource_group, enabled_env_name),
+                 checks=[
+                     JMESPathCheck('properties.publicNetworkAccess', 'Disabled'),
+                 ])
+
+        self.cmd('containerapp env delete -g {} -n {} -y --no-wait'.format(resource_group, enabled_env_name))
+
 
 class ContainerappEnvLocationNotInStageScenarioTest(ScenarioTest):
     def __init__(self, *arg, **kwargs):
