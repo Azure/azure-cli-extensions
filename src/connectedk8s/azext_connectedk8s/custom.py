@@ -984,12 +984,20 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
 
 def generate_reput_request_payload(cc, enable_oidc_issuer, enable_workload_identity, self_hosted_issuer, gateway, arc_agentry_configurations):
     # Update connected cluster resource object
-    oidc_profile = set_oidc_issuer_profile(enable_oidc_issuer, self_hosted_issuer)
-    security_profile = set_security_profile(enable_workload_identity)
-    cc.oidc_issuer_profile = oidc_profile
-    cc.security_profile = security_profile
-    cc.gateway = gateway
-    cc.arc_agentry_configurations = arc_agentry_configurations
+    if enable_oidc_issuer is not None:
+        oidc_profile = set_oidc_issuer_profile(enable_oidc_issuer, self_hosted_issuer)
+        cc.oidc_issuer_profile = oidc_profile
+
+    if enable_workload_identity is not None:
+        security_profile = set_security_profile(enable_workload_identity)
+        cc.security_profile = security_profile
+
+    if gateway is not None:
+        cc.gateway = gateway
+
+    if arc_agentry_configurations is not None:
+        cc.arc_agentry_configurations = arc_agentry_configurations
+
     return cc
 
 
