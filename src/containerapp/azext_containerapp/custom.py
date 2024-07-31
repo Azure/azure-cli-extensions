@@ -37,8 +37,6 @@ from azure.cli.command_modules.containerapp._utils import (safe_set,
                                                            _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
                                                            validate_container_app_name, register_provider_if_needed,
                                                            generate_randomized_cert_name, load_cert_file,
-                                                           generate_randomized_managed_cert_name,
-                                                           check_managed_cert_name_availability, prepare_managed_certificate_envelop,
                                                            trigger_workflow, _ensure_identity_resource_id,
                                                            AppType)
 
