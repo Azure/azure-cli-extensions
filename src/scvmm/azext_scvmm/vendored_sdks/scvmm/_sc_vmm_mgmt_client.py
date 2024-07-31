@@ -14,8 +14,8 @@ from msrest import Deserializer, Serializer
 from azure.mgmt.core import ARMPipelineClient
 
 from . import models
-from ._configuration import SCVMMConfiguration
-from .operations import AvailabilitySetsOperations, CloudsOperations, InventoryItemsOperations, Operations, VMInstanceGuestAgentsOperations, VirtualMachineInstanceHybridIdentityMetadataOperations, VirtualMachineInstancesOperations, VirtualMachineTemplatesOperations, VirtualNetworksOperations, VmmServersOperations
+from ._configuration import ScVmmMgmtClientConfiguration
+from .operations import AvailabilitySetsOperations, CloudsOperations, GuestAgentsOperations, InventoryItemsOperations, Operations, VirtualMachineInstancesOperations, VirtualMachineTemplatesOperations, VirtualNetworksOperations, VmInstanceHybridIdentityMetadatasOperations, VmmServersOperations
 
 if TYPE_CHECKING:
     # pylint: disable=unused-import,ungrouped-imports
@@ -24,33 +24,33 @@ if TYPE_CHECKING:
     from azure.core.credentials import TokenCredential
     from azure.core.rest import HttpRequest, HttpResponse
 
-class SCVMM(object):    # pylint: disable=too-many-instance-attributes
+class ScVmmMgmtClient(object):    # pylint: disable=too-many-instance-attributes
     """The Microsoft.ScVmm Rest API spec.
 
-    :ivar vmm_servers: VmmServersOperations operations
-    :vartype vmm_servers: azure.mgmt.scvmm.operations.VmmServersOperations
-    :ivar operations: Operations operations
-    :vartype operations: azure.mgmt.scvmm.operations.Operations
-    :ivar clouds: CloudsOperations operations
-    :vartype clouds: azure.mgmt.scvmm.operations.CloudsOperations
-    :ivar virtual_networks: VirtualNetworksOperations operations
-    :vartype virtual_networks: azure.mgmt.scvmm.operations.VirtualNetworksOperations
-    :ivar virtual_machine_templates: VirtualMachineTemplatesOperations operations
-    :vartype virtual_machine_templates:
-     azure.mgmt.scvmm.operations.VirtualMachineTemplatesOperations
-    :ivar availability_sets: AvailabilitySetsOperations operations
-    :vartype availability_sets: azure.mgmt.scvmm.operations.AvailabilitySetsOperations
-    :ivar inventory_items: InventoryItemsOperations operations
-    :vartype inventory_items: azure.mgmt.scvmm.operations.InventoryItemsOperations
     :ivar virtual_machine_instances: VirtualMachineInstancesOperations operations
     :vartype virtual_machine_instances:
      azure.mgmt.scvmm.operations.VirtualMachineInstancesOperations
-    :ivar virtual_machine_instance_hybrid_identity_metadata:
-     VirtualMachineInstanceHybridIdentityMetadataOperations operations
-    :vartype virtual_machine_instance_hybrid_identity_metadata:
-     azure.mgmt.scvmm.operations.VirtualMachineInstanceHybridIdentityMetadataOperations
-    :ivar vm_instance_guest_agents: VMInstanceGuestAgentsOperations operations
-    :vartype vm_instance_guest_agents: azure.mgmt.scvmm.operations.VMInstanceGuestAgentsOperations
+    :ivar guest_agents: GuestAgentsOperations operations
+    :vartype guest_agents: azure.mgmt.scvmm.operations.GuestAgentsOperations
+    :ivar vm_instance_hybrid_identity_metadatas: VmInstanceHybridIdentityMetadatasOperations
+     operations
+    :vartype vm_instance_hybrid_identity_metadatas:
+     azure.mgmt.scvmm.operations.VmInstanceHybridIdentityMetadatasOperations
+    :ivar operations: Operations operations
+    :vartype operations: azure.mgmt.scvmm.operations.Operations
+    :ivar availability_sets: AvailabilitySetsOperations operations
+    :vartype availability_sets: azure.mgmt.scvmm.operations.AvailabilitySetsOperations
+    :ivar clouds: CloudsOperations operations
+    :vartype clouds: azure.mgmt.scvmm.operations.CloudsOperations
+    :ivar virtual_machine_templates: VirtualMachineTemplatesOperations operations
+    :vartype virtual_machine_templates:
+     azure.mgmt.scvmm.operations.VirtualMachineTemplatesOperations
+    :ivar virtual_networks: VirtualNetworksOperations operations
+    :vartype virtual_networks: azure.mgmt.scvmm.operations.VirtualNetworksOperations
+    :ivar vmm_servers: VmmServersOperations operations
+    :vartype vmm_servers: azure.mgmt.scvmm.operations.VmmServersOperations
+    :ivar inventory_items: InventoryItemsOperations operations
+    :vartype inventory_items: azure.mgmt.scvmm.operations.InventoryItemsOperations
     :param credential: Credential needed for the client to connect to Azure.
     :type credential: ~azure.core.credentials.TokenCredential
     :param subscription_id: The ID of the target subscription. The value must be an UUID.
@@ -72,23 +72,23 @@ class SCVMM(object):    # pylint: disable=too-many-instance-attributes
         **kwargs  # type: Any
     ):
         # type: (...) -> None
-        self._config = SCVMMConfiguration(credential=credential, subscription_id=subscription_id, **kwargs)
+        self._config = ScVmmMgmtClientConfiguration(credential=credential, subscription_id=subscription_id, **kwargs)
         self._client = ARMPipelineClient(base_url=base_url, config=self._config, **kwargs)
 
         client_models = {k: v for k, v in models.__dict__.items() if isinstance(v, type)}
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
-        self.vmm_servers = VmmServersOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.operations = Operations(self._client, self._config, self._serialize, self._deserialize)
-        self.clouds = CloudsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.virtual_networks = VirtualNetworksOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.virtual_machine_templates = VirtualMachineTemplatesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.availability_sets = AvailabilitySetsOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.inventory_items = InventoryItemsOperations(self._client, self._config, self._serialize, self._deserialize)
         self.virtual_machine_instances = VirtualMachineInstancesOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.virtual_machine_instance_hybrid_identity_metadata = VirtualMachineInstanceHybridIdentityMetadataOperations(self._client, self._config, self._serialize, self._deserialize)
-        self.vm_instance_guest_agents = VMInstanceGuestAgentsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.guest_agents = GuestAgentsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.vm_instance_hybrid_identity_metadatas = VmInstanceHybridIdentityMetadatasOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.operations = Operations(self._client, self._config, self._serialize, self._deserialize)
+        self.availability_sets = AvailabilitySetsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.clouds = CloudsOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.virtual_machine_templates = VirtualMachineTemplatesOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.virtual_networks = VirtualNetworksOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.vmm_servers = VmmServersOperations(self._client, self._config, self._serialize, self._deserialize)
+        self.inventory_items = InventoryItemsOperations(self._client, self._config, self._serialize, self._deserialize)
 
 
     def _send_request(
@@ -123,7 +123,7 @@ class SCVMM(object):    # pylint: disable=too-many-instance-attributes
         self._client.close()
 
     def __enter__(self):
-        # type: () -> SCVMM
+        # type: () -> ScVmmMgmtClient
         self._client.__enter__()
         return self
 

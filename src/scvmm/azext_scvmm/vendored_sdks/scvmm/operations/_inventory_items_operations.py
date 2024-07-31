@@ -31,25 +31,22 @@ _SERIALIZER = Serializer()
 _SERIALIZER.client_side_validation = False
 # fmt: off
 
-def build_create_request(
+def build_list_by_vmm_server_request(
     subscription_id,  # type: str
     resource_group_name,  # type: str
     vmm_server_name,  # type: str
-    inventory_item_resource_name,  # type: str
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
     api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
-    content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
     accept = "application/json"
     # Construct URL
-    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemResourceName}")  # pylint: disable=line-too-long
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems")  # pylint: disable=line-too-long
     path_format_arguments = {
         "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
         "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
         "vmmServerName": _SERIALIZER.url("vmm_server_name", vmm_server_name, 'str', max_length=54, min_length=1, pattern=r'[a-zA-Z0-9-_\.]'),
-        "inventoryItemResourceName": _SERIALIZER.url("inventory_item_resource_name", inventory_item_resource_name, 'str', pattern=r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'),
     }
 
     _url = _format_url_section(_url, **path_format_arguments)
@@ -60,12 +57,10 @@ def build_create_request(
 
     # Construct headers
     _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
-    if content_type is not None:
-        _header_parameters['Content-Type'] = _SERIALIZER.header("content_type", content_type, 'str')
     _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
 
     return HttpRequest(
-        method="PUT",
+        method="GET",
         url=_url,
         params=_query_parameters,
         headers=_header_parameters,
@@ -112,6 +107,48 @@ def build_get_request(
     )
 
 
+def build_create_request(
+    subscription_id,  # type: str
+    resource_group_name,  # type: str
+    vmm_server_name,  # type: str
+    inventory_item_resource_name,  # type: str
+    **kwargs  # type: Any
+):
+    # type: (...) -> HttpRequest
+    api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
+    content_type = kwargs.pop('content_type', None)  # type: Optional[str]
+
+    accept = "application/json"
+    # Construct URL
+    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemResourceName}")  # pylint: disable=line-too-long
+    path_format_arguments = {
+        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
+        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
+        "vmmServerName": _SERIALIZER.url("vmm_server_name", vmm_server_name, 'str', max_length=54, min_length=1, pattern=r'[a-zA-Z0-9-_\.]'),
+        "inventoryItemResourceName": _SERIALIZER.url("inventory_item_resource_name", inventory_item_resource_name, 'str', pattern=r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'),
+    }
+
+    _url = _format_url_section(_url, **path_format_arguments)
+
+    # Construct parameters
+    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
+    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
+
+    # Construct headers
+    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
+    if content_type is not None:
+        _header_parameters['Content-Type'] = _SERIALIZER.header("content_type", content_type, 'str')
+    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
+
+    return HttpRequest(
+        method="PUT",
+        url=_url,
+        params=_query_parameters,
+        headers=_header_parameters,
+        **kwargs
+    )
+
+
 def build_delete_request(
     subscription_id,  # type: str
     resource_group_name,  # type: str
@@ -150,43 +187,6 @@ def build_delete_request(
         **kwargs
     )
 
-
-def build_list_by_vmm_server_request(
-    subscription_id,  # type: str
-    resource_group_name,  # type: str
-    vmm_server_name,  # type: str
-    **kwargs  # type: Any
-):
-    # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
-
-    accept = "application/json"
-    # Construct URL
-    _url = kwargs.pop("template_url", "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems")  # pylint: disable=line-too-long
-    path_format_arguments = {
-        "subscriptionId": _SERIALIZER.url("subscription_id", subscription_id, 'str'),
-        "resourceGroupName": _SERIALIZER.url("resource_group_name", resource_group_name, 'str', max_length=90, min_length=1),
-        "vmmServerName": _SERIALIZER.url("vmm_server_name", vmm_server_name, 'str', max_length=54, min_length=1, pattern=r'[a-zA-Z0-9-_\.]'),
-    }
-
-    _url = _format_url_section(_url, **path_format_arguments)
-
-    # Construct parameters
-    _query_parameters = kwargs.pop("params", {})  # type: Dict[str, Any]
-    _query_parameters['api-version'] = _SERIALIZER.query("api_version", api_version, 'str')
-
-    # Construct headers
-    _header_parameters = kwargs.pop("headers", {})  # type: Dict[str, Any]
-    _header_parameters['Accept'] = _SERIALIZER.header("accept", accept, 'str')
-
-    return HttpRequest(
-        method="GET",
-        url=_url,
-        params=_query_parameters,
-        headers=_header_parameters,
-        **kwargs
-    )
-
 # fmt: on
 class InventoryItemsOperations(object):
     """InventoryItemsOperations operations.
@@ -211,84 +211,90 @@ class InventoryItemsOperations(object):
         self._config = config
 
     @distributed_trace
-    def create(
+    def list_by_vmm_server(
         self,
         resource_group_name,  # type: str
         vmm_server_name,  # type: str
-        inventory_item_resource_name,  # type: str
-        body=None,  # type: Optional["_models.InventoryItem"]
         **kwargs  # type: Any
     ):
-        # type: (...) -> "_models.InventoryItem"
-        """Implements InventoryItem PUT method.
+        # type: (...) -> Iterable["_models.InventoryItemListResult"]
+        """Implements GET for the list of Inventory Items in the VMMServer.
 
-        Create Or Update InventoryItem.
+        Returns the list of inventoryItems in the given VmmServer.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param vmm_server_name: Name of the VMMServer.
+        :param vmm_server_name: Name of the VmmServer.
         :type vmm_server_name: str
-        :param inventory_item_resource_name: Name of the inventoryItem.
-        :type inventory_item_resource_name: str
-        :param body: Request payload.
-        :type body: ~azure.mgmt.scvmm.models.InventoryItem
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: InventoryItem, or the result of cls(response)
-        :rtype: ~azure.mgmt.scvmm.models.InventoryItem
+        :return: An iterator like instance of either InventoryItemListResult or the result of
+         cls(response)
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.scvmm.models.InventoryItemListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.InventoryItem"]
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
+
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.InventoryItemListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
+        def prepare_request(next_link=None):
+            if not next_link:
+                
+                request = build_list_by_vmm_server_request(
+                    subscription_id=self._config.subscription_id,
+                    resource_group_name=resource_group_name,
+                    vmm_server_name=vmm_server_name,
+                    api_version=api_version,
+                    template_url=self.list_by_vmm_server.metadata['url'],
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
 
-        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
-        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
+            else:
+                
+                request = build_list_by_vmm_server_request(
+                    subscription_id=self._config.subscription_id,
+                    resource_group_name=resource_group_name,
+                    vmm_server_name=vmm_server_name,
+                    api_version=api_version,
+                    template_url=next_link,
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
+                request.method = "GET"
+            return request
 
-        if body is not None:
-            _json = self._serialize.body(body, 'InventoryItem')
-        else:
-            _json = None
+        def extract_data(pipeline_response):
+            deserialized = self._deserialize("InventoryItemListResult", pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)
+            return deserialized.next_link or None, iter(list_of_elem)
 
-        request = build_create_request(
-            subscription_id=self._config.subscription_id,
-            resource_group_name=resource_group_name,
-            vmm_server_name=vmm_server_name,
-            inventory_item_resource_name=inventory_item_resource_name,
-            api_version=api_version,
-            content_type=content_type,
-            json=_json,
-            template_url=self.create.metadata['url'],
+        def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
+                request,
+                stream=False,
+                **kwargs
+            )
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+
+        return ItemPaged(
+            get_next, extract_data
         )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
-
-        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
-            request,
-            stream=False,
-            **kwargs
-        )
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 201]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        if response.status_code == 200:
-            deserialized = self._deserialize('InventoryItem', pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize('InventoryItem', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-
-    create.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemResourceName}"}  # type: ignore
-
+    list_by_vmm_server.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems"}  # type: ignore
 
     @distributed_trace
     def get(
@@ -305,7 +311,7 @@ class InventoryItemsOperations(object):
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param vmm_server_name: Name of the VMMServer.
+        :param vmm_server_name: Name of the VmmServer.
         :type vmm_server_name: str
         :param inventory_item_resource_name: Name of the inventoryItem.
         :type inventory_item_resource_name: str
@@ -357,6 +363,83 @@ class InventoryItemsOperations(object):
 
 
     @distributed_trace
+    def create(
+        self,
+        resource_group_name,  # type: str
+        vmm_server_name,  # type: str
+        inventory_item_resource_name,  # type: str
+        resource,  # type: "_models.InventoryItem"
+        **kwargs  # type: Any
+    ):
+        # type: (...) -> "_models.InventoryItem"
+        """Implements InventoryItem PUT method.
+
+        Create Or Update InventoryItem.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+        :type resource_group_name: str
+        :param vmm_server_name: Name of the VmmServer.
+        :type vmm_server_name: str
+        :param inventory_item_resource_name: Name of the inventoryItem.
+        :type inventory_item_resource_name: str
+        :param resource: Resource create parameters.
+        :type resource: ~azure.mgmt.scvmm.models.InventoryItem
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: InventoryItem, or the result of cls(response)
+        :rtype: ~azure.mgmt.scvmm.models.InventoryItem
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.InventoryItem"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
+        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
+
+        _json = self._serialize.body(resource, 'InventoryItem')
+
+        request = build_create_request(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=resource_group_name,
+            vmm_server_name=vmm_server_name,
+            inventory_item_resource_name=inventory_item_resource_name,
+            api_version=api_version,
+            content_type=content_type,
+            json=_json,
+            template_url=self.create.metadata['url'],
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
+
+        pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 201]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        if response.status_code == 200:
+            deserialized = self._deserialize('InventoryItem', pipeline_response)
+
+        if response.status_code == 201:
+            deserialized = self._deserialize('InventoryItem', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+
+    create.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemResourceName}"}  # type: ignore
+
+
+    @distributed_trace
     def delete(  # pylint: disable=inconsistent-return-statements
         self,
         resource_group_name,  # type: str
@@ -371,7 +454,7 @@ class InventoryItemsOperations(object):
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param vmm_server_name: Name of the VMMServer.
+        :param vmm_server_name: Name of the VmmServer.
         :type vmm_server_name: str
         :param inventory_item_resource_name: Name of the inventoryItem.
         :type inventory_item_resource_name: str
@@ -417,88 +500,3 @@ class InventoryItemsOperations(object):
 
     delete.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemResourceName}"}  # type: ignore
 
-
-    @distributed_trace
-    def list_by_vmm_server(
-        self,
-        resource_group_name,  # type: str
-        vmm_server_name,  # type: str
-        **kwargs  # type: Any
-    ):
-        # type: (...) -> Iterable["_models.InventoryItemsList"]
-        """Implements GET for the list of Inventory Items in the VMMServer.
-
-        Returns the list of inventoryItems in the given VMMServer.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-        :type resource_group_name: str
-        :param vmm_server_name: Name of the VMMServer.
-        :type vmm_server_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either InventoryItemsList or the result of cls(response)
-        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.scvmm.models.InventoryItemsList]
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
-
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.InventoryItemsList"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        def prepare_request(next_link=None):
-            if not next_link:
-                
-                request = build_list_by_vmm_server_request(
-                    subscription_id=self._config.subscription_id,
-                    resource_group_name=resource_group_name,
-                    vmm_server_name=vmm_server_name,
-                    api_version=api_version,
-                    template_url=self.list_by_vmm_server.metadata['url'],
-                )
-                request = _convert_request(request)
-                request.url = self._client.format_url(request.url)
-
-            else:
-                
-                request = build_list_by_vmm_server_request(
-                    subscription_id=self._config.subscription_id,
-                    resource_group_name=resource_group_name,
-                    vmm_server_name=vmm_server_name,
-                    api_version=api_version,
-                    template_url=next_link,
-                )
-                request = _convert_request(request)
-                request.url = self._client.format_url(request.url)
-                request.method = "GET"
-            return request
-
-        def extract_data(pipeline_response):
-            deserialized = self._deserialize("InventoryItemsList", pipeline_response)
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)
-            return deserialized.next_link or None, iter(list_of_elem)
-
-        def get_next(next_link=None):
-            request = prepare_request(next_link)
-
-            pipeline_response = self._client._pipeline.run(  # pylint: disable=protected-access
-                request,
-                stream=False,
-                **kwargs
-            )
-            response = pipeline_response.http_response
-
-            if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
-                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-            return pipeline_response
-
-
-        return ItemPaged(
-            get_next, extract_data
-        )
-    list_by_vmm_server.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems"}  # type: ignore

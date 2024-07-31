@@ -19,12 +19,12 @@ from azure.mgmt.core.exceptions import ARMErrorFormat
 
 from ... import models as _models
 from ..._vendor import _convert_request
-from ...operations._virtual_machine_instance_hybrid_identity_metadata_operations import build_get_request, build_list_request
+from ...operations._vm_instance_hybrid_identity_metadatas_operations import build_get_request, build_list_by_virtual_machine_instance_request
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class VirtualMachineInstanceHybridIdentityMetadataOperations:
-    """VirtualMachineInstanceHybridIdentityMetadataOperations async operations.
+class VmInstanceHybridIdentityMetadatasOperations:
+    """VmInstanceHybridIdentityMetadatasOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -45,6 +45,85 @@ class VirtualMachineInstanceHybridIdentityMetadataOperations:
         self._deserialize = deserializer
         self._config = config
 
+    @distributed_trace
+    def list_by_virtual_machine_instance(
+        self,
+        resource_uri: str,
+        **kwargs: Any
+    ) -> AsyncIterable["_models.VmInstanceHybridIdentityMetadataListResult"]:
+        """Implements GET HybridIdentityMetadata in a vm.
+
+        Returns the list of HybridIdentityMetadata of the given VM.
+
+        :param resource_uri: The fully qualified Azure Resource manager identifier of the resource.
+        :type resource_uri: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: An iterator like instance of either VmInstanceHybridIdentityMetadataListResult or the
+         result of cls(response)
+        :rtype:
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.scvmm.models.VmInstanceHybridIdentityMetadataListResult]
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
+
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.VmInstanceHybridIdentityMetadataListResult"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+        def prepare_request(next_link=None):
+            if not next_link:
+                
+                request = build_list_by_virtual_machine_instance_request(
+                    resource_uri=resource_uri,
+                    api_version=api_version,
+                    template_url=self.list_by_virtual_machine_instance.metadata['url'],
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
+
+            else:
+                
+                request = build_list_by_virtual_machine_instance_request(
+                    resource_uri=resource_uri,
+                    api_version=api_version,
+                    template_url=next_link,
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
+                request.method = "GET"
+            return request
+
+        async def extract_data(pipeline_response):
+            deserialized = self._deserialize("VmInstanceHybridIdentityMetadataListResult", pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
+
+        async def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            pipeline_response = await self._client._pipeline.run(  # pylint: disable=protected-access
+                request,
+                stream=False,
+                **kwargs
+            )
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+
+        return AsyncItemPaged(
+            get_next, extract_data
+        )
+    list_by_virtual_machine_instance.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default/hybridIdentityMetadata"}  # type: ignore
+
     @distributed_trace_async
     async def get(
         self,
@@ -55,8 +134,7 @@ class VirtualMachineInstanceHybridIdentityMetadataOperations:
 
         Implements HybridIdentityMetadata GET method.
 
-        :param resource_uri: The fully qualified Azure Resource manager identifier of the Hybrid
-         Compute machine resource to be extended.
+        :param resource_uri: The fully qualified Azure Resource manager identifier of the resource.
         :type resource_uri: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VmInstanceHybridIdentityMetadata, or the result of cls(response)
@@ -101,83 +179,3 @@ class VirtualMachineInstanceHybridIdentityMetadataOperations:
 
     get.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default/hybridIdentityMetadata/default"}  # type: ignore
 
-
-    @distributed_trace
-    def list(
-        self,
-        resource_uri: str,
-        **kwargs: Any
-    ) -> AsyncIterable["_models.VmInstanceHybridIdentityMetadataList"]:
-        """Implements GET HybridIdentityMetadata in a vm.
-
-        Returns the list of HybridIdentityMetadata of the given vm.
-
-        :param resource_uri: The fully qualified Azure Resource manager identifier of the Hybrid
-         Compute machine resource to be extended.
-        :type resource_uri: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either VmInstanceHybridIdentityMetadataList or the result
-         of cls(response)
-        :rtype:
-         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.scvmm.models.VmInstanceHybridIdentityMetadataList]
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
-
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.VmInstanceHybridIdentityMetadataList"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        def prepare_request(next_link=None):
-            if not next_link:
-                
-                request = build_list_request(
-                    resource_uri=resource_uri,
-                    api_version=api_version,
-                    template_url=self.list.metadata['url'],
-                )
-                request = _convert_request(request)
-                request.url = self._client.format_url(request.url)
-
-            else:
-                
-                request = build_list_request(
-                    resource_uri=resource_uri,
-                    api_version=api_version,
-                    template_url=next_link,
-                )
-                request = _convert_request(request)
-                request.url = self._client.format_url(request.url)
-                request.method = "GET"
-            return request
-
-        async def extract_data(pipeline_response):
-            deserialized = self._deserialize("VmInstanceHybridIdentityMetadataList", pipeline_response)
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)
-            return deserialized.next_link or None, AsyncList(list_of_elem)
-
-        async def get_next(next_link=None):
-            request = prepare_request(next_link)
-
-            pipeline_response = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request,
-                stream=False,
-                **kwargs
-            )
-            response = pipeline_response.http_response
-
-            if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
-                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-            return pipeline_response
-
-
-        return AsyncItemPaged(
-            get_next, extract_data
-        )
-    list.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default/hybridIdentityMetadata"}  # type: ignore

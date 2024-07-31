@@ -45,84 +45,91 @@ class InventoryItemsOperations:
         self._deserialize = deserializer
         self._config = config
 
-    @distributed_trace_async
-    async def create(
+    @distributed_trace
+    def list_by_vmm_server(
         self,
         resource_group_name: str,
         vmm_server_name: str,
-        inventory_item_resource_name: str,
-        body: Optional["_models.InventoryItem"] = None,
         **kwargs: Any
-    ) -> "_models.InventoryItem":
-        """Implements InventoryItem PUT method.
+    ) -> AsyncIterable["_models.InventoryItemListResult"]:
+        """Implements GET for the list of Inventory Items in the VMMServer.
 
-        Create Or Update InventoryItem.
+        Returns the list of inventoryItems in the given VmmServer.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param vmm_server_name: Name of the VMMServer.
+        :param vmm_server_name: Name of the VmmServer.
         :type vmm_server_name: str
-        :param inventory_item_resource_name: Name of the inventoryItem.
-        :type inventory_item_resource_name: str
-        :param body: Request payload.
-        :type body: ~azure.mgmt.scvmm.models.InventoryItem
         :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: InventoryItem, or the result of cls(response)
-        :rtype: ~azure.mgmt.scvmm.models.InventoryItem
+        :return: An iterator like instance of either InventoryItemListResult or the result of
+         cls(response)
+        :rtype:
+         ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.scvmm.models.InventoryItemListResult]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.InventoryItem"]
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
+
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.InventoryItemListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
+        def prepare_request(next_link=None):
+            if not next_link:
+                
+                request = build_list_by_vmm_server_request(
+                    subscription_id=self._config.subscription_id,
+                    resource_group_name=resource_group_name,
+                    vmm_server_name=vmm_server_name,
+                    api_version=api_version,
+                    template_url=self.list_by_vmm_server.metadata['url'],
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
 
-        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
-        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
+            else:
+                
+                request = build_list_by_vmm_server_request(
+                    subscription_id=self._config.subscription_id,
+                    resource_group_name=resource_group_name,
+                    vmm_server_name=vmm_server_name,
+                    api_version=api_version,
+                    template_url=next_link,
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
+                request.method = "GET"
+            return request
 
-        if body is not None:
-            _json = self._serialize.body(body, 'InventoryItem')
-        else:
-            _json = None
+        async def extract_data(pipeline_response):
+            deserialized = self._deserialize("InventoryItemListResult", pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
-        request = build_create_request(
-            subscription_id=self._config.subscription_id,
-            resource_group_name=resource_group_name,
-            vmm_server_name=vmm_server_name,
-            inventory_item_resource_name=inventory_item_resource_name,
-            api_version=api_version,
-            content_type=content_type,
-            json=_json,
-            template_url=self.create.metadata['url'],
+        async def get_next(next_link=None):
+            request = prepare_request(next_link)
+
+            pipeline_response = await self._client._pipeline.run(  # pylint: disable=protected-access
+                request,
+                stream=False,
+                **kwargs
+            )
+            response = pipeline_response.http_response
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+            return pipeline_response
+
+
+        return AsyncItemPaged(
+            get_next, extract_data
         )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
-
-        pipeline_response = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request,
-            stream=False,
-            **kwargs
-        )
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 201]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
-            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-        if response.status_code == 200:
-            deserialized = self._deserialize('InventoryItem', pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize('InventoryItem', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-
-    create.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemResourceName}"}  # type: ignore
-
+    list_by_vmm_server.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems"}  # type: ignore
 
     @distributed_trace_async
     async def get(
@@ -138,7 +145,7 @@ class InventoryItemsOperations:
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param vmm_server_name: Name of the VMMServer.
+        :param vmm_server_name: Name of the VmmServer.
         :type vmm_server_name: str
         :param inventory_item_resource_name: Name of the inventoryItem.
         :type inventory_item_resource_name: str
@@ -190,6 +197,82 @@ class InventoryItemsOperations:
 
 
     @distributed_trace_async
+    async def create(
+        self,
+        resource_group_name: str,
+        vmm_server_name: str,
+        inventory_item_resource_name: str,
+        resource: "_models.InventoryItem",
+        **kwargs: Any
+    ) -> "_models.InventoryItem":
+        """Implements InventoryItem PUT method.
+
+        Create Or Update InventoryItem.
+
+        :param resource_group_name: The name of the resource group. The name is case insensitive.
+        :type resource_group_name: str
+        :param vmm_server_name: Name of the VmmServer.
+        :type vmm_server_name: str
+        :param inventory_item_resource_name: Name of the inventoryItem.
+        :type inventory_item_resource_name: str
+        :param resource: Resource create parameters.
+        :type resource: ~azure.mgmt.scvmm.models.InventoryItem
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: InventoryItem, or the result of cls(response)
+        :rtype: ~azure.mgmt.scvmm.models.InventoryItem
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.InventoryItem"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
+        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
+
+        _json = self._serialize.body(resource, 'InventoryItem')
+
+        request = build_create_request(
+            subscription_id=self._config.subscription_id,
+            resource_group_name=resource_group_name,
+            vmm_server_name=vmm_server_name,
+            inventory_item_resource_name=inventory_item_resource_name,
+            api_version=api_version,
+            content_type=content_type,
+            json=_json,
+            template_url=self.create.metadata['url'],
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
+
+        pipeline_response = await self._client._pipeline.run(  # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 201]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+            raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+        if response.status_code == 200:
+            deserialized = self._deserialize('InventoryItem', pipeline_response)
+
+        if response.status_code == 201:
+            deserialized = self._deserialize('InventoryItem', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, {})
+
+        return deserialized
+
+    create.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemResourceName}"}  # type: ignore
+
+
+    @distributed_trace_async
     async def delete(  # pylint: disable=inconsistent-return-statements
         self,
         resource_group_name: str,
@@ -203,7 +286,7 @@ class InventoryItemsOperations:
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
         :type resource_group_name: str
-        :param vmm_server_name: Name of the VMMServer.
+        :param vmm_server_name: Name of the VmmServer.
         :type vmm_server_name: str
         :param inventory_item_resource_name: Name of the inventoryItem.
         :type inventory_item_resource_name: str
@@ -249,87 +332,3 @@ class InventoryItemsOperations:
 
     delete.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems/{inventoryItemResourceName}"}  # type: ignore
 
-
-    @distributed_trace
-    def list_by_vmm_server(
-        self,
-        resource_group_name: str,
-        vmm_server_name: str,
-        **kwargs: Any
-    ) -> AsyncIterable["_models.InventoryItemsList"]:
-        """Implements GET for the list of Inventory Items in the VMMServer.
-
-        Returns the list of inventoryItems in the given VMMServer.
-
-        :param resource_group_name: The name of the resource group. The name is case insensitive.
-        :type resource_group_name: str
-        :param vmm_server_name: Name of the VMMServer.
-        :type vmm_server_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either InventoryItemsList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.scvmm.models.InventoryItemsList]
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
-
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.InventoryItemsList"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        def prepare_request(next_link=None):
-            if not next_link:
-                
-                request = build_list_by_vmm_server_request(
-                    subscription_id=self._config.subscription_id,
-                    resource_group_name=resource_group_name,
-                    vmm_server_name=vmm_server_name,
-                    api_version=api_version,
-                    template_url=self.list_by_vmm_server.metadata['url'],
-                )
-                request = _convert_request(request)
-                request.url = self._client.format_url(request.url)
-
-            else:
-                
-                request = build_list_by_vmm_server_request(
-                    subscription_id=self._config.subscription_id,
-                    resource_group_name=resource_group_name,
-                    vmm_server_name=vmm_server_name,
-                    api_version=api_version,
-                    template_url=next_link,
-                )
-                request = _convert_request(request)
-                request.url = self._client.format_url(request.url)
-                request.method = "GET"
-            return request
-
-        async def extract_data(pipeline_response):
-            deserialized = self._deserialize("InventoryItemsList", pipeline_response)
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)
-            return deserialized.next_link or None, AsyncList(list_of_elem)
-
-        async def get_next(next_link=None):
-            request = prepare_request(next_link)
-
-            pipeline_response = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request,
-                stream=False,
-                **kwargs
-            )
-            response = pipeline_response.http_response
-
-            if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
-                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-            return pipeline_response
-
-
-        return AsyncItemPaged(
-            get_next, extract_data
-        )
-    list_by_vmm_server.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ScVmm/vmmServers/{vmmServerName}/inventoryItems"}  # type: ignore

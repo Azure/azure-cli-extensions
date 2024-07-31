@@ -21,8 +21,8 @@ if TYPE_CHECKING:
     from azure.core.credentials import TokenCredential
 
 
-class SCVMMConfiguration(Configuration):  # pylint: disable=too-many-instance-attributes
-    """Configuration for SCVMM.
+class ScVmmMgmtClientConfiguration(Configuration):  # pylint: disable=too-many-instance-attributes
+    """Configuration for ScVmmMgmtClient.
 
     Note that all parameters used to create this instance are saved as instance
     attributes.
@@ -43,7 +43,7 @@ class SCVMMConfiguration(Configuration):  # pylint: disable=too-many-instance-at
         **kwargs  # type: Any
     ):
         # type: (...) -> None
-        super(SCVMMConfiguration, self).__init__(**kwargs)
+        super(ScVmmMgmtClientConfiguration, self).__init__(**kwargs)
         api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
 
         if credential is None:

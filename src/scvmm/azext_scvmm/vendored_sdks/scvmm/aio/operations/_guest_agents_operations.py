@@ -21,12 +21,12 @@ from azure.mgmt.core.polling.async_arm_polling import AsyncARMPolling
 
 from ... import models as _models
 from ..._vendor import _convert_request
-from ...operations._vm_instance_guest_agents_operations import build_create_request_initial, build_delete_request, build_get_request, build_list_request
+from ...operations._guest_agents_operations import build_create_request_initial, build_delete_request, build_get_request, build_list_by_virtual_machine_instance_request
 T = TypeVar('T')
 ClsType = Optional[Callable[[PipelineResponse[HttpRequest, AsyncHttpResponse], T, Dict[str, Any]], Any]]
 
-class VMInstanceGuestAgentsOperations:
-    """VMInstanceGuestAgentsOperations async operations.
+class GuestAgentsOperations:
+    """GuestAgentsOperations async operations.
 
     You should not instantiate this class directly. Instead, you should create a Client instance that
     instantiates it for you and attaches it as an attribute.
@@ -47,131 +47,83 @@ class VMInstanceGuestAgentsOperations:
         self._deserialize = deserializer
         self._config = config
 
-    async def _create_initial(
+    @distributed_trace
+    def list_by_virtual_machine_instance(
         self,
         resource_uri: str,
-        body: Optional["_models.GuestAgent"] = None,
         **kwargs: Any
-    ) -> "_models.GuestAgent":
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.GuestAgent"]
+    ) -> AsyncIterable["_models.GuestAgentListResult"]:
+        """Implements GET GuestAgent in a vm.
+
+        Returns the list of GuestAgent of the given vm.
+
+        :param resource_uri: The fully qualified Azure Resource manager identifier of the resource.
+        :type resource_uri: str
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :return: An iterator like instance of either GuestAgentListResult or the result of
+         cls(response)
+        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.scvmm.models.GuestAgentListResult]
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
+
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.GuestAgentListResult"]
         error_map = {
             401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
         }
         error_map.update(kwargs.pop('error_map', {}))
+        def prepare_request(next_link=None):
+            if not next_link:
+                
+                request = build_list_by_virtual_machine_instance_request(
+                    resource_uri=resource_uri,
+                    api_version=api_version,
+                    template_url=self.list_by_virtual_machine_instance.metadata['url'],
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
 
-        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
-        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
+            else:
+                
+                request = build_list_by_virtual_machine_instance_request(
+                    resource_uri=resource_uri,
+                    api_version=api_version,
+                    template_url=next_link,
+                )
+                request = _convert_request(request)
+                request.url = self._client.format_url(request.url)
+                request.method = "GET"
+            return request
 
-        if body is not None:
-            _json = self._serialize.body(body, 'GuestAgent')
-        else:
-            _json = None
+        async def extract_data(pipeline_response):
+            deserialized = self._deserialize("GuestAgentListResult", pipeline_response)
+            list_of_elem = deserialized.value
+            if cls:
+                list_of_elem = cls(list_of_elem)
+            return deserialized.next_link or None, AsyncList(list_of_elem)
 
-        request = build_create_request_initial(
-            resource_uri=resource_uri,
-            api_version=api_version,
-            content_type=content_type,
-            json=_json,
-            template_url=self._create_initial.metadata['url'],
-        )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
+        async def get_next(next_link=None):
+            request = prepare_request(next_link)
 
-        pipeline_response = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request,
-            stream=False,
-            **kwargs
-        )
-        response = pipeline_response.http_response
-
-        if response.status_code not in [200, 201]:
-            map_error(status_code=response.status_code, response=response, error_map=error_map)
-            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
-
-        if response.status_code == 200:
-            deserialized = self._deserialize('GuestAgent', pipeline_response)
-
-        if response.status_code == 201:
-            deserialized = self._deserialize('GuestAgent', pipeline_response)
-
-        if cls:
-            return cls(pipeline_response, deserialized, {})
-
-        return deserialized
-
-    _create_initial.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default/guestAgents/default"}  # type: ignore
-
-
-    @distributed_trace_async
-    async def begin_create(
-        self,
-        resource_uri: str,
-        body: Optional["_models.GuestAgent"] = None,
-        **kwargs: Any
-    ) -> AsyncLROPoller["_models.GuestAgent"]:
-        """Implements GuestAgent PUT method.
-
-        Create Or Update GuestAgent.
-
-        :param resource_uri: The fully qualified Azure Resource manager identifier of the Hybrid
-         Compute machine resource to be extended.
-        :type resource_uri: str
-        :param body: Request payload.
-        :type body: ~azure.mgmt.scvmm.models.GuestAgent
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
-        :return: An instance of AsyncLROPoller that returns either GuestAgent or the result of
-         cls(response)
-        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.scvmm.models.GuestAgent]
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
-        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
-        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.GuestAgent"]
-        lro_delay = kwargs.pop(
-            'polling_interval',
-            self._config.polling_interval
-        )
-        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
-        if cont_token is None:
-            raw_result = await self._create_initial(
-                resource_uri=resource_uri,
-                body=body,
-                api_version=api_version,
-                content_type=content_type,
-                cls=lambda x,y,z: x,
+            pipeline_response = await self._client._pipeline.run(  # pylint: disable=protected-access
+                request,
+                stream=False,
                 **kwargs
             )
-        kwargs.pop('error_map', None)
-
-        def get_long_running_output(pipeline_response):
             response = pipeline_response.http_response
-            deserialized = self._deserialize('GuestAgent', pipeline_response)
-            if cls:
-                return cls(pipeline_response, deserialized, {})
-            return deserialized
+
+            if response.status_code not in [200]:
+                map_error(status_code=response.status_code, response=response, error_map=error_map)
+                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
+                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
+
+            return pipeline_response
 
 
-        if polling is True: polling_method = AsyncARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, **kwargs)
-        elif polling is False: polling_method = AsyncNoPolling()
-        else: polling_method = polling
-        if cont_token:
-            return AsyncLROPoller.from_continuation_token(
-                polling_method=polling_method,
-                continuation_token=cont_token,
-                client=self._client,
-                deserialization_callback=get_long_running_output
-            )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
-
-    begin_create.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default/guestAgents/default"}  # type: ignore
+        return AsyncItemPaged(
+            get_next, extract_data
+        )
+    list_by_virtual_machine_instance.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default/guestAgents"}  # type: ignore
 
     @distributed_trace_async
     async def get(
@@ -183,8 +135,7 @@ class VMInstanceGuestAgentsOperations:
 
         Implements GuestAgent GET method.
 
-        :param resource_uri: The fully qualified Azure Resource manager identifier of the Hybrid
-         Compute machine resource to be extended.
+        :param resource_uri: The fully qualified Azure Resource manager identifier of the resource.
         :type resource_uri: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: GuestAgent, or the result of cls(response)
@@ -230,18 +181,142 @@ class VMInstanceGuestAgentsOperations:
     get.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default/guestAgents/default"}  # type: ignore
 
 
+    async def _create_initial(
+        self,
+        resource_uri: str,
+        resource: "_models.GuestAgent",
+        **kwargs: Any
+    ) -> "_models.GuestAgent":
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.GuestAgent"]
+        error_map = {
+            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
+        }
+        error_map.update(kwargs.pop('error_map', {}))
+
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
+        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
+
+        _json = self._serialize.body(resource, 'GuestAgent')
+
+        request = build_create_request_initial(
+            resource_uri=resource_uri,
+            api_version=api_version,
+            content_type=content_type,
+            json=_json,
+            template_url=self._create_initial.metadata['url'],
+        )
+        request = _convert_request(request)
+        request.url = self._client.format_url(request.url)
+
+        pipeline_response = await self._client._pipeline.run(  # pylint: disable=protected-access
+            request,
+            stream=False,
+            **kwargs
+        )
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200, 201]:
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response, error_format=ARMErrorFormat)
+
+        response_headers = {}
+        if response.status_code == 200:
+            deserialized = self._deserialize('GuestAgent', pipeline_response)
+
+        if response.status_code == 201:
+            response_headers['Retry-After']=self._deserialize('int', response.headers.get('Retry-After'))
+            
+            deserialized = self._deserialize('GuestAgent', pipeline_response)
+
+        if cls:
+            return cls(pipeline_response, deserialized, response_headers)
+
+        return deserialized
+
+    _create_initial.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default/guestAgents/default"}  # type: ignore
+
+
+    @distributed_trace_async
+    async def begin_create(
+        self,
+        resource_uri: str,
+        resource: "_models.GuestAgent",
+        **kwargs: Any
+    ) -> AsyncLROPoller["_models.GuestAgent"]:
+        """Implements GuestAgent PUT method.
+
+        Create Or Update GuestAgent.
+
+        :param resource_uri: The fully qualified Azure Resource manager identifier of the resource.
+        :type resource_uri: str
+        :param resource: Resource create parameters.
+        :type resource: ~azure.mgmt.scvmm.models.GuestAgent
+        :keyword callable cls: A custom type or function that will be passed the direct response
+        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
+        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
+         this operation to not poll, or pass in your own initialized polling object for a personal
+         polling strategy.
+        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
+        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
+         Retry-After header is present.
+        :return: An instance of AsyncLROPoller that returns either GuestAgent or the result of
+         cls(response)
+        :rtype: ~azure.core.polling.AsyncLROPoller[~azure.mgmt.scvmm.models.GuestAgent]
+        :raises: ~azure.core.exceptions.HttpResponseError
+        """
+        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
+        content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
+        polling = kwargs.pop('polling', True)  # type: Union[bool, AsyncPollingMethod]
+        cls = kwargs.pop('cls', None)  # type: ClsType["_models.GuestAgent"]
+        lro_delay = kwargs.pop(
+            'polling_interval',
+            self._config.polling_interval
+        )
+        cont_token = kwargs.pop('continuation_token', None)  # type: Optional[str]
+        if cont_token is None:
+            raw_result = await self._create_initial(
+                resource_uri=resource_uri,
+                resource=resource,
+                api_version=api_version,
+                content_type=content_type,
+                cls=lambda x,y,z: x,
+                **kwargs
+            )
+        kwargs.pop('error_map', None)
+
+        def get_long_running_output(pipeline_response):
+            response = pipeline_response.http_response
+            deserialized = self._deserialize('GuestAgent', pipeline_response)
+            if cls:
+                return cls(pipeline_response, deserialized, {})
+            return deserialized
+
+
+        if polling is True: polling_method = AsyncARMPolling(lro_delay, lro_options={'final-state-via': 'azure-async-operation'}, **kwargs)
+        elif polling is False: polling_method = AsyncNoPolling()
+        else: polling_method = polling
+        if cont_token:
+            return AsyncLROPoller.from_continuation_token(
+                polling_method=polling_method,
+                continuation_token=cont_token,
+                client=self._client,
+                deserialization_callback=get_long_running_output
+            )
+        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)
+
+    begin_create.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default/guestAgents/default"}  # type: ignore
+
     @distributed_trace_async
     async def delete(  # pylint: disable=inconsistent-return-statements
         self,
         resource_uri: str,
         **kwargs: Any
     ) -> None:
-        """Deletes an GuestAgent.
+        """Deletes a GuestAgent resource.
 
         Implements GuestAgent DELETE method.
 
-        :param resource_uri: The fully qualified Azure Resource manager identifier of the Hybrid
-         Compute machine resource to be extended.
+        :param resource_uri: The fully qualified Azure Resource manager identifier of the resource.
         :type resource_uri: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: None, or the result of cls(response)
@@ -282,81 +357,3 @@ class VMInstanceGuestAgentsOperations:
 
     delete.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default/guestAgents/default"}  # type: ignore
 
-
-    @distributed_trace
-    def list(
-        self,
-        resource_uri: str,
-        **kwargs: Any
-    ) -> AsyncIterable["_models.GuestAgentList"]:
-        """Implements GET GuestAgent in a vm.
-
-        Returns the list of GuestAgent of the given vm.
-
-        :param resource_uri: The fully qualified Azure Resource manager identifier of the Hybrid
-         Compute machine resource to be extended.
-        :type resource_uri: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :return: An iterator like instance of either GuestAgentList or the result of cls(response)
-        :rtype: ~azure.core.async_paging.AsyncItemPaged[~azure.mgmt.scvmm.models.GuestAgentList]
-        :raises: ~azure.core.exceptions.HttpResponseError
-        """
-        api_version = kwargs.pop('api_version', "2023-10-07")  # type: str
-
-        cls = kwargs.pop('cls', None)  # type: ClsType["_models.GuestAgentList"]
-        error_map = {
-            401: ClientAuthenticationError, 404: ResourceNotFoundError, 409: ResourceExistsError
-        }
-        error_map.update(kwargs.pop('error_map', {}))
-        def prepare_request(next_link=None):
-            if not next_link:
-                
-                request = build_list_request(
-                    resource_uri=resource_uri,
-                    api_version=api_version,
-                    template_url=self.list.metadata['url'],
-                )
-                request = _convert_request(request)
-                request.url = self._client.format_url(request.url)
-
-            else:
-                
-                request = build_list_request(
-                    resource_uri=resource_uri,
-                    api_version=api_version,
-                    template_url=next_link,
-                )
-                request = _convert_request(request)
-                request.url = self._client.format_url(request.url)
-                request.method = "GET"
-            return request
-
-        async def extract_data(pipeline_response):
-            deserialized = self._deserialize("GuestAgentList", pipeline_response)
-            list_of_elem = deserialized.value
-            if cls:
-                list_of_elem = cls(list_of_elem)
-            return deserialized.next_link or None, AsyncList(list_of_elem)
-
-        async def get_next(next_link=None):
-            request = prepare_request(next_link)
-
-            pipeline_response = await self._client._pipeline.run(  # pylint: disable=protected-access
-                request,
-                stream=False,
-                **kwargs
-            )
-            response = pipeline_response.http_response
-
-            if response.status_code not in [200]:
-                map_error(status_code=response.status_code, response=response, error_map=error_map)
-                error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
-                raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
-
-            return pipeline_response
-
-
-        return AsyncItemPaged(
-            get_next, extract_data
-        )
-    list.metadata = {'url': "/{resourceUri}/providers/Microsoft.ScVmm/virtualMachineInstances/default/guestAgents"}  # type: ignore

@@ -56,5 +56,5 @@ class BusType(str, Enum):
 
 
 class VHDType(str, Enum):
-    static = "Static"
+    fixed = "Fixed"
     dynamic = "Dynamic"

@@ -18,10 +18,12 @@ class ActionType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     INTERNAL = "Internal"
 
 class AllocationMethod(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """Allocation method.
+    """Network address allocation method.
     """
 
+    #: Dynamically allocated address.
     DYNAMIC = "Dynamic"
+    #: Statically allocated address.
     STATIC = "Static"
 
 class CreatedByType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
@@ -34,66 +36,76 @@ class CreatedByType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     KEY = "Key"
 
 class CreateDiffDisk(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """Gets or sets a value indicating diff disk.
+    """Create diff disk.
     """
 
-    FALSE = "false"
+    #: Enable create diff disk.
     TRUE = "true"
+    #: Disable create diff disk.
+    FALSE = "false"
 
 class DeleteFromHost(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
 
-    FALSE = "false"
+    #: Enable delete from host.
     TRUE = "true"
+    #: Disable delete from host.
+    FALSE = "false"
 
 class DynamicMemoryEnabled(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """Gets or sets a value indicating whether to enable dynamic memory or not.
+    """Dynamic memory enabled.
     """
 
-    FALSE = "false"
+    #: Enable dynamic memory.
     TRUE = "true"
-
-class Force(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-
+    #: Disable dynamic memory.
     FALSE = "false"
+
+class ForceDelete(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+
+    #: Enable force delete.
     TRUE = "true"
-
-class IdentityType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """The type of managed service identity.
-    """
-
-    NONE = "None"
-    SYSTEM_ASSIGNED = "SystemAssigned"
+    #: Disable force delete.
+    FALSE = "false"
 
 class InventoryType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """The inventory type.
+    """The inventory type
     """
 
+    #: Cloud inventory type.
     CLOUD = "Cloud"
+    #: VirtualNetwork inventory type.
     VIRTUAL_NETWORK = "VirtualNetwork"
-    VIRTUAL_MACHINE_TEMPLATE = "VirtualMachineTemplate"
+    #: VirtualMachine inventory type.
     VIRTUAL_MACHINE = "VirtualMachine"
+    #: VirtualMachineTemplate inventory type.
+    VIRTUAL_MACHINE_TEMPLATE = "VirtualMachineTemplate"
 
 class IsCustomizable(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """Gets a value indicating whether the vm template is customizable or not.
+    """Customizable.
     """
 
-    FALSE = "false"
+    #: Enable customizable.
     TRUE = "true"
+    #: Disable customizable.
+    FALSE = "false"
 
 class IsHighlyAvailable(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """Gets highly available property.
+    """Highly available.
     """
 
-    FALSE = "false"
+    #: Enable highly available.
     TRUE = "true"
+    #: Disable highly available.
+    FALSE = "false"
 
 class LimitCpuForMigration(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """Gets or sets a value indicating whether to enable processor compatibility mode for live
-    migration of VMs.
+    """Limit CPU for migration.
     """
 
-    FALSE = "false"
+    #: Enable limit CPU for migration.
     TRUE = "true"
+    #: Disable limit CPU for migration.
+    FALSE = "false"
 
 class Origin(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     """The intended executor of the operation; as in Resource Based Access Control (RBAC) and audit
@@ -105,32 +117,46 @@ class Origin(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     USER_SYSTEM = "user,system"
 
 class OsType(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """Defines the different types of VM guest operating systems.
+    """Virtual machine operating system type.
     """
 
+    #: Windows operating system.
     WINDOWS = "Windows"
+    #: Linux operating system.
     LINUX = "Linux"
+    #: Other operating system.
     OTHER = "Other"
 
 class ProvisioningAction(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """Defines the different types of operations for guest agent.
+    """Guest agent provisioning action.
     """
 
+    #: Install guest agent.
     INSTALL = "install"
+    #: Uninstall guest agent.
     UNINSTALL = "uninstall"
+    #: Repair guest agent.
     REPAIR = "repair"
 
-class ProvisioningState(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
-    """The provisioning state of a resource.
+class ResourceProvisioningState(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
+    """The provisioning state of the resource.
     """
 
+    #: Resource has been created.
     SUCCEEDED = "Succeeded"
+    #: Resource creation failed.
     FAILED = "Failed"
+    #: Resource creation was canceled.
     CANCELED = "Canceled"
+    #: The resource is provisioning.
     PROVISIONING = "Provisioning"
+    #: The resource is updating.
     UPDATING = "Updating"
+    #: The resource is being deleted.
     DELETING = "Deleting"
+    #: The resource has been accepted.
     ACCEPTED = "Accepted"
+    #: The resource was created.
     CREATED = "Created"
 
 class SkipShutdown(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
@@ -138,5 +164,7 @@ class SkipShutdown(with_metaclass(CaseInsensitiveEnumMeta, str, Enum)):
     this flag indicates non-graceful shutdown whereas false indicates otherwise. Defaults to false.
     """
 
-    FALSE = "false"
+    #: Enable skip shutdown.
     TRUE = "true"
+    #: Disable skip shutdown.
+    FALSE = "false"
