@@ -984,12 +984,20 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
 
 def generate_reput_request_payload(cc, enable_oidc_issuer, enable_workload_identity, self_hosted_issuer, gateway, arc_agentry_configurations):
     # Update connected cluster resource object
-    oidc_profile = set_oidc_issuer_profile(enable_oidc_issuer, self_hosted_issuer)
-    security_profile = set_security_profile(enable_workload_identity)
-    cc.oidc_issuer_profile = oidc_profile
-    cc.security_profile = security_profile
-    cc.gateway = gateway
-    cc.arc_agentry_configurations = arc_agentry_configurations
+    if enable_oidc_issuer is not None:
+        oidc_profile = set_oidc_issuer_profile(enable_oidc_issuer, self_hosted_issuer)
+        cc.oidc_issuer_profile = oidc_profile
+
+    if enable_workload_identity is not None:
+        security_profile = set_security_profile(enable_workload_identity)
+        cc.security_profile = security_profile
+
+    if gateway is not None:
+        cc.gateway = gateway
+
+    if arc_agentry_configurations is not None:
+        cc.arc_agentry_configurations = arc_agentry_configurations
+
     return cc
 
 
@@ -1302,7 +1310,16 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     if proxy_params_unset and auto_upgrade is None and container_log_path is None and arm_properties_only_ahb_set:
         return patch_cc_response
 
-    if proxy_params_unset and not auto_upgrade and arm_properties_unset and not container_log_path and enable_oidc_issuer is None and enable_workload_identity is None:
+    if (
+        proxy_params_unset
+        and not auto_upgrade
+        and arm_properties_unset
+        and not container_log_path
+        and enable_oidc_issuer is None
+        and enable_workload_identity is None
+        and not enable_gateway
+        and not disable_gateway
+    ):
         raise RequiredArgumentMissingError(consts.No_Param_Error)
 
     if (https_proxy or http_proxy or no_proxy) and disable_proxy:
@@ -1387,7 +1404,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     # Substitute any protected helm values as the value for that will be null
     for helm_parameter, helm_value in protected_helm_values.items():
         helm_content_values[helm_parameter] = helm_value
-    
+
     if auto_upgrade is not None:
         helm_content_values["systemDefaultValues.azureArcAgents.autoUpdate"] = auto_upgrade
 
@@ -2903,7 +2920,7 @@ def add_config_protected_settings(https_proxy, http_proxy, no_proxy, proxy_cert,
     # Initialize configuration_protected_settings if it is None
     if configuration_protected_settings is None:
         configuration_protected_settings = {}
-    
+
     if container_log_path:
         configuration_settings.setdefault("logging", {"container_log_path": container_log_path})
     if any([https_proxy, http_proxy, no_proxy, proxy_cert]):
@@ -2916,7 +2933,7 @@ def add_config_protected_settings(https_proxy, http_proxy, no_proxy, proxy_cert,
             configuration_protected_settings["proxy"]["no_proxy"] = no_proxy
         if proxy_cert:
             configuration_protected_settings["proxy"]["proxy_cert"] = proxy_cert
-    
+
     for feature, protected_settings in configuration_protected_settings.items():
         if feature == "proxy":
             for setting, value in protected_settings.items():
