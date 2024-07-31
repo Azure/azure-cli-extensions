@@ -75,7 +75,7 @@ def validate_create(cmd, namespace):
     if namespace.encrypt_recovery_key:
         if not namespace.unlock_encrypted_vm:
             raise CLIError('Recovery password is provided in the argument, but unlock_encypted_vm is not passed. Rerun command adding --unlock_encypted_vm.')
-        
+
     if namespace.enable_nested:
         if is_linux:
             raise CLIError('Nested VM is not supported for Linux VM')

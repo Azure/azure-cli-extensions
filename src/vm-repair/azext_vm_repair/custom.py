@@ -630,8 +630,8 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         vnet_resource_group = subnet_id_tokens[-7]
         ipconfig_name = ip_config_object['name']
         orig_ip_address = ip_config_object['privateIPAddress']
-        application_names= ""
-        applicationSecurityGroups= 'applicationSecurityGroups'
+        application_names = ""
+        applicationSecurityGroups = 'applicationSecurityGroups'
         if applicationSecurityGroups in ip_config_object:
             for item in ip_config_object[applicationSecurityGroups]:
                 application_id_tokens = item['id'].split('/')
@@ -663,7 +663,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
             update_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip}' \
                                 .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address)
         _call_az_command(update_ip_command)
-        
+
         # Wait for IP updated
         wait_ip_update_command = 'az network nic ip-config wait --updated -g {g} --nic-name {nic}' \
                                 .format(g=resource_group_name, nic=primary_nic_name)
