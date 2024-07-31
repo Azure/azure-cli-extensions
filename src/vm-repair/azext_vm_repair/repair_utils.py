@@ -407,11 +407,11 @@ def _secret_tag_check(resource_group_name, copy_disk_name, secreturl):
         _call_az_command(set_tag_command)
 
 
-def _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux, encrypted_vm_recovery_password):
+def _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux, encrypt_recovery_key):
     logger.info('Unlocking attached copied disk...')
     if is_linux:
         return _unlock_mount_linux_encrypted_disk(repair_vm_name, repair_group_name)
-    return _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name, encrypted_vm_recovery_password)
+    return _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name, encrypt_recovery_key)
 
 
 def _unlock_singlepass_encrypted_disk_fallback(source_vm, resource_group_name, repair_vm_name, repair_group_name, copy_disk_name, is_linux):
@@ -462,13 +462,13 @@ def _unlock_mount_linux_encrypted_disk(repair_vm_name, repair_group_name):
     return _invoke_run_command(LINUX_RUN_SCRIPT_NAME, repair_vm_name, repair_group_name, True)
 
 
-def _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name, encrypted_vm_recovery_password):
+def _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name, encrypt_recovery_key):
     # Unlocks the disk using the phasephrase and mounts it on the repair VM.
-    if encrypted_vm_recovery_password:
+    if encrypt_recovery_key:
         logger.info('Using bitlocker password to unlock...')
         WINDOWS_RUN_SCRIPT_NAME = 'win-mount-encrypted-disk-bitlockerV.ps1'
         BITLOCKER_RECOVERY_PARAMS = []
-        BITLOCKER_RECOVERY_PARAMS.append('bitlockerkey="{}"'.format(encrypted_vm_recovery_password))
+        BITLOCKER_RECOVERY_PARAMS.append('bitlockerkey="{}"'.format(encrypt_recovery_key))
         return _invoke_run_command(WINDOWS_RUN_SCRIPT_NAME, repair_vm_name, repair_group_name, False, parameters=BITLOCKER_RECOVERY_PARAMS)
     
     WINDOWS_RUN_SCRIPT_NAME = 'win-mount-encrypted-disk.ps1'
@@ -718,15 +718,15 @@ def _get_function_param_dict(frame):
     _, _, _, values = inspect.getargvalues(frame)
     if 'cmd' in values:
         del values['cmd']
-    secure_params = ['repair_password', 'repair_username', 'encrypted_vm_recovery_password']
+    secure_params = ['repair_password', 'repair_username', 'encrypt_recovery_key']
     for param in secure_params:
         if param in values:
             values[param] = '********'
     return values
 
 
-def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux, encrypted_vm_recovery_password):
-    stdout, stderr = _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux, encrypted_vm_recovery_password)
+def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux, encrypt_recovery_key):
+    stdout, stderr = _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux, encrypt_recovery_key)
     logger.debug('Unlock script STDOUT:\n%s', stdout)
     if stderr:
         logger.warning('Encryption unlock script error was generated:\n%s', stderr)

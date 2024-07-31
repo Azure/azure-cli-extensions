@@ -72,7 +72,7 @@ def validate_create(cmd, namespace):
     else:
         logger.debug('The source VM\'s OS disk is not encrypted')
 
-    if namespace.encrypted_vm_recovery_password:
+    if namespace.encrypt_recovery_key:
         if not namespace.unlock_encrypted_vm:
             raise CLIError('Recovery password is provided in the argument, but unlock_encypted_vm is not passed. Rerun command adding --unlock_encypted_vm.')
         
