@@ -407,11 +407,11 @@ def _secret_tag_check(resource_group_name, copy_disk_name, secreturl):
         _call_az_command(set_tag_command)
 
 
-def _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux):
+def _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux, encrypted_vm_recovery_password):
     logger.info('Unlocking attached copied disk...')
     if is_linux:
         return _unlock_mount_linux_encrypted_disk(repair_vm_name, repair_group_name)
-    return _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name)
+    return _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name, encrypted_vm_recovery_password)
 
 
 def _unlock_singlepass_encrypted_disk_fallback(source_vm, resource_group_name, repair_vm_name, repair_group_name, copy_disk_name, is_linux):
@@ -462,8 +462,15 @@ def _unlock_mount_linux_encrypted_disk(repair_vm_name, repair_group_name):
     return _invoke_run_command(LINUX_RUN_SCRIPT_NAME, repair_vm_name, repair_group_name, True)
 
 
-def _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name):
+def _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name, encrypted_vm_recovery_password):
     # Unlocks the disk using the phasephrase and mounts it on the repair VM.
+    if encrypted_vm_recovery_password:
+        logger.info('Using bitlocker password to unlock...')
+        WINDOWS_RUN_SCRIPT_NAME = 'win-mount-encrypted-disk-bitlockerV.ps1'
+        BITLOCKER_RECOVERY_PARAMS = []
+        BITLOCKER_RECOVERY_PARAMS.append('bitlockerkey="{}"'.format(encrypted_vm_recovery_password))
+        return _invoke_run_command(WINDOWS_RUN_SCRIPT_NAME, repair_vm_name, repair_group_name, False, parameters=BITLOCKER_RECOVERY_PARAMS)
+    
     WINDOWS_RUN_SCRIPT_NAME = 'win-mount-encrypted-disk.ps1'
     return _invoke_run_command(WINDOWS_RUN_SCRIPT_NAME, repair_vm_name, repair_group_name, False)
 
@@ -490,6 +497,30 @@ def _fetch_compatible_windows_os_urn(source_vm):
     logger.debug('Returning Urn 0: %s', urns[0])
     return urns[0]
 
+def _fetch_compatible_windows_os_urn_v2(source_vm):
+    location = source_vm.location
+
+    # We will prefer to fetch image using source vm sku, that we match the CVM requirements. 
+    if source_vm.storage_profile is not None and source_vm.storage_profile.image_reference is not None:
+        sku=source_vm.storage_profile.image_reference.sku 
+        offer=source_vm.storage_profile.image_reference.offer
+        publisher=source_vm.storage_profile.image_reference.publisher
+        fetch_urn_command = 'az vm image list -s {sku} -f {offer} -p {publisher} -l {loc} --verbose --all --query "[?sku==\'{sku}\'].urn | reverse(sort(@))" -o json'.format(loc=location,sku=sku,offer=offer,publisher=publisher)
+        logger.info('Fetching compatible Windows OS images from gallery...')
+        urns = loads(_call_az_command(fetch_urn_command))
+
+    if not urns or len(urns) == 0:
+        # If source SKU not available then defaulting 2022 datacenter image.
+        fetch_urn_command = 'az vm image list -s "2022-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2022-datacenter\'].urn | reverse(sort(@))" -o json'.format(loc=location)
+        logger.info('Fetching compatible Windows OS images from gallery for 2022 Datacenter...')
+        urns = loads(_call_az_command(fetch_urn_command))
+
+    # No OS images available for Windows2016
+    if not urns:
+        raise WindowsOsNotAvailableError()
+    logger.debug('Fetched Urns:\n%s', urns)
+    logger.debug('Defaulting to first image available. Returning Urn 0: %s', urns[0])
+    return urns[0]
 
 def _select_distro_linux(distro):
     image_lookup = {
@@ -687,18 +718,19 @@ def _get_function_param_dict(frame):
     _, _, _, values = inspect.getargvalues(frame)
     if 'cmd' in values:
         del values['cmd']
-    secure_params = ['repair_password', 'repair_username']
+    secure_params = ['repair_password', 'repair_username', 'encrypted_vm_recovery_password']
     for param in secure_params:
         if param in values:
             values[param] = '********'
     return values
 
 
-def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux):
-    stdout, stderr = _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux)
+def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux, encrypted_vm_recovery_password):
+    stdout, stderr = _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux, encrypted_vm_recovery_password)
     logger.debug('Unlock script STDOUT:\n%s', stdout)
     if stderr:
         logger.warning('Encryption unlock script error was generated:\n%s', stderr)
+        raise Exception('Unexpected error occured while unlocking encrypted disk.')
 
 
 def _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username, fix_uuid=False):
@@ -731,3 +763,42 @@ def _fetch_architecture(source_vm):
     architecture = loads(_call_az_command(architecture_type_cmd).strip('\n'))
 
     return architecture[0][0]
+
+def _fetch_non_standard_security_type(source_vm):
+    """
+    Returns security type if security type is not standard and needs to be set.
+    """
+    if source_vm.security_profile is None or source_vm.security_profile.security_type is None:
+        return
+
+    if source_vm.security_profile.security_type.lower() == "standard" : 
+        return
+
+    return source_vm.security_profile.security_type
+
+def _fetch_vm_security_profile_parameters(source_vm):
+    create_repair_vm_command = ''
+    non_standard_security_type = _fetch_non_standard_security_type(source_vm)
+    if non_standard_security_type is None:
+        return create_repair_vm_command
+
+    create_repair_vm_command += ' --security-type {securityType}'.format(securityType=non_standard_security_type)
+
+    if source_vm.security_profile.uefi_settings is not None:
+        if source_vm.security_profile.uefi_settings.secure_boot_enabled is not None:
+            create_repair_vm_command += ' --enable-secure-boot {enableSecureBoot}'.format(enableSecureBoot=source_vm.security_profile.uefi_settings.secure_boot_enabled)
+
+        if source_vm.security_profile.uefi_settings.v_tpm_enabled is not None:
+            create_repair_vm_command += ' --enable-vtpm {enableVTpm}'.format(enableVTpm=source_vm.security_profile.uefi_settings.v_tpm_enabled)  
+
+    return create_repair_vm_command
+
+def _fetch_osdisk_security_profile_parameters(source_vm):
+    create_repair_vm_command = ''
+    if source_vm.storage_profile.os_disk.managed_disk is not None and source_vm.storage_profile.os_disk.managed_disk.security_profile is not None:
+        create_repair_vm_command += ' --os-disk-security-encryption-type {val}'.format(val=source_vm.storage_profile.os_disk.managed_disk.security_profile.security_encryption_type)
+
+        if source_vm.storage_profile.os_disk.managed_disk.security_profile.disk_encryption_set is not None:
+            create_repair_vm_command += ' --os-disk-secure-vm-disk-encryption-set {val}'.format(val=source_vm.storage_profile.os_disk.managed_disk.security_profile.disk_encryption_set.id)
+
+    return create_repair_vm_command

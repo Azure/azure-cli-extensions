@@ -1,6 +1,10 @@
 
 Release History
 ===============
+1.0.8
+++++++
+Making changes to create repair VM for confidential VM and use bit locker key from argument to unlock the disk. 
+
 1.0.7
 ++++++
 az command adjustment
