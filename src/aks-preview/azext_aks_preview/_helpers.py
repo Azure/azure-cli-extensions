@@ -335,7 +335,7 @@ def process_message_for_run_command(message):
 
 def check_is_azure_cli_core_editable_installed():
     try:
-        editable = os.getenv("AZURE_CLI_CORE_EDITABLE", False)
+        editable = os.getenv("AZURE_CLI_CORE_EDITABLE", "false").lower() == "true"
         if editable:
             return True
         for path_item in sys.path:
@@ -343,6 +343,6 @@ def check_is_azure_cli_core_editable_installed():
             if os.path.isfile(egg_link):
                 os.environ["AZURE_CLI_CORE_EDITABLE"] = "true"
                 return True
-    except Exception as ex:
+    except Exception as ex:  # pylint: disable=broad-except
         logger.debug("failed to check if azure-cli-core is installed as editable: %s", ex)
     return False
