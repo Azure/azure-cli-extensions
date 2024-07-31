@@ -73,8 +73,6 @@ def _restore_components(grafana_url, restore_functions, tmpdir, components, http
     if "folder" in exts:  # make "folder" be the first to restore, so dashboards can be positioned under a right folder
         exts.insert(0, exts.pop(exts.index("folder")))
 
-    # print(exts)
-    # huh weird: ['folder', 'library_panel', 'dashboard', 'library_panel', 'snapshot', 'annotation']
     for ext in exts:
         for file_path in glob(f'{tmpdir}/**/*.{ext}', recursive=True):
             logger.info('Restoring %s: %s', ext, file_path)
@@ -110,10 +108,10 @@ def create_dashboard(grafana_url, content, http_headers, overwrite):
         (Style.SUCCESS, 'SUCCESS') if result[0] == 200 else (Style.ERROR, 'FAILURE')
     ]
     if result[0] == 412:
-        to_print.append((Style.ERROR, ' (version mismatch, please enable --overwrite if you want to overwrite it)'))
+        to_print.append((Style.ERROR, ' (version mismatch, please enable --overwrite if you want to overwrite the dashboard)'))
     # this doesn't seem to be documented in the docs but it seems to be the error message when library panels are missing
     if result[0] == 500 and result[1].get('message') == 'Error while connecting library panels':
-        to_print.append((Style.ERROR, ' (Please make sure to include the proper folders for your library panels)'))
+        to_print.append((Style.ERROR, ' (Please make sure to include the folders which holds the library panels for this dashboard)'))
 
     print_styled_text(to_print)
     logger.info("status: %s, msg: %s", result[0], result[1])
@@ -170,7 +168,7 @@ def create_library_panel(grafana_url, payload, http_headers, overwrite):
             print_styled_text([
                 (Style.WARNING, f'Create library panel {panel_name}: '),
                 (Style.ERROR, 'FAILURE'),
-                (Style.ERROR, ' (name or UID already exists, please enable --overwrite if you want to overwrite it)')
+                (Style.ERROR, ' (name or UID already exists, please enable --overwrite if you want to overwrite the library panel)')
             ])
 
     else:
@@ -228,23 +226,22 @@ def create_folder(grafana_url, folder, http_headers, overwrite):
     result = send_grafana_post(f'{grafana_url}/api/folders', content, http_headers)
     folder_name = folder.get('title', '')
 
+    to_print = [
+        (Style.WARNING, f'{"Overwrite" if overwrite else "Create"} folder {folder_name}: '),
+    ]
+
     # 412 means the folder already exists and there is a version mismatch, so we should overwrite.
-    if result[0] == 412 and overwrite:
-        result = send_grafana_put(f'{grafana_url}/api/folders/{folder["uid"]}', content, http_headers)
-        print_styled_text([
-            (Style.WARNING, f'Overwrite folder {folder_name}: '),
-            (Style.SUCCESS, 'SUCCESS') if result[0] in [200] else (Style.ERROR, 'FAILURE')
-        ])
+    if result[0] == 412:
+        if overwrite:
+            result = send_grafana_put(f'{grafana_url}/api/folders/{folder["uid"]}', content, http_headers)
+            to_print.append((Style.SUCCESS, 'SUCCESS') if result[0] in [200] else (Style.ERROR, 'FAILURE'))
+        else:
+            to_print.append((Style.ERROR, 'FAILURE'))
+            to_print.append((Style.ERROR, ' (version mismatch, please enable --overwrite if you want to overwrite the folder)'))
     else:
-        to_print = [
-            (Style.WARNING, f'Create folder {folder_name}: '),
-            (Style.SUCCESS, 'SUCCESS') if result[0] in [200] else (Style.ERROR, 'FAILURE')
-        ]
+        to_print.append((Style.SUCCESS, 'SUCCESS') if result[0] in [200] else (Style.ERROR, 'FAILURE'))
 
-        if result[0] == 412:
-            to_print.append((Style.ERROR, ' (version mismatch, please enable --overwrite if you want to overwrite it)'))
-
-        print_styled_text(to_print)
+    print_styled_text(to_print)
 
     logger.info("status: %s, msg: %s", result[0], result[1])
 

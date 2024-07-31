@@ -57,7 +57,7 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, o
         output.append((Style.PRIMARY, "\n    " + "\n    ".join(folders_created_summary)))
 
     if len(folders_overwrote_summary) > 0:
-        output.append((Style.SUCCESS, f"\n\nFolders {dry_run_status}overwrote:"))
+        output.append((Style.SUCCESS, f"\n\nFolders {dry_run_status}overwritten:"))
         output.append((Style.PRIMARY, "\n    " + "\n    ".join(folders_overwrote_summary)))
 
     output.append((Style.SUCCESS, f"\n\nLibrary panels {dry_run_status}created:"))
@@ -65,7 +65,7 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, o
         output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
         output.append((Style.SECONDARY, "\n        ".join(panels)))
 
-    output.append((Style.SUCCESS, f"\n\nLibrary panels {dry_run_status}overwrote:"))
+    output.append((Style.SUCCESS, f"\n\nLibrary panels {dry_run_status}overwritten:"))
     for folder, panels in library_panels_overwrote_summary.items():
         output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
         output.append((Style.SECONDARY, "\n        ".join(panels)))
@@ -75,7 +75,7 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, o
         output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
         output.append((Style.SECONDARY, "\n        ".join(dashboards)))
 
-    output.append((Style.SUCCESS, f"\n\nDashboards {dry_run_status}overwrote:"))
+    output.append((Style.SUCCESS, f"\n\nDashboards {dry_run_status}overwritten:"))
     for folder, dashboards in dashboards_overwrote_summary.items():
         output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
         output.append((Style.SECONDARY, "\n        ".join(dashboards)))
@@ -193,7 +193,7 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels_fi
                 dashboard_title = dashboard['dashboard'].get('title', '')
                 print_styled_text([
                     (Style.WARNING, f'Create dashboard {dashboard_title}: '),
-                    (Style.ERROR, 'FAILURE (dashboard already exists. Enable --overwrite)')
+                    (Style.ERROR, 'FAILURE (dashboard already exists. Please enable --overwrite if you want to overwrite the dashboard)')
                 ])
                 is_successful = False
             else:

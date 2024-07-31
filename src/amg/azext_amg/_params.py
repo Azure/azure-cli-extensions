@@ -68,8 +68,8 @@ def load_arguments(self, _):
                    help="during restoration, update dashboards to reference data sources defined at the destination workspace through name matching")
         
     with self.argument_context("grafana migrate") as c:
-        c.argument("source_instance_ip", options_list=["-s", "--src-ip"], help="Grafana instance IP to migrate from")
-        c.argument("source_instance_token", options_list=["-t", "--src-token"], help="Grafana instance token to migrate from")
+        c.argument("source_grafana_endpoint", options_list=["-s", "--src-endpoint"], help="Grafana instance endpoint to migrate from")
+        c.argument("source_grafana_token_or_api_key", options_list=["-t", "--src-token-or-key"], help="Grafana instance service token (or api key) to get access to migrate from")
         c.argument("dry_run", options_list=["-d", "--dry-run"], arg_type=get_three_state_flag(), help="Preview changes without committing. Takes priority over --overwrite.")
         c.argument("overwrite", options_list=["--overwrite"], arg_type=get_three_state_flag(), help="Overwrite previous dashboards, library panels, and folders with the same uid with new ones (version replacement)")
 

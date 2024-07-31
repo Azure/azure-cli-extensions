@@ -57,7 +57,7 @@ helps['grafana restore'] = """
 
 helps['grafana migrate'] = """
     type: command
-    short-summary: Migrates an existing Grafana instance to an Azure Managed Grafana instance.
+    short-summary: Migrate an existing Grafana instance to an Azure Managed Grafana instance.
     examples:
        - name: Simple local to AMG example. Migrate dashboards and folders from a local Grafana instance to an Azure Managed Grafana instance.
          text: |

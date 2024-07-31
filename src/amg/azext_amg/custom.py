@@ -297,7 +297,7 @@ def restore_grafana(cmd, grafana_name, archive_file, components=None, remap_data
             destination_datasources=data_sources)
 
 
-def migrate_grafana(cmd, grafana_name, source_instance_ip, source_instance_token, dry_run=False, overwrite=False, folders_to_include=None,
+def migrate_grafana(cmd, grafana_name, source_grafana_endpoint, source_grafana_token_or_api_key, dry_run=False, overwrite=False, folders_to_include=None,
                    folders_to_exclude=None, resource_group_name=None):
     import os
     from pathlib import Path
@@ -306,7 +306,7 @@ def migrate_grafana(cmd, grafana_name, source_instance_ip, source_instance_token
     # for source instance (backing up from)
     headers_src = {
         "content-type": "application/json",
-        "authorization": "Bearer " + source_instance_token
+        "authorization": "Bearer " + source_grafana_token_or_api_key
     }
 
     # for destination instance (restoring to)
@@ -317,7 +317,7 @@ def migrate_grafana(cmd, grafana_name, source_instance_ip, source_instance_token
         "authorization": "Bearer " + creds_dest[1]
     }
 
-    migrate(backup_url=source_instance_ip,
+    migrate(backup_url=source_grafana_endpoint,
             backup_headers=headers_src,
             restore_url=_get_grafana_endpoint(cmd, resource_group_name, grafana_name, subscription=None),
             restore_headers=headers_dest,
