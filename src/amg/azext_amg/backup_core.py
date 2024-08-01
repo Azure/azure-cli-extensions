@@ -214,7 +214,7 @@ def get_all_annotations(grafana_url, http_headers):
         if status_code_and_content[0] == 200:
             annotations_batch = status_code_and_content[1]
             logger.info("There are %s annotations:", len(annotations_batch))
-            all_annotations = all_annotations + annotations_batch
+            all_annotations += annotations_batch
         else:
             logger.warning("Query annotation FAILED, status: %s, msg: %s", status_code_and_content[0],
                            status_code_and_content[1])

@@ -14,7 +14,7 @@ from azure.cli.core.style import print_styled_text, Style
 from knack.log import get_logger
 
 from .utils import (get_folder_id, send_grafana_post, send_grafana_patch, send_grafana_put, send_grafana_delete,
-                    send_grafana_get, create_datasource_mapping, remap_datasource_uids, get_snapshot)
+                    send_grafana_get, create_datasource_mapping, remap_datasource_uids, get_snapshot, search_annotations)
 
 logger = get_logger(__name__)
 
@@ -182,8 +182,8 @@ def create_library_panel(grafana_url, payload, http_headers, overwrite):
 
 
 def check_library_panel_exists(grafana_url, payload, http_headers):
-    result = send_grafana_get(f'{grafana_url}/api/library-elements/{payload["uid"]}', http_headers)
-    return result[0] == 200
+    (status, _) = send_grafana_get(f'{grafana_url}/api/library-elements/{payload["uid"]}', http_headers)
+    return status == 200
 
 
 # Restore snapshots
@@ -196,8 +196,8 @@ def _load_and_create_snapshot(grafana_url, file_path, http_headers):
 
 
 def check_snapshot_exists(grafana_url, snapshot_key, http_headers):
-    result = get_snapshot(snapshot_key, grafana_url, http_headers)
-    return result[0] == 200
+    (status, _) = get_snapshot(snapshot_key, grafana_url, http_headers)
+    return status == 200
     
 
 def create_snapshot(grafana_url, snapshot, http_headers, overwrite):
@@ -273,8 +273,8 @@ def check_folder_exists(grafana_url, folder, http_headers):
     if not folder.get('uid'):
         return False
 
-    result = send_grafana_get(f'{grafana_url}/api/folders/{folder["uid"]}', http_headers)
-    return result[0] == 200
+    (status, _) = send_grafana_get(f'{grafana_url}/api/folders/{folder["uid"]}', http_headers)
+    return status == 200
 
 
 # Restore annotations
@@ -283,17 +283,47 @@ def _load_and_create_annotation(grafana_url, file_path, http_headers):
         data = f.read()
 
     annotation = json.loads(data)
-    create_annotation(grafana_url, annotation, http_headers)
+    create_annotation(grafana_url, annotation, http_headers, overwrite=True)
 
 
-def create_annotation(grafana_url, annotation, http_headers):
-    result = send_grafana_post(f'{grafana_url}/api/annotations', json.dumps(annotation), http_headers)
+def create_annotation(grafana_url, annotation, http_headers, overwrite):
+    exists_before, old_id = check_annotation_exists_and_return_id(grafana_url, annotation, http_headers)
+
+    if exists_before:
+        if overwrite:
+            (status, content) = send_grafana_delete(f'{grafana_url}/api/annotations/{old_id}', http_headers)
+            logger.info("delete status: %s, msg: %s", status, content)
+        else:
+            print_styled_text([
+                (Style.WARNING, f'Create annotation id {old_id}: '),
+                (Style.ERROR, 'FAILURE'),
+                (Style.ERROR, ' (annotation with same time period, dashboardUID, and text already exists, please enable --overwrite if you want to overwrite the snapshot)')
+            ])
+            return False
+
+    (status, content) = send_grafana_post(f'{grafana_url}/api/annotations', json.dumps(annotation), http_headers)
     annotation_id = annotation['id']
     print_styled_text([
-        (Style.WARNING, f'Create annotation {annotation_id}: '),
-        (Style.SUCCESS, 'SUCCESS') if result[0] == 200 else (Style.ERROR, 'FAILURE')
+        (Style.WARNING, f'Create annotation id {annotation_id}: '),
+        (Style.SUCCESS, 'SUCCESS') if status == 200 else (Style.ERROR, 'FAILURE')
     ])
-    logger.info("status: %s, msg: %s", result[0], result[1])
+    logger.info("status: %s, msg: %s", status, content)
+
+    return status == 200
+
+
+def check_annotation_exists_and_return_id(grafana_url, annotation, http_headers):
+    ts_from = annotation['time']
+    ts_to = annotation['timeEnd']
+    (status, content) = search_annotations(grafana_url, ts_from, ts_to, http_headers)
+    for possible_matching_annotation in content:
+        # this will get the first matching annotation with the same text and dashboardUID and time period is the same as well.
+        # prevents duplicates, but if there is a change in anything about the annotation, it will be recreated.
+        # won't prevent: AMG1 migrate AMG2. Then change AMG1, then migrate again. AMG2 will have the old annotation and the new one (dependent on which fields you change).
+        if possible_matching_annotation['text'] == annotation['text'] and annotation['dashboardUID'] == possible_matching_annotation['dashboardUID']:
+            return True, possible_matching_annotation['id']
+        
+    return False, -1
 
 
 # Restore data sources

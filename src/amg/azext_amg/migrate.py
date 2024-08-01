@@ -1,7 +1,7 @@
 from knack.log import get_logger
 from azure.cli.core.style import print_styled_text, Style
 
-from .restore import create_dashboard, create_folder, create_library_panel, create_snapshot, create_annotation, create_datasource, set_uid_mapping, check_folder_exists, check_library_panel_exists, check_dashboard_exists, check_snapshot_exists
+from .restore import create_dashboard, create_folder, create_library_panel, create_snapshot, create_annotation, create_datasource, set_uid_mapping, check_folder_exists, check_library_panel_exists, check_dashboard_exists, check_snapshot_exists, check_annotation_exists_and_return_id
 from .backup_core import get_all_dashboards, get_all_library_panels, get_all_snapshots, get_all_folders, get_all_annotations, get_all_datasources
 
 logger = get_logger(__name__)
@@ -34,9 +34,9 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, o
     all_snapshots = get_all_snapshots(backup_url, backup_headers)
     snapshots_synced_summary, snapshots_overwrote_summary = _migrate_snapshots(all_snapshots, restore_url, restore_headers, dry_run, overwrite)
    
-    # get all the annotations
+    # get all the annotations (ONLY up the PAST 13 months)
     all_annotations = get_all_annotations(backup_url, backup_headers)
-    annotations_synced_summary = _migrate_annotations(all_annotations, restore_url, restore_headers, dry_run)
+    annotations_synced_summary, annotations_overwrote_summary = _migrate_annotations(all_annotations, restore_url, restore_headers, dry_run, overwrite)
 
     dry_run_status = "to be " if dry_run else ""
     output = [
@@ -80,7 +80,7 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, o
         output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
         output.append((Style.SECONDARY, "\n        ".join(dashboards)))
 
-    output.append((Style.SUCCESS, f"\n\nSnapshots {dry_run_status}updated:"))
+    output.append((Style.SUCCESS, f"\n\nSnapshots {dry_run_status}created:"))
     for folder, snapshots in snapshots_synced_summary.items():
         output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
         output.append((Style.SECONDARY, "\n        ".join(snapshots)))
@@ -90,9 +90,18 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, o
         output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
         output.append((Style.SECONDARY, "\n        ".join(snapshots)))
 
-    # TODO: annotations don't auto update, it creates a new one.
-    output.append((Style.SUCCESS, f"\n\nAnnotations {dry_run_status}updated (by id):"))
-    output.append((Style.PRIMARY, "\n    " + "\n    ".join(annotations_synced_summary)))
+    max_text_length = 50
+    output.append((Style.SUCCESS, f"\n\nAnnotations {dry_run_status}created:"))
+    if len(annotations_synced_summary) > 0:
+        # truncate it at less than 50 characters
+        postprocessed_synced_summary = [(a, b[:max_text_length] + "...") if len(b) > max_text_length else (a, b) for a, b in annotations_synced_summary]
+        output.append((Style.PRIMARY, "\n    " + "\n    ".join([f"id: {a}, text: {b}" for a, b in postprocessed_synced_summary])))
+
+    output.append((Style.SUCCESS, f"\n\nAnnotations {dry_run_status}overwritten:"))
+    if len(annotations_overwrote_summary) > 0:
+        # truncate it at less than 50 characters
+        postprocessed_overwrote_summary = [(a, b[:max_text_length] + "...") if len(b) > max_text_length else (a, b) for a, b in annotations_overwrote_summary]
+        output.append((Style.PRIMARY, "\n    " + "\n    ".join([f"id: {a}, text: {b}" for a, b in postprocessed_overwrote_summary])))
 
     print_styled_text(output)
 
@@ -263,14 +272,23 @@ def _migrate_snapshots(all_snapshots, restore_url, restore_headers, dry_run, ove
     return snapshots_synced_summary, snapshots_overwrote_summary
 
 
-def _migrate_annotations(all_annotations, restore_url, restore_headers, dry_run):
+def _migrate_annotations(all_annotations, restore_url, restore_headers, dry_run, overwrite):
     annotations_synced_summary = []
+    annotations_overwrote_summary = []
     for annotation in all_annotations:
+        exists_before, _ = check_annotation_exists_and_return_id(restore_url, annotation, restore_headers)
+
         if not dry_run:
-            create_annotation(restore_url, annotation, restore_headers)
+            is_successful = create_annotation(restore_url, annotation, restore_headers, overwrite)
+        else:
+            is_successful = True
 
         # can do text to get the text, annotations don't have titles.
         # annotations_synced_summary.append(annotation['text'])
-        annotations_synced_summary.append(str(annotation['id']))
+        if is_successful:
+            if exists_before:
+                annotations_overwrote_summary.append((str(annotation['id']), annotation['text']))
+            else:
+                annotations_synced_summary.append((str(annotation['id']), annotation['text']))
 
-    return annotations_synced_summary
+    return annotations_synced_summary, annotations_overwrote_summary
