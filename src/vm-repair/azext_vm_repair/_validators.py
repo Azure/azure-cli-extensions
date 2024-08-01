@@ -87,8 +87,13 @@ def validate_create(cmd, namespace):
         _prompt_repair_password(namespace)
     # Validate vm password
     validate_vm_password(namespace.repair_password, is_linux)
-    # Prompt input for public ip usage
-    if (not namespace.associate_public_ip) and (not namespace.yes):
+    
+    # Validate Public IP creation based on --yes or --no
+    if namespace.yes:
+        namespace.associate_public_ip = namespace.repair_vm_name + "PublicIP"
+    elif namespace.no:
+        namespace.associate_public_ip = '""'
+    else:
         _prompt_public_ip(namespace)
 
 
