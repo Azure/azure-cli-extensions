@@ -132,12 +132,7 @@ def _migrate_folders(all_folders, all_restore_folders, restore_url, restore_head
         if not is_successful:
             continue
 
-        # Make sure that it is successful to add it to the summary properly. dry_run just assume it will work.
-        if exists_before:
-            folders_overwrote_summary.append(content_folder_settings['title'])
-        else:
-            folders_created_summary.append(content_folder_settings['title'])
-
+        update_summary(exists_before, content_folder_settings['title'], folders_created_summary, folders_overwrote_summary)
 
     return folders_created_summary, folders_overwrote_summary
 
@@ -162,15 +157,7 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels_fi
             continue
 
         panel_folder_name = library_panel['meta']['folderName']
-        if exists_before:
-            if panel_folder_name not in library_panels_overwrote_summary:
-                library_panels_overwrote_summary[panel_folder_name] = []
-            library_panels_overwrote_summary[panel_folder_name].append(library_panel['name'])
-        else:
-            if panel_folder_name not in library_panels_created_summary:
-                library_panels_created_summary[panel_folder_name] = []
-            library_panels_created_summary[panel_folder_name].append(library_panel['name'])
-        
+        update_summary_dict(exists_before, panel_folder_name, library_panel['name'], library_panels_created_summary, library_panels_overwrote_summary)
 
     # we don't backup provisioned dashboards, so we don't need to restore them
     for dashboard in all_dashboards:
@@ -199,14 +186,7 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels_fi
             continue
 
         folder_title = dashboard['meta']['folderTitle']
-        if exists_before:
-            if folder_title not in dashboards_overwrote_summary:
-                dashboards_overwrote_summary[folder_title] = []
-            dashboards_overwrote_summary[folder_title].append(dashboard['dashboard']['title'])
-        else:
-            if folder_title not in dashboards_created_summary:
-                dashboards_created_summary[folder_title] = []
-            dashboards_created_summary[folder_title].append(dashboard['dashboard']['title'])
+        update_summary_dict(exists_before, folder_title, dashboard['dashboard']['title'], dashboards_created_summary, dashboards_overwrote_summary)
 
     return (library_panels_created_summary, library_panels_overwrote_summary, dashboards_created_summary, dashboards_overwrote_summary)
 
@@ -231,14 +211,7 @@ def _migrate_snapshots(all_snapshots, restore_url, restore_headers, dry_run, ove
             continue
 
         snapshot_folder_title = snapshot['meta']['folderTitle']
-        if exists_before:
-            if snapshot_folder_title not in snapshots_overwrote_summary:
-                snapshots_overwrote_summary[snapshot_folder_title] = []
-            snapshots_overwrote_summary[snapshot_folder_title].append(snapshot_name)
-        else:
-            if snapshot_folder_title not in snapshots_synced_summary:
-                snapshots_synced_summary[snapshot_folder_title] = []
-            snapshots_synced_summary[snapshot_folder_title].append(snapshot_name)
+        update_summary_dict(exists_before, snapshot_folder_title, snapshot_name, snapshots_synced_summary, snapshots_overwrote_summary)
 
     return snapshots_synced_summary, snapshots_overwrote_summary
 
@@ -253,15 +226,10 @@ def _migrate_annotations(all_annotations, restore_url, restore_headers, dry_run,
         if not dry_run:
             is_successful = create_annotation(restore_url, annotation, restore_headers, overwrite)
 
-        # can do text to get the text, annotations don't have titles.
-        # annotations_synced_summary.append(annotation['text'])
         if not is_successful:
             continue
 
-        if exists_before:
-            annotations_overwrote_summary.append((str(annotation['id']), annotation['text']))
-        else:
-            annotations_synced_summary.append((str(annotation['id']), annotation['text']))
+        update_summary(exists_before, (str(annotation['id']), annotation['text']), annotations_synced_summary, annotations_overwrote_summary)
 
     return annotations_synced_summary, annotations_overwrote_summary
 
