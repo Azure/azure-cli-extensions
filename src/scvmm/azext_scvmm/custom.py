@@ -69,6 +69,7 @@ from .vendored_sdks.scvmm.models import (
     VirtualNetwork,
     VirtualNetworkProperties,
     VmmServer,
+    VmmServerProperties,
     VmmCredential,
     AllocationMethod,
     NetworkInterface,
@@ -207,10 +208,12 @@ def connect_vmmserver(
     vmmserver = VmmServer(
         location=location,
         extended_location=get_extended_location(custom_location_id),
-        fqdn=fqdn,
-        port=port,
-        credentials=username_creds,
         tags=tags,
+        properties=VmmServerProperties(
+            fqdn=fqdn,
+            credentials=username_creds,
+            port=port,
+        ),
     )
 
     return sdk_no_wait(
