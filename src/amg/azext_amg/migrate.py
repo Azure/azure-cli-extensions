@@ -12,6 +12,8 @@ logger = get_logger(__name__)
 
 def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run,
             overwrite, folders_to_include=None, folders_to_exclude=None):
+    # pylint: disable=too-many-locals
+
     # get all datasources to be backedup
     all_datasources = get_all_datasources(backup_url, backup_headers)
     all_restore_datasources = get_all_datasources(restore_url, restore_headers)
