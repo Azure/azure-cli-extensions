@@ -7,7 +7,6 @@ on:
       branches:
         - main
       paths:
-        - '**.py'
         - '!**/test_*.py'
 
 permissions: {}
@@ -79,26 +78,32 @@ jobs:
             git --no-pager diff --diff-filter=ACMRT "$base_branch_pre"/"$base_branch"..."$diff_branch" > "$diff_code_file"
       - name: Display PR　Diff Modules
         run: |
-            for mod in "$changed_module_list"
-            do
-              echo changed module: "${mod}"
-            done
+          for mod in "$changed_module_list"
+          do
+            echo changed module: "${mod}"
+          done
+          if [ -z "$changed_module_list" ]; then
+            echo "no_changed_mod=true" >> $GITHUB_ENV
+          else
+            echo "no_changed_mod=false" >> $GITHUB_ENV
+          fi
       - name: Checkout CLI main repo
+        if: ${{ env.no_changed_mod == 'false' }}
         uses: actions/checkout@v4
         with:
            repository: Azure/azure-cli
            path: ./azure-cli
-      - name: Show workdirectory after cli cloned
-        run: |
-           pwd
-           ls
       - name: Move the main repo to the same level as the extension repo
+        if: ${{ env.no_changed_mod == 'false' }}
         run: |
-           mv azure-cli ../
-           cd ../
-           pwd
-           ls
+          pwd
+          ls
+          mv azure-cli ../
+          cd ../
+          pwd
+          ls
       - name: Install azdev
+        if: ${{ env.no_changed_mod == 'false' }}
         run: | 
            python -m pip install --upgrade pip
            set -ev
@@ -112,6 +117,7 @@ jobs:
            az --version
            pip list -v
       - name: Gen Base and Diff Metadata
+        if: ${{ env.no_changed_mod == 'false' }}
         id: get_comment_message
         env:
           pr_label_list: ${{ toJson(github.event.pull_request.labels.*.name) }}
@@ -141,12 +147,12 @@ jobs:
           for mod in "$changed_module_list"
           do
             echo changed module: "${mod}"
-            azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./"$diff_meta_path"/ && azdev extension remove "${mod}"
+            azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./"$diff_meta_path"/
           done
           ls ./"$base_meta_path"/
           ls ./"$diff_meta_path"/
           ls "$result_path"
-          git checkout "$base_branch_pre"/"$base_branch"
+          git checkout "$base_branch_pre"/"$base_branch" -- scripts
           python scripts/ci/release_version_cal.py
           ls "$result_path"
           cat "$result_path"/"$remove_labels_file"

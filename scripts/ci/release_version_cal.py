@@ -8,6 +8,7 @@
 import os
 import re
 import json
+import subprocess
 from packaging.version import parse
 
 from azdev.utilities.path import get_cli_repo_path, get_ext_repo_paths
@@ -62,9 +63,10 @@ def extract_module_version_update_info(mod_update_info, mod):
     -VERSION = '1.0.1'
     +VERSION = '1.1.1'
     --- a/src/monitor-control-service/HISTORY.RST
+    py files exclude tests, vendored_sdks and aaz folder
     """
     mod_update_info["setup_updated"] = False
-    module_setup_update_pattern = re.compile(r"\+\+\+.*?src/%s/setup.py" % mod)
+    module_setup_update_pattern = re.compile(r"\+\+\+.*?src/%s/(?!.*(?:tests|vendored_sdks|aaz)/).*?.py" % mod)
     module_version_update_pattern = re.compile(r"\+\s?VERSION\s?\=\s?[\'\"]([0-9\.b]+)[\'\"]")
     with open(diff_code_file, "r") as f:
         for line in f:
@@ -118,6 +120,14 @@ def extract_module_metadata_update_info(mod_update_info, mod):
                     mod_update_info["meta_updated"] = True
 
 
+def find_module_metadata_of_latest_version(mod):
+    cmd = ["azdev", "extension", "show", "--mod-name", mod, "--query", "pkg_name", "-o", "tsv"]
+    result = subprocess.run(cmd, stdout=subprocess.PIPE)
+    if result.returncode == 0:
+        mod = result.stdout.decode("utf8").strip()
+    return get_module_metadata_of_max_version(mod)
+
+
 def extract_module_version_info(mod_update_info, mod):
     next_version_pre_tag = get_next_version_pre_tag()
     next_version_segment_tag = get_next_version_segment_tag()
@@ -135,7 +145,7 @@ def extract_module_version_info(mod_update_info, mod):
     elif not os.path.exists(diff_meta_file):
         print("no diff meta file found for {0}".format(mod))
         return
-    pre_release = get_module_metadata_of_max_version(mod)
+    pre_release = find_module_metadata_of_latest_version(mod)
     if pre_release is None:
         next_version = cal_next_version(base_meta_file=base_meta_file, diff_meta_file=diff_meta_file,
                                         current_version=DEFAULT_VERSION,
