@@ -1095,7 +1095,7 @@ class AzureFirewallScenario(ScenarioTest):
         self.cmd("network firewall policy delete -n {policy} -g {rg}")
 
 
-    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_app_rules_with_customs', location="westus2")
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_app_rules_with_custom_headers_', location="westus2")
     def test_azure_firewall_policy_app_rules_with_custom_headers(self, resource_group):
         self.kwargs.update({
             'location': "westus2",
