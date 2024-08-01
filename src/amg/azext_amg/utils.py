@@ -194,3 +194,9 @@ def send_grafana_put(url, json_payload, http_post_headers):
     r = requests.put(url, headers=http_post_headers, data=json_payload)
     log_response(r)
     return (r.status_code, r.json())
+
+
+def send_grafana_delete(url, http_post_headers):
+    r = requests.delete(url, headers=http_post_headers)
+    log_response(r)
+    return (r.status_code, r.json())

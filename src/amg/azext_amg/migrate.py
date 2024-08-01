@@ -1,7 +1,7 @@
 from knack.log import get_logger
 from azure.cli.core.style import print_styled_text, Style
 
-from .restore import create_dashboard, create_folder, create_library_panel, create_snapshot, create_annotation, create_datasource, set_uid_mapping, check_folder_exists, check_library_panel_exists, check_dashboard_exists
+from .restore import create_dashboard, create_folder, create_library_panel, create_snapshot, create_annotation, create_datasource, set_uid_mapping, check_folder_exists, check_library_panel_exists, check_dashboard_exists, check_snapshot_exists
 from .backup_core import get_all_dashboards, get_all_library_panels, get_all_snapshots, get_all_folders, get_all_annotations, get_all_datasources
 
 logger = get_logger(__name__)
@@ -32,7 +32,7 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, o
 
     # get the list of snapshots to backup
     all_snapshots = get_all_snapshots(backup_url, backup_headers)
-    snapshots_synced_summary = _migrate_snapshots(all_snapshots, restore_url, restore_headers, dry_run)
+    snapshots_synced_summary, snapshots_overwrote_summary = _migrate_snapshots(all_snapshots, restore_url, restore_headers, dry_run, overwrite)
    
     # get all the annotations
     all_annotations = get_all_annotations(backup_url, backup_headers)
@@ -80,9 +80,13 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, o
         output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
         output.append((Style.SECONDARY, "\n        ".join(dashboards)))
 
-    # TODO: snapshots don't auto update, it creates a new one.
     output.append((Style.SUCCESS, f"\n\nSnapshots {dry_run_status}updated:"))
     for folder, snapshots in snapshots_synced_summary.items():
+        output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
+        output.append((Style.SECONDARY, "\n        ".join(snapshots)))
+
+    output.append((Style.SUCCESS, f"\n\nSnapshots {dry_run_status}overwritten:"))
+    for folder, snapshots in snapshots_overwrote_summary.items():
         output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
         output.append((Style.SECONDARY, "\n        ".join(snapshots)))
 
@@ -228,22 +232,35 @@ def _get_all_library_panels_uids_from_dashboards(all_dashboards):
     return library_panels_uids_to_update
 
 
-def _migrate_snapshots(all_snapshots, restore_url, restore_headers, dry_run):
+def _migrate_snapshots(all_snapshots, restore_url, restore_headers, dry_run, overwrite):
     snapshots_synced_summary = {}
-    for snapshot in all_snapshots:
-        if not dry_run:
-            create_snapshot(restore_url, snapshot, restore_headers)
-        
+    snapshots_overwrote_summary = {}
+    for snapshot_key, snapshot in all_snapshots:
+        snapshot['key'] = snapshot_key
+        exists_before = check_snapshot_exists(restore_url, snapshot['key'], restore_headers)
+
         try:
             snapshot_name = snapshot['dashboard']['title']
         except KeyError:
             snapshot_name = "Untitled Snapshot"
 
-        snapshot_folder_title = snapshot['meta']['folderTitle']
-        if snapshot_folder_title not in snapshots_synced_summary:
-            snapshots_synced_summary[snapshot_folder_title] = []
-        snapshots_synced_summary[snapshot_folder_title].append(snapshot_name)
-    return snapshots_synced_summary
+        if not dry_run:
+            is_successful = create_snapshot(restore_url, snapshot, restore_headers, overwrite)
+        else:
+            is_successful = True
+
+        if is_successful:
+            snapshot_folder_title = snapshot['meta']['folderTitle']
+            if exists_before:
+                if snapshot_folder_title not in snapshots_overwrote_summary:
+                    snapshots_overwrote_summary[snapshot_folder_title] = []
+                snapshots_overwrote_summary[snapshot_folder_title].append(snapshot_name)
+            else:
+                if snapshot_folder_title not in snapshots_synced_summary:
+                    snapshots_synced_summary[snapshot_folder_title] = []
+                snapshots_synced_summary[snapshot_folder_title].append(snapshot_name)
+
+    return snapshots_synced_summary, snapshots_overwrote_summary
 
 
 def _migrate_annotations(all_annotations, restore_url, restore_headers, dry_run):

@@ -147,7 +147,7 @@ def get_all_snapshots(grafana_url, http_headers):
 
             (individual_status, individual_content) = get_snapshot(snapshot['key'], grafana_url, http_headers)
             if individual_status == 200:
-                all_snapshots.append(individual_content)
+                all_snapshots.append((snapshot['key'], individual_content))
             else:
                 logger.warning("Getting snapshot %s FAILED, status: %s, msg: %s", snapshot['name'], individual_status, individual_content)
 

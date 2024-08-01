@@ -126,7 +126,7 @@ def _save_snapshots(grafana_url, backup_dir, timestamp, http_headers, **kwargs):
         os.makedirs(folder_path)
 
     all_snapshots = get_all_snapshots(grafana_url, http_headers)
-    for snapshot in all_snapshots:
+    for _, snapshot in all_snapshots:
         # same thing as the metadata[name] from the list snapshots API.
         _save_snapshot(snapshot['dashboard']['title'], snapshot, folder_path)
 

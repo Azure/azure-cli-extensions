@@ -13,8 +13,8 @@ from azure.cli.core.azclierror import ArgumentUsageError
 from azure.cli.core.style import print_styled_text, Style
 from knack.log import get_logger
 
-from .utils import (get_folder_id, send_grafana_post, send_grafana_patch, send_grafana_put,
-                    send_grafana_get, create_datasource_mapping, remap_datasource_uids)
+from .utils import (get_folder_id, send_grafana_post, send_grafana_patch, send_grafana_put, send_grafana_delete,
+                    send_grafana_get, create_datasource_mapping, remap_datasource_uids, get_snapshot)
 
 logger = get_logger(__name__)
 
@@ -192,22 +192,42 @@ def _load_and_create_snapshot(grafana_url, file_path, http_headers):
         data = f.read()
 
     snapshot = json.loads(data)
-    create_snapshot(grafana_url, snapshot, http_headers)
+    create_snapshot(grafana_url, snapshot, http_headers, overwrite=True)
+
+
+def check_snapshot_exists(grafana_url, snapshot_key, http_headers):
+    result = get_snapshot(snapshot_key, grafana_url, http_headers)
+    return result[0] == 200
     
 
-def create_snapshot(grafana_url, snapshot, http_headers):
+def create_snapshot(grafana_url, snapshot, http_headers, overwrite):
     try:
         snapshot['name'] = snapshot['dashboard']['title']
     except KeyError:
         snapshot['name'] = "Untitled Snapshot"
+    snapshot_name = snapshot['name']
+
+    exists_before = check_snapshot_exists(grafana_url, snapshot['key'], http_headers)
+    if exists_before:
+        if overwrite:
+            (status, content) = send_grafana_delete(f'{grafana_url}/api/snapshots/{snapshot["key"]}', http_headers)
+            logger.info("delete status: %s, msg: %s", status, content)
+        else:
+            print_styled_text([
+                (Style.WARNING, f'Create snapshot {snapshot_name}: '),
+                (Style.ERROR, 'FAILURE'),
+                (Style.ERROR, ' (name or UID already exists, please enable --overwrite if you want to overwrite the snapshot)')
+            ])
+            return False
 
     (status, content) = send_grafana_post(f'{grafana_url}/api/snapshots', json.dumps(snapshot), http_headers)
-    snapshot_name = snapshot['name']
     print_styled_text([
         (Style.WARNING, f'Create snapshot {snapshot_name}: '),
         (Style.SUCCESS, 'SUCCESS') if status == 200 else (Style.ERROR, 'FAILURE')
     ])
     logger.info("status: %s, msg: %s", status, content)
+
+    return status == 200
 
 
 # Restore folders
