@@ -178,10 +178,10 @@ def get_all_folders(grafana_url, http_headers, **kwargs):
         else:
             logger.warning("Getting folder %s FAILED", folder['title'])
             logger.info("settings status: %s, settings content: %s, permissions status: %s, permissions content: %s",
-                status_folder_settings,
-                content_folder_settings,
-                status_folder_permissions,
-                content_folder_permissions)
+                        status_folder_settings,
+                        content_folder_settings,
+                        status_folder_permissions,
+                        content_folder_permissions)
 
     return individual_folders
 

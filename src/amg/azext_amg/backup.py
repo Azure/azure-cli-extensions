@@ -15,7 +15,8 @@ import tarfile
 
 from knack.log import get_logger
 
-from .backup_core import get_all_dashboards, get_all_library_panels, get_all_folders, get_all_snapshots, get_all_annotations, get_all_datasources
+from .backup_core import (get_all_dashboards, get_all_library_panels, get_all_folders, get_all_snapshots,
+                          get_all_annotations, get_all_datasources)
 
 logger = get_logger(__name__)
 
@@ -157,7 +158,7 @@ def _save_folders(grafana_url, backup_dir, timestamp, http_headers, **kwargs):
     log_file_path = folder_path + '/' + log_file
     with open(log_file_path, 'w+', encoding="utf8") as f:
         for folder_set in folders:
-            (folder_settings, folder_permissions) = folder_set
+            (folder_settings, _) = folder_set
             folder_uri = "uid/" + folder_settings['uid']
 
             _save_folder_setting(

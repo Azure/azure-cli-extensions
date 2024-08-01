@@ -14,7 +14,8 @@ from azure.cli.core.style import print_styled_text, Style
 from knack.log import get_logger
 
 from .utils import (get_folder_id, send_grafana_post, send_grafana_patch, send_grafana_put, send_grafana_delete,
-                    send_grafana_get, create_datasource_mapping, remap_datasource_uids, get_snapshot, search_annotations)
+                    send_grafana_get, create_datasource_mapping, remap_datasource_uids, get_snapshot,
+                    search_annotations)
 
 logger = get_logger(__name__)
 
@@ -115,7 +116,7 @@ def create_dashboard(grafana_url, content, http_headers, overwrite):
     # error message when library panels are missing
     if result[0] == 500 and result[1].get('message') == 'Error while connecting library panels':
         to_print.append(
-            (Style.ERROR, ' (Please make sure to include the folders which holds the library panels for this dashboard)'))
+            (Style.ERROR, ' (missing library panels, please include the library panels folders for this dashboard)'))
 
     print_styled_text(to_print)
     logger.info("status: %s, msg: %s", result[0], result[1])
@@ -172,7 +173,8 @@ def create_library_panel(grafana_url, payload, http_headers, overwrite):
             print_styled_text([
                 (Style.WARNING, f'Create library panel {panel_name}: '),
                 (Style.ERROR, 'FAILURE'),
-                (Style.ERROR, ' (name or UID already exists, please enable --overwrite if you want to overwrite the library panel)')
+                (Style.ERROR, ' (name or UID already exists,'),
+                (Style.ERROR, ' please enable --overwrite if you want to overwrite the library panel)')
             ])
 
     else:
@@ -220,7 +222,8 @@ def create_snapshot(grafana_url, snapshot, http_headers, overwrite):
             print_styled_text([
                 (Style.WARNING, f'Create snapshot {snapshot_name}: '),
                 (Style.ERROR, 'FAILURE'),
-                (Style.ERROR, ' (name or UID already exists, please enable --overwrite if you want to overwrite the snapshot)')
+                (Style.ERROR, ' (name or UID already exists,'),
+                (Style.ERROR, ' please enable --overwrite if you want to overwrite the snapshot)')
             ])
             return False
 
@@ -302,7 +305,8 @@ def create_annotation(grafana_url, annotation, http_headers, overwrite):
             print_styled_text([
                 (Style.WARNING, f'Create annotation id {old_id}: '),
                 (Style.ERROR, 'FAILURE'),
-                (Style.ERROR, ' (annotation with same time period, dashboardUID, and text already exists, please enable --overwrite if you want to overwrite the snapshot)')
+                (Style.ERROR, ' (annotation with same time period, dashboardUID, and text already exists,'),
+                (Style.ERROR, ' please enable --overwrite if you want to overwrite the snapshot)')
             ])
             return False
 
@@ -321,12 +325,16 @@ def check_annotation_exists_and_return_id(grafana_url, annotation, http_headers)
     ts_from = annotation['time']
     ts_to = annotation['timeEnd']
     (status, content) = search_annotations(grafana_url, ts_from, ts_to, http_headers)
+    if status != 200:
+        return False, -1
+
     for possible_matching_annotation in content:
-        # this will get the first matching annotation with the same text and dashboardUID and time period is the same as well.
+        # this will get the first matching annotation with the same text and dashboardUID and time period
         # prevents duplicates, but if there is a change in anything about the annotation, it will be recreated.
         # won't prevent: AMG1 migrate AMG2. Then change AMG1, then migrate again.
         # AMG2 will have the old annotation and the new one (dependent on which fields you change).
-        if possible_matching_annotation['text'] == annotation['text'] and annotation['dashboardUID'] == possible_matching_annotation['dashboardUID']:
+        if (possible_matching_annotation['text'] == annotation['text'] and
+           annotation['dashboardUID'] == possible_matching_annotation['dashboardUID']):
             return True, possible_matching_annotation['id']
 
     return False, -1

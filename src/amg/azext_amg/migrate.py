@@ -1,8 +1,11 @@
 from knack.log import get_logger
 from azure.cli.core.style import print_styled_text, Style
 
-from .restore import create_dashboard, create_folder, create_library_panel, create_snapshot, create_annotation, create_datasource, set_uid_mapping, check_folder_exists, check_library_panel_exists, check_dashboard_exists, check_snapshot_exists, check_annotation_exists_and_return_id
-from .backup_core import get_all_dashboards, get_all_library_panels, get_all_snapshots, get_all_folders, get_all_annotations, get_all_datasources
+from .restore import (create_dashboard, create_folder, create_library_panel, create_snapshot, create_annotation,
+                      create_datasource, set_uid_mapping, check_folder_exists, check_library_panel_exists,
+                      check_dashboard_exists, check_snapshot_exists, check_annotation_exists_and_return_id)
+from .backup_core import (get_all_dashboards, get_all_library_panels, get_all_snapshots, get_all_folders,
+                          get_all_annotations, get_all_datasources)
 
 logger = get_logger(__name__)
 
@@ -67,7 +70,7 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run,
     ]
 
     append_summary(output, dry_run_status + "created", "Datasources", datasources_created_summary,
-                   "\nDatasources were created, make sure to manually input credentials for those datasources in Grafana (if you have to).")
+                   "\nDatasources were created, credentials ARE NOT migrated.")
     append_summary(output, dry_run_status + "remapped", "Datasources", datasources_remapped_summary)
     append_summary(output, dry_run_status + "created", "Folders", folders_created_summary)
     append_summary(output, dry_run_status + "overwritten", "Folders", folders_overwrote_summary)
@@ -206,9 +209,10 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels_fi
             # this logic doesn't apply to library panel since it is handled via PATCH.
             if exists_before and not overwrite:
                 dashboard_title = dashboard['dashboard'].get('title', '')
+                error_msg = 'dashboard already exists. Please enable --overwrite if you want to overwrite the dashboard'
                 print_styled_text([
                     (Style.WARNING, f'Create dashboard {dashboard_title}: '),
-                    (Style.ERROR, 'FAILURE (dashboard already exists. Please enable --overwrite if you want to overwrite the dashboard)')
+                    (Style.ERROR, f'FAILURE {error_msg}')
                 ])
                 is_successful = False
             else:
