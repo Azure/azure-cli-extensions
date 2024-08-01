@@ -37,19 +37,6 @@ def transform_sensitive_values(response_json):
     return response_json
 
 
-def transform_usages_output(result):
-    table_result = []
-    for item in result["value"]:
-        value = {
-            "Name": item["name"]["value"],
-            "Usage": item["usage"],
-            "Limit": item["limit"]
-        }
-        table_result.append(value)
-
-    return table_result
-
-
 def transform_telemetry_data_dog_values(response_json):
     containerapp_env_def = response_json
 

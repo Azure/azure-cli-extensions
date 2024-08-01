@@ -11,23 +11,6 @@ helps['containerapp'] = """
     short-summary: Manage Azure Container Apps.
 """
 
-helps['containerapp list-usages'] = """
-    type: command
-    short-summary: List usages of subscription level quotas in specific region.
-    examples:
-    - name: List usages of  quotas in specific region.
-      text: |
-          az containerapp list-usages -l eastus
-"""
-
-helps['containerapp env list-usages'] = """
-    type: command
-    short-summary: List usages of quotas for specific managed environment.
-    examples:
-    - name: List usages of quotas for specific managed environment.
-      text: |
-          az containerapp env list-usages -n MyEnv -g MyResourceGroup
-"""
 
 helps['containerapp env dapr-component resiliency'] = """
     type: group
@@ -177,17 +160,6 @@ helps['containerapp up'] = """
           az containerapp up -n my-containerapp --image myregistry.azurecr.io/myImage:myTag --environment MyConnectedEnvironmentId
 """
 
-helps['containerapp show-custom-domain-verification-id'] = """
-    type: command
-    short-summary: Show the verification id for binding app or environment custom domains
-    examples:
-    - name: Get the verification id, which needs to be added as a TXT record for app custom domain to verify domain ownership
-      text: |
-          az containerapp show-custom-domain-verification-id
-    - name: Get the verification id, which needs to be added as a TXT record for custom environment DNS suffix to verify domain ownership
-      text: |
-          az containerapp show-custom-domain-verification-id
-"""
 
 helps['containerapp replica count'] = """
     type: command

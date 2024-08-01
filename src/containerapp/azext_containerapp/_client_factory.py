@@ -15,6 +15,7 @@ def ex_handler_factory(no_throw=False):
         import json
         try:
             content = json.loads(ex.response.content)
+            detail = None
             if 'message' in content:
                 detail = content['message']
             elif 'Message' in content:
