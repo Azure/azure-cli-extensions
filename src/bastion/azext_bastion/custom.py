@@ -233,6 +233,38 @@ def _get_rdp_path(rdp_command="mstsc"):
     return rdp_path
 
 
+def get_host_name(cmd, target_resource_id, resource_group_name):
+    credential = AzureCliCredential()
+    subscription_id = get_subscription_id(cmd.cli_ctx)
+    resource_graph_client = ResourceGraphClient(credential)
+
+    # Query to get the VM resource
+    query = f"""
+        Resources
+        | where type == 'microsoft.compute/virtualmachines'
+        | where tolower(id) == tolower('{target_resource_id}')
+        | project id, name, resourceGroup
+        """
+    query_request = QueryRequest(
+        subscriptions=[subscription_id],
+        query=query
+    )
+    query_response = resource_graph_client.resources(query_request)
+
+    vm_name = None
+    hostname = None
+    for result in query_response.data:
+        if result['id'].lower() == target_resource_id.lower() and result['resourceGroup'].lower() == resource_group_name.lower():
+            vm_name = result['name']
+            break
+    if vm_name:
+        compute_client = ComputeManagementClient(credential, subscription_id)
+        vm_instance = compute_client.virtual_machines.get(resource_group_name, vm_name)
+        hostname = vm_instance.os_profile.computer_name
+
+    return hostname
+
+
 def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_name, bastion_host_name,
                      auth_type=None, resource_port=None, disable_gateway=False, configure=False, enable_mfa=False):
     import os
@@ -292,11 +324,11 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
             launch_and_wait(command)
             tunnel_server.cleanup()
         else:
-            hostname = get_host_name(target_resource_id, resource_group_name)
+            hostname = get_host_name(cmd, target_resource_id, resource_group_name)
             access_token = Profile(cli_ctx=cmd.cli_ctx).get_raw_token()[0][2].get("accessToken")
             logger.debug("Response %s", access_token)
             web_address = f"https://{bastion_endpoint}/api/rdpfile?resourceId={target_resource_id}&format=rdp" \
-                          f"&rdpport={resource_port}&enablerdsaad={enable_mfa}"
+                          f"&rdpport={resource_port}&enablerdsaad={enable_mfa}&hostname={hostname}"
 
             headers = {
                 "Authorization": f"Bearer {access_token}",
@@ -321,40 +353,6 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
             launch_and_wait(command)
     else:
         raise UnrecognizedArgumentError("Platform is not supported for this command. Supported platforms: Windows")
-
-
-def get_host_name(cmd, target_resource_id, resource_group_name):
-    credential = AzureCliCredential()
-    subscription_id = get_subscription_id(cmd.cli_ctx)
-    resource_graph_client = ResourceGraphClient(credential)
-
-    # Query to get the VM resource
-    query = f"""
-        Resources
-        | where type == 'microsoft.compute/virtualmachines'
-        | where id == '{target_resource_id}'
-        | project id, name, resourceGroup
-        """
-
-    query_request = QueryRequest(
-        subscriptions=[subscription_id],
-        query=query
-    )
-    query_response = resource_graph_client.resources(query_request)
-
-    # Get vm name from query response
-    vm_name = None
-    for result in query_response.data:
-        if result['id'] == target_resource_id and result['resourceGroup'] == resource_group_name:
-            vm_name = result['name']
-            break
-
-    if vm_name:
-        compute_client = ComputeManagementClient(credential, subscription_id)
-        vm_instance = compute_client.virtual_machines.get(resource_group_name, vm_name)
-        hostname = vm_instance.os_profile.computer_name
-
-    return hostname
 
 def _is_ipconnect_request(bastion, target_ip_address):
     if target_ip_address:
