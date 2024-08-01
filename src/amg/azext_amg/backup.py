@@ -1,12 +1,17 @@
-from glob import glob
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 import datetime
-import tarfile
-import os
-import shutil
+from glob import glob
 import json
-import re
+import os
 import random
+import shutil
 import string
+import re
+import tarfile
 
 from knack.log import get_logger
 
@@ -187,7 +192,6 @@ def _save_annotations(grafana_url, backup_dir, timestamp, http_headers, **kwargs
 
 
 def _save_annotation(file_name, annotation_setting, folder_path):
-    logger.info(annotation_setting)
     file_path = _save_json(file_name, annotation_setting, folder_path, 'annotation')
     logger.warning("Annotation: \"%s\" is saved", annotation_setting.get('text'))
     logger.info("    -> %s", file_path)
@@ -207,7 +211,6 @@ def _save_datasources(grafana_url, backup_dir, timestamp, http_headers, **kwargs
 
 
 def _save_datasource(file_name, datasource_setting, folder_path):
-    logger.info(datasource_setting)
     file_path = _save_json(file_name, datasource_setting, folder_path, 'datasource')
     logger.warning("Datasource: \"%s\" is saved", datasource_setting['name'])
     logger.info("    -> %s", file_path)

@@ -3,15 +3,9 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import datetime
 from glob import glob
 import json
-import os
-import random
-import shutil
-import string
 import re
-import tarfile
 import time
 
 from knack.log import get_logger
