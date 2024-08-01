@@ -57,7 +57,7 @@ def get_all_dashboards(grafana_url, http_headers, **kwargs):
         current_page += 1
         current_run_dashboards = _get_individual_dashboard_setting(dashboards, grafana_url, http_headers)
         # add the previous list to the list where we added everything.
-        all_dashboards = all_dashboards + current_run_dashboards
+        all_dashboards += current_run_dashboards
         _print_an_empty_line()
 
     return all_dashboards
@@ -79,19 +79,21 @@ def _get_all_dashboards_in_grafana(page, limit, grafana_url, http_headers):
 
 
 def _get_individual_dashboard_setting(dashboards, grafana_url, http_headers):
+    if not dashboards:
+        return []
+
     all_individual_dashboards = []
-    if dashboards:
-        for board in dashboards:
-            board_uri = "uid/" + board['uid']
+    for board in dashboards:
+        board_uri = "uid/" + board['uid']
 
-            (status, content) = get_dashboard(board_uri, grafana_url, http_headers)
-            if status == 200:
-                # do not back up provisioned dashboards
-                if content['meta']['provisioned']:
-                    logger.warning("Dashboard: \"%s\" is provisioned, skipping...", board['title'])
-                    continue
+        (status, content) = get_dashboard(board_uri, grafana_url, http_headers)
+        if status == 200:
+            # do not back up provisioned dashboards
+            if content['meta']['provisioned']:
+                logger.warning("Dashboard: \"%s\" is provisioned, skipping...", board['title'])
+                continue
 
-                all_individual_dashboards.append(content)
+            all_individual_dashboards.append(content)
 
     return all_individual_dashboards
 
@@ -107,10 +109,8 @@ def get_all_library_panels(grafana_url, http_headers):
             break
         current_page += 1
 
-        # don't log here, log later depending on backup versus migrate.
-
         # Since we are not excluding anything. We can just add the panels to the list since this is all the data we need.
-        all_panels = all_panels + panels
+        all_panels += panels
         _print_an_empty_line()
 
     return all_panels
@@ -131,31 +131,30 @@ def _get_all_library_panels_in_grafana(page, grafana_url, http_headers):
 def get_all_snapshots(grafana_url, http_headers):
     (status, content) = search_snapshot(grafana_url, http_headers)
 
-    if status == 200:
-        all_snapshots_metadata = []
-        for snapshot in content:
-            if not snapshot['external']:
-                all_snapshots_metadata.append(snapshot)
-            else:
-                logger.warning("External snapshot: %s is skipped", snapshot['name'])
-
-        logger.info("There are %s snapshots:", len(all_snapshots_metadata))
-
-        all_snapshots = []
-        for snapshot in all_snapshots_metadata:
-            logger.info(snapshot)
-
-            (individual_status, individual_content) = get_snapshot(snapshot['key'], grafana_url, http_headers)
-            if individual_status == 200:
-                all_snapshots.append((snapshot['key'], individual_content))
-            else:
-                logger.warning("Getting snapshot %s FAILED, status: %s, msg: %s", snapshot['name'], individual_status, individual_content)
-
-        return all_snapshots
-    else:
+    if status != 200:
         logger.warning("Query snapshot failed, status: %s, msg: %s", status, content)
+        return []
 
-    return []
+    all_snapshots_metadata = []
+    for snapshot in content:
+        if not snapshot['external']:
+            all_snapshots_metadata.append(snapshot)
+        else:
+            logger.warning("External snapshot: %s is skipped", snapshot['name'])
+
+    logger.info("There are %s snapshots:", len(all_snapshots_metadata))
+
+    all_snapshots = []
+    for snapshot in all_snapshots_metadata:
+        logger.info(snapshot)
+
+        (individual_status, individual_content) = get_snapshot(snapshot['key'], grafana_url, http_headers)
+        if individual_status == 200:
+            all_snapshots.append((snapshot['key'], individual_content))
+        else:
+            logger.warning("Getting snapshot %s FAILED, status: %s, msg: %s", snapshot['name'], individual_status, individual_content)
+
+    return all_snapshots
 
 
 def get_all_folders(grafana_url, http_headers, **kwargs):

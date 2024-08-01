@@ -40,70 +40,49 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run, o
 
     dry_run_status = "to be " if dry_run else ""
     output = [
-        (Style.IMPORTANT, f"\n\nDry run: {dry_run if dry_run else False}\n"),
-        (Style.IMPORTANT, f"Overwrite dashboards, folders, and library panels: {overwrite if overwrite else False}\n"),
+        (Style.IMPORTANT, f"\n\nDry run: {dry_run}\n"),
+        (Style.IMPORTANT, f"Overwrite dashboards, folders, and library panels: {overwrite}\n"),
     ]
 
-    if len(datasources_created_summary) > 0:
-        output.append((Style.SUCCESS, f"\n\nDatasources {dry_run_status}created:"))
-        output.append((Style.IMPORTANT, f"\nDatasources were created, make sure to manually input credentials for those datasources in Grafana (if you have to)."))
-        output.append((Style.PRIMARY, "\n    " + "\n    ".join(datasources_created_summary)))
-    if len(datasources_remapped_summary) > 0:
-        output.append((Style.SUCCESS, f"\n\nDatasources {dry_run_status}remapped:"))
-        output.append((Style.PRIMARY, "\n    " + "\n    ".join(datasources_remapped_summary)))
+    append_summary(output, dry_run_status + "created", "Datasources", datasources_created_summary, 
+               "\nDatasources were created, make sure to manually input credentials for those datasources in Grafana (if you have to).")
+    append_summary(output, dry_run_status + "remapped", "Datasources", datasources_remapped_summary)
+    append_summary(output, dry_run_status + "created", "Folders", folders_created_summary)
+    append_summary(output, dry_run_status + "overwritten", "Folders", folders_overwrote_summary)
 
-    if len(folders_created_summary) > 0:
-        output.append((Style.SUCCESS, f"\n\nFolders {dry_run_status}created:"))
-        output.append((Style.PRIMARY, "\n    " + "\n    ".join(folders_created_summary)))
+    append_nested_summary(output, dry_run_status + "created", "Library panels", library_panels_created_summary)
+    append_nested_summary(output, dry_run_status + "overwritten", "Library panels", library_panels_overwrote_summary)
+    append_nested_summary(output, dry_run_status + "created", "Dashboards", dashboards_created_summary)
+    append_nested_summary(output, dry_run_status + "overwritten", "Dashboards", dashboards_overwrote_summary)
+    append_nested_summary(output, dry_run_status + "created", "Snapshots", snapshots_synced_summary)
+    append_nested_summary(output, dry_run_status + "overwritten", "Snapshots", snapshots_overwrote_summary)
 
-    if len(folders_overwrote_summary) > 0:
-        output.append((Style.SUCCESS, f"\n\nFolders {dry_run_status}overwritten:"))
-        output.append((Style.PRIMARY, "\n    " + "\n    ".join(folders_overwrote_summary)))
-
-    output.append((Style.SUCCESS, f"\n\nLibrary panels {dry_run_status}created:"))
-    for folder, panels in library_panels_created_summary.items():
-        output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
-        output.append((Style.SECONDARY, "\n        ".join(panels)))
-
-    output.append((Style.SUCCESS, f"\n\nLibrary panels {dry_run_status}overwritten:"))
-    for folder, panels in library_panels_overwrote_summary.items():
-        output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
-        output.append((Style.SECONDARY, "\n        ".join(panels)))
-
-    output.append((Style.SUCCESS, f"\n\nDashboards {dry_run_status}created:"))
-    for folder, dashboards in dashboards_created_summary.items():
-        output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
-        output.append((Style.SECONDARY, "\n        ".join(dashboards)))
-
-    output.append((Style.SUCCESS, f"\n\nDashboards {dry_run_status}overwritten:"))
-    for folder, dashboards in dashboards_overwrote_summary.items():
-        output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
-        output.append((Style.SECONDARY, "\n        ".join(dashboards)))
-
-    output.append((Style.SUCCESS, f"\n\nSnapshots {dry_run_status}created:"))
-    for folder, snapshots in snapshots_synced_summary.items():
-        output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
-        output.append((Style.SECONDARY, "\n        ".join(snapshots)))
-
-    output.append((Style.SUCCESS, f"\n\nSnapshots {dry_run_status}overwritten:"))
-    for folder, snapshots in snapshots_overwrote_summary.items():
-        output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
-        output.append((Style.SECONDARY, "\n        ".join(snapshots)))
-
-    max_text_length = 50
-    output.append((Style.SUCCESS, f"\n\nAnnotations {dry_run_status}created:"))
-    if len(annotations_synced_summary) > 0:
-        # truncate it at less than 50 characters
-        postprocessed_synced_summary = [(a, b[:max_text_length] + "...") if len(b) > max_text_length else (a, b) for a, b in annotations_synced_summary]
-        output.append((Style.PRIMARY, "\n    " + "\n    ".join([f"id: {a}, text: {b}" for a, b in postprocessed_synced_summary])))
-
-    output.append((Style.SUCCESS, f"\n\nAnnotations {dry_run_status}overwritten:"))
-    if len(annotations_overwrote_summary) > 0:
-        # truncate it at less than 50 characters
-        postprocessed_overwrote_summary = [(a, b[:max_text_length] + "...") if len(b) > max_text_length else (a, b) for a, b in annotations_overwrote_summary]
-        output.append((Style.PRIMARY, "\n    " + "\n    ".join([f"id: {a}, text: {b}" for a, b in postprocessed_overwrote_summary])))
+    append_annotations_summary(output, dry_run_status + "created", "Annotations", annotations_synced_summary)
+    append_annotations_summary(output, dry_run_status + "overwritten", "Annotations", annotations_overwrote_summary)
 
     print_styled_text(output)
+
+
+def append_summary(output, status, summary_type, summary_data, important_message=None):
+    if len(summary_data) > 0:
+        output.append((Style.SUCCESS, f"\n\n{summary_type} {status}:"))
+        if important_message:
+            output.append((Style.IMPORTANT, important_message))
+        output.append((Style.PRIMARY, "\n    " + "\n    ".join(summary_data)))
+
+
+def append_nested_summary(output, status, summary_type, summary_data):
+    output.append((Style.SUCCESS, f"\n\n{summary_type} {status}:"))
+    for folder, items in summary_data.items():
+        output.append((Style.PRIMARY, f"\n    {folder}/\n        "))
+        output.append((Style.SECONDARY, "\n        ".join(items)))
+
+
+def append_annotations_summary(output, status, summary_type, annotations_summary, max_text_length=50):
+    output.append((Style.SUCCESS, f"\n\n{summary_type} {status}:"))
+    if len(annotations_summary) > 0:
+        postprocessed_summary = [(a, b[:max_text_length] + "...") if len(b) > max_text_length else (a, b) for a, b in annotations_summary]
+        output.append((Style.PRIMARY, "\n    " + "\n    ".join([f"id: {a}, text: {b}" for a, b in postprocessed_summary])))
 
 
 def _migrate_datasources(all_datasources, all_restore_datasources, restore_url, restore_headers, dry_run):
@@ -182,12 +161,12 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels_fi
             panel_folder_name = library_panel['meta']['folderName']
             if exists_before:
                 if panel_folder_name not in library_panels_overwrote_summary:
-                    library_panels_overwrote_summary[panel_folder_name] = set()
-                library_panels_overwrote_summary[panel_folder_name].add(library_panel['name'])
+                    library_panels_overwrote_summary[panel_folder_name] = []
+                library_panels_overwrote_summary[panel_folder_name].append(library_panel['name'])
             else:
                 if panel_folder_name not in library_panels_created_summary:
-                    library_panels_created_summary[panel_folder_name] = set()
-                library_panels_created_summary[panel_folder_name].add(library_panel['name'])
+                    library_panels_created_summary[panel_folder_name] = []
+                library_panels_created_summary[panel_folder_name].append(library_panel['name'])
         
 
     # we don't backup provisioned dashboards, so we don't need to restore them
@@ -226,19 +205,6 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels_fi
                 dashboards_created_summary[folder_title].append(dashboard['dashboard']['title'])
 
     return (library_panels_created_summary, library_panels_overwrote_summary, dashboards_created_summary, dashboards_overwrote_summary)
-
-
-def _get_all_library_panels_uids_from_dashboards(all_dashboards):
-    library_panels_uids_to_update = set()
-    for dashboard in all_dashboards:
-        if ('dashboard' not in dashboard) or ('panels' not in dashboard['dashboard']):
-            continue
-
-        for panel in dashboard['dashboard']['panels']:
-            if panel.get('libraryPanel'):
-                library_panels_uids_to_update.add(panel['libraryPanel']['uid'])
-
-    return library_panels_uids_to_update
 
 
 def _migrate_snapshots(all_snapshots, restore_url, restore_headers, dry_run, overwrite):
