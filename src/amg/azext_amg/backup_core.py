@@ -203,14 +203,13 @@ def get_all_annotations(grafana_url, http_headers):
     thirteen_months_retention = now - (13 * one_month_in_ms)
 
     while ts_from > thirteen_months_retention:
-        status_code_and_content = search_annotations(grafana_url, ts_from, ts_to, http_headers)
-        if status_code_and_content[0] == 200:
-            annotations_batch = status_code_and_content[1]
+        (status, content) = search_annotations(grafana_url, ts_from, ts_to, http_headers)
+        if status == 200:
+            annotations_batch = content
             logger.info("There are %s annotations:", len(annotations_batch))
             all_annotations += annotations_batch
         else:
-            logger.warning("Query annotation FAILED, status: %s, msg: %s", status_code_and_content[0],
-                           status_code_and_content[1])
+            logger.warning("Query annotation FAILED, status: %s, msg: %s", status, content)
 
         ts_to = ts_from
         ts_from = ts_from - one_month_in_ms
@@ -219,15 +218,14 @@ def get_all_annotations(grafana_url, http_headers):
 
 
 def get_all_datasources(grafana_url, http_headers):
-    status_code_and_content = search_datasource(grafana_url, http_headers)
-    if status_code_and_content[0] == 200:
-        datasources = status_code_and_content[1]
+    (status, content) = search_datasource(grafana_url, http_headers)
+    if status == 200:
+        datasources = content
         logger.info("There are %s datasources:", len(datasources))
         return datasources
 
     else:
-        logger.info("Query datasource FAILED, status: %s, msg: %s", status_code_and_content[0],
-                    status_code_and_content[1])
+        logger.info("Query datasource FAILED, status: %s, msg: %s", status, content)
 
 
 def _save_json(file_name, data, folder_path, extension, pretty_print=None):
