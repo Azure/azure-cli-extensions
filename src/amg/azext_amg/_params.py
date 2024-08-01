@@ -66,7 +66,7 @@ def load_arguments(self, _):
         c.argument("archive_file", options_list=["-a", "--archive-file"], help="archive to restore Grafana artifacts from")
         c.argument("remap_data_sources", options_list=["-r", "--remap-data-sources"], arg_type=get_three_state_flag(),
                    help="during restoration, update dashboards to reference data sources defined at the destination workspace through name matching")
-        
+
     with self.argument_context("grafana migrate") as c:
         c.argument("source_grafana_endpoint", options_list=["-s", "--src-endpoint"], help="Grafana instance endpoint to migrate from")
         c.argument("source_grafana_token_or_api_key", options_list=["-t", "--src-token-or-key"], help="Grafana instance service token (or api key) to get access to migrate from")

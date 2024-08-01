@@ -3,7 +3,6 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from glob import glob
 import json
 import re
 import time
@@ -11,7 +10,7 @@ import time
 from knack.log import get_logger
 
 from .utils import search_dashboard, get_dashboard
-from .utils import search_library_panels, get_library_panel
+from .utils import search_library_panels
 from .utils import search_snapshot, get_snapshot
 from .utils import search_folders, get_folder, get_folder_permissions
 from .utils import search_datasource
@@ -25,7 +24,7 @@ def get_all_dashboards(grafana_url, http_headers, **kwargs):
     current_page = 1
 
     all_dashboards = []
-    
+
     # Go through all the pages, we are unsure how many pages there are
     while True:
         dashboards = _get_all_dashboards_in_grafana(current_page, limit, grafana_url, http_headers)
@@ -103,7 +102,8 @@ def get_all_library_panels(grafana_url, http_headers):
             break
         current_page += 1
 
-        # Since we are not excluding anything. We can just add the panels to the list since this is all the data we need.
+        # Since we are not excluding anything. We can just add the panels to the
+        # list since this is all the data we need.
         all_panels += panels
         _print_an_empty_line()
 
@@ -146,7 +146,8 @@ def get_all_snapshots(grafana_url, http_headers):
         if individual_status == 200:
             all_snapshots.append((snapshot['key'], individual_content))
         else:
-            logger.warning("Getting snapshot %s FAILED, status: %s, msg: %s", snapshot['name'], individual_status, individual_content)
+            logger.warning("Getting snapshot %s FAILED, status: %s, msg: %s",
+                           snapshot['name'], individual_status, individual_content)
 
     return all_snapshots
 
@@ -167,14 +168,20 @@ def get_all_folders(grafana_url, http_headers, **kwargs):
     individual_folders = []
     for folder in folders:
         (status_folder_settings, content_folder_settings) = get_folder(folder['uid'], grafana_url, http_headers)
-        # TODO: get_folder_permissions usually requires admin permission but we don't save the permissions in backup or migrate. Figure out what to do.
+        # TODO: get_folder_permissions usually requires admin permission but we
+        # don't save the permissions in backup or migrate. Figure out what to do.
         (status_folder_permissions, content_folder_permissions) = get_folder_permissions(folder['uid'],
                                                                                          grafana_url,
                                                                                          http_headers)
         if status_folder_settings == 200 and status_folder_permissions == 200:
             individual_folders.append((content_folder_settings, content_folder_permissions))
         else:
-            logger.warning("Getting folder %s FAILED, settings status: %s, settings content: %s, permissions status: %s, permissions content: %s", folder['title'], status_folder_settings, content_folder_settings, status_folder_permissions, content_folder_permissions)
+            logger.warning("Getting folder %s FAILED", folder['title'])
+            logger.info("settings status: %s, settings content: %s, permissions status: %s, permissions content: %s",
+                status_folder_settings,
+                content_folder_settings,
+                status_folder_permissions,
+                content_folder_permissions)
 
     return individual_folders
 
@@ -224,8 +231,7 @@ def get_all_datasources(grafana_url, http_headers):
         logger.info("There are %s datasources:", len(datasources))
         return datasources
 
-    else:
-        logger.info("Query datasource FAILED, status: %s, msg: %s", status, content)
+    logger.info("Query datasource FAILED, status: %s, msg: %s", status, content)
 
 
 def _save_json(file_name, data, folder_path, extension, pretty_print=None):

@@ -19,6 +19,7 @@ from .backup_core import get_all_dashboards, get_all_library_panels, get_all_fol
 
 logger = get_logger(__name__)
 
+
 def backup(grafana_name, grafana_url, backup_dir, components, http_headers, **kwargs):
     backup_functions = {'dashboards': _save_dashboards,
                         'library_panels': _save_library_panels,
@@ -109,11 +110,10 @@ def _save_library_panels(grafana_url, backup_dir, timestamp, http_headers, **kwa
     with open(log_file_path, 'w', encoding="utf8") as f:
         for panel in all_panels:
             panel_uri = panel['uid']
-            _save_library_panel_setting(
-                        panel['name'],
-                        panel_uri,
-                        panel,
-                        folder_path)
+            _save_library_panel_setting(panel['name'],
+                                        panel_uri,
+                                        panel,
+                                        folder_path)
             f.write(panel_uri + '\t' + panel['name'] + '\n')
 
 

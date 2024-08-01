@@ -30,7 +30,7 @@ def restore(grafana_url, archive_file, components, http_headers, destination_dat
     restore_functions = collections.OrderedDict()
     restore_functions['folder'] = _load_and_create_folder
     restore_functions['dashboard'] = _load_and_create_dashboard
-    restore_functions['library_panel'] =_load_and_create_library_panel 
+    restore_functions['library_panel'] = _load_and_create_library_panel
     restore_functions['snapshot'] = _load_and_create_snapshot
     restore_functions['annotation'] = _load_and_create_annotation
     restore_functions['datasource'] = _load_and_create_datasource
@@ -86,7 +86,7 @@ def _load_and_create_dashboard(grafana_url, file_path, http_headers):
 
     content = json.loads(data)
     content['dashboard']['id'] = None
-    
+
     create_dashboard(grafana_url, content, http_headers, overwrite=True)
 
 
@@ -108,10 +108,14 @@ def create_dashboard(grafana_url, content, http_headers, overwrite):
         (Style.SUCCESS, 'SUCCESS') if result[0] == 200 else (Style.ERROR, 'FAILURE')
     ]
     if result[0] == 412:
-        to_print.append((Style.ERROR, ' (version mismatch, please enable --overwrite if you want to overwrite the dashboard)'))
-    # this doesn't seem to be documented in the docs but it seems to be the error message when library panels are missing
+        to_print.append(
+            (Style.ERROR, ' (version mismatch, please enable --overwrite if you want to overwrite the dashboard)'))
+
+    # this doesn't seem to be documented in the docs but it seems to be the
+    # error message when library panels are missing
     if result[0] == 500 and result[1].get('message') == 'Error while connecting library panels':
-        to_print.append((Style.ERROR, ' (Please make sure to include the folders which holds the library panels for this dashboard)'))
+        to_print.append(
+            (Style.ERROR, ' (Please make sure to include the folders which holds the library panels for this dashboard)'))
 
     print_styled_text(to_print)
     logger.info("status: %s, msg: %s", result[0], result[1])
@@ -158,7 +162,7 @@ def create_library_panel(grafana_url, payload, http_headers, overwrite):
                     'kind': payload['kind']
                 }
                 (status, content) = send_grafana_patch(f'{grafana_url}/api/library-elements/{uid}',
-                                                    json.dumps(patch_payload), http_headers)
+                                                       json.dumps(patch_payload), http_headers)
 
             print_styled_text([
                 (Style.WARNING, f'Overwrite library panel {panel_name}: '),
@@ -198,7 +202,7 @@ def _load_and_create_snapshot(grafana_url, file_path, http_headers):
 def check_snapshot_exists(grafana_url, snapshot_key, http_headers):
     (status, _) = get_snapshot(snapshot_key, grafana_url, http_headers)
     return status == 200
-    
+
 
 def create_snapshot(grafana_url, snapshot, http_headers, overwrite):
     try:
@@ -257,7 +261,8 @@ def create_folder(grafana_url, folder, http_headers, overwrite):
             to_print.append((Style.SUCCESS, 'SUCCESS') if result[0] in [200] else (Style.ERROR, 'FAILURE'))
         else:
             to_print.append((Style.ERROR, 'FAILURE'))
-            to_print.append((Style.ERROR, ' (version mismatch, please enable --overwrite if you want to overwrite the folder)'))
+            to_print.append(
+                (Style.ERROR, ' (version mismatch, please enable --overwrite if you want to overwrite the folder)'))
     else:
         to_print.append((Style.SUCCESS, 'SUCCESS') if result[0] in [200] else (Style.ERROR, 'FAILURE'))
 
@@ -319,10 +324,11 @@ def check_annotation_exists_and_return_id(grafana_url, annotation, http_headers)
     for possible_matching_annotation in content:
         # this will get the first matching annotation with the same text and dashboardUID and time period is the same as well.
         # prevents duplicates, but if there is a change in anything about the annotation, it will be recreated.
-        # won't prevent: AMG1 migrate AMG2. Then change AMG1, then migrate again. AMG2 will have the old annotation and the new one (dependent on which fields you change).
+        # won't prevent: AMG1 migrate AMG2. Then change AMG1, then migrate again.
+        # AMG2 will have the old annotation and the new one (dependent on which fields you change).
         if possible_matching_annotation['text'] == annotation['text'] and annotation['dashboardUID'] == possible_matching_annotation['dashboardUID']:
             return True, possible_matching_annotation['id']
-        
+
     return False, -1
 
 
@@ -334,7 +340,7 @@ def _load_and_create_datasource(grafana_url, file_path, http_headers):
     datasource = json.loads(data)
     create_datasource(grafana_url, datasource, http_headers)
 
-    
+
 def create_datasource(grafana_url, datasource, http_headers):
     result = send_grafana_post(f'{grafana_url}/api/datasources', json.dumps(datasource), http_headers)
     datasource_name = datasource['name']
