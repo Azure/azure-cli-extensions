@@ -116,27 +116,29 @@ def _migrate_folders(all_folders, all_restore_folders, restore_url, restore_head
     restore_folder_uids = set()
 
     for folder in all_folders:
-        content_folder_settings, content_folder_permissions = folder
-        # create a folder if it does not exist
-        if content_folder_settings['uid'] not in restore_folder_uids:
-            # Do this check before creation. 
-            exists_before = check_folder_exists(restore_url, content_folder_settings, restore_headers)
+        content_folder_settings, _ = folder
 
-            if not dry_run:
-                is_successful = create_folder(restore_url, content_folder_settings, restore_headers, overwrite)
-            else:
-                is_successful = True
-
-            # Make sure that it is successful to add it to the summary properly. dry_run just assume it will work.
-            if is_successful:
-                if exists_before:
-                    folders_overwrote_summary.append(content_folder_settings['title'])
-                else:
-                    folders_created_summary.append(content_folder_settings['title'])
-
-
-        else:
+        if content_folder_settings['uid'] in restore_folder_uids:
             logger.warning("Folder %s already exists, skipping", content_folder_settings['title'])
+            continue
+
+        # create a folder if it does not exist
+        exists_before = check_folder_exists(restore_url, content_folder_settings, restore_headers)
+
+        is_successful = True
+        if not dry_run:
+            is_successful = create_folder(restore_url, content_folder_settings, restore_headers, overwrite)
+
+        if not is_successful:
+            continue
+
+        # Make sure that it is successful to add it to the summary properly. dry_run just assume it will work.
+        if exists_before:
+            folders_overwrote_summary.append(content_folder_settings['title'])
+        else:
+            folders_created_summary.append(content_folder_settings['title'])
+
+
     return folders_created_summary, folders_overwrote_summary
 
 
@@ -151,22 +153,23 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels_fi
         exists_before = check_library_panel_exists(restore_url, library_panel, restore_headers)
 
         library_panel['id'] = None
+        is_successful = True
         if not dry_run:
             # in create_library_panel, it does the patch if the library panel already exists.
             is_successful = create_library_panel(restore_url, library_panel, restore_headers, overwrite)
-        else:
-            is_successful = True
 
-        if is_successful:
-            panel_folder_name = library_panel['meta']['folderName']
-            if exists_before:
-                if panel_folder_name not in library_panels_overwrote_summary:
-                    library_panels_overwrote_summary[panel_folder_name] = []
-                library_panels_overwrote_summary[panel_folder_name].append(library_panel['name'])
-            else:
-                if panel_folder_name not in library_panels_created_summary:
-                    library_panels_created_summary[panel_folder_name] = []
-                library_panels_created_summary[panel_folder_name].append(library_panel['name'])
+        if not is_successful:
+            continue
+
+        panel_folder_name = library_panel['meta']['folderName']
+        if exists_before:
+            if panel_folder_name not in library_panels_overwrote_summary:
+                library_panels_overwrote_summary[panel_folder_name] = []
+            library_panels_overwrote_summary[panel_folder_name].append(library_panel['name'])
+        else:
+            if panel_folder_name not in library_panels_created_summary:
+                library_panels_created_summary[panel_folder_name] = []
+            library_panels_created_summary[panel_folder_name].append(library_panel['name'])
         
 
     # we don't backup provisioned dashboards, so we don't need to restore them
@@ -177,6 +180,7 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels_fi
 
         dashboard['dashboard']['id'] = None
         # Overwrite takes care of delete & create.
+        is_successful = True
         if not dry_run:
             # there is a weird edge case where if the version is the same, it will overwrite even if false.
             # so if the uid are the same, then without overwrite, it will overwrite if the version is the same.
@@ -190,19 +194,19 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels_fi
                 is_successful = False
             else:
                 is_successful = create_dashboard(restore_url, dashboard, restore_headers, overwrite)
-        else:
-            is_successful = True
 
-        if is_successful:
-            folder_title = dashboard['meta']['folderTitle']
-            if exists_before:
-                if folder_title not in dashboards_overwrote_summary:
-                    dashboards_overwrote_summary[folder_title] = []
-                dashboards_overwrote_summary[folder_title].append(dashboard['dashboard']['title'])
-            else:
-                if folder_title not in dashboards_created_summary:
-                    dashboards_created_summary[folder_title] = []
-                dashboards_created_summary[folder_title].append(dashboard['dashboard']['title'])
+        if not is_successful:
+            continue
+
+        folder_title = dashboard['meta']['folderTitle']
+        if exists_before:
+            if folder_title not in dashboards_overwrote_summary:
+                dashboards_overwrote_summary[folder_title] = []
+            dashboards_overwrote_summary[folder_title].append(dashboard['dashboard']['title'])
+        else:
+            if folder_title not in dashboards_created_summary:
+                dashboards_created_summary[folder_title] = []
+            dashboards_created_summary[folder_title].append(dashboard['dashboard']['title'])
 
     return (library_panels_created_summary, library_panels_overwrote_summary, dashboards_created_summary, dashboards_overwrote_summary)
 
@@ -219,21 +223,22 @@ def _migrate_snapshots(all_snapshots, restore_url, restore_headers, dry_run, ove
         except KeyError:
             snapshot_name = "Untitled Snapshot"
 
+        is_successful = True
         if not dry_run:
             is_successful = create_snapshot(restore_url, snapshot, restore_headers, overwrite)
-        else:
-            is_successful = True
 
-        if is_successful:
-            snapshot_folder_title = snapshot['meta']['folderTitle']
-            if exists_before:
-                if snapshot_folder_title not in snapshots_overwrote_summary:
-                    snapshots_overwrote_summary[snapshot_folder_title] = []
-                snapshots_overwrote_summary[snapshot_folder_title].append(snapshot_name)
-            else:
-                if snapshot_folder_title not in snapshots_synced_summary:
-                    snapshots_synced_summary[snapshot_folder_title] = []
-                snapshots_synced_summary[snapshot_folder_title].append(snapshot_name)
+        if not is_successful:
+            continue
+
+        snapshot_folder_title = snapshot['meta']['folderTitle']
+        if exists_before:
+            if snapshot_folder_title not in snapshots_overwrote_summary:
+                snapshots_overwrote_summary[snapshot_folder_title] = []
+            snapshots_overwrote_summary[snapshot_folder_title].append(snapshot_name)
+        else:
+            if snapshot_folder_title not in snapshots_synced_summary:
+                snapshots_synced_summary[snapshot_folder_title] = []
+            snapshots_synced_summary[snapshot_folder_title].append(snapshot_name)
 
     return snapshots_synced_summary, snapshots_overwrote_summary
 
@@ -244,17 +249,35 @@ def _migrate_annotations(all_annotations, restore_url, restore_headers, dry_run,
     for annotation in all_annotations:
         exists_before, _ = check_annotation_exists_and_return_id(restore_url, annotation, restore_headers)
 
+        is_successful = True
         if not dry_run:
             is_successful = create_annotation(restore_url, annotation, restore_headers, overwrite)
-        else:
-            is_successful = True
 
         # can do text to get the text, annotations don't have titles.
         # annotations_synced_summary.append(annotation['text'])
-        if is_successful:
-            if exists_before:
-                annotations_overwrote_summary.append((str(annotation['id']), annotation['text']))
-            else:
-                annotations_synced_summary.append((str(annotation['id']), annotation['text']))
+        if not is_successful:
+            continue
+
+        if exists_before:
+            annotations_overwrote_summary.append((str(annotation['id']), annotation['text']))
+        else:
+            annotations_synced_summary.append((str(annotation['id']), annotation['text']))
 
     return annotations_synced_summary, annotations_overwrote_summary
+
+
+def update_summary(exists_before, item, summary_created, summary_overwrote):
+    if exists_before:
+        summary_overwrote.append(item)
+    else:
+        summary_created.append(item)
+
+def update_summary_dict(exists_before, key, item, summary_created, summary_overwrote):
+    if exists_before:
+        if key not in summary_overwrote:
+            summary_overwrote[key] = []
+        summary_overwrote[key].append(item)
+    else:
+        if key not in summary_created:
+            summary_created[key] = []
+        summary_created[key].append(item)
