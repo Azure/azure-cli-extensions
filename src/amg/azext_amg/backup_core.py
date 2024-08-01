@@ -44,14 +44,14 @@ def get_all_dashboards(grafana_url, http_headers, **kwargs):
                                                     (not d.get('folderTitle', '')
                                                     and 'general' not in folders_to_exclude))]
 
-        _print_an_empty_line()
+        print_an_empty_line()
         if len(dashboards) == 0:
             break
         current_page += 1
         current_run_dashboards = _get_individual_dashboard_setting(dashboards, grafana_url, http_headers)
         # add the previous list to the list where we added everything.
         all_dashboards += current_run_dashboards
-        _print_an_empty_line()
+        print_an_empty_line()
 
     return all_dashboards
 
@@ -97,7 +97,7 @@ def get_all_library_panels(grafana_url, http_headers):
     while True:
         panels = _get_all_library_panels_in_grafana(current_page, grafana_url, http_headers)
 
-        _print_an_empty_line()
+        print_an_empty_line()
         if len(panels) == 0:
             break
         current_page += 1
@@ -105,7 +105,7 @@ def get_all_library_panels(grafana_url, http_headers):
         # Since we are not excluding anything. We can just add the panels to the
         # list since this is all the data we need.
         all_panels += panels
-        _print_an_empty_line()
+        print_an_empty_line()
 
     return all_panels
 
@@ -234,19 +234,5 @@ def get_all_datasources(grafana_url, http_headers):
     logger.info("Query datasource FAILED, status: %s, msg: %s", status, content)
 
 
-def _save_json(file_name, data, folder_path, extension, pretty_print=None):
-    pattern = "^db/|^uid/"
-    if re.match(pattern, file_name):
-        file_name = re.sub(pattern, '', file_name)
-
-    file_path = folder_path + '/' + file_name + '.' + extension
-    with open(file_path, 'w', encoding="utf8") as f:
-        if pretty_print:
-            f.write(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')))
-        else:
-            f.write(json.dumps(data))
-    return file_path
-
-
-def _print_an_empty_line():
+def print_an_empty_line():
     logger.info('')

@@ -16,7 +16,7 @@ import tarfile
 from knack.log import get_logger
 
 from .backup_core import (get_all_dashboards, get_all_library_panels, get_all_folders, get_all_snapshots,
-                          get_all_annotations, get_all_datasources)
+                          get_all_annotations, get_all_datasources, print_an_empty_line)
 
 logger = get_logger(__name__)
 
@@ -135,6 +135,7 @@ def _save_snapshots(grafana_url, backup_dir, timestamp, http_headers, **kwargs):
     for _, snapshot in all_snapshots:
         # same thing as the metadata[name] from the list snapshots API.
         _save_snapshot(snapshot['dashboard']['title'], snapshot, folder_path)
+    print_an_empty_line()
 
 
 def _save_snapshot(file_name, snapshot_setting, folder_path):
@@ -158,7 +159,7 @@ def _save_folders(grafana_url, backup_dir, timestamp, http_headers, **kwargs):
     log_file_path = folder_path + '/' + log_file
     with open(log_file_path, 'w+', encoding="utf8") as f:
         for folder_set in folders:
-            (folder_settings, _) = folder_set
+            folder_settings, _ = folder_set
             folder_uri = "uid/" + folder_settings['uid']
 
             _save_folder_setting(
@@ -190,6 +191,7 @@ def _save_annotations(grafana_url, backup_dir, timestamp, http_headers, **kwargs
     for annotation in all_annotations:
         annotation_id = str(annotation['id'])
         _save_annotation(annotation_id, annotation, folder_path)
+    print_an_empty_line()
 
 
 def _save_annotation(file_name, annotation_setting, folder_path):
@@ -209,6 +211,7 @@ def _save_datasources(grafana_url, backup_dir, timestamp, http_headers, **kwargs
     for datasource in all_datasources:
         datasource_name = datasource['uid']
         _save_datasource(datasource_name, datasource, folder_path)
+    print_an_empty_line()
 
 
 def _save_datasource(file_name, datasource_setting, folder_path):
