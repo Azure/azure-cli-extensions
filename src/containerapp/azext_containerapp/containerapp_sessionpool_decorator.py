@@ -157,8 +157,11 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         # We only support 'Dynamic' type in CLI
         self.session_pool_def["properties"]["poolManagementType"] = "Dynamic"
         self.session_pool_def["properties"]["environmentId"] = self.get_argument_managed_env()
+
+        # Now dynamic session pool has support for NodeLTS and PythonLTS container type, so if its not provided, throw an error
         if self.get_argument_container_type() is None:
-            self.set_argument_container_type(ContainerType.PythonLTS.name)
+            raise RequiredArgumentMissingError("Required argument 'container_type' is not specified.")
+        
         self.session_pool_def["properties"]["containerType"] = self.get_argument_container_type()
 
         dynamic_pool_def = self.set_up_dynamic_configuration()
