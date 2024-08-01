@@ -43,10 +43,7 @@ def close_subprocess_and_raise_cli_error(proc_subprocess, msg):
 
 
 def check_if_csp_is_running(clientproxy_process):
-    if clientproxy_process.poll() is None:
-        return True
-    else:
-        return False
+    return (clientproxy_process.poll() is None)
 
 
 def make_api_call_with_retries(uri, data, method, tls_verify, fault_type, summary, cli_error, clientproxy_process):
@@ -98,7 +95,8 @@ def fetch_and_post_at_to_csp(cmd, api_server_port, tenant_id, kid, clientproxy_p
         credential, _, _ = profile.get_login_credentials(subscription_id=profile.get_subscription()["id"],
                                                          resource=consts.KAP_1P_Server_App_Scope)
         if isinstance(credential._credential, ServicePrincipalCredential):
-            # This is a workaround to fix the issue where the token is not being refreshed https://github.com/AzureAD/microsoft-authentication-library-for-python/pull/692
+            # This is a workaround to fix the issue where the token is not being refreshed
+            # https://github.com/AzureAD/microsoft-authentication-library-for-python/pull/692
             credential._credential.remove_tokens_for_client()
         accessToken = credential.get_token(consts.KAP_1P_Server_App_Scope, data=token_data)
         jwtToken = accessToken.token

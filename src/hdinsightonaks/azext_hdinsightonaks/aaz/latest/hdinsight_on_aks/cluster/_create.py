@@ -18,23 +18,29 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a cluster.
 
-    :example: Create a Trino cluster. need use az hdinsight-on-aks cluster node-profile create $node frist.
-        az hdinsight-on-aks cluster node-profile create --count 5 --node-type Worker --vm-size Standard_D8d_v5
-        az hdinsightonaks cluster create -n {clustername} --cluster-pool-name {clusterpoolname} -g {resourcesGroup} -l {location} --assigned-identity-object-id {00000000-0000-0000-0000-000000000000} --assigned-identity-client-id {00000000-0000-0000-0000-000000000000} --authorization-user-id {00000000-0000-0000-0000-000000000000} --assigned-identity-id {/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PSGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/yourmsi} --cluster-type Trino --cluster-version {1.0.6} --oss-version {0.410.0} --nodes $node-profile
+    :example: Create a simple Trino cluster.
+        az az hdinsight-on-aks cluster create -n {clustername} --cluster-pool-name {clusterpoolname} -g {resourcesGroup} -l {location}--cluster-type trino --cluster-version {1.2.0} --oss-version {0.440.0} --node '[{"count":2,"type":"worker","vm-size":"Standard_D8d_v5"}]' --identity-list '[{"client-id":"00000000-0000-0000-0000-000000000000","object-id":"00000000-0000-0000-0000-000000000000","resource-id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourcesGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/yourmsi","type":"cluster"}]' --authorization-user-id "00000000-0000-0000-0000-000000000000"
 
-    :example: Create a Flink cluster.
-        az hdinsight-on-aks cluster create  -n {clustername} --cluster-pool-name {clusterpoolname} -g {RG} -l {westus3} --assigned-identity-object-id {00000000-0000-0000-0000-000000000000} --assigned-identity-client-id {00000000-0000-0000-0000-000000000000} --authorization-user-id {00000000-0000-0000-0000-000000000000} --assigned-identity-id {/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PSGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/yourmsi} --cluster-type Flink --cluster-version {flinkversion} --oss-version {flinkossversion} --nodes {nodes} --flink-storage-uri {storageUri} --job-manager-cpu {1} --job-manager-memory {2000} --task-manager-cpu {6} --task-manager-memory {49016}
+    :example: Create a simple Flink cluster.
+        az hdinsight-on-aks cluster create -n {clustername} --cluster-pool-name {clusterpoolname} -g {resourcesGroup} -l {location}--cluster-type flink --flink-storage-uri {abfs://container@yourstorage.dfs.core.windows.net/} --cluster-version {1.2.0} --oss-version {1.17.0} --node '[{"count":5,"type":"worker","vm-size":"Standard_D8d_v5"}]' --identity-list '[{"client-id":"00000000-0000-0000-0000-000000000000","object-id":"00000000-0000-0000-0000-000000000000","resource-id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourcesGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/yourmsi","type":"cluster"}]' --authorization-user-id "00000000-0000-0000-0000-000000000000" --job-manager-cpu {1} --job-manager-memory {2000} --task-manager-cpu {6} --task-manager-memory {49016}
 
-    :example: Create Trino cluster with hive catalog.
-        az hdinsight-on-aks cluster trino-hive-catalog create --catalog-name {catalogName} --metastore-db-connection-url {metastoreDbConnectionURL} --metastore-db-connection-user-name {metastoreDbUserName}  --metastore-db-connection-password-secret {metastoreDbPasswordSecret} --metastore-warehouse-dir {metastoreWarehouseDir}
-        az hdinsight-on-aks cluster secret create --secret-name {secretName}  --reference-name {secretName}
-        az hdinsight-on-aks cluster create -n {clustername} --cluster-pool-name {clusterpoolname} -g {resourcesGroup} -l {westus3} --assigned-identity-object-id {00000000-0000-0000-0000-000000000000} --assigned-identity-client-id {00000000-0000-0000-0000-000000000000} --authorization-user-id {00000000-0000-0000-0000-000000000000} --assigned-identity-id {/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PSGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/yourmsi} --cluster-type Trino --cluster-version {1.0.6} --oss-version {0.410.0} --nodes {node-profile} --secret-reference {secretReference} --key-vault-id {keyVaultResourceId} --trino-hive-catalog {trinoHiveCatalogOption}
+    :example: Create a simple Spark cluster.
+        az hdinsight-on-aks cluster create -n {clustername} --cluster-pool-name {clusterpoolname} -g {resourcesGroup} -l {location}--cluster-type spark --spark-storage-url {abfs://container@yourstorage.dfs.core.windows.net/} --cluster-version {1.2.0} --oss-version {3.4.1} --node '[{"count":2,"type":"worker","vm-size":"Standard_D8d_v5"}]' --identity-list '[{"client-id":"00000000-0000-0000-0000-000000000000","object-id":"00000000-0000-0000-0000-000000000000","resource-id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourcesGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/yourmsi","type":"cluster"}]' --authorization-user-id "00000000-0000-0000-0000-000000000000"
+
+    :example: Create a simple Kafka cluster.
+        az az hdinsight-on-aks cluster create -n {clustername} --cluster-pool-name {clusterpoolname} -g {resourcesGroup} -l {location}--cluster-type kafka --cluster-version {1.2.0} --oss-version {3.6.0} --node '[{"count":2,"type":"worker","vm-size":"Standard_D8d_v5"}]' --identity-list '[{"client-id":"00000000-0000-0000-0000-000000000000","object-id":"00000000-0000-0000-0000-000000000000","resource-id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourcesGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/yourmsi","type":"cluster"}]' --authorization-user-id "00000000-0000-0000-0000-000000000000" --kafka-profile '{"disk-storage":{"data-disk-size":8,"data-disk-type":"Standard_SSD_LRS"}}'
+
+    :example: Create a Spark cluster with custom hive metastore.
+        az hdinsight-on-aks cluster create -n {clustername} --cluster-pool-name {clusterpoolname} -g {resourcesGroup} -l {location}--cluster-type spark --spark-storage-url {abfs://container@yourstorage.dfs.core.windows.net/} --cluster-version {1.2.0} --oss-version {3.4.1} --node '[{"count":2,"type":"worker","vm-size":"Standard_D8d_v5"}]' --identity-list '[{"client-id":"00000000-0000-0000-0000-000000000000","object-id":"00000000-0000-0000-0000-000000000000","resource-id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourcesGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/yourmsi","type":"cluster"}]' --authorization-user-id "00000000-0000-0000-0000-000000000000"  --secret-reference '[{reference-name:sqlpassword,secret-name:sqlpassword,type:Secret}]' --key-vault-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourcesGroup/providers/Microsoft.KeyVault/vaults/CLIKV --spark-hive-kv-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourcesGroup/providers/Microsoft.KeyVault/vaults/CLIKV --spark-db-auth-mode SqlAuth --spark-hive-db-name {sparkhms} --spark-hive-db-secret {sqlpassword} --spark-hive-db-server {yourserver.database.windows.net} --spark-hive-db-user {username}
+
+    :example: Create a Flink cluster with availability zones.
+        az hdinsight-on-aks cluster create -n {clustername} --cluster-pool-name {clusterpoolname} -g {resourcesGroup} -l {location}--cluster-type flink --flink-storage-uri {abfs://container@yourstorage.dfs.core.windows.net/} --cluster-version {1.2.0} --oss-version {1.17.0} --node '[{"count":5,"type":"worker","vm-size":"Standard_D8d_v5"}]' --identity-list '[{"client-id":"00000000-0000-0000-0000-000000000000","object-id":"00000000-0000-0000-0000-000000000000","resource-id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourcesGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/yourmsi","type":"cluster"}]' --authorization-user-id "00000000-0000-0000-0000-000000000000" --job-manager-cpu {1} --job-manager-memory {2000} --task-manager-cpu {6} --task-manager-memory {49016} --availability-zones [1,2]
     """
 
     _aaz_info = {
-        "version": "2023-11-01-preview",
+        "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}", "2023-11-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}", "2024-05-01-preview"],
         ]
     }
 
@@ -332,12 +338,10 @@ class Create(AAZCommand):
         kafka_profile.enable_k_raft = AAZBoolArg(
             options=["enable-k-raft"],
             help="Expose Kafka cluster in KRaft mode.",
-            default=True,
         )
         kafka_profile.enable_public_endpoints = AAZBoolArg(
             options=["enable-public-endpoints"],
             help="Expose worker nodes as public endpoints.",
-            default=False,
         )
         kafka_profile.remote_storage_uri = AAZStrArg(
             options=["remote-storage-uri"],
@@ -365,7 +369,6 @@ class Create(AAZCommand):
             options=["enabled"],
             help="Enable Ranger for cluster or not.",
             required=True,
-            default=False,
         )
 
         ranger_profile = cls._args_schema.ranger_profile
@@ -570,11 +573,19 @@ class Create(AAZCommand):
         # define Arg Group "ComputeProfile"
 
         _args_schema = cls._args_schema
+        _args_schema.availability_zones = AAZListArg(
+            options=["--availability-zones"],
+            arg_group="ComputeProfile",
+            help="The list of Availability zones to use for AKS VMSS nodes.",
+        )
         _args_schema.nodes = AAZListArg(
             options=["--nodes"],
             arg_group="ComputeProfile",
             help="The nodes definitions.",
         )
+
+        availability_zones = cls._args_schema.availability_zones
+        availability_zones.Element = AAZStrArg()
 
         nodes = cls._args_schema.nodes
         nodes.Element = AAZObjectArg()
@@ -585,7 +596,7 @@ class Create(AAZCommand):
             help="The number of virtual machines.",
             required=True,
             fmt=AAZIntArgFormat(
-                minimum=1,
+                minimum=0,
             ),
         )
         _element.type = AAZStrArg(
@@ -774,6 +785,47 @@ class Create(AAZCommand):
             help="True if metrics are enabled, otherwise false.",
         )
 
+        # define Arg Group "ManagedIdentityProfile"
+
+        _args_schema = cls._args_schema
+        _args_schema.identity_list = AAZListArg(
+            options=["--identity-list"],
+            arg_group="ManagedIdentityProfile",
+            help="The list of managed identity.",
+        )
+
+        identity_list = cls._args_schema.identity_list
+        identity_list.Element = AAZObjectArg()
+
+        _element = cls._args_schema.identity_list.Element
+        _element.client_id = AAZStrArg(
+            options=["client-id"],
+            help="ClientId of the managed identity.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[{(]?[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}[)}]?$",
+            ),
+        )
+        _element.object_id = AAZStrArg(
+            options=["object-id"],
+            help="ObjectId of the managed identity.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[{(]?[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}[)}]?$",
+            ),
+        )
+        _element.resource_id = AAZResourceIdArg(
+            options=["resource-id"],
+            help="ResourceId of the managed identity.",
+            required=True,
+        )
+        _element.type = AAZStrArg(
+            options=["type"],
+            help="The type of managed identity.",
+            required=True,
+            enum={"cluster": "cluster", "internal": "internal", "user": "user"},
+        )
+
         # define Arg Group "PrometheusProfile"
 
         _args_schema = cls._args_schema
@@ -781,6 +833,7 @@ class Create(AAZCommand):
             options=["--enable-prometheu"],
             arg_group="PrometheusProfile",
             help="Enable Prometheus for cluster or not.",
+            default=False,
         )
 
         # define Arg Group "Properties"
@@ -917,6 +970,14 @@ class Create(AAZCommand):
             fmt=AAZIntArgFormat(
                 maximum=5,
                 minimum=0,
+            ),
+        )
+        _args_schema.vm_size = AAZStrArg(
+            options=["--vm-size"],
+            arg_group="SshProfile",
+            help="The virtual machine SKU.",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_\-]{0,256}$",
             ),
         )
 
@@ -1147,7 +1208,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -1193,6 +1254,7 @@ class Create(AAZCommand):
                 cluster_profile.set_prop("kafkaProfile", AAZObjectType, ".kafka_profile")
                 cluster_profile.set_prop("llapProfile", AAZFreeFormDictType, ".llap_profile")
                 cluster_profile.set_prop("logAnalyticsProfile", AAZObjectType)
+                cluster_profile.set_prop("managedIdentityProfile", AAZObjectType)
                 cluster_profile.set_prop("ossVersion", AAZStrType, ".oss_version", typ_kwargs={"flags": {"required": True}})
                 cluster_profile.set_prop("prometheusProfile", AAZObjectType)
                 cluster_profile.set_prop("rangerPluginProfile", AAZObjectType, ".ranger_plugin_profile")
@@ -1359,6 +1421,21 @@ class Create(AAZCommand):
                 application_logs.set_prop("stdErrorEnabled", AAZBoolType, ".application_log_std_error_enabled")
                 application_logs.set_prop("stdOutEnabled", AAZBoolType, ".application_log_std_out_enabled")
 
+            managed_identity_profile = _builder.get(".properties.clusterProfile.managedIdentityProfile")
+            if managed_identity_profile is not None:
+                managed_identity_profile.set_prop("identityList", AAZListType, ".identity_list", typ_kwargs={"flags": {"required": True}})
+
+            identity_list = _builder.get(".properties.clusterProfile.managedIdentityProfile.identityList")
+            if identity_list is not None:
+                identity_list.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.clusterProfile.managedIdentityProfile.identityList[]")
+            if _elements is not None:
+                _elements.set_prop("clientId", AAZStrType, ".client_id", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("objectId", AAZStrType, ".object_id", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("resourceId", AAZStrType, ".resource_id", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+
             prometheus_profile = _builder.get(".properties.clusterProfile.prometheusProfile")
             if prometheus_profile is not None:
                 prometheus_profile.set_prop("enabled", AAZBoolType, ".enable_prometheu", typ_kwargs={"flags": {"required": True}})
@@ -1508,6 +1585,7 @@ class Create(AAZCommand):
             ssh_profile = _builder.get(".properties.clusterProfile.sshProfile")
             if ssh_profile is not None:
                 ssh_profile.set_prop("count", AAZIntType, ".ssh_profile_count", typ_kwargs={"flags": {"required": True}})
+                ssh_profile.set_prop("vmSize", AAZStrType, ".vm_size")
 
             stub_profile = _builder.get(".properties.clusterProfile.stubProfile")
             if stub_profile is not None:
@@ -1586,7 +1664,12 @@ class Create(AAZCommand):
 
             compute_profile = _builder.get(".properties.computeProfile")
             if compute_profile is not None:
+                compute_profile.set_prop("availabilityZones", AAZListType, ".availability_zones")
                 compute_profile.set_prop("nodes", AAZListType, ".nodes", typ_kwargs={"flags": {"required": True}})
+
+            availability_zones = _builder.get(".properties.computeProfile.availabilityZones")
+            if availability_zones is not None:
+                availability_zones.set_elements(AAZStrType, ".")
 
             nodes = _builder.get(".properties.computeProfile.nodes")
             if nodes is not None:
@@ -1696,7 +1779,6 @@ class Create(AAZCommand):
             cluster_profile.identity_profile = AAZObjectType(
                 serialized_name="identityProfile",
             )
-            _CreateHelper._build_schema_identity_profile_read(cluster_profile.identity_profile)
             cluster_profile.kafka_profile = AAZObjectType(
                 serialized_name="kafkaProfile",
             )
@@ -1705,6 +1787,9 @@ class Create(AAZCommand):
             )
             cluster_profile.log_analytics_profile = AAZObjectType(
                 serialized_name="logAnalyticsProfile",
+            )
+            cluster_profile.managed_identity_profile = AAZObjectType(
+                serialized_name="managedIdentityProfile",
             )
             cluster_profile.oss_version = AAZStrType(
                 serialized_name="ossVersion",
@@ -1977,11 +2062,21 @@ class Create(AAZCommand):
                 flags={"secret": True},
             )
 
-            kafka_profile = cls._schema_on_200_201.properties.cluster_profile.kafka_profile
-            kafka_profile.cluster_identity = AAZObjectType(
-                serialized_name="clusterIdentity",
+            identity_profile = cls._schema_on_200_201.properties.cluster_profile.identity_profile
+            identity_profile.msi_client_id = AAZStrType(
+                serialized_name="msiClientId",
+                flags={"required": True},
             )
-            _CreateHelper._build_schema_identity_profile_read(kafka_profile.cluster_identity)
+            identity_profile.msi_object_id = AAZStrType(
+                serialized_name="msiObjectId",
+                flags={"required": True},
+            )
+            identity_profile.msi_resource_id = AAZStrType(
+                serialized_name="msiResourceId",
+                flags={"required": True},
+            )
+
+            kafka_profile = cls._schema_on_200_201.properties.cluster_profile.kafka_profile
             kafka_profile.connectivity_endpoints = AAZObjectType(
                 serialized_name="connectivityEndpoints",
             )
@@ -2037,6 +2132,32 @@ class Create(AAZCommand):
             )
             application_logs.std_out_enabled = AAZBoolType(
                 serialized_name="stdOutEnabled",
+            )
+
+            managed_identity_profile = cls._schema_on_200_201.properties.cluster_profile.managed_identity_profile
+            managed_identity_profile.identity_list = AAZListType(
+                serialized_name="identityList",
+                flags={"required": True},
+            )
+
+            identity_list = cls._schema_on_200_201.properties.cluster_profile.managed_identity_profile.identity_list
+            identity_list.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.cluster_profile.managed_identity_profile.identity_list.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"required": True},
+            )
+            _element.object_id = AAZStrType(
+                serialized_name="objectId",
+                flags={"required": True},
+            )
+            _element.resource_id = AAZStrType(
+                serialized_name="resourceId",
+                flags={"required": True},
+            )
+            _element.type = AAZStrType(
+                flags={"required": True},
             )
 
             prometheus_profile = cls._schema_on_200_201.properties.cluster_profile.prometheus_profile
@@ -2250,6 +2371,9 @@ class Create(AAZCommand):
                 serialized_name="podPrefix",
                 flags={"read_only": True},
             )
+            ssh_profile.vm_size = AAZStrType(
+                serialized_name="vmSize",
+            )
 
             trino_profile = cls._schema_on_200_201.properties.cluster_profile.trino_profile
             trino_profile.catalog_options = AAZObjectType(
@@ -2335,9 +2459,15 @@ class Create(AAZCommand):
             _CreateHelper._build_schema_trino_debug_config_read(worker.debug)
 
             compute_profile = cls._schema_on_200_201.properties.compute_profile
+            compute_profile.availability_zones = AAZListType(
+                serialized_name="availabilityZones",
+            )
             compute_profile.nodes = AAZListType(
                 flags={"required": True},
             )
+
+            availability_zones = cls._schema_on_200_201.properties.compute_profile.availability_zones
+            availability_zones.Element = AAZStrType()
 
             nodes = cls._schema_on_200_201.properties.compute_profile.nodes
             nodes.Element = AAZObjectType()
@@ -2404,36 +2534,6 @@ class _CreateHelper:
 
         _schema.cpu = cls._schema_compute_resource_definition_read.cpu
         _schema.memory = cls._schema_compute_resource_definition_read.memory
-
-    _schema_identity_profile_read = None
-
-    @classmethod
-    def _build_schema_identity_profile_read(cls, _schema):
-        if cls._schema_identity_profile_read is not None:
-            _schema.msi_client_id = cls._schema_identity_profile_read.msi_client_id
-            _schema.msi_object_id = cls._schema_identity_profile_read.msi_object_id
-            _schema.msi_resource_id = cls._schema_identity_profile_read.msi_resource_id
-            return
-
-        cls._schema_identity_profile_read = _schema_identity_profile_read = AAZObjectType()
-
-        identity_profile_read = _schema_identity_profile_read
-        identity_profile_read.msi_client_id = AAZStrType(
-            serialized_name="msiClientId",
-            flags={"required": True},
-        )
-        identity_profile_read.msi_object_id = AAZStrType(
-            serialized_name="msiObjectId",
-            flags={"required": True},
-        )
-        identity_profile_read.msi_resource_id = AAZStrType(
-            serialized_name="msiResourceId",
-            flags={"required": True},
-        )
-
-        _schema.msi_client_id = cls._schema_identity_profile_read.msi_client_id
-        _schema.msi_object_id = cls._schema_identity_profile_read.msi_object_id
-        _schema.msi_resource_id = cls._schema_identity_profile_read.msi_resource_id
 
     _schema_trino_debug_config_read = None
 

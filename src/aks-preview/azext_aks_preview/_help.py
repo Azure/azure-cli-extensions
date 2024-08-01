@@ -287,6 +287,12 @@ helps['aks create'] = f"""
         - name: --data-collection-settings
           type: string
           short-summary: Path to JSON file containing data collection settings for Monitoring addon.
+        - name: --enable-high-log-scale-mode
+          type: bool
+          short-summary: Enable High Log Scale Mode for Container Logs.
+        - name: --ampls-resource-id
+          type: string
+          short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
         - name: --enable-cluster-autoscaler
           type: bool
           short-summary: Enable cluster autoscaler, default value is false.
@@ -637,6 +643,9 @@ helps['aks create'] = f"""
         - name: --enable-static-egress-gateway
           type: bool
           short-summary: Enable Static Egress Gateway addon to the cluster.
+        - name: --enable-imds-restriction
+          type: bool
+          short-summary: Enable IMDS restriction in the cluster. Non-hostNetwork Pods will not be able to access IMDS.
         - name: --vm-sizes
           type: string
           short-summary: Comma-separated list of sizes. Must use VirtualMachines agent pool type.
@@ -1254,6 +1263,12 @@ helps['aks update'] = """
         - name: --disable-static-egress-gateway
           type: bool
           short-summary: Disable Static Egress Gateway addon to the cluster.
+        - name: --enable-imds-restriction
+          type: bool
+          short-summary: Enable IMDS restriction in the cluster. Non-hostNetwork Pods will not be able to access IMDS.
+        - name: --disable-imds-restriction
+          type: bool
+          short-summary: Disable IMDS restriction in the cluster. All Pods in the cluster will be able to access IMDS.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -2298,6 +2313,12 @@ parameters:
   - name: --data-collection-settings
     type: string
     short-summary: Path to JSON file containing data collection settings for Monitoring addon.
+  - name: --enable-high-log-scale-mode
+    type: bool
+    short-summary: Enable High Log Scale Mode for Container Logs.
+  - name: --ampls-resource-id
+    type: string
+    short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
@@ -2365,6 +2386,12 @@ parameters:
   - name: --data-collection-settings
     type: string
     short-summary: Path to JSON file containing data collection settings for Monitoring addon.
+  - name: --enable-high-log-scale-mode
+    type: bool
+    short-summary: Enable High Log Scale Mode for Container Logs.
+  - name: --ampls-resource-id
+    type: string
+    short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
@@ -2446,6 +2473,12 @@ parameters:
   - name: --data-collection-settings
     type: string
     short-summary: Path to JSON file containing data collection settings for Monitoring addon.
+  - name: --enable-high-log-scale-mode
+    type: bool
+    short-summary: Enable High Log Scale Mode for Container Logs.
+  - name: --ampls-resource-id
+    type: string
+    short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
