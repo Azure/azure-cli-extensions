@@ -2940,27 +2940,27 @@ def add_config_protected_settings(https_proxy, http_proxy, no_proxy, proxy_cert,
         configuration_settings.setdefault("proxy", {})
         if https_proxy:
             configuration_protected_settings["proxy"]["https_proxy"] = https_proxy
-            configuration_settings["proxy"]["https_proxy"] = "ClientKnown"
         if http_proxy:
             configuration_protected_settings["proxy"]["http_proxy"] = http_proxy
-            configuration_settings["proxy"]["http_proxy"] = "ClientKnown"
         if no_proxy:
             configuration_protected_settings["proxy"]["no_proxy"] = no_proxy
-            configuration_settings["proxy"]["no_proxy"] = "ClientKnown"
         if proxy_cert:
             configuration_protected_settings["proxy"]["proxy_cert"] = proxy_cert
-            configuration_settings["proxy"]["proxy_cert"] = "ClientKnown"
 
     for feature, protected_settings in configuration_protected_settings.items():
         if feature == "proxy":
             for setting, value in protected_settings.items():
                 if setting == "https_proxy":
                     protected_helm_values["global.httpsProxy"] = value
+                    configuration_settings["proxy"]["https_proxy"] = "ClientKnown"
                 if setting == "http_proxy":
                     protected_helm_values["global.httpProxy"] = value
+                    configuration_settings["proxy"]["http_proxy"] = "ClientKnown"
                 if setting == "no_proxy":
                     protected_helm_values["global.noProxy"] = value
+                    configuration_settings["proxy"]["no_proxy"] = "ClientKnown"
                 if setting == "proxy_cert":
                     protected_helm_values["global.proxyCert"] = value
+                    configuration_settings["proxy"]["proxy_cert"] = "ClientKnown"
 
     return configuration_settings, configuration_protected_settings, protected_helm_values
