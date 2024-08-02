@@ -29,9 +29,7 @@ class PolicyGeneratingImage(unittest.TestCase):
                     "environmentVariables": [
 
                     ],
-                    "command": [
-                        "python3"
-                    ],
+                    "command": [],
                     "workingDir": ""
                 }
             ]
