@@ -1,6 +1,11 @@
 
 Release History
 ===============
+
+1.0.8
+++++++
+SELFHELP telemetry added as initiator. Extra parameters is introduced at the backend to capture the telemetry data.
+
 1.0.7
 ++++++
 az command adjustment
