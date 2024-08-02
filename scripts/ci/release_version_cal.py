@@ -65,21 +65,24 @@ def extract_module_version_update_info(mod_update_info, mod):
     --- a/src/monitor-control-service/HISTORY.RST
     py files exclude tests, vendored_sdks and aaz folder
     """
-    mod_update_info["setup_updated"] = False
+    diff_file_started = False
     module_setup_update_pattern = re.compile(r"\+\+\+.*?src/%s/(?!.*(?:tests|vendored_sdks|aaz)/).*?.py" % mod)
     module_version_update_pattern = re.compile(r"\+\s?VERSION\s?\=\s?[\'\"]([0-9\.b]+)[\'\"]")
     with open(diff_code_file, "r") as f:
         for line in f:
-            if mod_update_info["setup_updated"]:
-                if line.find("---") == 0 or mod_update_info.get("version_diff", None):
+            if diff_file_started:
+                if mod_update_info.get("version_diff", None):
                     break
+                if line.find("diff") == 0:
+                    diff_file_started = False
+                    continue
                 mod_version_update_match = re.findall(module_version_update_pattern, line)
                 if mod_version_update_match and len(mod_version_update_match) == 1:
                     mod_update_info["version_diff"] = mod_version_update_match[0]
             else:
                 mod_setup_update_match = re.findall(module_setup_update_pattern, line)
                 if mod_setup_update_match:
-                    mod_update_info["setup_updated"] = True
+                    diff_file_started = True
 
 
 def extract_module_metadata_update_info(mod_update_info, mod):
@@ -220,7 +223,7 @@ def gen_history_comment_message(mod, mod_update_info, mod_message):
 
 def gen_version_comment_message(mod, mod_update_info, mod_message):
     global block_pr
-    if not mod_update_info["setup_updated"]:
+    if not mod_update_info.get("version_diff", None):
         if mod_update_info.get("version", None):
             mod_message.append(" - Update `VERSION` to `{0}` in `src/{1}/setup.py`".format(mod_update_info.get("version", "-"), mod))
     else:
@@ -241,7 +244,7 @@ def gen_preview_comment_message(mod, mod_update_info, mod_message):
     if mod_update_info.get("preview_tag", "-") == mod_update_info.get("preview_tag_diff", "-"):
         return
     preview_comment_message = " - "
-    if mod_update_info["setup_updated"] and mod_update_info.get("version_diff", None):
+    if mod_update_info.get("version_diff", None):
         block_pr = 1
         preview_comment_message += ":warning: "
     if mod_update_info.get("preview_tag", None) and mod_update_info.get("preview_tag_diff", None):
@@ -267,7 +270,7 @@ def gen_exp_comment_message(mod, mod_update_info, mod_message):
     if mod_update_info.get("exp_tag", "-") == mod_update_info.get("exp_tag_diff", "-"):
         return
     exp_comment_message = " - "
-    if mod_update_info["setup_updated"]:
+    if mod_update_info.get("version_diff", None):
         block_pr = 1
         exp_comment_message += ":warning: "
     if mod_update_info.get("exp_tag", None) and mod_update_info.get("exp_tag_diff", None):
