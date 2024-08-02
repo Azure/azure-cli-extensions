@@ -932,8 +932,7 @@ def generate_arc_agent_configuration(configuration_settings, configuration_prote
         protected_settings = configuration_protected_settings.get(feature)
         configuration = ArcAgentryConfigurations(
             feature=feature,
-            settings=settings,
-            protected_settings=protected_settings
+            settings=settings
         )
         arc_agentry_configurations.append(configuration)
     return arc_agentry_configurations
@@ -2930,19 +2929,27 @@ def add_config_protected_settings(https_proxy, http_proxy, no_proxy, proxy_cert,
     # Initialize configuration_protected_settings if it is None
     if configuration_protected_settings is None:
         configuration_protected_settings = {}
+    
+    if configuration_settings is None:
+        configuration_settings = {}
 
     if container_log_path:
         configuration_settings.setdefault("logging", {"container_log_path": container_log_path})
     if any([https_proxy, http_proxy, no_proxy, proxy_cert]):
         configuration_protected_settings.setdefault("proxy", {})
+        configuration_settings.setdefault("proxy", {})
         if https_proxy:
             configuration_protected_settings["proxy"]["https_proxy"] = https_proxy
+            configuration_settings["proxy"]["https_proxy"] = "ClientKnown"
         if http_proxy:
             configuration_protected_settings["proxy"]["http_proxy"] = http_proxy
+            configuration_settings["proxy"]["http_proxy"] = "ClientKnown"
         if no_proxy:
             configuration_protected_settings["proxy"]["no_proxy"] = no_proxy
+            configuration_settings["proxy"]["no_proxy"] = "ClientKnown"
         if proxy_cert:
             configuration_protected_settings["proxy"]["proxy_cert"] = proxy_cert
+            configuration_settings["proxy"]["proxy_cert"] = "ClientKnown"
 
     for feature, protected_settings in configuration_protected_settings.items():
         if feature == "proxy":
