@@ -6,8 +6,6 @@ on:
       types: [opened, labeled, unlabeled, synchronize]
       branches:
         - main
-      paths:
-        - '!**/test_*.py'
 
 permissions: {}
 
@@ -76,13 +74,13 @@ jobs:
             cat changed_files | grep azext_ | awk -F"azext_" '{print $1}'| awk -F"/" '{print $2}' | sort | uniq > changed_modules
             echo "changed_module_list=$(cat changed_files | grep azext_ | awk -F"azext_" '{print $1}'| awk -F"/" '{print $2}' | sort | uniq | xargs)" >> $GITHUB_ENV
             git --no-pager diff --diff-filter=ACMRT "$base_branch_pre"/"$base_branch"..."$diff_branch" > "$diff_code_file"
-      - name: Display PR　Diff Modules
+      - name: Display PR Diff Modules
         run: |
-          for mod in "$changed_module_list"
+          for mod in ${changed_module_list[@]}
           do
             echo changed module: "${mod}"
           done
-          if [ -z "$changed_module_list" ]; then
+          if [ ${#changed_module_list[@]} -eq 0 ]; then
             echo "no_changed_mod=true" >> $GITHUB_ENV
           else
             echo "no_changed_mod=false" >> $GITHUB_ENV
@@ -137,14 +135,14 @@ jobs:
           set -ev
           git checkout "$base_branch_pre"/"$base_branch"
           mkdir "$base_meta_path"
-          for mod in "$changed_module_list"
+          for mod in ${changed_module_list[@]}
           do
             echo changed module: "${mod}"
             azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./"$base_meta_path"/ && azdev extension remove "${mod}"
           done
           git checkout "$diff_branch"
           mkdir "$diff_meta_path"
-          for mod in "$changed_module_list"
+          for mod in ${changed_module_list[@]}
           do
             echo changed module: "${mod}"
             azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./"$diff_meta_path"/
