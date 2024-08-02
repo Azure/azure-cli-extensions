@@ -5,6 +5,10 @@ Release History
 upcoming
 ++++++
 
+0.3.55
+++++++
+* 'az containerapp sessionpool create/update': Added NodeLTS container_type, and container_type parameter is mandatory now.
+
 0.3.54
 ++++++
 * 'az containerapp env create/update': Support `--public-network-access` to allow or block public network
