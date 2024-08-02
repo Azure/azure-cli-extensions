@@ -54,7 +54,7 @@ from .vendored_sdks.preview_2022_10_01.models import ConnectedClusterPatch as Co
 from .vendored_sdks.preview_2024_07_01.models import (
     ConnectedCluster as ConnectedCluster2024_07_01_Preview, OidcIssuerProfile,
     SecurityProfile, SecurityProfileWorkloadIdentity, ArcAgentryConfigurations,
-    Gateway
+    Gateway, ArcAgentProfile
 )
 import sys
 import hashlib
@@ -156,6 +156,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
             enabled=True,
             resource_id=gateway_resource_id
         )
+
+    arc_agent_profile = None
+    if disable_auto_upgrade:
+        arc_agent_profile = ArcAgentProfile(agent_auto_upgrade="Disabled")
 
     # Checking whether optional extra values file has been provided.
     values_file = utils.get_values_file()
@@ -403,7 +407,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                 cc = generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra,
                                               enable_private_link, private_link_scope_resource_id,
                                               distribution_version, azure_hybrid_benefit, enable_oidc_issuer,
-                                              enable_workload_identity, gateway, arc_agentry_configurations)
+                                              enable_workload_identity, gateway, arc_agentry_configurations, arc_agent_profile)
                 cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
                 cc_response = LongRunningOperation(cmd.cli_ctx)(cc_response)
                 # Disabling cluster-connect if private link is getting enabled
@@ -476,7 +480,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     cc = generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra,
                                   enable_private_link, private_link_scope_resource_id, distribution_version,
                                   azure_hybrid_benefit, enable_oidc_issuer, enable_workload_identity, gateway,
-                                  arc_agentry_configurations, self_hosted_issuer)
+                                  arc_agentry_configurations, arc_agent_profile, self_hosted_issuer)
 
     print("Azure resource provisioning has begun.")
     # Create connected cluster resource
@@ -937,7 +941,7 @@ def generate_arc_agent_configuration(configuration_settings, configuration_prote
 
 def generate_request_payload(location, public_key, tags, kubernetes_distro, kubernetes_infra, enable_private_link, private_link_scope_resource_id,
                              distribution_version, azure_hybrid_benefit, enable_oidc_issuer, enable_workload_identity, gateway,
-                             arc_agentry_configurations, self_hosted_issuer=""):
+                             arc_agentry_configurations, arc_agent_profile, self_hosted_issuer=""):
     # Create connected cluster resource object
     identity = ConnectedClusterIdentity(
         type="SystemAssigned"
@@ -953,7 +957,7 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
         infrastructure=kubernetes_infra
     )
 
-    if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None or enable_oidc_issuer or enable_workload_identity or gateway is not None or arc_agentry_configurations is not None:
+    if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None or enable_oidc_issuer or enable_workload_identity or gateway is not None or arc_agentry_configurations is not None or arc_agent_profile is not None:
         # Set additional parameters
         private_link_state = None
         if enable_private_link is not None:
@@ -975,6 +979,7 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
             distribution_version=distribution_version,
             oidc_issuer_profile=oidc_profile,
             security_profile=security_profile,
+            arc_agent_profile=arc_agent_profile,
             gateway=gateway,
             arc_agentry_configurations=arc_agentry_configurations
         )
@@ -982,7 +987,7 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
     return cc
 
 
-def generate_reput_request_payload(cc, enable_oidc_issuer, enable_workload_identity, self_hosted_issuer, gateway, arc_agentry_configurations):
+def generate_reput_request_payload(cc, enable_oidc_issuer, enable_workload_identity, self_hosted_issuer, gateway, arc_agentry_configurations, arc_agent_profile):
     # Update connected cluster resource object
     if enable_oidc_issuer is not None:
         oidc_profile = set_oidc_issuer_profile(enable_oidc_issuer, self_hosted_issuer)
@@ -997,6 +1002,9 @@ def generate_reput_request_payload(cc, enable_oidc_issuer, enable_workload_ident
 
     if arc_agentry_configurations is not None:
         cc.arc_agentry_configurations = arc_agentry_configurations
+    
+    if arc_agent_profile is not None:
+        cc.arc_agent_profile = arc_agent_profile
 
     return cc
 
@@ -1371,9 +1379,14 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
             enabled=False
         )
 
+    # Set arc agent profile when auto-upgrade is set
+    arc_agent_profile = None
+    if auto_upgrade is not None:
+        arc_agent_profile = ArcAgentProfile(agent_auto_upgrade="Enabled") if auto_upgrade else ArcAgentProfile(agent_auto_upgrade="Disabled")
+
     # Get the connected cluster resource using latest api version and generate reput request payload
     connected_cluster = get_connectedk8s_2024_07_01(cmd, resource_group_name, cluster_name)
-    cc = generate_reput_request_payload(connected_cluster, enable_oidc_issuer, enable_workload_identity, self_hosted_issuer, gateway, arc_agentry_configurations)
+    cc = generate_reput_request_payload(connected_cluster, enable_oidc_issuer, enable_workload_identity, self_hosted_issuer, gateway, arc_agentry_configurations, arc_agent_profile)
 
     # Update connected cluster resource
     reput_cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, False)
@@ -1404,9 +1417,6 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     # Substitute any protected helm values as the value for that will be null
     for helm_parameter, helm_value in protected_helm_values.items():
         helm_content_values[helm_parameter] = helm_value
-
-    if auto_upgrade is not None:
-        helm_content_values["systemDefaultValues.azureArcAgents.autoUpdate"] = auto_upgrade
 
     # Set agent version in registry path
     if connected_cluster.agent_version is not None:
