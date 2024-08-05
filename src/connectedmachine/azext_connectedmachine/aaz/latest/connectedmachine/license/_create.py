@@ -13,19 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "connectedmachine license create",
-    is_preview=True,
 )
 class Create(AAZCommand):
-    """Create operation to create a license.
+    """Create a license.
 
     :example: Sample command for license create
-        az connectedmachine license create --name 'myESULicense' --resource-group 'ytongtest' --location 'eastus2euap' --license-type 'ESU' --state 'Activated' --target 'Windows Server 2012' --edition 'Datacenter' --type 'pCore' --processors 16 --subscription subscriptionId
+        az connectedmachine license create --name licenseName --resource-group myResourceGroup --location 'eastus2euap' --license-type 'ESU' --state 'Activated' --target 'Windows Server 2012' --edition 'Datacenter' --type 'pCore' --processors 16 --subscription mySubscription
     """
 
     _aaz_info = {
-        "version": "2024-03-31-preview",
+        "version": "2024-05-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses/{}", "2024-03-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses/{}", "2024-05-20-preview"],
         ]
     }
 
@@ -227,7 +226,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-31-preview",
+                    "api-version", "2024-05-20-preview",
                     required=True,
                 ),
             }

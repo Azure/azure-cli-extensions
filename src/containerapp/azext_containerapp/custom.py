@@ -10,8 +10,6 @@ import json
 import requests
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
-from ._constants import DOTNET_COMPONENT_RESOURCE_TYPE
-
 
 from azure.cli.core import telemetry as telemetry_core
 
@@ -39,8 +37,6 @@ from azure.cli.command_modules.containerapp._utils import (safe_set,
                                                            _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
                                                            validate_container_app_name, register_provider_if_needed,
                                                            generate_randomized_cert_name, load_cert_file,
-                                                           generate_randomized_managed_cert_name,
-                                                           check_managed_cert_name_availability, prepare_managed_certificate_envelop,
                                                            trigger_workflow, _ensure_identity_resource_id,
                                                            AppType)
 
@@ -86,7 +82,6 @@ from ._clients import (
     GitHubActionPreviewClient,
     ContainerAppPreviewClient,
     AuthPreviewClient,
-    SubscriptionPreviewClient,
     StoragePreviewClient,
     ContainerAppsJobPreviewClient,
     ContainerAppsResiliencyPreviewClient,
@@ -120,7 +115,7 @@ from ._constants import (CONTAINER_APPS_RP,
                          DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_WEAVIATE_IMAGE, DEV_WEAVIATE_CONTAINER_NAME, DEV_WEAVIATE_SERVICE_TYPE,
                          DEV_MILVUS_IMAGE, DEV_MILVUS_CONTAINER_NAME, DEV_MILVUS_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME,
                          DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST,
-                         JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA, JAVA_COMPONENT_ADMIN, JAVA_COMPONENT_NACOS)
+                         JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA, JAVA_COMPONENT_ADMIN, JAVA_COMPONENT_NACOS, DOTNET_COMPONENT_RESOURCE_TYPE)
 
 
 logger = get_logger(__name__)
@@ -666,33 +661,6 @@ def list_containerapp(cmd, resource_group_name=None, managed_env=None, environme
     containerapp_list_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
     return containerapp_list_decorator.list()
-
-
-def show_custom_domain_verification_id(cmd):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-    try:
-        r = SubscriptionPreviewClient.show_custom_domain_verification_id(cmd)
-        return r
-    except CLIError as e:
-        handle_raw_exception(e)
-
-
-def list_usages(cmd, location):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-    try:
-        r = SubscriptionPreviewClient.list_usages(cmd, location)
-        return r
-    except CLIError as e:
-        handle_raw_exception(e)
-
-
-def list_environment_usages(cmd, resource_group_name, name):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-    try:
-        r = ManagedEnvironmentPreviewClient.list_usages(cmd, resource_group_name, name)
-        return r
-    except CLIError as e:
-        handle_raw_exception(e)
 
 
 def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
@@ -1325,22 +1293,6 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
         return update_containerapp_logic(cmd=cmd, name=name, resource_group_name=resource_group_name, image=image, replace_env_vars=env_vars, ingress=ingress, target_port=target_port,
                                          registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, container_name=name, force_single_container_updates=force_single_container_updates)
     return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, environment_type=environment_type)
-
-
-def create_managed_certificate(cmd, name, resource_group_name, hostname, validation_method, certificate_name=None):
-    if certificate_name and not check_managed_cert_name_availability(cmd, resource_group_name, name, certificate_name):
-        raise ValidationError(f"Certificate name '{certificate_name}' is not available.")
-    cert_name = certificate_name
-    while not cert_name:
-        cert_name = generate_randomized_managed_cert_name(hostname, resource_group_name)
-        if not check_managed_cert_name_availability(cmd, resource_group_name, name, certificate_name):
-            cert_name = None
-    certificate_envelop = prepare_managed_certificate_envelop(cmd, name, resource_group_name, hostname, validation_method.upper())
-    try:
-        r = ManagedEnvironmentPreviewClient.create_or_update_managed_certificate(cmd, resource_group_name, name, cert_name, certificate_envelop, True, validation_method.upper() == 'TXT')
-        return r
-    except Exception as e:
-        handle_raw_exception(e)
 
 
 def list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None, managed_certificates_only=False, private_key_certificates_only=False):
