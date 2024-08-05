@@ -41,6 +41,7 @@ from azext_aks_preview._consts import (
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
+    check_is_azure_cli_core_editable_installed,
     check_is_private_cluster,
     get_cluster_snapshot_by_snapshot_id,
     setup_common_safeguards_profile,
@@ -993,43 +994,10 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: bool
         """
-        # read the original value passed by the command
-        enable_managed_identity = self.raw_param.get("enable_managed_identity")
-        # In create mode, try to read the property value corresponding to the parameter from the `mc` object
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if self.mc and self.mc.identity:
-                enable_managed_identity = check_is_msi_cluster(self.mc)
-
-        # skip dynamic completion & validation if option read_only is specified
-        if read_only:
-            return enable_managed_identity
-
-        # dynamic completion for create mode only
-        if self.decorator_mode == DecoratorMode.CREATE:
-            # if user does not specify service principal or client secret,
-            # backfill the value of enable_managed_identity to True
-            (
-                service_principal,
-                client_secret,
-            ) = self._get_service_principal_and_client_secret(read_only=True)
-            if not (service_principal or client_secret) and not enable_managed_identity:
-                enable_managed_identity = True
+        enable_managed_identity = super()._get_enable_managed_identity()
 
         # validation
         if enable_validation:
-            if self.decorator_mode == DecoratorMode.CREATE:
-                (
-                    service_principal,
-                    client_secret,
-                ) = self._get_service_principal_and_client_secret(read_only=True)
-                if (service_principal or client_secret) and enable_managed_identity:
-                    raise MutuallyExclusiveArgumentError(
-                        "Cannot specify --enable-managed-identity and --service-principal/--client-secret at same time"
-                    )
-            if not enable_managed_identity and self._get_assign_identity(enable_validation=False):
-                raise RequiredArgumentMissingError(
-                    "--assign-identity can only be specified when --enable-managed-identity is specified"
-                )
             # additional validation in aks-preview
             if self.decorator_mode == DecoratorMode.CREATE:
                 if not enable_managed_identity and self._get_enable_pod_identity(enable_validation=False):
@@ -3741,9 +3709,42 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # set up imds restriction(a property in network profile)
         mc = self.set_up_imds_restriction(mc)
 
+        # validate the azure cli core version
+        self.verify_cli_core_version()
+
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
         return mc
+
+    def verify_cli_core_version(self):
+        from azure.cli.core import __version__ as core_version
+        monitor_options_specified = False
+        # in case in a super old version, the options are not available
+        try:
+            monitor_options_specified = any(
+                (
+                    self.context.get_ampls_resource_id(),
+                    self.context.get_enable_high_log_scale_mode(),
+                )
+            )
+        except Exception as ex:  # pylint: disable=broad-except
+            logger.debug("failed to get the value of monitor_options: %s", ex)
+            monitor_options_specified = any(
+                (
+                    self.__raw_parameters.get("ampls_resource_id"),
+                    self.__raw_parameters.get("enable_high_log_scale_mode"),
+                )
+            )
+        finally:
+            if monitor_options_specified and (
+                core_version < "2.63.0" and
+                not check_is_azure_cli_core_editable_installed()
+            ):
+                raise ArgumentUsageError(
+                    f"The --ampls-resource-id and --enable-high-log-scale-mode options are only available in Azure CLI "
+                    f"version 2.63.0 and later. Your current Azure CLI version is {core_version}. Please upgrade your "
+                    "Azure CLI."
+                )
 
     def check_is_postprocessing_required(self, mc: ManagedCluster) -> bool:
         """Helper function to check if postprocessing is required after sending a PUT request to create the cluster.
@@ -3850,6 +3851,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     create_dcr=False,
                     create_dcra=True,
                     enable_syslog=self.context.get_enable_syslog(),
+                    data_collection_settings=self.context.get_data_collection_settings(),
+                    is_private_cluster=self.context.get_enable_private_cluster(),
+                    ampls_resource_id=self.context.get_ampls_resource_id(),
+                    enable_high_log_scale_mode=self.context.get_enable_high_log_scale_mode(),
                 )
 
         # ingress appgw addon
