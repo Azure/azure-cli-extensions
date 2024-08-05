@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* az aks create/update: Support in place param updates for managed prom
 
 7.0.0b2
 ++++++++

@@ -90,7 +90,7 @@ def ensure_azure_monitor_profile_prerequisites(
         # Do RP registrations and artifact creation (DC*, rules, grafana link etc.) if not enabled already
         # Otherwise move forward so that the addon can be enabled with new KSM parameters
         if is_prometheus_enabled is False:
-            rp_registrations(cmd, cluster_subscription, raw_parameters)
+            rp_registrations(cmd, cluster_subscription)
             link_azure_monitor_profile_artifacts(
                 cmd,
                 cluster_subscription,
