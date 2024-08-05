@@ -59,7 +59,7 @@ jobs:
             echo "changed_module_list=$(cat changed_files | grep azext_ | awk -F"azext_" '{print $1}'| awk -F"/" '{print $2}' | sort | uniq | xargs)" >> $GITHUB_ENV
       - name: Display Diff Modules
         run: |
-            for mod in "$changed_module_list"
+            for mod in ${changed_module_list[@]}
             do
               echo changed module: "${mod}"
             done
