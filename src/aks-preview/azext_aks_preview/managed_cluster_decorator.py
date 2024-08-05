@@ -3029,7 +3029,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
                 observability=self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
                     enabled=advanced_network_observability,
-                    tlsManagement=self.context.get_advanced_networking_observability_tls_management(),
+                    tls_management=self.context.get_advanced_networking_observability_tls_management(),
                 )
             )
         return mc
