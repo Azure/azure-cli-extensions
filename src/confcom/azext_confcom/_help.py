@@ -127,6 +127,23 @@ helps[
           type: bool
           short-summary: 'Path to custom settings file'
 
+        - name: --rules-file-name -p
+          type: bool
+          short-summary: 'Path to custom rules file'
+
+        - name: --print-version -v
+          type: bool
+          short-summary: 'Print the version of genpolicy tooling'
+
+        - name: --containerd-pull -d
+          type: string
+          short-summary: 'Use containerd to pull the image. This option is only supported on Linux'
+
+        - name: --containerd-socket-path
+          type: string
+          short-summary: 'Path to the containerd socket. This option is only supported on Linux'
+
+
     examples:
         - name: Input a Kubernetes YAML file to inject a base64 encoded Confidential Container Security Policy into the YAML file
           text: az confcom katapolicygen --yaml "./pod.json"
@@ -136,4 +153,8 @@ helps[
           text: az confcom katapolicygen --yaml "./pod.json" -j "./settings.json"
         - name: Input a Kubernetes YAML file and external config map file
           text: az confcom katapolicygen --yaml "./pod.json" --config-map-file "./configmap.json"
+        - name: Input a Kubernetes YAML file and custom rules file
+          text: az confcom katapolicygen --yaml "./pod.json" -p "./rules.rego"
+        - name: Input a Kubernetes YAML file with a custom containerd socket path
+          text: az confcom katapolicygen --yaml "./pod.json" --containerd-pull --containerd-socket-path "/my/custom/containerd.sock"
 """

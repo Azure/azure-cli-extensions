@@ -737,8 +737,6 @@ def load_policy_from_image_name(
         {
             config.ACI_FIELD_VERSION: "1.0",
             config.ACI_FIELD_CONTAINERS: containers,
-            # fallback to default fragments if the policy is not present
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS: config.DEFAULT_REGO_FRAGMENTS,
         },
         debug_mode=debug_mode,
         disable_stdio=disable_stdio,

@@ -8,7 +8,7 @@ import sys
 
 from pkg_resources import parse_version
 from knack.log import get_logger
-from azext_confcom.config import DEFAULT_REGO_FRAGMENTS, DATA_FOLDER
+from azext_confcom.config import DEFAULT_REGO_FRAGMENTS
 from azext_confcom import os_util
 from azext_confcom.template_util import (
     pretty_print_func,
@@ -164,14 +164,15 @@ def katapolicygen_confcom(
     print_policy: bool = False,
     use_cached_files: bool = False,
     settings_file_name: str = None,
+    rules_file_name: str = None,
+    print_version: bool = False,
+    containerd_pull: str = False,
+    containerd_socket_path: str = None,
 ):
-
-    if settings_file_name:
-        if "genpolicy-settings.json" in settings_file_name:
-            error_out("Cannot use default settings file names")
-        os_util.copy_file(settings_file_name, DATA_FOLDER)
-
     kata_proxy = KataPolicyGenProxy()
+
+    if not (yaml_path or print_version):
+        error_out("Either --yaml-path or --print-version is required")
 
     output = kata_proxy.kata_genpolicy(
         yaml_path,
@@ -180,6 +181,10 @@ def katapolicygen_confcom(
         print_policy=print_policy,
         use_cached_files=use_cached_files,
         settings_file_name=settings_file_name,
+        rules_file_name=rules_file_name,
+        print_version=print_version,
+        containerd_pull=containerd_pull,
+        containerd_socket_path=containerd_socket_path,
     )
     print(output)
     sys.exit(0)

@@ -2,6 +2,13 @@
 
 Release History
 ===============
+0.3.6
+++++++
+* updating genpolicy version up through 3.2.0.azl1.genpolicy0. Please note that this is a breaking change for deploying older policies. With the new node image, 0.3.6 or newer will be required.
+* changing genpolicy flags to give full path to config files instead of path as a flag
+* adding genpolicy flags for --containerd-pull, --containerd-socket-path, --rules-file-name, and --print-version
+* `-c` flag for katapolicygen now supports persistent volume claims
+
 0.3.5
 ++++++
 * making diff mode more robust
