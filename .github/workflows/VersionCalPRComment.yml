@@ -73,7 +73,7 @@ jobs:
           git --no-pager diff --name-only --diff-filter=ACMRT "$base_branch_pre"/"$base_branch"..."$diff_branch" | grep -v "/tests/" > changed_files
           cat changed_files
           cat changed_files | grep src/ | awk -F"src/" '{print $2}'| grep / | awk -F"/" '{print $1}' | sort | uniq
-          echo "changed_module_list=$(cat changed_files | grep src/ | awk -F"src/" '{print $2}'| grep / | awk -F"/" '{print $1}' | sort | uniq)" >> $GITHUB_ENV
+          echo "changed_module_list=$(cat changed_files | grep src/ | awk -F"src/" '{print $2}'| grep / | awk -F"/" '{print $1}' | sort | uniq | xargs)" >> $GITHUB_ENV
           git --no-pager diff --diff-filter=ACMRT "$base_branch_pre"/"$base_branch"..."$diff_branch" > "$diff_code_file"
       - name: Display PR Diff Modules
         run: |
