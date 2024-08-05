@@ -4,7 +4,12 @@ Release History
 ===============
 upcoming
 ++++++
+
+0.3.54
+++++++
 * 'az containerapp env create/update': Support `--public-network-access` to allow or block public network
+* Update azure cli dependency version >= "2.62.0"
+* Remove GA commands which exist in azure-cli version 2.62.0
 
 0.3.53
 ++++++
