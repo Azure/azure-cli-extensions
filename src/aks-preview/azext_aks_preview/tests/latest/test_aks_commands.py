@@ -13191,7 +13191,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="westcentralus",
     )
     def test_aks_update_advanced_networking_observability_tls_management(
         self, resource_group, resource_group_location
@@ -13267,7 +13267,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="westcentralus",
     )
     def test_aks_create_advanced_networking_observability_tls_management_managed(
         self, resource_group, resource_group_location
@@ -13312,7 +13312,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="westcentralus",
     )
     def test_aks_create_advanced_networking_observability_tls_management_none(
         self, resource_group, resource_group_location
