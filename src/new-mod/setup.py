@@ -10,7 +10,7 @@ from codecs import open
 from setuptools import setup, find_packages
 
 # HISTORY.rst entry.
-VERSION = '1.9.0'
+VERSION = '1.0.0'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -34,16 +34,15 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='virtual-network-manager',
+    name='new-mod',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools NetworkManagementClient Extension',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/network-manager',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/new-mod',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
-    package_data={'azext_network_manager': ['azext_metadata.json']},
 )
