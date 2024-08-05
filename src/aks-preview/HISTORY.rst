@@ -18,6 +18,7 @@ Pending
 ++++++++
 * Fix bug related to the --ampls-resource-id option in the `az aks enable-addons` command.
 * Vendor new SDK and bump API version to 2024-06-02-preview.
+* Add option `--enable-fqdn-policy`, `--disable-fqdn-policy` to `az aks create/update`
 
 7.0.0b3
 ++++++++

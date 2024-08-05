@@ -1228,6 +1228,12 @@ helps['aks update'] = """
         - name: --disable-advanced-network-observability
           type: bool
           short-summary: Disable advanced network observability functionalities on a cluster
+        - name: --enable-fqdn-policy
+          type: bool
+          short-summary: Enable advanced network security FQDN functionalities on a cluster.
+        - name: --disable-fqdn-policy
+          type: bool
+          short-summary: Disable advanced network security FQDN functionalities on a cluster
         - name: --enable-cost-analysis
           type: bool
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.

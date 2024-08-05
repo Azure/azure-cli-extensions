@@ -728,6 +728,26 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             return not disable_advanced_network_observability
         return None
 
+    def get_enable_fqdn_policy(self) -> Optional[bool]:
+        """Get the value of enable_fqdn_policy
+
+        :return: bool or None
+        """
+        enable_fqdn_policy = self.raw_param.get("enable_fqdn_policy")
+        disable_fqdn_policy = self.raw_param.get("disable_fqdn_policy")
+        if enable_fqdn_policy and disable_fqdn_policy:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-advanced-network-observability and "
+                "--disable-advanced-network-observability at the same time."
+            )
+        if enable_fqdn_policy is False and disable_fqdn_policy is False:
+            return None
+        if enable_fqdn_policy is not None:
+            return enable_fqdn_policy
+        if disable_fqdn_policy is not None:
+            return not disable_fqdn_policy
+        return None
+
     def get_load_balancer_managed_outbound_ip_count(self) -> Union[int, None]:
         """Obtain the value of load_balancer_managed_outbound_ip_count.
 
@@ -2989,6 +3009,16 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     enabled=advanced_network_observability
                 )
             )
+
+        fqdn_policy = self.context.get_enable_fqdn_policy()
+        if fqdn_policy is not None:
+            network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
+                security=self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
+                    fqdnPolicy=self.models.AdvancedNetworkingFQDNPolicy(
+                        enabled=fqdn_policy
+                    )
+                )
+            )
         return mc
 
     def set_up_api_server_access_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -4063,6 +4093,24 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
                 observability=self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
                     enabled=advanced_network_observability
+                )
+            )
+        return mc
+
+    def update_enable_fqdn_policy_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update enable fqdn policy of network profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        fqdn_policy = self.context.get_enable_fqdn_policy()
+        if fqdn_policy is not None:
+            mc.network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
+                security=self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
+                    fqdnPolicy=self.models.AdvancedNetworkingFQDNPolicy(
+                        enabled=fqdn_policy
+                    )
                 )
             )
         return mc
@@ -5341,6 +5389,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nodepool_initialization_taints_mc(mc)
         # update advanced_network_observability in network_profile
         mc = self.update_enable_advanced_network_observability_in_network_profile(mc)
+        # update fqdn policy in network_profile
+        mc = self.update_enable_fqdn_policy_in_network_profile(mc)
         # update kubernetes support plan
         mc = self.update_k8s_support_plan(mc)
         # update AI toolchain operator
