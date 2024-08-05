@@ -1,5 +1,8 @@
 Release History
 ===============
+2.0.6
+-----
+*  Added new --bastion flag parameter to allow uers to leverage the Bastion Developer SKU and connect to virtual machines without exposing their publci I
 2.0.5
 -----
 * Remove ctypes dependency from RDP feature
