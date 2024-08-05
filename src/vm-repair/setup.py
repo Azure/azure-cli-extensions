@@ -24,7 +24,7 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = ['opencensus~=0.11.4']
 
 with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
