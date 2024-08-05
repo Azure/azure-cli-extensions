@@ -13,10 +13,9 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "connectedmachine license",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """The operations on ESU license
+    """Manage ESU license on an Azure Arc-Enabled Server.
     """
     pass
 

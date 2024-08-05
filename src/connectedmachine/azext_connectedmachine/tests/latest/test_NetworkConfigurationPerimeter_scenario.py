@@ -39,7 +39,7 @@ class NetworkConfigurationPerimeterScenarioTest(ScenarioTest):
             'scope': 'adrielScope',
             'location': 'centraluseuap',
             'subscription': '00000000-0000-0000-0000-000000000000',
-            'perimeterName': 'fd1289de-e8d3-4f76-8008-de297232dbf6.adrielScope-e1bf45b1-b9a1-4f8b-a76e-3607869aed94',
+            'perimeterName': '00000000-0000-0000-0000-000000000000.adrielScope-00000000-0000-0000-0000-000000000000',
         })
 
         # network security perimeter configuration
@@ -55,3 +55,10 @@ class NetworkConfigurationPerimeterScenarioTest(ScenarioTest):
                 '--subscription "{subscription}" '
                 '--perimeter-name "{perimeterName}"',
                 checks=[])  
+
+        # self.cmd('az connectedmachine private-link-scope network-security-perimeter-configuration reconcile '
+        #         '--resource-group "{rg}" '
+        #         '--scope-name "{scope}" '
+        #         '--subscription "{subscription}" '
+        #         '--perimeter-name "{perimeterName}"',
+        #         checks=[])  

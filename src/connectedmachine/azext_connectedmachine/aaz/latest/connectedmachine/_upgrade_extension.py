@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "connectedmachine upgrade-extension",
 )
 class UpgradeExtension(AAZCommand):
-    """The operation to upgrade Machine Extensions.
+    """Upgrade Machine Extensions.
 
-    :example: Sample command for extension upgrade
+    :example: Sample command for upgrade-extension
         az connectedmachine extension upgrade --machine-name "myMachineName" --resource-group "myResourceGroup" --subscription "mySubscription" --targets "{"Microsoft.Compute.CustomScriptExtension": "{"targetVersion": "1.10"}", "Microsoft.Azure.Monitoring": "{"targetVersion": "2.0"}"}"
     """
 
     _aaz_info = {
-        "version": "2024-03-31-preview",
+        "version": "2024-05-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/upgradeextensions", "2024-03-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/upgradeextensions", "2024-05-20-preview"],
         ]
     }
 
@@ -156,7 +156,7 @@ class UpgradeExtension(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-31-preview",
+                    "api-version", "2024-05-20-preview",
                     required=True,
                 ),
             }

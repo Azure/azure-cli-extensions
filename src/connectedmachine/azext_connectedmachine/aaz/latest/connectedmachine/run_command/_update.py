@@ -16,16 +16,16 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Update(AAZCommand):
-    """Update operation to create or update a run command.
+    """Update a run command.
 
     :example: Sample command for run-command update
-        az connetcedmachine run-command update --resource-group "myResourceGroup" --name "myRunCommand" --machine-name "myMachine" --subscription "mySubscription" --tags Tag1=Value1
+        az connetcedmachine run-command update --resource-group myResourceGroup --name myRunCommand --machine-name myMachine --subscription mySubscription --tags Tag1=Value1
     """
 
     _aaz_info = {
-        "version": "2024-03-31-preview",
+        "version": "2024-05-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/runcommands/{}", "2024-03-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/runcommands/{}", "2024-05-20-preview"],
         ]
     }
 
@@ -74,35 +74,35 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.async_execution = AAZBoolArg(
-            options=["--async", "--async-execution"],
+            options=["--async-execution"],
             arg_group="Properties",
             help="Optional. If set to true, provisioning will complete as soon as script starts and will not wait for script to complete.",
             nullable=True,
         )
         _args_schema.error_blob_managed_identity = AAZObjectArg(
-            options=["--error-id", "--error-blob-managed-identity"],
+            options=["--error-blob-id", "--error-blob-managed-identity"],
             arg_group="Properties",
             help="User-assigned managed identity that has access to errorBlobUri storage blob. Use an empty object in case of system-assigned identity. Make sure managed identity has been given access to blob's container with 'Storage Blob Data Contributor' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged",
             nullable=True,
         )
         cls._build_args_run_command_managed_identity_update(_args_schema.error_blob_managed_identity)
         _args_schema.error_blob_uri = AAZStrArg(
-            options=["--error-uri", "--error-blob-uri"],
+            options=["--error-blob-uri"],
             arg_group="Properties",
             help="Specifies the Azure storage blob where script error stream will be uploaded. Use a SAS URI with read, append, create, write access OR use managed identity to provide the VM access to the blob. Refer errorBlobManagedIdentity parameter.",
             nullable=True,
         )
         _args_schema.output_blob_managed_identity = AAZObjectArg(
-            options=["--output-id", "--output-blob-managed-identity"],
+            options=["--output-blob-id", "--output-blob-managed-identity"],
             arg_group="Properties",
             help="User-assigned managed identity that has access to outputBlobUri storage blob. Use an empty object in case of system-assigned identity. Make sure managed identity has been given access to blob's container with 'Storage Blob Data Contributor' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged",
             nullable=True,
         )
         cls._build_args_run_command_managed_identity_update(_args_schema.output_blob_managed_identity)
         _args_schema.output_blob_uri = AAZStrArg(
-            options=["--output-uri", "--output-blob-uri"],
+            options=["--output-blob-uri"],
             arg_group="Properties",
-            help="Specifies the Azure storage blob where script output stream will be uploaded. Use a SAS URI with read, append, create, write access OR use managed identity to provide the VM access to the blob. Refer outputBlobManagedIdentity parameter.",
+            help="Specifies the Azure storage blob where script output stream will be uploaded. Use a SAS URI with read, append, create, write access OR use managed identity to provide the VM access to the blob. Refer outputBlobManagedIdentity parameter. ",
             nullable=True,
         )
         _args_schema.parameters = AAZListArg(
@@ -118,25 +118,19 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.run_as_password = AAZStrArg(
-            options=["--password", "--run-as-password"],
+            options=["--run-as-password"],
             arg_group="Properties",
             help="Specifies the user account password on the machine when executing the run command.",
             nullable=True,
         )
         _args_schema.run_as_user = AAZStrArg(
-            options=["--user", "--run-as-user"],
+            options=["--run-as-user"],
             arg_group="Properties",
             help="Specifies the user account on the machine when executing the run command.",
             nullable=True,
         )
-        _args_schema.source = AAZObjectArg(
-            options=["--source"],
-            arg_group="Properties",
-            help="The source of the run command script.",
-            nullable=True,
-        )
         _args_schema.timeout_in_seconds = AAZIntArg(
-            options=["--timeout", "--timeout-in-seconds"],
+            options=["--timeout-in-seconds"],
             arg_group="Properties",
             help="The timeout in seconds to execute the run command.",
             nullable=True,
@@ -154,29 +148,6 @@ class Update(AAZCommand):
         )
         cls._build_args_run_command_input_parameter_update(protected_parameters.Element)
 
-        source = cls._args_schema.source
-        source.command_id = AAZStrArg(
-            options=["command-id"],
-            help="Specifies the commandId of predefined built-in script.",
-            nullable=True,
-        )
-        source.script = AAZStrArg(
-            options=["script"],
-            help="Specifies the script content to be executed on the machine.",
-            nullable=True,
-        )
-        source.script_uri = AAZStrArg(
-            options=["script-uri"],
-            help="Specifies the script download location. It can be either SAS URI of an Azure storage blob with read access or public URI.",
-            nullable=True,
-        )
-        source.script_uri_managed_identity = AAZObjectArg(
-            options=["script-uri-managed-identity"],
-            help="User-assigned managed identity that has access to scriptUri in case of Azure storage blob. Use an empty object in case of system-assigned identity. Make sure the Azure storage blob exists, and managed identity has been given access to blob's container with 'Storage Blob Data Reader' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged.",
-            nullable=True,
-        )
-        cls._build_args_run_command_managed_identity_update(source.script_uri_managed_identity)
-
         # define Arg Group "RunCommandProperties"
 
         _args_schema = cls._args_schema
@@ -191,6 +162,35 @@ class Update(AAZCommand):
         tags.Element = AAZStrArg(
             nullable=True,
         )
+
+        # define Arg Group "Source"
+
+        _args_schema = cls._args_schema
+        _args_schema.command_id = AAZStrArg(
+            options=["--command-id"],
+            arg_group="Source",
+            help="Specifies the commandId of predefined built-in script.",
+            nullable=True,
+        )
+        _args_schema.script = AAZStrArg(
+            options=["--script"],
+            arg_group="Source",
+            help="Specifies the script content to be executed on the machine.",
+            nullable=True,
+        )
+        _args_schema.script_uri = AAZStrArg(
+            options=["--script-uri"],
+            arg_group="Source",
+            help="Specifies the script download location. It can be either SAS URI of an Azure storage blob with read access or public URI.",
+            nullable=True,
+        )
+        _args_schema.script_uri_managed_identity = AAZObjectArg(
+            options=["--script-uri-id", "--script-uri-managed-identity"],
+            arg_group="Source",
+            help="User-assigned managed identity that has access to scriptUri in case of Azure storage blob. Use an empty object in case of system-assigned identity. Make sure the Azure storage blob exists, and managed identity has been given access to blob's container with 'Storage Blob Data Reader' role assignment. In case of user-assigned identity, make sure you add it under VM's identity. For more info on managed identity and Run Command, refer https://aka.ms/ManagedIdentity and https://aka.ms/RunCommandManaged.",
+            nullable=True,
+        )
+        cls._build_args_run_command_managed_identity_update(_args_schema.script_uri_managed_identity)
         return cls._args_schema
 
     _args_run_command_input_parameter_update = None
@@ -329,7 +329,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-31-preview",
+                    "api-version", "2024-05-20-preview",
                     required=True,
                 ),
             }
@@ -432,7 +432,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-31-preview",
+                    "api-version", "2024-05-20-preview",
                     required=True,
                 ),
             }
@@ -504,7 +504,7 @@ class Update(AAZCommand):
                 properties.set_prop("protectedParameters", AAZListType, ".protected_parameters")
                 properties.set_prop("runAsPassword", AAZStrType, ".run_as_password", typ_kwargs={"flags": {"secret": True}})
                 properties.set_prop("runAsUser", AAZStrType, ".run_as_user")
-                properties.set_prop("source", AAZObjectType, ".source")
+                properties.set_prop("source", AAZObjectType)
                 properties.set_prop("timeoutInSeconds", AAZIntType, ".timeout_in_seconds")
 
             parameters = _builder.get(".properties.parameters")
@@ -605,6 +605,7 @@ class _UpdateHelper:
         )
         properties.instance_view = AAZObjectType(
             serialized_name="instanceView",
+            flags={"read_only": True},
         )
         properties.output_blob_managed_identity = AAZObjectType(
             serialized_name="outputBlobManagedIdentity",

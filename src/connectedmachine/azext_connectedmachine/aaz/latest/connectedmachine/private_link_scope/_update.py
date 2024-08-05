@@ -18,13 +18,13 @@ class Update(AAZCommand):
     """Update an Azure Arc PrivateLinkScope. Note: You cannot                                          specify a different value for InstrumentationKey nor AppId in the Put operation.
 
     :example: Sample command for private-link-scope update
-        az connectedmachine private-link-scope update --location westus --tags Tag1=Value1 --resource-group my-resource-group --scope-name my-privatelinkscope --subscription mySubscription
+        az connectedmachine private-link-scope update --location westus --tags Tag1=Value1 --resource-group my-resource-group --scope-name my-privatelinkscope
     """
 
     _aaz_info = {
-        "version": "2024-03-31-preview",
+        "version": "2024-05-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2024-03-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2024-05-20-preview"],
         ]
     }
 
@@ -164,7 +164,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-31-preview",
+                    "api-version", "2024-05-20-preview",
                     required=True,
                 ),
             }
@@ -247,7 +247,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-31-preview",
+                    "api-version", "2024-05-20-preview",
                     required=True,
                 ),
             }

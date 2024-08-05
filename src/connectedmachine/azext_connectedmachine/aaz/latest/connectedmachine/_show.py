@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-03-31-preview",
+        "version": "2024-05-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2024-03-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2024-05-20-preview"],
         ]
     }
 
@@ -133,7 +133,7 @@ class Show(AAZCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2024-03-31-preview",
+                    "api-version", "2024-05-20-preview",
                     required=True,
                 ),
             }
@@ -398,7 +398,9 @@ class Show(AAZCommand):
             detected_properties.Element = AAZStrType()
 
             error_details = cls._schema_on_200.properties.error_details
-            error_details.Element = AAZObjectType()
+            error_details.Element = AAZObjectType(
+                flags={"read_only": True},
+            )
             _ShowHelper._build_schema_error_detail_read(error_details.Element)
 
             extensions = cls._schema_on_200.properties.extensions
@@ -419,7 +421,7 @@ class Show(AAZCommand):
             )
             license_profile.product_profile = AAZObjectType(
                 serialized_name="productProfile",
-                flags={"client_flatten": True},
+                flags={"client_flatten": True, "read_only": True},
             )
             license_profile.software_assurance = AAZObjectType(
                 serialized_name="softwareAssurance",
@@ -436,9 +438,11 @@ class Show(AAZCommand):
             )
             esu_profile.esu_eligibility = AAZStrType(
                 serialized_name="esuEligibility",
+                flags={"read_only": True},
             )
             esu_profile.esu_key_state = AAZStrType(
                 serialized_name="esuKeyState",
+                flags={"read_only": True},
             )
             esu_profile.esu_keys = AAZListType(
                 serialized_name="esuKeys",
@@ -449,6 +453,7 @@ class Show(AAZCommand):
             )
             esu_profile.server_type = AAZStrType(
                 serialized_name="serverType",
+                flags={"read_only": True},
             )
 
             assigned_license = cls._schema_on_200.properties.license_profile.esu_profile.assigned_license
@@ -531,6 +536,10 @@ class Show(AAZCommand):
             _element.sku = AAZStrType()
 
             product_profile = cls._schema_on_200.properties.license_profile.product_profile
+            product_profile.billing_end_date = AAZStrType(
+                serialized_name="billingEndDate",
+                flags={"read_only": True},
+            )
             product_profile.billing_start_date = AAZStrType(
                 serialized_name="billingStartDate",
                 flags={"read_only": True},
@@ -543,6 +552,10 @@ class Show(AAZCommand):
                 serialized_name="enrollmentDate",
                 flags={"read_only": True},
             )
+            product_profile.error = AAZObjectType(
+                flags={"read_only": True},
+            )
+            _ShowHelper._build_schema_error_detail_read(product_profile.error)
             product_profile.product_features = AAZListType(
                 serialized_name="productFeatures",
             )
@@ -557,6 +570,10 @@ class Show(AAZCommand):
             product_features.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.license_profile.product_profile.product_features.Element
+            _element.billing_end_date = AAZStrType(
+                serialized_name="billingEndDate",
+                flags={"read_only": True},
+            )
             _element.billing_start_date = AAZStrType(
                 serialized_name="billingStartDate",
                 flags={"read_only": True},
@@ -569,6 +586,10 @@ class Show(AAZCommand):
                 serialized_name="enrollmentDate",
                 flags={"read_only": True},
             )
+            _element.error = AAZObjectType(
+                flags={"read_only": True},
+            )
+            _ShowHelper._build_schema_error_detail_read(_element.error)
             _element.name = AAZStrType()
             _element.subscription_status = AAZStrType(
                 serialized_name="subscriptionStatus",
@@ -757,7 +778,9 @@ class _ShowHelper:
             _schema.target = cls._schema_error_detail_read.target
             return
 
-        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType()
+        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType(
+            flags={"read_only": True}
+        )
 
         error_detail_read = _schema_error_detail_read
         error_detail_read.additional_info = AAZListType(
@@ -781,12 +804,17 @@ class _ShowHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZObjectType(
+            flags={"read_only": True},
+        )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
 
         details = _schema_error_detail_read.details
-        details.Element = AAZObjectType()
+        details.Element = AAZObjectType(
+            flags={"read_only": True},
+        )
         cls._build_schema_error_detail_read(details.Element)
 
         _schema.additional_info = cls._schema_error_detail_read.additional_info
@@ -836,7 +864,9 @@ class _ShowHelper:
     def _build_schema_patch_settings_read(cls, _schema):
         if cls._schema_patch_settings_read is not None:
             _schema.assessment_mode = cls._schema_patch_settings_read.assessment_mode
+            _schema.enable_hotpatching = cls._schema_patch_settings_read.enable_hotpatching
             _schema.patch_mode = cls._schema_patch_settings_read.patch_mode
+            _schema.status = cls._schema_patch_settings_read.status
             return
 
         cls._schema_patch_settings_read = _schema_patch_settings_read = AAZObjectType()
@@ -845,12 +875,29 @@ class _ShowHelper:
         patch_settings_read.assessment_mode = AAZStrType(
             serialized_name="assessmentMode",
         )
+        patch_settings_read.enable_hotpatching = AAZBoolType(
+            serialized_name="enableHotpatching",
+        )
         patch_settings_read.patch_mode = AAZStrType(
             serialized_name="patchMode",
         )
+        patch_settings_read.status = AAZObjectType(
+            flags={"read_only": True},
+        )
+
+        status = _schema_patch_settings_read.status
+        status.error = AAZObjectType(
+            flags={"read_only": True},
+        )
+        cls._build_schema_error_detail_read(status.error)
+        status.hotpatch_enablement_status = AAZStrType(
+            serialized_name="hotpatchEnablementStatus",
+        )
 
         _schema.assessment_mode = cls._schema_patch_settings_read.assessment_mode
+        _schema.enable_hotpatching = cls._schema_patch_settings_read.enable_hotpatching
         _schema.patch_mode = cls._schema_patch_settings_read.patch_mode
+        _schema.status = cls._schema_patch_settings_read.status
 
     _schema_service_status_read = None
 

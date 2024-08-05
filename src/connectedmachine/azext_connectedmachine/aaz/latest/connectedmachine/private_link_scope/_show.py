@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "connectedmachine private-link-scope show",
 )
 class Show(AAZCommand):
-    """Return an Azure Arc PrivateLinkScope.
+    """Get an Azure Arc PrivateLinkScope.
 
     :example: Sample command for private-link-scope show
-        az connectedmachine private-link-scope show --scope-name myPrivateLinkScope --resource-group myResourceGroup --subscription mySubscription
+        az connectedmachine private-link-scope show --resource-group my-resource-group --scope-name my-privatelinkscope
     """
 
     _aaz_info = {
-        "version": "2024-03-31-preview",
+        "version": "2024-05-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2024-03-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}", "2024-05-20-preview"],
         ]
     }
 
@@ -123,7 +123,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-31-preview",
+                    "api-version", "2024-05-20-preview",
                     required=True,
                 ),
             }

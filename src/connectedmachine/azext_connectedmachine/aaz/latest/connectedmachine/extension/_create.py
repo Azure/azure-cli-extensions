@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "connectedmachine extension create",
 )
 class Create(AAZCommand):
-    """The operation to create the extension.
+    """Create an extension.
 
     :example: Sample command for extension create
         az connectedmachine extension create --name CustomScriptExtension --location eastus2euap --type CustomScriptExtension --publisher Microsoft.Compute --type-handler-version 1.10 --machine-name myMachine --resource-group myResourceGroup
     """
 
     _aaz_info = {
-        "version": "2024-03-31-preview",
+        "version": "2024-05-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2024-03-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2024-05-20-preview"],
         ]
     }
 
@@ -91,12 +91,12 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.auto_upgrade_minor_version = AAZBoolArg(
-            options=["--upgrade-minor-ver", "--auto-upgrade-minor", "--auto-upgrade-minor-version"],
+            options=["--auto-upgrade-min", "--auto-upgrade-minor-version"],
             arg_group="Properties",
             help="Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true.",
         )
         _args_schema.enable_automatic_upgrade = AAZBoolArg(
-            options=["--auto-upgrade", "--enable-auto-upgrade", "--enable-automatic-upgrade"],
+            options=["--enable-auto-upgrade", "--enable-automatic-upgrade"],
             arg_group="Properties",
             help="Indicates whether the extension should be automatically upgraded by the platform if there is a newer version available.",
         )
@@ -258,7 +258,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-31-preview",
+                    "api-version", "2024-05-20-preview",
                     required=True,
                 ),
             }

@@ -22,9 +22,9 @@ class AssessPatches(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-03-31-preview",
+        "version": "2024-05-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/assesspatches", "2024-03-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/assesspatches", "2024-05-20-preview"],
         ]
     }
 
@@ -137,7 +137,7 @@ class AssessPatches(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-31-preview",
+                    "api-version", "2024-05-20-preview",
                     required=True,
                 ),
             }
@@ -179,6 +179,7 @@ class AssessPatches(AAZCommand):
             )
             _schema_on_200.error_details = AAZObjectType(
                 serialized_name="errorDetails",
+                flags={"read_only": True},
             )
             _AssessPatchesHelper._build_schema_error_detail_read(_schema_on_200.error_details)
             _schema_on_200.last_modified_date_time = AAZStrType(
@@ -259,7 +260,9 @@ class _AssessPatchesHelper:
             _schema.target = cls._schema_error_detail_read.target
             return
 
-        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType()
+        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType(
+            flags={"read_only": True}
+        )
 
         error_detail_read = _schema_error_detail_read
         error_detail_read.additional_info = AAZListType(
@@ -283,12 +286,17 @@ class _AssessPatchesHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZObjectType(
+            flags={"read_only": True},
+        )
         _element.type = AAZStrType(
             flags={"read_only": True},
         )
 
         details = _schema_error_detail_read.details
-        details.Element = AAZObjectType()
+        details.Element = AAZObjectType(
+            flags={"read_only": True},
+        )
         cls._build_schema_error_detail_read(details.Element)
 
         _schema.additional_info = cls._schema_error_detail_read.additional_info

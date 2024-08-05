@@ -16,16 +16,16 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class List(AAZCommand):
-    """List operation to get all the run commands of a non-Azure machine.
+    """Get all the run commands of a non-Azure machine.
 
     :example: Sample command for run-command list
-        az connectedmachine run-command list --resource-group "myResourceGroup" --machine-name "myMachine"
+        az connectedmachine run-command list --resource-group myResourceGroup --machine-name myMachine --subscription mySubscription
     """
 
     _aaz_info = {
-        "version": "2024-03-31-preview",
+        "version": "2024-05-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/runcommands", "2024-03-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/runcommands", "2024-05-20-preview"],
         ]
     }
 
@@ -132,7 +132,7 @@ class List(AAZCommand):
                     "$expand", self.ctx.args.expand,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2024-03-31-preview",
+                    "api-version", "2024-05-20-preview",
                     required=True,
                 ),
             }
@@ -208,6 +208,7 @@ class List(AAZCommand):
             )
             properties.instance_view = AAZObjectType(
                 serialized_name="instanceView",
+                flags={"read_only": True},
             )
             properties.output_blob_managed_identity = AAZObjectType(
                 serialized_name="outputBlobManagedIdentity",

@@ -33,10 +33,10 @@ class ESULicenseScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_esulicense')
     def test_esu_license(self):
         self.kwargs.update({
-            'machine': 'testmachine',
-            'rg': 'ytongtest',
-            'location': 'centraluseuap',
             'customScriptName': 'custom-test',
+            'machine': 'testmachine2',
+            'rg': 'ytongtest3',
+            'location': 'eastus2',
             'subscription': '00000000-0000-0000-0000-000000000000',
             'licenseName': 'myESULicense',
         })
@@ -55,11 +55,11 @@ class ESULicenseScenarioTest(ScenarioTest):
                     self.check('name', '{licenseName}'),
         ])
 
-        self.cmd('az connectedmachine license list --resource-group {rg}', checks=[
-            self.check('length(@)', 2)
+        self.cmd('az connectedmachine license list --subscription {subscription}', checks=[
+            self.check('length(@)', 7)
         ])
 
-        self.cmd('az connectedmachine license show --resource-group {rg} --name {licenseName}', checks=[
+        self.cmd('az connectedmachine license show --resource-group {rg} --name {licenseName} --subscription {subscription}', checks=[
             self.check('length(@)', 8)
         ])
 
