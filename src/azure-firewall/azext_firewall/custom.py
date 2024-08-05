@@ -288,8 +288,8 @@ class AzureFirewallUpdate(_AzureFirewallUpdate):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.private_ranges = AAZListArg(
             options=['--private-ranges'],
-            help="Space-separated list of SNAT privaterange. Validate values are single Ip, "
-                 "Ipprefixes or a single special value \"IANAPrivateRanges\".",
+            help="Space-separated list of SNAT private ranges. Valid values are single IP, "
+                 "IP prefixes or a single special value \"IANAPrivateRanges\".",
             nullable=True)
         args_schema.private_ranges.Element = AAZStrArg(nullable=True)
         args_schema.allow_active_ftp = AAZBoolArg(
@@ -911,7 +911,7 @@ class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
 
 class AzureFirewallPolicyIntrusionDetectionAdd(_AzureFirewallPoliciesUpdate):
     """
-    Add overrided intrusion signature or a bypass rule or private ranges list for intrusion detection
+    Add override for intrusion signature or a bypass rule or private ranges list for intrusion detection
     """
 
     @classmethod
@@ -921,11 +921,11 @@ class AzureFirewallPolicyIntrusionDetectionAdd(_AzureFirewallPoliciesUpdate):
         args_schema.name._options = ['--policy-name']
         args_schema.signature_id = AAZStrArg(
             options=['--signature-id'],
-            help="Signature id."
+            help="Signature id for override"
         )
         args_schema.signature_mode = AAZStrArg(
             options=['--mode'],
-            help="The signature state"
+            help="The override signature state"
         )
         args_schema.signature_mode.enum = AAZArgEnum({'Off': 'off', 'Alert': 'Alert', 'Deny': 'Deny'})
         args_schema.bypass_rule_name = AAZStrArg(
@@ -938,7 +938,7 @@ class AzureFirewallPolicyIntrusionDetectionAdd(_AzureFirewallPoliciesUpdate):
         )
         args_schema.bypass_rule_protocol = AAZStrArg(
             options=['--rule-protocol'],
-            help="The rule bypass protocol"
+            help="The bypass traffic rule protocol"
         )
         args_schema.bypass_rule_protocol.enum = AAZArgEnum({'TCP': 'TCP', 'UDP': 'UDP', 'ICMP': 'ICMP', 'Any': 'Any'})
         args_schema.bypass_rule_source_addresses = AAZListArg(
@@ -948,22 +948,22 @@ class AzureFirewallPolicyIntrusionDetectionAdd(_AzureFirewallPoliciesUpdate):
         args_schema.bypass_rule_source_addresses.Element = AAZStrArg()
         args_schema.bypass_rule_destination_addresses = AAZListArg(
             options=['--rule-dest-addresses'],
-            help="Space-separated list of destination IP addresses or ranges for this rule"
+            help="Space-separated list of destination IP addresses or ranges for bypass traffic rule"
         )
         args_schema.bypass_rule_destination_addresses.Element = AAZStrArg()
         args_schema.bypass_rule_destination_ports = AAZListArg(
             options=['--rule-dest-ports'],
-            help="Space-separated list of destination ports or ranges"
+            help="Space-separated list of destination ports or ranges for bypass traffic rule"
         )
         args_schema.bypass_rule_destination_ports.Element = AAZStrArg()
         args_schema.bypass_rule_source_ip_groups = AAZListArg(
             options=['--rule-src-ip-groups'],
-            help="Space-separated list of source IpGroups"
+            help="Space-separated list of source IpGroups for bypass traffic rule"
         )
         args_schema.bypass_rule_source_ip_groups.Element = AAZStrArg()
         args_schema.bypass_rule_destination_ip_groups = AAZListArg(
             options=['--rule-dest-ip-groups'],
-            help="Space-separated list of destination IpGroups for this rule"
+            help="Space-separated list of destination IpGroups for bypass traffic rule"
         )
         args_schema.bypass_rule_destination_ip_groups.Element = AAZResourceIdArg(
             fmt=AAZResourceIdArgFormat(
@@ -1041,7 +1041,7 @@ class AzureFirewallPolicyIntrusionDetectionList(_PolicyIntrusionDetectionShow):
 
 class AzureFirewallPolicyIntrusionDetectionRemove(_AzureFirewallPoliciesUpdate):
     """
-    Remove overrided intrusion signature or a bypass rule
+    Remove overridden intrusion signature or a bypass rule
     """
 
     @classmethod
