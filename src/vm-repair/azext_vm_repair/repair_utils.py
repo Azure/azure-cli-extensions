@@ -470,7 +470,7 @@ def _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name, encr
         BITLOCKER_RECOVERY_PARAMS = []
         BITLOCKER_RECOVERY_PARAMS.append('bitlockerkey="{}"'.format(encrypt_recovery_key))
         return _invoke_run_command(WINDOWS_RUN_SCRIPT_NAME, repair_vm_name, repair_group_name, False, parameters=BITLOCKER_RECOVERY_PARAMS)
-    
+
     WINDOWS_RUN_SCRIPT_NAME = 'win-mount-encrypted-disk.ps1'
     return _invoke_run_command(WINDOWS_RUN_SCRIPT_NAME, repair_vm_name, repair_group_name, False)
 
@@ -773,7 +773,7 @@ def _fetch_non_standard_security_type(source_vm):
     """
     if source_vm.security_profile is None or source_vm.security_profile.security_type is None:
         return
-    if source_vm.security_profile.security_type.lower() == "standard" :
+    if source_vm.security_profile.security_type.lower() == "standard":
         return
     return source_vm.security_profile.security_type
 
@@ -789,7 +789,7 @@ def _fetch_vm_security_profile_parameters(source_vm):
             create_repair_vm_command += ' --enable-secure-boot {enableSecureBoot}'.format(enableSecureBoot=source_vm.security_profile.uefi_settings.secure_boot_enabled)
 
         if source_vm.security_profile.uefi_settings.v_tpm_enabled is not None:
-            create_repair_vm_command += ' --enable-vtpm {enableVTpm}'.format(enableVTpm=source_vm.security_profile.uefi_settings.v_tpm_enabled)  
+            create_repair_vm_command += ' --enable-vtpm {enableVTpm}'.format(enableVTpm=source_vm.security_profile.uefi_settings.v_tpm_enabled)
     return create_repair_vm_command
 
 
