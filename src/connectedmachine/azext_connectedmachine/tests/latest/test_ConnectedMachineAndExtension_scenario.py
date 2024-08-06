@@ -33,9 +33,9 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_machineextension')
     def test_machine_and_extension(self):
         self.kwargs.update({
-            'machine': 'testmachine',
-            'rg': 'ytongtest',
-            'location': 'centraluseuap',
+            'machine': 'testmachine2',
+            'rg': 'ytongtest3',
+            'location': 'eastus2',
             'customScriptName': 'custom-test',
         })
 

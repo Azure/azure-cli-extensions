@@ -6,11 +6,11 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._scvmm import SCVMM
+from ._sc_vmm_mgmt_client import ScVmmMgmtClient
 from ._version import VERSION
 
 __version__ = VERSION
-__all__ = ['SCVMM']
+__all__ = ['ScVmmMgmtClient']
 
 # `._patch.py` is used for handwritten extensions to the generated code
 # Example: https://github.com/Azure/azure-sdk-for-python/blob/main/doc/dev/customize_code/how-to-patch-sdk-code.md

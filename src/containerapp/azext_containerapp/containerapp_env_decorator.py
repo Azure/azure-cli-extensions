@@ -69,10 +69,6 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
             if (not self.get_argument_certificate_file()) and (not self.get_argument_certificate_key_vault_url()):
                 raise ValidationError("Either --certificate-file or --certificate-akv-url should be set when --dns-suffix is set")
 
-        # validate mtls and p2p traffic encryption
-        if self.get_argument_p2p_encryption_enabled() is False and self.get_argument_mtls_enabled() is True:
-            raise ValidationError("Cannot use '--enable-mtls' with '--enable-peer-to-peer-encryption False'")
-
     def set_up_public_network_access(self):
         if self.get_argument_public_network_access():
             safe_set(self.managed_env_def, "properties", "publicNetworkAccess",
@@ -161,16 +157,6 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                 }
             self.managed_env_def["properties"]["customDomainConfiguration"] = custom_domain
 
-    def set_up_peer_to_peer_encryption(self):
-        is_p2p_encryption_enabled = self.get_argument_p2p_encryption_enabled()
-        is_mtls_enabled = self.get_argument_mtls_enabled()
-
-        if is_p2p_encryption_enabled is not None:
-            safe_set(self.managed_env_def, "properties", "peerTrafficConfiguration", "encryption", "enabled", value=is_p2p_encryption_enabled)
-
-        if is_mtls_enabled is not None:
-            safe_set(self.managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=is_mtls_enabled)
-
     def get_argument_enable_workload_profiles(self):
         return self.get_param("enable_workload_profiles")
 
@@ -192,9 +178,6 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
     def get_argument_certificate_key_vault_url(self):
         return self.get_param("certificate_key_vault_url")
 
-    def get_argument_p2p_encryption_enabled(self):
-        return self.get_param("p2p_encryption_enabled")
-
     def get_argument_public_network_access(self):
         return self.get_param("public_network_access")
 
@@ -207,14 +190,9 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
         if self.get_argument_certificate_file() and self.get_argument_certificate_key_vault_url():
             raise ValidationError("Cannot use certificate --certificate-file with --certificate-akv-url at the same time")
 
-        # validate mtls and p2p traffic encryption
-        if self.get_argument_p2p_encryption_enabled() is False and self.get_argument_mtls_enabled() is True:
-            raise ValidationError("Cannot use '--enable-mtls' with '--enable-peer-to-peer-encryption False'")
-
     def construct_payload(self):
         super().construct_payload()
 
-        self.set_up_peer_to_peer_encryption()
         self.set_up_public_network_access()
 
     def set_up_public_network_access(self):
@@ -262,16 +240,6 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
             safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificateValue", value="")
             safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificatePassword", value="")
 
-    def set_up_peer_to_peer_encryption(self):
-        is_p2p_encryption_enabled = self.get_argument_p2p_encryption_enabled()
-        is_mtls_enabled = self.get_argument_mtls_enabled()
-
-        if is_p2p_encryption_enabled is not None:
-            safe_set(self.managed_env_def, "properties", "peerTrafficConfiguration", "encryption", "enabled", value=is_p2p_encryption_enabled)
-
-        if is_mtls_enabled is not None:
-            safe_set(self.managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=is_mtls_enabled)
-
     def get_argument_logs_dynamic_json_columns(self):
         return self.get_param("logs_dynamic_json_columns")
 
@@ -280,9 +248,6 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
 
     def get_argument_certificate_key_vault_url(self):
         return self.get_param("certificate_key_vault_url")
-
-    def get_argument_p2p_encryption_enabled(self):
-        return self.get_param("p2p_encryption_enabled")
 
     def get_argument_public_network_access(self):
         return self.get_param("public_network_access")
