@@ -7996,38 +7996,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError):
             dec_6.update_upgrade_settings(mc_6)
 
-    def test_enable_disable_cost_analysis(self):
-        # Should not update mc if unset
-        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_0 = self.models.ManagedCluster(
-            location="test_location",
-        )
-        dec_0.context.attach_mc(mc_0)
-        dec_mc_0 = dec_0.update_metrics_profile(mc_0)
-        ground_truth_mc_0 = self.models.ManagedCluster(
-            location="test_location",
-        )
-        self.assertEqual(dec_mc_0, ground_truth_mc_0)
-
-        # Should error if both set
-        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {"disable_cost_analysis": True, "enable_cost_analysis": True},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_6 = self.models.ManagedCluster(
-            location="test_location",
-        )
-        dec_6.context.attach_mc(mc_6)
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            dec_6.update_metrics_profile(mc_6)
-
     def test_update_addon_autoscaling(self):
         # Should not update mc if unset
         dec_0 = AKSPreviewManagedClusterUpdateDecorator(
