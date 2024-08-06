@@ -88,11 +88,6 @@ def load_command_table(self, _):
         custom_command_type=source_control_configuration_custom_type,
     ) as g:
         g.custom_command(
-            "create",
-            "create_config",
-            deprecate_info=self.deprecate(redirect="k8s-configuration flux create"),
-        )
-        g.custom_command(
             "list",
             "list_configs",
             table_transformer=sourcecontrol_list_table_format,

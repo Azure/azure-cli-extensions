@@ -40,7 +40,7 @@ def build_create_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
     accept = "application/json"
@@ -80,7 +80,7 @@ def build_get_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -117,7 +117,7 @@ def build_update_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
     content_type = kwargs.pop('content_type', None)  # type: Optional[str]
 
     accept = "application/json"
@@ -157,7 +157,7 @@ def build_delete_request_initial(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
     force = kwargs.pop('force', None)  # type: Optional[bool]
 
     accept = "application/json"
@@ -195,7 +195,7 @@ def build_list_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -229,7 +229,7 @@ def build_list_by_resource_group_request(
     **kwargs  # type: Any
 ):
     # type: (...) -> HttpRequest
-    api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+    api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
 
     accept = "application/json"
     # Construct URL
@@ -265,7 +265,7 @@ class VCentersOperations(object):
     instantiates it for you and attaches it as an attribute.
 
     :ivar models: Alias to model classes used in this operation group.
-    :type models: ~azure_arc_vmware_management_service_api.models
+    :type models: ~azure.mgmt.connectedvmware.models
     :param client: Client for service requests.
     :param config: Configuration of service client.
     :param serializer: An object model serializer.
@@ -294,7 +294,7 @@ class VCentersOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         if body is not None:
@@ -357,7 +357,7 @@ class VCentersOperations(object):
         :param vcenter_name: Name of the vCenter.
         :type vcenter_name: str
         :param body: Request payload.
-        :type body: ~azure_arc_vmware_management_service_api.models.VCenter
+        :type body: ~azure.mgmt.connectedvmware.models.VCenter
         :keyword callable cls: A custom type or function that will be passed the direct response
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
@@ -367,10 +367,10 @@ class VCentersOperations(object):
         :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
          Retry-After header is present.
         :return: An instance of LROPoller that returns either VCenter or the result of cls(response)
-        :rtype: ~azure.core.polling.LROPoller[~azure_arc_vmware_management_service_api.models.VCenter]
+        :rtype: ~azure.core.polling.LROPoller[~azure.mgmt.connectedvmware.models.VCenter]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VCenter"]
@@ -431,7 +431,7 @@ class VCentersOperations(object):
         :type vcenter_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VCenter, or the result of cls(response)
-        :rtype: ~azure_arc_vmware_management_service_api.models.VCenter
+        :rtype: ~azure.mgmt.connectedvmware.models.VCenter
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VCenter"]
@@ -440,7 +440,7 @@ class VCentersOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
 
         
         request = build_get_request(
@@ -493,10 +493,10 @@ class VCentersOperations(object):
         :param vcenter_name: Name of the vCenter.
         :type vcenter_name: str
         :param body: Resource properties to update.
-        :type body: ~azure_arc_vmware_management_service_api.models.ResourcePatch
+        :type body: ~azure.mgmt.connectedvmware.models.ResourcePatch
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: VCenter, or the result of cls(response)
-        :rtype: ~azure_arc_vmware_management_service_api.models.VCenter
+        :rtype: ~azure.mgmt.connectedvmware.models.VCenter
         :raises: ~azure.core.exceptions.HttpResponseError
         """
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VCenter"]
@@ -505,7 +505,7 @@ class VCentersOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
         content_type = kwargs.pop('content_type', "application/json")  # type: Optional[str]
 
         if body is not None:
@@ -561,7 +561,7 @@ class VCentersOperations(object):
         }
         error_map.update(kwargs.pop('error_map', {}))
 
-        api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
 
         
         request = build_delete_request_initial(
@@ -586,8 +586,13 @@ class VCentersOperations(object):
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
+        response_headers = {}
+        if response.status_code == 202:
+            response_headers['Location']=self._deserialize('str', response.headers.get('Location'))
+            
+
         if cls:
-            return cls(pipeline_response, None, {})
+            return cls(pipeline_response, None, response_headers)
 
     _delete_initial.metadata = {'url': "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ConnectedVMwarevSphere/vcenters/{vcenterName}"}  # type: ignore
 
@@ -623,7 +628,7 @@ class VCentersOperations(object):
         :rtype: ~azure.core.polling.LROPoller[None]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
         polling = kwargs.pop('polling', True)  # type: Union[bool, PollingMethod]
         cls = kwargs.pop('cls', None)  # type: ClsType[None]
         lro_delay = kwargs.pop(
@@ -673,11 +678,10 @@ class VCentersOperations(object):
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either VCentersList or the result of cls(response)
-        :rtype:
-         ~azure.core.paging.ItemPaged[~azure_arc_vmware_management_service_api.models.VCentersList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.VCentersList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
 
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VCentersList"]
         error_map = {
@@ -752,11 +756,10 @@ class VCentersOperations(object):
         :type resource_group_name: str
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either VCentersList or the result of cls(response)
-        :rtype:
-         ~azure.core.paging.ItemPaged[~azure_arc_vmware_management_service_api.models.VCentersList]
+        :rtype: ~azure.core.paging.ItemPaged[~azure.mgmt.connectedvmware.models.VCentersList]
         :raises: ~azure.core.exceptions.HttpResponseError
         """
-        api_version = kwargs.pop('api_version', "2023-03-01-preview")  # type: str
+        api_version = kwargs.pop('api_version', "2023-10-01")  # type: str
 
         cls = kwargs.pop('cls', None)  # type: ClsType["_models.VCentersList"]
         error_map = {

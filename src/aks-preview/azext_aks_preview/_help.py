@@ -4,6 +4,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=too-many-lines
 import os.path
 
 from knack.help_files import helps
@@ -14,7 +15,7 @@ AKS_SERVICE_PRINCIPAL_CACHE = os.path.join(
     '$HOME', '.azure', 'aksServicePrincipal.json')
 
 # AKS command help
-helps['aks create'] = """
+helps['aks create'] = f"""
     type: command
     short-summary: Create a new managed Kubernetes cluster.
     parameters:
@@ -25,7 +26,7 @@ helps['aks create'] = """
           type: string
           short-summary: Service principal used for authentication to Azure APIs.
           long-summary:  If not specified, a new service principal is created and cached at
-                         {sp_cache} to be used by subsequent `az aks` commands.
+                         {AKS_SERVICE_PRINCIPAL_CACHE} to be used by subsequent `az aks` commands.
         - name: --skip-subnet-role-assignment
           type: bool
           short-summary: Skip role assignment for subnet (advanced networking).
@@ -50,10 +51,10 @@ helps['aks create'] = """
                          size of its node pool with `az aks scale`.
         - name: --node-osdisk-size
           type: int
-          short-summary: Size in GB of the OS disk for each node in the node pool. Minimum 30 GB.
+          short-summary: Size in GiB of the OS disk for each node in the node pool. Minimum 30 GiB.
         - name: --node-osdisk-type
           type: string
-          short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Managed'. May not be changed for this pool after creation.
+          short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Ephemeral' when possible in conjunction with VM size and OS disk size. May not be changed for this pool after creation. ('Ephemeral' or 'Managed')
         - name: --node-osdisk-diskencryptionset-id -d
           type: string
           short-summary: ResourceId of the disk encryption set to use for enabling encryption at rest on agent node os disk.
@@ -164,6 +165,10 @@ helps['aks create'] = """
           type: string
           short-summary: Load balancer backend pool type.
           long-summary: Load balancer backend pool type, supported values are nodeIP and nodeIPConfiguration.
+        - name: --cluster-service-load-balancer-health-probe-mode
+          type: string
+          short-summary: Set the cluster service health probe mode.
+          long-summary: Set the cluster service health probe mode. Default is "Servicenodeport".
         - name: --nat-gateway-managed-outbound-ip-count
           type: int
           short-summary: NAT gateway managed outbound IP count.
@@ -181,19 +186,16 @@ helps['aks create'] = """
           short-summary: Enable the Kubernetes addons in a comma-separated list.
           long-summary: |-
             These addons are available:
-                http_application_routing        - configure ingress with automatic public DNS name creation.
-                monitoring                      - turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace.
-                                                  If monitoring addon is enabled --no-wait argument will have no effect
-                virtual-node                    - enable AKS Virtual Node. Requires --aci-subnet-name to provide the name of an existing subnet for the Virtual Node to use.
-                                                  aci-subnet-name must be in the same vnet which is specified by --vnet-subnet-id (required as well).
-                azure-policy                    - enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner. Required if enabling Guardrails
-                                                  Learn more at aka.ms/aks/policy.
-                ingress-appgw                   - enable Application Gateway Ingress Controller addon (PREVIEW).
-                confcom                         - enable confcom addon, this will enable SGX device plugin by default(PREVIEW).
-                open-service-mesh               - enable Open Service Mesh addon (PREVIEW).
-                gitops                          - enable GitOps (PREVIEW).
-                azure-keyvault-secrets-provider - enable Azure Keyvault Secrets Provider addon.
-                web_application_routing         - enable Web Application Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
+            - http_application_routing        : configure ingress with automatic public DNS name creation.
+            - monitoring                      :  turn on Log Analytics monitoring. Uses the Log Analytics Default Workspace if it exists, else creates one. Specify "--workspace-resource-id" to use an existing workspace. If monitoring addon is enabled --no-wait argument will have no effect
+            - virtual-node                    : enable AKS Virtual Node. Requires --aci-subnet-name to provide the name of an existing subnet for the Virtual Node to use. aci-subnet-name must be in the same vnet which is specified by --vnet-subnet-id (required as well).
+            - azure-policy                    : enable Azure policy. The Azure Policy add-on for AKS enables at-scale enforcements and safeguards on your clusters in a centralized, consistent manner. Required if enabling deployment safeguards. Learn more at aka.ms/aks/policy.
+            - ingress-appgw                   : enable Application Gateway Ingress Controller addon (PREVIEW).
+            - confcom                         : enable confcom addon, this will enable SGX device plugin by default(PREVIEW).
+            - open-service-mesh               : enable Open Service Mesh addon (PREVIEW).
+            - gitops                          : enable GitOps (PREVIEW).
+            - azure-keyvault-secrets-provider : enable Azure Keyvault Secrets Provider addon.
+            - web_application_routing         : enable Web Application Routing addon (PREVIEW). Specify "--dns-zone-resource-id" to configure DNS.
         - name: --disable-rbac
           type: bool
           short-summary: Disable Kubernetes Role-Based Access Control.
@@ -216,7 +218,7 @@ helps['aks create'] = """
           short-summary: (PREVIEW) The Kubernetes network policy to use.
           long-summary: |
               Using together with "azure" network plugin.
-              Specify "azure" for Azure network policy manager and "calico" for calico network policy controller.
+              Specify "azure" for Azure network policy manager, "calico" for calico network policy controller, "cilium" for Azure CNI Overlay powered by Cilium.
               Defaults to "" (network policy disabled).
         - name: --network-dataplane
           type: string
@@ -231,9 +233,9 @@ helps['aks create'] = """
               Used together with the "azure" network plugin.
               Requires either --pod-subnet-id or --network-plugin-mode=overlay.
               This flag is deprecated in favor of --network-dataplane=cilium.
-        - name: --enable-network-observability
+        - name: --enable-advanced-network-observability
           type: bool
-          short-summary: Enable network observability on a cluster.
+          short-summary: Enable advanced network observability functionalities on a cluster. Note that enabling this will incur additional costs.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -285,6 +287,12 @@ helps['aks create'] = """
         - name: --data-collection-settings
           type: string
           short-summary: Path to JSON file containing data collection settings for Monitoring addon.
+        - name: --enable-high-log-scale-mode
+          type: bool
+          short-summary: Enable High Log Scale Mode for Container Logs.
+        - name: --ampls-resource-id
+          type: string
+          short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
         - name: --enable-cluster-autoscaler
           type: bool
           short-summary: Enable cluster autoscaler, default value is false.
@@ -297,7 +305,7 @@ helps['aks create'] = """
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000].
         - name: --vm-set-type
           type: string
-          short-summary: Agent pool vm set type. VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only).
+          short-summary: Agent pool vm set type. VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview).
         - name: --enable-pod-security-policy
           type: bool
           short-summary: Enable pod security policy.
@@ -305,6 +313,9 @@ helps['aks create'] = """
         - name: --node-resource-group
           type: string
           short-summary: The node resource group is the resource group where all customer's resources will be created in, such as virtual machines.
+        - name: --k8s-support-plan
+          type: string
+          short-summary: Choose from "KubernetesOfficial" or "AKSLongTermSupport", with "AKSLongTermSupport" you get 1 extra year of CVE patchs.
         - name: --nrg-lockdown-restriction-level
           type: string
           short-summary: Restriction level on the managed node resource group.
@@ -312,6 +323,9 @@ helps['aks create'] = """
         - name: --uptime-sla
           type: bool
           short-summary: --uptime-sla is deprecated. Please use '--tier standard' instead.
+        - name: --sku
+          type: string
+          short-summary: Specify SKU name for managed clusters. '--sku base' enables a base managed cluster. '--sku automatic' enables an automatic managed cluster.
         - name: --tier
           type: string
           short-summary: Specify SKU tier for managed clusters. '--tier standard' enables a standard managed cluster service with a financially backed SLA. '--tier free' does not have a financially backed SLA.
@@ -345,7 +359,7 @@ helps['aks create'] = """
           short-summary: Public IP prefix ID used to assign public IPs to VMSS nodes.
         - name: --enable-managed-identity
           type: bool
-          short-summary: Using managed identity to manage cluster resource group. Default value is true, you can explicitly specify "--client-id" and "--secret" to disable managed identity.
+          short-summary: Using managed identity to manage cluster resource group. You can explicitly specify "--service-principal" and "--client-secret" to disable managed identity, otherwise it will be enabled.
         - name: --assign-identity
           type: string
           short-summary: Specify an existing user assigned identity to manage cluster resource group.
@@ -497,9 +511,15 @@ helps['aks create'] = """
         - name: --image-cleaner-interval-hours
           type: int
           short-summary: ImageCleaner scanning interval.
+        - name: --enable-image-integrity
+          type: bool
+          short-summary: Enable ImageIntegrity Service.
         - name: --dns-zone-resource-id
           type: string
           short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
+        - name: --dns-zone-resource-ids
+          type: string
+          short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the web_application_routing addon.
         - name: --enable-custom-ca-trust
           type: bool
           short-summary: Enable Custom CA Trust on agent node pool.
@@ -519,6 +539,9 @@ helps['aks create'] = """
         - name: --enable-vpa
           type: bool
           short-summary: Enable vertical pod autoscaler for cluster.
+        - name: --enable-addon-autoscaling
+          type: bool
+          short-summary: Enable addon autoscaling for cluster.
         - name: --nodepool-allowed-host-ports
           type: string
           short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP.
@@ -528,18 +551,21 @@ helps['aks create'] = """
         - name: --node-public-ip-tags
           type: string
           short-summary: The ipTags of the node public IPs.
-        - name: --guardrails-level
+        - name: --safeguards-level
           type: string
-          short-summary: The Guardrails Level. Accepted Values are [Off, Warning]. Requires azure policy addon to be enabled
-        - name: --guardrails-version
+          short-summary: The deployment safeguards Level. Accepted Values are [Off, Warning, Enforcement]. Requires azure policy addon to be enabled
+        - name: --safeguards-version
           type: string
-          short-summary: The version of Guardrails to use. Default "v1.0.0" Use the ListGuardrailsVersions API to discover available versions
-        - name: --guardrails-excluded-ns
+          short-summary: The version of deployment safeguards to use. Default "v1.0.0" Use the ListSafeguardsVersions API to discover available versions
+        - name: --safeguards-excluded-ns
           type: string
-          short-summary: Comma-separated list of Kubernetes namespaces to exclude from Guardrails
+          short-summary: Comma-separated list of Kubernetes namespaces to exclude from deployment safeguards
         - name: --enable-asm --enable-azure-service-mesh
           type: bool
           short-summary: Enable Azure Service Mesh.
+        - name: --revision
+          type: string
+          short-summary: Azure Service Mesh revision to install.
         - name: --enable-azuremonitormetrics
           type: bool
           short-summary: Enable Azure Monitor Metrics Profile
@@ -561,12 +587,68 @@ helps['aks create'] = """
         - name: --enable-windows-recording-rules
           type: bool
           short-summary: Enable Windows Recording Rules when enabling the Azure Monitor Metrics addon
+        - name: --enable-azure-monitor-app-monitoring
+          type: bool
+          short-summary: Enable Azure Monitor Application Monitoring
         - name: --nodepool-labels
           type: string
           short-summary: The node labels for all node pools in this cluster. See https://aka.ms/node-labels for syntax of labels.
         - name: --nodepool-taints
           type: string
           short-summary: The node taints for all node pools in this cluster.
+        - name: --node-init-taints --nodepool-initialization-taints
+          type: string
+          short-summary: The node initialization taints for node pools created with aks create operation.
+        - name: --enable-cost-analysis
+          type: bool
+          short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
+        - name: --node-provisioning-mode
+          type: string
+          short-summary: Set the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". For more information on "Auto" mode see aka.ms/aks/nap.
+        - name: --enable-app-routing
+          type: bool
+          short-summary: Enable Application Routing addon.
+        - name: --enable-ai-toolchain-operator
+          type: bool
+          short-summary: Enable AI toolchain operator to the cluster.
+        - name: --ssh-access
+          type: string
+          short-summary: Configure SSH setting for all node pools in this cluster. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
+        - name: --pod-ip-allocation-mode
+          type: string
+          short-summary: Set the ip allocation mode for how Pod IPs from the Azure Pod Subnet are allocated to the nodes in the AKS cluster. The choice is between dynamic batches of individual IPs or static allocation of a set of CIDR blocks. Accepted Values are "DynamicIndividual" or "StaticBlock".
+          long-summary: |
+              Used together with the "azure" network plugin.
+              Requires --pod-subnet-id.
+        - name: --enable-secure-boot
+          type: bool
+          short-summary: Enable Secure Boot on all node pools in the cluster. Must use VMSS agent pool type.
+        - name: --enable-vtpm
+          type: bool
+          short-summary: Enable vTPM on all node pools in the cluster. Must use VMSS agent pool type.
+        - name: --bootstrap-artifact-source
+          type: string
+          short-summary: Configure artifact source when bootstraping the cluster.
+          long-summary: |
+              The artifacts include the addon image. Use "Direct" to download artifacts from MCR, "Cache" to downalod artifacts from Azure Container Registry.
+        - name: --bootstrap-container-registry-resource-id
+          type: string
+          short-summary: Configure container registry resource ID. Must use "Cache" as bootstrap artifact source.
+        - name: --if-match
+          type: string
+          short-summary: The value provided will be compared to the ETag of the managed cluster, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new cluster.
+        - name: --if-none-match
+          type: string
+          short-summary: Set to '*' to allow a new cluster to be created, but to prevent updating an existing cluster. Other values will be ignored.
+        - name: --enable-static-egress-gateway
+          type: bool
+          short-summary: Enable Static Egress Gateway addon to the cluster.
+        - name: --enable-imds-restriction
+          type: bool
+          short-summary: Enable IMDS restriction in the cluster. Non-hostNetwork Pods will not be able to access IMDS.
+        - name: --vm-sizes
+          type: string
+          short-summary: Comma-separated list of sizes. Must use VirtualMachines agent pool type.
     examples:
         - name: Create a Kubernetes cluster with an existing SSH public key.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --ssh-key-value /path/to/publickey
@@ -632,16 +714,22 @@ helps['aks create'] = """
           text: az aks create -g MyResourceGroup -n MyManagedCluster --network-plugin none
         - name: Create a kubernetes cluster with Custom CA Trust enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-custom-ca-trust
-        - name: Create a kubernetes cluster with guardrails set to "Warning"
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning --enable-addons azure-policy
-        - name: Create a kubernetes cluster with guardrails set to "Warning" and some namespaces excluded
-          text: az aks create -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning --guardrails-excluded-ns ns1,ns2 --enable-addons azure-policy
+        - name: Create a kubernetes cluster with safeguards set to "Warning"
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --safeguards-level Warning --enable-addons azure-policy
+        - name: Create a kubernetes cluster with safeguards set to "Warning" and some namespaces excluded
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --safeguards-level Warning --safeguards-excluded-ns ns1,ns2 --enable-addons azure-policy
         - name: Create a kubernetes cluster with Azure Service Mesh enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-service-mesh
         - name: Create a kubernetes cluster with Azure Monitor Metrics enabled.
           text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azuremonitormetrics
+        - name: Create a kubernetes cluster with Azure Monitor App Monitoring enabled
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --enable-azure-monitor-app-monitoring
+        - name: Create a kubernetes cluster with a nodepool having ip allocation mode set to "StaticBlock"
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --os-sku Ubuntu --max-pods MaxPodsPerNode --network-plugin azure --vnet-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/NodeSubnet --pod-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/PodSubnet --pod-ip-allocation-mode StaticBlock
+        - name: Create a kubernetes cluster with a VirtualMachines nodepool
+          text: az aks create -g MyResourceGroup -n MyManagedCluster --vm-set-type VirtualMachines --vm-sizes "VMSize1,VMSize2" --node-count 3
 
-""".format(sp_cache=AKS_SERVICE_PRINCIPAL_CACHE)
+"""
 
 helps['aks scale'] = """
     type: command
@@ -653,6 +741,16 @@ helps['aks scale'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+"""
+
+helps['aks stop'] = """
+    type: command
+    short-summary: Stop a managed cluster.
+    long-summary: This can only be performed on Azure Virtual Machine Scale set backed clusters. Stopping a
+        cluster stops the control plane and agent nodes entirely, while maintaining all object and
+        cluster state. A cluster does not accrue charges while it is stopped. See `stopping a
+        cluster <https://docs.microsoft.com/azure/aks/start-stop-cluster>`_ for more details about
+        stopping a cluster.
 """
 
 helps['aks upgrade'] = """
@@ -677,6 +775,22 @@ helps['aks upgrade'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --enable-force-upgrade
+          type: bool
+          short-summary: Enable forceUpgrade cluster upgrade settings override.
+        - name: --disable-force-upgrade
+          type: bool
+          short-summary: Disable forceUpgrade cluster upgrade settings override.
+        - name: --upgrade-override-until
+          type: string
+          short-summary: Until when the cluster upgradeSettings overrides are effective.
+          long-summary: It needs to be in a valid date-time format that's within the next 30 days. For example, 2023-04-01T13:00:00Z. Note that if --force-upgrade is set to true and --upgrade-override-until is not set, by default it will be set to 3 days from now.
+        - name: --if-match
+          type: string
+          short-summary: The value provided will be compared to the ETag of the managed cluster, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new cluster.
+        - name: --if-none-match
+          type: string
+          short-summary: Set to '*' to allow a new cluster to be created, but to prevent updating an existing cluster. Other values will be ignored.
     examples:
       - name: Upgrade a existing managed cluster to a managed cluster snapshot.
         text: az aks upgrade -g MyResourceGroup -n MyManagedCluster --cluster-snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedclustersnapshots/mysnapshot1"
@@ -708,25 +822,28 @@ helps['aks update'] = """
         - name: --no-uptime-sla
           type: bool
           short-summary: Change a standard managed cluster to a free one. --no-uptime-sla is deprecated. Please use '--tier free' instead.
+        - name: --sku
+          type: string
+          short-summary: Specify SKU name for managed clusters. '--sku base' enables a base managed cluster. '--sku automatic' enables an automatic managed cluster.
         - name: --tier
           type: string
           short-summary: Specify SKU tier for managed clusters. '--tier standard' enables a standard managed cluster service with a financially backed SLA. '--tier free' changes a standard managed cluster to a free one.
         - name: --load-balancer-managed-outbound-ip-count
           type: int
           short-summary: Load balancer managed outbound IP count.
-          long-summary: Desired number of managed outbound IPs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only. If updated, it will wipe off the existing setting on Load balancer managed outbound IP count; Load balancer outbound IP resource IDs and Load balancer outbound IP prefix resource IDs.
+          long-summary: Desired number of managed outbound IPs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
         - name: --load-balancer-managed-outbound-ipv6-count
           type: int
           short-summary: Load balancer managed outbound IPv6 IP count.
-          long-summary: Desired number of managed outbound IPv6 IPs for load balancer outbound connection. Valid for dual-stack (--ip-families IPv4,IPv6) only. If updated, it will wipe off the existing setting on Load balancer managed outbound IPv6 count; Load balancer outbound IP resource IDs and Load balancer outbound IP prefix resource IDs.
+          long-summary: Desired number of managed outbound IPv6 IPs for load balancer outbound connection. Valid for dual-stack (--ip-families IPv4,IPv6) only.
         - name: --load-balancer-outbound-ips
           type: string
           short-summary: Load balancer outbound IP resource IDs.
-          long-summary: Comma-separated public IP resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only. If updated, it will wipe off the existing setting on Load balancer managed outbound IP count; Load balancer outbound IP resource IDs and Load balancer outbound IP prefix resource IDs.
+          long-summary: Comma-separated public IP resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
         - name: --load-balancer-outbound-ip-prefixes
           type: string
           short-summary: Load balancer outbound IP prefix resource IDs.
-          long-summary: Comma-separated public IP prefix resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only. If updated, it will wipe off the existing setting on Load balancer managed outbound IP count; Load balancer outbound IP resource IDs and Load balancer outbound IP prefix resource IDs.
+          long-summary: Comma-separated public IP prefix resource IDs for load balancer outbound connection. Valid for Standard SKU load balancer cluster only.
         - name: --load-balancer-outbound-ports
           type: int
           short-summary: Load balancer outbound allocated ports.
@@ -739,6 +856,10 @@ helps['aks update'] = """
           type: string
           short-summary: Load balancer backend pool type.
           long-summary: Load balancer backend pool type, supported values are nodeIP and nodeIPConfiguration.
+        - name: --cluster-service-load-balancer-health-probe-mode
+          type: string
+          short-summary: Set the cluster service health probe mode.
+          long-summary: Set the cluster service health probe mode. Default is "Servicenodeport".
         - name: --nat-gateway-managed-outbound-ip-count
           type: int
           short-summary: NAT gateway managed outbound IP count.
@@ -790,19 +911,27 @@ helps['aks update'] = """
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
+        - name: --if-match
+          type: string
+          short-summary: The value provided will be compared to the ETag of the managed cluster, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new cluster.
+        - name: --if-none-match
+          type: string
+          short-summary: Set to '*' to allow a new cluster to be created, but to prevent updating an existing cluster. Other values will be ignored.
         - name: --auto-upgrade-channel
           type: string
           short-summary: Specify the upgrade channel for autoupgrade. It could be rapid, stable, patch, node-image or none, none means disable autoupgrade.
         - name: --node-os-upgrade-channel
           type: string
           short-summary: Manner in which the OS on your nodes is updated. It could be NodeImage, None, SecurityPatch or Unmanaged.
-        - name: --upgrade-settings
-          type: string
-          short-summary: A comma separated list of supported cluster upgrade settings. E.g., IgnoreKubernetesDeprecations.
-          long-summary: Allowed value is "IgnoreKubernetesDeprecations". If set as "", upgrade settings will be set to default and the existing overrides will no longer be effective.
+        - name: --enable-force-upgrade
+          type: bool
+          short-summary: Enable forceUpgrade cluster upgrade settings override.
+        - name: --disable-force-upgrade
+          type: bool
+          short-summary: Disable forceUpgrade cluster upgrade settings override.
         - name: --upgrade-override-until
           type: string
-          short-summary: Until when the cluster upgradeSettings overrides are effective. It needs to be in a valid date-time format that's within the next 30 days. For example, 2023-04-01T13:00:00Z. Note that if --upgrade-settings is set to IgnoreKubernetesDeprecations and --upgrade-override-until is not set, by default it will be set to 3 days from now.
+          short-summary: Until when the cluster upgradeSettings overrides are effective. It needs to be in a valid date-time format that's within the next 30 days. For example, 2023-04-01T13:00:00Z. Note that if --force-upgrade is set to true and --upgrade-override-until is not set, by default it will be set to 3 days from now.
         - name: --enable-managed-identity
           type: bool
           short-summary: Update current cluster to managed identity to manage cluster resource group.
@@ -824,6 +953,9 @@ helps['aks update'] = """
         - name: --enable-workload-identity
           type: bool
           short-summary: (PREVIEW) Enable Workload Identity addon for cluster.
+        - name: --disable-workload-identity
+          type: bool
+          short-summary: (PREVIEW) Disable Workload Identity addon for cluster.
         - name: --enable-secret-rotation
           type: bool
           short-summary: Enable secret rotation. Use with azure-keyvault-secrets-provider addon.
@@ -833,19 +965,36 @@ helps['aks update'] = """
         - name: --rotation-poll-interval
           type: string
           short-summary: Set interval of rotation poll. Use with azure-keyvault-secrets-provider addon.
+        - name: --k8s-support-plan
+          type: string
+          short-summary: Choose from "KubernetesOfficial" or "AKSLongTermSupport", with "AKSLongTermSupport" you get 1 extra year of CVE patchs.
         - name: --enable-disk-driver
           type: bool
           short-summary: Enable AzureDisk CSI Driver.
+        - name: --ip-families
+          type: string
+          short-summary: A comma separated list of IP versions to use for cluster networking.
+          long-summary: Each IP version should be in the format IPvN. For example, IPv4.
         - name: --pod-cidr
           type: string
           short-summary: A CIDR notation IP range from which to assign pod IPs when kubenet is used.
           long-summary: This range must not overlap with any Subnet IP ranges. For example, 172.244.0.0/16.
+        - name: --network-plugin
+          type: string
+          short-summary: The Kubernetes network plugin to use.
+          long-summary: Specify "azure" for routable pod IPs from VNET, "kubenet" for non-routable pod IPs with an overlay network, or "none" for no networking configured.
         - name: --network-plugin-mode
           type: string
           short-summary: The network plugin mode to use.
           long-summary: |
               Used to control the mode the network plugin should operate in. For example, "overlay" used with
               --network-plugin=azure will use an overlay network (non-VNET IPs) for pods in the cluster.
+        - name: --network-policy
+          type: string
+          short-summary: Update the mode of a network policy.
+          long-summary: |
+              Specify "azure" for Azure network policy manager, "cilium" for Azure CNI Overlay powered by Cilium.
+              Defaults to "" (network policy disabled).
         - name: --network-dataplane
           type: string
           short-summary: The network dataplane to use.
@@ -960,6 +1109,9 @@ helps['aks update'] = """
         - name: --image-cleaner-interval-hours
           type: int
           short-summary: ImageCleaner scanning interval.
+        - name: --enable-image-integrity
+          type: bool
+          short-summary: Enable ImageIntegrity Service.
         - name: --disable-image-integrity
           type: bool
           short-summary: Disable ImageIntegrity Service.
@@ -1011,6 +1163,12 @@ helps['aks update'] = """
         - name: --disable-azure-monitor-metrics
           type: bool
           short-summary: Disable Azure Monitor Metrics Profile. This will delete all DCRA's associated with the cluster, any linked DCRs with the data stream = prometheus-stream and the recording rule groups created by the addon for this AKS cluster.
+        - name: --enable-azure-monitor-app-monitoring
+          type: bool
+          short-summary: Enable Azure Monitor Application Monitoring
+        - name: --disable-azure-monitor-app-monitoring
+          type: bool
+          short-summary: Disable Azure Monitor Application Monitoring
         - name: --enable-node-restriction
           type: bool
           short-summary: Enable node restriction option on cluster.
@@ -1032,6 +1190,12 @@ helps['aks update'] = """
         - name: --disable-vpa
           type: bool
           short-summary: Disable vertical pod autoscaler for cluster.
+        - name: --enable-addon-autoscaling
+          type: bool
+          short-summary: Enable addon autoscaling for cluster.
+        - name: --disable-addon-autoscaling
+          type: bool
+          short-summary: Disable addon autoscaling for cluster.
         - name: --cluster-snapshot-id
           type: string
           short-summary: The source cluster snapshot id is used to update existing cluster.
@@ -1043,24 +1207,68 @@ helps['aks update'] = """
           type: string
           short-summary: Path to a file containing up to 10 blank line separated certificates. Only valid for linux nodes.
           long-summary: These certificates are used by Custom CA Trust features and will be added to trust stores of nodes. Requires Custom CA Trust to be enabled on the node.
-        - name: --guardrails-level
+        - name: --safeguards-level
           type: string
-          short-summary: The Guardrails Level. Accepted Values are [Off, Warning]. Requires azure policy addon to be enabled
-        - name: --guardrails-version
+          short-summary: The deployment safeguards Level. Accepted Values are [Off, Warning, Enforcement]. Requires azure policy addon to be enabled
+        - name: --safeguards-version
           type: string
-          short-summary: The version of Guardrails to use. Default "v1.0.0" Use the ListGuardrailsVersions API to discover available versions
-        - name: --guardrails-excluded-ns
+          short-summary: The version of deployment safeguards to use. Default "v1.0.0" Use the ListSafeguardsVersions API to discover available versions
+        - name: --safeguards-excluded-ns
           type: string
-          short-summary: Comma-separated list of Kubernetes namespaces to exclude from Guardrails. Use "" to clear a previously non-empty list
+          short-summary: Comma-separated list of Kubernetes namespaces to exclude from deployment safeguards. Use "" to clear a previously non-empty list
         - name: --nodepool-taints
           type: string
           short-summary: The node taints for all node pool.
         - name: --nodepool-labels
           type: string
           short-summary: The node labels for all node pool. See https://aka.ms/node-labels for syntax of labels.
-        - name: --enable-network-observability
+        - name: --enable-advanced-network-observability
           type: bool
-          short-summary: Enable network observability on a cluster.
+          short-summary: Enable advanced network observability functionalities on a cluster. Note that enabling this will incur additional costs.
+        - name: --disable-advanced-network-observability
+          type: bool
+          short-summary: Disable advanced network observability functionalities on a cluster
+        - name: --enable-cost-analysis
+          type: bool
+          short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
+        - name: --disable-cost-analysis
+          type: bool
+          short-summary: Disable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal.
+        - name: --node-provisioning-mode
+          type: string
+          short-summary: Set the node provisioning mode of the cluster. Valid values are "Auto" and "Manual". For more information on "Auto" mode see aka.ms/aks/nap.
+        - name: --enable-ai-toolchain-operator
+          type: bool
+          short-summary: Enable AI toolchain operator to the cluster
+        - name: --disable-ai-toolchain-operator
+          type: bool
+          short-summary: Disable AI toolchain operator.
+        - name: --ssh-access
+          type: string
+          short-summary: Update SSH setting for all node pools in this cluster. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
+        - name: --node-init-taints --nodepool-initialization-taints
+          type: string
+          short-summary: The node initialization taints for all node pools in cluster.
+        - name: --bootstrap-artifact-source
+          type: string
+          short-summary: Configure artifact source when bootstraping the cluster.
+          long-summary: |
+              The artifacts include the addon image. Use "Direct" to download artifacts from MCR, "Cache" to downalod artifacts from Azure Container Registry.
+        - name: --bootstrap-container-registry-resource-id
+          type: string
+          short-summary: Configure container registry resource ID. Must use "Cache" as bootstrap artifact source.
+        - name: --enable-static-egress-gateway
+          type: bool
+          short-summary: Enable Static Egress Gateway addon to the cluster.
+        - name: --disable-static-egress-gateway
+          type: bool
+          short-summary: Disable Static Egress Gateway addon to the cluster.
+        - name: --enable-imds-restriction
+          type: bool
+          short-summary: Enable IMDS restriction in the cluster. Non-hostNetwork Pods will not be able to access IMDS.
+        - name: --disable-imds-restriction
+          type: bool
+          short-summary: Disable IMDS restriction in the cluster. All Pods in the cluster will be able to access IMDS.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1120,12 +1328,12 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-windows-gmsa --gmsa-dns-server "10.240.0.4" --gmsa-root-domain-name "contoso.com"
       - name: Update a existing managed cluster to a managed cluster snapshot.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --cluster-snapshot-id "/subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/managedclustersnapshots/mysnapshot1"
-      - name: Update a kubernetes cluster with guardrails set to "Warning". Assumes azure policy addon is already enabled
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning
-      - name: Update a kubernetes cluster with guardrails set to "Warning" and some namespaces excluded. Assumes azure policy addon is already enabled
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --guardrails-level Warning --guardrails-excluded-ns ns1,ns2
-      - name: Update a kubernetes cluster to clear any namespaces excluded from guardrails. Assumes azure policy addon is already enabled
-        text: az aks update -g MyResourceGroup -n MyManagedCluster --guardrails-excluded-ns ""
+      - name: Update a kubernetes cluster with safeguards set to "Warning". Assumes azure policy addon is already enabled
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --safeguards-level Warning
+      - name: Update a kubernetes cluster with safeguards set to "Warning" and some namespaces excluded. Assumes azure policy addon is already enabled
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --safeguards-level Warning --safeguards-excluded-ns ns1,ns2
+      - name: Update a kubernetes cluster to clear any namespaces excluded from safeguards. Assumes azure policy addon is already enabled
+        text: az aks update -g MyResourceGroup -n MyManagedCluster --safeguards-excluded-ns ""
 """
 
 helps['aks kollect'] = """
@@ -1504,17 +1712,17 @@ helps['aks nodepool add'] = """
           - "`az aks get-versions`"
         - name: --node-osdisk-size
           type: int
-          short-summary: Size in GB of the OS disk for each node in the agent pool. Minimum 30 GB.
+          short-summary: Size in GiB of the OS disk for each node in the agent pool. Minimum 30 GiB.
         - name: --node-osdisk-type
           type: string
-          short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Managed'. May not be changed for this pool after creation.
+          short-summary: OS disk type to be used for machines in a given agent pool. Defaults to 'Ephemeral' when possible in conjunction with VM size and OS disk size. May not be changed for this pool after creation. ('Ephemeral' or 'Managed')
         - name: --max-pods -m
           type: int
           short-summary: The maximum number of pods deployable to a node.
           long-summary: If not specified, defaults based on network-plugin. 30 for "azure", 110 for "kubenet", or 250 for "none".
         - name: --zones -z
           type: string array
-          short-summary: Space-separated list of availability zones where agent nodes will be placed.
+          short-summary: Space-separated list of availability zones where agent nodes will be placed. Must use VMSS agent pool type.
         - name: --vnet-subnet-id
           type: string
           short-summary: The ID of a subnet in an existing VNet into which to deploy the cluster.
@@ -1523,19 +1731,19 @@ helps['aks nodepool add'] = """
           short-summary: The ID of a subnet in an existing VNet into which to assign pods in the cluster (requires azure network-plugin)
         - name: --ppg
           type: string
-          short-summary: The ID of a PPG.
+          short-summary: The ID of a PPG. Must use VMSS agent pool type.
         - name: --os-type
           type: string
-          short-summary: The OS Type. Linux or Windows.
+          short-summary: The OS Type. Linux or Windows. Windows not supported yet for "VirtualMachines" VM set type.
         - name: --os-sku
           type: string
-          short-summary: The os-sku of the agent node pool. Ubuntu or CBLMariner when os-type is Linux, default is Ubuntu if not set; Windows2019 or Windows2022 when os-type is Windows, the current default is Windows2019 if not set, and the default will be changed to Windows2022 after Windows2019 is deprecated.
+          short-summary: The os-sku of the agent node pool. Ubuntu or CBLMariner when os-type is Linux, default is Ubuntu if not set; Windows2019, Windows2022 or WindowsAnnual when os-type is Windows, the current default is Windows2022 if not set.
         - name: --enable-fips-image
           type: bool
           short-summary: Use FIPS-enabled OS on agent nodes.
         - name: --enable-cluster-autoscaler -e
           type: bool
-          short-summary: Enable cluster autoscaler.
+          short-summary: Enable cluster autoscaler. Must use VMSS agent pool type.
         - name: --min-count
           type: int
           short-summary: Minimun nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [0, 1000] for user nodepool, and [1,1000] for system nodepool.
@@ -1559,10 +1767,10 @@ helps['aks nodepool add'] = """
           short-summary: It can only be set when --priority is Spot. Specify the maximum price you are willing to pay in US Dollars. Possible values are any decimal value greater than zero or -1 which indicates default price to be up-to on-demand. It can only include up to 5 decimal places.
         - name: --enable-node-public-ip
           type: bool
-          short-summary: Enable VMSS node public IP.
+          short-summary: Enable VMSS node public IP. Must use VMSS agent pool type.
         - name: --node-public-ip-prefix-id
           type: string
-          short-summary: Public IP prefix ID used to assign public IPs to VMSS nodes.
+          short-summary: Public IP prefix ID used to assign public IPs to VMSS nodes. Must use VMSS agent pool type.
         - name: --labels
           type: string
           short-summary: The node labels for the node pool. See https://aka.ms/node-labels for syntax of labels.
@@ -1571,13 +1779,19 @@ helps['aks nodepool add'] = """
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
         - name: --vm-set-type
           type: string
-          short-summary: Agent pool vm set type. VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(internal use only).
+          short-summary: Agent pool vm set type. VirtualMachineScaleSets, AvailabilitySet or VirtualMachines(Preview).
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+        - name: --drain-timeout
+          type: int
+          short-summary: When nodes are drain how many minutes to wait for all pods to be evicted
+        - name: --node-soak-duration
+          type: int
+          short-summary: The amount of time (in minutes) to wait after draining a node and before reimaging it and moving on to next node.
         - name: --kubelet-config
           type: string
           short-summary: Kubelet configurations for agent nodes.
@@ -1589,7 +1803,7 @@ helps['aks nodepool add'] = """
           short-summary: Enable EncryptionAtHost on agent node pool.
         - name: --enable-ultra-ssd
           type: bool
-          short-summary: Enable UltraSSD on agent node pool.
+          short-summary: Enable UltraSSD on agent node pool. Must use VMSS agent pool type.
         - name: --workload-runtime
           type: string
           short-summary: Determines the type of workload a node can run. Defaults to OCIContainer.
@@ -1598,13 +1812,13 @@ helps['aks nodepool add'] = """
           short-summary: GPU instance profile to partition multi-gpu Nvidia GPUs.
         - name: --snapshot-id
           type: string
-          short-summary: The source snapshot id used to create this nodepool.
+          short-summary: The source snapshot id used to create this nodepool. Must use VMSS agent pool type.
         - name: --crg-id
           type: string
-          short-summary: The crg-id used to associate the new nodepool with the existed Capacity Reservation Group resource.
+          short-summary: The crg-id used to associate the new nodepool with the existed Capacity Reservation Group resource. Must use VMSS agent pool type.
         - name: --host-group-id
           type: string
-          short-summary: (PREVIEW) The fully qualified dedicated host group id used to provision agent node pool.
+          short-summary: (PREVIEW) The fully qualified dedicated host group id used to provision agent node pool. Must use VMSS agent pool type.
         - name: --message-of-the-day
           type: string
           short-summary: Path to a file containing the desired message of the day. Only valid for linux nodes. Will be written to /etc/motd.
@@ -1613,16 +1827,49 @@ helps['aks nodepool add'] = """
           short-summary: Enable Custom CA Trust on agent node pool.
         - name: --disable-windows-outbound-nat
           type: bool
-          short-summary: Disable Windows OutboundNAT on Windows agent node pool.
+          short-summary: Disable Windows OutboundNAT on Windows agent node pool. Must use VMSS agent pool type.
         - name: --allowed-host-ports
           type: string
-          short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP.
+          short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP. Must use VMSS agent pool type.
         - name: --asg-ids
           type: string
-          short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs.
+          short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs. Must use VMSS agent pool type.
         - name: --node-public-ip-tags
           type: string
-          short-summary: The ipTags of the node public IPs.
+          short-summary: The ipTags of the node public IPs. Must use VMSS agent pool type.
+        - name: --enable-artifact-streaming
+          type: bool
+          short-summary: Enable artifact streaming for VirtualMachineScaleSets managed by a node pool, to speed up the cold-start of containers on a node through on-demand image loading. To use this feature, container images must also enable artifact streaming on ACR. If not specified, the default is false.
+        - name: --skip-gpu-driver-install
+          type: bool
+          short-summary: To skip GPU driver auto installation by AKS on a nodepool using GPU vm size if customers want to manage GPU driver installation by their own. If not specified, the default is false.
+        - name: --ssh-access
+          type: string
+          short-summary: Configure SSH setting for the node pool. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
+        - name: --pod-ip-allocation-mode
+          type: string
+          short-summary: Set the ip allocation mode for how Pod IPs from the Azure Pod Subnet are allocated to the nodes in the AKS cluster. The choice is between dynamic batches of individual IPs or static allocation of a set of CIDR blocks. Accepted Values are "DynamicIndividual" or "StaticBlock".
+          long-summary: |
+              Used together with the "azure" network plugin.
+              Requires --pod-subnet-id.
+        - name: --enable-secure-boot
+          type: bool
+          short-summary: Enable Secure Boot on agent node pool. Must use VMSS agent pool type.
+        - name: --enable-vtpm
+          type: bool
+          short-summary: Enable vTPM on agent node pool. Must use VMSS agent pool type.
+        - name: --if-match
+          type: string
+          short-summary: The value provided will be compared to the ETag of the agentpool, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new agentpool.
+        - name: --if-none-match
+          type: string
+          short-summary: Set to '*' to allow a new agentpool to be created, but to prevent updating an existing agentpool. Other values will be ignored.
+        - name: --gateway-prefix-size
+          type: int
+          short-summary: The size of Public IPPrefix attached to the Gateway-mode node pool. The node pool must be in Gateway mode.
+        - name: --vm-sizes
+          type: string
+          short-summary: Comma-separated list of sizes. Must use VirtualMachines agent pool type.
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1638,6 +1885,10 @@ helps['aks nodepool add'] = """
           text: az aks nodepool add -g MyResourceGroup -n MyNodePool --cluster-name MyMC --node-vm-size VMSize --crg-id "/subscriptions/SubID/resourceGroups/ResourceGroupName/providers/Microsoft.ContainerService/CapacityReservationGroups/MyCRGID"
         - name: create a nodepool in an existing AKS cluster with host group id
           text: az aks nodepool add -g MyResourceGroup -n MyNodePool --cluster-name MyMC --host-group-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.ContainerService/hostGroups/myHostGroup --node-vm-size VMSize
+        - name: Create a nodepool with ip allocation mode set to "StaticBlock" and using a pod subnet ID
+          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster  --os-sku Ubuntu --pod-subnet-id /subscriptions/00000/resourceGroups/AnotherResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVnet/subnets/MySubnet --pod-ip-allocation-mode StaticBlock
+        - name: Create a nodepool of type VirtualMachines
+          text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --vm-set-type VirtualMachines --vm-sizes "Standard_D4s_v3,Standard_D8s_v3" --node-count 3
 """
 
 helps['aks nodepool scale'] = """
@@ -1665,12 +1916,24 @@ helps['aks nodepool upgrade'] = """
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+        - name: --drain-timeout
+          type: int
+          short-summary: When nodes are drain how many minutes to wait for all pods to be evicted
+        - name: --node-soak-duration
+          type: int
+          short-summary: The amount of time (in minutes) to wait after draining a node and before reimaging it and moving on to next node.
         - name: --aks-custom-headers
           type: string
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
         - name: --snapshot-id
           type: string
-          short-summary: The source snapshot id used to upgrade this nodepool.
+          short-summary: The source snapshot id used to upgrade this nodepool. Must use VMSS agent pool type.
+        - name: --if-match
+          type: string
+          short-summary: The value provided will be compared to the ETag of the node pool, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new agentpool. For upgrade node image version requests this will be ignored.
+        - name: --if-none-match
+          type: string
+          short-summary: Set to '*' to allow a new node pool to be created, but to prevent updating an existing node pool. Other values will be ignored.
 """
 
 helps['aks nodepool update'] = """
@@ -1680,7 +1943,7 @@ helps['aks nodepool update'] = """
     parameters:
         - name: --enable-cluster-autoscaler -e
           type: bool
-          short-summary: Enable cluster autoscaler.
+          short-summary: Enable cluster autoscaler. Must use VMSS agent pool type.
         - name: --disable-cluster-autoscaler -d
           type: bool
           short-summary: Disable cluster autoscaler.
@@ -1699,6 +1962,12 @@ helps['aks nodepool update'] = """
         - name: --max-surge
           type: string
           short-summary: Extra nodes used to speed upgrade. When specified, it represents the number or percent used, eg. 5 or 33%
+        - name: --drain-timeout
+          type: int
+          short-summary: When nodes are drain how many minutes to wait for all pods to be evicted
+        - name: --node-soak-duration
+          type: int
+          short-summary: The amount of time (in minutes) to wait after draining a node and before reimaging it and moving on to next node.
         - name: --mode
           type: string
           short-summary: The mode for a node pool which defines a node pool's primary function. If set as "System", AKS prefers system pods scheduling to node pools with mode `System`. Learn more at https://aka.ms/aks/nodepool/mode.
@@ -1719,10 +1988,43 @@ helps['aks nodepool update'] = """
           short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
         - name: --allowed-host-ports
           type: string
-          short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP.
+          short-summary: Expose host ports on the node pool. When specified, format should be a comma-separated list of ranges with protocol, eg. 80/TCP,443/TCP,4000-5000/TCP. Must use VMSS agent pool type.
         - name: --asg-ids
           type: string
-          short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs.
+          short-summary: The IDs of the application security groups to which the node pool's network interface should belong. When specified, format should be a comma-separated list of IDs. Must use VMSS agent pool type.
+        - name: --enable-artifact-streaming
+          type: bool
+          short-summary: Enable artifact streaming for VirtualMachineScaleSets managed by a node pool, to speed up the cold-start of containers on a node through on-demand image loading. To use this feature, container images must also enable artifact streaming on ACR. If not specified, the default is false.
+        - name: --os-sku
+          type: string
+          short-summary: The os-sku of the agent node pool.
+        - name: --ssh-access
+          type: string
+          short-summary: Update SSH setting for the node pool. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
+        - name: --enable-secure-boot
+          type: bool
+          short-summary: Enable Secure Boot on an existing Trusted Launch enabled agent node pool. Must use VMSS agent pool type.
+        - name: --disable-secure-boot
+          type: bool
+          short-summary: Disable Secure Boot on on an existing Trusted Launch enabled agent node pool.
+        - name: --enable-vtpm
+          type: bool
+          short-summary: Enable vTPM on an existing Trusted Launch enabled agent node pool. Must use VMSS agent pool type.
+        - name: --disable-vtpm
+          type: bool
+          short-summary: Disable vTPM on an existing Trusted Launch enabled agent node pool.
+        - name: --if-match
+          type: string
+          short-summary: The value provided will be compared to the ETag of the node pool, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new agentpool.
+        - name: --if-none-match
+          type: string
+          short-summary: Set to '*' to allow a new node pool to be created, but to prevent updating an existing node pool. Other values will be ignored.
+        - name: --enable-fips-image
+          type: bool
+          short-summary: Switch to use FIPS-enabled OS on agent nodes.
+        - name: --disable-fips-image
+          type: bool
+          short-summary: Switch to use non-FIPS-enabled OS on agent nodes.
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -1776,6 +2078,10 @@ helps['aks nodepool delete'] = """
         - name: --ignore-pod-disruption-budget -i
           type: bool
           short-summary: (PREVIEW) ignore-pod-disruption-budget deletes an existing nodepool without considering Pod Disruption Budget.
+        - name: --if-match
+          type: string
+          short-summary: The value provided will be compared to the ETag of the node pool, if it matches the operation will proceed. If it does not match, the request will be rejected to prevent accidental overwrites. This must not be specified when creating a new agentpool.
+
     examples:
         - name: Delete an agent pool with ignore-pod-disruption-budget
           text: az aks nodepool delete --resource-group MyResourceGroup --cluster-name MyManagedCluster --name nodepool1 --ignore-pod-disruption-budget=true
@@ -1791,6 +2097,135 @@ helps['aks nodepool operation-abort'] = """
     examples:
         - name: Abort operation on agent pool
           text: az aks nodepool operation-abort -g myResourceGroup --nodepool-name nodepool1 --cluster-name myAKSCluster
+"""
+
+helps['aks nodepool delete-machines'] = """
+    type: command
+    short-summary: Delete specific machines in an agentpool for a managed cluster.
+    parameters:
+        - name: --machine-names
+          type: string array
+          short-summary: Space-separated list of machine names from the agent pool to be deleted.
+    examples:
+        - name: Delete specific machines in an agent pool
+          text: az aks nodepool delete-machines -g myResourceGroup --nodepool-name nodepool1 --cluster-name myAKSCluster --machine-names machine1
+"""
+
+helps['aks nodepool manual-scale'] = """
+    type: group
+    short-summary: Commands to manage nodepool virtualMachineProfile.scale.manual.
+"""
+
+helps['aks nodepool manual-scale add'] = """
+    type: command
+    short-summary: Add a new manual to a VirtualMachines agentpool in the managed Kubernetes cluster.
+    parameters:
+        - name: --vm-sizes
+          type: string
+          short-summary: Comma-separated list of sizes in the manual.
+        - name: --node-count -c
+          type: int
+          short-summary: Number of nodes in the manual.
+"""
+
+helps['aks nodepool manual-scale update'] = """
+    type: command
+    short-summary: Update an existing manual of a VirtualMachines agentpool in the managed Kubernetes cluster.
+    parameters:
+        - name: --current-vm-sizes
+          type: string
+          short-summary: Comma-separated list of sizes in the manual to be updated.
+        - name: --vm-sizes
+          type: string
+          short-summary: Comma-separated list of new sizes.
+        - name: --node-count -c
+          type: int
+          short-summary: Number of nodes in the manual.
+"""
+
+helps['aks nodepool manual-scale delete'] = """
+    type: command
+    short-summary: Delete an existing manual to a VirtualMachines agentpool in the managed Kubernetes cluster.
+    parameters:
+        - name: --current-vm-sizes
+          type: string
+          short-summary: Comma-separated list of sizes in the manual to be deleted.
+"""
+
+helps['aks machine'] = """
+   type: group
+   short-summary: Get information about machines in a nodepool of a managed clusters
+"""
+
+helps['aks machine list'] = """
+   type: command
+   short-summary: Get information about IP Addresses, Hostname for all machines in an agentpool
+   parameters:
+       - name: --cluster-name
+         type: string
+         short-summary: Name of the managed cluster
+       - name: --nodepool-name
+         type: string
+         short-summary: Name of the agentpool of a managed cluster
+   exmaples:
+       - name: Get information about IP Addresses, Hostname for all machines in an agentpool
+         text: az aks machine list --cluster-name <clusterName> --nodepool-name <apName>
+"""
+
+helps['aks machine show'] = """
+   type: command
+   short-summary: Show IP Addresses, Hostname for a specific machine in an agentpool for a managedcluster.
+   parameters:
+       - name: --cluster-name
+         type: string
+         short-summary: Name of the managed cluster
+       - name: --nodepool-name
+         type: string
+         short-summary: Name of the agentpool of a managed cluster
+       - name: --machine-name
+         type: string
+         short-summary: Get IP Addresses, Hostname for a specific machine in an agentpool
+   exmaples:
+       - name: Get IP Addresses, Hostname for a specific machine in an agentpool
+         text: az aks machine show --cluster-name <clusterName> --nodepool-name <apName> --machine-name <machineName>
+"""
+
+helps['aks operation'] = """
+    type: group
+    short-summary: Commands to manage and view operations on managed Kubernetes cluster.
+"""
+
+helps['aks operation show'] = """
+    type: command
+    short-summary: Show the details for a specific operation on managed Kubernetes cluster.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: The name of the managed cluster
+        - name: --nodepool-name
+          type: string
+          short-summary: The name of the nodepool.
+        - name: --resource-group -g
+          type: string
+          short-summary: Name of the resource group.
+        - name: --operation-id
+          type: string
+          short-summary: The ID of the operation.
+"""
+
+helps['aks operation show-latest'] = """
+    type: command
+    short-summary: Show the details for the latest operation on managed Kubernetes cluster.
+    parameters:
+        - name: --name -n
+          type: string
+          short-summary: The name of the managed cluster
+        - name: --nodepool-name
+          type: string
+          short-summary: The name of the nodepool.
+        - name: --resource-group -g
+          type: string
+          short-summary: Name of the resource group.
 """
 
 helps['aks operation-abort'] = """
@@ -1878,6 +2313,12 @@ parameters:
   - name: --data-collection-settings
     type: string
     short-summary: Path to JSON file containing data collection settings for Monitoring addon.
+  - name: --enable-high-log-scale-mode
+    type: bool
+    short-summary: Enable High Log Scale Mode for Container Logs.
+  - name: --ampls-resource-id
+    type: string
+    short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
@@ -1911,6 +2352,9 @@ parameters:
   - name: --dns-zone-resource-id
     type: string
     short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
+  - name: --dns-zone-resource-ids
+    type: string
+    short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the web_application_routing addon.
 examples:
   - name: Enable a Kubernetes addon. (autogenerated)
     text: az aks addon enable --addon virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
@@ -1942,6 +2386,12 @@ parameters:
   - name: --data-collection-settings
     type: string
     short-summary: Path to JSON file containing data collection settings for Monitoring addon.
+  - name: --enable-high-log-scale-mode
+    type: bool
+    short-summary: Enable High Log Scale Mode for Container Logs.
+  - name: --ampls-resource-id
+    type: string
+    short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
@@ -1975,6 +2425,9 @@ parameters:
   - name: --dns-zone-resource-id
     type: string
     short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
+  - name: --dns-zone-resource-ids
+    type: string
+    short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the web_application_routing addon.
 examples:
   - name: Update a Kubernetes addon. (autogenerated)
     text: az aks addon update --addon virtual-node --name MyManagedCluster --resource-group MyResourceGroup --subnet-name VirtualNodeSubnet
@@ -2020,6 +2473,12 @@ parameters:
   - name: --data-collection-settings
     type: string
     short-summary: Path to JSON file containing data collection settings for Monitoring addon.
+  - name: --enable-high-log-scale-mode
+    type: bool
+    short-summary: Enable High Log Scale Mode for Container Logs.
+  - name: --ampls-resource-id
+    type: string
+    short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
@@ -2053,6 +2512,9 @@ parameters:
   - name: --dns-zone-resource-id
     type: string
     short-summary: The resource ID of the DNS zone resource to use with the web_application_routing addon.
+  - name: --dns-zone-resource-ids
+    type: string
+    short-summary: A comma separated list of resource IDs of the DNS zone resource to use with the web_application_routing addon.
   - name: --aks-custom-headers
     type: string
     short-summary: Send custom headers. When specified, format should be Key1=Value1,Key2=Value2
@@ -2087,15 +2549,6 @@ short-summary: Get the versions available for creating a managed Kubernetes clus
 examples:
   - name: Get the versions available for creating a managed Kubernetes cluster
     text: az aks get-versions --location westus2
-    crafted: true
-"""
-
-helps['aks get-os-options'] = """
-type: command
-short-summary: Get the OS options available for creating a managed Kubernetes cluster.
-examples:
-  - name: Get the OS options available for creating a managed Kubernetes cluster
-    text: az aks get-os-options --location westus2
     crafted: true
 """
 
@@ -2335,7 +2788,7 @@ helps['aks trustedaccess rolebinding create'] = """
         - name: --roles
           type: string
           short-summary: Specify the space-separated roles.
-        - name: --source-resource-id -r
+        - name: --source-resource-id
           type: string
           short-summary: Specify the source resource id of the binding.
 
@@ -2480,8 +2933,8 @@ helps['aks draft generate-workflow'] = """
 
 helps['aks draft up'] = """
     type: command
-    short-summary: Set up GitHub OIDC and generate a GitHub workflow for automatic build and deploy to AKS
-    long-summary: This command combines `az aks draft setup-gh` and `az aks draft generate-workflow`.
+    short-summary: Run `az aks draft setup-gh` then `az aks draft generate-workflow`.
+    long-summary: This command combines `az aks draft setup-gh` and `az aks draft generate-workflow` to set up GitHub OIDC and generate a GitHub workflow for automatic build and deploy to AKS.
                   Before running this command, create a resource group, a container registry and a Kubernetes cluster on Azure and
                   link the three resources using `az aks update -n <cluster-name> -g <resource-group-name> --attach-acr <acr-name>`.
     parameters:
@@ -2565,6 +3018,9 @@ helps['aks mesh enable'] = """
     short-summary: Enable Azure Service Mesh.
     long-summary: This command enables Azure Service Mesh in given cluster.
     parameters:
+      - name: --revision
+        type: string
+        short-summary: Azure Service Mesh revision to install.
       - name: --key-vault-id
         type: string
         short-summary: The Azure Keyvault id with plugin CA info.
@@ -2584,7 +3040,7 @@ helps['aks mesh enable'] = """
       - name: Enable Azure Service Mesh with selfsigned CA.
         text: az aks mesh enable --resource-group MyResourceGroup --name MyManagedCluster
       - name: Enable Azure Service Mesh with plugin CA.
-        text: az aks mesh enable --resource-group MyResourceGroup --name MyManagedCluster --key-vault-id my-akv-id --ca-cert-object-name my-ca-cert --ca-key-object-name my-ca-key --cert-chain-object-name my-cert-chain --root-cert-object-name my-root-cert
+        text: az aks mesh enable --resource-group MyResourceGroup --name MyManagedCluster --key-vault-id /subscriptions/8ecadfc9-d1a3-4ea4-b844-0d9f87e4d7c8/resourceGroups/foo/providers/Microsoft.KeyVault/vaults/foo --ca-cert-object-name my-ca-cert --ca-key-object-name my-ca-key --cert-chain-object-name my-cert-chain --root-cert-object-name my-root-cert
 
 """
 
@@ -2620,4 +3076,175 @@ helps['aks mesh disable-ingress-gateway'] = """
     examples:
       - name: Disable an internal ingress gateway.
         text: az aks mesh disable-ingress-gateway --resource-group MyResourceGroup --name MyManagedCluster --ingress-gateway-type Internal
+"""
+
+helps['aks mesh get-revisions'] = """
+    type: command
+    short-summary: Discover available Azure Service Mesh revisions and their compatibility.
+    long-summary: This command discovers available Azure Service Mesh revisions and their compatibility information for the given location.
+    examples:
+      - name: Discover Azure Service Mesh revisions.
+        text: az aks mesh get-revisions --location westus2
+        crafted: true
+"""
+
+helps['aks mesh get-upgrades'] = """
+    type: command
+    short-summary: Discover available Azure Service Mesh upgrades.
+    long-summary: This command discovers available Azure Service Mesh upgrades for the mesh revision installed on the cluster.
+    examples:
+      - name: Discover Azure Service Mesh upgrades.
+        text: az aks mesh get-upgrades --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
+helps['aks mesh upgrade start'] = """
+    type: command
+    short-summary: Initiate Azure Service Mesh upgrade.
+    long-summary: This command initiates upgrade of Azure Service Mesh to the specified revision.
+    parameters:
+      - name: --revision
+        type: string
+        short-summary: Azure Service Mesh revision to upgrade to.
+    examples:
+      - name: Initiate Azure Service Mesh upgrade.
+        text: az aks mesh upgrade start --resource-group MyResourceGroup --name MyManagedCluster --revision asm-1-18
+"""
+
+helps['aks mesh upgrade'] = """
+    type: group
+    short-summary: Commands to manage the upgrades for Azure Service Mesh.
+    long-summary: A group of commands to manage the upgrades for Azure Service Mesh in given cluster.
+"""
+
+helps['aks mesh upgrade complete'] = """
+    type: command
+    short-summary: Complete Azure Service Mesh upgrade.
+    long-summary: This command completes Azure Service Mesh canary upgrade by removing the previous revision.
+    examples:
+      - name: Complete Azure Service Mesh upgrade.
+        text: az aks mesh upgrade complete --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
+helps['aks mesh upgrade rollback'] = """
+    type: command
+    short-summary: Rollback Azure Service Mesh upgrade.
+    long-summary: This command rolls back Azure Service Mesh upgrade to the previous stable revision.
+    examples:
+      - name: Rollback Azure Service Mesh upgrade.
+        text: az aks mesh upgrade rollback --resource-group MyResourceGroup --name MyManagedCluster
+"""
+
+
+helps['aks approuting'] = """
+    type: group
+    short-summary: Commands to manage App Routing aadon.
+    long-summary: A group of commands to manage App Routing in given cluster.
+"""
+
+helps['aks approuting enable'] = """
+    type: command
+    short-summary: Enable App Routing.
+    long-summary: This command enables App Routing in given cluster.
+    parameters:
+      - name: --enable-kv
+        type: bool
+        short-summary: Enable the keyvault secrets provider.
+        long-summary: This optional flag enables the keyvault-secrets-provider addon in given cluster. This is required for most App Routing use-cases.
+      - name: --attach-kv
+        type: string
+        short-summary: Attach a keyvault id to access secrets and certificates.
+        long-summary: This optional flag attaches a keyvault id to access secrets and certificates.
+"""
+
+helps['aks approuting disable'] = """
+    type: command
+    short-summary: Disable App Routing addon.
+    long-summary: This command disables App Routing in given cluster.
+"""
+
+helps['aks approuting update'] = """
+    type: command
+    short-summary: Update App Routing addon.
+    long-summary: This command is used to update keyvault id in App Routing addon.
+    parameters:
+      - name: --attach-kv
+        type: string
+        short-summary: Attach a keyvault id to access secrets and certificates.
+        long-summary: This optional flag attaches a keyvault id to access secrets and certificates.
+      - name: --enable-kv
+        type: bool
+        short-summary: Enable the keyvault secrets provider addon.
+        long-summary: This optional flag enables the keyvault-secrets-provider addon in given cluster. This is required for most App Routing use-cases.
+"""
+
+helps['aks approuting zone'] = """
+    type: group
+    short-summary: Commands to manage App Routing DNS Zones.
+    long-summary: A group of commands to manage App Routing DNS zones in given cluster.
+"""
+
+helps['aks approuting zone add'] = """
+    type: command
+    short-summary: Add DNS Zone(s) to App Routing.
+    long-summary: This command adds multiple DNS zone resource IDs to App Routing.
+    parameters:
+      - name: --ids
+        type: string
+        short-summary: Comma-separated list of DNS zone resource IDs to add to App Routing.
+      - name: --attach-zones
+        type: bool
+        short-summary: Grant DNS zone Contributor permissions on all zone IDs specified in --ids.
+"""
+
+helps['aks approuting zone delete'] = """
+    type: command
+    short-summary: Delete DNS Zone(s) from App Routing.
+    long-summary: This command deletes DNS zone resource IDs from App Routing in given cluster.
+    parameters:
+      - name: --ids
+        type: string
+        short-summary: Comma-separated list of DNS zone resource IDs to delete from App Routing.
+"""
+
+helps['aks approuting zone update'] = """
+    type: command
+    short-summary: Replace DNS Zone(s) in App Routing.
+    long-summary: This command replaces the DNS zone resource IDs used in App Routing.
+    parameters:
+      - name: --ids
+        type: string
+        short-summary: Comma-separated list of DNS zone resource IDs to replace in App Routing.
+      - name: --attach-zones
+        type: bool
+        short-summary: Grant DNS zone Contributor permissions on all zone IDs specified in --ids.
+"""
+
+helps['aks approuting zone list'] = """
+    type: command
+    short-summary: List DNS Zone IDs in App Routing.
+    long-summary: This command lists the DNS zone resources used in App Routing.
+"""
+
+helps['aks check-network'] = """
+    type: group
+    short-summary: Commands to troubleshoot network connectivity in managed Kubernetes cluster.
+"""
+
+helps['aks check-network outbound'] = """
+    type: command
+    short-summary: Perform outbound network connectivity check for a node in a managed Kubernetes cluster.
+    long-summary: This command checks outbound network connectivity from a node to certain required AKS endpoints.
+    parameters:
+      - name: --name -n
+        type: string
+        short-summary: Name of the managed cluster.
+      - name: --resource-group -g
+        type: string
+        short-summary: Name of the resource group.
+      - name: --node-name
+        type: string
+        short-summary: Name of the node to perform the connectivity check. If not specified, a random node will be chosen.
+      - name: --custom-endpoints
+        type: string
+        short-summary: Additional endpoint(s) to perform the connectivity check, separated by comma.
 """

@@ -2,6 +2,47 @@
 
 Release History
 ===============
+1.1.1
+++++++
+* `create-from-machines` : Search for BIOS IDs with both Little Endian and Middle Endian format.
+
+1.1.0
+++++++
+* Prompt credentials if not provided for Guest Agent.
+
+1.0.1
+++++++
+* Fix bug in `az connectedvmware create` command when RG of machine is different from RG of vCenter.
+* Update help command for vm create to remove non-required parameters.
+* Bug fix in sample resource id format for vcenter
+* Add --private-link-scope flag to `az connectedvmware vm guest-agent enable` command.
+
+1.0.0
+++++++
+* Add command `az connectedvmware create-from-machines`.
+* Delete HCRP Machine resource by default during `delete vm`. To retain, use `--retain-machine` flag.
+* Use GA API Version for VCENTER_KIND_GET_API_VERSION.
+* Set extension to non-preview version
+
+0.2.4
+++++++
+* Link existing HCRP machine to vCenter using the CLI.
+* Add examples in help.
+
+0.2.3
+++++++
+* Fix docs and help for vm creation from template with disk override.
+* Convert any HCRP machine with empty kind to VMWare / AVS kind, while enabling vm from inventory.
+* Reprompt fix for password for vcenter connect.
+
+0.2.2
+++++++
+* GA release: Using stable API version for all operations.
+* `az connectedvmware inventory item show` shows inventory-type specific properties.
+
+0.2.1
+++++++
+* Bug fix for `get-resource-id` internal function, which was not honoring resource-group override.
 
 0.2.0
 ++++++
@@ -13,6 +54,7 @@ Release History
 * Added delete-from-host flag for `vm delete`
 * Deprecated VM List option as VM Instance is a child resource of Machines.
 * Updated tests and helps accordingly.
+* raising better exception types instead of CLIError
 
 0.1.12
 ++++++

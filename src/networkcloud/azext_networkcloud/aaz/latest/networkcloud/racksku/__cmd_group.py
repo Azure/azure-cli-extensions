@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "networkcloud racksku",
+    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage rack SKU

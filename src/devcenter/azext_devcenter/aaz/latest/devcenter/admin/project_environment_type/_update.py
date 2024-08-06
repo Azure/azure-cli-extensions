@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/environmenttypes/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/environmenttypes/{}", "2024-05-01-preview"],
         ]
     }
 
@@ -51,15 +51,24 @@ class Update(AAZCommand):
             help="The name of the environment type.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.project_name = AAZStrArg(
             options=["--project", "--project-name"],
             help="The name of the project. Use `az configure -d project=<project_name>` to configure a default.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 
@@ -124,6 +133,12 @@ class Update(AAZCommand):
             options=["--deployment-target-id"],
             arg_group="Properties",
             help="ID of a subscription that the environment type will be mapped to. The environment's resources will be deployed into this subscription.",
+            nullable=True,
+        )
+        _args_schema.display_name = AAZStrArg(
+            options=["--display-name"],
+            arg_group="Properties",
+            help="The display name of the project environment type.",
             nullable=True,
         )
         _args_schema.status = AAZStrArg(
@@ -227,7 +242,7 @@ class Update(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -255,7 +270,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -296,8 +311,8 @@ class Update(AAZCommand):
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
+            if session.http_response.status_code in [200, 201]:
+                return self.on_200_201(session)
 
             return self.on_error(session.http_response)
 
@@ -314,7 +329,7 @@ class Update(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -342,7 +357,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -369,25 +384,25 @@ class Update(AAZCommand):
 
             return self.serialize_content(_content_value)
 
-        def on_200(self, session):
+        def on_200_201(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200
+                schema_builder=self._build_schema_on_200_201
             )
 
-        _schema_on_200 = None
+        _schema_on_200_201 = None
 
         @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
 
-            cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_project_environment_type_read(cls._schema_on_200)
+            cls._schema_on_200_201 = AAZObjectType()
+            _UpdateHelper._build_schema_project_environment_type_read(cls._schema_on_200_201)
 
-            return cls._schema_on_200
+            return cls._schema_on_200_201
 
     class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
 
@@ -417,6 +432,7 @@ class Update(AAZCommand):
             if properties is not None:
                 properties.set_prop("creatorRoleAssignment", AAZObjectType)
                 properties.set_prop("deploymentTargetId", AAZStrType, ".deployment_target_id")
+                properties.set_prop("displayName", AAZStrType, ".display_name")
                 properties.set_prop("status", AAZStrType, ".status")
                 properties.set_prop("userRoleAssignments", AAZDictType, ".user_role_assignments")
 
@@ -559,6 +575,13 @@ class _UpdateHelper:
         )
         properties.deployment_target_id = AAZStrType(
             serialized_name="deploymentTargetId",
+        )
+        properties.display_name = AAZStrType(
+            serialized_name="displayName",
+        )
+        properties.environment_count = AAZIntType(
+            serialized_name="environmentCount",
+            flags={"read_only": True},
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",

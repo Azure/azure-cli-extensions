@@ -6,7 +6,6 @@
 import json
 import requests
 
-from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from msrestazure.azure_exceptions import CloudError
 
 from knack.log import get_logger
@@ -18,6 +17,7 @@ from azure.cli.core.util import should_disable_connection_verify
 from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError
 
 from ._client_factory import cf_amg
+from .utils import get_yes_or_no_option, MGMT_SERVICE_CLIENT_API_VERSION
 
 logger = get_logger(__name__)
 
@@ -25,8 +25,8 @@ logger = get_logger(__name__)
 grafana_endpoints = {}
 
 
-def create_grafana(cmd, resource_group_name, grafana_name,
-                   location=None, skip_system_assigned_identity=False, skip_role_assignments=False,
+def create_grafana(cmd, resource_group_name, grafana_name, location=None,
+                   deterministic_outbound_ip=None, skip_system_assigned_identity=False, skip_role_assignments=False,
                    tags=None, zone_redundancy=None, principal_ids=None, principal_types=None):
     from azure.cli.core.commands.arm import resolve_role_id
 
@@ -43,7 +43,8 @@ def create_grafana(cmd, resource_group_name, grafana_name,
         "tags": tags
     }
     resource["properties"] = {
-        "zoneRedundancy": zone_redundancy
+        "zoneRedundancy": zone_redundancy,
+        "deterministicOutboundIP": deterministic_outbound_ip
     }
 
     poller = client.grafana.begin_create(resource_group_name, grafana_name, resource)
@@ -113,7 +114,7 @@ def _create_role_assignment(cli_ctx, principal_id, principal_type, role_definiti
     import time
     from azure.core.exceptions import ResourceExistsError
     assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
-                                                 api_version="2020-04-01-preview").role_assignments
+                                                 api_version=MGMT_SERVICE_CLIENT_API_VERSION).role_assignments
     RoleAssignmentCreateParameters = get_sdk(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
                                              'RoleAssignmentCreateParameters', mod='models',
                                              operation_group='role_assignments')
@@ -145,9 +146,9 @@ def _create_role_assignment(cli_ctx, principal_id, principal_type, role_definiti
 
 def _delete_role_assignment(cli_ctx, principal_id):
     assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
-                                                 api_version="2020-04-01-preview").role_assignments
+                                                 api_version=MGMT_SERVICE_CLIENT_API_VERSION).role_assignments
     f = f"principalId eq '{principal_id}'"
-    assignments = list(assignments_client.list(filter=f))
+    assignments = list(assignments_client.list_for_subscription(filter=f))
     for a in assignments or []:
         assignments_client.delete_by_id(a.id)
 
@@ -162,58 +163,75 @@ def list_grafana(cmd, resource_group_name=None):
 def update_grafana(cmd, grafana_name, api_key_and_service_account=None, deterministic_outbound_ip=None,
                    public_network_access=None, smtp=None, host=None, user=None, password=None,
                    start_tls_policy=None, skip_verify=None, from_address=None, from_name=None,
-                   resource_group_name=None, tags=None):
+                   major_version=None, resource_group_name=None, tags=None):
 
-    # pylint: disable=too-many-boolean-expressions, too-many-boolean-expressions
-
-    if (not api_key_and_service_account and not deterministic_outbound_ip and not public_network_access and not tags
-            and not smtp and not host and not user and not password and not start_tls_policy and not from_address
-            and not from_name and skip_verify is None):
+    if all(param is None for param in (api_key_and_service_account, deterministic_outbound_ip, public_network_access,
+                                       smtp, host, user, password, start_tls_policy, skip_verify, from_address,
+                                       from_name, major_version, tags)):
         raise ArgumentUsageError("Please supply at least one parameter value to update the Grafana workspace")
 
     client = cf_amg(cmd.cli_ctx, subscription=None)
     instance = client.grafana.get(resource_group_name, grafana_name)
 
+    resource = {}
+    resourceProperties = {}
+
     if api_key_and_service_account:
-        instance.properties.api_key = api_key_and_service_account
+        resourceProperties["apiKey"] = api_key_and_service_account
 
     if deterministic_outbound_ip:
-        instance.properties.deterministic_outbound_ip = deterministic_outbound_ip
+        resourceProperties["deterministicOutboundIP"] = deterministic_outbound_ip
 
     if public_network_access:
-        instance.properties.public_network_access = public_network_access
+        resourceProperties["publicNetworkAccess"] = public_network_access
+
+    if major_version:
+        if major_version == "10":
+            # prompt for confirmation, cancel operation if not confirmed
+            if (not get_yes_or_no_option("You are trying to upgrade this workspace to Grafana version 10. By "
+                                         "proceeding, you acknowledge that upgrading to Grafana version 10 is a "
+                                         "permanent and irreversible operation and Grafana legacy alerting has been "
+                                         "deprecated and any migrated legacy alert may require manual adjustments "
+                                         "to function properly under the new alerting system. Do you wish to proceed? "
+                                         "(Y/N): ")):
+                return None
+        resourceProperties["grafanaMajorVersion"] = major_version
 
     if tags:
-        instance.tags = tags
+        resource["tags"] = tags
 
-    if (smtp or host or user or password or start_tls_policy
-            or from_address or from_name or skip_verify is not None):
-
+    if not all(param is None for param in (smtp, host, user, password, start_tls_policy, from_address, from_name,
+                                           skip_verify)):
         from azext_amg.vendored_sdks.models import GrafanaConfigurations, Smtp
-        if not instance.properties.grafana_configurations:
-            instance.properties.grafana_configurations = GrafanaConfigurations()
+        resourceProperties["grafanaConfigurations"] = GrafanaConfigurations()
+
         if not instance.properties.grafana_configurations.smtp:
-            instance.properties.grafana_configurations.smtp = Smtp()
+            resourceProperties["grafanaConfigurations"].smtp = Smtp()
+        else:
+            resourceProperties["grafanaConfigurations"] = instance.properties.grafana_configurations
 
         if smtp:
-            instance.properties.grafana_configurations.smtp.enabled = (smtp == "Enabled")
+            resourceProperties["grafanaConfigurations"].smtp.enabled = smtp == "Enabled"
         if host:
-            instance.properties.grafana_configurations.smtp.host = host
+            resourceProperties["grafanaConfigurations"].smtp.host = host
         if user:
-            instance.properties.grafana_configurations.smtp.user = user
+            resourceProperties["grafanaConfigurations"].smtp.user = user
         if password:
-            instance.properties.grafana_configurations.smtp.password = password
+            resourceProperties["grafanaConfigurations"].smtp.password = password
         if start_tls_policy:
-            instance.properties.grafana_configurations.smtp.start_tls_policy = start_tls_policy
+            resourceProperties["grafanaConfigurations"].smtp.start_tls_policy = start_tls_policy
         if skip_verify is not None:
-            instance.properties.grafana_configurations.smtp.skip_verify = skip_verify
+            resourceProperties["grafanaConfigurations"].smtp.skip_verify = skip_verify
         if from_address:
-            instance.properties.grafana_configurations.smtp.from_address = from_address
+            resourceProperties["grafanaConfigurations"].smtp.from_address = from_address
         if from_name:
-            instance.properties.grafana_configurations.smtp.from_name = from_name
+            resourceProperties["grafanaConfigurations"].smtp.from_name = from_name
 
-    # "begin_create" uses PUT, which handles both Create and Update
-    return client.grafana.begin_create(resource_group_name, grafana_name, instance)
+    if resourceProperties:
+        resource["properties"] = resourceProperties
+
+    # "update" uses PATCH
+    return client.grafana.update(resource_group_name, grafana_name, resource)
 
 
 def show_grafana(cmd, grafana_name, resource_group_name=None, subscription=None):
@@ -230,7 +248,7 @@ def delete_grafana(cmd, grafana_name, resource_group_name=None):
     LongRunningOperation(cmd.cli_ctx)(poller)
 
     # delete role assignment
-    logger.warning("Grafana instance of '%s' was delete. Now removing role assignments for associated with its "
+    logger.warning("Grafana instance of '%s' was deleted. Now removing role assignments for associated with its "
                    "managed identity", grafana_name)
     _delete_role_assignment(cmd.cli_ctx, grafana.identity.principal_id)
 
@@ -281,107 +299,16 @@ def restore_grafana(cmd, grafana_name, archive_file, components=None, remap_data
 
 def sync_dashboard(cmd, source, destination, folders_to_include=None, folders_to_exclude=None,
                    dashboards_to_include=None, dashboards_to_exclude=None, dry_run=None):
-    # pylint: disable=too-many-locals, too-many-branches, too-many-statements
-    if not is_valid_resource_id(source):
-        raise ArgumentUsageError(f"'{source}' isn't a valid resource id, please refer to example commands in help")
-    if not is_valid_resource_id(destination):
-        raise ArgumentUsageError(f"'{destination}' isn't a valid resource id, please refer to example commands in help")
+    from .sync import sync
 
-    if source.lower() == destination.lower():
-        raise ArgumentUsageError("Destination workspace should be different from the source workspace")
-
-    parsed_source = parse_resource_id(source)
-    parsed_destination = parse_resource_id(destination)
-
-    source_workspace, source_resource_group, source_subscription = (parsed_source["name"],
-                                                                    parsed_source["resource_group"],
-                                                                    parsed_source["subscription"])
-    destination_workspace, destination_resource_group, destination_subscription = (parsed_destination["name"],
-                                                                                   parsed_destination["resource_group"],
-                                                                                   parsed_destination["subscription"])
-
-    _health_endpoint_reachable(cmd, source_workspace, resource_group_name=source_resource_group,
-                               subscription=source_subscription)
-    _health_endpoint_reachable(cmd, destination_workspace, resource_group_name=destination_resource_group,
-                               subscription=destination_subscription)
-
-    # TODO: skip READ-ONLY destination dashboard (rare case)
-    destination_folders = list_folders(cmd, destination_workspace, resource_group_name=destination_resource_group,
-                                       subscription=destination_subscription)
-    destination_folders = {f["title"].lower(): f["id"] for f in destination_folders}
-
-    destination_data_sources = list_data_sources(cmd, destination_workspace, destination_resource_group,
-                                                 subscription=destination_subscription)
-    source_data_sources = list_data_sources(cmd, source_workspace, source_resource_group,
-                                            subscription=source_subscription)
-
-    from .utils import create_datasource_mapping, remap_datasource_uids
-    uid_mapping = create_datasource_mapping(source_data_sources, destination_data_sources)
-
-    source_dashboards = list_dashboards(cmd, source_workspace, resource_group_name=source_resource_group,
-                                        subscription=source_subscription)
-
-    summary = {
-        "folders_created": [],
-        "dashboards_synced": [],
-        "dashboards_skipped": [],
-    }
-    data_source_missed = set()
-    for dashboard in source_dashboards:
-        uid = dashboard["uid"]
-        source_dashboard = show_dashboard(cmd, source_workspace, uid, resource_group_name=source_resource_group,
-                                          subscription=source_subscription)
-        folder_title = source_dashboard["meta"]["folderTitle"]
-        dashboard_title = source_dashboard["dashboard"]["title"]
-        dashboard_path = folder_title + "/" + dashboard_title
-
-        should_skip = False
-        if source_dashboard["meta"].get("provisioned"):
-            should_skip = True
-        else:
-            if folders_to_include:
-                should_skip = not next((f for f in folders_to_include if folder_title.lower() == f.lower()), None)
-            if not should_skip and folders_to_exclude:
-                should_skip = next((f for f in folders_to_exclude if folder_title.lower() == f.lower()), None)
-            if dashboards_to_include:
-                should_skip = not next((p for p in dashboards_to_include if p.lower() == dashboard_title.lower()), None)
-            if dashboards_to_exclude:
-                should_skip = next((p for p in dashboards_to_exclude if p.lower() == dashboard_title.lower()), None)
-        if should_skip:
-            summary["dashboards_skipped"].append(dashboard_path)
-            continue
-
-        # Figure out whether we shall correct the data sources. It is possible the Uids are different
-        remap_datasource_uids(source_dashboard.get("dashboard"), uid_mapping, data_source_missed)
-        if not dry_run:
-            delete_dashboard(cmd, destination_workspace, uid, resource_group_name=destination_resource_group,
-                             ignore_error=True, subscription=destination_subscription)
-
-        # ensure the folder exists at destination side
-        if folder_title.lower() == "general":
-            folder_id = None
-        else:
-            folder_id = destination_folders.get(folder_title.lower())
-            if not folder_id:
-                summary["folders_created"].append(folder_title)
-                if not dry_run:
-                    logger.warning("Creating folder: %s", folder_title)
-                    new_folder = create_folder(cmd, destination_workspace, title=folder_title,
-                                               resource_group_name=destination_resource_group,
-                                               subscription=destination_subscription)
-                    folder_id = new_folder["id"]
-                destination_folders[folder_title.lower()] = folder_id or "dry run dummy"
-
-        summary["dashboards_synced"].append(dashboard_path)
-        if not dry_run:
-            logger.warning("Syncing dashboard: %s", dashboard_path)
-            _create_dashboard(cmd, destination_workspace, definition=source_dashboard, overwrite=True,
-                              folder_id=folder_id, resource_group_name=destination_resource_group,
-                              for_sync=True)
-    if data_source_missed:
-        logger.warning(("A few data sources used by dashboards are unavailable at destination: \"%s\""
-                        ". Please configure them."), ", ".join(data_source_missed))
-    return summary
+    sync(cmd,
+         source,
+         destination,
+         folders_to_include=folders_to_include,
+         folders_to_exclude=folders_to_exclude,
+         dashboards_to_include=dashboards_to_include,
+         dashboards_to_exclude=dashboards_to_exclude,
+         dry_run=dry_run)
 
 
 def show_dashboard(cmd, grafana_name, uid, resource_group_name=None, api_key_or_token=None, subscription=None):
@@ -408,15 +335,15 @@ def list_dashboards(cmd, grafana_name, resource_group_name=None, api_key_or_toke
 
 def create_dashboard(cmd, grafana_name, definition, title=None, folder=None, resource_group_name=None,
                      overwrite=None, api_key_or_token=None):
-    folder_id = None
+    folder_uid = None
     if folder:
-        folder_id = _find_folder(cmd, resource_group_name, grafana_name, folder)["id"]
-    return _create_dashboard(cmd, grafana_name, definition=definition, title=title, folder_id=folder_id,
+        folder_uid = _find_folder(cmd, resource_group_name, grafana_name, folder)["uid"]
+    return _create_dashboard(cmd, grafana_name, definition=definition, title=title, folder_uid=folder_uid,
                              resource_group_name=resource_group_name, overwrite=overwrite,
                              api_key_or_token=api_key_or_token)
 
 
-def _create_dashboard(cmd, grafana_name, definition, title=None, folder_id=None, resource_group_name=None,
+def _create_dashboard(cmd, grafana_name, definition, title=None, folder_uid=None, resource_group_name=None,
                       overwrite=None, api_key_or_token=None, for_sync=True, subscription=None):
     if "dashboard" in definition:
         payload = definition
@@ -428,8 +355,8 @@ def _create_dashboard(cmd, grafana_name, definition, title=None, folder_id=None,
     if title:
         payload['dashboard']['title'] = title
 
-    if folder_id:
-        payload['folderId'] = folder_id
+    if folder_uid:
+        payload['folderUid'] = folder_uid
 
     payload['overwrite'] = overwrite or False
 
@@ -467,7 +394,6 @@ def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
         payload['folderId'] = folder['id']
 
     payload['overwrite'] = overwrite or False
-
     payload['inputs'] = []
 
     # provide parameter values for datasource
@@ -482,7 +408,7 @@ def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
             else:
                 logger.warning("No data source was found matching the required parameter of %s", parameter['pluginId'])
 
-    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/dashboards/import",
+    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/dashboards/db",
                              payload, api_key_or_token=api_key_or_token)
     return json.loads(response.content)
 
@@ -510,12 +436,11 @@ def _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, defin
         pass
 
     if re.match(r"^[a-z]+://", definition.lower()):
-        response = requests.get(definition, verify=(not should_disable_connection_verify()))
+        response = requests.get(definition, verify=not should_disable_connection_verify())
         if response.status_code == 200:
             definition = json.loads(response.content.decode())
         else:
             raise ArgumentUsageError(f"Failed to dashboard definition from '{definition}'. Error: '{response}'.")
-
     else:
         definition = json.loads(_try_load_file_content(definition))
 
@@ -644,25 +569,21 @@ def delete_folder(cmd, grafana_name, folder, resource_group_name=None, api_key_o
 
 
 def _find_folder(cmd, resource_group_name, grafana_name, folder, api_key_or_token=None):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders/id/" + folder,
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders/" + folder,
                              raise_for_error_status=False, api_key_or_token=api_key_or_token)
-    if response.status_code >= 400 or not json.loads(response.content)['uid']:
-        response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders/" + folder,
-                                 raise_for_error_status=False, api_key_or_token=api_key_or_token)
+    if response.status_code >= 400:
+        response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders",
+                                 api_key_or_token=api_key_or_token)
         if response.status_code >= 400:
-            response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders",
-                                     api_key_or_token=api_key_or_token)
-            if response.status_code >= 400:
-                raise ArgumentUsageError(f"Could't find the folder '{folder}'. Ex: {response.status_code}")
-            result = json.loads(response.content)
-            result = [f for f in result if f["title"] == folder]
-            if len(result) == 0:
-                raise ArgumentUsageError(f"Could't find the folder '{folder}'. Ex: {response.status_code}")
-            if len(result) > 1:
-                raise ArgumentUsageError((f"More than one folder has the same title of '{folder}'. Please use other "
-                                          f"unique identifiers"))
-            return result[0]
-
+            raise ArgumentUsageError(f"Couldn't find the folder '{folder}'. Ex: {response.status_code}")
+        result = json.loads(response.content)
+        result = [f for f in result if f["title"] == folder]
+        if len(result) == 0:
+            raise ArgumentUsageError(f"Couldn't find the folder '{folder}'. Ex: {response.status_code}")
+        if len(result) > 1:
+            raise ArgumentUsageError((f"More than one folder has the same title of '{folder}'. Please use other "
+                                     f"unique identifiers"))
+        return result[0]
     return json.loads(response.content)
 
 
@@ -751,8 +672,7 @@ def update_service_account(cmd, grafana_name, service_account, new_name=None,
 
 
 def list_service_accounts(cmd, grafana_name, resource_group_name=None):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get",
-                             "/api/serviceaccounts/search")
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/serviceaccounts/search")
     return json.loads(response.content)['serviceAccounts']
 
 
@@ -845,8 +765,7 @@ def list_users(cmd, grafana_name, resource_group_name=None, api_key_or_token=Non
 
 
 def show_user(cmd, grafana_name, user, resource_group_name=None, api_key_or_token=None):
-    users = list_users(cmd, grafana_name, resource_group_name=resource_group_name,
-                       api_key_or_token=api_key_or_token)
+    users = list_users(cmd, grafana_name, resource_group_name=resource_group_name, api_key_or_token=api_key_or_token)
     match = next((u for u in users if u['name'].lower() == user.lower()), None)
 
     if match:
@@ -975,12 +894,8 @@ def _send_request(cmd, resource_group_name, grafana_name, http_method, path, bod
     }
 
     # TODO: handle re-try on 429
-    response = requests.request(http_method,
-                                url=endpoint + path,
-                                headers=headers,
-                                json=body,
-                                timeout=60,
-                                verify=(not should_disable_connection_verify()))
+    response = requests.request(http_method, url=endpoint + path, headers=headers, json=body, timeout=60,
+                                verify=not should_disable_connection_verify())
     if response.status_code >= 400:
         if raise_for_error_status:
             logger.warning(str(response.content))

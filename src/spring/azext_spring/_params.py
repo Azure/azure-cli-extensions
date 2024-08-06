@@ -5,18 +5,22 @@
 # pylint: disable=line-too-long
 
 from knack.arguments import CLIArgumentType
+from azext_spring.jobs.job import JOB_TIMEOUT_RESET_VALUE
+from azext_spring.jobs.job_validators import (validate_job_name_for_oss_config_server_bind,
+                                              validate_job_name_for_service_registry_bind)
 from azure.cli.core.commands.parameters import get_enum_type, get_three_state_flag, tags_type
 from azure.cli.core.commands.parameters import (name_type, get_location_type, resource_group_name_type)
 from ._validators import (validate_env, validate_cosmos_type, validate_resource_id, validate_location,
-                          validate_name, validate_app_name, validate_deployment_name, validate_log_lines,
-                          validate_log_limit, validate_log_since, validate_sku, normalize_sku, validate_jvm_options,
+                          validate_name, validate_app_name, validate_deployment_name, validate_sku,
+                          normalize_sku, validate_jvm_options,
                           validate_vnet, validate_vnet_required_parameters, validate_node_resource_group,
                           validate_tracing_parameters_asc_create, validate_tracing_parameters_asc_update,
                           validate_app_insights_parameters, validate_instance_count, validate_java_agent_parameters,
                           validate_ingress_timeout, validate_jar, validate_ingress_send_timeout,
                           validate_ingress_session_max_age, validate_config_server_ssh_or_warn,
                           validate_remote_debugging_port, validate_ingress_client_auth_certificates,
-                          validate_managed_environment, validate_dataplane_public_endpoint)
+                          validate_managed_environment, validate_dataplane_public_endpoint, validate_server_version,
+                          validate_planned_maintenance)
 from ._validators_enterprise import (only_support_enterprise, validate_builder_resource, validate_builder_create,
                                      validate_source_path, validate_artifact_path, validate_build_create,
                                      validate_build_update, validate_container_registry_create,
@@ -28,20 +32,26 @@ from ._validators_enterprise import (only_support_enterprise, validate_builder_r
                                      validate_buildpack_binding_exist, validate_buildpack_binding_not_exist,
                                      validate_buildpack_binding_properties, validate_buildpack_binding_secrets,
                                      validate_build_env, validate_target_module, validate_runtime_version,
-                                     validate_acs_ssh_or_warn, validate_apm_properties, validate_apm_secrets,
+                                     validate_acs_ssh_or_warn, validate_refresh_interval,
+                                     validate_apm_properties, validate_apm_secrets,
                                      validate_apm_not_exist, validate_apm_update, validate_apm_reference,
                                      validate_apm_reference_and_enterprise_tier, validate_cert_reference,
-                                     validate_build_cert_reference, validate_acs_create)
+                                     validate_build_cert_reference, validate_acs_create, not_support_enterprise,
+                                     validate_custom_actuator_port, validate_custom_actuator_path,
+                                     validate_create_app_binding_default_application_configuration_service,
+                                     validate_create_app_binding_default_config_server,
+                                     validate_create_app_binding_default_service_registry)
 from ._app_validator import (fulfill_deployment_param, active_deployment_exist,
                              ensure_not_active_deployment, validate_deloy_path, validate_deloyment_create_path,
-                             validate_cpu, validate_build_cpu, validate_memory, validate_build_memory,
+                             validate_cpu, validate_build_cpu, validate_memory, validate_build_memory, validate_path_exist,
                              fulfill_deployment_param_or_warning, active_deployment_exist_or_warning)
+from .log_stream.log_stream_validators import (validate_log_lines, validate_log_limit, validate_log_since)
 from ._app_managed_identity_validator import (validate_create_app_with_user_identity_or_warning,
                                               validate_create_app_with_system_identity_or_warning,
                                               validate_app_force_set_system_identity_or_warning,
                                               validate_app_force_set_user_identity_or_warning)
 from ._utils import ApiType
-from .vendored_sdks.appplatform.v2023_09_01_preview.models._app_platform_management_client_enums import (ConfigurationServiceGeneration, SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
+from .vendored_sdks.appplatform.v2024_05_01_preview.models._app_platform_management_client_enums import (CustomizedAcceleratorType, ConfigurationServiceGeneration, SupportedRuntimeValue, TestKeyType, BackendProtocol, SessionAffinity, ApmType, BindingType)
 
 
 name_type = CLIArgumentType(options_list=[
@@ -61,6 +71,9 @@ cpu_type = CLIArgumentType(type=str, help='CPU resource quantity. Should be 250m
 memory_type = CLIArgumentType(type=str, help='Memory resource quantity. Should be 512Mi, 1536Mi, 2560Mi, 3584Mi or #Gi, e.g., 1Gi, 3Gi.', validator=validate_memory)
 build_cpu_type = CLIArgumentType(type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.', validator=validate_build_cpu)
 build_memory_type = CLIArgumentType(type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.', validator=validate_build_memory)
+acs_configs_export_path_type = CLIArgumentType(nargs='?',
+                                               const='.',
+                                               help='The path of directory to export the configuration files. Default to the current folder if no value provided.')
 
 
 # pylint: disable=too-many-statements
@@ -85,6 +98,12 @@ def load_arguments(self, _):
         c.argument('outbound_type', arg_group='VNet Injection',
                    help='The outbound type of Azure Spring Apps VNet instance.',
                    validator=validate_vnet, default="loadBalancer")
+        c.argument('enable_private_storage_access',
+                   arg_group='VNet Injection',
+                   arg_type=get_three_state_flag(),
+                   is_preview=True,
+                   options_list=['--enable-private-storage-access', '--enable-psa'],
+                   help='If true, set private network access to backend storage in vnet injection instance.')
         c.argument('enable_log_stream_public_endpoint',
                    arg_type=get_three_state_flag(),
                    validator=validate_dataplane_public_endpoint,
@@ -164,6 +183,12 @@ def load_arguments(self, _):
                    options_list=['--application-configuration-service-generation', '--acs-gen'],
                    validator=validate_acs_create,
                    help='(Enterprise Tier Only) Application Configuration Service Generation to enable.')
+        c.argument('enable_config_server',
+                   action='store_true',
+                   options_list=['--enable-config-server', '--enable-cs'],
+                   is_preview=True,
+                   arg_group="Config Server",
+                   help='(Enterprise Tier Only) Enable Config Server.')
         c.argument('enable_application_live_view',
                    action='store_true',
                    options_list=['--enable-application-live-view', '--enable-alv'],
@@ -251,6 +276,35 @@ def load_arguments(self, _):
                    options_list=['--enable-dataplane-public-endpoint', '--enable-dppa'],
                    help='If true, assign public endpoint for log streaming, remote debugging, app connect in vnet injection instance which could be accessed out of virtual network.')
 
+        c.argument('enable_private_storage_access',
+                   arg_group='VNet Injection',
+                   arg_type=get_three_state_flag(),
+                   is_preview=True,
+                   options_list=['--enable-private-storage-access', '--enable-psa'],
+                   help='If true, set private network access to backend storage in vnet injection instance.')
+
+        c.argument('enable_planned_maintenance',
+                   arg_group='Planned Maintenance',
+                   action='store_true',
+                   validator=validate_planned_maintenance,
+                   is_preview=True,
+                   options_list=['--enable-planned-maintenance', '--enable-pm'],
+                   help='If set, enable planned maintenance for the instance.')
+        c.argument('planned_maintenance_day',
+                   arg_group='Planned Maintenance',
+                   arg_type=get_enum_type(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']),
+                   validator=validate_planned_maintenance,
+                   is_preview=True,
+                   options_list=['--planned-maintenance-day', '--pm-day'],
+                   help='Day of the week which planned maintenance will be scheduled on.')
+        c.argument('planned_maintenance_start_hour',
+                   arg_group='Planned Maintenance',
+                   type=int,
+                   validator=validate_planned_maintenance,
+                   is_preview=True,
+                   options_list=['--planned-maintenance-start-hour', '--pm-start-hour'],
+                   help='Start time of the planned maintenance window in UTC. Must be between 0 and 23.')
+
     for scope in ['spring create', 'spring update']:
         with self.argument_context(scope) as c:
             c.argument('tags', arg_type=tags_type)
@@ -258,6 +312,9 @@ def load_arguments(self, _):
     with self.argument_context('spring test-endpoint renew-key') as c:
         c.argument('type', type=str, arg_type=get_enum_type(
             TestKeyType), help='Type of test-endpoint key')
+
+    with self.argument_context('spring list-support-server-versions') as c:
+        c.argument('service', service_name_type, validator=not_support_enterprise)
 
     with self.argument_context('spring app') as c:
         c.argument('service', service_name_type)
@@ -307,6 +364,22 @@ def load_arguments(self, _):
                    nargs='+',
                    validator=validate_create_app_with_user_identity_or_warning,
                    help="Space-separated user-assigned managed identity resource IDs to assgin to an app.")
+        c.argument('bind_service_registry',
+                   action='store_true',
+                   options_list=['--bind-service-registry', '--bind-sr'],
+                   validator=validate_create_app_binding_default_service_registry,
+                   help='Bind the app to the default Service Registry automatically.')
+        c.argument('bind_application_configuration_service',
+                   action='store_true',
+                   options_list=['--bind-application-configuration-service', '--bind-acs'],
+                   validator=validate_create_app_binding_default_application_configuration_service,
+                   help='Bind the app to the default Application Configuration Service automatically.')
+        c.argument('bind_config_server',
+                   action='store_true',
+                   options_list=['--bind-config-server', '--bind-cs'],
+                   is_preview=True,
+                   validator=validate_create_app_binding_default_config_server,
+                   help='Bind the app to the default Config Server automatically.')
         c.argument('cpu', arg_type=cpu_type)
         c.argument('memory', arg_type=memory_type)
         c.argument('instance_count', type=int,
@@ -317,6 +390,11 @@ def load_arguments(self, _):
                    help='A json file path indicates the certificates which would be loaded to app')
         c.argument('deployment_name', default='default',
                    help='Name of the default deployment.', validator=validate_name)
+        c.argument('disable_test_endpoint_auth',
+                   arg_type=get_three_state_flag(),
+                   options_list=['--disable-test-endpoint-auth', '--disable-tea'],
+                   help="If true, disable authentication of the app's test endpoint.",
+                   default=False)
 
     with self.argument_context('spring app update') as c:
         c.argument('assign_endpoint', arg_type=get_three_state_flag(),
@@ -336,6 +414,10 @@ def load_arguments(self, _):
         c.argument('deployment', options_list=['--deployment', '-d'],
                    help='Name of an existing deployment of the app. Default to the production deployment if not specified.',
                    validator=fulfill_deployment_param_or_warning)
+        c.argument('disable_test_endpoint_auth',
+                   arg_type=get_three_state_flag(),
+                   options_list=['--disable-test-endpoint-auth', '--disable-tea'],
+                   help="If true, disable authentication of the app's test endpoint.")
 
     with self.argument_context('spring app append-persistent-storage') as c:
         c.argument('storage_name', type=str,
@@ -478,6 +560,10 @@ def load_arguments(self, _):
                        help="(Enterprise Tier Only) Config file patterns separated with \',\' to decide which patterns "
                             "of Application Configuration Service will be used. Use '\"\"' to clear existing configurations.",
                        validator=validate_config_file_patterns)
+            c.argument('custom_actuator_port', type=int,
+                       help='(Enterprise Tier Only) Custom actuator port for the app. Default to 8080.', validator=validate_custom_actuator_port)
+            c.argument('custom_actuator_path',
+                       help='(Enterprise Tier Only) Custom actuator path for the app. Default to "/actuator".', validator=validate_custom_actuator_path)
 
     with self.argument_context('spring app scale') as c:
         c.argument('cpu', arg_type=cpu_type)
@@ -490,7 +576,7 @@ def load_arguments(self, _):
                 'artifact_path', options_list=['--artifact-path',
                                                c.deprecate(target='--jar-path', redirect='--artifact-path', hide=True),
                                                c.deprecate(target='-p', redirect='--artifact-path', hide=True)],
-                help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_jar)
+                help='Deploy the specified pre-built artifact (jar, war or netcore zip, war is in public preview).', validator=validate_jar)
             c.argument(
                 'disable_validation', arg_type=get_three_state_flag(),
                 help='If true, disable jar validation.')
@@ -528,6 +614,7 @@ def load_arguments(self, _):
             c.argument('build_certificates', nargs='*',
                        help='(Enterprise Tier Only) Space-separated certificate names, the certificates are used during build time.',
                        validator=validate_build_cert_reference)
+            c.argument('server_version', help='(Standard and Basic Tiers Only) Tomcat server version. List all supported server versions by running `az spring list-support-server-versions -o table`. This feature is in public preview.', validator=validate_server_version)
 
     with self.argument_context('spring app deploy') as c:
         c.argument('source_path', arg_type=source_path_type, validator=validate_deloy_path)
@@ -620,6 +707,22 @@ def load_arguments(self, _):
         c.argument('config_file',
                    help='A yaml file path for the configuration of Spring Cloud config server')
 
+    with self.argument_context('spring config-server') as c:
+        c.argument('service', options_list=['--service', '-s', c.deprecate(target='--name', redirect='--service', hide=True),
+                                            c.deprecate(target='-n', redirect='-s', hide=True)],
+                   help="The name of Azure Spring Apps instance.")
+
+    for scope in ['bind', 'unbind', 'create', 'delete']:
+        with self.argument_context('spring config-server {}'.format(scope)) as c:
+            c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    for scope in ['bind', 'unbind']:
+        with self.argument_context('spring config-server {}'.format(scope)) as c:
+            c.argument('app', help='Name of app.', validator=validate_app_name)
+            c.argument('job',
+                       help='The name of job running in the specified Azure Spring Apps instance.',
+                       validator=validate_job_name_for_oss_config_server_bind)
+
     for scope in ['spring config-server git set', 'spring config-server git repo add', 'spring config-server git repo update']:
         with self.argument_context(scope) as c:
             c.argument('uri', help='Uri of the added config.')
@@ -676,6 +779,12 @@ def load_arguments(self, _):
                    help='If true, only import public certificate part from key vault.', default=False)
         c.argument('public_certificate_file', options_list=['--public-certificate-file', '-f'],
                    help='A file path for the public certificate to be uploaded')
+        c.argument('enable_auto_sync', arg_type=get_three_state_flag(),
+                   help='Whether to automatically synchronize certificate from key vault', default=False)
+
+    with self.argument_context('spring certificate update') as c:
+        c.argument('enable_auto_sync', arg_type=get_three_state_flag(),
+                   help='Whether to automatically synchronize certificate from key vault')
 
     with self.argument_context('spring certificate list') as c:
         c.argument('certificate_type', help='Type of uploaded certificate',
@@ -810,8 +919,12 @@ def load_arguments(self, _):
             c.argument('metadata_url', arg_group='Single Sign On (SSO)', help="The URI of Issuer Identifier.")
 
     for scope in ['bind', 'unbind']:
-        with self.argument_context('spring service-registry {}'.format(scope)) as c:
-            c.argument('app', app_name_type, help='Name of app.', validator=validate_app_name)
+        with self.argument_context(f'spring service-registry {scope}') as c:
+            c.argument('app', help='Name of app.', validator=validate_app_name)
+            c.argument('job',
+                       help='The name of job running in the specified Azure Spring Apps instance.',
+                       validator=validate_job_name_for_service_registry_bind,
+                       is_preview=True)
 
     for scope in ['bind', 'unbind']:
         with self.argument_context('spring application-configuration-service {}'.format(scope)) as c:
@@ -820,6 +933,10 @@ def load_arguments(self, _):
     for scope in ['create', 'update']:
         with self.argument_context('spring application-configuration-service {}'.format(scope)) as c:
             c.argument('generation', arg_type=get_enum_type(ConfigurationServiceGeneration), help='Generation of Application Configuration Service.')
+            c.argument('refresh_interval', type=int,
+                       validator=validate_refresh_interval,
+                       help='Specify the interval (in seconds) for refreshing the repository. '
+                            'Use 0 to turn off automatic refresh. An interval of at least 60 seconds is recommended.')
 
     for scope in ['add', 'update']:
         with self.argument_context('spring application-configuration-service git repo {}'.format(scope)) as c:
@@ -843,6 +960,13 @@ def load_arguments(self, _):
         with self.argument_context('spring application-configuration-service git repo {}'.format(scope)) as c:
             c.argument('name', help="Required unique name to label each item of git configs.")
 
+    with self.argument_context('spring application-configuration-service config show') as c:
+        c.argument('config_file_pattern',
+                   options_list=['--config-file-pattern', '--pattern'],
+                   help='Case sensitive. Set the config file pattern in the formats like {application} or {application}/{profile} '
+                        'instead of {application}-{profile}.yml')
+        c.argument('export_path', arg_type=acs_configs_export_path_type)
+
     for scope in ['gateway create', 'api-portal create']:
         with self.argument_context('spring {}'.format(scope)) as c:
             c.argument('instance_count', type=int, help='Number of instance.')
@@ -856,6 +980,7 @@ def load_arguments(self, _):
             c.argument('client_id', arg_group='Single Sign On (SSO)', help="The public identifier for the application.")
             c.argument('client_secret', arg_group='Single Sign On (SSO)', help="The secret known only to the application and the authorization server.")
             c.argument('issuer_uri', arg_group='Single Sign On (SSO)', help="The URI of Issuer Identifier.")
+            c.argument('enable_api_try_out', arg_type=get_three_state_flag(), arg_group='Try out API', help="Try out the API by sending requests and viewing responses in API portal.")
 
     with self.argument_context('spring gateway update') as c:
         c.argument('cpu', type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.')
@@ -865,7 +990,7 @@ def load_arguments(self, _):
         c.argument('api_doc_location', arg_group='API metadata', help="Location of additional documentation for the APIs available on the Gateway instance.")
         c.argument('api_version', arg_group='API metadata', help="Version of APIs available on this Gateway instance.")
         c.argument('server_url', arg_group='API metadata', help="Base URL that API consumers will use to access APIs on the Gateway instance.")
-        c.argument('apm_types', nargs='*',
+        c.argument('apm_types', nargs='*', arg_group='APM',
                    help="Space-separated list of APM integrated with Gateway. Allowed values are: " + ', '.join(list(ApmType)))
         c.argument('properties', nargs='*',
                    help='Non-sensitive properties for environment variables. Format "key[=value]" and separated by space.')
@@ -891,6 +1016,25 @@ def load_arguments(self, _):
         c.argument('certificate_names', arg_group='Client Certificate Authentication', help="Comma-separated list of certificate names in Azure Spring Apps.")
         c.argument('addon_configs_json', arg_group='Add-on Configurations', help="JSON string of add-on configurations.")
         c.argument('addon_configs_file', arg_group='Add-on Configurations', help="The file path of JSON string of add-on configurations.")
+        c.argument('apms', arg_group='APM', nargs='*',
+                   help="Space-separated list of APM reference names in Azure Spring Apps to integrate with Gateway.")
+        c.argument('enable_response_cache',
+                   arg_type=get_three_state_flag(),
+                   arg_group='Response Cache',
+                   help='Enable response cache settings in Spring Cloud Gateway'
+                   )
+        c.argument('response_cache_scope',
+                   arg_group='Response Cache',
+                   help='Scope for response cache, available values are [Route, Instance]'
+                   )
+        c.argument('response_cache_size',
+                   arg_group='Response Cache',
+                   help='Maximum size of the cache that determines whether the cache needs to evict some entries. Examples are [1GB, 10MB, 100KB]. Use "default" to reset, and Gateway will manage this property.'
+                   )
+        c.argument('response_cache_ttl',
+                   arg_group='Response Cache',
+                   help='Time before a cached entry expires. Examples are [1h, 30m, 50s]. Use "default" to reset, and Gateway will manage this property.'
+                   )
 
     for scope in ['spring gateway custom-domain',
                   'spring api-portal custom-domain']:
@@ -1012,16 +1156,18 @@ def load_arguments(self, _):
     for scope in ['spring application-accelerator customized-accelerator create',
                   'spring application-accelerator customized-accelerator update']:
         with self.argument_context(scope) as c:
-            c.argument('display_name', type=str, help='Display name for customized accelerator.')
-            c.argument('description', type=str, help='Description for customized accelerator.')
-            c.argument('icon_url', type=str, help='Icon url for customized accelerator.')
-            c.argument('accelerator_tags', type=str, help="Comma-separated list of tags on the customized accelerator.")
+            c.argument('display_name', help='Display name for customized accelerator.')
+            c.argument('description', help='Description for customized accelerator.')
+            c.argument('icon_url', help='Icon url for customized accelerator.')
+            c.argument('accelerator_tags', help="Comma-separated list of tags on the customized accelerator.")
+            c.argument('type', help='Type of customized accelerator.', arg_type=get_enum_type(CustomizedAcceleratorType))
 
             c.argument('git_url', help='Git URL', validator=validate_acc_git_url)
+            c.argument('git_sub_path', help='Folder path inside the git repository to consider as the root of the accelerator or fragment.')
             c.argument('git_interval', type=int, help='Interval in seconds for checking for updates to Git or image repository.', validator=validate_git_interval)
-            c.argument('git_branch', type=str, help='Git repository branch to be used.', validator=validate_acc_git_refs)
-            c.argument('git_commit', type=str, help='Git repository commit to be used.', validator=validate_acc_git_refs)
-            c.argument('git_tag', type=str, help='Git repository tag to be used.', validator=validate_acc_git_refs)
+            c.argument('git_branch', help='Git repository branch to be used.', validator=validate_acc_git_refs)
+            c.argument('git_commit', help='Git repository commit to be used.', validator=validate_acc_git_refs)
+            c.argument('git_tag', help='Git repository tag to be used.', validator=validate_acc_git_refs)
 
             c.argument('ca_cert_name', help='CA certificate name.')
             c.argument('username', help='Username of git repository basic auth.')
@@ -1029,3 +1175,137 @@ def load_arguments(self, _):
             c.argument('private_key', help='Private SSH Key algorithm of git repository.')
             c.argument('host_key', help='Public SSH Key of git repository.')
             c.argument('host_key_algorithm', help='SSH Key algorithm of git repository.')
+
+    for scope in ['spring component']:
+        with self.argument_context(scope) as c:
+            c.argument('service', service_name_type)
+
+    def prepare_common_logs_argument(c):
+        c.argument('follow',
+                   options_list=['--follow ', '-f'],
+                   help='The flag to indicate logs should be streamed.',
+                   action='store_true')
+        c.argument('lines',
+                   type=int,
+                   help='Number of lines to show. Maximum is 10000.')
+        c.argument('since',
+                   help='Only return logs newer than a relative duration like 5s, 2m, or 1h. Maximum is 1h')
+        c.argument('limit',
+                   type=int,
+                   help='Maximum kibibyte of logs to return. Ceiling number is 2048.')
+
+    with self.argument_context('spring component logs') as c:
+        c.argument('name', options_list=['--name', '-n'],
+                   help="Name of the component. Find component names from command `az spring component list`")
+        c.argument('all_instances',
+                   help='The flag to indicate get logs for all instances of the component.',
+                   action='store_true')
+        c.argument('instance',
+                   options_list=['--instance', '-i'],
+                   help='Name of an existing instance of the component.')
+        c.argument('max_log_requests',
+                   type=int,
+                   help="Specify maximum number of concurrent logs to follow when get logs by all-instances.")
+        prepare_common_logs_argument(c)
+
+    with self.argument_context('spring component instance') as c:
+        c.argument('component', options_list=['--component', '-c'],
+                   help="Name of the component. Find components from command `az spring component list`")
+
+    with self.argument_context('spring job list') as c:
+        c.argument('service', service_name_type, validator=only_support_enterprise)
+
+    for scope in ['job create', 'job update', 'job deploy', 'job start', 'job show', 'job delete']:
+        with self.argument_context(f"spring {scope}") as c:
+            c.argument('service', service_name_type, validator=only_support_enterprise)
+            c.argument('name', name_type, help='The name of job running in the specified Azure Spring Apps instance.')
+
+    with self.argument_context('spring job create') as c:
+        c.argument('bind_service_registry',
+                   action='store_true',
+                   options_list=['--bind-service-registry', '--bind-sr'],
+                   help='Bind the job to the default Service Registry automatically.')
+        c.argument('bind_config_server',
+                   action='store_true',
+                   options_list=['--bind-config-server', '--bind-cs'],
+                   help='Bind the job to the default Config Server automatically.')
+
+    with self.argument_context('spring job deploy') as c:
+        c.argument('builder', help='(Enterprise Tier Only) Build service builder used to build the executable.', default='default')
+        c.argument('build_env', build_env_type)
+        c.argument('build_cpu', arg_type=build_cpu_type, default="1")
+        c.argument('build_memory', arg_type=build_memory_type, default="2Gi")
+        c.argument('source_path', arg_type=source_path_type, validator=validate_path_exist)
+        c.argument('artifact_path', help='Deploy the specified pre-built artifact (jar or netcore zip).', validator=validate_path_exist)
+        c.argument('disable_validation', arg_type=get_three_state_flag(), help='If true, disable jar validation.')
+
+    for scope in ['job create', 'job update', 'job deploy', 'job start']:
+        with self.argument_context(f"spring {scope}") as c:
+            c.argument('cpu', type=str, help='CPU resource quantity. Should be 500m or number of CPU cores.')
+            c.argument('memory', type=str, help='Memory resource quantity. Should be 512Mi or #Gi, e.g., 1Gi, 3Gi.')
+            c.argument('envs', nargs='*',
+                       help='Non-sensitive properties for environment variables. Format "key[=value]" and separated by space.')
+            c.argument('secret_envs', nargs='*',
+                       help='Sensitive properties for environment variables. Once put, it will be encrypted and not returned.'
+                            'Format "key[=value]" and separated by space.')
+            c.argument('args', help='The arguments of the job execution.')
+
+    job_parallelism_help = 'Maximum number of replicas to run per execution'
+    retry_limit_help = 'Maximum number of retries before failing the job.'
+
+    with self.argument_context('spring job create') as c:
+        c.argument('parallelism', type=int, help=job_parallelism_help)
+        c.argument('timeout', type=int, help='Maximum number of seconds an execution is allowed to run.')
+        c.argument('retry_limit', type=int, help=retry_limit_help)
+
+    for scope in ['spring job update', 'spring job deploy']:
+        with self.argument_context(scope) as c:
+            c.argument('parallelism', type=int, help=job_parallelism_help)
+            c.argument('timeout', type=int,
+                       help=f'Maximum number of seconds an execution is allowed to run. You can use {JOB_TIMEOUT_RESET_VALUE} to reset timeout.')
+            c.argument('retry_limit', type=int, help=retry_limit_help)
+
+    with self.argument_context('spring job deploy') as c:
+        c.argument('version', help='Deployment version, keep unchanged if not set.')
+
+    with self.argument_context('spring job start') as c:
+        c.argument('wait_until_finished', help='If true, wait until the job execution is finished.', arg_type=get_three_state_flag(), default=False)
+
+    with self.argument_context('spring job logs') as c:
+        c.argument('service', service_name_type)
+        c.argument('name', name_type, help='The name of the job running in the specified Azure Spring Apps instance.')
+        c.argument('execution', help='the name of the job execution.')
+        c.argument('all_instances',
+                   help='The flag to indicate get logs for all instances of the job execution.',
+                   action='store_true')
+        c.argument('instance',
+                   options_list=['--instance', '-i'],
+                   help='Name of an existing instance of the job execution. Find instance names from command `az spring job execution instance list`.')
+        c.argument('max_log_requests',
+                   type=int,
+                   help="Specify maximum number of concurrent logs to follow when get logs by all-instances.")
+        prepare_common_logs_argument(c)
+
+    for scope in ['job execution list', 'job execution show', 'job execution cancel']:
+        with self.argument_context(f"spring {scope}") as c:
+            c.argument('service', service_name_type)
+            c.argument('job', help='The name of job running in the specified Azure Spring Apps instance.')
+
+    for scope in ['job execution show', 'job execution cancel']:
+        with self.argument_context(f"spring {scope}") as c:
+            c.argument('name', name_type,
+                       help='The name of job execution running in the specified Azure Spring Apps instance.')
+
+    with self.argument_context('spring job execution instance list') as c:
+        c.argument('service', service_name_type)
+        c.argument('execution', help='the name of the job execution.')
+        c.argument('job', help='The name of job running in the specified Azure Spring Apps instance.')
+
+    with self.argument_context('spring private-dns-zone add') as c:
+        c.argument('service', service_name_type)
+        c.argument('zone_id', help='The resource id of the private DNS zone which you would like to configure with the service instance.')
+    with self.argument_context('spring private-dns-zone update') as c:
+        c.argument('service', service_name_type)
+        c.argument('zone_id', help='The resource id of the private DNS zone which you would like to configure with the service instance.')
+    with self.argument_context('spring private-dns-zone clean') as c:
+        c.argument('service', service_name_type)

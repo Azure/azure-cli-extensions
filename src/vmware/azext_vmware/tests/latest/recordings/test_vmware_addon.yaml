@@ -1,8 +1,8 @@
 interactions:
 - request:
-    body: '{"location": "northcentralus", "sku": {"name": "av20"}, "identity": {"type":
-      "None"}, "properties": {"managementCluster": {"clusterSize": 4}, "internet":
-      "Disabled", "networkBlock": "192.168.48.0/22"}}'
+    body: '{"identity": {"type": "None"}, "location": "northcentralus", "properties":
+      {"internet": "Disabled", "managementCluster": {"clusterSize": 4}, "networkBlock":
+      "192.168.48.0/22"}, "sku": {"name": "av20"}}'
     headers:
       Accept:
       - application/json
@@ -19,19 +19,27 @@ interactions:
       ParameterSetName:
       - -g -n --location --sku --cluster-size --network-block --accept-eula
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1?api-version=2022-05-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","location":"eastus2","tags":{},"sku":{"name":"AV36"},"properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1","name":"cloud1","type":"Microsoft.AVS/privateClouds","tags":{},"location":"eastus2","properties":{"managementCluster":{"clusterSize":4,"clusterId":1,"hosts":["fakehost18.nyc1.kubernetes.center","fakehost19.nyc1.kubernetes.center","fakehost20.nyc1.kubernetes.center","fakehost21.nyc1.kubernetes.center"]},"internet":"Disabled","identitySources":[{"name":"group1","alias":"groupAlias","domain":"domain1","baseUserDN":"ou=baseUser","baseGroupDN":"ou=baseGroup","primaryServer":"ldaps://1.1.1.1:636/","secondaryServer":"ldaps://1.1.1.2:636/","ssl":"Enabled"}],"availability":{"strategy":"SingleZone","zone":1},"provisioningState":"Succeeded","circuit":{"primarySubnet":"192.168.53.0/30","secondarySubnet":"192.168.53.4/30","expressRouteID":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2/providers/Microsoft.Network/expressroutecircuits/tnt13-41a90db2-9d5e-4bd5-a77a-5ce7b58213d6-eastus2-xconnect"},"endpoints":{"nsxtManager":"https://192.168.50.3/","vcsa":"https://192.168.50.2/"},"networkBlock":"192.168.48.0/22","externalCloudLinks":["/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mygroup/providers/Microsoft.AVS/privateClouds/cloud2"]},"sku":{"name":"AV36"}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '1377'
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:53:27 GMT
+      - Fri, 28 Jun 2024 20:04:30 GMT
       server:
       - Rocket
     status:
@@ -51,19 +59,27 @@ interactions:
       ParameterSetName:
       - -g -c
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons?api-version=2022-05-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons?api-version=2023-09-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded","licenseKey":"41915178-A8FF-4A4D-B683-6D735AF5E3F5"}}]}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '272'
+      - '324'
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:53:29 GMT
+      - Fri, 28 Jun 2024 20:04:32 GMT
       server:
       - Rocket
     status:
@@ -87,19 +103,67 @@ interactions:
       ParameterSetName:
       - -g -c --vrs-count
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/vr?api-version=2022-05-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/vr?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/arc","name":"arc","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"Arc","provisioningState":"Succeeded","vCenter":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg_test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/test-vcenter"}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '260'
+      - '411'
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:53:31 GMT
+      - Fri, 28 Jun 2024 20:04:35 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware addon vr update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -c --vrs-count
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/vr?api-version=2023-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/arc","name":"arc","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"Arc","provisioningState":"Succeeded","vCenter":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg_test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/test-vcenter"}}'
+    headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '411'
+      content-type:
+      - application/json
+      date:
+      - Fri, 28 Jun 2024 20:04:37 GMT
       server:
       - Rocket
     status:
@@ -123,19 +187,27 @@ interactions:
       ParameterSetName:
       - -g -c --vrs-count
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/vr?api-version=2022-05-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/vr?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/arc","name":"arc","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"Arc","provisioningState":"Succeeded","vCenter":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg_test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/test-vcenter"}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '260'
+      - '411'
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:53:34 GMT
+      - Fri, 28 Jun 2024 20:04:37 GMT
       server:
       - Rocket
     status:
@@ -155,19 +227,27 @@ interactions:
       ParameterSetName:
       - -g -c
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons?api-version=2022-05-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons?api-version=2023-09-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded","licenseKey":"41915178-A8FF-4A4D-B683-6D735AF5E3F5"}}]}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '272'
+      - '324'
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:53:36 GMT
+      - Fri, 28 Jun 2024 20:04:40 GMT
       server:
       - Rocket
     status:
@@ -187,19 +267,27 @@ interactions:
       ParameterSetName:
       - -g -c
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/vr?api-version=2022-05-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/vr?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/arc","name":"arc","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"Arc","provisioningState":"Succeeded","vCenter":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg_test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/test-vcenter"}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '260'
+      - '411'
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:53:38 GMT
+      - Fri, 28 Jun 2024 20:04:42 GMT
       server:
       - Rocket
     status:
@@ -209,7 +297,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -221,17 +309,27 @@ interactions:
       ParameterSetName:
       - -g -c --yes
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: DELETE
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/vr?api-version=2022-05-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/vr?api-version=2023-09-01
   response:
     body:
       string: ''
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '0'
+      content-type:
+      - application/json
       date:
-      - Mon, 17 Oct 2022 15:53:40 GMT
+      - Fri, 28 Jun 2024 20:04:44 GMT
       server:
       - Rocket
     status:
@@ -251,19 +349,27 @@ interactions:
       ParameterSetName:
       - -g -c
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons?api-version=2022-05-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons?api-version=2023-09-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded","licenseKey":"41915178-A8FF-4A4D-B683-6D735AF5E3F5"}}]}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '272'
+      - '324'
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:53:43 GMT
+      - Fri, 28 Jun 2024 20:04:47 GMT
       server:
       - Rocket
     status:
@@ -287,19 +393,67 @@ interactions:
       ParameterSetName:
       - -g -c --license-key
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/srm?api-version=2022-05-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/srm?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/arc","name":"arc","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"Arc","provisioningState":"Succeeded","vCenter":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg_test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/test-vcenter"}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '260'
+      - '411'
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:53:45 GMT
+      - Fri, 28 Jun 2024 20:04:49 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware addon srm update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -c --license-key
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/srm?api-version=2023-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/arc","name":"arc","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"Arc","provisioningState":"Succeeded","vCenter":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg_test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/test-vcenter"}}'
+    headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '411'
+      content-type:
+      - application/json
+      date:
+      - Fri, 28 Jun 2024 20:04:52 GMT
       server:
       - Rocket
     status:
@@ -323,19 +477,27 @@ interactions:
       ParameterSetName:
       - -g -c --license-key
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/srm?api-version=2022-05-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/srm?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/arc","name":"arc","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"Arc","provisioningState":"Succeeded","vCenter":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg_test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/test-vcenter"}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '260'
+      - '411'
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:53:47 GMT
+      - Fri, 28 Jun 2024 20:04:52 GMT
       server:
       - Rocket
     status:
@@ -355,19 +517,27 @@ interactions:
       ParameterSetName:
       - -g -c
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons?api-version=2022-05-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons?api-version=2023-09-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded","licenseKey":"41915178-A8FF-4A4D-B683-6D735AF5E3F5"}}]}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '272'
+      - '324'
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:53:49 GMT
+      - Fri, 28 Jun 2024 20:04:54 GMT
       server:
       - Rocket
     status:
@@ -387,19 +557,27 @@ interactions:
       ParameterSetName:
       - -g -c
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/srm?api-version=2022-05-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/srm?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/arc","name":"arc","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"Arc","provisioningState":"Succeeded","vCenter":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg_test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/test-vcenter"}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '260'
+      - '411'
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:53:51 GMT
+      - Fri, 28 Jun 2024 20:04:56 GMT
       server:
       - Rocket
     status:
@@ -409,7 +587,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -421,17 +599,27 @@ interactions:
       ParameterSetName:
       - -g -c --yes
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: DELETE
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/srm?api-version=2022-05-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/srm?api-version=2023-09-01
   response:
     body:
       string: ''
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '0'
+      content-type:
+      - application/json
       date:
-      - Mon, 17 Oct 2022 15:53:54 GMT
+      - Fri, 28 Jun 2024 20:04:59 GMT
       server:
       - Rocket
     status:
@@ -455,55 +643,27 @@ interactions:
       ParameterSetName:
       - -g -c --offer
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/hcx?api-version=2022-05-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/hcx?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/arc","name":"arc","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"Arc","provisioningState":"Succeeded","vCenter":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg_test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/test-vcenter"}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '260'
+      - '411'
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:53:56 GMT
-      server:
-      - Rocket
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"properties": {"addonType": "HCX", "offer": "offerId"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - vmware addon hcx update
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '56'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - -g -c --offer
-      User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
-    method: PUT
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/hcx?api-version=2022-05-01
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}'
-    headers:
-      content-length:
-      - '260'
-      content-type:
-      - application/json
-      date:
-      - Mon, 17 Oct 2022 15:53:58 GMT
+      - Fri, 28 Jun 2024 20:05:01 GMT
       server:
       - Rocket
     status:
@@ -523,19 +683,27 @@ interactions:
       ParameterSetName:
       - -g -c
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/hcx?api-version=2022-05-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/hcx?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/arc","name":"arc","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"Arc","provisioningState":"Succeeded","vCenter":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg_test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/test-vcenter"}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '260'
+      - '411'
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:54:00 GMT
+      - Fri, 28 Jun 2024 20:05:04 GMT
       server:
       - Rocket
     status:
@@ -545,7 +713,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -557,17 +725,27 @@ interactions:
       ParameterSetName:
       - -g -c --yes
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: DELETE
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/hcx?api-version=2022-05-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/hcx?api-version=2023-09-01
   response:
     body:
       string: ''
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '0'
+      content-type:
+      - application/json
       date:
-      - Mon, 17 Oct 2022 15:54:03 GMT
+      - Fri, 28 Jun 2024 20:05:07 GMT
       server:
       - Rocket
     status:
@@ -591,19 +769,67 @@ interactions:
       ParameterSetName:
       - -g -c --vcenter
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/arc?api-version=2022-05-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/arc?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/arc","name":"arc","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"Arc","provisioningState":"Succeeded","vCenter":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg_test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/test-vcenter"}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '260'
+      - '411'
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:54:05 GMT
+      - Fri, 28 Jun 2024 20:05:09 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware addon arc update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -c --vcenter
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/arc?api-version=2023-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/arc","name":"arc","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"Arc","provisioningState":"Succeeded","vCenter":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg_test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/test-vcenter"}}'
+    headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '411'
+      content-type:
+      - application/json
+      date:
+      - Fri, 28 Jun 2024 20:05:12 GMT
       server:
       - Rocket
     status:
@@ -627,19 +853,27 @@ interactions:
       ParameterSetName:
       - -g -c --vcenter
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/arc?api-version=2022-05-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/arc?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/arc","name":"arc","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"Arc","provisioningState":"Succeeded","vCenter":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg_test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/test-vcenter"}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '260'
+      - '411'
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:54:07 GMT
+      - Fri, 28 Jun 2024 20:05:12 GMT
       server:
       - Rocket
     status:
@@ -659,19 +893,27 @@ interactions:
       ParameterSetName:
       - -g -c
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/arc?api-version=2022-05-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/arc?api-version=2023-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/arc","name":"arc","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"Arc","provisioningState":"Succeeded","vCenter":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg_test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/test-vcenter"}}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '260'
+      - '411'
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:54:09 GMT
+      - Fri, 28 Jun 2024 20:05:15 GMT
       server:
       - Rocket
     status:
@@ -681,7 +923,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -693,17 +935,27 @@ interactions:
       ParameterSetName:
       - -g -c --yes
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: DELETE
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/arc?api-version=2022-05-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/arc?api-version=2023-09-01
   response:
     body:
       string: ''
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
       - '0'
+      content-type:
+      - application/json
       date:
-      - Mon, 17 Oct 2022 15:54:12 GMT
+      - Fri, 28 Jun 2024 20:05:17 GMT
       server:
       - Rocket
     status:
@@ -723,19 +975,27 @@ interactions:
       ParameterSetName:
       - -g -c
       User-Agent:
-      - AZURECLI/2.27.1 azsdk-python-mgmt-avs/1.0.0b1 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons?api-version=2022-05-01
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons?api-version=2023-09-01
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/srm","name":"srm","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"SRM","provisioningState":"Succeeded","licenseKey":"41915178-A8FF-4A4D-B683-6D735AF5E3F5"}}]}'
     headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
       content-length:
-      - '272'
+      - '324'
       content-type:
       - application/json
       date:
-      - Mon, 17 Oct 2022 15:54:14 GMT
+      - Fri, 28 Jun 2024 20:05:20 GMT
       server:
       - Rocket
     status:

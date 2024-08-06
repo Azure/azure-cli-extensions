@@ -62,7 +62,7 @@ def _fill_defaults_for_pod_identity_exceptions(pod_identity_exceptions):
             # which will be converted to `None` in response. This behavior will break the extension
             # when using 2021-10-01 version. As a workaround, we always back fill the empty dict value
             # before sending to the server side.
-            exc.pod_labels = dict()
+            exc.pod_labels = {}
 
 
 def _fill_defaults_for_pod_identity_profile(pod_identity_profile):
@@ -115,8 +115,7 @@ def _ensure_managed_identity_operator_permission(cmd, instance, scope):
     elif instance.identity.type.lower() == 'systemassigned':
         cluster_identity_object_id = instance.identity.principal_id
     else:
-        raise CLIError('unsupported identity type: {}'.format(
-            instance.identity.type))
+        raise CLIError(f"unsupported identity type: {instance.identity.type}")
     if cluster_identity_object_id is None:
         raise CLIError('unable to resolve cluster identity')
 
@@ -126,7 +125,7 @@ def _ensure_managed_identity_operator_permission(cmd, instance, scope):
     scope = scope.lower()
 
     # list all assignments of the target identity (scope) that assigned to the cluster identity
-    filter_query = "atScope() and assignedTo('{}')".format(cluster_identity_object_id)
+    filter_query = f"atScope() and assignedTo('{cluster_identity_object_id}')"
     for i in assignments_client.list_for_scope(scope=scope, filter=filter_query):
         if not i.role_definition_id.lower().endswith(CONST_MANAGED_IDENTITY_OPERATOR_ROLE_ID):
             continue
@@ -140,7 +139,7 @@ def _ensure_managed_identity_operator_permission(cmd, instance, scope):
             continue
 
         # already assigned
-        logger.debug('Managed Identity Opereator role has been assigned to {}'.format(i.scope))
+        logger.debug('Managed Identity Opereator role has been assigned to %s', i.scope)
         return
 
     if not add_role_assignment(cmd, CONST_MANAGED_IDENTITY_OPERATOR_ROLE, cluster_identity_object_id,

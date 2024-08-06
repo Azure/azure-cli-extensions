@@ -6,20 +6,29 @@
 import os
 import time
 
+from azure.cli.command_modules.containerapp._utils import format_location
+from msrestazure.tools import parse_resource_id
+
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, live_only, StorageAccountPreparer)
-from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
+from .common import (write_test_file, clean_up_test_file, TEST_LOCATION, STAGE_LOCATION)
+from .utils import create_containerapp_env, prepare_containerapp_env_for_app_e2e_tests
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
-from azext_containerapp.tests.latest.common import TEST_LOCATION
-from .utils import create_containerapp_env
 
-class ContainerAppJobsExecutionsTest(ScenarioTest):
+class ContainerAppJobsExecutionsLocationNotInStageTest(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     def test_containerappjob_create_with_yaml(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
         env = self.create_random_name(prefix='env', length=24)
         job = self.create_random_name(prefix='yaml', length=24)
@@ -27,11 +36,11 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
         share = self.create_random_name(prefix='share', length=24)
 
         self.cmd(
-            f'az storage account create --resource-group {resource_group}  --name {storage} --location {TEST_LOCATION} --kind StorageV2 --sku Standard_LRS --enable-large-file-share --output none')
+            f'az storage account create --resource-group {resource_group}  --name {storage} --location {location} --kind StorageV2 --sku Standard_LRS --enable-large-file-share --output none')
         self.cmd(
             f'az storage share-rm create --resource-group {resource_group}  --storage-account {storage} --name {share} --quota 1024 --enabled-protocols SMB --output none')
 
-        create_containerapp_env(self, env, resource_group)
+        create_containerapp_env(self, env, resource_group, location)
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
         account_key = self.cmd(f'az storage account keys list -g {resource_group} -n {storage} --query "[0].value" '
@@ -45,7 +54,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
 
         # test job create with yaml
         containerappjob_yaml_text = f"""
-            location: {TEST_LOCATION}
+            location: {location}
             properties:
                 environmentId: {containerapp_env["id"]}
                 configuration:
@@ -58,7 +67,9 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
                     replicaRetryLimit: 1
                     replicaTimeout: 100
                     scheduleTriggerConfig: null
-                    secrets: null
+                    secrets:
+                    - name: secret1
+                      value: 1
                     triggerType: Manual
                 template:
                     containers:
@@ -132,6 +143,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
             JMESPathCheck("properties.configuration.triggerType", "Manual", case_sensitive=False),
             JMESPathCheck('properties.configuration.replicaTimeout', 100),
             JMESPathCheck('properties.configuration.replicaRetryLimit', 1),
+            JMESPathCheck("length(properties.configuration.secrets)", 1),
             JMESPathCheck('properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
             JMESPathCheck('properties.template.containers[0].resources.cpu', "0.5"),
             JMESPathCheck('properties.template.containers[0].resources.memory', "1Gi"),
@@ -155,7 +167,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
 
         # test container app job update with yaml
         containerappjob_yaml_text = f"""
-            location: {TEST_LOCATION}
+            location: {location}
             properties:
                 environmentId: {containerapp_env["id"]}
                 configuration:
@@ -168,7 +180,10 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
                     replicaRetryLimit: 1
                     replicaTimeout: 200
                     scheduleTriggerConfig: null
-                    secrets: null
+                    secrets:
+                    - name: secret1
+                    - name: secret2
+                      value: 123
                     triggerType: Manual
                 template:
                     containers:
@@ -219,6 +234,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
             JMESPathCheck("properties.configuration.triggerType", "Manual", case_sensitive=False),
             JMESPathCheck('properties.configuration.replicaTimeout', 200),
             JMESPathCheck('properties.configuration.replicaRetryLimit', 1),
+            JMESPathCheck("length(properties.configuration.secrets)", 2),
             JMESPathCheck('properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
             JMESPathCheck('properties.template.containers[0].resources.cpu', "0.75"),
             JMESPathCheck('properties.template.containers[0].resources.memory', "1.5Gi"),
@@ -229,6 +245,16 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
             JMESPathCheck('properties.template.containers[0].volumeMounts[0].subPath', 'sub2'),
             JMESPathCheck('properties.template.containers[0].volumeMounts[0].mountPath', '/mnt/data'),
             JMESPathCheck('properties.template.containers[0].volumeMounts[0].volumeName', 'azure-files-volume'),
+        ])
+
+        self.cmd(f'containerapp job secret show -g {resource_group} -n {job} --secret-name secret1', checks=[
+            JMESPathCheck("name", 'secret1'),
+            JMESPathCheck("value", '1'),
+        ])
+
+        self.cmd(f'containerapp job secret show -g {resource_group} -n {job} --secret-name secret2', checks=[
+            JMESPathCheck("name", 'secret2'),
+            JMESPathCheck("value", '123'),
         ])
 
         # wait for provisioning state of job to be succeeded before updating
@@ -258,13 +284,18 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     def test_containerappjob_eventtriggered_create_with_yaml(self, resource_group):
-        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
 
-        env = self.create_random_name(prefix='env', length=24)
         job = self.create_random_name(prefix='yaml', length=24)
 
-        create_containerapp_env(self, env, resource_group)
-        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self, location)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(env_rg, env_name)).get_output_in_json()
 
         user_identity_name = self.create_random_name(prefix='containerapp-user', length=24)
         user_identity = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
@@ -272,7 +303,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
 
         # test job create with yaml
         containerappjob_yaml_text = f"""
-            location: {TEST_LOCATION}
+            location: {location}
             properties:
                 environmentId: {containerapp_env["id"]}
                 configuration:
@@ -341,7 +372,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
         containerappjob_file_name = f"{self._testMethodName}_containerappjob.yml"
 
         write_test_file(containerappjob_file_name, containerappjob_yaml_text)
-        self.cmd(f'containerapp job create -n {job} -g {resource_group} --environment {env} --yaml {containerappjob_file_name}')
+        self.cmd(f'containerapp job create -n {job} -g {resource_group} --environment {env_id} --yaml {containerappjob_file_name}')
 
         self.cmd(f'containerapp job show -g {resource_group} -n {job}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
@@ -371,7 +402,7 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
 
         # test container app job update with yaml
         containerappjob_yaml_text = f"""
-            location: {TEST_LOCATION}
+            location: {location}
             properties:
                 environmentId: {containerapp_env["id"]}
                 configuration:
@@ -379,8 +410,8 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
                         replicaCompletionCount: 2
                         parallelism: 2
                         scale:
-                            minExecutions: 1
-                            maxExecutions: 9
+                            minExecutions: 5
+                            maxExecutions: 95
                             rules:
                             - name: github-runner-testv2
                               type: github-runner
@@ -411,11 +442,177 @@ class ContainerAppJobsExecutionsTest(ScenarioTest):
             JMESPathCheck('properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
             JMESPathCheck('properties.configuration.eventTriggerConfig.replicaCompletionCount', 2),
             JMESPathCheck('properties.configuration.eventTriggerConfig.parallelism', 2),
-            JMESPathCheck('properties.configuration.eventTriggerConfig.scale.minExecutions', 1),
-            JMESPathCheck('properties.configuration.eventTriggerConfig.scale.maxExecutions', 9),
+            JMESPathCheck('properties.configuration.eventTriggerConfig.scale.minExecutions', 5),
+            JMESPathCheck('properties.configuration.eventTriggerConfig.scale.maxExecutions', 95),
             JMESPathCheck('properties.configuration.eventTriggerConfig.scale.rules[0].name', "github-runner-testv2"),
             JMESPathCheck('properties.configuration.eventTriggerConfig.scale.rules[0].metadata.runnerScope', "repo"),
             JMESPathCheck('properties.configuration.eventTriggerConfig.scale.rules[0].metadata.owner', "test_org_1"),
             JMESPathCheck('properties.configuration.eventTriggerConfig.scale.rules[0].auth[0].secretRef', "personal-access-token"),
+        ])
+        clean_up_test_file(containerappjob_file_name)
+
+
+class ContainerAppJobsExecutionsTest(ScenarioTest):
+    def __init__(self, *arg, **kwargs):
+        super().__init__(*arg, random_config_dir=True, **kwargs)
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northcentralus")
+    def test_containerappjob_create_with_environment_id(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env1 = self.create_random_name(prefix='env1', length=24)
+        env2 = self.create_random_name(prefix='env2', length=24)
+        job1 = self.create_random_name(prefix='yaml1', length=24)
+
+        create_containerapp_env(self, env1, resource_group)
+        containerapp_env1 = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env1)).get_output_in_json()
+
+        create_containerapp_env(self, env2, resource_group)
+        containerapp_env2 = self.cmd(
+            'containerapp env show -g {} -n {}'.format(resource_group, env2)).get_output_in_json()
+
+        # the value in --yaml is used, warning for different value in --environmentId
+        containerappjob_yaml_text = f"""
+                location: {TEST_LOCATION}
+                properties:
+                    environmentId: {containerapp_env1["id"]}
+                    configuration:
+                        dapr: null
+                        eventTriggerConfig: null
+                        manualTriggerConfig:
+                            parallelism: 1
+                            replicaCompletionCount: 1
+                        registries: null
+                        replicaRetryLimit: 1
+                        replicaTimeout: 100
+                        scheduleTriggerConfig: null
+                        secrets: null
+                        triggerType: Manual
+                    template:
+                        containers:
+                        - env:
+                            - name: MY_ENV_VAR
+                              value: hello
+                          image: mcr.microsoft.com/k8se/quickstart-jobs:latest
+                          name: anfranci-azclitest-acaj1
+                          resources:
+                            cpu: 0.5
+                            ephemeralStorage: 1Gi
+                            memory: 1Gi
+                        initContainers:
+                        - command:
+                            - /bin/sh
+                            - -c
+                            - sleep 150
+                          image: k8seteste2e.azurecr.io/e2e-apps/kuar:green
+                          name: simple-sleep-container
+                          probes:
+                          - type: liveness
+                            httpGet:
+                                path: "/health"
+                                port: 8080
+                                httpHeaders:
+                                    - name: "Custom-Header"
+                                      value: "liveness probe"
+                            initialDelaySeconds: 7
+                            periodSeconds: 3
+                            resources:
+                                cpu: "0.25"
+                                memory: 0.5Gi
+                    workloadProfileName: null
+                """
+        containerappjob_file_name = f"{self._testMethodName}_containerappjob.yml"
+
+        write_test_file(containerappjob_file_name, containerappjob_yaml_text)
+        self.cmd(
+            f'containerapp job create -n {job1} -g {resource_group} --environment {env2} --yaml {containerappjob_file_name}',
+            checks=[
+                JMESPathCheck("properties.provisioningState", "Succeeded"),
+                JMESPathCheck("properties.environmentId", containerapp_env1["id"]),
+                JMESPathCheck("properties.configuration.triggerType", "Manual", case_sensitive=False),
+                JMESPathCheck('properties.configuration.replicaTimeout', 100),
+                JMESPathCheck('properties.configuration.replicaRetryLimit', 1),
+                JMESPathCheck('properties.template.containers[0].image',
+                              "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
+                JMESPathCheck('properties.template.containers[0].resources.cpu', "0.5"),
+                JMESPathCheck('properties.template.containers[0].resources.memory', "1Gi"),
+            ])
+
+        self.cmd(f'containerapp job show -g {resource_group} -n {job1}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.environmentId", containerapp_env1["id"]),
+            JMESPathCheck("properties.configuration.triggerType", "Manual", case_sensitive=False),
+            JMESPathCheck('properties.configuration.replicaTimeout', 100),
+            JMESPathCheck('properties.configuration.replicaRetryLimit', 1),
+            JMESPathCheck('properties.template.containers[0].image', "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
+            JMESPathCheck('properties.template.containers[0].resources.cpu', "0.5"),
+            JMESPathCheck('properties.template.containers[0].resources.memory', "1Gi"),
+        ])
+
+        # test container app job update with yaml
+        containerappjob_yaml_text = f"""
+                location: {TEST_LOCATION}
+                properties:
+                    configuration:
+                        dapr: null
+                        eventTriggerConfig: null
+                        manualTriggerConfig:
+                            parallelism: 1
+                            replicaCompletionCount: 1
+                        registries: null
+                        replicaRetryLimit: 1
+                        replicaTimeout: 200
+                        scheduleTriggerConfig: null
+                        secrets: null
+                        triggerType: Manual
+                    template:
+                        containers:
+                        - env:
+                            - name: MY_ENV_VAR
+                              value: hello
+                          image: mcr.microsoft.com/k8se/quickstart-jobs:latest
+                          name: anfranci-azclitest-acaj1
+                          resources:
+                            cpu: 0.75
+                            ephemeralStorage: 1Gi
+                            memory: 1.5Gi
+                        initContainers:
+                        - command:
+                            - /bin/sh
+                            - -c
+                            - sleep 150
+                          image: k8seteste2e.azurecr.io/e2e-apps/kuar:green
+                          name: simple-sleep-container
+                        probes:
+                        - type: liveness
+                          httpGet:
+                            path: "/health"
+                            port: 8080
+                            httpHeaders:
+                                - name: "Custom-Header"
+                                  value: "liveness probe"
+                            initialDelaySeconds: 7
+                            periodSeconds: 3
+                            resources:
+                                cpu: "0.25"
+                                memory: 0.5Gi
+                """
+        write_test_file(containerappjob_file_name, containerappjob_yaml_text)
+        job2 = self.create_random_name(prefix='yaml2', length=24)
+        self.cmd(f'containerapp job create -n {job2} -g {resource_group} --environment {env2} --yaml {containerappjob_file_name}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.environmentId", containerapp_env2["id"]),
+            JMESPathCheck("properties.configuration.triggerType", "Manual", case_sensitive=False),
+            JMESPathCheck('properties.configuration.replicaTimeout', 200),
+            JMESPathCheck('properties.configuration.replicaRetryLimit', 1),
+            JMESPathCheck('properties.template.containers[0].image',
+                          "mcr.microsoft.com/k8se/quickstart-jobs:latest"),
+            JMESPathCheck('properties.template.containers[0].resources.cpu', "0.75"),
+            JMESPathCheck('properties.template.containers[0].resources.memory', "1.5Gi"),
+        ])
+
+        self.cmd(f'containerapp job list -g {resource_group}', checks=[
+            JMESPathCheck("length(@)", 2),
         ])
         clean_up_test_file(containerappjob_file_name)

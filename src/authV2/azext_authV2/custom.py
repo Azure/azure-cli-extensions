@@ -445,7 +445,7 @@ def update_auth_classic_settings(cmd, resource_group_name, name, enabled=None, a
         if values.get(arg, None):
             setattr(auth_settings, arg, values[arg] if arg not in bool_flags else values[arg] == 'true')
 
-    return _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'update_auth_settings', slot, auth_settings)
+    _generic_site_operation(cmd.cli_ctx, resource_group_name, name, 'update_auth_settings', slot, auth_settings)
 # endregion
 
 # region webapp auth microsoft

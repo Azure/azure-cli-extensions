@@ -5,6 +5,7 @@
 
 import base64
 import binascii
+import shutil
 import json
 import os
 from tarfile import TarFile
@@ -43,6 +44,13 @@ def load_json_from_str(data: str) -> dict:
 def load_json_from_file(path: str) -> dict:
     raw_data = load_str_from_file(path)
     return load_json_from_str(raw_data)
+
+
+def copy_file(src: str, dest: str) -> None:
+    try:
+        shutil.copy(src, dest)
+    except (FileNotFoundError, IsADirectoryError, PermissionError, OSError):
+        eprint(f"File not found at path: {src}")
 
 
 def load_str_from_file(path: str) -> str:
@@ -87,7 +95,7 @@ def load_tar_mapping_from_file(path: str) -> dict:
     return raw_json
 
 
-def map_image_from_tar(image_name: str, tar: TarFile, tar_location: str):
+def map_image_from_tar_backwards_compatibility(image_name: str, tar: TarFile, tar_location: str):
     tar_dir = os.path.dirname(tar_location)
     # grab all files in the folder and only take the one that's named with hex values and a json extension
     members = tar.getmembers()
@@ -123,6 +131,43 @@ def map_image_from_tar(image_name: str, tar: TarFile, tar_location: str):
 
     # get the path of the json file and read it in
     image_info_file_path = os.path.join(tar_dir, info_file.name)
+    image_info_raw = load_json_from_file(image_info_file_path)
+    # delete the extracted json file to clean up
+    os.remove(image_info_file_path)
+    image_info = image_info_raw.get("config")
+    # importing the constant from config.py gives a circular dependency error
+    image_info["Architecture"] = image_info_raw.get("architecture")
+
+    return image_info
+
+
+def map_image_from_tar(image_name: str, tar: TarFile, tar_location: str):
+    tar_dir = os.path.dirname(tar_location)
+    info_file = None
+    info_file_name = "manifest.json"
+
+    # extract just the manifest file and see if any of the RepoTags match the image_name we're searching for
+    # the manifest.json should have a list of all the image tags
+    # and what json files they map to to get env vars, startup cmd, etc.
+    tar.extract(info_file_name, path=tar_dir)
+    manifest_path = os.path.join(tar_dir, info_file_name)
+    manifest = load_json_from_file(manifest_path)
+    try:
+        # if we match a RepoTag to the image, stop searching
+        for image in manifest:
+            if image_name in image.get("RepoTags"):
+                info_file = image.get("Config")
+                break
+    finally:
+        # remove the extracted manifest file to clean up
+        os.remove(manifest_path)
+
+    if not info_file:
+        return None
+    tar.extract(info_file, path=tar_dir)
+
+    # get the path of the json file and read it in
+    image_info_file_path = os.path.join(tar_dir, info_file)
     image_info_raw = load_json_from_file(image_info_file_path)
     # delete the extracted json file to clean up
     os.remove(image_info_file_path)

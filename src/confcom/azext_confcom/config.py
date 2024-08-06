@@ -11,6 +11,7 @@ ACI_FIELD_VERSION = "version"
 ACI_FIELD_RESOURCES = "resources"
 ACI_FIELD_RESOURCES_NAME = "name"
 ACI_FIELD_CONTAINERS = "containers"
+ACI_FIELD_CONTAINERS_NAME = "name"
 ACI_FIELD_CONTAINERS_CONTAINERIMAGE = "containerImage"
 ACI_FIELD_CONTAINERS_ENVS = "environmentVariables"
 ACI_FIELD_CONTAINERS_ENVS_NAME = "name"
@@ -36,6 +37,8 @@ ACI_FIELD_CONTAINERS_REGO_FRAGMENTS_ISS = "iss"
 ACI_FIELD_CONTAINERS_REGO_FRAGMENTS_MINIMUM_SVN = "minimumSvn"
 ACI_FIELD_CONTAINERS_REGO_FRAGMENTS_INCLUDES = "includes"
 ACI_FIELD_CONTAINERS_ID = "id"
+ACI_FIELD_CONTAINERS_CONFIGMAP = "configMap"
+ACI_FIELD_CONTAINERS_CONFIGMAP_KEYVALUE = "keyValuePairs"
 
 ACI_FIELD_CONTAINERS_ARCHITECTURE_KEY = "Architecture"
 ACI_FIELD_CONTAINERS_ARCHITECTURE_VALUE = "amd64"
@@ -58,6 +61,7 @@ ACI_FIELD_TEMPLATE_VOLUMES = "volumes"
 ACI_FIELD_TEMPLATE_IMAGE = "image"
 ACI_FIELD_TEMPLATE_SECURITY_CONTEXT = "securityContext"
 ACI_FIELD_TEMPLATE_RESOURCE_LABEL = "Microsoft.ContainerInstance/containerGroups"
+ACI_FIELD_TEMPLATE_RESOURCE_PROFILE_LABEL = "Microsoft.ContainerInstance/containerGroupProfiles"
 ACI_FIELD_TEMPLATE_COMMAND = "command"
 ACI_FIELD_TEMPLATE_ENVS = "environmentVariables"
 ACI_FIELD_TEMPLATE_VOLUME_MOUNTS = "volumeMounts"
@@ -70,10 +74,14 @@ ACI_FIELD_CONTAINERS_PRIVILEGED = "privileged"
 ACI_FIELD_CONTAINERS_CAPABILITIES = "capabilities"
 ACI_FIELD_CONTAINERS_CAPABILITIES_ADD = "add"
 ACI_FIELD_CONTAINERS_CAPABILITIES_DROP = "drop"
-
+ACI_FIELD_SUPPORTED_RESOURCES = [
+    ACI_FIELD_TEMPLATE_RESOURCE_LABEL,
+    ACI_FIELD_TEMPLATE_RESOURCE_PROFILE_LABEL
+]
 
 # output json values
 POLICY_FIELD_CONTAINERS = "containers"
+POLICY_FIELD_CONTAINERS_NAME = "name"
 POLICY_FIELD_CONTAINERS_ID = "id"
 POLICY_FIELD_CONTAINERS_ELEMENTS = "elements"
 POLICY_FIELD_CONTAINERS_LENGTH = "length"
@@ -116,6 +124,8 @@ POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_FEED = "feed"
 POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_ISS = "iss"
 POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_MINIMUM_SVN = "minimum_svn"
 POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_INCLUDES = "includes"
+POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_CONFIGMAP_LOCATION = "/mnt/configmap"
+POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_CONFIGMAP_TYPE = "emptyDir"
 
 CONFIG_FILE = "./data/internal_config.json"
 
@@ -156,6 +166,8 @@ CUSTOMER_REGO_POLICY = os_util.load_str_from_file(REGO_FILE_PATH)
 SIDECAR_REGO_FILE = "./data/sidecar_rego_policy.txt"
 SIDECAR_REGO_FILE_PATH = f"{script_directory}/{SIDECAR_REGO_FILE}"
 SIDECAR_REGO_POLICY = os_util.load_str_from_file(SIDECAR_REGO_FILE_PATH)
+# data folder
+DATA_FOLDER = os.path.join(script_directory, "data")
 
 # api version
 API_VERSION = _config["version_api"]
@@ -167,3 +179,39 @@ DEFAULT_USER = _config["default_user"]
 DEFAULT_UNPRIVILEGED_CAPABILITIES = _config["default_unprivileged_capabilities"]
 # default priviliged user capabilities to be added for security context
 DEFAULT_PRIVILEGED_CAPABILITIES = _config["default_privileged_capabilities"]
+# these signals are hardcoded because the signals package in python is not portable across platforms
+SIGNALS = {
+    "SIGHUP": 1,
+    "SIGINT": 2,
+    "SIGQUIT": 3,
+    "SIGILL": 4,
+    "SIGTRAP": 5,
+    "SIGABRT": 6,
+    "SIGIOT": 6,
+    "SIGBUS": 7,
+    "SIGFPE": 8,
+    "SIGKILL": 9,
+    "SIGUSR1": 10,
+    "SIGSEGV": 11,
+    "SIGUSR2": 12,
+    "SIGPIPE": 13,
+    "SIGALRM": 14,
+    "SIGTERM": 15,
+    "SIGSTKFLT": 16,
+    "SIGCHLD": 17,
+    "SIGCONT": 18,
+    "SIGSTOP": 19,
+    "SIGTSTP": 20,
+    "SIGTTIN": 21,
+    "SIGTTOU": 22,
+    "SIGURG": 23,
+    "SIGXCPU": 24,
+    "SIGXFSZ": 25,
+    "SIGVTALRM": 26,
+    "SIGPROF": 27,
+    "SIGWINCH": 28,
+    "SIGIO": 29,
+    "SIGPWR": 30,
+    "SIGSYS": 31,
+    "SIGUNUSED": 31
+}

@@ -2,6 +2,70 @@
 
 Release History
 ===============
+2.0.6
+++++++
+* Add create permission in postgresql
+
+2.0.5
+++++++
+* Bump version
+
+2.0.4
+++++++
+* Fix PostgreSQL connection string format
+
+2.0.3
+++++++
+* Prompt confirmation when update PostgreSQL server
+
+2.0.2
+++++++
+* Fix no attribute error
+
+2.0.1
+++++++
+* Fix old api-version issue
+
+2.0.0
+++++++
+* Update to be compatible with Azure CLI 2.60.0
+
+1.0.3
+++++++
+* Fix no attribute error
+
+1.0.2
+++++++
+* Bypass error of `az postgres flexible-server db show`
+
+1.0.1
+++++++
+* Make some improvements to fix non-json output issue
+
+1.0.0
+++++++
+* Support function app
+
+0.3.13
+++++++
+* AAD rebranding and make some improvements
+
+0.3.12
+++++++
+* make some improvements and support slot.
+
+0.3.11
+++++++
+* make some improvements.
+
+0.3.10
+++++++
+* make some improvements.
+
+0.3.9
+++++++
+* Support `--customized-keys` and make some improvements.
+
 0.3.8
 ++++++
 * Make some improvements.

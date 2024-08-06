@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud baremetalmachine update",
+    is_preview=True,
 )
 class Update(AAZCommand):
     """Update properties of the provided bare metal machine, or update tags associated with the bare metal machine. Properties and tag updates can be done independently.
@@ -22,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/baremetalmachines/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -164,7 +165,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -340,6 +341,10 @@ class _UpdateHelper:
             serialized_name="machineName",
             flags={"required": True},
         )
+        properties.machine_roles = AAZListType(
+            serialized_name="machineRoles",
+            flags={"read_only": True},
+        )
         properties.machine_sku_id = AAZStrType(
             serialized_name="machineSkuId",
             flags={"required": True},
@@ -376,6 +381,9 @@ class _UpdateHelper:
             serialized_name="readyState",
             flags={"read_only": True},
         )
+        properties.runtime_protection_status = AAZObjectType(
+            serialized_name="runtimeProtectionStatus",
+        )
         properties.serial_number = AAZStrType(
             serialized_name="serialNumber",
             flags={"required": True},
@@ -394,7 +402,7 @@ class _UpdateHelper:
 
         bmc_credentials = _schema_bare_metal_machine_read.properties.bmc_credentials
         bmc_credentials.password = AAZStrType(
-            flags={"required": True, "secret": True},
+            flags={"secret": True},
         )
         bmc_credentials.username = AAZStrType(
             flags={"required": True},
@@ -476,6 +484,31 @@ class _UpdateHelper:
 
         hybrid_aks_clusters_associated_ids = _schema_bare_metal_machine_read.properties.hybrid_aks_clusters_associated_ids
         hybrid_aks_clusters_associated_ids.Element = AAZStrType()
+
+        machine_roles = _schema_bare_metal_machine_read.properties.machine_roles
+        machine_roles.Element = AAZStrType()
+
+        runtime_protection_status = _schema_bare_metal_machine_read.properties.runtime_protection_status
+        runtime_protection_status.definitions_last_updated = AAZStrType(
+            serialized_name="definitionsLastUpdated",
+            flags={"read_only": True},
+        )
+        runtime_protection_status.definitions_version = AAZStrType(
+            serialized_name="definitionsVersion",
+            flags={"read_only": True},
+        )
+        runtime_protection_status.scan_completed_time = AAZStrType(
+            serialized_name="scanCompletedTime",
+            flags={"read_only": True},
+        )
+        runtime_protection_status.scan_scheduled_time = AAZStrType(
+            serialized_name="scanScheduledTime",
+            flags={"read_only": True},
+        )
+        runtime_protection_status.scan_started_time = AAZStrType(
+            serialized_name="scanStartedTime",
+            flags={"read_only": True},
+        )
 
         virtual_machines_associated_ids = _schema_bare_metal_machine_read.properties.virtual_machines_associated_ids
         virtual_machines_associated_ids.Element = AAZStrType()

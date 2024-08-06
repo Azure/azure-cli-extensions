@@ -2,14 +2,15 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long
 
-from azure.cli.core.azclierror import ValidationError, CLIError, ResourceNotFoundError
+from azure.cli.core.azclierror import CLIError, ResourceNotFoundError
 from ._client_factory import handle_raw_exception
 from ._clients import ManagedEnvironmentClient, ContainerAppClient
 from ._constants import (
     CONTAINER_APPS_RP
 )
-from ._utils import register_provider_if_needed, validate_container_app_name, AppType
+from azure.cli.command_modules.containerapp._utils import register_provider_if_needed, validate_container_app_name, AppType
 
 
 class DevServiceUtils:
@@ -26,7 +27,7 @@ class DevServiceUtils:
         try:
             env_info = ManagedEnvironmentClient.show(cmd=cmd, resource_group_name=resource_group_name,
                                                      name=environment_name)
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             pass
 
         if not env_info:
@@ -47,7 +48,7 @@ class DevServiceUtils:
         try:
             containerapp_def = ContainerAppClient.show(cmd=cmd, resource_group_name=resource_group_name,
                                                        name=service_name)
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             pass
 
         if not containerapp_def:

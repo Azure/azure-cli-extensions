@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud virtualmachine console list",
+    is_preview=True,
 )
 class List(AAZCommand):
     """List consoles of the virtual machine.
@@ -22,11 +23,13 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}/consoles", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}/consoles", "2023-10-01-preview"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -122,7 +125,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }

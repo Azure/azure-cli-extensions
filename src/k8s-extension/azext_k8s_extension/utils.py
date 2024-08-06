@@ -54,3 +54,17 @@ def is_dogfood_cluster(cmd):
         urlparse(cmd.cli_ctx.cloud.endpoints.resource_manager).hostname
         == consts.DF_RM_HOSTNAME
     )
+
+
+def is_skip_prerequisites_specified(configuration_settings):
+    # Determine if provisioning to prerequisites should be skipped by a configuration setting named skipPrerequisites.
+    SKIP_PREQUISITES = 'skipPrerequisites'
+
+    has_skip_prerequisites_set = False
+
+    if SKIP_PREQUISITES in configuration_settings:
+        skip_prerequisites_configuration_setting = configuration_settings[SKIP_PREQUISITES]
+        if (isinstance(skip_prerequisites_configuration_setting, str) and str(skip_prerequisites_configuration_setting).lower() == "true") or (isinstance(skip_prerequisites_configuration_setting, bool) and skip_prerequisites_configuration_setting):
+            has_skip_prerequisites_set = True
+
+    return has_skip_prerequisites_set

@@ -10,11 +10,17 @@ from pkg_resources import parse_version
 from knack.log import get_logger
 from azext_confcom.config import DEFAULT_REGO_FRAGMENTS
 from azext_confcom import os_util
-from azext_confcom.template_util import pretty_print_func, print_func, str_to_sha256
+from azext_confcom.template_util import (
+    pretty_print_func,
+    print_func,
+    str_to_sha256,
+    inject_policy_into_template,
+    print_existing_policy_from_arm_template,
+)
 from azext_confcom.init_checks import run_initial_docker_checks
-from azext_confcom.template_util import inject_policy_into_template, print_existing_policy_from_arm_template
 from azext_confcom import security_policy
 from azext_confcom.security_policy import OutputType
+from azext_confcom.kata_proxy import KataPolicyGenProxy
 
 
 logger = get_logger(__name__)
@@ -37,6 +43,7 @@ def acipolicygen_confcom(
     print_policy_to_terminal: bool = False,
     disable_stdio: bool = False,
     print_existing_policy: bool = False,
+    faster_hashing: bool = False,
 ):
 
     if sum(map(bool, [input_path, arm_template, image_name])) != 1:
@@ -51,6 +58,18 @@ def acipolicygen_confcom(
         )
     elif save_to_file and arm_template and not (print_policy_to_terminal or outraw or outraw_pretty_print):
         error_out("Must print policy to terminal when saving to file")
+    elif faster_hashing and tar_mapping_location:
+        error_out("Cannot use --faster-hashing with --tar")
+
+    if print_existing_policy or outraw or outraw_pretty_print:
+        logger.warning(
+            "%s %s %s %s %s",
+            "Secrets that are included in the provided arm template or configuration files ",
+            "in the container env or cmd sections will be printed out with this flag.",
+            "These are outputed secrets that you must protect. Be sure that you do not include these secrets in your",
+            "source control. Also verify that no secrets are present in the logs of your command or script.",
+            "For additional information, see http://aka.ms/clisecrets. \n",
+        )
 
     if print_existing_policy:
         print_existing_policy_from_arm_template(arm_template, arm_template_parameters)
@@ -108,7 +127,7 @@ def acipolicygen_confcom(
 
     for count, policy in enumerate(container_group_policies):
         policy.populate_policy_content_for_all_images(
-            individual_image=bool(image_name), tar_mapping=tar_mapping
+            individual_image=bool(image_name), tar_mapping=tar_mapping, faster_hashing=faster_hashing
         )
 
         if validate_sidecar:
@@ -116,10 +135,8 @@ def acipolicygen_confcom(
         elif diff:
             exit_code = get_diff_outputs(policy, output_type == security_policy.OutputType.PRETTY_PRINT)
         elif arm_template and not (print_policy_to_terminal or outraw or outraw_pretty_print):
-            seccomp_profile_hashes = {x.get_id(): x.get_seccomp_profile_sha256() for x in policy.get_images()}
             result = inject_policy_into_template(arm_template, arm_template_parameters,
-                                                 policy.get_serialized_output(), count,
-                                                 seccomp_profile_hashes)
+                                                 policy.get_serialized_output(), count)
             if result:
                 # this is always going to be the unencoded policy
                 print(str_to_sha256(policy.get_serialized_output(OutputType.RAW)))
@@ -138,6 +155,39 @@ def acipolicygen_confcom(
                 policy.save_to_file(save_to_file, output_type)
 
     sys.exit(exit_code)
+
+
+def katapolicygen_confcom(
+    yaml_path: str,
+    config_map_file: str,
+    outraw: bool = False,
+    print_policy: bool = False,
+    use_cached_files: bool = False,
+    settings_file_name: str = None,
+    rules_file_name: str = None,
+    print_version: bool = False,
+    containerd_pull: str = False,
+    containerd_socket_path: str = None,
+):
+    kata_proxy = KataPolicyGenProxy()
+
+    if not (yaml_path or print_version):
+        error_out("Either --yaml-path or --print-version is required")
+
+    output = kata_proxy.kata_genpolicy(
+        yaml_path,
+        config_map_file=config_map_file,
+        outraw=outraw,
+        print_policy=print_policy,
+        use_cached_files=use_cached_files,
+        settings_file_name=settings_file_name,
+        rules_file_name=rules_file_name,
+        print_version=print_version,
+        containerd_pull=containerd_pull,
+        containerd_socket_path=containerd_socket_path,
+    )
+    print(output)
+    sys.exit(0)
 
 
 def update_confcom(cmd, instance, tags=None):

@@ -47,6 +47,10 @@ from azext_eventgrid.vendored_sdks.eventgrid.models import (
     DeadLetterWithResourceIdentity,
     EventChannelFilter)
 
+from azure.cli.core.aaz import has_value
+from azext_eventgrid.aaz.latest.eventgrid.namespace import ListKey as _NamespaceListKey, RegenerateKey as _NamespaceRegenerateKey
+from azext_eventgrid.aaz.latest.eventgrid.namespace.ca_certificate import Create as _CaCertificateCreate, Update as _CaCertificateUpdate
+
 logger = get_logger(__name__)
 
 EVENTGRID_NAMESPACE = "Microsoft.EventGrid"
@@ -1812,3 +1816,49 @@ def _validate_subscription_id_matches_default_subscription_id(
         raise CLIError('The subscription ID in the specified resource-id'
                        ' does not match the default subscription ID. To set the default subscription ID,'
                        ' use az account set ID_OR_NAME, or use the global argument --subscription ')
+
+
+class NamespaceListKey(_NamespaceListKey):
+    def _output(self, *args, **kwargs):
+        return self.deserialize_output(self.ctx.vars.instance.to_serialized_data(), client_flatten=True)
+
+
+class NamespaceRegenerateKey(_NamespaceRegenerateKey):
+    def _output(self, *args, **kwargs):
+        return self.deserialize_output(self.ctx.vars.instance.to_serialized_data(), client_flatten=True)
+
+
+class CaCertificateCreate(_CaCertificateCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZFileArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.certificate = AAZFileArg(
+            options=["--certificate"],
+            help="Path to the base64 encoded PEM (Privacy Enhanced Mail) format certificate data file.",
+        )
+        args_schema.encoded_certificate._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if has_value(args.certificate):
+            args.encoded_certificate = args.certificate
+
+
+class CaCertificateUpdate(_CaCertificateUpdate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        from azure.cli.core.aaz import AAZFileArg
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.certificate = AAZFileArg(
+            options=["--certificate"],
+            help="Path to the base64 encoded PEM (Privacy Enhanced Mail) format certificate data file.",
+        )
+        args_schema.encoded_certificate._registered = False
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        if has_value(args.certificate):
+            args.encoded_certificate = args.certificate

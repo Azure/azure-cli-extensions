@@ -85,7 +85,7 @@ class ManagedCosmosDBUtils:
         return {"linker_name": binding_name, "parameters": parameters, "resource_id": resource_id}
 
 
-class ManagedPostgreSQLUtils:
+class ManagedPostgreSQLFlexibleUtils:
 
     @staticmethod
     def build_postgres_resource_id(subscription_id, resource_group_name, service_name, arg_dict):
@@ -126,8 +126,56 @@ class ManagedPostgreSQLUtils:
         if not all(key in arg_dict for key in ["database", "username", "password"]):
             raise ValidationError(
                 "Managed PostgreSQL Flexible Server needs the database, username, and password arguments.")
-        resource_id = ManagedPostgreSQLUtils.build_postgres_resource_id(subscription_id, resource_group_name,
+        resource_id = ManagedPostgreSQLFlexibleUtils.build_postgres_resource_id(subscription_id, resource_group_name,
+                                                                                service_name, arg_dict)
+        parameters = ManagedPostgreSQLFlexibleUtils.build_postgres_params(resource_id, name, arg_dict["username"],
+                                                                          arg_dict["password"], key_vault_id=None)
+        return {"linker_name": binding_name, "parameters": parameters, "resource_id": resource_id}
+
+
+class ManagedMySQLFlexibleUtils:
+
+    @staticmethod
+    def build_mysql_resource_id(subscription_id, resource_group_name, service_name, arg_dict):
+        url_fmt = "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.DBforMySQL/flexibleServers/" \
+                  "{}/databases/{}"
+        resource_id = url_fmt.format(
+            subscription_id,
+            resource_group_name,
+            service_name,
+            arg_dict["database"])
+        return resource_id
+
+    @staticmethod
+    def build_mysql_params(resource_id, capp_name, username, password, key_vault_id):
+        parameters = {
+            'target_service': {
+                "type": "AzureResource",
+                "id": resource_id
+            },
+            'auth_info': {
+                'authType': "secret",
+                'secret_info': {
+                    'secret_type': "rawValue",
+                    'value': password,
+                },
+                'name': username
+            },
+            'secret_store': {
+                'key_vault_id': key_vault_id,
+            },
+            'scope': capp_name,
+        }
+        return parameters
+
+    @staticmethod
+    def build_mysql_service_connector_def(subscription_id, resource_group_name, service_name, arg_dict, name,
+                                          binding_name):
+        if not all(key in arg_dict for key in ["database", "username", "password"]):
+            raise ValidationError(
+                "Managed MySQL Flexible Server needs the database, username, and password arguments.")
+        resource_id = ManagedMySQLFlexibleUtils.build_mysql_resource_id(subscription_id, resource_group_name,
                                                                         service_name, arg_dict)
-        parameters = ManagedPostgreSQLUtils.build_postgres_params(resource_id, name, arg_dict["username"],
+        parameters = ManagedMySQLFlexibleUtils.build_mysql_params(resource_id, name, arg_dict["username"],
                                                                   arg_dict["password"], key_vault_id=None)
         return {"linker_name": binding_name, "parameters": parameters, "resource_id": resource_id}

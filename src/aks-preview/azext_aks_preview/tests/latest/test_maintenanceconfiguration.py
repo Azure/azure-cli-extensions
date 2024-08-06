@@ -5,15 +5,15 @@
 import unittest
 from types import SimpleNamespace
 
-# from azure.cli.core.util import CLIError
+import azext_aks_preview.maintenanceconfiguration as mc
+from azext_aks_preview.__init__ import register_aks_preview_resource_type
+from azure.cli.command_modules.acs.tests.latest.mocks import MockCLI, MockCmd
 from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
-    RequiredArgumentMissingError,
     MutuallyExclusiveArgumentError,
+    RequiredArgumentMissingError,
 )
-from azext_aks_preview.__init__ import register_aks_preview_resource_type
-import azext_aks_preview.maintenanceconfiguration as mc
-from azure.cli.command_modules.acs.tests.latest.mocks import MockCLI, MockCmd
+
 
 class TestAddMaintenanceConfiguration(unittest.TestCase):
     def test_add_maintenance_configuration_with_invalid_name(self):
@@ -24,7 +24,7 @@ class TestAddMaintenanceConfiguration(unittest.TestCase):
             "config_name": "something",
         }
 
-        err = ("--config-name must be one of default, aksManagedAutoUpgradeSchedule or aksManagedNodeOSUpgradeSchedule, not something")
+        err = "--config-name must be one of default, aksManagedAutoUpgradeSchedule or aksManagedNodeOSUpgradeSchedule, not something"
         with self.assertRaises(InvalidArgumentValueError) as cm:
             mc.aks_maintenanceconfiguration_update_internal(cmd, None, raw_parameters)
         self.assertEqual(str(cm.exception), err)
@@ -40,11 +40,11 @@ class TestAddMaintenanceConfiguration(unittest.TestCase):
             "schedule_type": "Weekly",
         }
 
-        err = ("--schedule-type is not supported for default maintenance configuration.")
+        err = "--schedule-type is not supported for default maintenance configuration."
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             mc.aks_maintenanceconfiguration_update_internal(cmd, None, raw_parameters)
         self.assertEqual(str(cm.exception), err)
-    
+
     def test_add_non_default_schedule_with_weekday(self):
         cmd = SimpleNamespace()
         raw_parameters = {
@@ -54,11 +54,11 @@ class TestAddMaintenanceConfiguration(unittest.TestCase):
             "weekday": "Monday",
         }
 
-        err = ("--weekday and --start-hour are only applicable to default maintenance configuration.")
+        err = "--weekday and --start-hour are only applicable to default maintenance configuration."
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             mc.aks_maintenanceconfiguration_update_internal(cmd, None, raw_parameters)
         self.assertEqual(str(cm.exception), err)
-    
+
     def test_add_daily_schedule_with_missing_options(self):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
@@ -70,11 +70,11 @@ class TestAddMaintenanceConfiguration(unittest.TestCase):
             "schedule_type": "Daily",
         }
 
-        err = ("Please specify --interval-days when using daily schedule.")
+        err = "Please specify --interval-days when using daily schedule."
         with self.assertRaises(RequiredArgumentMissingError) as cm:
             mc.aks_maintenanceconfiguration_update_internal(cmd, None, raw_parameters)
         self.assertEqual(str(cm.exception), err)
-    
+
     def test_add_daily_schedule_with_invalid_options(self):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
@@ -88,7 +88,7 @@ class TestAddMaintenanceConfiguration(unittest.TestCase):
             "day_of_week": "Monday",
         }
 
-        err = ("--interval-weeks, --interval-months, --day-of-week, --day-of-month and --week-index cannot be used for Daily schedule.")
+        err = "--interval-weeks, --interval-months, --day-of-week, --day-of-month and --week-index cannot be used for Daily schedule."
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             mc.aks_maintenanceconfiguration_update_internal(cmd, None, raw_parameters)
         self.assertEqual(str(cm.exception), err)
@@ -107,11 +107,11 @@ class TestAddMaintenanceConfiguration(unittest.TestCase):
             "week_index": "First",
         }
 
-        err = ("--interval-months, --day-of-month and --week-index cannot be used for Weekly schedule.")
+        err = "--interval-months, --day-of-month and --week-index cannot be used for Weekly schedule."
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             mc.aks_maintenanceconfiguration_update_internal(cmd, None, raw_parameters)
         self.assertEqual(str(cm.exception), err)
-    
+
     def test_add_absolute_monthly_schedule_with_missing_options(self):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
@@ -125,7 +125,7 @@ class TestAddMaintenanceConfiguration(unittest.TestCase):
             "interval_months": 3,
         }
 
-        err = ("Please specify --interval-months and --day-of-month when using absolute monthly schedule.")
+        err = "Please specify --interval-months and --day-of-month when using absolute monthly schedule."
         with self.assertRaises(RequiredArgumentMissingError) as cm:
             mc.aks_maintenanceconfiguration_update_internal(cmd, None, raw_parameters)
         self.assertEqual(str(cm.exception), err)
@@ -144,11 +144,11 @@ class TestAddMaintenanceConfiguration(unittest.TestCase):
             "week_index": "First",
         }
 
-        err = ("--interval-days, --interval-weeks, --day-of-week and --week-index cannot be used for AbsoluteMonthly schedule.")
+        err = "--interval-days, --interval-weeks, --day-of-week and --week-index cannot be used for AbsoluteMonthly schedule."
         with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
             mc.aks_maintenanceconfiguration_update_internal(cmd, None, raw_parameters)
         self.assertEqual(str(cm.exception), err)
-    
+
     def test_add_relative_monthly_schedule_with_missing_options(self):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
@@ -162,11 +162,11 @@ class TestAddMaintenanceConfiguration(unittest.TestCase):
             "interval_months": 3,
         }
 
-        err = ("Please specify --interval-months, --day-of-week and --week-index when using relative monthly schedule.")
+        err = "Please specify --interval-months, --day-of-week and --week-index when using relative monthly schedule."
         with self.assertRaises(RequiredArgumentMissingError) as cm:
             mc.aks_maintenanceconfiguration_update_internal(cmd, None, raw_parameters)
         self.assertEqual(str(cm.exception), err)
-    
+
     def test_add_dedicated_schedule_with_missing_options(self):
         register_aks_preview_resource_type()
         cli_ctx = MockCLI()
@@ -181,8 +181,7 @@ class TestAddMaintenanceConfiguration(unittest.TestCase):
             "start_time": "00:00",
         }
 
-        err = ("Please specify --duration for maintenance window.")
+        err = "Please specify --duration for maintenance window."
         with self.assertRaises(RequiredArgumentMissingError) as cm:
             mc.aks_maintenanceconfiguration_update_internal(cmd, None, raw_parameters)
         self.assertEqual(str(cm.exception), err)
-        

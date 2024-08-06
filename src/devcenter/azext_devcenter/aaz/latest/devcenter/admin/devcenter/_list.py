@@ -25,12 +25,14 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.devcenter/devcenters", "2023-04-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.devcenter/devcenters", "2024-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters", "2024-05-01-preview"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -47,19 +49,17 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
-        )
+        _args_schema.resource_group = AAZResourceGroupNameArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        condition_0 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
-        condition_1 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
+        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
+        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
         if condition_0:
-            self.DevCentersListBySubscription(ctx=self.ctx)()
-        if condition_1:
             self.DevCentersListByResourceGroup(ctx=self.ctx)()
+        if condition_1:
+            self.DevCentersListBySubscription(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -75,7 +75,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class DevCentersListBySubscription(AAZHttpOperation):
+    class DevCentersListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -89,7 +89,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.DevCenter/devcenters",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters",
                 **self.url_parameters
             )
 
@@ -99,11 +99,15 @@ class List(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
@@ -115,7 +119,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -212,13 +216,68 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.dev_box_provisioning_settings = AAZObjectType(
+                serialized_name="devBoxProvisioningSettings",
+            )
             properties.dev_center_uri = AAZStrType(
                 serialized_name="devCenterUri",
                 flags={"read_only": True},
             )
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
+            )
+            properties.encryption = AAZObjectType()
+            properties.network_settings = AAZObjectType(
+                serialized_name="networkSettings",
+            )
+            properties.plan_id = AAZStrType(
+                serialized_name="planId",
+            )
+            properties.project_catalog_settings = AAZObjectType(
+                serialized_name="projectCatalogSettings",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+
+            dev_box_provisioning_settings = cls._schema_on_200.value.Element.properties.dev_box_provisioning_settings
+            dev_box_provisioning_settings.install_azure_monitor_agent_enable_status = AAZStrType(
+                serialized_name="installAzureMonitorAgentEnableStatus",
+            )
+
+            encryption = cls._schema_on_200.value.Element.properties.encryption
+            encryption.customer_managed_key_encryption = AAZObjectType(
+                serialized_name="customerManagedKeyEncryption",
+            )
+
+            customer_managed_key_encryption = cls._schema_on_200.value.Element.properties.encryption.customer_managed_key_encryption
+            customer_managed_key_encryption.key_encryption_key_identity = AAZObjectType(
+                serialized_name="keyEncryptionKeyIdentity",
+            )
+            customer_managed_key_encryption.key_encryption_key_url = AAZStrType(
+                serialized_name="keyEncryptionKeyUrl",
+            )
+
+            key_encryption_key_identity = cls._schema_on_200.value.Element.properties.encryption.customer_managed_key_encryption.key_encryption_key_identity
+            key_encryption_key_identity.delegated_identity_client_id = AAZStrType(
+                serialized_name="delegatedIdentityClientId",
+            )
+            key_encryption_key_identity.identity_type = AAZStrType(
+                serialized_name="identityType",
+            )
+            key_encryption_key_identity.user_assigned_identity_resource_id = AAZStrType(
+                serialized_name="userAssignedIdentityResourceId",
+            )
+
+            network_settings = cls._schema_on_200.value.Element.properties.network_settings
+            network_settings.microsoft_hosted_network_enable_status = AAZStrType(
+                serialized_name="microsoftHostedNetworkEnableStatus",
+            )
+
+            project_catalog_settings = cls._schema_on_200.value.Element.properties.project_catalog_settings
+            project_catalog_settings.catalog_item_sync_enable_status = AAZStrType(
+                serialized_name="catalogItemSyncEnableStatus",
             )
 
             system_data = cls._schema_on_200.value.Element.system_data
@@ -246,7 +305,7 @@ class List(AAZCommand):
 
             return cls._schema_on_200
 
-    class DevCentersListByResourceGroup(AAZHttpOperation):
+    class DevCentersListBySubscription(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -260,7 +319,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/devcenters",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.DevCenter/devcenters",
                 **self.url_parameters
             )
 
@@ -270,15 +329,11 @@ class List(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
@@ -290,7 +345,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -387,13 +442,68 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.dev_box_provisioning_settings = AAZObjectType(
+                serialized_name="devBoxProvisioningSettings",
+            )
             properties.dev_center_uri = AAZStrType(
                 serialized_name="devCenterUri",
                 flags={"read_only": True},
             )
+            properties.display_name = AAZStrType(
+                serialized_name="displayName",
+            )
+            properties.encryption = AAZObjectType()
+            properties.network_settings = AAZObjectType(
+                serialized_name="networkSettings",
+            )
+            properties.plan_id = AAZStrType(
+                serialized_name="planId",
+            )
+            properties.project_catalog_settings = AAZObjectType(
+                serialized_name="projectCatalogSettings",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+
+            dev_box_provisioning_settings = cls._schema_on_200.value.Element.properties.dev_box_provisioning_settings
+            dev_box_provisioning_settings.install_azure_monitor_agent_enable_status = AAZStrType(
+                serialized_name="installAzureMonitorAgentEnableStatus",
+            )
+
+            encryption = cls._schema_on_200.value.Element.properties.encryption
+            encryption.customer_managed_key_encryption = AAZObjectType(
+                serialized_name="customerManagedKeyEncryption",
+            )
+
+            customer_managed_key_encryption = cls._schema_on_200.value.Element.properties.encryption.customer_managed_key_encryption
+            customer_managed_key_encryption.key_encryption_key_identity = AAZObjectType(
+                serialized_name="keyEncryptionKeyIdentity",
+            )
+            customer_managed_key_encryption.key_encryption_key_url = AAZStrType(
+                serialized_name="keyEncryptionKeyUrl",
+            )
+
+            key_encryption_key_identity = cls._schema_on_200.value.Element.properties.encryption.customer_managed_key_encryption.key_encryption_key_identity
+            key_encryption_key_identity.delegated_identity_client_id = AAZStrType(
+                serialized_name="delegatedIdentityClientId",
+            )
+            key_encryption_key_identity.identity_type = AAZStrType(
+                serialized_name="identityType",
+            )
+            key_encryption_key_identity.user_assigned_identity_resource_id = AAZStrType(
+                serialized_name="userAssignedIdentityResourceId",
+            )
+
+            network_settings = cls._schema_on_200.value.Element.properties.network_settings
+            network_settings.microsoft_hosted_network_enable_status = AAZStrType(
+                serialized_name="microsoftHostedNetworkEnableStatus",
+            )
+
+            project_catalog_settings = cls._schema_on_200.value.Element.properties.project_catalog_settings
+            project_catalog_settings.catalog_item_sync_enable_status = AAZStrType(
+                serialized_name="catalogItemSyncEnableStatus",
             )
 
             system_data = cls._schema_on_200.value.Element.system_data

@@ -10,7 +10,7 @@
 
 import os
 from azure.cli.testsdk import ScenarioTest
-from azure.cli.testsdk import ResourceGroupPreparer
+from azure.cli.testsdk import ResourceGroupPreparer, live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .example_steps import step_create
 from .example_steps import step_show
@@ -21,7 +21,7 @@ from .example_steps import step_link_notification_hub
 from .example_steps import step_list_key
 from .example_steps import step_regenerate_key
 from .example_steps import step_delete
-from .recording_processors import BodyReplacerProcessor
+from .recording_processors import BodyReplacerProcessor, URIIdentityReplacer
 from .. import (
     try_manual,
     raise_if,
@@ -42,6 +42,9 @@ def setup_scenario(test, rg_2, rg):
 def cleanup_scenario(test, rg_2, rg):
     pass
 
+def get_resource_count_by_resource_group(self):
+   count = self.cmd('az communication list --resource-group "{rg}" --query "[].id | length(@)"').output.strip()
+   return int(count)
 
 # Testcase: Scenario
 @try_manual
@@ -57,11 +60,16 @@ def call_scenario(test, rg_2, rg):
         test.check("location", "Global", case_sensitive=False),
         test.check("dataLocation", "United States", case_sensitive=False),
     ])
+
+    expected_count = 1
+    if test.kwargs['existingResourceCountByResourceGroup'] is not None:
+        expected_count = test.kwargs['existingResourceCountByResourceGroup'] + 1
+
     step_list(test, rg_2, rg, checks=[
-        test.check('length(@)', 1),
+        test.check('length(@)', expected_count),
     ])
     step_list2(test, rg_2, rg, checks=[
-        test.check('length(@)', 1),
+        test.check('length(@)', expected_count),
     ])
     step_update(test, rg_2, rg, checks=[
         test.check("name", "{myCommunicationService}", case_sensitive=False),
@@ -82,24 +90,28 @@ class CommunicationScenarioTest(ScenarioTest):
 
     def __init__(self, *args, **kwargs):
         super(CommunicationScenarioTest, self).__init__(recording_processors=[
-            BodyReplacerProcessor(keys=["createdBy", "lastModifiedBy"])
+            URIIdentityReplacer(),
+            BodyReplacerProcessor(keys=["createdBy", "lastModifiedBy", "identity", "dataLocation", "immutableResourceId", "hostname"])
         ], *args, **kwargs)
-        
+
         self.kwargs.update({
-            'subscription_id': self.get_subscription_id()
+            'subscription_id': self.get_subscription_id(),
         })
 
         self.kwargs.update({
             'myCommunicationService': self.create_random_name(prefix='MyCommunicationResource'[:11], length=23),
         })
-
-
+        self.kwargs.update({
+            'existingResourceCountByResourceGroup': 0,
+        })
+        
+    @live_only()
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyOtherResourceGroup'[:7], key='rg_2',
                            parameter_name='rg_2')
     @ResourceGroupPreparer(name_prefix='clitestcommunication_MyResourceGroup'[:7], key='rg', parameter_name='rg')
     def test_communication_scenario(self, rg_2, rg):
+        self.kwargs['existingResourceCountByResourceGroup'] = get_resource_count_by_resource_group(self)
         call_scenario(self, rg_2, rg)
         calc_coverage(__file__)
         raise_if()
-

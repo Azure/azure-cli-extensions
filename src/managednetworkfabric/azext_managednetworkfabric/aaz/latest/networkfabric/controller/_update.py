@@ -21,13 +21,13 @@ class Update(AAZCommand):
         az networkfabric controller update --resource-group "example-rg"   --resource-name "example-nfc" --infra-er-connections "[{expressRouteCircuitId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit',expressRouteAuthorizationKey:'auth-key'}]" --workload-er-connections "[{expressRouteCircuitId:'/subscriptions/xxxxx-xxxx-xxxx-xxxx-xxxxx/resourceGroups/example-rg/providers/Microsoft.Network/expressRouteCircuits/example-expressRouteCircuit',expressRouteAuthorizationKey:'auth-key'}]"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
-        az networkfabric controller update --infra-er-connections ??
+        az networkfabric controller update --infra-er-connections "??"
     """
 
     _aaz_info = {
-        "version": "2023-06-15",
+        "version": "2024-02-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers/{}", "2023-06-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/networkfabriccontrollers/{}", "2024-02-15-preview"],
         ]
     }
 
@@ -55,7 +55,6 @@ class Update(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the resource group",
             required=True,
         )
 
@@ -201,7 +200,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-15",
+                    "api-version", "2024-02-15-preview",
                     required=True,
                 ),
             }

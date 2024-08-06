@@ -205,7 +205,7 @@ helps['vmware private-cloud rotate-nsxt-password'] = """
     short-summary: Rotate the NSX-T Manager password.
     examples:
     - name: Rotate the NSX-T Manager password.
-      text: az vmware private-cloud rotate-nsxt-password
+      text: az vmware private-cloud rotate-nsxt-password --resource-group MyResourceGroup --private-cloud MyPrivateCloud
 """
 
 helps['vmware authorization create'] = """
@@ -274,7 +274,7 @@ helps['vmware datastore create'] = """
 
 helps['vmware datastore netapp-volume'] = """
     type: group
-    short-summary: Create a new Microsoft.NetApp provided NetApp volume in a private cloud cluster.
+    short-summary: Manage NetApp volume resource.
 """
 
 helps['vmware datastore netapp-volume create'] = """
@@ -287,7 +287,7 @@ helps['vmware datastore netapp-volume create'] = """
 
 helps['vmware datastore disk-pool-volume'] = """
     type: group
-    short-summary: Create a VMFS datastore in a private cloud cluster using Microsoft.StoragePool provided iSCSI target.
+    short-summary: Manage disk pool volume resource.
 """
 
 helps['vmware datastore disk-pool-volume create'] = """
@@ -296,6 +296,19 @@ helps['vmware datastore disk-pool-volume create'] = """
     examples:
     - name: Create a new Microsoft.StoragePool provided disk pool based iSCSI datastore.
       text: az vmware datastore disk-pool-volume create --name iSCSIDatastore1 --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud --target-id /subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/ResourceGroup1/providers/Microsoft.StoragePool/diskPools/mpio-diskpool/iscsiTargets/mpio-iscsi-target --lun-name lun0
+"""
+
+helps['vmware datastore elastic-san-volume'] = """
+    type: group
+    short-summary: Manage Elastic SAN volume resource.
+"""
+
+helps['vmware datastore elastic-san-volume create'] = """
+    type: command
+    short-summary: Create an Elastic SAN volume in a private cloud cluster using Microsoft.ElasticSan provider.
+    examples:
+    - name: Create a new Microsoft.ElasticSan provided Elastic SAN volume based datastore.
+      text: az vmware datastore elastic-san-volume create --name ElasticSANDatastore --resource-group MyResourceGroup --cluster Cluster-1 --private-cloud MyPrivateCloud --elastic-san-volume elasticsan
 """
 
 helps['vmware datastore show'] = """
@@ -846,7 +859,7 @@ helps['vmware workload-network segment create'] = """
     short-summary: Create a segment by ID in a private cloud workload network.
     examples:
     - name: Create a segment by ID in a workload network.
-      text: az vmware workload-network segment create --resource-group group1 --private-cloud cloud1 --segment segment1 --display-name segment1 --connected-gateway /infra/tier-1s/gateway --revision 1 --dhcp-ranges 40.20.0.0 40.20.0.1 --gateway-address 40.20.20.20/16 --port-name port1
+      text: az vmware workload-network segment create --resource-group group1 --private-cloud cloud1 --segment segment1 --display-name segment1 --connected-gateway /infra/tier-1s/gateway --revision 1 --dhcp-ranges 40.20.0.0 40.20.0.1 --gateway-address 40.20.20.20/16
 """
 
 helps['vmware workload-network segment update'] = """
@@ -854,7 +867,7 @@ helps['vmware workload-network segment update'] = """
     short-summary: Update a segment by ID in a private cloud workload network.
     examples:
     - name: Update a segment by ID in a workload network.
-      text: az vmware workload-network segment update --resource-group group1 --private-cloud cloud1 --segment segment1 --display-name segment1 --connected-gateway /infra/tier-1s/gateway --revision 1 --dhcp-ranges 40.20.0.0 40.20.0.1 --gateway-address 40.20.20.20/16 --port-name port1
+      text: az vmware workload-network segment update --resource-group group1 --private-cloud cloud1 --segment segment1 --display-name segment1 --connected-gateway /infra/tier-1s/gateway --revision 1 --dhcp-ranges 40.20.0.0 40.20.0.1 --gateway-address 40.20.20.20/16
 """
 
 helps['vmware workload-network segment delete'] = """

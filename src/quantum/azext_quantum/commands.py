@@ -117,7 +117,7 @@ def transform_output(results):
                 ]))
         return table
 
-    elif isinstance(results, list) and len(results) > 0 and 'reportData' in results[0]:
+    elif isinstance(results, list) and len(results) > 0 and 'reportData' in results[0]:  # pylint: disable=too-many-nested-blocks
         table = []
 
         indices = range(len(results))
@@ -182,6 +182,9 @@ def load_command_table(self, _):
         w.command('set', 'set', validator=validate_workspace_info)
         w.command('clear', 'clear')
         w.command('quotas', 'quotas', validator=validate_workspace_info)
+        w.command('keys list', 'list_keys')
+        w.command('keys regenerate', 'regenerate_keys')
+        w.command('update', 'enable_keys')
 
     with self.command_group('quantum target', target_ops) as t:
         t.command('list', 'list', validator=validate_workspace_info, table_transformer=transform_targets)

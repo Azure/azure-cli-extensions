@@ -39,20 +39,16 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
     def test_private_link(self):
         rand_string = 'test'
         self.kwargs.update({
-            'machine': 'testMachine',
-            'rg': 'az-sdk-test',
+            'machine': 'testmachine',
+            'rg': 'ytongtest2',
             'scope': 'scope-' + rand_string,
             'vnet': 'vnet-' + rand_string,
             'subnet': 'subnet-' + rand_string,
             'private_endpoint': 'pe-' + rand_string,
             'private_endpoint_connection': 'pec-' + rand_string,
-            'location': 'eastus2euap',
+            'location': 'eastus',
             'customScriptName': 'custom-' + rand_string,
         })
-
-        # Prepare network
-        self.cmd('az group create -n {rg} -l {location}',
-                    checks=self.check('name', '{rg}'))
 
         # Prepare network
         self.cmd('az network vnet create -n {vnet} -g {rg} -l {location} --subnet-name {subnet}',
@@ -118,7 +114,8 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
         self.kwargs['private_endpoint_connection_name'] = connection_list[0]['name']
 
         self.cmd('az connectedmachine private-endpoint-connection update '
-                '--connection-state "{{\\"description\\":\\"Rejected by AZ CLI\\", \\"status\\":\\"Rejected\\"}}" '
+                '--description "Rejected by AZ CLI" '
+                '--status "Rejected" '
                 '--name "{private_endpoint_connection_name}" '
                 '--resource-group "{rg}" '
                 '--scope-name "{scope}"',
@@ -150,3 +147,8 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
                 checks=[
                     self.check('length(@)', 0)
                 ])
+
+        self.cmd('az connectedmachine private-link-scope delete -y '
+                '--resource-group "{rg}" '
+                '--scope-name "{scope}"',
+                checks=[])

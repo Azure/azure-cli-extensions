@@ -6,6 +6,7 @@ import unittest
 from argparse import Namespace
 from azure.cli.core.util import CLIError
 from azure.cli.core.azclierror import InvalidArgumentValueError
+from .common.test_utils import get_test_cmd
 from ..._validators import (validate_vnet, validate_vnet_required_parameters, _validate_cidr_range,
                             _set_default_cidr_range, validate_sku)
 
@@ -19,19 +20,10 @@ from azure.cli.core import AzCommandsLoader
 from azure.cli.core.commands import AzCliCommand
 
 
-def _get_test_cmd():
-    cli_ctx = DummyCli()
-    cli_ctx.data['subscription_id'] = '00000000-0000-0000-0000-000000000000'
-    loader = AzCommandsLoader(cli_ctx, resource_type='Microsoft.AppPlatform')
-    cmd = AzCliCommand(loader, 'test', None)
-    cmd.command_kwargs = {'resource_type': 'Microsoft.AppPlatform'}
-    cmd.cli_ctx = cli_ctx
-    return cmd
-
-
 def _mock_get_vnet(cmd, vnet_id):
     def _mock_get(id):
-        def _get_subnet(vnet_id, name, address_prefix=None, app_route_table_name=None, svc_route_table_name=None, ip_configurations=None, location=None):
+        def _get_subnet(vnet_id, name, address_prefix=None, app_route_table_name=None, svc_route_table_name=None,
+                        ip_configurations=None, location=None):
             subnet = {
                 "id": '{0}/subnets/{1}'.format(vnet_id, name),
                 "name": name
@@ -170,9 +162,10 @@ class TestValidateIPRanges(unittest.TestCase):
     @mock.patch('azext_spring._validators._get_graph_rbac_management_client',
                 _mock_get_graph_rbac_management_client)
     def test_valid_vnet(self):
-        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', vnet='test-vnet', app_subnet='app', location='eastus',
+        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', vnet='test-vnet', app_subnet='app',
+                       location='eastus',
                        service_runtime_subnet='svc', resource_group='test', sku=None)
-        validate_vnet(_get_test_cmd(), ns)
+        validate_vnet(get_test_cmd(), ns)
         self.assertEqual(ns.app_subnet.lower(),
                          '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/app'.lower())
         self.assertEqual(ns.service_runtime_subnet.lower(),
@@ -183,14 +176,14 @@ class TestValidateIPRanges(unittest.TestCase):
                        vnet='/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/NetworkInterfaces/test-vnet',
                        app_subnet='app', service_runtime_subnet='svc', resource_group='test', sku=None)
         with self.assertRaises(CLIError) as context:
-            validate_vnet(_get_test_cmd(), ns)
+            validate_vnet(get_test_cmd(), ns)
         self.assertTrue('is not a valid VirtualNetwork resource ID' in str(context.exception))
 
     def test_only_subnet_name(self):
         ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', app_subnet='app',
                        service_runtime_subnet='svc', resource_group='test', vnet=None, sku=None)
         with self.assertRaises(CLIError) as context:
-            validate_vnet(_get_test_cmd(), ns)
+            validate_vnet(get_test_cmd(), ns)
         self.assertTrue('is not a valid subnet resource ID' in str(context.exception))
 
     @mock.patch('azext_spring._validators._get_vnet', _mock_get_vnet)
@@ -198,10 +191,11 @@ class TestValidateIPRanges(unittest.TestCase):
     @mock.patch('azext_spring._validators._get_graph_rbac_management_client',
                 _mock_get_graph_rbac_management_client)
     def test_valid_subnets(self):
-        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None, sku=None, location='eastus',
+        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None,
+                       sku=None, location='eastus',
                        app_subnet='/subscriptions/11111111-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/app',
                        service_runtime_subnet='/subscriptions/11111111-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/svc')
-        validate_vnet(_get_test_cmd(), ns)
+        validate_vnet(get_test_cmd(), ns)
         self.assertEqual(ns.app_subnet.lower(),
                          '/subscriptions/11111111-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/app'.lower())
         self.assertEqual(ns.service_runtime_subnet.lower(),
@@ -213,41 +207,50 @@ class TestValidateIPRanges(unittest.TestCase):
                 _mock_get_graph_rbac_management_client)
     def test_subnet_with_route_table(self):
         # bind with different route tables
-        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None, sku=None, location='eastus',
+        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None,
+                       sku=None, location='eastus',
                        app_subnet='/subscriptions/22222222-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/app',
                        service_runtime_subnet='/subscriptions/22222222-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/svc')
-        validate_vnet(_get_test_cmd(), ns)
+        validate_vnet(get_test_cmd(), ns)
 
         # bind with the same route table
-        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None, sku=None, location='eastus',
+        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None,
+                       sku=None, location='eastus',
                        app_subnet='/subscriptions/55555555-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/app',
                        service_runtime_subnet='/subscriptions/55555555-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/svc')
         with self.assertRaises(CLIError) as context:
-            validate_vnet(_get_test_cmd(), ns)
-        self.assertTrue('--service-runtime-subnet and --app-subnet should associate with different route tables.' in str(context.exception))
+            validate_vnet(get_test_cmd(), ns)
+        self.assertTrue(
+            '--service-runtime-subnet and --app-subnet should associate with different route tables.' in str(
+                context.exception))
 
         # one subnet bind route table while the other not
-        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None, sku=None, location='eastus',
+        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None,
+                       sku=None, location='eastus',
                        app_subnet='/subscriptions/66666666-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/app',
                        service_runtime_subnet='/subscriptions/66666666-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/svc')
         with self.assertRaises(CLIError) as context:
-            validate_vnet(_get_test_cmd(), ns)
-        self.assertTrue('--service-runtime-subnet and --app-subnet should both associate with different route tables or neither.' in str(context.exception))
+            validate_vnet(get_test_cmd(), ns)
+        self.assertTrue(
+            '--service-runtime-subnet and --app-subnet should both associate with different route tables or neither.' in str(
+                context.exception))
 
     def test_subnets_same(self):
-        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None, sku=None, location='eastus',
+        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None,
+                       sku=None, location='eastus',
                        app_subnet='/subscriptions/11111111-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/virtualnetworks/test-Vnet/subnets/app',
                        service_runtime_subnet='/subscriptions/11111111-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet/subnets/app')
         with self.assertRaises(CLIError) as context:
-            validate_vnet(_get_test_cmd(), ns)
+            validate_vnet(get_test_cmd(), ns)
         self.assertEqual('--app-subnet and --service-runtime-subnet should not be the same.', str(context.exception))
 
     def test_subnets_in_different_vnet(self):
-        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None, sku=None, location='eastus',
+        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.0/16', resource_group='test', vnet=None,
+                       sku=None, location='eastus',
                        app_subnet='/subscriptions/11111111-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/virtualnetworks/test-Vnet/subnets/app',
                        service_runtime_subnet='/subscriptions/11111111-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/VirtualNetworks/test-vnet1/subnets/svc')
         with self.assertRaises(CLIError) as context:
-            validate_vnet(_get_test_cmd(), ns)
+            validate_vnet(get_test_cmd(), ns)
         self.assertEqual('--app-subnet and --service-runtime-subnet should be in the same Virtual Networks.',
                          str(context.exception))
 
@@ -271,12 +274,14 @@ class TestValidateIPRanges(unittest.TestCase):
     @mock.patch('azext_spring._validators._get_graph_rbac_management_client',
                 _mock_get_graph_rbac_management_client)
     def test_vnet_location(self):
-        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.1/16', resource_group='test', vnet=None, sku=None, location='westus',
+        ns = Namespace(reserved_cidr_range='10.0.0.0/8,20.0.0.0/16,30.0.0.1/16', resource_group='test', vnet=None,
+                       sku=None, location='westus',
                        app_subnet='/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/app',
                        service_runtime_subnet='/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/svc')
         with self.assertRaises(CLIError) as context:
-            validate_vnet(_get_test_cmd(), ns)
-        self.assertTrue('--vnet and Azure Spring Apps instance should be in the same location.' in str(context.exception))
+            validate_vnet(get_test_cmd(), ns)
+        self.assertTrue(
+            '--vnet and Azure Spring Apps instance should be in the same location.' in str(context.exception))
 
 
 def _mock_term_client(accepted, registered):
@@ -284,10 +289,12 @@ def _mock_term_client(accepted, registered):
         term = mock.MagicMock()
         term.accepted = accepted
         return term
+
     def _mock_provider_get(namespace):
         provider = mock.MagicMock()
         provider.registration_state = 'Registered' if registered else 'NotRegistered'
         return provider
+
     client = mock.MagicMock()
     client.marketplace_agreements = mock.MagicMock()
     client.marketplace_agreements.get = _mock_get
@@ -295,33 +302,36 @@ def _mock_term_client(accepted, registered):
     client.providers.get = _mock_provider_get
     return client
 
+
 def _mock_happy_client(cli_ctx, client_type, **kwargs):
     return _mock_term_client(True, True)
+
 
 def _mock_not_accepted_term_client(cli_ctx, client_type, **kwargs):
     return _mock_term_client(False, True)
 
+
 def _mock_not_registered_client(cli_ctx, client_type, **kwargs):
     return _mock_term_client(True, False)
+
 
 class TestSkuValidator(unittest.TestCase):
     @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client', _mock_happy_client)
     def test_happy_path(self):
         ns = Namespace(sku='Enterprise', marketplace_plan_id=None)
-        validate_sku(_get_test_cmd(), ns)
+        validate_sku(get_test_cmd(), ns)
         self.assertEqual('Enterprise', ns.sku.tier)
 
     @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client', _mock_not_accepted_term_client)
     def test_term_not_accept(self):
         ns = Namespace(sku='Enterprise', marketplace_plan_id=None)
         with self.assertRaises(InvalidArgumentValueError) as context:
-            validate_sku(_get_test_cmd(), ns)
+            validate_sku(get_test_cmd(), ns)
         self.assertTrue('Terms for Azure Spring Apps Enterprise is not accepted.' in str(context.exception))
 
     @mock.patch('azure.cli.core.commands.client_factory.get_mgmt_service_client', _mock_not_registered_client)
     def test_provider_not_registered(self):
         ns = Namespace(sku='Enterprise', marketplace_plan_id=None)
         with self.assertRaises(InvalidArgumentValueError) as context:
-            validate_sku(_get_test_cmd(), ns)
+            validate_sku(get_test_cmd(), ns)
         self.assertTrue('Microsoft.SaaS resource provider is not registered.' in str(context.exception))
-

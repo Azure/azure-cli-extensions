@@ -43,7 +43,9 @@ from .repair_utils import (
     _unlock_encrypted_vm_run,
     _create_repair_vm,
     _check_n_start_vm,
-    _check_existing_rg
+    _check_existing_rg,
+    _fetch_architecture,
+    _select_distro_linux_Arm64
 )
 from .exceptions import AzCommandError, RunScriptNotFoundForIdError, SupportingResourceNotFoundError, CommandCanceledByUserError
 logger = get_logger(__name__)
@@ -70,6 +72,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         copy_disk_id = None
         resource_tag = _get_repair_resource_tag(resource_group_name, vm_name)
         created_resources = []
+        architecture_type = _fetch_architecture(source_vm)
 
         # Fetch OS image urn and set OS type for disk create
         if is_linux and _uses_managed_disk(source_vm):
@@ -77,8 +80,11 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             os_type = 'Linux'
             hyperV_generation_linux = _check_linux_hyperV_gen(source_vm)
             if hyperV_generation_linux == 'V2':
-                logger.info('Generation 2 VM detected, RHEL/Centos/Oracle 6 distros not available to be used for rescue VM ')
+                logger.info('Generation 2 VM detected')
                 os_image_urn = _select_distro_linux_gen2(distro)
+            if architecture_type == 'Arm64':
+                logger.info('ARM64 VM detected')
+                os_image_urn = _select_distro_linux_Arm64(distro)
             else:
                 os_image_urn = _select_distro_linux(distro)
         else:
@@ -424,11 +430,20 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             # Fetch run path from GitHub
             repair_script_path = _fetch_run_script_path(run_id)
             run_command_params.append('script_path="./{}"'.format(repair_script_path))
-
         # Custom script scenario for script testers
         else:
             run_command_params.append('script_path=no-op')
             additional_scripts.append(custom_script_file)
+
+        if preview:
+            parts = preview.split('/')
+            if len(parts) < 7 or parts.index('map.json') == -1:
+                raise Exception('Invalid preview url. Write full URL of map.json file. example https://github.com/Azure/repair-script-library/blob/main/map.json')
+            last_index = parts.index('map.json')
+            fork_name = parts[last_index - 4]
+            branch_name = parts[last_index - 1]
+            run_command_params.append('repo_fork="{}"'.format(fork_name))
+            run_command_params.append('repo_branch="{}"'.format(branch_name))
 
         # Append Parameters
         if parameters:
@@ -513,6 +528,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         return_dict = command.init_return_dict()
         return_dict['script_status'] = command.script.status
         return_dict['logs'] = stdout
+        return_dict['err'] = stderr
         return_dict['log_full_path'] = log_fullpath
         return_dict['output'] = command.script.output
         return_dict['vm_name'] = repair_vm_name
@@ -596,6 +612,18 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         vnet_resource_group = subnet_id_tokens[-7]
         ipconfig_name = ip_config_object['name']
         orig_ip_address = ip_config_object['privateIPAddress']
+        application_names=""
+        applicationSecurityGroups='applicationSecurityGroups'
+        if applicationSecurityGroups in ip_config_object:
+            for item in ip_config_object[applicationSecurityGroups]:
+                application_id_tokens = item['id'].split('/')
+                if application_id_tokens[-1] is not None:
+
+                    application_names+=application_id_tokens[-1]+ " "
+                    
+        logger.info('applicationSecurityGroups {application_names}...\n')
+
+        
         # Dynamic | Static
         orig_ip_allocation_method = ip_config_object['privateIPAllocationMethod']
 
@@ -610,22 +638,41 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         # 3) Update private IP address to another in subnet. This will invoke and wait for a VM restart.
         logger.info('Updating VM IP configuration. This might take a few minutes...\n')
         # Update IP address
-        update_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} ' \
-                            .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address)
+        if application_names:
+            update_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} --asgs {asgs}' \
+                                .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address,asgs=application_names)
+        else:
+            logger.info('applicationSecurityGroups do not exist...\n')
+            update_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip}' \
+                                .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address)
         _call_az_command(update_ip_command)
+        
+         # Wait for IP updated
+        wait_ip_update_command = 'az network nic ip-config wait --updated -g {g} --nic-name {nic}' \
+                                .format(g=resource_group_name, nic=primary_nic_name)
+        _call_az_command(wait_ip_update_command)
 
+            
         # 4) Change things back. This will also invoke and wait for a VM restart.
         logger.info('NIC reset is complete. Now reverting back to your original configuration...\n')
         # If user had dynamic config, change back to dynamic
         revert_ip_command = None
         if orig_ip_allocation_method == DYNAMIC_CONFIG:
             # Revert Static to Dynamic
-            revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method}' \
-                                .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG)
+            if application_names:
+                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method} --asgs {asgs}' \
+                                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG,asgs=application_names)
+            else:
+                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method}' \
+                                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG)
         else:
             # Revert to original static ip
-            revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} ' \
-                                .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address)
+            if application_names:
+                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} --asgs {asgs}' \
+                                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address,asgs=application_names)
+            else:
+                revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} ' \
+                                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address)
 
         _call_az_command(revert_ip_command)
         logger.info('VM guest NIC reset is complete and all configurations are reverted.')
@@ -701,7 +748,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     logger.info('Running fstab run command')
 
     try:
-        run_out = run(cmd, repair_vm_name, repair_group_name, run_id='linux-alar2', parameters=["fstab"])
+        run_out = run(cmd, repair_vm_name, repair_group_name, run_id='linux-alar2', parameters=["fstab", "initiator=SELFHELP"])
 
     except Exception:
         command.set_status_error()
@@ -732,3 +779,18 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     repair_vm_id = _call_az_command(show_vm_id)
 
     restore(cmd, vm_name, resource_group_name, copy_disk_name, repair_vm_id, yes=True)
+
+    command.message = 'fstab script has been applied to the source VM. A new repair VM \'{n}\' was created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
+        'The repairs were complete using the fstab script and the repair VM was then deleted. ' \
+        'The repair disk was restored to the source VM. ' \
+        .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name)
+
+    command.set_status_success()
+    if command.error_stack_trace:
+        logger.debug(command.error_stack_trace)
+    # Generate return object and log errors if needed
+    return_dict = command.init_return_dict()
+
+    logger.info('\n%s\n', command.message)
+
+    return return_dict

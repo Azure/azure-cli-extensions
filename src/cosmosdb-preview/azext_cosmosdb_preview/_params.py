@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, too-many-statements
 
+import argparse
 from argcomplete.completers import FilesCompleter
 
 from azext_cosmosdb_preview._validators import (
@@ -28,16 +29,21 @@ from azext_cosmosdb_preview.actions import (
     CreatePhysicalPartitionIdListAction)
 
 from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
-    ContinuousTier
-)
+    DefaultConsistencyLevel,
+    DatabaseAccountKind,
+    ServerVersion,
+    NetworkAclBypass,
+    BackupPolicyType,
+    AnalyticalStorageSchemaType,
+    BackupStorageRedundancy,
+    CapacityMode,
+    ContinuousTier,
+    DefaultPriorityLevel)
 
 from azure.cli.core.util import shell_safe_json_parse
 
 from azure.cli.core.commands.parameters import (
     tags_type, get_resource_name_completion_list, name_type, get_enum_type, get_three_state_flag, get_location_type)
-
-from azure.mgmt.cosmosdb.models import (
-    DefaultConsistencyLevel, DatabaseAccountKind, ServerVersion, NetworkAclBypass, BackupPolicyType, AnalyticalStorageSchemaType, BackupStorageRedundancy)
 
 from azure.cli.command_modules.cosmosdb.actions import (
     CreateLocation, CreateDatabaseRestoreResource, UtcDatetimeAction)
@@ -108,10 +114,15 @@ def load_arguments(self, _):
             'managed-cassandra cluster update',
             'managed-cassandra cluster show',
             'managed-cassandra cluster delete',
+            'managed-cassandra cluster deallocate',
             'managed-cassandra cluster backup list',
             'managed-cassandra cluster backup show']:
         with self.argument_context(scope) as c:
             c.argument('cluster_name', options_list=['--cluster-name', '-c'], help="Cluster Name", required=True)
+
+        # Managed Cassandra Cluster
+        with self.argument_context('managed-cassandra cluster deallocate') as c:
+            c.argument('force', options_list=['--force', '-f'], help="Force to deallocate the cluster", required=False)
 
     # Managed Cassandra Cluster
     for scope in [
@@ -128,6 +139,8 @@ def load_arguments(self, _):
             c.argument('gossip_certificates', help="A list of certificates that should be accepted by on-premise data centers.")
             c.argument('external_seed_nodes', nargs='+', validator=validate_seednodes, help="A list of ip addresses of the seed nodes of on-premise data centers.")
             c.argument('identity_type', options_list=['--identity-type'], arg_type=get_enum_type(['None', 'SystemAssigned']), help="Type of identity used for Customer Managed Disk Key.")
+            c.argument("cluster_type", options_list=['--cluster-type'], help="Type of the cluster, can be Production or NonProduction. If set to Production, operations on cluster might have restrictions.", arg_type=get_enum_type(['Production', 'NonProduction']))
+            c.argument('extensions', nargs='*', help="A set of extensions that will be effective on the cluster. It will replace the entire set of extensions with new set. Use \"\" to remove all. Now Available: cassandra-lucene-index.")
 
     # Managed Cassandra Cluster
     with self.argument_context('managed-cassandra cluster create') as c:
@@ -267,6 +280,7 @@ def load_arguments(self, _):
         c.argument('service_name', options_list=['--name', '-n'], help="Service Name.")
         c.argument('instance_count', options_list=['--count', '-c'], help="Instance Count.")
         c.argument('instance_size', options_list=['--size'], help="Instance Size. Possible values are: Cosmos.D4s, Cosmos.D8s, Cosmos.D16s etc")
+        c.argument('dedicated_gateway_type', options_list=['--gateway-type'], arg_type=get_enum_type(['IntegratedCache', 'DistributedQuery']), help="Dedicated Gateway Type. Valid only for SqlDedicatedGateway service kind")
 
     with self.argument_context('cosmosdb service create') as c:
         c.argument('instance_size', options_list=['--size'], help="Instance Size. Possible values are: Cosmos.D4s, Cosmos.D8s, Cosmos.D16s etc")
@@ -290,15 +304,16 @@ def load_arguments(self, _):
     # CosmosDB account create with gremlin and tables to restore
     with self.argument_context('cosmosdb create') as c:
         c.argument('account_name', completer=None)
-        c.argument('key_uri', help="The URI of the key vault", is_preview=True)
         c.argument('enable_free_tier', arg_type=get_three_state_flag(), help="If enabled the account is free-tier.", is_preview=True)
-        c.argument('assign_identity', nargs='*', help="Assign system or user assigned identities separated by spaces. Use '[system]' to refer system assigned identity.", is_preview=True)
+        c.argument('assign_identity', nargs='*', help="Assign system or user assigned identities separated by spaces. Use '[system]' to refer system assigned identity.")
+        c.argument('key_uri', help="The URI of the key vault")
         c.argument('is_restore_request', options_list=['--is-restore-request', '-r'], arg_type=get_three_state_flag(), help="Restore from an existing/deleted account.", is_preview=True, arg_group='Restore')
         c.argument('restore_source', help="The restorable-database-account Id of the source account from which the account has to be restored. Required if --is-restore-request is set to true.", is_preview=True, arg_group='Restore')
         c.argument('restore_timestamp', action=UtcDatetimeAction, help="The timestamp to which the account has to be restored to. Required if --is-restore-request is set to true.", is_preview=True, arg_group='Restore')
         c.argument('databases_to_restore', nargs='+', action=CreateDatabaseRestoreResource, is_preview=True, arg_group='Restore')
         c.argument('gremlin_databases_to_restore', nargs='+', action=CreateGremlinDatabaseRestoreResource, is_preview=True, arg_group='Restore')
         c.argument('tables_to_restore', nargs='+', action=CreateTableRestoreResource, is_preview=True, arg_group='Restore')
+        c.argument('enable_partition_merge', arg_type=get_three_state_flag(), is_preview=True, help="Flag to enable partition merge on the account.")
 
     for scope in ['cosmosdb create', 'cosmosdb update']:
         with self.argument_context(scope) as c:
@@ -316,7 +331,7 @@ def load_arguments(self, _):
             c.argument('virtual_network_rules', nargs='+', validator=validate_virtual_network_rules, help='ACL\'s for virtual network')
             c.argument('enable_multiple_write_locations', arg_type=get_three_state_flag(), help="Enable Multiple Write Locations")
             c.argument('disable_key_based_metadata_write_access', arg_type=get_three_state_flag(), help="Disable write operations on metadata resources (databases, containers, throughput) via account keys")
-            c.argument('enable_public_network', options_list=['--enable-public-network', '-e'], arg_type=get_three_state_flag(), help="Enable or disable public network access to server.")
+            c.argument('public_network_access', options_list=['--public-network-access', '-p'], arg_type=get_enum_type(['ENABLED', 'DISABLED', 'SECUREDBYPERIMETER']), help="Sets public network access in server to either Enabled, Disabled, or SecuredByPerimeter.")
             c.argument('enable_analytical_storage', arg_type=get_three_state_flag(), help="Flag to enable log storage on the account.")
             c.argument('network_acl_bypass', arg_type=get_enum_type(NetworkAclBypass), options_list=['--network-acl-bypass'], help="Flag to enable or disable Network Acl Bypass.")
             c.argument('network_acl_bypass_resource_ids', nargs='+', options_list=['--network-acl-bypass-resource-ids', '-i'], help="List of Resource Ids to allow Network Acl Bypass.")
@@ -324,12 +339,20 @@ def load_arguments(self, _):
             c.argument('backup_retention', type=int, help="the time(in hours) for which each backup is retained (only for accounts with periodic mode backups)", arg_group='Backup Policy')
             c.argument('backup_redundancy', arg_type=get_enum_type(BackupStorageRedundancy), help="The redundancy type of the backup Storage account", arg_group='Backup Policy')
             c.argument('server_version', arg_type=get_enum_type(ServerVersion), help="Valid only for MongoDB accounts.")
-            c.argument('default_identity', help="The primary identity to access key vault in CMK related features. e.g. 'FirstPartyIdentity', 'SystemAssignedIdentity' and more.", is_preview=True)
+            c.argument('default_identity', help="The primary identity to access key vault in CMK related features. e.g. 'FirstPartyIdentity', 'SystemAssignedIdentity' and more.")
             c.argument('analytical_storage_schema_type', options_list=['--analytical-storage-schema-type', '--as-schema'], arg_type=get_enum_type(AnalyticalStorageSchemaType), help="Schema type for analytical storage.", arg_group='Analytical Storage Configuration')
             c.argument('backup_policy_type', arg_type=get_enum_type(BackupPolicyType), help="The type of backup policy of the account to create", arg_group='Backup Policy')
             c.argument('continuous_tier', arg_type=get_enum_type(ContinuousTier), help="The tier of Continuous backup", arg_group='Backup Policy')
             c.argument('enable_materialized_views', options_list=['--enable-materialized-views', '--enable-mv'], arg_type=get_three_state_flag(), help="Flag to enable MaterializedViews on the account.", is_preview=True)
             c.argument('enable_burst_capacity', arg_type=get_three_state_flag(), help="Flag to enable burst capacity on the account.", is_preview=True)
+            c.argument('enable_priority_based_execution', options_list=['--enable-priority-based-execution', '--enable-pbe'], arg_type=get_three_state_flag(), help="Flag to enable priority based execution on the account.", is_preview=True)
+            c.argument('default_priority_level', arg_type=get_enum_type(DefaultPriorityLevel), help="Default Priority Level of Request if not specified.", is_preview=True)
+            c.argument('enable_prpp_autoscale', arg_type=get_three_state_flag(), help="Enable or disable PerRegionPerPartitionAutoscale.", is_preview=True)
+            c.argument('enable_partition_merge', arg_type=get_three_state_flag(), help="Flag to enable partition merge on the account.")
+            c.argument('capacity_mode', options_list=['--capacity-mode'], arg_type=get_enum_type(CapacityMode), help="CapacityMode of the account.", is_preview=True)
+
+    with self.argument_context('cosmosdb update') as c:
+        c.argument('key_uri', help="The URI of the key vault", is_preview=True)
 
     with self.argument_context('cosmosdb restore') as c:
         c.argument('target_database_account_name', options_list=['--target-database-account-name', '-n'], help='Name of the new target Cosmos DB database account after the restore')
@@ -339,10 +362,11 @@ def load_arguments(self, _):
         c.argument('databases_to_restore', nargs='+', action=CreateDatabaseRestoreResource)
         c.argument('gremlin_databases_to_restore', nargs='+', action=CreateGremlinDatabaseRestoreResource, is_preview=True)
         c.argument('tables_to_restore', nargs='+', action=CreateTableRestoreResource, is_preview=True)
-        c.argument('assign_identity', nargs='*', help="Assign system or user assigned identities separated by spaces. Use '[system]' to refer system assigned identity.", is_preview=True)
-        c.argument('default_identity', help="The primary identity to access key vault in CMK related features. e.g. 'FirstPartyIdentity', 'SystemAssignedIdentity' and more.", is_preview=True)
-        c.argument('enable_public_network', options_list=['--enable-public-network', '-e'], arg_type=get_three_state_flag(), help="Enable or disable public network access to server.", is_preview=True)
+        c.argument('assign_identity', nargs='*', help="Assign system or user assigned identities separated by spaces. Use '[system]' to refer system assigned identity.")
+        c.argument('default_identity', help="The primary identity to access key vault in CMK related features. e.g. 'FirstPartyIdentity', 'SystemAssignedIdentity' and more.")
+        c.argument('public_network_access', options_list=['--public-network-access', '-p'], arg_type=get_enum_type(['ENABLED', 'DISABLED']), help="Sets public network access in server to either Enabled or Disabled.")
         c.argument('source_backup_location', help="This is the location of the source account where backups are located. Provide this value if the source and target are in different locations.", is_preview=True)
+        c.argument('disable_ttl', options_list=['--disable-ttl'], arg_type=get_three_state_flag(), help="Enable or disable restoring with ttl disabled.", is_preview=True)
 
     # Restorable Database Accounts
     with self.argument_context('cosmosdb restorable-database-account show') as c:
@@ -437,7 +461,40 @@ def load_arguments(self, _):
             'cosmosdb dts resume',
             'cosmosdb dts cancel']:
         with self.argument_context(scope) as c:
-            c.argument('job_name', options_list=['--job-name', '-n'], help='Name of the Data Transfer Job.')
+            c.argument('job_name', options_list=['--job-name', '-n'], help='Name of the Data Transfer Job.', required=True)
+
+    with self.argument_context('cosmosdb copy create') as c:
+        c.argument('job_name', job_name_type)
+        c.argument('src_account', help='Name of the Azure Cosmos DB source database account.', completer=get_resource_name_completion_list('Microsoft.DocumentDb/databaseAccounts'), id_part='name')
+        c.argument('dest_account', help='Name of the Azure Cosmos DB destination database account.', completer=get_resource_name_completion_list('Microsoft.DocumentDb/databaseAccounts'), id_part='name')
+        c.argument('src_cassandra', nargs='+', arg_group='Azure Cosmos DB API for Apache Cassandra table copy', action=AddCassandraTableAction, help='Source Cassandra table details')
+        c.argument('src_mongo', nargs='+', arg_group='Azure Cosmos DB API for MongoDB collection copy', action=AddMongoCollectionAction, help='Source Mongo collection details')
+        c.argument('src_nosql', nargs='+', arg_group='Azure Cosmos DB API for NoSQL container copy', action=AddSqlContainerAction, help='Source NoSql container details')
+        c.argument('dest_cassandra', nargs='+', arg_group='Azure Cosmos DB API for Apache Cassandra table copy', action=AddCassandraTableAction, help='Destination Cassandra table details')
+        c.argument('dest_mongo', nargs='+', arg_group='Azure Cosmos DB API for MongoDB collection copy', action=AddMongoCollectionAction, help='Destination Mongo collection details')
+        c.argument('dest_nosql', nargs='+', arg_group='Azure Cosmos DB API for NoSQL container copy', action=AddSqlContainerAction, help='Destination NoSql container details')
+        c.argument('host_copy_on_src', arg_type=get_three_state_flag(), help=argparse.SUPPRESS)
+        c.argument('worker_count', type=int, help=argparse.SUPPRESS)
+        c.argument('mode', help='Copy Mode (Online / Offline)')
+
+    for scope in [
+            'cosmosdb copy list',
+            'cosmosdb copy show',
+            'cosmosdb copy pause',
+            'cosmosdb copy resume',
+            'cosmosdb copy cancel',
+            'cosmosdb copy complete']:
+        with self.argument_context(scope) as c:
+            c.argument('account_name', options_list=["--account-name", "-a"], id_part=None, required=True, help='Azure Cosmos DB account name where the job is created. Use --dest-account value from create job command.')
+
+    for scope in [
+            'cosmosdb copy show',
+            'cosmosdb copy pause',
+            'cosmosdb copy resume',
+            'cosmosdb copy cancel',
+            'cosmosdb copy complete']:
+        with self.argument_context(scope) as c:
+            c.argument('job_name', options_list=['--job-name', '-n'], help='Name of the container copy job.', required=True)
 
     max_throughput_type = CLIArgumentType(options_list=['--max-throughput'], help='The maximum throughput resource can scale to (RU/s). Provided when the resource is autoscale enabled. The minimum value can be 4000 (RU/s)')
 
@@ -520,43 +577,50 @@ def load_arguments(self, _):
     with self.argument_context('cosmosdb sql database restore') as c:
         c.argument('account_name', account_name_type, id_part=None, required=True)
         c.argument('database_name', options_list=['--name', '-n'], help="Database name", required=True)
-        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the database needs to be restored to.", required=True)
+        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the database needs to be restored to.", required=False)
+        c.argument('disable_ttl', options_list=['--disable-ttl'], arg_type=get_three_state_flag(), help="Enable or disable restoring with ttl disabled.", is_preview=True, required=False)
 
     # SQL collection restore
     with self.argument_context('cosmosdb sql container restore') as c:
         c.argument('account_name', account_name_type, id_part=None, required=True)
         c.argument('database_name', database_name_type, required=True)
         c.argument('container_name', options_list=['--name', '-n'], help="Container name", required=True)
-        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the container needs to be restored to.", required=True)
+        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the container needs to be restored to.", required=False)
+        c.argument('disable_ttl', options_list=['--disable-ttl'], arg_type=get_three_state_flag(), help="Enable or disable restoring with ttl disabled.", is_preview=True, required=False)
 
     # MongoDB database restore
     with self.argument_context('cosmosdb mongodb database restore') as c:
         c.argument('account_name', account_name_type, id_part=None, required=True)
         c.argument('database_name', options_list=['--name', '-n'], help="Database name", required=True)
-        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the database needs to be restored to.", required=True)
+        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the database needs to be restored to.", required=False)
+        c.argument('disable_ttl', options_list=['--disable-ttl'], arg_type=get_three_state_flag(), help="Enable or disable restoring with ttl disabled.", is_preview=True, required=False)
 
     # MongoDB collection restore
     with self.argument_context('cosmosdb mongodb collection restore') as c:
         c.argument('account_name', account_name_type, id_part=None, required=True)
         c.argument('database_name', database_name_type, required=True)
         c.argument('collection_name', options_list=['--name', '-n'], help="Collection name", required=True)
-        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the collection needs to be restored to.", required=True)
+        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the collection needs to be restored to.", required=False)
+        c.argument('disable_ttl', options_list=['--disable-ttl'], arg_type=get_three_state_flag(), help="Enable or disable restoring with ttl disabled.", is_preview=True, required=False)
 
     # Gremlin database restore
     with self.argument_context('cosmosdb gremlin database restore') as c:
         c.argument('account_name', account_name_type, id_part=None, required=True)
         c.argument('database_name', options_list=['--name', '-n'], help="Name of the CosmosDB Gremlin database name", required=True)
-        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the database needs to be restored to.", required=True)
+        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the database needs to be restored to.", required=False)
+        c.argument('disable_ttl', options_list=['--disable-ttl'], arg_type=get_three_state_flag(), help="Enable or disable restoring with ttl disabled.", is_preview=True, required=False)
 
     # Gremlin Graph restore
     with self.argument_context('cosmosdb gremlin graph restore') as c:
         c.argument('account_name', account_name_type, id_part=None, required=True)
         c.argument('database_name', database_name_type, required=True, help='Name of the CosmosDB Gremlin database name')
         c.argument('graph_name', options_list=['--name', '-n'], help="Name of the CosmosDB Gremlin graph name", required=True)
-        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the graph needs to be restored to.", required=True)
+        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the graph needs to be restored to.", required=False)
+        c.argument('disable_ttl', options_list=['--disable-ttl'], arg_type=get_three_state_flag(), help="Enable or disable restoring with ttl disabled.", is_preview=True, required=False)
 
     # Table restore
     with self.argument_context('cosmosdb table restore') as c:
         c.argument('account_name', account_name_type, id_part=None, required=True)
         c.argument('table_name', options_list=['--table-name', '-n'], required=True, help='Name of the CosmosDB Table name')
-        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the Table needs to be restored to.", required=True)
+        c.argument('restore_timestamp', options_list=['--restore-timestamp', '-t'], action=UtcDatetimeAction, help="The timestamp to which the Table needs to be restored to.", required=False)
+        c.argument('disable_ttl', options_list=['--disable-ttl'], arg_type=get_three_state_flag(), help="Enable or disable restoring with ttl disabled.", is_preview=True, required=False)

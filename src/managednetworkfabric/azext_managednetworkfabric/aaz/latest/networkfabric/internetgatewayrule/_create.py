@@ -21,13 +21,13 @@ class Create(AAZCommand):
         az networkfabric internetgatewayrule create --resource-group "example-rg" --location "westus3" --resource-name "example-internetgatewayrule" --rule-properties "{action:Allow,addressList:['10.10.10.10']}"
 
     :example: Help text for sub parameters under the specific parent can be viewed by using the shorthand syntax '??'. See https://github.com/Azure/azure-cli/tree/dev/doc/shorthand_syntax.md for more about shorthand syntax.
-        az networkfabric internetgatewayrule create --rule-properties ??
+        az networkfabric internetgatewayrule create --rule-properties "??"
     """
 
     _aaz_info = {
-        "version": "2023-06-15",
+        "version": "2024-02-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/internetgatewayrules/{}", "2023-06-15"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.managednetworkfabric/internetgatewayrules/{}", "2024-02-15-preview"],
         ]
     }
 
@@ -54,7 +54,6 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of the resource group",
             required=True,
         )
 
@@ -198,7 +197,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-15",
+                    "api-version", "2024-02-15-preview",
                     required=True,
                 ),
             }

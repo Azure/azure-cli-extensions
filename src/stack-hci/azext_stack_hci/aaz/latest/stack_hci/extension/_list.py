@@ -22,11 +22,13 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01",
+        "version": "2023-08-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}/arcsettings/{}/extensions", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurestackhci/clusters/{}/arcsettings/{}/extensions", "2023-08-01"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -128,7 +130,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-08-01",
                     required=True,
                 ),
             }
@@ -221,25 +223,15 @@ class List(AAZCommand):
             extension_parameters.force_update_tag = AAZStrType(
                 serialized_name="forceUpdateTag",
             )
-            extension_parameters.protected_settings = AAZObjectType(
+            extension_parameters.protected_settings = AAZFreeFormDictType(
                 serialized_name="protectedSettings",
                 flags={"secret": True},
             )
             extension_parameters.publisher = AAZStrType()
-            extension_parameters.settings = AAZObjectType()
+            extension_parameters.settings = AAZFreeFormDictType()
             extension_parameters.type = AAZStrType()
             extension_parameters.type_handler_version = AAZStrType(
                 serialized_name="typeHandlerVersion",
-            )
-
-            protected_settings = cls._schema_on_200.value.Element.properties.extension_parameters.protected_settings
-            protected_settings.workspace_key = AAZStrType(
-                serialized_name="workspaceKey",
-            )
-
-            settings = cls._schema_on_200.value.Element.properties.extension_parameters.settings
-            settings.workspace_id = AAZStrType(
-                serialized_name="workspaceId",
             )
 
             per_node_extension_details = cls._schema_on_200.value.Element.properties.per_node_extension_details

@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import re
+
 from azure.cli.testsdk.scenario_tests import RecordingProcessor
 from azure.cli.testsdk.scenario_tests.utilities import is_text_payload
 
@@ -43,5 +44,5 @@ class RegexSingleValueReplacer(RecordingProcessor):
 
 class SpringTestEndpointReplacer(RegexSingleValueReplacer):
     def __init__(self):
-        super(SpringTestEndpointReplacer, self).__init__(re.compile(f'(?<="primaryKey":")[^"]+|(?<="secondaryKey":")[^"]+|(?<="primaryTestEndpoint":")[^"]+|(?<="secondaryTestEndpoint":")[^"]+', re.IGNORECASE),
-                                                   'primary', 'fake')
+        regex_string = '(?<="primaryKey":")[^"]+|(?<="secondaryKey":")[^"]+|(?<="primaryTestEndpoint":")[^"]+|(?<="secondaryTestEndpoint":")[^"]+'
+        super(SpringTestEndpointReplacer, self).__init__(re.compile(regex_string, re.IGNORECASE), 'primary', 'fake')

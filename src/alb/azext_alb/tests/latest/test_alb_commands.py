@@ -10,6 +10,7 @@ import unittest
 import tempfile
 
 from azure.cli.testsdk import *
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from knack.util import CLIError
 from azure.cli.core.profiles import supported_api_version, ResourceType
 from azure.cli.core.commands.client_factory import get_subscription_id
@@ -30,15 +31,15 @@ class AlbScenario(ScenarioTest):
             'subnet': "s1"
         })
         
-        #Works with subscription db308457-7e8c-44cc-a8a7-c6d7daee414d
+        #Works with subscription 668f1741-ef48-4132-bf98-28b3a3d3f257
         # Create Resource group.
-        self.cmd('group create -n {rg} --location canadaeast')
+        self.cmd('group create -n {rg} --location northeurope')
 
         # Create Traffic Controller
-        tcCount1 = len(self.cmd('network alb list').get_output_in_json())
+        tcCount1 = len(self.cmd('network alb list -g {rg}').get_output_in_json())
         self.cmd('network alb create -g {rg} -n {tc} --tags foo=doo',
                     checks=self.check('tags.foo', 'doo'))
-        tcCount2 = len(self.cmd('network alb list').get_output_in_json())
+        tcCount2 = len(self.cmd('network alb list -g {rg}').get_output_in_json())
         self.assertTrue(tcCount2 == tcCount1 + 1)
         self.cmd('network alb show -g {rg} -n {tc}', checks=[
             self.check('name', '{tc}'),
@@ -56,7 +57,7 @@ class AlbScenario(ScenarioTest):
         ])
 
         #Create Association for traffic controller. Currently this tests will only work in subscription db308457-7e8c-44cc-a8a7-c6d7daee414d
-        vnet = self.cmd('network vnet create -g {rg} -n {vnet} --subnet-name {subnet} --location eastus').get_output_in_json()
+        vnet = self.cmd('network vnet create -g {rg} -n {vnet} --subnet-name {subnet}').get_output_in_json()
         subnet = self.cmd('network vnet subnet update -g {rg} -n {subnet} --vnet-name {vnet} --delegations Microsoft.ServiceNetworking/trafficControllers').get_output_in_json()
 
         associationCount1 = len(self.cmd('network alb association list -g {rg} --alb-name {tc}').get_output_in_json())
@@ -77,7 +78,7 @@ class AlbScenario(ScenarioTest):
         self.assertTrue(tcFrontendCount3 == tcFrontendCount1)
 
         self.cmd('network alb delete -g {rg} -n {tc} -y')
-        tcCount3 = len(self.cmd('network alb list').get_output_in_json())
+        tcCount3 = len(self.cmd('network alb list -g {rg}').get_output_in_json())
         self.assertTrue(tcCount3 == tcCount1)
 
         self.cmd('network vnet delete -g {rg} -n {vnet}')

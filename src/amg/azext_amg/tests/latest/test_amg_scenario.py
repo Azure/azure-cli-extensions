@@ -10,19 +10,26 @@ import unittest
 
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, MSGraphNameReplacer, MOCKED_USER_NAME)
-from azure.cli.testsdk .scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+
 from .test_definitions import (test_data_source, test_notification_channel, test_dashboard)
+from .recording_processors import ApiKeyServiceAccountTokenReplacer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class AmgScenarioTest(ScenarioTest):
 
+    def __init__(self, method_name):
+        super().__init__(method_name, recording_processors=[
+            ApiKeyServiceAccountTokenReplacer()
+        ])
+
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
     def test_amg_crud(self, resource_group):
 
         self.kwargs.update({
-            'name': 'clitestamg2',
+            'name': self.create_random_name(prefix='clitestamg', length=23),
             'location': 'westcentralus'
         })
 
@@ -62,12 +69,11 @@ class AmgScenarioTest(ScenarioTest):
         final_count = len(self.cmd('grafana list').get_output_in_json())
         self.assertTrue(final_count, count - 1)
 
-
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
     def test_api_key_e2e(self, resource_group):
 
         self.kwargs.update({
-            'name': 'clitestamgapikey',
+            'name': self.create_random_name(prefix='clitestamgapikey', length=23),
             'location': 'westcentralus',
             "key": "apikey1",
             "key2": "apikey2"
@@ -98,7 +104,7 @@ class AmgScenarioTest(ScenarioTest):
     def test_service_account_e2e(self, resource_group):
 
         self.kwargs.update({
-            'name': 'clitestserviceaccount',
+            'name': self.create_random_name(prefix='clitestamgsvcacct', length=23),
             'location': 'westcentralus',
             "account": "myServiceAccount",
             "token": "myToken"
@@ -142,7 +148,7 @@ class AmgScenarioTest(ScenarioTest):
 
         # Test Instance
         self.kwargs.update({
-            'name': 'clitestamge2e',
+            'name': self.create_random_name(prefix='clitestamge2e', length=23),
             'location': 'westeurope'
         })
 
@@ -167,10 +173,10 @@ class AmgScenarioTest(ScenarioTest):
                 self.check('tags.foo', 'doo')
             ])
 
-            # Test User      
+            # Test User
             response_list = self.cmd('grafana user list -g {rg} -n {name}').get_output_in_json()
             self.assertTrue(len(response_list) > 0)
-        
+
             response_actual_user = self.cmd('grafana user actual-user -g {rg} -n {name}').get_output_in_json()
             self.assertTrue(len(response_actual_user) > 0)
 
@@ -179,10 +185,10 @@ class AmgScenarioTest(ScenarioTest):
                 'title': 'Test Folder',
                 'update_title': 'Test Folder Update'
             })
-        
+
             response_create = self.cmd('grafana folder create -g {rg} -n {name} --title "{title}"', checks=[
                 self.check("[title]", "['{title}']")]).get_output_in_json()
-        
+
             self.kwargs.update({
                 'folder_uid': response_create["uid"]
             })
@@ -192,7 +198,7 @@ class AmgScenarioTest(ScenarioTest):
 
             self.cmd('grafana folder update -g {rg} -n {name} --folder "{folder_uid}" --title "{update_title}"', checks=[
                 self.check("[title]", "['{update_title}']")])
-            
+
             response_list = self.cmd('grafana folder list -g {rg} -n {name}').get_output_in_json()
             self.assertTrue(len(response_list) > 0)
 
@@ -200,13 +206,12 @@ class AmgScenarioTest(ScenarioTest):
             response_delete = self.cmd('grafana folder list -g {rg} -n {name}').get_output_in_json()
             self.assertTrue(len(response_delete) == len(response_list) - 1)
 
-
             # Test Data Source
             self.kwargs.update({
                 'definition': test_data_source,
                 'definition_name': test_data_source["name"]
             })
-        
+
             self.cmd('grafana data-source create -g {rg} -n {name} --definition "{definition}"', checks=[
                 self.check("[name]", "['{definition_name}']")])
 
@@ -215,7 +220,7 @@ class AmgScenarioTest(ScenarioTest):
 
             self.cmd('grafana data-source update -g {rg} -n {name} --data-source "{definition_name}" --definition "{definition}"', checks=[
                 self.check("[name]", "['{definition_name}']")])
-            
+
             response_list = self.cmd('grafana data-source list -g {rg} -n {name}').get_output_in_json()
             self.assertTrue(len(response_list) > 0)
 
@@ -223,13 +228,12 @@ class AmgScenarioTest(ScenarioTest):
             response_delete = self.cmd('grafana data-source list -g {rg} -n {name}').get_output_in_json()
             self.assertTrue(len(response_delete) == len(response_list) - 1)
 
-
             # Test Notification Channel
             self.kwargs.update({
                 'definition': test_notification_channel,
                 'definition_name': test_notification_channel["name"]
             })
-        
+
             response_create = self.cmd('grafana notification-channel create -g {rg} -n {name} --definition "{definition}"', checks=[
                 self.check("[name]", "['{definition_name}']")]).get_output_in_json()
 
@@ -242,7 +246,7 @@ class AmgScenarioTest(ScenarioTest):
 
             self.cmd('grafana notification-channel update -g {rg} -n {name} --notification-channel "{notification_channel_uid}" --definition "{definition}"', checks=[
                 self.check("[name]", "['{definition_name}']")])
-            
+
             response_list = self.cmd('grafana notification-channel list -g {rg} -n {name}').get_output_in_json()
             self.assertTrue(len(response_list) > 0)
 
@@ -250,7 +254,6 @@ class AmgScenarioTest(ScenarioTest):
             response_delete = self.cmd('grafana notification-channel list -g {rg} -n {name}').get_output_in_json()
             self.assertTrue(len(response_delete) == len(response_list) - 1)
 
-    
             # Test Dashboard
             definition_name = test_dashboard["dashboard"]["title"]
             slug = definition_name.lower().replace(' ', '-')
@@ -260,7 +263,7 @@ class AmgScenarioTest(ScenarioTest):
                 'definition_name': definition_name,
                 'definition_slug': slug,
             })
-        
+
             response_create = self.cmd('grafana dashboard create -g {rg} -n {name} --definition "{definition}" --title "{definition_name}"', checks=[
                 self.check("[slug]", "['{definition_slug}']")]).get_output_in_json()
 
@@ -293,16 +296,15 @@ class AmgScenarioTest(ScenarioTest):
             final_count = len(self.cmd('grafana list').get_output_in_json())
             self.assertTrue(final_count, count - 1)
 
-
     @AllowLargeResponse(size_kb=3072)
     @ResourceGroupPreparer(name_prefix='cli_test_amg', location='westcentralus')
     def test_amg_backup_restore(self, resource_group):
 
         # Test Instance
         self.kwargs.update({
-            'name': 'clitestbackup',
+            'name': self.create_random_name(prefix='clitestamgbackup', length=23),
             'location': 'westcentralus',
-            'name2': 'clitestbackup2'
+            'name2': self.create_random_name(prefix='clitestamgbackup', length=23)
         })
 
         owner = self._get_signed_in_user()
@@ -320,16 +322,16 @@ class AmgScenarioTest(ScenarioTest):
                 'folderTitle': 'Test Folder',
                 'id': amg1['id'],
                 'id2': amg2['id']
-           })
+            })
             self.cmd('grafana folder create -g {rg} -n {name} --title "{folderTitle}"')
-            
+
             # set up data source
             self.kwargs.update({
                 'dataSourceDefinition': test_data_source,
                 'dataSourceName': test_data_source["name"]
             })
-            self.cmd('grafana data-source create -g {rg} -n {name} --definition "{dataSourceDefinition}"')        
-        
+            self.cmd('grafana data-source create -g {rg} -n {name} --definition "{dataSourceDefinition}"')
+
             # create dashboard
             dashboard_title = test_dashboard["dashboard"]["title"]
             slug = dashboard_title.lower().replace(' ', '-')
@@ -363,7 +365,6 @@ class AmgScenarioTest(ScenarioTest):
                 'dashboardUid3': response_create["uid"],
             })
 
-
             with tempfile.TemporaryDirectory() as temp_dir:
                 self.kwargs.update({
                     'tempDir': temp_dir
@@ -380,7 +381,7 @@ class AmgScenarioTest(ScenarioTest):
                 })
 
                 self.cmd('grafana folder delete -g {rg} -n {name} --folder "{folderTitle}"')
-                self.cmd('grafana data-source delete -g {rg} -n {name} --data-source "{dataSourceName}"') 
+                self.cmd('grafana data-source delete -g {rg} -n {name} --data-source "{dataSourceName}"')
 
                 self.cmd('grafana restore -g {rg} -n {name} --archive-file "{archiveFile}"')
 
@@ -436,8 +437,8 @@ class AmgScenarioTest(ScenarioTest):
             self.cmd('grafana dashboard sync --source {id} --destination {id2} --folders-to-include "{folderTitle}" --dashboards-to-include "{dashboardTitle}"')
             self.cmd('grafana dashboard list -g {rg} -n {name2}', checks=[
                 self.check("length([?uid == '{dashboardUid3}'])", 0),
-                self.check("length([?uid == '{dashboardUid}'])", 1)])
-
+                self.check("length([?uid == '{dashboardUid}'])", 1)
+            ])
 
     def _get_signed_in_user(self):
         account_info = self.cmd('account show').get_output_in_json()

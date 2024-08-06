@@ -74,7 +74,7 @@ def get_permission_scope_values():
 
 
 def get_resource_type_values():
-    return ['Microsoft.RecoveryServices/vaults']
+    return ['Microsoft.RecoveryServices/vaults', 'Microsoft.DataProtection/backupVaults']
 
 
 def get_critical_operation_values():

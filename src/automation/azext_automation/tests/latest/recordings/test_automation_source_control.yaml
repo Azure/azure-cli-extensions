@@ -1,0 +1,1058 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.56.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_automation_source_control_000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001","name":"cli_test_automation_source_control_000001","type":"Microsoft.Resources/resourceGroups","location":"westus2","tags":{"product":"azurecli","cause":"automation","test":"test_automation_source_control","date":"2024-01-22T08:59:48Z","module":"automation"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '423'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jan 2024 08:59:53 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "account000002", "location": "westus2", "properties": {"sku":
+      {"name": "Basic"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation account create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '90'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -n -g
+      User-Agent:
+      - AZURECLI/2.56.0 azsdk-python-mgmt-automation/1.1.0b2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002?api-version=2021-06-22
+  response:
+    body:
+      string: '{"name":"account000002","systemData":{"createdAt":"2024-01-22T08:59:55.33+00:00","lastModifiedAt":"2024-01-22T08:59:55.33+00:00"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002","type":"Microsoft.Automation/AutomationAccounts","location":"westus2","tags":{},"etag":null,"properties":{"disableLocalAuth":false,"sku":{"name":"Basic","family":null,"capacity":null},"state":"Ok","RegistrationUrl":"https://7569bf74-5a2a-40c1-8d7e-cf35a5448419.agentsvc.wus2.azure-automation.net/accounts/7569bf74-5a2a-40c1-8d7e-cf35a5448419","encryption":{"keySource":"Microsoft.Automation","identity":{"userAssignedIdentity":null}},"automationHybridServiceUrl":"https://7569bf74-5a2a-40c1-8d7e-cf35a5448419.jrds.wus2.azure-automation.net/automationAccounts/7569bf74-5a2a-40c1-8d7e-cf35a5448419","RuntimeConfiguration":{"powershell":{"builtinModules":{"Az":"8.0.0"}},"powershell7":{"builtinModules":{"Az":"8.0.0"}},"powershell72":{"builtinModules":{"Az":"8.3.0"}}},"creationTime":"2024-01-22T08:59:55.33+00:00","lastModifiedBy":null,"lastModifiedTime":"2024-01-22T08:59:55.33+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1195'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jan 2024 08:59:55 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002?api-version=2021-06-22
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"identity": {"type": "SystemAssigned"}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - rest
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '40'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -m -u --body
+      User-Agent:
+      - python/3.10.11 (Windows-10-10.0.22631-SP0) AZURECLI/2.56.0
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002?api-version=2020-01-13-preview
+  response:
+    body:
+      string: '{"name":"account000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002","type":"Microsoft.Automation/AutomationAccounts","location":"westus2","identity":{"type":"SystemAssigned","principalId":"a2550939-9ba6-4a59-8518-3b7f9956cf74","tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47"},"tags":{},"etag":null,"properties":{"disableLocalAuth":false,"sku":{"name":"Basic","family":null,"capacity":null},"state":"Ok","RegistrationUrl":"https://7569bf74-5a2a-40c1-8d7e-cf35a5448419.agentsvc.wus2.azure-automation.net/accounts/7569bf74-5a2a-40c1-8d7e-cf35a5448419","encryption":{"keySource":"Microsoft.Automation","identity":{"userAssignedIdentity":null}},"RuntimeConfiguration":{"powershell":{"builtinModules":{"Az":"8.0.0"}},"powershell7":{"builtinModules":{"Az":"8.0.0"}},"powershell72":{"builtinModules":{"Az":"8.3.0"}}},"creationTime":"2024-01-22T08:59:55.33+00:00","lastModifiedBy":null,"lastModifiedTime":"2024-01-22T08:59:59.7633333+00:00"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1071'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jan 2024 08:59:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"branch": "master", "folderPath": "/", "publishRunbook":
+      false, "repoUrl": "https://github.com/ReaNAiveD/SwaggerAndCmdletsTests.git",
+      "securityToken": {"accessToken": "ghp_MOCKED_GITHUB_TOKEN",
+      "tokenType": "PersonalAccessToken"}, "sourceType": "GitHub"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation source-control create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '288'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --automation-account-name --name --repo-url --branch --source-type --folder-path
+        --access-token --token-type --publish-runbook
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003?api-version=2023-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003","name":"sourcecontrol000003","type":null,"properties":{"creationTime":"2024-01-22T09:00:02.8314198+00:00","lastModifiedTime":"2024-01-22T09:00:02.8314198+00:00","repoUrl":"https://github.com/ReaNAiveD/SwaggerAndCmdletsTests.git","sourceType":"GitHub","branch":"master","folderPath":"/","autoSync":false,"publishRunbook":false,"description":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '562'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jan 2024 09:00:02 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003?api-version=2023-11-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation source-control list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls?api-version=2023-11-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003","name":"sourcecontrol000003","type":null,"properties":{"creationTime":"2024-01-22T09:00:02.8314198+00:00","lastModifiedTime":"2024-01-22T09:00:02.8314198+00:00","repoUrl":"https://github.com/ReaNAiveD/SwaggerAndCmdletsTests.git","sourceType":"GitHub","branch":"master","folderPath":"/","autoSync":false,"publishRunbook":false,"description":null}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '574'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jan 2024 09:00:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation source-control show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name --name
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003?api-version=2023-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003","name":"sourcecontrol000003","type":null,"properties":{"creationTime":"2024-01-22T09:00:02.8314198+00:00","lastModifiedTime":"2024-01-22T09:00:02.8314198+00:00","repoUrl":"https://github.com/ReaNAiveD/SwaggerAndCmdletsTests.git","sourceType":"GitHub","branch":"master","folderPath":"/","autoSync":false,"publishRunbook":false,"description":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '562'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jan 2024 09:00:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation source-control update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name --name --access-token --token-type --publish-runbook
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003?api-version=2023-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003","name":"sourcecontrol000003","type":null,"properties":{"creationTime":"2024-01-22T09:00:02.8314198+00:00","lastModifiedTime":"2024-01-22T09:00:02.8314198+00:00","repoUrl":"https://github.com/ReaNAiveD/SwaggerAndCmdletsTests.git","sourceType":"GitHub","branch":"master","folderPath":"/","autoSync":false,"publishRunbook":false,"description":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '562'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jan 2024 09:00:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"autoSync": false, "branch": "master", "creationTime":
+      "2024-01-22T09:00:02.8314198+00:00", "folderPath": "/", "lastModifiedTime":
+      "2024-01-22T09:00:02.8314198+00:00", "publishRunbook": true, "repoUrl": "https://github.com/ReaNAiveD/SwaggerAndCmdletsTests.git",
+      "sourceType": "GitHub", "securityToken": {"accessToken": "ghp_MOCKED_GITHUB_TOKEN",
+      "tokenType": "PersonalAccessToken"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation source-control update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '416'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --automation-account-name --name --access-token --token-type --publish-runbook
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003?api-version=2023-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003","name":"sourcecontrol000003","type":null,"properties":{"creationTime":"2024-01-22T09:00:02.8314198+00:00","lastModifiedTime":"2024-01-22T09:00:09.3073186+00:00","repoUrl":"https://github.com/ReaNAiveD/SwaggerAndCmdletsTests.git","sourceType":"GitHub","branch":"master","folderPath":"/","autoSync":false,"publishRunbook":true,"description":null}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '561'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jan 2024 09:00:08 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003?api-version=2023-11-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: '{"properties": {"commitId": ""}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation source-control sync-job create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '32'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --automation-account-name --source-control-name --job-id --commit-id
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065?api-version=2023-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065","properties":{"sourceControlSyncJobId":"ba7e6fcd-ea81-4adf-9bed-a38557110065","provisioningState":"Running","creationTime":"2024-01-22T09:00:11.1166712+00:00","startTime":null,"endTime":null,"syncType":"FullSync"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '489'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jan 2024 09:00:10 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065?api-version=2023-11-01
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation source-control sync-job list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name --source-control-name
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs?api-version=2023-11-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065","properties":{"sourceControlSyncJobId":"ba7e6fcd-ea81-4adf-9bed-a38557110065","provisioningState":"Running","creationTime":"2024-01-22T09:00:11.1166712+00:00","startTime":null,"endTime":null,"syncType":"FullSync"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '501'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jan 2024 09:00:12 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation source-control sync-job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name --source-control-name --job-id
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065?api-version=2023-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065","properties":{"sourceControlSyncJobId":"ba7e6fcd-ea81-4adf-9bed-a38557110065","provisioningState":"Running","exception":null,"creationTime":"2024-01-22T09:00:11.1166712+00:00","startTime":null,"endTime":null,"syncType":"FullSync"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '506'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jan 2024 09:00:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation source-control sync-job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name --source-control-name --job-id
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065?api-version=2023-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065","properties":{"sourceControlSyncJobId":"ba7e6fcd-ea81-4adf-9bed-a38557110065","provisioningState":"Running","exception":null,"creationTime":"2024-01-22T09:00:11.1166712+00:00","startTime":null,"endTime":null,"syncType":"FullSync"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '506'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jan 2024 09:00:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation source-control sync-job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name --source-control-name --job-id
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065?api-version=2023-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065","properties":{"sourceControlSyncJobId":"ba7e6fcd-ea81-4adf-9bed-a38557110065","provisioningState":"Running","exception":null,"creationTime":"2024-01-22T09:00:11.1166712+00:00","startTime":null,"endTime":null,"syncType":"FullSync"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '506'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jan 2024 09:00:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation source-control sync-job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name --source-control-name --job-id
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065?api-version=2023-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065","properties":{"sourceControlSyncJobId":"ba7e6fcd-ea81-4adf-9bed-a38557110065","provisioningState":"Running","exception":null,"creationTime":"2024-01-22T09:00:11.1166712+00:00","startTime":null,"endTime":null,"syncType":"FullSync"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '506'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jan 2024 09:00:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation source-control sync-job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name --source-control-name --job-id
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065?api-version=2023-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065","properties":{"sourceControlSyncJobId":"ba7e6fcd-ea81-4adf-9bed-a38557110065","provisioningState":"Running","exception":null,"creationTime":"2024-01-22T09:00:11.1166712+00:00","startTime":"2024-01-22T09:00:22.9093137+00:00","endTime":null,"syncType":"FullSync"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '537'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jan 2024 09:00:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation source-control sync-job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name --source-control-name --job-id
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065?api-version=2023-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065","properties":{"sourceControlSyncJobId":"ba7e6fcd-ea81-4adf-9bed-a38557110065","provisioningState":"Running","exception":null,"creationTime":"2024-01-22T09:00:11.1166712+00:00","startTime":"2024-01-22T09:00:22.9093137+00:00","endTime":null,"syncType":"FullSync"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '537'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jan 2024 09:00:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation source-control sync-job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name --source-control-name --job-id
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065?api-version=2023-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065","properties":{"sourceControlSyncJobId":"ba7e6fcd-ea81-4adf-9bed-a38557110065","provisioningState":"Running","exception":null,"creationTime":"2024-01-22T09:00:11.1166712+00:00","startTime":"2024-01-22T09:00:22.9093137+00:00","endTime":null,"syncType":"FullSync"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '537'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jan 2024 09:00:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation source-control sync-job show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name --source-control-name --job-id
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065?api-version=2023-11-01
+  response:
+    body:
+      string: "{\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065\"\
+        ,\"properties\":{\"sourceControlSyncJobId\":\"ba7e6fcd-ea81-4adf-9bed-a38557110065\"\
+        ,\"provisioningState\":\"Failed\",\"exception\":\"Unable to retrieve Managed\
+        \ Identity/ AzureRunAsConnection.\\r\\nEnable managed identity. Managed identity\
+        \ would be more secure than Run as Account and offers ease of use since it\
+        \ doesn\u2019t require any credentials to be stored.\\r\\nIn case Managed\
+        \ Identity is already enabled, give contributor access in the automation account.\\\
+        r\\nRelevant Doc: https://docs.microsoft.com/azure/automation/source-control-integration#prerequisites\\\
+        r\\n You can also create Run As Account, validate AzureRunAsConnection exist\
+        \ and retry.\\r\\nRelevant Doc: https://docs.microsoft.com/en-us/azure/automation/automation-create-runas-account#create-run-as-account-from-the-portal\
+        \ (Unable to retrieve Managed Identity/ AzureRunAsConnection.\\r\\nEnable\
+        \ managed identity. Managed identity would be more secure than Run as Account\
+        \ and offers ease of use since it doesn\u2019t require any credentials to\
+        \ be stored.\\r\\nIn case Managed Identity is already enabled, give contributor\
+        \ access in the automation account.\\r\\nRelevant Doc: https://docs.microsoft.com/azure/automation/source-control-integration#prerequisites\\\
+        r\\n You can also create Run As Account, validate AzureRunAsConnection exist\
+        \ and retry.\\r\\nRelevant Doc: https://docs.microsoft.com/en-us/azure/automation/automation-create-runas-account#create-run-as-account-from-the-portal)\"\
+        ,\"creationTime\":\"2024-01-22T09:00:11.1166712+00:00\",\"startTime\":\"2024-01-22T09:00:30.6280811+00:00\"\
+        ,\"endTime\":\"2024-01-22T09:00:30.6280811+00:00\",\"syncType\":\"FullSync\"\
+        }}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1862'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jan 2024 09:00:32 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation source-control sync-job stream list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name --source-control-name --sync-job-id
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065/streams?api-version=2023-11-01
+  response:
+    body:
+      string: "{\"value\":[{\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065/streams/8685dc32-7996-461a-848a-d7bff9955db3_00638415108238624596_00000000000000000001\"\
+        ,\"properties\":{\"sourceControlSyncJobStreamId\":\"8685dc32-7996-461a-848a-d7bff9955db3_00638415108238624596_00000000000000000001\"\
+        ,\"summary\":\"========================================================================================================\\\
+        r\\n\\r\\nAzure Automation Source Control.\\r\\nSupported runbooks to sync:\
+        \ PowerShell Workflow, PowerShell Scripts, DSC Configurations, Graphical,\
+        \ and Python 2.\",\"time\":\"2024-01-22T09:00:23.8624596+00:00\",\"streamType\"\
+        :\"Output\"}},{\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065/streams/8685dc32-7996-461a-848a-d7bff9955db3_00638415108240186826_00000000000000000002\"\
+        ,\"properties\":{\"sourceControlSyncJobStreamId\":\"8685dc32-7996-461a-848a-d7bff9955db3_00638415108240186826_00000000000000000002\"\
+        ,\"summary\":\"Setting AzureEnvironment.\",\"time\":\"2024-01-22T09:00:24.0186826+00:00\"\
+        ,\"streamType\":\"Output\"}},{\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065/streams/8685dc32-7996-461a-848a-d7bff9955db3_00638415108285499379_00000000000000000003\"\
+        ,\"properties\":{\"sourceControlSyncJobStreamId\":\"8685dc32-7996-461a-848a-d7bff9955db3_00638415108285499379_00000000000000000003\"\
+        ,\"summary\":\"GET http://127.0.0.1:20096/oauth2/token?resource=https://management.azure.com\
+        \ with 0-byte payload\",\"time\":\"2024-01-22T09:00:28.5499379+00:00\",\"\
+        streamType\":\"Verbose\"}},{\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065/streams/8685dc32-7996-461a-848a-d7bff9955db3_00638415108292843193_00000000000000000004\"\
+        ,\"properties\":{\"sourceControlSyncJobStreamId\":\"8685dc32-7996-461a-848a-d7bff9955db3_00638415108292843193_00000000000000000004\"\
+        ,\"summary\":\"received -1-byte response of content type application/json;\
+        \ charset=utf-8\",\"time\":\"2024-01-22T09:00:29.2843193+00:00\",\"streamType\"\
+        :\"Verbose\"}},{\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065/streams/8685dc32-7996-461a-848a-d7bff9955db3_00638415108294561822_00000000000000000005\"\
+        ,\"properties\":{\"sourceControlSyncJobStreamId\":\"8685dc32-7996-461a-848a-d7bff9955db3_00638415108294561822_00000000000000000005\"\
+        ,\"summary\":\"POST https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/listKeys?api-version=2017-05-15-preview\
+        \ with 0-byte payload\",\"time\":\"2024-01-22T09:00:29.4561822+00:00\",\"\
+        streamType\":\"Verbose\"}},{\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065/streams/8685dc32-7996-461a-848a-d7bff9955db3_00638415108297374673_00000000000000000006\"\
+        ,\"properties\":{\"sourceControlSyncJobStreamId\":\"8685dc32-7996-461a-848a-d7bff9955db3_00638415108297374673_00000000000000000006\"\
+        ,\"summary\":\"System-Assigned Managed Identity is enabled but it does not\
+        \ have Contributor access to Automation account\",\"time\":\"2024-01-22T09:00:29.7374673+00:00\"\
+        ,\"streamType\":\"Output\"}},{\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065/streams/8685dc32-7996-461a-848a-d7bff9955db3_00638415108298624432_00000000000000000007\"\
+        ,\"properties\":{\"sourceControlSyncJobStreamId\":\"8685dc32-7996-461a-848a-d7bff9955db3_00638415108298624432_00000000000000000007\"\
+        ,\"summary\":\"This runbook uses Run As accounts for authentication. Run As\
+        \ accounts are retiring on 30 September 2023 and you must replace it with\
+        \ Managed identities. To know more, visit https://learn.microsoft.com/azure/automation/migrate-run-as-accounts-managed-identity?tabs=run-as-account\"\
+        ,\"time\":\"2024-01-22T09:00:29.8624432+00:00\",\"streamType\":\"Warning\"\
+        }},{\"id\":\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065/streams/8685dc32-7996-461a-848a-d7bff9955db3_00638415108304249605_00000000000000000008\"\
+        ,\"properties\":{\"sourceControlSyncJobStreamId\":\"8685dc32-7996-461a-848a-d7bff9955db3_00638415108304249605_00000000000000000008\"\
+        ,\"summary\":\"Unable to retrieve Managed Identity/ AzureRunAsConnection.\\\
+        r\\nEnable managed identity. Managed identity would be more secure than Run\
+        \ as Account and offers ease of use since it doesn\u2019t require any credentials\
+        \ to be stored.\\r\\nIn case Managed Identity is already enabled, give contributor\
+        \ access in the automation account.\\r\\nRelevant Doc: https://docs.microsoft.com/azure/automation/source-control-integration#prerequisites\\\
+        r\\n You can also create Run As Account, validate AzureRunAsConnection exist\
+        \ and retry.\\r\\nRelevant Doc: https://docs.microsoft.com/en-us/azure/automation/automation-create-runas-account#create-run-as-account-from-the-portal\"\
+        ,\"time\":\"2024-01-22T09:00:30.4249605+00:00\",\"streamType\":\"Error\"}}]}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '6344'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jan 2024 09:00:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation source-control sync-job stream show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --automation-account-name --source-control-name --sync-job-id --stream-id
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065/streams/8685dc32-7996-461a-848a-d7bff9955db3_00638415108238624596_00000000000000000001?api-version=2023-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003/sourceControlSyncJobs/ba7e6fcd-ea81-4adf-9bed-a38557110065/streams/8685dc32-7996-461a-848a-d7bff9955db3_00638415108238624596_00000000000000000001","properties":{"sourceControlSyncJobStreamId":"8685dc32-7996-461a-848a-d7bff9955db3_00638415108238624596_00000000000000000001","summary":"========================================================================================================\r\n\r\nAzure
+        Automation Source Control.\r\nSupported runbooks to sync: PowerShell Workflow,
+        PowerShell Scripts, DSC Configurations, Graphical, and Python 2.","time":"2024-01-22T09:00:23.8624596+00:00","streamType":"Output","streamText":"========================================================================================================\r\nAzure
+        Automation Source Control.\r\nSupported runbooks to sync: PowerShell Workflow,
+        PowerShell Scripts, DSC Configurations, Graphical, and Python 2.\r\n","value":{"value":"========================================================================================================\r\n\r\nAzure
+        Automation Source Control.\r\nSupported runbooks to sync: PowerShell Workflow,
+        PowerShell Scripts, DSC Configurations, Graphical, and Python 2."}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1387'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 22 Jan 2024 09:00:35 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - automation source-control delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - -g --automation-account-name --name -y
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_automation_source_control_000001/providers/Microsoft.Automation/automationAccounts/account000002/sourceControls/sourcecontrol000003?api-version=2023-11-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 22 Jan 2024 09:00:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-HTTPAPI/2.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+    status:
+      code: 200
+      message: OK
+version: 1

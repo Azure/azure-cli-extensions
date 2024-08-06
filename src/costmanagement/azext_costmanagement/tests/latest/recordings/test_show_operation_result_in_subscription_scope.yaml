@@ -1,0 +1,51 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - costmanagement show-operation-result
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --scope --operation-id
+      User-Agent:
+      - AZURECLI/2.56.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.6 (macOS-14.2.1-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CostManagement/operationResults/op000002?api-version=2023-08-01
+  response:
+    body:
+      string: '{"message":"The request is invalid.","messageDetail":"The parameters
+        dictionary contains a null entry for parameter ''operationId'' of non-nullable
+        type ''System.Guid'' for method ''System.Threading.Tasks.Task`1[System.Web.Http.IHttpActionResult]
+        Get(System.Guid, Microsoft.CE.CIP.CCM.Model.RequestScope)'' in ''Microsoft.CE.CIP.CCMApiWebRole.Controllers.Arm.ArmOperationResultsController''.
+        An optional parameter must be a reference type, a nullable type, or be declared
+        as an optional parameter."}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '491'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Thu, 25 Jan 2024 04:18:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      session-id:
+      - fc08e5b8-5cae-4db6-9e93-a42c25548268
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 400
+      message: Bad Request
+version: 1

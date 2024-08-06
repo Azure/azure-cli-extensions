@@ -8,7 +8,7 @@ from datetime import datetime
 from knack.log import get_logger
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import (ValidationError, ArgumentUsageError)
-from .custom import app_get, _get_app_log
+from .custom import app_get
 from ._utils import (get_spring_sku, wait_till_end, convert_argument_to_parameter_list)
 from ._deployment_factory import (deployment_selector,
                                   deployment_settings_options_from_resource,
@@ -20,6 +20,7 @@ from ._app_validator import _get_active_deployment
 from .custom import app_tail_log_internal
 import datetime
 from time import sleep
+from .log_stream.log_stream_operations import log_stream_from_url
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
@@ -53,6 +54,10 @@ def app_create(cmd, client, resource_group, service, name,
                assign_identity=None,
                system_assigned=None,
                user_assigned=None,
+               bind_service_registry=None,
+               bind_application_configuration_service=None,
+               bind_config_server=None,
+               disable_test_endpoint_auth=None,
                # app.update
                enable_persistent_storage=None,
                persistent_storage=None,
@@ -115,6 +120,10 @@ def app_create(cmd, client, resource_group, service, name,
     create_app_kwargs = {
         'system_assigned': system_assigned,
         'user_assigned': user_assigned,
+        'bind_service_registry': bind_service_registry,
+        'bind_application_configuration_service': bind_application_configuration_service,
+        'bind_config_server': bind_config_server,
+        'disable_test_endpoint_auth': disable_test_endpoint_auth,
         'enable_temporary_disk': True,
         'enable_persistent_storage': enable_persistent_storage,
         'persistent_storage': persistent_storage,
@@ -199,6 +208,7 @@ def app_update(cmd, client, resource_group, service, name,
                backend_protocol=None,
                client_auth_certs=None,
                workload_profile=None,
+               disable_test_endpoint_auth=None,
                # deployment.source
                runtime_version=None,
                jvm_options=None,
@@ -207,6 +217,8 @@ def app_update(cmd, client, resource_group, service, name,
                env=None,
                disable_probe=None,
                config_file_patterns=None,
+               custom_actuator_port=None,
+               custom_actuator_path=None,
                enable_liveness_probe=None,
                enable_readiness_probe=None,
                enable_startup_probe=None,
@@ -237,6 +249,8 @@ def app_update(cmd, client, resource_group, service, name,
     deployment_kwargs = {
         'disable_probe': disable_probe,
         'config_file_patterns': config_file_patterns,
+        'custom_actuator_port': custom_actuator_port,
+        'custom_actuator_path': custom_actuator_path,
         'env': env,
         'runtime_version': runtime_version,
         'jvm_options': jvm_options,
@@ -266,6 +280,7 @@ def app_update(cmd, client, resource_group, service, name,
         'backend_protocol': backend_protocol,
         'client_auth_certs': client_auth_certs,
         'secrets': secrets,
+        'disable_test_endpoint_auth': disable_test_endpoint_auth,
         'workload_profile_name': workload_profile
     }
     if deployment is None:
@@ -307,6 +322,7 @@ def app_deploy(cmd, client, resource_group, service, name,
                source_path=None,
                target_module=None,
                runtime_version=None,
+               server_version=None,
                jvm_options=None,
                main_entry=None,
                container_image=None,
@@ -326,6 +342,8 @@ def app_deploy(cmd, client, resource_group, service, name,
                build_certificates=None,
                disable_probe=None,
                config_file_patterns=None,
+               custom_actuator_port=None,
+               custom_actuator_path=None,
                enable_liveness_probe=None,
                enable_readiness_probe=None,
                enable_startup_probe=None,
@@ -358,10 +376,13 @@ def app_deploy(cmd, client, resource_group, service, name,
         'sku': deployment.sku,
         'disable_probe': disable_probe,
         'config_file_patterns': config_file_patterns,
+        'custom_actuator_port': custom_actuator_port,
+        'custom_actuator_path': custom_actuator_path,
         'env': env,
         'apms': apms,
         'build_certificates': build_certificates,
         'runtime_version': runtime_version,
+        'server_version': server_version,
         'jvm_options': jvm_options,
         'main_entry': main_entry,
         'version': version,
@@ -510,7 +531,7 @@ def _get_deployment_ignore_exception(client, resource_group, service, app_name, 
 
 def _get_app_log_deploy_phase(url, auth, format_json, exceptions):
     try:
-        _get_app_log(url, auth, format_json, exceptions, chunk_size=10 * 1024, stderr=True)
+        log_stream_from_url(url, auth, format_json, exceptions, chunk_size=10 * 1024, stderr=True)
     except Exception:
         pass
 
@@ -523,6 +544,7 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       source_path=None,
                       target_module=None,
                       runtime_version=None,
+                      server_version=None,
                       jvm_options=None,
                       main_entry=None,
                       container_image=None,
@@ -544,6 +566,8 @@ def deployment_create(cmd, client, resource_group, service, app, name,
                       build_certificates=None,
                       disable_probe=None,
                       config_file_patterns=None,
+                      custom_actuator_port=None,
+                      custom_actuator_path=None,
                       enable_liveness_probe=None,
                       enable_readiness_probe=None,
                       enable_startup_probe=None,
@@ -582,10 +606,13 @@ def deployment_create(cmd, client, resource_group, service, app, name,
         'deployment': name,
         'disable_probe': disable_probe,
         'config_file_patterns': config_file_patterns,
+        'custom_actuator_port': custom_actuator_port,
+        'custom_actuator_path': custom_actuator_path,
         'env': env,
         'apms': apms,
         'build_certificates': build_certificates,
         'runtime_version': runtime_version,
+        'server_version': server_version,
         'jvm_options': jvm_options,
         'main_entry': main_entry,
         'version': version,

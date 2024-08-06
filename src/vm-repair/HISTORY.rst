@@ -2,6 +2,68 @@
 Release History
 ===============
 
+1.0.8
+++++++
+SELFHELP telemetry added as initiator. Extra parameters is introduced at the backend to capture the telemetry data.
+
+1.0.7
+++++++
+az command adjustment
+
+1.0.6
+++++++
+Add CLI update wait for ASG to wait for the operation done as the async 2rd operation will cancel the 1st call.
+
+
+1.0.5
+++++++
+Bug fix ASG is not added properly when reset the nic
+Add ASG if exist when nic is reset 
+
+1.0.4
+++++++
+Logging improvements and script fixing
+
+1.0.3
+++++++
+Bug fix the win-nest specific SKU issue
+
+1.0.2
+++++++
+Bug fix for repo null string check so its set to main correctly
+Add more logging to capture issues
+
+1.0.1
+++++++
+Fix bug in win-run-driver.ps1 for 1.0.0b1.
+
+1.0.0b1
+++++++
+Fix bug in win-run-driver.ps1 default values for invoking run command through az vm repair run.
+
+0.5.9
+++++++
+Adding default values in win-run-driver.ps1 script for repo_fork and branch_name.
+
+0.5.8
+++++++
+Fix az vm repair run --preview parameter to take in fork and branch name of User's repository.
+
+0.5.7
+++++++
+Remove VM-repair SUSE image check
+
+0.5.6
+++++++
+Renaming the Public IP resource.
+Fix the name of the resource, previously the name was always "yes". Now it follows the format repair-<VM>_PublicIP
+
+0.5.5
+++++++
+Adding ARM64 support.
+Fix for telemetry for repair-and-restore command.
+Repair VM fix for gen1 VM attaching disk on SCSI controller, preventing nested VM from booting (by Ryan McCallum)
+
 0.5.4
 ++++++
 Adding repair-and-restore command to create a one command flow for vm-repair with fstab scripts.

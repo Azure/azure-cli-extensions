@@ -25,9 +25,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}", "2024-05-01-preview"],
         ]
     }
 
@@ -52,14 +52,23 @@ class Create(AAZCommand):
             options=["-n", "--name", "--catalog-name"],
             help="The name of the catalog.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-_.]{2,62}$",
+                max_length=63,
+                min_length=3,
+            ),
         )
         _args_schema.dev_center_name = AAZStrArg(
             options=["-d", "--dev-center", "--dev-center-name"],
             help="The name of the dev center. Use `az configure -d dev-center=<dev_center_name>` to configure a default.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9-]{2,25}$",
+                max_length=26,
+                min_length=3,
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group. You can configure the default group using `az configure --defaults group=<name>`.",
             required=True,
         )
 
@@ -78,6 +87,20 @@ class Create(AAZCommand):
             help="Properties for a GitHub catalog type.",
         )
         cls._build_args_git_catalog_create(_args_schema.git_hub)
+        _args_schema.sync_type = AAZStrArg(
+            options=["--sync-type"],
+            arg_group="Properties",
+            help="Indicates the type of sync that is configured for the catalog.",
+            enum={"Manual": "Manual", "Scheduled": "Scheduled"},
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Properties",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     _args_git_catalog_create = None
@@ -143,16 +166,16 @@ class Create(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_201,
+                    self.on_200_201,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [201]:
+            if session.http_response.status_code in [200, 201]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_201,
+                    self.on_200_201,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
@@ -173,7 +196,7 @@ class Create(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -201,7 +224,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -232,53 +255,70 @@ class Create(AAZCommand):
             if properties is not None:
                 _CreateHelper._build_schema_git_catalog_create(properties.set_prop("adoGit", AAZObjectType, ".ado_git"))
                 _CreateHelper._build_schema_git_catalog_create(properties.set_prop("gitHub", AAZObjectType, ".git_hub"))
+                properties.set_prop("syncType", AAZStrType, ".sync_type")
+                properties.set_prop("tags", AAZDictType, ".tags")
+
+            tags = _builder.get(".properties.tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
-        def on_201(self, session):
+        def on_200_201(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_201
+                schema_builder=self._build_schema_on_200_201
             )
 
-        _schema_on_201 = None
+        _schema_on_200_201 = None
 
         @classmethod
-        def _build_schema_on_201(cls):
-            if cls._schema_on_201 is not None:
-                return cls._schema_on_201
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
 
-            cls._schema_on_201 = AAZObjectType()
+            cls._schema_on_200_201 = AAZObjectType()
 
-            _schema_on_201 = cls._schema_on_201
-            _schema_on_201.id = AAZStrType(
+            _schema_on_200_201 = cls._schema_on_200_201
+            _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_201.name = AAZStrType(
+            _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_201.properties = AAZObjectType(
+            _schema_on_200_201.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _schema_on_201.system_data = AAZObjectType(
+            _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_201.type = AAZStrType(
+            _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_201.properties
+            properties = cls._schema_on_200_201.properties
             properties.ado_git = AAZObjectType(
                 serialized_name="adoGit",
             )
             _CreateHelper._build_schema_git_catalog_read(properties.ado_git)
+            properties.connection_state = AAZStrType(
+                serialized_name="connectionState",
+                flags={"read_only": True},
+            )
             properties.git_hub = AAZObjectType(
                 serialized_name="gitHub",
             )
             _CreateHelper._build_schema_git_catalog_read(properties.git_hub)
+            properties.last_connection_time = AAZStrType(
+                serialized_name="lastConnectionTime",
+                flags={"read_only": True},
+            )
+            properties.last_sync_stats = AAZObjectType(
+                serialized_name="lastSyncStats",
+            )
             properties.last_sync_time = AAZStrType(
                 serialized_name="lastSyncTime",
                 flags={"read_only": True},
@@ -291,8 +331,43 @@ class Create(AAZCommand):
                 serialized_name="syncState",
                 flags={"read_only": True},
             )
+            properties.sync_type = AAZStrType(
+                serialized_name="syncType",
+            )
+            properties.tags = AAZDictType()
 
-            system_data = cls._schema_on_201.system_data
+            last_sync_stats = cls._schema_on_200_201.properties.last_sync_stats
+            last_sync_stats.added = AAZIntType(
+                flags={"read_only": True},
+            )
+            last_sync_stats.removed = AAZIntType(
+                flags={"read_only": True},
+            )
+            last_sync_stats.synced_catalog_item_types = AAZListType(
+                serialized_name="syncedCatalogItemTypes",
+            )
+            last_sync_stats.synchronization_errors = AAZIntType(
+                serialized_name="synchronizationErrors",
+                flags={"read_only": True},
+            )
+            last_sync_stats.unchanged = AAZIntType(
+                flags={"read_only": True},
+            )
+            last_sync_stats.updated = AAZIntType(
+                flags={"read_only": True},
+            )
+            last_sync_stats.validation_errors = AAZIntType(
+                serialized_name="validationErrors",
+                flags={"read_only": True},
+            )
+
+            synced_catalog_item_types = cls._schema_on_200_201.properties.last_sync_stats.synced_catalog_item_types
+            synced_catalog_item_types.Element = AAZStrType()
+
+            tags = cls._schema_on_200_201.properties.tags
+            tags.Element = AAZStrType()
+
+            system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -312,7 +387,7 @@ class Create(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            return cls._schema_on_201
+            return cls._schema_on_200_201
 
 
 class _CreateHelper:

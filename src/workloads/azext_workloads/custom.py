@@ -20,7 +20,7 @@ class SVICreate(_SVICreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZFreeFormDictArg, AAZFreeFormDictArgFormat, \
-            AAZResourceIdArg, AAZResourceIdArgFormat
+            AAZResourceIdArg, AAZResourceIdArgFormat, AAZStrArg, AAZStrArgFormat
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.configuration = AAZFreeFormDictArg(
             options=["--configuration"],
@@ -32,6 +32,12 @@ class SVICreate(_SVICreate):
             help="The virtual machine ID or name of the Central Server.",
             fmt=AAZResourceIdArgFormat(template="/subscriptions/{subscription}/resourceGroups/{resource_group}"
                                                 "/providers/Microsoft.Compute/virtualMachines/{}")
+        )
+        args_schema.mrgstracc = AAZStrArg(
+            options=["--managed-rg-sa-name"],
+            help="The custom storage account name for the storage account created by the service " +
+                 "in the managed resource group created as part of VIS deployment.",
+            fmt=AAZStrArgFormat()
         )
         args_schema.configuration_org._registered = False
         args_schema.discovery_org._registered = False
@@ -76,6 +82,8 @@ class SVICreate(_SVICreate):
                 properties.set_prop("environment", AAZStrType, ".environment", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("managedResourceGroupConfiguration", AAZObjectType)
                 properties.set_prop("sapProduct", AAZStrType, ".sap_product", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("managedResourcesNetworkAccessType", AAZStrType,
+                                    ".managed_resources_network_access_type")
 
             managed_resource_group_configuration = _builder.get(".properties.managedResourceGroupConfiguration")
             if managed_resource_group_configuration is not None:
@@ -90,10 +98,19 @@ class SVICreate(_SVICreate):
                 output['properties']["configuration"] = self.ctx.args.configuration.to_serialized_data()
                 return output
             if has_value(self.ctx.args.discovery):
-                output['properties'].update({
-                    "configuration": {
-                        'centralServerVmId': self.ctx.args.discovery.to_serialized_data(),
-                        'configurationType': 'Discovery'
-                    }
-                })
+                if has_value(self.ctx.args.mrgstracc):
+                    output['properties'].update({
+                        "configuration": {
+                            'centralServerVmId': self.ctx.args.discovery.to_serialized_data(),
+                            'configurationType': 'Discovery',
+                            'managedRgStorageAccountName': self.ctx.args.mrgstracc.to_serialized_data()
+                        }
+                    })
+                else:
+                    output['properties'].update({
+                        "configuration": {
+                            'centralServerVmId': self.ctx.args.discovery.to_serialized_data(),
+                            'configurationType': 'Discovery'
+                        }
+                    })
             return output

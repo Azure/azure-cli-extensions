@@ -7,6 +7,7 @@ import sys
 
 from azure.cli.core.azclierror import (ValidationError)
 
+from ._constants import RUNTIME_JAVA
 from ._utils import safe_get
 
 
@@ -42,6 +43,8 @@ def create_deserializer(models):
 
 
 def process_loaded_yaml(yaml_containerapp):
+    if not isinstance(yaml_containerapp, dict):  # pylint: disable=unidiomatic-typecheck
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
     if not yaml_containerapp.get('properties'):
         yaml_containerapp['properties'] = {}
 
@@ -76,3 +79,58 @@ def process_loaded_yaml(yaml_containerapp):
         del yaml_containerapp['properties']['managedEnvironmentId']
 
     return yaml_containerapp
+
+
+def process_containerapp_resiliency_yaml(containerapp_resiliency):
+
+    if not isinstance(containerapp_resiliency, dict):  # pylint: disable=unidiomatic-typecheck
+        raise ValidationError('Invalid YAML provided. Please provide a valid container app resiliency YAML spec.')
+    if 'additionalProperties' in containerapp_resiliency and not containerapp_resiliency['additionalProperties']:
+        raise ValidationError('Invalid YAML provided. Please provide a valid containerapp resiliency YAML spec.')
+    if not containerapp_resiliency.get('properties'):
+        containerapp_resiliency['properties'] = {}
+
+    nested_properties = ["timeoutPolicy",
+                         "httpRetryPolicy",
+                         "tcpRetryPolicy",
+                         "circuitBreakerPolicy",
+                         "tcpConnectionPool",
+                         "httpConnectionPool"]
+    for nested_property in nested_properties:
+        # Fix this and remove additionalProperties after flattening is avoided
+        tmp = containerapp_resiliency['additionalProperties'].get(nested_property)
+        if nested_property in containerapp_resiliency:
+            containerapp_resiliency['properties'][nested_property] = tmp
+            del containerapp_resiliency[nested_property]
+
+    return containerapp_resiliency
+
+
+def process_dapr_component_resiliency_yaml(dapr_component_resiliency):
+
+    if not isinstance(dapr_component_resiliency, dict):  # pylint: disable=unidiomatic-typecheck
+        raise ValidationError('Invalid YAML provided. Please provide a valid dapr component resiliency YAML spec.')
+    if 'additionalProperties' in dapr_component_resiliency and not dapr_component_resiliency['additionalProperties']:
+        raise ValidationError('Invalid YAML provided. Please provide a valid dapr component resiliency YAML spec.')
+    if not dapr_component_resiliency.get('properties'):
+        dapr_component_resiliency['properties'] = {}
+
+    nested_properties = ["inboundPolicy",
+                         "outboundPolicy"]
+    for nested_property in nested_properties:
+        tmp = dapr_component_resiliency['additionalProperties'].get(nested_property)
+        if nested_property in dapr_component_resiliency:
+            dapr_component_resiliency['properties'][nested_property] = tmp
+            del dapr_component_resiliency[nested_property]
+
+    return dapr_component_resiliency
+
+
+def infer_runtime_option(runtime, enable_java_metrics, enable_java_agent):
+    if runtime:
+        return runtime
+    if enable_java_metrics is not None:
+        return RUNTIME_JAVA
+    if enable_java_agent is not None:
+        return RUNTIME_JAVA
+    return None

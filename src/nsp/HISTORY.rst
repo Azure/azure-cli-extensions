@@ -3,6 +3,25 @@
 Release History
 ===============
 ===============
+
+##### 1.0.0b2
+++++++
+No new commands added. Flatten false the properties of the command output.
+
+
+##### 1.0.0b1
+++++++
+No new commands added.
+Commands for new api version 2023-08-01-preview added.
+
+Existing commands updated:
+* perimeter profile access-rule: create, show, update (added servicetag based rules).
+
+##### 0.3.0
+++++++
+No new commands added or updated.
+Commands for new api version 2023-07-01-preview added.
+
 ##### 0.2.1
 ++++++
 No new commands added.

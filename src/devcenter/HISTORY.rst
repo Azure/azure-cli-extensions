@@ -2,6 +2,38 @@
 
 Release History
 ===============
+6.0.1
+++++++
+* Update "az devcenter dev environment show-logs-by-operation" to handle escape characters
+
+6.0.0
+++++++
+* Update control plane API to v2024-05-01-preview
+* Update data plane API to v2024-05-01-preview
+
+5.0.1
+++++++
+* Fix bug in "az devcenter dev environment show-logs-by-operation" if logs is not in JSON format
+
+5.0.0
+++++++
+* Require roles and identity type parameters in "az decenter admin project-environment-type create"
+
+4.0.1
+++++++
+* Update due to bug in API swagger causing missing API version
+
+4.0.0
+++++++
+* Update control plane API to v2023-10-01-preview
+* Update data plane API to v2023-10-01-preview
+
+3.0.0
+++++++
+* Update control plane API to v2023-06-01-preview
+* Update data plane API to v2023-07-01-preview
+
+=======
 2.0.0
 ++++++
 * Update dev-box-definition to devbox-definition parameter

@@ -9,7 +9,11 @@ import requests
 import re
 import os
 import time
+from azext_spring.jobs.job import (append_managed_component_ref, backfill_secret_envs,
+                                   job_has_resource_id_ref_ignore_case, remove_managed_component_ref)
 from azure.cli.core._profile import Profile
+from azure.core.exceptions import HttpResponseError, ResourceNotFoundError as ResourceNotFoundException
+from azure.mgmt.loganalytics import LogAnalyticsManagementClient
 
 from ._websocket import WebSocketConnection, recv_remote, send_stdin, EXEC_PROTOCOL_CTRL_C_MSG
 from azure.mgmt.cosmosdb import CosmosDBManagementClient
@@ -19,15 +23,16 @@ import yaml  # pylint: disable=import-error
 from time import sleep
 from ._stream_utils import stream_logs
 from azure.mgmt.core.tools import (parse_resource_id, is_valid_resource_id)
-from ._utils import (get_portal_uri, get_spring_sku, get_proxy_api_endpoint, BearerAuth)
+from ._utils import (get_portal_uri, get_spring_sku, get_proxy_api_endpoint, BearerAuth, wait_till_end)
 from knack.util import CLIError
-from .vendored_sdks.appplatform.v2023_09_01_preview import models, AppPlatformManagementClient
+from .vendored_sdks.appplatform.v2024_05_01_preview import models, AppPlatformManagementClient
 from knack.log import get_logger
 from azure.cli.core.azclierror import ClientRequestError, FileOperationError, InvalidArgumentValueError, ResourceNotFoundError
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.util import sdk_no_wait
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 from azure.cli.core.commands import cached_put
+from msrestazure.tools import resource_id
 from ._resource_quantity import validate_cpu, validate_memory
 from six.moves.urllib import parse
 from threading import Thread
@@ -37,17 +42,23 @@ import base64
 from collections import defaultdict
 from ._log_stream import LogStream
 from ._build_service import _update_default_build_agent_pool
+from .log_stream.log_stream_operations import log_stream_from_url
 
 logger = get_logger(__name__)
 DEFAULT_DEPLOYMENT_NAME = "default"
 DEPLOYMENT_CREATE_OR_UPDATE_SLEEP_INTERVAL = 5
 APP_CREATE_OR_UPDATE_SLEEP_INTERVAL = 2
+CONFIG_SERVER_DEFAULT_NAME = "default"
+CONFIG_SERVER_ADDON_NAME = "configServer"
+RESOURCE_ID_KEY_NAME = "resourceId"
 
 # pylint: disable=line-too-long
 NO_PRODUCTION_DEPLOYMENT_ERROR = "No production deployment found, use --deployment to specify deployment or create deployment with: az spring app deployment create"
 NO_PRODUCTION_DEPLOYMENT_SET_ERROR = "This app has no production deployment, use \"az spring app deployment create\" to create a deployment and \"az spring app set-deployment\" to set production deployment."
 DELETE_PRODUCTION_DEPLOYMENT_WARNING = "You are going to delete production deployment, the app will be inaccessible after this operation."
 LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose' parameter if needed."
+APP_INSIGHTS_CREATION_FAILURE_WARNING = 'Unable to create the Application Insights for the Azure Spring Apps. ' \
+                                        'Please use the Azure Portal to manually create and configure the Application Insights, if needed.'
 
 
 def _warn_enable_java_agent(enable_java_agent, **_):
@@ -82,7 +93,9 @@ def _update_application_insights_asc_create(cmd,
 def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_insights=None,
                   disable_app_insights=None, sku=None, tags=None, build_pool_size=None,
                   enable_log_stream_public_endpoint=None, enable_dataplane_public_endpoint=None,
-                  ingress_read_timeout=None, no_wait=False):
+                  enable_private_storage_access=None, ingress_read_timeout=None,
+                  enable_planned_maintenance=False, planned_maintenance_day=None,
+                  planned_maintenance_start_hour=None, no_wait=False):
     """
     TODO (jiec) app_insights_key, app_insights and disable_app_insights are marked as deprecated.
     Will be decommissioned in future releases.
@@ -92,6 +105,7 @@ def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_
     update_service_tags = False
     update_service_sku = False
     update_dataplane_public_endpoint = False
+    update_private_storage_access = False
 
     # update service sku
     if sku is not None:
@@ -104,15 +118,24 @@ def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_
     updated_resource_properties.zone_redundant = None
 
     if enable_log_stream_public_endpoint is not None or enable_dataplane_public_endpoint is not None:
+        if updated_resource_properties.vnet_addons is None:
+            updated_resource_properties.vnet_addons = models.ServiceVNetAddons()
         val = enable_log_stream_public_endpoint if enable_log_stream_public_endpoint is not None else \
             enable_dataplane_public_endpoint
-        updated_resource_properties.vnet_addons = models.ServiceVNetAddons(
-            data_plane_public_endpoint=val,
-            log_stream_public_endpoint=val
-        )
+        updated_resource_properties.vnet_addons.data_plane_public_endpoint = val
+        updated_resource_properties.vnet_addons.log_stream_public_endpoint = val
         update_dataplane_public_endpoint = True
-    else:
-        updated_resource_properties.vnet_addons = None
+
+    if enable_private_storage_access is not None:
+        if updated_resource_properties.vnet_addons is None:
+            updated_resource_properties.vnet_addons = models.ServiceVNetAddons(
+                # explicitly set as none in case unexpected update
+                data_plane_public_endpoint=None,
+                log_stream_public_endpoint=None
+            )
+        val = "Enabled" if enable_private_storage_access else "Disabled"
+        updated_resource_properties.vnet_addons.private_storage_access = val
+        update_private_storage_access = True
 
     _update_application_insights_asc_update(cmd, resource_group, name, location,
                                             app_insights_key, app_insights, disable_app_insights, no_wait)
@@ -122,13 +145,21 @@ def spring_update(cmd, client, resource_group, name, app_insights_key=None, app_
 
     _update_ingress_config(updated_resource_properties, ingress_read_timeout)
 
+    # update planned maintenance
+    update_planned_maintenance, updated_resource_properties.maintenance_schedule_configuration = _update_planned_maintenance(
+        legacy_configuration=resource.properties.maintenance_schedule_configuration,
+        enable_planned_maintenance=enable_planned_maintenance,
+        planned_maintenance_day=planned_maintenance_day,
+        planned_maintenance_start_hour=planned_maintenance_start_hour
+    )
+
     # update service tags
     if tags is not None:
         updated_resource.tags = tags
         update_service_tags = True
 
-    if update_service_tags is False and update_service_sku is False and update_dataplane_public_endpoint is False and (
-            ingress_read_timeout is None):
+    if update_service_tags is False and update_service_sku is False and update_dataplane_public_endpoint is False \
+            and update_private_storage_access is False and update_planned_maintenance is False and ingress_read_timeout is None:
         return resource
 
     updated_resource.properties = updated_resource_properties
@@ -182,6 +213,18 @@ def _update_application_insights_asc_update(cmd, resource_group, name, location,
                         monitoring_setting_resource=monitoring_setting_resource)
 
 
+def _update_planned_maintenance(legacy_configuration, enable_planned_maintenance=False, planned_maintenance_day=None,
+                                planned_maintenance_start_hour=None):
+    if enable_planned_maintenance is True:
+        if planned_maintenance_day is None or planned_maintenance_start_hour is None:
+            return False, legacy_configuration
+        return True, models.WeeklyMaintenanceScheduleConfiguration(
+            day=planned_maintenance_day,
+            hour=planned_maintenance_start_hour
+        )
+    return False, legacy_configuration
+
+
 def spring_delete(cmd, client, resource_group, name, no_wait=False):
     logger.warning("Stop using Azure Spring Apps? We appreciate your feedback: https://aka.ms/asa_exitsurvey")
     return sdk_no_wait(no_wait, client.services.begin_delete, resource_group_name=resource_group, service_name=name)
@@ -203,6 +246,15 @@ def spring_stop(cmd, client, resource_group, name, no_wait=False):
     if state != "Succeeded" or power_state != "Running":
         raise ClientRequestError("Service is in Provisioning State({}) and Power State({}), stopping cannot be performed.".format(state, power_state))
     return sdk_no_wait(no_wait, client.services.begin_stop, resource_group_name=resource_group, service_name=name)
+
+
+def spring_flush_vnet_dns_setting(cmd, client, resource_group, name, no_wait=False):
+    resource = client.services.get(resource_group, name)
+    state = resource.properties.provisioning_state
+    power_state = resource.properties.power_state
+    if state != "Succeeded" or power_state != "Running":
+        raise ClientRequestError("Service is in Provisioning State({}) and Power State({}), flush vnet dns setting cannot be performed.".format(state, power_state))
+    return sdk_no_wait(no_wait, client.services.begin_flush_vnet_dns_setting, resource_group_name=resource_group, service_name=name)
 
 
 def spring_list(cmd, client, resource_group=None):
@@ -482,7 +534,7 @@ def app_get_build_log(cmd, client, resource_group, service, name, deployment=Non
 def app_tail_log(cmd, client, resource_group, service, name,
                  deployment=None, instance=None, follow=False, lines=50, since=None, limit=2048, format_json=None):
     app_tail_log_internal(cmd, client, resource_group, service, name, deployment, instance, follow, lines, since, limit,
-                          format_json, get_app_log=_get_app_log)
+                          format_json, get_app_log=log_stream_from_url)
 
 
 def app_tail_log_internal(cmd, client, resource_group, service, name,
@@ -663,7 +715,7 @@ def validate_config_server_settings(client, resource_group, name, config_server_
                     raise CLIError(error_msg)
 
     try:
-        result = sdk_no_wait(False, client.begin_validate, resource_group, name, config_server_settings).result()
+        result = sdk_no_wait(False, client.config_servers.begin_validate, resource_group, name, config_server_settings).result()
     except Exception as err:  # pylint: disable=broad-except
         raise CLIError("{0}. You may raise a support ticket if needed by the following link: https://docs.microsoft.com/azure/spring-cloud/spring-cloud-faq?pivots=programming-language-java#how-can-i-provide-feedback-and-report-issues".format(err))
 
@@ -693,28 +745,28 @@ def eureka_disable(cmd, client, resource_group, name):
     return cached_put(cmd, client.begin_update_patch, eureka_server_resource, resource_group, name).result()
 
 
-def config_enable(cmd, client, resource_group, name):
-    config_server_resource = client.get(resource_group, name)
+def config_enable(cmd, client, resource_group, service):
+    config_server_resource = client.config_servers.get(resource_group, service)
     if not config_server_resource.properties.enabled_state:
         raise CLIError("Only supported Standard consumption Tier.")
 
     config_server_properties = models.ConfigServerProperties(enabled_state="Enabled")
     config_server_resource = models.ConfigServerResource(properties=config_server_properties)
-    return cached_put(cmd, client.begin_update_patch, config_server_resource, resource_group, name).result()
+    return cached_put(cmd, client.config_servers.begin_update_patch, config_server_resource, resource_group, service).result()
 
 
-def config_disable(cmd, client, resource_group, name):
-    config_server_resource = client.get(resource_group, name)
+def config_disable(cmd, client, resource_group, service):
+    config_server_resource = client.config_servers.get(resource_group, service)
     if not config_server_resource.properties.enabled_state:
         raise CLIError("Only supported Standard consumption Tier.")
 
     config_server_properties = models.ConfigServerProperties(enabled_state="Disabled")
     config_server_resource = models.ConfigServerResource(properties=config_server_properties)
-    return cached_put(cmd, client.begin_update_patch, config_server_resource, resource_group, name).result()
+    return cached_put(cmd, client.config_servers.begin_update_patch, config_server_resource, resource_group, service).result()
 
 
-def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
-    config_server_resource = client.get(resource_group, name)
+def config_set(cmd, client, resource_group, service, config_file, no_wait=False):
+    config_server_resource = client.config_servers.get(resource_group, service)
     if config_server_resource.properties.enabled_state and config_server_resource.properties.enabled_state == "Disabled":
         raise CLIError("Config server is disabled.")
 
@@ -754,34 +806,34 @@ def config_set(cmd, client, resource_group, name, config_file, no_wait=False):
         del config_property['repos']
 
     config_property['repositories'] = repositories
-    git_property = client._deserialize('ConfigServerGitProperty', config_property)
+    git_property = client.config_servers._deserialize('ConfigServerGitProperty', config_property)
     config_server_settings = models.ConfigServerSettings(git_property=git_property)
     config_server_properties = models.ConfigServerProperties(enabled_state="Enabled", config_server=config_server_settings)
 
     logger.warning("[1/2] Validating config server settings")
-    validate_config_server_settings(client, resource_group, name, config_server_settings)
+    validate_config_server_settings(client, resource_group, service, config_server_settings)
     logger.warning("[2/2] Updating config server settings, (this operation can take a while to complete)")
 
     config_server_resource = models.ConfigServerResource(properties=config_server_properties)
-    return sdk_no_wait(no_wait, client.begin_update_put, resource_group, name, config_server_resource)
+    return sdk_no_wait(no_wait, client.config_servers.begin_update_put, resource_group, service, config_server_resource)
 
 
-def config_get(cmd, client, resource_group, name):
-    config_server_resource = client.get(resource_group, name)
+def config_get(cmd, client, resource_group, service):
+    config_server_resource = client.config_servers.get(resource_group, service)
 
-    if not config_server_resource.properties.enabled_state and not config_server_resource.properties.config_server:
+    if not config_server_resource.properties.enabled_state and not config_server_resource.properties.config_server and not config_server_resource.properties.resource_requests:
         raise CLIError("Config server not set.")
     return config_server_resource
 
 
-def config_delete(cmd, client, resource_group, name):
-    config_server_resource = client.get(resource_group, name)
+def config_clear(cmd, client, resource_group, service):
+    config_server_resource = client.config_servers.get(resource_group, service)
     config_server_properties = models.ConfigServerProperties(enabled_state=config_server_resource.properties.enabled_state)
     config_server_resource = models.ConfigServerResource(properties=config_server_properties)
-    return client.begin_update_put(resource_group, name, config_server_resource)
+    return client.config_servers.begin_update_put(resource_group, service, config_server_resource)
 
 
-def config_git_set(cmd, client, resource_group, name, uri,
+def config_git_set(cmd, client, resource_group, service, uri,
                    label=None,
                    search_paths=None,
                    username=None,
@@ -790,7 +842,7 @@ def config_git_set(cmd, client, resource_group, name, uri,
                    host_key_algorithm=None,
                    private_key=None,
                    strict_host_key_checking=None):
-    config_server_resource = client.get(resource_group, name)
+    config_server_resource = client.config_servers.get(resource_group, service)
     if config_server_resource.properties.enabled_state and config_server_resource.properties.enabled_state == "Disabled":
         raise CLIError("Config server is disabled.")
 
@@ -812,14 +864,14 @@ def config_git_set(cmd, client, resource_group, name, uri,
     config_server_properties = models.ConfigServerProperties(enabled_state="Enabled", config_server=config_server_settings)
 
     logger.warning("[1/2] Validating config server settings")
-    validate_config_server_settings(client, resource_group, name, config_server_settings)
+    validate_config_server_settings(client, resource_group, service, config_server_settings)
 
     logger.warning("[2/2] Updating config server settings, (this operation can take a while to complete)")
     config_server_resource = models.ConfigServerResource(properties=config_server_properties)
-    return cached_put(cmd, client.begin_update_put, config_server_resource, resource_group, name).result()
+    return cached_put(cmd, client.config_servers.begin_update_put, config_server_resource, resource_group, service).result()
 
 
-def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
+def config_repo_add(cmd, client, resource_group, service, uri, repo_name,
                     pattern=None,
                     label=None,
                     search_paths=None,
@@ -829,7 +881,7 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
                     host_key_algorithm=None,
                     private_key=None,
                     strict_host_key_checking=None):
-    config_server_resource = client.get(resource_group, name)
+    config_server_resource = client.config_servers.get(resource_group, service)
     config_server = config_server_resource.properties.config_server
     git_property = models.ConfigServerGitProperty(uri=uri) if not config_server else config_server.git_property
 
@@ -865,15 +917,15 @@ def config_repo_add(cmd, client, resource_group, name, uri, repo_name,
         config_server=config_server_settings)
 
     logger.warning("[1/2] Validating config server settings")
-    validate_config_server_settings(client, resource_group, name, config_server_settings)
+    validate_config_server_settings(client, resource_group, service, config_server_settings)
 
     logger.warning("[2/2] Adding config server settings repo, (this operation can take a while to complete)")
     config_server_resource = models.ConfigServerResource(properties=config_server_properties)
-    return cached_put(cmd, client.begin_update_patch, config_server_resource, resource_group, name).result()
+    return cached_put(cmd, client.config_servers.begin_update_patch, config_server_resource, resource_group, service).result()
 
 
-def config_repo_delete(cmd, client, resource_group, name, repo_name):
-    config_server_resource = client.get(resource_group, name)
+def config_repo_delete(cmd, client, resource_group, service, repo_name):
+    config_server_resource = client.config_servers.get(resource_group, service)
     config_server = config_server_resource.properties.config_server
     if not config_server or not config_server.git_property or not config_server.git_property.repositories:
         raise CLIError("Repo '{}' not found.".format(repo_name))
@@ -890,14 +942,14 @@ def config_repo_delete(cmd, client, resource_group, name, repo_name):
         config_server=config_server_settings)
 
     logger.warning("[1/2] Validating config server settings")
-    validate_config_server_settings(client, resource_group, name, config_server_settings)
+    validate_config_server_settings(client, resource_group, service, config_server_settings)
 
     logger.warning("[2/2] Deleting config server settings repo, (this operation can take a while to complete)")
     config_server_resource = models.ConfigServerResource(properties=config_server_properties)
-    return cached_put(cmd, client.begin_update_patch, config_server_resource, resource_group, name).result()
+    return cached_put(cmd, client.config_servers.begin_update_patch, config_server_resource, resource_group, service).result()
 
 
-def config_repo_update(cmd, client, resource_group, name, repo_name,
+def config_repo_update(cmd, client, resource_group, service, repo_name,
                        uri=None,
                        pattern=None,
                        label=None,
@@ -908,7 +960,7 @@ def config_repo_update(cmd, client, resource_group, name, repo_name,
                        host_key_algorithm=None,
                        private_key=None,
                        strict_host_key_checking=None):
-    config_server_resource = client.get(resource_group, name)
+    config_server_resource = client.config_servers.get(resource_group, service)
     config_server = config_server_resource.properties.config_server
     if not config_server or not config_server.git_property or not config_server.git_property.repositories:
         raise CLIError("Repo '{}' not found.".format(repo_name))
@@ -943,21 +995,124 @@ def config_repo_update(cmd, client, resource_group, name, repo_name,
     config_server_properties = models.ConfigServerProperties(config_server=config_server_settings)
 
     logger.warning("[1/2] Validating config server settings")
-    validate_config_server_settings(client, resource_group, name, config_server_settings)
+    validate_config_server_settings(client, resource_group, service, config_server_settings)
 
     logger.warning("[2/2] Updating config server settings repo, (this operation can take a while to complete)")
     config_server_resource = models.ConfigServerResource(properties=config_server_properties)
-    return cached_put(cmd, client.begin_update_patch, config_server_resource, resource_group, name).result()
+    return cached_put(cmd, client.config_servers.begin_update_patch, config_server_resource, resource_group, service).result()
 
 
-def config_repo_list(cmd, client, resource_group, name):
-    config_server_resource = client.get(resource_group, name)
+def config_repo_list(cmd, client, resource_group, service):
+    config_server_resource = client.config_servers.get(resource_group, service)
     config_server = config_server_resource.properties.config_server
 
     if not config_server or not config_server.git_property or not config_server.git_property.repositories:
         raise CLIError("Repos not found.")
 
     return config_server.git_property.repositories
+
+
+def config_create(cmd, client, service, resource_group):
+    try:
+        config_server_resource = client.config_servers.get(resource_group, service)
+        if config_server_resource is not None:
+            raise CLIError("Config server '{}' already exists.".format(CONFIG_SERVER_DEFAULT_NAME))
+    except ResourceNotFoundException:
+        pass
+
+    properties = models.ConfigServerProperties()
+    config_server_resource = models.ConfigServerResource(properties=properties)
+    logger.warning("Creating config server")
+    return client.config_servers.begin_update_put(resource_group, service, config_server_resource)
+
+
+def config_delete(cmd, client, service, resource_group):
+    return client.config_servers.begin_delete(resource_group, service)
+
+
+def config_bind(cmd, client, service, resource_group, app=None, job=None):
+    """app and job will be validated so that one and only one is not None.
+        """
+    if app is not None:
+        return _config_bind_or_unbind_app(cmd, client, service, resource_group, app, True)
+    else:
+        return _config_bind_or_unbind_job(cmd, client, service, resource_group, job, True)
+
+
+def config_unbind(cmd, client, service, resource_group, app=None, job=None):
+    """app and job will be validated so that one and only one is not None.
+            """
+    if app is not None:
+        return _config_bind_or_unbind_app(cmd, client, service, resource_group, app, False)
+    else:
+        return _config_bind_or_unbind_job(cmd, client, service, resource_group, job, False)
+
+
+def _config_bind_or_unbind_app(cmd, client, service, resource_group, app_name, enabled):
+    app = client.apps.get(resource_group, service, app_name)
+    app.properties.addon_configs = _get_app_addon_configs_with_config_server(app.properties.addon_configs)
+
+    if (app.properties.addon_configs[CONFIG_SERVER_ADDON_NAME][RESOURCE_ID_KEY_NAME] != "") == enabled:
+        logger.warning('App "{}" has been {}binded'.format(app_name, '' if enabled else 'un'))
+        return app
+
+    config_server_id = _get_config_server_resource_id(cmd, resource_group, service)
+    if enabled:
+        app.properties.addon_configs[CONFIG_SERVER_ADDON_NAME][RESOURCE_ID_KEY_NAME] = config_server_id
+    else:
+        app.properties.addon_configs[CONFIG_SERVER_ADDON_NAME][RESOURCE_ID_KEY_NAME] = ""
+    return client.apps.begin_update(resource_group, service, app_name, app)
+
+
+def _config_bind_or_unbind_job(cmd, client, service, resource_group, job_name, enabled):
+    job: models.JobResource = client.job.get(resource_group, service, job_name)
+    job = backfill_secret_envs(client, resource_group, service, job_name, job)
+    config_server_id = _get_config_server_resource_id(cmd, resource_group, service)
+    is_job_already_binded = _is_job_already_binded_to_cs(job, config_server_id)
+    if is_job_already_binded == enabled:
+        logger.warning(f'Job {job_name} has been {"" if enabled else "un"}binded.')
+        return job
+
+    if enabled:
+        job = _append_config_server_reference(job, config_server_id)
+    else:
+        job = _remove_config_server_reference(job, config_server_id)
+    """TODO(jiec): There seems to be issues in SDK if we directly return client.job.begin_create_or_update.
+    """
+    poller = client.job.begin_create_or_update(resource_group, service, job_name, job)
+    wait_till_end(cmd, poller)
+    return client.job.get(resource_group, service, job_name)
+
+
+def _get_config_server_resource_id(cmd, resource_group, service):
+    return resource_id(
+        subscription=get_subscription_id(cmd.cli_ctx),
+        resource_group=resource_group,
+        namespace='Microsoft.AppPlatform',
+        type='Spring',
+        name=service,
+        child_type_1="configServers",
+        child_name_1=CONFIG_SERVER_DEFAULT_NAME
+    )
+
+
+def _is_job_already_binded_to_cs(job: models.JobResource, config_server_id: str):
+    return job_has_resource_id_ref_ignore_case(job, config_server_id)
+
+
+def _append_config_server_reference(job: models.JobResource, config_server_id) -> models.JobResource:
+    return append_managed_component_ref(job, config_server_id)
+
+
+def _remove_config_server_reference(job: models.JobResource, config_server_id) -> models.JobResource:
+    return remove_managed_component_ref(job, config_server_id)
+
+
+def _get_app_addon_configs_with_config_server(addon_configs):
+    addon_configs = addon_configs or {}
+    addon_configs.setdefault(CONFIG_SERVER_ADDON_NAME, {})
+    addon_configs[CONFIG_SERVER_ADDON_NAME].setdefault(RESOURCE_ID_KEY_NAME, "")
+    return addon_configs
 
 
 def binding_list(cmd, client, resource_group, service, app):
@@ -1137,130 +1292,6 @@ def _get_redis_primary_key(cli_ctx, resource_id):
     return keys.primary_key
 
 
-# pylint: disable=bare-except, too-many-statements
-def _get_app_log(url, auth, format_json, exceptions, chunk_size=None, stderr=False):
-    logger_seg_regex = re.compile(r'([^\.])[^\.]+\.')
-
-    def build_log_shortener(length):
-        if length <= 0:
-            raise InvalidArgumentValueError('Logger length in `logger{length}` should be positive')
-
-        def shortener(record):
-            '''
-            Try shorten the logger property to the specified length before feeding it to the formatter.
-            '''
-            logger_name = record.get('logger', None)
-            if logger_name is None:
-                return record
-
-            # first, try to shorten the package name to one letter, e.g.,
-            #     org.springframework.cloud.netflix.eureka.config.DiscoveryClientOptionalArgsConfiguration
-            # to: o.s.c.n.e.c.DiscoveryClientOptionalArgsConfiguration
-            while len(logger_name) > length:
-                logger_name, count = logger_seg_regex.subn(r'\1.', logger_name, 1)
-                if count < 1:
-                    break
-
-            # then, cut off the leading packages if necessary
-            logger_name = logger_name[-length:]
-            record['logger'] = logger_name
-            return record
-
-        return shortener
-
-    def build_formatter():
-        '''
-        Build the log line formatter based on the format_json argument.
-        '''
-        nonlocal format_json
-
-        def identity(o):
-            return o
-
-        if format_json is None or len(format_json) == 0:
-            return identity
-
-        logger_regex = re.compile(r'\blogger\{(\d+)\}')
-        match = logger_regex.search(format_json)
-        pre_processor = identity
-        if match:
-            length = int(match[1])
-            pre_processor = build_log_shortener(length)
-            format_json = logger_regex.sub('logger', format_json, 1)
-
-        first_exception = True
-
-        def format_line(line):
-            nonlocal first_exception
-            try:
-                log_record = json.loads(line)
-                # Add n=\n so that in Windows CMD it's easy to specify customized format with line ending
-                # e.g., "{timestamp} {message}{n}"
-                # (Windows CMD does not escape \n in string literal.)
-                return format_json.format_map(pre_processor(defaultdict(str, n="\n", **log_record)))
-            except:
-                if first_exception:
-                    # enable this format error logging only with --verbose
-                    logger.info("Failed to format log line '{}'".format(line), exc_info=sys.exc_info())
-                    first_exception = False
-                return line
-
-        return format_line
-
-    def iter_lines(response, limit=2 ** 20, chunk_size=None):
-        '''
-        Returns a line iterator from the response content. If no line ending was found and the buffered content size is
-        larger than the limit, the buffer will be yielded directly.
-        '''
-        buffer = []
-        total = 0
-        for content in response.iter_content(chunk_size=chunk_size):
-            if not content:
-                if len(buffer) > 0:
-                    yield b''.join(buffer)
-                break
-
-            start = 0
-            while start < len(content):
-                line_end = content.find(b'\n', start)
-                should_print = False
-                if line_end < 0:
-                    next = (content if start == 0 else content[start:])
-                    buffer.append(next)
-                    total += len(next)
-                    start = len(content)
-                    should_print = total >= limit
-                else:
-                    buffer.append(content[start:line_end + 1])
-                    start = line_end + 1
-                    should_print = True
-
-                if should_print:
-                    yield b''.join(buffer)
-                    buffer.clear()
-                    total = 0
-
-    with requests.get(url, stream=True, auth=auth) as response:
-        try:
-            if response.status_code != 200:
-                raise CLIError("Failed to connect to the server with status code '{}' and reason '{}'".format(
-                    response.status_code, response.reason))
-            std_encoding = sys.stdout.encoding
-
-            formatter = build_formatter()
-
-            for line in iter_lines(response, chunk_size=chunk_size):
-                decoded = (line.decode(encoding='utf-8', errors='replace')
-                           .encode(std_encoding, errors='replace')
-                           .decode(std_encoding, errors='replace'))
-                if stderr:
-                    print(formatter(decoded), end='', file=sys.stderr)
-                else:
-                    print(formatter(decoded), end='')
-        except CLIError as e:
-            exceptions.append(e)
-
-
 def storage_callback(pipeline_response, deserialized, headers):
     return models.StorageResource.deserialize(json.loads(pipeline_response.http_response.text()))
 
@@ -1326,7 +1357,7 @@ def storage_list_persistent_storage(client, resource_group, service, name):
 
 
 def certificate_add(cmd, client, resource_group, service, name, only_public_cert=None,
-                    vault_uri=None, vault_certificate_name=None, public_certificate_file=None):
+                    vault_uri=None, vault_certificate_name=None, public_certificate_file=None, enable_auto_sync=None):
     if vault_uri is None and public_certificate_file is None:
         raise InvalidArgumentValueError("One of --vault-uri and --public-certificate-file should be provided")
     if vault_uri is not None and public_certificate_file is not None:
@@ -1339,10 +1370,11 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
         if only_public_cert is None:
             only_public_cert = False
         properties = models.KeyVaultCertificateProperties(
-            type="KeyVaultCertificate",
+            type='KeyVaultCertificate',
             vault_uri=vault_uri,
             key_vault_cert_name=vault_certificate_name,
-            exclude_private_key=only_public_cert
+            exclude_private_key=only_public_cert,
+            auto_sync='Enabled' if enable_auto_sync is True else 'Disabled'
         )
     else:
         if os.path.exists(public_certificate_file):
@@ -1360,16 +1392,17 @@ def certificate_add(cmd, client, resource_group, service, name, only_public_cert
         )
     certificate_resource = models.CertificateResource(properties=properties)
 
-    def callback(pipeline_response, deserialized, headers):
-        return models.CertificateResource.deserialize(json.loads(pipeline_response.http_response.text()))
+    return client.certificates.begin_create_or_update(resource_group, service, name, certificate_resource)
 
-    return client.certificates.begin_create_or_update(
-        resource_group_name=resource_group,
-        service_name=service,
-        certificate_name=name,
-        certificate_resource=certificate_resource,
-        cls=callback
-    )
+
+def certificate_update(cmd, client, resource_group, service, name, enable_auto_sync=None):
+    certificate_resource = client.certificates.get(resource_group, service, name)
+
+    if certificate_resource.properties.type == 'KeyVaultCertificate':
+        if enable_auto_sync is not None:
+            certificate_resource.properties.auto_sync = 'Enabled' if enable_auto_sync is True else 'Disabled'
+
+    return client.certificates.begin_create_or_update(resource_group, service, name, certificate_resource)
 
 
 def certificate_show(cmd, client, resource_group, service, name):
@@ -1551,26 +1584,26 @@ def _get_connection_string_from_app_insights(cmd, resource_group, app_insights):
 
 
 def try_create_application_insights(cmd, resource_group, name, location):
-    creation_failed_warn = 'Unable to create the Application Insights for the Azure Spring Apps. ' \
-                           'Please use the Azure Portal to manually create and configure the Application Insights, ' \
-                           'if needed.'
+    workspace = try_create_log_analytics_workspace(cmd, resource_group, name, location)
+    if workspace is None:
+        logger.warning(APP_INSIGHTS_CREATION_FAILURE_WARNING)
+        return None
 
-    ai_resource_group_name = resource_group
-    ai_name = name
-    ai_location = location
-
-    app_insights_client = get_mgmt_service_client(cmd.cli_ctx, ApplicationInsightsManagementClient)
+    app_insights_client = get_mgmt_service_client(cmd.cli_ctx, ApplicationInsightsManagementClient,
+                                                  api_version='2020-02-02-preview')
     ai_properties = {
-        "name": ai_name,
-        "location": ai_location,
+        "location": location,
         "kind": "web",
         "properties": {
-            "Application_Type": "web"
+            "Application_Type": "web",
+            "Flow_Type": "Bluefield",
+            "Request_Source": "rest",
+            "WorkspaceResourceId": workspace.id
         }
     }
-    appinsights = app_insights_client.components.create_or_update(ai_resource_group_name, ai_name, ai_properties)
+    appinsights = app_insights_client.components.create_or_update(resource_group, name, ai_properties)
     if appinsights is None or appinsights.connection_string is None:
-        logger.warning(creation_failed_warn)
+        logger.warning(APP_INSIGHTS_CREATION_FAILURE_WARNING)
         return None
 
     portal_url = get_portal_uri(cmd.cli_ctx)
@@ -1631,6 +1664,40 @@ def app_insights_show(cmd, client, resource_group, name, no_wait=False):
     if not monitoring_setting_properties:
         raise CLIError("Application Insights not set.")
     return monitoring_setting_properties
+
+
+def try_create_log_analytics_workspace(cmd, resource_group, name, location):
+    client = get_mgmt_service_client(cmd.cli_ctx, LogAnalyticsManagementClient)
+    workspace = None
+
+    try:
+        workspace = client.workspaces.get(resource_group, name)
+    except HttpResponseError as err:
+        if err.status_code != 404:
+            raise
+
+    if workspace is not None:
+        return workspace
+
+    logger.debug("Log Analytics workspace not found. Creating it now...")
+    properties = {
+        "location": location,
+        "properties": {
+            "sku": {
+                "name": "PerGB2018"
+            },
+            "retentionInDays": 30
+        }
+    }
+    workspace = client.workspaces.begin_create_or_update(resource_group, name, properties).result()
+
+    portal_url = get_portal_uri(cmd.cli_ctx)
+    # We make this success message as a warning to no interfere with regular JSON output in stdout
+    logger.warning('Log Analytics workspace \"%s\" was created for this Azure Spring Apps. '
+                   'You can visit %s/#resource%s/overview to view your Log Analytics workspace',
+                   workspace.name, portal_url, workspace.id)
+
+    return workspace
 
 
 def app_connect(cmd, client, resource_group, service, name,

@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "connectedmachine extension show",
 )
 class Show(AAZCommand):
-    """Create or update the extension.
+    """Show an extension of a Non-Azure machine.
 
     :example: Sample command for extension show
         az connectedmachine extension show --name CustomScriptExtension --machine-name myMachine --resource-group myResourceGroup
     """
 
     _aaz_info = {
-        "version": "2022-12-27",
+        "version": "2024-05-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2022-12-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/extensions/{}", "2024-05-20-preview"],
         ]
     }
 
@@ -135,7 +135,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27",
+                    "api-version", "2024-05-20-preview",
                     required=True,
                 ),
             }

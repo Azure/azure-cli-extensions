@@ -14,11 +14,12 @@ from azure.cli.core.azclierror import (ArgumentUsageError, ClientRequestError,
                                        InvalidArgumentValueError,
                                        MutuallyExclusiveArgumentError)
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.core.exceptions import ResourceNotFoundError
 from knack.log import get_logger
-from .vendored_sdks.appplatform.v2023_09_01_preview.models import (ApmReference, CertificateReference)
-from .vendored_sdks.appplatform.v2023_09_01_preview.models._app_platform_management_client_enums import (ApmType, ConfigurationServiceGeneration)
+from .vendored_sdks.appplatform.v2024_05_01_preview.models import (ApmReference, CertificateReference)
+from .vendored_sdks.appplatform.v2024_05_01_preview.models._app_platform_management_client_enums import (ApmType, ConfigurationServiceGeneration)
 
+from ._gateway_constant import (GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE, GATEWAY_RESPONSE_CACHE_SCOPE_INSTANCE,
+                                GATEWAY_RESPONSE_CACHE_SIZE_RESET_VALUE, GATEWAY_RESPONSE_CACHE_TTL_RESET_VALUE)
 from ._resource_quantity import validate_cpu as validate_and_normalize_cpu
 from ._resource_quantity import \
     validate_memory as validate_and_normalize_memory
@@ -27,6 +28,7 @@ from ._util_enterprise import (
 )
 from ._validators import (validate_instance_count, _parse_sku_name, _parse_jar_file)
 from .buildpack_binding import (DEFAULT_BUILD_SERVICE_NAME)
+from ._app_validator import validate_path_exist
 
 logger = get_logger(__name__)
 
@@ -182,6 +184,7 @@ def validate_source_path(namespace):
     valued_args = [x for x in arguments if x]
     if len(valued_args) > 1:
         raise InvalidArgumentValueError('At most one of --artifact-path, --source-path must be provided.')
+    validate_path_exist(namespace.source_path, namespace.artifact_path)
 
 
 def validate_artifact_path(namespace):
@@ -194,6 +197,7 @@ def validate_artifact_path(namespace):
     if values is None:
         # ignore jar_file check
         return
+    validate_path_exist(namespace.source_path, namespace.artifact_path)
     file_size, spring_boot_version, spring_cloud_version, has_actuator, has_manifest, has_jar, has_class, ms_sdk_version, jdk_version = values
 
     tips = ", if you choose to ignore these errors, turn validation off with --disable-validation"
@@ -328,6 +332,18 @@ def _validate_patterns(patterns):
         raise InvalidArgumentValueError("Patterns should be the collection of patterns separated by comma, each pattern in the format of 'application' or 'application/profile'")
 
 
+def validate_pattern_for_show_acs_configs(namespace):
+    if namespace.config_file_pattern:
+        if not _is_valid_pattern(namespace.config_file_pattern):
+            raise InvalidArgumentValueError("Pattern should be in the format of 'application' or 'application/profile'")
+        if _is_valid_app_and_profile_name(namespace.config_file_pattern):
+            parts = namespace.config_file_pattern.split('/')
+            if parts[1] == '*':
+                namespace.config_file_pattern = f"{parts[0]}/default"
+        elif _is_valid_app_name(namespace.config_file_pattern):
+            namespace.config_file_pattern = f"{namespace.config_file_pattern}/default"
+
+
 def _is_valid_pattern(pattern):
     return _is_valid_app_name(pattern) or _is_valid_app_and_profile_name(pattern)
 
@@ -351,7 +367,17 @@ def validate_acs_create(namespace):
             raise ArgumentUsageError("--application-configuration-service-generation can only be set when enable application configuration service.")
 
 
-def validate_gateway_update(namespace):
+def validate_refresh_interval(namespace):
+    if namespace.refresh_interval:
+        if not isinstance(namespace.refresh_interval, int):
+            raise InvalidArgumentValueError("--refresh-interval should be a number.")
+
+        if namespace.refresh_interval < 0:
+            raise ArgumentUsageError("--refresh-interval must be greater than or equal to 0.")
+
+
+def validate_gateway_update(cmd, namespace):
+    _validate_gateway_response_cache(namespace)
     _validate_sso(namespace)
     validate_cpu(namespace)
     validate_memory(namespace)
@@ -359,6 +385,7 @@ def validate_gateway_update(namespace):
     _validate_gateway_apm_types(namespace)
     _validate_gateway_envs(namespace)
     _validate_gateway_secrets(namespace)
+    validate_apm_reference(cmd, namespace)
 
 
 def validate_api_portal_update(namespace):
@@ -407,6 +434,73 @@ def _validate_gateway_secrets(namespace):
         for item in namespace.secrets:
             secrets_dict.update(validate_tag(item))
         namespace.secrets = secrets_dict
+
+
+def _validate_gateway_response_cache(namespace):
+    _validate_gateway_response_cache_exclusive(namespace)
+    _validate_gateway_response_cache_scope(namespace)
+    _validate_gateway_response_cache_size(namespace)
+    _validate_gateway_response_cache_ttl(namespace)
+
+
+def _validate_gateway_response_cache_exclusive(namespace):
+    if namespace.enable_response_cache is not None and namespace.enable_response_cache is False \
+        and (namespace.response_cache_scope is not None
+             or namespace.response_cache_size is not None
+             or namespace.response_cache_ttl is not None):
+        raise InvalidArgumentValueError(
+            "Conflict detected: Parameters in ['--response-cache-scope', '--response-cache-scope', '--response-cache-ttl'] "
+            "cannot be set together with '--enable-response-cache false'.")
+
+
+def _validate_gateway_response_cache_scope(namespace):
+    scope = namespace.response_cache_scope
+    if (scope is not None and not isinstance(scope, str)):
+        raise InvalidArgumentValueError("The allowed values for '--response-cache-scope' are [{}, {}]".format(
+            GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE, GATEWAY_RESPONSE_CACHE_SCOPE_INSTANCE
+        ))
+    if (scope is not None and isinstance(scope, str)):
+        scope = scope.lower()
+        if GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE.lower() != scope \
+                and GATEWAY_RESPONSE_CACHE_SCOPE_INSTANCE.lower() != scope:
+            raise InvalidArgumentValueError("The allowed values for '--response-cache-scope' are [{}, {}]".format(
+                GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE, GATEWAY_RESPONSE_CACHE_SCOPE_INSTANCE
+            ))
+        # Normalize input
+        if GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE.lower() == scope:
+            namespace.response_cache_scope = GATEWAY_RESPONSE_CACHE_SCOPE_ROUTE
+        else:
+            namespace.response_cache_scope = GATEWAY_RESPONSE_CACHE_SCOPE_INSTANCE
+
+
+def _validate_gateway_response_cache_size(namespace):
+    if namespace.response_cache_size is not None:
+        size = namespace.response_cache_size
+        if not isinstance(size, str):
+            raise InvalidArgumentValueError('--response-cache-size should be a string')
+        if GATEWAY_RESPONSE_CACHE_SIZE_RESET_VALUE.lower() == size.lower():
+            # Normalize the input
+            namespace.response_cache_size = GATEWAY_RESPONSE_CACHE_SIZE_RESET_VALUE
+        else:
+            pattern = r"^[1-9][0-9]{0,9}(GB|MB|KB)$"
+            if not match(pattern, size):
+                raise InvalidArgumentValueError(
+                    "Invalid response cache size '{}', the regex used to validate is '{}'".format(size, pattern))
+
+
+def _validate_gateway_response_cache_ttl(namespace):
+    if namespace.response_cache_ttl is not None:
+        ttl = namespace.response_cache_ttl
+        if not isinstance(ttl, str):
+            raise InvalidArgumentValueError('--response-cache-ttl should be a string')
+        if GATEWAY_RESPONSE_CACHE_TTL_RESET_VALUE.lower() == ttl.lower():
+            # Normalize the input
+            namespace.response_cache_ttl = GATEWAY_RESPONSE_CACHE_TTL_RESET_VALUE
+        else:
+            pattern = r"^[1-9][0-9]{0,9}(h|m|s)$"
+            if not match(pattern, ttl):
+                raise InvalidArgumentValueError(
+                    "Invalid response cache ttl '{}', the regex used to validate is '{}'".format(ttl, pattern))
 
 
 def validate_routes(namespace):
@@ -531,9 +625,10 @@ def validate_apm_reference(cmd, namespace):
 
     result = []
     for apm_name in apm_names:
-        resource_id = '{}/apms/{}'.format(service_resource_id, apm_name)
-        apm_reference = ApmReference(resource_id=resource_id)
-        result.append(apm_reference)
+        if apm_name != "":
+            resource_id = '{}/apms/{}'.format(service_resource_id, apm_name)
+            apm_reference = ApmReference(resource_id=resource_id)
+            result.append(apm_reference)
 
     namespace.apms = result
 
@@ -586,3 +681,69 @@ def validate_build_cert_reference(cmd, namespace):
     get_cert_resource_id(cert_names, cmd, namespace, result)
 
     namespace.build_certificates = result
+
+
+def validate_create_app_binding_default_service_registry(cmd, namespace):
+    if namespace.bind_service_registry:
+        namespace.bind_service_registry = _get_eactly_one_service_registry_resource_id(cmd,
+                                                                                       namespace.resource_group,
+                                                                                       namespace.service)
+
+
+def _get_eactly_one_service_registry_resource_id(cmd, resource_group, service):
+    client = get_client(cmd)
+    service_registry_resources = list(client.service_registries.list(resource_group, service))
+    if len(service_registry_resources) == 0:
+        raise ClientRequestError('App cannot bind to service registry because it is not configured.')
+    if len(service_registry_resources) > 1:
+        raise ClientRequestError('App cannot bind to multiple service registries.')
+    return service_registry_resources[0].id
+
+
+def validate_create_app_binding_default_application_configuration_service(cmd, namespace):
+    if namespace.bind_application_configuration_service:
+        namespace.bind_application_configuration_service \
+            = _get_eactly_one_application_configuration_service_resource_id(cmd,
+                                                                            namespace.resource_group,
+                                                                            namespace.service)
+
+
+def _get_eactly_one_application_configuration_service_resource_id(cmd, resource_group, service):
+    client = get_client(cmd)
+    acs_resources = list(client.configuration_services.list(resource_group, service))
+    if len(acs_resources) == 0:
+        raise ClientRequestError('App cannot bind to application configuration service '
+                                 'because it is not configured.')
+    if len(acs_resources) > 1:
+        raise ClientRequestError('App cannot bind to multiple application configuration services.')
+    return acs_resources[0].id
+
+
+def validate_custom_actuator_port(cmd, namespace):
+    if namespace.custom_actuator_port:
+        only_support_enterprise(cmd, namespace)
+        if namespace.custom_actuator_port <= 0:
+            raise ArgumentUsageError("--custom-actuator-port must be greater than 0")
+
+
+def validate_custom_actuator_path(cmd, namespace):
+    if namespace.custom_actuator_path:
+        only_support_enterprise(cmd, namespace)
+
+
+def validate_create_app_binding_default_config_server(cmd, namespace):
+    if namespace.bind_config_server:
+        namespace.bind_config_server \
+            = _get_exactly_one_config_server_resource_id(cmd,
+                                                         namespace.resource_group,
+                                                         namespace.service)
+
+
+def _get_exactly_one_config_server_resource_id(cmd, resource_group, service):
+    client = get_client(cmd)
+    config_server_resources = list(client.config_servers.list(resource_group, service))
+    if len(config_server_resources) == 0:
+        raise ClientRequestError('App cannot bind to config server because it is not configured.')
+    if len(config_server_resources) > 1:
+        raise ClientRequestError('App cannot bind to multiple config servers.')
+    return config_server_resources[0].id

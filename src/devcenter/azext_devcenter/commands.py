@@ -8,14 +8,9 @@
 # pylint: disable=too-many-statements
 from azure.cli.core.commands import CliCommandType
 from azext_devcenter._client_factory import (
-    cf_project_dp,
-    cf_pool_dp,
-    cf_schedule_dp,
-    cf_dev_box_dp,
-    cf_environment_dp,
-    cf_catalog_dp,
-    cf_environment_definition_dp,
-    cf_environment_type_dp,
+    cf_dev_center_dp,
+    cf_dev_boxes_dp,
+    cf_environments_dp,
 )
 from .custom import (
     AttachedNetworkCreate,
@@ -24,6 +19,8 @@ from .custom import (
     AttachedNetworkShow,
     AttachedNetworkWait,
     CheckNameAvailabilityExecute,
+    CheckScopedNameAvailabilityExecute,
+    CatalogConnect,
     CatalogCreate,
     CatalogDelete,
     CatalogList,
@@ -31,12 +28,19 @@ from .custom import (
     CatalogSync,
     CatalogUpdate,
     CatalogWait,
+    CatalogGetSyncErrorDetail,
+    CatalogTaskGetErrorDetail,
+    CatalogTaskList,
+    CatalogTaskShow,
     DevBoxDefinitionCreate,
     DevBoxDefinitionDelete,
     DevBoxDefinitionList,
     DevBoxDefinitionShow,
     DevBoxDefinitionUpdate,
     DevBoxDefinitionWait,
+    EnvironmentDefinitionGetErrorDetail,
+    EnvironmentDefinitionList,
+    EnvironmentDefinitionShow,
     EnvironmentTypeCreate,
     EnvironmentTypeDelete,
     EnvironmentTypeList,
@@ -52,6 +56,7 @@ from .custom import (
     ImageVersionList,
     ImageVersionShow,
     NetworkConnectionCreate,
+    PlanMemberCreate,
     PoolCreate,
     PoolDelete,
     PoolList,
@@ -61,6 +66,18 @@ from .custom import (
     ProjectCreate,
     ProjectAllowedEnvironmentTypeList,
     ProjectAllowedEnvironmentTypeShow,
+    ProjectCatalogConnect,
+    ProjectCatalogCreate,
+    ProjectCatalogDelete,
+    ProjectCatalogList,
+    ProjectCatalogShow,
+    ProjectCatalogSync,
+    ProjectCatalogUpdate,
+    ProjectCatalogWait,
+    ProjectCatalogGetSyncErrorDetail,
+    ProjectEnvironmentDefinitionGetErrorDetail,
+    ProjectEnvironmentDefinitionList,
+    ProjectEnvironmentDefinitionShow,
     ProjectEnvironmentTypeCreate,
     ProjectEnvironmentTypeDelete,
     ProjectEnvironmentTypeList,
@@ -76,12 +93,12 @@ from .custom import (
 
 def load_command_table(self, _):
     # Control plane
-    self.command_table[
-        "devcenter admin attached-network create"
-    ] = AttachedNetworkCreate(loader=self)
-    self.command_table[
-        "devcenter admin attached-network delete"
-    ] = AttachedNetworkDelete(loader=self)
+    self.command_table["devcenter admin attached-network create"] = (
+        AttachedNetworkCreate(loader=self)
+    )
+    self.command_table["devcenter admin attached-network delete"] = (
+        AttachedNetworkDelete(loader=self)
+    )
     self.command_table["devcenter admin attached-network list"] = AttachedNetworkList(
         loader=self
     )
@@ -92,9 +109,13 @@ def load_command_table(self, _):
         loader=self
     )
 
-    self.command_table[
-        "devcenter admin check-name-availability execute"
-    ] = CheckNameAvailabilityExecute(loader=self)
+    self.command_table["devcenter admin check-name-availability execute"] = (
+        CheckNameAvailabilityExecute(loader=self)
+    )
+
+    self.command_table["devcenter admin check-scoped-name-availability execute"] = (
+        CheckScopedNameAvailabilityExecute(loader=self)
+    )
 
     self.command_table["devcenter admin catalog create"] = CatalogCreate(loader=self)
     self.command_table["devcenter admin catalog delete"] = CatalogDelete(loader=self)
@@ -103,41 +124,65 @@ def load_command_table(self, _):
     self.command_table["devcenter admin catalog sync"] = CatalogSync(loader=self)
     self.command_table["devcenter admin catalog update"] = CatalogUpdate(loader=self)
     self.command_table["devcenter admin catalog wait"] = CatalogWait(loader=self)
+    self.command_table["devcenter admin catalog connect"] = CatalogConnect(loader=self)
+    self.command_table["devcenter admin catalog get-sync-error-detail"] = (
+        CatalogGetSyncErrorDetail(loader=self)
+    )
 
-    self.command_table[
-        "devcenter admin devbox-definition create"
-    ] = DevBoxDefinitionCreate(loader=self)
-    self.command_table[
-        "devcenter admin devbox-definition delete"
-    ] = DevBoxDefinitionDelete(loader=self)
+    self.command_table["devcenter admin catalog-task get-error-detail"] = (
+        CatalogTaskGetErrorDetail(loader=self)
+    )
+    self.command_table["devcenter admin catalog-task list"] = CatalogTaskList(
+        loader=self
+    )
+    self.command_table["devcenter admin catalog-task show"] = CatalogTaskShow(
+        loader=self
+    )
+
+    self.command_table["devcenter admin environment-definition get-error-detail"] = (
+        EnvironmentDefinitionGetErrorDetail(loader=self)
+    )
+    self.command_table["devcenter admin environment-definition list"] = (
+        EnvironmentDefinitionList(loader=self)
+    )
+    self.command_table["devcenter admin environment-definition show"] = (
+        EnvironmentDefinitionShow(loader=self)
+    )
+
+    self.command_table["devcenter admin devbox-definition create"] = (
+        DevBoxDefinitionCreate(loader=self)
+    )
+    self.command_table["devcenter admin devbox-definition delete"] = (
+        DevBoxDefinitionDelete(loader=self)
+    )
     self.command_table["devcenter admin devbox-definition list"] = DevBoxDefinitionList(
         loader=self
     )
     self.command_table["devcenter admin devbox-definition show"] = DevBoxDefinitionShow(
         loader=self
     )
-    self.command_table[
-        "devcenter admin devbox-definition update"
-    ] = DevBoxDefinitionUpdate(loader=self)
+    self.command_table["devcenter admin devbox-definition update"] = (
+        DevBoxDefinitionUpdate(loader=self)
+    )
     self.command_table["devcenter admin devbox-definition wait"] = DevBoxDefinitionWait(
         loader=self
     )
 
-    self.command_table[
-        "devcenter admin environment-type create"
-    ] = EnvironmentTypeCreate(loader=self)
-    self.command_table[
-        "devcenter admin environment-type delete"
-    ] = EnvironmentTypeDelete(loader=self)
+    self.command_table["devcenter admin environment-type create"] = (
+        EnvironmentTypeCreate(loader=self)
+    )
+    self.command_table["devcenter admin environment-type delete"] = (
+        EnvironmentTypeDelete(loader=self)
+    )
     self.command_table["devcenter admin environment-type list"] = EnvironmentTypeList(
         loader=self
     )
     self.command_table["devcenter admin environment-type show"] = EnvironmentTypeShow(
         loader=self
     )
-    self.command_table[
-        "devcenter admin environment-type update"
-    ] = EnvironmentTypeUpdate(loader=self)
+    self.command_table["devcenter admin environment-type update"] = (
+        EnvironmentTypeUpdate(loader=self)
+    )
 
     self.command_table["devcenter admin gallery create"] = GalleryCreate(loader=self)
     self.command_table["devcenter admin gallery delete"] = GalleryDelete(loader=self)
@@ -155,45 +200,83 @@ def load_command_table(self, _):
         loader=self
     )
 
-    self.command_table[
-        "devcenter admin network-connection create"
-    ] = NetworkConnectionCreate(loader=self)
+    self.command_table["devcenter admin network-connection create"] = (
+        NetworkConnectionCreate(loader=self)
+    )
+
+    self.command_table["devcenter admin plan-member create"] = PlanMemberCreate(
+        loader=self
+    )
 
     self.command_table["devcenter admin pool create"] = PoolCreate(loader=self)
     self.command_table["devcenter admin pool delete"] = PoolDelete(loader=self)
     self.command_table["devcenter admin pool list"] = PoolList(loader=self)
-    # TODO: Uncomment once feature is complete
-    # self.command_table["devcenter admin pool run-health-check"] = PoolRunHealthCheck(
-    #     loader=self
-    # )
     self.command_table["devcenter admin pool show"] = PoolShow(loader=self)
     self.command_table["devcenter admin pool update"] = PoolUpdate(loader=self)
     self.command_table["devcenter admin pool wait"] = PoolWait(loader=self)
 
     self.command_table["devcenter admin project create"] = ProjectCreate(loader=self)
 
-    self.command_table[
-        "devcenter admin project-allowed-environment-type list"
-    ] = ProjectAllowedEnvironmentTypeList(loader=self)
-    self.command_table[
-        "devcenter admin project-allowed-environment-type show"
-    ] = ProjectAllowedEnvironmentTypeShow(loader=self)
+    self.command_table["devcenter admin project-allowed-environment-type list"] = (
+        ProjectAllowedEnvironmentTypeList(loader=self)
+    )
+    self.command_table["devcenter admin project-allowed-environment-type show"] = (
+        ProjectAllowedEnvironmentTypeShow(loader=self)
+    )
+
+    self.command_table["devcenter admin project-catalog create"] = ProjectCatalogCreate(
+        loader=self
+    )
+    self.command_table["devcenter admin project-catalog delete"] = ProjectCatalogDelete(
+        loader=self
+    )
+    self.command_table["devcenter admin project-catalog list"] = ProjectCatalogList(
+        loader=self
+    )
+    self.command_table["devcenter admin project-catalog show"] = ProjectCatalogShow(
+        loader=self
+    )
+    self.command_table["devcenter admin project-catalog sync"] = ProjectCatalogSync(
+        loader=self
+    )
+    self.command_table["devcenter admin project-catalog update"] = ProjectCatalogUpdate(
+        loader=self
+    )
+    self.command_table["devcenter admin project-catalog wait"] = ProjectCatalogWait(
+        loader=self
+    )
+    self.command_table["devcenter admin project-catalog connect"] = (
+        ProjectCatalogConnect(loader=self)
+    )
+    self.command_table["devcenter admin project-catalog get-sync-error-detail"] = (
+        ProjectCatalogGetSyncErrorDetail(loader=self)
+    )
 
     self.command_table[
-        "devcenter admin project-environment-type create"
-    ] = ProjectEnvironmentTypeCreate(loader=self)
-    self.command_table[
-        "devcenter admin project-environment-type delete"
-    ] = ProjectEnvironmentTypeDelete(loader=self)
-    self.command_table[
-        "devcenter admin project-environment-type list"
-    ] = ProjectEnvironmentTypeList(loader=self)
-    self.command_table[
-        "devcenter admin project-environment-type show"
-    ] = ProjectEnvironmentTypeShow(loader=self)
-    self.command_table[
-        "devcenter admin project-environment-type update"
-    ] = ProjectEnvironmentTypeUpdate(loader=self)
+        "devcenter admin project-environment-definition get-error-detail"
+    ] = ProjectEnvironmentDefinitionGetErrorDetail(loader=self)
+    self.command_table["devcenter admin project-environment-definition list"] = (
+        ProjectEnvironmentDefinitionList(loader=self)
+    )
+    self.command_table["devcenter admin project-environment-definition show"] = (
+        ProjectEnvironmentDefinitionShow(loader=self)
+    )
+
+    self.command_table["devcenter admin project-environment-type create"] = (
+        ProjectEnvironmentTypeCreate(loader=self)
+    )
+    self.command_table["devcenter admin project-environment-type delete"] = (
+        ProjectEnvironmentTypeDelete(loader=self)
+    )
+    self.command_table["devcenter admin project-environment-type list"] = (
+        ProjectEnvironmentTypeList(loader=self)
+    )
+    self.command_table["devcenter admin project-environment-type show"] = (
+        ProjectEnvironmentTypeShow(loader=self)
+    )
+    self.command_table["devcenter admin project-environment-type update"] = (
+        ProjectEnvironmentTypeUpdate(loader=self)
+    )
 
     self.command_table["devcenter admin schedule create"] = ScheduleCreate(loader=self)
     self.command_table["devcenter admin schedule delete"] = ScheduleDelete(loader=self)
@@ -203,54 +286,21 @@ def load_command_table(self, _):
 
     # Data plane
 
-    devcenter_pool_dp = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter_dataplane.operations._pool_operations#PoolOperations.{}",
-        client_factory=cf_pool_dp,
+    devcenter_dp = CliCommandType(
+        operations_tmpl="azext_devcenter.vendored_sdks.devcenter_dataplane.operations._operations#DevCenterOperations.{}",
+        client_factory=cf_dev_center_dp,
     )
 
-    devcenter_project_dp = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter_dataplane.operations._project_operations#ProjectOperations.{}",
-        client_factory=cf_project_dp,
+    dev_boxes_dp = CliCommandType(
+        operations_tmpl="azext_devcenter.vendored_sdks.devcenter_dataplane.operations._operations#DevBoxesOperations.{}",
+        client_factory=cf_dev_boxes_dp,
     )
 
-    devcenter_dev_box_dp = CliCommandType(
+    environments_dp = CliCommandType(
         operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._dev_box_operations#DevBoxOperations.{}"
+            "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._operations#EnvironmentsOperations.{}"
         ),
-        client_factory=cf_dev_box_dp,
-    )
-
-    devcenter_catalog_dp = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._catalogs_operations#CatalogsOperations.{}"
-        ),
-        client_factory=cf_catalog_dp,
-    )
-
-    devcenter_environment_definition_dp = CliCommandType(
-        operations_tmpl="azext_devcenter.vendored_sdks.devcenter_dataplane.operations._environment_definitions_operations#EnvironmentDefinitionsOperations.{}",
-        client_factory=cf_environment_definition_dp,
-    )
-
-    devcenter_environment_dp = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._environments_operations#EnvironmentsOperations.{}"
-        ),
-        client_factory=cf_environment_dp,
-    )
-
-    devcenter_environment_type_dp = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._environment_type_operations#EnvironmentTypeOperations.{}"
-        ),
-        client_factory=cf_environment_type_dp,
-    )
-
-    devcenter_schedule_dp = CliCommandType(
-        operations_tmpl=(
-            "azext_devcenter.vendored_sdks.devcenter_dataplane.operations._schedule_operations#ScheduleOperations.{}"
-        ),
-        client_factory=cf_schedule_dp,
+        client_factory=cf_environments_dp,
     )
 
     with self.command_group("devcenter"):
@@ -259,15 +309,19 @@ def load_command_table(self, _):
     with self.command_group("devcenter dev"):
         pass
 
-    with self.command_group("devcenter dev project", devcenter_project_dp) as g:
+    with self.command_group("devcenter dev project", devcenter_dp) as g:
         g.custom_command("list", "devcenter_project_list_dp")
         g.custom_show_command("show", "devcenter_project_show_dp")
 
-    with self.command_group("devcenter dev pool", devcenter_pool_dp) as g:
+    with self.command_group("devcenter dev pool", dev_boxes_dp) as g:
         g.custom_command("list", "devcenter_pool_list_dp")
         g.custom_show_command("show", "devcenter_pool_show_dp")
 
-    with self.command_group("devcenter dev dev-box", devcenter_dev_box_dp) as g:
+    with self.command_group("devcenter dev schedule", dev_boxes_dp) as g:
+        g.custom_command("list", "devcenter_schedule_list_dp")
+        g.custom_show_command("show", "devcenter_schedule_show_dp")
+
+    with self.command_group("devcenter dev dev-box") as g:
         g.custom_command("list", "devcenter_dev_box_list")
         g.custom_show_command("show", "devcenter_dev_box_show")
         g.custom_command("create", "devcenter_dev_box_create", supports_no_wait=True)
@@ -277,19 +331,22 @@ def load_command_table(self, _):
             supports_no_wait=True,
             confirmation=True,
         )
+        g.custom_command("start", "devcenter_dev_box_start", supports_no_wait=True)
+        g.custom_command("stop", "devcenter_dev_box_stop", supports_no_wait=True)
+        g.custom_command("restart", "devcenter_dev_box_restart", supports_no_wait=True)
+        g.custom_command("repair", "devcenter_dev_box_repair", supports_no_wait=True)
         g.custom_command(
             "show-remote-connection", "devcenter_dev_box_get_remote_connection"
         )
-        g.custom_command("start", "devcenter_dev_box_start", supports_no_wait=True)
-        g.custom_command("restart", "devcenter_dev_box_restart", supports_no_wait=True)
-        g.custom_command("stop", "devcenter_dev_box_stop", supports_no_wait=True)
-        g.custom_command("delay-action", "devcenter_dev_box_delay_action")
-        g.custom_command("delay-all-actions", "devcenter_dev_box_delay_all_actions")
         g.custom_command("list-action", "devcenter_dev_box_list_action")
         g.custom_command("show-action", "devcenter_dev_box_show_action")
         g.custom_command("skip-action", "devcenter_dev_box_skip_action")
+        g.custom_command("delay-action", "devcenter_dev_box_delay_action")
+        g.custom_command("delay-all-actions", "devcenter_dev_box_delay_all_actions")
+        g.custom_command("list-operation", "devcenter_dev_box_list_operation")
+        g.custom_command("show-operation", "devcenter_dev_box_show_operation")
 
-    with self.command_group("devcenter dev environment", devcenter_environment_dp) as g:
+    with self.command_group("devcenter dev environment") as g:
         g.custom_command("list", "devcenter_environment_list")
         g.custom_show_command("show", "devcenter_environment_show")
         g.custom_command(
@@ -307,21 +364,42 @@ def load_command_table(self, _):
             supports_no_wait=True,
             confirmation=True,
         )
+        g.custom_command("list-operation", "devcenter_environment_operation_list")
+        g.custom_command("show-operation", "devcenter_environment_operation_show")
+        g.custom_command(
+            "show-logs-by-operation",
+            "devcenter_environment_operation_show_logs_by_operation",
+        )
+        g.custom_command("show-action", "devcenter_environment_operation_show_action")
+        g.custom_command("list-action", "devcenter_environment_operation_list_action")
+        g.custom_command("delay-action", "devcenter_environment_operation_delay_action")
+        g.custom_command("skip-action", "devcenter_environment_operation_skip_action")
+        g.custom_command("show-outputs", "devcenter_environment_operation_show_outputs")
+        g.custom_command(
+            "update-expiration-date",
+            "devcenter_environment_operation_update_environment",
+        )
 
-    with self.command_group(
-        "devcenter dev environment-type", devcenter_environment_type_dp
-    ) as g:
-        g.custom_command("list", "devcenter_environment_type_list_dp")
-
-    with self.command_group("devcenter dev schedule", devcenter_schedule_dp) as g:
-        g.custom_show_command("show", "devcenter_schedule_show_dp")
-
-    with self.command_group("devcenter dev catalog", devcenter_catalog_dp) as g:
+    with self.command_group("devcenter dev catalog", environments_dp) as g:
         g.custom_command("list", "devcenter_catalog_list_dp")
         g.custom_show_command("show", "devcenter_catalog_show_dp")
 
     with self.command_group(
-        "devcenter dev environment-definition", devcenter_environment_definition_dp
+        "devcenter dev environment-definition", environments_dp
     ) as g:
         g.custom_command("list", "devcenter_environment_definition_list_dp")
         g.custom_show_command("show", "devcenter_environment_definition_show_dp")
+
+    with self.command_group("devcenter dev environment-type", environments_dp) as g:
+        g.custom_command("list", "devcenter_environment_type_list_dp")
+
+    with self.command_group("devcenter dev customization-group") as g:
+        g.custom_command("list", "devcenter_customization_group_list")
+        g.custom_show_command("show", "devcenter_customization_group_show")
+        g.custom_command("create", "devcenter_customization_group_create")
+
+    with self.command_group("devcenter dev customization-task") as g:
+        g.custom_command("list", "devcenter_customization_task_definition_list")
+        g.custom_show_command("show", "devcenter_customization_task_definition_show")
+        g.custom_command("validate", "devcenter_customization_task_definition_validate")
+        g.custom_command("show-logs", "devcenter_customization_task_log_show")

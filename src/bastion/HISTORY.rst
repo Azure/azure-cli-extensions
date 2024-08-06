@@ -2,9 +2,41 @@
 
 Release History
 ===============
-0.3.0
+
+1.1.0
 ++++++
 * Allow to pass `ssh_args` as positional parameter in command `az network bastion ssh`
+
+1.0.2
++++++
+* Remove redundant aad login commands from examples section.
+
+1.0.1
++++++
+* Added support for concurrent connections.
+
+1.0.0
+++++++
+* Removing preview flag and update MFA documentation.
+* Adding support for premium SKU.
+* Giving proper error message when using --target-ip-address flag with IpConnect feature.
+* Fix error messages to display appropriate messages.
+* Fix formatting issues.
+
+0.3.0
+++++++
+* Removing preview flag.
+* Fix for AAD login.
+
+0.2.7
+++++++
+* add support for auth type password in RDP connection
+* line formatting issue with IP connect
+
+0.2.6
+++++++
+* Adding auth type aad for RDP to mimic the enable-mfa flag.
+* Fixing issue where if powershell is opened in system32 directory, file generation throws error. Files are now dumped in temp folder.
 
 0.2.5
 ++++++

@@ -1,5 +1,117 @@
 Release History
 ===============
+1.25.0
+---
+* Add arguments `--disable-test-endpoint-auth` in `spring app create` and `spring app update`.
+
+1.24.5
+---
+* Verify that `--artifact-path` and `--source-path` exist before all steps in `az spring app deploy`, `az spring app deployment create` and `az spring job deploy` commands.
+
+1.24.4
+---
+* Refine the error message when user failed to get job log streaming in command `az spring job logs`.
+
+1.24.3
+---
+* Fix subnet address prefix validation issue.
+
+1.24.2
+---
+* Fix commands `az spring config-server enable` and `az spring config-server disable`.
+
+1.24.1
+---
+* Add command group `az spring private-dns-zone` to configure constumer private DNS zone with Azure Spring Apps.
+* Add new command `az spring private-dns-zone add`,  `az spring private-dns-zone update` and `az spring private-dns-zone clean`
+
+1.24.0
+---
+* Add Job support
+
+1.23.0
+---
+* For Application Configuration Service Version Gen2, show the Git revisions in command `az spring application-configuration-service config show`.
+
+1.22.0
+---
+* Add argument `--custom-actuator-port` in `spring app update`, `spring app deploy` and `spring app deployment create` to support custom actuator port.
+* Add argument `--custom-actuator-path` in `spring app update`, `spring app deploy` and `spring app deployment create` to support custom actuator path.
+
+1.21.0
+---
+* Add argument `--enable-config-server` to `az spring create` to create Spring Cloud Config Server in enterprise tier during creating service instance.
+* Add new command `az spring config-server create` to create Spring Cloud Config Server in enterprise tier.
+* Add new command `az spring config-server delete` to delete Spring Cloud Config Server in enterprise tier.
+* Add new command `az spring config-server bind` to bind an app to Spring Cloud Config Server in enterprise tier.
+* Add new command `az spring config-server unbind` to unbind an app with Spring Cloud Config Server in enterprise tier.
+* Add argument `--bind-config-server` to `az spring app create` bind with default config server during creation automatically.
+* Update commands `az spring config-server clear` and `az spring config-server git repo remove` to require confirmation before running the command.
+* Add more samples for `az spring config-server` sub commands.
+* Update commands `az spring create` and `az spring update` to include a new argument `--enable-private-storage-access` to set whether private network access to backend storage in vnet injection instance.
+
+1.20.1
+---
+* Add command to show the configurations pulled by Application Configuration Service from upstream Git repositories. `az spring application-configuration-service config show`.
+
+1.20.0
+---
+* Change default Application Configuration Service generation value to Gen2.
+
+1.19.4
+---
+* Enhance managed component log streaming when `-i/--instance` and `--all-instances` parameters are not specified.
+
+1.19.3
+---
+* Add arguments `--refresh-interval` in `spring application-configuration-service create` and `spring application-configuration-service update`.
+
+1.19.2
+---
+* Add runtime version `Java_21`.
+
+1.19.1
+---
+* Create workspace-based Application Insights instead, since classic Application Insights will be retired on 29 February 2024.
+
+1.19.0
+---
+* Add new commands for managed component log streaming `az spring component list`, `az spring component instance list` and `az spring component logs`.
+
+1.18.0
+---
+* Add arguments `--bind-service-registry` in `spring app create`.
+* Add arguments `--bind-application-configuration-service` in `spring app create`.
+
+1.17.0
+---
+* Add arguments `--enable-api-try-out` in `spring api-portal update`
+
+1.16.0
+---
+* Add arguments `--enable-planned-maintenance`, `--planned-maintenance-day` and `--planned-maintenance-start-hour` in `az spring update` to support configuring Planned Maintenance.
+
+1.15.1
+---
+* Add arguments `--apms` for Spring Cloud Gateway.
+
+1.15.0
+---
+* Add arguments `--type` and `--git-sub-path` in `spring application-accelerator customized-accelerator create` and `spring application-accelerator customized-accelerator update` for accelerator fragment support.
+* Add new argument `--server-version` in `az spring app deploy` and `az spring app deployment create` to support WAR file deployment in Standard tier. 
+* Add argument `--enable-auto-sync` in `az spring certificate add`.
+* Add new command `az spring certificate update` to update a certificate.
+* Add new command `az spring list-support-server-versions` to list all supported server versions.
+* Fix `list-marketplace-plan` command.
+
+1.14.3
+---
+* Make error message for `az spring app logs` more readable.  
+
+1.14.2
+---
+* Add new command `az spring flush-virtualnetwork-dns-settings` to flush virtual network DNS settings for the service instance.
+
 1.14.1
 ---
 * Support up to 1000 app instances in Enterprise tier.

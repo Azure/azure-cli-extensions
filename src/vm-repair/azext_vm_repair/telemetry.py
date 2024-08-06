@@ -55,3 +55,20 @@ def _track_run_command_telemetry(logger, command_name, parameters, status, messa
         tc.flush()
     except Exception as exception:
         logger.error('Unexpected error sending telemetry with exception: %s', str(exception))
+
+
+def _track_command_telemetry_repair_and_restore(logger, command_name, status, message, error_message, error_stack_trace, duration, subscription_id):
+    try:
+        properties = {
+            'command_name': command_name,
+            'command_status': status,
+            'message': message,
+            'error_message': error_message,
+            'error_stack_trace': error_stack_trace,
+            'subscription_id': subscription_id
+        }
+        measurements = {'command_duration': duration}
+        tc.track_event(command_name, properties, measurements)
+        tc.flush()
+    except Exception as exception:
+        logger.error('Unexpected error sending telemetry with exception: %s', str(exception))

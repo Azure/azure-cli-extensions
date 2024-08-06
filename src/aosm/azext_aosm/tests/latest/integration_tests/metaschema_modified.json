@@ -1,0 +1,416 @@
+{
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "version": "2023-09-01",
+  "$ref": "#/definitions/schemaObjectRoot",
+  "definitions": {
+    "schemaArray": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "array"
+        },
+        "items": {
+          "$ref": "#/definitions/schemaAllOf"
+        },
+        "minItems": {
+          "$ref": "#/definitions/nonNegativeIntegerDefault0"
+        },
+        "uniqueItems": {
+          "type": "boolean",
+          "default": false
+        },
+        "maxItems": {
+          "$ref": "#/definitions/nonNegativeInteger"
+        },
+        "$comment": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "enum": {
+          "type": "array",
+          "items": true,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "default": {
+          "type": "array"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "schemaArrayMultiType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "const": "array"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/schemaAllOf"
+          }
+        },
+        "minItems": {
+          "$ref": "#/definitions/nonNegativeIntegerDefault0"
+        },
+        "maxItems": {
+          "$ref": "#/definitions/nonNegativeInteger"
+        },
+        "additionalItems": {
+          "const": false
+        },
+        "uniqueItems": {
+          "type": "boolean",
+          "default": false
+        },
+        "$comment": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "enum": {
+          "type": "array",
+          "items": true,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "default": {
+          "type": "array"
+        }
+      },
+      "required": [
+        "type",
+        "additionalItems"
+      ],
+      "additionalProperties": false
+    },
+    "schemaObjectRoot": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "type": "string"
+        },
+        "type": {
+          "const": "object"
+        },
+        "$schema": {
+          "type": "string",
+          "format": "uri",
+          "not": {
+            "const": "https://json-schema.org/draft/2020-12/schema"
+          }
+        },
+        "version": {
+          "type": "string"
+        },
+        "$comment": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "required": {
+          "type": "array"
+        },
+        "additionalProperties": {
+          "type": "boolean"
+        },
+        "enum": {
+          "type": "array",
+          "items": true,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "maxProperties": {
+          "$ref": "#/definitions/nonNegativeInteger"
+        },
+        "minProperties": {
+          "$ref": "#/definitions/nonNegativeIntegerDefault0"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/schemaAllOf"
+          }
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "schemaObject": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "type": "string"
+        },
+        "type": {
+          "const": "object"
+        },
+        "version": {
+          "type": "string"
+        },
+        "$comment": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "required": {
+          "type": "array"
+        },
+        "enum": {
+          "type": "array",
+          "items": true,
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "additionalProperties": {
+          "type": "boolean"
+        },
+        "maxProperties": {
+          "$ref": "#/definitions/nonNegativeInteger"
+        },
+        "minProperties": {
+          "$ref": "#/definitions/nonNegativeIntegerDefault0"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/schemaAllOf"
+          }
+        },
+        "default": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "schemaAllOf": {
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "object"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/definitions/schemaObject"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "string",
+                  "integer",
+                  "boolean",
+                  "number"
+                ]
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/definitions/schemaPrimitive"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "array"
+              },
+              "items": {
+                "type": "array"
+              }
+            },
+            "required": [
+              "type",
+              "items"
+            ]
+          },
+          "then": {
+            "$ref": "#/definitions/schemaArrayMultiType"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "array"
+              },
+              "items": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/schemaArray"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "schemaPrimitive": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "number",
+            "integer",
+            "string",
+            "boolean",
+            "null"
+          ]
+        },
+        "enum": {
+          "type": "array",
+          "items": true,
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/definitions/defaultPrimitiveCondition"
+        }
+      ],
+      "additionalProperties": true
+    },
+    "nonNegativeInteger": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "nonNegativeIntegerDefault0": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/nonNegativeInteger"
+        },
+        {
+          "default": 0
+        }
+      ]
+    },
+    "defaultPrimitiveCondition": {
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "integer"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "default": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "number"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "default": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "string"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "default": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "boolean"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "default": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "null"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "default": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

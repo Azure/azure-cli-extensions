@@ -13,16 +13,15 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-instance deleted-backup-instance undelete",
-    is_experimental=True,
 )
 class Undelete(AAZCommand):
     """Undelete soft-deleted backup instances.
     """
 
     _aaz_info = {
-        "version": "2023-05-01",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/deletedbackupinstances/{}/undelete", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/deletedbackupinstances/{}/undelete", "2024-04-01"],
         ]
     }
 
@@ -53,7 +52,7 @@ class Undelete(AAZCommand):
             required=True,
         )
         _args_schema.vault_name = AAZStrArg(
-            options=["--vault-name"],
+            options=["-v", "--vault-name"],
             help="The name of the backup vault.",
             required=True,
             id_part="name",
@@ -141,7 +140,7 @@ class Undelete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }

@@ -14,10 +14,10 @@ from azure.cli.testsdk import (ScenarioTest, record_only)
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 '''
-Since the scenarios covered here involves a lot of Azure Spring service creation. 
+Since the scenarios covered here involves a lot of Azure Spring service creation.
 It will take around 5~10 minutes to create one. And may take 1~2 hours to finish all.
 So as a trade-off, mark it as record_only. It will run against the requests and responses
-in yaml files under recordings fold. If the yaml file is not here, it will call to backend 
+in yaml files under recordings fold. If the yaml file is not here, it will call to backend
 and generate the yaml file again.
 '''
 
@@ -334,8 +334,10 @@ class AzureSpringCloudCreateTests(ScenarioTest):
                 break
             elif result['properties']['provisioningState'] == "Failed":
                 exit(1)
-            sleep_in_seconds = 30
-            time.sleep(sleep_in_seconds)
+
+            if (self.is_live):
+                sleep_in_seconds = 30
+                time.sleep(sleep_in_seconds)
 
     def _test_asc_update_with_suffix(self, rg, service_name, target_ai_status, cmd_suffix):
         self._asc_update_disable_ai(rg, service_name)
@@ -371,8 +373,10 @@ class AzureSpringCloudCreateTests(ScenarioTest):
                 break
             elif result == "Failed":
                 exit(1)
-            sleep_in_seconds = 3
-            time.sleep(sleep_in_seconds)
+
+            if (self.is_live):
+                sleep_in_seconds = 3
+                time.sleep(sleep_in_seconds)
 
     '''
     Hard-code the information of application insights.

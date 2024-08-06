@@ -20,14 +20,17 @@ ManagedEnvironment = {
         "vnetConfiguration": None,  # VnetConfiguration
         "appLogsConfiguration": None,
         "customDomainConfiguration": None,  # CustomDomainConfiguration,
-        "workloadProfiles": None
+        "workloadProfiles": None,
+        "infrastructureResourceGroup": None,
+        "openTelemetryConfiguration": None
     }
 }
 
 CustomDomainConfiguration = {
     "dnsSuffix": None,
     "certificateValue": None,
-    "certificatePassword": None
+    "certificatePassword": None,
+    "certificateKeyVaultProperties": None
 }
 
 AppLogsConfiguration = {
@@ -87,7 +90,7 @@ SecretVolumeItem = {
 
 Volume = {
     "name": None,
-    "storageType": "EmptyDir",  # AzureFile, EmptyDir or Secret
+    "storageType": "EmptyDir",  # AzureFile, EmptyDir, Secret or NfsAzureFile
     "storageName": None,   # None for EmptyDir or Secret, otherwise name of storage resource
     "secrets": None,  # [SecretVolumeItem]
     "mountOptions": None,
@@ -290,30 +293,150 @@ ContainerAppsJob = {
     "tags": None
 }
 
+SessionPool = {
+    "location": None,
+    "properties": {
+        "environmentId": None,
+        "poolManagementType": None,
+        "containerType": None,
+        "customContainerTemplate": None,
+        "secrets": None,
+        "dynamicPoolConfiguration": None,
+        "scaleConfiguration": None,
+        "sessionNetworkConfiguration": None
+    }
+}
+
+SessionCodeInterpreterPythonExecution = {
+    "properties": {
+        "identifier": None,
+        "codeInputType": None,
+        "executionType": None,
+        "code": None,
+        "timeoutInSeconds": None
+    }
+}
+
+DaprComponentResiliency = {
+    "properties": {
+        "inboundPolicy": {
+            "timeoutPolicy": {
+                "responseTimeoutInSeconds": None,
+            },
+            "httpRetryPolicy": {
+                "maxRetries": None,
+                "retryBackOff": {
+                    "initialDelayInMilliseconds": None,
+                    "maxIntervalInMilliseconds": None,
+                }
+            },
+            "circuitBreakerPolicy": {
+                "consecutiveErrors": None,
+                "timeoutInSeconds": None,
+                "intervalInSeconds": None
+            }
+        },
+        "outboundPolicy": {
+            "timeoutPolicy": {
+                "responseTimeoutInSeconds": None,
+            },
+            "httpRetryPolicy": {
+                "maxRetries": None,
+                "retryBackOff": {
+                    "initialDelayInMilliseconds": None,
+                    "maxIntervalInMilliseconds": None,
+                }
+            },
+            "circuitBreakerPolicy": {
+                "consecutiveErrors": None,
+                "timeoutInSeconds": None,
+                "intervalInSeconds": None
+            }
+        }
+    }
+}
+
+ContainerAppsResiliency = {
+    "properties": {
+        "timeoutPolicy": None,
+        "httpRetryPolicy": None,
+        "tcpRetryPolicy": None,
+        "circuitBreakerPolicy": None,
+        "tcpConnectionPool": None,
+        "httpConnectionPool": None
+    }
+}
+
+HttpRetryPolicy = {
+    "maxRetries": None,
+    "retryBackOff": {
+        "initialDelayInMilliseconds": None,
+        "maxIntervalInMilliseconds": None,
+    },
+    "matches": {
+        "headers": None,
+        "httpStatusCodes": None,
+        "errors": None
+    }
+}
+
+TcpConnectionPool = {
+    "maxConnections": None
+}
+
+TimeoutPolicy = {
+    "responseTimeoutInSeconds": None,
+    "connectionTimeoutInSeconds": None
+}
+
+TcpRetryPolicy = {
+    "maxConnectAttempts": None
+}
+
+CircuitBreakerPolicy = {
+    "consecutiveErrors": None,
+    "intervalInSeconds": None,
+    "maxEjectionPercent": None
+}
+
+HttpConnectionPool = {
+    "http1MaxPendingRequests": None,
+    "http2MaxRequests": None
+}
+
 ContainerAppCertificateEnvelope = {
     "location": None,
     "properties": {
         "password": None,
-        "value": None
+        "value": None,
+        "certificateKeyVaultProperties": None
     }
 }
 
 DaprComponent = {
     "properties": {
-        "componentType": None,  # String
-        "version": None,
-        "ignoreErrors": None,
-        "initTimeout": None,
-        "secrets": None,
-        "metadata": None,
-        "scopes": None
+        "componentType": None,  # str
+        "ignoreErrors": None,  # str
+        "initTimeout": None,  # str
+        "metadata": None,  # [DaprMetadata]
+        "scopes": None,  # [str]
+        "secrets": None,  # [Secret]
+        "secretStoreComponent": None,  # str
+        "serviceComponentBind": None,  # DaprServiceComponentBinding
+        "version": None,  # str
     }
 }
 
+DaprServiceComponentBinding = {
+    "name": None,  # str
+    "serviceId": None,  # str
+    "metadata": None,  # Dict[str, str]
+}
+
 DaprMetadata = {
-    "key": None,  # str
+    "name": None,  # str
     "value": None,  # str
-    "secret_ref": None  # str
+    "secretRef": None  # str
 }
 
 SourceControl = {
@@ -333,7 +456,8 @@ GitHubActionConfiguration = {
     "publishType": None,  # str
     "os": None,  # str
     "runtimeStack": None,  # str
-    "runtimeVersion": None  # str
+    "runtimeVersion": None,  # str
+    "buildEnvironmentVariables": None  # [EnvironmentVar]
 }
 
 RegistryInfo = {
@@ -365,9 +489,23 @@ ContainerAppCustomDomain = {
     "certificateId": None
 }
 
+ManagedEnvironmentStorageProperties = {
+    "location": None,
+    "properties": {
+        "azureFile": None,
+        "nfsAzureFile": None,
+    }
+}
+
 AzureFileProperties = {
     "accountName": None,
     "accountKey": None,
+    "accessMode": None,
+    "shareName": None
+}
+
+NfsAzureFileProperties = {
+    "server": None,
     "accessMode": None,
     "shareName": None
 }
@@ -399,11 +537,86 @@ ImagePatchableCheck = {
     "reason": None,
 }
 
-OryxMarinerRunImgTagProperty = {
+OryxRunImageTagProperty = {
     "fullTag": None,
     "framework": None,
     "version": None,
-    "marinerVersion": None,
+    "os": None,
     "architectures": None,
     "support": None,
+}
+
+
+# model for preview extension
+ConnectedEnvironment = {
+    "extendedLocation": None,
+    "tags": None,
+    "location": None,
+    "properties": {
+        "staticIp": None,
+        "daprAIConnectionString": None
+    }
+}
+
+ExtendedLocation = {
+    "name": None,
+    "type": None
+}
+
+AppInsightsConfiguration = {
+    "connectionString": None
+}
+
+OpenTelemetryConfiguration = {
+    "destinationsConfiguration": None,
+    "tracesConfiguration": None,
+    "logsConfiguration": None,
+    "metricsConfiguration": None
+}
+
+DestinationsConfiguration = {
+    "dataDogConfiguration": None
+}
+
+DataDogConfiguration = {
+    "site": None,
+    "key": None
+}
+
+TracesConfiguration = {
+    "destinations": []
+}
+
+LogsConfiguration = {
+    "destinations": []
+}
+
+MetricsConfiguration = {
+    "destinations": []
+}
+
+JavaComponent = {
+    "properties": {
+        "componentType": None,
+        "serviceBinds": None
+    }
+}
+
+RuntimeJava = {
+    "enableMetrics": True,
+    "javaAgent": {
+        "enabled": False,
+        "logging": {}
+    }
+}
+
+DotNetComponent = {
+    "properties": {
+        "componentType": "AspireDashboard"
+    }
+}
+
+JavaLoggerSetting = {
+    "logger": None,
+    "level": None
 }

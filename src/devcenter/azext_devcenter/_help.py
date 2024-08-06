@@ -96,6 +96,30 @@ helps[
 """
 
 helps[
+    "devcenter dev schedule list"
+] = """
+    type: command
+    short-summary: "List schedules."
+    examples:
+      - name: List schedules by project using dev center
+        text: |-
+               az devcenter dev schedule list --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject"
+      - name: List schedules by project using endpoint
+        text: |-
+               az devcenter dev schedule list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject"
+      - name: List schedules by pool using dev center
+        text: |-
+               az devcenter dev schedule list --dev-center-name "ContosoDevCenter" \
+--pool-name "DevPool" --project-name "DevProject"
+      - name: List schedules by pool using endpoint
+        text: |-
+               az devcenter dev schedule list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--pool-name "DevPool" --project-name "DevProject"
+"""
+
+helps[
     "devcenter dev schedule show"
 ] = """
     type: command
@@ -246,6 +270,22 @@ helps[
 """
 
 helps[
+    "devcenter dev dev-box repair"
+] = """
+    type: command
+    short-summary: "Attempts automated repair steps to resolve common problems on a Dev Box. The dev box may restart during this operation."
+    examples:
+      - name: Repair using dev center
+        text: |-
+               az devcenter dev dev-box repair --name "MyDevBox" --dev-center-name "ContosoDevCenter" \
+               --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Repair using endpoint
+        text: |-
+               az devcenter dev dev-box repair --name "MyDevBox" --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
     "devcenter dev dev-box stop"
 ] = """
     type: command
@@ -311,6 +351,40 @@ helps[
                az devcenter dev dev-box delay-all-actions --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
 --project-name "DevProject" --delay-time "04:30" --name "myDevBox" \
 --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev dev-box list-operation"
+] = """
+    type: command
+    short-summary: "Lists operations on the dev box which have occurred within the past 90 days."
+    examples:
+      - name: List operations using dev center
+        text: |-
+               az devcenter dev dev-box list-operation --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --name "myDevBox" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: List operations using endpoint
+        text: |-
+               az devcenter dev dev-box list-operation --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --name "myDevBox" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev dev-box show-operation"
+] = """
+    type: command
+    short-summary: "Get an operation on a dev box."
+    examples:
+      - name: Get operation using dev center
+        text: |-
+               az devcenter dev dev-box show-operation --dev-center-name "ContosoDevCenter" \
+--project-name "DevProject" --name "myDevBox" --operation-id \
+"f5dbdfab-fa0e-4831-8d13-25359aa5e680" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Get operation using endpoint
+        text: |-
+               az devcenter dev dev-box show-operation --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--project-name "DevProject" --name "myDevBox" --operation-id \
+"f5dbdfab-fa0e-4831-8d13-25359aa5e680" --user-id "00000000-0000-0000-0000-000000000000"
 """
 
 helps[
@@ -549,7 +623,7 @@ definitions available for a project."
 --project-name "DevProject"
       - name: List using endpoint
         text: |-
-               az devcenter dev environment-definition list --dev-center-name "ContosoDevCenter" \
+               az devcenter dev environment-definition list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
 --project-name "DevProject"
       - name: List by catalog using dev center
         text: |-
@@ -575,4 +649,291 @@ helps[
         text: |-
                az devcenter dev environment-definition show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
 --project-name "DevProject" --catalog-name "myCatalog" --definition-name "foo"
+"""
+
+helps[
+    "devcenter dev environment list-operation"
+] = """
+    type: command
+    short-summary: "Lists operations on the environment which have occurred within the past 90 days."
+    examples:
+      - name: List using dev center
+        text: |-
+              az devcenter dev environment list-operation --dev-center-name "ContosoDevCenter" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+    examples:
+      - name: List using endpoint
+        text: |-
+              az devcenter dev environment list-operation --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev environment show-operation"
+] = """
+    type: command
+    short-summary: "Gets an environment action result."
+    examples:
+      - name: Get using dev center
+        text: |-
+              az devcenter dev environment show-operation --dev-center-name "ContosoDevCenter" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --operation-id \
+"f5dbdfab-fa0e-4831-8d13-25359aa5e680"
+    examples:
+      - name: Get using endpoint
+        text: |-
+              az devcenter dev environment show-operation --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --operation-id "f5dbdfab-fa0e-4831-8d13-25359aa5e680"
+"""
+
+helps[
+    "devcenter dev environment show-logs-by-operation"
+] = """
+    type: command
+    short-summary: "Gets the logs for an operation on an environment."
+    examples:
+      - name: Get using dev center
+        text: |-
+              az devcenter dev environment show-logs-by-operation --dev-center-name "ContosoDevCenter" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --operation-id \
+"f5dbdfab-fa0e-4831-8d13-25359aa5e680"
+    examples:
+      - name: Get using endpoint
+        text: |-
+              az devcenter dev environment show-logs-by-operation --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --operation-id "f5dbdfab-fa0e-4831-8d13-25359aa5e680"
+"""
+
+helps[
+    "devcenter dev environment show-action"
+] = """
+    type: command
+    short-summary: "Retrieve a specific environment action."
+    examples:
+      - name: Get using dev center
+        text: |-
+              az devcenter dev environment show-action --dev-center-name "ContosoDevCenter" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --action-name \
+"myEnv-Delete"
+    examples:
+      - name: Get using endpoint
+        text: |-
+              az devcenter dev environment show-action --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --action-name "myEnv-Delete"
+"""
+
+helps[
+    "devcenter dev environment list-action"
+] = """
+    type: command
+    short-summary: "List specific environment actions."
+    examples:
+      - name: List using dev center
+        text: |-
+              az devcenter dev environment list-action --dev-center-name "ContosoDevCenter" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+    examples:
+      - name: List using endpoint
+        text: |-
+              az devcenter dev environment list-action --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev environment delay-action"
+] = """
+    type: command
+    short-summary: "Delay an environment action."
+    examples:
+      - name: Delay using dev center
+        text: |-
+              az devcenter dev environment delay-action --dev-center-name "ContosoDevCenter" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --action-name \
+"myEnv-Delete" --delay-time "04:30"
+    examples:
+      - name: Delay using endpoint
+        text: |-
+              az devcenter dev environment delay-action --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --action-name "myEnv-Delete" --delay-time "04:30"
+"""
+
+helps[
+    "devcenter dev environment skip-action"
+] = """
+    type: command
+    short-summary: "Skip a specific environment action."
+    examples:
+      - name: Skip using dev center
+        text: |-
+              az devcenter dev environment skip-action --dev-center-name "ContosoDevCenter" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --action-name \
+"myEnv-Delete"
+    examples:
+      - name: Skip using endpoint
+        text: |-
+              az devcenter dev environment skip-action --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --action-name "myEnv-Delete"
+"""
+
+helps[
+    "devcenter dev environment show-outputs"
+] = """
+    type: command
+    short-summary: "Gets outputs from the environment."
+    examples:
+      - name: Get using dev center
+        text: |-
+              az devcenter dev environment show-outputs --dev-center-name "ContosoDevCenter" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+    examples:
+      - name: Get using endpoint
+        text: |-
+              az devcenter dev environment show-outputs --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev environment update-expiration-date"
+] = """
+    type: command
+    short-summary: "Update the environment expiration"
+    examples:
+      - name: Get using dev center
+        text: |-
+              az devcenter dev environment update-expiration-date --dev-center-name "ContosoDevCenter" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --expiration "2025-11-30T22:35:00+00:00"
+    examples:
+      - name: Get using endpoint
+        text: |-
+              az devcenter dev environment update-expiration-date --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" \
+--name "mydevenv" --project-name "DevProject" --user-id "00000000-0000-0000-0000-000000000000" --expiration "2025-11-30T22:35:00+00:00"
+
+"""
+
+helps[
+    "devcenter dev customization-group"
+] = """
+    type: group
+    short-summary: Manage customization groups.
+"""
+
+helps[
+    "devcenter dev customization-group create"
+] = """
+    type: command
+    short-summary: "Create a customization group."
+    examples:
+      - name: Create using dev center
+        text: |-
+               az devcenter dev customization-group create --dev-center-name "ContosoDevCenter" --project-name "DevProject" \
+--dev-box-name "myDevBox" --tasks "[{\\"name\\": \\"catalogName/choco\\", \\"displayName\\": \\"Install VS Code\\", \\"parameters\\": {\\"packageName\\": \\"vscode\
+\\", \\"packageVersion\\": \\"1.0.0\\"}}, {\\"name\\": \\"catalogName/write-to-file\\", \\"runAs\\": \\"User\\"}]" --name "Provisioning" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Create using endpoint
+        text: |-
+               az devcenter dev customization-group create --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" \
+--dev-box-name "myDevBox" --tasks "[{\\"name\\": \\"catalogName/choco\\", \\"displayName\\": \\"Install VS Code\\", \\"parameters\\": {\\"packageName\\": \\"vscode\
+\\", \\"packageVersion\\": \\"1.0.0\\"}}, {\\"name\\": \\"catalogName/write-to-file\\", \\"runAs\\": \\"User\\"}]" --name "Provisioning" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev customization-group show"
+] = """
+    type: command
+    short-summary: "Get a customization group."
+    examples:
+      - name: Get using dev center
+        text: |-
+               az devcenter dev customization-group show --dev-center-name "ContosoDevCenter" --project-name "DevProject" \
+--dev-box-name "myDevBox" --name "Provisioning" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Get using endpoint
+        text: |-
+               az devcenter dev customization-group show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" \
+--dev-box-name "myDevBox" --name "Provisioning" --user-id "00000000-0000-0000-0000-000000000000"
+"""
+
+helps[
+    "devcenter dev customization-group list"
+] = """
+    type: command
+    short-summary: "List customization groups on the dev box"
+    examples:
+      - name: List using dev center
+        text: |-
+               az devcenter dev customization-group list --dev-center-name "ContosoDevCenter" --project-name "DevProject" \
+--dev-box-name "myDevBox" --user-id "00000000-0000-0000-0000-000000000000" --include-tasks
+      - name: List using endpoint
+        text: |-
+               az devcenter dev customization-group list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" \
+--dev-box-name "myDevBox" --user-id "00000000-0000-0000-0000-000000000000" --include-tasks
+"""
+
+helps[
+    "devcenter dev customization-task"
+] = """
+    type: group
+    short-summary: Manage customization tasks.
+"""
+
+helps[
+    "devcenter dev customization-task show"
+] = """
+    type: command
+    short-summary: "Get a customization task."
+    examples:
+      - name: Get using dev center
+        text: |-
+               az devcenter dev customization-task show --dev-center-name "ContosoDevCenter" --project-name "DevProject" \
+--task-name "choco" --catalog-name "myCatalog"
+      - name: Get using endpoint
+        text: |-
+               az devcenter dev customization-task show --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" \
+--task-name "choco" --catalog-name "myCatalog"
+"""
+
+helps[
+    "devcenter dev customization-task list"
+] = """
+    type: command
+    short-summary: "List customization task."
+    examples:
+      - name: List using dev center
+        text: |-
+               az devcenter dev customization-task list --dev-center-name "ContosoDevCenter" --project-name "DevProject"
+      - name: List using endpoint
+        text: |-
+               az devcenter dev customization-task list --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject"
+"""
+
+helps[
+    "devcenter dev customization-task validate"
+] = """
+    type: command
+    short-summary: "Validate customization tasks."
+    examples:
+      - name: Validate using dev center
+        text: |-
+               az devcenter dev customization-task validate --dev-center-name "ContosoDevCenter" --project-name "DevProject" \
+--tasks "[{\\"name\\": \\"catalogName/choco\\", \\"displayName\\": \\"Install VS Code\\", \\"parameters\\": {\\"packageName\\": \\"vscode\
+\\", \\"packageVersion\\": \\"1.0.0\\"}}, {\\"name\\": \\"catalogName/write-to-file\\", \\"runAs\\": \\"User\\"}]"
+      - name: Validate using endpoint
+        text: |-
+               az devcenter dev customization-task validate --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" \
+--tasks "[{\\"name\\": \\"catalogName/choco\\", \\"displayName\\": \\"Install VS Code\\", \\"parameters\\": {\\"packageName\\": \\"vscode\
+\\", \\"packageVersion\\": \\"1.0.0\\"}}, {\\"name\\": \\"catalogName/write-to-file\\", \\"runAs\\": \\"User\\"}]"
+"""
+
+helps[
+    "devcenter dev customization-task show-logs"
+] = """
+    type: command
+    short-summary: "Show logs of a customization task."
+    examples:
+      - name: Get using dev center
+        text: |-
+               az devcenter dev customization-task show-logs --dev-center-name "ContosoDevCenter" --project-name "DevProject" \
+--dev-box-name "myDevBox" --customization-group-name "Provisioning" --customization-task-id "91835dc0-ef5a-4f58-9e3a-099aea8481f4" --user-id "00000000-0000-0000-0000-000000000000"
+      - name: Get using endpoint
+        text: |-
+               az devcenter dev customization-task show-logs --endpoint "https://8a40af38-3b4c-4672-a6a4-5e964b1870ed-contosodevcenter.centralus.devcenter.azure.com/" --project-name "DevProject" \
+--dev-box-name "myDevBox" --customization-group-name "Provisioning" --customization-task-id "91835dc0-ef5a-4f58-9e3a-099aea8481f4" --user-id "00000000-0000-0000-0000-000000000000"
 """

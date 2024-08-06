@@ -6,6 +6,7 @@
 # --------------------------------------------------------------------------------------------
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer, KeyVaultPreparer
 from msrestazure.tools import resource_id
+import uuid
 
 
 class SelfHelpScenario(ScenarioTest):
@@ -15,15 +16,11 @@ class SelfHelpScenario(ScenarioTest):
     def test_help_discoverysolutions(self, resource_group, key_vault):
 
         self.kwargs.update({
-            'scope': resource_id(resource_group=resource_group,
-                                 subscription=self.get_subscription_id(),
-                                 name=key_vault,
-                                 namespace='Microsoft.KeyVault',
-                                 type='vaults')
+            'filter': "\"ProblemClassificationId eq '00000000-0000-0000-0000-000000000000'\"",
         })
 
         list_solution_discovery_result = self.cmd(
-            'self-help discovery-solution list --scope {scope}', checks=[
+            'self-help discovery-solution list --filter {filter}', checks=[
                 self.check(
                     '[0].type', 'Microsoft.Help/discoverySolutions', case_sensitive=False)
             ]).get_output_in_json()
@@ -32,6 +29,24 @@ class SelfHelpScenario(ScenarioTest):
         self.assertTrue("type" in list_solution_discovery_result[0])
         self.assertTrue("name" in list_solution_discovery_result[0])
         self.assertTrue("id" in list_solution_discovery_result[0])
+
+        self.kwargs.update({
+            'subscription-id': self.get_subscription_id(),
+            'service-id': "\"6f16735c-b0ae-b275-ad3a-03479cfa1396\"",
+            'issue-summary': "\"I am not able to make rdp connection to the virtual machine\""
+        })
+
+        list_solution_discovery_result_nlp = self.cmd(
+            'self-help discovery-solution list-nlp --issue-summary {issue-summary} --service-id {service-id}', checks=[
+                self.check(
+                    '[0].type', 'Microsoft.Help/discoverSolutions', case_sensitive=False)
+            ]).get_output_in_json()
+
+        list_solution_discovery_result_nlp_subscription = self.cmd(
+            'self-help discovery-solution list-nlp-subscription --issue-summary {issue-summary} --service-id {service-id} --subscription-id {subscription-id}', checks=[
+                self.check(
+                    '[0].type', 'Microsoft.Help/discoverSolutions', case_sensitive=False)
+            ]).get_output_in_json()
 
     @ResourceGroupPreparer()
     @KeyVaultPreparer()
@@ -70,7 +85,7 @@ class SelfHelpScenario(ScenarioTest):
 
     def test_help_check_name_diagnostics(self):
 
-        # Create diagnostic for keyVault resource.
+        # Check diagnostic name availability.
         self.kwargs.update({
             'scope': resource_id(subscription=self.get_subscription_id()),
             'diagnostic-name': self.create_random_name(prefix='cli_test', length=15),
@@ -78,5 +93,190 @@ class SelfHelpScenario(ScenarioTest):
 
         self.cmd(
             "self-help check-name-availability --scope {scope} --name {diagnostic-name} --type 'Microsoft.Help/diagnostics'", checks=[
-                self.check('nameAvailable', True),
-            ])
+                self.check('nameAvailable', 'True'),])
+        
+    def test_help_check_name_solutions(self):
+
+        # Check solution name availability.
+        self.kwargs.update({
+            'scope': resource_id(subscription=self.get_subscription_id()),
+            'solution-name': self.create_random_name(prefix='cli_test', length=15),
+        })
+
+        self.cmd(
+            "self-help check-name-availability --scope {scope} --name {solution-name} --type 'Microsoft.Help/solutions'", checks=[
+                self.check('nameAvailable', 'True'),])
+    
+    def test_help_check_name_troubleshooters(self):
+
+        # Check troubleshooter name availability.
+        self.kwargs.update({
+            'scope': resource_id(subscription=self.get_subscription_id()),
+            'troubleshooter-name': str(uuid.uuid4())
+        })
+
+        self.cmd(
+            "self-help check-name-availability --scope {scope} --name {troubleshooter-name} --type 'Microsoft.Help/troubleshooters'", checks=[
+                self.check('nameAvailable', 'True'),])
+    
+
+    @ResourceGroupPreparer()
+    @KeyVaultPreparer()
+    def test_help_solutions(self, resource_group, key_vault):
+
+        # Create solution for keyVault resource.
+        solution_name = self.create_random_name(prefix='cli_test', length=15)
+        self.kwargs.update({
+            'scope': resource_id(resource_group=resource_group,
+                                 subscription=self.get_subscription_id(),
+                                 name=key_vault,
+                                 namespace='Microsoft.KeyVault',
+                                 type='vaults'),
+            'solution-name': solution_name,
+            'trigger-criteria': "[{name:solutionid,value:apollo-cognitve-search-custom-skill}]",
+            'update-trigger-criteria': "[{name:ReplacementKey,value:<!--56ee7509-92e1-4b9e-97c2-dda53065294c-->}]",
+            'parameters': '{SearchText:CanNotRDP,SymptomId:KeyVaultVaultNotFoundInsight}',
+            'update-parameters': '{SearchText:CanNotRDP,SymptomId:KeyVaultVaultNotFoundInsight}'
+        })
+
+        warmup_solution_result = self.cmd(
+            "self-help solution warmup --solution-name {solution-name} --parameters {parameters} --scope {scope}", checks=[])
+
+        create_solution_result = self.cmd(
+            "self-help solution create --solution-name {solution-name}  --trigger-criteria {trigger-criteria} --parameters {parameters} --scope {scope}", checks=[
+                self.check('name', '{solution-name}'),
+                self.check('type', 'Microsoft.Help/Solutions')])
+        create_solution_result = create_solution_result.get_output_in_json()
+        self.assertTrue(create_solution_result is not None)
+        self.assertTrue(create_solution_result["id"] is not None)
+        self.assertTrue(create_solution_result["name"] is not None)
+
+        # Get solution for keyVault resource.
+        get_solution_result = self.cmd(
+            "self-help solution show --solution-name {solution-name} --scope {scope}", checks=[
+                self.check('name', '{solution-name}'),
+                self.check('type', 'Microsoft.Help/Solutions')])
+        get_solution_result = get_solution_result.get_output_in_json()
+        self.assertTrue(get_solution_result is not None)
+        self.assertTrue(get_solution_result["id"] is not None)
+        self.assertTrue(get_solution_result["name"] is not None)
+
+        # Update solution for keyVault resource.
+        update_solution_result = self.cmd(
+            "self-help solution update --solution-name {solution-name} --trigger-criteria {update-trigger-criteria} --parameters {update-parameters} --scope {scope}", checks=[
+                self.check('name', '{solution-name}'),
+                self.check('type', 'Microsoft.Help/Solutions')])
+        update_solution_result = update_solution_result.get_output_in_json()
+        self.assertTrue(update_solution_result is not None)
+        self.assertTrue(update_solution_result["id"] is not None)
+        self.assertTrue(update_solution_result["name"] is not None)
+
+    @ResourceGroupPreparer()
+    @KeyVaultPreparer()
+    def test_help_simplified_solutions(self, resource_group, key_vault):
+        # Create simplesolution for keyVault resource.
+        solution_name = self.create_random_name(prefix='cli_test', length=15)
+        self.kwargs.update({
+            'scope': resource_id(resource_group=resource_group,
+                                 subscription=self.get_subscription_id(),
+                                 name=key_vault,
+                                 namespace='Microsoft.KeyVault',
+                                 type='vaults'),
+            'solution-name': solution_name,
+            'solution-id': "apollo-cognitve-search-custom-skill",
+            'parameters': '{}',
+        })
+
+        create_solution_result = self.cmd(
+            "self-help simplified-solution create --solution-name {solution-name} --solution-id {solution-id} --parameters {parameters} --scope {scope}", checks=[
+                self.check('name', '{solution-name}'),
+                self.check('type', 'Microsoft.Help/simplifiedSolutions')])
+        create_solution_result = create_solution_result.get_output_in_json()
+        self.assertTrue(create_solution_result is not None)
+        self.assertTrue(create_solution_result["id"] is not None)
+        self.assertTrue(create_solution_result["name"] is not None)
+
+        # Get solution for keyVault resource.
+        get_solution_result = self.cmd(
+            "self-help simplified-solution show --solution-name {solution-name} --scope {scope}", checks=[
+                self.check('name', '{solution-name}'),
+                self.check('type', 'Microsoft.Help/simplifiedSolutions')])
+        get_solution_result = get_solution_result.get_output_in_json()
+        self.assertTrue(get_solution_result is not None)
+        self.assertTrue(get_solution_result["id"] is not None)
+        self.assertTrue(get_solution_result["name"] is not None)
+
+    @ResourceGroupPreparer()
+    @KeyVaultPreparer()
+    def test_help_self_help(self, resource_group, key_vault):
+        # Create simplesolution for keyVault resource.
+        solution_name = self.create_random_name(prefix='cli_test', length=15)
+        self.kwargs.update({
+            'solution-id': "apollo-48996ff7-002f-47c1-85b2-df138843d5d5",
+        })
+
+        # Get solution for keyVault resource.
+        get_solution_result = self.cmd(
+            "self-help solution-self-help show --solution-id {solution-id}", checks=[
+                self.check('name', '{solution-id}'),
+                self.check('type', 'Microsoft.Help/selfHelp')])
+        get_solution_result = get_solution_result.get_output_in_json()
+        self.assertTrue(get_solution_result is not None)
+        self.assertTrue(get_solution_result["id"] is not None)
+        self.assertTrue(get_solution_result["name"] is not None)
+
+    @ResourceGroupPreparer()
+    @KeyVaultPreparer()
+    def test_help_troubleshooters(self, resource_group, key_vault):
+
+        # Create solution for keyVault resource.
+        resourceId = resource_id(resource_group=resource_group,
+                                 subscription=self.get_subscription_id(),
+                                 name=key_vault,
+                                 namespace='Microsoft.KeyVault',
+                                 type='vaults')
+        self.kwargs.update({
+            'scope': resourceId,
+            'troubleshooter-name': '1b98e3d0-5b5e-4b8f-b1ea-de6142f99999',
+            'solution-id': 'e104dbdf-9e14-4c9f-bc78-21ac90382231',
+            'parameters': '{ResourceUri:' + resourceId + '}',
+            'responses': '[]'
+        })
+
+        create_troubleshooter_result = self.cmd(
+            "self-help troubleshooter create --troubleshooter-name {troubleshooter-name}  --solution-id {solution-id} --parameters {parameters} --scope {scope}", checks=[
+                self.check('name', '{troubleshooter-name}'),
+                self.check('type', 'Microsoft.Help/troubleshooters')])
+        create_troubleshooter_result = create_troubleshooter_result.get_output_in_json()
+        self.assertTrue(create_troubleshooter_result is not None)
+        self.assertTrue(create_troubleshooter_result["id"] is not None)
+        self.assertTrue(create_troubleshooter_result["name"] is not None)
+        self.assertTrue(create_troubleshooter_result["steps"] is not None)
+
+
+        # Get solution for keyVault resource.
+        get_troubleshooter_result = self.cmd(
+            "self-help troubleshooter show --troubleshooter-name {troubleshooter-name} --scope {scope}", checks=[
+                self.check('name', '{troubleshooter-name}'),
+                self.check('type', 'Microsoft.Help/troubleshooters')])
+        get_troubleshooter_result = get_troubleshooter_result.get_output_in_json()
+        self.assertTrue(get_troubleshooter_result is not None)
+        self.assertTrue(get_troubleshooter_result["id"] is not None)
+        self.assertTrue(get_troubleshooter_result["name"] is not None)
+        self.assertTrue(get_troubleshooter_result["steps"] is not None)
+
+        self.kwargs.update({'step-id': get_troubleshooter_result["steps"][0]["id"]})
+
+        # End troubleshooter for keyVault resource.
+        self.cmd(
+            "self-help troubleshooter end --troubleshooter-name {troubleshooter-name} --scope {scope}")
+        
+        # Restart troubleshooter for keyVault resource.
+        restart_troubleshooter_result = self.cmd(
+            "self-help troubleshooter restart --troubleshooter-name {troubleshooter-name} --scope {scope}")
+        restart_troubleshooter_result = restart_troubleshooter_result.get_output_in_json()
+        self.assertTrue(restart_troubleshooter_result is not None)
+
+        # Continue troubleshooter for keyVault resource.
+        self.cmd("self-help troubleshooter continue --troubleshooter-name {troubleshooter-name} --step-id {step-id} --responses {responses} --scope {scope}")
+

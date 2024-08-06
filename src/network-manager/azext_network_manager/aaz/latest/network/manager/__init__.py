@@ -9,3 +9,15 @@
 # flake8: noqa
 
 from .__cmd_group import *
+from ._create import *
+from ._delete import *
+from ._list import *
+from ._list_active_connectivity_config import *
+from ._list_active_security_admin_rule import *
+from ._list_deploy_status import *
+from ._list_effective_connectivity_config import *
+from ._list_effective_security_admin_rule import *
+from ._post_commit import *
+from ._show import *
+from ._update import *
+from ._wait import *

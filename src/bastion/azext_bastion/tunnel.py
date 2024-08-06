@@ -18,22 +18,22 @@ import traceback
 import logging as logs
 from contextlib import closing
 from datetime import datetime
-from threading import Thread
+from threading import Thread, Lock
+import requests
+import urllib3
 
 import websocket
 from websocket import create_connection, WebSocket
 
 from msrestazure.azure_exceptions import CloudError
-from .BastionServiceConstants import BastionSku
-
 from azure.cli.core._profile import Profile
 from azure.cli.core.util import should_disable_connection_verify
 
-import requests
-import urllib3
-
 from knack.util import CLIError
 from knack.log import get_logger
+
+from .BastionServiceConstants import BastionSku
+
 logger = get_logger(__name__)
 
 
@@ -54,6 +54,8 @@ class TunnelServer:
         self.node_id = None
         self.host_name = None
         self.cli_ctx = cli_ctx
+        self.active_connections = 0
+        self.connection_lock = Lock()
         logger.info('Creating a socket on port: %s', self.local_port)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         logger.info('Setting socket options')
@@ -96,7 +98,7 @@ class TunnelServer:
         logger.debug("Content: %s", str(content))
         web_address = f"https://{self.bastion_endpoint}/api/tokens"
         response = requests.post(web_address, data=content, headers=custom_header,
-                                 verify=(not should_disable_connection_verify()))
+                                 verify=not should_disable_connection_verify())
         response_json = None
 
         if response.content is not None:
@@ -118,31 +120,45 @@ class TunnelServer:
         self.sock.listen(100)
         index = 0
         while True:
-            self.client, _address = self.sock.accept()
+            client, _address = self.sock.accept()
+            with self.connection_lock:
+                self.active_connections += 1
+            logger.info('Got a connection, starting a new thread')
+            thread = Thread(target=self._handle_client, args=(client, index))
+            thread.start()
+            index += 1
 
+    def _handle_client(self, client, index):
+        try:
             auth_token = self._get_auth_token()
-            if self.bastion['sku']['name'] == BastionSku.QuickConnect.name or self.bastion['sku']['name'] == BastionSku.Developer.name:
+            if self.bastion['sku']['name'] == BastionSku.QuickConnect.name or \
+               self.bastion['sku']['name'] == BastionSku.Developer.name:
                 host = f"wss://{self.bastion_endpoint}/omni/webtunnel/{auth_token}"
             else:
                 host = f"wss://{self.bastion_endpoint}/webtunnelv2/{auth_token}?X-Node-Id={self.node_id}"
 
             verify_mode = ssl.CERT_NONE if should_disable_connection_verify() else ssl.CERT_REQUIRED
-            self.ws = create_connection(host,
-                                        sockopt=((socket.IPPROTO_TCP, socket.TCP_NODELAY, 1),),
-                                        sslopt={'cert_reqs': verify_mode},
-                                        enable_multithread=True)
-            logger.info('Websocket, connected status: %s', self.ws.connected)
-            index = index + 1
+            ws = create_connection(host,
+                                   sockopt=((socket.IPPROTO_TCP, socket.TCP_NODELAY, 1),),
+                                   sslopt={'cert_reqs': verify_mode},
+                                   enable_multithread=True)
+            logger.info('Websocket, connected status: %s', ws.connected)
             logger.info('Got debugger connection... index: %s', index)
-            debugger_thread = Thread(target=self._listen_to_client, args=(self.client, self.ws, index))
-            web_socket_thread = Thread(target=self._listen_to_web_socket, args=(self.client, self.ws, index))
+            debugger_thread = Thread(target=self._listen_to_client, args=(client, ws, index))
+            web_socket_thread = Thread(target=self._listen_to_web_socket, args=(client, ws, index))
             debugger_thread.start()
             web_socket_thread.start()
             logger.info('Both debugger and websocket threads started...')
             logger.info('Successfully connected to local server..')
             debugger_thread.join()
             web_socket_thread.join()
-            self.cleanup()
+        except Exception as ex:  # pylint: disable=broad-except
+            logger.info('Exception in handling client: %s', ex)
+        finally:
+            with self.connection_lock:
+                self.active_connections -= 1
+                if self.active_connections == 0:
+                    self.cleanup()
             logger.info('Both debugger and websocket threads stopped...')
             logger.info('Stopped local server..')
 
@@ -204,7 +220,7 @@ class TunnelServer:
 
             web_address = f"https://{self.bastion_endpoint}/api/tokens/{self.last_token}"
             response = requests.delete(web_address, headers=custom_header,
-                                       verify=(not should_disable_connection_verify()))
+                                       verify=not should_disable_connection_verify())
             if response.status_code == 404:
                 logger.info('Session already deleted')
             elif response.status_code not in [200, 204]:

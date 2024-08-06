@@ -13,6 +13,7 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "networkcloud cluster update-version",
+    is_preview=True,
 )
 class UpdateVersion(AAZCommand):
     """Update the version of the provided cluster to one of the available supported versions.
@@ -22,9 +23,9 @@ class UpdateVersion(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-07-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/updateversion", "2023-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}/updateversion", "2023-10-01-preview"],
         ]
     }
 
@@ -101,15 +102,6 @@ class UpdateVersion(AAZCommand):
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200, 201]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
@@ -159,7 +151,7 @@ class UpdateVersion(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -187,9 +179,6 @@ class UpdateVersion(AAZCommand):
             _builder.set_prop("targetClusterVersion", AAZStrType, ".target_cluster_version", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
-
-        def on_204(self, session):
-            pass
 
         def on_200_201(self, session):
             data = self.deserialize_http_content(session)

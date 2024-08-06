@@ -12,8 +12,5 @@ def netapp_exception_handler(ex):
     if isinstance(ex, (CloudError, ValidationError, ValueError)):
         message = ex
         raise CLIError(message)
-    else:
-        import sys
 
-        from six import reraise
-        reraise(*sys.exc_info())
+    raise ex

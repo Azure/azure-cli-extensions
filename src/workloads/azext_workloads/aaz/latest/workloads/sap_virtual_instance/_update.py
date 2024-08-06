@@ -19,23 +19,29 @@ class Update(AAZCommand):
     """Update a Virtual Instance for SAP solutions (VIS) resource
 
     :example: Add tags for an existing Virtual Instance for SAP solutions (VIS) resource
-        az workloads sap-virtual-instance update -g <Resource-group-name> -n <ResourceName> --tags tag=test tag2=test2
+        az workloads sap-virtual-instance update -g <resource-group-name> -n <vis-name> --tags tag1=test1 tag2=test2
 
     :example: Add tags for an existing Virtual Instance for SAP solutions (VIS) resource using the Azure resource ID of the VIS
-        az workloads sap-virtual-instance update --id <ResourceID> --tags tag=test1
+        az workloads sap-virtual-instance update --id <resource-id> --tags tag1=test1
+
+    :example: Add/Change Identity and Managed Resource Network Access for an existing Virtual Instance for SAP Solutions (VIS) resource
+        az workloads sap-virtual-instance update -g <resource-group-name> -n <vis-name> --identity "{type:UserAssigned,userAssignedIdentities:{<managed-identity-resource-id>:{}}}" --managed-resources-network-access-type <public/private>
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}", "2023-10-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
+    AZ_SUPPORT_GENERIC_UPDATE = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -56,6 +62,9 @@ class Update(AAZCommand):
             help="The name of the Virtual Instances for SAP solutions resource",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z][a-zA-Z0-9]{2}$",
+            ),
         )
 
         # define Arg Group "Body"
@@ -64,38 +73,908 @@ class Update(AAZCommand):
         _args_schema.identity = AAZObjectArg(
             options=["--identity"],
             arg_group="Body",
-            help="A pre-created user assigned identity with appropriate roles assigned. To learn more on identity and roles required, visit the ACSS how-to-guide.",
+            help="Managed service identity (user assigned identities)",
+            nullable=True,
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Body",
-            help="Gets or sets the Resource tags.",
+            help="Resource tags.",
+            nullable=True,
         )
 
         identity = cls._args_schema.identity
         identity.type = AAZStrArg(
             options=["type"],
             help="Type of manage identity",
-            required=True,
             enum={"None": "None", "UserAssigned": "UserAssigned"},
         )
         identity.user_assigned_identities = AAZDictArg(
             options=["user-assigned-identities"],
             help="User assigned identities dictionary",
+            nullable=True,
         )
 
         user_assigned_identities = cls._args_schema.identity.user_assigned_identities
         user_assigned_identities.Element = AAZObjectArg(
+            nullable=True,
             blank={},
         )
 
         tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
+        tags.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.configuration = AAZObjectArg(
+            options=["--configuration"],
+            arg_group="Properties",
+            help="Defines if the SAP system is being created using Azure Center for SAP solutions (ACSS) or if an existing SAP system is being registered with ACSS",
+        )
+        _args_schema.managed_resource_group_configuration = AAZObjectArg(
+            options=["--mrg-config", "--managed-resource-group-configuration"],
+            arg_group="Properties",
+            help="Managed resource group configuration",
+            nullable=True,
+        )
+        _args_schema.managed_resources_network_access_type = AAZStrArg(
+            options=["--mrg-network-access-typ", "--managed-resources-network-access-type"],
+            arg_group="Properties",
+            help="Specifies the network access configuration for the resources that will be deployed in the Managed Resource Group. The options to choose from are Public and Private. If 'Private' is chosen, the Storage Account service tag should be enabled on the subnets in which the SAP VMs exist. This is required for establishing connectivity between VM extensions and the managed resource group storage account. This setting is currently applicable only to Storage Account. Learn more here https://go.microsoft.com/fwlink/?linkid=2247228",
+            nullable=True,
+            enum={"Private": "Private", "Public": "Public"},
+        )
+
+        configuration = cls._args_schema.configuration
+        configuration.deployment = AAZObjectArg(
+            options=["deployment"],
+        )
+        configuration.deployment_with_os_config = AAZObjectArg(
+            options=["deployment-with-os-config"],
+        )
+        configuration.discovery = AAZObjectArg(
+            options=["discovery"],
+        )
+
+        deployment = cls._args_schema.configuration.deployment
+        deployment.app_location = AAZStrArg(
+            options=["app-location"],
+            help="The geo-location where the SAP system is to be created.",
+            nullable=True,
+        )
+        deployment.infrastructure_configuration = AAZObjectArg(
+            options=["infrastructure-configuration"],
+            help="The infrastructure configuration.",
+            nullable=True,
+        )
+        cls._build_args_infrastructure_configuration_update(deployment.infrastructure_configuration)
+        deployment.software_configuration = AAZObjectArg(
+            options=["software-configuration"],
+            help="The software configuration.",
+            nullable=True,
+        )
+        cls._build_args_software_configuration_update(deployment.software_configuration)
+
+        deployment_with_os_config = cls._args_schema.configuration.deployment_with_os_config
+        deployment_with_os_config.app_location = AAZStrArg(
+            options=["app-location"],
+            help="The geo-location where the SAP system is to be created.",
+            nullable=True,
+        )
+        deployment_with_os_config.infrastructure_configuration = AAZObjectArg(
+            options=["infrastructure-configuration"],
+            help="The infrastructure configuration.",
+            nullable=True,
+        )
+        cls._build_args_infrastructure_configuration_update(deployment_with_os_config.infrastructure_configuration)
+        deployment_with_os_config.os_sap_configuration = AAZObjectArg(
+            options=["os-sap-configuration"],
+            help="The OS and SAP configuration.",
+            nullable=True,
+        )
+        deployment_with_os_config.software_configuration = AAZObjectArg(
+            options=["software-configuration"],
+            help="The software configuration.",
+            nullable=True,
+        )
+        cls._build_args_software_configuration_update(deployment_with_os_config.software_configuration)
+
+        os_sap_configuration = cls._args_schema.configuration.deployment_with_os_config.os_sap_configuration
+        os_sap_configuration.deployer_vm_packages = AAZObjectArg(
+            options=["deployer-vm-packages"],
+            help="The url and storage account ID where deployer VM packages are uploaded",
+            nullable=True,
+        )
+        os_sap_configuration.sap_fqdn = AAZStrArg(
+            options=["sap-fqdn"],
+            help="The FQDN to set for the SAP system",
+            nullable=True,
+        )
+
+        deployer_vm_packages = cls._args_schema.configuration.deployment_with_os_config.os_sap_configuration.deployer_vm_packages
+        deployer_vm_packages.storage_account_id = AAZStrArg(
+            options=["storage-account-id"],
+            help="The deployer VM packages storage account id",
+            nullable=True,
+        )
+        deployer_vm_packages.url = AAZStrArg(
+            options=["url"],
+            help="The URL to the deployer VM packages file.",
+            nullable=True,
+        )
+
+        discovery = cls._args_schema.configuration.discovery
+        discovery.central_server_vm_id = AAZStrArg(
+            options=["central-server-vm-id"],
+            help="The virtual machine ID of the Central Server.",
+            nullable=True,
+        )
+        discovery.managed_rg_storage_account_name = AAZStrArg(
+            options=["managed-rg-storage-account-name"],
+            help="The custom storage account name for the storage account created by the service in the managed resource group created as part of VIS deployment.<br><br>Refer to the storage account naming rules [here](https://learn.microsoft.com/azure/azure-resource-manager/management/resource-name-rules#microsoftstorage).<br><br>If not provided, the service will create the storage account with a random name.",
+            nullable=True,
+            fmt=AAZStrArgFormat(
+                max_length=24,
+                min_length=3,
+            ),
+        )
+
+        managed_resource_group_configuration = cls._args_schema.managed_resource_group_configuration
+        managed_resource_group_configuration.name = AAZStrArg(
+            options=["name"],
+            help="Managed resource group name",
+            nullable=True,
+        )
         return cls._args_schema
+
+    _args_disk_configuration_update = None
+
+    @classmethod
+    def _build_args_disk_configuration_update(cls, _schema):
+        if cls._args_disk_configuration_update is not None:
+            _schema.disk_volume_configurations = cls._args_disk_configuration_update.disk_volume_configurations
+            return
+
+        cls._args_disk_configuration_update = AAZObjectArg(
+            nullable=True,
+        )
+
+        disk_configuration_update = cls._args_disk_configuration_update
+        disk_configuration_update.disk_volume_configurations = AAZDictArg(
+            options=["disk-volume-configurations"],
+            help="The disk configuration for the db volume. For HANA, Required volumes are: ['hana/data', 'hana/log', hana/shared', 'usr/sap', 'os'], Optional volume : ['backup'].",
+            nullable=True,
+        )
+
+        disk_volume_configurations = cls._args_disk_configuration_update.disk_volume_configurations
+        disk_volume_configurations.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_disk_configuration_update.disk_volume_configurations.Element
+        _element.count = AAZIntArg(
+            options=["count"],
+            help="The total number of disks required for the concerned volume.",
+            nullable=True,
+        )
+        _element.size_gb = AAZIntArg(
+            options=["size-gb"],
+            help="The disk size in GB.",
+            nullable=True,
+        )
+        _element.sku = AAZObjectArg(
+            options=["sku"],
+            help="The disk SKU details.",
+            nullable=True,
+        )
+
+        sku = cls._args_disk_configuration_update.disk_volume_configurations.Element.sku
+        sku.name = AAZStrArg(
+            options=["name"],
+            help="Defines the disk sku name.",
+            nullable=True,
+            enum={"PremiumV2_LRS": "PremiumV2_LRS", "Premium_LRS": "Premium_LRS", "Premium_ZRS": "Premium_ZRS", "StandardSSD_LRS": "StandardSSD_LRS", "StandardSSD_ZRS": "StandardSSD_ZRS", "Standard_LRS": "Standard_LRS", "UltraSSD_LRS": "UltraSSD_LRS"},
+        )
+
+        _schema.disk_volume_configurations = cls._args_disk_configuration_update.disk_volume_configurations
+
+    _args_high_availability_software_configuration_update = None
+
+    @classmethod
+    def _build_args_high_availability_software_configuration_update(cls, _schema):
+        if cls._args_high_availability_software_configuration_update is not None:
+            _schema.fencing_client_id = cls._args_high_availability_software_configuration_update.fencing_client_id
+            _schema.fencing_client_password = cls._args_high_availability_software_configuration_update.fencing_client_password
+            return
+
+        cls._args_high_availability_software_configuration_update = AAZObjectArg(
+            nullable=True,
+        )
+
+        high_availability_software_configuration_update = cls._args_high_availability_software_configuration_update
+        high_availability_software_configuration_update.fencing_client_id = AAZStrArg(
+            options=["fencing-client-id"],
+            help="The fencing client id.",
+        )
+        high_availability_software_configuration_update.fencing_client_password = AAZStrArg(
+            options=["fencing-client-password"],
+            help="The fencing client id secret/password. The secret should never expire. This will be used pacemaker to start/stop the cluster VMs.",
+        )
+
+        _schema.fencing_client_id = cls._args_high_availability_software_configuration_update.fencing_client_id
+        _schema.fencing_client_password = cls._args_high_availability_software_configuration_update.fencing_client_password
+
+    _args_infrastructure_configuration_update = None
+
+    @classmethod
+    def _build_args_infrastructure_configuration_update(cls, _schema):
+        if cls._args_infrastructure_configuration_update is not None:
+            _schema.app_resource_group = cls._args_infrastructure_configuration_update.app_resource_group
+            _schema.single_server = cls._args_infrastructure_configuration_update.single_server
+            _schema.three_tier = cls._args_infrastructure_configuration_update.three_tier
+            return
+
+        cls._args_infrastructure_configuration_update = AAZObjectArg(
+            nullable=True,
+        )
+
+        infrastructure_configuration_update = cls._args_infrastructure_configuration_update
+        infrastructure_configuration_update.single_server = AAZObjectArg(
+            options=["single-server"],
+        )
+        infrastructure_configuration_update.three_tier = AAZObjectArg(
+            options=["three-tier"],
+        )
+        infrastructure_configuration_update.app_resource_group = AAZStrArg(
+            options=["app-resource-group"],
+            help="The application resource group where SAP system resources will be deployed.",
+        )
+
+        single_server = cls._args_infrastructure_configuration_update.single_server
+        single_server.custom_resource_names = AAZObjectArg(
+            options=["custom-resource-names"],
+            help="The set of custom names to be used for underlying azure resources that are part of the SAP system.",
+            nullable=True,
+        )
+        single_server.db_disk_configuration = AAZObjectArg(
+            options=["db-disk-configuration"],
+            help="Gets or sets the disk configuration.",
+            nullable=True,
+        )
+        cls._build_args_disk_configuration_update(single_server.db_disk_configuration)
+        single_server.network_configuration = AAZObjectArg(
+            options=["network-configuration"],
+            help="Network configuration for the server",
+            nullable=True,
+        )
+        cls._build_args_network_configuration_update(single_server.network_configuration)
+        single_server.subnet_id = AAZStrArg(
+            options=["subnet-id"],
+            help="The subnet id.",
+        )
+        single_server.virtual_machine_configuration = AAZObjectArg(
+            options=["virtual-machine-configuration"],
+            help="Gets or sets the virtual machine configuration.",
+        )
+        cls._build_args_virtual_machine_configuration_update(single_server.virtual_machine_configuration)
+
+        custom_resource_names = cls._args_infrastructure_configuration_update.single_server.custom_resource_names
+        custom_resource_names.full_resource_name = AAZObjectArg(
+            options=["full-resource-name"],
+        )
+
+        full_resource_name = cls._args_infrastructure_configuration_update.single_server.custom_resource_names.full_resource_name
+        full_resource_name.virtual_machine = AAZObjectArg(
+            options=["virtual-machine"],
+            help="The resource names object for virtual machine and related resources.",
+            nullable=True,
+        )
+        cls._build_args_virtual_machine_resource_names_update(full_resource_name.virtual_machine)
+
+        three_tier = cls._args_infrastructure_configuration_update.three_tier
+        three_tier.application_server = AAZObjectArg(
+            options=["application-server"],
+            help="The application server configuration.",
+        )
+        three_tier.central_server = AAZObjectArg(
+            options=["central-server"],
+            help="The central server configuration.",
+        )
+        three_tier.custom_resource_names = AAZObjectArg(
+            options=["custom-resource-names"],
+            help="The set of custom names to be used for underlying azure resources that are part of the SAP system.",
+            nullable=True,
+        )
+        three_tier.database_server = AAZObjectArg(
+            options=["database-server"],
+            help="The database configuration.",
+        )
+        three_tier.network_configuration = AAZObjectArg(
+            options=["network-configuration"],
+            help="Network configuration common to all servers",
+            nullable=True,
+        )
+        cls._build_args_network_configuration_update(three_tier.network_configuration)
+        three_tier.storage_configuration = AAZObjectArg(
+            options=["storage-configuration"],
+            help="The storage configuration.",
+            nullable=True,
+        )
+
+        application_server = cls._args_infrastructure_configuration_update.three_tier.application_server
+        application_server.instance_count = AAZIntArg(
+            options=["instance-count"],
+            help="The number of app server instances.",
+        )
+        application_server.subnet_id = AAZStrArg(
+            options=["subnet-id"],
+            help="The subnet id.",
+        )
+        application_server.virtual_machine_configuration = AAZObjectArg(
+            options=["virtual-machine-configuration"],
+            help="Gets or sets the virtual machine configuration.",
+        )
+        cls._build_args_virtual_machine_configuration_update(application_server.virtual_machine_configuration)
+
+        central_server = cls._args_infrastructure_configuration_update.three_tier.central_server
+        central_server.instance_count = AAZIntArg(
+            options=["instance-count"],
+            help="The number of central server VMs.",
+        )
+        central_server.subnet_id = AAZStrArg(
+            options=["subnet-id"],
+            help="The subnet id.",
+        )
+        central_server.virtual_machine_configuration = AAZObjectArg(
+            options=["virtual-machine-configuration"],
+            help="Gets or sets the virtual machine configuration.",
+        )
+        cls._build_args_virtual_machine_configuration_update(central_server.virtual_machine_configuration)
+
+        custom_resource_names = cls._args_infrastructure_configuration_update.three_tier.custom_resource_names
+        custom_resource_names.full_resource_name = AAZObjectArg(
+            options=["full-resource-name"],
+        )
+
+        full_resource_name = cls._args_infrastructure_configuration_update.three_tier.custom_resource_names.full_resource_name
+        full_resource_name.application_server = AAZObjectArg(
+            options=["application-server"],
+            help="The full resource names object for application layer resources. The number of entries in this list should be equal to the number VMs to be created for application layer.",
+            nullable=True,
+        )
+        full_resource_name.central_server = AAZObjectArg(
+            options=["central-server"],
+            help="The full resource names object for central server layer resources.",
+            nullable=True,
+        )
+        full_resource_name.database_server = AAZObjectArg(
+            options=["database-server"],
+            help="The full resource names object for database layer resources. The number of entries in this list should be equal to the number VMs to be created for database layer.",
+            nullable=True,
+        )
+        full_resource_name.shared_storage = AAZObjectArg(
+            options=["shared-storage"],
+            help="The resource names object for shared storage.",
+            nullable=True,
+        )
+
+        application_server = cls._args_infrastructure_configuration_update.three_tier.custom_resource_names.full_resource_name.application_server
+        application_server.availability_set_name = AAZStrArg(
+            options=["availability-set-name"],
+            help="The full name for availability set. In case name is not provided, it will be defaulted to {SID}-App-AvSet.",
+            nullable=True,
+        )
+        application_server.virtual_machines = AAZListArg(
+            options=["virtual-machines"],
+            help="The list of virtual machine naming details.",
+            nullable=True,
+        )
+
+        virtual_machines = cls._args_infrastructure_configuration_update.three_tier.custom_resource_names.full_resource_name.application_server.virtual_machines
+        virtual_machines.Element = AAZObjectArg(
+            nullable=True,
+        )
+        cls._build_args_virtual_machine_resource_names_update(virtual_machines.Element)
+
+        central_server = cls._args_infrastructure_configuration_update.three_tier.custom_resource_names.full_resource_name.central_server
+        central_server.availability_set_name = AAZStrArg(
+            options=["availability-set-name"],
+            help="The full name for availability set. In case name is not provided, it will be defaulted to {SID}-ASCS-AvSet.",
+            nullable=True,
+        )
+        central_server.load_balancer = AAZObjectArg(
+            options=["load-balancer"],
+            help="The resource names object for load balancer and related resources.",
+            nullable=True,
+        )
+        cls._build_args_load_balancer_resource_names_update(central_server.load_balancer)
+        central_server.virtual_machines = AAZListArg(
+            options=["virtual-machines"],
+            help="The list of names for all ASCS virtual machines to be deployed. The number of entries in this list should be equal to the number VMs to be created for ASCS layer. At maximum, there can be two virtual machines at this layer: ASCS and ERS.",
+            nullable=True,
+        )
+
+        virtual_machines = cls._args_infrastructure_configuration_update.three_tier.custom_resource_names.full_resource_name.central_server.virtual_machines
+        virtual_machines.Element = AAZObjectArg(
+            nullable=True,
+        )
+        cls._build_args_virtual_machine_resource_names_update(virtual_machines.Element)
+
+        database_server = cls._args_infrastructure_configuration_update.three_tier.custom_resource_names.full_resource_name.database_server
+        database_server.availability_set_name = AAZStrArg(
+            options=["availability-set-name"],
+            help="The full name for availability set. In case name is not provided, it will be defaulted to {SID}-DB-AvSet.",
+            nullable=True,
+        )
+        database_server.load_balancer = AAZObjectArg(
+            options=["load-balancer"],
+            nullable=True,
+        )
+        cls._build_args_load_balancer_resource_names_update(database_server.load_balancer)
+        database_server.virtual_machines = AAZListArg(
+            options=["virtual-machines"],
+            help="The list of virtual machine naming details.",
+            nullable=True,
+        )
+
+        virtual_machines = cls._args_infrastructure_configuration_update.three_tier.custom_resource_names.full_resource_name.database_server.virtual_machines
+        virtual_machines.Element = AAZObjectArg(
+            nullable=True,
+        )
+        cls._build_args_virtual_machine_resource_names_update(virtual_machines.Element)
+
+        shared_storage = cls._args_infrastructure_configuration_update.three_tier.custom_resource_names.full_resource_name.shared_storage
+        shared_storage.shared_storage_account_name = AAZStrArg(
+            options=["shared-storage-account-name"],
+            help="The full name of the shared storage account. If it is not provided, it will be defaulted to {SID}nfs{guid of 15 chars}.",
+            nullable=True,
+        )
+        shared_storage.shared_storage_account_private_end_point_name = AAZStrArg(
+            options=["shared-storage-account-private-end-point-name"],
+            help="The full name of private end point for the shared storage account. If it is not provided, it will be defaulted to {storageAccountName}_pe",
+            nullable=True,
+        )
+
+        database_server = cls._args_infrastructure_configuration_update.three_tier.database_server
+        database_server.disk_configuration = AAZObjectArg(
+            options=["disk-configuration"],
+            help="Gets or sets the disk configuration.",
+            nullable=True,
+        )
+        cls._build_args_disk_configuration_update(database_server.disk_configuration)
+        database_server.instance_count = AAZIntArg(
+            options=["instance-count"],
+            help="The number of database VMs.",
+        )
+        database_server.subnet_id = AAZStrArg(
+            options=["subnet-id"],
+            help="The subnet id.",
+        )
+        database_server.virtual_machine_configuration = AAZObjectArg(
+            options=["virtual-machine-configuration"],
+            help="Gets or sets the virtual machine configuration.",
+        )
+        cls._build_args_virtual_machine_configuration_update(database_server.virtual_machine_configuration)
+
+        storage_configuration = cls._args_infrastructure_configuration_update.three_tier.storage_configuration
+        storage_configuration.transport_file_share_configuration = AAZObjectArg(
+            options=["transport-file-share-configuration"],
+            help="The properties of the transport directory attached to the VIS. The default for transportFileShareConfiguration is the createAndMount flow if storage configuration is missing.",
+            nullable=True,
+        )
+
+        transport_file_share_configuration = cls._args_infrastructure_configuration_update.three_tier.storage_configuration.transport_file_share_configuration
+        transport_file_share_configuration.create_and_mount = AAZObjectArg(
+            options=["create-and-mount"],
+        )
+        transport_file_share_configuration.mount = AAZObjectArg(
+            options=["mount"],
+        )
+        transport_file_share_configuration.skip = AAZObjectArg(
+            options=["skip"],
+            blank={},
+        )
+
+        create_and_mount = cls._args_infrastructure_configuration_update.three_tier.storage_configuration.transport_file_share_configuration.create_and_mount
+        create_and_mount.resource_group = AAZStrArg(
+            options=["resource-group"],
+            help="The name of transport file share resource group. This should be pre created by the customer. The app rg is used in case of missing input.",
+            nullable=True,
+        )
+        create_and_mount.storage_account_name = AAZStrArg(
+            options=["storage-account-name"],
+            help="The name of file share storage account name . A custom name is used in case of missing input.",
+            nullable=True,
+        )
+
+        mount = cls._args_infrastructure_configuration_update.three_tier.storage_configuration.transport_file_share_configuration.mount
+        mount.id = AAZStrArg(
+            options=["id"],
+            help="The fileshare resource ID",
+        )
+        mount.private_endpoint_id = AAZStrArg(
+            options=["private-endpoint-id"],
+            help="The private endpoint resource ID",
+        )
+
+        _schema.app_resource_group = cls._args_infrastructure_configuration_update.app_resource_group
+        _schema.single_server = cls._args_infrastructure_configuration_update.single_server
+        _schema.three_tier = cls._args_infrastructure_configuration_update.three_tier
+
+    _args_load_balancer_resource_names_update = None
+
+    @classmethod
+    def _build_args_load_balancer_resource_names_update(cls, _schema):
+        if cls._args_load_balancer_resource_names_update is not None:
+            _schema.backend_pool_names = cls._args_load_balancer_resource_names_update.backend_pool_names
+            _schema.frontend_ip_configuration_names = cls._args_load_balancer_resource_names_update.frontend_ip_configuration_names
+            _schema.health_probe_names = cls._args_load_balancer_resource_names_update.health_probe_names
+            _schema.load_balancer_name = cls._args_load_balancer_resource_names_update.load_balancer_name
+            return
+
+        cls._args_load_balancer_resource_names_update = AAZObjectArg(
+            nullable=True,
+        )
+
+        load_balancer_resource_names_update = cls._args_load_balancer_resource_names_update
+        load_balancer_resource_names_update.backend_pool_names = AAZListArg(
+            options=["backend-pool-names"],
+            help="The list of backend pool names. Currently, ACSS deploys only one backend pool and hence, size of this list should be 1",
+            nullable=True,
+        )
+        load_balancer_resource_names_update.frontend_ip_configuration_names = AAZListArg(
+            options=["frontend-ip-configuration-names"],
+            help="The list of frontend IP configuration names. If provided as input, size of this list should be 2 for cs layer and should be 1 for database layer.",
+            nullable=True,
+        )
+        load_balancer_resource_names_update.health_probe_names = AAZListArg(
+            options=["health-probe-names"],
+            help="The list of health probe names. If provided as input, size of this list should be 2 for cs layer and should be 1 for database layer.",
+            nullable=True,
+        )
+        load_balancer_resource_names_update.load_balancer_name = AAZStrArg(
+            options=["load-balancer-name"],
+            help="The full resource name for load balancer. If this value is not provided, load balancer will be name as {ASCS/DB}-loadBalancer.",
+            nullable=True,
+        )
+
+        backend_pool_names = cls._args_load_balancer_resource_names_update.backend_pool_names
+        backend_pool_names.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        frontend_ip_configuration_names = cls._args_load_balancer_resource_names_update.frontend_ip_configuration_names
+        frontend_ip_configuration_names.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        health_probe_names = cls._args_load_balancer_resource_names_update.health_probe_names
+        health_probe_names.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        _schema.backend_pool_names = cls._args_load_balancer_resource_names_update.backend_pool_names
+        _schema.frontend_ip_configuration_names = cls._args_load_balancer_resource_names_update.frontend_ip_configuration_names
+        _schema.health_probe_names = cls._args_load_balancer_resource_names_update.health_probe_names
+        _schema.load_balancer_name = cls._args_load_balancer_resource_names_update.load_balancer_name
+
+    _args_network_configuration_update = None
+
+    @classmethod
+    def _build_args_network_configuration_update(cls, _schema):
+        if cls._args_network_configuration_update is not None:
+            _schema.is_secondary_ip_enabled = cls._args_network_configuration_update.is_secondary_ip_enabled
+            return
+
+        cls._args_network_configuration_update = AAZObjectArg(
+            nullable=True,
+        )
+
+        network_configuration_update = cls._args_network_configuration_update
+        network_configuration_update.is_secondary_ip_enabled = AAZBoolArg(
+            options=["is-secondary-ip-enabled"],
+            help="Specifies whether a secondary IP address should be added to the network interface on all VMs of the SAP system being deployed",
+            nullable=True,
+        )
+
+        _schema.is_secondary_ip_enabled = cls._args_network_configuration_update.is_secondary_ip_enabled
+
+    _args_software_configuration_update = None
+
+    @classmethod
+    def _build_args_software_configuration_update(cls, _schema):
+        if cls._args_software_configuration_update is not None:
+            _schema.external = cls._args_software_configuration_update.external
+            _schema.sap_install_without_os_config = cls._args_software_configuration_update.sap_install_without_os_config
+            _schema.service_initiated = cls._args_software_configuration_update.service_initiated
+            return
+
+        cls._args_software_configuration_update = AAZObjectArg(
+            nullable=True,
+        )
+
+        software_configuration_update = cls._args_software_configuration_update
+        software_configuration_update.external = AAZObjectArg(
+            options=["external"],
+        )
+        software_configuration_update.sap_install_without_os_config = AAZObjectArg(
+            options=["sap-install-without-os-config"],
+        )
+        software_configuration_update.service_initiated = AAZObjectArg(
+            options=["service-initiated"],
+        )
+
+        external = cls._args_software_configuration_update.external
+        external.central_server_vm_id = AAZStrArg(
+            options=["central-server-vm-id"],
+            help="The resource ID of the virtual machine containing the central server instance.",
+            nullable=True,
+        )
+
+        sap_install_without_os_config = cls._args_software_configuration_update.sap_install_without_os_config
+        sap_install_without_os_config.bom_url = AAZStrArg(
+            options=["bom-url"],
+            help="The URL to the SAP Build of Materials(BOM) file.",
+        )
+        sap_install_without_os_config.high_availability_software_configuration = AAZObjectArg(
+            options=["high-availability-software-configuration"],
+            nullable=True,
+        )
+        cls._build_args_high_availability_software_configuration_update(sap_install_without_os_config.high_availability_software_configuration)
+        sap_install_without_os_config.sap_bits_storage_account_id = AAZStrArg(
+            options=["sap-bits-storage-account-id"],
+            help="The SAP bits storage account id.",
+        )
+        sap_install_without_os_config.software_version = AAZStrArg(
+            options=["software-version"],
+            help="The software version to install.",
+        )
+
+        service_initiated = cls._args_software_configuration_update.service_initiated
+        service_initiated.bom_url = AAZStrArg(
+            options=["bom-url"],
+            help="The URL to the SAP Build of Materials(BOM) file.",
+        )
+        service_initiated.high_availability_software_configuration = AAZObjectArg(
+            options=["high-availability-software-configuration"],
+            help="Gets or sets the HA software configuration.",
+            nullable=True,
+        )
+        cls._build_args_high_availability_software_configuration_update(service_initiated.high_availability_software_configuration)
+        service_initiated.sap_bits_storage_account_id = AAZStrArg(
+            options=["sap-bits-storage-account-id"],
+            help="The SAP bits storage account id.",
+        )
+        service_initiated.sap_fqdn = AAZStrArg(
+            options=["sap-fqdn"],
+            help="The FQDN to set for the SAP system during install.",
+        )
+        service_initiated.software_version = AAZStrArg(
+            options=["software-version"],
+            help="The software version to install.",
+        )
+        service_initiated.ssh_private_key = AAZStrArg(
+            options=["ssh-private-key"],
+            help="The SSH private key.",
+        )
+
+        _schema.external = cls._args_software_configuration_update.external
+        _schema.sap_install_without_os_config = cls._args_software_configuration_update.sap_install_without_os_config
+        _schema.service_initiated = cls._args_software_configuration_update.service_initiated
+
+    _args_virtual_machine_configuration_update = None
+
+    @classmethod
+    def _build_args_virtual_machine_configuration_update(cls, _schema):
+        if cls._args_virtual_machine_configuration_update is not None:
+            _schema.image_reference = cls._args_virtual_machine_configuration_update.image_reference
+            _schema.os_profile = cls._args_virtual_machine_configuration_update.os_profile
+            _schema.vm_size = cls._args_virtual_machine_configuration_update.vm_size
+            return
+
+        cls._args_virtual_machine_configuration_update = AAZObjectArg()
+
+        virtual_machine_configuration_update = cls._args_virtual_machine_configuration_update
+        virtual_machine_configuration_update.image_reference = AAZObjectArg(
+            options=["image-reference"],
+            help="The image reference.",
+        )
+        virtual_machine_configuration_update.os_profile = AAZObjectArg(
+            options=["os-profile"],
+            help="The OS profile.",
+        )
+        virtual_machine_configuration_update.vm_size = AAZStrArg(
+            options=["vm-size"],
+            help="The virtual machine size.",
+        )
+
+        image_reference = cls._args_virtual_machine_configuration_update.image_reference
+        image_reference.id = AAZResourceIdArg(
+            options=["id"],
+            help="Specifies the ARM resource ID of the Azure Compute Gallery image version used for creating ACSS VMs. You will need to provide this input when you choose to deploy virtual machines in ACSS with OS image from the Azure Compute gallery.",
+            nullable=True,
+        )
+        image_reference.offer = AAZStrArg(
+            options=["offer"],
+            help="Specifies the offer of the platform image or marketplace image used to create the virtual machine.",
+            nullable=True,
+        )
+        image_reference.publisher = AAZStrArg(
+            options=["publisher"],
+            help="The image publisher.",
+            nullable=True,
+        )
+        image_reference.sku = AAZStrArg(
+            options=["sku"],
+            help="The image SKU.",
+            nullable=True,
+        )
+        image_reference.version = AAZStrArg(
+            options=["version"],
+            help="Specifies the version of the platform image or marketplace image used to create the virtual machine. The allowed formats are Major.Minor.Build or 'latest'. Major, Minor, and Build are decimal numbers. Specify 'latest' to use the latest version of an image available at deploy time. Even if you use 'latest', the VM image will not automatically update after deploy time even if a new version becomes available.",
+            nullable=True,
+        )
+
+        os_profile = cls._args_virtual_machine_configuration_update.os_profile
+        os_profile.admin_password = AAZStrArg(
+            options=["admin-password"],
+            help="Specifies the password of the administrator account. <br><br> **Minimum-length (Windows):** 8 characters <br><br> **Minimum-length (Linux):** 6 characters <br><br> **Max-length (Windows):** 123 characters <br><br> **Max-length (Linux):** 72 characters <br><br> **Complexity requirements:** 3 out of 4 conditions below need to be fulfilled <br> Has lower characters <br>Has upper characters <br> Has a digit <br> Has a special character (Regex match [\W_]) <br><br> **Disallowed values:** \"abc@123\", \"P@$$w0rd\", \"P@ssw0rd\", \"P@ssword123\", \"Pa$$word\", \"pass@word1\", \"Password!\", \"Password1\", \"Password22\", \"iloveyou!\" <br><br> For resetting the password, see [How to reset the Remote Desktop service or its login password in a Windows VM](https://docs.microsoft.com/troubleshoot/azure/virtual-machines/reset-rdp) <br><br> For resetting root password, see [Manage users, SSH, and check or repair disks on Azure Linux VMs using the VMAccess Extension](https://docs.microsoft.com/troubleshoot/azure/virtual-machines/troubleshoot-ssh-connection)",
+            nullable=True,
+        )
+        os_profile.admin_username = AAZStrArg(
+            options=["admin-username"],
+            help="Specifies the name of the administrator account. <br><br> This property cannot be updated after the VM is created. <br><br> **Windows-only restriction:** Cannot end in \".\" <br><br> **Disallowed values:** \"administrator\", \"admin\", \"user\", \"user1\", \"test\", \"user2\", \"test1\", \"user3\", \"admin1\", \"1\", \"123\", \"a\", \"actuser\", \"adm\", \"admin2\", \"aspnet\", \"backup\", \"console\", \"david\", \"guest\", \"john\", \"owner\", \"root\", \"server\", \"sql\", \"support\", \"support_388945a0\", \"sys\", \"test2\", \"test3\", \"user4\", \"user5\". <br><br> **Minimum-length (Linux):** 1  character <br><br> **Max-length (Linux):** 64 characters <br><br> **Max-length (Windows):** 20 characters.",
+            nullable=True,
+        )
+        os_profile.os_configuration = AAZObjectArg(
+            options=["os-configuration"],
+            help="Specifies Windows operating system settings on the virtual machine.",
+            nullable=True,
+        )
+
+        os_configuration = cls._args_virtual_machine_configuration_update.os_profile.os_configuration
+        os_configuration.linux = AAZObjectArg(
+            options=["linux"],
+        )
+        os_configuration.windows = AAZObjectArg(
+            options=["windows"],
+            blank={},
+        )
+
+        linux = cls._args_virtual_machine_configuration_update.os_profile.os_configuration.linux
+        linux.disable_password_authentication = AAZBoolArg(
+            options=["disable-password-authentication"],
+            help="Specifies whether password authentication should be disabled.",
+            nullable=True,
+        )
+        linux.ssh = AAZObjectArg(
+            options=["ssh"],
+            help="Specifies the ssh key configuration for a Linux OS. (This property is deprecated, please use 'sshKeyPair' instead)",
+            nullable=True,
+        )
+        linux.ssh_key_pair = AAZObjectArg(
+            options=["ssh-key-pair"],
+            help="The SSH Key-pair used to authenticate with the VM's.",
+            nullable=True,
+        )
+
+        ssh = cls._args_virtual_machine_configuration_update.os_profile.os_configuration.linux.ssh
+        ssh.public_keys = AAZListArg(
+            options=["public-keys"],
+            help="The list of SSH public keys used to authenticate with linux based VMs.",
+            nullable=True,
+        )
+
+        public_keys = cls._args_virtual_machine_configuration_update.os_profile.os_configuration.linux.ssh.public_keys
+        public_keys.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_virtual_machine_configuration_update.os_profile.os_configuration.linux.ssh.public_keys.Element
+        _element.key_data = AAZStrArg(
+            options=["key-data"],
+            help="SSH public key certificate used to authenticate with the VM through ssh. The key needs to be at least 2048-bit and in ssh-rsa format. <br><br> For creating ssh keys, see [Create SSH keys on Linux and Mac for Linux VMs in Azure](https://docs.microsoft.com/azure/virtual-machines/linux/create-ssh-keys-detailed).",
+            nullable=True,
+        )
+
+        ssh_key_pair = cls._args_virtual_machine_configuration_update.os_profile.os_configuration.linux.ssh_key_pair
+        ssh_key_pair.private_key = AAZStrArg(
+            options=["private-key"],
+            help="SSH private key.",
+            nullable=True,
+        )
+        ssh_key_pair.public_key = AAZStrArg(
+            options=["public-key"],
+            help="SSH public key",
+            nullable=True,
+        )
+
+        _schema.image_reference = cls._args_virtual_machine_configuration_update.image_reference
+        _schema.os_profile = cls._args_virtual_machine_configuration_update.os_profile
+        _schema.vm_size = cls._args_virtual_machine_configuration_update.vm_size
+
+    _args_virtual_machine_resource_names_update = None
+
+    @classmethod
+    def _build_args_virtual_machine_resource_names_update(cls, _schema):
+        if cls._args_virtual_machine_resource_names_update is not None:
+            _schema.data_disk_names = cls._args_virtual_machine_resource_names_update.data_disk_names
+            _schema.host_name = cls._args_virtual_machine_resource_names_update.host_name
+            _schema.network_interfaces = cls._args_virtual_machine_resource_names_update.network_interfaces
+            _schema.os_disk_name = cls._args_virtual_machine_resource_names_update.os_disk_name
+            _schema.vm_name = cls._args_virtual_machine_resource_names_update.vm_name
+            return
+
+        cls._args_virtual_machine_resource_names_update = AAZObjectArg(
+            nullable=True,
+        )
+
+        virtual_machine_resource_names_update = cls._args_virtual_machine_resource_names_update
+        virtual_machine_resource_names_update.data_disk_names = AAZDictArg(
+            options=["data-disk-names"],
+            help="The full resource names for virtual machine data disks. This is a dictionary containing list of names of data disks per volume. Currently supported volumes for database layer are ['hana/data', 'hana/log', hana/shared', 'usr/sap', 'os', 'backup']. For application and cs layers, only 'default' volume is supported",
+            nullable=True,
+        )
+        virtual_machine_resource_names_update.host_name = AAZStrArg(
+            options=["host-name"],
+            help="The full name for virtual-machine's host (computer name). Currently, ACSS only supports host names which are less than or equal to 13 characters long. If this value is not provided, vmName will be used as host name.",
+            nullable=True,
+        )
+        virtual_machine_resource_names_update.network_interfaces = AAZListArg(
+            options=["network-interfaces"],
+            help="The list of network interface name objects for the selected virtual machine. Currently, only one network interface is supported per virtual machine.",
+            nullable=True,
+        )
+        virtual_machine_resource_names_update.os_disk_name = AAZStrArg(
+            options=["os-disk-name"],
+            help="The full name for OS disk attached to the VM. If this value is not provided, it will be named by ARM as per its default naming standards (prefixed with vm name). There is only one OS disk attached per Virtual Machine.",
+            nullable=True,
+        )
+        virtual_machine_resource_names_update.vm_name = AAZStrArg(
+            options=["vm-name"],
+            help="The full name for virtual machine. The length of this field can be upto 64 characters. If name is not provided, service uses a default name based on the deployment type. For SingleServer, default name is {SID}vm. In case of HA-AvZone systems, default name will be {SID}{app/ascs/db}z{a/b}vm with an incrementor at the end in case of more than 1 vm per layer. For distributed and HA-AvSet systems, default name will be {SID}{app/ascs/db}vm with an incrementor at the end in case of more than 1 vm per layer.",
+            nullable=True,
+        )
+
+        data_disk_names = cls._args_virtual_machine_resource_names_update.data_disk_names
+        data_disk_names.Element = AAZListArg(
+            nullable=True,
+        )
+
+        _element = cls._args_virtual_machine_resource_names_update.data_disk_names.Element
+        _element.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        network_interfaces = cls._args_virtual_machine_resource_names_update.network_interfaces
+        network_interfaces.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_virtual_machine_resource_names_update.network_interfaces.Element
+        _element.network_interface_name = AAZStrArg(
+            options=["network-interface-name"],
+            help="The full name for network interface. If name is not provided, service uses a default name based on the deployment type. For SingleServer, default name is {SID}-Nic. In case of HA-AvZone systems, default name will be {SID}-{App/ASCS/DB}-Zone{A/B}-Nic with an incrementor at the end in case of more than 1 instance per layer. For distributed and HA-AvSet systems, default name will be {SID}-{App/ASCS/DB}-Nic with an incrementor at the end in case of more than 1 instance per layer.",
+            nullable=True,
+        )
+
+        _schema.data_disk_names = cls._args_virtual_machine_resource_names_update.data_disk_names
+        _schema.host_name = cls._args_virtual_machine_resource_names_update.host_name
+        _schema.network_interfaces = cls._args_virtual_machine_resource_names_update.network_interfaces
+        _schema.os_disk_name = cls._args_virtual_machine_resource_names_update.os_disk_name
+        _schema.vm_name = cls._args_virtual_machine_resource_names_update.vm_name
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SAPVirtualInstancesUpdate(ctx=self.ctx)()
+        self.SAPVirtualInstancesGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
+        self.InstanceUpdateByJson(ctx=self.ctx)()
+        self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
+        yield self.SAPVirtualInstancesCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -106,11 +985,19 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SAPVirtualInstancesUpdate(AAZHttpOperation):
+    class SAPVirtualInstancesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -130,7 +1017,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "PATCH"
+            return "GET"
 
         @property
         def error_format(self):
@@ -158,7 +1045,106 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-10-01-preview",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+            _UpdateHelper._build_schema_sap_virtual_instance_read(cls._schema_on_200)
+
+            return cls._schema_on_200
+
+    class SAPVirtualInstancesCreate(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200, 201]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Workloads/sapVirtualInstances/{sapVirtualInstanceName}",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "PUT"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "sapVirtualInstanceName", self.ctx.args.sap_virtual_instance_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -180,10 +1166,44 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"client_flatten": True}}
+                value=self.ctx.vars.instance,
+            )
+
+            return self.serialize_content(_content_value)
+
+        def on_200_201(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200_201
+            )
+
+        _schema_on_200_201 = None
+
+        @classmethod
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
+
+            cls._schema_on_200_201 = AAZObjectType()
+            _UpdateHelper._build_schema_sap_virtual_instance_read(cls._schema_on_200_201)
+
+            return cls._schema_on_200_201
+
+    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self._update_instance(self.ctx.vars.instance)
+
+        def _update_instance(self, instance):
+            _instance_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                value=instance,
+                typ=AAZObjectType
             )
             _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             identity = _builder.get(".identity")
@@ -193,194 +1213,344 @@ class Update(AAZCommand):
 
             user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
             if user_assigned_identities is not None:
-                user_assigned_identities.set_elements(AAZObjectType, ".")
+                user_assigned_identities.set_elements(AAZObjectType, ".", typ_kwargs={"nullable": True})
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("configuration", AAZObjectType, ".configuration", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("managedResourceGroupConfiguration", AAZObjectType, ".managed_resource_group_configuration")
+                properties.set_prop("managedResourcesNetworkAccessType", AAZStrType, ".managed_resources_network_access_type")
+
+            configuration = _builder.get(".properties.configuration")
+            if configuration is not None:
+                configuration.discriminate_by("configurationType", "Deployment")
+                configuration.discriminate_by("configurationType", "DeploymentWithOSConfig")
+                configuration.discriminate_by("configurationType", "Discovery")
+
+            disc_deployment = _builder.get(".properties.configuration{configurationType:Deployment}")
+            if disc_deployment is not None:
+                disc_deployment.set_prop("appLocation", AAZStrType, ".deployment.app_location")
+                _UpdateHelper._build_schema_infrastructure_configuration_update(disc_deployment.set_prop("infrastructureConfiguration", AAZObjectType, ".deployment.infrastructure_configuration"))
+                _UpdateHelper._build_schema_software_configuration_update(disc_deployment.set_prop("softwareConfiguration", AAZObjectType, ".deployment.software_configuration"))
+
+            disc_deployment_with_os_config = _builder.get(".properties.configuration{configurationType:DeploymentWithOSConfig}")
+            if disc_deployment_with_os_config is not None:
+                disc_deployment_with_os_config.set_prop("appLocation", AAZStrType, ".deployment_with_os_config.app_location")
+                _UpdateHelper._build_schema_infrastructure_configuration_update(disc_deployment_with_os_config.set_prop("infrastructureConfiguration", AAZObjectType, ".deployment_with_os_config.infrastructure_configuration"))
+                disc_deployment_with_os_config.set_prop("osSapConfiguration", AAZObjectType, ".deployment_with_os_config.os_sap_configuration")
+                _UpdateHelper._build_schema_software_configuration_update(disc_deployment_with_os_config.set_prop("softwareConfiguration", AAZObjectType, ".deployment_with_os_config.software_configuration"))
+
+            os_sap_configuration = _builder.get(".properties.configuration{configurationType:DeploymentWithOSConfig}.osSapConfiguration")
+            if os_sap_configuration is not None:
+                os_sap_configuration.set_prop("deployerVmPackages", AAZObjectType, ".deployer_vm_packages")
+                os_sap_configuration.set_prop("sapFqdn", AAZStrType, ".sap_fqdn")
+
+            deployer_vm_packages = _builder.get(".properties.configuration{configurationType:DeploymentWithOSConfig}.osSapConfiguration.deployerVmPackages")
+            if deployer_vm_packages is not None:
+                deployer_vm_packages.set_prop("storageAccountId", AAZStrType, ".storage_account_id")
+                deployer_vm_packages.set_prop("url", AAZStrType, ".url")
+
+            disc_discovery = _builder.get(".properties.configuration{configurationType:Discovery}")
+            if disc_discovery is not None:
+                disc_discovery.set_prop("centralServerVmId", AAZStrType, ".discovery.central_server_vm_id")
+                disc_discovery.set_prop("managedRgStorageAccountName", AAZStrType, ".discovery.managed_rg_storage_account_name")
+
+            managed_resource_group_configuration = _builder.get(".properties.managedResourceGroupConfiguration")
+            if managed_resource_group_configuration is not None:
+                managed_resource_group_configuration.set_prop("name", AAZStrType, ".name")
 
             tags = _builder.get(".tags")
             if tags is not None:
                 tags.set_elements(AAZStrType, ".")
 
-            return self.serialize_content(_content_value)
+            return _instance_value
 
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
+    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
 
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
+        def __call__(self, *args, **kwargs):
+            self._update_instance_by_generic(
+                self.ctx.vars.instance,
+                self.ctx.generic_update_args
             )
-            _schema_on_200.identity = AAZObjectType()
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            identity = cls._schema_on_200.identity
-            identity.type = AAZStrType(
-                flags={"required": True},
-            )
-            identity.user_assigned_identities = AAZDictType(
-                serialized_name="userAssignedIdentities",
-            )
-
-            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.identity.user_assigned_identities.Element
-            _element.client_id = AAZStrType(
-                serialized_name="clientId",
-                flags={"read_only": True},
-            )
-            _element.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.configuration = AAZObjectType(
-                flags={"required": True},
-            )
-            properties.environment = AAZStrType(
-                flags={"required": True},
-            )
-            properties.errors = AAZObjectType()
-            properties.health = AAZStrType()
-            properties.managed_resource_group_configuration = AAZObjectType(
-                serialized_name="managedResourceGroupConfiguration",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.sap_product = AAZStrType(
-                serialized_name="sapProduct",
-                flags={"required": True},
-            )
-            properties.state = AAZStrType()
-            properties.status = AAZStrType()
-
-            configuration = cls._schema_on_200.properties.configuration
-            configuration.configuration_type = AAZStrType(
-                serialized_name="configurationType",
-                flags={"required": True},
-            )
-
-            disc_deployment = cls._schema_on_200.properties.configuration.discriminate_by("configuration_type", "Deployment")
-            disc_deployment.app_location = AAZStrType(
-                serialized_name="appLocation",
-            )
-            disc_deployment.infrastructure_configuration = AAZObjectType(
-                serialized_name="infrastructureConfiguration",
-            )
-            _UpdateHelper._build_schema_infrastructure_configuration_read(disc_deployment.infrastructure_configuration)
-            disc_deployment.software_configuration = AAZObjectType(
-                serialized_name="softwareConfiguration",
-            )
-            _UpdateHelper._build_schema_software_configuration_read(disc_deployment.software_configuration)
-
-            disc_deployment_with_os_config = cls._schema_on_200.properties.configuration.discriminate_by("configuration_type", "DeploymentWithOSConfig")
-            disc_deployment_with_os_config.app_location = AAZStrType(
-                serialized_name="appLocation",
-            )
-            disc_deployment_with_os_config.infrastructure_configuration = AAZObjectType(
-                serialized_name="infrastructureConfiguration",
-            )
-            _UpdateHelper._build_schema_infrastructure_configuration_read(disc_deployment_with_os_config.infrastructure_configuration)
-            disc_deployment_with_os_config.os_sap_configuration = AAZObjectType(
-                serialized_name="osSapConfiguration",
-            )
-            disc_deployment_with_os_config.software_configuration = AAZObjectType(
-                serialized_name="softwareConfiguration",
-            )
-            _UpdateHelper._build_schema_software_configuration_read(disc_deployment_with_os_config.software_configuration)
-
-            os_sap_configuration = cls._schema_on_200.properties.configuration.discriminate_by("configuration_type", "DeploymentWithOSConfig").os_sap_configuration
-            os_sap_configuration.deployer_vm_packages = AAZObjectType(
-                serialized_name="deployerVmPackages",
-            )
-            os_sap_configuration.sap_fqdn = AAZStrType(
-                serialized_name="sapFqdn",
-            )
-
-            deployer_vm_packages = cls._schema_on_200.properties.configuration.discriminate_by("configuration_type", "DeploymentWithOSConfig").os_sap_configuration.deployer_vm_packages
-            deployer_vm_packages.storage_account_id = AAZStrType(
-                serialized_name="storageAccountId",
-            )
-            deployer_vm_packages.url = AAZStrType()
-
-            disc_discovery = cls._schema_on_200.properties.configuration.discriminate_by("configuration_type", "Discovery")
-            disc_discovery.app_location = AAZStrType(
-                serialized_name="appLocation",
-                flags={"read_only": True},
-            )
-            disc_discovery.central_server_vm_id = AAZStrType(
-                serialized_name="centralServerVmId",
-            )
-            disc_discovery.managed_rg_storage_account_name = AAZStrType(
-                serialized_name="managedRgStorageAccountName",
-            )
-
-            errors = cls._schema_on_200.properties.errors
-            errors.properties = AAZObjectType()
-            _UpdateHelper._build_schema_error_definition_read(errors.properties)
-
-            managed_resource_group_configuration = cls._schema_on_200.properties.managed_resource_group_configuration
-            managed_resource_group_configuration.name = AAZStrType()
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
-
-            return cls._schema_on_200
 
 
 class _UpdateHelper:
     """Helper class for Update"""
+
+    @classmethod
+    def _build_schema_disk_configuration_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("diskVolumeConfigurations", AAZDictType, ".disk_volume_configurations")
+
+        disk_volume_configurations = _builder.get(".diskVolumeConfigurations")
+        if disk_volume_configurations is not None:
+            disk_volume_configurations.set_elements(AAZObjectType, ".")
+
+        _elements = _builder.get(".diskVolumeConfigurations{}")
+        if _elements is not None:
+            _elements.set_prop("count", AAZIntType, ".count")
+            _elements.set_prop("sizeGB", AAZIntType, ".size_gb")
+            _elements.set_prop("sku", AAZObjectType, ".sku")
+
+        sku = _builder.get(".diskVolumeConfigurations{}.sku")
+        if sku is not None:
+            sku.set_prop("name", AAZStrType, ".name")
+
+    @classmethod
+    def _build_schema_high_availability_software_configuration_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("fencingClientId", AAZStrType, ".fencing_client_id", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("fencingClientPassword", AAZStrType, ".fencing_client_password", typ_kwargs={"flags": {"secret": True}})
+
+    @classmethod
+    def _build_schema_infrastructure_configuration_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("appResourceGroup", AAZStrType, ".app_resource_group", typ_kwargs={"flags": {"required": True}})
+        _builder.discriminate_by("deploymentType", "SingleServer")
+        _builder.discriminate_by("deploymentType", "ThreeTier")
+
+        disc_single_server = _builder.get("{deploymentType:SingleServer}")
+        if disc_single_server is not None:
+            disc_single_server.set_prop("customResourceNames", AAZObjectType, ".single_server.custom_resource_names")
+            cls._build_schema_disk_configuration_update(disc_single_server.set_prop("dbDiskConfiguration", AAZObjectType, ".single_server.db_disk_configuration"))
+            cls._build_schema_network_configuration_update(disc_single_server.set_prop("networkConfiguration", AAZObjectType, ".single_server.network_configuration"))
+            disc_single_server.set_prop("subnetId", AAZStrType, ".single_server.subnet_id", typ_kwargs={"flags": {"required": True}})
+            cls._build_schema_virtual_machine_configuration_update(disc_single_server.set_prop("virtualMachineConfiguration", AAZObjectType, ".single_server.virtual_machine_configuration", typ_kwargs={"flags": {"required": True}}))
+
+        custom_resource_names = _builder.get("{deploymentType:SingleServer}.customResourceNames")
+        if custom_resource_names is not None:
+            custom_resource_names.discriminate_by("namingPatternType", "FullResourceName")
+
+        disc_full_resource_name = _builder.get("{deploymentType:SingleServer}.customResourceNames{namingPatternType:FullResourceName}")
+        if disc_full_resource_name is not None:
+            cls._build_schema_virtual_machine_resource_names_update(disc_full_resource_name.set_prop("virtualMachine", AAZObjectType, ".full_resource_name.virtual_machine"))
+
+        disc_three_tier = _builder.get("{deploymentType:ThreeTier}")
+        if disc_three_tier is not None:
+            disc_three_tier.set_prop("applicationServer", AAZObjectType, ".three_tier.application_server", typ_kwargs={"flags": {"required": True}})
+            disc_three_tier.set_prop("centralServer", AAZObjectType, ".three_tier.central_server", typ_kwargs={"flags": {"required": True}})
+            disc_three_tier.set_prop("customResourceNames", AAZObjectType, ".three_tier.custom_resource_names")
+            disc_three_tier.set_prop("databaseServer", AAZObjectType, ".three_tier.database_server", typ_kwargs={"flags": {"required": True}})
+            cls._build_schema_network_configuration_update(disc_three_tier.set_prop("networkConfiguration", AAZObjectType, ".three_tier.network_configuration"))
+            disc_three_tier.set_prop("storageConfiguration", AAZObjectType, ".three_tier.storage_configuration")
+
+        application_server = _builder.get("{deploymentType:ThreeTier}.applicationServer")
+        if application_server is not None:
+            application_server.set_prop("instanceCount", AAZIntType, ".instance_count", typ_kwargs={"flags": {"required": True}})
+            application_server.set_prop("subnetId", AAZStrType, ".subnet_id", typ_kwargs={"flags": {"required": True}})
+            cls._build_schema_virtual_machine_configuration_update(application_server.set_prop("virtualMachineConfiguration", AAZObjectType, ".virtual_machine_configuration", typ_kwargs={"flags": {"required": True}}))
+
+        central_server = _builder.get("{deploymentType:ThreeTier}.centralServer")
+        if central_server is not None:
+            central_server.set_prop("instanceCount", AAZIntType, ".instance_count", typ_kwargs={"flags": {"required": True}})
+            central_server.set_prop("subnetId", AAZStrType, ".subnet_id", typ_kwargs={"flags": {"required": True}})
+            cls._build_schema_virtual_machine_configuration_update(central_server.set_prop("virtualMachineConfiguration", AAZObjectType, ".virtual_machine_configuration", typ_kwargs={"flags": {"required": True}}))
+
+        custom_resource_names = _builder.get("{deploymentType:ThreeTier}.customResourceNames")
+        if custom_resource_names is not None:
+            custom_resource_names.discriminate_by("namingPatternType", "FullResourceName")
+
+        disc_full_resource_name = _builder.get("{deploymentType:ThreeTier}.customResourceNames{namingPatternType:FullResourceName}")
+        if disc_full_resource_name is not None:
+            disc_full_resource_name.set_prop("applicationServer", AAZObjectType, ".full_resource_name.application_server")
+            disc_full_resource_name.set_prop("centralServer", AAZObjectType, ".full_resource_name.central_server")
+            disc_full_resource_name.set_prop("databaseServer", AAZObjectType, ".full_resource_name.database_server")
+            disc_full_resource_name.set_prop("sharedStorage", AAZObjectType, ".full_resource_name.shared_storage")
+
+        application_server = _builder.get("{deploymentType:ThreeTier}.customResourceNames{namingPatternType:FullResourceName}.applicationServer")
+        if application_server is not None:
+            application_server.set_prop("availabilitySetName", AAZStrType, ".availability_set_name")
+            application_server.set_prop("virtualMachines", AAZListType, ".virtual_machines")
+
+        virtual_machines = _builder.get("{deploymentType:ThreeTier}.customResourceNames{namingPatternType:FullResourceName}.applicationServer.virtualMachines")
+        if virtual_machines is not None:
+            cls._build_schema_virtual_machine_resource_names_update(virtual_machines.set_elements(AAZObjectType, "."))
+
+        central_server = _builder.get("{deploymentType:ThreeTier}.customResourceNames{namingPatternType:FullResourceName}.centralServer")
+        if central_server is not None:
+            central_server.set_prop("availabilitySetName", AAZStrType, ".availability_set_name")
+            cls._build_schema_load_balancer_resource_names_update(central_server.set_prop("loadBalancer", AAZObjectType, ".load_balancer"))
+            central_server.set_prop("virtualMachines", AAZListType, ".virtual_machines")
+
+        virtual_machines = _builder.get("{deploymentType:ThreeTier}.customResourceNames{namingPatternType:FullResourceName}.centralServer.virtualMachines")
+        if virtual_machines is not None:
+            cls._build_schema_virtual_machine_resource_names_update(virtual_machines.set_elements(AAZObjectType, "."))
+
+        database_server = _builder.get("{deploymentType:ThreeTier}.customResourceNames{namingPatternType:FullResourceName}.databaseServer")
+        if database_server is not None:
+            database_server.set_prop("availabilitySetName", AAZStrType, ".availability_set_name")
+            cls._build_schema_load_balancer_resource_names_update(database_server.set_prop("loadBalancer", AAZObjectType, ".load_balancer"))
+            database_server.set_prop("virtualMachines", AAZListType, ".virtual_machines")
+
+        virtual_machines = _builder.get("{deploymentType:ThreeTier}.customResourceNames{namingPatternType:FullResourceName}.databaseServer.virtualMachines")
+        if virtual_machines is not None:
+            cls._build_schema_virtual_machine_resource_names_update(virtual_machines.set_elements(AAZObjectType, "."))
+
+        shared_storage = _builder.get("{deploymentType:ThreeTier}.customResourceNames{namingPatternType:FullResourceName}.sharedStorage")
+        if shared_storage is not None:
+            shared_storage.set_prop("sharedStorageAccountName", AAZStrType, ".shared_storage_account_name")
+            shared_storage.set_prop("sharedStorageAccountPrivateEndPointName", AAZStrType, ".shared_storage_account_private_end_point_name")
+
+        database_server = _builder.get("{deploymentType:ThreeTier}.databaseServer")
+        if database_server is not None:
+            cls._build_schema_disk_configuration_update(database_server.set_prop("diskConfiguration", AAZObjectType, ".disk_configuration"))
+            database_server.set_prop("instanceCount", AAZIntType, ".instance_count", typ_kwargs={"flags": {"required": True}})
+            database_server.set_prop("subnetId", AAZStrType, ".subnet_id", typ_kwargs={"flags": {"required": True}})
+            cls._build_schema_virtual_machine_configuration_update(database_server.set_prop("virtualMachineConfiguration", AAZObjectType, ".virtual_machine_configuration", typ_kwargs={"flags": {"required": True}}))
+
+        storage_configuration = _builder.get("{deploymentType:ThreeTier}.storageConfiguration")
+        if storage_configuration is not None:
+            storage_configuration.set_prop("transportFileShareConfiguration", AAZObjectType, ".transport_file_share_configuration")
+
+        transport_file_share_configuration = _builder.get("{deploymentType:ThreeTier}.storageConfiguration.transportFileShareConfiguration")
+        if transport_file_share_configuration is not None:
+            transport_file_share_configuration.discriminate_by("configurationType", "CreateAndMount")
+            transport_file_share_configuration.discriminate_by("configurationType", "Mount")
+            transport_file_share_configuration.discriminate_by("configurationType", "Skip")
+
+        disc_create_and_mount = _builder.get("{deploymentType:ThreeTier}.storageConfiguration.transportFileShareConfiguration{configurationType:CreateAndMount}")
+        if disc_create_and_mount is not None:
+            disc_create_and_mount.set_prop("resourceGroup", AAZStrType, ".create_and_mount.resource_group")
+            disc_create_and_mount.set_prop("storageAccountName", AAZStrType, ".create_and_mount.storage_account_name")
+
+        disc_mount = _builder.get("{deploymentType:ThreeTier}.storageConfiguration.transportFileShareConfiguration{configurationType:Mount}")
+        if disc_mount is not None:
+            disc_mount.set_prop("id", AAZStrType, ".mount.id", typ_kwargs={"flags": {"required": True}})
+            disc_mount.set_prop("privateEndpointId", AAZStrType, ".mount.private_endpoint_id", typ_kwargs={"flags": {"required": True}})
+
+    @classmethod
+    def _build_schema_load_balancer_resource_names_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("backendPoolNames", AAZListType, ".backend_pool_names")
+        _builder.set_prop("frontendIpConfigurationNames", AAZListType, ".frontend_ip_configuration_names")
+        _builder.set_prop("healthProbeNames", AAZListType, ".health_probe_names")
+        _builder.set_prop("loadBalancerName", AAZStrType, ".load_balancer_name")
+
+        backend_pool_names = _builder.get(".backendPoolNames")
+        if backend_pool_names is not None:
+            backend_pool_names.set_elements(AAZStrType, ".")
+
+        frontend_ip_configuration_names = _builder.get(".frontendIpConfigurationNames")
+        if frontend_ip_configuration_names is not None:
+            frontend_ip_configuration_names.set_elements(AAZStrType, ".")
+
+        health_probe_names = _builder.get(".healthProbeNames")
+        if health_probe_names is not None:
+            health_probe_names.set_elements(AAZStrType, ".")
+
+    @classmethod
+    def _build_schema_network_configuration_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("isSecondaryIpEnabled", AAZBoolType, ".is_secondary_ip_enabled")
+
+    @classmethod
+    def _build_schema_software_configuration_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.discriminate_by("softwareInstallationType", "External")
+        _builder.discriminate_by("softwareInstallationType", "SAPInstallWithoutOSConfig")
+        _builder.discriminate_by("softwareInstallationType", "ServiceInitiated")
+
+        disc_external = _builder.get("{softwareInstallationType:External}")
+        if disc_external is not None:
+            disc_external.set_prop("centralServerVmId", AAZStrType, ".external.central_server_vm_id")
+
+        disc_sap_install_without_os_config = _builder.get("{softwareInstallationType:SAPInstallWithoutOSConfig}")
+        if disc_sap_install_without_os_config is not None:
+            disc_sap_install_without_os_config.set_prop("bomUrl", AAZStrType, ".sap_install_without_os_config.bom_url", typ_kwargs={"flags": {"required": True}})
+            cls._build_schema_high_availability_software_configuration_update(disc_sap_install_without_os_config.set_prop("highAvailabilitySoftwareConfiguration", AAZObjectType, ".sap_install_without_os_config.high_availability_software_configuration"))
+            disc_sap_install_without_os_config.set_prop("sapBitsStorageAccountId", AAZStrType, ".sap_install_without_os_config.sap_bits_storage_account_id", typ_kwargs={"flags": {"required": True}})
+            disc_sap_install_without_os_config.set_prop("softwareVersion", AAZStrType, ".sap_install_without_os_config.software_version", typ_kwargs={"flags": {"required": True}})
+
+        disc_service_initiated = _builder.get("{softwareInstallationType:ServiceInitiated}")
+        if disc_service_initiated is not None:
+            disc_service_initiated.set_prop("bomUrl", AAZStrType, ".service_initiated.bom_url", typ_kwargs={"flags": {"required": True}})
+            cls._build_schema_high_availability_software_configuration_update(disc_service_initiated.set_prop("highAvailabilitySoftwareConfiguration", AAZObjectType, ".service_initiated.high_availability_software_configuration"))
+            disc_service_initiated.set_prop("sapBitsStorageAccountId", AAZStrType, ".service_initiated.sap_bits_storage_account_id", typ_kwargs={"flags": {"required": True}})
+            disc_service_initiated.set_prop("sapFqdn", AAZStrType, ".service_initiated.sap_fqdn", typ_kwargs={"flags": {"required": True}})
+            disc_service_initiated.set_prop("softwareVersion", AAZStrType, ".service_initiated.software_version", typ_kwargs={"flags": {"required": True}})
+            disc_service_initiated.set_prop("sshPrivateKey", AAZStrType, ".service_initiated.ssh_private_key", typ_kwargs={"flags": {"secret": True}})
+
+    @classmethod
+    def _build_schema_virtual_machine_configuration_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("imageReference", AAZObjectType, ".image_reference", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("osProfile", AAZObjectType, ".os_profile", typ_kwargs={"flags": {"required": True}})
+        _builder.set_prop("vmSize", AAZStrType, ".vm_size", typ_kwargs={"flags": {"required": True}})
+
+        image_reference = _builder.get(".imageReference")
+        if image_reference is not None:
+            image_reference.set_prop("id", AAZStrType, ".id")
+            image_reference.set_prop("offer", AAZStrType, ".offer")
+            image_reference.set_prop("publisher", AAZStrType, ".publisher")
+            image_reference.set_prop("sku", AAZStrType, ".sku")
+            image_reference.set_prop("version", AAZStrType, ".version")
+
+        os_profile = _builder.get(".osProfile")
+        if os_profile is not None:
+            os_profile.set_prop("adminPassword", AAZStrType, ".admin_password", typ_kwargs={"flags": {"secret": True}})
+            os_profile.set_prop("adminUsername", AAZStrType, ".admin_username")
+            os_profile.set_prop("osConfiguration", AAZObjectType, ".os_configuration")
+
+        os_configuration = _builder.get(".osProfile.osConfiguration")
+        if os_configuration is not None:
+            os_configuration.discriminate_by("osType", "Linux")
+            os_configuration.discriminate_by("osType", "Windows")
+
+        disc_linux = _builder.get(".osProfile.osConfiguration{osType:Linux}")
+        if disc_linux is not None:
+            disc_linux.set_prop("disablePasswordAuthentication", AAZBoolType, ".linux.disable_password_authentication")
+            disc_linux.set_prop("ssh", AAZObjectType, ".linux.ssh")
+            disc_linux.set_prop("sshKeyPair", AAZObjectType, ".linux.ssh_key_pair")
+
+        ssh = _builder.get(".osProfile.osConfiguration{osType:Linux}.ssh")
+        if ssh is not None:
+            ssh.set_prop("publicKeys", AAZListType, ".public_keys")
+
+        public_keys = _builder.get(".osProfile.osConfiguration{osType:Linux}.ssh.publicKeys")
+        if public_keys is not None:
+            public_keys.set_elements(AAZObjectType, ".")
+
+        _elements = _builder.get(".osProfile.osConfiguration{osType:Linux}.ssh.publicKeys[]")
+        if _elements is not None:
+            _elements.set_prop("keyData", AAZStrType, ".key_data")
+
+        ssh_key_pair = _builder.get(".osProfile.osConfiguration{osType:Linux}.sshKeyPair")
+        if ssh_key_pair is not None:
+            ssh_key_pair.set_prop("privateKey", AAZStrType, ".private_key", typ_kwargs={"flags": {"secret": True}})
+            ssh_key_pair.set_prop("publicKey", AAZStrType, ".public_key")
+
+    @classmethod
+    def _build_schema_virtual_machine_resource_names_update(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("dataDiskNames", AAZDictType, ".data_disk_names")
+        _builder.set_prop("hostName", AAZStrType, ".host_name")
+        _builder.set_prop("networkInterfaces", AAZListType, ".network_interfaces")
+        _builder.set_prop("osDiskName", AAZStrType, ".os_disk_name")
+        _builder.set_prop("vmName", AAZStrType, ".vm_name")
+
+        data_disk_names = _builder.get(".dataDiskNames")
+        if data_disk_names is not None:
+            data_disk_names.set_elements(AAZListType, ".")
+
+        _elements = _builder.get(".dataDiskNames{}")
+        if _elements is not None:
+            _elements.set_elements(AAZStrType, ".")
+
+        network_interfaces = _builder.get(".networkInterfaces")
+        if network_interfaces is not None:
+            network_interfaces.set_elements(AAZObjectType, ".")
+
+        _elements = _builder.get(".networkInterfaces[]")
+        if _elements is not None:
+            _elements.set_prop("networkInterfaceName", AAZStrType, ".network_interface_name")
 
     _schema_disk_configuration_read = None
 
@@ -461,7 +1631,7 @@ class _UpdateHelper:
         )
         high_availability_software_configuration_read.fencing_client_password = AAZStrType(
             serialized_name="fencingClientPassword",
-            flags={"required": True},
+            flags={"secret": True},
         )
 
         _schema.fencing_client_id = cls._schema_high_availability_software_configuration_read.fencing_client_id
@@ -803,6 +1973,195 @@ class _UpdateHelper:
 
         _schema.is_secondary_ip_enabled = cls._schema_network_configuration_read.is_secondary_ip_enabled
 
+    _schema_sap_virtual_instance_read = None
+
+    @classmethod
+    def _build_schema_sap_virtual_instance_read(cls, _schema):
+        if cls._schema_sap_virtual_instance_read is not None:
+            _schema.id = cls._schema_sap_virtual_instance_read.id
+            _schema.identity = cls._schema_sap_virtual_instance_read.identity
+            _schema.location = cls._schema_sap_virtual_instance_read.location
+            _schema.name = cls._schema_sap_virtual_instance_read.name
+            _schema.properties = cls._schema_sap_virtual_instance_read.properties
+            _schema.system_data = cls._schema_sap_virtual_instance_read.system_data
+            _schema.tags = cls._schema_sap_virtual_instance_read.tags
+            _schema.type = cls._schema_sap_virtual_instance_read.type
+            return
+
+        cls._schema_sap_virtual_instance_read = _schema_sap_virtual_instance_read = AAZObjectType()
+
+        sap_virtual_instance_read = _schema_sap_virtual_instance_read
+        sap_virtual_instance_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        sap_virtual_instance_read.identity = AAZObjectType()
+        sap_virtual_instance_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        sap_virtual_instance_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        sap_virtual_instance_read.properties = AAZObjectType(
+            flags={"required": True, "client_flatten": True},
+        )
+        sap_virtual_instance_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        sap_virtual_instance_read.tags = AAZDictType()
+        sap_virtual_instance_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        identity = _schema_sap_virtual_instance_read.identity
+        identity.type = AAZStrType(
+            flags={"required": True},
+        )
+        identity.user_assigned_identities = AAZDictType(
+            serialized_name="userAssignedIdentities",
+        )
+
+        user_assigned_identities = _schema_sap_virtual_instance_read.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectType(
+            nullable=True,
+        )
+
+        _element = _schema_sap_virtual_instance_read.identity.user_assigned_identities.Element
+        _element.client_id = AAZStrType(
+            serialized_name="clientId",
+            flags={"read_only": True},
+        )
+        _element.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
+
+        properties = _schema_sap_virtual_instance_read.properties
+        properties.configuration = AAZObjectType(
+            flags={"required": True},
+        )
+        properties.environment = AAZStrType(
+            flags={"required": True},
+        )
+        properties.errors = AAZObjectType()
+        properties.health = AAZStrType()
+        properties.managed_resource_group_configuration = AAZObjectType(
+            serialized_name="managedResourceGroupConfiguration",
+        )
+        properties.managed_resources_network_access_type = AAZStrType(
+            serialized_name="managedResourcesNetworkAccessType",
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.sap_product = AAZStrType(
+            serialized_name="sapProduct",
+            flags={"required": True},
+        )
+        properties.state = AAZStrType()
+        properties.status = AAZStrType()
+
+        configuration = _schema_sap_virtual_instance_read.properties.configuration
+        configuration.configuration_type = AAZStrType(
+            serialized_name="configurationType",
+            flags={"required": True},
+        )
+
+        disc_deployment = _schema_sap_virtual_instance_read.properties.configuration.discriminate_by("configuration_type", "Deployment")
+        disc_deployment.app_location = AAZStrType(
+            serialized_name="appLocation",
+        )
+        disc_deployment.infrastructure_configuration = AAZObjectType(
+            serialized_name="infrastructureConfiguration",
+        )
+        cls._build_schema_infrastructure_configuration_read(disc_deployment.infrastructure_configuration)
+        disc_deployment.software_configuration = AAZObjectType(
+            serialized_name="softwareConfiguration",
+        )
+        cls._build_schema_software_configuration_read(disc_deployment.software_configuration)
+
+        disc_deployment_with_os_config = _schema_sap_virtual_instance_read.properties.configuration.discriminate_by("configuration_type", "DeploymentWithOSConfig")
+        disc_deployment_with_os_config.app_location = AAZStrType(
+            serialized_name="appLocation",
+        )
+        disc_deployment_with_os_config.infrastructure_configuration = AAZObjectType(
+            serialized_name="infrastructureConfiguration",
+        )
+        cls._build_schema_infrastructure_configuration_read(disc_deployment_with_os_config.infrastructure_configuration)
+        disc_deployment_with_os_config.os_sap_configuration = AAZObjectType(
+            serialized_name="osSapConfiguration",
+        )
+        disc_deployment_with_os_config.software_configuration = AAZObjectType(
+            serialized_name="softwareConfiguration",
+        )
+        cls._build_schema_software_configuration_read(disc_deployment_with_os_config.software_configuration)
+
+        os_sap_configuration = _schema_sap_virtual_instance_read.properties.configuration.discriminate_by("configuration_type", "DeploymentWithOSConfig").os_sap_configuration
+        os_sap_configuration.deployer_vm_packages = AAZObjectType(
+            serialized_name="deployerVmPackages",
+        )
+        os_sap_configuration.sap_fqdn = AAZStrType(
+            serialized_name="sapFqdn",
+        )
+
+        deployer_vm_packages = _schema_sap_virtual_instance_read.properties.configuration.discriminate_by("configuration_type", "DeploymentWithOSConfig").os_sap_configuration.deployer_vm_packages
+        deployer_vm_packages.storage_account_id = AAZStrType(
+            serialized_name="storageAccountId",
+        )
+        deployer_vm_packages.url = AAZStrType()
+
+        disc_discovery = _schema_sap_virtual_instance_read.properties.configuration.discriminate_by("configuration_type", "Discovery")
+        disc_discovery.app_location = AAZStrType(
+            serialized_name="appLocation",
+            flags={"read_only": True},
+        )
+        disc_discovery.central_server_vm_id = AAZStrType(
+            serialized_name="centralServerVmId",
+        )
+        disc_discovery.managed_rg_storage_account_name = AAZStrType(
+            serialized_name="managedRgStorageAccountName",
+        )
+
+        errors = _schema_sap_virtual_instance_read.properties.errors
+        errors.properties = AAZObjectType()
+        cls._build_schema_error_definition_read(errors.properties)
+
+        managed_resource_group_configuration = _schema_sap_virtual_instance_read.properties.managed_resource_group_configuration
+        managed_resource_group_configuration.name = AAZStrType()
+
+        system_data = _schema_sap_virtual_instance_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        tags = _schema_sap_virtual_instance_read.tags
+        tags.Element = AAZStrType()
+
+        _schema.id = cls._schema_sap_virtual_instance_read.id
+        _schema.identity = cls._schema_sap_virtual_instance_read.identity
+        _schema.location = cls._schema_sap_virtual_instance_read.location
+        _schema.name = cls._schema_sap_virtual_instance_read.name
+        _schema.properties = cls._schema_sap_virtual_instance_read.properties
+        _schema.system_data = cls._schema_sap_virtual_instance_read.system_data
+        _schema.tags = cls._schema_sap_virtual_instance_read.tags
+        _schema.type = cls._schema_sap_virtual_instance_read.type
+
     _schema_software_configuration_read = None
 
     @classmethod
@@ -889,7 +2248,7 @@ class _UpdateHelper:
         )
         disc_service_initiated.ssh_private_key = AAZStrType(
             serialized_name="sshPrivateKey",
-            flags={"required": True},
+            flags={"secret": True},
         )
 
         _schema.software_installation_type = cls._schema_software_configuration_read.software_installation_type
@@ -945,6 +2304,7 @@ class _UpdateHelper:
         )
 
         image_reference = _schema_virtual_machine_configuration_read.image_reference
+        image_reference.id = AAZStrType()
         image_reference.offer = AAZStrType()
         image_reference.publisher = AAZStrType()
         image_reference.sku = AAZStrType()
@@ -953,6 +2313,7 @@ class _UpdateHelper:
         os_profile = _schema_virtual_machine_configuration_read.os_profile
         os_profile.admin_password = AAZStrType(
             serialized_name="adminPassword",
+            flags={"secret": True},
         )
         os_profile.admin_username = AAZStrType(
             serialized_name="adminUsername",
@@ -992,6 +2353,7 @@ class _UpdateHelper:
         ssh_key_pair = _schema_virtual_machine_configuration_read.os_profile.os_configuration.discriminate_by("os_type", "Linux").ssh_key_pair
         ssh_key_pair.private_key = AAZStrType(
             serialized_name="privateKey",
+            flags={"secret": True},
         )
         ssh_key_pair.public_key = AAZStrType(
             serialized_name="publicKey",

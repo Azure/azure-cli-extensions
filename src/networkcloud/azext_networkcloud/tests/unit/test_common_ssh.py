@@ -9,6 +9,7 @@ from abc import ABC
 from unittest import mock
 
 from azext_networkcloud.operations.common_ssh import CustomSshOptions
+from azure.cli.core.aaz._base import AAZUndefined
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.mock import DummyCli

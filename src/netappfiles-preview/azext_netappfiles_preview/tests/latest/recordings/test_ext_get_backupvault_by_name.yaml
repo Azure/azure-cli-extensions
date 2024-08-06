@@ -1,0 +1,406 @@
+interactions:
+- request:
+    body: '{"location": "westus2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - netappfiles account create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -a -l
+      User-Agent:
+      - AZURECLI/2.52.0 azsdk-python-mgmt-netapp/10.1.0 Python/3.10.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002","name":"cli-acc-000002","type":"Microsoft.NetApp/netAppAccounts","etag":"W/\"datetime''2023-10-04T22%3A24%3A26.8721082Z''\"","location":"westus2","tags":{"CreatedOnDate":"2023-10-04T22:24:25.5078743Z"},"properties":{"provisioningState":"Creating"},"systemData":{"createdBy":"c6c4faba-2b22-44d9-80a4-71ff5b71f811","createdByType":"Application","createdAt":"2023-10-04T22:24:25.9588582Z","lastModifiedBy":"c6c4faba-2b22-44d9-80a4-71ff5b71f811","lastModifiedByType":"Application","lastModifiedAt":"2023-10-04T22:24:25.9588582Z"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetApp/locations/westus2/operationResults/67118bee-4eb0-4bbf-9a0c-e607bd05f2fe?api-version=2022-11-01
+      cache-control:
+      - no-cache
+      content-length:
+      - '675'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 04 Oct 2023 22:24:28 GMT
+      etag:
+      - W/"datetime'2023-10-04T22%3A24%3A26.8721082Z'"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - netappfiles account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -l
+      User-Agent:
+      - AZURECLI/2.52.0 azsdk-python-mgmt-netapp/10.1.0 Python/3.10.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetApp/locations/westus2/operationResults/67118bee-4eb0-4bbf-9a0c-e607bd05f2fe?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetApp/locations/westus2/operationResults/67118bee-4eb0-4bbf-9a0c-e607bd05f2fe","name":"67118bee-4eb0-4bbf-9a0c-e607bd05f2fe","status":"Succeeded","startTime":"2023-10-04T22:24:26.8805676Z","endTime":"2023-10-04T22:24:26.921935Z","percentComplete":100.0,"properties":{"resourceName":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002","action":"CREATE"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '526'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 04 Oct 2023 22:24:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - netappfiles account create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -l
+      User-Agent:
+      - AZURECLI/2.52.0 azsdk-python-mgmt-netapp/10.1.0 Python/3.10.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002?api-version=2022-11-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002","name":"cli-acc-000002","type":"Microsoft.NetApp/netAppAccounts","etag":"W/\"datetime''2023-10-04T22%3A24%3A26.9131251Z''\"","location":"westus2","tags":{"CreatedOnDate":"2023-10-04T22:24:25.5078743Z"},"properties":{"activeDirectories":[{"activeDirectoryId":"09ef3da0-c3dd-8e10-a69c-04a84d8ebc85","username":"sdkuser","password":"****************","domain":"sdkdomain","dns":"192.0.2.2","status":"Created","smbServerName":"PSSMBSName","organizationalUnit":"CN=Computers","adName":"ps1792","aesEncryption":false,"ldapSigning":false,"ldapOverTLS":false,"allowLocalNfsUsersWithLdap":false,"encryptDCConnections":false,"ldapSearchScope":{}}],"encryption":{"keySource":"Microsoft.NetApp"},"provisioningState":"Succeeded"},"systemData":{"createdBy":"c6c4faba-2b22-44d9-80a4-71ff5b71f811","createdByType":"Application","createdAt":"2023-10-04T22:24:25.9588582Z","lastModifiedBy":"c6c4faba-2b22-44d9-80a4-71ff5b71f811","lastModifiedByType":"Application","lastModifiedAt":"2023-10-04T22:24:25.9588582Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1144'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 04 Oct 2023 22:24:28 GMT
+      etag:
+      - W/"datetime'2023-10-04T22%3A24%3A26.9131251Z'"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2", "tags": {"Tag1": "Value1", "Tag2": "Value2"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - netappfiles account backup-vault create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '69'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -a -n -l --tags
+      User-Agent:
+      - AZURECLI/2.52.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.10 (Windows-10-10.0.22621-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002/backupVaults/cli-backupvault-000003?api-version=2022-11-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002/backupVaults/cli-backupvault-000003","name":"cli-acc-000002/cli-backupvault-000003","type":"Microsoft.NetApp/netAppAccounts/backupVaults","etag":"W/\"datetime''2023-10-04T22%3A24%3A32.0572959Z''\"","location":"westus2","tags":{"Tag1":"Value1","Tag2":"Value2","CreatedOnDate":"2023-10-04T22:24:30.4247853Z"},"properties":{"provisioningState":"Creating"},"systemData":{"createdBy":"c6c4faba-2b22-44d9-80a4-71ff5b71f811","createdByType":"Application","createdAt":"2023-10-04T22:24:31.1398731Z","lastModifiedBy":"c6c4faba-2b22-44d9-80a4-71ff5b71f811","lastModifiedByType":"Application","lastModifiedAt":"2023-10-04T22:24:31.1398731Z"}}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetApp/locations/westus2/operationResults/94f6b35c-2e9a-49c8-8e1d-e384a9af6561?api-version=2022-11-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 04 Oct 2023 22:24:32 GMT
+      etag:
+      - W/"datetime'2023-10-04T22%3A24%3A32.0572959Z'"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - netappfiles account backup-vault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -n -l --tags
+      User-Agent:
+      - AZURECLI/2.52.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetApp/locations/westus2/operationResults/94f6b35c-2e9a-49c8-8e1d-e384a9af6561?api-version=2022-11-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.NetApp/locations/westus2/operationResults/94f6b35c-2e9a-49c8-8e1d-e384a9af6561","name":"94f6b35c-2e9a-49c8-8e1d-e384a9af6561","status":"Succeeded","startTime":"2023-10-04T22:24:32.0215084Z","endTime":"2023-10-04T22:24:32.3356449Z","percentComplete":100.0,"properties":{"resourceName":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002/backupVaults/cli-backupvault-000003","action":"CREATE"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '563'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 04 Oct 2023 22:24:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - netappfiles account backup-vault create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -a -n -l --tags
+      User-Agent:
+      - AZURECLI/2.52.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002/backupVaults/cli-backupvault-000003?api-version=2022-11-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002/backupVaults/cli-backupvault-000003","name":"cli-acc-000002/cli-backupvault-000003","type":"Microsoft.NetApp/netAppAccounts/backupVaults","etag":"W/\"datetime''2023-10-04T22%3A24%3A32.369138Z''\"","location":"westus2","tags":{"Tag1":"Value1","Tag2":"Value2","CreatedOnDate":"2023-10-04T22:24:30.4247853Z"},"properties":{"provisioningState":"Succeeded"},"systemData":{"createdBy":"c6c4faba-2b22-44d9-80a4-71ff5b71f811","createdByType":"Application","createdAt":"2023-10-04T22:24:31.1398731Z","lastModifiedBy":"c6c4faba-2b22-44d9-80a4-71ff5b71f811","lastModifiedByType":"Application","lastModifiedAt":"2023-10-04T22:24:31.1398731Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 04 Oct 2023 22:24:33 GMT
+      etag:
+      - W/"datetime'2023-10-04T22%3A24%3A32.369138Z'"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - netappfiles account backup-vault show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group -a -n
+      User-Agent:
+      - AZURECLI/2.52.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002/backupVaults/cli-backupvault-000003?api-version=2022-11-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002/backupVaults/cli-backupvault-000003","name":"cli-acc-000002/cli-backupvault-000003","type":"Microsoft.NetApp/netAppAccounts/backupVaults","etag":"W/\"datetime''2023-10-04T22%3A24%3A32.369138Z''\"","location":"westus2","tags":{"Tag1":"Value1","Tag2":"Value2","CreatedOnDate":"2023-10-04T22:24:30.4247853Z"},"properties":{"provisioningState":"Succeeded"},"systemData":{"createdBy":"c6c4faba-2b22-44d9-80a4-71ff5b71f811","createdByType":"Application","createdAt":"2023-10-04T22:24:31.1398731Z","lastModifiedBy":"c6c4faba-2b22-44d9-80a4-71ff5b71f811","lastModifiedByType":"Application","lastModifiedAt":"2023-10-04T22:24:31.1398731Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 04 Oct 2023 22:24:35 GMT
+      etag:
+      - W/"datetime'2023-10-04T22%3A24%3A32.369138Z'"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - netappfiles account backup-vault show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ids
+      User-Agent:
+      - AZURECLI/2.52.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002/backupVaults/cli-backupvault-000003?api-version=2022-11-01-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_tests_rg000001/providers/Microsoft.NetApp/netAppAccounts/cli-acc-000002/backupVaults/cli-backupvault-000003","name":"cli-acc-000002/cli-backupvault-000003","type":"Microsoft.NetApp/netAppAccounts/backupVaults","etag":"W/\"datetime''2023-10-04T22%3A24%3A32.369138Z''\"","location":"westus2","tags":{"Tag1":"Value1","Tag2":"Value2","CreatedOnDate":"2023-10-04T22:24:30.4247853Z"},"properties":{"provisioningState":"Succeeded"},"systemData":{"createdBy":"c6c4faba-2b22-44d9-80a4-71ff5b71f811","createdByType":"Application","createdAt":"2023-10-04T22:24:31.1398731Z","lastModifiedBy":"c6c4faba-2b22-44d9-80a4-71ff5b71f811","lastModifiedByType":"Application","lastModifiedAt":"2023-10-04T22:24:31.1398731Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '779'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 04 Oct 2023 22:24:37 GMT
+      etag:
+      - W/"datetime'2023-10-04T22%3A24%3A32.369138Z'"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      server:
+      - Microsoft-IIS/10.0
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      transfer-encoding:
+      - chunked
+      vary:
+      - Accept-Encoding
+      x-content-type-options:
+      - nosniff
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -89,7 +89,7 @@ class LinuxManagedDiskCreateRestoreTest(LiveScenarioTest):
         })
 
         # Create test VM
-        self.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-username azureadmin --admin-password !Passw0rd2018')
+        self.cmd('vm create -g {rg} -n {vm} --image Canonical:UbuntuServer:18.04-LTS:latest --admin-username azureadmin --admin-password !Passw0rd2018')
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
@@ -124,7 +124,7 @@ class LinuxUnmanagedDiskCreateRestoreTest(LiveScenarioTest):
         })
 
         # Create test VM
-        self.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-username azureadmin --admin-password !Passw0rd2018 --use-unmanaged-disk')
+        self.cmd('vm create -g {rg} -n {vm} --image Canonical:UbuntuServer:18.04-LTS:latest --admin-username azureadmin --admin-password !Passw0rd2018 --use-unmanaged-disk')
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
@@ -226,7 +226,7 @@ class LinuxManagedDiskCreateRestoreTestwithpublicip(LiveScenarioTest):
         })
 
         # Create test VM
-        self.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-username azureadmin --admin-password !Passw0rd2018')
+        self.cmd('vm create -g {rg} -n {vm} --image Canonical:UbuntuServer:18.04-LTS:latest --admin-username azureadmin --admin-password !Passw0rd2018')
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
@@ -260,7 +260,7 @@ class LinuxUnmanagedDiskCreateRestoreTestwithpublicip(LiveScenarioTest):
         })
 
         # Create test VM
-        self.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-username azureadmin --admin-password !Passw0rd2018 --use-unmanaged-disk')
+        self.cmd('vm create -g {rg} -n {vm} --image Canonical:UbuntuServer:18.04-LTS:latest --admin-username azureadmin --admin-password !Passw0rd2018 --use-unmanaged-disk')
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
@@ -351,7 +351,7 @@ class LinuxSinglepassKekEncryptedManagedDiskCreateRestoreTest(LiveScenarioTest):
         })
 
         # Create test VM
-        self.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-username azureadmin --admin-password !Passw0rd2018 --size Standard_D2s_v3')
+        self.cmd('vm create -g {rg} -n {vm} --image Canonical:UbuntuServer:18.04-LTS:latest --admin-username azureadmin --admin-password !Passw0rd2018 --size Standard_D2s_v3')
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
@@ -450,7 +450,7 @@ class LinuxSinglepassNoKekEncryptedManagedDiskCreateRestoreTest(LiveScenarioTest
         })
 
         # Create test VM
-        self.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-username azureadmin --admin-password !Passw0rd2018 --size Standard_D2s_v3')
+        self.cmd('vm create -g {rg} -n {vm} --image Canonical:UbuntuServer:18.04-LTS:latest --admin-username azureadmin --admin-password !Passw0rd2018 --size Standard_D2s_v3')
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
@@ -517,7 +517,7 @@ class LinuxRunHelloWorldTest(LiveScenarioTest):
         })
 
         # Create test VM
-        self.cmd('vm create -g {rg} -n {vm} --admin-username azureadmin --image UbuntuLTS --admin-password !Passw0rd2018')
+        self.cmd('vm create -g {rg} -n {vm} --admin-username azureadmin --image Canonical:UbuntuServer:18.04-LTS:latest --admin-password !Passw0rd2018')
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
@@ -562,6 +562,7 @@ class WindowsManagedDiskCreateRestoreGen2Test(LiveScenarioTest):
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
+
 class LinuxSinglepassKekEncryptedManagedDiskWithRHEL8DistroCreateRestoreTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -573,7 +574,7 @@ class LinuxSinglepassKekEncryptedManagedDiskWithRHEL8DistroCreateRestoreTest(Liv
         })
 
         # Create test VM
-        self.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-username azureadmin --admin-password !Passw0rd2018 --size Standard_D2s_v3')
+        self.cmd('vm create -g {rg} -n {vm} --image Canonical:UbuntuServer:18.04-LTS:latest --admin-username azureadmin --admin-password !Passw0rd2018 --size Standard_D2s_v3')
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
@@ -616,6 +617,7 @@ class LinuxSinglepassKekEncryptedManagedDiskWithRHEL8DistroCreateRestoreTest(Liv
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
+
 class LinuxSinglepassNoKekEncryptedManagedDiskWithSLES15CreateRestoreTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -626,7 +628,7 @@ class LinuxSinglepassNoKekEncryptedManagedDiskWithSLES15CreateRestoreTest(LiveSc
         })
 
         # Create test VM
-        self.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-username azureadmin --admin-password !Passw0rd2018 --size Standard_D2s_v3')
+        self.cmd('vm create -g {rg} -n {vm} --image Canonical:UbuntuServer:18.04-LTS:latest --admin-username azureadmin --admin-password !Passw0rd2018 --size Standard_D2s_v3')
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
@@ -662,6 +664,7 @@ class LinuxSinglepassNoKekEncryptedManagedDiskWithSLES15CreateRestoreTest(LiveSc
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
+
 class LinuxManagedDiskCreateRestoreTestwithOracle8andpublicip(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -671,7 +674,7 @@ class LinuxManagedDiskCreateRestoreTestwithOracle8andpublicip(LiveScenarioTest):
         })
 
         # Create test VM
-        self.cmd('vm create -g {rg} -n {vm} --image UbuntuLTS --admin-username azureadmin --admin-password !Passw0rd2018')
+        self.cmd('vm create -g {rg} -n {vm} --image Canonical:UbuntuServer:18.04-LTS:latest --admin-username azureadmin --admin-password !Passw0rd2018')
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
@@ -694,6 +697,7 @@ class LinuxManagedDiskCreateRestoreTestwithOracle8andpublicip(LiveScenarioTest):
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
+
 
 class ResetNICWindowsVM(LiveScenarioTest):
 
@@ -721,7 +725,7 @@ class ResetNICWindowsVM(LiveScenarioTest):
 
 @pytest.mark.repairandrestore
 class RepairAndRestoreLinuxVM(LiveScenarioTest):
-    
+
     @ResourceGroupPreparer(location='westus2')
     def test_vmrepair_RepairAndRestoreLinuxVM(self, resource_group):
         self.kwargs.update({
@@ -742,3 +746,67 @@ class RepairAndRestoreLinuxVM(LiveScenarioTest):
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
+
+
+@pytest.mark.arm64
+class LinuxARMManagedDiskCreateRestoreTest(LiveScenarioTest):
+
+    @ResourceGroupPreparer(location='eastus')
+    def test_vmrepair_LinuxManagedCreateRestore(self, resource_group):
+        self.kwargs.update({
+            'vm': 'vm1'
+        })
+
+        # Create test VM
+        self.cmd('vm create -g {rg} -n {vm} --image Canonical:UbuntuServer:18_04-lts-arm64:latest --admin-username azureadmin --admin-password !Passw0rd2018')
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
+        # Something wrong with vm create command if it fails here
+        assert len(vms) == 1
+
+        # Test create
+        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018 --yes -o json').get_output_in_json()
+        assert result['status'] == STATUS_SUCCESS, result['error_message']
+
+        # Check repair VM
+        repair_vms = self.cmd('vm list -g {} -o json'.format(result['repair_resource_group'])).get_output_in_json()
+        assert len(repair_vms) == 1
+        repair_vm = repair_vms[0]
+        # Check attached data disk
+        assert repair_vm['storageProfile']['dataDisks'][0]['name'] == result['copied_disk_name']
+
+        # Call Restore
+        self.cmd('vm repair restore -g {rg} -n {vm} --yes')
+
+        # Check swapped OS disk
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
+        source_vm = vms[0]
+        assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
+        
+@pytest.mark.ResetNic        
+class ResetNICWithASG(LiveScenarioTest):
+
+    @ResourceGroupPreparer(location='westus2')
+    def test_vmrepair_ResetNicWindowsVM(self, resource_group):
+        self.kwargs.update({
+            'vm': 'vm1'
+        })
+
+        # Create test VM
+        self.cmd('vm create -g {rg} -n {vm} --admin-username azureadmin --image Win2016Datacenter --admin-password !Passw0rd2018')
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
+        # Something wrong with vm create command if it fails here
+        assert len(vms) == 1
+
+        #create ASG
+        self.cmd('az network asg create \
+                  --resource-group myResourceGroup \
+                  --name myASG')
+
+        # Test Reset NIC
+        self.cmd('vm repair reset-nic -g {rg} -n {vm} --yes')
+
+        # Mac address should be changed in the Guest OS but no way to assert from here.
+        # Assert that the VM is still running afterwards
+        vm_instance_view = self.cmd('vm get-instance-view -g {rg} -n {vm} -o json').get_output_in_json()
+        vm_power_state = vm_instance_view['instanceView']['statuses'][1]['code']
+        assert vm_power_state == 'PowerState/running'

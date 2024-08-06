@@ -17,6 +17,7 @@ from .custom_dev_setting_constant import SpringTestEnvironmentEnum
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 class AppDeploy(ScenarioTest):
     def __init__(self, method_name):
         super(AppDeploy, self).__init__(
@@ -24,12 +25,18 @@ class AppDeploy(ScenarioTest):
             recording_processors=[SpringTestEndpointReplacer()]
         )
 
+    def test_replacer(self):
+        original_string = '"primaryKey":"xxxxxxxxx"abcdefg'
+        expected_string = '"primaryKey":"fake"abcdefg'
+        actual_string = SpringTestEndpointReplacer()._replace(original_string)
+        self.assertEqual(expected_string, actual_string)
+
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     @SpringAppNamePreparer()
     def test_deploy_app(self, resource_group, spring, app):
         py_path = os.path.abspath(os.path.dirname(__file__))
-        file_path = os.path.join(py_path, 'files/test.jar').replace("\\","/")
+        file_path = os.path.join(py_path, 'files/test.jar').replace("\\", "/")
         self.kwargs.update({
             'app': app,
             'serviceName': spring,
@@ -48,16 +55,15 @@ class AppDeploy(ScenarioTest):
         ])
 
         # deploy fake file, the fail is expected
-        with self.assertRaisesRegexp(CLIError, "112404: Exit code 1: application error."):
+        with self.assertRaisesRegexp(CLIError, "112404: Exit code 1: application error"):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v1')
-
 
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
     @SpringAppNamePreparer()
     def test_deploy_app_1(self, resource_group, spring, app):
         py_path = os.path.abspath(os.path.dirname(__file__))
-        file_path = os.path.join(py_path, 'files/test.jar').replace("\\","/")
+        file_path = os.path.join(py_path, 'files/test.jar').replace("\\", "/")
         self.kwargs.update({
             'app': app,
             'serviceName': spring,
@@ -76,8 +82,62 @@ class AppDeploy(ScenarioTest):
         ])
 
         # deploy change to .Net
-        with self.assertRaisesRegexp(CLIError, "112404: Exit code 0: purposely stopped."):
+        with self.assertRaisesRegexp(CLIError, "112404: Exit code 0: purposely stopped"):
             self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v2 --runtime-version NetCore_31 --main-entry test')
+
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
+    @SpringAppNamePreparer()
+    def test_deploy_app_2(self, resource_group, spring, app):
+        py_path = os.path.abspath(os.path.dirname(__file__))
+        file_path = os.path.join(py_path, 'files/test1.jar').replace("\\", "/")
+        self.kwargs.update({
+            'app': app,
+            'serviceName': spring,
+            'rg': resource_group,
+            'file': file_path
+        })
+
+        self.cmd('spring app create -n {app} -g {rg} -s {serviceName} --cpu 2  --env "foo=bar" --runtime-version Java_11', checks=[
+            self.check('name', '{app}'),
+            self.check('properties.activeDeployment.name', 'default'),
+            self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.cpu', '2'),
+            self.check('properties.activeDeployment.sku.capacity', 1),
+            self.check('properties.activeDeployment.properties.source.type', 'Jar'),
+            self.check('properties.activeDeployment.properties.source.runtimeVersion', 'Java_11'),
+            self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
+        ])
+
+        # deploy unexist file, the fail is expected
+        with self.assertRaisesRegexp(CLIError, "artifact path {} does not exist.".format(file_path)):
+            self.cmd('spring app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v3')
+
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
+    @SpringAppNamePreparer()
+    def test_deploy_app_3(self, resource_group, spring, app):
+        py_path = os.path.abspath(os.path.dirname(__file__))
+        file_path = os.path.join(py_path, 'files/test1.jar').replace("\\", "/")
+        self.kwargs.update({
+            'app': app,
+            'serviceName': spring,
+            'rg': resource_group,
+            'file': file_path
+        })
+
+        self.cmd('spring app create -n {app} -g {rg} -s {serviceName} --cpu 2  --env "foo=bar" --runtime-version Java_11', checks=[
+            self.check('name', '{app}'),
+            self.check('properties.activeDeployment.name', 'default'),
+            self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.cpu', '2'),
+            self.check('properties.activeDeployment.sku.capacity', 1),
+            self.check('properties.activeDeployment.properties.source.type', 'Jar'),
+            self.check('properties.activeDeployment.properties.source.runtimeVersion', 'Java_11'),
+            self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
+        ])
+
+        # deploy unexist file, the fail is expected
+        with self.assertRaisesRegexp(CLIError, "artifact path {} does not exist.".format(file_path)):
+            self.cmd('spring app deployment create -n green --app {app} -g {rg} -s {serviceName} --instance-count 2 --artifact-path {file}')
 
 
 class AppCRUD(ScenarioTest):
@@ -93,6 +153,7 @@ class AppCRUD(ScenarioTest):
 
         self.cmd('spring app create -n {app} -g {rg} -s {serviceName} --cpu 2  --env "foo=bar"', checks=[
             self.check('name', '{app}'),
+            self.check('properties.testEndpointAuthState', "Enabled"),
             self.check('properties.activeDeployment.name', 'default'),
             self.check('properties.activeDeployment.properties.deploymentSettings.resourceRequests.cpu', '2'),
             self.check('properties.activeDeployment.sku.capacity', 1),
@@ -101,19 +162,28 @@ class AppCRUD(ScenarioTest):
             self.check('properties.activeDeployment.properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
         ])
 
+        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --session-max-age 1800',
+                 checks=[
+                     self.check('properties.testEndpointAuthState', "Enabled"),
+                ])
+
         # ingress only set session affinity
-        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --session-affinity Cookie --session-max-age 1800', checks=[
-            self.check('name', '{app}'),
-            self.check('properties.ingressSettings.readTimeoutInSeconds', '300'),
-            self.check('properties.ingressSettings.sendTimeoutInSeconds', '60'),
-            self.check('properties.ingressSettings.backendProtocol', 'Default'),
-            self.check('properties.ingressSettings.sessionAffinity', 'Cookie'),
-            self.check('properties.ingressSettings.sessionCookieMaxAge', '1800'),
-        ])
+        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --session-affinity Cookie --session-max-age 1800 '
+                 '--disable-test-endpoint-auth',
+                 checks=[
+                     self.check('name', '{app}'),
+                     self.check('properties.testEndpointAuthState', "Disabled"),
+                     self.check('properties.ingressSettings.readTimeoutInSeconds', '300'),
+                     self.check('properties.ingressSettings.sendTimeoutInSeconds', '60'),
+                     self.check('properties.ingressSettings.backendProtocol', 'Default'),
+                     self.check('properties.ingressSettings.sessionAffinity', 'Cookie'),
+                     self.check('properties.ingressSettings.sessionCookieMaxAge', '1800'),
+                ])
 
         # green deployment copy settings from active, but still accept input as highest priority
         self.cmd('spring app deployment create -n green --app {app} -g {rg} -s {serviceName} --instance-count 2', checks=[
             self.check('name', 'green'),
+            self.check('properties.testEndpointAuthState', None),
             self.check('properties.deploymentSettings.resourceRequests.cpu', '2'),
             self.check('properties.deploymentSettings.resourceRequests.memory', '1Gi'),
             self.check('properties.source.type', 'Jar'),
@@ -121,7 +191,6 @@ class AppCRUD(ScenarioTest):
             self.check('sku.capacity', 2),
             self.check('properties.deploymentSettings.environmentVariables', {'foo': 'bar'}),
         ])
-
 
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])
@@ -148,6 +217,59 @@ class AppCRUD(ScenarioTest):
             self.check('properties.deploymentSettings.resourceRequests.memory', '1Gi'),
             self.check('sku.capacity', 1)
         ])
+
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['spring'])
+    @SpringAppNamePreparer()
+    def test_app_create_binding_tanzu_components(self, resource_group, spring, app):
+        self.kwargs.update({
+            'app': app,
+            'serviceName': spring,
+            'rg': resource_group
+        })
+
+        self.cmd('spring app create -n {app} -g {rg} -s {serviceName} --bind-service-registry --bind-application-configuration-service --bind-config-server', checks=[
+            self.check('name', '{app}'),
+            self.check('properties.addonConfigs.applicationConfigurationService.resourceId', "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/configurationServices/default".format(self.get_subscription_id(), resource_group, spring)),
+            self.check('properties.addonConfigs.serviceRegistry.resourceId', "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/serviceRegistries/default".format(self.get_subscription_id(), resource_group, spring)),
+            self.check('properties.addonConfigs.configServer.resourceId', "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}/configServers/default".format(self.get_subscription_id(), resource_group, spring))
+        ])
+
+    @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE['resource_group_name'])
+    @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE['spring'], location = 'eastasia')
+    @SpringAppNamePreparer()
+    def test_enterprise_app_crud(self, resource_group, spring, app):
+        self.kwargs.update({
+            'app': app,
+            'serviceName': spring,
+            'rg': resource_group
+        })
+
+        self.cmd('spring app create -n {app} -g {rg} -s {serviceName}', checks=[
+            self.check('name', '{app}'),
+            self.check('properties.testEndpointAuthState', "Enabled"),
+        ])
+
+        # The property 'testEndpointAuthState' is enabled, update app without parameter 'disable-test-endpoint-auth'
+        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --custom-actuator-port 8080 --custom-actuator-path actuator',
+                 checks=[
+                     self.check('properties.activeDeployment.properties.deploymentSettings.addonConfigs', {'appLiveView': {'actuatorPath': 'actuator', 'actuatorPort': 8080}}),
+                     self.check('properties.testEndpointAuthState', "Enabled"),
+                 ])
+
+        # Update actuator configs, and test endpoint auth
+        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --custom-actuator-port 8081 --custom-actuator-path actuator '
+                 '--disable-test-endpoint-auth',
+                 checks=[
+                     self.check('properties.activeDeployment.properties.deploymentSettings.addonConfigs', {'appLiveView': {'actuatorPath': 'actuator', 'actuatorPort': 8081}}),
+                     self.check('properties.testEndpointAuthState', "Disabled"),
+                 ])
+        # The property 'testEndpointAuthState' is disabled, update app without parameter 'disable-test-endpoint-auth'
+        self.cmd('spring app update -n {app} -g {rg} -s {serviceName} --custom-actuator-port 8082',
+                 checks=[
+                     self.check('properties.activeDeployment.properties.deploymentSettings.addonConfigs', {'appLiveView': {'actuatorPath': 'actuator', 'actuatorPort': 8082}}),
+                     self.check('properties.testEndpointAuthState', "Disabled"),
+                 ])
 
 
 class BlueGreenTest(ScenarioTest):
@@ -204,6 +326,7 @@ class BlueGreenTest(ScenarioTest):
             self.check('properties.active', False)
         ])
 
+
 @record_only()
 class CustomImageTest(ScenarioTest):
 
@@ -225,7 +348,6 @@ class CustomImageTest(ScenarioTest):
             self.check('properties.source.customContainer.containerImage', '{containerImage}'),
             self.check('properties.source.customContainer.languageFramework', None),
         ])
-
 
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.STANDARD['resource_group_name'])
     @SpringPreparer(**SpringTestEnvironmentEnum.STANDARD['spring'])

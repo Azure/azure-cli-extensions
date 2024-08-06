@@ -1,0 +1,61 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks mesh get-revisions
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/meshRevisionProfiles?api-version=2024-06-02-preview
+  response:
+    body:
+      string: "{\n  \"value\": [\n   {\n    \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/meshRevisionProfiles/istio\"\
+        ,\n    \"name\": \"istio\",\n    \"type\": \"Microsoft.ContainerService/locations/meshRevisionProfiles\"\
+        ,\n    \"properties\": {\n     \"meshRevisions\": [\n      {\n       \"revision\"\
+        : \"asm-1-19\",\n       \"upgrades\": [\n        \"asm-1-20\"\n       ],\n\
+        \       \"compatibleWith\": [\n        {\n         \"name\": \"kubernetes\"\
+        ,\n         \"versions\": [\n          \"1.25\",\n          \"1.26\",\n  \
+        \        \"1.27\",\n          \"1.28\"\n         ]\n        }\n       ]\n\
+        \      },\n      {\n       \"revision\": \"asm-1-20\",\n       \"upgrades\"\
+        : [\n        \"asm-1-21\"\n       ],\n       \"compatibleWith\": [\n     \
+        \   {\n         \"name\": \"kubernetes\",\n         \"versions\": [\n    \
+        \      \"1.25\",\n          \"1.26\",\n          \"1.27\",\n          \"1.28\"\
+        ,\n          \"1.29\"\n         ]\n        }\n       ]\n      },\n      {\n\
+        \       \"revision\": \"asm-1-21\",\n       \"compatibleWith\": [\n      \
+        \  {\n         \"name\": \"kubernetes\",\n         \"versions\": [\n     \
+        \     \"1.26\",\n          \"1.27\",\n          \"1.28\",\n          \"1.29\"\
+        \n         ]\n        }\n       ]\n      }\n     ]\n    }\n   }\n  ]\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1166'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:40:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: B8DFD818470C4C2882AF9B7B9DAE5289 Ref B: MNZ221060610007 Ref C: 2024-05-22T21:40:16Z'
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -12,6 +12,7 @@ def connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-ma
                           user_identity_auth_info=None, system_identity_auth_info=None,
                           service_principal_auth_info_secret=None,
                           key_vault_id=None,
+                          app_config_id=None,
                           service_endpoint=None,
                           private_endpoint=None,
                           store_in_connection_string=False,
@@ -19,7 +20,9 @@ def connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-ma
                           yes=False,
                           # Resource.KubernetesCluster
                           cluster=None, scope=None, enable_csi=False,
-                          site=None,                                             # Resource.WebApp
+                          customized_keys=None,
+                          opt_out_list=None,
+                          site=None, slot=None,                                  # Resource.WebApp
                           spring=None, app=None, deployment='default',           # Resource.SpringCloud
                           # Resource.*Postgres, Resource.*Sql*
                           server=None, database=None,
@@ -40,10 +43,13 @@ def connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-ma
                                   new_addon, no_wait,
                                   # Resource.KubernetesCluster
                                   cluster, scope, enable_csi,
-                                  site,
+                                  site, slot,
                                   spring, app, deployment,
                                   server, database,
                                   enable_mi_for_db_linker=get_enable_mi_for_db_linker_func(yes),
+                                  customized_keys=customized_keys,
+                                  opt_out_list=opt_out_list,
+                                  app_config_id=app_config_id,
                                   **kwargs)
 
 
@@ -57,6 +63,7 @@ def local_connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,
                                 user_account_auth_info=None,                      # new auth info
                                 service_principal_auth_info_secret=None,
                                 no_wait=False,
+                                customized_keys=None,
                                 yes=False,
                                 # Resource.*Postgres, Resource.*Sql*
                                 server=None, database=None,
@@ -77,4 +84,5 @@ def local_connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,
                                         # Resource.*Postgres, Resource.*Sql*
                                         server, database,
                                         enable_mi_for_db_linker=get_enable_mi_for_db_linker_func(yes),
+                                        customized_keys=customized_keys,
                                         **kwargs)

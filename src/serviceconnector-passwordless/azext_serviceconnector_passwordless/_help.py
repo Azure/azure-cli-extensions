@@ -253,7 +253,7 @@ for source in SOURCE_RESOURCES:
               long-summary: |
                 Usage: --system-identity mysql-identity-id=xx
 
-                mysql-identity-id      : Optional. ID of identity used for MySQL flexible server AAD Authentication. Ignore it if you are the server AAD administrator.
+                mysql-identity-id      : Optional. ID of identity used for MySQL flexible server Microsoft Entra Authentication. Ignore it if you are the server Microsoft Entra administrator.
             '''
             else:
                 system_identity_param = '''
@@ -274,7 +274,7 @@ for source in SOURCE_RESOURCES:
 
                 client-id            : Required. Client id of the user assigned identity.
                 subs-id              : Required. Subscription id of the user assigned identity.
-                mysql-identity-id    : Optional. ID of identity used for MySQL flexible server AAD Authentication. Ignore it if you are the server AAD administrator.
+                mysql-identity-id    : Optional. ID of identity used for MySQL flexible server Microsoft Entra Authentication. Ignore it if you are the server Microsoft Entra administrator.
         '''
             else:
                 user_identity_param = '''
@@ -298,7 +298,7 @@ for source in SOURCE_RESOURCES:
                 client-id            : Required. Client id of the service principal.
                 object-id            : Optional. Object id of the service principal (Enterprise Application).
                 secret               : Required. Secret of the service principal.
-                mysql-identity-id    : Optional. ID of identity used for MySQL flexible server AAD Authentication. Ignore it if you are the server AAD administrator.
+                mysql-identity-id    : Optional. ID of identity used for MySQL flexible server Microsoft Entra Authentication. Ignore it if you are the server Microsoft Entra administrator.
         '''
             else:
                 service_principal_param = '''
@@ -558,7 +558,7 @@ for target in supported_target_resources:
             Usage: --user-account mysql-identity-id=xx object-id=XX
 
             object-id              : Optional. Object id of current login user. It will be set automatically if not provided.
-            mysql-identity-id      : Optional. ID of identity used for MySQL flexible server AAD Authentication. Ignore it if you are the server AAD administrator.
+            mysql-identity-id      : Optional. ID of identity used for MySQL flexible server Microsoft Entra Authentication. Ignore it if you are the server Microsoft Entra administrator.
         '''
         else:
             user_account_param = '''

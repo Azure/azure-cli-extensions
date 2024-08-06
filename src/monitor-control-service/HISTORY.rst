@@ -2,6 +2,36 @@
 
 Release History
 ===============
+1.2.0
+++++++
+* Update api-version to `2023-03-11` for sub cmds of `az monitor data-collection rule`
+
+1.1.0
+++++++
+* Update api-version to `2023-03-11`
+* Change default arg type of empty object to be `AAZFreeFormDictArg` to fix deserialization issue
+* Add `enum_support_extension` for Enum arg type
+
+1.0.2
+++++++
+* `az monitor data-collection rule/endpoint`: Removed the enum limitation for the `--kind` parameter.
+
+1.0.1
+++++++
+* Normalization module name in setup
+
+1.0.0
+++++++
+* Enable all of the facilities of `data-collection` in stable version `2022-06-01`
+* Remove `id_part` of subcommands `data-flow`, `log-analytics`, `performance-counter`, `windows-event-log` and `syslog` for `az monitor data-collection rule`
+
+0.4.1
+++++++
+* `az monitor data-collection rule association create/update`: Add parameter --endpoint-id.
+
+0.4.0
+++++++
+* Bump api version to `2022-06-01`
 
 0.3.1
 ++++++

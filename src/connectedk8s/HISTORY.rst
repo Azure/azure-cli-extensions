@@ -3,13 +3,112 @@
 Release History
 ===============
 
+1.9.0
+++++++
+* Upgrading to v0.2.2 of ArcK8sDiagnoser
+* Fix Style and Linter issues.
+* Increase Max Timeout for Onboarding Helm Install to 20 mins (from 10).
+
+1.8.0
+++++++
+* New api version 2024-07-1-preview added
+* Adding functionality for workload identity feature.
+* Cluster create and update waits for agent state 
+
+1.7.3
+++++++
+* Skip helm archive download if helm is already installed.
+
+1.7.2
+++++++
+* Fixed Broken Import for Service Principal
+
+1.7.1
+++++++
+* Fixed PoP token for proxy command using service principal.
+
+1.7.0
+++++++
+* Update helm binary download source.
+* Introduce "--skip-ssl-verification" flag.
+
+1.6.8
+++++++
+* Add support for running multiple proxy instances on the same machine using different ports.
+
+1.6.7
+++++++
+* Improve Error logs during Arc Onboarding scenarios, Style fixes.
+
+1.6.6
+++++++
+* Fix proxy live test.
+* Fix unused variable and parameter.
+* Use makedirs instead of mkdir for installing kubectl.
+
+1.6.5
+++++++
+* Fix tenant ID retrieval for proxy command.
+
+1.6.4
+++++++
+* Replace AAD Graph with Microsoft Graph for getting Custom Locations RP service principal application object ID.
+* Will require Application.Read.All permission for Microsoft Graph to activate Custom Locations automatically. See below for work-around:
+https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/custom-locations#enable-custom-locations-on-your-cluster
+
+1.6.3
+++++++
+* Skip checking operation version support for non-stable release trains.
+
+1.6.2
+++++++
+* Additional bugfixes.
+
+1.6.1
+++++++
+* Added support for reading ARM metadata 2023-11-01.
+* Enable connectedk8s CLI extension to be used for new cluster kind of provisioned clusters.
+
+1.6.0
+++++++
+* Updated Helm from 3.6.3 to 3.12.2
+
+1.5.6
+++++++
+* Deprecate '--app-id' and '--app-secret' RBAC params.
+* Use 1P apps for authN/authZ when RBAC is enabled.
+* Add warning to use kubelogin version v0.0.32 or higher which has support for generating PoP token.
+
+1.5.5
+++++++
+* Lookup Custom Locations objectId using appId instead of displayName
+
+1.5.4
+++++++
+* Log debug if 'arcConfigEndpoint' doesn't exist in 'dataplaneEndpoints' ARM metadata.
+
+1.5.3
+++++++
+* Add support to get AKS-EE kubernetes distro
+
+1.5.2
+++++++
+* Skip onboarding pre-checks for AKS-HCI with additional distros : [aks_management, aks_edge_k8s, aks_edge_k3s]
+
+1.4.2
+++++++
+* Fix reference error.
+
+1.4.1
+++++++
+* Skip Onboarding prechecks for AKS-HCI.
+
 1.4.0
 ++++++
 * Added support for reading ARM metadata 2022-09-01.
 
 1.3.20
 ++++++
-
 * Bug fix in parsing logs for outbound connectivity check for troubleshoot command
 
 1.3.19
@@ -67,7 +166,7 @@ Release History
 1.3.10
 ++++++
 * Added CLI heuristics change
-* Added AKS IOT infra support 
+* Added AKS IOT infra support
 * Bug Fix in precheckutils
 
 1.3.9

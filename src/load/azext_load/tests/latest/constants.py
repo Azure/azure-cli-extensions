@@ -9,14 +9,15 @@ TEST_RESOURCES_DIR = os.path.join(os.path.dirname(__file__), r"resources")
 
 
 class LoadConstants:
-
     # Test Plan constants
     LOAD_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"config.yaml")
-    INVALID_LOAD_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"invalid-config.yaml")
+    INVALID_LOAD_TEST_CONFIG_FILE = os.path.join(
+        TEST_RESOURCES_DIR, r"invalid-config.yaml"
+    )
     TEST_PLAN = os.path.join(TEST_RESOURCES_DIR, r"sample-JMX-file.jmx")
-    ADDITIONAL_FILE =  os.path.join(TEST_RESOURCES_DIR, r"additional-data.csv")
+    ADDITIONAL_FILE = os.path.join(TEST_RESOURCES_DIR, r"additional-data.csv")
     FILE_NAME = "sample-JMX-file.jmx"
-    FILE_TYPE ="JMX_FILE"
+    FILE_TYPE = "JMX_FILE"
 
     ENV_VAR_DURATION_NAME = "duration_in_sec"
     ENV_VAR_DURATION_SHORT = "1"
@@ -36,9 +37,9 @@ class LoadConstants:
     SPLIT_CSV_FALSE = "false"
 
     INVALID_SUBNET_ID = r"/subscriptions/invalid/resource/id"
-    KEYVAULT_REFERENCE_ID = r"/subscriptions/{subscription_id}/resourceGroups/sample-rg/providers/Microsoft.KeyVault/vaults/sample-kv"
+    KEYVAULT_REFERENCE_ID = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi"
     # App Component constants
-    APP_COMPONENT_ID = r"/subscriptions/{subscription_id}/resourceGroups/hbisht-rg/providers/Microsoft.Compute/virtualMachineScaleSets/hbisht-temp-vmss"
+    APP_COMPONENT_ID = r"/subscriptions/0a00b000-0aa0-0aa0-aaa0-000000000/resourceGroups/sample-rg/providers/Microsoft.Compute/virtualMachineScaleSets/sample-vmss"
     APP_COMPONENT_TYPE = r"Microsoft.Compute/virtualMachineScaleSets"
     APP_COMPONENT_NAME = r"temp-vmss"
 
@@ -57,6 +58,7 @@ class LoadConstants:
 
 class LoadTestConstants(LoadConstants):
     # Test IDs for load test commands
+    UPDATE_WITH_CONFIG_TEST_ID = "update-with-config-test-case"
     DELETE_TEST_ID = "delete-test-case"
     CREATE_TEST_ID = "create-test-case"
     UPDATE_TEST_ID = "update-test-case"
@@ -70,7 +72,7 @@ class LoadTestConstants(LoadConstants):
 
     INVALID_UPDATE_TEST_ID = "invalid-update-test-case"
     INVALID_PF_TEST_ID = "invalid-pf-test-case"
-    
+
     DESCRIPTION = r"Sample_test_description"
     DISPLAY_NAME = r"Sample_test_display_name"
 

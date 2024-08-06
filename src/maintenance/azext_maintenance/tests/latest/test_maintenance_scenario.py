@@ -9,8 +9,11 @@
 # --------------------------------------------------------------------------
 
 import os
+from datetime import datetime, timezone, timedelta
+import time
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
+from azure.cli.testsdk import live_only
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .. import (
@@ -25,17 +28,21 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 # Env setup_scenario
 
 def setup_scenario(test):
-    
-    test.cmd('az group show --resource-group "{rg}" ',checks=[])
 
-    ## Dedicated host
-    test.cmd('az vm host group create --name clidhtesthostgroup --resource-group "{rg}" --platform-fault-domain-count 1 ',checks=[])
+    test.cmd('az group show --resource-group "{rg}" ', checks=[])
 
-    test.cmd('az vm host create --host-group clidhtesthostgroup --name clidhtesthost --resource-group "{rg}" --sku ESv3-Type2  --platform-fault-domain 0', checks=[])
-    
+    # Dedicated host
+    test.cmd('az vm host group create --name clidhtesthostgroup --resource-group "{rg}" --platform-fault-domain-count 1 ', checks=[])
 
-    ### VMSS resource
-    test.cmd('az vmss create -n "clitestvmss" -g "{rg}"  --instance-count 1 --image "Win2016Datacenter" --data-disk-sizes-gb 2 --admin-password "PasswordCLIMaintenanceRP8!"  --upgrade-policy-mode Automatic ', checks=[])
+    test.cmd('az vm host create --host-group clidhtesthostgroup --name clidhtesthost --resource-group "{rg}" --sku ESv3-Type3  --platform-fault-domain 0', checks=[])
+
+    # Create NetworkSecurityGroup
+    test.cmd('az network nsg create --resource-group "{rg}" --name "clitestnsg"', checks=[])
+    test.cmd('az network vnet create --resource-group "{rg}" --name "clitestvnet" --subnet-name "clitestsubnet" --network-security-group "clitestnsg"', checks=[])
+    test.cmd('az network vnet subnet create --name "clitestsubnet" --vnet-name "clitestvnet" --resource-group "{rg}" --address-prefixes "10.0.0.0/24"  --network-security-group "clitestnsg"', checks=[])
+
+    # VMSS resource
+    test.cmd('az vmss create -n "clitestvmss" -g "{rg}"  --instance-count 1 --image "Win2016Datacenter" --data-disk-sizes-gb 2 --admin-password "PasswordCLIMaintenanceRP8!" --vnet-name "clitestvnet" --subnet "clitestsubnet" --upgrade-policy-mode Automatic --orchestration-mode Uniform', checks=[])
 
     # Disable AutomaticUpdates for VM
     test.cmd('az vmss update --name  "clitestvmss"  -g "{rg}"  --set virtualMachineProfile.osProfile.windowsConfiguration.enableAutomaticUpdates=false', checks=[])
@@ -55,7 +62,8 @@ def cleanup_scenario(test):
     test.cmd('az vm host delete --yes -n "clitestvmss" -g "{rg}"  --host-group clidhtesthostgroup', checks=[])
     pass
 
-## applyupdate to dedicated host
+
+# applyupdate to dedicated host
 def step_applyupdate_create_or_update_parent(test):
     test.cmd('az maintenance applyupdate create-or-update-parent '
              '--provider-name "Microsoft.Compute" '
@@ -66,7 +74,8 @@ def step_applyupdate_create_or_update_parent(test):
              '--resource-type "hosts" ',
              checks=[])
 
-## get applyupdate to dedicated host
+
+# get applyupdate to dedicated host
 def step_applyupdate_show_parent(test):
     test.cmd('az maintenance applyupdate show-parent '
              '--name default '
@@ -77,7 +86,8 @@ def step_applyupdate_show_parent(test):
              '--resource-parent-type "hostgroups" '
              '--resource-type "hosts" ',
              checks=[])
-    
+
+
 # list pending update for dedicated host
 def step_update_list_parent(test):
     test.cmd('az maintenance update list-parent '
@@ -88,6 +98,7 @@ def step_update_list_parent(test):
              '--resource-parent-type "hostgroups" '
              '--resource-type "hosts" ',
              checks=[])
+
 
 # create configuration assignment for dedicated host
 def step_assignment_create_or_update_parent(test):
@@ -102,7 +113,8 @@ def step_assignment_create_or_update_parent(test):
              '--resource-parent-type "hostgroups" '
              '--resource-type "hosts" ',
              checks=[])
-    
+
+
 # get configuration assignment for dedicated host
 def step_assignment_show_parent(test):
     test.cmd('az maintenance assignment show-parent '
@@ -114,7 +126,8 @@ def step_assignment_show_parent(test):
              '--resource-parent-type "hostgroups" '
              '--resource-type "hosts" ',
              checks=[])
-    
+
+
 # list configuration assignment for dedicated host
 def step_update_list_parent(test):
     test.cmd('az maintenance update list-parent '
@@ -125,6 +138,7 @@ def step_update_list_parent(test):
              '--resource-parent-type "hostgroups" '
              '--resource-type "hosts" ',
              checks=[])
+
 
 # delete configuration assignment for dedicated host
 def step_assignment_delete_parent(test):
@@ -138,6 +152,7 @@ def step_assignment_delete_parent(test):
              '--resource-type "hosts" '
              ' --yes ',
              checks=[])
+
 
 def step__applyupdates_put_applyupdates_createorupdate(test):
     test.cmd('az maintenance applyupdate create '
@@ -173,6 +188,7 @@ def step__maintenanceconfigurations_put_maintenanceconfigurations_createorupdate
              '--resource-name "configuration1"',
              checks=[])
 
+
 def step__maintenanceconfigurations_put_maintenanceconfigurations_createorupdateforresource_host(test):
     test.cmd('az maintenance configuration create '
              '--location "eastus2euap" '
@@ -188,11 +204,12 @@ def step__maintenanceconfigurations_put_maintenanceconfigurations_createorupdate
              '--resource-name "host_configuration1"',
              checks=[])
 
+
 def step__maintenanceconfigurations_delete_maintenanceconfigurations_host(test):
     test.cmd('az maintenance configuration delete '
              '--resource-group "{rg}" '
              '--resource-name "host_configuration1" '
-             '--yes',
+             '--yes ',
              checks=[])
 
 
@@ -202,10 +219,12 @@ def step__maintenanceconfigurations_get_maintenanceconfigurations_getforresource
              '--resource-name "configuration1"',
              checks=[])
 
+
 @AllowLargeResponse(size_kb=9999)
 def step__maintenanceconfigurations_get_maintenanceconfigurations_list(test):
     test.cmd('az maintenance configuration list',
              checks=[])
+
 
 def step__maintenanceconfigurations_patch_maintenanceconfigurations_updateforresource(test):
     test.cmd('az maintenance configuration update '
@@ -243,6 +262,7 @@ def step__configurationassignments_get_configurationassignments_list(test):
              '--resource-type "virtualMachineScaleSets"',
              checks=[])
 
+
 # configuration assignment for dedicated host
 def step__configurationassignments_get_configurationassignments_show(test):
     test.cmd('az maintenance assignment show '
@@ -254,6 +274,7 @@ def step__configurationassignments_get_configurationassignments_show(test):
              '--name "{MaintenanceConfigurations_2}" ',
              checks=[])
 
+
 def step_assignment_list_parent(test):
     test.cmd('az maintenance assignment list-parent '
              '--provider-name "Microsoft.Compute" '
@@ -263,6 +284,7 @@ def step_assignment_list_parent(test):
              '--resource-parent-type "hostgroups" '
              '--resource-type "hosts" ',
              checks=[])
+
 
 def step__publicmaintenanceconfigurations_get_publicmaintenanceconfigurations_getforresource(test):
     test.cmd('az maintenance public-configuration show '
@@ -291,7 +313,7 @@ def step__configurationassignments_delete_configurationassignments_delete(test):
              '--resource-group "{rg}" '
              '--resource-name "clitestvmss" '
              '--resource-type "virtualMachineScaleSets" '
-             '--yes',
+             '--yes ',
              checks=[])
 
 
@@ -299,7 +321,7 @@ def step__maintenanceconfigurations_delete_maintenanceconfigurations_deleteforre
     test.cmd('az maintenance configuration delete '
              '--resource-group "{rg}" '
              '--resource-name "configuration1" '
-             '--yes',
+             '--yes ',
              checks=[])
 
 
@@ -307,7 +329,7 @@ def step__maintenanceconfigurations_delete_publicmaintenanceconfigurations_delet
     test.cmd('az maintenance configuration delete '
              '--resource-group "{rg}" '
              '--resource-name "sqlcli" '
-             '--yes',
+             '--yes ',
              checks=[])
 
 
@@ -327,32 +349,89 @@ def step__maintenanceconfigurations_put_publicmaintenanceconfigurations_createor
              '--extension-properties publicMaintenanceConfigurationId=sqlcli isAvailable=true',
              checks=[])
 
+
 def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchadvanced(test):
     test.cmd('az maintenance configuration create --maintenance-scope InGuestPatch '
-        '--maintenance-window-duration "02:00" '
-        '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
-        '--maintenance-window-recur-every "Day" '
-        '--maintenance-window-start-date-time "2024-04-30 08:00" '
-        '--maintenance-window-time-zone "Pacific Standard Time" '
-        '--resource-group  {rg} '
-        '--resource-name  clitestmrpconfinguestadvanced '
-        '--install-patches-linux-parameters package-name-masks-to-exclude=pkg1 '
-        ' package-name-masks-to-exclude=pkg2  classifications-to-include=Other  '
-        '--reboot-setting IfRequired '
-        '--extension-properties InGuestPatchMode=User '
-        , checks=[])
+             '--maintenance-window-duration "02:00" '
+             '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
+             '--maintenance-window-recur-every "Day" '
+             '--maintenance-window-start-date-time "2024-04-30 08:00" '
+             '--maintenance-window-time-zone "Pacific Standard Time" '
+             '--resource-group  {rg} '
+             '--resource-name  clitestmrpconfinguestadvanced '
+             '--install-patches-linux-parameters package-name-masks-to-exclude=pkg1 '
+             ' package-name-masks-to-exclude=pkg2  classifications-to-include=Other  '
+             '--reboot-setting IfRequired '
+             '--extension-properties InGuestPatchMode=User ',
+             checks=[])
+
 
 def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchdefault(test):
     test.cmd('az maintenance configuration create --maintenance-scope InGuestPatch '
-        '--maintenance-window-duration "02:00" '
-        '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
-        '--maintenance-window-recur-every "Day" '
-        '--maintenance-window-start-date-time "2024-04-30 08:00" '
-        '--maintenance-window-time-zone "Pacific Standard Time" '
-        '--resource-group  {rg} '
-        '--resource-name clitestmrpconfinguestdefault '
-        '--extension-properties InGuestPatchMode=Platform '
-        , checks=[])
+             '--maintenance-window-duration "02:00" '
+             '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
+             '--maintenance-window-recur-every "Day" '
+             '--maintenance-window-start-date-time "2024-04-30 08:00" '
+             '--maintenance-window-time-zone "Pacific Standard Time" '
+             '--resource-group {rg} '
+             '--resource-name clitestmrpconfinguestdefault '
+             '--extension-properties InGuestPatchMode=Platform ',
+             checks=[])
+
+
+def step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchadvanced_forcancel(test, start_date):
+    test.cmd('az maintenance configuration create --maintenance-scope InGuestPatch '
+             '--location eastus2euap '
+             '--namespace "Microsoft.Maintenance" '
+             '--visibility "Custom" '
+             '--maintenance-window-duration "02:00" '
+             '--maintenance-window-expiration-date-time "9999-12-31 00:00" '
+             '--maintenance-window-recur-every "Day" '
+             f'--maintenance-window-start-date-time "{start_date}" '
+             '--maintenance-window-time-zone "UTC" '
+             '--resource-group {rg} '
+             '--resource-name clitestmrpconfinguestadvancedforcancel '
+             '--linux-parameters "classifications-to-include-list=[Security,Critical]" '
+             '--reboot-setting Always '
+             '--extension-properties InGuestPatchMode=User ',
+             checks=[])
+
+
+def step__maintenanceconfigurations_cancel_maintenanceconfigurations(test, start_date):
+    test.cmd(f'az maintenance applyupdate create-or-update --apply-update-name "{start_date}" '
+             '--provider-name "Microsoft.Maintenance" '
+             '--resource-group {rg} '
+             '--resource-name clitestmrpconfinguestadvancedforcancel '
+             '--resource-type "maintenanceConfigurations" '
+             '--status "Cancel" ',
+             checks=[])
+
+
+def step__maintenanceconfigurations_cancel(test):
+    create_date_format = "%Y-%m-%d %H:%M"
+    applyupdate_date_format = "%Y%m%d%H%M00"
+
+    # this will be used as a moniker
+    start_date = datetime.fromisoformat('1970-01-01')
+    start_date_for_create = start_date.strftime(create_date_format)
+    start_date_for_applyupdate = start_date.strftime(applyupdate_date_format)
+
+    if test.in_recording:
+        real_start_date = datetime.now(timezone.utc) + timedelta(minutes=12)
+        real_start_date_for_create = real_start_date.strftime(create_date_format)
+        real_start_date_for_applyupdate = real_start_date.strftime(applyupdate_date_format)
+
+        test.name_replacer.register_name_pair(real_start_date_for_create, start_date_for_create)
+        test.name_replacer.register_name_pair(real_start_date_for_applyupdate, start_date_for_applyupdate)
+
+        # use the real start dates since we're in recording
+        start_date_for_create, start_date_for_applyupdate = real_start_date_for_create, real_start_date_for_applyupdate
+
+    step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchadvanced_forcancel(test, start_date_for_create)
+    if test.in_recording:
+        time.sleep(4 * 60)
+    step__maintenanceconfigurations_cancel_maintenanceconfigurations(test, start_date_for_applyupdate)
+
 
 # Dynamic scope tests subscription level
 def step__configurationassignments_put_configurationassignments_createorupdate_subscription(test):
@@ -367,7 +446,8 @@ def step__configurationassignments_put_configurationassignments_createorupdate_s
              '--filter-tags-operator All '
              '-l global',
              checks=[])
-    
+
+
 def step__configurationassignments_put_configurationassignments_update_subscription(test):
     test.cmd('az maintenance assignment update-subscription '
              '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
@@ -380,16 +460,19 @@ def step__configurationassignments_put_configurationassignments_update_subscript
              '--filter-tags-operator All '
              ' -l global',
              checks=[])
-    
+
+
 def step__configurationassignments_put_configurationassignments_show_subscription(test):
     test.cmd('az maintenance assignment show-subscription '
              '--name cli_dynamicscope_recording01 ',
              checks=[])
-    
+
+
 def step__configurationassignments_put_configurationassignments_delete_subscription(test):
     test.cmd('az maintenance assignment delete-subscription '
              '--name cli_dynamicscope_recording01 --yes ',
              checks=[])
+
 
 # Dynamic scope tests resource group level
 def step__configurationassignments_put_configurationassignments_createorupdate_resourcegroup(test):
@@ -403,7 +486,8 @@ def step__configurationassignments_put_configurationassignments_createorupdate_r
              '--filter-tags-operator All '
              '--resource-group "{rg}"',
              checks=[])
-    
+
+
 def step__configurationassignments_put_configurationassignments_update_resourcegroup(test):
     test.cmd('az maintenance assignment update-resource-group '
              '--maintenance-configuration-id "/subscriptions/{subscription_id}/resourcegroups/{rg}/providers/Microsoft.'
@@ -415,28 +499,46 @@ def step__configurationassignments_put_configurationassignments_update_resourceg
              '--filter-tags-operator All '
              '--resource-group "{rg}" ',
              checks=[])
-    
+
+
 def step__configurationassignments_put_configurationassignments_show_resourcegroup(test):
     test.cmd('az maintenance assignment show-resource-group '
              '--name cli_dynamicscope_recording01 --resource-group "{rg}" ',
              checks=[])
-    
+
+
 def step__configurationassignments_put_configurationassignments_delete_resourcegroup(test):
     test.cmd('az maintenance assignment delete-resource-group '
              '--name cli_dynamicscope_recording01  --resource-group "{rg}" --yes ',
              checks=[])
 
-# Testcase: Scenario
 
+def step__scheduledevent_acknowledge(test):
+    from azure.core.exceptions import ResourceNotFoundError
+    try:
+        test.cmd('az maintenance scheduledevent acknowledge '
+             '--resource-group "{rg}" '
+             '--resource-name "clitestvmss" '
+             '--resource-type "virtualMachineScaleSets" '
+             '--scheduled-event-id "00000000-0000-0000-0000-000000000000" ',
+             checks=[])
+    except ResourceNotFoundError as e:
+        test.assertIn("InvalidScheduledEventId", str(e))
+
+
+# Testcase: Scenario
 def call_scenario(test):
     setup_scenario(test)
+
+    # Scheduled events approve
+    step__scheduledevent_acknowledge(test)
 
     # OS Image create/ vmss. CRUD maintenance config
     step__maintenanceconfigurations_put_maintenanceconfigurations_createorupdateforresource(test)
     step__maintenanceconfigurations_get_maintenanceconfigurations_getforresource(test)
     step__maintenanceconfigurations_get_maintenanceconfigurations_list(test)
     step__maintenanceconfigurations_patch_maintenanceconfigurations_updateforresource(test)
-    
+
     # Assignment to vmss
     step__configurationassignments_put_configurationassignments_createorupdate(test)
     step__configurationassignments_get_configurationassignments_list(test)
@@ -459,6 +561,8 @@ def call_scenario(test):
     step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchdefault(test)
     step__maintenanceconfigurations_create_maintenanceconfigurations_inguestpatchadvanced(test)
 
+    # cancel maintenance config
+    step__maintenanceconfigurations_cancel(test)
     # Dynamic scope
     step__configurationassignments_put_configurationassignments_createorupdate_subscription(test)
     step__configurationassignments_put_configurationassignments_update_subscription(test)
@@ -468,7 +572,7 @@ def call_scenario(test):
     step__configurationassignments_put_configurationassignments_update_resourcegroup(test)
     step__configurationassignments_put_configurationassignments_show_resourcegroup(test)
 
-    ## Dedicated host test
+    # Dedicated host test
 
     # create host config
     step__maintenanceconfigurations_put_maintenanceconfigurations_createorupdateforresource_host(test)
@@ -482,7 +586,7 @@ def call_scenario(test):
 
     step_assignment_delete_parent(test)
     step__maintenanceconfigurations_delete_maintenanceconfigurations_host(test)
-    
+
     # pending update dedicated host
     step_update_list_parent(test)
 
@@ -513,7 +617,9 @@ class MaintenanceScenarioTest(ScenarioTest):
             'HSProbeSettings': '{"protocol": "https", "port": "80", "requestPath": "/"}'
         })
 
+    @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='clitestmaintenance_examplerg'[:7], key='rg', parameter_name='rg', location="eastus2euap")
+    @live_only() 
     def test_maintenance_Scenario(self, rg):
         call_scenario(self)
         calc_coverage(__file__)

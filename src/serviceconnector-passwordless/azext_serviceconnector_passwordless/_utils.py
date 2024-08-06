@@ -21,6 +21,9 @@ logger = get_logger(__name__)
 
 IP_ADDRESS_CHECKER = 'https://api.ipify.org'
 OPEN_ALL_IP_MESSAGE = 'Do you want to enable access for all IPs to allow local environment connecting to database?'
+SET_ADMIN_MESSAGE = 'Do you want to set current user as Entra admin?'
+ENABLE_ENTRA_AUTH_MESSAGE = 'Do you want to enable Microsoft Entra Authentication for the database server?\
+ It may cause the server restart.'
 
 
 def should_load_source(source):
@@ -29,13 +32,15 @@ def should_load_source(source):
     return should_load_source_base(source)
 
 
-def run_cli_cmd(cmd, retry=0, interval=0, should_retry_func=None):
+def run_cli_cmd(cmd, retry=0, interval=0, should_retry_func=None, should_return_json=True):
     try:
+        if should_return_json:
+            return run_cli_cmd_base(cmd + ' -o json', retry, interval, should_retry_func)
         return run_cli_cmd_base(cmd, retry, interval, should_retry_func)
     except CLIInternalError as e:
         error_code = 'Unknown'
         error_res = re.search(
-            '\(([a-zA-Z]+)\)', str(e))
+            r'\(([a-zA-Z]+)\)', str(e))
         if error_res:
             error_code = error_res.group(1)
         telemetry.set_exception(
@@ -80,3 +85,26 @@ def confirm_all_ip_allow():
         telemetry.set_exception(e, "No-TTY")
         raise CLIInternalError(
             'Unable to prompt for confirmation as no tty available. Use --yes.') from e
+
+
+def confirm_enable_entra_auth():
+    try:
+        if not prompt_y_n(ENABLE_ENTRA_AUTH_MESSAGE):
+            ex = AzureConnectionError(
+                "Please enable Microsoft Entra authentication manually and try again.")
+            telemetry.set_exception(ex, "Refuse-Entra-Auth")
+            raise ex
+    except NoTTYException as e:
+        telemetry.set_exception(e, "No-TTY")
+        raise CLIInternalError(
+            'Unable to prompt for confirmation as no tty available. Use --yes.') from e
+
+
+def confirm_admin_set():
+    try:
+        return prompt_y_n(SET_ADMIN_MESSAGE)
+    except NoTTYException as e:
+        telemetry.set_exception(e, "No-TTY")
+        logger.warning(
+            'Unable to prompt for confirmation as no tty available. Use --yes to enable the operation.')
+        return False

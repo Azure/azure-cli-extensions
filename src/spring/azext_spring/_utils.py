@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import json
+import re
+from datetime import datetime
 from enum import Enum
 import os
 from time import sleep
@@ -14,10 +16,15 @@ import uuid
 from io import open
 from re import (search, match, compile)
 from json import dumps
+from threading import Thread
+
+from azure.cli.core._profile import Profile
+from azure.cli.core.commands.client_factory import get_subscription_id, get_mgmt_service_client
+from azure.cli.core.profiles import ResourceType
 from knack.util import CLIError, todict
 from knack.log import get_logger
-from azure.cli.core.azclierror import ValidationError
-from .vendored_sdks.appplatform.v2023_09_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
+from azure.cli.core.azclierror import ValidationError, CLIInternalError
+from .vendored_sdks.appplatform.v2024_05_01_preview.models._app_platform_management_client_enums import SupportedRuntimeValue
 from ._client_factory import cf_resource_groups
 
 
@@ -40,8 +47,18 @@ def _get_upload_local_file(runtime_version, artifact_path=None, source_path=None
     return file_type, file_path
 
 
+def _get_file_ext(artifact_path):
+    return os.path.splitext(artifact_path)[-1].lower() if artifact_path else ""
+
+
 def _get_file_type(runtime_version, artifact_path=None):
-    file_type = "Jar" if _is_java(runtime_version) else "Others"
+    file_type = "Others"
+    if _is_java(runtime_version):
+        file_ext = _get_file_ext(artifact_path)
+        if file_ext.lower() == ".jar":
+            file_type = "Jar"
+        elif file_ext.lower() == ".war":
+            file_type = "War"
     if artifact_path is None:
         file_type = "Source"
     return file_type
@@ -56,7 +73,7 @@ def _is_java(runtime_version):
 
 
 def _java_runtime_in_number():
-    return [8, 11, 17]
+    return [8, 11, 17, 21]
 
 
 def _pack_source_code(source_location, tar_file_path):
@@ -193,7 +210,20 @@ def get_azure_files_info(file_sas_url):
 
 
 def _get_azure_storage_client_info(account_type, sas_url):
-    regex = compile("http(s)?://(?P<account_name>.*?)\.{0}\.(?P<endpoint_suffix>.*?)/(?P<container_name>.*?)/(?P<relative_path>.*?)\?(?P<sas_token>.*)".format(account_type))
+    """
+    http(s)?://: Matches the beginning of the URL, which can start with either “http://” or “https://”.
+    (?P<account_name>.*?): Matches the account name in the URL.
+    The ?P<account_name> syntax creates a named group that can be referred to later in the expression.
+    {re.escape(".")}: Escapes the period character so that it matches a literal period in the URL.
+    {account_type}: Leverage f-string, to insert account_type into the string.
+    {re.escape(".")}: Escapes the period character again.
+    (?P<endpoint_suffix>.*?): Matches the endpoint suffix in the URL.
+    /(?P<container_name>.*?): Matches the container name in the URL.
+    /(?P<relative_path>.*?): Matches the relative path in the URL.
+    {re.escape("?")}: The ? character is escaped so that it matches a literal question mark in the URL.
+    (?P<sas_token>.*): Matches the SAS token in the URL.
+    """
+    regex = compile(f'http(s)?://(?P<account_name>.*?){re.escape(".")}{account_type}{re.escape(".")}(?P<endpoint_suffix>.*?)/(?P<container_name>.*?)/(?P<relative_path>.*?){re.escape("?")}(?P<sas_token>.*)')
     matchObj = search(regex, sas_url)
     account_name = matchObj.group('account_name')
     endpoint_suffix = matchObj.group('endpoint_suffix')
@@ -263,6 +293,11 @@ def get_portal_uri(cli_ctx):
         return 'https://portal.azure.com'
 
 
+def get_hostname(cli_ctx, client, resource_group, service_name):
+    resource = client.services.get(resource_group, service_name)
+    return get_proxy_api_endpoint(cli_ctx, resource)
+
+
 def get_proxy_api_endpoint(cli_ctx, spring_resource):
     """Get the endpoint of the proxy api."""
     if not spring_resource.properties.fqdn:
@@ -306,6 +341,68 @@ def handle_asc_exception(ex):
             raise CLIError(ex)
 
 
+def register_provider_if_needed(cmd, rp_name):
+    if not _is_resource_provider_registered(cmd, rp_name):
+        _register_resource_provider(cmd, rp_name)
+
+
+def _is_resource_provider_registered(cmd, resource_provider, subscription_id=None):
+    registered = None
+    if not subscription_id:
+        subscription_id = get_subscription_id(cmd.cli_ctx)
+    try:
+        providers_client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id).providers
+        registration_state = getattr(providers_client.get(resource_provider), 'registration_state', "NotRegistered")
+
+        registered = (registration_state and registration_state.lower() == 'registered')
+    except Exception:  # pylint: disable=broad-except
+        pass
+    return registered
+
+
+def _register_resource_provider(cmd, resource_provider):
+    from azure.mgmt.resource.resources.models import ProviderRegistrationRequest, ProviderConsentDefinition
+
+    logger.warning(f"Registering resource provider {resource_provider} ...")
+    properties = ProviderRegistrationRequest(third_party_provider_consent=ProviderConsentDefinition(consent_to_authorization=True))
+
+    client = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES).providers
+    try:
+        client.register(resource_provider, properties=properties)
+        # wait for registration to finish
+        timeout_secs = 120
+        registration = _is_resource_provider_registered(cmd, resource_provider)
+        start = datetime.utcnow()
+        while not registration:
+            registration = _is_resource_provider_registered(cmd, resource_provider)
+            sleep(3)
+            if (datetime.utcnow() - start).seconds >= timeout_secs:
+                raise CLIInternalError(f"Timed out while waiting for the {resource_provider} resource provider to be registered.")
+
+    except Exception as e:
+        msg = ("This operation requires registering the resource provider {0}. "
+               "We were unable to perform that registration on your behalf: "
+               "Server responded with error message -- {1} . "
+               "Please check with your admin on permissions, "
+               "or try running registration manually with: az provider register --wait --namespace {0}")
+        raise ValidationError(resource_provider, msg.format(e.args)) from e
+
+
+def get_bearer_auth(cli_ctx):
+    profile = Profile(cli_ctx=cli_ctx)
+    creds, _, tenant = profile.get_raw_token()
+    token = creds[1]
+    return BearerAuth(token)
+
+
+def _get_value_from_dict(input_dict, *keys):
+    for key in keys:
+        if not isinstance(input_dict, dict):
+            return None
+        input_dict = input_dict.get(key)
+    return input_dict
+
+
 class BearerAuth(requests.auth.AuthBase):
     def __init__(self, token):
         self.token = token
@@ -313,3 +410,43 @@ class BearerAuth(requests.auth.AuthBase):
     def __call__(self, r):
         r.headers["authorization"] = "Bearer " + self.token
         return r
+
+
+def _contains_alive_thread(threads: [Thread]):
+    for t in threads:
+        if t.is_alive():
+            return True
+
+
+def parallel_start_threads(threads: [Thread]):
+    for t in threads:
+        t.daemon = True
+        t.start()
+
+    while _contains_alive_thread(threads):
+        sleep(1)
+        # so that ctrl+c can stop the command
+
+
+def sequential_start_threads(threads: [Thread]):
+    for idx, t in enumerate(threads):
+        t.daemon = True
+        t.start()
+
+        while t.is_alive():
+            sleep(1)
+            # so that ctrl+c can stop the command
+
+
+def string_equals_ignore_case(left: str, right: str):
+    if left is None and right is None:
+        return True
+
+    if left is None or right is None:
+        return False
+
+    return left.casefold() == right.casefold()
+
+
+def get_service_instance_resource_id(sub_id: str, group: str, service: str):
+    return f"/subscriptions/{sub_id}/resourceGroups/{group}/providers/Microsoft.AppPlatform/Spring/{service}"

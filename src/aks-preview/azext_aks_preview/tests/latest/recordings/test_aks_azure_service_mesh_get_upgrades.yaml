@@ -1,0 +1,1791 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks mesh get-revisions
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -l
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/meshRevisionProfiles?api-version=2024-06-02-preview
+  response:
+    body:
+      string: "{\n  \"value\": [\n   {\n    \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/meshRevisionProfiles/istio\"\
+        ,\n    \"name\": \"istio\",\n    \"type\": \"Microsoft.ContainerService/locations/meshRevisionProfiles\"\
+        ,\n    \"properties\": {\n     \"meshRevisions\": [\n      {\n       \"revision\"\
+        : \"asm-1-19\",\n       \"upgrades\": [\n        \"asm-1-20\"\n       ],\n\
+        \       \"compatibleWith\": [\n        {\n         \"name\": \"kubernetes\"\
+        ,\n         \"versions\": [\n          \"1.25\",\n          \"1.26\",\n  \
+        \        \"1.27\",\n          \"1.28\"\n         ]\n        }\n       ]\n\
+        \      },\n      {\n       \"revision\": \"asm-1-20\",\n       \"upgrades\"\
+        : [\n        \"asm-1-21\"\n       ],\n       \"compatibleWith\": [\n     \
+        \   {\n         \"name\": \"kubernetes\",\n         \"versions\": [\n    \
+        \      \"1.25\",\n          \"1.26\",\n          \"1.27\",\n          \"1.28\"\
+        ,\n          \"1.29\"\n         ]\n        }\n       ]\n      },\n      {\n\
+        \       \"revision\": \"asm-1-21\",\n       \"compatibleWith\": [\n      \
+        \  {\n         \"name\": \"kubernetes\",\n         \"versions\": [\n     \
+        \     \"1.26\",\n          \"1.27\",\n          \"1.28\",\n          \"1.29\"\
+        \n         ]\n        }\n       ]\n      }\n     ]\n    }\n   }\n  ]\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1166'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:40:16 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 7DAF3D9A4A3F435A8C353FFDAE7863CA Ref B: MNZ221060610029 Ref C: 2024-05-22T21:40:16Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --aks-custom-headers --ssh-key-value
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2024-06-02-preview
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.ContainerService/managedClusters/cliakstest000001''
+        under resource group ''clitest000001'' was not found. For more details please
+        go to https://aka.ms/ARMResourceNotFoundFix"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '244'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 22 May 2024 21:40:17 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - gateway
+      x-msedge-ref:
+      - 'Ref A: D478AE1C8B614572B7C339E097E0683E Ref B: MNZ221060619017 Ref C: 2024-05-22T21:40:17Z'
+    status:
+      code: 404
+      message: Not Found
+- request:
+    body: '{"location": "westus2", "sku": {"name": "Base", "tier": "Free"}, "identity":
+      {"type": "SystemAssigned"}, "kind": "Base", "properties": {"kubernetesVersion":
+      "", "dnsPrefix": "cliakstest-clitestb7jnztem4-79a739", "agentPoolProfiles":
+      [{"count": 3, "vmSize": "Standard_DS2_v2", "osDiskSizeGB": 0, "workloadRuntime":
+      "OCIContainer", "osType": "Linux", "enableAutoScaling": false, "type": "VirtualMachineScaleSets",
+      "mode": "System", "orchestratorVersion": "", "upgradeSettings": {}, "enableNodePublicIP":
+      false, "enableCustomCATrust": false, "scaleSetPriority": "Regular", "scaleSetEvictionPolicy":
+      "Delete", "spotMaxPrice": -1.0, "nodeTaints": [], "nodeInitializationTaints":
+      [], "enableEncryptionAtHost": false, "enableUltraSSD": false, "enableFIPS":
+      false, "networkProfile": {}, "securityProfile": {"sshAccess": "localuser"},
+      "name": "nodepool1"}], "linuxProfile": {"adminUsername": "azureuser", "ssh":
+      {"publicKeys": [{"keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/iCEDcZPMqjmMzF9030Dhx20eGq81GmiZyKPdaWP/rh6NILJOiJIi64uS84TxY47oZ/bWW2ers4t9xD1lOkN/YH6Kcy3uaNDKOJNYa6AktWNikmcsJ7VdNp+yFCYwwikEb+bcsDikOLpq/Thog96j0LDE35GZ7MCdhJs8stsFpRm7UMSspDPQAsqrd4My//XkJR1izjWDzmP9rV6okgpHMbzseh1hxWk5wTTiZDYjxBZC/zK3PrfpM4ogyE+3Dn72qz5lMUA6iNfMrb7w4vFGZrQhhpxj5T6a0knr4VWw15D3xAoaioIfSOkqQUAoYBmjpo68KlDbWcvQHzEMnkC/
+      azcli_aks_live_test@example.com\n"}]}}, "addonProfiles": {}, "enableRBAC": true,
+      "enablePodSecurityPolicy": false, "networkProfile": {"networkPlugin": "kubenet",
+      "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP": "10.0.0.10",
+      "outboundType": "loadBalancer", "loadBalancerSku": "standard"}, "disableLocalAccounts":
+      false, "storageProfile": {}, "bootstrapProfile": {"artifactSource": "Direct"}}}'
+    headers:
+      AKSHTTPCustomFeatures:
+      - Microsoft.ContainerService/AzureServiceMeshPreview
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1729'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --name --location --aks-custom-headers --ssh-key-value
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2024-06-02-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001\"\
+        ,\n  \"location\": \"westus2\",\n  \"name\": \"cliakstest000001\",\n  \"type\"\
+        : \"Microsoft.ContainerService/ManagedClusters\",\n  \"kind\": \"Base\",\n\
+        \  \"properties\": {\n   \"provisioningState\": \"Creating\",\n   \"powerState\"\
+        : {\n    \"code\": \"Running\"\n   },\n   \"kubernetesVersion\": \"1.28\"\
+        ,\n   \"currentKubernetesVersion\": \"1.28.9\",\n   \"dnsPrefix\": \"cliakstest-clitestb7jnztem4-79a739\"\
+        ,\n   \"fqdn\": \"cliakstest-clitestb7jnztem4-79a739-h1vrnfhi.hcp.westus2.azmk8s.io\"\
+        ,\n   \"azurePortalFQDN\": \"cliakstest-clitestb7jnztem4-79a739-h1vrnfhi.portal.hcp.westus2.azmk8s.io\"\
+        ,\n   \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n   \
+        \  \"count\": 3,\n     \"vmSize\": \"Standard_DS2_v2\",\n     \"osDiskSizeGB\"\
+        : 128,\n     \"osDiskType\": \"Managed\",\n     \"kubeletDiskType\": \"OS\"\
+        ,\n     \"workloadRuntime\": \"OCIContainer\",\n     \"maxPods\": 110,\n \
+        \    \"type\": \"VirtualMachineScaleSets\",\n     \"enableAutoScaling\": false,\n\
+        \     \"provisioningState\": \"Creating\",\n     \"powerState\": {\n     \
+        \ \"code\": \"Running\"\n     },\n     \"orchestratorVersion\": \"1.28\",\n\
+        \     \"currentOrchestratorVersion\": \"1.28.9\",\n     \"enableNodePublicIP\"\
+        : false,\n     \"enableCustomCATrust\": false,\n     \"nodeLabels\": {},\n\
+        \     \"mode\": \"System\",\n     \"enableEncryptionAtHost\": false,\n   \
+        \  \"enableUltraSSD\": false,\n     \"osType\": \"Linux\",\n     \"osSKU\"\
+        : \"Ubuntu\",\n     \"nodeImageVersion\": \"AKSUbuntu-2204gen2containerd-202405.03.0\"\
+        ,\n     \"upgradeSettings\": {\n      \"maxSurge\": \"10%\"\n     },\n   \
+        \  \"enableFIPS\": false,\n     \"networkProfile\": {},\n     \"securityProfile\"\
+        : {\n      \"sshAccess\": \"LocalUser\",\n      \"enableVTPM\": false,\n \
+        \     \"enableSecureBoot\": false\n     }\n    }\n   ],\n   \"linuxProfile\"\
+        : {\n    \"adminUsername\": \"azureuser\",\n    \"ssh\": {\n     \"publicKeys\"\
+        : [\n      {\n       \"keyData\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/iCEDcZPMqjmMzF9030Dhx20eGq81GmiZyKPdaWP/rh6NILJOiJIi64uS84TxY47oZ/bWW2ers4t9xD1lOkN/YH6Kcy3uaNDKOJNYa6AktWNikmcsJ7VdNp+yFCYwwikEb+bcsDikOLpq/Thog96j0LDE35GZ7MCdhJs8stsFpRm7UMSspDPQAsqrd4My//XkJR1izjWDzmP9rV6okgpHMbzseh1hxWk5wTTiZDYjxBZC/zK3PrfpM4ogyE+3Dn72qz5lMUA6iNfMrb7w4vFGZrQhhpxj5T6a0knr4VWw15D3xAoaioIfSOkqQUAoYBmjpo68KlDbWcvQHzEMnkC/\
+        \ azcli_aks_live_test@example.com\\n\"\n      }\n     ]\n    }\n   },\n  \
+        \ \"servicePrincipalProfile\": {\n    \"clientId\":\"00000000-0000-0000-0000-000000000001\"\
+        \n   },\n   \"nodeResourceGroup\": \"MC_clitest000001_cliakstest000001_westus2\"\
+        ,\n   \"enableRBAC\": true,\n   \"enablePodSecurityPolicy\": false,\n   \"\
+        supportPlan\": \"KubernetesOfficial\",\n   \"networkProfile\": {\n    \"networkPlugin\"\
+        : \"kubenet\",\n    \"networkPolicy\": \"none\",\n    \"loadBalancerSku\"\
+        : \"standard\",\n    \"loadBalancerProfile\": {\n     \"managedOutboundIPs\"\
+        : {\n      \"count\": 1\n     },\n     \"backendPoolType\": \"nodeIPConfiguration\"\
+        \n    },\n    \"podCidr\": \"10.244.0.0/16\",\n    \"serviceCidr\": \"10.0.0.0/16\"\
+        ,\n    \"dnsServiceIP\": \"10.0.0.10\",\n    \"outboundType\": \"loadBalancer\"\
+        ,\n    \"podCidrs\": [\n     \"10.244.0.0/16\"\n    ],\n    \"serviceCidrs\"\
+        : [\n     \"10.0.0.0/16\"\n    ],\n    \"ipFamilies\": [\n     \"IPv4\"\n\
+        \    ]\n   },\n   \"maxAgentPools\": 100,\n   \"autoUpgradeProfile\": {\n\
+        \    \"nodeOSUpgradeChannel\": \"NodeImage\"\n   },\n   \"disableLocalAccounts\"\
+        : false,\n   \"securityProfile\": {},\n   \"storageProfile\": {\n    \"diskCSIDriver\"\
+        : {\n     \"enabled\": true,\n     \"version\": \"v1\"\n    },\n    \"fileCSIDriver\"\
+        : {\n     \"enabled\": true\n    },\n    \"snapshotController\": {\n     \"\
+        enabled\": true\n    }\n   },\n   \"oidcIssuerProfile\": {\n    \"enabled\"\
+        : false\n   },\n   \"workloadAutoScalerProfile\": {},\n   \"metricsProfile\"\
+        : {\n    \"costAnalysis\": {\n     \"enabled\": false\n    }\n   },\n   \"\
+        resourceUID\": \"664e66471312ca00011597ed\",\n   \"controlPlanePluginProfiles\"\
+        : {\n    \"azure-monitor-metrics-ccp\": {\n     \"enableV2\": true\n    },\n\
+        \    \"karpenter\": {\n     \"enableV2\": true\n    },\n    \"live-patching-controller\"\
+        : {\n     \"enableV2\": true\n    }\n   },\n   \"nodeProvisioningProfile\"\
+        : {\n    \"mode\": \"Manual\"\n   },\n   \"bootstrapProfile\": {\n    \"artifactSource\"\
+        : \"Direct\"\n   }\n  },\n  \"identity\": {\n   \"type\": \"SystemAssigned\"\
+        ,\n   \"principalId\":\"00000000-0000-0000-0000-000000000001\",\n   \"tenantId\"\
+        : \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n  },\n  \"sku\": {\n   \"name\"\
+        : \"Base\",\n   \"tier\": \"Free\"\n  }\n }"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/12753dfd-3c9b-44a3-8acc-ab36f1659181?api-version=2016-03-30&t=638520108238144979&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=JNnC1rPaEG9tVizri1HrSceYsI3R8Gw7fYVIyNe_1o21hBhz56Tj4nTYYJZBe8AeZ4X2g9Sca4Nd_oa8fi30qGKFtG48kTDqKnt1fKyovlAYPVIwjw5sPLoMuscwklyx8QsYpSkVuT0gQ6qj8evK5SdRShXg0FrV14OBN1tChVHUeFBwxj5aVwplTSkc3hxxfprzVQ-fh5CQHAHS5qpgxxxBSWWi8weoNIQWJEuouQ0TX6qViLW_lrkj5OD6tzjkP3-8rhoLSCkP5K9UWufnQevhWsnz8y8lSQeLIEVFOmldw2r4ACd7srYgbkHdzj34PTWeB1o2jpqxdjfEvBbnfg&h=r3wqamaLi4DYBnFhgznfxk4CtzzTgOb7bSuYGB1nxjE
+      cache-control:
+      - no-cache
+      content-length:
+      - '4230'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:40:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: FB6AAE99700F4B7AB2556185CE1FBFBF Ref B: MNZ221060619017 Ref C: 2024-05-22T21:40:17Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --aks-custom-headers --ssh-key-value
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/12753dfd-3c9b-44a3-8acc-ab36f1659181?api-version=2016-03-30&t=638520108238144979&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=JNnC1rPaEG9tVizri1HrSceYsI3R8Gw7fYVIyNe_1o21hBhz56Tj4nTYYJZBe8AeZ4X2g9Sca4Nd_oa8fi30qGKFtG48kTDqKnt1fKyovlAYPVIwjw5sPLoMuscwklyx8QsYpSkVuT0gQ6qj8evK5SdRShXg0FrV14OBN1tChVHUeFBwxj5aVwplTSkc3hxxfprzVQ-fh5CQHAHS5qpgxxxBSWWi8weoNIQWJEuouQ0TX6qViLW_lrkj5OD6tzjkP3-8rhoLSCkP5K9UWufnQevhWsnz8y8lSQeLIEVFOmldw2r4ACd7srYgbkHdzj34PTWeB1o2jpqxdjfEvBbnfg&h=r3wqamaLi4DYBnFhgznfxk4CtzzTgOb7bSuYGB1nxjE
+  response:
+    body:
+      string: "{\n  \"name\": \"12753dfd-3c9b-44a3-8acc-ab36f1659181\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2024-05-22T21:40:23.6343409Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:40:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: FF661BB5628F4B4AB265B2D8E2171DC8 Ref B: MNZ221060619017 Ref C: 2024-05-22T21:40:23Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --aks-custom-headers --ssh-key-value
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/12753dfd-3c9b-44a3-8acc-ab36f1659181?api-version=2016-03-30&t=638520108238144979&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=JNnC1rPaEG9tVizri1HrSceYsI3R8Gw7fYVIyNe_1o21hBhz56Tj4nTYYJZBe8AeZ4X2g9Sca4Nd_oa8fi30qGKFtG48kTDqKnt1fKyovlAYPVIwjw5sPLoMuscwklyx8QsYpSkVuT0gQ6qj8evK5SdRShXg0FrV14OBN1tChVHUeFBwxj5aVwplTSkc3hxxfprzVQ-fh5CQHAHS5qpgxxxBSWWi8weoNIQWJEuouQ0TX6qViLW_lrkj5OD6tzjkP3-8rhoLSCkP5K9UWufnQevhWsnz8y8lSQeLIEVFOmldw2r4ACd7srYgbkHdzj34PTWeB1o2jpqxdjfEvBbnfg&h=r3wqamaLi4DYBnFhgznfxk4CtzzTgOb7bSuYGB1nxjE
+  response:
+    body:
+      string: "{\n  \"name\": \"12753dfd-3c9b-44a3-8acc-ab36f1659181\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2024-05-22T21:40:23.6343409Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:40:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: D56820BAC5354CB4834F03FC1025ED17 Ref B: MNZ221060619017 Ref C: 2024-05-22T21:40:54Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --aks-custom-headers --ssh-key-value
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/12753dfd-3c9b-44a3-8acc-ab36f1659181?api-version=2016-03-30&t=638520108238144979&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=JNnC1rPaEG9tVizri1HrSceYsI3R8Gw7fYVIyNe_1o21hBhz56Tj4nTYYJZBe8AeZ4X2g9Sca4Nd_oa8fi30qGKFtG48kTDqKnt1fKyovlAYPVIwjw5sPLoMuscwklyx8QsYpSkVuT0gQ6qj8evK5SdRShXg0FrV14OBN1tChVHUeFBwxj5aVwplTSkc3hxxfprzVQ-fh5CQHAHS5qpgxxxBSWWi8weoNIQWJEuouQ0TX6qViLW_lrkj5OD6tzjkP3-8rhoLSCkP5K9UWufnQevhWsnz8y8lSQeLIEVFOmldw2r4ACd7srYgbkHdzj34PTWeB1o2jpqxdjfEvBbnfg&h=r3wqamaLi4DYBnFhgznfxk4CtzzTgOb7bSuYGB1nxjE
+  response:
+    body:
+      string: "{\n  \"name\": \"12753dfd-3c9b-44a3-8acc-ab36f1659181\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2024-05-22T21:40:23.6343409Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:41:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: D019A72825BD42028117F3F09289C407 Ref B: MNZ221060619017 Ref C: 2024-05-22T21:41:24Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --aks-custom-headers --ssh-key-value
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/12753dfd-3c9b-44a3-8acc-ab36f1659181?api-version=2016-03-30&t=638520108238144979&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=JNnC1rPaEG9tVizri1HrSceYsI3R8Gw7fYVIyNe_1o21hBhz56Tj4nTYYJZBe8AeZ4X2g9Sca4Nd_oa8fi30qGKFtG48kTDqKnt1fKyovlAYPVIwjw5sPLoMuscwklyx8QsYpSkVuT0gQ6qj8evK5SdRShXg0FrV14OBN1tChVHUeFBwxj5aVwplTSkc3hxxfprzVQ-fh5CQHAHS5qpgxxxBSWWi8weoNIQWJEuouQ0TX6qViLW_lrkj5OD6tzjkP3-8rhoLSCkP5K9UWufnQevhWsnz8y8lSQeLIEVFOmldw2r4ACd7srYgbkHdzj34PTWeB1o2jpqxdjfEvBbnfg&h=r3wqamaLi4DYBnFhgznfxk4CtzzTgOb7bSuYGB1nxjE
+  response:
+    body:
+      string: "{\n  \"name\": \"12753dfd-3c9b-44a3-8acc-ab36f1659181\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2024-05-22T21:40:23.6343409Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:41:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 37890B3F9F634DB5A6D6C926E947B79C Ref B: MNZ221060619017 Ref C: 2024-05-22T21:41:54Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --aks-custom-headers --ssh-key-value
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/12753dfd-3c9b-44a3-8acc-ab36f1659181?api-version=2016-03-30&t=638520108238144979&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=JNnC1rPaEG9tVizri1HrSceYsI3R8Gw7fYVIyNe_1o21hBhz56Tj4nTYYJZBe8AeZ4X2g9Sca4Nd_oa8fi30qGKFtG48kTDqKnt1fKyovlAYPVIwjw5sPLoMuscwklyx8QsYpSkVuT0gQ6qj8evK5SdRShXg0FrV14OBN1tChVHUeFBwxj5aVwplTSkc3hxxfprzVQ-fh5CQHAHS5qpgxxxBSWWi8weoNIQWJEuouQ0TX6qViLW_lrkj5OD6tzjkP3-8rhoLSCkP5K9UWufnQevhWsnz8y8lSQeLIEVFOmldw2r4ACd7srYgbkHdzj34PTWeB1o2jpqxdjfEvBbnfg&h=r3wqamaLi4DYBnFhgznfxk4CtzzTgOb7bSuYGB1nxjE
+  response:
+    body:
+      string: "{\n  \"name\": \"12753dfd-3c9b-44a3-8acc-ab36f1659181\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2024-05-22T21:40:23.6343409Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:42:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: A58F2446EF0C4570804302230EC6CDF8 Ref B: MNZ221060619017 Ref C: 2024-05-22T21:42:25Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --aks-custom-headers --ssh-key-value
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/12753dfd-3c9b-44a3-8acc-ab36f1659181?api-version=2016-03-30&t=638520108238144979&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=JNnC1rPaEG9tVizri1HrSceYsI3R8Gw7fYVIyNe_1o21hBhz56Tj4nTYYJZBe8AeZ4X2g9Sca4Nd_oa8fi30qGKFtG48kTDqKnt1fKyovlAYPVIwjw5sPLoMuscwklyx8QsYpSkVuT0gQ6qj8evK5SdRShXg0FrV14OBN1tChVHUeFBwxj5aVwplTSkc3hxxfprzVQ-fh5CQHAHS5qpgxxxBSWWi8weoNIQWJEuouQ0TX6qViLW_lrkj5OD6tzjkP3-8rhoLSCkP5K9UWufnQevhWsnz8y8lSQeLIEVFOmldw2r4ACd7srYgbkHdzj34PTWeB1o2jpqxdjfEvBbnfg&h=r3wqamaLi4DYBnFhgznfxk4CtzzTgOb7bSuYGB1nxjE
+  response:
+    body:
+      string: "{\n  \"name\": \"12753dfd-3c9b-44a3-8acc-ab36f1659181\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2024-05-22T21:40:23.6343409Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:42:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 6E4B1559ABA14445A19D5BA2A2E65D0B Ref B: MNZ221060619017 Ref C: 2024-05-22T21:42:55Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --aks-custom-headers --ssh-key-value
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/12753dfd-3c9b-44a3-8acc-ab36f1659181?api-version=2016-03-30&t=638520108238144979&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=JNnC1rPaEG9tVizri1HrSceYsI3R8Gw7fYVIyNe_1o21hBhz56Tj4nTYYJZBe8AeZ4X2g9Sca4Nd_oa8fi30qGKFtG48kTDqKnt1fKyovlAYPVIwjw5sPLoMuscwklyx8QsYpSkVuT0gQ6qj8evK5SdRShXg0FrV14OBN1tChVHUeFBwxj5aVwplTSkc3hxxfprzVQ-fh5CQHAHS5qpgxxxBSWWi8weoNIQWJEuouQ0TX6qViLW_lrkj5OD6tzjkP3-8rhoLSCkP5K9UWufnQevhWsnz8y8lSQeLIEVFOmldw2r4ACd7srYgbkHdzj34PTWeB1o2jpqxdjfEvBbnfg&h=r3wqamaLi4DYBnFhgznfxk4CtzzTgOb7bSuYGB1nxjE
+  response:
+    body:
+      string: "{\n  \"name\": \"12753dfd-3c9b-44a3-8acc-ab36f1659181\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2024-05-22T21:40:23.6343409Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:43:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: A1F4638B12984B87B5CFD2B33D7175FD Ref B: MNZ221060619017 Ref C: 2024-05-22T21:43:25Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --aks-custom-headers --ssh-key-value
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/12753dfd-3c9b-44a3-8acc-ab36f1659181?api-version=2016-03-30&t=638520108238144979&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=JNnC1rPaEG9tVizri1HrSceYsI3R8Gw7fYVIyNe_1o21hBhz56Tj4nTYYJZBe8AeZ4X2g9Sca4Nd_oa8fi30qGKFtG48kTDqKnt1fKyovlAYPVIwjw5sPLoMuscwklyx8QsYpSkVuT0gQ6qj8evK5SdRShXg0FrV14OBN1tChVHUeFBwxj5aVwplTSkc3hxxfprzVQ-fh5CQHAHS5qpgxxxBSWWi8weoNIQWJEuouQ0TX6qViLW_lrkj5OD6tzjkP3-8rhoLSCkP5K9UWufnQevhWsnz8y8lSQeLIEVFOmldw2r4ACd7srYgbkHdzj34PTWeB1o2jpqxdjfEvBbnfg&h=r3wqamaLi4DYBnFhgznfxk4CtzzTgOb7bSuYGB1nxjE
+  response:
+    body:
+      string: "{\n  \"name\": \"12753dfd-3c9b-44a3-8acc-ab36f1659181\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2024-05-22T21:40:23.6343409Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:43:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 3073BFFCE22543608F3A5D72E83AF2C8 Ref B: MNZ221060619017 Ref C: 2024-05-22T21:43:55Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --aks-custom-headers --ssh-key-value
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/12753dfd-3c9b-44a3-8acc-ab36f1659181?api-version=2016-03-30&t=638520108238144979&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=JNnC1rPaEG9tVizri1HrSceYsI3R8Gw7fYVIyNe_1o21hBhz56Tj4nTYYJZBe8AeZ4X2g9Sca4Nd_oa8fi30qGKFtG48kTDqKnt1fKyovlAYPVIwjw5sPLoMuscwklyx8QsYpSkVuT0gQ6qj8evK5SdRShXg0FrV14OBN1tChVHUeFBwxj5aVwplTSkc3hxxfprzVQ-fh5CQHAHS5qpgxxxBSWWi8weoNIQWJEuouQ0TX6qViLW_lrkj5OD6tzjkP3-8rhoLSCkP5K9UWufnQevhWsnz8y8lSQeLIEVFOmldw2r4ACd7srYgbkHdzj34PTWeB1o2jpqxdjfEvBbnfg&h=r3wqamaLi4DYBnFhgznfxk4CtzzTgOb7bSuYGB1nxjE
+  response:
+    body:
+      string: "{\n  \"name\": \"12753dfd-3c9b-44a3-8acc-ab36f1659181\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2024-05-22T21:40:23.6343409Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:44:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 37EC604B1CB94628AC2D529C9868A627 Ref B: MNZ221060619017 Ref C: 2024-05-22T21:44:26Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --aks-custom-headers --ssh-key-value
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/12753dfd-3c9b-44a3-8acc-ab36f1659181?api-version=2016-03-30&t=638520108238144979&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=JNnC1rPaEG9tVizri1HrSceYsI3R8Gw7fYVIyNe_1o21hBhz56Tj4nTYYJZBe8AeZ4X2g9Sca4Nd_oa8fi30qGKFtG48kTDqKnt1fKyovlAYPVIwjw5sPLoMuscwklyx8QsYpSkVuT0gQ6qj8evK5SdRShXg0FrV14OBN1tChVHUeFBwxj5aVwplTSkc3hxxfprzVQ-fh5CQHAHS5qpgxxxBSWWi8weoNIQWJEuouQ0TX6qViLW_lrkj5OD6tzjkP3-8rhoLSCkP5K9UWufnQevhWsnz8y8lSQeLIEVFOmldw2r4ACd7srYgbkHdzj34PTWeB1o2jpqxdjfEvBbnfg&h=r3wqamaLi4DYBnFhgznfxk4CtzzTgOb7bSuYGB1nxjE
+  response:
+    body:
+      string: "{\n  \"name\": \"12753dfd-3c9b-44a3-8acc-ab36f1659181\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2024-05-22T21:40:23.6343409Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '126'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:44:56 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 7F243B46E46B4DBEA5A9446A687AA83A Ref B: MNZ221060619017 Ref C: 2024-05-22T21:44:56Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --aks-custom-headers --ssh-key-value
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/12753dfd-3c9b-44a3-8acc-ab36f1659181?api-version=2016-03-30&t=638520108238144979&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=JNnC1rPaEG9tVizri1HrSceYsI3R8Gw7fYVIyNe_1o21hBhz56Tj4nTYYJZBe8AeZ4X2g9Sca4Nd_oa8fi30qGKFtG48kTDqKnt1fKyovlAYPVIwjw5sPLoMuscwklyx8QsYpSkVuT0gQ6qj8evK5SdRShXg0FrV14OBN1tChVHUeFBwxj5aVwplTSkc3hxxfprzVQ-fh5CQHAHS5qpgxxxBSWWi8weoNIQWJEuouQ0TX6qViLW_lrkj5OD6tzjkP3-8rhoLSCkP5K9UWufnQevhWsnz8y8lSQeLIEVFOmldw2r4ACd7srYgbkHdzj34PTWeB1o2jpqxdjfEvBbnfg&h=r3wqamaLi4DYBnFhgznfxk4CtzzTgOb7bSuYGB1nxjE
+  response:
+    body:
+      string: "{\n  \"name\": \"12753dfd-3c9b-44a3-8acc-ab36f1659181\",\n  \"status\"\
+        : \"Succeeded\",\n  \"startTime\": \"2024-05-22T21:40:23.6343409Z\",\n  \"\
+        endTime\": \"2024-05-22T21:45:17.1915988Z\"\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '170'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:45:26 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: BFE903834BD74F6199379701802D2118 Ref B: MNZ221060619017 Ref C: 2024-05-22T21:45:26Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --location --aks-custom-headers --ssh-key-value
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2024-06-02-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001\"\
+        ,\n  \"location\": \"westus2\",\n  \"name\": \"cliakstest000001\",\n  \"type\"\
+        : \"Microsoft.ContainerService/ManagedClusters\",\n  \"kind\": \"Base\",\n\
+        \  \"properties\": {\n   \"provisioningState\": \"Succeeded\",\n   \"powerState\"\
+        : {\n    \"code\": \"Running\"\n   },\n   \"kubernetesVersion\": \"1.28\"\
+        ,\n   \"currentKubernetesVersion\": \"1.28.9\",\n   \"dnsPrefix\": \"cliakstest-clitestb7jnztem4-79a739\"\
+        ,\n   \"fqdn\": \"cliakstest-clitestb7jnztem4-79a739-h1vrnfhi.hcp.westus2.azmk8s.io\"\
+        ,\n   \"azurePortalFQDN\": \"cliakstest-clitestb7jnztem4-79a739-h1vrnfhi.portal.hcp.westus2.azmk8s.io\"\
+        ,\n   \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n   \
+        \  \"count\": 3,\n     \"vmSize\": \"Standard_DS2_v2\",\n     \"osDiskSizeGB\"\
+        : 128,\n     \"osDiskType\": \"Managed\",\n     \"kubeletDiskType\": \"OS\"\
+        ,\n     \"workloadRuntime\": \"OCIContainer\",\n     \"maxPods\": 110,\n \
+        \    \"type\": \"VirtualMachineScaleSets\",\n     \"enableAutoScaling\": false,\n\
+        \     \"provisioningState\": \"Succeeded\",\n     \"powerState\": {\n    \
+        \  \"code\": \"Running\"\n     },\n     \"orchestratorVersion\": \"1.28\"\
+        ,\n     \"currentOrchestratorVersion\": \"1.28.9\",\n     \"enableNodePublicIP\"\
+        : false,\n     \"enableCustomCATrust\": false,\n     \"mode\": \"System\"\
+        ,\n     \"enableEncryptionAtHost\": false,\n     \"enableUltraSSD\": false,\n\
+        \     \"osType\": \"Linux\",\n     \"osSKU\": \"Ubuntu\",\n     \"nodeImageVersion\"\
+        : \"AKSUbuntu-2204gen2containerd-202405.03.0\",\n     \"upgradeSettings\"\
+        : {\n      \"maxSurge\": \"10%\"\n     },\n     \"enableFIPS\": false,\n \
+        \    \"networkProfile\": {},\n     \"securityProfile\": {\n      \"sshAccess\"\
+        : \"LocalUser\",\n      \"enableVTPM\": false,\n      \"enableSecureBoot\"\
+        : false\n     },\n     \"eTag\": \"26a342ab-fc2c-4aba-ac5b-4a2db8eb05ff\"\n\
+        \    }\n   ],\n   \"linuxProfile\": {\n    \"adminUsername\": \"azureuser\"\
+        ,\n    \"ssh\": {\n     \"publicKeys\": [\n      {\n       \"keyData\": \"\
+        ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/iCEDcZPMqjmMzF9030Dhx20eGq81GmiZyKPdaWP/rh6NILJOiJIi64uS84TxY47oZ/bWW2ers4t9xD1lOkN/YH6Kcy3uaNDKOJNYa6AktWNikmcsJ7VdNp+yFCYwwikEb+bcsDikOLpq/Thog96j0LDE35GZ7MCdhJs8stsFpRm7UMSspDPQAsqrd4My//XkJR1izjWDzmP9rV6okgpHMbzseh1hxWk5wTTiZDYjxBZC/zK3PrfpM4ogyE+3Dn72qz5lMUA6iNfMrb7w4vFGZrQhhpxj5T6a0knr4VWw15D3xAoaioIfSOkqQUAoYBmjpo68KlDbWcvQHzEMnkC/\
+        \ azcli_aks_live_test@example.com\\n\"\n      }\n     ]\n    }\n   },\n  \
+        \ \"servicePrincipalProfile\": {\n    \"clientId\":\"00000000-0000-0000-0000-000000000001\"\
+        \n   },\n   \"nodeResourceGroup\": \"MC_clitest000001_cliakstest000001_westus2\"\
+        ,\n   \"enableRBAC\": true,\n   \"enablePodSecurityPolicy\": false,\n   \"\
+        supportPlan\": \"KubernetesOfficial\",\n   \"networkProfile\": {\n    \"networkPlugin\"\
+        : \"kubenet\",\n    \"networkPolicy\": \"none\",\n    \"loadBalancerSku\"\
+        : \"standard\",\n    \"loadBalancerProfile\": {\n     \"managedOutboundIPs\"\
+        : {\n      \"count\": 1\n     },\n     \"effectiveOutboundIPs\": [\n     \
+        \ {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000001_westus2/providers/Microsoft.Network/publicIPAddresses/0460be94-cb3e-4282-b57d-d4a6582192ff\"\
+        \n      }\n     ],\n     \"backendPoolType\": \"nodeIPConfiguration\"\n  \
+        \  },\n    \"podCidr\": \"10.244.0.0/16\",\n    \"serviceCidr\": \"10.0.0.0/16\"\
+        ,\n    \"dnsServiceIP\": \"10.0.0.10\",\n    \"outboundType\": \"loadBalancer\"\
+        ,\n    \"podCidrs\": [\n     \"10.244.0.0/16\"\n    ],\n    \"serviceCidrs\"\
+        : [\n     \"10.0.0.0/16\"\n    ],\n    \"ipFamilies\": [\n     \"IPv4\"\n\
+        \    ]\n   },\n   \"maxAgentPools\": 100,\n   \"identityProfile\": {\n   \
+        \ \"kubeletidentity\": {\n     \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_clitest000001_cliakstest000001_westus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cliakstest000001-agentpool\"\
+        ,\n     \"clientId\":\"00000000-0000-0000-0000-000000000001\",\n     \"objectId\"\
+        :\"00000000-0000-0000-0000-000000000001\"\n    }\n   },\n   \"autoUpgradeProfile\"\
+        : {\n    \"nodeOSUpgradeChannel\": \"NodeImage\"\n   },\n   \"disableLocalAccounts\"\
+        : false,\n   \"securityProfile\": {},\n   \"storageProfile\": {\n    \"diskCSIDriver\"\
+        : {\n     \"enabled\": true,\n     \"version\": \"v1\"\n    },\n    \"fileCSIDriver\"\
+        : {\n     \"enabled\": true\n    },\n    \"snapshotController\": {\n     \"\
+        enabled\": true\n    }\n   },\n   \"oidcIssuerProfile\": {\n    \"enabled\"\
+        : false\n   },\n   \"workloadAutoScalerProfile\": {},\n   \"metricsProfile\"\
+        : {\n    \"costAnalysis\": {\n     \"enabled\": false\n    }\n   },\n   \"\
+        resourceUID\": \"664e66471312ca00011597ed\",\n   \"controlPlanePluginProfiles\"\
+        : {\n    \"azure-monitor-metrics-ccp\": {\n     \"enableV2\": true\n    },\n\
+        \    \"karpenter\": {\n     \"enableV2\": true\n    },\n    \"live-patching-controller\"\
+        : {\n     \"enableV2\": true\n    }\n   },\n   \"nodeProvisioningProfile\"\
+        : {\n    \"mode\": \"Manual\"\n   },\n   \"bootstrapProfile\": {\n    \"artifactSource\"\
+        : \"Direct\"\n   }\n  },\n  \"identity\": {\n   \"type\": \"SystemAssigned\"\
+        ,\n   \"principalId\":\"00000000-0000-0000-0000-000000000001\",\n   \"tenantId\"\
+        : \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n  },\n  \"sku\": {\n   \"name\"\
+        : \"Base\",\n   \"tier\": \"Free\"\n  },\n  \"etag\": \"25813e8c-3d34-41da-93fd-c7da83badb22\"\
+        \n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4963'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:45:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: CC1C8BE190204E84B29FF3775C5304C2 Ref B: MNZ221060619017 Ref C: 2024-05-22T21:45:27Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks mesh enable
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --revision
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2024-06-02-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001\"\
+        ,\n  \"location\": \"westus2\",\n  \"name\": \"cliakstest000001\",\n  \"type\"\
+        : \"Microsoft.ContainerService/ManagedClusters\",\n  \"kind\": \"Base\",\n\
+        \  \"properties\": {\n   \"provisioningState\": \"Succeeded\",\n   \"powerState\"\
+        : {\n    \"code\": \"Running\"\n   },\n   \"kubernetesVersion\": \"1.28\"\
+        ,\n   \"currentKubernetesVersion\": \"1.28.9\",\n   \"dnsPrefix\": \"cliakstest-clitestb7jnztem4-79a739\"\
+        ,\n   \"fqdn\": \"cliakstest-clitestb7jnztem4-79a739-h1vrnfhi.hcp.westus2.azmk8s.io\"\
+        ,\n   \"azurePortalFQDN\": \"cliakstest-clitestb7jnztem4-79a739-h1vrnfhi.portal.hcp.westus2.azmk8s.io\"\
+        ,\n   \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n   \
+        \  \"count\": 3,\n     \"vmSize\": \"Standard_DS2_v2\",\n     \"osDiskSizeGB\"\
+        : 128,\n     \"osDiskType\": \"Managed\",\n     \"kubeletDiskType\": \"OS\"\
+        ,\n     \"workloadRuntime\": \"OCIContainer\",\n     \"maxPods\": 110,\n \
+        \    \"type\": \"VirtualMachineScaleSets\",\n     \"enableAutoScaling\": false,\n\
+        \     \"provisioningState\": \"Succeeded\",\n     \"powerState\": {\n    \
+        \  \"code\": \"Running\"\n     },\n     \"orchestratorVersion\": \"1.28\"\
+        ,\n     \"currentOrchestratorVersion\": \"1.28.9\",\n     \"enableNodePublicIP\"\
+        : false,\n     \"enableCustomCATrust\": false,\n     \"mode\": \"System\"\
+        ,\n     \"enableEncryptionAtHost\": false,\n     \"enableUltraSSD\": false,\n\
+        \     \"osType\": \"Linux\",\n     \"osSKU\": \"Ubuntu\",\n     \"nodeImageVersion\"\
+        : \"AKSUbuntu-2204gen2containerd-202405.03.0\",\n     \"upgradeSettings\"\
+        : {\n      \"maxSurge\": \"10%\"\n     },\n     \"enableFIPS\": false,\n \
+        \    \"networkProfile\": {},\n     \"securityProfile\": {\n      \"sshAccess\"\
+        : \"LocalUser\",\n      \"enableVTPM\": false,\n      \"enableSecureBoot\"\
+        : false\n     },\n     \"eTag\": \"26a342ab-fc2c-4aba-ac5b-4a2db8eb05ff\"\n\
+        \    }\n   ],\n   \"linuxProfile\": {\n    \"adminUsername\": \"azureuser\"\
+        ,\n    \"ssh\": {\n     \"publicKeys\": [\n      {\n       \"keyData\": \"\
+        ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/iCEDcZPMqjmMzF9030Dhx20eGq81GmiZyKPdaWP/rh6NILJOiJIi64uS84TxY47oZ/bWW2ers4t9xD1lOkN/YH6Kcy3uaNDKOJNYa6AktWNikmcsJ7VdNp+yFCYwwikEb+bcsDikOLpq/Thog96j0LDE35GZ7MCdhJs8stsFpRm7UMSspDPQAsqrd4My//XkJR1izjWDzmP9rV6okgpHMbzseh1hxWk5wTTiZDYjxBZC/zK3PrfpM4ogyE+3Dn72qz5lMUA6iNfMrb7w4vFGZrQhhpxj5T6a0knr4VWw15D3xAoaioIfSOkqQUAoYBmjpo68KlDbWcvQHzEMnkC/\
+        \ azcli_aks_live_test@example.com\\n\"\n      }\n     ]\n    }\n   },\n  \
+        \ \"servicePrincipalProfile\": {\n    \"clientId\":\"00000000-0000-0000-0000-000000000001\"\
+        \n   },\n   \"nodeResourceGroup\": \"MC_clitest000001_cliakstest000001_westus2\"\
+        ,\n   \"enableRBAC\": true,\n   \"enablePodSecurityPolicy\": false,\n   \"\
+        supportPlan\": \"KubernetesOfficial\",\n   \"networkProfile\": {\n    \"networkPlugin\"\
+        : \"kubenet\",\n    \"networkPolicy\": \"none\",\n    \"loadBalancerSku\"\
+        : \"standard\",\n    \"loadBalancerProfile\": {\n     \"managedOutboundIPs\"\
+        : {\n      \"count\": 1\n     },\n     \"effectiveOutboundIPs\": [\n     \
+        \ {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000001_westus2/providers/Microsoft.Network/publicIPAddresses/0460be94-cb3e-4282-b57d-d4a6582192ff\"\
+        \n      }\n     ],\n     \"backendPoolType\": \"nodeIPConfiguration\"\n  \
+        \  },\n    \"podCidr\": \"10.244.0.0/16\",\n    \"serviceCidr\": \"10.0.0.0/16\"\
+        ,\n    \"dnsServiceIP\": \"10.0.0.10\",\n    \"outboundType\": \"loadBalancer\"\
+        ,\n    \"podCidrs\": [\n     \"10.244.0.0/16\"\n    ],\n    \"serviceCidrs\"\
+        : [\n     \"10.0.0.0/16\"\n    ],\n    \"ipFamilies\": [\n     \"IPv4\"\n\
+        \    ]\n   },\n   \"maxAgentPools\": 100,\n   \"identityProfile\": {\n   \
+        \ \"kubeletidentity\": {\n     \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_clitest000001_cliakstest000001_westus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cliakstest000001-agentpool\"\
+        ,\n     \"clientId\":\"00000000-0000-0000-0000-000000000001\",\n     \"objectId\"\
+        :\"00000000-0000-0000-0000-000000000001\"\n    }\n   },\n   \"autoUpgradeProfile\"\
+        : {\n    \"nodeOSUpgradeChannel\": \"NodeImage\"\n   },\n   \"disableLocalAccounts\"\
+        : false,\n   \"securityProfile\": {},\n   \"storageProfile\": {\n    \"diskCSIDriver\"\
+        : {\n     \"enabled\": true,\n     \"version\": \"v1\"\n    },\n    \"fileCSIDriver\"\
+        : {\n     \"enabled\": true\n    },\n    \"snapshotController\": {\n     \"\
+        enabled\": true\n    }\n   },\n   \"oidcIssuerProfile\": {\n    \"enabled\"\
+        : false\n   },\n   \"workloadAutoScalerProfile\": {},\n   \"metricsProfile\"\
+        : {\n    \"costAnalysis\": {\n     \"enabled\": false\n    }\n   },\n   \"\
+        resourceUID\": \"664e66471312ca00011597ed\",\n   \"controlPlanePluginProfiles\"\
+        : {\n    \"azure-monitor-metrics-ccp\": {\n     \"enableV2\": true\n    },\n\
+        \    \"karpenter\": {\n     \"enableV2\": true\n    },\n    \"live-patching-controller\"\
+        : {\n     \"enableV2\": true\n    }\n   },\n   \"nodeProvisioningProfile\"\
+        : {\n    \"mode\": \"Manual\"\n   },\n   \"bootstrapProfile\": {\n    \"artifactSource\"\
+        : \"Direct\"\n   }\n  },\n  \"identity\": {\n   \"type\": \"SystemAssigned\"\
+        ,\n   \"principalId\":\"00000000-0000-0000-0000-000000000001\",\n   \"tenantId\"\
+        : \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n  },\n  \"sku\": {\n   \"name\"\
+        : \"Base\",\n   \"tier\": \"Free\"\n  },\n  \"etag\": \"25813e8c-3d34-41da-93fd-c7da83badb22\"\
+        \n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4963'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:45:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: AE6AD1D1239745C8B3C3F127909B9476 Ref B: MNZ221060619023 Ref C: 2024-05-22T21:45:27Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks mesh enable
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --revision
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2024-06-02-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001\"\
+        ,\n  \"location\": \"westus2\",\n  \"name\": \"cliakstest000001\",\n  \"type\"\
+        : \"Microsoft.ContainerService/ManagedClusters\",\n  \"kind\": \"Base\",\n\
+        \  \"properties\": {\n   \"provisioningState\": \"Succeeded\",\n   \"powerState\"\
+        : {\n    \"code\": \"Running\"\n   },\n   \"kubernetesVersion\": \"1.28\"\
+        ,\n   \"currentKubernetesVersion\": \"1.28.9\",\n   \"dnsPrefix\": \"cliakstest-clitestb7jnztem4-79a739\"\
+        ,\n   \"fqdn\": \"cliakstest-clitestb7jnztem4-79a739-h1vrnfhi.hcp.westus2.azmk8s.io\"\
+        ,\n   \"azurePortalFQDN\": \"cliakstest-clitestb7jnztem4-79a739-h1vrnfhi.portal.hcp.westus2.azmk8s.io\"\
+        ,\n   \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n   \
+        \  \"count\": 3,\n     \"vmSize\": \"Standard_DS2_v2\",\n     \"osDiskSizeGB\"\
+        : 128,\n     \"osDiskType\": \"Managed\",\n     \"kubeletDiskType\": \"OS\"\
+        ,\n     \"workloadRuntime\": \"OCIContainer\",\n     \"maxPods\": 110,\n \
+        \    \"type\": \"VirtualMachineScaleSets\",\n     \"enableAutoScaling\": false,\n\
+        \     \"provisioningState\": \"Succeeded\",\n     \"powerState\": {\n    \
+        \  \"code\": \"Running\"\n     },\n     \"orchestratorVersion\": \"1.28\"\
+        ,\n     \"currentOrchestratorVersion\": \"1.28.9\",\n     \"enableNodePublicIP\"\
+        : false,\n     \"enableCustomCATrust\": false,\n     \"mode\": \"System\"\
+        ,\n     \"enableEncryptionAtHost\": false,\n     \"enableUltraSSD\": false,\n\
+        \     \"osType\": \"Linux\",\n     \"osSKU\": \"Ubuntu\",\n     \"nodeImageVersion\"\
+        : \"AKSUbuntu-2204gen2containerd-202405.03.0\",\n     \"upgradeSettings\"\
+        : {\n      \"maxSurge\": \"10%\"\n     },\n     \"enableFIPS\": false,\n \
+        \    \"networkProfile\": {},\n     \"securityProfile\": {\n      \"sshAccess\"\
+        : \"LocalUser\",\n      \"enableVTPM\": false,\n      \"enableSecureBoot\"\
+        : false\n     },\n     \"eTag\": \"26a342ab-fc2c-4aba-ac5b-4a2db8eb05ff\"\n\
+        \    }\n   ],\n   \"linuxProfile\": {\n    \"adminUsername\": \"azureuser\"\
+        ,\n    \"ssh\": {\n     \"publicKeys\": [\n      {\n       \"keyData\": \"\
+        ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/iCEDcZPMqjmMzF9030Dhx20eGq81GmiZyKPdaWP/rh6NILJOiJIi64uS84TxY47oZ/bWW2ers4t9xD1lOkN/YH6Kcy3uaNDKOJNYa6AktWNikmcsJ7VdNp+yFCYwwikEb+bcsDikOLpq/Thog96j0LDE35GZ7MCdhJs8stsFpRm7UMSspDPQAsqrd4My//XkJR1izjWDzmP9rV6okgpHMbzseh1hxWk5wTTiZDYjxBZC/zK3PrfpM4ogyE+3Dn72qz5lMUA6iNfMrb7w4vFGZrQhhpxj5T6a0knr4VWw15D3xAoaioIfSOkqQUAoYBmjpo68KlDbWcvQHzEMnkC/\
+        \ azcli_aks_live_test@example.com\\n\"\n      }\n     ]\n    }\n   },\n  \
+        \ \"servicePrincipalProfile\": {\n    \"clientId\":\"00000000-0000-0000-0000-000000000001\"\
+        \n   },\n   \"nodeResourceGroup\": \"MC_clitest000001_cliakstest000001_westus2\"\
+        ,\n   \"enableRBAC\": true,\n   \"enablePodSecurityPolicy\": false,\n   \"\
+        supportPlan\": \"KubernetesOfficial\",\n   \"networkProfile\": {\n    \"networkPlugin\"\
+        : \"kubenet\",\n    \"networkPolicy\": \"none\",\n    \"loadBalancerSku\"\
+        : \"standard\",\n    \"loadBalancerProfile\": {\n     \"managedOutboundIPs\"\
+        : {\n      \"count\": 1\n     },\n     \"effectiveOutboundIPs\": [\n     \
+        \ {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000001_westus2/providers/Microsoft.Network/publicIPAddresses/0460be94-cb3e-4282-b57d-d4a6582192ff\"\
+        \n      }\n     ],\n     \"backendPoolType\": \"nodeIPConfiguration\"\n  \
+        \  },\n    \"podCidr\": \"10.244.0.0/16\",\n    \"serviceCidr\": \"10.0.0.0/16\"\
+        ,\n    \"dnsServiceIP\": \"10.0.0.10\",\n    \"outboundType\": \"loadBalancer\"\
+        ,\n    \"podCidrs\": [\n     \"10.244.0.0/16\"\n    ],\n    \"serviceCidrs\"\
+        : [\n     \"10.0.0.0/16\"\n    ],\n    \"ipFamilies\": [\n     \"IPv4\"\n\
+        \    ]\n   },\n   \"maxAgentPools\": 100,\n   \"identityProfile\": {\n   \
+        \ \"kubeletidentity\": {\n     \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_clitest000001_cliakstest000001_westus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cliakstest000001-agentpool\"\
+        ,\n     \"clientId\":\"00000000-0000-0000-0000-000000000001\",\n     \"objectId\"\
+        :\"00000000-0000-0000-0000-000000000001\"\n    }\n   },\n   \"autoUpgradeProfile\"\
+        : {\n    \"nodeOSUpgradeChannel\": \"NodeImage\"\n   },\n   \"disableLocalAccounts\"\
+        : false,\n   \"securityProfile\": {},\n   \"storageProfile\": {\n    \"diskCSIDriver\"\
+        : {\n     \"enabled\": true,\n     \"version\": \"v1\"\n    },\n    \"fileCSIDriver\"\
+        : {\n     \"enabled\": true\n    },\n    \"snapshotController\": {\n     \"\
+        enabled\": true\n    }\n   },\n   \"oidcIssuerProfile\": {\n    \"enabled\"\
+        : false\n   },\n   \"workloadAutoScalerProfile\": {},\n   \"metricsProfile\"\
+        : {\n    \"costAnalysis\": {\n     \"enabled\": false\n    }\n   },\n   \"\
+        resourceUID\": \"664e66471312ca00011597ed\",\n   \"controlPlanePluginProfiles\"\
+        : {\n    \"azure-monitor-metrics-ccp\": {\n     \"enableV2\": true\n    },\n\
+        \    \"karpenter\": {\n     \"enableV2\": true\n    },\n    \"live-patching-controller\"\
+        : {\n     \"enableV2\": true\n    }\n   },\n   \"nodeProvisioningProfile\"\
+        : {\n    \"mode\": \"Manual\"\n   },\n   \"bootstrapProfile\": {\n    \"artifactSource\"\
+        : \"Direct\"\n   }\n  },\n  \"identity\": {\n   \"type\": \"SystemAssigned\"\
+        ,\n   \"principalId\":\"00000000-0000-0000-0000-000000000001\",\n   \"tenantId\"\
+        : \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n  },\n  \"sku\": {\n   \"name\"\
+        : \"Base\",\n   \"tier\": \"Free\"\n  },\n  \"etag\": \"25813e8c-3d34-41da-93fd-c7da83badb22\"\
+        \n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4963'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:45:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: C18642F4C28940B48C49C7102FBDB692 Ref B: MNZ221060619023 Ref C: 2024-05-22T21:45:28Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks mesh enable
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --revision
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/meshRevisionProfiles?api-version=2024-06-02-preview
+  response:
+    body:
+      string: "{\n  \"value\": [\n   {\n    \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/meshRevisionProfiles/istio\"\
+        ,\n    \"name\": \"istio\",\n    \"type\": \"Microsoft.ContainerService/locations/meshRevisionProfiles\"\
+        ,\n    \"properties\": {\n     \"meshRevisions\": [\n      {\n       \"revision\"\
+        : \"asm-1-19\",\n       \"upgrades\": [\n        \"asm-1-20\"\n       ],\n\
+        \       \"compatibleWith\": [\n        {\n         \"name\": \"kubernetes\"\
+        ,\n         \"versions\": [\n          \"1.25\",\n          \"1.26\",\n  \
+        \        \"1.27\",\n          \"1.28\"\n         ]\n        }\n       ]\n\
+        \      },\n      {\n       \"revision\": \"asm-1-20\",\n       \"upgrades\"\
+        : [\n        \"asm-1-21\"\n       ],\n       \"compatibleWith\": [\n     \
+        \   {\n         \"name\": \"kubernetes\",\n         \"versions\": [\n    \
+        \      \"1.25\",\n          \"1.26\",\n          \"1.27\",\n          \"1.28\"\
+        ,\n          \"1.29\"\n         ]\n        }\n       ]\n      },\n      {\n\
+        \       \"revision\": \"asm-1-21\",\n       \"compatibleWith\": [\n      \
+        \  {\n         \"name\": \"kubernetes\",\n         \"versions\": [\n     \
+        \     \"1.26\",\n          \"1.27\",\n          \"1.28\",\n          \"1.29\"\
+        \n         ]\n        }\n       ]\n      }\n     ]\n    }\n   }\n  ]\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1166'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:45:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 981EDE4D106643D68215A9ADC2224AEA Ref B: MNZ221060619023 Ref C: 2024-05-22T21:45:29Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus2", "sku": {"name": "Base", "tier": "Free"}, "identity":
+      {"type": "SystemAssigned"}, "kind": "Base", "properties": {"kubernetesVersion":
+      "1.28", "dnsPrefix": "cliakstest-clitestb7jnztem4-79a739", "agentPoolProfiles":
+      [{"count": 3, "vmSize": "Standard_DS2_v2", "osDiskSizeGB": 128, "osDiskType":
+      "Managed", "kubeletDiskType": "OS", "workloadRuntime": "OCIContainer", "maxPods":
+      110, "osType": "Linux", "osSKU": "Ubuntu", "enableAutoScaling": false, "type":
+      "VirtualMachineScaleSets", "mode": "System", "orchestratorVersion": "1.28",
+      "upgradeSettings": {"maxSurge": "10%"}, "powerState": {"code": "Running"}, "enableNodePublicIP":
+      false, "enableCustomCATrust": false, "enableEncryptionAtHost": false, "enableUltraSSD":
+      false, "enableFIPS": false, "networkProfile": {}, "securityProfile": {"sshAccess":
+      "LocalUser", "enableVTPM": false, "enableSecureBoot": false}, "name": "nodepool1"}],
+      "linuxProfile": {"adminUsername": "azureuser", "ssh": {"publicKeys": [{"keyData":
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/iCEDcZPMqjmMzF9030Dhx20eGq81GmiZyKPdaWP/rh6NILJOiJIi64uS84TxY47oZ/bWW2ers4t9xD1lOkN/YH6Kcy3uaNDKOJNYa6AktWNikmcsJ7VdNp+yFCYwwikEb+bcsDikOLpq/Thog96j0LDE35GZ7MCdhJs8stsFpRm7UMSspDPQAsqrd4My//XkJR1izjWDzmP9rV6okgpHMbzseh1hxWk5wTTiZDYjxBZC/zK3PrfpM4ogyE+3Dn72qz5lMUA6iNfMrb7w4vFGZrQhhpxj5T6a0knr4VWw15D3xAoaioIfSOkqQUAoYBmjpo68KlDbWcvQHzEMnkC/
+      azcli_aks_live_test@example.com\n"}]}}, "servicePrincipalProfile": {"clientId":"00000000-0000-0000-0000-000000000001"},
+      "oidcIssuerProfile": {"enabled": false}, "nodeResourceGroup": "MC_clitest000001_cliakstest000001_westus2",
+      "enableRBAC": true, "supportPlan": "KubernetesOfficial", "enablePodSecurityPolicy":
+      false, "networkProfile": {"networkPlugin": "kubenet", "networkPolicy": "none",
+      "podCidr": "10.244.0.0/16", "serviceCidr": "10.0.0.0/16", "dnsServiceIP": "10.0.0.10",
+      "outboundType": "loadBalancer", "loadBalancerSku": "standard", "loadBalancerProfile":
+      {"managedOutboundIPs": {"count": 1}, "effectiveOutboundIPs": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000001_westus2/providers/Microsoft.Network/publicIPAddresses/0460be94-cb3e-4282-b57d-d4a6582192ff"}],
+      "backendPoolType": "nodeIPConfiguration"}, "podCidrs": ["10.244.0.0/16"], "serviceCidrs":
+      ["10.0.0.0/16"], "ipFamilies": ["IPv4"]}, "autoUpgradeProfile": {"nodeOSUpgradeChannel":
+      "NodeImage"}, "identityProfile": {"kubeletidentity": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_clitest000001_cliakstest000001_westus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cliakstest000001-agentpool",
+      "clientId":"00000000-0000-0000-0000-000000000001", "objectId":"00000000-0000-0000-0000-000000000001"}},
+      "disableLocalAccounts": false, "securityProfile": {}, "storageProfile": {"diskCSIDriver":
+      {"enabled": true, "version": "v1"}, "fileCSIDriver": {"enabled": true}, "snapshotController":
+      {"enabled": true}}, "workloadAutoScalerProfile": {}, "serviceMeshProfile": {"mode":
+      "Istio", "istio": {"revisions": ["asm-1-19"]}}, "metricsProfile": {"costAnalysis":
+      {"enabled": false}}, "nodeProvisioningProfile": {"mode": "Manual"}, "bootstrapProfile":
+      {"artifactSource": "Direct"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks mesh enable
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '3216'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --resource-group --name --revision
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2024-06-02-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001\"\
+        ,\n  \"location\": \"westus2\",\n  \"name\": \"cliakstest000001\",\n  \"type\"\
+        : \"Microsoft.ContainerService/ManagedClusters\",\n  \"kind\": \"Base\",\n\
+        \  \"properties\": {\n   \"provisioningState\": \"Updating\",\n   \"powerState\"\
+        : {\n    \"code\": \"Running\"\n   },\n   \"kubernetesVersion\": \"1.28\"\
+        ,\n   \"currentKubernetesVersion\": \"1.28.9\",\n   \"dnsPrefix\": \"cliakstest-clitestb7jnztem4-79a739\"\
+        ,\n   \"fqdn\": \"cliakstest-clitestb7jnztem4-79a739-h1vrnfhi.hcp.westus2.azmk8s.io\"\
+        ,\n   \"azurePortalFQDN\": \"cliakstest-clitestb7jnztem4-79a739-h1vrnfhi.portal.hcp.westus2.azmk8s.io\"\
+        ,\n   \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n   \
+        \  \"count\": 3,\n     \"vmSize\": \"Standard_DS2_v2\",\n     \"osDiskSizeGB\"\
+        : 128,\n     \"osDiskType\": \"Managed\",\n     \"kubeletDiskType\": \"OS\"\
+        ,\n     \"workloadRuntime\": \"OCIContainer\",\n     \"maxPods\": 110,\n \
+        \    \"type\": \"VirtualMachineScaleSets\",\n     \"enableAutoScaling\": false,\n\
+        \     \"provisioningState\": \"Updating\",\n     \"powerState\": {\n     \
+        \ \"code\": \"Running\"\n     },\n     \"orchestratorVersion\": \"1.28\",\n\
+        \     \"currentOrchestratorVersion\": \"1.28.9\",\n     \"enableNodePublicIP\"\
+        : false,\n     \"enableCustomCATrust\": false,\n     \"nodeLabels\": {},\n\
+        \     \"mode\": \"System\",\n     \"enableEncryptionAtHost\": false,\n   \
+        \  \"enableUltraSSD\": false,\n     \"osType\": \"Linux\",\n     \"osSKU\"\
+        : \"Ubuntu\",\n     \"nodeImageVersion\": \"AKSUbuntu-2204gen2containerd-202405.03.0\"\
+        ,\n     \"upgradeSettings\": {\n      \"maxSurge\": \"10%\"\n     },\n   \
+        \  \"enableFIPS\": false,\n     \"networkProfile\": {},\n     \"securityProfile\"\
+        : {\n      \"sshAccess\": \"LocalUser\",\n      \"enableVTPM\": false,\n \
+        \     \"enableSecureBoot\": false\n     },\n     \"eTag\": \"26a342ab-fc2c-4aba-ac5b-4a2db8eb05ff\"\
+        \n    }\n   ],\n   \"linuxProfile\": {\n    \"adminUsername\": \"azureuser\"\
+        ,\n    \"ssh\": {\n     \"publicKeys\": [\n      {\n       \"keyData\": \"\
+        ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/iCEDcZPMqjmMzF9030Dhx20eGq81GmiZyKPdaWP/rh6NILJOiJIi64uS84TxY47oZ/bWW2ers4t9xD1lOkN/YH6Kcy3uaNDKOJNYa6AktWNikmcsJ7VdNp+yFCYwwikEb+bcsDikOLpq/Thog96j0LDE35GZ7MCdhJs8stsFpRm7UMSspDPQAsqrd4My//XkJR1izjWDzmP9rV6okgpHMbzseh1hxWk5wTTiZDYjxBZC/zK3PrfpM4ogyE+3Dn72qz5lMUA6iNfMrb7w4vFGZrQhhpxj5T6a0knr4VWw15D3xAoaioIfSOkqQUAoYBmjpo68KlDbWcvQHzEMnkC/\
+        \ azcli_aks_live_test@example.com\\n\"\n      }\n     ]\n    }\n   },\n  \
+        \ \"servicePrincipalProfile\": {\n    \"clientId\":\"00000000-0000-0000-0000-000000000001\"\
+        \n   },\n   \"nodeResourceGroup\": \"MC_clitest000001_cliakstest000001_westus2\"\
+        ,\n   \"enableRBAC\": true,\n   \"enablePodSecurityPolicy\": false,\n   \"\
+        supportPlan\": \"KubernetesOfficial\",\n   \"networkProfile\": {\n    \"networkPlugin\"\
+        : \"kubenet\",\n    \"networkPolicy\": \"none\",\n    \"loadBalancerSku\"\
+        : \"standard\",\n    \"loadBalancerProfile\": {\n     \"managedOutboundIPs\"\
+        : {\n      \"count\": 1\n     },\n     \"effectiveOutboundIPs\": [\n     \
+        \ {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000001_westus2/providers/Microsoft.Network/publicIPAddresses/0460be94-cb3e-4282-b57d-d4a6582192ff\"\
+        \n      }\n     ],\n     \"backendPoolType\": \"nodeIPConfiguration\"\n  \
+        \  },\n    \"podCidr\": \"10.244.0.0/16\",\n    \"serviceCidr\": \"10.0.0.0/16\"\
+        ,\n    \"dnsServiceIP\": \"10.0.0.10\",\n    \"outboundType\": \"loadBalancer\"\
+        ,\n    \"podCidrs\": [\n     \"10.244.0.0/16\"\n    ],\n    \"serviceCidrs\"\
+        : [\n     \"10.0.0.0/16\"\n    ],\n    \"ipFamilies\": [\n     \"IPv4\"\n\
+        \    ]\n   },\n   \"maxAgentPools\": 100,\n   \"identityProfile\": {\n   \
+        \ \"kubeletidentity\": {\n     \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_clitest000001_cliakstest000001_westus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cliakstest000001-agentpool\"\
+        ,\n     \"clientId\":\"00000000-0000-0000-0000-000000000001\",\n     \"objectId\"\
+        :\"00000000-0000-0000-0000-000000000001\"\n    }\n   },\n   \"autoUpgradeProfile\"\
+        : {\n    \"nodeOSUpgradeChannel\": \"NodeImage\"\n   },\n   \"disableLocalAccounts\"\
+        : false,\n   \"securityProfile\": {},\n   \"storageProfile\": {\n    \"diskCSIDriver\"\
+        : {\n     \"enabled\": true,\n     \"version\": \"v1\"\n    },\n    \"fileCSIDriver\"\
+        : {\n     \"enabled\": true\n    },\n    \"snapshotController\": {\n     \"\
+        enabled\": true\n    }\n   },\n   \"oidcIssuerProfile\": {\n    \"enabled\"\
+        : false\n   },\n   \"workloadAutoScalerProfile\": {},\n   \"serviceMeshProfile\"\
+        : {\n    \"mode\": \"Istio\",\n    \"istio\": {\n     \"components\": {},\n\
+        \     \"revisions\": [\n      \"asm-1-19\"\n     ]\n    }\n   },\n   \"metricsProfile\"\
+        : {\n    \"costAnalysis\": {\n     \"enabled\": false\n    }\n   },\n   \"\
+        resourceUID\": \"664e66471312ca00011597ed\",\n   \"controlPlanePluginProfiles\"\
+        : {\n    \"azure-monitor-metrics-ccp\": {\n     \"enableV2\": true\n    },\n\
+        \    \"karpenter\": {\n     \"enableV2\": true\n    },\n    \"live-patching-controller\"\
+        : {\n     \"enableV2\": true\n    }\n   },\n   \"nodeProvisioningProfile\"\
+        : {\n    \"mode\": \"Manual\"\n   },\n   \"bootstrapProfile\": {\n    \"artifactSource\"\
+        : \"Direct\"\n   }\n  },\n  \"identity\": {\n   \"type\": \"SystemAssigned\"\
+        ,\n   \"principalId\":\"00000000-0000-0000-0000-000000000001\",\n   \"tenantId\"\
+        : \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n  },\n  \"sku\": {\n   \"name\"\
+        : \"Base\",\n   \"tier\": \"Free\"\n  },\n  \"etag\": \"25813e8c-3d34-41da-93fd-c7da83badb22\"\
+        \n }"
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/25b82a5d-2fa0-4939-a63b-923b43892ad0?api-version=2016-03-30&t=638520111343391416&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=HCe8zVKIpOwAXXS0syW7kADoXPgViPqYJFldEKcULxucFIBdSkz6XHB0fa4IM2DJmHCk7ef8kvWhDhxJc8bgaXZCYI3FPIofYvL1pW5O2YDpfWQj7h9y6FgO2mwFbqysAVIreBPllUbdc0lcgiv-EA5cyHiZU-92rQzkcCpQbe9m-R__OM3No_nmV2iG2g6YjrkglJoAf_BN0wAnHHT3U0sd6lPrd8iSJZ72wqT90Im9VST9HLtZuqrO1xDCqSPtfY0T-kLNnKyg0nuWF4oRFY3Uz-HFZ7b4nVvWHMrStbJkr7cjo8b13wD-cMHvkfmo03paRyxVJs98gylBSPNmfQ&h=dINKxtPlD-laj4HCxk3khiOwv2byEzpTnArfa0BmGF8
+      cache-control:
+      - no-cache
+      content-length:
+      - '5126'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:45:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 1D7700C4370D4407973C45F6B81DF427 Ref B: MNZ221060619023 Ref C: 2024-05-22T21:45:29Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks mesh enable
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --revision
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/25b82a5d-2fa0-4939-a63b-923b43892ad0?api-version=2016-03-30&t=638520111343391416&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=HCe8zVKIpOwAXXS0syW7kADoXPgViPqYJFldEKcULxucFIBdSkz6XHB0fa4IM2DJmHCk7ef8kvWhDhxJc8bgaXZCYI3FPIofYvL1pW5O2YDpfWQj7h9y6FgO2mwFbqysAVIreBPllUbdc0lcgiv-EA5cyHiZU-92rQzkcCpQbe9m-R__OM3No_nmV2iG2g6YjrkglJoAf_BN0wAnHHT3U0sd6lPrd8iSJZ72wqT90Im9VST9HLtZuqrO1xDCqSPtfY0T-kLNnKyg0nuWF4oRFY3Uz-HFZ7b4nVvWHMrStbJkr7cjo8b13wD-cMHvkfmo03paRyxVJs98gylBSPNmfQ&h=dINKxtPlD-laj4HCxk3khiOwv2byEzpTnArfa0BmGF8
+  response:
+    body:
+      string: "{\n  \"name\": \"25b82a5d-2fa0-4939-a63b-923b43892ad0\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2024-05-22T21:45:34.1374207Z\",\n  \"\
+        error\": {\n   \"code\": \"NotLatestOperation\",\n   \"message\": \"The operation\
+        \ has been preempted by another one. Please wait for the other operation to\
+        \ complete and try again..\"\n  }\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '306'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:45:33 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: FDFB81886B514EB2B4C5D8F5525D1A47 Ref B: MNZ221060619023 Ref C: 2024-05-22T21:45:34Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks mesh enable
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --revision
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/25b82a5d-2fa0-4939-a63b-923b43892ad0?api-version=2016-03-30&t=638520111343391416&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=HCe8zVKIpOwAXXS0syW7kADoXPgViPqYJFldEKcULxucFIBdSkz6XHB0fa4IM2DJmHCk7ef8kvWhDhxJc8bgaXZCYI3FPIofYvL1pW5O2YDpfWQj7h9y6FgO2mwFbqysAVIreBPllUbdc0lcgiv-EA5cyHiZU-92rQzkcCpQbe9m-R__OM3No_nmV2iG2g6YjrkglJoAf_BN0wAnHHT3U0sd6lPrd8iSJZ72wqT90Im9VST9HLtZuqrO1xDCqSPtfY0T-kLNnKyg0nuWF4oRFY3Uz-HFZ7b4nVvWHMrStbJkr7cjo8b13wD-cMHvkfmo03paRyxVJs98gylBSPNmfQ&h=dINKxtPlD-laj4HCxk3khiOwv2byEzpTnArfa0BmGF8
+  response:
+    body:
+      string: "{\n  \"name\": \"25b82a5d-2fa0-4939-a63b-923b43892ad0\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2024-05-22T21:45:34.1374207Z\",\n  \"\
+        error\": {\n   \"code\": \"NotLatestOperation\",\n   \"message\": \"The operation\
+        \ has been preempted by another one. Please wait for the other operation to\
+        \ complete and try again..\"\n  }\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '306'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:46:03 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 7A391E9302EE4E7FB64D6AA1DDB96CDB Ref B: MNZ221060619023 Ref C: 2024-05-22T21:46:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks mesh enable
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --revision
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/25b82a5d-2fa0-4939-a63b-923b43892ad0?api-version=2016-03-30&t=638520111343391416&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=HCe8zVKIpOwAXXS0syW7kADoXPgViPqYJFldEKcULxucFIBdSkz6XHB0fa4IM2DJmHCk7ef8kvWhDhxJc8bgaXZCYI3FPIofYvL1pW5O2YDpfWQj7h9y6FgO2mwFbqysAVIreBPllUbdc0lcgiv-EA5cyHiZU-92rQzkcCpQbe9m-R__OM3No_nmV2iG2g6YjrkglJoAf_BN0wAnHHT3U0sd6lPrd8iSJZ72wqT90Im9VST9HLtZuqrO1xDCqSPtfY0T-kLNnKyg0nuWF4oRFY3Uz-HFZ7b4nVvWHMrStbJkr7cjo8b13wD-cMHvkfmo03paRyxVJs98gylBSPNmfQ&h=dINKxtPlD-laj4HCxk3khiOwv2byEzpTnArfa0BmGF8
+  response:
+    body:
+      string: "{\n  \"name\": \"25b82a5d-2fa0-4939-a63b-923b43892ad0\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2024-05-22T21:45:34.1374207Z\",\n  \"\
+        error\": {\n   \"code\": \"NotLatestOperation\",\n   \"message\": \"The operation\
+        \ has been preempted by another one. Please wait for the other operation to\
+        \ complete and try again..\"\n  }\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '306'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:46:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 9EDCDE47B31840F8917223756A200157 Ref B: MNZ221060619023 Ref C: 2024-05-22T21:46:34Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks mesh enable
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --revision
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/25b82a5d-2fa0-4939-a63b-923b43892ad0?api-version=2016-03-30&t=638520111343391416&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=HCe8zVKIpOwAXXS0syW7kADoXPgViPqYJFldEKcULxucFIBdSkz6XHB0fa4IM2DJmHCk7ef8kvWhDhxJc8bgaXZCYI3FPIofYvL1pW5O2YDpfWQj7h9y6FgO2mwFbqysAVIreBPllUbdc0lcgiv-EA5cyHiZU-92rQzkcCpQbe9m-R__OM3No_nmV2iG2g6YjrkglJoAf_BN0wAnHHT3U0sd6lPrd8iSJZ72wqT90Im9VST9HLtZuqrO1xDCqSPtfY0T-kLNnKyg0nuWF4oRFY3Uz-HFZ7b4nVvWHMrStbJkr7cjo8b13wD-cMHvkfmo03paRyxVJs98gylBSPNmfQ&h=dINKxtPlD-laj4HCxk3khiOwv2byEzpTnArfa0BmGF8
+  response:
+    body:
+      string: "{\n  \"name\": \"25b82a5d-2fa0-4939-a63b-923b43892ad0\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2024-05-22T21:45:34.1374207Z\",\n  \"\
+        error\": {\n   \"code\": \"NotLatestOperation\",\n   \"message\": \"The operation\
+        \ has been preempted by another one. Please wait for the other operation to\
+        \ complete and try again..\"\n  }\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '306'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:47:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 79C99289412448A78AEECEF55EECB0F5 Ref B: MNZ221060619023 Ref C: 2024-05-22T21:47:05Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks mesh enable
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --revision
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/25b82a5d-2fa0-4939-a63b-923b43892ad0?api-version=2016-03-30&t=638520111343391416&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=HCe8zVKIpOwAXXS0syW7kADoXPgViPqYJFldEKcULxucFIBdSkz6XHB0fa4IM2DJmHCk7ef8kvWhDhxJc8bgaXZCYI3FPIofYvL1pW5O2YDpfWQj7h9y6FgO2mwFbqysAVIreBPllUbdc0lcgiv-EA5cyHiZU-92rQzkcCpQbe9m-R__OM3No_nmV2iG2g6YjrkglJoAf_BN0wAnHHT3U0sd6lPrd8iSJZ72wqT90Im9VST9HLtZuqrO1xDCqSPtfY0T-kLNnKyg0nuWF4oRFY3Uz-HFZ7b4nVvWHMrStbJkr7cjo8b13wD-cMHvkfmo03paRyxVJs98gylBSPNmfQ&h=dINKxtPlD-laj4HCxk3khiOwv2byEzpTnArfa0BmGF8
+  response:
+    body:
+      string: "{\n  \"name\": \"25b82a5d-2fa0-4939-a63b-923b43892ad0\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2024-05-22T21:45:34.1374207Z\",\n  \"\
+        error\": {\n   \"code\": \"NotLatestOperation\",\n   \"message\": \"The operation\
+        \ has been preempted by another one. Please wait for the other operation to\
+        \ complete and try again..\"\n  }\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '306'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:47:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 7E56FB503FA74B5E9A1D917FB646C171 Ref B: MNZ221060619023 Ref C: 2024-05-22T21:47:35Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks mesh enable
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --revision
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/25b82a5d-2fa0-4939-a63b-923b43892ad0?api-version=2016-03-30&t=638520111343391416&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=HCe8zVKIpOwAXXS0syW7kADoXPgViPqYJFldEKcULxucFIBdSkz6XHB0fa4IM2DJmHCk7ef8kvWhDhxJc8bgaXZCYI3FPIofYvL1pW5O2YDpfWQj7h9y6FgO2mwFbqysAVIreBPllUbdc0lcgiv-EA5cyHiZU-92rQzkcCpQbe9m-R__OM3No_nmV2iG2g6YjrkglJoAf_BN0wAnHHT3U0sd6lPrd8iSJZ72wqT90Im9VST9HLtZuqrO1xDCqSPtfY0T-kLNnKyg0nuWF4oRFY3Uz-HFZ7b4nVvWHMrStbJkr7cjo8b13wD-cMHvkfmo03paRyxVJs98gylBSPNmfQ&h=dINKxtPlD-laj4HCxk3khiOwv2byEzpTnArfa0BmGF8
+  response:
+    body:
+      string: "{\n  \"name\": \"25b82a5d-2fa0-4939-a63b-923b43892ad0\",\n  \"status\"\
+        : \"InProgress\",\n  \"startTime\": \"2024-05-22T21:45:34.1374207Z\",\n  \"\
+        error\": {\n   \"code\": \"NotLatestOperation\",\n   \"message\": \"The operation\
+        \ has been preempted by another one. Please wait for the other operation to\
+        \ complete and try again..\"\n  }\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '306'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:48:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: F699AEA0CC1B4FA69D767FE67A852DE7 Ref B: MNZ221060619023 Ref C: 2024-05-22T21:48:05Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks mesh enable
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --revision
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/25b82a5d-2fa0-4939-a63b-923b43892ad0?api-version=2016-03-30&t=638520111343391416&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=HCe8zVKIpOwAXXS0syW7kADoXPgViPqYJFldEKcULxucFIBdSkz6XHB0fa4IM2DJmHCk7ef8kvWhDhxJc8bgaXZCYI3FPIofYvL1pW5O2YDpfWQj7h9y6FgO2mwFbqysAVIreBPllUbdc0lcgiv-EA5cyHiZU-92rQzkcCpQbe9m-R__OM3No_nmV2iG2g6YjrkglJoAf_BN0wAnHHT3U0sd6lPrd8iSJZ72wqT90Im9VST9HLtZuqrO1xDCqSPtfY0T-kLNnKyg0nuWF4oRFY3Uz-HFZ7b4nVvWHMrStbJkr7cjo8b13wD-cMHvkfmo03paRyxVJs98gylBSPNmfQ&h=dINKxtPlD-laj4HCxk3khiOwv2byEzpTnArfa0BmGF8
+  response:
+    body:
+      string: "{\n  \"name\": \"25b82a5d-2fa0-4939-a63b-923b43892ad0\",\n  \"status\"\
+        : \"Succeeded\",\n  \"startTime\": \"2024-05-22T21:45:34.1374207Z\",\n  \"\
+        endTime\": \"2024-05-22T21:48:33.4723822Z\",\n  \"error\": {\n   \"code\"\
+        : \"NotLatestOperation\",\n   \"message\": \"The operation has been preempted\
+        \ by another one. Please wait for the other operation to complete and try\
+        \ again..\"\n  }\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '350'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:48:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 467A8CED5BFD424CB3155EBDA5F942E4 Ref B: MNZ221060619023 Ref C: 2024-05-22T21:48:35Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks mesh enable
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name --revision
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2024-06-02-preview
+  response:
+    body:
+      string: "{\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001\"\
+        ,\n  \"location\": \"westus2\",\n  \"name\": \"cliakstest000001\",\n  \"type\"\
+        : \"Microsoft.ContainerService/ManagedClusters\",\n  \"kind\": \"Base\",\n\
+        \  \"properties\": {\n   \"provisioningState\": \"Succeeded\",\n   \"powerState\"\
+        : {\n    \"code\": \"Running\"\n   },\n   \"kubernetesVersion\": \"1.28\"\
+        ,\n   \"currentKubernetesVersion\": \"1.28.9\",\n   \"dnsPrefix\": \"cliakstest-clitestb7jnztem4-79a739\"\
+        ,\n   \"fqdn\": \"cliakstest-clitestb7jnztem4-79a739-h1vrnfhi.hcp.westus2.azmk8s.io\"\
+        ,\n   \"azurePortalFQDN\": \"cliakstest-clitestb7jnztem4-79a739-h1vrnfhi.portal.hcp.westus2.azmk8s.io\"\
+        ,\n   \"agentPoolProfiles\": [\n    {\n     \"name\": \"nodepool1\",\n   \
+        \  \"count\": 3,\n     \"vmSize\": \"Standard_DS2_v2\",\n     \"osDiskSizeGB\"\
+        : 128,\n     \"osDiskType\": \"Managed\",\n     \"kubeletDiskType\": \"OS\"\
+        ,\n     \"workloadRuntime\": \"OCIContainer\",\n     \"maxPods\": 110,\n \
+        \    \"type\": \"VirtualMachineScaleSets\",\n     \"enableAutoScaling\": false,\n\
+        \     \"provisioningState\": \"Succeeded\",\n     \"powerState\": {\n    \
+        \  \"code\": \"Running\"\n     },\n     \"orchestratorVersion\": \"1.28\"\
+        ,\n     \"currentOrchestratorVersion\": \"1.28.9\",\n     \"enableNodePublicIP\"\
+        : false,\n     \"enableCustomCATrust\": false,\n     \"mode\": \"System\"\
+        ,\n     \"enableEncryptionAtHost\": false,\n     \"enableUltraSSD\": false,\n\
+        \     \"osType\": \"Linux\",\n     \"osSKU\": \"Ubuntu\",\n     \"nodeImageVersion\"\
+        : \"AKSUbuntu-2204gen2containerd-202405.03.0\",\n     \"upgradeSettings\"\
+        : {\n      \"maxSurge\": \"10%\"\n     },\n     \"enableFIPS\": false,\n \
+        \    \"networkProfile\": {},\n     \"securityProfile\": {\n      \"sshAccess\"\
+        : \"LocalUser\",\n      \"enableVTPM\": false,\n      \"enableSecureBoot\"\
+        : false\n     },\n     \"eTag\": \"55c3383d-f8cd-4b0b-9bc4-cb68d60ffd42\"\n\
+        \    }\n   ],\n   \"linuxProfile\": {\n    \"adminUsername\": \"azureuser\"\
+        ,\n    \"ssh\": {\n     \"publicKeys\": [\n      {\n       \"keyData\": \"\
+        ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/iCEDcZPMqjmMzF9030Dhx20eGq81GmiZyKPdaWP/rh6NILJOiJIi64uS84TxY47oZ/bWW2ers4t9xD1lOkN/YH6Kcy3uaNDKOJNYa6AktWNikmcsJ7VdNp+yFCYwwikEb+bcsDikOLpq/Thog96j0LDE35GZ7MCdhJs8stsFpRm7UMSspDPQAsqrd4My//XkJR1izjWDzmP9rV6okgpHMbzseh1hxWk5wTTiZDYjxBZC/zK3PrfpM4ogyE+3Dn72qz5lMUA6iNfMrb7w4vFGZrQhhpxj5T6a0knr4VWw15D3xAoaioIfSOkqQUAoYBmjpo68KlDbWcvQHzEMnkC/\
+        \ azcli_aks_live_test@example.com\\n\"\n      }\n     ]\n    }\n   },\n  \
+        \ \"servicePrincipalProfile\": {\n    \"clientId\":\"00000000-0000-0000-0000-000000000001\"\
+        \n   },\n   \"nodeResourceGroup\": \"MC_clitest000001_cliakstest000001_westus2\"\
+        ,\n   \"enableRBAC\": true,\n   \"enablePodSecurityPolicy\": false,\n   \"\
+        supportPlan\": \"KubernetesOfficial\",\n   \"networkProfile\": {\n    \"networkPlugin\"\
+        : \"kubenet\",\n    \"networkPolicy\": \"none\",\n    \"loadBalancerSku\"\
+        : \"standard\",\n    \"loadBalancerProfile\": {\n     \"managedOutboundIPs\"\
+        : {\n      \"count\": 1\n     },\n     \"effectiveOutboundIPs\": [\n     \
+        \ {\n       \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MC_clitest000001_cliakstest000001_westus2/providers/Microsoft.Network/publicIPAddresses/0460be94-cb3e-4282-b57d-d4a6582192ff\"\
+        \n      }\n     ],\n     \"backendPoolType\": \"nodeIPConfiguration\"\n  \
+        \  },\n    \"podCidr\": \"10.244.0.0/16\",\n    \"serviceCidr\": \"10.0.0.0/16\"\
+        ,\n    \"dnsServiceIP\": \"10.0.0.10\",\n    \"outboundType\": \"loadBalancer\"\
+        ,\n    \"podCidrs\": [\n     \"10.244.0.0/16\"\n    ],\n    \"serviceCidrs\"\
+        : [\n     \"10.0.0.0/16\"\n    ],\n    \"ipFamilies\": [\n     \"IPv4\"\n\
+        \    ]\n   },\n   \"maxAgentPools\": 100,\n   \"identityProfile\": {\n   \
+        \ \"kubeletidentity\": {\n     \"resourceId\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/MC_clitest000001_cliakstest000001_westus2/providers/Microsoft.ManagedIdentity/userAssignedIdentities/cliakstest000001-agentpool\"\
+        ,\n     \"clientId\":\"00000000-0000-0000-0000-000000000001\",\n     \"objectId\"\
+        :\"00000000-0000-0000-0000-000000000001\"\n    }\n   },\n   \"autoUpgradeProfile\"\
+        : {\n    \"nodeOSUpgradeChannel\": \"NodeImage\"\n   },\n   \"disableLocalAccounts\"\
+        : false,\n   \"securityProfile\": {},\n   \"storageProfile\": {\n    \"diskCSIDriver\"\
+        : {\n     \"enabled\": true,\n     \"version\": \"v1\"\n    },\n    \"fileCSIDriver\"\
+        : {\n     \"enabled\": true\n    },\n    \"snapshotController\": {\n     \"\
+        enabled\": true\n    }\n   },\n   \"oidcIssuerProfile\": {\n    \"enabled\"\
+        : false\n   },\n   \"workloadAutoScalerProfile\": {},\n   \"serviceMeshProfile\"\
+        : {\n    \"mode\": \"Istio\",\n    \"istio\": {\n     \"components\": {},\n\
+        \     \"revisions\": [\n      \"asm-1-19\"\n     ]\n    }\n   },\n   \"metricsProfile\"\
+        : {\n    \"costAnalysis\": {\n     \"enabled\": false\n    }\n   },\n   \"\
+        resourceUID\": \"664e66471312ca00011597ed\",\n   \"controlPlanePluginProfiles\"\
+        : {\n    \"azure-monitor-metrics-ccp\": {\n     \"enableV2\": true\n    },\n\
+        \    \"karpenter\": {\n     \"enableV2\": true\n    },\n    \"live-patching-controller\"\
+        : {\n     \"enableV2\": true\n    }\n   },\n   \"nodeProvisioningProfile\"\
+        : {\n    \"mode\": \"Manual\"\n   },\n   \"bootstrapProfile\": {\n    \"artifactSource\"\
+        : \"Direct\"\n   }\n  },\n  \"identity\": {\n   \"type\": \"SystemAssigned\"\
+        ,\n   \"principalId\":\"00000000-0000-0000-0000-000000000001\",\n   \"tenantId\"\
+        : \"72f988bf-86f1-41af-91ab-2d7cd011db47\"\n  },\n  \"sku\": {\n   \"name\"\
+        : \"Base\",\n   \"tier\": \"Free\"\n  },\n  \"etag\": \"13b6cf74-6595-4347-93f3-79b547a4be14\"\
+        \n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5105'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:48:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 689C193C139D48969D9258775C940DD6 Ref B: MNZ221060619023 Ref C: 2024-05-22T21:48:36Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks mesh get-upgrades
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --name
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001/meshUpgradeProfiles?api-version=2024-06-02-preview
+  response:
+    body:
+      string: "{\n  \"value\": [\n   {\n    \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001/meshUpgradeProfiles/istio\"\
+        ,\n    \"name\": \"istio\",\n    \"type\": \"Microsoft.ContainerService/managedClusters/meshUpgradeProfiles\"\
+        ,\n    \"properties\": {\n     \"revision\": \"asm-1-19\",\n     \"upgrades\"\
+        : [\n      \"asm-1-20\"\n     ],\n     \"compatibleWith\": [\n      {\n  \
+        \     \"name\": \"kubernetes\",\n       \"versions\": [\n        \"1.25\"\
+        ,\n        \"1.26\",\n        \"1.27\",\n        \"1.28\"\n       ]\n    \
+        \  }\n     ]\n    }\n   }\n  ]\n }"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '589'
+      content-type:
+      - application/json
+      date:
+      - Wed, 22 May 2024 21:48:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 70D06B5136504DADA639369154B0126E Ref B: MNZ221060619053 Ref C: 2024-05-22T21:48:37Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - aks delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --resource-group --name --yes --no-wait
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.8.10 (Linux-6.5.0-1021-azure-x86_64-with-glibc2.29)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.ContainerService/managedClusters/cliakstest000001?api-version=2024-06-02-preview
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operations/2cbb4f3a-ac0f-4575-810e-f1e1bc7a2708?api-version=2016-03-30&t=638520113186047740&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=IZaDwp1HRNzUkZ7zDZtbcJsiiQiuj7RI-NgKKsEoTL22lJeZmnxehxJT3Dn6MUOj2a-bvP6wFTJYvA9LlEvC1HJLHVjTX35sWXEHgFZsG2Le83oFU-RmR0VnSTUiGciuPxstt5GsVh9Qc2szTyZ4mRieWxfYYr7oj6T1MBHFVURpWJfdKZgYs8SR-keD_Z_tXHQFggMoaLu6piX8EopoobhOfl-Wq4vNCMLRNPHzVh62YMRoWJf3fw2964ZJUIXXizoGRiaRaR6DJVrZzM7nzgiQUbEMDSesL82nTqmiSECs5qXE47SJjLjiabiiViE8dcwR3l9mAU2nyq_kpq-Fow&h=OOlrVSJdX9TVND44U7mAS-HuXhPtBe0bdiX8egzdDTs
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Wed, 22 May 2024 21:48:38 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ContainerService/locations/westus2/operationresults/2cbb4f3a-ac0f-4575-810e-f1e1bc7a2708?api-version=2016-03-30&t=638520113186360224&c=MIIHpTCCBo2gAwIBAgITOgMLgtc7Cc87eiuz1wAEAwuC1zANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSU5GUkEgQ0EgMDEwHhcNMjQwNTE0MjM1NDE2WhcNMjUwNTA5MjM1NDE2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOaEi-3zqsJBRoTW6v-hbr3zODw-Nh-eOXXe91NBg2Z3Oc9PRHKDZ0OVB1pdRvaSaxj_fTPqS7_zPMg37TSKP1jYOqimCgHmTsELmvkaboQVj3bAhFZM8R-EuxzmXxEIzoHqkXzdtsrO5DsXdYYlHDN_wp2LYd94JWWnq2nJqh-nub97Y4Ee_G0mXj86cKrC3JKJfdLXj9jnkXSpnqLZxVhA13YJvC2_f2WWpKnMYw4TYNfyuBRr6h9bG5HXnuYIZLqU-6YmjjvUDU75uYwwZJ3tD6TuDRJJUISwb56EdF9HaX4AK4WQeH0kIR3mpC1oKsrCEkosvSjav5cUhTeJcW0CAwEAAaOCBJIwggSOMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CWTJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSU5GUkElMjBDQSUyMDAxKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQlkyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMElORlJBJTIwQ0ElMjAwMSg0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JZMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3J0MB0GA1UdDgQWBBSnK85HTzCdZ4rcO7N2a69b201FzTAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJTkZSQSUyMENBJTIwMDEoNCkuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTl2Ztn_PjsurvwwKidileIud8-YzAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFNOYW41q3r-S4rfLmeNVcnYR7IvJtvAiXlY6eep1zrI3aUTHvJuYyY6vcP_4p5MlEr3FDCiW1CMJDLThVd46NQv0N3GoQIZlOvZKBWj8DK8W-Gtk8Vy7kyP5Xp1-CNrFl7SeFojKYONR2t1lVjbGz7_rALuwCLF02cTuVJsgdg3yHCVH9xnU-Y5tMQGCfL3c9Ju4zrxFGhJG9idwO6HSO1n2wsP0bXkmtW604JhkQOqYNFjM1JK-pGQadrEMz7XfJHseSLK8wkQk0Ow7uIYDAVA7R01Dj_84vasGdo3z-nB4JeB3Qx6EWEnfihZgP88K5MiIdTZgx1yKC4b7uOLe3w&s=Feu4k5HhKuIyJOAnLOdRtwKVY9aocCJQxREtR2vRBNFCTOf4EIaKFRpPzL6FeesPDi3DFTXtISgDw5THRnfQtTtnSn_goRYdf5CKRrhiCTXsusH0gQLS1tv3MF4Zg_b9Bs2p2GpqhVJoGpoZKRzoNQnJhzlRm13IH1vrqQ79LSc0mALWvgCNc9VqYgdB282qw6XIldtbX0szz-H37qQekaJXELOB7lOcE4Jg8jNesB1ZQSl3Y2_ofGTRrtxx0VlScezLpDOuNHAQnni65xvPqOVP-tF2GGG_IOvIiBO57EEGiWwO0sJRB9OEpGCSs2ips6bc4srLPyCBZiC0phpXLw&h=IQWCTOBHYBUqEFlaYVK_EU4fkSnP_K1qiV6LTmaOgjk
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-msedge-ref:
+      - 'Ref A: A6CDBEC1C8604E2DBA6D4BEEC312555B Ref B: MNZ221060608049 Ref C: 2024-05-22T21:48:37Z'
+    status:
+      code: 202
+      message: Accepted
+version: 1

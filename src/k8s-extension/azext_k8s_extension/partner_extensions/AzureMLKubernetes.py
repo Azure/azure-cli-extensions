@@ -10,10 +10,13 @@
 import copy
 from hashlib import md5
 from typing import Any, Dict, List, Tuple
+
+from ..aaz.latest.relay.hyco import Create as HycoCreate, Show as HycoShow
+from ..aaz.latest.relay.hyco.authorization_rule import Create as HycoAuthoCreate
+from ..aaz.latest.relay.hyco.authorization_rule.keys import List as HycoAuthoKeysList
+from ..aaz.latest.relay.namespace import Create as NamespaceCreate
 from ..utils import get_cluster_rp_api_version
 
-import azure.mgmt.relay
-import azure.mgmt.relay.models
 import azure.mgmt.resource.locks
 import azure.mgmt.servicebus
 import azure.mgmt.servicebus.models
@@ -343,7 +346,7 @@ class AzureMLKubernetes(DefaultExtension):
                         cmd, subscription_id, resource_group_name, cluster_name, '', self.RELAY_HC_AUTH_NAME, True)
                     configuration_protected_settings[self.RELAY_SERVER_CONNECTION_STRING] = relay_connection_string
                     logger.info("Get relay connection string succeeded.")
-                except azure.mgmt.relay.models.ErrorResponseException as ex:
+                except azure.core.exceptions.HttpResponseError as ex:
                     if ex.response.status_code == 404:
                         raise ResourceNotFoundError("Relay server not found. "
                                                     "Check {} for more information.".format(self.TSG_LINK)) from ex
@@ -611,8 +614,6 @@ def _lock_resource(cmd, lock_scope, lock_level='CanNotDelete'):
 
 def _get_relay_connection_str(
         cmd, subscription_id, resource_group_name, cluster_name, cluster_location, auth_rule_name, get_key_only=False) -> Tuple[str, str, str]:
-    relay_client: azure.mgmt.relay.RelayManagementClient = get_mgmt_service_client(
-        cmd.cli_ctx, azure.mgmt.relay.RelayManagementClient)
 
     cluster_id = '{}-{}-{}-relay'.format(cluster_name, subscription_id, resource_group_name)
     relay_namespace_name = _get_valid_name(
@@ -623,40 +624,48 @@ def _get_relay_connection_str(
     # only create relay if not found
     try:
         # get connection string
-        hybrid_connection_object = relay_client.hybrid_connections.get(
-            resource_group_name, relay_namespace_name, hybrid_connection_name)
-        hc_resource_id = hybrid_connection_object.id
-        key: azure.mgmt.relay.models.AccessKeys = relay_client.hybrid_connections.list_keys(
-            resource_group_name, relay_namespace_name, hybrid_connection_name, auth_rule_name)
-    except HttpOperationError as e:
+        hybrid_connection_object = HycoShow(cli_ctx=cmd.cli_ctx)(command_args={"resource_group": resource_group_name,
+                                                                               "namespace_name": relay_namespace_name,
+                                                                               "name": hybrid_connection_name})
+        hc_resource_id = hybrid_connection_object['id']
+        key = HycoAuthoKeysList(cli_ctx=cmd.cli_ctx)(command_args={"resource_group": resource_group_name,
+                                                                   "namespace_name": relay_namespace_name,
+                                                                   "hybrid_connection_name": hybrid_connection_name,
+                                                                   "name": auth_rule_name})
+    except azure.core.exceptions.HttpResponseError as e:
         if e.response.status_code != 404 or get_key_only:
             raise e
         # create namespace
-        relay_namespace_params = azure.mgmt.relay.models.RelayNamespace(
-            location=cluster_location, tags=resource_tag)
-
-        async_poller = relay_client.namespaces.create_or_update(
-            resource_group_name, relay_namespace_name, relay_namespace_params)
+        async_poller = NamespaceCreate(cli_ctx=cmd.cli_ctx)(command_args={"resource_group": resource_group_name,
+                                                                          "name": relay_namespace_name,
+                                                                          "location": cluster_location,
+                                                                          "tags": resource_tag})
         while True:
             async_poller.result(15)
             if async_poller.done():
                 break
 
         # create hybrid connection
-        hybrid_connection_object = relay_client.hybrid_connections.create_or_update(
-            resource_group_name, relay_namespace_name, hybrid_connection_name, requires_client_authorization=True)
-        hc_resource_id = hybrid_connection_object.id
+        hybrid_connection_object = HycoCreate(cli_ctx=cmd.cli_ctx)(command_args={"resource_group": resource_group_name,
+                                                                                 "namespace_name": relay_namespace_name,
+                                                                                 "name": hybrid_connection_name,
+                                                                                 "requires_client_authorization": True})
+        hc_resource_id = hybrid_connection_object['id']
 
         # create authorization rule
-        auth_rule_rights = [azure.mgmt.relay.models.AccessRights.manage,
-                            azure.mgmt.relay.models.AccessRights.send, azure.mgmt.relay.models.AccessRights.listen]
-        relay_client.hybrid_connections.create_or_update_authorization_rule(
-            resource_group_name, relay_namespace_name, hybrid_connection_name, auth_rule_name, rights=auth_rule_rights)
+        auth_rule_rights = ["Manage", "Send", "Listen"]
+        HycoAuthoCreate(cli_ctx=cmd.cli_ctx)(command_args={"resource_group": resource_group_name,
+                                                           "namespace_name": relay_namespace_name,
+                                                           "hybrid_connection_name": hybrid_connection_name,
+                                                           "name": auth_rule_name,
+                                                           "rights": auth_rule_rights})
 
         # get connection string
-        key: azure.mgmt.relay.models.AccessKeys = relay_client.hybrid_connections.list_keys(
-            resource_group_name, relay_namespace_name, hybrid_connection_name, auth_rule_name)
-    return f'{key.primary_connection_string}', hc_resource_id, hybrid_connection_name
+        key = HycoAuthoKeysList(cli_ctx=cmd.cli_ctx)(command_args={"resource_group": resource_group_name,
+                                                                   "namespace_name": relay_namespace_name,
+                                                                   "hybrid_connection_name": hybrid_connection_name,
+                                                                   "name": auth_rule_name})
+    return f'{key["primaryConnectionString"]}', hc_resource_id, hybrid_connection_name
 
 
 def _get_service_bus_connection_string(cmd, subscription_id, resource_group_name, cluster_name, cluster_location,

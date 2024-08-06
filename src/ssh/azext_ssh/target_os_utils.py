@@ -80,10 +80,12 @@ def _get_arc_server_os(cmd, resource_group_name, vm_name):
     try:
         arc_server = ArcServerShow(cli_ctx=cmd.cli_ctx)(command_args=get_args)
     except Exception:
-        return None
+        return None, None
 
     if arc_server and arc_server.get('osName', None):
-        os_type = arc_server['osName']
+        os_type = arc_server.get('osName')
+    elif arc_server and arc_server.get('properties', None):
+        os_type = arc_server.get('properties').get('osType', None)
 
     if arc_server and arc_server.get('properties'):
         agent_version = arc_server.get('properties').get('agentVersion')
@@ -104,7 +106,7 @@ def _get_connected_vmware_os(cmd, resource_group_name, vm_name):
     try:
         vmware = VMwarevSphereShow(cli_ctx=cmd.cli_ctx)(command_args=get_args)
     except Exception:
-        return None
+        return None, None
 
     if vmware and vmware.get("osProfile") and vmware.get("osProfile").get("osType"):
         os_type = vmware.get("osProfile").get("osType")

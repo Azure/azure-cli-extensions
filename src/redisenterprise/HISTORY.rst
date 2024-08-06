@@ -2,7 +2,15 @@
 
 Release History
 ===============
+1.0.0
++++++++++
+- Added support for new enterprise SKU E1
 
+0.1.4
++++++++++
+- Added support for new enterprise SKU's E5, E200, E400
+
+0.1.3
 ++++++
 - Added support for flushing the data in case of geo replicated cache
 - Added support for customer managed keys

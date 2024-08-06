@@ -23,9 +23,9 @@ class Delete(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-12-27",
+        "version": "2024-05-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2022-12-27"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}", "2024-05-20-preview"],
         ]
     }
 
@@ -124,7 +124,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-12-27",
+                    "api-version", "2024-05-20-preview",
                     required=True,
                 ),
             }
