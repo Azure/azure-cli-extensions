@@ -610,7 +610,7 @@ helps['aks create'] = f"""
           short-summary: Enable Application Routing addon.
         - name: --app-routing-nginx-default-controller 
           type: string
-          short-summary: Configure default ingress controller type. Valid values are annotationControlled (default), external, internal, or none. See [link here] for more info.
+          short-summary: Configure default nginx ingress controller type. Valid values are annotationControlled (default), external, internal, or none. See [link here] for more info.
         - name: --enable-ai-toolchain-operator
           type: bool
           short-summary: Enable AI toolchain operator to the cluster.
@@ -3157,6 +3157,10 @@ helps['aks approuting enable'] = """
         type: string
         short-summary: Attach a keyvault id to access secrets and certificates.
         long-summary: This optional flag attaches a keyvault id to access secrets and certificates.
+      - name: --nginx
+        type: string
+        short-summary: Configure default NginxIngressController resource
+        long-summary: Configure default nginx ingress controller type. Valid values are annotationControlled (default), external, internal, or none. See [link here] for more info.
 """
 
 helps['aks approuting disable'] = """
@@ -3178,6 +3182,10 @@ helps['aks approuting update'] = """
         type: bool
         short-summary: Enable the keyvault secrets provider addon.
         long-summary: This optional flag enables the keyvault-secrets-provider addon in given cluster. This is required for most App Routing use-cases.
+      - name: --nginx
+        type: string
+        short-summary: Configure default NginxIngressController resource
+        long-summary: Configure default nginx ingress controller type. Valid values are annotationControlled (default), external, internal, or none. See [link here] for more info.
 """
 
 helps['aks approuting zone'] = """

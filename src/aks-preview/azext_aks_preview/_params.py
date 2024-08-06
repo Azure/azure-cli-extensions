@@ -2285,10 +2285,12 @@ def load_arguments(self, _):
     with self.argument_context("aks approuting enable") as c:
         c.argument("enable_kv", action="store_true")
         c.argument("keyvault_id", options_list=["--attach-kv"])
+        c.argument("nginx", arg_type=get_enum_type(app_routing_nginx_configs), options_list=["--nginx"])
 
     with self.argument_context("aks approuting update") as c:
         c.argument("keyvault_id", options_list=["--attach-kv"])
         c.argument("enable_kv", action="store_true")
+        c.argument("nginx", arg_type=get_enum_type(app_routing_nginx_configs), options_list=["--nginx"])
 
     with self.argument_context("aks approuting zone add") as c:
         c.argument("dns_zone_resource_ids", options_list=["--ids"], required=True)
