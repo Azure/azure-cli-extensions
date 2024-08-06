@@ -177,6 +177,7 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels_fi
     dashboards_created_summary = {}
     dashboards_overwrote_summary = {}
 
+    created_library_panels = set()
     # only update the library panels that are not included / excluded.
     for library_panel in all_library_panels_filtered:
         exists_before = check_library_panel_exists(restore_url, library_panel, restore_headers)
@@ -190,6 +191,7 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels_fi
         if not is_successful:
             continue
 
+        created_library_panels.add(library_panel['uid'])
         panel_folder_name = library_panel['meta']['folderName']
         update_summary_dict(exists_before,
                             panel_folder_name,
@@ -200,8 +202,18 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels_fi
     # we don't backup provisioned dashboards, so we don't need to restore them
     for dashboard in all_dashboards:
         exists_before = check_dashboard_exists(restore_url, dashboard, restore_headers)
+        dashboard_title = dashboard['dashboard'].get('title', '')
 
         # Skipping making/updating dashboard if the library panel it relies on is not being updated.
+        panel_uids = {p["libraryPanel"]["uid"] for p in dashboard["dashboard"]["panels"] if "libraryPanel" in p}
+        if not panel_uids.issubset(created_library_panels):
+            # all the panels that are created are in the created_library_panels set, so if the panel is not in the set,
+            # then it is not created and we should skip the dashboard.
+            print_styled_text([
+                (Style.WARNING, f'Create dashboard {dashboard_title}: '),
+                (Style.ERROR, f'FAILURE (skipped because library panel is not created)')
+            ])
+            continue
 
         dashboard['dashboard']['id'] = None
         # Overwrite takes care of delete & create.
@@ -211,8 +223,7 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels_fi
             # so if the uid are the same, then without overwrite, it will overwrite if the version is the same.
             # this logic doesn't apply to library panel since it is handled via PATCH.
             if exists_before and not overwrite:
-                dashboard_title = dashboard['dashboard'].get('title', '')
-                error_msg = 'dashboard already exists. Please enable --overwrite if you want to overwrite the dashboard'
+                error_msg = '(dashboard already exists. Please enable --overwrite if you want to overwrite dashboard)'
                 print_styled_text([
                     (Style.WARNING, f'Create dashboard {dashboard_title}: '),
                     (Style.ERROR, f'FAILURE {error_msg}')

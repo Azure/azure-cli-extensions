@@ -108,15 +108,10 @@ def create_dashboard(grafana_url, content, http_headers, overwrite):
         (Style.WARNING, f'Create dashboard {dashboard_title}: '),
         (Style.SUCCESS, 'SUCCESS') if result[0] == 200 else (Style.ERROR, 'FAILURE')
     ]
+
     if result[0] == 412:
         to_print.append(
             (Style.ERROR, ' (version mismatch, please enable --overwrite if you want to overwrite the dashboard)'))
-
-    # this doesn't seem to be documented in the docs but it seems to be the
-    # error message when library panels are missing
-    if result[0] == 500 and result[1].get('message') == 'Error while connecting library panels':
-        to_print.append(
-            (Style.ERROR, ' (missing library panels, please include the library panels folders for this dashboard)'))
 
     print_styled_text(to_print)
     logger.info("status: %s, msg: %s", result[0], result[1])
