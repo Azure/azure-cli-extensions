@@ -396,7 +396,6 @@ def update_addons(
 
 def add_ingress_appgw_addon_role_assignment(result, cmd):
     service_principal_msi_id = None
-    is_service_principal = False
     # Check if service principal exists, if it does, assign permissions to service principal
     # Else, provide permissions to MSI
     is_service_principal = False
