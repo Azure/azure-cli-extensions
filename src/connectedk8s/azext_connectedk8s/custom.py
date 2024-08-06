@@ -957,6 +957,12 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
         private_link_state = None
         if enable_private_link is not None:
             private_link_state = "Enabled" if enable_private_link is True else "Disabled"
+        
+        # Set OIDC and Security profile
+        if enable_oidc_issuer:
+            oidc_issuer = set_oidc_issuer_profile(enable_oidc_issuer, self_hosted_issuer)
+        if enable_workload_identity:
+            security = set_security_profile(enable_workload_identity)
 
         cc = ConnectedCluster2024_07_01_Preview(
             location=location,
@@ -971,14 +977,10 @@ def generate_request_payload(location, public_key, tags, kubernetes_distro, kube
             distribution_version=distribution_version,
             arc_agent_profile=arc_agent_profile,
             gateway=gateway,
-            arc_agentry_configurations=arc_agentry_configurations
+            arc_agentry_configurations=arc_agentry_configurations,
+            oidc_issuer_profile=oidc_issuer,
+            security_profile=security
         )
-        
-        # Set OIDC and Security profile
-        if enable_oidc_issuer:
-            cc.oidc_issuer_profile = set_oidc_issuer_profile(enable_oidc_issuer, self_hosted_issuer)
-        if enable_workload_identity:
-            cc.security_profile = set_security_profile(enable_workload_identity)
 
     return cc
 
