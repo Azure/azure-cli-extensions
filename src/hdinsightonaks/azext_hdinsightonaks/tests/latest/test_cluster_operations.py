@@ -6,14 +6,14 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-from .testUtil import authorization_info
+from .testUtil import authorization_info_version11
 from azure.cli.testsdk import ScenarioTest
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class HdinsightonaksClusterScenario(ScenarioTest):
-    location = 'westus3'
+    location = 'eastus2'
     resourceGroup = "hilocli-test"
     clusterPoolName = "hilopool"
 
@@ -35,16 +35,18 @@ class HdinsightonaksClusterScenario(ScenarioTest):
             'clusterType': "Microsoft.HDInsight/clusterPools/clusters"
         })
 
-        # Create a cluster pool.
+        # 
         self.cmd('az hdinsight-on-aks check-name-availability -l {loc} --name {poolName}/{clusterName} --type {clusterType}', checks=[
             self.check("nameAvailable", True)
         ])
+        
 
     def test_create_cluster(self):
         self.kwargs.update({
             "loc": self.location,
             "rg": self.resourceGroup,
             "poolName": self.clusterPoolName,
+            "clusterPoolVersion": "1.1",
             "clusterName": self.create_random_name(prefix='hilo-', length=18),
             "clusterType": "Spark",
             # Create a cluster node-profile object.
@@ -52,14 +54,16 @@ class HdinsightonaksClusterScenario(ScenarioTest):
             "targetWorkerNodeCount": 4
         })
 
+        self.cmd('az hdinsight-on-aks clusterpool create -g {rg} -n {poolName} -l {loc} --version {clusterPoolVersion} --workernode-size Standard_E4s_v3')
+
         # Get spark cluster version and ossVersion.
         spark_versions = self.cmd(
             'az hdinsight-on-aks list-available-cluster-version -l {loc} --query "[?clusterType==\'Spark\']"').get_output_in_json()
 
         # Create a Spark cluster.
-        create_command = 'az hdinsight-on-aks cluster create -n {clusterName} --cluster-pool-name {poolName} -g {rg} -l {loc} --cluster-type {clusterType} --spark-storage-url abfs://testspzrk@yuchenhilostorage.dfs.core.windows.net/ --cluster-version ' + \
+        create_command = 'az hdinsight-on-aks cluster create -n {clusterName} --cluster-pool-name {poolName} -g {rg} -l {loc} --cluster-type {clusterType} --spark-storage-url abfs://testspzrk@hilostorage.dfs.core.windows.net/ --cluster-version ' + \
             spark_versions[0]["clusterVersion"] + ' --oss-version ' + spark_versions[0]["ossVersion"] + \
-            ' --nodes ' + '{computeNodeProfile}' + ' ' + authorization_info()
+            ' --nodes ' + '{computeNodeProfile}' + ' ' + authorization_info_version11()
         self.cmd(create_command, checks=[
             self.check("name", '{clusterName}'),
             self.check("location", '{loc}'),

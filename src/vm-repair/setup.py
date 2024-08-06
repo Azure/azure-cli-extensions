@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "1.0.5"
+VERSION = "1.0.8"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -24,7 +24,7 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = ['opencensus~=0.11.4']
 
 with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()

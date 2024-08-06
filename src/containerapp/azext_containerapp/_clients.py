@@ -310,28 +310,6 @@ class DaprComponentResiliencyPreviewClient():
         return policy_list
 
 
-class SubscriptionPreviewClient():
-    api_version = PREVIEW_API_VERSION
-
-    @classmethod
-    def show_custom_domain_verification_id(cls, cmd):
-        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        sub_id = get_subscription_id(cmd.cli_ctx)
-        request_url = f"{management_hostname}subscriptions/{sub_id}/providers/Microsoft.App/getCustomDomainVerificationId?api-version={cls.api_version}"
-
-        r = send_raw_request(cmd.cli_ctx, "POST", request_url)
-        return r.json()
-
-    @classmethod
-    def list_usages(cls, cmd, location):
-        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        sub_id = get_subscription_id(cmd.cli_ctx)
-        request_url = f"{management_hostname}subscriptions/{sub_id}/providers/Microsoft.App/locations/{location}/usages?api-version={cls.api_version}"
-
-        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
-        return r.json()
-
-
 class StoragePreviewClient(StorageClient):
     api_version = PREVIEW_API_VERSION
 

@@ -36,9 +36,12 @@ from azext_aks_preview._consts import (
     CONST_DNS_ZONE_CONTRIBUTOR_ROLE,
     CONST_ARTIFACT_SOURCE_CACHE,
     CONST_OUTBOUND_TYPE_NONE,
+    CONST_IMDS_RESTRICTION_ENABLED,
+    CONST_IMDS_RESTRICTION_DISABLED,
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
+    check_is_azure_cli_core_editable_installed,
     check_is_private_cluster,
     get_cluster_snapshot_by_snapshot_id,
     setup_common_safeguards_profile,
@@ -984,43 +987,10 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
         :return: bool
         """
-        # read the original value passed by the command
-        enable_managed_identity = self.raw_param.get("enable_managed_identity")
-        # In create mode, try to read the property value corresponding to the parameter from the `mc` object
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if self.mc and self.mc.identity:
-                enable_managed_identity = check_is_msi_cluster(self.mc)
-
-        # skip dynamic completion & validation if option read_only is specified
-        if read_only:
-            return enable_managed_identity
-
-        # dynamic completion for create mode only
-        if self.decorator_mode == DecoratorMode.CREATE:
-            # if user does not specify service principal or client secret,
-            # backfill the value of enable_managed_identity to True
-            (
-                service_principal,
-                client_secret,
-            ) = self._get_service_principal_and_client_secret(read_only=True)
-            if not (service_principal or client_secret) and not enable_managed_identity:
-                enable_managed_identity = True
+        enable_managed_identity = super()._get_enable_managed_identity()
 
         # validation
         if enable_validation:
-            if self.decorator_mode == DecoratorMode.CREATE:
-                (
-                    service_principal,
-                    client_secret,
-                ) = self._get_service_principal_and_client_secret(read_only=True)
-                if (service_principal or client_secret) and enable_managed_identity:
-                    raise MutuallyExclusiveArgumentError(
-                        "Cannot specify --enable-managed-identity and --service-principal/--client-secret at same time"
-                    )
-            if not enable_managed_identity and self._get_assign_identity(enable_validation=False):
-                raise RequiredArgumentMissingError(
-                    "--assign-identity can only be specified when --enable-managed-identity is specified"
-                )
             # additional validation in aks-preview
             if self.decorator_mode == DecoratorMode.CREATE:
                 if not enable_managed_identity and self._get_enable_pod_identity(enable_validation=False):
@@ -2904,6 +2874,25 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         # because it's already checked in get_enable_static_egress_gateway
         return self.raw_param.get("disable_static_egress_gateway")
 
+    def get_enable_imds_restriction(self) -> bool:
+        """Obtain the value of enable_imds_restriction.
+
+        :return: bool
+        """
+        enable_imds_restriction = self.raw_param.get("enable_imds_restriction")
+        if enable_imds_restriction and self.get_disable_imds_restriction():
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-imds-restriction and --disable-imds-restriction at the same time."
+            )
+        return enable_imds_restriction
+
+    def get_disable_imds_restriction(self) -> bool:
+        """Obtain the value of disable_imds_restriction.
+
+        :return: bool
+        """
+        return self.raw_param.get("disable_imds_restriction")
+
 
 # pylint: disable=too-many-public-methods
 class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
@@ -2967,6 +2956,17 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         """
         mc = super().set_up_network_profile(mc)
         network_profile = mc.network_profile
+
+        # network_plugin is typically defaulted to kubenet. AKS-RP is moving
+        # away from specifying this default in the API and making it based
+        # on the k8s version being used. The CLI should not be responsible
+        # for setting default values and should pass properties as empty
+        # unless specified by the user.
+        if (
+            network_profile.network_plugin is not None and
+            self.context.raw_param.get("network_plugin") is None
+        ):
+            network_profile.network_plugin = None
 
         # set up pod_cidrs, service_cidrs and ip_families
         (
@@ -3378,6 +3378,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             pool_details["os_type"] = agentpool.os_type
             pool_details["mode"] = agentpool.mode
             pool_details["node_taints"] = agentpool.node_taints
+            pool_details["zoned"] = agentpool.availability_zones is not None
             agentpool_details.append(pool_details)
             # Marking the only agentpool name as the valid nodepool for
             # installing Azure Container Storage during `az aks create`
@@ -3625,6 +3626,14 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         # Default is disabled so no need to worry about that here
         return mc
 
+    def set_up_imds_restriction(self, mc: ManagedCluster) -> ManagedCluster:
+        self._ensure_mc(mc)
+
+        enable_imds_restriction = self.context.get_enable_imds_restriction()
+        if enable_imds_restriction:
+            mc.network_profile.pod_link_local_access = CONST_IMDS_RESTRICTION_ENABLED
+        return mc
+
     # pylint: disable=unused-argument
     def construct_mc_profile_preview(self, bypass_restore_defaults: bool = False) -> ManagedCluster:
         """The overall controller used to construct the default ManagedCluster profile.
@@ -3689,10 +3698,45 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_bootstrap_profile(mc)
         # set up static egress gateway profile
         mc = self.set_up_static_egress_gateway(mc)
+        # set up imds restriction(a property in network profile)
+        mc = self.set_up_imds_restriction(mc)
+
+        # validate the azure cli core version
+        self.verify_cli_core_version()
 
         # DO NOT MOVE: keep this at the bottom, restore defaults
         mc = self._restore_defaults_in_mc(mc)
         return mc
+
+    def verify_cli_core_version(self):
+        from azure.cli.core import __version__ as core_version
+        monitor_options_specified = False
+        # in case in a super old version, the options are not available
+        try:
+            monitor_options_specified = any(
+                (
+                    self.context.get_ampls_resource_id(),
+                    self.context.get_enable_high_log_scale_mode(),
+                )
+            )
+        except Exception as ex:  # pylint: disable=broad-except
+            logger.debug("failed to get the value of monitor_options: %s", ex)
+            monitor_options_specified = any(
+                (
+                    self.__raw_parameters.get("ampls_resource_id"),
+                    self.__raw_parameters.get("enable_high_log_scale_mode"),
+                )
+            )
+        finally:
+            if monitor_options_specified and (
+                core_version < "2.63.0" and
+                not check_is_azure_cli_core_editable_installed()
+            ):
+                raise ArgumentUsageError(
+                    f"The --ampls-resource-id and --enable-high-log-scale-mode options are only available in Azure CLI "
+                    f"version 2.63.0 and later. Your current Azure CLI version is {core_version}. Please upgrade your "
+                    "Azure CLI."
+                )
 
     def check_is_postprocessing_required(self, mc: ManagedCluster) -> bool:
         """Helper function to check if postprocessing is required after sending a PUT request to create the cluster.
@@ -3799,6 +3843,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     create_dcr=False,
                     create_dcra=True,
                     enable_syslog=self.context.get_enable_syslog(),
+                    data_collection_settings=self.context.get_data_collection_settings(),
+                    is_private_cluster=self.context.get_enable_private_cluster(),
+                    ampls_resource_id=self.context.get_ampls_resource_id(),
+                    enable_high_log_scale_mode=self.context.get_enable_high_log_scale_mode(),
                 )
 
         # ingress appgw addon
@@ -4160,6 +4208,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     pool_details["os_type"] = agentpool.os_type
                     pool_details["mode"] = agentpool.mode
                     pool_details["node_taints"] = agentpool.node_taints
+                    pool_details["zoned"] = agentpool.availability_zones is not None
                     if agentpool.node_labels is not None:
                         node_labels = agentpool.node_labels
                         if node_labels is not None and \
@@ -4288,10 +4337,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     pre_disable_validate = False
 
                     msg = (
-                        "Disabling Azure Container Storage will forcefully delete all the storagepools in the cluster "
-                        "and affect the applications using these storagepools. Forceful deletion of storagepools can "
+                        "Disabling Azure Container Storage will forcefully delete all the storage pools in the cluster "
+                        "and affect the applications using these storage pools. Forceful deletion of storage pools can "
                         "also lead to leaking of storage resources which are being consumed. Do you want to validate "
-                        "whether any of the storagepools are being used before disabling Azure Container Storage?"
+                        "whether any of the storage pools are being used before disabling Azure Container Storage?"
                     )
 
                     from azext_aks_preview.azurecontainerstorage._consts import (
@@ -4299,11 +4348,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     )
                     if disable_pool_type != CONST_ACSTOR_ALL:
                         msg = (
-                            f"Disabling Azure Container Storage for storagepool type {disable_pool_type} "
-                            "will forcefully delete all the storagepools of the same type and affect the "
-                            "applications using these storagepools. Forceful deletion of storagepools can "
+                            f"Disabling Azure Container Storage for storage pool type {disable_pool_type} "
+                            "will forcefully delete all the storage pools of the same type and affect the "
+                            "applications using these storage pools. Forceful deletion of storage pools can "
                             "also lead to leaking of storage resources which are being consumed. Do you want to "
-                            f"validate whether any of the storagepools of type {disable_pool_type} are being used "
+                            f"validate whether any of the storage pools of type {disable_pool_type} are being used "
                             "before disabling Azure Container Storage?"
                         )
                     if self.context.get_yes() or prompt_y_n(msg, default="y"):
@@ -5299,6 +5348,34 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.network_profile.static_egress_gateway_profile.enabled = False
         return mc
 
+    def update_imds_restriction(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update imds restriction for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        original_imds_restriction = 'IMDS'  # default value is IMDS
+        if mc.network_profile and mc.network_profile.pod_link_local_access:
+            original_imds_restriction = mc.network_profile.pod_link_local_access
+        target_imds_restriction = ''
+        if self.context.get_enable_imds_restriction():
+            mc.network_profile.pod_link_local_access = CONST_IMDS_RESTRICTION_ENABLED
+            target_imds_restriction = CONST_IMDS_RESTRICTION_ENABLED
+        if self.context.get_disable_imds_restriction():
+            mc.network_profile.pod_link_local_access = CONST_IMDS_RESTRICTION_DISABLED
+            target_imds_restriction = CONST_IMDS_RESTRICTION_DISABLED
+
+        if target_imds_restriction != '' and original_imds_restriction != target_imds_restriction:
+            target_behavior = ("enabled" if target_imds_restriction == CONST_IMDS_RESTRICTION_ENABLED else "disabled")
+            msg = (
+                f"You're going to update cluster imds restriction to '{target_behavior}' "
+                "This change will take effect after you upgrade the cluster. Proceed?"
+            )
+            if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
+                raise DecoratorEarlyExitException()
+        return mc
+
     def update_mc_profile_preview(self) -> ManagedCluster:
         """The overall controller used to update the preview ManagedCluster profile.
 
@@ -5376,6 +5453,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_bootstrap_profile(mc)
         # update static egress gateway
         mc = self.update_static_egress_gateway(mc)
+        # update imds restriction
+        mc = self.update_imds_restriction(mc)
 
         return mc
 

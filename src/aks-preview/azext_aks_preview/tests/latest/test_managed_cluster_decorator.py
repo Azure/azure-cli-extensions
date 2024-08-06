@@ -3856,55 +3856,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             ),
         ))
 
-    def test_handle_egress_gateways_asm(self):
-        ctx_0 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_azure_service_mesh": True,
-                    "enable_egress_gateway": True
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        old_profile = self.models.ServiceMeshProfile(
-            mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
-            istio=self.models.IstioServiceMesh(),
-        )
-        new_profile, updated = ctx_0._handle_egress_gateways_asm(old_profile)
-        self.assertEqual(updated, True)
-        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-            mode="Istio",
-            istio=self.models.IstioServiceMesh(
-                components=self.models.IstioComponents(
-                    egress_gateways=[
-                        self.models.IstioEgressGateway(
-                            enabled=True
-                        )
-                    ]
-                )
-            ),
-        ))
-        # ASM was never enabled on the cluster
-        old_profile = self.models.ServiceMeshProfile(
-            mode=CONST_AZURE_SERVICE_MESH_MODE_DISABLED,
-        )
-        new_profile, updated = ctx_0._handle_egress_gateways_asm(old_profile)
-        self.assertEqual(updated, True)
-        self.assertEqual(new_profile, self.models.ServiceMeshProfile(
-            mode="Istio",
-            istio=self.models.IstioServiceMesh(
-                components=self.models.IstioComponents(
-                    egress_gateways=[
-                        self.models.IstioEgressGateway(
-                            enabled=True
-                        )
-                    ]
-                )
-            ),
-        ))
-
     def test_handle_pluginca_asm(self):
         ctx_0 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -4168,7 +4119,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         ground_truth_mc_1.agent_pool_profiles = [ground_truth_agentpool_profile_1]
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
-    def test_set_up_network_profile(self):
+    def test_set_up_network_profile_preview(self):
         # custom value
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
@@ -4214,6 +4165,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         network_profile_1.ip_families = ["IPv4", "IPv6"]
         network_profile_1.pod_cidrs = ["10.246.0.0/16", "2001:abcd::/64"]
         network_profile_1.service_cidrs = ["10.0.0.0/16", "2001:ffff::/108"]
+        network_profile_1.network_plugin = None
 
         load_balancer_profile_1 = self.models.load_balancer_models.ManagedClusterLoadBalancerProfile(
             managed_outbound_i_ps=self.models.load_balancer_models.ManagedClusterLoadBalancerProfileManagedOutboundIPs(
@@ -4226,6 +4178,36 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             location="test_location", network_profile=network_profile_1
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
+        # custom value
+        dec_2 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "network_plugin": "azure",
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_2 = self.models.ManagedCluster(location="test_location")
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.set_up_network_profile(mc_2)
+
+        network_profile_2 = self.models.ContainerServiceNetworkProfile()
+        # TODO: remove this temp fix once aks-preview's dependency on core azure-cli is updated to 2.26.0
+        for attr_name, attr_value in vars(network_profile_2).items():
+            if (
+                not attr_name.startswith("_")
+                and attr_name not in ["additional_properties", "outbound_type"]
+                and attr_value is not None
+            ):
+                setattr(network_profile_2, attr_name, None)
+        network_profile_2.network_plugin = "azure"
+        network_profile_2.load_balancer_sku = CONST_LOAD_BALANCER_SKU_STANDARD
+
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location", network_profile=network_profile_2
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
     def test_set_up_api_server_access_profile(self):
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
@@ -5276,6 +5258,44 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(UnknownError):
             dec_2.set_up_static_egress_gateway(mc_2)
 
+    def test_set_up_imds_restriction(self):
+        dec_0 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(location="test_location")
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.set_up_imds_restriction(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_imds_restriction": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="kubenet"
+            ),
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_imds_restriction(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="kubenet",
+                pod_link_local_access="None",
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
     def test_construct_mc_profile_preview(self):
         import inspect
 
@@ -5359,6 +5379,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         network_profile_1 = self.models.ContainerServiceNetworkProfile(
             load_balancer_sku="standard",
+            network_plugin=None,
         )
         identity_1 = self.models.ManagedClusterIdentity(type="SystemAssigned")
         storage_profile_1 = self.models.ManagedClusterStorageProfile(
@@ -8909,6 +8930,96 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_4, ground_truth_mc_4)
 
+    def test_enable_disable_imds_restriction(self):
+        # Should not update mc if unset
+        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.update_imds_restriction(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # Should error if both set
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_imds_restriction": True, 
+                "enable_imds_restriction": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_1.context.attach_mc(mc_1)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_1.update_imds_restriction(mc_1)
+
+        # custom value
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_imds_restriction": True,
+                "yes": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="kubenet",
+            ),
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_imds_restriction(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="kubenet",
+                pod_link_local_access="None"
+            ),
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # custom value
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_imds_restriction": True,
+                "yes": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="kubenet",
+            ),
+        )
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_imds_restriction(mc_3)
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="kubenet",
+                pod_link_local_access="IMDS",
+            ),
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
 if __name__ == "__main__":
     unittest.main()

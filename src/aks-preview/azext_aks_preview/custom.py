@@ -534,6 +534,8 @@ def aks_create(
     enable_msi_auth_for_monitoring=True,
     enable_syslog=False,
     data_collection_settings=None,
+    ampls_resource_id=None,
+    enable_high_log_scale_mode=False,
     aci_subnet_name=None,
     appgw_name=None,
     appgw_subnet_cidr=None,
@@ -653,6 +655,8 @@ def aks_create(
     enable_static_egress_gateway=False,
     # virtualmachines
     vm_sizes=None,
+    # IMDS restriction
+    enable_imds_restriction=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -858,6 +862,9 @@ def aks_update(
     # Static Egress Gateway
     enable_static_egress_gateway=False,
     disable_static_egress_gateway=False,
+    # IMDS restriction
+    enable_imds_restriction=False,
+    disable_imds_restriction=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1818,7 +1825,7 @@ def aks_agentpool_manual_scale_update(cmd,    # pylint: disable=unused-argument
             break
     if not manual_exists:
         raise InvalidArgumentValueError(
-            f"Manual with sizes {','.join(current_vm_sizes)} doesn't exist in node pool {nodepool_name}"
+            f"Manual with sizes {current_vm_sizes} doesn't exist in node pool {nodepool_name}"
         )
 
     return sdk_no_wait(
@@ -2009,6 +2016,8 @@ def aks_addon_enable(
     dns_zone_resource_ids=None,
     enable_syslog=False,
     data_collection_settings=None,
+    ampls_resource_id=None,
+    enable_high_log_scale_mode=False
 ):
     return enable_addons(
         cmd,
@@ -2033,6 +2042,8 @@ def aks_addon_enable(
         dns_zone_resource_ids=dns_zone_resource_ids,
         enable_syslog=enable_syslog,
         data_collection_settings=data_collection_settings,
+        ampls_resource_id=ampls_resource_id,
+        enable_high_log_scale_mode=enable_high_log_scale_mode
     )
 
 
@@ -2063,6 +2074,8 @@ def aks_addon_update(
     dns_zone_resource_ids=None,
     enable_syslog=False,
     data_collection_settings=None,
+    ampls_resource_id=None,
+    enable_high_log_scale_mode=False
 ):
     instance = client.get(resource_group_name, name)
     addon_profiles = instance.addon_profiles
@@ -2112,6 +2125,8 @@ def aks_addon_update(
         dns_zone_resource_ids=dns_zone_resource_ids,
         enable_syslog=enable_syslog,
         data_collection_settings=data_collection_settings,
+        ampls_resource_id=ampls_resource_id,
+        enable_high_log_scale_mode=enable_high_log_scale_mode
     )
 
 
@@ -2146,6 +2161,8 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
                 create_dcra=True,
                 enable_syslog=False,
                 data_collection_settings=None,
+                ampls_resource_id=None,
+                enable_high_log_scale_mode=False
             )
     except TypeError:
         pass
@@ -2188,6 +2205,8 @@ def aks_enable_addons(
     dns_zone_resource_ids=None,
     enable_syslog=False,
     data_collection_settings=None,
+    ampls_resource_id=None,
+    enable_high_log_scale_mode=False,
     aks_custom_headers=None,
 ):
     headers = get_aks_custom_headers(aks_custom_headers)
@@ -2223,8 +2242,6 @@ def aks_enable_addons(
         no_wait=no_wait,
         dns_zone_resource_id=dns_zone_resource_id,
         dns_zone_resource_ids=dns_zone_resource_ids,
-        enable_syslog=enable_syslog,
-        data_collection_settings=data_collection_settings,
     )
     if (
         CONST_MONITORING_ADDON_NAME in instance.addon_profiles and
@@ -2255,14 +2272,21 @@ def aks_enable_addons(
                 create_dcra=True,
                 enable_syslog=enable_syslog,
                 data_collection_settings=data_collection_settings,
+                ampls_resource_id=ampls_resource_id,
+                enable_high_log_scale_mode=enable_high_log_scale_mode
             )
         else:
             # monitoring addon will use legacy path
             if enable_syslog:
                 raise ArgumentUsageError(
                     "--enable-syslog can not be used without MSI auth.")
+            if enable_high_log_scale_mode:
+                raise ArgumentUsageError(
+                    "--enable-high-log-scale-mode can not be used without MSI auth.")
             if data_collection_settings is not None:
                 raise ArgumentUsageError("--data-collection-settings can not be used without MSI auth.")
+            if ampls_resource_id is not None:
+                raise ArgumentUsageError("--ampls-resource-id can not be used without MSI auth.")
             ensure_container_insights_for_monitoring(
                 cmd,
                 instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
@@ -2311,7 +2335,7 @@ def aks_rotate_certs(cmd, client, resource_group_name, name, no_wait=True):     
     return sdk_no_wait(no_wait, client.begin_rotate_cluster_certificates, resource_group_name, name)
 
 
-def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
+def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements,
                    instance,
                    subscription_id,
                    resource_group_name,
@@ -2333,9 +2357,8 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    rotation_poll_interval=None,
                    dns_zone_resource_id=None,
                    dns_zone_resource_ids=None,
-                   no_wait=False,  # pylint: disable=unused-argument
-                   enable_syslog=False,
-                   data_collection_settings=None):
+                   no_wait=False,):  # pylint: disable=unused-argument
+
     ManagedClusterAddonProfile = cmd.get_models(
         "ManagedClusterAddonProfile",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
@@ -2522,10 +2545,6 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
 
 def aks_get_versions(cmd, client, location):    # pylint: disable=unused-argument
     return client.list_kubernetes_versions(location)
-
-
-def aks_get_os_options(cmd, client, location):    # pylint: disable=unused-argument
-    return client.get_os_options(location, resource_type='managedClusters')
 
 
 def get_aks_custom_headers(aks_custom_headers=None):

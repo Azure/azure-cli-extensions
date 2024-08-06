@@ -618,9 +618,11 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
             for item in ip_config_object[applicationSecurityGroups]:
                 application_id_tokens = item['id'].split('/')
                 if application_id_tokens[-1] is not None:
+
                     application_names+=application_id_tokens[-1]+ " "
-            logger.info('applicationSecurityGroups {application_names}...\n')    
-        
+                    
+        logger.info('applicationSecurityGroups {application_names}...\n')
+
         
         # Dynamic | Static
         orig_ip_allocation_method = ip_config_object['privateIPAllocationMethod']
@@ -644,7 +646,13 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
             update_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip}' \
                                 .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address)
         _call_az_command(update_ip_command)
+        
+         # Wait for IP updated
+        wait_ip_update_command = 'az network nic ip-config wait --updated -g {g} --nic-name {nic}' \
+                                .format(g=resource_group_name, nic=primary_nic_name)
+        _call_az_command(wait_ip_update_command)
 
+            
         # 4) Change things back. This will also invoke and wait for a VM restart.
         logger.info('NIC reset is complete. Now reverting back to your original configuration...\n')
         # If user had dynamic config, change back to dynamic
@@ -740,7 +748,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     logger.info('Running fstab run command')
 
     try:
-        run_out = run(cmd, repair_vm_name, repair_group_name, run_id='linux-alar2', parameters=["fstab"])
+        run_out = run(cmd, repair_vm_name, repair_group_name, run_id='linux-alar2', parameters=["fstab", "initiator=SELFHELP"])
 
     except Exception:
         command.set_status_error()
