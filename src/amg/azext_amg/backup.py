@@ -156,6 +156,7 @@ def _save_folders(grafana_url, backup_dir, timestamp, http_headers, **kwargs):
 
     folders = get_all_folders(grafana_url, http_headers, **kwargs)
 
+    print_an_empty_line()
     log_file_path = folder_path + '/' + log_file
     with open(log_file_path, 'w+', encoding="utf8") as f:
         for folder_set in folders:
@@ -169,6 +170,7 @@ def _save_folders(grafana_url, backup_dir, timestamp, http_headers, **kwargs):
                 folder_settings,
                 folder_path)
             f.write(folder_uri + '\t' + folder_settings['title'] + '\n')
+    print_an_empty_line()
 
 
 def _save_folder_setting(folder_name, file_name, folder_settings, folder_permissions, folder_path):
