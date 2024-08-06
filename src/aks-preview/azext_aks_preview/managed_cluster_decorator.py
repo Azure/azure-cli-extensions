@@ -737,8 +737,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         disable_fqdn_policy = self.raw_param.get("disable_fqdn_policy")
         if enable_fqdn_policy and disable_fqdn_policy:
             raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-advanced-network-observability and "
-                "--disable-advanced-network-observability at the same time."
+                "Cannot specify --enable-fqdn-policy and "
+                "--disable-fqdn-policy at the same time."
             )
         if enable_fqdn_policy is False and disable_fqdn_policy is False:
             return None
@@ -3014,7 +3014,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         if fqdn_policy is not None:
             network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
                 security=self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
-                    fqdnPolicy=self.models.AdvancedNetworkingFQDNPolicy(
+                    fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
                         enabled=fqdn_policy
                     )
                 )
@@ -4108,7 +4108,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if fqdn_policy is not None:
             mc.network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
                 security=self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
-                    fqdnPolicy=self.models.AdvancedNetworkingFQDNPolicy(
+                    fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
                         enabled=fqdn_policy
                     )
                 )

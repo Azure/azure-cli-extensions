@@ -13191,7 +13191,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="westus2",
     )
     def test_aks_update_enable_fqdn_policy(
         self, resource_group, resource_group_location
@@ -13209,12 +13209,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
+            "--network-plugin azure --network-dataplane=cilium --network-plugin-mode overlay "
         )
         self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
         # update to enable fqdn policy
         update_cmd = (
-            "aks update --resource-group={resource_group} --name={name} --enable-fqdn-policy "
+            "aks update --resource-group={resource_group} --name={name} "
+            "--enable-fqdn-policy "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
         )
         self.cmd(
@@ -13248,7 +13250,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="westus2",
     )
     def test_aks_create_with_enable_fqdn_policy(
         self, resource_group, resource_group_location
@@ -13270,7 +13272,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard --enable-fqdn-policy "
+            "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
+            "--network-plugin azure --network-dataplane=cilium --network-plugin-mode overlay --enable-fqdn-policy "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview"
         )
         self.cmd(
