@@ -11,6 +11,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Vendor new SDK and bump API version to 2024-06-02-preview.
+
+7.0.0b3
+++++++++
+* Add option `--enable-high-log-scale-mode` to `az aks create --enable-addons monitoring` and `az aks enable-addons -a monitoring`.
+* Add option `--ampls-resource-id` to `az aks create --enable-addons monitoring` and `az aks enable-addons -a monitoring`.
+* Vendor new SDK and bump API version to 2024-05-02-preview.
 
 7.0.0b3
 ++++++++

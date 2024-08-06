@@ -17,14 +17,14 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List the network security perimeter configurations for a private link scope.
 
-    :example: network-security-perimeter-configuration list
-        az connectedmachine private-link-scope network-security-perimeter-configuration list --resource-group "az-sdk-test" --scope-name "scope-test" --subscription subscriptionId
+    :example: Sample command for NSP list
+        az connectedmachine private-link-scope network-security-perimeter-configuration list --resource-group myResourceGroup --scope-name myPrivateLinkScope --subscription mySubscription
     """
 
     _aaz_info = {
-        "version": "2024-03-31-preview",
+        "version": "2024-05-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/networksecurityperimeterconfigurations", "2024-03-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/networksecurityperimeterconfigurations", "2024-05-20-preview"],
         ]
     }
 
@@ -124,7 +124,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-31-preview",
+                    "api-version", "2024-05-20-preview",
                     required=True,
                 ),
             }
