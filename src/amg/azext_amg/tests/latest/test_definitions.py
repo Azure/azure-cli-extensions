@@ -14,6 +14,17 @@ test_data_source = {
     "type": "grafana-azure-monitor-datasource"
 }
 
+test_data_source_different_uid = {
+    "access": "proxy",
+    "uid": "bdpe79jidbwu8d",
+    "jsonData": {
+        "azureAuthType": "msi",
+        "subscriptionId": ""
+    },
+    "name": "Test Azure Monitor Data Source",
+    "type": "grafana-azure-monitor-datasource"
+}
+
 test_notification_channel = {
     "name": "Test Teams Notification Channel",
     "settings": {

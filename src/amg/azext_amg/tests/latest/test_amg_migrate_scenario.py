@@ -12,7 +12,7 @@ import unittest
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, MSGraphNameReplacer, MOCKED_USER_NAME)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
-from .test_definitions import (test_data_source, test_notification_channel, test_dashboard, test_dashboard_with_datasource)
+from .test_definitions import (test_data_source, test_data_source_different_uid, test_notification_channel, test_dashboard, test_dashboard_with_datasource)
 from .recording_processors import ApiKeyServiceAccountTokenReplacer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -226,7 +226,8 @@ class AmgMigrateScenarioTest(ScenarioTest):
             dashboard_title = test_dashboard_with_datasource["dashboard"]["title"]
             self.kwargs.update({
                 'dashboardDefinitionDatasource': test_dashboard_with_datasource,
-                'dashboardTitle4': dashboard_title + '4'
+                'dashboardTitle4': dashboard_title + '4',
+                'dataSourceDefinitionDifferentUID': test_data_source_different_uid
             })
             self.kwargs['dashboardDefinitionDatasource']['dashboard']['uid'] = 'mg2OAlTVd'  # control the uid to prevent auto generated uid with possible '-' that breaks the command
 
@@ -235,7 +236,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
                 'dashboardUid4': response_create["uid"],
             })
 
-            ds2 = self.cmd('grafana data-source create -g {rg} -n {name2} --definition "{dataSourceDefinition}"').get_output_in_json()
+            ds2 = self.cmd('grafana data-source create -g {rg} -n {name2} --definition "{dataSourceDefinitionDifferentUID}"').get_output_in_json()
             self.kwargs.update({
                 'amg2_datasource_uid': ds2['datasource']['uid']
             })
