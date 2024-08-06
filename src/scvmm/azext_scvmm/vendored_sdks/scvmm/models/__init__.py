@@ -10,28 +10,32 @@ try:
     from ._models_py3 import AvailabilitySet
     from ._models_py3 import AvailabilitySetListItem
     from ._models_py3 import AvailabilitySetListResult
+    from ._models_py3 import AvailabilitySetProperties
+    from ._models_py3 import AvailabilitySetTagsUpdate
     from ._models_py3 import Checkpoint
     from ._models_py3 import Cloud
     from ._models_py3 import CloudCapacity
     from ._models_py3 import CloudInventoryItem
     from ._models_py3 import CloudListResult
+    from ._models_py3 import CloudProperties
+    from ._models_py3 import CloudTagsUpdate
     from ._models_py3 import ErrorAdditionalInfo
     from ._models_py3 import ErrorDetail
     from ._models_py3 import ErrorResponse
     from ._models_py3 import ExtendedLocation
     from ._models_py3 import GuestAgent
-    from ._models_py3 import GuestAgentList
+    from ._models_py3 import GuestAgentListResult
+    from ._models_py3 import GuestAgentProperties
     from ._models_py3 import GuestCredential
     from ._models_py3 import HardwareProfile
     from ._models_py3 import HardwareProfileUpdate
     from ._models_py3 import HttpProxyConfiguration
-    from ._models_py3 import Identity
     from ._models_py3 import InfrastructureProfile
     from ._models_py3 import InfrastructureProfileUpdate
     from ._models_py3 import InventoryItem
     from ._models_py3 import InventoryItemDetails
+    from ._models_py3 import InventoryItemListResult
     from ._models_py3 import InventoryItemProperties
-    from ._models_py3 import InventoryItemsList
     from ._models_py3 import NetworkInterface
     from ._models_py3 import NetworkInterfaceUpdate
     from ._models_py3 import NetworkProfile
@@ -39,63 +43,75 @@ try:
     from ._models_py3 import Operation
     from ._models_py3 import OperationDisplay
     from ._models_py3 import OperationListResult
-    from ._models_py3 import OsProfileForVMInstance
+    from ._models_py3 import OsProfileForVmInstance
     from ._models_py3 import ProxyResource
     from ._models_py3 import Resource
-    from ._models_py3 import ResourcePatch
     from ._models_py3 import StopVirtualMachineOptions
     from ._models_py3 import StorageProfile
     from ._models_py3 import StorageProfileUpdate
-    from ._models_py3 import StorageQoSPolicy
-    from ._models_py3 import StorageQoSPolicyDetails
+    from ._models_py3 import StorageQosPolicy
+    from ._models_py3 import StorageQosPolicyDetails
     from ._models_py3 import SystemData
     from ._models_py3 import TrackedResource
-    from ._models_py3 import VMMCredential
-    from ._models_py3 import VMMServer
-    from ._models_py3 import VMMServerListResult
     from ._models_py3 import VirtualDisk
     from ._models_py3 import VirtualDiskUpdate
     from ._models_py3 import VirtualMachineCreateCheckpoint
     from ._models_py3 import VirtualMachineDeleteCheckpoint
     from ._models_py3 import VirtualMachineInstance
     from ._models_py3 import VirtualMachineInstanceListResult
+    from ._models_py3 import VirtualMachineInstanceProperties
     from ._models_py3 import VirtualMachineInstanceUpdate
+    from ._models_py3 import VirtualMachineInstanceUpdateProperties
     from ._models_py3 import VirtualMachineInventoryItem
     from ._models_py3 import VirtualMachineRestoreCheckpoint
     from ._models_py3 import VirtualMachineTemplate
     from ._models_py3 import VirtualMachineTemplateInventoryItem
     from ._models_py3 import VirtualMachineTemplateListResult
+    from ._models_py3 import VirtualMachineTemplateProperties
+    from ._models_py3 import VirtualMachineTemplateTagsUpdate
     from ._models_py3 import VirtualNetwork
     from ._models_py3 import VirtualNetworkInventoryItem
     from ._models_py3 import VirtualNetworkListResult
+    from ._models_py3 import VirtualNetworkProperties
+    from ._models_py3 import VirtualNetworkTagsUpdate
     from ._models_py3 import VmInstanceHybridIdentityMetadata
-    from ._models_py3 import VmInstanceHybridIdentityMetadataList
+    from ._models_py3 import VmInstanceHybridIdentityMetadataListResult
+    from ._models_py3 import VmInstanceHybridIdentityMetadataProperties
+    from ._models_py3 import VmmCredential
+    from ._models_py3 import VmmServer
+    from ._models_py3 import VmmServerListResult
+    from ._models_py3 import VmmServerProperties
+    from ._models_py3 import VmmServerTagsUpdate
 except (SyntaxError, ImportError):
     from ._models import AvailabilitySet  # type: ignore
     from ._models import AvailabilitySetListItem  # type: ignore
     from ._models import AvailabilitySetListResult  # type: ignore
+    from ._models import AvailabilitySetProperties  # type: ignore
+    from ._models import AvailabilitySetTagsUpdate  # type: ignore
     from ._models import Checkpoint  # type: ignore
     from ._models import Cloud  # type: ignore
     from ._models import CloudCapacity  # type: ignore
     from ._models import CloudInventoryItem  # type: ignore
     from ._models import CloudListResult  # type: ignore
+    from ._models import CloudProperties  # type: ignore
+    from ._models import CloudTagsUpdate  # type: ignore
     from ._models import ErrorAdditionalInfo  # type: ignore
     from ._models import ErrorDetail  # type: ignore
     from ._models import ErrorResponse  # type: ignore
     from ._models import ExtendedLocation  # type: ignore
     from ._models import GuestAgent  # type: ignore
-    from ._models import GuestAgentList  # type: ignore
+    from ._models import GuestAgentListResult  # type: ignore
+    from ._models import GuestAgentProperties  # type: ignore
     from ._models import GuestCredential  # type: ignore
     from ._models import HardwareProfile  # type: ignore
     from ._models import HardwareProfileUpdate  # type: ignore
     from ._models import HttpProxyConfiguration  # type: ignore
-    from ._models import Identity  # type: ignore
     from ._models import InfrastructureProfile  # type: ignore
     from ._models import InfrastructureProfileUpdate  # type: ignore
     from ._models import InventoryItem  # type: ignore
     from ._models import InventoryItemDetails  # type: ignore
+    from ._models import InventoryItemListResult  # type: ignore
     from ._models import InventoryItemProperties  # type: ignore
-    from ._models import InventoryItemsList  # type: ignore
     from ._models import NetworkInterface  # type: ignore
     from ._models import NetworkInterfaceUpdate  # type: ignore
     from ._models import NetworkProfile  # type: ignore
@@ -103,47 +119,54 @@ except (SyntaxError, ImportError):
     from ._models import Operation  # type: ignore
     from ._models import OperationDisplay  # type: ignore
     from ._models import OperationListResult  # type: ignore
-    from ._models import OsProfileForVMInstance  # type: ignore
+    from ._models import OsProfileForVmInstance  # type: ignore
     from ._models import ProxyResource  # type: ignore
     from ._models import Resource  # type: ignore
-    from ._models import ResourcePatch  # type: ignore
     from ._models import StopVirtualMachineOptions  # type: ignore
     from ._models import StorageProfile  # type: ignore
     from ._models import StorageProfileUpdate  # type: ignore
-    from ._models import StorageQoSPolicy  # type: ignore
-    from ._models import StorageQoSPolicyDetails  # type: ignore
+    from ._models import StorageQosPolicy  # type: ignore
+    from ._models import StorageQosPolicyDetails  # type: ignore
     from ._models import SystemData  # type: ignore
     from ._models import TrackedResource  # type: ignore
-    from ._models import VMMCredential  # type: ignore
-    from ._models import VMMServer  # type: ignore
-    from ._models import VMMServerListResult  # type: ignore
     from ._models import VirtualDisk  # type: ignore
     from ._models import VirtualDiskUpdate  # type: ignore
     from ._models import VirtualMachineCreateCheckpoint  # type: ignore
     from ._models import VirtualMachineDeleteCheckpoint  # type: ignore
     from ._models import VirtualMachineInstance  # type: ignore
     from ._models import VirtualMachineInstanceListResult  # type: ignore
+    from ._models import VirtualMachineInstanceProperties  # type: ignore
     from ._models import VirtualMachineInstanceUpdate  # type: ignore
+    from ._models import VirtualMachineInstanceUpdateProperties  # type: ignore
     from ._models import VirtualMachineInventoryItem  # type: ignore
     from ._models import VirtualMachineRestoreCheckpoint  # type: ignore
     from ._models import VirtualMachineTemplate  # type: ignore
     from ._models import VirtualMachineTemplateInventoryItem  # type: ignore
     from ._models import VirtualMachineTemplateListResult  # type: ignore
+    from ._models import VirtualMachineTemplateProperties  # type: ignore
+    from ._models import VirtualMachineTemplateTagsUpdate  # type: ignore
     from ._models import VirtualNetwork  # type: ignore
     from ._models import VirtualNetworkInventoryItem  # type: ignore
     from ._models import VirtualNetworkListResult  # type: ignore
+    from ._models import VirtualNetworkProperties  # type: ignore
+    from ._models import VirtualNetworkTagsUpdate  # type: ignore
     from ._models import VmInstanceHybridIdentityMetadata  # type: ignore
-    from ._models import VmInstanceHybridIdentityMetadataList  # type: ignore
+    from ._models import VmInstanceHybridIdentityMetadataListResult  # type: ignore
+    from ._models import VmInstanceHybridIdentityMetadataProperties  # type: ignore
+    from ._models import VmmCredential  # type: ignore
+    from ._models import VmmServer  # type: ignore
+    from ._models import VmmServerListResult  # type: ignore
+    from ._models import VmmServerProperties  # type: ignore
+    from ._models import VmmServerTagsUpdate  # type: ignore
 
-from ._scvmm_enums import (
+from ._sc_vmm_mgmt_client_enums import (
     ActionType,
     AllocationMethod,
     CreateDiffDisk,
     CreatedByType,
     DeleteFromHost,
     DynamicMemoryEnabled,
-    Force,
-    IdentityType,
+    ForceDelete,
     InventoryType,
     IsCustomizable,
     IsHighlyAvailable,
@@ -151,7 +174,7 @@ from ._scvmm_enums import (
     Origin,
     OsType,
     ProvisioningAction,
-    ProvisioningState,
+    ResourceProvisioningState,
     SkipShutdown,
 )
 
@@ -159,28 +182,32 @@ __all__ = [
     'AvailabilitySet',
     'AvailabilitySetListItem',
     'AvailabilitySetListResult',
+    'AvailabilitySetProperties',
+    'AvailabilitySetTagsUpdate',
     'Checkpoint',
     'Cloud',
     'CloudCapacity',
     'CloudInventoryItem',
     'CloudListResult',
+    'CloudProperties',
+    'CloudTagsUpdate',
     'ErrorAdditionalInfo',
     'ErrorDetail',
     'ErrorResponse',
     'ExtendedLocation',
     'GuestAgent',
-    'GuestAgentList',
+    'GuestAgentListResult',
+    'GuestAgentProperties',
     'GuestCredential',
     'HardwareProfile',
     'HardwareProfileUpdate',
     'HttpProxyConfiguration',
-    'Identity',
     'InfrastructureProfile',
     'InfrastructureProfileUpdate',
     'InventoryItem',
     'InventoryItemDetails',
+    'InventoryItemListResult',
     'InventoryItemProperties',
-    'InventoryItemsList',
     'NetworkInterface',
     'NetworkInterfaceUpdate',
     'NetworkProfile',
@@ -188,45 +215,52 @@ __all__ = [
     'Operation',
     'OperationDisplay',
     'OperationListResult',
-    'OsProfileForVMInstance',
+    'OsProfileForVmInstance',
     'ProxyResource',
     'Resource',
-    'ResourcePatch',
     'StopVirtualMachineOptions',
     'StorageProfile',
     'StorageProfileUpdate',
-    'StorageQoSPolicy',
-    'StorageQoSPolicyDetails',
+    'StorageQosPolicy',
+    'StorageQosPolicyDetails',
     'SystemData',
     'TrackedResource',
-    'VMMCredential',
-    'VMMServer',
-    'VMMServerListResult',
     'VirtualDisk',
     'VirtualDiskUpdate',
     'VirtualMachineCreateCheckpoint',
     'VirtualMachineDeleteCheckpoint',
     'VirtualMachineInstance',
     'VirtualMachineInstanceListResult',
+    'VirtualMachineInstanceProperties',
     'VirtualMachineInstanceUpdate',
+    'VirtualMachineInstanceUpdateProperties',
     'VirtualMachineInventoryItem',
     'VirtualMachineRestoreCheckpoint',
     'VirtualMachineTemplate',
     'VirtualMachineTemplateInventoryItem',
     'VirtualMachineTemplateListResult',
+    'VirtualMachineTemplateProperties',
+    'VirtualMachineTemplateTagsUpdate',
     'VirtualNetwork',
     'VirtualNetworkInventoryItem',
     'VirtualNetworkListResult',
+    'VirtualNetworkProperties',
+    'VirtualNetworkTagsUpdate',
     'VmInstanceHybridIdentityMetadata',
-    'VmInstanceHybridIdentityMetadataList',
+    'VmInstanceHybridIdentityMetadataListResult',
+    'VmInstanceHybridIdentityMetadataProperties',
+    'VmmCredential',
+    'VmmServer',
+    'VmmServerListResult',
+    'VmmServerProperties',
+    'VmmServerTagsUpdate',
     'ActionType',
     'AllocationMethod',
     'CreateDiffDisk',
     'CreatedByType',
     'DeleteFromHost',
     'DynamicMemoryEnabled',
-    'Force',
-    'IdentityType',
+    'ForceDelete',
     'InventoryType',
     'IsCustomizable',
     'IsHighlyAvailable',
@@ -234,6 +268,6 @@ __all__ = [
     'Origin',
     'OsType',
     'ProvisioningAction',
-    'ProvisioningState',
+    'ResourceProvisioningState',
     'SkipShutdown',
 ]

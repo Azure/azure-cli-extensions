@@ -5258,6 +5258,44 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(UnknownError):
             dec_2.set_up_static_egress_gateway(mc_2)
 
+    def test_set_up_imds_restriction(self):
+        dec_0 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(location="test_location")
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.set_up_imds_restriction(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(location="test_location")
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        dec_1 = AKSPreviewManagedClusterCreateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_imds_restriction": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="kubenet"
+            ),
+        )
+        dec_1.context.attach_mc(mc_1)
+        dec_mc_1 = dec_1.set_up_imds_restriction(mc_1)
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="kubenet",
+                pod_link_local_access="None",
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
+
     def test_construct_mc_profile_preview(self):
         import inspect
 
@@ -7958,38 +7996,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError):
             dec_6.update_upgrade_settings(mc_6)
 
-    def test_enable_disable_cost_analysis(self):
-        # Should not update mc if unset
-        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_0 = self.models.ManagedCluster(
-            location="test_location",
-        )
-        dec_0.context.attach_mc(mc_0)
-        dec_mc_0 = dec_0.update_metrics_profile(mc_0)
-        ground_truth_mc_0 = self.models.ManagedCluster(
-            location="test_location",
-        )
-        self.assertEqual(dec_mc_0, ground_truth_mc_0)
-
-        # Should error if both set
-        dec_6 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {"disable_cost_analysis": True, "enable_cost_analysis": True},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_6 = self.models.ManagedCluster(
-            location="test_location",
-        )
-        dec_6.context.attach_mc(mc_6)
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            dec_6.update_metrics_profile(mc_6)
-
     def test_update_addon_autoscaling(self):
         # Should not update mc if unset
         dec_0 = AKSPreviewManagedClusterUpdateDecorator(
@@ -8892,6 +8898,96 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_4, ground_truth_mc_4)
 
+    def test_enable_disable_imds_restriction(self):
+        # Should not update mc if unset
+        dec_0 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {},
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_0 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_0.context.attach_mc(mc_0)
+        dec_mc_0 = dec_0.update_imds_restriction(mc_0)
+        ground_truth_mc_0 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        self.assertEqual(dec_mc_0, ground_truth_mc_0)
+
+        # Should error if both set
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_imds_restriction": True, 
+                "enable_imds_restriction": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+        )
+        dec_1.context.attach_mc(mc_1)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_1.update_imds_restriction(mc_1)
+
+        # custom value
+        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_imds_restriction": True,
+                "yes": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="kubenet",
+            ),
+        )
+        dec_2.context.attach_mc(mc_2)
+        dec_mc_2 = dec_2.update_imds_restriction(mc_2)
+        ground_truth_mc_2 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="kubenet",
+                pod_link_local_access="None"
+            ),
+        )
+        self.assertEqual(dec_mc_2, ground_truth_mc_2)
+
+        # custom value
+        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "disable_imds_restriction": True,
+                "yes": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+
+        mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="kubenet",
+            ),
+        )
+        dec_3.context.attach_mc(mc_3)
+        dec_mc_3 = dec_3.update_imds_restriction(mc_3)
+        ground_truth_mc_3 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="kubenet",
+                pod_link_local_access="IMDS",
+            ),
+        )
+        self.assertEqual(dec_mc_3, ground_truth_mc_3)
 
 if __name__ == "__main__":
     unittest.main()

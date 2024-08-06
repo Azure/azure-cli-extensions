@@ -135,8 +135,10 @@ class AccessTokenCredential:
 
 def validate_custom_token():
     if os.getenv('AZURE_SUBSCRIPTION_ID') is None:
-        telemetry.set_exception(exception='Required environment variables and parameters are not set',
-                                fault_type=consts.Custom_Token_Environments_Fault_Type,
-                                summary='Required environment variables and parameters are not set')
-        raise ValidationError("Environment variable 'AZURE_SUBSCRIPTION_ID' should be set when custom access token \
-            is enabled.")
+        telemetry.set_exception(exception='Required environment variable \'AZURE_SUBSCRIPTION_ID\' is not set, when '
+                                          'using Custom Access Token.',
+                                fault_type=consts.Custom_Token_Env_Var_Sub_Id_Missing_Fault_Type,
+                                summary='Required environment variable \'AZURE_SUBSCRIPTION_ID\' is not set, when '
+                                        'using Custom Access Token.')
+        raise ValidationError("Environment variable 'AZURE_SUBSCRIPTION_ID' should be set when custom access token "
+                              "is enabled.")

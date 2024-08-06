@@ -188,7 +188,10 @@ def process_env_vars_from_template(params: dict,
     if template_env_vars:
         for env_var in template_env_vars:
             name = case_insensitive_dict_get(env_var, "name")
-            value = case_insensitive_dict_get(env_var, "value") or case_insensitive_dict_get(env_var, "secureValue")
+            value = case_insensitive_dict_get(env_var, "value")
+            # "value" is allowed to be empty string
+            if value is None:
+                value = case_insensitive_dict_get(env_var, "secureValue")
 
             if not name:
                 eprint(

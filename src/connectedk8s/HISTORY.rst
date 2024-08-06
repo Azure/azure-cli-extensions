@@ -3,11 +3,17 @@
 Release History
 ===============
 
-1.9.0
+1.10.0
 ++++++
 * Added support for arc gateway feature.
 * Bug fix for Workload Identity poll or agent state
 * Bug fix for connectedk8s update with workload identity enabled
+
+1.9.0
+++++++
+* Upgrading to v0.2.2 of ArcK8sDiagnoser
+* Fix Style and Linter issues.
+* Increase Max Timeout for Onboarding Helm Install to 20 mins (from 10).
 
 1.8.0
 ++++++
