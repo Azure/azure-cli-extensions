@@ -6,8 +6,6 @@
 import json
 import requests
 
-from msrestazure.azure_exceptions import CloudError
-
 from knack.log import get_logger
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
@@ -50,15 +48,15 @@ class GrafanaCreate(_GrafanaCreate):
                  'Once provided, CLI won\'t make the current logged-in user as Grafana Admin',
         )
         args_schema['principal_ids'].Element = AAZStrArg()
-        args_schema['identity']._registered = False
+        args_schema['identity']._registered = False  # pylint: disable=protected-access
 
         return args_schema
-    
+
     def pre_operations(self):
         args = self.ctx.args
         if args.skip_role_assignments and args.principal_ids:
             raise ArgumentUsageError("--skip-role-assignments | --assignee-object-ids")
-        
+
         if not args.skip_system_assigned_identity:
             args.identity = {"type": "SystemAssigned"}
 
@@ -73,8 +71,8 @@ class GrafanaCreate(_GrafanaCreate):
 
         if not args.skip_role_assignments:
             logger.warning("Grafana instance of '%s' was created. Now creating default role assignments for its "
-                       "managed identity, and current CLI account unless --principal-ids are provided.",
-                       args.workspace_name)
+                           "managed identity, and current CLI account unless --principal-ids are provided.",
+                           args.workspace_name)
 
             client = cf_amg(cli_ctx, subscription=None)
             subscription_scope = '/subscriptions/' + client._config.subscription_id  # pylint: disable=protected-access
@@ -85,12 +83,15 @@ class GrafanaCreate(_GrafanaCreate):
                 principal_ids = [user_principal_id]
             grafana_admin_role_id = resolve_role_id(cli_ctx, "Grafana Admin", subscription_scope)
 
-            for p in principal_ids:
-                _create_role_assignment(cli_ctx, p, "User", grafana_admin_role_id, self.ctx.vars.instance.id)
+            for principal_id in principal_ids:
+                principal_types = {"User", "Group"}
+                _create_role_assignment(cli_ctx, principal_id, principal_types, grafana_admin_role_id,
+                                        self.ctx.vars.instance.id)
 
             if self.ctx.vars.instance.identity:
                 monitoring_reader_role_id = resolve_role_id(cli_ctx, "Monitoring Reader", subscription_scope)
-                _create_role_assignment(cli_ctx, self.ctx.vars.instance.identity.principal_id, "ServicePrincipal",
+                principal_types = {"ServicePrincipal"}
+                _create_role_assignment(cli_ctx, self.ctx.vars.instance.identity.principal_id, {"ServicePrincipal"},
                                         monitoring_reader_role_id, subscription_scope)
 
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -119,7 +120,7 @@ class GrafanaDelete(_GrafanaDelete):
 class GrafanaUpdate(_GrafanaUpdate):
     def pre_operations(self):
         args = self.ctx.args
-        
+
         if args.grafana_major_version == "10":
             # prompt for confirmation, cancel operation if not confirmed
             if (not get_yes_or_no_option("You are trying to upgrade this workspace to Grafana version 10. By "
@@ -165,16 +166,18 @@ def _get_login_account_principal_id(cli_ctx):
     return result[0].object_id, principal_type
 
 
-def _create_role_assignment(cli_ctx, principal_id, principal_type, role_definition_id, scope):
+def _create_role_assignment(cli_ctx, principal_id, principal_types, role_definition_id, scope):
     import time
-    from azure.core.exceptions import ResourceExistsError
+    from azure.core.exceptions import HttpResponseError, ResourceExistsError
+    from msrestazure.azure_exceptions import CloudError
+
     assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
                                                  api_version=MGMT_SERVICE_CLIENT_API_VERSION).role_assignments
     RoleAssignmentCreateParameters = get_sdk(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
                                              'RoleAssignmentCreateParameters', mod='models',
                                              operation_group='role_assignments')
     parameters = RoleAssignmentCreateParameters(role_definition_id=role_definition_id,
-                                                principal_id=principal_id, principal_type=principal_type)
+                                                principal_id=principal_id, principal_type=principal_types.pop())
 
     logger.info("Creating an assignment with a role '%s' on the scope of '%s'", role_definition_id, scope)
     retry_times = 36
@@ -197,6 +200,14 @@ def _create_role_assignment(cli_ctx, principal_id, principal_type, role_definiti
                                retry_times)
                 continue
             raise
+        except HttpResponseError as ex:
+            # try each principal_type until we get the right one
+            if ex.message.find('UnmatchedPrincipalType') != -1:
+                parameters = RoleAssignmentCreateParameters(role_definition_id=role_definition_id,
+                                                            principal_id=principal_id,
+                                                            principal_type=principal_types.pop())
+                continue
+            break
 
 
 def _delete_role_assignment(cli_ctx, principal_id):

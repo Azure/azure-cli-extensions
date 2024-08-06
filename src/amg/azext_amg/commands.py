@@ -5,8 +5,6 @@
 
 # pylint: disable=line-too-long,too-many-statements
 
-from ._validators import process_grafana_create_namespace
-
 
 def load_command_table(self, _):
 
