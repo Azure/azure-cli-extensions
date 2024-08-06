@@ -8,7 +8,7 @@ Release History
 * `network firewall policy rule-collection-group collection rule add/update"`: Add parameter `--http-headers-to-insert`
 * `az network firewall policy draft create/update/show`: support policy draft commands
 * `az network firewall policy rule collection group draft create/update/show`: support rule collection group draft commands
-
+* new intrusion-detection parameter: IDPS Profile
 
 1.0.1
 ++++++
