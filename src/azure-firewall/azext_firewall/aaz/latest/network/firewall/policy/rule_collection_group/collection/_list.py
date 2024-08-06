@@ -297,6 +297,7 @@ class _ListHelper:
             flags={"required": True},
         )
 
+        # app rule
         disc_application_rule = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule")
         disc_application_rule.destination_addresses = AAZListType(
             serialized_name="destinationAddresses",
@@ -322,6 +323,9 @@ class _ListHelper:
         )
         disc_application_rule.web_categories = AAZListType(
             serialized_name="webCategories",
+        )
+        disc_application_rule.http_headers_to_insert = AAZListType(
+            serialized_name="httpHeadersToInsert",
         )
 
         destination_addresses = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").destination_addresses
@@ -354,6 +358,18 @@ class _ListHelper:
         web_categories = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").web_categories
         web_categories.Element = AAZStrType()
 
+        http_headers_to_insert = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").http_headers_to_insert
+        http_headers_to_insert.Element = AAZObjectType()
+
+        _element = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").http_headers_to_insert.Element
+        _element.header_name = AAZStrType(
+            serialized_name="headerName",
+        )
+        _element.header_value = AAZStrType(
+            serialized_name="headerValue",
+        )
+
+        # NAT rule
         disc_nat_rule = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "NatRule")
         disc_nat_rule.destination_addresses = AAZListType(
             serialized_name="destinationAddresses",
@@ -395,6 +411,7 @@ class _ListHelper:
         source_ip_groups = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "NatRule").source_ip_groups
         source_ip_groups.Element = AAZStrType()
 
+        # network rule
         disc_network_rule = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "NetworkRule")
         disc_network_rule.destination_addresses = AAZListType(
             serialized_name="destinationAddresses",

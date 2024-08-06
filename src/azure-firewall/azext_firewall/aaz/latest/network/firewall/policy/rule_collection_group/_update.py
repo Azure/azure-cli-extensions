@@ -110,6 +110,7 @@ class Update(AAZCommand):
             ),
         )
 
+        # define firewall_policy_filter_rule_collection
         firewall_policy_filter_rule_collection = cls._args_schema.rule_collections.Element.firewall_policy_filter_rule_collection
         firewall_policy_filter_rule_collection.action = AAZObjectArg(
             options=["action"],
@@ -154,41 +155,56 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        # define app rule in firewall_policy_filter_rule_collection
         application_rule = cls._args_schema.rule_collections.Element.firewall_policy_filter_rule_collection.rules.Element.application_rule
         application_rule.destination_addresses = AAZListArg(
             options=["destination-addresses"],
+            help="List of destination IP addresses or Service Tags.",
             nullable=True,
         )
         application_rule.fqdn_tags = AAZListArg(
             options=["fqdn-tags"],
+            help="List of FQDN Tags for this rule.",
             nullable=True,
         )
         application_rule.protocols = AAZListArg(
             options=["protocols"],
+            help="Array of Application Protocols.",
             nullable=True,
         )
         application_rule.source_addresses = AAZListArg(
             options=["source-addresses"],
+            help="List of source IP addresses for this rule.",
             nullable=True,
         )
         application_rule.source_ip_groups = AAZListArg(
             options=["source-ip-groups"],
+            help="List of source IpGroups for this rule.",
             nullable=True,
         )
         application_rule.target_fqdns = AAZListArg(
             options=["target-fqdns"],
+            help="List of FQDNs for this rule.",
             nullable=True,
         )
         application_rule.target_urls = AAZListArg(
             options=["target-urls"],
+            help="List of Urls for this rule condition.",
             nullable=True,
         )
         application_rule.terminate_tls = AAZBoolArg(
             options=["terminate-tls"],
+            help="Terminate TLS connections for this rule.",
             nullable=True,
         )
         application_rule.web_categories = AAZListArg(
             options=["web-categories"],
+            help="List of destination azure web categories.",
+            nullable=True,
+        )
+        application_rule.http_headers_to_insert = AAZListArg(
+            options=["http-headers-to-insert"],
+            help="List of HTTP/S headers to insert.",
             nullable=True,
         )
 
@@ -247,6 +263,22 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        http_headers_to_insert = cls._args_schema.rule_collections.Element.firewall_policy_filter_rule_collection.rules.Element.application_rule.http_headers_to_insert
+        http_headers_to_insert.Element = AAZObjectArg(
+            nullable=True,
+        )
+     
+        _element = cls._args_schema.rule_collections.Element.firewall_policy_filter_rule_collection.rules.Element.application_rule.http_headers_to_insert.Element
+        _element.header_name = AAZStrArg(
+            options=["header-name"],
+            help="Name of the header"
+        )
+        _element.header_value = AAZStrArg(
+            options=["header-value"],
+            help="Value of the header"
+        )
+
+        # define NAT rule in firewall_policy_filter_rule_collection
         nat_rule = cls._args_schema.rule_collections.Element.firewall_policy_filter_rule_collection.rules.Element.nat_rule
         nat_rule.destination_addresses = AAZListArg(
             options=["destination-addresses"],
@@ -307,6 +339,7 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        # define network rule in firewall_policy_filter_rule_collection
         network_rule = cls._args_schema.rule_collections.Element.firewall_policy_filter_rule_collection.rules.Element.network_rule
         network_rule.destination_addresses = AAZListArg(
             options=["destination-addresses"],
@@ -373,6 +406,7 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        # define firewall_policy_nat_rule_collection
         firewall_policy_nat_rule_collection = cls._args_schema.rule_collections.Element.firewall_policy_nat_rule_collection
         firewall_policy_nat_rule_collection.action = AAZObjectArg(
             options=["action"],
@@ -417,6 +451,7 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        # define app rule in firewall_policy_nat_rule_collection
         application_rule = cls._args_schema.rule_collections.Element.firewall_policy_nat_rule_collection.rules.Element.application_rule
         application_rule.destination_addresses = AAZListArg(
             options=["destination-addresses"],
@@ -453,6 +488,10 @@ class Update(AAZCommand):
         application_rule.web_categories = AAZListArg(
             options=["web-categories"],
             nullable=True,
+        )
+        application_rule.http_headers_to_insert = AAZDictArg(
+            options=["http-headers-to-insert"],
+            help="List of HTTP/S headers to insert.",
         )
 
         destination_addresses = cls._args_schema.rule_collections.Element.firewall_policy_nat_rule_collection.rules.Element.application_rule.destination_addresses
@@ -510,6 +549,22 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        http_headers_to_insert = cls._args_schema.rule_collections.Element.firewall_policy_nat_rule_collection.rules.Element.application_rule.http_headers_to_insert
+        http_headers_to_insert.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.rule_collections.Element.firewall_policy_nat_rule_collection.rules.Element.application_rule.http_headers_to_insert.Element
+        _element.header_name = AAZStrArg(
+            options=["header-name"],
+            help="Name of the header",
+        )
+        _element.header_value = AAZStrArg(
+            options=["header-value"],
+            help="Value of the header",
+        )
+        
+        # define NAT rule in firewall_policy_nat_rule_collection
         nat_rule = cls._args_schema.rule_collections.Element.firewall_policy_nat_rule_collection.rules.Element.nat_rule
         nat_rule.destination_addresses = AAZListArg(
             options=["destination-addresses"],
@@ -570,6 +625,7 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        # define network rule in firewall_policy_nat_rule_collection
         network_rule = cls._args_schema.rule_collections.Element.firewall_policy_nat_rule_collection.rules.Element.network_rule
         network_rule.destination_addresses = AAZListArg(
             options=["destination-addresses"],
@@ -936,6 +992,7 @@ class Update(AAZCommand):
                 disc_application_rule.set_prop("targetUrls", AAZListType, ".application_rule.target_urls")
                 disc_application_rule.set_prop("terminateTLS", AAZBoolType, ".application_rule.terminate_tls")
                 disc_application_rule.set_prop("webCategories", AAZListType, ".application_rule.web_categories")
+                disc_application_rule.set_prop("httpHeadersToInsert", AAZListType, ".application_rule.http_headers_to_insert")
 
             destination_addresses = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:ApplicationRule}.destinationAddresses")
             if destination_addresses is not None:
@@ -973,6 +1030,15 @@ class Update(AAZCommand):
             web_categories = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:ApplicationRule}.webCategories")
             if web_categories is not None:
                 web_categories.set_elements(AAZStrType, ".")
+
+            http_headers_to_insert = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:ApplicationRule}.httpHeadersToInsert")
+            if http_headers_to_insert is not None:
+                http_headers_to_insert.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get("{ruleType:ApplicationRule}.httpHeadersToInsert[]")
+            if _elements is not None:
+                _elements.set_prop("headerName", AAZStrType, ".header_name")
+                _elements.set_prop("headerValue", AAZStrType, ".header_value")
 
             disc_nat_rule = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:NatRule}")
             if disc_nat_rule is not None:
@@ -1078,6 +1144,7 @@ class Update(AAZCommand):
                 disc_application_rule.set_prop("targetUrls", AAZListType, ".application_rule.target_urls")
                 disc_application_rule.set_prop("terminateTLS", AAZBoolType, ".application_rule.terminate_tls")
                 disc_application_rule.set_prop("webCategories", AAZListType, ".application_rule.web_categories")
+                disc_application_rule.set_prop("httpHeadersToInsert", AAZListType, ".application_rule.http_headers_to_insert")
 
             destination_addresses = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:ApplicationRule}.destinationAddresses")
             if destination_addresses is not None:
@@ -1115,6 +1182,15 @@ class Update(AAZCommand):
             web_categories = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:ApplicationRule}.webCategories")
             if web_categories is not None:
                 web_categories.set_elements(AAZStrType, ".")
+
+            http_headers_to_insert = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyFilterRuleCollection}.rules[]{ruleType:ApplicationRule}.httpHeadersToInsert")
+            if http_headers_to_insert is not None:
+                http_headers_to_insert.set_elements(AAZStrType, ".")
+
+            _elements = _builder.get("{ruleType:ApplicationRule}.httpHeadersToInsert[]")
+            if _elements is not None:
+                _elements.set_prop("headerName", AAZStrType, ".header_name")
+                _elements.set_prop("headerValue", AAZStrType, ".header_value")
 
             disc_nat_rule = _builder.get(".properties.ruleCollections[]{ruleCollectionType:FirewallPolicyNatRuleCollection}.rules[]{ruleType:NatRule}")
             if disc_nat_rule is not None:
@@ -1345,10 +1421,13 @@ class _UpdateHelper:
         disc_application_rule.web_categories = AAZListType(
             serialized_name="webCategories",
         )
+        disc_application_rule.http_headers_to_insert = AAZListType(
+            serialized_name="httpHeadersToInsert",
+        )
 
         destination_addresses = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").destination_addresses
         destination_addresses.Element = AAZStrType()
-
+ 
         fqdn_tags = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").fqdn_tags
         fqdn_tags.Element = AAZStrType()
 
@@ -1376,6 +1455,18 @@ class _UpdateHelper:
         web_categories = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").web_categories
         web_categories.Element = AAZStrType()
 
+        http_headers_to_insert = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").http_headers_to_insert
+        http_headers_to_insert.Element = AAZObjectType()
+
+        _element = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "ApplicationRule").http_headers_to_insert.Element
+        _element.header_name = AAZStrType(
+            serialized_name="headerName",
+        )
+        _element.header_value = AAZStrType(
+            serialized_name="headerValue",
+        )
+
+        
         disc_nat_rule = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "NatRule")
         disc_nat_rule.destination_addresses = AAZListType(
             serialized_name="destinationAddresses",
@@ -1416,6 +1507,7 @@ class _UpdateHelper:
 
         source_ip_groups = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "NatRule").source_ip_groups
         source_ip_groups.Element = AAZStrType()
+
 
         disc_network_rule = _schema_firewall_policy_rule_read.discriminate_by("rule_type", "NetworkRule")
         disc_network_rule.destination_addresses = AAZListType(
