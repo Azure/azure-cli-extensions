@@ -826,10 +826,6 @@ def load_arguments(self, _):
             arg_type=get_enum_type(tls_management_types),
             default=CONST_TLS_MANAGEMENT_MANAGED,
             is_preview=True,
-            help=(
-                'Management of TLS certificates for querying network flow logs via the flow log endpoint.'
-                'Valid values are "Managed" and "None". If not specified, the default is Managed.'
-            )
         )
         c.argument(
             "custom_ca_trust_certificates",
@@ -1333,10 +1329,6 @@ def load_arguments(self, _):
             "advanced_networking_observability_tls_management",
             is_preview=True,
             arg_type=get_enum_type(tls_management_types),
-            help=(
-                'Management of TLS certificates for querying network flow logs via the flow log endpoint.'
-                'Valid values are "Managed" and "None". If not specified, the default is Managed.'
-            )
         )
         c.argument("enable_cost_analysis", is_preview=True, action="store_true")
         c.argument("disable_cost_analysis", is_preview=True, action="store_true")

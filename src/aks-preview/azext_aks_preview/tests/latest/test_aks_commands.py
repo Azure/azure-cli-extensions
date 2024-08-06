@@ -13286,7 +13286,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             }
         )
 
-        # create
+        # create an advancaed networking observability cluster with tls management set to "Managed"
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
@@ -13322,7 +13322,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             }
         )
 
-        # create
+        # create an advancaed networking observability cluster with tls management set to "None"
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "

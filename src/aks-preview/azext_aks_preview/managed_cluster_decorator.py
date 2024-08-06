@@ -3026,12 +3026,20 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         advanced_network_observability = self.context.get_enable_advanced_network_observability()
         if advanced_network_observability is not None:
-            network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
-                observability=self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
+            # Create an advanced networking model with an observability model if it does not exist.
+            if network_profile.advanced_networking is None:
+                network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
+                    observability=self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
+                        enabled=advanced_network_observability,
+                        tls_management=self.context.get_advanced_networking_observability_tls_management(),
+                    )
+                )
+            # Update the advanced networking model with an observability model if it does exist.
+            else:
+                network_profile.advanced_networking.observability = self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
                     enabled=advanced_network_observability,
                     tls_management=self.context.get_advanced_networking_observability_tls_management(),
                 )
-            )
         return mc
 
     def set_up_api_server_access_profile(self, mc: ManagedCluster) -> ManagedCluster:

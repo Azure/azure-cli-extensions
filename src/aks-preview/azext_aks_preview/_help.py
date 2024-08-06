@@ -236,6 +236,9 @@ helps['aks create'] = f"""
         - name: --enable-advanced-network-observability
           type: bool
           short-summary: Enable advanced network observability functionalities on a cluster. Note that enabling this will incur additional costs.
+        - name: --advanced-networking-observability-tls-management
+          type: string
+          short-summary: Management of TLS certificates for querying network flow logs via the flow log endpoint for Advanced Networking observability clusters. Valid values are "Managed" and "None". If not specified, the default is Managed.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
