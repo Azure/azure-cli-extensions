@@ -70,8 +70,9 @@ Release History
 ++++++
 * `az grafana dashboard sync`: fix version mismatch issue for library panel sync
 
-1.4.0
+2.0.0
 ++++++
+* Move existing Grafana CRUD command implementations to AAZ CodeGen
 * `az grafana create`: Migrate to AAZDev Tool & implicitly support role assignment principal types
 * `az grafana update`: Migrate to AAZDev Tool
 * `az grafana list`: Migrate to AAZDev Tool
