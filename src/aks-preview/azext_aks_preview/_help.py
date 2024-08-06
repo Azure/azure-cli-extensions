@@ -608,6 +608,9 @@ helps['aks create'] = f"""
         - name: --enable-app-routing
           type: bool
           short-summary: Enable Application Routing addon.
+        - name: --app-routing-nginx-default-controller 
+          type: string
+          short-summary: Configure default ingress controller type. Valid values are annotationControlled (default), external, internal, or none. See [link here] for more info.
         - name: --enable-ai-toolchain-operator
           type: bool
           short-summary: Enable AI toolchain operator to the cluster.

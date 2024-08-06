@@ -4853,6 +4853,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             {
                 "enable_addons": "web_application_routing",
                 "dns_zone_resource_ids": "test_dns_zone_resource_id",
+                "app_routing_nginx_default_controller": "external"
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -4863,6 +4864,9 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
                 enabled=True,
                 dns_zone_resource_ids=["test_dns_zone_resource_id"],
+                nginx=self.models.ManagedClusterIngressProfileNginx(
+                    default_ingress_controller_type="External"
+                )
             )
         )
         ground_truth_mc_1 = self.models.ManagedCluster(
@@ -5116,7 +5120,10 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
             self.cmd,
             self.client,
-            {"enable_app_routing": True},
+            {
+                "enable_app_routing": True,
+                "app_routing_nginx_default_controller": "external",
+             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_1 = self.models.ManagedCluster(location="test_location")
@@ -5125,6 +5132,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         ground_truth_ingress_profile_1 = self.models.ManagedClusterIngressProfile(
             web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
                 enabled=True,
+                nginx=self.models.ManagedClusterIngressProfileNginx(default_ingress_controller_type="External")
             )
         )
         ground_truth_mc_1 = self.models.ManagedCluster(

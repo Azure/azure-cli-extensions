@@ -38,6 +38,7 @@ from azext_aks_preview._consts import (
     CONST_OUTBOUND_TYPE_NONE,
     CONST_IMDS_RESTRICTION_ENABLED,
     CONST_IMDS_RESTRICTION_DISABLED,
+    APP_ROUTING_NGINX_TO_API
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
@@ -135,6 +136,7 @@ ManagedClusterStorageProfileFileCSIDriver = TypeVar('ManagedClusterStorageProfil
 ManagedClusterStorageProfileBlobCSIDriver = TypeVar('ManagedClusterStorageProfileBlobCSIDriver')
 ManagedClusterStorageProfileSnapshotController = TypeVar('ManagedClusterStorageProfileSnapshotController')
 ManagedClusterIngressProfileWebAppRouting = TypeVar("ManagedClusterIngressProfileWebAppRouting")
+ManagedClusterIngressProfileNginx = TypeVar("ManagedClusterIngressProfileNginx")
 ManagedClusterSecurityProfileDefender = TypeVar("ManagedClusterSecurityProfileDefender")
 ManagedClusterSecurityProfileNodeRestriction = TypeVar("ManagedClusterSecurityProfileNodeRestriction")
 ManagedClusterWorkloadProfileVerticalPodAutoscaler = TypeVar("ManagedClusterWorkloadProfileVerticalPodAutoscaler")
@@ -2755,6 +2757,13 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         return self.raw_param.get("update_dns_zone")
+    
+    def get_app_routing_nginx_default_controller(self) -> string:
+        """Obtain the value of app_routing_nginx_default_controller.
+        
+        :return: string
+        """
+        return self.raw_param.get("app_routing_nginx_default_controller")
 
     def get_node_provisioning_mode(self) -> Union[str, None]:
         """Obtain the value of node_provisioning_mode.
@@ -3133,7 +3142,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             if "web_application_routing" in addons:
                 dns_zone_resource_ids = self.context.get_dns_zone_resource_ids()
                 mc.ingress_profile.web_app_routing.dns_zone_resource_ids = dns_zone_resource_ids
-
+                nginx_ingress_controller = self.get_app_routing_nginx_default_controller()
+                if nginx_ingress_controller:
+                    mc.ingress_profile.web_app_routing.nginx = (
+                        self.models.ManagedClusterIngressProfileNginx(default_ingress_controller_type=APP_ROUTING_NGINX_TO_API[nginx_ingress_controller])
+                        )
+                    
         return mc
 
     def set_up_workload_auto_scaler_profile(self, mc: ManagedCluster) -> ManagedCluster:
