@@ -213,7 +213,11 @@ def create_snapshot(grafana_url, snapshot, http_headers, overwrite):
         snapshot['name'] = "Untitled Snapshot"
     snapshot_name = snapshot['name']
 
-    exists_before = check_snapshot_exists(grafana_url, snapshot['key'], http_headers)
+    exists_before = False
+    # TODO: in backup we don't save the key.
+    if 'key' in snapshot:
+        exists_before = check_snapshot_exists(grafana_url, snapshot['key'], http_headers)
+
     if exists_before:
         if overwrite:
             (status, content) = send_grafana_delete(f'{grafana_url}/api/snapshots/{snapshot["key"]}', http_headers)

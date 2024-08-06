@@ -14,14 +14,15 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run,
             overwrite, folders_to_include=None, folders_to_exclude=None):
     # pylint: disable=too-many-locals
 
-    # get all datasources to be backedup
-    all_datasources = get_all_datasources(backup_url, backup_headers)
-    all_restore_datasources = get_all_datasources(restore_url, restore_headers)
-    if (all_restore_datasources is None) or (all_datasources is None):
+    # get all datasources to be backed up
+    all_source_datasources = get_all_datasources(backup_url, backup_headers)
+    all_destination_datasources = get_all_datasources(restore_url, restore_headers)
+    # it will be None when the request to get all the datasources doesn't work.
+    if (all_destination_datasources is None) or (all_source_datasources is None):
         logger.error("ABORTING!! Datasources are not found. Please check the URLs, headers, or api key/service token.")
         return
     (datasources_created_summary, datasources_remapped_summary) = _migrate_datasources(
-        all_datasources, all_restore_datasources, restore_url, restore_headers, dry_run)
+        all_source_datasources, all_destination_datasources, restore_url, restore_headers, dry_run)
 
     all_folders = get_all_folders(backup_url,
                                   backup_headers,
@@ -114,14 +115,14 @@ def append_annotations_summary(output, status, summary_type, annotations_summary
                        "\n    ".join([f"id: {a}, text: {b}" for a, b in postprocessed_summary])))
 
 
-def _migrate_datasources(all_datasources, all_restore_datasources, restore_url, restore_headers, dry_run):
+def _migrate_datasources(all_source_datasources, all_destination_datasources, restore_url, restore_headers, dry_run):
     datasources_created_summary = []
     datasources_remapped_summary = []
 
     # since in our remapping, we use the name and type to check if it is the same datasource.
-    restore_datasources_names = {(ds['name'], ds['type']) for ds in all_restore_datasources}
+    restore_datasources_names = {(ds['name'], ds['type']) for ds in all_destination_datasources}
 
-    for datasource in all_datasources:
+    for datasource in all_source_datasources:
         if (datasource['name'], datasource['type']) not in restore_datasources_names:
             if not dry_run:
                 create_datasource(restore_url, datasource, restore_headers)
@@ -132,7 +133,7 @@ def _migrate_datasources(all_datasources, all_restore_datasources, restore_url, 
             datasources_remapped_summary.append(datasource['name'])
     # grab all the new datasources now. since we have created the datasources, we can now do the mapping.
     # do the mapping from the backup to the restore.
-    set_uid_mapping(all_datasources, all_restore_datasources)
+    set_uid_mapping(all_source_datasources, all_destination_datasources)
 
     return (datasources_created_summary, datasources_remapped_summary)
 

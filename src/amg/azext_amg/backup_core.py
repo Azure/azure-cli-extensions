@@ -232,6 +232,7 @@ def get_all_datasources(grafana_url, http_headers):
         return datasources
 
     logger.info("Query datasource FAILED, status: %s, msg: %s", status, content)
+    return None
 
 
 def print_an_empty_line():
