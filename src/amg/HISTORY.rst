@@ -69,3 +69,11 @@ Release History
 1.3.5
 ++++++
 * `az grafana dashboard sync`: fix version mismatch issue for library panel sync
+
+1.4.0
+++++++
+* `az grafana create`: Migrate to AAZDev Tool & implicitly support role assignment principal types
+* `az grafana update`: Migrate to AAZDev Tool
+* `az grafana list`: Migrate to AAZDev Tool
+* `az grafana show`: Migrate to AAZDev Tool
+* `az grafana delete`: Migrate to AAZDev Tool
