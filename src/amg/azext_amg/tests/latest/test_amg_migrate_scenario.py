@@ -137,6 +137,12 @@ class AmgMigrateScenarioTest(ScenarioTest):
             self.assertTrue(folder_list_output == folder_list_output_after)
             self.assertTrue(dashboard_list_output == dashboard_list_output_after)
 
+            # Close-out Instance
+            self.cmd('grafana delete -g {rg} -n {name} --yes')
+            self.cmd('grafana delete -g {rg} -n {name2} --yes')
+            final_count = len(self.cmd('grafana list').get_output_in_json())
+            self.assertTrue(final_count, 0)
+
 
     @AllowLargeResponse(size_kb=3072)
     @ResourceGroupPreparer(name_prefix='cli_test_amg', location='westcentralus')
@@ -207,7 +213,12 @@ class AmgMigrateScenarioTest(ScenarioTest):
                 self.check("[dashboard.title]", "['{dashboardTitle2}']"),
                 self.check("[dashboard.uid]", "['{dashboardUid2_amg2}']"),
                 self.check("[meta.folderTitle]", "['General']")])
-
+            
+            # Close-out Instance
+            self.cmd('grafana delete -g {rg} -n {name} --yes')
+            self.cmd('grafana delete -g {rg} -n {name2} --yes')
+            final_count = len(self.cmd('grafana list').get_output_in_json())
+            self.assertTrue(final_count, 0)
 
 
     @AllowLargeResponse(size_kb=3072)
@@ -267,6 +278,12 @@ class AmgMigrateScenarioTest(ScenarioTest):
                 self.check("[dashboard.title]", "['{dashboardTitle4}']"),
                 self.check("[dashboard.panels[0].datasource.uid]", "['{amg2_datasource_uid}']"),
                 self.check("[meta.folderTitle]", "['General']")])
+            
+            # Close-out Instance
+            self.cmd('grafana delete -g {rg} -n {name} --yes')
+            self.cmd('grafana delete -g {rg} -n {name2} --yes')
+            final_count = len(self.cmd('grafana list').get_output_in_json())
+            self.assertTrue(final_count, 0)
 
 
     @AllowLargeResponse(size_kb=3072)
@@ -332,7 +349,13 @@ class AmgMigrateScenarioTest(ScenarioTest):
                 self.check("[dashboard.title]", "['{dashboardTitle3}']"),
                 self.check("[meta.folderTitle]", "['{folderTitle}']")])
 
-            # TODO: add snapshots / annotations once duplication problem is fixed.
+            # TODO: Add snapshot / annotation testing when creating them via the CLI is supported.
+
+            # Close-out Instance
+            self.cmd('grafana delete -g {rg} -n {name} --yes')
+            self.cmd('grafana delete -g {rg} -n {name2} --yes')
+            final_count = len(self.cmd('grafana list').get_output_in_json())
+            self.assertTrue(final_count, 0)
 
     def _get_signed_in_user(self):
         account_info = self.cmd('account show').get_output_in_json()
