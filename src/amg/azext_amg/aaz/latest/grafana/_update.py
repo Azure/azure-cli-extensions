@@ -91,7 +91,7 @@ class Update(AAZCommand):
             help="The major Grafana software version to target.",
         )
         _args_schema.public_network_access = AAZStrArg(
-            options=["--public-network-access"],
+            options=["-p", "--public-network-access"],
             arg_group="Properties",
             help="Indicate the state for enable or disable traffic over the public interface.",
             default="Enabled",
