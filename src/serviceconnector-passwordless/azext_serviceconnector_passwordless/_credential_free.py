@@ -859,7 +859,7 @@ class PostgresSingleHandler(PostgresFlexHandler):
                     "No database found with name {}".format(self.dbname))
                 telemetry.set_exception(e, "No-Db")
                 raise e
-        except Exception as e:
+        except CLIInternalError as e:
             telemetry.set_exception(e, "No-Db")
             raise e
 
