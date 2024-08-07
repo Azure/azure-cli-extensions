@@ -416,7 +416,7 @@ class MysqlFlexibleHandler(TargetHandler):
                 telemetry.set_exception(ex, "Connect-Db-Close-Fail")
                 raise ex from e
 
-    def get_connection_string(self, dbname):
+    def get_connection_string(self, dbname=""):
         password = run_cli_cmd(
             'az account get-access-token --resource-type oss-rdbms').get('accessToken')
 
@@ -606,7 +606,7 @@ class SqlHandler(TargetHandler):
                 self.ip = search_ip.group(1)
             raise AzureConnectionError("Fail to connect sql." + str(e)) from e
 
-    def get_connection_string(self, dbname):
+    def get_connection_string(self, dbname=""):
         token_bytes = run_cli_cmd(
             'az account get-access-token --output json --resource https://database.windows.net/').get('accessToken').encode('utf-16-le')
 
@@ -859,7 +859,7 @@ class PostgresSingleHandler(PostgresFlexHandler):
                     "No database found with name {}".format(self.dbname))
                 telemetry.set_exception(e, "No-Db")
                 raise e
-        except CLIInternalError as e:
+        except Exception as e:
             telemetry.set_exception(e, "No-Db")
             raise e
 
