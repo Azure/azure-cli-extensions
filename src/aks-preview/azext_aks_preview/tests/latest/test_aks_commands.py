@@ -13535,6 +13535,42 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus2"
+    )
+    def test_aks_create_with_app_routing_enabled_and_nginx_specified_abbrv(
+        self, resource_group, resource_group_location
+    ):
+        """This test case exercises creating an AKS cluster with app routing addon enabled and the None nginx type specified using the abbreviated form to configure default nic"""
+
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+
+        # create cluster with app routing addon enabled
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "aks_name": aks_name,
+                "location": resource_group_location,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version 1.30 "
+            "--ssh-key-value={ssh_key_value} --enable-app-routing --ardnic none"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("ingressProfile.webAppRouting.enabled", True),
+                self.check("ingressProfile.webAppRouting.nginx.defaultIngressControllerType", "None")
+            ],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
         location="eastus",
