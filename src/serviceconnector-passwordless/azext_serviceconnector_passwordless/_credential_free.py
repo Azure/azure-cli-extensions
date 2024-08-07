@@ -416,7 +416,7 @@ class MysqlFlexibleHandler(TargetHandler):
                 telemetry.set_exception(ex, "Connect-Db-Close-Fail")
                 raise ex from e
 
-    def get_connection_string(self, dbname):
+    def get_connection_string(self, dbname=""):
         password = run_cli_cmd(
             'az account get-access-token --resource-type oss-rdbms').get('accessToken')
 
@@ -606,7 +606,7 @@ class SqlHandler(TargetHandler):
                 self.ip = search_ip.group(1)
             raise AzureConnectionError("Fail to connect sql." + str(e)) from e
 
-    def get_connection_string(self, dbname):
+    def get_connection_string(self, dbname=""):
         token_bytes = run_cli_cmd(
             'az account get-access-token --output json --resource https://database.windows.net/').get('accessToken').encode('utf-16-le')
 
@@ -726,7 +726,8 @@ class PostgresFlexHandler(TargetHandler):
                     True, ip_name, ip_address, ip_address)
             try:
                 # create again
-                self.create_aad_user_in_pg(connection_string, query_list)
+                self.create_aad_user_in_pg(connection_string, query_list[0:1])
+                self.create_aad_user_in_pg(self.get_connection_string(self.dbname), query_list[1:])
             except AzureConnectionError as e:
                 logger.warning(e)
                 if not ip_address:
@@ -738,7 +739,8 @@ class PostgresFlexHandler(TargetHandler):
                     True, ip_name, '0.0.0.0', '255.255.255.255')
                 # create again
                 try:
-                    self.create_aad_user_in_pg(connection_string, query_list)
+                    self.create_aad_user_in_pg(connection_string, query_list[0:1])
+                    self.create_aad_user_in_pg(self.get_connection_string(self.dbname), query_list[1:])
                 except AzureConnectionError as e:
                     telemetry.set_exception(e, "Connect-Db-Fail")
                     raise e
