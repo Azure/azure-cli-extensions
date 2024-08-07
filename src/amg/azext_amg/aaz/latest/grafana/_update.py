@@ -75,14 +75,12 @@ class Update(AAZCommand):
             options=["--api-key", "--service-account"],
             arg_group="Properties",
             help="The api key setting of the Grafana instance.",
-            default="Disabled",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.deterministic_outbound_ip = AAZStrArg(
             options=["-i", "--deterministic-outbound-ip"],
             arg_group="Properties",
             help="Whether a Grafana instance uses deterministic outbound IPs.",
-            default="Disabled",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.grafana_major_version = AAZStrArg(
@@ -94,14 +92,12 @@ class Update(AAZCommand):
             options=["-p", "--public-network-access"],
             arg_group="Properties",
             help="Indicate the state for enable or disable traffic over the public interface.",
-            default="Enabled",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.zone_redundancy = AAZStrArg(
             options=["--zone-redundancy"],
             arg_group="Properties",
             help="The zone redundancy setting of the Grafana instance.",
-            default="Disabled",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
 

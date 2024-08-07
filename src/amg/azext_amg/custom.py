@@ -33,7 +33,7 @@ class GrafanaCreate(_GrafanaCreate):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema['skip_system_assigned_identity'] = AAZStrArg(
-            options=['--skip-system-assigned-identity'],
+            options=['--skip-system-assigned-identity', '--skip-identity'],
             help='Do not enable system assigned identity. Use this option if you want to manage the identity '
                  'yourself.',
         )
@@ -453,7 +453,7 @@ def list_notification_channels(cmd, grafana_name, resource_group_name=None, shor
     if short is False:
         response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/alert-notifications",
                                  api_key_or_token=api_key_or_token)
-    elif short is True:
+    else:
         response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/alert-notifications/lookup",
                                  api_key_or_token=api_key_or_token)
     return json.loads(response.content)
