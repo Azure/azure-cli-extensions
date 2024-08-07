@@ -59,7 +59,6 @@ def create_fleet(cmd,
             "AgentProfile",
             resource_type=CUSTOM_MGMT_FLEET,
             operation_group="fleets",
-            vm_size=vm_size
         )
         api_server_access_profile = api_server_access_profile_model(
             enable_private_cluster=enable_private_cluster,
@@ -68,6 +67,7 @@ def create_fleet(cmd,
         )
         agent_profile = agent_profile_model(
             subnet_id=agent_subnet_id
+            vm_size=vm_size
         )
         fleet_hub_profile = fleet_hub_profile_model(
             dns_prefix=dns_name_prefix,
