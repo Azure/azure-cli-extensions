@@ -5,7 +5,7 @@
 
 test_data_source = {
     "access": "proxy",
-    "uid": "bdpe79jidbwu8c",
+    "uid": "da714998-ca29-4adc-851b-1bd93371cbc6",
     "jsonData": {
         "azureAuthType": "msi",
         "subscriptionId": ""
@@ -68,7 +68,7 @@ test_dashboard_with_datasource = {
             {
                 "datasource": {
                     "type": "grafana-azure-monitor-datasource",
-                    "uid": "bdpe79jidbwu8c"
+                    "uid": "da714998-ca29-4adc-851b-1bd93371cbc6"
                 },
                 "fieldConfig": {
                     "defaults": {
@@ -148,7 +148,7 @@ test_dashboard_with_datasource = {
                     {
                         "datasource": {
                             "type": "grafana-azure-monitor-datasource",
-                            "uid": "bdpe79jidbwu8c"
+                            "uid": "da714998-ca29-4adc-851b-1bd93371cbc6"
                         },
                         "refId": "A",
                         "scenarioId": "random_walk"
@@ -160,7 +160,7 @@ test_dashboard_with_datasource = {
             {
                 "datasource": {
                     "type": "grafana-azure-monitor-datasource",
-                    "uid": "bdpe79jidbwu8c"
+                    "uid": "da714998-ca29-4adc-851b-1bd93371cbc6"
                 },
                 "fieldConfig": {
                     "defaults": {
@@ -240,7 +240,7 @@ test_dashboard_with_datasource = {
                     {
                         "datasource": {
                             "type": "grafana-azure-monitor-datasource",
-                            "uid": "bdpe79jidbwu8c"
+                            "uid": "da714998-ca29-4adc-851b-1bd93371cbc6"
                         },
                         "refId": "A",
                         "scenarioId": "random_walk",

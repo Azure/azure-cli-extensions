@@ -125,8 +125,9 @@ class AmgMigrateScenarioTest(ScenarioTest):
             folder_list_output = self.cmd('grafana folder list -g {rg} -n {name2}').get_output_in_json()
             dashboard_list_output = self.cmd('grafana dashboard list -g {rg} -n {name2}').get_output_in_json()
 
-            # now migrate to new instance 2.
-            self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken} --dry-run')
+            with unittest.mock.patch('azext_amg.utils.search_annotations', side_effect=self._return_200_and_empty_list):
+                # now migrate to new instance 2.
+                self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken} --dry-run')
 
             data_source_list_output_after = self.cmd('grafana data-source list -g {rg} -n {name2}').get_output_in_json()
             folder_list_output_after = self.cmd('grafana folder list -g {rg} -n {name2}').get_output_in_json()
@@ -187,9 +188,10 @@ class AmgMigrateScenarioTest(ScenarioTest):
                 self.check("[dashboard.title]", "['{dashboardTitle2_amg}']"),
                 self.check("[dashboard.uid]", "['{dashboardUid2_amg2}']"),
                 self.check("[meta.folderTitle]", "['General']")])
-                
-            # now migrate to new instance 2.
-            self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken}')
+
+            with unittest.mock.patch('azext_amg.utils.search_annotations', side_effect=self._return_200_and_empty_list):
+                # now migrate to new instance 2.
+                self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken}')
 
             # the uid shouldn't be updated since we didn't overwrite.
             self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid2_amg2}"', checks=[
@@ -197,7 +199,8 @@ class AmgMigrateScenarioTest(ScenarioTest):
                 self.check("[dashboard.uid]", "['{dashboardUid2_amg2}']"),
                 self.check("[meta.folderTitle]", "['General']")])
 
-            self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken} --overwrite')
+            with unittest.mock.patch('azext_amg.utils.search_annotations', side_effect=self._return_200_and_empty_list):
+                self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken} --overwrite')
 
             # the uid should stay the same, but the title & other properies should be updated.
             self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid2_amg2}"', checks=[
@@ -256,8 +259,9 @@ class AmgMigrateScenarioTest(ScenarioTest):
                 'serviceAccountToken': service_account_token['key']
             })
 
-            # now migrate to new instance 2.
-            self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken}')
+            with unittest.mock.patch('azext_amg.utils.search_annotations', side_effect=self._return_200_and_empty_list):
+                # now migrate to new instance 2.
+                self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken}')
 
             self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid4}"', checks=[
                 self.check("[dashboard.title]", "['{dashboardTitle4}']"),
@@ -297,8 +301,9 @@ class AmgMigrateScenarioTest(ScenarioTest):
                 'serviceAccountToken': service_account_token['key']
             })
 
-            # now migrate to new instance 2.
-            self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken}')
+            with unittest.mock.patch('azext_amg.utils.search_annotations', side_effect=self._return_200_and_empty_list):
+                # now migrate to new instance 2.
+                self.cmd('grafana migrate -g {rg} -n {name2} -s {srcUrl} -t {serviceAccountToken}')
 
             # check that the migrate worked.
             # migrate shouldn't have modified the first instance.
@@ -334,3 +339,6 @@ class AmgMigrateScenarioTest(ScenarioTest):
         if account_info['user']['type'] == 'user':
             return account_info['user']['name']
         return None
+
+    def _return_200_and_empty_list(self, grafana_url, ts_from, ts_to, http_get_headers):
+        return 200, []
