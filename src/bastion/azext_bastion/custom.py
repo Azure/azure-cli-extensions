@@ -327,8 +327,8 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
             hostname = get_host_name(cmd, target_resource_id, resource_group_name)
             access_token = Profile(cli_ctx=cmd.cli_ctx).get_raw_token()[0][2].get("accessToken")
             logger.debug("Response %s", access_token)
-            web_address = f"https://{bastion_endpoint}/api/rdpfile?resourceId={target_resource_id}&format=rdp" \
-                          f"&rdpport={resource_port}&enablerdsaad={enable_mfa}&hostname={hostname}"
+            web_address = f"https://{bastion_endpoint}/api/rdpfile?resourceId={target_resource_id}&resourceHostName={hostname}" \
+                          f"&format=rdp&rdpport={resource_port}&enablerdsaad={enable_mfa}&resourceName={hostname}"
 
             headers = {
                 "Authorization": f"Bearer {access_token}",
