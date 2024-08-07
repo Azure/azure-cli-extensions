@@ -726,7 +726,8 @@ class PostgresFlexHandler(TargetHandler):
                     True, ip_name, ip_address, ip_address)
             try:
                 # create again
-                self.create_aad_user_in_pg(connection_string, query_list)
+                self.create_aad_user_in_pg(connection_string, query_list[0:1])
+                self.create_aad_user_in_pg(self.get_connection_string(self.dbname), query_list[1:])
             except AzureConnectionError as e:
                 logger.warning(e)
                 if not ip_address:
@@ -738,7 +739,8 @@ class PostgresFlexHandler(TargetHandler):
                     True, ip_name, '0.0.0.0', '255.255.255.255')
                 # create again
                 try:
-                    self.create_aad_user_in_pg(connection_string, query_list)
+                    self.create_aad_user_in_pg(connection_string, query_list[0:1])
+                    self.create_aad_user_in_pg(self.get_connection_string(self.dbname), query_list[1:])
                 except AzureConnectionError as e:
                     telemetry.set_exception(e, "Connect-Db-Fail")
                     raise e
