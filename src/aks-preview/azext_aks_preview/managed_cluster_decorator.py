@@ -2758,10 +2758,10 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("update_dns_zone")
     
-    def get_app_routing_nginx_default_controller(self) -> string:
+    def get_app_routing_nginx_default_controller(self) -> str:
         """Obtain the value of app_routing_nginx_default_controller.
         
-        :return: string
+        :return: str
         """
         return self.raw_param.get("app_routing_nginx_default_controller")
     
@@ -3149,7 +3149,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             if "web_application_routing" in addons:
                 dns_zone_resource_ids = self.context.get_dns_zone_resource_ids()
                 mc.ingress_profile.web_app_routing.dns_zone_resource_ids = dns_zone_resource_ids
-                nginx_ingress_controller = self.get_app_routing_nginx_default_controller()
+                nginx_ingress_controller = self.context.get_app_routing_nginx_default_controller()
                 if nginx_ingress_controller:
                     mc.ingress_profile.web_app_routing.nginx = (
                         self.models.ManagedClusterIngressProfileNginx(default_ingress_controller_type=APP_ROUTING_NGINX_TO_API[nginx_ingress_controller])
