@@ -656,7 +656,11 @@ def load_arguments(self, _):
         c.argument("rotation_poll_interval")
         c.argument("enable_sgxquotehelper", action="store_true")
         c.argument("enable_app_routing", action="store_true", is_preview=True)
-        c.argument("app_routing_nginx_default_controller", arg_type=get_enum_type(app_routing_nginx_configs), options_list=["--app-routing-nginx-default-controller", "--ardnic"])
+        c.argument(
+            "app_routing_default_nginx_controller", 
+            arg_type=get_enum_type(app_routing_nginx_configs), 
+            options_list=["--app-routing-default-nginx-controller", "--ardnc"]
+        )
         # nodepool paramerters
         c.argument(
             "nodepool_name",
