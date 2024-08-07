@@ -12,6 +12,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * Vendor new SDK and bump API version to 2024-06-02-preview.
+* Add support for default nginx ingress controller config for app routing add-on
 
 7.0.0b3
 ++++++++
