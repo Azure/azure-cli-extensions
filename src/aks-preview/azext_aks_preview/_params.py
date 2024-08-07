@@ -405,11 +405,11 @@ bootstrap_artifact_source_types = [
 
 # consts for app routing add-on
 app_routing_nginx_configs = [
-    CONST_APP_ROUTING_ANNOTATION_CONTROLLED_NGINX, 
-    CONST_APP_ROUTING_EXTERNAL_NGINX, 
-    CONST_APP_ROUTING_INTERNAL_NGINX, 
+    CONST_APP_ROUTING_ANNOTATION_CONTROLLED_NGINX,
+    CONST_APP_ROUTING_EXTERNAL_NGINX,
+    CONST_APP_ROUTING_INTERNAL_NGINX,
     CONST_APP_ROUTING_NONE_NGINX
-    ]
+]
 
 
 def load_arguments(self, _):
@@ -656,7 +656,7 @@ def load_arguments(self, _):
         c.argument("rotation_poll_interval")
         c.argument("enable_sgxquotehelper", action="store_true")
         c.argument("enable_app_routing", action="store_true", is_preview=True)
-        c.argument("app_routing_nginx_default_controller", arg_type=get_enum_type(app_routing_nginx_configs), options_list=["--app-routing-nginx-default-controller"])
+        c.argument("app_routing_nginx_default_controller", arg_type=get_enum_type(app_routing_nginx_configs), options_list=["--app-routing-nginx-default-controller", "--ardnic"])
         # nodepool paramerters
         c.argument(
             "nodepool_name",

@@ -608,7 +608,7 @@ helps['aks create'] = f"""
         - name: --enable-app-routing
           type: bool
           short-summary: Enable Application Routing addon.
-        - name: --app-routing-nginx-default-controller 
+        - name: --app-routing-nginx-default-controller
           type: string
           short-summary: Configure default nginx ingress controller type. Valid values are annotationControlled (default behavior), external, internal, or none. See [link here] for more info.
         - name: --enable-ai-toolchain-operator
