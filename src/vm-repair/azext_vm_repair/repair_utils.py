@@ -727,7 +727,7 @@ def _get_function_param_dict(frame):
     return values
 
 
-def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux, encrypt_recovery_key):
+def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux, encrypt_recovery_key = ""):
     stdout, stderr = _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linux, encrypt_recovery_key)
     logger.debug('Unlock script STDOUT:\n%s', stdout)
     if stderr:
