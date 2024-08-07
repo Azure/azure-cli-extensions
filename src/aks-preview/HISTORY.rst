@@ -16,6 +16,7 @@ Pending
 7.0.0b4
 ++++++++
 * Fix bug related to the -ampls-resource-id option in the `az aks enable-addons` command.
+* Vendor new SDK and bump API version to 2024-06-02-preview.
 
 7.0.0b3
 ++++++++
