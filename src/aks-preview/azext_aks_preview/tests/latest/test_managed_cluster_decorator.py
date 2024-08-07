@@ -4853,7 +4853,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             {
                 "enable_addons": "web_application_routing",
                 "dns_zone_resource_ids": "test_dns_zone_resource_id",
-                "app_routing_nginx_default_controller": "external"
+                "app_routing_default_nginx_controller": "external"
             },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -5145,7 +5145,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             self.client,
             {
                 "enable_app_routing": True,
-                "app_routing_nginx_default_controller": "external",
+                "app_routing_default_nginx_controller": "external",
              },
             CUSTOM_MGMT_AKS_PREVIEW,
         )

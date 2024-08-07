@@ -13499,7 +13499,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus2"
+        random_name_length=17, name_prefix="clitest", location="centralus"
     )
     def test_aks_create_with_app_routing_enabled_and_nginx_specified(
         self, resource_group, resource_group_location
@@ -13522,7 +13522,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version 1.30 "
-            "--ssh-key-value={ssh_key_value} --enable-app-routing --app-routing-nginx-default-controller none"
+            "--ssh-key-value={ssh_key_value} --enable-app-routing --app-routing-default-nginx-controller none"
         )
         self.cmd(
             create_cmd,
@@ -13533,9 +13533,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             ],
         )
 
+        # delete AKS cluster
+        self.cmd(
+            "aks delete -g {resource_group} -n {aks_name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus2"
+        random_name_length=17, name_prefix="clitest", location="centralus"
     )
     def test_aks_create_with_app_routing_enabled_and_nginx_specified_abbrv(
         self, resource_group, resource_group_location
@@ -13558,7 +13564,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version 1.30 "
-            "--ssh-key-value={ssh_key_value} --enable-app-routing --ardnic none"
+            "--ssh-key-value={ssh_key_value} --enable-app-routing --ardnc none"
         )
         self.cmd(
             create_cmd,
@@ -13567,6 +13573,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("ingressProfile.webAppRouting.enabled", True),
                 self.check("ingressProfile.webAppRouting.nginx.defaultIngressControllerType", "None")
             ],
+        )
+
+        # delete AKS cluster
+        self.cmd(
+            "aks delete -g {resource_group} -n {aks_name} --yes --no-wait",
+            checks=[self.is_empty()],
         )
 
     @AllowLargeResponse()
