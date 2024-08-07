@@ -66,7 +66,7 @@ def create_fleet(cmd,
             subnet_id=apiserver_subnet_id
         )
         agent_profile = agent_profile_model(
-            subnet_id=agent_subnet_id
+            subnet_id=agent_subnet_id,
             vm_size=vm_size
         )
         fleet_hub_profile = fleet_hub_profile_model(
