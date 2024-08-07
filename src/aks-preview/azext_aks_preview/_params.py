@@ -632,6 +632,8 @@ def load_arguments(self, _):
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)
+        c.argument("enable_high_log_scale_mode", arg_type=get_three_state_flag(), is_preview=True)
+        c.argument("ampls_resource_id", is_preview=True)
         c.argument("aci_subnet_name")
         c.argument("appgw_name", arg_group="Application Gateway")
         c.argument("appgw_subnet_cidr", arg_group="Application Gateway")
@@ -879,7 +881,7 @@ def load_arguments(self, _):
         c.argument("grafana_resource_id", validator=validate_grafanaresourceid)
         c.argument("enable_windows_recording_rules", action="store_true")
         c.argument("enable_azure_monitor_app_monitoring", is_preview=True, action="store_true")
-        c.argument("enable_cost_analysis", is_preview=True, action="store_true")
+        c.argument("enable_cost_analysis", action="store_true")
         c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
         # azure container storage
         c.argument(
@@ -1310,8 +1312,8 @@ def load_arguments(self, _):
             action="store_true",
             is_preview=True,
         )
-        c.argument("enable_cost_analysis", is_preview=True, action="store_true")
-        c.argument("disable_cost_analysis", is_preview=True, action="store_true")
+        c.argument("enable_cost_analysis", action="store_true")
+        c.argument("disable_cost_analysis", action="store_true")
         c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
         c.argument('disable_ai_toolchain_operator', is_preview=True, action='store_true')
         # azure container storage
@@ -1856,6 +1858,8 @@ def load_arguments(self, _):
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)
+        c.argument("enable_high_log_scale_mode", arg_type=get_three_state_flag(), is_preview=True)
+        c.argument("ampls_resource_id", is_preview=True)
         c.argument(
             "dns_zone_resource_id",
             deprecate_info=c.deprecate(
@@ -1911,6 +1915,8 @@ def load_arguments(self, _):
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)
+        c.argument("enable_high_log_scale_mode", arg_type=get_three_state_flag(), is_preview=True)
+        c.argument("ampls_resource_id", is_preview=True)
         c.argument(
             "dns_zone_resource_id",
             deprecate_info=c.deprecate(
@@ -1949,6 +1955,8 @@ def load_arguments(self, _):
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)
+        c.argument("enable_high_log_scale_mode", arg_type=get_three_state_flag(), is_preview=True)
+        c.argument("ampls_resource_id", is_preview=True)
         c.argument(
             "dns_zone_resource_id",
             deprecate_info=c.deprecate(

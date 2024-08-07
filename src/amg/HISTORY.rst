@@ -70,6 +70,12 @@ Release History
 ++++++
 * `az grafana dashboard sync`: fix version mismatch issue for library panel sync
 
+1.3.6
+++++++
+* `az grafana folder show`: remove folder lookup by id due to deprecated API
+* `az grafana folder delete`: remove folder lookup by id due to deprecated API
+* `az grafana dashboard import`: update call from deprecated dashboard import API to dashboard create/update API
+
 2.0.0
 ++++++
 * Move existing Grafana CRUD command implementations to AAZ CodeGen
