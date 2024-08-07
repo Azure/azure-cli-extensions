@@ -38,7 +38,8 @@ from azext_aks_preview._consts import (
     CONST_OUTBOUND_TYPE_NONE,
     CONST_IMDS_RESTRICTION_ENABLED,
     CONST_IMDS_RESTRICTION_DISABLED,
-    APP_ROUTING_NGINX_TO_API
+    APP_ROUTING_NGINX_TO_API,
+    CONST_APP_ROUTING_ANNOTATION_CONTROLLED_NGINX
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
@@ -3145,16 +3146,19 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 mc.ingress_profile = self.models.ManagedClusterIngressProfile()  # pylint: disable=no-member
             mc.ingress_profile.web_app_routing = (
                 self.models.ManagedClusterIngressProfileWebAppRouting(enabled=True)  # pylint: disable=no-member
-            )
+                )
+            
+            nginx_ingress_controller = self.context.get_app_routing_nginx_default_controller()
+            # specify annotationControlled if blank, but do nothing if no argument
+            if nginx_ingress_controller:
+                mc.ingress_profile.web_app_routing.nginx = (
+                    self.models.ManagedClusterIngressProfileNginx(default_ingress_controller_type=APP_ROUTING_NGINX_TO_API[nginx_ingress_controller])
+                    )
+
             if "web_application_routing" in addons:
                 dns_zone_resource_ids = self.context.get_dns_zone_resource_ids()
                 mc.ingress_profile.web_app_routing.dns_zone_resource_ids = dns_zone_resource_ids
-                nginx_ingress_controller = self.context.get_app_routing_nginx_default_controller()
-                if nginx_ingress_controller:
-                    mc.ingress_profile.web_app_routing.nginx = (
-                        self.models.ManagedClusterIngressProfileNginx(default_ingress_controller_type=APP_ROUTING_NGINX_TO_API[nginx_ingress_controller])
-                        )
-                    
+      
         return mc
 
     def set_up_workload_auto_scaler_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -5085,6 +5089,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if dns_zone_resource_ids:
             self._update_dns_zone_resource_ids(mc, dns_zone_resource_ids)
 
+        # modify default nic config
         if nginx:
             self._update_app_routing_nginx(mc, nginx)
 
@@ -5120,11 +5125,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         # web app routing object has been created
         if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
-            if not mc.ingress_profile.web_app_routing.nginx:
-                mc.ingress_profile.web_app_routing.nginx = (
-                    self.models.ManagedClusterIngressProfileNginx()
-                )
-            mc.ingress_profile.web_app_routing.nginx.default_ingress_controller_type = APP_ROUTING_NGINX_TO_API[nginx]
+            if mc.ingress_profile.web_app_routing.nginx == None:
+                mc.ingress_profile.web_app_routing.nginx = self.models.ManagedClusterIngressProfileNginx()
+            mc.ingress_profile.web_app_routing.nginx.default_ingress_controller_type = (
+                APP_ROUTING_NGINX_TO_API[nginx]
+            )                
         else:
             raise CLIError('App Routing must be enabled to modify the default nginx ingress controller.\n')
 
