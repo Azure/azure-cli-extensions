@@ -5145,7 +5145,7 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             self.client,
             {
                 "enable_app_routing": True,
-                "app_routing_default_nginx_controller": "external",
+                "app_routing_default_nginx_controller": "External",
              },
             CUSTOM_MGMT_AKS_PREVIEW,
         )
@@ -8402,7 +8402,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         dec_9 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
             self.client,
-            {"enable_app_routing": True, "enable_kv": False, "nginx": "annotationControlled"},
+            {"enable_app_routing": True, "enable_kv": False, "nginx": "AnnotationControlled"},
             CUSTOM_MGMT_AKS_PREVIEW,
         )
         mc_9 = self.models.ManagedCluster(
