@@ -3017,7 +3017,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 )
             network_profile.advanced_networking.security = self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
                 fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
-                        enabled=fqdn_policy
+                    enabled=fqdn_policy
                 )
             )
 
