@@ -14,9 +14,19 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ScVmmScenarioTest(ScenarioTest):
     def test_scvmm(self):
+        vmm_pass = self.cmd(
+            'az keyvault secret show --name SyntheticsVMMServerPassword --vault-name arcscvmmsynthetics --query value -o tsv',
+        ).output.strip()
+        guest_pass = self.cmd(
+            'az keyvault secret show --name arcvmw-domain-password --vault-name arcprivatecloudtest-kv --query value -o tsv',
+        ).output.strip()
         self.kwargs.update(
             {
                 'resource_group': 'azcli-test-rg-vmm',
+                'fqdn': 'vmmnebdev0809.cdm.lab',
+                'port': '8100',
+                'vmmserver_username': 'cdmlab\\\\cdmlabuser',
+                'vmmserver_password': vmm_pass,
                 'location': 'eastus2euap',
                 'custom_location': 'azcli-test-cl-vmm',
                 'vmmserver_name': 'azcli-test-vmm-vmmserver',
@@ -37,13 +47,21 @@ class ScVmmScenarioTest(ScenarioTest):
                 'checkpoint_name': 'azcli-test-checkpoint',
                 'checkpoint_description': 'azcli-test-checkpoint',
                 'guest_username': 'Administrator',
-                'guest_password': 'Password~1',
+                'guest_password': guest_pass,         
                 'extension_name': 'RunCommand',
                 'extension_type': 'CustomScriptExtension',
                 'publisher': 'Microsoft.Compute',
                 'command_whoami': '{"commandToExecute": "whoami"}',
                 'command_sysroot': '{"commandToExecute": "echo %SYSTEMROOT%"}',
             }
+        )
+
+        self.cmd(
+            'az scvmm vmmserver connect -g {resource_group} -l {location} --name {vmmserver_name} --custom-location'
+            ' {custom_location} --fqdn {fqdn} --port {port} --username {vmmserver_username} --password {vmmserver_password}',
+            checks=[
+                self.check('properties.provisioningState', 'Succeeded'),
+            ],
         )
 
         self.cmd(
@@ -298,3 +316,5 @@ class ScVmmScenarioTest(ScenarioTest):
         self.cmd('az scvmm vm-template delete -g {resource_group} --name {vmt_name} -y')
 
         self.cmd('az scvmm cloud delete -g {resource_group} --name {cloud_name} -y')
+
+        self.cmd('az scvmm vmmserver delete -g {resource_group} --name {vmmserver_name} --no-wait')
