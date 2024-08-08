@@ -38,7 +38,6 @@ from azext_aks_preview._consts import (
     CONST_OUTBOUND_TYPE_NONE,
     CONST_IMDS_RESTRICTION_ENABLED,
     CONST_IMDS_RESTRICTION_DISABLED,
-    APP_ROUTING_NGINX_TO_API
 )
 from azext_aks_preview._helpers import (
     check_is_apiserver_vnet_integration_cluster,
@@ -3148,11 +3147,11 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             )
 
             nginx_ingress_controller = self.context.get_app_routing_default_nginx_controller()
-            # specify annotationControlled if blank, but do nothing if no argument
+
             if nginx_ingress_controller:
                 mc.ingress_profile.web_app_routing.nginx = (
                     self.models.ManagedClusterIngressProfileNginx(
-                        default_ingress_controller_type=APP_ROUTING_NGINX_TO_API[nginx_ingress_controller]
+                        default_ingress_controller_type=nginx_ingress_controller
                     )
                 )
 
@@ -5128,9 +5127,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
             if mc.ingress_profile.web_app_routing.nginx is None:
                 mc.ingress_profile.web_app_routing.nginx = self.models.ManagedClusterIngressProfileNginx()
-            mc.ingress_profile.web_app_routing.nginx.default_ingress_controller_type = (
-                APP_ROUTING_NGINX_TO_API[nginx]
-            )
+            mc.ingress_profile.web_app_routing.nginx.default_ingress_controller_type = nginx
         else:
             raise CLIError('App Routing must be enabled to modify the default nginx ingress controller.\n')
 
