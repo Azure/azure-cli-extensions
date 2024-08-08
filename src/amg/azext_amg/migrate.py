@@ -5,6 +5,7 @@
 
 from knack.log import get_logger
 from azure.cli.core.style import print_styled_text, Style
+from azure.cli.core.azclierror import ArgumentUsageError
 
 from .restore import (create_dashboard, create_folder, create_library_panel, create_snapshot, create_annotation,
                       create_datasource, set_uid_mapping, check_folder_exists, check_library_panel_exists,
@@ -18,6 +19,10 @@ logger = get_logger(__name__)
 def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run,
             overwrite, folders_to_include=None, folders_to_exclude=None):
     # pylint: disable=too-many-locals
+    folders_to_include_set = set(s.lower() for s in folders_to_include)
+    folders_to_exclude_set = set(s.lower() for s in folders_to_exclude)
+    if folders_to_include_set.intersection(folders_to_exclude_set):
+        raise ArgumentUsageError("Folders to include and exclude cannot have the same folder")
 
     # get all datasources to be backed up
     all_source_datasources = get_all_datasources(backup_url, backup_headers)
@@ -42,9 +47,14 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run,
                                         folders_to_include=folders_to_include,
                                         folders_to_exclude=folders_to_exclude)
     all_library_panels = get_all_library_panels(backup_url, backup_headers)
-    if folders_to_exclude is None or 'General' not in folders_to_exclude:
-        # edge case for general folder. The uid is empty string.
-        valid_folder_uids.add('')
+
+    valid_folder_uids.add('')
+    if folders_to_include:
+        if 'general' not in folders_to_include_set:
+            valid_folder_uids.discard('')
+    if folders_to_exclude:
+        if 'general' in folders_to_exclude_set:
+            valid_folder_uids.discard('')
 
     all_library_panels_filtered = [panel for panel in all_library_panels if panel['folderUid'] in valid_folder_uids]
     (library_panels_created_summary,
