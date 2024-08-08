@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except
+# pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except, unused-variable, redefined-outer-name, reimported, unused-import, consider-using-generator, broad-exception-raised
 import platform
 import subprocess
 import stat
@@ -24,7 +24,6 @@ from azure.cli.command_modules.containerapp._client_factory import handle_raw_ex
 from azure.cli.core._profile import Profile
 from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError, CLIError, InvalidArgumentValueError)
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
-from azure.core.exceptions import HttpResponseError
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.servicelinker import ServiceLinkerManagementClient
 
@@ -345,7 +344,7 @@ def get_pack_exec_path():
 
 def patchable_check(base_run_image_name, oryx_run_images, inspect_result):
     # (1) Check if the base run image is based from a supported MCR repository.
-    # (2) Fetch all of the supported Oryx run image tags from MCR and compare the version
+    # (2) Fetch all the supported Oryx run image tags from MCR and compare the version
     # of the provided base run image with the latest version of a compatible Oryx run image from MCR.
     MCR_PREFIX = "mcr.microsoft.com/"
     result = {
@@ -548,7 +547,6 @@ def _validate_custom_loc_and_location(cmd, custom_location_id=None, env=None, co
 
     # check if custom location can be used by target environment
     if env:
-        env_rg = env_rg
         env_name = env
         env_id = None
         if is_valid_resource_id(env):
@@ -739,4 +737,3 @@ class AppType(Enum):
     ContainerApp = 1
     ContainerAppJob = 2
     SessionPool = 3
-

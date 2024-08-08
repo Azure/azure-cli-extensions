@@ -180,7 +180,6 @@ def load_command_table(self, _):
         # aks-preview only
         g.custom_command("kollect", "aks_kollect")
         g.custom_command("kanalyze", "aks_kanalyze")
-        g.custom_command("get-os-options", "aks_get_os_options")
         g.custom_command(
             "operation-abort", "aks_operation_abort", supports_no_wait=True
         )
@@ -397,19 +396,8 @@ def load_command_table(self, _):
             supports_no_wait=True,
         )
         g.custom_command(
-            "enable-egress-gateway",
-            "aks_mesh_enable_egress_gateway",
-            supports_no_wait=True,
-        )
-        g.custom_command(
             "disable-ingress-gateway",
             "aks_mesh_disable_ingress_gateway",
-            supports_no_wait=True,
-            confirmation=True,
-        )
-        g.custom_command(
-            "disable-egress-gateway",
-            "aks_mesh_disable_egress_gateway",
             supports_no_wait=True,
             confirmation=True,
         )

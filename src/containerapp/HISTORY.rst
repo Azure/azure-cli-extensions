@@ -4,7 +4,21 @@ Release History
 ===============
 upcoming
 ++++++
+
+0.3.54
+++++++
+* 'az containerapp env create/update': Support `--public-network-access` to allow or block public network
+* Update azure cli dependency version >= "2.62.0"
+* Remove GA commands which exist in azure-cli version 2.62.0
+
+0.3.53
+++++++
+* 'az containerapp job update': Support command in extension
+* 'az containerapp job logs show': Support log streaming for job execution
+* 'az containerapp job replica list': Support list replicas of a job execution
 * 'az containerapp env update': Fix logs configuration about removing destination with `--logs-destination none`
+* 'az containerapp auth update': Fix AuthConfigSecretRefNotFound when setting secret
+* 'az containerapp job create/update': Support --scale-rule-identity for scale rule to authenticate to azure resource scaler
 
 0.3.52
 ++++++

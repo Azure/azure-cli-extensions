@@ -48,6 +48,9 @@ aks create:
     data_collection_settings:
       rule_exclusions:
       - option_length_too_long
+    enable_high_log_scale_mode:
+      rule_exclusions:
+      - option_length_too_long
     node_os_upgrade_channel:
       rule_exclusions:
       - option_length_too_long
@@ -58,6 +61,12 @@ aks create:
       rule_exclusions:
       - option_length_too_long
     enable_azure_container_storage:
+      rule_exclusions:
+        - option_length_too_long
+    ephemeral_disk_volume_type:
+      rule_exclusions:
+        - option_length_too_long
+    ephemeral_disk_nvme_perf_tier:
       rule_exclusions:
         - option_length_too_long
     enable_ai_toolchain_operator:
@@ -79,6 +88,9 @@ aks create:
       rule_exclusions:
         - option_length_too_long
     enable_static_egress_gateway:
+      rule_exclusions:
+        - option_length_too_long
+    enable_imds_restriction:
       rule_exclusions:
         - option_length_too_long
 aks update:
@@ -152,6 +164,9 @@ aks update:
     data_collection_settings:
       rule_exclusions:
       - option_length_too_long
+    enable_high_log_scale_mode:
+      rule_exclusions:
+      - option_length_too_long
     node_os_upgrade_channel:
       rule_exclusions:
       - option_length_too_long
@@ -173,6 +188,12 @@ aks update:
     azure_container_storage_nodepools:
       rule_exclusions:
         - option_length_too_long
+    ephemeral_disk_volume_type:
+      rule_exclusions:
+        - option_length_too_long
+    ephemeral_disk_nvme_perf_tier:
+      rule_exclusions:
+        - option_length_too_long
     enable_ai_toolchain_operator:
       rule_exclusions:
         - option_length_too_long
@@ -183,7 +204,7 @@ aks update:
       rule_exclusions:
         - option_length_too_long
     disable_azure_monitor_app_monitoring:
-      rule_exclusions: 
+      rule_exclusions:
         - option_length_too_long
     bootstrap_artifact_source:
       rule_exclusions:
@@ -195,6 +216,12 @@ aks update:
       rule_exclusions:
         - option_length_too_long
     disable_static_egress_gateway:
+      rule_exclusions:
+        - option_length_too_long
+    enable_imds_restriction:
+      rule_exclusions:
+        - option_length_too_long
+    disable_imds_restriction:
       rule_exclusions:
         - option_length_too_long
 aks delete:
@@ -216,6 +243,9 @@ aks addon enable:
     data_collection_settings:
       rule_exclusions:
       - option_length_too_long
+    enable_high_log_scale_mode:
+      rule_exclusions:
+      - option_length_too_long
 aks addon update:
   parameters:
     appgw_watch_namespace:
@@ -228,6 +258,9 @@ aks addon update:
       rule_exclusions:
       - option_length_too_long
     data_collection_settings:
+      rule_exclusions:
+      - option_length_too_long
+    enable_high_log_scale_mode:
       rule_exclusions:
       - option_length_too_long
 aks enable-addons:
@@ -245,6 +278,9 @@ aks enable-addons:
       rule_exclusions:
       - option_length_too_long
     data_collection_settings:
+      rule_exclusions:
+      - option_length_too_long
+    enable_high_log_scale_mode:
       rule_exclusions:
       - option_length_too_long
 aks nodepool add:
@@ -291,6 +327,12 @@ aks nodepool update:
       rule_exclusions:
         - option_length_too_long
     disable_vtpm:
+      rule_exclusions:
+        - option_length_too_long
+    enable_fips_image:
+      rule_exclusions:
+        - option_length_too_long
+    disable_fips_image:
       rule_exclusions:
         - option_length_too_long
 aks nodepool delete:

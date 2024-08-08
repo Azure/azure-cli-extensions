@@ -25,13 +25,11 @@ class PolicyGeneratingImage(unittest.TestCase):
             "version": "1.0",
             "containers": [
                 {
-                    "containerImage": "python:3.6.14-slim-buster",
+                    "containerImage": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot",
                     "environmentVariables": [
 
                     ],
-                    "command": [
-                        "python3"
-                    ],
+                    "command": [],
                     "workingDir": ""
                 }
             ]
@@ -40,7 +38,7 @@ class PolicyGeneratingImage(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        with load_policy_from_image_name("python:3.6.14-slim-buster") as aci_policy:
+        with load_policy_from_image_name("mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot") as aci_policy:
             aci_policy.populate_policy_content_for_all_images(individual_image=True)
             cls.aci_policy = aci_policy
         with load_policy_from_str(cls.custom_json) as custom_policy:

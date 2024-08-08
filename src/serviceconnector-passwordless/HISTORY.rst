@@ -2,6 +2,22 @@
 
 Release History
 ===============
+2.0.7
+++++++
+* Fix argument missing
+
+2.0.6
+++++++
+* Add create permission in postgresql
+
+2.0.5
+++++++
+* Bump version
+
+2.0.4
+++++++
+* Fix PostgreSQL connection string format
+
 2.0.3
 ++++++
 * Prompt confirmation when update PostgreSQL server

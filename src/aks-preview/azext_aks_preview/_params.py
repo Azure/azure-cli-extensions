@@ -190,6 +190,11 @@ from azext_aks_preview._validators import (
 )
 from azext_aks_preview.azurecontainerstorage._consts import (
     CONST_ACSTOR_ALL,
+    CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY,
+    CONST_DISK_TYPE_PV_WITH_ANNOTATION,
+    CONST_EPHEMERAL_NVME_PERF_TIER_BASIC,
+    CONST_EPHEMERAL_NVME_PERF_TIER_PREMIUM,
+    CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD,
     CONST_STORAGE_POOL_TYPE_AZURE_DISK,
     CONST_STORAGE_POOL_TYPE_EPHEMERAL_DISK,
     CONST_STORAGE_POOL_TYPE_ELASTIC_SAN,
@@ -360,6 +365,17 @@ disable_storage_pool_options = [
     CONST_STORAGE_POOL_OPTION_NVME,
     CONST_STORAGE_POOL_OPTION_SSD,
     CONST_ACSTOR_ALL,
+]
+
+ephemeral_disk_volume_types = [
+    CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY,
+    CONST_DISK_TYPE_PV_WITH_ANNOTATION,
+]
+
+ephemeral_disk_nvme_perf_tiers = [
+    CONST_EPHEMERAL_NVME_PERF_TIER_BASIC,
+    CONST_EPHEMERAL_NVME_PERF_TIER_PREMIUM,
+    CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD,
 ]
 
 # consts for guardrails level
@@ -616,6 +632,8 @@ def load_arguments(self, _):
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)
+        c.argument("enable_high_log_scale_mode", arg_type=get_three_state_flag(), is_preview=True)
+        c.argument("ampls_resource_id", is_preview=True)
         c.argument("aci_subnet_name")
         c.argument("appgw_name", arg_group="Application Gateway")
         c.argument("appgw_subnet_cidr", arg_group="Application Gateway")
@@ -792,12 +810,6 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
-            "enable_network_observability",
-            action="store_true",
-            is_preview=True,
-            help="enable network observability for cluster",
-        )
-        c.argument(
             "enable_advanced_network_observability",
             action="store_true",
             is_preview=True,
@@ -869,7 +881,7 @@ def load_arguments(self, _):
         c.argument("grafana_resource_id", validator=validate_grafanaresourceid)
         c.argument("enable_windows_recording_rules", action="store_true")
         c.argument("enable_azure_monitor_app_monitoring", is_preview=True, action="store_true")
-        c.argument("enable_cost_analysis", is_preview=True, action="store_true")
+        c.argument("enable_cost_analysis", action="store_true")
         c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
         # azure container storage
         c.argument(
@@ -894,6 +906,16 @@ def load_arguments(self, _):
             "storage_pool_option",
             arg_type=get_enum_type(storage_pool_options),
             help="set ephemeral disk storage pool option for azure container storage",
+        )
+        c.argument(
+            "ephemeral_disk_volume_type",
+            arg_type=get_enum_type(ephemeral_disk_volume_types),
+            help="set ephemeral disk volume type for azure container storage",
+        )
+        c.argument(
+            "ephemeral_disk_nvme_perf_tier",
+            arg_type=get_enum_type(ephemeral_disk_nvme_perf_tiers),
+            help="set ephemeral disk volume type for azure container storage",
         )
         c.argument(
             "node_provisioning_mode",
@@ -933,6 +955,7 @@ def load_arguments(self, _):
         c.argument("if_none_match")
         # virtual machines
         c.argument("vm_sizes", is_preview=True)
+        c.argument("enable_imds_restriction", action="store_true", is_preview=True)
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1280,18 +1303,6 @@ def load_arguments(self, _):
         c.argument("safeguards_version", help="The deployment safeguards version", is_preview=True)
         c.argument("safeguards_excluded_ns", is_preview=True)
         c.argument(
-            "enable_network_observability",
-            action="store_true",
-            is_preview=True,
-            help="enable network observability for cluster",
-        )
-        c.argument(
-            "disable_network_observability",
-            action="store_true",
-            is_preview=True,
-            help="disable network observability for cluster",
-        )
-        c.argument(
             "enable_advanced_network_observability",
             action="store_true",
             is_preview=True,
@@ -1301,8 +1312,8 @@ def load_arguments(self, _):
             action="store_true",
             is_preview=True,
         )
-        c.argument("enable_cost_analysis", is_preview=True, action="store_true")
-        c.argument("disable_cost_analysis", is_preview=True, action="store_true")
+        c.argument("enable_cost_analysis", action="store_true")
+        c.argument("disable_cost_analysis", action="store_true")
         c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
         c.argument('disable_ai_toolchain_operator', is_preview=True, action='store_true')
         # azure container storage
@@ -1314,7 +1325,7 @@ def load_arguments(self, _):
         c.argument(
             "disable_azure_container_storage",
             arg_type=get_enum_type(disable_storage_pool_types),
-            help="disable azure container storage or any one of the storagepool types",
+            help="disable azure container storage or any one of the storage pool types",
         )
         c.argument(
             "storage_pool_name",
@@ -1339,6 +1350,16 @@ def load_arguments(self, _):
             help="define the comma separated nodepool list to install azure container storage",
         )
         c.argument(
+            "ephemeral_disk_volume_type",
+            arg_type=get_enum_type(ephemeral_disk_volume_types),
+            help="set ephemeral disk volume type for azure container storage",
+        )
+        c.argument(
+            "ephemeral_disk_nvme_perf_tier",
+            arg_type=get_enum_type(ephemeral_disk_nvme_perf_tiers),
+            help="set ephemeral disk volume type for azure container storage",
+        )
+        c.argument(
             "node_provisioning_mode",
             is_preview=True,
             arg_type=get_enum_type(node_provisioning_modes),
@@ -1351,6 +1372,8 @@ def load_arguments(self, _):
         c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
         c.argument('enable_static_egress_gateway', is_preview=True, action='store_true')
         c.argument('disable_static_egress_gateway', is_preview=True, action='store_true')
+        c.argument("enable_imds_restriction", action="store_true", is_preview=True)
+        c.argument("disable_imds_restriction", action="store_true", is_preview=True)
 
         c.argument(
             "cluster_service_load_balancer_health_probe_mode",
@@ -1627,6 +1650,16 @@ def load_arguments(self, _):
         )
         c.argument("if_match")
         c.argument("if_none_match")
+        c.argument(
+            "enable_fips_image",
+            is_preview=True,
+            action="store_true"
+        )
+        c.argument(
+            "disable_fips_image",
+            is_preview=True,
+            action="store_true"
+        )
 
     with self.argument_context("aks nodepool upgrade") as c:
         c.argument("max_surge", validator=validate_max_surge)
@@ -1825,6 +1858,8 @@ def load_arguments(self, _):
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)
+        c.argument("enable_high_log_scale_mode", arg_type=get_three_state_flag(), is_preview=True)
+        c.argument("ampls_resource_id", is_preview=True)
         c.argument(
             "dns_zone_resource_id",
             deprecate_info=c.deprecate(
@@ -1880,6 +1915,8 @@ def load_arguments(self, _):
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)
+        c.argument("enable_high_log_scale_mode", arg_type=get_three_state_flag(), is_preview=True)
+        c.argument("ampls_resource_id", is_preview=True)
         c.argument(
             "dns_zone_resource_id",
             deprecate_info=c.deprecate(
@@ -1918,6 +1955,8 @@ def load_arguments(self, _):
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)
+        c.argument("enable_high_log_scale_mode", arg_type=get_three_state_flag(), is_preview=True)
+        c.argument("ampls_resource_id", is_preview=True)
         c.argument(
             "dns_zone_resource_id",
             deprecate_info=c.deprecate(

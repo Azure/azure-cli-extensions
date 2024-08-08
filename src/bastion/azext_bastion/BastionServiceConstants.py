@@ -14,3 +14,4 @@ class BastionSku(Enum):
     Standard = "Standard"
     Developer = "Developer"
     QuickConnect = "QuickConnect"
+    Premium = "Premium"

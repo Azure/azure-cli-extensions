@@ -120,7 +120,7 @@ def load_arguments(self, _):
     # App Resiliency
     with self.argument_context('containerapp resiliency') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
-        c.argument('container_app_name', options_list=['--container-app-name'], help=f"The name of the existing Container App.")
+        c.argument('container_app_name', options_list=['--container-app-name'], help="The name of the existing Container App.")
         c.argument('name', name_type, help=f"The name of the Container App Resiliency Policy. A name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character, cannot have '--', and must be less than {MAXIMUM_APP_RESILIENCY_NAME_LENGTH} characters.")
         c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of a container app resiliency policy. All other parameters will be ignored.')
         c.argument('default', options_list=['--recommended'], help='Set recommended values of resiliency policies for a container app.')
@@ -160,6 +160,10 @@ def load_arguments(self, _):
         c.argument('service_name', options_list=['--name', '-n'], help="The service name.")
         c.argument('environment_name', options_list=['--environment'], help="The environment name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+
+    with self.argument_context('containerapp env') as c:
+        c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']),
+                   help="Allow or block all public traffic", is_preview=True)
 
     with self.argument_context('containerapp env', arg_group='Custom Domain') as c:
         c.argument('certificate_identity', options_list=['--custom-domain-certificate-identity', '--certificate-identity'],
@@ -252,12 +256,6 @@ def load_arguments(self, _):
         c.argument('service_principal_client_secret', help='The service principal client secret. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-client-secret", "--sp-sec"])
         c.argument('service_principal_tenant_id', help='The service principal tenant ID. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-tenant-id", "--sp-tid"])
 
-    with self.argument_context('containerapp auth') as c:
-        # subgroup update
-        c.argument('token_store', arg_type=get_three_state_flag(), help='Boolean indicating if token store is enabled for the app.', is_preview=True)
-        c.argument('sas_url_secret', help='The blob storage SAS URL to be used for token store.', is_preview=True)
-        c.argument('sas_url_secret_name', help='The secret name that contains blob storage SAS URL to be used for token store.', is_preview=True)
-
     with self.argument_context('containerapp env workload-profile set') as c:
         c.argument('workload_profile_type', help="The type of workload profile to add or update. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
         c.argument('min_nodes', help="The minimum node count for the workload profile")
@@ -297,7 +295,7 @@ def load_arguments(self, _):
 
     # scale
     with self.argument_context('containerapp', arg_group='Scale') as c:
-        c.argument('scale_rule_identity', options_list=['--scale-rule-identity', '--sri'], 
+        c.argument('scale_rule_identity', options_list=['--scale-rule-identity', '--sri'],
                    help='Resource ID of a managed identity to authenticate with Azure scaler resource(storage account/eventhub or else), or System to use a system-assigned identity.', is_preview=True)
 
     with self.argument_context('containerapp job', arg_group='Scale') as c:
@@ -305,6 +303,7 @@ def load_arguments(self, _):
         c.argument('max_executions', type=int, help="Maximum number of job executions to run per polling interval.")
         c.argument('polling_interval', type=int, help="Interval to check each event source in seconds. Defaults to 30s.")
         c.argument('scale_rule_type', options_list=['--scale-rule-type', '--srt'], help="The type of the scale rule.")
+        c.argument('scale_rule_identity', options_list=['--scale-rule-identity', '--sri'], help='Resource ID of a managed identity to authenticate with Azure scaler resource(storage account/eventhub or else), or System to use a system-assigned identity.', is_preview=True)
 
     # params for preview
     with self.argument_context('containerapp') as c:
@@ -359,14 +358,27 @@ def load_arguments(self, _):
         c.argument('unbind_service_bindings', nargs='*', options_list=['--unbind'], help="Space separated list of services, bindings or Java components to be removed from this Java Component. e.g. BIND_NAME1...")
         c.argument('configuration', nargs="*", help="Java component configuration. Configuration must be in format \"<propertyName>=<value>\" \"<propertyName>=<value>\"...")
 
+    with self.argument_context('containerapp job logs show') as c:
+        c.argument('follow', help="Print logs in real time if present.", arg_type=get_three_state_flag())
+        c.argument('tail', help="The number of past logs to print (0-300)", type=int, default=20)
+        c.argument('container', help="The name of the container")
+        c.argument('output_format', options_list=["--format"], help="Log output format", arg_type=get_enum_type(["json", "text"]), default="json")
+        c.argument('replica', help="The name of the replica. List replicas with 'az containerapp job replica list'. A replica may not exist if the job pod has been cleaned up.")
+        c.argument('execution', help="The name of the container app execution. Defaults to the latest execution.")
+        c.argument('name', name_type, id_part=None, help="The name of the Containerapp job.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+
+    with self.argument_context('containerapp job replica') as c:
+        c.argument('replica', help="The name of the replica. ")
+        c.argument('execution', help="The name of the container app execution. Defaults to the latest execution.")
+        c.argument('name', name_type, id_part=None, help="The name of the Containerapp.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+
     with self.argument_context('containerapp env dotnet-component') as c:
         c.argument('dotnet_component_name', options_list=['--name', '-n'], help="The DotNet component name.")
         c.argument('environment_name', options_list=['--environment'], help="The environment name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
         c.argument('dotnet_component_type', options_list=['--type'], arg_type=get_enum_type(['AspireDashboard']), help="The type of DotNet component.")
-
-    with self.argument_context('containerapp env', arg_group='Peer Traffic Configuration') as c:
-        c.argument('p2p_encryption_enabled', arg_type=get_three_state_flag(), options_list=['--enable-peer-to-peer-encryption'], is_preview=True, help='Boolean indicating whether the peer-to-peer traffic encryption is enabled for the environment.')
 
     with self.argument_context('containerapp sessionpool') as c:
         c.argument('name', options_list=['--name', '-n'], help="The Session Pool name.")
