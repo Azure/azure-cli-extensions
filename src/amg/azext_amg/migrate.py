@@ -22,10 +22,6 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run,
     # get all datasources to be backed up
     all_source_datasources = get_all_datasources(backup_url, backup_headers)
     all_destination_datasources = get_all_datasources(restore_url, restore_headers)
-    # it will be None when the request to get all the datasources doesn't work.
-    if (all_destination_datasources is None) or (all_source_datasources is None):
-        logger.error("ABORTING!! Datasources are not found. Please check the URLs, headers, or api key/service token.")
-        return
     (datasources_created_summary, datasources_remapped_summary) = _migrate_datasources(
         all_source_datasources, all_destination_datasources, restore_url, restore_headers, dry_run)
 

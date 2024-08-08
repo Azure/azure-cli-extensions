@@ -300,12 +300,18 @@ def restore_grafana(cmd, grafana_name, archive_file, components=None, remap_data
 def migrate_grafana(cmd, grafana_name, source_grafana_endpoint, source_grafana_token_or_api_key, dry_run=False,
                     overwrite=False, folders_to_include=None, folders_to_exclude=None, resource_group_name=None):
     from .migrate import migrate
+    from .utils import get_health_endpoint
 
     # for source instance (backing up from)
     headers_src = {
         "content-type": "application/json",
         "authorization": "Bearer " + source_grafana_token_or_api_key
     }
+    (status, _) = get_health_endpoint(source_grafana_endpoint, headers_src)
+    if status == 401:
+        raise ArgumentUsageError(f"Access to source grafana endpoint was denied")
+    elif status >= 400:
+        raise ArgumentUsageError(f"Source grafana endpoint is not reachable")
 
     # for destination instance (restoring to)
     _health_endpoint_reachable(cmd, grafana_name, resource_group_name=resource_group_name)

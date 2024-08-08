@@ -166,6 +166,11 @@ def get_folder_id(dashboard, grafana_url, http_post_headers):
         return 0
 
 
+def get_health_endpoint(grafana_url, http_get_headers):
+    (status_code, content) = send_grafana_get(f'{grafana_url}/api/health', http_get_headers)
+    return (status_code, content)
+
+
 def send_grafana_get(url, http_get_headers):
     r = requests.get(url, headers=http_get_headers)
     log_response(r)
