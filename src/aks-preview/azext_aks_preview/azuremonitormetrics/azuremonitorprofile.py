@@ -13,7 +13,10 @@ from azext_aks_preview.azuremonitormetrics.helper import check_azuremonitormetri
 from azext_aks_preview.azuremonitormetrics.recordingrules.create import create_rules
 from azext_aks_preview.azuremonitormetrics.recordingrules.delete import delete_rules
 from knack.util import CLIError
+from knack.log import get_logger
 from azure.cli.core.azclierror import InvalidArgumentValueError
+
+logger = get_logger(__name__)
 
 
 # pylint: disable=line-too-long
@@ -81,17 +84,22 @@ def ensure_azure_monitor_profile_prerequisites(
             cluster_name
         )
     else:
+        is_prometheus_enabled = False
         # Check if already onboarded
         if create_flow is False:
-            check_azuremonitormetrics_profile(cmd, cluster_subscription, cluster_resource_group_name, cluster_name)
-        # Do RP registrations if required
-        rp_registrations(cmd, cluster_subscription)
-        link_azure_monitor_profile_artifacts(
-            cmd,
-            cluster_subscription,
-            cluster_resource_group_name,
-            cluster_name,
-            cluster_region,
-            raw_parameters,
-            create_flow
-        )
+            is_prometheus_enabled = check_azuremonitormetrics_profile(cmd, cluster_subscription, cluster_resource_group_name, cluster_name)
+        if is_prometheus_enabled:
+            logger.info("Azure Prometheus is already enabled : This command will only allow updates to the KSM parameters. All other parameters will be ignored")
+        # Do RP registrations and artifact creation (DC*, rules, grafana link etc.) if not enabled already
+        # Otherwise move forward so that the addon can be enabled with new KSM parameters
+        if is_prometheus_enabled is False:
+            rp_registrations(cmd, cluster_subscription)
+            link_azure_monitor_profile_artifacts(
+                cmd,
+                cluster_subscription,
+                cluster_resource_group_name,
+                cluster_name,
+                cluster_region,
+                raw_parameters,
+                create_flow
+            )
