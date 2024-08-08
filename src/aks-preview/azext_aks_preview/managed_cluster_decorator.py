@@ -3012,13 +3012,15 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         fqdn_policy = self.context.get_enable_fqdn_policy()
         if fqdn_policy is not None:
-            network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
-                security=self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
-                    fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
+            if network_profile.advanced_networking is None:
+                network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
+                )
+            network_profile.advanced_networking.security = self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
+                fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
                         enabled=fqdn_policy
-                    )
                 )
             )
+
         return mc
 
     def set_up_api_server_access_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -4106,11 +4108,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         fqdn_policy = self.context.get_enable_fqdn_policy()
         if fqdn_policy is not None:
-            mc.network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
-                security=self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
-                    fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
-                        enabled=fqdn_policy
-                    )
+            if mc.network_profile.advanced_networking is None:
+                mc.network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
+                )
+            mc.network_profile.advanced_networking.security = self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
+                fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
+                    enabled=fqdn_policy
                 )
             )
         return mc

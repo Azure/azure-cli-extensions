@@ -1074,6 +1074,36 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_5.get_enable_fqdn_policy(), False)
 
+        # Check behavior of advanced networking observability and security.
+        # Enable obs, enable fqdn.
+        ctx_6 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_advanced_network_observability": True,
+                    "enable_fqdn_policy": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_6.get_enable_fqdn_policy(), True)
+        self.assertEqual(ctx_6.get_enable_advanced_network_observability(), True)
+
+        ctx_7 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_advanced_network_observability": True,
+                    "enable_fqdn_policy": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_7.get_enable_fqdn_policy(), True)
+        self.assertEqual(ctx_7.get_enable_advanced_network_observability(), True)
+
     def test_get_enable_managed_identity(self):
         # custom value
         ctx_1 = AKSPreviewManagedClusterContext(
