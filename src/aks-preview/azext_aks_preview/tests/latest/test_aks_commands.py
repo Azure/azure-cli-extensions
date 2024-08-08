@@ -13191,7 +13191,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="westus2",
+        location="eastus2euap",
     )
     def test_aks_update_enable_fqdn_policy(
         self, resource_group, resource_group_location
@@ -13250,7 +13250,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="westus2",
+        location="eastus2euap",
     )
     def test_aks_create_with_enable_fqdn_policy(
         self, resource_group, resource_group_location
@@ -13294,7 +13294,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="westus2",
+        location="eastus2euap",
     )
     def test_aks_create_with_enable_fqdn_policy_observability(
         self, resource_group, resource_group_location
