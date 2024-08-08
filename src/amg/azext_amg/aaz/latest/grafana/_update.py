@@ -84,7 +84,7 @@ class Update(AAZCommand):
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.grafana_major_version = AAZStrArg(
-            options=["-v", "--grafana-major-version"],
+            options=["-v", "--major-version", "--grafana-major-version"],
             arg_group="Properties",
             help="The major Grafana software version to target.",
         )
@@ -104,8 +104,8 @@ class Update(AAZCommand):
         # define Arg Group "Smtp"
 
         _args_schema = cls._args_schema
-        _args_schema.enabled = AAZBoolArg(
-            options=["--enabled"],
+        _args_schema.smtp_enabled = AAZBoolArg(
+            options=["--smtp", "--smtp-enabled"],
             arg_group="Smtp",
             help="Enable this to allow Grafana to send email. Default is false",
             default=False,
@@ -259,7 +259,7 @@ class Update(AAZCommand):
 
             smtp = _builder.get(".properties.grafanaConfigurations.smtp")
             if smtp is not None:
-                smtp.set_prop("enabled", AAZBoolType, ".enabled")
+                smtp.set_prop("enabled", AAZBoolType, ".smtp_enabled")
                 smtp.set_prop("fromAddress", AAZStrType, ".from_address")
                 smtp.set_prop("fromName", AAZStrType, ".from_name")
                 smtp.set_prop("host", AAZStrType, ".host")
