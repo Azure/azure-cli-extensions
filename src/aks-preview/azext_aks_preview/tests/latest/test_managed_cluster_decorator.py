@@ -1057,7 +1057,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        # fail on get_enable_network_observability mutual exclusive error
+        # fail on get_enable_fqdn_policy mutual exclusive error
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_4.get_enable_fqdn_policy()
 
