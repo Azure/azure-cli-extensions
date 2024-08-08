@@ -61,7 +61,7 @@ helps['grafana migrate'] = """
     examples:
        - name: Migrate dashboards and folders from a local Grafana instance to an Azure Managed Grafana instance.
          text: |
-           az grafana migrate -g MyResourceGroup -n MyGrafana -s http://localhost:3000 -t <token that starts with glsa_...>
+           az grafana migrate -g MyResourceGroup -n MyGrafana -s http://localhost:3000 -t YourServiceTokenOrAPIKey
 """
 
 helps['grafana update'] = """
