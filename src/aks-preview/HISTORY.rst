@@ -12,6 +12,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 * Add `--advanced-networking-observability-tls-management` to `az aks create/update` command.
+* az aks create/update: Support in place param updates for managed prom
+* Vendor new SDK and bump API version to 2024-06-02-preview.
+
+7.0.0b4
+++++++++
+* Fix bug related to the --ampls-resource-id option in the `az aks enable-addons` command.
 * Vendor new SDK and bump API version to 2024-06-02-preview.
 
 7.0.0b3

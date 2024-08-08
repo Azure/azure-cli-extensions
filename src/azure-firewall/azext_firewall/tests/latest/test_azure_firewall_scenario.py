@@ -1425,3 +1425,50 @@ class AzureFirewallScenario(ScenarioTest):
         ])
 
         self.cmd('network firewall policy delete -g {rg} --name {policy}')
+
+
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_idps_profiles', location='westus2')
+    def test_azure_policy_idps_profiles(self, resource_group, resource_group_location):
+        self.kwargs.update({
+            'location': "westus2",
+            'rg': resource_group,
+            'policy_name_1': 'policy1',
+            'policy_name_2': 'policy2',
+        })
+
+        # create policy without idps profile        
+        self.cmd('network firewall policy create -g {rg} -n {policy_name_1} -l {location} --sku Premium', 
+                 checks=[
+                    self.check('type', 'Microsoft.Network/FirewallPolicies'),
+                    self.check('name', '{policy_name_1}')
+        ])
+
+        # add idps mode and profile to policy        
+        self.cmd('network firewall policy update -g {rg} -n {policy_name_1} --idps-mode Alert --idps-profile Advanced',
+                 checks=[
+                     self.check('intrusionDetection.mode', 'Alert'),
+                     self.check('intrusionDetection.profile', 'Advanced')
+                 ])
+        
+        # delete policy 1
+        self.cmd('network firewall policy delete -g {rg} --name {policy_name_1}')
+
+        # create policy 2 with idps profile        
+        self.cmd('network firewall policy create -g {rg} -n {policy_name_2} -l {location} --sku Premium --idps-mode Deny --idps-profile Standard',
+                 checks=[
+                     self.check('type', 'Microsoft.Network/FirewallPolicies'),
+                     self.check('name', '{policy_name_2}'),
+                     self.check('intrusionDetection.mode', 'Deny'),
+                     self.check('intrusionDetection.profile', 'Standard')
+        ])
+
+        # change idps profile in policy 2
+        self.cmd('network firewall policy update -g {rg} -n {policy_name_2} --idps-mode Deny --idps-profile Basic',
+                 checks=[
+                     self.check('intrusionDetection.mode', 'Deny'),
+                     self.check('intrusionDetection.profile', 'Basic')
+        ])  
+
+        # delete policy 2
+        self.cmd('network firewall policy delete -g {rg} --name {policy_name_2}')
