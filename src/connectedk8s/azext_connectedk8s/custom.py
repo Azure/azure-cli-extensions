@@ -536,7 +536,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     for helm_parameter, helm_value in protected_helm_values.items():
         helm_content_values[helm_parameter] = helm_value
 
-    print("Starting to install Azure arc agents on the Kubernetes cluster.")
+    print("Step: {}: Starting to install Azure arc agents on the Kubernetes cluster.".format(utils.get_utctimestring()))
     # Install azure-arc agents
     utils.helm_install_release(cmd.cli_ctx.cloud.endpoints.resource_manager, chart_path, kubernetes_distro,
                                kubernetes_infra, location, private_key_pem, kube_config, kube_context, no_wait,
@@ -576,8 +576,6 @@ def poll_for_agent_state(cmd, resource_group_name, cluster_name, timeout_minutes
             return True
         elapsed_time = time.time() - start_time
         if elapsed_time >= timeout_minutes * 60:
-            print("Agent state has not reached terminal state within " + timeout_minutes + " minute timeout window: " +
-                  connected_cluster.provisioning_state)
             return False
         time.sleep(interval)
 
