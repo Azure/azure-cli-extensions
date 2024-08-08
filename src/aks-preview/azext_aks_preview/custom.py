@@ -2219,6 +2219,11 @@ def aks_enable_addons(
         enable_msi_auth_for_monitoring = False
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
+
+    is_private_cluster = False
+    if instance.api_server_access_profile and instance.api_server_access_profile.enable_private_cluster:
+        is_private_cluster = True
+
     instance = _update_addons(
         cmd,
         instance,
@@ -2272,6 +2277,7 @@ def aks_enable_addons(
                 create_dcra=True,
                 enable_syslog=enable_syslog,
                 data_collection_settings=data_collection_settings,
+                is_private_cluster=is_private_cluster,
                 ampls_resource_id=ampls_resource_id,
                 enable_high_log_scale_mode=enable_high_log_scale_mode
             )
