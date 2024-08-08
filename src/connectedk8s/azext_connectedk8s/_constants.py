@@ -89,9 +89,10 @@ Get_Kubernetes_Namespace_Fault_Type = 'kubernetes-get-namespace-error'
 Get_Kubernetes_Helm_Release_Namespace_Fault_Type = 'kubernetes-get-helm-release-namespace-error'
 Delete_Kubernetes_Helm_Release_Namespace_Fault_Type = 'kubernetes-delete-helm-release-namespace-error'
 Update_Agent_Success = 'Agents for Connected Cluster {} have been updated successfully'
-Update_Agent_Failure = \
-    'Error while updating agents. Please run \"kubectl get pods -n azure-arc\" to check the pods in case of timeout ' \
-    'error. Error: {}'
+Update_Agent_Failure = 'Error while updating agents. Please run \"kubectl get pods -n azure-arc\" to check the pods in case of timeout error. Error: {}'
+Agent_State_Succeeded = "Succeeded"
+Agent_State_Failed = "Failed"
+Agent_State_Timeout = 15
 Get_Credentials_Failed_Fault_Type = 'failed-to-get-list-cluster-user-credentials'
 Failed_To_Merge_Credentials_Fault_Type = "failed-to-merge-credentials"
 Kubeconfig_Failed_To_Load_Fault_Type = "failed-to-load-kubeconfig-file"
@@ -122,12 +123,9 @@ Port_Check_Fault_Type = "Error while checking if port is in use."
 Proxy_Cert_Path_Does_Not_Exist_Fault_Type = 'proxy-cert-path-does-not-exist-error'
 Proxy_Cert_Path_Does_Not_Exist_Error = 'Proxy cert path {} does not exist. Please check the path provided'
 Get_Kubernetes_Infra_Fault_Type = 'kubernetes-get-infrastructure-error'
-No_Param_Error = \
-    'No parmeters were specified with update command. Please run az connectedk8s update --help to check parameters ' \
-    'available for update'
-EnableProxy_Conflict_Error = \
-    'Conflict detected: --disable-proxy can not be set with --https-proxy, --http-proxy, --proxy-skip-range and ' \
-    '--proxy-cert at the same time. Please run az connectedk8s update --help for more information about the parameters'
+No_Param_Error = 'No parameters were specified with update command. Please run az connectedk8s update --help to check parameters available for update'
+Gateway_ArmId_Is_Invalid = "The provided Gateway ArmID in --gateway-resource-id  {} is invalid. Please provide a valid Gateway ArmID."
+EnableProxy_Conflict_Error = 'Conflict detected: --disable-proxy can not be set with --https-proxy, --http-proxy, --proxy-skip-range and --proxy-cert at the same time. Please run az connectedk8s update --help for more information about the parameters'
 Manual_Upgrade_Called_In_Auto_Update_Enabled = 'Manual Upgrade was called while in auto_Update enabled mode'
 Upgrade_Agent_Success = 'Agents for Connected Cluster {} have been upgraded successfully'
 Upgrade_Agent_Failure = \

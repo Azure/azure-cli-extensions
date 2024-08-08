@@ -7,6 +7,11 @@ import azext_connectedk8s._constants as consts
 
 from os import name
 from azure.cli.core.azclierror import ArgumentUsageError
+from azure.cli.core.azclierror import (
+    InvalidArgumentValueError,
+    ArgumentUsageError
+)
+import re
 
 
 def example_name_or_id_validator(cmd, namespace):
@@ -40,3 +45,17 @@ def override_client_request_id_header(cmd, namespace):
         cmd.cli_ctx.data['headers'][consts.Client_Request_Id_Header] = namespace.correlation_id
     else:
         cmd.cli_ctx.data['headers'][consts.Client_Request_Id_Header] = consts.Default_Onboarding_Source_Tracking_Guid
+
+
+def validate_gateway_properties(namespace):
+    if namespace.enable_gateway is False and namespace.gateway_resource_id != "":
+        raise ArgumentUsageError("Conflicting gateway parameters received. The parameter '--gateway-resource-id' should be set only if '--enable-gateway' is set to true.")
+    if namespace.enable_gateway is True and namespace.gateway_resource_id == "":
+        raise ArgumentUsageError("The parameter '--gateway-resource-id' was not provided. It is mandatory to pass this parameter for enabling gateway on the connected cluster resource.")
+
+
+def validate_gateway_updates(namespace):
+    if namespace.enable_gateway and namespace.disable_gateway:
+        raise ArgumentUsageError("Cannot specify both --enable-gateway and --disable-gateway simultaneously.")
+    if namespace.enable_gateway and namespace.gateway_resource_id == "":
+        raise ArgumentUsageError("The parameter '--gateway-resource-id' was not provided. It is mandatory to pass this parameter for enabling gateway on the connected cluster resource.")
