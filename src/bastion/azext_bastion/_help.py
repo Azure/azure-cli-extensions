@@ -24,6 +24,9 @@ examples:
   - name: SSH to virtual machine using Azure Bastion using AAD.
     text: |
         az network bastion ssh --name MyBastionHost --resource-group MyResourceGroup --target-resource-id vmResourceId --auth-type AAD
+  - name: SSH to virtual machine using Azure Bastion using AAD, while supplying additional SSH arguments.
+    text: |
+        az network bastion ssh --name MyBastionHost --resource-group MyResourceGroup --target-resource-id vmResourceId --auth-type AAD -- -L 8080:127.0.0.1:8080
 """
 
 helps['network bastion rdp'] = """

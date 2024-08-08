@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+1.1.0
+++++++
+* Allow to pass `ssh_args` as positional parameter in command `az network bastion ssh`
+
 1.0.2
 +++++
 * Remove redundant aad login commands from examples section.

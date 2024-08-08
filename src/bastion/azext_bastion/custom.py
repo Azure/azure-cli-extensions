@@ -136,7 +136,7 @@ def _build_args(cert_file, private_key_file):
 
 
 def ssh_bastion_host(cmd, auth_type, target_resource_id, target_ip_address, resource_group_name, bastion_host_name,
-                     resource_port=None, username=None, ssh_key=None):
+                     resource_port=None, username=None, ssh_key=None, ssh_args=None):
     import os
     from .aaz.latest.network.bastion import Show
 
@@ -198,6 +198,8 @@ def ssh_bastion_host(cmd, auth_type, target_resource_id, target_ip_address, reso
     command = command + ["-p", str(tunnel_server.local_port)]
     command = command + ["-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null"]
     command = command + ["-o", "LogLevel=Error"]
+    if ssh_args:
+        command = command + ssh_args
     logger.debug("Running ssh command %s", " ".join(command))
 
     try:
