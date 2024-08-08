@@ -1,3 +1,8 @@
+# --------------------------------------------------------------------------------------------
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License. See License.txt in the project root for license information.
+# --------------------------------------------------------------------------------------------
+
 from knack.log import get_logger
 from azure.cli.core.style import print_styled_text, Style
 
@@ -211,7 +216,7 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels_fi
             # then it is not created and we should skip the dashboard.
             print_styled_text([
                 (Style.WARNING, f'Create dashboard {dashboard_title}: '),
-                (Style.ERROR, f'FAILURE (skipped because library panel is not created)')
+                (Style.ERROR, 'FAILURE (skipped because library panel is not created)')
             ])
             continue
 
