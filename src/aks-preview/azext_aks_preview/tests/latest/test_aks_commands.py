@@ -13091,9 +13091,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="westcentralus",
     )
-    def test_aks_update_enable_advanced_network_observability(
+    def test_aks_update_advanced_network_observability(
         self, resource_group, resource_group_location
     ):
         aks_name = self.create_random_name("cliakstest", 16)
@@ -13112,7 +13112,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
-        # update to enable network observability
+        # update to enable observability and tls management to "Managed" by default (no value specified)
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} --enable-advanced-network-observability "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
@@ -13122,16 +13122,45 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "Managed"),
             ],
         )
 
-        # update to disable network observability
+        # update to set advanced networking observability tls management to "None"
         update_cmd_two = (
-            "aks update --resource-group={resource_group} --name={name} --disable-advanced-network-observability "
+            "aks update --resource-group={resource_group} --name={name} --advanced-networking-observability-tls-management None "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
         )
         self.cmd(
             update_cmd_two,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "None"),
+            ],
+        )
+
+        # update to set advanced networking observability tls management to "Managed"
+        update_cmd_three = (
+            "aks update --resource-group={resource_group} --name={name} --advanced-networking-observability-tls-management Managed "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
+        )
+        self.cmd(
+            update_cmd_three,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "Managed"),
+            ],
+        )
+
+        # update to disable network observability
+        update_cmd_four = (
+            "aks update --resource-group={resource_group} --name={name} --disable-advanced-network-observability "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
+        )
+        self.cmd(
+            update_cmd_four,
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.advancedNetworking.observability.enabled", False),
@@ -13178,82 +13207,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
-            ],
-        )
-
-        # delete
-        self.cmd(
-            "aks delete -g {resource_group} -n {name} --yes --no-wait",
-            checks=[self.is_empty()],
-        )
-
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17,
-        name_prefix="clitest",
-        location="westcentralus",
-    )
-    def test_aks_update_advanced_networking_observability_tls_management(
-        self, resource_group, resource_group_location
-    ):
-        aks_name = self.create_random_name("cliakstest", 16)
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "ssh_key_value": self.generate_ssh_keys(),
-                "location": resource_group_location,
-            }
-        )
-
-        create_cmd = (
-            "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
-        )
-        self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
-
-        # update to set advanced networking observability tls management to "Managed" by default (no value specified)
-        update_cmd = (
-            "aks update --resource-group={resource_group} --name={name} "
-            "--enable-advanced-network-observability "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
-        )
-        self.cmd(
-            update_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.advancedNetworking.observability.enabled", True),
-                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "Managed"),
-            ],
-        )
-
-        # update to set advanced networking observability tls management to "None"
-        update_cmd_two = (
-            "aks update --resource-group={resource_group} --name={name} "
-            "--enable-advanced-network-observability --advanced-networking-observability-tls-management None "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
-        )
-        self.cmd(
-            update_cmd_two,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.advancedNetworking.observability.enabled", True),
-                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "None"),
-            ],
-        )
-
-        # update to set advanced networking observability tls management to "Managed"
-        update_cmd_three = (
-            "aks update --resource-group={resource_group} --name={name} "
-            "--advanced-networking-observability-tls-management Managed "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
-        )
-        self.cmd(
-            update_cmd_three,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.advancedNetworking.observability.enabled", True),
-                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "Managed"),
             ],
         )
 

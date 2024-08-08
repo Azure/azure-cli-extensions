@@ -1327,8 +1327,8 @@ def load_arguments(self, _):
         )
         c.argument(
             "advanced_networking_observability_tls_management",
-            is_preview=True,
             arg_type=get_enum_type(tls_management_types),
+            is_preview=True,
         )
         c.argument("enable_cost_analysis", action="store_true")
         c.argument("disable_cost_analysis", action="store_true")

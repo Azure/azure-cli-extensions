@@ -1024,6 +1024,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.cmd,
             AKSManagedClusterParamDict(
                 {
+                    "enable_advanced_network_observability": True,
                     "advanced_networking_observability_tls_management": "Managed",
                 }
             ),
@@ -1037,6 +1038,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.cmd,
             AKSManagedClusterParamDict(
                 {
+                    "enable_advanced_network_observability": True,
                     "advanced_networking_observability_tls_management": "None",
                 }
             ),
@@ -1044,6 +1046,36 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             decorator_mode=DecoratorMode.UPDATE,
         )
         self.assertEqual(ctx_3.get_advanced_networking_observability_tls_management(), "None")
+
+        # Flag set to Managed when Observability is disabled.
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "disable_advanced_network_observability": True,
+                    "advanced_networking_observability_tls_management": "Managed",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        with self.assertRaises(ArgumentUsageError):
+            ctx_4.get_advanced_networking_observability_tls_management()
+
+        # Flag set to None when Observability is disabled.
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "disable_advanced_network_observability": True,
+                    "advanced_networking_observability_tls_management": "None",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        with self.assertRaises(ArgumentUsageError):
+            ctx_4.get_advanced_networking_observability_tls_management()
 
     def test_get_enable_managed_identity(self):
         # custom value
