@@ -35,7 +35,6 @@ def load_arguments(self, _):
         c.argument('yes', help='Option to skip prompt for associating public ip and confirm yes to it in no Tty mode')
         c.argument('no', help='Option to skip prompt for associating public ip and confirm no to it in no Tty mode')
 
-
     with self.argument_context('vm repair restore') as c:
         c.argument('repair_vm_id', help='Repair VM resource id.')
         c.argument('disk_name', help='Name of fixed data disk. Defaults to the first data disk in the repair VM.')

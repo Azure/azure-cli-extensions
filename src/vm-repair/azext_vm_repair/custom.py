@@ -32,7 +32,6 @@ from .repair_utils import (
     _parse_run_script_raw_logs,
     _check_script_succeeded,
     _fetch_disk_info,
-    _unlock_singlepass_encrypted_disk,
     _invoke_run_command,
     _get_cloud_init_script,
     _select_distro_linux,
@@ -47,7 +46,7 @@ from .repair_utils import (
     _fetch_architecture,
     _select_distro_linux_Arm64
 )
-from .exceptions import AzCommandError, RunScriptNotFoundForIdError, SupportingResourceNotFoundError, CommandCanceledByUserError
+
 logger = get_logger(__name__)
 
 
@@ -616,18 +615,17 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         vnet_resource_group = subnet_id_tokens[-7]
         ipconfig_name = ip_config_object['name']
         orig_ip_address = ip_config_object['privateIPAddress']
-        application_names=""
-        applicationSecurityGroups='applicationSecurityGroups'
+        application_names = ""
+        applicationSecurityGroups = 'applicationSecurityGroups'
         if applicationSecurityGroups in ip_config_object:
             for item in ip_config_object[applicationSecurityGroups]:
                 application_id_tokens = item['id'].split('/')
                 if application_id_tokens[-1] is not None:
 
-                    application_names+=application_id_tokens[-1]+ " "
-                    
+                    application_names += application_id_tokens[-1] + " "
+
         logger.info('applicationSecurityGroups {application_names}...\n')
 
-        
         # Dynamic | Static
         orig_ip_allocation_method = ip_config_object['privateIPAllocationMethod']
 
@@ -644,19 +642,18 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         # Update IP address
         if application_names:
             update_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} --asgs {asgs}' \
-                                .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address,asgs=application_names)
+                                .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address, asgs=application_names)
         else:
             logger.info('applicationSecurityGroups do not exist...\n')
             update_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip}' \
                                 .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address)
         _call_az_command(update_ip_command)
-        
-         # Wait for IP updated
+
+        # Wait for IP updated
         wait_ip_update_command = 'az network nic ip-config wait --updated -g {g} --nic-name {nic}' \
-                                .format(g=resource_group_name, nic=primary_nic_name)
+            .format(g=resource_group_name, nic=primary_nic_name)
         _call_az_command(wait_ip_update_command)
 
-            
         # 4) Change things back. This will also invoke and wait for a VM restart.
         logger.info('NIC reset is complete. Now reverting back to your original configuration...\n')
         # If user had dynamic config, change back to dynamic
@@ -665,7 +662,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
             # Revert Static to Dynamic
             if application_names:
                 revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method} --asgs {asgs}' \
-                                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG,asgs=application_names)
+                                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG, asgs=application_names)
             else:
                 revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method}' \
                                     .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG)
@@ -673,7 +670,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
             # Revert to original static ip
             if application_names:
                 revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} --asgs {asgs}' \
-                                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address,asgs=application_names)
+                                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address, asgs=application_names)
             else:
                 revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} ' \
                                     .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address)
