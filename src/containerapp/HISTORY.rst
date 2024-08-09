@@ -7,7 +7,7 @@ upcoming
 
 0.3.55
 ++++++
-* 'az containerapp sessionpool create/update': Added NodeLTS container-type, and container-type parameter is mandatory now.
+* 'az containerapp sessionpool create/update': Added NodeLTS container-type.
 
 0.3.54
 ++++++
