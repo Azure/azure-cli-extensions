@@ -1,10 +1,10 @@
 
 Release History
 ===============
-
 1.0.8
 ++++++
 SELFHELP telemetry added as initiator. Extra parameters is introduced at the backend to capture the telemetry data.
+Made changes to `repair create` for confidential VM to use recovery key provided by the user to unlock the disk. 
 
 1.0.7
 ++++++
@@ -13,7 +13,6 @@ az command adjustment
 1.0.6
 ++++++
 Add CLI update wait for ASG to wait for the operation done as the async 2rd operation will cancel the 1st call.
-
 
 1.0.5
 ++++++

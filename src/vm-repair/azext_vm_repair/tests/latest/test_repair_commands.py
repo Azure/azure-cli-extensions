@@ -82,7 +82,7 @@ class WindowsUnmanagedDiskCreateRestoreTest(LiveScenarioTest):
 @pytest.mark.linux
 class LinuxManagedDiskCreateRestoreTest(LiveScenarioTest):
 
-    @ResourceGroupPreparer(location='eastus')
+    @ResourceGroupPreparer(location='westus2')
     def test_vmrepair_LinuxManagedCreateRestore(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
@@ -117,7 +117,7 @@ class LinuxManagedDiskCreateRestoreTest(LiveScenarioTest):
 @pytest.mark.linux
 class LinuxUnmanagedDiskCreateRestoreTest(LiveScenarioTest):
 
-    @ResourceGroupPreparer(location='eastus')
+    @ResourceGroupPreparer(location='westus2')
     def test_vmrepair_LinuxUnmanagedCreateRestore(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
@@ -192,7 +192,7 @@ class WindowsUnmanagedDiskCreateRestoreTestwithpublicip(LiveScenarioTest):
         })
 
         # Create test VM
-        self.cmd('vm create -g {rg} -n {vm} --admin-username azureadmin --image Win2016Datacenter --admin-password !Passw0rd2018 --use-unmanaged-disk')
+        self.cmd('vm create -g {rg} -n {vm} --admin-username azureadmin --image Win2022Datacenter --admin-password !Passw0rd2018 --use-unmanaged-disk')
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
@@ -219,7 +219,7 @@ class WindowsUnmanagedDiskCreateRestoreTestwithpublicip(LiveScenarioTest):
 
 class LinuxManagedDiskCreateRestoreTestwithpublicip(LiveScenarioTest):
 
-    @ResourceGroupPreparer(location='eastus')
+    @ResourceGroupPreparer(location='westus2')
     def test_vmrepair_LinuxManagedCreateRestorePublicIp(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
@@ -751,7 +751,7 @@ class RepairAndRestoreLinuxVM(LiveScenarioTest):
 @pytest.mark.arm64
 class LinuxARMManagedDiskCreateRestoreTest(LiveScenarioTest):
 
-    @ResourceGroupPreparer(location='eastus')
+    @ResourceGroupPreparer(location='westus2')
     def test_vmrepair_LinuxManagedCreateRestore(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
@@ -810,3 +810,43 @@ class ResetNICWithASG(LiveScenarioTest):
         vm_instance_view = self.cmd('vm get-instance-view -g {rg} -n {vm} -o json').get_output_in_json()
         vm_power_state = vm_instance_view['instanceView']['statuses'][1]['code']
         assert vm_power_state == 'PowerState/running'
+
+
+class WindowsConfidentialVMRepair(LiveScenarioTest):
+
+    @ResourceGroupPreparer(location='westus2')
+    def test_vmrepair_ConfidentialVMAndUnlockDisk(self, resource_group):
+        self.kwargs.update({
+            'vm': 'vm1'
+        })
+        
+        adminPassword = "!Passw0rd2024"
+        adminUsername = "azureadmin"
+        imageGen2 = "Win2022AzureEditionCore"
+
+        # Create test VM
+        # need to create a cvm
+        # self.cmd('vm create -g {rg} -n {vm} --admin-username {} --admin-password {} --image {} --size Standard_DC4es_v5 --enable-vtpm true --public-ip-sku Standard --security-type ConfidentialVM --os-disk-security-encryption-type VMGuestStateOnly --enable-secure-boot true'.format(adminUsername, adminPassword, imageGen2))
+        self.cmd('vm create -g {rg} -n {vm} --admin-username {} --admin-password {} --image {}'.format(adminUsername, adminPassword, imageGen2))
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
+        # Something wrong with vm create command if it fails here
+        assert len(vms) == 1
+
+        # Test create
+        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username {} --repair-password {} --unlock-encrypted-vm --encrypt-recovery-key {} --yes --verbose -o json'.format(adminUsername, adminPassword, adminPassword)).get_output_in_json()
+        assert result['status'] == STATUS_SUCCESS, result['error_message']
+
+        # Check repair VM
+        repair_vms = self.cmd('vm list -g {} -o json'.format(result['repair_resource_group'])).get_output_in_json()
+        assert len(repair_vms) == 1
+        repair_vm = repair_vms[0]
+        # Check attached data disk
+        assert repair_vm['storageProfile']['dataDisks'][0]['name'] == result['copied_disk_name']
+
+        # Call Restore
+        self.cmd('vm repair restore -g {rg} -n {vm} --yes')
+
+        # Check swapped OS disk
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
+        source_vm = vms[0]
+        assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
