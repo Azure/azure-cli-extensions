@@ -13239,9 +13239,44 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             }
         )
 
-        # create an advancaed networking observability cluster with tls management set to "Managed"
+        # create an advanced networking observability cluster with tls management set to "Managed" by default (no value specified)
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard --enable-advanced-network-observability "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "Managed"),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "location": resource_group_location,
+            }
+        )
+
+        # create an advanced networking observability cluster with tls management set to "Managed" explicitly
+        create_cmd = (
+             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
             "--enable-advanced-network-observability --advanced-networking-observability-tls-management Managed "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview"
@@ -13275,7 +13310,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             }
         )
 
-        # create an advancaed networking observability cluster with tls management set to "None"
+        # create an advanced networking observability cluster with tls management set to "None"
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
