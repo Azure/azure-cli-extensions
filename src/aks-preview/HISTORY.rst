@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* `az aks create`/`az aks nodepool add`: No longer supports creating nodepools with ossku `CBLMariner`.
 * az aks create/update: Support in place param updates for managed prom
 * Vendor new SDK and bump API version to 2024-06-02-preview.
 
