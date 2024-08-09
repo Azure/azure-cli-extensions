@@ -744,10 +744,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 self.mc.network_profile.advanced_networking.observability.enabled
             ):
                 return tls_management
-            if (
-                enable_advanced_network_observability is not None and
-                enable_advanced_network_observability
-            ):
+            if enable_advanced_network_observability:
                 return tls_management
             raise ArgumentUsageError(
                 "Cannot set --tls-management without enabling advanced network observability"
