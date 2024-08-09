@@ -165,8 +165,39 @@ jobs:
           path: |
             cal_result
             !cal_result/**/*.md
+  skip-version-cal:
+    if: ${{ contains(github.event.pull_request.labels.*.name, 'skip-cal-version') }}
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+      contents: read
+    steps:
+      - name: Check Init GH Event
+        env:
+          action: ${{ toJSON(github.event.action) }}
+          label: ${{ toJSON(github.event.label) }}
+        run: |
+          echo prepare default version cal output
+      - name: Set Default Version Output
+        env:
+          result_path: "./cal_result"
+          remove_labels_file: "labels_removed.txt"
+        run: |
+          set -x
+          mkdir "$result_path"
+          cd "$result_path"
+          echo "release-version-block" > "$remove_labels_file"
+          cd ../
+          ls "$result_path"
+      - name: Archive pr version cal output
+        uses: actions/upload-artifact@v4
+        with:
+          name: version-cal-output
+          path: |
+            cal_result
   version-output:
-    needs: version-cal
+    needs: [version-cal, skip-version-cal]
+    if: always()
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -228,3 +259,10 @@ jobs:
              "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels/${del_lab}" \
              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}"
           done
+      - uses: snnaplab/get-labels-action@v1
+      - name: Check real time labels
+        if: contains(fromJSON(env.LABELS), 'release-version-block')
+        run: |
+          echo label: $LABELS
+          echo blocked
+          exit 1
