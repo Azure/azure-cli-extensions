@@ -440,6 +440,12 @@ class AmgScenarioTest(ScenarioTest):
                 self.check("length([?uid == '{dashboardUid}'])", 1)
             ])
 
+            # Close-out Instance
+            self.cmd('grafana delete -g {rg} -n {name} --yes')
+            self.cmd('grafana delete -g {rg} -n {name2} --yes')
+            final_count = len(self.cmd('grafana list').get_output_in_json())
+            self.assertTrue(final_count, 0)
+
     def _get_signed_in_user(self):
         account_info = self.cmd('account show').get_output_in_json()
         if account_info['user']['type'] == 'user':

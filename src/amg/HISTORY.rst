@@ -75,3 +75,7 @@ Release History
 * `az grafana folder show`: remove folder lookup by id due to deprecated API
 * `az grafana folder delete`: remove folder lookup by id due to deprecated API
 * `az grafana dashboard import`: update call from deprecated dashboard import API to dashboard create/update API
+
+1.4.0
+++++++
+* `az grafana migrate`: support migration from other Grafana instances to AMG

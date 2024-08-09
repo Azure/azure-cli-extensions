@@ -297,6 +297,40 @@ def restore_grafana(cmd, grafana_name, archive_file, components=None, remap_data
             destination_datasources=data_sources)
 
 
+def migrate_grafana(cmd, grafana_name, source_grafana_endpoint, source_grafana_token_or_api_key, dry_run=False,
+                    overwrite=False, folders_to_include=None, folders_to_exclude=None, resource_group_name=None):
+    from .migrate import migrate
+    from .utils import get_health_endpoint
+
+    # for source instance (backing up from)
+    headers_src = {
+        "content-type": "application/json",
+        "authorization": "Bearer " + source_grafana_token_or_api_key
+    }
+    (status, _) = get_health_endpoint(source_grafana_endpoint, headers_src)
+    if status == 401:
+        raise ArgumentUsageError(f"Access to source grafana endpoint was denied")
+    elif status >= 400:
+        raise ArgumentUsageError(f"Source grafana endpoint is not reachable")
+
+    # for destination instance (restoring to)
+    _health_endpoint_reachable(cmd, grafana_name, resource_group_name=resource_group_name)
+    creds_dest = _get_data_plane_creds(cmd, api_key_or_token=None, subscription=None)
+    headers_dest = {
+        "content-type": "application/json",
+        "authorization": "Bearer " + creds_dest[1]
+    }
+
+    migrate(backup_url=source_grafana_endpoint,
+            backup_headers=headers_src,
+            restore_url=_get_grafana_endpoint(cmd, resource_group_name, grafana_name, subscription=None),
+            restore_headers=headers_dest,
+            dry_run=dry_run,
+            overwrite=overwrite,
+            folders_to_include=folders_to_include,
+            folders_to_exclude=folders_to_exclude)
+
+
 def sync_dashboard(cmd, source, destination, folders_to_include=None, folders_to_exclude=None,
                    dashboards_to_include=None, dashboards_to_exclude=None, dry_run=None):
     from .sync import sync
