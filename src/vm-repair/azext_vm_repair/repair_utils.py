@@ -16,7 +16,7 @@ from knack.log import get_logger
 from knack.prompting import prompt_y_n, NoTTYException
 
 from .encryption_types import Encryption
-from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, SuseNotAvailableError)
+from .exceptions import (AzCommandError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV)
 
 REPAIR_MAP_URL = 'https://raw.githubusercontent.com/Azure/repair-script-library/master/map.json'
 
@@ -207,8 +207,8 @@ def _check_existing_rg(rg_name):
         logger.info('Checking for existing resource groups with identical name within subscription...')
         group_exists = loads(_call_az_command(exists_rg_command))
     except AzCommandError as azCommandError:
-        logger.error(azCommandError)
-        raise Exception('Unexpected error occured while fetching existing resource groups.')
+        logger.error('Unexpected error occured while fetching existing resource groups.')
+        raise azCommandError
 
     logger.info('Pre-existing repair resource group with the same name is \'%s\'', group_exists)
     return group_exists
