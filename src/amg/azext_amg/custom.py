@@ -57,7 +57,7 @@ class GrafanaCreate(_GrafanaCreate):
         if has_value(args.skip_role_assignments) and has_value(args.principal_ids):
             raise ArgumentUsageError("--skip-role-assignments | --assignee-object-ids")
 
-        if not args.skip_system_assigned_identity:
+        if not has_value(args.skip_system_assigned_identity):
             args.identity = {"type": "SystemAssigned"}
 
         process_grafana_create_namespace(self.ctx, self.ctx.args)
