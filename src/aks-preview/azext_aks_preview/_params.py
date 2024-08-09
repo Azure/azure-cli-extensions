@@ -1327,8 +1327,8 @@ def load_arguments(self, _):
             action="store_true",
             is_preview=True,
         )
-        c.argument("enable_cost_analysis", is_preview=True, action="store_true")
-        c.argument("disable_cost_analysis", is_preview=True, action="store_true")
+        c.argument("enable_cost_analysis", action="store_true")
+        c.argument("disable_cost_analysis", action="store_true")
         c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
         c.argument('disable_ai_toolchain_operator', is_preview=True, action='store_true')
         # azure container storage
