@@ -122,6 +122,8 @@ from azext_aks_preview._consts import (
     CONST_ARTIFACT_SOURCE_DIRECT,
     CONST_ARTIFACT_SOURCE_CACHE,
     CONST_OUTBOUND_TYPE_NONE,
+    CONST_TLS_MANAGEMENT_MANAGED,
+    CONST_TLS_MANAGEMENT_NONE,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -397,6 +399,11 @@ health_probe_modes = [
 bootstrap_artifact_source_types = [
     CONST_ARTIFACT_SOURCE_DIRECT,
     CONST_ARTIFACT_SOURCE_CACHE,
+]
+
+tls_management_types = [
+    CONST_TLS_MANAGEMENT_MANAGED,
+    CONST_TLS_MANAGEMENT_NONE,
 ]
 
 
@@ -812,6 +819,12 @@ def load_arguments(self, _):
         c.argument(
             "enable_advanced_network_observability",
             action="store_true",
+            is_preview=True,
+        )
+        c.argument(
+            "advanced_networking_observability_tls_management",
+            arg_type=get_enum_type(tls_management_types),
+            default=CONST_TLS_MANAGEMENT_MANAGED,
             is_preview=True,
         )
         c.argument(
@@ -1310,6 +1323,11 @@ def load_arguments(self, _):
         c.argument(
             "disable_advanced_network_observability",
             action="store_true",
+            is_preview=True,
+        )
+        c.argument(
+            "advanced_networking_observability_tls_management",
+            arg_type=get_enum_type(tls_management_types),
             is_preview=True,
         )
         c.argument("enable_cost_analysis", action="store_true")
