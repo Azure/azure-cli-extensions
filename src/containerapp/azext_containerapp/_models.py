@@ -307,7 +307,7 @@ SessionPool = {
     }
 }
 
-SessionCodeInterpreterPythonExecution = {
+SessionCodeInterpreterExecution = {
     "properties": {
         "identifier": None,
         "codeInputType": None,
