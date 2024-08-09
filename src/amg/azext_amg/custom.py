@@ -54,7 +54,7 @@ class GrafanaCreate(_GrafanaCreate):
 
     def pre_operations(self):
         args = self.ctx.args
-        if args.skip_role_assignments and args.principal_ids:
+        if has_value(args.skip_role_assignments) and has_value(args.principal_ids):
             raise ArgumentUsageError("--skip-role-assignments | --assignee-object-ids")
 
         if not args.skip_system_assigned_identity:
