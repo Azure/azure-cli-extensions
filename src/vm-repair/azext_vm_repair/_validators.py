@@ -175,6 +175,7 @@ def validate_run(cmd, namespace):
         raise CLIError('Repair resource id is not valid.')
 
 
+# pylint: disable=W0212
 def validate_reset_nic(cmd, namespace):
     check_extension_version(EXTENSION_NAME)
     if namespace._subscription:
