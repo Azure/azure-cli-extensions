@@ -319,11 +319,11 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
         # Fetch source and repair VM data
         source_vm = get_vm(cmd, resource_group_name, vm_name)
         is_managed = _uses_managed_disk(source_vm)
-        if repair_vm_id:
-            logger.info('Repair VM ID: %s', repair_vm_id)
-            repair_vm_id = parse_resource_id(repair_vm_id)
-            repair_vm_name = repair_vm_id['name']
-            repair_resource_group = repair_vm_id['resource_group']
+
+        logger.info('Repair VM ID: %s', repair_vm_id)
+        repair_vm_id = parse_resource_id(repair_vm_id)
+        repair_vm_name = repair_vm_id['name']
+        repair_resource_group = repair_vm_id['resource_group']
         source_disk = None
 
         # MANAGED DISK
@@ -441,6 +441,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         if preview:
             parts = preview.split('/')
             if len(parts) < 7 or parts.index('map.json') == -1:
+                # pylint: disable=W0719
                 raise Exception('Invalid preview url. Write full URL of map.json file. example https://github.com/Azure/repair-script-library/blob/main/map.json')
             last_index = parts.index('map.json')
             fork_name = parts[last_index - 4]

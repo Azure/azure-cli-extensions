@@ -427,12 +427,14 @@ def _unlock_singlepass_encrypted_disk_fallback(source_vm, resource_group_name, r
         volume_type = 'ALL'
 
     try:
+
+        # Set command as SINGLE_WITHOUT_KEK by default
+        install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --volume-type {volume}' \
+                                        .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, volume=volume_type)
+
         if encryption_type is Encryption.SINGLE_WITH_KEK:
             install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --key-encryption-key {kek_url} --volume-type {volume}' \
                                             .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, kek_url=kekurl, volume=volume_type)
-        elif encryption_type is Encryption.SINGLE_WITHOUT_KEK:
-            install_ade_extension_command = 'az vm encryption enable --disk-encryption-keyvault {vault} --name {repair} --resource-group {g} --volume-type {volume}' \
-                                            .format(g=repair_group_name, repair=repair_vm_name, vault=key_vault, volume=volume_type)
         # Add format-all flag for linux vms
         if is_linux:
             install_ade_extension_command += " --encrypt-format-all"
@@ -572,6 +574,7 @@ def _select_distro_linux_gen2(distro):
     return os_image_urn
 
 
+# pylint: disable=W0719
 def _resolve_api_version(rcf, resource_provider_namespace, parent_resource_path, resource_type):
 
     provider = rcf.providers.get(resource_provider_namespace)
@@ -704,11 +707,11 @@ def _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux):
 def _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username, fix_uuid=False):
 
     # logging all parameters of the function individually
-    logger.info('Creating repair VM with command: {}'.format(create_repair_vm_command))
-    logger.info('copy_disk_id: {}'.format(copy_disk_id))
-    logger.info('repair_password: {}'.format(repair_password))
-    logger.info('repair_username: {}'.format(repair_username))
-    logger.info('fix_uuid: {}'.format(fix_uuid))
+    logger.info('Creating repair VM with command: %s', create_repair_vm_command)
+    logger.info('copy_disk_id: %s', copy_disk_id)
+    logger.info('repair_password: %s', repair_password)
+    logger.info('repair_username: %s', repair_username)
+    logger.info('fix_uuid: %s', fix_uuid)
 
     if not fix_uuid:
         create_repair_vm_command += ' --attach-data-disks {id}'.format(id=copy_disk_id)
