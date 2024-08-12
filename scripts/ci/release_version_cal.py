@@ -306,11 +306,11 @@ def gen_comment_message(mod, mod_update_info, comment_message):
 
 def add_label_hint_message(comment_message):
     comment_message.append("#### Notes")
-    comment_message.append(" - Stable/preview tag is inherited from last release. "
-                           "If needed, please add `stable`/`preview` label to modify it.")
-    comment_message.append(" - Major/minor/patch/pre increment of version number is calculated by pull request "
-                           "code changes automatically. "
-                           "If needed, please add `major`/`minor`/`patch`/`pre` label to adjust it.")
+    # comment_message.append(" - Stable/preview tag is inherited from last release. "
+    #                        "If needed, please add `stable`/`preview` label to modify it.")
+    # comment_message.append(" - Major/minor/patch/pre increment of version number is calculated by pull request "
+    #                        "code changes automatically. "
+    #                        "If needed, please add `major`/`minor`/`patch`/`pre` label to adjust it.")
     comment_message.append(DEFAULT_MESSAGE)
 
 
