@@ -20,7 +20,8 @@ from azure.cli.core.azclierror import (
     CLIInternalError,
     InvalidArgumentValueError,
     ResourceNotFoundError,
-    ArgumentUsageError)
+    ArgumentUsageError,
+    MutuallyExclusiveArgumentError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.containerapp.custom import set_secrets, open_containerapp_in_browser, create_deserializer
 from azure.cli.command_modules.containerapp.containerapp_job_decorator import ContainerAppJobDecorator
@@ -38,7 +39,11 @@ from azure.cli.command_modules.containerapp._utils import (safe_set,
                                                            validate_container_app_name, register_provider_if_needed,
                                                            generate_randomized_cert_name, load_cert_file,
                                                            trigger_workflow, _ensure_identity_resource_id,
-                                                           AppType)
+                                                           AppType, _get_existing_secrets, store_as_secret_and_return_secret_ref, 
+                                                           set_managed_identity, is_registry_msi_system)
+from azure.cli.command_modules.containerapp._models import (
+    RegistryCredentials as RegistryCredentialsModel,
+)
 
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
@@ -76,6 +81,7 @@ from .containerapp_env_storage_decorator import ContainerappEnvStorageDecorator
 from .java_component_decorator import JavaComponentDecorator
 from .containerapp_sessionpool_decorator import SessionPoolPreviewDecorator, SessionPoolCreateDecorator, SessionPoolUpdateDecorator
 from .containerapp_session_code_interpreter_decorator import SessionCodeInterpreterCommandsPreviewDecorator
+from .containerapp_job_registry_decorator import ContainerAppJobRegistryPreviewSetDecorator
 from .dotnet_component_decorator import DotNetComponentDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._clients import (
@@ -106,7 +112,7 @@ from ._models import (
     AzureFileProperties as AzureFilePropertiesModel
 )
 
-from ._utils import connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check, get_pack_exec_path, is_docker_running, parse_build_env_vars
+from ._utils import connected_env_check_cert_name_availability, get_oryx_run_image_tags, patchable_check, get_pack_exec_path, is_docker_running, parse_build_env_vars, env_has_managed_identity
 
 from ._constants import (CONTAINER_APPS_RP,
                          NAME_INVALID, NAME_ALREADY_EXISTS, ACR_IMAGE_SUFFIX, DEV_POSTGRES_IMAGE, DEV_POSTGRES_SERVICE_TYPE,
@@ -3105,3 +3111,111 @@ def create_dotnet_component(cmd, dotnet_component_name, environment_name, resour
         aspire_dashboard_url = dotnet_component_decorator._get_aspire_dashboard_url(environment_name, resource_group_name, dotnet_component_name)
         logger.warning("Access your Aspire Dashboard at %s.", aspire_dashboard_url)
     return
+
+def set_registry(cmd, name, resource_group_name, server, username=None, password=None, disable_warnings=False, identity=None, no_wait=False):
+    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
+    if (username or password) and identity:
+        raise MutuallyExclusiveArgumentError("Use either identity or username/password.")
+
+    containerapp_def = None
+    try:
+        containerapp_def = ContainerAppPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=name)
+    except:
+        pass
+
+    if not containerapp_def:
+        raise ResourceNotFoundError("The containerapp '{}' does not exist".format(name))
+
+    _get_existing_secrets(cmd, resource_group_name, name, containerapp_def)
+
+    registry = None
+
+    registries_def = safe_get(containerapp_def, "properties", "configuration", "registries", default=[])
+    containerapp_def["properties"]["configuration"]["registries"] = registries_def
+
+    if (not username or not password) and not identity:
+        # If registry is Azure Container Registry, we can try inferring credentials
+        if ACR_IMAGE_SUFFIX not in server:
+            raise RequiredArgumentMissingError('Registry username and password are required if you are not using Azure Container Registry.')
+        not disable_warnings and logger.warning('No credential was provided to access Azure Container Registry. Trying to look up...')
+        parsed = urlparse(server)
+        registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
+
+        try:
+            username, password, _ = _get_acr_cred(cmd.cli_ctx, registry_name)
+        except Exception as ex:
+            raise RequiredArgumentMissingError('Failed to retrieve credentials for container registry. Please provide the registry username and password') from ex
+
+    # Check if updating existing registry
+    updating_existing_registry = False
+    for r in registries_def:
+        if r['server'].lower() == server.lower():
+            not disable_warnings and logger.warning("Updating existing registry.")
+            updating_existing_registry = True
+            if username:
+                r["username"] = username
+                r["identity"] = None
+            if password:
+                r["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
+                    containerapp_def["properties"]["configuration"]["secrets"],
+                    r["username"],
+                    r["server"],
+                    password,
+                    update_existing_secret=True)
+                r["identity"] = None
+            if identity:
+                r["identity"] = identity
+                r["username"] = None
+                r["passwordSecretRef"] = None
+
+    # If not updating existing registry, add as new registry
+    if not updating_existing_registry:
+        registry = RegistryCredentialsModel
+        registry["server"] = server
+        if not identity:
+            registry["username"] = username
+            registry["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
+                containerapp_def["properties"]["configuration"]["secrets"],
+                username,
+                server,
+                password,
+                update_existing_secret=True)
+        else:
+            registry["identity"] = identity
+
+        registries_def.append(registry)
+
+    if identity:
+        if is_registry_msi_system(identity):
+            set_managed_identity(cmd, resource_group_name, containerapp_def, system_assigned=True)
+
+        if is_valid_resource_id(identity):
+            env_id = safe_get(containerapp_def, "properties", "environmentId", default="")
+            parsed_managed_env = parse_resource_id(env_id)
+            managed_env_name = parsed_managed_env['name']
+            managed_env_rg = parsed_managed_env['resource_group']
+            if not env_has_managed_identity(cmd, managed_env_rg, managed_env_name, identity):
+                set_managed_identity(cmd, resource_group_name, containerapp_def, user_assigned=[identity])
+
+    try:
+        r = ContainerAppPreviewClient.create_or_update(
+            cmd=cmd, resource_group_name=resource_group_name, name=name, container_app_envelope=containerapp_def, no_wait=no_wait)
+
+        return r["properties"]["configuration"]["registries"]
+    except Exception as e:
+        handle_raw_exception(e)
+
+def set_registry_job(cmd, name, resource_group_name, server, username=None, password=None, disable_warnings=False, identity=None, no_wait=False):
+    raw_parameters = locals()
+
+    containerapp_job_registry_set_decorator = ContainerAppJobRegistryPreviewSetDecorator(
+        cmd=cmd,
+        client=ContainerAppsJobPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_job_registry_set_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_job_registry_set_decorator.validate_arguments()
+    containerapp_job_registry_set_decorator.construct_payload()
+    r = containerapp_job_registry_set_decorator.set()
+    return r

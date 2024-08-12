@@ -4,6 +4,10 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp create': Support --registry-identity use Environment identity for ACR authentication.
+* 'az containerapp job create': Support --registry-identity use Environment identity for ACR authentication.
+* 'az containerapp registry set': Support --identity use Environment identity for ACR authentication.
+* 'az containerapp job registry set': Support --identity use Environment identity for ACR authentication.
 
 0.3.54
 ++++++
