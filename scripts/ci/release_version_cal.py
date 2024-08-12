@@ -215,7 +215,7 @@ def get_next_version_segment_tag():
 
 def add_suggest_header(comment_message):
     comment_message.insert(0, "## :warning: Release Suggestions")
-    comment_message.insert(0, "@" + pr_user)
+    comment_message.insert(0, "Hi @" + pr_user)
 
 
 def gen_history_comment_message(mod, mod_update_info, mod_message):
