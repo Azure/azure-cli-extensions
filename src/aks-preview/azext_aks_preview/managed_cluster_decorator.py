@@ -3056,8 +3056,8 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
                 )
             network_profile.advanced_networking.observability = self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
-                    enabled=advanced_network_observability
-                )
+                enabled=advanced_network_observability
+            )
 
         fqdn_policy = self.context.get_enable_fqdn_policy()
         if fqdn_policy is not None:
