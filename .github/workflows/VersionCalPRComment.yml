@@ -70,6 +70,7 @@ jobs:
           git log --oneline | head -n 10
           git checkout "$diff_branch"
           git log --oneline | head -n 10
+          git --no-pager diff --name-only --diff-filter=ACMRT "$base_branch_pre"/"$base_branch"..."$diff_branch"
           git --no-pager diff --name-only --diff-filter=ACMRT "$base_branch_pre"/"$base_branch"..."$diff_branch" | grep -v "/tests/" > changed_files
           cat changed_files
           cat changed_files | grep src/ | awk -F"src/" '{print $2}'| grep / | awk -F"/" '{print $1}' | sort | uniq
@@ -122,6 +123,7 @@ jobs:
         id: get_comment_message
         env:
           pr_label_list: ${{ toJson(github.event.pull_request.labels.*.name) }}
+          pr_user: ${{ github.event.pull_request.user.login }}
           base_branch: ${{ github.event.pull_request.base.ref }}
           base_branch_pre: "upstream"
           diff_code_file: "diff_codes.txt"
@@ -157,6 +159,7 @@ jobs:
           python scripts/ci/release_version_cal.py
           ls "$result_path"
           cat "$result_path"/"$remove_labels_file"
+          cat "$result_path"/"$output_file"
           # echo "commit_message=$(cat $output_file)" >> $GITHUB_ENV
       - name: Archive pr version cal output
         uses: actions/upload-artifact@v4
