@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 7.0.0b5
 +++++++
+* Add option `--enable-acns`, `--disable-acns` to `az aks create/update`
 * Add option `--enable-fqdn-policy`, `--disable-fqdn-policy` to `az aks create/update`
 * az aks create/update: Support in place param updates for managed prom
 * Vendor new SDK and bump API version to 2024-06-02-preview.
