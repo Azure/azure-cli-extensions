@@ -433,6 +433,89 @@ class AmgScenarioTest(ScenarioTest):
                 self.check("length([?uid == '{dashboardUid}'])", 1)
             ])
 
+    @ResourceGroupPreparer(name_prefix='cli_test_amg')
+    def test_amg_private_endpoint(self, resource_group):
+
+        self.kwargs.update({
+            'name': 'clitestamgmpe',
+            'location': 'westcentralus',
+            'monitor_name': 'clitestamgmonitor',
+            'mpe_name': 'clitestmpe',
+            'pe_name': 'clitestpe',
+            'vnet_name': 'clitestvnet',
+            'subnet_name': 'clitestsubnet',
+            'conn_name': 'clitestconn',
+            'sub': self.get_subscription_id(),
+        })
+
+        owner = self._get_signed_in_user()
+        self.recording_processors.append(MSGraphNameReplacer(owner, MOCKED_USER_NAME))
+
+        with unittest.mock.patch('azext_amg.custom._gen_guid', side_effect=self.create_guid):
+
+            self.cmd('grafana create -g {rg} -n {name} -l {location}')
+            time.sleep(120)
+
+            self.cmd('monitor account create -n {monitor_name} -g {rg} -l {location}')
+
+            self.cmd('grafana managed-private-endpoint create -g {rg} --workspace-name {name} -n {mpe_name} -l {location} --group-ids prometheusMetrics --private-link-resource-region {location} --private-link-resource-id /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Monitor/accounts/{monitor_name}')
+
+            self.cmd('grafana managed-private-endpoint list -g {rg} --workspace-name {name}', checks=[
+                self.check('length([])', 1)
+            ])
+
+            self.cmd('grafana managed-private-endpoint show -g {rg} --workspace-name {name} -n {mpe_name}', checks=[
+                self.check('name', '{mpe_name}')
+            ])
+
+            out = self.cmd('network private-endpoint-connection list -g {rg} -n {monitor_name} --type Microsoft.Monitor/accounts', checks=[
+                self.check('length([])', 1)
+            ]).get_output_in_json()
+
+            self.kwargs.update({
+                'mpe_id': out[0]['id']
+            })
+
+            self.cmd('network private-endpoint-connection approve --id {mpe_id} -d "Approved" ')
+
+            self.cmd('grafana managed-private-endpoint show -g {rg} --workspace-name {name} -n {mpe_name}', checks=[
+                self.check('connectionState.status', 'Pending')
+            ])
+
+            self.cmd('grafana managed-private-endpoint refresh -g {rg} --workspace-name {name}')
+
+            self.cmd('grafana managed-private-endpoint show -g {rg} --workspace-name {name} -n {mpe_name}', checks=[
+                self.check('connectionState.status', 'Approved')
+            ])
+
+            self.cmd('grafana managed-private-endpoint delete -g {rg} --workspace-name {name} -n {mpe_name} --yes')
+
+            self.cmd('grafana managed-private-endpoint list -g {rg} --workspace-name {name}', checks=[
+                self.check('length([])', 0)
+            ])
+
+            self.cmd('network vnet create -g {rg} -n {vnet_name} -l {location} --subnet-name {subnet_name}')
+
+            self.cmd('network private-endpoint create -g {rg} -n {pe_name} --vnet-name {vnet_name} --subnet {subnet_name} --private-connection-resource-id /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Dashboard/grafana/{name} -l {location} --connection-name {conn_name} --group-id grafana') 
+
+            self.cmd('grafana private-endpoint-connection list -g {rg} --workspace-name {name}', checks=[
+                self.check('length([])', 1)
+            ])
+
+            self.cmd('grafana private-endpoint-connection update --private-link-service-connection-state description="Rejection Message" status="Rejected" -g {rg} --workspace-name {name} -n {conn_name}')
+
+            self.cmd('grafana private-endpoint-connection show -g {rg} --workspace-name {name} -n {conn_name}', checks=[
+                self.check('name', '{conn_name}'),
+                self.check('privateLinkServiceConnectionState.status', 'Rejected'),
+                self.check('privateLinkServiceConnectionState.description', 'Rejection Message')
+            ])
+
+            self.cmd('grafana private-endpoint-connection delete -g {rg} --workspace-name {name} -n {conn_name} --yes')
+
+            self.cmd('grafana private-endpoint-connection list -g {rg} --workspace-name {name}', checks=[
+                self.check('length([])', 0)
+            ])
+
     def _get_signed_in_user(self):
         account_info = self.cmd('account show').get_output_in_json()
         if account_info['user']['type'] == 'user':
