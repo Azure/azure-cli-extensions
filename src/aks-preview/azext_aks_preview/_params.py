@@ -122,6 +122,10 @@ from azext_aks_preview._consts import (
     CONST_ARTIFACT_SOURCE_DIRECT,
     CONST_ARTIFACT_SOURCE_CACHE,
     CONST_OUTBOUND_TYPE_NONE,
+    CONST_APP_ROUTING_ANNOTATION_CONTROLLED_NGINX,
+    CONST_APP_ROUTING_EXTERNAL_NGINX,
+    CONST_APP_ROUTING_INTERNAL_NGINX,
+    CONST_APP_ROUTING_NONE_NGINX,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -399,6 +403,14 @@ bootstrap_artifact_source_types = [
     CONST_ARTIFACT_SOURCE_CACHE,
 ]
 
+# consts for app routing add-on
+app_routing_nginx_configs = [
+    CONST_APP_ROUTING_ANNOTATION_CONTROLLED_NGINX,
+    CONST_APP_ROUTING_EXTERNAL_NGINX,
+    CONST_APP_ROUTING_INTERNAL_NGINX,
+    CONST_APP_ROUTING_NONE_NGINX
+]
+
 
 def load_arguments(self, _):
     acr_arg_type = CLIArgumentType(metavar="ACR_NAME_OR_RESOURCE_ID")
@@ -644,6 +656,11 @@ def load_arguments(self, _):
         c.argument("rotation_poll_interval")
         c.argument("enable_sgxquotehelper", action="store_true")
         c.argument("enable_app_routing", action="store_true", is_preview=True)
+        c.argument(
+            "app_routing_default_nginx_controller",
+            arg_type=get_enum_type(app_routing_nginx_configs),
+            options_list=["--app-routing-default-nginx-controller", "--ardnc"]
+        )
         # nodepool paramerters
         c.argument(
             "nodepool_name",
@@ -2270,10 +2287,12 @@ def load_arguments(self, _):
     with self.argument_context("aks approuting enable") as c:
         c.argument("enable_kv", action="store_true")
         c.argument("keyvault_id", options_list=["--attach-kv"])
+        c.argument("nginx", arg_type=get_enum_type(app_routing_nginx_configs))
 
     with self.argument_context("aks approuting update") as c:
         c.argument("keyvault_id", options_list=["--attach-kv"])
         c.argument("enable_kv", action="store_true")
+        c.argument("nginx", arg_type=get_enum_type(app_routing_nginx_configs))
 
     with self.argument_context("aks approuting zone add") as c:
         c.argument("dns_zone_resource_ids", options_list=["--ids"], required=True)
