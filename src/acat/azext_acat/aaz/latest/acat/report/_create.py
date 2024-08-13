@@ -77,8 +77,8 @@ class Create(AAZCommand):
             required=True,
             default="UTC",
         )
-        _args_schema.trigger_time = AAZDateTimeArg(
-            options=["--trigger-time-hidden"],
+        _args_schema.trigger_time_by_codegen = AAZDateTimeArg(
+            options=["--trigger-time-by-codegen"],
             arg_group="Properties",
             help="Report collection trigger time.",
             required=True,
@@ -236,7 +236,7 @@ class Create(AAZCommand):
                 properties.set_prop("resources", AAZListType, ".resources", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("storageInfo", AAZObjectType, ".storage_info")
                 properties.set_prop("timeZone", AAZStrType, ".time_zone", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("triggerTime", AAZStrType, ".trigger_time", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("triggerTime", AAZStrType, ".trigger_time_by_codegen", typ_kwargs={"flags": {"required": True}})
 
             resources = _builder.get(".properties.resources")
             if resources is not None:

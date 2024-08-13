@@ -534,6 +534,8 @@ def aks_create(
     enable_msi_auth_for_monitoring=True,
     enable_syslog=False,
     data_collection_settings=None,
+    ampls_resource_id=None,
+    enable_high_log_scale_mode=False,
     aci_subnet_name=None,
     appgw_name=None,
     appgw_subnet_cidr=None,
@@ -544,6 +546,7 @@ def aks_create(
     enable_secret_rotation=False,
     rotation_poll_interval=None,
     enable_app_routing=False,
+    app_routing_default_nginx_controller=None,
     # nodepool paramerters
     nodepool_name="nodepool1",
     node_vm_size=None,
@@ -604,6 +607,8 @@ def aks_create(
     enable_cilium_dataplane=False,
     custom_ca_trust_certificates=None,
     enable_advanced_network_observability=None,
+    enable_fqdn_policy=None,
+    enable_acns=None,
     # nodepool
     crg_id=None,
     message_of_the_day=None,
@@ -653,6 +658,8 @@ def aks_create(
     enable_static_egress_gateway=False,
     # virtualmachines
     vm_sizes=None,
+    # IMDS restriction
+    enable_imds_restriction=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -834,6 +841,10 @@ def aks_update(
     safeguards_excluded_ns=None,
     enable_advanced_network_observability=None,
     disable_advanced_network_observability=None,
+    enable_fqdn_policy=None,
+    disable_fqdn_policy=None,
+    enable_acns=None,
+    disable_acns=None,
     # metrics profile
     enable_cost_analysis=False,
     disable_cost_analysis=False,
@@ -858,6 +869,9 @@ def aks_update(
     # Static Egress Gateway
     enable_static_egress_gateway=False,
     disable_static_egress_gateway=False,
+    # IMDS restriction
+    enable_imds_restriction=False,
+    disable_imds_restriction=False,
 ):
     # DO NOT MOVE: get all the original parameters and save them as a dictionary
     raw_parameters = locals()
@@ -1818,7 +1832,7 @@ def aks_agentpool_manual_scale_update(cmd,    # pylint: disable=unused-argument
             break
     if not manual_exists:
         raise InvalidArgumentValueError(
-            f"Manual with sizes {','.join(current_vm_sizes)} doesn't exist in node pool {nodepool_name}"
+            f"Manual with sizes {current_vm_sizes} doesn't exist in node pool {nodepool_name}"
         )
 
     return sdk_no_wait(
@@ -2009,6 +2023,8 @@ def aks_addon_enable(
     dns_zone_resource_ids=None,
     enable_syslog=False,
     data_collection_settings=None,
+    ampls_resource_id=None,
+    enable_high_log_scale_mode=False
 ):
     return enable_addons(
         cmd,
@@ -2033,6 +2049,8 @@ def aks_addon_enable(
         dns_zone_resource_ids=dns_zone_resource_ids,
         enable_syslog=enable_syslog,
         data_collection_settings=data_collection_settings,
+        ampls_resource_id=ampls_resource_id,
+        enable_high_log_scale_mode=enable_high_log_scale_mode
     )
 
 
@@ -2063,6 +2081,8 @@ def aks_addon_update(
     dns_zone_resource_ids=None,
     enable_syslog=False,
     data_collection_settings=None,
+    ampls_resource_id=None,
+    enable_high_log_scale_mode=False
 ):
     instance = client.get(resource_group_name, name)
     addon_profiles = instance.addon_profiles
@@ -2112,6 +2132,8 @@ def aks_addon_update(
         dns_zone_resource_ids=dns_zone_resource_ids,
         enable_syslog=enable_syslog,
         data_collection_settings=data_collection_settings,
+        ampls_resource_id=ampls_resource_id,
+        enable_high_log_scale_mode=enable_high_log_scale_mode
     )
 
 
@@ -2146,6 +2168,8 @@ def aks_disable_addons(cmd, client, resource_group_name, name, addons, no_wait=F
                 create_dcra=True,
                 enable_syslog=False,
                 data_collection_settings=None,
+                ampls_resource_id=None,
+                enable_high_log_scale_mode=False
             )
     except TypeError:
         pass
@@ -2188,6 +2212,8 @@ def aks_enable_addons(
     dns_zone_resource_ids=None,
     enable_syslog=False,
     data_collection_settings=None,
+    ampls_resource_id=None,
+    enable_high_log_scale_mode=False,
     aks_custom_headers=None,
 ):
     headers = get_aks_custom_headers(aks_custom_headers)
@@ -2200,6 +2226,11 @@ def aks_enable_addons(
         enable_msi_auth_for_monitoring = False
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
+
+    is_private_cluster = False
+    if instance.api_server_access_profile and instance.api_server_access_profile.enable_private_cluster:
+        is_private_cluster = True
+
     instance = _update_addons(
         cmd,
         instance,
@@ -2223,8 +2254,6 @@ def aks_enable_addons(
         no_wait=no_wait,
         dns_zone_resource_id=dns_zone_resource_id,
         dns_zone_resource_ids=dns_zone_resource_ids,
-        enable_syslog=enable_syslog,
-        data_collection_settings=data_collection_settings,
     )
     if (
         CONST_MONITORING_ADDON_NAME in instance.addon_profiles and
@@ -2255,14 +2284,22 @@ def aks_enable_addons(
                 create_dcra=True,
                 enable_syslog=enable_syslog,
                 data_collection_settings=data_collection_settings,
+                is_private_cluster=is_private_cluster,
+                ampls_resource_id=ampls_resource_id,
+                enable_high_log_scale_mode=enable_high_log_scale_mode
             )
         else:
             # monitoring addon will use legacy path
             if enable_syslog:
                 raise ArgumentUsageError(
                     "--enable-syslog can not be used without MSI auth.")
+            if enable_high_log_scale_mode:
+                raise ArgumentUsageError(
+                    "--enable-high-log-scale-mode can not be used without MSI auth.")
             if data_collection_settings is not None:
                 raise ArgumentUsageError("--data-collection-settings can not be used without MSI auth.")
+            if ampls_resource_id is not None:
+                raise ArgumentUsageError("--ampls-resource-id can not be used without MSI auth.")
             ensure_container_insights_for_monitoring(
                 cmd,
                 instance.addon_profiles[CONST_MONITORING_ADDON_NAME],
@@ -2311,7 +2348,7 @@ def aks_rotate_certs(cmd, client, resource_group_name, name, no_wait=True):     
     return sdk_no_wait(no_wait, client.begin_rotate_cluster_certificates, resource_group_name, name)
 
 
-def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
+def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements,
                    instance,
                    subscription_id,
                    resource_group_name,
@@ -2333,9 +2370,8 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
                    rotation_poll_interval=None,
                    dns_zone_resource_id=None,
                    dns_zone_resource_ids=None,
-                   no_wait=False,  # pylint: disable=unused-argument
-                   enable_syslog=False,
-                   data_collection_settings=None):
+                   no_wait=False,):  # pylint: disable=unused-argument
+
     ManagedClusterAddonProfile = cmd.get_models(
         "ManagedClusterAddonProfile",
         resource_type=CUSTOM_MGMT_AKS_PREVIEW,
@@ -2522,10 +2558,6 @@ def _update_addons(cmd,  # pylint: disable=too-many-branches,too-many-statements
 
 def aks_get_versions(cmd, client, location):    # pylint: disable=unused-argument
     return client.list_kubernetes_versions(location)
-
-
-def aks_get_os_options(cmd, client, location):    # pylint: disable=unused-argument
-    return client.get_os_options(location, resource_type='managedClusters')
 
 
 def get_aks_custom_headers(aks_custom_headers=None):
@@ -3382,7 +3414,8 @@ def aks_approuting_enable(
         resource_group_name,
         name,
         enable_kv=False,
-        keyvault_id=None
+        keyvault_id=None,
+        nginx=None,
 ):
     return _aks_approuting_update(
         cmd,
@@ -3391,7 +3424,8 @@ def aks_approuting_enable(
         name,
         enable_app_routing=True,
         keyvault_id=keyvault_id,
-        enable_kv=enable_kv)
+        enable_kv=enable_kv,
+        nginx=nginx)
 
 
 def aks_approuting_disable(
@@ -3414,7 +3448,8 @@ def aks_approuting_update(
         resource_group_name,
         name,
         keyvault_id=None,
-        enable_kv=False
+        enable_kv=False,
+        nginx=None
 ):
     return _aks_approuting_update(
         cmd,
@@ -3422,7 +3457,8 @@ def aks_approuting_update(
         resource_group_name,
         name,
         keyvault_id=keyvault_id,
-        enable_kv=enable_kv)
+        enable_kv=enable_kv,
+        nginx=nginx)
 
 
 def aks_approuting_zone_add(
@@ -3517,7 +3553,8 @@ def _aks_approuting_update(
         delete_dns_zone=None,
         update_dns_zone=None,
         dns_zone_resource_ids=None,
-        attach_zones=None
+        attach_zones=None,
+        nginx=None
 ):
     from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
     from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator

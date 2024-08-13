@@ -122,6 +122,10 @@ from azext_aks_preview._consts import (
     CONST_ARTIFACT_SOURCE_DIRECT,
     CONST_ARTIFACT_SOURCE_CACHE,
     CONST_OUTBOUND_TYPE_NONE,
+    CONST_APP_ROUTING_ANNOTATION_CONTROLLED_NGINX,
+    CONST_APP_ROUTING_EXTERNAL_NGINX,
+    CONST_APP_ROUTING_INTERNAL_NGINX,
+    CONST_APP_ROUTING_NONE_NGINX,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -399,6 +403,14 @@ bootstrap_artifact_source_types = [
     CONST_ARTIFACT_SOURCE_CACHE,
 ]
 
+# consts for app routing add-on
+app_routing_nginx_configs = [
+    CONST_APP_ROUTING_ANNOTATION_CONTROLLED_NGINX,
+    CONST_APP_ROUTING_EXTERNAL_NGINX,
+    CONST_APP_ROUTING_INTERNAL_NGINX,
+    CONST_APP_ROUTING_NONE_NGINX
+]
+
 
 def load_arguments(self, _):
     acr_arg_type = CLIArgumentType(metavar="ACR_NAME_OR_RESOURCE_ID")
@@ -632,6 +644,8 @@ def load_arguments(self, _):
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)
+        c.argument("enable_high_log_scale_mode", arg_type=get_three_state_flag(), is_preview=True)
+        c.argument("ampls_resource_id", is_preview=True)
         c.argument("aci_subnet_name")
         c.argument("appgw_name", arg_group="Application Gateway")
         c.argument("appgw_subnet_cidr", arg_group="Application Gateway")
@@ -642,6 +656,11 @@ def load_arguments(self, _):
         c.argument("rotation_poll_interval")
         c.argument("enable_sgxquotehelper", action="store_true")
         c.argument("enable_app_routing", action="store_true", is_preview=True)
+        c.argument(
+            "app_routing_default_nginx_controller",
+            arg_type=get_enum_type(app_routing_nginx_configs),
+            options_list=["--app-routing-default-nginx-controller", "--ardnc"]
+        )
         # nodepool paramerters
         c.argument(
             "nodepool_name",
@@ -813,6 +832,16 @@ def load_arguments(self, _):
             is_preview=True,
         )
         c.argument(
+            "enable_fqdn_policy",
+            action="store_true",
+            is_preview=True,
+        )
+        c.argument(
+            "enable_acns",
+            action="store_true",
+            is_preview=True,
+        )
+        c.argument(
             "custom_ca_trust_certificates",
             options_list=["--custom-ca-trust-certificates", "--ca-certs"],
             is_preview=True,
@@ -879,7 +908,7 @@ def load_arguments(self, _):
         c.argument("grafana_resource_id", validator=validate_grafanaresourceid)
         c.argument("enable_windows_recording_rules", action="store_true")
         c.argument("enable_azure_monitor_app_monitoring", is_preview=True, action="store_true")
-        c.argument("enable_cost_analysis", is_preview=True, action="store_true")
+        c.argument("enable_cost_analysis", action="store_true")
         c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
         # azure container storage
         c.argument(
@@ -953,6 +982,7 @@ def load_arguments(self, _):
         c.argument("if_none_match")
         # virtual machines
         c.argument("vm_sizes", is_preview=True)
+        c.argument("enable_imds_restriction", action="store_true", is_preview=True)
 
     with self.argument_context("aks update") as c:
         # managed cluster paramerters
@@ -1309,8 +1339,28 @@ def load_arguments(self, _):
             action="store_true",
             is_preview=True,
         )
-        c.argument("enable_cost_analysis", is_preview=True, action="store_true")
-        c.argument("disable_cost_analysis", is_preview=True, action="store_true")
+        c.argument(
+            "enable_fqdn_policy",
+            action="store_true",
+            is_preview=True,
+        )
+        c.argument(
+            "disable_fqdn_policy",
+            action="store_true",
+            is_preview=True,
+        )
+        c.argument(
+            "enable_acns",
+            action="store_true",
+            is_preview=True,
+        )
+        c.argument(
+            "disable_acns",
+            action="store_true",
+            is_preview=True,
+        )
+        c.argument("enable_cost_analysis", action="store_true")
+        c.argument("disable_cost_analysis", action="store_true")
         c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
         c.argument('disable_ai_toolchain_operator', is_preview=True, action='store_true')
         # azure container storage
@@ -1322,7 +1372,7 @@ def load_arguments(self, _):
         c.argument(
             "disable_azure_container_storage",
             arg_type=get_enum_type(disable_storage_pool_types),
-            help="disable azure container storage or any one of the storagepool types",
+            help="disable azure container storage or any one of the storage pool types",
         )
         c.argument(
             "storage_pool_name",
@@ -1369,6 +1419,8 @@ def load_arguments(self, _):
         c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
         c.argument('enable_static_egress_gateway', is_preview=True, action='store_true')
         c.argument('disable_static_egress_gateway', is_preview=True, action='store_true')
+        c.argument("enable_imds_restriction", action="store_true", is_preview=True)
+        c.argument("disable_imds_restriction", action="store_true", is_preview=True)
 
         c.argument(
             "cluster_service_load_balancer_health_probe_mode",
@@ -1647,12 +1699,10 @@ def load_arguments(self, _):
         c.argument("if_none_match")
         c.argument(
             "enable_fips_image",
-            is_preview=True,
             action="store_true"
         )
         c.argument(
             "disable_fips_image",
-            is_preview=True,
             action="store_true"
         )
 
@@ -1853,6 +1903,8 @@ def load_arguments(self, _):
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)
+        c.argument("enable_high_log_scale_mode", arg_type=get_three_state_flag(), is_preview=True)
+        c.argument("ampls_resource_id", is_preview=True)
         c.argument(
             "dns_zone_resource_id",
             deprecate_info=c.deprecate(
@@ -1908,6 +1960,8 @@ def load_arguments(self, _):
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)
+        c.argument("enable_high_log_scale_mode", arg_type=get_three_state_flag(), is_preview=True)
+        c.argument("ampls_resource_id", is_preview=True)
         c.argument(
             "dns_zone_resource_id",
             deprecate_info=c.deprecate(
@@ -1946,6 +2000,8 @@ def load_arguments(self, _):
         )
         c.argument("enable_syslog", arg_type=get_three_state_flag(), is_preview=True)
         c.argument("data_collection_settings", is_preview=True)
+        c.argument("enable_high_log_scale_mode", arg_type=get_three_state_flag(), is_preview=True)
+        c.argument("ampls_resource_id", is_preview=True)
         c.argument(
             "dns_zone_resource_id",
             deprecate_info=c.deprecate(
@@ -2261,10 +2317,12 @@ def load_arguments(self, _):
     with self.argument_context("aks approuting enable") as c:
         c.argument("enable_kv", action="store_true")
         c.argument("keyvault_id", options_list=["--attach-kv"])
+        c.argument("nginx", arg_type=get_enum_type(app_routing_nginx_configs))
 
     with self.argument_context("aks approuting update") as c:
         c.argument("keyvault_id", options_list=["--attach-kv"])
         c.argument("enable_kv", action="store_true")
+        c.argument("nginx", arg_type=get_enum_type(app_routing_nginx_configs))
 
     with self.argument_context("aks approuting zone add") as c:
         c.argument("dns_zone_resource_ids", options_list=["--ids"], required=True)
