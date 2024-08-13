@@ -13604,6 +13604,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "Managed"),
             ],
         )
 
@@ -13641,7 +13642,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
             "--network-plugin azure --network-dataplane=cilium --network-plugin-mode overlay "
-            "--enable-acns "
+            "--enable-acns --advanced-networking-observability-tls-management None "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview"
         )
         self.cmd(
@@ -13650,6 +13651,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "None"),
             ],
         )
 

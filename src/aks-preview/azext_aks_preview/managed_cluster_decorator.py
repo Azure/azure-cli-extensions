@@ -3088,6 +3088,9 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                     )
                 )
             )
+            tls_management = self.context.get_advanced_networking_observability_tls_management()
+            if tls_management is not None:
+                network_profile.advanced_networking.observability.tls_management = tls_management
 
         advanced_network_observability = self.context.get_enable_advanced_network_observability()
         if advanced_network_observability is not None:
