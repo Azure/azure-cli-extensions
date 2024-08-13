@@ -736,6 +736,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         tls_management = self.raw_param.get("advanced_networking_observability_tls_management")
         enable_advanced_network_observability = self.raw_param.get("enable_advanced_network_observability")
+        enable_acns = self.raw_param.get("enable_acns")
         if tls_management is not None:
             if (
                 self.mc and
@@ -745,7 +746,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 self.mc.network_profile.advanced_networking.observability.enabled
             ):
                 return tls_management
-            if enable_advanced_network_observability:
+            if enable_advanced_network_observability or enable_acns:
                 return tls_management
             raise ArgumentUsageError(
                 "Cannot set --tls-management without enabling advanced network observability"
@@ -4202,7 +4203,11 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 mc.network_profile.advanced_networking.observability = self.models.AdvancedNetworkingObservability()  # pylint: disable=no-member
             mc.network_profile.advanced_networking.observability.enabled = advanced_network_observability
         tls_management = self.context.get_advanced_networking_observability_tls_management()
-        if tls_management is not None:
+        if (
+            mc.network_profile.advanced_networking is not None and
+            mc.network_profile.advanced_networking.observability is not None and
+            tls_management is not None
+        ):
             mc.network_profile.advanced_networking.observability.tls_management = tls_management
         return mc
 
@@ -4245,6 +4250,13 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                     )
                 )
             )
+            tls_management = self.context.get_advanced_networking_observability_tls_management()
+            if (
+                mc.network_profile.advanced_networking is not None and
+                mc.network_profile.advanced_networking.observability is not None and
+                tls_management is not None
+            ):
+                mc.network_profile.advanced_networking.observability.tls_management = tls_management
         return mc
 
     # pylint: disable=too-many-statements,too-many-locals,too-many-branches

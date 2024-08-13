@@ -13536,7 +13536,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update to enable acns
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
-            "--enable-acns "
+            "--enable-acns --advanced-networking-observability-tls-management None "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
         )
         self.cmd(
@@ -13545,7 +13545,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
-                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "Managed"),
+                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "None"),
             ],
         )
 
