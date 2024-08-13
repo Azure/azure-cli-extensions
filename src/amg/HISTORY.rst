@@ -52,3 +52,8 @@ Release History
 1.3.1
 ++++++
 * `az grafana delete`: bump azure-mgmt-authorization package version
+
+1.4.0
+++++++
+* `az grafana private-endpoint-connection`: support private endpoint connection management
+* `az grafana managed-private-endpoint`: support managed private endpoint management
