@@ -236,6 +236,12 @@ helps['aks create'] = f"""
         - name: --enable-advanced-network-observability
           type: bool
           short-summary: Enable advanced network observability functionalities on a cluster. Note that enabling this will incur additional costs.
+        - name: --enable-fqdn-policy
+          type: bool
+          short-summary: Enable advanced network security FQDN functionalities on a cluster. Note that enabling this will incur additional costs.
+        - name: --enable-acns
+          type: bool
+          short-summary: Enable advanced network functionalities on a cluster. Note that enabling this will incur additional costs.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -1231,6 +1237,18 @@ helps['aks update'] = """
         - name: --disable-advanced-network-observability
           type: bool
           short-summary: Disable advanced network observability functionalities on a cluster
+        - name: --enable-fqdn-policy
+          type: bool
+          short-summary: Enable advanced network security FQDN functionalities on a cluster. Note that enabling this will incur additional costs.
+        - name: --disable-fqdn-policy
+          type: bool
+          short-summary: Disable advanced network security FQDN functionalities on a cluster
+        - name: --enable-acns
+          type: bool
+          short-summary: Enable advanced network functionalities on a cluster. Note that enabling this will incur additional costs.
+        - name: --disable-acns
+          type: bool
+          short-summary: Disable advanced network functionalities on a cluster
         - name: --enable-cost-analysis
           type: bool
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
