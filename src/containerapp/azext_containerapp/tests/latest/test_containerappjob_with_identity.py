@@ -197,8 +197,10 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
         # prepare acr
         acr_id = self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --location {location}').get_output_in_json()["id"]
         # role assign
-        self.cmd(f'role assignment create --role acrpull --assignee {containerapp_env["identity"]["principalId"]} --scope {acr_id}')
-        self.cmd(f'role assignment create --role acrpull --assignee {identity_json["principalId"]} --scope {acr_id}')
+        roleAssignmentName1 = self.create_guid()
+        roleAssignmentName2 = self.create_guid()
+        self.cmd(f'role assignment create --role acrpull --assignee {containerapp_env["identity"]["principalId"]} --scope {acr_id} --name {roleAssignmentName1}')
+        self.cmd(f'role assignment create --role acrpull --assignee {identity_json["principalId"]} --scope {acr_id} --name {roleAssignmentName2}')
         # upload image
         self.cmd(f'acr import -n {acr} --source {image_source}')
 

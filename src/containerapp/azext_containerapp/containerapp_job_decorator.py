@@ -688,13 +688,13 @@ class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
 
         if self.get_argument_registry_identity():
             if is_registry_msi_system(self.get_argument_registry_identity()):
-                set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.containerapp_def, system_assigned=True)
+                set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.containerappjob_def, system_assigned=True)
             elif is_valid_resource_id(self.get_argument_registry_identity()):
                 parsed_managed_env = parse_resource_id(self.get_argument_managed_env())
                 managed_env_name = parsed_managed_env['name']
                 managed_env_rg = parsed_managed_env['resource_group']
                 if not env_has_managed_identity(self.cmd, managed_env_rg, managed_env_name, self.get_argument_registry_identity()):
-                    set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.containerapp_def, user_assigned=[self.get_argument_registry_identity()])
+                    set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.containerappjob_def, user_assigned=[self.get_argument_registry_identity()])
 
     def construct_payload(self):
         self.parent_construct_payload()
@@ -709,7 +709,7 @@ class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
                 self.containerappjob_def["properties"]["configuration"]["eventTriggerConfig"]["scale"]["rules"][0]["identity"] = identity
 
     def validate_arguments(self):
-        ### copy from parent
+        # copy from parent
         validate_container_app_name(self.get_argument_name(), AppType.ContainerAppJob.name)
         if self.get_argument_yaml() is None:
             if self.get_argument_replica_timeout() is None:
@@ -720,9 +720,9 @@ class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
 
             if self.get_argument_managed_env() is None:
                 raise RequiredArgumentMissingError('Usage error: --environment is required if not using --yaml')
-        ###
- 
-        validate_create(registry_identity = self.get_argument_registry_identity(), registry_pass = self.get_argument_registry_pass(), registry_user = self.get_argument_registry_user(), registry_server = self.get_argument_registry_server(), no_wait = self.get_argument_no_wait())
+        # end copy
+
+        validate_create(registry_identity=self.get_argument_registry_identity(), registry_pass=self.get_argument_registry_pass(), registry_user=self.get_argument_registry_user(), registry_server=self.get_argument_registry_server(), no_wait=self.get_argument_no_wait())
 
         if self.get_argument_yaml() is None:
             if self.get_argument_trigger_type() is None:

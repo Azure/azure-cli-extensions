@@ -33,7 +33,7 @@ from azure.cli.command_modules.containerapp._utils import (store_as_secret_and_r
                                                            get_linker_client,
                                                            safe_get, _update_revision_env_secretrefs, _add_or_update_tags, _populate_secret_values,
                                                            clean_null_values, _add_or_update_env_vars, _remove_env_vars, _get_acr_cred, _ensure_identity_resource_id,
-                                                           create_acrpull_role_assignment, _ensure_location_allowed, get_default_workload_profile_name_from_env, 
+                                                           create_acrpull_role_assignment, _ensure_location_allowed, get_default_workload_profile_name_from_env,
                                                            set_managed_identity, parse_secret_flags, _infer_acr_credentials)
 from azure.cli.command_modules.containerapp._constants import (CONTAINER_APPS_RP)
 from azure.cli.command_modules.containerapp._models import (
@@ -848,10 +848,10 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         self.set_up_runtime()
 
     def validate_arguments(self):
-        ### copy from parent
+        # copy from parent
         validate_container_app_name(self.get_argument_name(), AppType.ContainerApp.name)
         validate_revision_suffix(self.get_argument_revision_suffix())
-        ###
+        # end copy
         validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(), self.get_argument_no_wait(), self.get_argument_source(), self.get_argument_artifact(), self.get_argument_repo(), self.get_argument_yaml(), self.get_argument_environment_type())
         if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
             raise InvalidArgumentValueError("--bind have multiple values, but --customized-keys only can be set when --bind is single.")

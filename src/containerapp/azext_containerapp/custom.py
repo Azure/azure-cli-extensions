@@ -39,7 +39,7 @@ from azure.cli.command_modules.containerapp._utils import (safe_set,
                                                            validate_container_app_name, register_provider_if_needed,
                                                            generate_randomized_cert_name, load_cert_file,
                                                            trigger_workflow, _ensure_identity_resource_id,
-                                                           AppType, _get_existing_secrets, store_as_secret_and_return_secret_ref, 
+                                                           AppType, _get_existing_secrets, store_as_secret_and_return_secret_ref,
                                                            set_managed_identity, is_registry_msi_system)
 from azure.cli.command_modules.containerapp._models import (
     RegistryCredentials as RegistryCredentialsModel,
@@ -3112,6 +3112,7 @@ def create_dotnet_component(cmd, dotnet_component_name, environment_name, resour
         logger.warning("Access your Aspire Dashboard at %s.", aspire_dashboard_url)
     return
 
+
 def set_registry(cmd, name, resource_group_name, server, username=None, password=None, disable_warnings=False, identity=None, no_wait=False):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     if (username or password) and identity:
@@ -3204,6 +3205,7 @@ def set_registry(cmd, name, resource_group_name, server, username=None, password
         return r["properties"]["configuration"]["registries"]
     except Exception as e:
         handle_raw_exception(e)
+
 
 def set_registry_job(cmd, name, resource_group_name, server, username=None, password=None, disable_warnings=False, identity=None, no_wait=False):
     raw_parameters = locals()

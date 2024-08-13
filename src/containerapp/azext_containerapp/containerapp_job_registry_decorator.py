@@ -24,15 +24,14 @@ from ._validators import validate_create
 
 logger = get_logger(__name__)
 
+
 class ContainerAppJobRegistryPreviewSetDecorator(ContainerAppJobRegistrySetDecorator):
     def validate_arguments(self):
         super().validate_arguments()
-        validate_create(registry_identity = self.get_argument_identity(), registry_pass = self.get_argument_password(), registry_user = self.get_argument_username(), registry_server = self.get_argument_server(), no_wait = self.get_argument_no_wait())
+        validate_create(registry_identity=self.get_argument_identity(), registry_pass=self.get_argument_password(), registry_user=self.get_argument_username(), registry_server=self.get_argument_server(), no_wait=self.get_argument_no_wait())
 
     def construct_payload(self):
-
         self.set_up_get_existing_secrets()
-
         registries_def = safe_get(self.containerappjob_def, "properties", "configuration", "registries", default=[])
         safe_set(self.new_containerappjob, "properties", "configuration", "registries", value=registries_def)
 
