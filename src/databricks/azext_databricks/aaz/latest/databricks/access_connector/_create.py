@@ -19,15 +19,12 @@ class Create(AAZCommand):
 
     :example: Create a databricks accessConnector
         az databricks access-connector create --resource-group MyResourceGroup --name MyAccessConnector --location westus --identity-type SystemAssigned
-
-    :example: Create a databricks accessConnector with identities
-        az databricks access-connector create --resource-group MyResourceGroup --name MyAccessConnector --location westus --identity-type UserAssigned --user-assigned-identities {"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}":{}}
     """
 
     _aaz_info = {
-        "version": "2022-10-01-preview",
+        "version": "2024-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/accessconnectors/{}", "2022-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/accessconnectors/{}", "2024-05-01"],
         ]
     }
 
@@ -176,7 +173,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-10-01-preview",
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }
@@ -292,6 +289,13 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.refered_by = AAZListType(
+                serialized_name="referedBy",
+                flags={"read_only": True},
+            )
+
+            refered_by = cls._schema_on_200_201.properties.refered_by
+            refered_by.Element = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

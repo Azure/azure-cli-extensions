@@ -11,18 +11,12 @@
 # pylint: disable=unused-wildcard-import
 # pylint: disable=unused-import
 
-try:
-    from .manual._help import helps  # pylint: disable=reimported
-except ImportError as e:
-    if e.name.endswith('manual._help'):
-        pass
-    else:
-        raise e
+from knack.help_files import helps
 
 
 helps['monitor data-collection'] = '''
     type: group
-    short-summary: Manage Monitor
+    short-summary: Manage data collection for monitor control service
 '''
 
 helps['monitor data-collection rule'] = """

@@ -5,6 +5,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 from codecs import open
+
 from setuptools import find_packages, setup
 
 try:
@@ -16,7 +17,7 @@ except ImportError:
 
 # Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = "1.0.0b4"
+VERSION = "2.0.0b1"
 
 
 # The full list of classifiers is available at
@@ -32,7 +33,12 @@ CLASSIFIERS = [
     "License :: OSI Approved :: MIT License",
 ]
 
-DEPENDENCIES = ["oras~=0.1.19", "jinja2>=3.1.2"]
+DEPENDENCIES = [
+    "oras~=0.1.19",
+    "jinja2>=3.1.4",
+    "genson>=1.2.2",
+    "ruamel.yaml>=0.17.4",
+]
 
 with open("README.md", "r", encoding="utf-8") as f:
     README = f.read()
@@ -54,8 +60,7 @@ setup(
     package_data={
         "azext_aosm": [
             "azext_metadata.json",
-            "generate_nfd/templates/*",
-            "generate_nsd/templates/*",
+            "common/templates/**",
         ]
     },
 )

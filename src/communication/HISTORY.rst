@@ -2,6 +2,26 @@
 
 Release History
 ===============
+1.9.3
+++++++
+* Update Email service create - Global as the default value for Location 
+* Update Email service domain create - Global as the default value for Location 
+* Update Email service domain sender username create - example and text update
+
+1.9.2
+++++++
+* Update azure-rooms-communication to 1.1.0 (pstn-dial-out GA)
+* Update azure-communication-chat to 1.3.0
+* Update azure-communication-phonenumbers to 1.2.0b3
+
+1.9.1
+++++++
+* Add Email communication Domain resource Initiate and Cancel verification operations
+
+1.9.0
+++++++
+* Adding managed identity support for stable api version 2023-04-01
+
 1.8.0b2
 ++++++
 * Add Email communication resource CRUD operations

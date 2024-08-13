@@ -81,3 +81,24 @@ Release History
 1.0.5
 ++++++
 * Upgrade SDK version to 2024-02-02-preview
+
+1.1.0
+++++++
+* Added new in-preview `az fleet updaterun skip` command.
+* Fixed KubeConfig read bug within `az fleet get-credentials`.
+
+1.1.1
+++++++
+* Removed automatic population of empty dns_name_prefix as this is handled server-side now.
+
+1.1.2
+++++++
+* Removed preview markings for hub-related parameters.
+
+1.2.0
+++++++
+* Upgrade SDK version to 2024-05-02-preview
+
+1.2.1
+++++++
+* Fixed --vm-size parameter mapping

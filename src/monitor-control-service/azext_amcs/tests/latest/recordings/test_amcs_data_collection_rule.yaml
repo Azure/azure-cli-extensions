@@ -1,11 +1,10 @@
 interactions:
 - request:
-    body: '{"location": "westus2", "properties": {"dataSources": {"performanceCounters":
-      [{"streams": ["Microsoft-InsightsMetrics"], "samplingFrequencyInSeconds": 60,
-      "counterSpecifiers": ["\\Processor Information(_Total)\\% Processor Time"],
-      "name": "perfCounter01"}]}, "destinations": {"azureMonitorMetrics": {"name":
-      "azureMonitorMetrics-default"}}, "dataFlows": [{"streams": ["Microsoft-InsightsMetrics"],
-      "destinations": ["azureMonitorMetrics-default"]}]}}'
+    body: '{"location": "westus2", "properties": {"dataFlows": [{"destinations": ["azureMonitorMetrics-default"],
+      "streams": ["Microsoft-InsightsMetrics"]}], "dataSources": {"performanceCounters":
+      [{"counterSpecifiers": ["\\Processor Information(_Total)\\% Processor Time"],
+      "name": "perfCounter01", "samplingFrequencyInSeconds": 60, "streams": ["Microsoft-InsightsMetrics"]}]},
+      "destinations": {"azureMonitorMetrics": {"name": "azureMonitorMetrics-default"}}}}'
     headers:
       Accept:
       - application/json
@@ -22,16 +21,17 @@ interactions:
       ParameterSetName:
       - --resource-group --location --name --rule-file
       User-Agent:
-      - AZURECLI/2.53.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule?api-version=2022-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule?api-version=2023-03-11
   response:
     body:
-      string: '{"properties":{"immutableId":"dcr-e3ed4c36f1df4d6898b8b88223dafa1b","dataSources":{"performanceCounters":[{"streams":["Microsoft-InsightsMetrics"],"samplingFrequencyInSeconds":60,"counterSpecifiers":["\\Processor
-        Information(_Total)\\% Processor Time"],"name":"perfCounter01"}]},"destinations":{"azureMonitorMetrics":{"name":"azureMonitorMetrics-default"}},"dataFlows":[{"streams":["Microsoft-InsightsMetrics"],"destinations":["azureMonitorMetrics-default"]}],"provisioningState":"Succeeded"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule","name":"testrule","type":"Microsoft.Insights/dataCollectionRules","etag":"\"be01b84c-0000-0800-0000-6541e5560000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2023-11-01T05:42:45.7325602Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-11-01T05:42:45.7325602Z"}}'
+      string: '{"properties":{"immutableId":"dcr-63383fb2d9834878ac8837497caaf4c4","dataSources":{"performanceCounters":[{"streams":["Microsoft-InsightsMetrics"],"samplingFrequencyInSeconds":60,"counterSpecifiers":["\\Processor
+        Information(_Total)\\% Processor Time"],"name":"perfCounter01"}]},"destinations":{"azureMonitorMetrics":{"name":"azureMonitorMetrics-default"}},"dataFlows":[{"streams":["Microsoft-InsightsMetrics"],"destinations":["azureMonitorMetrics-default"]}],"provisioningState":"Succeeded"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule","name":"testrule","type":"Microsoft.Insights/dataCollectionRules","etag":"\"0100178d-0000-0800-0000-66963db00000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2024-07-16T09:30:23.6272808Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-16T09:30:23.6272808Z"}}'
     headers:
       api-supported-versions:
-      - 2019-11-01-preview, 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11
+      - 2019-11-01-preview, 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11,
+        2024-03-11
       cache-control:
       - no-cache
       content-length:
@@ -39,25 +39,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Nov 2023 05:42:47 GMT
+      - Tue, 16 Jul 2024 09:30:24 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:2bbfbac8-e1b0-44af-b9c6-3a40669d37e3
-      server:
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '149'
+      x-msedge-ref:
+      - 'Ref A: F6427D9971C14567B346741BAB725734 Ref B: TYO201100113049 Ref C: 2024-07-16T09:30:22Z'
     status:
       code: 200
       message: OK
@@ -75,16 +75,17 @@ interactions:
       ParameterSetName:
       - --resource-group --name --performance-counters
       User-Agent:
-      - AZURECLI/2.53.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule?api-version=2022-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule?api-version=2023-03-11
   response:
     body:
-      string: '{"properties":{"immutableId":"dcr-e3ed4c36f1df4d6898b8b88223dafa1b","dataSources":{"performanceCounters":[{"streams":["Microsoft-InsightsMetrics"],"samplingFrequencyInSeconds":60,"counterSpecifiers":["\\Processor
-        Information(_Total)\\% Processor Time"],"name":"perfCounter01"}]},"destinations":{"azureMonitorMetrics":{"name":"azureMonitorMetrics-default"}},"dataFlows":[{"streams":["Microsoft-InsightsMetrics"],"destinations":["azureMonitorMetrics-default"]}],"provisioningState":"Succeeded"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule","name":"testrule","type":"Microsoft.Insights/dataCollectionRules","etag":"\"be01b84c-0000-0800-0000-6541e5560000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2023-11-01T05:42:45.7325602Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-11-01T05:42:45.7325602Z"}}'
+      string: '{"properties":{"immutableId":"dcr-63383fb2d9834878ac8837497caaf4c4","dataSources":{"performanceCounters":[{"streams":["Microsoft-InsightsMetrics"],"samplingFrequencyInSeconds":60,"counterSpecifiers":["\\Processor
+        Information(_Total)\\% Processor Time"],"name":"perfCounter01"}]},"destinations":{"azureMonitorMetrics":{"name":"azureMonitorMetrics-default"}},"dataFlows":[{"streams":["Microsoft-InsightsMetrics"],"destinations":["azureMonitorMetrics-default"]}],"provisioningState":"Succeeded"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule","name":"testrule","type":"Microsoft.Insights/dataCollectionRules","etag":"\"0100178d-0000-0800-0000-66963db00000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2024-07-16T09:30:23.6272808Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-16T09:30:23.6272808Z"}}'
     headers:
       api-supported-versions:
-      - 2019-11-01-preview, 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11
+      - 2019-11-01-preview, 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11,
+        2024-03-11
       cache-control:
       - no-cache
       content-length:
@@ -92,33 +93,34 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Nov 2023 05:42:49 GMT
+      - Tue, 16 Jul 2024 09:30:25 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:2bbfbac8-e1b0-44af-b9c6-3a40669d37e3
-      server:
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: ED67BEB238F24479A7E462CDF2700EBE Ref B: TYO201100116029 Ref C: 2024-07-16T09:30:24Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "westus2", "properties": {"dataSources": {"performanceCounters":
-      [{"streams": ["Microsoft-InsightsMetrics"], "samplingFrequencyInSeconds": 60,
-      "counterSpecifiers": ["[\\Processor Information(_Total)\\% Processor Time]"],
-      "name": "perfCounter02"}]}, "destinations": {"azureMonitorMetrics": {"name":
-      "azureMonitorMetrics-default"}}, "dataFlows": [{"streams": ["Microsoft-InsightsMetrics"],
-      "destinations": ["azureMonitorMetrics-default"]}]}}'
+    body: '{"location": "westus2", "properties": {"dataFlows": [{"destinations": ["azureMonitorMetrics-default"],
+      "streams": ["Microsoft-InsightsMetrics"]}], "dataSources": {"performanceCounters":
+      [{"counterSpecifiers": ["[\\Processor Information(_Total)\\% Processor Time]"],
+      "name": "perfCounter02", "samplingFrequencyInSeconds": 60, "streams": ["Microsoft-InsightsMetrics"]}]},
+      "destinations": {"azureMonitorMetrics": {"name": "azureMonitorMetrics-default"}}}}'
     headers:
       Accept:
       - application/json
@@ -135,16 +137,17 @@ interactions:
       ParameterSetName:
       - --resource-group --name --performance-counters
       User-Agent:
-      - AZURECLI/2.53.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule?api-version=2022-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule?api-version=2023-03-11
   response:
     body:
-      string: '{"properties":{"immutableId":"dcr-e3ed4c36f1df4d6898b8b88223dafa1b","dataSources":{"performanceCounters":[{"streams":["Microsoft-InsightsMetrics"],"samplingFrequencyInSeconds":60,"counterSpecifiers":["[\\Processor
-        Information(_Total)\\% Processor Time]"],"name":"perfCounter02"}]},"destinations":{"azureMonitorMetrics":{"name":"azureMonitorMetrics-default"}},"dataFlows":[{"streams":["Microsoft-InsightsMetrics"],"destinations":["azureMonitorMetrics-default"]}],"provisioningState":"Succeeded"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule","name":"testrule","type":"Microsoft.Insights/dataCollectionRules","etag":"\"be01224d-0000-0800-0000-6541e55a0000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2023-11-01T05:42:45.7325602Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-11-01T05:42:50.0796511Z"}}'
+      string: '{"properties":{"immutableId":"dcr-63383fb2d9834878ac8837497caaf4c4","dataSources":{"performanceCounters":[{"streams":["Microsoft-InsightsMetrics"],"samplingFrequencyInSeconds":60,"counterSpecifiers":["[\\Processor
+        Information(_Total)\\% Processor Time]"],"name":"perfCounter02"}]},"destinations":{"azureMonitorMetrics":{"name":"azureMonitorMetrics-default"}},"dataFlows":[{"streams":["Microsoft-InsightsMetrics"],"destinations":["azureMonitorMetrics-default"]}],"provisioningState":"Succeeded"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule","name":"testrule","type":"Microsoft.Insights/dataCollectionRules","etag":"\"01007d8d-0000-0800-0000-66963db20000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2024-07-16T09:30:23.6272808Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-16T09:30:25.6610912Z"}}'
     headers:
       api-supported-versions:
-      - 2019-11-01-preview, 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11
+      - 2019-11-01-preview, 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11,
+        2024-03-11
       cache-control:
       - no-cache
       content-length:
@@ -152,25 +155,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Nov 2023 05:42:51 GMT
+      - Tue, 16 Jul 2024 09:30:26 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:2bbfbac8-e1b0-44af-b9c6-3a40669d37e3
-      server:
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '149'
+      x-msedge-ref:
+      - 'Ref A: 09C74B0AC7854462B4116436AEAE07D0 Ref B: TYO201100116029 Ref C: 2024-07-16T09:30:25Z'
     status:
       code: 200
       message: OK
@@ -188,16 +191,17 @@ interactions:
       ParameterSetName:
       - -g -n
       User-Agent:
-      - AZURECLI/2.53.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule?api-version=2022-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule?api-version=2023-03-11
   response:
     body:
-      string: '{"properties":{"immutableId":"dcr-e3ed4c36f1df4d6898b8b88223dafa1b","dataSources":{"performanceCounters":[{"streams":["Microsoft-InsightsMetrics"],"samplingFrequencyInSeconds":60,"counterSpecifiers":["[\\Processor
-        Information(_Total)\\% Processor Time]"],"name":"perfCounter02"}]},"destinations":{"azureMonitorMetrics":{"name":"azureMonitorMetrics-default"}},"dataFlows":[{"streams":["Microsoft-InsightsMetrics"],"destinations":["azureMonitorMetrics-default"]}],"provisioningState":"Succeeded"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule","name":"testrule","type":"Microsoft.Insights/dataCollectionRules","etag":"\"be01224d-0000-0800-0000-6541e55a0000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2023-11-01T05:42:45.7325602Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-11-01T05:42:50.0796511Z"}}'
+      string: '{"properties":{"immutableId":"dcr-63383fb2d9834878ac8837497caaf4c4","dataSources":{"performanceCounters":[{"streams":["Microsoft-InsightsMetrics"],"samplingFrequencyInSeconds":60,"counterSpecifiers":["[\\Processor
+        Information(_Total)\\% Processor Time]"],"name":"perfCounter02"}]},"destinations":{"azureMonitorMetrics":{"name":"azureMonitorMetrics-default"}},"dataFlows":[{"streams":["Microsoft-InsightsMetrics"],"destinations":["azureMonitorMetrics-default"]}],"provisioningState":"Succeeded"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule","name":"testrule","type":"Microsoft.Insights/dataCollectionRules","etag":"\"01007d8d-0000-0800-0000-66963db20000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2024-07-16T09:30:23.6272808Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-16T09:30:25.6610912Z"}}'
     headers:
       api-supported-versions:
-      - 2019-11-01-preview, 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11
+      - 2019-11-01-preview, 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11,
+        2024-03-11
       cache-control:
       - no-cache
       content-length:
@@ -205,23 +209,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Nov 2023 05:42:53 GMT
+      - Tue, 16 Jul 2024 09:30:26 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:2bbfbac8-e1b0-44af-b9c6-3a40669d37e3
-      server:
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: BA34E865725844179C0F141774D6FA29 Ref B: TYO201151002029 Ref C: 2024-07-16T09:30:26Z'
     status:
       code: 200
       message: OK
@@ -239,16 +245,17 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.53.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules?api-version=2022-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules?api-version=2023-03-11
   response:
     body:
-      string: '{"value":[{"properties":{"immutableId":"dcr-e3ed4c36f1df4d6898b8b88223dafa1b","dataSources":{"performanceCounters":[{"streams":["Microsoft-InsightsMetrics"],"samplingFrequencyInSeconds":60,"counterSpecifiers":["[\\Processor
-        Information(_Total)\\% Processor Time]"],"name":"perfCounter02"}]},"destinations":{"azureMonitorMetrics":{"name":"azureMonitorMetrics-default"}},"dataFlows":[{"streams":["Microsoft-InsightsMetrics"],"destinations":["azureMonitorMetrics-default"]}],"provisioningState":"Succeeded"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule","name":"testrule","type":"Microsoft.Insights/dataCollectionRules","etag":"\"be01224d-0000-0800-0000-6541e55a0000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2023-11-01T05:42:45.7325602Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-11-01T05:42:50.0796511Z"}}],"nextLink":null}'
+      string: '{"value":[{"properties":{"immutableId":"dcr-63383fb2d9834878ac8837497caaf4c4","dataSources":{"performanceCounters":[{"streams":["Microsoft-InsightsMetrics"],"samplingFrequencyInSeconds":60,"counterSpecifiers":["[\\Processor
+        Information(_Total)\\% Processor Time]"],"name":"perfCounter02"}]},"destinations":{"azureMonitorMetrics":{"name":"azureMonitorMetrics-default"}},"dataFlows":[{"streams":["Microsoft-InsightsMetrics"],"destinations":["azureMonitorMetrics-default"]}],"provisioningState":"Succeeded"},"location":"westus2","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule","name":"testrule","type":"Microsoft.Insights/dataCollectionRules","etag":"\"01007d8d-0000-0800-0000-66963db20000\"","systemData":{"createdBy":"liwang3@microsoft.com","createdByType":"User","createdAt":"2024-07-16T09:30:23.6272808Z","lastModifiedBy":"liwang3@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-07-16T09:30:25.6610912Z"}}],"nextLink":null}'
     headers:
       api-supported-versions:
-      - 2019-11-01-preview, 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11
+      - 2019-11-01-preview, 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11,
+        2024-03-11
       cache-control:
       - no-cache
       content-length:
@@ -256,23 +263,25 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Nov 2023 05:42:54 GMT
+      - Tue, 16 Jul 2024 09:30:26 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:2bbfbac8-e1b0-44af-b9c6-3a40669d37e3
-      server:
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
       vary:
-      - Accept-Encoding,Accept-Encoding
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 6E4C473F021445DE839ACA9E5D3CD9D5 Ref B: TYO201100116021 Ref C: 2024-07-16T09:30:27Z'
     status:
       code: 200
       message: OK
@@ -280,7 +289,7 @@ interactions:
     body: null
     headers:
       Accept:
-      - application/json
+      - '*/*'
       Accept-Encoding:
       - gzip, deflate
       CommandName:
@@ -292,35 +301,40 @@ interactions:
       ParameterSetName:
       - -g -n -y
       User-Agent:
-      - AZURECLI/2.53.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule?api-version=2022-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules/testrule?deleteAssociations=false&api-version=2023-03-11
   response:
     body:
       string: ''
     headers:
       api-supported-versions:
-      - 2019-11-01-preview, 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11
+      - 2019-11-01-preview, 2021-04-01, 2021-09-01-preview, 2022-06-01, 2023-03-11,
+        2024-03-11
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Wed, 01 Nov 2023 05:42:59 GMT
+      - Tue, 16 Jul 2024 09:30:29 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:2bbfbac8-e1b0-44af-b9c6-3a40669d37e3
-      server:
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
+      - '199'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '2999'
+      x-msedge-ref:
+      - 'Ref A: 29AEE15AAB4841708148B98E212C56DF Ref B: TYO201100113053 Ref C: 2024-07-16T09:30:27Z'
     status:
       code: 200
       message: OK
@@ -338,9 +352,9 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.53.0 azsdk-python-mgmt-monitor/1.0.0b1 Python/3.10.11 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules?api-version=2022-06-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_amcs_rule000001/providers/Microsoft.Insights/dataCollectionRules?api-version=2023-03-11
   response:
     body:
       string: '{"value":[]}'
@@ -352,17 +366,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 01 Nov 2023 05:43:00 GMT
+      - Tue, 16 Jul 2024 09:30:29 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 2E4D246C6D6C4A2986C8C97C97001DB6 Ref B: TYO201151001036 Ref C: 2024-07-16T09:30:30Z'
     status:
       code: 200
       message: OK

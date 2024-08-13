@@ -68,6 +68,7 @@ class TestLoadBalancer(unittest.TestCase):
             outbound_ports,
             idle_timeout,
             backend_pool_type,
+            "",
             profile,
             self.load_balancer_models,
         )
@@ -88,6 +89,7 @@ class TestLoadBalancer(unittest.TestCase):
             outbound_ports,
             idle_timeout,
             backend_pool_type,
+            "",
             profile,
             self.load_balancer_models,
         )
@@ -145,6 +147,7 @@ class TestLoadBalancer(unittest.TestCase):
             outbound_ports,
             idle_timeout,
             backend_pool_type,
+            "",
             profile,
             self.load_balancer_models,
         )

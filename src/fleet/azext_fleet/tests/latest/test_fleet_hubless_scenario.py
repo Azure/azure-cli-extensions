@@ -121,8 +121,12 @@ class FleetHublessScenarioTest(ScenarioTest):
         self.cmd('fleet member wait -g {rg} --fleet-name {fleet_name} --fleet-member-name {member_name} --updated', checks=[self.is_empty()])
         self.cmd('aks wait -g {rg} -n {member_name} --updated', checks=[self.is_empty()])
 
-        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version 1.27.1 --stages {stages_file}', checks=[
+        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version 1.29.2 --stages {stages_file}', checks=[
             self.check('name', '{updaterun}')
+        ])
+
+        self.cmd('fleet updaterun skip -g {rg} -n {updaterun} -f {fleet_name} --targets Group:group2', checks=[
+            self.check('status.stages[0].groups[1].status.state', 'Skipped')
         ])
 
         self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name} --yes')
@@ -143,7 +147,7 @@ class FleetHublessScenarioTest(ScenarioTest):
             'update_strategy_name': update_strategy_name,
         })
 
-        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version 1.27.1 --update-strategy-name {update_strategy_name}', checks=[
+        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version 1.29.2 --update-strategy-name {update_strategy_name}', checks=[
             self.check('name', '{updaterun}')
         ])
 

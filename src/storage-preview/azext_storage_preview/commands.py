@@ -6,7 +6,7 @@
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.commands.arm import show_exception_handler
 from ._client_factory import (cf_sa, blob_data_service_factory, adls_blob_data_service_factory,
-                              cf_share_client, cf_share_service, cf_share_file_client, cf_share_directory_client)
+                              cf_share_client, cf_share_file_client, cf_share_directory_client, cf_local_users)
 from .profiles import (CUSTOM_DATA_STORAGE, CUSTOM_DATA_STORAGE_ADLS, CUSTOM_MGMT_STORAGE,
                        CUSTOM_DATA_STORAGE_FILESHARE)
 
@@ -213,3 +213,32 @@ def load_command_table(self, _):  # pylint: disable=too-many-locals, too-many-st
                                        exception_handler=file_related_exception_handler,
                                        transform=transform_file_show_result)
         g.storage_custom_command('download-batch', 'storage_file_download_batch', client_factory=cf_share_client)
+
+    local_users_sdk = CliCommandType(
+        operations_tmpl='azext_storage_preview.vendored_sdks.azure_mgmt_storage.operations#'
+                        'LocalUsersOperations.{}',
+        client_factory=cf_local_users,
+        resource_type=CUSTOM_MGMT_STORAGE
+    )
+
+    local_users_custom_type = CliCommandType(
+        operations_tmpl='azext_storage_preview.operations.account#{}',
+        client_factory=cf_local_users,
+        resource_type=CUSTOM_MGMT_STORAGE
+    )
+
+    with self.command_group('storage account local-user', local_users_sdk,
+                            custom_command_type=local_users_custom_type,
+                            resource_type=CUSTOM_MGMT_STORAGE, min_api='2021-08-01', is_preview=True) as g:
+        g.custom_command('create', 'create_local_user')
+        g.custom_command('update', 'update_local_user')
+        g.command('delete', 'delete')
+        g.command('list', 'list')
+        g.show_command('show', 'get')
+        g.command('list-keys', 'list_keys')
+        g.command('regenerate-password', 'regenerate_password')
+
+    with self.command_group('storage account task-assignment') as g:
+        from .operations.task_assignment import TaskAssignmentCreate, TaskAssignmentUpdate
+        self.command_table['storage account task-assignment create'] = TaskAssignmentCreate(loader=self)
+        self.command_table['storage account task-assignment update'] = TaskAssignmentUpdate(loader=self)

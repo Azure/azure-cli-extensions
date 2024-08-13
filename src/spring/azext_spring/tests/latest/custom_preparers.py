@@ -162,5 +162,7 @@ class SpringAppNamePreparer(SpringSubResourceWrapper, SingleValueReplacer):
             return
         group = self._get_resource_group(**kwargs)
         spring = self._get_spring(**kwargs)
-        template = 'az spring app delete -n {} -s {} -g {}'.format(name, spring, group)
-        self.live_only_execute(self.cli_ctx, template)
+        try:
+            self.live_only_execute(self.cli_ctx, 'spring app delete -n {} -g {} -s {}'.format(name, group, spring))
+        except:
+            pass

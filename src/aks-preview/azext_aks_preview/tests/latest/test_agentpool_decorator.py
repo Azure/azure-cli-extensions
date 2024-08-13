@@ -8,7 +8,7 @@ from unittest.mock import Mock, patch
 
 from azext_aks_preview.__init__ import register_aks_preview_resource_type
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
-from azext_aks_preview._consts import CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_SSH_ACCESS_LOCALUSER
+from azext_aks_preview._consts import CONST_WORKLOAD_RUNTIME_OCI_CONTAINER, CONST_SSH_ACCESS_LOCALUSER, CONST_VIRTUAL_MACHINES
 from azext_aks_preview.agentpool_decorator import (
     AKSPreviewAgentPoolAddDecorator,
     AKSPreviewAgentPoolContext,
@@ -25,6 +25,12 @@ from azure.cli.command_modules.acs._consts import (
     CONST_VIRTUAL_MACHINE_SCALE_SETS,
     AgentPoolDecoratorMode,
     DecoratorMode,
+    CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
+    CONST_DEFAULT_NODE_VM_SIZE,
+)
+from azext_aks_preview._consts import (
+    CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE,
+    CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
 )
 from azure.cli.command_modules.acs.agentpool_decorator import AKSAgentPoolParamDict
 from azure.cli.command_modules.acs.tests.latest.mocks import (
@@ -564,6 +570,223 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         )
         ctx_1.attach_agentpool(agentpool_1)
         self.assertEqual(ctx_1.get_disable_vtpm(), True)
+    
+    def common_get_enable_fips_image(self):
+        # default
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"enable_fips_image": False}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_enable_fips_image(), False)
+        agentpool = self.create_initialized_agentpool_instance(enable_fips=True)
+        ctx_1.attach_agentpool(agentpool)
+        self.assertEqual(ctx_1.get_enable_fips_image(), True)
+        
+        # default
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"enable_fips_image": False}),
+            self.models,
+            DecoratorMode.UPDATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_2.get_enable_fips_image(), False)
+        agentpool_2 = self.create_initialized_agentpool_instance(enable_fips=True)
+        ctx_2.attach_agentpool(agentpool_2)
+        # Update takes directly from flag value not from agentpool property
+        self.assertEqual(ctx_2.get_enable_fips_image(), False)
+
+    def common_get_disable_fips_image(self):
+        # default
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"disable_fips_image": True}),
+            self.models,
+            DecoratorMode.UPDATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_disable_fips_image(), True)
+        agentpool_1 = self.create_initialized_agentpool_instance(enable_fips=True)
+        ctx_1.attach_agentpool(agentpool_1)
+        self.assertEqual(ctx_1.get_disable_fips_image(), True)
+
+    def common_get_agentpool_windows_profile(self):
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({
+                "os_type": "windows",
+                "disable_windows_outbound_nat": True,
+            }),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        # check all fields under windows_profile
+        self.assertEqual(ctx_1.get_disable_windows_outbound_nat(), True)
+
+        # check result when fields had been assigned values
+        agentpool_1 = self.create_initialized_agentpool_instance(
+            windows_profile=self.models.AgentPoolWindowsProfile(
+                disable_outbound_nat=False
+            )
+        )
+        ctx_1.attach_agentpool(agentpool_1)
+        self.assertEqual(
+            ctx_1.get_disable_windows_outbound_nat(),
+            False,
+        )
+
+    def common_get_node_vm_size(self):
+        # default
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"node_vm_size": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_node_vm_size(), CONST_DEFAULT_NODE_VM_SIZE)
+        agentpool = self.create_initialized_agentpool_instance(vm_size="Standard_ABCD_v2")
+        ctx_1.attach_agentpool(agentpool)
+        self.assertEqual(ctx_1.get_node_vm_size(), "Standard_ABCD_v2")
+
+        # custom value
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"node_vm_size": None, "snapshot_id": "test_snapshot_id"}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        mock_snapshot = Mock(vm_size="test_vm_size")
+        with patch(
+            "azure.cli.command_modules.acs.agentpool_decorator.get_snapshot_by_snapshot_id",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(ctx_2.get_node_vm_size(), "test_vm_size")
+
+        # custom value
+        ctx_3 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict(
+                {
+                    "node_vm_size": "custom_node_vm_size",
+                    "snapshot_id": "test_snapshot_id",
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        mock_snapshot = Mock(vm_size="test_vm_size")
+        with patch(
+            "azure.cli.command_modules.acs.agentpool_decorator.get_snapshot_by_snapshot_id",
+            return_value=mock_snapshot,
+        ):
+            self.assertEqual(ctx_3.get_node_vm_size(), "custom_node_vm_size")
+
+        # custom value
+        ctx_4 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict(
+                {
+                    "node_vm_size": None,
+                    "os_type": "WINDOWS",
+                }
+            ),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        if self.agentpool_decorator_mode == AgentPoolDecoratorMode.MANAGED_CLUSTER:
+            # fail on windows os type for ManagedCluster mode (aks create)
+            with self.assertRaises(InvalidArgumentValueError):
+                ctx_4.get_node_vm_size()
+        else:
+            self.assertEqual(ctx_4.get_node_vm_size(), CONST_DEFAULT_WINDOWS_NODE_VM_SIZE)
+        
+        # if --node-vm-size is not specified, but --sku automatic is explicitly specified
+        ctx_5 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"sku": "automatic", "os_type": "Linux"}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_5.get_node_vm_size(), CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE)
+
+    def common_get_gateway_prefix_size(self):
+        # default
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"gateway_prefix_size": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_gateway_prefix_size(), None)
+
+        # custom value
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"gateway_prefix_size": 30}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_2.get_gateway_prefix_size(), 30)
+
+    def common_get_vm_sizes(self):
+        # default
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"vm_sizes": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            AgentPoolDecoratorMode.STANDALONE, # windows node pool can't be system node pool
+        )
+        agentpool_1 = self.create_initialized_agentpool_instance(os_type="windows")
+        ctx_1.attach_agentpool(agentpool_1)
+        self.assertEqual(ctx_1.get_vm_sizes(), [CONST_DEFAULT_WINDOWS_NODE_VM_SIZE])
+
+        # default
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"vm_sizes": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_2 = self.create_initialized_agentpool_instance(os_type="linux")
+        ctx_2.attach_agentpool(agentpool_2)
+        self.assertEqual(ctx_2.get_vm_sizes(), [CONST_DEFAULT_NODE_VM_SIZE])
+
+        # custom
+        ctx_3 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"vm_sizes": "Standard_D4s_v3,Standard_D8s_v3"}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_3 = self.create_initialized_agentpool_instance(os_type="linux")
+        ctx_3.attach_agentpool(agentpool_3)
+        self.assertEqual(ctx_3.get_vm_sizes(), ["Standard_D4s_v3", "Standard_D8s_v3"])
+
+        # custom
+        ctx_4 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"vm_sizes": None, "node_vm_size": "Standard_D4s_v3"}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_4 = self.create_initialized_agentpool_instance(os_type="linux")
+        ctx_4.attach_agentpool(agentpool_4)
+        self.assertEqual(ctx_4.get_vm_sizes(), ["Standard_D4s_v3"])
 
 
 class AKSPreviewAgentPoolContextStandaloneModeTestCase(
@@ -624,6 +847,21 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
 
     def test_get_disable_vtpm(self):
         self.common_get_disable_vtpm()
+    
+    def common_get_enable_fips_image(self):
+        self.common_get_enable_fips_image()
+    
+    def common_get_disable_fips_image(self):
+        self.common_get_disable_fips_image()
+
+    def test_get_agentpool_windows_profile(self):
+        self.common_get_agentpool_windows_profile()
+
+    def test_get_gateway_prefix_size(self):
+        self.common_get_gateway_prefix_size()
+
+    def test_get_vm_sizes(self):
+        self.common_get_vm_sizes()
 
 
 class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
@@ -681,6 +919,18 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
 
     def test_get_enable_vtpm(self):
         self.common_get_enable_vtpm()
+    
+    def common_get_enable_fips_image(self):
+        self.common_get_enable_fips_image()
+
+    def test_get_agentpool_windows_profile(self):
+        self.common_get_agentpool_windows_profile()
+
+    def test_get_gateway_prefix_size(self):
+        self.common_get_gateway_prefix_size()
+
+    def test_get_vm_sizes(self):
+        self.common_get_vm_sizes()
 
 
 class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
@@ -904,6 +1154,83 @@ class AKSPreviewAgentPoolAddDecoratorCommonTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
 
+    def common_set_up_agentpool_windows_profile(self):
+        dec_1 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {
+                "os_type": "windows",
+                "disable_windows_outbound_nat": True,
+            },
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        agentpool_1 = self.create_initialized_agentpool_instance(restore_defaults=False)
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.set_up_agentpool_windows_profile(agentpool_1)
+        dec_agentpool_1 = self._restore_defaults_in_agentpool(dec_agentpool_1)
+
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
+            windows_profile=self.models.AgentPoolWindowsProfile(
+                disable_outbound_nat=True
+            )
+        )
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+
+    def common_set_up_agentpool_gateway_profile(self):
+        dec_1 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"gateway_prefix_size": 30},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        # fail on passing the wrong agentpool object
+        with self.assertRaises(CLIInternalError):
+            dec_1.set_up_agentpool_gateway_profile(None)
+        agentpool_1 = self.create_initialized_agentpool_instance(restore_defaults=False)
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.set_up_agentpool_gateway_profile(agentpool_1)
+        dec_agentpool_1 = self._restore_defaults_in_agentpool(dec_agentpool_1)
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
+            gateway_profile=self.models.AgentPoolGatewayProfile(
+                public_ip_prefix_size=30
+            )
+        )
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+
+    def common_set_up_virtual_machines_profile(self):
+        dec_1 = AKSPreviewAgentPoolAddDecorator(
+            self.cmd,
+            self.client,
+            {"vm_sizes": "Standard_D4s_v3,Standard_D8s_v3", "node-count": 5},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        # fail on passing the wrong agentpool object
+        with self.assertRaises(CLIInternalError):
+            dec_1.set_up_virtual_machines_profile(None)
+        agentpool_1 = self.create_initialized_agentpool_instance(restore_defaults=False)
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.set_up_virtual_machines_profile(agentpool_1)
+        dec_agentpool_1 = self._restore_defaults_in_agentpool(dec_agentpool_1)
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(
+            type=CONST_VIRTUAL_MACHINES,
+            count=None,
+            sizes=None,
+            virtual_machines_profile=self.models.VirtualMachinesProfile(
+                scale=self.models.ScaleProfile(
+                    manual=[
+                        self.models.ManualScaleProfile(
+                            sizes=["Standard_D4s_v3", "Standard_D8s_v3"],
+                            count=5,
+                        )
+                    ]
+                )
+            )
+        )
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+
 
 class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
     AKSPreviewAgentPoolAddDecoratorCommonTestCase
@@ -943,6 +1270,12 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
 
     def test_set_up_vtpm(self):
         self.common_set_up_vtpm()
+
+    def test_set_up_agentpool_windows_profile(self):
+        self.common_set_up_agentpool_windows_profile()
+
+    def test_set_up_agentpool_gateway_profile(self):
+        self.common_set_up_agentpool_gateway_profile()
 
     def test_construct_agentpool_profile_preview(self):
         import inspect
@@ -1000,6 +1333,7 @@ class AKSPreviewAgentPoolAddDecoratorStandaloneModeTestCase(
             enable_auto_scaling=False,
             count=3,
             node_taints=[],
+            node_initialization_taints=[],
             os_disk_size_gb=0,
             upgrade_settings=ground_truth_upgrade_settings_1,
             type_properties_type=CONST_VIRTUAL_MACHINE_SCALE_SETS,
@@ -1056,6 +1390,12 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(
 
     def test_set_up_vtpm(self):
         self.common_set_up_vtpm()
+
+    def test_set_up_agentpool_windows_profile(self):
+        self.common_set_up_agentpool_windows_profile()
+
+    def test_set_up_agentpool_gateway_profile(self):
+        self.common_set_up_agentpool_gateway_profile()
 
     def test_construct_agentpool_profile_preview(self):
         import inspect
@@ -1114,6 +1454,7 @@ class AKSPreviewAgentPoolAddDecoratorManagedClusterModeTestCase(
             enable_auto_scaling=False,
             count=3,
             node_taints=[],
+            node_initialization_taints=[],
             os_disk_size_gb=0,
             upgrade_settings=upgrade_settings_1,
             type=CONST_VIRTUAL_MACHINE_SCALE_SETS,
@@ -1391,6 +1732,53 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             dec_3.update_vtpm(agentpool_2)
 
+    def common_update_fips_image(self):
+        dec_1 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_fips_image": True, "disable_fips_image": False},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        # fail on passing the wrong agentpool object
+        with self.assertRaises(CLIInternalError):
+            dec_1.update_fips_image(None)
+
+        agentpool_1 = self.create_initialized_agentpool_instance(enable_fips=False)
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.update_fips_image(agentpool_1)
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(enable_fips=True)
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+
+        dec_2 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_fips_image": False, "disable_fips_image": True},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        # fail on passing the wrong agentpool object
+        with self.assertRaises(CLIInternalError):
+            dec_2.update_fips_image(None)
+        
+        agentpool_2 = self.create_initialized_agentpool_instance(enable_fips=True)
+        dec_2.context.attach_agentpool(agentpool_2)
+        dec_agentpool_2 = dec_2.update_fips_image(agentpool_2)
+        ground_truth_agentpool_2 = self.create_initialized_agentpool_instance(enable_fips=False)
+        self.assertEqual(dec_agentpool_2, ground_truth_agentpool_2)
+
+        # Should error if both set
+        dec_3 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_fips_image": True, "disable_fips_image": True},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        dec_3.context.attach_agentpool(agentpool_2)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_3.update_fips_image(agentpool_2)
+
 
 class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(
     AKSPreviewAgentPoolUpdateDecoratorCommonTestCase
@@ -1418,6 +1806,9 @@ class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(
 
     def test_update_vtpm(self):
         self.common_update_vtpm()
+
+    def test_update_fips_image(self):
+        self.common_update_fips_image()
 
     def test_update_agentpool_profile_preview(self):
         import inspect
@@ -1496,6 +1887,9 @@ class AKSPreviewAgentPoolUpdateDecoratorManagedClusterModeTestCase(
 
     def test_update_vtpm(self):
         self.common_update_vtpm()
+
+    def test_update_fips_image(self):
+        self.common_update_fips_image()
 
     def test_update_agentpool_profile_preview(self):
         import inspect

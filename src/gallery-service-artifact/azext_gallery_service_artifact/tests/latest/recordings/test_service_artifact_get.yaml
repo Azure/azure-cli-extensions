@@ -1,0 +1,68 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - gallery service-artifact get
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --gallery-name --resource-group --service-artifact-name
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.30.1 Python/3.10.11 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoCreatedWithCLIExtensionTest?api-version=2023-07-03
+  response:
+    body:
+      string: "{\r\n  \"name\": \"ArcoCreatedWithCLIExtensionTest\",\r\n  \"id\":\
+        \ \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_extension_test_rg/providers/Microsoft.Compute/galleries/cli_extension_test_gallery/serviceArtifacts/ArcoCreatedWithCLIExtensionTest\"\
+        ,\r\n  \"type\": \"Microsoft.Compute/galleries/serviceArtifacts\",\r\n  \"\
+        location\": \"EastUS2EUAP\",\r\n  \"properties\": {\r\n    \"description\"\
+        : \"Test Arco created using cli extension test\",\r\n    \"targetLocations\"\
+        : [\r\n      {\r\n        \"name\": \"eastus2euap\"\r\n      },\r\n      {\r\
+        \n        \"name\": \"centraluseuap\"\r\n      },\r\n      {\r\n        \"\
+        name\": \"westcentralus\"\r\n      },\r\n      {\r\n        \"name\": \"westus\"\
+        \r\n      }\r\n    ],\r\n    \"vmArtifactsProfiles\": [\r\n      {\r\n   \
+        \     \"name\": \"vmArtifactsProfile\",\r\n        \"description\": \"VM Artifact\
+        \ profile with default upgrade window\",\r\n        \"artifactProfiles\":\
+        \ [\r\n          {\r\n            \"description\": \"Using a SIG Image for\
+        \ testing\",\r\n            \"imageReference\": {\r\n              \"id\"\
+        : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/robhoopa_validate_arco_changes/providers/Microsoft.Compute/galleries/ArcoBugBashGallery1/images/Windows2022Gen2ImageGeneralized1\"\
+        ,\r\n              \"initialVersion\": \"0.0.1\"\r\n            }\r\n    \
+        \      }\r\n        ],\r\n        \"upgradeSdpPolicy\": {\r\n          \"\
+        type\": \"PlatformOrchestratedForNewAndExistingResources\",\r\n          \"\
+        schedulingPolicy\": {\r\n            \"disableRegularUpgrades\": false,\r\n\
+        \            \"upgradeWindow\": \"Default\",\r\n            \"maxConcurrentResourceCountPerRegion\"\
+        : 5\r\n          }\r\n        }\r\n      }\r\n    ],\r\n    \"provisioningState\"\
+        : \"Updating\"\r\n  }\r\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1620'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 03 Apr 2024 05:21:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-resource:
+      - Microsoft.Compute/GetServiceArtifact3Min;347,Microsoft.Compute/GetServiceArtifact30Min;2493
+      x-msedge-ref:
+      - 'Ref A: 0DC08C59C1CD481BA1F2E1E51C25AD11 Ref B: SN4AA2022303019 Ref C: 2024-04-03T05:21:36Z'
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -17,7 +17,8 @@ from azure.cli.core.azclierror import (
 )
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.core.exceptions import ResourceNotFoundError  # type: ignore
-from msrestazure.tools import is_valid_resource_id
+from msrestazure.tools import is_valid_resource_id, parse_resource_id
+from knack.prompting import prompt, prompt_y_n
 
 from .pwinput import pwinput
 from .vmware_utils import get_logger, get_resource_id
@@ -841,7 +842,10 @@ Resources
     substring(u, 11, 2), substring(u, 9, 2), '-',
     substring(u, 16, 2), substring(u, 14, 2), '-',
     substring(u, 19))
-| project machineId=id, name, resourceGroup, vmUuidRev, kind
+| extend vmUuid=pack_array(u, vmUuidRev)
+| mv-expand vmUuid
+| extend vmUuid=tostring(vmUuid)
+| project machineId=id, name, resourceGroup, vmUuid, kind
 | join kind=inner (
 ConnectedVMwareVsphereResources
 | where type =~ 'Microsoft.ConnectedVMwareVsphere/VCenters/InventoryItems'
@@ -851,8 +855,8 @@ ConnectedVMwareVsphereResources
 | extend biosId = tolower(tostring(p['smbiosUuid']))
 | extend managedResourceId=tolower(tostring(p['managedResourceId']))
 | project inventoryId=id, biosId, managedResourceId
-) on $left.vmUuidRev == $right.biosId
-| project-away vmUuidRev
+) on $left.vmUuid == $right.biosId
+| project-away vmUuid
 """
     query = " ".join(query.splitlines())
 
@@ -1007,7 +1011,9 @@ def create_vm(
     # The subscription of the vCenter can be different from the machine resource.
     # There was no straightforward way to change the subscription for vcenter client factory.
     # Hence using the generic get client.
-    vcenter_sub = vcenter_id.split("/")[2]
+    vcenter_parts = parse_resource_id(vcenter_id)
+    vcenter_sub = vcenter_parts["subscription"]
+    vcenter_rg = vcenter_parts["resource_group"]
     resources_client = get_resources_client(cmd.cli_ctx, vcenter_sub)
     vcenter = resources_client.get_by_id(vcenter_id, VCENTER_KIND_GET_API_VERSION)
 
@@ -1061,7 +1067,9 @@ def create_vm(
             "type": "str"
         }
         inventory_item_client = cf_inventory_item(cmd.cli_ctx)
-        inventory_items = inventory_item_client.list_by_v_center(resource_group_name, vcenter.name)
+        inventory_items = inventory_item_client.list_by_v_center(
+            vcenter_rg, vcenter.name
+        )
         for inv_item in inventory_items:
             if not hasattr(inv_item, "smbiosUuid"):
                 raise CLIInternalError(
@@ -2085,14 +2093,41 @@ def enable_guest_agent(
     client: VMInstanceGuestAgentsOperations,
     resource_group_name,
     vm_name,
-    username,
-    password,
+    username=None,
+    password=None,
     https_proxy=None,
+    private_link_scope=None,
     no_wait=False,
 ):
     """
     Enable guest agent on the given virtual machine.
     """
+
+    creds_ok = all(inp is not None for inp in [username, password])
+    while not creds_ok:
+        creds = {
+            "username": username,
+            "password": password,
+        }
+        while not creds["username"]:
+            creds["username"] = prompt("Please provide VM username: ")
+            if not creds["username"]:
+                print("Parameter is required, please try again")
+        while not creds["password"]:
+            creds["password"] = pwinput("Please provide VM password: ")
+            if not creds["password"]:
+                print("Parameter is required, please try again")
+                continue
+            passwdConfim = pwinput("Please confirm VM password: ")
+            if creds["password"] != passwdConfim:
+                print("Passwords do not match, please try again")
+                creds["password"] = None
+        if prompt_y_n("Confirm VM credentials?", default="y"):
+            username, password = (
+                creds["username"],
+                creds["password"],
+            )
+            creds_ok = True
 
     machine_client = cf_machine(cmd.cli_ctx)
     machine = machine_client.get(resource_group_name, vm_name)
@@ -2114,6 +2149,7 @@ def enable_guest_agent(
 
     guest_agent = GuestAgent(
         credentials=vm_creds,
+        private_link_scope_resource_id=private_link_scope,
         http_proxy_config=https_proxy_config,
         provisioning_action=GUEST_AGENT_PROVISIONING_ACTION_INSTALL,
     )

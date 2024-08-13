@@ -64,6 +64,7 @@ class Update(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.applies_to_groups = AAZListArg(
             options=["--applies-to-groups"],
+            singular_options=["--applies-to-group"],
             arg_group="Properties",
             help="Groups for configuration",
         )
@@ -88,6 +89,7 @@ class Update(AAZCommand):
         )
         _args_schema.hubs = AAZListArg(
             options=["--hubs"],
+            singular_options=["--hub"],
             arg_group="Properties",
             help="List of hubItems",
             nullable=True,

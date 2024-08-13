@@ -2,34 +2,34 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, consider-using-f-string, logging-format-interpolation, inconsistent-return-statements, broad-except, bare-except, too-many-statements, too-many-locals, too-many-boolean-expressions, too-many-branches, too-many-nested-blocks, pointless-statement, expression-not-assigned, unbalanced-tuple-unpacking, unsupported-assignment-operation
+# pylint: disable=line-too-long, unused-argument, logging-fstring-interpolation, logging-not-lazy, consider-using-f-string, logging-format-interpolation, inconsistent-return-statements, broad-except, bare-except, too-many-statements, too-many-locals, too-many-boolean-expressions, too-many-branches, too-many-nested-blocks, pointless-statement, expression-not-assigned, unbalanced-tuple-unpacking, unsupported-assignment-operation
 
-import sys
 import time
 from urllib.parse import urlparse
 import json
+import requests
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
 
 from azure.cli.core import telemetry as telemetry_core
-from azure.cli.command_modules.containerapp._utils import safe_set, safe_get
 
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
-    ResourceNotFoundError,
     ValidationError,
     CLIError,
     CLIInternalError,
     InvalidArgumentValueError,
-    ResourceNotFoundError)
+    ResourceNotFoundError,
+    ArgumentUsageError)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.command_modules.containerapp.custom import set_secrets, open_containerapp_in_browser, create_deserializer
 from azure.cli.command_modules.containerapp.containerapp_job_decorator import ContainerAppJobDecorator
 from azure.cli.command_modules.containerapp.containerapp_decorator import BaseContainerAppDecorator
-from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvUpdateDecorator, ContainerAppEnvDecorator
+from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvDecorator
 from azure.cli.command_modules.containerapp._decorator_utils import load_yaml_file
 from azure.cli.command_modules.containerapp._github_oauth import get_github_access_token
-from azure.cli.command_modules.containerapp._utils import (_validate_subscription_registered,
+from azure.cli.command_modules.containerapp._utils import (safe_set,
+                                                           _validate_subscription_registered,
                                                            _convert_object_from_snake_to_camel_case,
                                                            _object_to_dict, _remove_additional_attributes,
                                                            raise_missing_token_suggestion,
@@ -37,8 +37,6 @@ from azure.cli.command_modules.containerapp._utils import (_validate_subscriptio
                                                            _get_acr_cred, safe_get, await_github_action, repo_url_to_name,
                                                            validate_container_app_name, register_provider_if_needed,
                                                            generate_randomized_cert_name, load_cert_file,
-                                                           generate_randomized_managed_cert_name,
-                                                           check_managed_cert_name_availability, prepare_managed_certificate_envelop,
                                                            trigger_workflow, _ensure_identity_resource_id,
                                                            AppType)
 
@@ -51,8 +49,9 @@ from msrest.exceptions import DeserializationError
 from .containerapp_env_certificate_decorator import ContainerappPreviewEnvCertificateListDecorator, \
     ContainerappEnvCertificatePreviweUploadDecorator
 from .connected_env_decorator import ConnectedEnvironmentDecorator, ConnectedEnvironmentCreateDecorator
-from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator
+from .containerapp_job_decorator import ContainerAppJobPreviewCreateDecorator, ContainerAppJobPreviewUpdateDecorator
 from .containerapp_env_decorator import ContainerappEnvPreviewCreateDecorator, ContainerappEnvPreviewUpdateDecorator
+from .containerapp_java_decorator import ContainerappJavaLoggerDecorator, ContainerappJavaLoggerSetDecorator, ContainerappJavaLoggerDeleteDecorator
 from .containerapp_resiliency_decorator import (
     ContainerAppResiliencyPreviewCreateDecorator,
     ContainerAppResiliencyPreviewShowDecorator,
@@ -69,20 +68,20 @@ from .daprcomponent_resiliency_decorator import (
 from .containerapp_env_telemetry_decorator import (
     ContainerappEnvTelemetryDataDogPreviewSetDecorator,
     ContainerappEnvTelemetryAppInsightsPreviewSetDecorator,
-    ContainerappEnvTelemetryOtlpPreviewSetDecorator,
-    APP_INSIGHTS_DEST,
-    DATA_DOG_DEST
+    ContainerappEnvTelemetryOtlpPreviewSetDecorator
 )
 from .containerapp_auth_decorator import ContainerAppPreviewAuthDecorator
 from .containerapp_decorator import ContainerAppPreviewCreateDecorator, ContainerAppPreviewListDecorator, ContainerAppPreviewUpdateDecorator
 from .containerapp_env_storage_decorator import ContainerappEnvStorageDecorator
 from .java_component_decorator import JavaComponentDecorator
+from .containerapp_sessionpool_decorator import SessionPoolPreviewDecorator, SessionPoolCreateDecorator, SessionPoolUpdateDecorator
+from .containerapp_session_code_interpreter_decorator import SessionCodeInterpreterCommandsPreviewDecorator
+from .dotnet_component_decorator import DotNetComponentDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._clients import (
     GitHubActionPreviewClient,
     ContainerAppPreviewClient,
     AuthPreviewClient,
-    SubscriptionPreviewClient,
     StoragePreviewClient,
     ContainerAppsJobPreviewClient,
     ContainerAppsResiliencyPreviewClient,
@@ -92,7 +91,10 @@ from ._clients import (
     ConnectedEnvironmentClient,
     ConnectedEnvStorageClient,
     ConnectedEnvCertificateClient,
-    JavaComponentPreviewClient
+    JavaComponentPreviewClient,
+    SessionPoolPreviewClient,
+    SessionCodeInterpreterPreviewClient,
+    DotNetComponentPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._models import (
@@ -112,11 +114,12 @@ from ._constants import (CONTAINER_APPS_RP,
                          DEV_KAFKA_IMAGE, DEV_KAFKA_SERVICE_TYPE, DEV_MARIADB_CONTAINER_NAME, DEV_MARIADB_IMAGE, DEV_MARIADB_SERVICE_TYPE, DEV_QDRANT_IMAGE,
                          DEV_QDRANT_CONTAINER_NAME, DEV_QDRANT_SERVICE_TYPE, DEV_WEAVIATE_IMAGE, DEV_WEAVIATE_CONTAINER_NAME, DEV_WEAVIATE_SERVICE_TYPE,
                          DEV_MILVUS_IMAGE, DEV_MILVUS_CONTAINER_NAME, DEV_MILVUS_SERVICE_TYPE, DEV_SERVICE_LIST, CONTAINER_APPS_SDK_MODELS, BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME,
-                         DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST, AZURE_FILE_STORAGE_TYPE, NFS_AZURE_FILE_STORAGE_TYPE,
-                         JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA)
+                         DAPR_SUPPORTED_STATESTORE_DEV_SERVICE_LIST, DAPR_SUPPORTED_PUBSUB_DEV_SERVICE_LIST,
+                         JAVA_COMPONENT_CONFIG, JAVA_COMPONENT_EUREKA, JAVA_COMPONENT_ADMIN, JAVA_COMPONENT_NACOS, DOTNET_COMPONENT_RESOURCE_TYPE)
 
 
 logger = get_logger(__name__)
+
 
 def list_all_services(cmd, environment_name, resource_group_name):
     services = list_containerapp(cmd, resource_group_name=resource_group_name, managed_env=environment_name)
@@ -422,6 +425,7 @@ def create_containerapp(cmd,
                         scale_rule_http_concurrency=None,
                         scale_rule_metadata=None,
                         scale_rule_auth=None,
+                        scale_rule_identity=None,
                         target_port=None,
                         exposed_port=None,
                         transport="auto",
@@ -469,7 +473,10 @@ def create_containerapp(cmd,
                         service_principal_client_id=None,
                         service_principal_client_secret=None,
                         service_principal_tenant_id=None,
-                        max_inactive_revisions=None):
+                        max_inactive_revisions=None,
+                        runtime=None,
+                        enable_java_metrics=None,
+                        enable_java_agent=None):
     raw_parameters = locals()
 
     containerapp_create_decorator = ContainerAppPreviewCreateDecorator(
@@ -501,6 +508,7 @@ def update_containerapp_logic(cmd,
                               scale_rule_http_concurrency=None,
                               scale_rule_metadata=None,
                               scale_rule_auth=None,
+                              scale_rule_identity=None,
                               service_bindings=None,
                               customized_keys=None,
                               unbind_service_bindings=None,
@@ -528,7 +536,10 @@ def update_containerapp_logic(cmd,
                               artifact=None,
                               build_env_vars=None,
                               max_inactive_revisions=None,
-                              force_single_container_updates=False):
+                              force_single_container_updates=False,
+                              runtime=None,
+                              enable_java_metrics=None,
+                              enable_java_agent=None):
     raw_parameters = locals()
 
     containerapp_update_decorator = ContainerAppPreviewUpdateDecorator(
@@ -559,6 +570,7 @@ def update_containerapp(cmd,
                         scale_rule_http_concurrency=None,
                         scale_rule_metadata=None,
                         scale_rule_auth=None,
+                        scale_rule_identity=None,
                         unbind_service_bindings=None,
                         service_bindings=None,
                         customized_keys=None,
@@ -579,7 +591,10 @@ def update_containerapp(cmd,
                         source=None,
                         artifact=None,
                         build_env_vars=None,
-                        max_inactive_revisions=None):
+                        max_inactive_revisions=None,
+                        runtime=None,
+                        enable_java_metrics=None,
+                        enable_java_agent=None):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     return update_containerapp_logic(cmd=cmd,
@@ -595,6 +610,7 @@ def update_containerapp(cmd,
                                      scale_rule_http_concurrency=scale_rule_http_concurrency,
                                      scale_rule_metadata=scale_rule_metadata,
                                      scale_rule_auth=scale_rule_auth,
+                                     scale_rule_identity=scale_rule_identity,
                                      service_bindings=service_bindings,
                                      customized_keys=customized_keys,
                                      unbind_service_bindings=unbind_service_bindings,
@@ -615,7 +631,10 @@ def update_containerapp(cmd,
                                      source=source,
                                      artifact=artifact,
                                      build_env_vars=build_env_vars,
-                                     max_inactive_revisions=max_inactive_revisions)
+                                     max_inactive_revisions=max_inactive_revisions,
+                                     runtime=runtime,
+                                     enable_java_metrics=enable_java_metrics,
+                                     enable_java_agent=enable_java_agent)
 
 
 def show_containerapp(cmd, name, resource_group_name, show_secrets=False):
@@ -642,33 +661,6 @@ def list_containerapp(cmd, resource_group_name=None, managed_env=None, environme
     containerapp_list_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
     return containerapp_list_decorator.list()
-
-
-def show_custom_domain_verification_id(cmd):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-    try:
-        r = SubscriptionPreviewClient.show_custom_domain_verification_id(cmd)
-        return r
-    except CLIError as e:
-        handle_raw_exception(e)
-
-
-def list_usages(cmd, location):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-    try:
-        r = SubscriptionPreviewClient.list_usages(cmd, location)
-        return r
-    except CLIError as e:
-        handle_raw_exception(e)
-
-
-def list_environment_usages(cmd, resource_group_name, name):
-    _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
-    try:
-        r = ManagedEnvironmentPreviewClient.list_usages(cmd, resource_group_name, name)
-        return r
-    except CLIError as e:
-        handle_raw_exception(e)
 
 
 def delete_containerapp(cmd, name, resource_group_name, no_wait=False):
@@ -705,15 +697,17 @@ def create_managed_environment(cmd,
                                hostname=None,
                                certificate_file=None,
                                certificate_password=None,
-                               certificate_identity = None,
+                               certificate_identity=None,
                                certificate_key_vault_url=None,
                                enable_workload_profiles=True,
                                mtls_enabled=None,
+                               p2p_encryption_enabled=None,
                                enable_dedicated_gpu=False,
                                no_wait=False,
                                logs_dynamic_json_columns=False,
                                system_assigned=False,
-                               user_assigned=None):
+                               user_assigned=None,
+                               public_network_access=None):
     raw_parameters = locals()
     containerapp_env_create_decorator = ContainerappEnvPreviewCreateDecorator(
         cmd=cmd,
@@ -741,7 +735,7 @@ def update_managed_environment(cmd,
                                hostname=None,
                                certificate_file=None,
                                certificate_password=None,
-                               certificate_identity = None,
+                               certificate_identity=None,
                                certificate_key_vault_url=None,
                                tags=None,
                                workload_profile_type=None,
@@ -749,8 +743,10 @@ def update_managed_environment(cmd,
                                min_nodes=None,
                                max_nodes=None,
                                mtls_enabled=None,
+                               p2p_encryption_enabled=None,
                                no_wait=False,
-                               logs_dynamic_json_columns=None):
+                               logs_dynamic_json_columns=None,
+                               public_network_access=None):
     raw_parameters = locals()
     containerapp_env_update_decorator = ContainerappEnvPreviewUpdateDecorator(
         cmd=cmd,
@@ -891,6 +887,7 @@ def create_containerappsjob(cmd,
                             scale_rule_name=None,
                             scale_rule_type=None,
                             scale_rule_auth=None,
+                            scale_rule_identity=None,
                             polling_interval=30,
                             min_executions=0,
                             max_executions=10,
@@ -917,6 +914,52 @@ def create_containerappsjob(cmd,
     containerapp_job_create_decorator.construct_for_post_process(r)
     r = containerapp_job_create_decorator.post_process(r)
 
+    return r
+
+
+def update_containerappsjob(cmd,
+                            name,
+                            resource_group_name,
+                            yaml=None,
+                            image=None,
+                            container_name=None,
+                            replica_timeout=None,
+                            replica_retry_limit=None,
+                            replica_completion_count=None,
+                            parallelism=None,
+                            cron_expression=None,
+                            set_env_vars=None,
+                            remove_env_vars=None,
+                            replace_env_vars=None,
+                            remove_all_env_vars=False,
+                            cpu=None,
+                            memory=None,
+                            startup_command=None,
+                            args=None,
+                            scale_rule_metadata=None,
+                            scale_rule_name=None,
+                            scale_rule_type=None,
+                            scale_rule_auth=None,
+                            scale_rule_identity=None,
+                            polling_interval=None,
+                            min_executions=None,
+                            max_executions=None,
+                            tags=None,
+                            workload_profile_name=None,
+                            no_wait=False):
+    raw_parameters = locals()
+
+    containerapp_job_update_decorator = ContainerAppJobPreviewUpdateDecorator(
+        cmd=cmd,
+        client=ContainerAppsJobPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_job_update_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    containerapp_job_update_decorator.validate_arguments()
+
+    containerapp_job_update_decorator.construct_payload()
+    r = containerapp_job_update_decorator.update()
     return r
 
 
@@ -1252,22 +1295,6 @@ def containerapp_up_logic(cmd, resource_group_name, name, managed_env, image, en
     return create_containerapp(cmd=cmd, name=name, resource_group_name=resource_group_name, managed_env=managed_env, image=image, env_vars=env_vars, ingress=ingress, target_port=target_port, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass, workload_profile_name=workload_profile_name, environment_type=environment_type)
 
 
-def create_managed_certificate(cmd, name, resource_group_name, hostname, validation_method, certificate_name=None):
-    if certificate_name and not check_managed_cert_name_availability(cmd, resource_group_name, name, certificate_name):
-        raise ValidationError(f"Certificate name '{certificate_name}' is not available.")
-    cert_name = certificate_name
-    while not cert_name:
-        cert_name = generate_randomized_managed_cert_name(hostname, resource_group_name)
-        if not check_managed_cert_name_availability(cmd, resource_group_name, name, certificate_name):
-            cert_name = None
-    certificate_envelop = prepare_managed_certificate_envelop(cmd, name, resource_group_name, hostname, validation_method.upper())
-    try:
-        r = ManagedEnvironmentPreviewClient.create_or_update_managed_certificate(cmd, resource_group_name, name, cert_name, certificate_envelop, True, validation_method.upper() == 'TXT')
-        return r
-    except Exception as e:
-        handle_raw_exception(e)
-
-
 def list_certificates(cmd, name, resource_group_name, location=None, certificate=None, thumbprint=None, managed_certificates_only=False, private_key_certificates_only=False):
     raw_parameters = locals()
 
@@ -1283,7 +1310,7 @@ def list_certificates(cmd, name, resource_group_name, location=None, certificate
     return containerapp_env_certificate_list_decorator.list()
 
 
-def upload_certificate(cmd, name, resource_group_name, certificate_file=None, certificate_name=None, certificate_password=None, location=None, prompt=False, certificate_identity = None, certificate_key_vault_url=None):
+def upload_certificate(cmd, name, resource_group_name, certificate_file=None, certificate_name=None, certificate_password=None, location=None, prompt=False, certificate_identity=None, certificate_key_vault_url=None):
     raw_parameters = locals()
 
     containerapp_env_certificate_upload_decorator = ContainerappEnvCertificatePreviweUploadDecorator(
@@ -1328,7 +1355,12 @@ def update_auth_config(cmd, resource_group_name, name, set_string=None, enabled=
 
     containerapp_auth_decorator.construct_payload()
     if containerapp_auth_decorator.get_argument_token_store() and containerapp_auth_decorator.get_argument_sas_url_secret() is not None:
-        set_secrets(cmd, name, resource_group_name, secrets=[f"{BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME}={containerapp_auth_decorator.get_argument_sas_url_secret()}"], no_wait=True, disable_max_length=True)
+        if not containerapp_auth_decorator.get_argument_yes():
+            msg = 'Configuring --sas-url-secret will add a secret to the containerapp. Are you sure you want to continue?'
+            if not prompt_y_n(msg, default="n"):
+                raise ArgumentUsageError(
+                    'Usage Error: --sas-url-secret cannot be used without agreeing to add secret to the containerapp.')
+        set_secrets(cmd, name, resource_group_name, secrets=[f"{BLOB_STORAGE_TOKEN_STORE_SECRET_SETTING_NAME}={containerapp_auth_decorator.get_argument_sas_url_secret()}"], no_wait=False, disable_max_length=True)
     return containerapp_auth_decorator.create_or_update()
 
 
@@ -1357,8 +1389,7 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
                                       tags=None):
     from pycomposefile import ComposeFile
 
-    from azure.cli.command_modules.containerapp._compose_utils import (create_containerapps_compose_environment,
-                                                                       build_containerapp_from_compose_service,
+    from azure.cli.command_modules.containerapp._compose_utils import (build_containerapp_from_compose_service,
                                                                        check_supported_platform,
                                                                        warn_about_unsupported_elements,
                                                                        resolve_ingress_and_target_port,
@@ -1384,10 +1415,11 @@ def create_containerapps_from_compose(cmd,  # pylint: disable=R0914
     except CLIInternalError:  # pylint: disable=W0702
         logger.info(  # pylint: disable=W1203
             f"Creating the Container Apps managed environment {managed_env_name} under {env_rg} in {location}.")
-        managed_environment = create_containerapps_compose_environment(cmd,
-                                                                       managed_env_name,
-                                                                       env_rg,
-                                                                       tags=tags)
+        managed_environment = create_managed_environment(cmd,
+                                                         name=managed_env_name,
+                                                         resource_group_name=env_rg,
+                                                         tags=tags,
+                                                         location=location)
 
     compose_yaml = load_yaml_file(compose_file_path)
     parsed_compose_file = ComposeFile(compose_yaml)
@@ -1804,7 +1836,7 @@ def connected_env_create_or_update_dapr_component(cmd, resource_group_name, envi
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
     yaml_dapr_component = load_yaml_file(yaml)
-    if type(yaml_dapr_component) != dict:  # pylint: disable=unidiomatic-typecheck
+    if not isinstance(yaml_dapr_component, dict):  # pylint: disable=unidiomatic-typecheck
         raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.')
 
     # Deserialize the yaml into a DaprComponent object. Need this since we're not using SDK
@@ -2083,7 +2115,7 @@ def assign_env_managed_identity(cmd, name, resource_group_name, system_assigned=
 
     # no changes to containerapp environment
     if (not is_system_identity_changed) and (not to_add_user_assigned_identity):
-        logger.warning("No managed identities changes to containerapp environment", old_user_identity)
+        logger.warning("No managed identities changes to containerapp environment")
         return managed_env_def
 
     if to_add_user_assigned_identity:
@@ -2271,7 +2303,7 @@ def delete_java_component(cmd, java_component_name, environment_name, resource_g
     return java_component_decorator.delete()
 
 
-def create_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, no_wait):
+def create_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, service_bindings, unbind_service_bindings, no_wait):
     raw_parameters = locals()
     java_component_decorator = JavaComponentDecorator(
         cmd=cmd,
@@ -2283,7 +2315,7 @@ def create_java_component(cmd, java_component_name, environment_name, resource_g
     return java_component_decorator.create()
 
 
-def update_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, no_wait):
+def update_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, service_bindings, unbind_service_bindings, no_wait):
     raw_parameters = locals()
     java_component_decorator = JavaComponentDecorator(
         cmd=cmd,
@@ -2295,36 +2327,68 @@ def update_java_component(cmd, java_component_name, environment_name, resource_g
     return java_component_decorator.update()
 
 
-def create_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
-    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, no_wait)
+def create_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, service_bindings, unbind_service_bindings, no_wait)
 
 
-def update_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
-    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, no_wait)
+def update_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, service_bindings, unbind_service_bindings, no_wait)
 
 
-def show_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name):
+def show_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name):
     return show_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG)
 
 
-def delete_spring_cloud_config(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
+def delete_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, no_wait)
 
 
-def create_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
-    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, no_wait)
+def create_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, service_bindings, unbind_service_bindings, no_wait)
 
 
-def update_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, configuration=None, no_wait=False):
-    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, no_wait)
+def update_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, service_bindings, unbind_service_bindings, no_wait)
 
 
-def show_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name):
+def show_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name):
     return show_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA)
 
 
-def delete_spring_cloud_eureka(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
+def delete_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, no_wait)
+
+
+def create_nacos(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS, configuration, service_bindings, unbind_service_bindings, no_wait)
+
+
+def update_nacos(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS, configuration, service_bindings, unbind_service_bindings, no_wait)
+
+
+def show_nacos(cmd, java_component_name, environment_name, resource_group_name):
+    return show_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS)
+
+
+def delete_nacos(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
+    return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS, no_wait)
+
+
+def create_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, configuration, service_bindings, unbind_service_bindings, no_wait)
+
+
+def update_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, configuration, service_bindings, unbind_service_bindings, no_wait)
+
+
+def show_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name):
+    return show_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN)
+
+
+def delete_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
+    return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, no_wait)
 
 
 def set_environment_telemetry_data_dog(cmd,
@@ -2346,7 +2410,7 @@ def set_environment_telemetry_data_dog(cmd,
 
     containerapp_env_telemetry_data_dog_decorator.construct_payload()
     r = containerapp_env_telemetry_data_dog_decorator.update()
-    
+
     return r
 
 
@@ -2369,7 +2433,7 @@ def delete_environment_telemetry_data_dog(cmd,
 
     containerapp_env_telemetry_data_dog_decorator.construct_payload()
     r = containerapp_env_telemetry_data_dog_decorator.update()
-    
+
     return r
 
 
@@ -2384,7 +2448,7 @@ def show_environment_telemetry_data_dog(cmd,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    
+
     containerapp_env_def = None
     try:
         containerapp_env_def = containerapp_env_telemetry_data_dog_decorator.show()
@@ -2416,7 +2480,7 @@ def set_environment_telemetry_app_insights(cmd,
 
     containerapp_env_telemetry_app_insights_decorator.construct_payload()
     r = containerapp_env_telemetry_app_insights_decorator.update()
-    
+
     return r
 
 
@@ -2438,7 +2502,7 @@ def delete_environment_telemetry_app_insights(cmd,
 
     containerapp_env_telemetry_app_insights_decorator.construct_payload()
     r = containerapp_env_telemetry_app_insights_decorator.update()
-    
+
     return r
 
 
@@ -2453,7 +2517,7 @@ def show_environment_telemetry_app_insights(cmd,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    
+
     containerapp_env_def = None
     try:
         containerapp_env_def = containerapp_env_telemetry_app_insights_decorator.show()
@@ -2507,7 +2571,7 @@ def add_environment_telemetry_otlp(cmd,
 
     containerapp_env_telemetry_otlp_decorator.construct_payload()
     r = containerapp_env_telemetry_otlp_decorator.update()
-    
+
     return r
 
 
@@ -2547,7 +2611,7 @@ def update_environment_telemetry_otlp(cmd,
 
     containerapp_env_telemetry_otlp_decorator.construct_payload()
     r = containerapp_env_telemetry_otlp_decorator.update()
-    
+
     return r
 
 
@@ -2570,7 +2634,7 @@ def remove_environment_telemetry_otlp(cmd,
 
     containerapp_env_telemetry_otlp_decorator.construct_remove_payload()
     r = containerapp_env_telemetry_otlp_decorator.update()
-    
+
     return r
 
 
@@ -2586,7 +2650,7 @@ def show_environment_telemetry_otlp(cmd,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    
+
     containerapp_env_def = None
     try:
         containerapp_env_def = containerapp_env_telemetry_otlp_decorator.show()
@@ -2602,7 +2666,7 @@ def show_environment_telemetry_otlp(cmd,
 
         if not otlp:
             raise ResourceNotFoundError(f"Otlp entry with name --otlp-name {otlp_name} does not exist, please retry with different name")
-        
+
         existing_otlps = otlp
         safe_set(containerapp_env_def, "properties", "openTelemetryConfiguration", "destinationsConfiguration", "otlpConfigurations", value=existing_otlps)
 
@@ -2620,7 +2684,7 @@ def list_environment_telemetry_otlp(cmd,
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    
+
     containerapp_env_def = None
     try:
         containerapp_env_def = containerapp_env_telemetry_otlp_decorator.show()
@@ -2629,3 +2693,415 @@ def list_environment_telemetry_otlp(cmd,
 
     return containerapp_env_def
 
+
+def list_replica_containerappsjob(cmd, resource_group_name, name, execution=None):
+    if execution is None:
+        executions = ContainerAppsJobPreviewClient.get_executions(cmd=cmd, resource_group_name=resource_group_name, name=name)
+        execution = executions['value'][0]['name']
+        logger.warning('No execution specified. Using the latest execution: %s', execution)
+    try:
+        replicas = ContainerAppsJobPreviewClient.get_replicas(cmd, resource_group_name, name, execution)
+        return replicas['value']
+    except CLIError as e:
+        handle_raw_exception(e)
+
+
+def stream_job_logs(cmd, resource_group_name, name, container, execution=None, replica=None, follow=False, tail=None, output_format=None):
+    if tail:
+        if tail < 0 or tail > 300:
+            raise ValidationError("--tail must be between 0 and 300.")
+
+    sub = get_subscription_id(cmd.cli_ctx)
+    token_response = ContainerAppsJobPreviewClient.get_auth_token(cmd, resource_group_name, name)
+    token = token_response["properties"]["token"]
+
+    job = ContainerAppsJobPreviewClient.show(cmd, resource_group_name, name)
+    base_url = job["properties"]["eventStreamEndpoint"]
+    base_url = base_url[:base_url.index("/subscriptions/")]
+
+    if execution is None and replica is not None:
+        raise ValidationError("Cannot specify a replica without an execution")
+
+    if execution is None:
+        executions = ContainerAppsJobPreviewClient.get_executions(cmd, resource_group_name, name)['value']
+        if not executions:
+            raise ValidationError("No executions found for this job")
+        execution = executions[0]["name"]
+        logger.warning("No execution provided, defaulting to latest execution: %s", execution)
+
+    if replica is None:
+        replicas = ContainerAppsJobPreviewClient.get_replicas(cmd, resource_group_name, name, execution)['value']
+        if not replicas:
+            raise ValidationError("No replicas found for execution")
+        replica = replicas[0]["name"]
+        logger.warning("No replica provided, defaulting to latest replica: %s", replica)
+
+    url = (f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/jobs/{name}"
+           f"/executions/{execution}/replicas/{replica}/containers/{container}/logstream")
+
+    logger.info("connecting to : %s", url)
+    request_params = {"follow": str(follow).lower(),
+                      "output": output_format,
+                      "tailLines": tail}
+    headers = {"Authorization": f"Bearer {token}"}
+    resp = requests.get(url,
+                        timeout=None,
+                        stream=True,
+                        params=request_params,
+                        headers=headers)
+
+    if not resp.ok:
+        raise ValidationError(f"Got bad status from the logstream API: {resp.status_code}. Error: {str(resp.content)}")
+
+    for line in resp.iter_lines():
+        if line:
+            logger.info("received raw log line: %s", line)
+            # these .replaces are needed to display color/quotations properly
+            # for some reason the API returns garbled unicode special characters (may need to add more in the future)
+            print(line.decode("utf-8").replace("\\u0022", "\u0022").replace("\\u001B", "\u001B").replace("\\u002B", "\u002B").replace("\\u0027", "\u0027"))
+
+
+def create_or_update_java_logger(cmd, logger_name, logger_level, name, resource_group_name, no_wait=False):
+    raw_parameters = locals()
+    containerapp_java_logger_set_decorator = ContainerappJavaLoggerSetDecorator(
+        cmd=cmd,
+        client=ContainerAppPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_java_logger_set_decorator.validate_arguments()
+    containerapp_java_logger_set_decorator.construct_payload()
+    return containerapp_java_logger_set_decorator.create_or_update()
+
+
+# pylint: disable=redefined-builtin
+def delete_java_logger(cmd, name, resource_group_name, logger_name=None, all=None, no_wait=False):
+    raw_parameters = locals()
+    containerapp_java_logger_decorator = ContainerappJavaLoggerDeleteDecorator(
+        cmd=cmd,
+        client=ContainerAppPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_java_logger_decorator.validate_arguments()
+    containerapp_java_logger_decorator.construct_payload()
+    return containerapp_java_logger_decorator.delete()
+
+
+# pylint: disable=redefined-builtin
+def show_java_logger(cmd, name, resource_group_name, logger_name=None, all=None):
+    raw_parameters = locals()
+    containerapp_java_logger_decorator = ContainerappJavaLoggerDecorator(
+        cmd=cmd,
+        client=ContainerAppPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_java_logger_decorator.validate_arguments()
+    return containerapp_java_logger_decorator.show()
+
+
+def create_session_pool(cmd,
+                        name,
+                        resource_group_name,
+                        location=None,
+                        managed_env=None,
+                        container_type=None,
+                        cooldown_period=None,
+                        secrets=None,
+                        network_status=None,
+                        max_concurrent_sessions=None,
+                        ready_session_instances=None,
+                        image=None,
+                        container_name=None,
+                        cpu=None,
+                        memory=None,
+                        env_vars=None,
+                        startup_command=None,
+                        args=None,
+                        target_port=None,
+                        registry_server=None,
+                        registry_pass=None,
+                        registry_user=None):
+    raw_parameters = locals()
+    session_pool_decorator = SessionPoolCreateDecorator(
+        cmd=cmd,
+        client=SessionPoolPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_pool_decorator.validate_arguments()
+    session_pool_decorator.register_provider(CONTAINER_APPS_RP)
+
+    session_pool_decorator.construct_payload()
+    r = session_pool_decorator.create()
+
+    return r
+
+
+def update_session_pool(cmd,
+                        name,
+                        resource_group_name,
+                        location=None,
+                        cooldown_period=None,
+                        secrets=None,
+                        network_status=None,
+                        max_concurrent_sessions=None,
+                        ready_session_instances=None,
+                        image=None,
+                        container_name=None,
+                        cpu=None,
+                        memory=None,
+                        env_vars=None,
+                        startup_command=None,
+                        args=None,
+                        target_port=None,
+                        registry_server=None,
+                        registry_pass=None,
+                        registry_user=None):
+    raw_parameters = locals()
+    session_pool_decorator = SessionPoolUpdateDecorator(
+        cmd=cmd,
+        client=SessionPoolPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_pool_decorator.construct_payload()
+    r = session_pool_decorator.update()
+
+    return r
+
+
+def show_session_pool(cmd,
+                      name,
+                      resource_group_name):
+    raw_parameters = locals()
+    session_pool_decorator = SessionPoolPreviewDecorator(
+        cmd=cmd,
+        client=SessionPoolPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_pool_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    r = session_pool_decorator.show()
+
+    return r
+
+
+def list_session_pool(cmd,
+                      resource_group_name=None):
+    raw_parameters = locals()
+    session_pool_decorator = SessionPoolPreviewDecorator(
+        cmd=cmd,
+        client=SessionPoolPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_pool_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+    r = session_pool_decorator.list()
+
+    return r
+
+
+def delete_session_pool(cmd,
+                        name,
+                        resource_group_name):
+    raw_parameters = locals()
+    session_pool_decorator = SessionPoolPreviewDecorator(
+        cmd=cmd,
+        client=SessionPoolPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    r = session_pool_decorator.delete()
+
+    return r
+
+
+# session code interpreter commands
+def execute_session_code_interpreter(cmd,
+                                     name,
+                                     resource_group_name,
+                                     identifier,
+                                     code,
+                                     session_pool_location=None,
+                                     timeout_in_seconds=None):
+    raw_parameters = locals()
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_code_interpreter_decorator.validate_arguments()
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
+
+    session_code_interpreter_decorator.construct_payload()
+    r = session_code_interpreter_decorator.execute()
+
+    return r
+
+
+def upload_session_code_interpreter(cmd,
+                                    name,
+                                    resource_group_name,
+                                    identifier,
+                                    filepath,
+                                    session_pool_location=None):
+    raw_parameters = locals()
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
+
+    r = session_code_interpreter_decorator.upload()
+
+    return r
+
+
+def show_file_content_session_code_interpreter(cmd,
+                                               name,
+                                               resource_group_name,
+                                               identifier,
+                                               filename,
+                                               session_pool_location=None):
+    raw_parameters = locals()
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
+
+    r = session_code_interpreter_decorator.show_file_content()
+
+    return r
+
+
+def show_file_metadata_session_code_interpreter(cmd,
+                                                name,
+                                                resource_group_name,
+                                                identifier,
+                                                filename,
+                                                session_pool_location=None):
+    raw_parameters = locals()
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
+
+    r = session_code_interpreter_decorator.show_file_metadata()
+
+    return r
+
+
+def list_files_session_code_interpreter(cmd,
+                                        name,
+                                        resource_group_name,
+                                        identifier,
+                                        path=None,
+                                        session_pool_location=None):
+    raw_parameters = locals()
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
+
+    r = session_code_interpreter_decorator.list_files()
+
+    return r
+
+
+def delete_file_session_code_interpreter(cmd,
+                                         name,
+                                         resource_group_name,
+                                         identifier,
+                                         filename,
+                                         session_pool_location=None):
+    raw_parameters = locals()
+    session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
+        cmd=cmd,
+        client=SessionCodeInterpreterPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    session_code_interpreter_decorator.register_provider(CONTAINER_APPS_RP)
+
+    r = session_code_interpreter_decorator.delete_file()
+
+    return r
+
+
+def list_dotnet_components(cmd, environment_name, resource_group_name):
+    raw_parameters = locals()
+    dotnet_component_decorator = DotNetComponentDecorator(
+        cmd=cmd,
+        client=DotNetComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    return dotnet_component_decorator.list()
+
+
+# pylint: disable=protected-access
+def show_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name):
+    raw_parameters = locals()
+    dotnet_component_decorator = DotNetComponentDecorator(
+        cmd=cmd,
+        client=DotNetComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    result = dotnet_component_decorator.show()
+    if result is not None:
+        logger.warning("Found DotNet Component '%s' in environment '%s' in resource group '%s'.", dotnet_component_name, environment_name, resource_group_name)
+
+    component_type = safe_get(result, "properties", "componentType")
+    if component_type == DOTNET_COMPONENT_RESOURCE_TYPE:
+        aspire_dashboard_url = dotnet_component_decorator._get_aspire_dashboard_url(environment_name, resource_group_name, dotnet_component_name)
+        logger.warning("Aspire Dashboard URL: %s.", aspire_dashboard_url)
+    return result
+
+
+def delete_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name, no_wait=False):
+    raw_parameters = locals()
+    dotnet_component_decorator = DotNetComponentDecorator(
+        cmd=cmd,
+        client=DotNetComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    logger.warning("Deleting DotNet Component '%s' in environment '%s' in resource group '%s'.", dotnet_component_name, environment_name, resource_group_name)
+    dotnet_component_decorator.delete()
+    logger.warning("Successfully deleted DotNet Component '%s' in environment '%s' in resource group '%s'.", dotnet_component_name, environment_name, resource_group_name)
+
+
+# pylint: disable=useless-return, protected-access
+def create_dotnet_component(cmd, dotnet_component_name, environment_name, resource_group_name, dotnet_component_type=DOTNET_COMPONENT_RESOURCE_TYPE, no_wait=False):
+    raw_parameters = locals()
+    dotnet_component_decorator = DotNetComponentDecorator(
+        cmd=cmd,
+        client=DotNetComponentPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    dotnet_component_decorator.construct_payload()
+    logger.warning("Creating DotNet Component '%s' in environment '%s' in resource group '%s.", dotnet_component_name, environment_name, resource_group_name)
+    r = dotnet_component_decorator.create()
+    if r is not None:
+        logger.warning("Successfully created DotNet Component '%s' in environment '%s' in resource group '%s'.", dotnet_component_name, environment_name, resource_group_name)
+    component_type = safe_get(r, "properties", "componentType")
+    if component_type == DOTNET_COMPONENT_RESOURCE_TYPE:
+        aspire_dashboard_url = dotnet_component_decorator._get_aspire_dashboard_url(environment_name, resource_group_name, dotnet_component_name)
+        logger.warning("Access your Aspire Dashboard at %s.", aspire_dashboard_url)
+    return

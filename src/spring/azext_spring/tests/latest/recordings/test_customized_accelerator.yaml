@@ -1,6 +1,105 @@
 interactions:
 - request:
-    body: '{"properties": {"displayName": "acc-name", "gitRepository": {"url": "https://github.com/Azure-Samples/piggymetrics-config",
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring application-accelerator customized-accelerator list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002?api-version=2024-05-01-preview
+  response:
+    body:
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"95a0892ab04a44e4a0ffa44a7c60cec1","networkProfile":{"outboundIPs":{"publicIPs":["4.157.151.134","4.157.150.159"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"clitest000002.azuremicroservices.io","marketplaceResource":{"plan":"asa-ent-hr-mtr","publisher":"vmware-inc","product":"azure-spring-cloud-vmware-tanzu-2"}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002","name":"clitest000002","systemData":{"createdBy":"feilonghuang@microsoft.com","createdByType":"User","createdAt":"2024-01-17T06:33:17.0111064Z","lastModifiedBy":"feilonghuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-01-17T06:33:17.0111064Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '948'
+      content-type:
+      - application/json
+      date:
+      - Mon, 15 Apr 2024 08:53:05 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-resource-requests:
+      - '11998'
+      x-msedge-ref:
+      - 'Ref A: DB3C41D0620A4ECABB2156594358DE01 Ref B: MAA201060516033 Ref C: 2024-04-15T08:53:05Z'
+      x-rp-server-mvid:
+      - ec637d3d-68a7-4774-a4ad-c912c3fa4ba1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - spring application-accelerator customized-accelerator list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -s
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators?api-version=2024-05-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"provisioningState":"Succeeded","displayName":"fragment-name","description":"desc","acceleratorType":"Fragment","gitRepository":{"url":"https://github.com/sample-accelerators/fragments.git","branch":"main","subPath":"java-version","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/","name":"fragment-name","systemData":{"createdBy":"feilonghuang@microsoft.com","createdByType":"User","createdAt":"2024-01-17T06:50:36.3764315Z","lastModifiedBy":"dixue@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-04-15T06:56:47.2469766Z"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '841'
+      content-type:
+      - application/json
+      date:
+      - Mon, 15 Apr 2024 08:53:09 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 4C8A023819254913B7EAFF7F8E2C27FD Ref B: MAA201060513047 Ref C: 2024-04-15T08:53:08Z'
+      x-rp-server-mvid:
+      - ec637d3d-68a7-4774-a4ad-c912c3fa4ba1
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"acceleratorType": "Accelerator", "displayName": "acc-name",
+      "gitRepository": {"url": "https://github.com/Azure-Samples/piggymetrics-config",
       "intervalInSeconds": 10, "branch": "master", "authSetting": {"authType": "Public"}}}}'
     headers:
       Accept:
@@ -12,45 +111,49 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '209'
+      - '243'
       Content-Type:
       - application/json
       ParameterSetName:
       - -n -g -s --display-name --git-url --git-branch --git-interval
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name?api-version=2024-05-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Creating","displayName":"acc-name","gitRepository":{"url":"https://github.com/Azure-Samples/piggymetrics-config","intervalInSeconds":10,"branch":"master","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name","name":"acc-name","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-24T06:01:15.3720124Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-24T06:01:15.3720124Z"}}'
+      string: '{"properties":{"provisioningState":"Creating","displayName":"acc-name","acceleratorType":"Accelerator","gitRepository":{"url":"https://github.com/Azure-Samples/piggymetrics-config","intervalInSeconds":10,"branch":"master","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name","name":"acc-name","systemData":{"createdBy":"dixue@microsoft.com","createdByType":"User","createdAt":"2024-04-15T08:53:11.7086178Z","lastModifiedBy":"dixue@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-04-15T08:53:11.7086178Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationStatus/clitest000002/operationId/88b06971-eee4-4a91-a0f7-945fe3088baa?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/clitest000002/operationId/38c6c52b-1a45-4d2a-8132-4f5cb8d0aa57?api-version=2024-05-01-preview&t=638487679928804848&c=MIIHrTCCBpWgAwIBAgITfwLBjXw4zjrTc5t5NAAEAsGNfDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwMzA0MDE1ODIwWhcNMjUwMjI3MDE1ODIwWjCBjDELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAldBMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYDVQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvtNWzX7Z4RXasqNpidaHzNujkmKIyeVQ0-WDwUq-xuI9MngwGfjp7c7s5Xb8FEMqNdZ1xARSX0cBqqPaGRNWlUq2dptWsjU2XASz899FGoiPCAP0Hw1IzLGB5egvgqEb0tCLMFDKHps1ibdq1zbzi7_t6RAzAiBv_Y0HV0WGZ80NUuUhFFUdf94u96e-8r6L7dz9zEXWHApvUxiDHDGAKil_Vll-2CU3hoBQYCEkwSHgBwBBs9_wCw27ArDoCA1tO2_8aMdCvk4KfT8pZ7Qxj12bxHYzURqOlVVjmkCF9mTAoAagk9JTqwWwqjpUNl2v4QcVNmeI6T51P82qPWqbzQIDAQABo4IETTCCBEkwJwYJKwYBBAGCNxUKBBowGDAKBggrBgEFBQcDATAKBggrBgEFBQcDAjA9BgkrBgEEAYI3FQcEMDAuBiYrBgEEAYI3FQiGkOMNhNW0eITxiz6Fm90Wzp0SgWCC9fYrg_LRIAIBZAIBCjCCAdoGCCsGAQUFBwEBBIIBzDCCAcgwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDEuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDQuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwHQYDVR0OBBYEFH0WB2hDveCytfalzMbzM6A_u3fJMA4GA1UdDwEB_wQEAwIFoDBABgNVHREEOTA3gjVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCATUGA1UdHwSCASwwggEoMIIBJKCCASCgggEchkJodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmwwFwYDVR0gBBAwDjAMBgorBgEEAYI3ewEBMB8GA1UdIwQYMBaAFK55wmtdJYgTBvYHCcOXfHuXjx1VMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjANBgkqhkiG9w0BAQsFAAOCAQEAQecZ6u3Vy_TvdS1UGS1bLXbc7WCmjz1SY2cbMWSy7F1JLL2cdtJQunrfzR8hinuMeynkkpEAWzLv-QEzW5c6bJ9MOBQKfcP-JVyIpUJTWKeWGEPwiH986PrB3MvzN6AaYRL6CdZPVlNl9TwhL8Uom3OFDx0m0mLdYvyfeTEW_Ifuil7NDR_sTJXNqBOg38-06i2DKZdwNcx92E3UsgW_avrTtx_jeUivpCTrRXRgXa814xZxBcvZTeyOe9yzKJxcM6_QIGW97JT9oBXaCceQ2KQgaD0FQLAWSANWbHqNf6Wzz3Osu0t0UO57HorMxIM1ZHA2wKetsyhuX8yzeGvnoQ&s=sg2ViU1yj1zXefyBd6SmftVioUjpycNxrV93pZ2pokeZlqRKqeAbSY9GlOfHCewYyfKyu0kHXajgskQXdH_Ak7xAcHK3gvaHKIb1XEdBwUPsgX-AEBytt0uYA4y_dyoX0KqxA4an-MUN64Y4BhQ3VaI3LxbHmdVEhEaazn3VED8VLZKmnKL5H2k0ZnW-XzH8_YaBbuH0PzOEHMxObd3Jm-qeGEDWdu78FlVglrwB3girDZpYdNyGCTuVRFrgRz9Alr_D7Q0LZdh_EF3MtIcrdpvt351iuuyd8t934Lbrd8Azq-rku31d2xVIMpCrrYd5Q-t1umRs-wEDBopGX38R-w&h=s2zJqU5MDP3LUK9g9ETFrOgscjlmUKKuiXHgHW973G4
       cache-control:
       - no-cache
       content-length:
-      - '771'
+      - '801'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 24 Mar 2023 06:01:16 GMT
+      - Mon, 15 Apr 2024 08:53:12 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationResults/88b06971-eee4-4a91-a0f7-945fe3088baa/Spring/clitest000002?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/eastus/operationResults/38c6c52b-1a45-4d2a-8132-4f5cb8d0aa57/Spring/clitest000002?api-version=2024-05-01-preview&t=638487679928961118&c=MIIHrTCCBpWgAwIBAgITfwLBjXw4zjrTc5t5NAAEAsGNfDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwMzA0MDE1ODIwWhcNMjUwMjI3MDE1ODIwWjCBjDELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAldBMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYDVQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvtNWzX7Z4RXasqNpidaHzNujkmKIyeVQ0-WDwUq-xuI9MngwGfjp7c7s5Xb8FEMqNdZ1xARSX0cBqqPaGRNWlUq2dptWsjU2XASz899FGoiPCAP0Hw1IzLGB5egvgqEb0tCLMFDKHps1ibdq1zbzi7_t6RAzAiBv_Y0HV0WGZ80NUuUhFFUdf94u96e-8r6L7dz9zEXWHApvUxiDHDGAKil_Vll-2CU3hoBQYCEkwSHgBwBBs9_wCw27ArDoCA1tO2_8aMdCvk4KfT8pZ7Qxj12bxHYzURqOlVVjmkCF9mTAoAagk9JTqwWwqjpUNl2v4QcVNmeI6T51P82qPWqbzQIDAQABo4IETTCCBEkwJwYJKwYBBAGCNxUKBBowGDAKBggrBgEFBQcDATAKBggrBgEFBQcDAjA9BgkrBgEEAYI3FQcEMDAuBiYrBgEEAYI3FQiGkOMNhNW0eITxiz6Fm90Wzp0SgWCC9fYrg_LRIAIBZAIBCjCCAdoGCCsGAQUFBwEBBIIBzDCCAcgwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDEuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDQuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwHQYDVR0OBBYEFH0WB2hDveCytfalzMbzM6A_u3fJMA4GA1UdDwEB_wQEAwIFoDBABgNVHREEOTA3gjVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCATUGA1UdHwSCASwwggEoMIIBJKCCASCgggEchkJodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmwwFwYDVR0gBBAwDjAMBgorBgEEAYI3ewEBMB8GA1UdIwQYMBaAFK55wmtdJYgTBvYHCcOXfHuXjx1VMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjANBgkqhkiG9w0BAQsFAAOCAQEAQecZ6u3Vy_TvdS1UGS1bLXbc7WCmjz1SY2cbMWSy7F1JLL2cdtJQunrfzR8hinuMeynkkpEAWzLv-QEzW5c6bJ9MOBQKfcP-JVyIpUJTWKeWGEPwiH986PrB3MvzN6AaYRL6CdZPVlNl9TwhL8Uom3OFDx0m0mLdYvyfeTEW_Ifuil7NDR_sTJXNqBOg38-06i2DKZdwNcx92E3UsgW_avrTtx_jeUivpCTrRXRgXa814xZxBcvZTeyOe9yzKJxcM6_QIGW97JT9oBXaCceQ2KQgaD0FQLAWSANWbHqNf6Wzz3Osu0t0UO57HorMxIM1ZHA2wKetsyhuX8yzeGvnoQ&s=FDHjqHYsfy_wjg6zc-i37Ixh6pymy4nVp3OFAOzSlKsKk6P_11z5FMg8mmJNvXZoSJbO1U2jt_mVNlefVClONNkTv1tm3-FsWk3SHffDlK7MC14U4hhCNEJY4srM9kcB4JJvwIn1SXXJHDa-4G9lt05q83jvSsNxgzFhxQy1H0OkujPcgvjawxvyUeF5acR8jk3LUjAaI8wHErabiGb55yXx-NsTDavMGOUp37n37GzuxOXc6kVmBn3Cka7dq24AcFStEs4PFQccMpK_x-SothbYhahrl-7JjtFEdB-UVswKItLvCQhepfnDBmpv-K9KjtlkP_1GvgEx8xMklSJD0A&h=ichNdpEuCKLyux4LKjdyJHp_P1nFCgLRKRj6T88kp74
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: 10806F08E94F49B49CA9BAA2A100A56B Ref B: MAA201060516031 Ref C: 2024-04-15T08:53:10Z'
       x-rp-server-mvid:
-      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+      - ec637d3d-68a7-4774-a4ad-c912c3fa4ba1
     status:
       code: 201
       message: Created
@@ -68,21 +171,21 @@ interactions:
       ParameterSetName:
       - -n -g -s --display-name --git-url --git-branch --git-interval
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationStatus/clitest000002/operationId/88b06971-eee4-4a91-a0f7-945fe3088baa?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/clitest000002/operationId/38c6c52b-1a45-4d2a-8132-4f5cb8d0aa57?api-version=2024-05-01-preview&t=638487679928804848&c=MIIHrTCCBpWgAwIBAgITfwLBjXw4zjrTc5t5NAAEAsGNfDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwMzA0MDE1ODIwWhcNMjUwMjI3MDE1ODIwWjCBjDELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAldBMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYDVQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvtNWzX7Z4RXasqNpidaHzNujkmKIyeVQ0-WDwUq-xuI9MngwGfjp7c7s5Xb8FEMqNdZ1xARSX0cBqqPaGRNWlUq2dptWsjU2XASz899FGoiPCAP0Hw1IzLGB5egvgqEb0tCLMFDKHps1ibdq1zbzi7_t6RAzAiBv_Y0HV0WGZ80NUuUhFFUdf94u96e-8r6L7dz9zEXWHApvUxiDHDGAKil_Vll-2CU3hoBQYCEkwSHgBwBBs9_wCw27ArDoCA1tO2_8aMdCvk4KfT8pZ7Qxj12bxHYzURqOlVVjmkCF9mTAoAagk9JTqwWwqjpUNl2v4QcVNmeI6T51P82qPWqbzQIDAQABo4IETTCCBEkwJwYJKwYBBAGCNxUKBBowGDAKBggrBgEFBQcDATAKBggrBgEFBQcDAjA9BgkrBgEEAYI3FQcEMDAuBiYrBgEEAYI3FQiGkOMNhNW0eITxiz6Fm90Wzp0SgWCC9fYrg_LRIAIBZAIBCjCCAdoGCCsGAQUFBwEBBIIBzDCCAcgwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDEuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDQuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwHQYDVR0OBBYEFH0WB2hDveCytfalzMbzM6A_u3fJMA4GA1UdDwEB_wQEAwIFoDBABgNVHREEOTA3gjVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCATUGA1UdHwSCASwwggEoMIIBJKCCASCgggEchkJodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmwwFwYDVR0gBBAwDjAMBgorBgEEAYI3ewEBMB8GA1UdIwQYMBaAFK55wmtdJYgTBvYHCcOXfHuXjx1VMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjANBgkqhkiG9w0BAQsFAAOCAQEAQecZ6u3Vy_TvdS1UGS1bLXbc7WCmjz1SY2cbMWSy7F1JLL2cdtJQunrfzR8hinuMeynkkpEAWzLv-QEzW5c6bJ9MOBQKfcP-JVyIpUJTWKeWGEPwiH986PrB3MvzN6AaYRL6CdZPVlNl9TwhL8Uom3OFDx0m0mLdYvyfeTEW_Ifuil7NDR_sTJXNqBOg38-06i2DKZdwNcx92E3UsgW_avrTtx_jeUivpCTrRXRgXa814xZxBcvZTeyOe9yzKJxcM6_QIGW97JT9oBXaCceQ2KQgaD0FQLAWSANWbHqNf6Wzz3Osu0t0UO57HorMxIM1ZHA2wKetsyhuX8yzeGvnoQ&s=sg2ViU1yj1zXefyBd6SmftVioUjpycNxrV93pZ2pokeZlqRKqeAbSY9GlOfHCewYyfKyu0kHXajgskQXdH_Ak7xAcHK3gvaHKIb1XEdBwUPsgX-AEBytt0uYA4y_dyoX0KqxA4an-MUN64Y4BhQ3VaI3LxbHmdVEhEaazn3VED8VLZKmnKL5H2k0ZnW-XzH8_YaBbuH0PzOEHMxObd3Jm-qeGEDWdu78FlVglrwB3girDZpYdNyGCTuVRFrgRz9Alr_D7Q0LZdh_EF3MtIcrdpvt351iuuyd8t934Lbrd8Azq-rku31d2xVIMpCrrYd5Q-t1umRs-wEDBopGX38R-w&h=s2zJqU5MDP3LUK9g9ETFrOgscjlmUKKuiXHgHW973G4
   response:
     body:
-      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationStatus/clitest000002/operationId/88b06971-eee4-4a91-a0f7-945fe3088baa","name":"88b06971-eee4-4a91-a0f7-945fe3088baa","status":"Running","startTime":"2023-03-24T06:01:16.3548364Z"}'
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/clitest000002/operationId/38c6c52b-1a45-4d2a-8132-4f5cb8d0aa57","name":"38c6c52b-1a45-4d2a-8132-4f5cb8d0aa57","status":"Running","startTime":"2024-04-15T08:53:12.7213393Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '337'
+      - '327'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 24 Mar 2023 06:01:16 GMT
+      - Mon, 15 Apr 2024 08:53:13 GMT
       expires:
       - '-1'
       pragma:
@@ -91,14 +194,14 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 17D37B5F3ADE4ACCADE4FDCFAEE7C542 Ref B: MAA201060516031 Ref C: 2024-04-15T08:53:13Z'
       x-rp-server-mvid:
-      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+      - ec637d3d-68a7-4774-a4ad-c912c3fa4ba1
     status:
       code: 200
       message: OK
@@ -116,21 +219,21 @@ interactions:
       ParameterSetName:
       - -n -g -s --display-name --git-url --git-branch --git-interval
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationStatus/clitest000002/operationId/88b06971-eee4-4a91-a0f7-945fe3088baa?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/clitest000002/operationId/38c6c52b-1a45-4d2a-8132-4f5cb8d0aa57?api-version=2024-05-01-preview&t=638487679928804848&c=MIIHrTCCBpWgAwIBAgITfwLBjXw4zjrTc5t5NAAEAsGNfDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwMzA0MDE1ODIwWhcNMjUwMjI3MDE1ODIwWjCBjDELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAldBMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYDVQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvtNWzX7Z4RXasqNpidaHzNujkmKIyeVQ0-WDwUq-xuI9MngwGfjp7c7s5Xb8FEMqNdZ1xARSX0cBqqPaGRNWlUq2dptWsjU2XASz899FGoiPCAP0Hw1IzLGB5egvgqEb0tCLMFDKHps1ibdq1zbzi7_t6RAzAiBv_Y0HV0WGZ80NUuUhFFUdf94u96e-8r6L7dz9zEXWHApvUxiDHDGAKil_Vll-2CU3hoBQYCEkwSHgBwBBs9_wCw27ArDoCA1tO2_8aMdCvk4KfT8pZ7Qxj12bxHYzURqOlVVjmkCF9mTAoAagk9JTqwWwqjpUNl2v4QcVNmeI6T51P82qPWqbzQIDAQABo4IETTCCBEkwJwYJKwYBBAGCNxUKBBowGDAKBggrBgEFBQcDATAKBggrBgEFBQcDAjA9BgkrBgEEAYI3FQcEMDAuBiYrBgEEAYI3FQiGkOMNhNW0eITxiz6Fm90Wzp0SgWCC9fYrg_LRIAIBZAIBCjCCAdoGCCsGAQUFBwEBBIIBzDCCAcgwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDEuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDQuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwHQYDVR0OBBYEFH0WB2hDveCytfalzMbzM6A_u3fJMA4GA1UdDwEB_wQEAwIFoDBABgNVHREEOTA3gjVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCATUGA1UdHwSCASwwggEoMIIBJKCCASCgggEchkJodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmwwFwYDVR0gBBAwDjAMBgorBgEEAYI3ewEBMB8GA1UdIwQYMBaAFK55wmtdJYgTBvYHCcOXfHuXjx1VMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjANBgkqhkiG9w0BAQsFAAOCAQEAQecZ6u3Vy_TvdS1UGS1bLXbc7WCmjz1SY2cbMWSy7F1JLL2cdtJQunrfzR8hinuMeynkkpEAWzLv-QEzW5c6bJ9MOBQKfcP-JVyIpUJTWKeWGEPwiH986PrB3MvzN6AaYRL6CdZPVlNl9TwhL8Uom3OFDx0m0mLdYvyfeTEW_Ifuil7NDR_sTJXNqBOg38-06i2DKZdwNcx92E3UsgW_avrTtx_jeUivpCTrRXRgXa814xZxBcvZTeyOe9yzKJxcM6_QIGW97JT9oBXaCceQ2KQgaD0FQLAWSANWbHqNf6Wzz3Osu0t0UO57HorMxIM1ZHA2wKetsyhuX8yzeGvnoQ&s=sg2ViU1yj1zXefyBd6SmftVioUjpycNxrV93pZ2pokeZlqRKqeAbSY9GlOfHCewYyfKyu0kHXajgskQXdH_Ak7xAcHK3gvaHKIb1XEdBwUPsgX-AEBytt0uYA4y_dyoX0KqxA4an-MUN64Y4BhQ3VaI3LxbHmdVEhEaazn3VED8VLZKmnKL5H2k0ZnW-XzH8_YaBbuH0PzOEHMxObd3Jm-qeGEDWdu78FlVglrwB3girDZpYdNyGCTuVRFrgRz9Alr_D7Q0LZdh_EF3MtIcrdpvt351iuuyd8t934Lbrd8Azq-rku31d2xVIMpCrrYd5Q-t1umRs-wEDBopGX38R-w&h=s2zJqU5MDP3LUK9g9ETFrOgscjlmUKKuiXHgHW973G4
   response:
     body:
-      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationStatus/clitest000002/operationId/88b06971-eee4-4a91-a0f7-945fe3088baa","name":"88b06971-eee4-4a91-a0f7-945fe3088baa","status":"Running","startTime":"2023-03-24T06:01:16.3548364Z"}'
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/clitest000002/operationId/38c6c52b-1a45-4d2a-8132-4f5cb8d0aa57","name":"38c6c52b-1a45-4d2a-8132-4f5cb8d0aa57","status":"Running","startTime":"2024-04-15T08:53:12.7213393Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '337'
+      - '327'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 24 Mar 2023 06:01:26 GMT
+      - Mon, 15 Apr 2024 08:53:24 GMT
       expires:
       - '-1'
       pragma:
@@ -139,14 +242,14 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: C6CB929AB4A24A9DA9999315A52999FE Ref B: MAA201060516031 Ref C: 2024-04-15T08:53:24Z'
       x-rp-server-mvid:
-      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+      - ec637d3d-68a7-4774-a4ad-c912c3fa4ba1
     status:
       code: 200
       message: OK
@@ -164,21 +267,21 @@ interactions:
       ParameterSetName:
       - -n -g -s --display-name --git-url --git-branch --git-interval
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationStatus/clitest000002/operationId/88b06971-eee4-4a91-a0f7-945fe3088baa?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/clitest000002/operationId/38c6c52b-1a45-4d2a-8132-4f5cb8d0aa57?api-version=2024-05-01-preview&t=638487679928804848&c=MIIHrTCCBpWgAwIBAgITfwLBjXw4zjrTc5t5NAAEAsGNfDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwMzA0MDE1ODIwWhcNMjUwMjI3MDE1ODIwWjCBjDELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAldBMRAwDgYDVQQHEwdSZWRtb25kMR4wHAYDVQQKExVNaWNyb3NvZnQgQ29ycG9yYXRpb24xPjA8BgNVBAMTNWFzeW5jb3BlcmF0aW9uc2lnbmluZ2NlcnRpZmljYXRlLm1hbmFnZW1lbnQuYXp1cmUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvtNWzX7Z4RXasqNpidaHzNujkmKIyeVQ0-WDwUq-xuI9MngwGfjp7c7s5Xb8FEMqNdZ1xARSX0cBqqPaGRNWlUq2dptWsjU2XASz899FGoiPCAP0Hw1IzLGB5egvgqEb0tCLMFDKHps1ibdq1zbzi7_t6RAzAiBv_Y0HV0WGZ80NUuUhFFUdf94u96e-8r6L7dz9zEXWHApvUxiDHDGAKil_Vll-2CU3hoBQYCEkwSHgBwBBs9_wCw27ArDoCA1tO2_8aMdCvk4KfT8pZ7Qxj12bxHYzURqOlVVjmkCF9mTAoAagk9JTqwWwqjpUNl2v4QcVNmeI6T51P82qPWqbzQIDAQABo4IETTCCBEkwJwYJKwYBBAGCNxUKBBowGDAKBggrBgEFBQcDATAKBggrBgEFBQcDAjA9BgkrBgEEAYI3FQcEMDAuBiYrBgEEAYI3FQiGkOMNhNW0eITxiz6Fm90Wzp0SgWCC9fYrg_LRIAIBZAIBCjCCAdoGCCsGAQUFBwEBBIIBzDCCAcgwZgYIKwYBBQUHMAKGWmh0dHA6Ly9jcmwubWljcm9zb2Z0LmNvbS9wa2lpbmZyYS9DZXJ0cy9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDEuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwyLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMy5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDQuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwHQYDVR0OBBYEFH0WB2hDveCytfalzMbzM6A_u3fJMA4GA1UdDwEB_wQEAwIFoDBABgNVHREEOTA3gjVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCATUGA1UdHwSCASwwggEoMIIBJKCCASCgggEchkJodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ1JML0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwxLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwyLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmwzLmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmyGNGh0dHA6Ly9jcmw0LmFtZS5nYmwvY3JsL0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcmwwFwYDVR0gBBAwDjAMBgorBgEEAYI3ewEBMB8GA1UdIwQYMBaAFK55wmtdJYgTBvYHCcOXfHuXjx1VMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjANBgkqhkiG9w0BAQsFAAOCAQEAQecZ6u3Vy_TvdS1UGS1bLXbc7WCmjz1SY2cbMWSy7F1JLL2cdtJQunrfzR8hinuMeynkkpEAWzLv-QEzW5c6bJ9MOBQKfcP-JVyIpUJTWKeWGEPwiH986PrB3MvzN6AaYRL6CdZPVlNl9TwhL8Uom3OFDx0m0mLdYvyfeTEW_Ifuil7NDR_sTJXNqBOg38-06i2DKZdwNcx92E3UsgW_avrTtx_jeUivpCTrRXRgXa814xZxBcvZTeyOe9yzKJxcM6_QIGW97JT9oBXaCceQ2KQgaD0FQLAWSANWbHqNf6Wzz3Osu0t0UO57HorMxIM1ZHA2wKetsyhuX8yzeGvnoQ&s=sg2ViU1yj1zXefyBd6SmftVioUjpycNxrV93pZ2pokeZlqRKqeAbSY9GlOfHCewYyfKyu0kHXajgskQXdH_Ak7xAcHK3gvaHKIb1XEdBwUPsgX-AEBytt0uYA4y_dyoX0KqxA4an-MUN64Y4BhQ3VaI3LxbHmdVEhEaazn3VED8VLZKmnKL5H2k0ZnW-XzH8_YaBbuH0PzOEHMxObd3Jm-qeGEDWdu78FlVglrwB3girDZpYdNyGCTuVRFrgRz9Alr_D7Q0LZdh_EF3MtIcrdpvt351iuuyd8t934Lbrd8Azq-rku31d2xVIMpCrrYd5Q-t1umRs-wEDBopGX38R-w&h=s2zJqU5MDP3LUK9g9ETFrOgscjlmUKKuiXHgHW973G4
   response:
     body:
-      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationStatus/clitest000002/operationId/88b06971-eee4-4a91-a0f7-945fe3088baa","name":"88b06971-eee4-4a91-a0f7-945fe3088baa","status":"Succeeded","startTime":"2023-03-24T06:01:16.3548364Z","endTime":"2023-03-24T06:01:32.8492943Z"}'
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/clitest000002/operationId/38c6c52b-1a45-4d2a-8132-4f5cb8d0aa57","name":"38c6c52b-1a45-4d2a-8132-4f5cb8d0aa57","status":"Succeeded","startTime":"2024-04-15T08:53:12.7213393Z","endTime":"2024-04-15T08:53:34.2803288Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '380'
+      - '370'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 24 Mar 2023 06:01:37 GMT
+      - Mon, 15 Apr 2024 08:53:35 GMT
       expires:
       - '-1'
       pragma:
@@ -187,14 +290,14 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: F4DDE3D766354C16A2EA9F107E6B87BC Ref B: MAA201060516031 Ref C: 2024-04-15T08:53:35Z'
       x-rp-server-mvid:
-      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+      - ec637d3d-68a7-4774-a4ad-c912c3fa4ba1
     status:
       code: 200
       message: OK
@@ -212,21 +315,21 @@ interactions:
       ParameterSetName:
       - -n -g -s --display-name --git-url --git-branch --git-interval
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name?api-version=2024-05-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","displayName":"acc-name","gitRepository":{"url":"https://github.com/Azure-Samples/piggymetrics-config","intervalInSeconds":10,"branch":"master","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name","name":"acc-name","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-24T06:01:15.3720124Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-24T06:01:15.3720124Z"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","displayName":"acc-name","acceleratorType":"Accelerator","gitRepository":{"url":"https://github.com/Azure-Samples/piggymetrics-config","intervalInSeconds":10,"branch":"master","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name","name":"acc-name","systemData":{"createdBy":"dixue@microsoft.com","createdByType":"User","createdAt":"2024-04-15T08:53:11.7086178Z","lastModifiedBy":"dixue@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-04-15T08:53:11.7086178Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '772'
+      - '802'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 24 Mar 2023 06:01:38 GMT
+      - Mon, 15 Apr 2024 08:53:36 GMT
       expires:
       - '-1'
       pragma:
@@ -235,21 +338,21 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 70710737D89244D8BA328B374763BF77 Ref B: MAA201060516031 Ref C: 2024-04-15T08:53:36Z'
       x-rp-server-mvid:
-      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+      - ec637d3d-68a7-4774-a4ad-c912c3fa4ba1
     status:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"displayName": "acc-name", "description": "desc", "gitRepository":
-      {"url": "https://github.com/Azure-Samples/piggymetrics-config", "branch": "master",
-      "authSetting": {"authType": "Public"}}}}'
+    body: '{"properties": {"acceleratorType": "Accelerator", "displayName": "acc-name",
+      "description": "desc", "gitRepository": {"url": "https://github.com/Azure-Samples/piggymetrics-config",
+      "branch": "master", "authSetting": {"authType": "Public"}}}}'
     headers:
       Accept:
       - application/json
@@ -260,45 +363,49 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '207'
+      - '241'
       Content-Type:
       - application/json
       ParameterSetName:
       - -n -g -s --display-name --git-url --git-branch --description
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name?api-version=2024-05-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Updating","displayName":"acc-name","description":"desc","gitRepository":{"url":"https://github.com/Azure-Samples/piggymetrics-config","branch":"master","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name","name":"acc-name","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-24T06:01:15.3720124Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-24T06:01:39.7977954Z"}}'
+      string: '{"properties":{"provisioningState":"Updating","displayName":"acc-name","description":"desc","acceleratorType":"Accelerator","gitRepository":{"url":"https://github.com/Azure-Samples/piggymetrics-config","branch":"master","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name","name":"acc-name","systemData":{"createdBy":"dixue@microsoft.com","createdByType":"User","createdAt":"2024-04-15T08:53:11.7086178Z","lastModifiedBy":"dixue@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-04-15T08:53:38.8984462Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationStatus/clitest000002/operationId/e0dabe78-fd08-4eee-8713-a6c049c4037e?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/clitest000002/operationId/bc26b8ba-6678-4597-92d8-1b84e7b6cbc2?api-version=2024-05-01-preview&t=638487680200860139&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=X_O-hTtLjIQ8z15P5rYE9Fnkb0zWOWEcf_LaDuxYys6M3cSAoRtJrzVKrIGWtT9gL7NzmUuwNa5Ku9RvYJ5iXcy8ePL7zU1IXDBWkj-EmOh6TXCAdCgZL6yfJk7eWiODASXCmGCvF6gLlACF0bRkrUL4Ddb1tUWfEYgJTctERhyT66stuwlKLk9ztFJLgMHK8pzXDBFerN59iV3A3oJq7pGq0ryoHU_gOaoZt7CEMaicegPkTfYBUVZu9kRTPsXm57RjzS1d8DeiLwh9ce2fTTKI3CNsd0Aaj_iqvwATVjQDCY0b1FUkeAqtkgK1QCoI41psMtKMRe3eade_7ozBvg&h=FKFAJiSrwWw3o6mov77fHcmkj2zLeq8_trpvdL8cASs
       cache-control:
       - no-cache
       content-length:
-      - '769'
+      - '799'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 24 Mar 2023 06:01:42 GMT
+      - Mon, 15 Apr 2024 08:53:39 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationResults/e0dabe78-fd08-4eee-8713-a6c049c4037e/Spring/clitest000002?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/eastus/operationResults/bc26b8ba-6678-4597-92d8-1b84e7b6cbc2/Spring/clitest000002?api-version=2024-05-01-preview&t=638487680200860139&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=FqjcpoZRUIjwfmJoGEIe2AkEJb8f0zRvHhmVF-6jBbq5w6OZn_o9SOyXUx_se1pt0xAYvEJvNdjiocpLdgZjHUnwlWgcSWugsd4EGWvCdrYYDIOc6e-JOVHPC1nQqY54Su5T130mtJ-4EpsW5m8f9WEbXU-0bomndT_adMnT1gQMLuqPvj8psT7fe2youwq_etXb7tt_6oUTK7Z5qTM_ZxM2k7WjP0qSzyGOwGXO6_ZftFRasVYRQYV2FuwXwZ89bVg623swGCfz5IURMeF-hPwnAh886xCg9tMoFGp13_eRf9yg6FjMCs3OkdndM3jN7Rb2aPP7jDWuOtzrAREhxg&h=P_MEUX7auf29Qd36FzaJLHN1T7IVKyUsMMkp6bs1KqA
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: F48380639C994D1AB54A99CA3D28E154 Ref B: MAA201060514037 Ref C: 2024-04-15T08:53:38Z'
       x-rp-server-mvid:
-      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+      - ec637d3d-68a7-4774-a4ad-c912c3fa4ba1
     status:
       code: 201
       message: Created
@@ -316,21 +423,21 @@ interactions:
       ParameterSetName:
       - -n -g -s --display-name --git-url --git-branch --description
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationStatus/clitest000002/operationId/e0dabe78-fd08-4eee-8713-a6c049c4037e?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/clitest000002/operationId/bc26b8ba-6678-4597-92d8-1b84e7b6cbc2?api-version=2024-05-01-preview&t=638487680200860139&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=X_O-hTtLjIQ8z15P5rYE9Fnkb0zWOWEcf_LaDuxYys6M3cSAoRtJrzVKrIGWtT9gL7NzmUuwNa5Ku9RvYJ5iXcy8ePL7zU1IXDBWkj-EmOh6TXCAdCgZL6yfJk7eWiODASXCmGCvF6gLlACF0bRkrUL4Ddb1tUWfEYgJTctERhyT66stuwlKLk9ztFJLgMHK8pzXDBFerN59iV3A3oJq7pGq0ryoHU_gOaoZt7CEMaicegPkTfYBUVZu9kRTPsXm57RjzS1d8DeiLwh9ce2fTTKI3CNsd0Aaj_iqvwATVjQDCY0b1FUkeAqtkgK1QCoI41psMtKMRe3eade_7ozBvg&h=FKFAJiSrwWw3o6mov77fHcmkj2zLeq8_trpvdL8cASs
   response:
     body:
-      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationStatus/clitest000002/operationId/e0dabe78-fd08-4eee-8713-a6c049c4037e","name":"e0dabe78-fd08-4eee-8713-a6c049c4037e","status":"Running","startTime":"2023-03-24T06:01:42.4157328Z"}'
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/clitest000002/operationId/bc26b8ba-6678-4597-92d8-1b84e7b6cbc2","name":"bc26b8ba-6678-4597-92d8-1b84e7b6cbc2","status":"Running","startTime":"2024-04-15T08:53:39.9241599Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '337'
+      - '327'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 24 Mar 2023 06:01:42 GMT
+      - Mon, 15 Apr 2024 08:53:40 GMT
       expires:
       - '-1'
       pragma:
@@ -339,14 +446,14 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 6788152BE13F467FB7D0C4EC1857AEC2 Ref B: MAA201060514037 Ref C: 2024-04-15T08:53:40Z'
       x-rp-server-mvid:
-      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+      - ec637d3d-68a7-4774-a4ad-c912c3fa4ba1
     status:
       code: 200
       message: OK
@@ -364,21 +471,21 @@ interactions:
       ParameterSetName:
       - -n -g -s --display-name --git-url --git-branch --description
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationStatus/clitest000002/operationId/e0dabe78-fd08-4eee-8713-a6c049c4037e?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/clitest000002/operationId/bc26b8ba-6678-4597-92d8-1b84e7b6cbc2?api-version=2024-05-01-preview&t=638487680200860139&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=X_O-hTtLjIQ8z15P5rYE9Fnkb0zWOWEcf_LaDuxYys6M3cSAoRtJrzVKrIGWtT9gL7NzmUuwNa5Ku9RvYJ5iXcy8ePL7zU1IXDBWkj-EmOh6TXCAdCgZL6yfJk7eWiODASXCmGCvF6gLlACF0bRkrUL4Ddb1tUWfEYgJTctERhyT66stuwlKLk9ztFJLgMHK8pzXDBFerN59iV3A3oJq7pGq0ryoHU_gOaoZt7CEMaicegPkTfYBUVZu9kRTPsXm57RjzS1d8DeiLwh9ce2fTTKI3CNsd0Aaj_iqvwATVjQDCY0b1FUkeAqtkgK1QCoI41psMtKMRe3eade_7ozBvg&h=FKFAJiSrwWw3o6mov77fHcmkj2zLeq8_trpvdL8cASs
   response:
     body:
-      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationStatus/clitest000002/operationId/e0dabe78-fd08-4eee-8713-a6c049c4037e","name":"e0dabe78-fd08-4eee-8713-a6c049c4037e","status":"Succeeded","startTime":"2023-03-24T06:01:42.4157328Z","endTime":"2023-03-24T06:01:48.6879058Z"}'
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/clitest000002/operationId/bc26b8ba-6678-4597-92d8-1b84e7b6cbc2","name":"bc26b8ba-6678-4597-92d8-1b84e7b6cbc2","status":"Succeeded","startTime":"2024-04-15T08:53:39.9241599Z","endTime":"2024-04-15T08:53:50.1814956Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '380'
+      - '370'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 24 Mar 2023 06:01:52 GMT
+      - Mon, 15 Apr 2024 08:53:51 GMT
       expires:
       - '-1'
       pragma:
@@ -387,14 +494,14 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 0A87ED1A26A74122865D8D9CAC3C89E8 Ref B: MAA201060514037 Ref C: 2024-04-15T08:53:51Z'
       x-rp-server-mvid:
-      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+      - ec637d3d-68a7-4774-a4ad-c912c3fa4ba1
     status:
       code: 200
       message: OK
@@ -412,21 +519,21 @@ interactions:
       ParameterSetName:
       - -n -g -s --display-name --git-url --git-branch --description
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name?api-version=2024-05-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","displayName":"acc-name","description":"desc","gitRepository":{"url":"https://github.com/Azure-Samples/piggymetrics-config","branch":"master","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name","name":"acc-name","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-24T06:01:15.3720124Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-24T06:01:39.7977954Z"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","displayName":"acc-name","description":"desc","acceleratorType":"Accelerator","gitRepository":{"url":"https://github.com/Azure-Samples/piggymetrics-config","branch":"master","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name","name":"acc-name","systemData":{"createdBy":"dixue@microsoft.com","createdByType":"User","createdAt":"2024-04-15T08:53:11.7086178Z","lastModifiedBy":"dixue@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-04-15T08:53:38.8984462Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '770'
+      - '800'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 24 Mar 2023 06:01:54 GMT
+      - Mon, 15 Apr 2024 08:53:52 GMT
       expires:
       - '-1'
       pragma:
@@ -435,14 +542,14 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 35D3FAA307DC4CE79D367CDEC640692C Ref B: MAA201060514037 Ref C: 2024-04-15T08:53:52Z'
       x-rp-server-mvid:
-      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+      - ec637d3d-68a7-4774-a4ad-c912c3fa4ba1
     status:
       code: 200
       message: OK
@@ -460,21 +567,21 @@ interactions:
       ParameterSetName:
       - -g -s
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002?api-version=2024-05-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"da917f7f53cd43678329f6da8b91a661","networkProfile":{"outboundIPs":{"publicIPs":["20.250.56.238","20.250.57.103"]},"ingressConfig":{"readTimeoutInSeconds":300},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"clitest000002.azuremicroservices.io","marketplaceResource":{"plan":"asa-ent-hr-mtr","publisher":"vmware-inc","product":"azure-spring-cloud-vmware-tanzu-2"}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"switzerlandnorth","tags":{"__asc_mt_enable_big_app":"true"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002","name":"clitest000002","systemData":{"createdBy":"3462cf92-dc17-43c5-8c7e-e50c11a1c181","createdByType":"Application","createdAt":"2023-03-24T02:22:49.7533513Z","lastModifiedBy":"3462cf92-dc17-43c5-8c7e-e50c11a1c181","lastModifiedByType":"Application","lastModifiedAt":"2023-03-24T02:22:49.7533513Z"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"95a0892ab04a44e4a0ffa44a7c60cec1","networkProfile":{"outboundIPs":{"publicIPs":["4.157.151.134","4.157.150.159"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"clitest000002.azuremicroservices.io","marketplaceResource":{"plan":"asa-ent-hr-mtr","publisher":"vmware-inc","product":"azure-spring-cloud-vmware-tanzu-2"}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002","name":"clitest000002","systemData":{"createdBy":"feilonghuang@microsoft.com","createdByType":"User","createdAt":"2024-01-17T06:33:17.0111064Z","lastModifiedBy":"feilonghuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-01-17T06:33:17.0111064Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1067'
+      - '948'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 24 Mar 2023 06:01:58 GMT
+      - Mon, 15 Apr 2024 08:53:55 GMT
       expires:
       - '-1'
       pragma:
@@ -483,16 +590,16 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '11999'
+      x-msedge-ref:
+      - 'Ref A: A3EBB53264D644468A7C5B9B090FAC9C Ref B: MAA201060513047 Ref C: 2024-04-15T08:53:54Z'
       x-rp-server-mvid:
-      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+      - ec637d3d-68a7-4774-a4ad-c912c3fa4ba1
     status:
       code: 200
       message: OK
@@ -510,21 +617,21 @@ interactions:
       ParameterSetName:
       - -g -s
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators?api-version=2024-05-01-preview
   response:
     body:
-      string: '{"value":[{"properties":{"provisioningState":"Succeeded","displayName":"acc-name","description":"desc","gitRepository":{"url":"https://github.com/Azure-Samples/piggymetrics-config","branch":"master","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/","name":"acc-name","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-24T06:01:15.3720124Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-24T06:01:39.7977954Z"}}]}'
+      string: '{"value":[{"properties":{"provisioningState":"Succeeded","displayName":"acc-name","description":"desc","acceleratorType":"Accelerator","gitRepository":{"url":"https://github.com/Azure-Samples/piggymetrics-config","branch":"master","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/","name":"acc-name","systemData":{"createdBy":"dixue@microsoft.com","createdByType":"User","createdAt":"2024-04-15T08:53:11.7086178Z","lastModifiedBy":"dixue@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-04-15T08:53:38.8984462Z"}},{"properties":{"provisioningState":"Succeeded","displayName":"fragment-name","description":"desc","acceleratorType":"Fragment","gitRepository":{"url":"https://github.com/sample-accelerators/fragments.git","branch":"main","subPath":"java-version","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/","name":"fragment-name","systemData":{"createdBy":"feilonghuang@microsoft.com","createdByType":"User","createdAt":"2024-01-17T06:50:36.3764315Z","lastModifiedBy":"dixue@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-04-15T06:56:47.2469766Z"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '774'
+      - '1634'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 24 Mar 2023 06:02:01 GMT
+      - Mon, 15 Apr 2024 08:53:56 GMT
       expires:
       - '-1'
       pragma:
@@ -533,14 +640,14 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 9B0451A60A8A48CE9D47576C475AE8D3 Ref B: MAA201060516039 Ref C: 2024-04-15T08:53:56Z'
       x-rp-server-mvid:
-      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+      - ec637d3d-68a7-4774-a4ad-c912c3fa4ba1
     status:
       code: 200
       message: OK
@@ -558,21 +665,21 @@ interactions:
       ParameterSetName:
       - -n -g -s
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002?api-version=2024-05-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"da917f7f53cd43678329f6da8b91a661","networkProfile":{"outboundIPs":{"publicIPs":["20.250.56.238","20.250.57.103"]},"ingressConfig":{"readTimeoutInSeconds":300},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"clitest000002.azuremicroservices.io","marketplaceResource":{"plan":"asa-ent-hr-mtr","publisher":"vmware-inc","product":"azure-spring-cloud-vmware-tanzu-2"}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"switzerlandnorth","tags":{"__asc_mt_enable_big_app":"true"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002","name":"clitest000002","systemData":{"createdBy":"3462cf92-dc17-43c5-8c7e-e50c11a1c181","createdByType":"Application","createdAt":"2023-03-24T02:22:49.7533513Z","lastModifiedBy":"3462cf92-dc17-43c5-8c7e-e50c11a1c181","lastModifiedByType":"Application","lastModifiedAt":"2023-03-24T02:22:49.7533513Z"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"95a0892ab04a44e4a0ffa44a7c60cec1","networkProfile":{"outboundIPs":{"publicIPs":["4.157.151.134","4.157.150.159"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"clitest000002.azuremicroservices.io","marketplaceResource":{"plan":"asa-ent-hr-mtr","publisher":"vmware-inc","product":"azure-spring-cloud-vmware-tanzu-2"}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002","name":"clitest000002","systemData":{"createdBy":"feilonghuang@microsoft.com","createdByType":"User","createdAt":"2024-01-17T06:33:17.0111064Z","lastModifiedBy":"feilonghuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-01-17T06:33:17.0111064Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1067'
+      - '948'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 24 Mar 2023 06:02:04 GMT
+      - Mon, 15 Apr 2024 08:53:58 GMT
       expires:
       - '-1'
       pragma:
@@ -581,16 +688,16 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
-      - '11999'
+      - '11998'
+      x-msedge-ref:
+      - 'Ref A: 98875B5FE69340D28EA06932733B9AD4 Ref B: MAA201060514039 Ref C: 2024-04-15T08:53:58Z'
       x-rp-server-mvid:
-      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+      - ec637d3d-68a7-4774-a4ad-c912c3fa4ba1
     status:
       code: 200
       message: OK
@@ -608,21 +715,21 @@ interactions:
       ParameterSetName:
       - -n -g -s
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name?api-version=2024-05-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","displayName":"acc-name","description":"desc","gitRepository":{"url":"https://github.com/Azure-Samples/piggymetrics-config","branch":"master","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name","name":"acc-name","systemData":{"createdBy":"yuwzho@microsoft.com","createdByType":"User","createdAt":"2023-03-24T06:01:15.3720124Z","lastModifiedBy":"yuwzho@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-24T06:01:39.7977954Z"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","displayName":"acc-name","description":"desc","acceleratorType":"Accelerator","gitRepository":{"url":"https://github.com/Azure-Samples/piggymetrics-config","branch":"master","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name","name":"acc-name","systemData":{"createdBy":"dixue@microsoft.com","createdByType":"User","createdAt":"2024-04-15T08:53:11.7086178Z","lastModifiedBy":"dixue@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-04-15T08:53:38.8984462Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '770'
+      - '800'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 24 Mar 2023 06:02:06 GMT
+      - Mon, 15 Apr 2024 08:54:00 GMT
       expires:
       - '-1'
       pragma:
@@ -631,14 +738,14 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 1620533AA2C2421984876C516CF123A4 Ref B: MAA201060515009 Ref C: 2024-04-15T08:53:59Z'
       x-rp-server-mvid:
-      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+      - ec637d3d-68a7-4774-a4ad-c912c3fa4ba1
     status:
       code: 200
       message: OK
@@ -656,21 +763,21 @@ interactions:
       ParameterSetName:
       - -n -g -s
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002?api-version=2024-05-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"da917f7f53cd43678329f6da8b91a661","networkProfile":{"outboundIPs":{"publicIPs":["20.250.56.238","20.250.57.103"]},"ingressConfig":{"readTimeoutInSeconds":300},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"clitest000002.azuremicroservices.io","marketplaceResource":{"plan":"asa-ent-hr-mtr","publisher":"vmware-inc","product":"azure-spring-cloud-vmware-tanzu-2"}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"switzerlandnorth","tags":{"__asc_mt_enable_big_app":"true"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002","name":"clitest000002","systemData":{"createdBy":"3462cf92-dc17-43c5-8c7e-e50c11a1c181","createdByType":"Application","createdAt":"2023-03-24T02:22:49.7533513Z","lastModifiedBy":"3462cf92-dc17-43c5-8c7e-e50c11a1c181","lastModifiedByType":"Application","lastModifiedAt":"2023-03-24T02:22:49.7533513Z"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"95a0892ab04a44e4a0ffa44a7c60cec1","networkProfile":{"outboundIPs":{"publicIPs":["4.157.151.134","4.157.150.159"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"clitest000002.azuremicroservices.io","marketplaceResource":{"plan":"asa-ent-hr-mtr","publisher":"vmware-inc","product":"azure-spring-cloud-vmware-tanzu-2"}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002","name":"clitest000002","systemData":{"createdBy":"feilonghuang@microsoft.com","createdByType":"User","createdAt":"2024-01-17T06:33:17.0111064Z","lastModifiedBy":"feilonghuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-01-17T06:33:17.0111064Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1067'
+      - '948'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 24 Mar 2023 06:02:08 GMT
+      - Mon, 15 Apr 2024 08:54:02 GMT
       expires:
       - '-1'
       pragma:
@@ -679,16 +786,16 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '11999'
+      x-msedge-ref:
+      - 'Ref A: 05ADA3C631154F919C556E6B8F64E543 Ref B: MAA201060513017 Ref C: 2024-04-15T08:54:01Z'
       x-rp-server-mvid:
-      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+      - ec637d3d-68a7-4774-a4ad-c912c3fa4ba1
     status:
       code: 200
       message: OK
@@ -708,37 +815,41 @@ interactions:
       ParameterSetName:
       - -n -g -s
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/acc-name?api-version=2024-05-01-preview
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationStatus/clitest000002/operationId/28a47412-38f6-40e6-9e35-723ad03295e7?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/clitest000002/operationId/aedb4feb-6eb6-4823-b1ce-ab2087073626?api-version=2024-05-01-preview&t=638487680444598571&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=Gm3W9zM-tgbfaaQnLMcKQYCeXmx7ZcJBj84wc0LuD8uETmdBPFdg8ucsclasBK2fjhS_K6QAXGvVnXEW5ZYE98GS-rXg2YoAz_-P4ncdXBtaYlRU2wrC5bLHIQFIHBGdsxaFj0ShcJKInGv0TAKajtEMz3HpKxJ8TCK6i-GRusDDF0chsIxR3iZl4Bq5Kq2SYtXnSYbdl3KJiYUSN7M0TCB6dQ5DWw6ZpIj5ovo1fqN51GnXDTnsrOxqUs0QjOHhSM58dBu1h5YfA7r-xgsSTopC5cQLgnNi5hUl0m_TzYVRcZpNbtRXFPgTtJPx09uGcY8mMAG4JIEdh8PNaDg5sg&h=bN8hJ7euWhMUr7Bs1yDTte__Ld4zNtJW0fxtlfoDdoY
       cache-control:
       - no-cache
       content-length:
       - '0'
       date:
-      - Fri, 24 Mar 2023 06:02:11 GMT
+      - Mon, 15 Apr 2024 08:54:03 GMT
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationResults/28a47412-38f6-40e6-9e35-723ad03295e7/Spring/clitest000002?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/eastus/operationResults/aedb4feb-6eb6-4823-b1ce-ab2087073626/Spring/clitest000002?api-version=2024-05-01-preview&t=638487680444754439&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=eSFHWQG3biHsvSNfMM_Oaze8MyUtvwEg9_ZlQ9q7iAfR1kdxt3VaWnm_qrKvFJ6-CeRlUnrJbxUtB_NhsOA1DX-lLmF6--kMkwssnmZDTPF0O2CJ3RffNb8n2_l5N612Tcoflxd--eTY6arml1-OLZu2m66Li9z0IRnXZEXWMwZRhhRjMVNa-pcVW6Y5gaNJdyTAmEkYsBfFAts4JnWOpWO7uYfJSKnZlDuflxKoPsLAJSGGthFDoF-iaBo_8XerfObImyPcjyoFVQct1pFqM5mThPr2RxZ8shn-LBn1jfZdYPxHR3TJGwOyIpiYfoRJMsLbDgFSH1O14ZZi3aoYFg&h=CQepjJlpNZtVV1zDJmAU75CssiB_msia7ToblvYJI1I
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
+      x-msedge-ref:
+      - 'Ref A: A86C5D7C84104F43BF75E7B3F7BFEC12 Ref B: MAA201060513051 Ref C: 2024-04-15T08:54:03Z'
       x-rp-server-mvid:
-      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+      - ec637d3d-68a7-4774-a4ad-c912c3fa4ba1
     status:
       code: 202
       message: Accepted
@@ -756,21 +867,21 @@ interactions:
       ParameterSetName:
       - -n -g -s
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationStatus/clitest000002/operationId/28a47412-38f6-40e6-9e35-723ad03295e7?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/clitest000002/operationId/aedb4feb-6eb6-4823-b1ce-ab2087073626?api-version=2024-05-01-preview&t=638487680444598571&c=MIIHADCCBeigAwIBAgITHgPr-Oynpc11nukqPwAAA-v47DANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwMjAxMTUzMzMzWhcNMjUwMTI2MTUzMzMzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0fVpJv9HfZ9lDyFsKVf2PJgsZDMFA6khnm_67kUV0KDb8vTd3bmnw1UYl75g2Cp9GDvvaCqKVn-aux3TWe11D61vAtFcTPbNvezESM6bHR-RV1e4LhXUIl6PZRcIE65rk0bYF8P1O_zZ4mpWHx99Mc9gSe6E2sqh_sWRIuE4mSXNxVzzmndknLOkcDnqNl9Kt1VpXt5orBSwAV74sCBJuvzSE7MEW2kHUJtqzGWoXvf5pm-rYfwqhQa3HLjUMj7xbwzsBDtEn2ZYJLlqJqIps5iVHixHPn8k6opx-9FVP2u009BccFRDwiVl1b6xWXhwzq58hYtdYc3SoMCcWMtf0CAwEAAaOCA-0wggPpMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBR1fq2N8kAQnlwHFZuqRYZ3nIu5LjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMBcGA1UdIAQQMA4wDAYKKwYBBAGCN3sBATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBABwCQ0hRgTzuMiiq8PUrVdDBN8_c3HcEZsxdazvy4RNcw_7WjYA3QdRzVtaOAEfPq6GrfCF7n8qlpXjMSOq5Oc-mL6EwulQAybtx4RxY0zI5tDTHfITDo2FVSa6thj9WVlgOF2UxNbopXBAYpN-fbgUTanBsphWY2F_Kz_VKFv-4UXHwyNiDa3wpaQrmQ2urunWos3lEhx0aRKdNTZwjJtK78rfIazNccJHT1LHpWU7i8XEBYP_RzftkGhoEhofdnth4t99G4Clw9RBOC8Km1SZ7zJTtaYcCU-NXSzWQgWTQeGMwo5CnvADN5uPXz3aUMxAukDY-ed4wPldjzzJFmzk&s=Gm3W9zM-tgbfaaQnLMcKQYCeXmx7ZcJBj84wc0LuD8uETmdBPFdg8ucsclasBK2fjhS_K6QAXGvVnXEW5ZYE98GS-rXg2YoAz_-P4ncdXBtaYlRU2wrC5bLHIQFIHBGdsxaFj0ShcJKInGv0TAKajtEMz3HpKxJ8TCK6i-GRusDDF0chsIxR3iZl4Bq5Kq2SYtXnSYbdl3KJiYUSN7M0TCB6dQ5DWw6ZpIj5ovo1fqN51GnXDTnsrOxqUs0QjOHhSM58dBu1h5YfA7r-xgsSTopC5cQLgnNi5hUl0m_TzYVRcZpNbtRXFPgTtJPx09uGcY8mMAG4JIEdh8PNaDg5sg&h=bN8hJ7euWhMUr7Bs1yDTte__Ld4zNtJW0fxtlfoDdoY
   response:
     body:
-      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationStatus/clitest000002/operationId/28a47412-38f6-40e6-9e35-723ad03295e7","name":"28a47412-38f6-40e6-9e35-723ad03295e7","status":"Running","startTime":"2023-03-24T06:02:11.6852936Z"}'
+      string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/eastus/operationStatus/clitest000002/operationId/aedb4feb-6eb6-4823-b1ce-ab2087073626","name":"aedb4feb-6eb6-4823-b1ce-ab2087073626","status":"Succeeded","startTime":"2024-04-15T08:54:04.3046097Z","endTime":"2024-04-15T08:54:04.5035071Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '337'
+      - '370'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 24 Mar 2023 06:02:11 GMT
+      - Mon, 15 Apr 2024 08:54:05 GMT
       expires:
       - '-1'
       pragma:
@@ -779,62 +890,14 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 02EB679D27984404BD852768CF3D1E34 Ref B: MAA201060513051 Ref C: 2024-04-15T08:54:04Z'
       x-rp-server-mvid:
-      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - spring application-accelerator customized-accelerator delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g -s
-      User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationStatus/clitest000002/operationId/28a47412-38f6-40e6-9e35-723ad03295e7?api-version=2024-01-01-preview
-  response:
-    body:
-      string: '{"id":"subscriptions/6c933f90-8115-4392-90f2-7077c9fa5dbd/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/locations/switzerlandnorth/operationStatus/clitest000002/operationId/28a47412-38f6-40e6-9e35-723ad03295e7","name":"28a47412-38f6-40e6-9e35-723ad03295e7","status":"Succeeded","startTime":"2023-03-24T06:02:11.6852936Z","endTime":"2023-03-24T06:02:17.7685448Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '380'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Fri, 24 Mar 2023 06:02:21 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-rp-server-mvid:
-      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+      - ec637d3d-68a7-4774-a4ad-c912c3fa4ba1
     status:
       code: 200
       message: OK
@@ -852,21 +915,21 @@ interactions:
       ParameterSetName:
       - -g -s
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002?api-version=2024-05-01-preview
   response:
     body:
-      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"da917f7f53cd43678329f6da8b91a661","networkProfile":{"outboundIPs":{"publicIPs":["20.250.56.238","20.250.57.103"]},"ingressConfig":{"readTimeoutInSeconds":300},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"clitest000002.azuremicroservices.io","marketplaceResource":{"plan":"asa-ent-hr-mtr","publisher":"vmware-inc","product":"azure-spring-cloud-vmware-tanzu-2"}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"switzerlandnorth","tags":{"__asc_mt_enable_big_app":"true"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002","name":"clitest000002","systemData":{"createdBy":"3462cf92-dc17-43c5-8c7e-e50c11a1c181","createdByType":"Application","createdAt":"2023-03-24T02:22:49.7533513Z","lastModifiedBy":"3462cf92-dc17-43c5-8c7e-e50c11a1c181","lastModifiedByType":"Application","lastModifiedAt":"2023-03-24T02:22:49.7533513Z"}}'
+      string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"95a0892ab04a44e4a0ffa44a7c60cec1","networkProfile":{"outboundIPs":{"publicIPs":["4.157.151.134","4.157.150.159"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"clitest000002.azuremicroservices.io","marketplaceResource":{"plan":"asa-ent-hr-mtr","publisher":"vmware-inc","product":"azure-spring-cloud-vmware-tanzu-2"}},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"E0","tier":"Enterprise"},"location":"eastus","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002","name":"clitest000002","systemData":{"createdBy":"feilonghuang@microsoft.com","createdByType":"User","createdAt":"2024-01-17T06:33:17.0111064Z","lastModifiedBy":"feilonghuang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-01-17T06:33:17.0111064Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1067'
+      - '948'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 24 Mar 2023 06:02:26 GMT
+      - Mon, 15 Apr 2024 08:54:07 GMT
       expires:
       - '-1'
       pragma:
@@ -875,16 +938,16 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '11999'
+      x-msedge-ref:
+      - 'Ref A: 40E4BDC6C4D9478D84450A31CE0831D6 Ref B: MAA201060514033 Ref C: 2024-04-15T08:54:07Z'
       x-rp-server-mvid:
-      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+      - ec637d3d-68a7-4774-a4ad-c912c3fa4ba1
     status:
       code: 200
       message: OK
@@ -902,21 +965,21 @@ interactions:
       ParameterSetName:
       - -g -s
       User-Agent:
-      - AZURECLI/2.46.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.8.10 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators?api-version=2024-05-01-preview
   response:
     body:
-      string: '{"value":[]}'
+      string: '{"value":[{"properties":{"provisioningState":"Succeeded","displayName":"fragment-name","description":"desc","acceleratorType":"Fragment","gitRepository":{"url":"https://github.com/sample-accelerators/fragments.git","branch":"main","subPath":"java-version","authSetting":{"authType":"Public"}}},"type":"Microsoft.AppPlatform/Spring/applicationAccelerators/customizedAccelerators","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.AppPlatform/Spring/clitest000002/applicationAccelerators/default/customizedAccelerators/","name":"fragment-name","systemData":{"createdBy":"feilonghuang@microsoft.com","createdByType":"User","createdAt":"2024-01-17T06:50:36.3764315Z","lastModifiedBy":"dixue@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-04-15T06:56:47.2469766Z"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '12'
+      - '841'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Fri, 24 Mar 2023 06:02:27 GMT
+      - Mon, 15 Apr 2024 08:54:09 GMT
       expires:
       - '-1'
       pragma:
@@ -925,14 +988,14 @@ interactions:
       - appId=cid-v1:797d7e4e-8180-497e-a254-780fbd39ba4d
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 7A10DADECE364DFEBB5D49B5C6E3D748 Ref B: MAA201060514011 Ref C: 2024-04-15T08:54:08Z'
       x-rp-server-mvid:
-      - 2d8cffe0-ed19-4f32-b630-c96199e681e1
+      - ec637d3d-68a7-4774-a4ad-c912c3fa4ba1
     status:
       code: 200
       message: OK

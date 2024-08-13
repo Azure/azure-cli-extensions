@@ -3,6 +3,39 @@
 Release History
 ===============
 
+1.9.0
+++++++
+* Upgrading to v0.2.2 of ArcK8sDiagnoser
+* Fix Style and Linter issues.
+* Increase Max Timeout for Onboarding Helm Install to 20 mins (from 10).
+
+1.8.0
+++++++
+* New api version 2024-07-1-preview added
+* Adding functionality for workload identity feature.
+* Cluster create and update waits for agent state 
+
+1.7.3
+++++++
+* Skip helm archive download if helm is already installed.
+
+1.7.2
+++++++
+* Fixed Broken Import for Service Principal
+
+1.7.1
+++++++
+* Fixed PoP token for proxy command using service principal.
+
+1.7.0
+++++++
+* Update helm binary download source.
+* Introduce "--skip-ssl-verification" flag.
+
+1.6.8
+++++++
+* Add support for running multiple proxy instances on the same machine using different ports.
+
 1.6.7
 ++++++
 * Improve Error logs during Arc Onboarding scenarios, Style fixes.

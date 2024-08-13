@@ -19,6 +19,13 @@ class SpringTestEnvironmentEnum:
             "additional_params": "--disable-app-insights",
         },
     }
+    STANDARD_VNet = {
+        "resource_group_name": "AZURE_CLI_TEST_DEV_SPRING_RG_NAME_VNET",
+        "spring": {
+            "dev_setting_name": "AZURE_CLI_TEST_DEV_SPRING_NAME_VNET",
+            "additional_params": "--disable-app-insights",
+        },
+    }
     ENTERPRISE = {
         "resource_group_name": "AZURE_CLI_TEST_DEV_SPRING_RG_NAME_ENTERPRISE",
         "spring": {
