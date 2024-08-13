@@ -750,7 +750,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 return tls_management
             raise ArgumentUsageError(
                 "Cannot set --tls-management without enabling advanced network observability"
-                "(--enable-advanced-network-observability)."
+                "(--enable-advanced-network-observability or --enable-acns)."
             )
         return tls_management
 
