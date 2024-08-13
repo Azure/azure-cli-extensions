@@ -180,6 +180,10 @@ CONST_GITOPS_ADDON_NAME = "gitops"
 # only used as the key of the corresponding description, not to map to the key name in addonProfiles,
 # since its configuration is actually stored in a separate ingress profile
 CONST_WEB_APPLICATION_ROUTING_KEY_NAME = "ingress/webApplicationRouting"
+CONST_APP_ROUTING_ANNOTATION_CONTROLLED_NGINX = "AnnotationControlled"
+CONST_APP_ROUTING_EXTERNAL_NGINX = "External"
+CONST_APP_ROUTING_INTERNAL_NGINX = "Internal"
+CONST_APP_ROUTING_NONE_NGINX = "None"
 
 # all supported addons
 ADDONS = {
