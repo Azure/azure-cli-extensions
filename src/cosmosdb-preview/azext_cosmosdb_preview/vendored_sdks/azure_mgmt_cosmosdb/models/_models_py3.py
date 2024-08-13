@@ -196,8 +196,8 @@ class AnalyticalStorageConfiguration(_serialization.Model):
 class ApiProperties(_serialization.Model):
     """ApiProperties.
 
-    :ivar server_version: Describes the ServerVersion of an a MongoDB account. Known values are:
-     "3.2", "3.6", "4.0", "4.2", "5.0", and "6.0".
+    :ivar server_version: Describes the version of the MongoDB account. Known values are: "3.2",
+     "3.6", "4.0", "4.2", "5.0", "6.0", and "7.0".
     :vartype server_version: str or ~azure.mgmt.cosmosdb.models.ServerVersion
     """
 
@@ -207,8 +207,8 @@ class ApiProperties(_serialization.Model):
 
     def __init__(self, *, server_version: Optional[Union[str, "_models.ServerVersion"]] = None, **kwargs: Any) -> None:
         """
-        :keyword server_version: Describes the ServerVersion of an a MongoDB account. Known values are:
-         "3.2", "3.6", "4.0", "4.2", "5.0", and "6.0".
+        :keyword server_version: Describes the version of the MongoDB account. Known values are: "3.2",
+         "3.6", "4.0", "4.2", "5.0", "6.0", and "7.0".
         :paramtype server_version: str or ~azure.mgmt.cosmosdb.models.ServerVersion
         """
         super().__init__(**kwargs)
@@ -494,12 +494,13 @@ class DataTransferDataSourceSink(_serialization.Model):
     """Base class for all DataTransfer source/sink.
 
     You probably want to use the sub-classes and not this class directly. Known sub-classes are:
-    AzureBlobDataTransferDataSourceSink, BaseCosmosDataTransferDataSourceSink
+    AzureBlobDataTransferDataSourceSink, BaseCosmosDataTransferDataSourceSink,
+    CosmosMongoVCoreDataTransferDataSourceSink
 
     All required parameters must be populated in order to send to server.
 
-    :ivar component: Known values are: "CosmosDBCassandra", "CosmosDBMongo", "CosmosDBSql", and
-     "AzureBlobStorage".
+    :ivar component: Known values are: "CosmosDBCassandra", "CosmosDBMongo", "CosmosDBMongoVCore",
+     "CosmosDBSql", and "AzureBlobStorage".
     :vartype component: str or ~azure.mgmt.cosmosdb.models.DataTransferComponent
     """
 
@@ -515,6 +516,7 @@ class DataTransferDataSourceSink(_serialization.Model):
         "component": {
             "AzureBlobStorage": "AzureBlobDataTransferDataSourceSink",
             "BaseCosmosDataTransferDataSourceSink": "BaseCosmosDataTransferDataSourceSink",
+            "CosmosDBMongoVCore": "CosmosMongoVCoreDataTransferDataSourceSink",
         }
     }
 
@@ -529,8 +531,8 @@ class AzureBlobDataTransferDataSourceSink(DataTransferDataSourceSink):
 
     All required parameters must be populated in order to send to server.
 
-    :ivar component: Known values are: "CosmosDBCassandra", "CosmosDBMongo", "CosmosDBSql", and
-     "AzureBlobStorage".
+    :ivar component: Known values are: "CosmosDBCassandra", "CosmosDBMongo", "CosmosDBMongoVCore",
+     "CosmosDBSql", and "AzureBlobStorage".
     :vartype component: str or ~azure.mgmt.cosmosdb.models.DataTransferComponent
     :ivar container_name: Required.
     :vartype container_name: str
@@ -773,8 +775,8 @@ class BaseCosmosDataTransferDataSourceSink(DataTransferDataSourceSink):
 
     All required parameters must be populated in order to send to server.
 
-    :ivar component: Known values are: "CosmosDBCassandra", "CosmosDBMongo", "CosmosDBSql", and
-     "AzureBlobStorage".
+    :ivar component: Known values are: "CosmosDBCassandra", "CosmosDBMongo", "CosmosDBMongoVCore",
+     "CosmosDBSql", and "AzureBlobStorage".
     :vartype component: str or ~azure.mgmt.cosmosdb.models.DataTransferComponent
     :ivar remote_account_name:
     :vartype remote_account_name: str
@@ -2233,6 +2235,167 @@ class Certificate(_serialization.Model):
         self.pem = pem
 
 
+class ChaosFaultListResponse(_serialization.Model):
+    """Chaos Fault List Response.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: List of Chaos Faults.
+    :vartype value: list[~azure.mgmt.cosmosdb.models.ChaosFaultResource]
+    """
+
+    _validation = {
+        "value": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[ChaosFaultResource]"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.value = None
+
+
+class Resource(_serialization.Model):
+    """Common fields that are returned in the response for all Azure Resource Manager resources.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.id = None
+        self.name = None
+        self.type = None
+        self.system_data = None
+
+
+class ProxyResource(Resource):
+    """The resource model definition for a Azure Resource Manager proxy resource. It will not have
+    tags and a location.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    """
+
+
+class ChaosFaultResource(ProxyResource):
+    """A request object to enable/disable the chaos fault.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
+    :ivar action: Indicates whether what action to take for the Chaos Fault. Known values are:
+     "Enable" and "Disable".
+    :vartype action: str or ~azure.mgmt.cosmosdb.models.SupportedActions
+    :ivar region: Region of the account where the Chaos Fault is to be enabled/disabled.
+    :vartype region: str
+    :ivar database_name: Database name.
+    :vartype database_name: str
+    :ivar container_name: Container name.
+    :vartype container_name: str
+    :ivar provisioning_state: A provisioning state of the Chaos Fault.
+    :vartype provisioning_state: str
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+        "provisioning_state": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "action": {"key": "properties.action", "type": "str"},
+        "region": {"key": "properties.region", "type": "str"},
+        "database_name": {"key": "properties.databaseName", "type": "str"},
+        "container_name": {"key": "properties.containerName", "type": "str"},
+        "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        action: Optional[Union[str, "_models.SupportedActions"]] = None,
+        region: Optional[str] = None,
+        database_name: Optional[str] = None,
+        container_name: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword action: Indicates whether what action to take for the Chaos Fault. Known values are:
+         "Enable" and "Disable".
+        :paramtype action: str or ~azure.mgmt.cosmosdb.models.SupportedActions
+        :keyword region: Region of the account where the Chaos Fault is to be enabled/disabled.
+        :paramtype region: str
+        :keyword database_name: Database name.
+        :paramtype database_name: str
+        :keyword container_name: Container name.
+        :paramtype container_name: str
+        """
+        super().__init__(**kwargs)
+        self.action = action
+        self.region = region
+        self.database_name = database_name
+        self.container_name = container_name
+        self.provisioning_state = None
+
+
 class ClientEncryptionIncludedPath(_serialization.Model):
     """.
 
@@ -3650,8 +3813,8 @@ class CosmosCassandraDataTransferDataSourceSink(BaseCosmosDataTransferDataSource
 
     All required parameters must be populated in order to send to server.
 
-    :ivar component: Known values are: "CosmosDBCassandra", "CosmosDBMongo", "CosmosDBSql", and
-     "AzureBlobStorage".
+    :ivar component: Known values are: "CosmosDBCassandra", "CosmosDBMongo", "CosmosDBMongoVCore",
+     "CosmosDBSql", and "AzureBlobStorage".
     :vartype component: str or ~azure.mgmt.cosmosdb.models.DataTransferComponent
     :ivar remote_account_name:
     :vartype remote_account_name: str
@@ -3696,8 +3859,8 @@ class CosmosMongoDataTransferDataSourceSink(BaseCosmosDataTransferDataSourceSink
 
     All required parameters must be populated in order to send to server.
 
-    :ivar component: Known values are: "CosmosDBCassandra", "CosmosDBMongo", "CosmosDBSql", and
-     "AzureBlobStorage".
+    :ivar component: Known values are: "CosmosDBCassandra", "CosmosDBMongo", "CosmosDBMongoVCore",
+     "CosmosDBSql", and "AzureBlobStorage".
     :vartype component: str or ~azure.mgmt.cosmosdb.models.DataTransferComponent
     :ivar remote_account_name:
     :vartype remote_account_name: str
@@ -3737,13 +3900,72 @@ class CosmosMongoDataTransferDataSourceSink(BaseCosmosDataTransferDataSourceSink
         self.collection_name = collection_name
 
 
+class CosmosMongoVCoreDataTransferDataSourceSink(DataTransferDataSourceSink):  # pylint: disable=name-too-long
+    """A CosmosDB Mongo vCore API data source/sink.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar component: Known values are: "CosmosDBCassandra", "CosmosDBMongo", "CosmosDBMongoVCore",
+     "CosmosDBSql", and "AzureBlobStorage".
+    :vartype component: str or ~azure.mgmt.cosmosdb.models.DataTransferComponent
+    :ivar database_name: Required.
+    :vartype database_name: str
+    :ivar collection_name: Required.
+    :vartype collection_name: str
+    :ivar host_name:
+    :vartype host_name: str
+    :ivar connection_string_key_vault_uri:
+    :vartype connection_string_key_vault_uri: str
+    """
+
+    _validation = {
+        "component": {"required": True},
+        "database_name": {"required": True},
+        "collection_name": {"required": True},
+    }
+
+    _attribute_map = {
+        "component": {"key": "component", "type": "str"},
+        "database_name": {"key": "databaseName", "type": "str"},
+        "collection_name": {"key": "collectionName", "type": "str"},
+        "host_name": {"key": "hostName", "type": "str"},
+        "connection_string_key_vault_uri": {"key": "connectionStringKeyVaultUri", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        database_name: str,
+        collection_name: str,
+        host_name: Optional[str] = None,
+        connection_string_key_vault_uri: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword database_name: Required.
+        :paramtype database_name: str
+        :keyword collection_name: Required.
+        :paramtype collection_name: str
+        :keyword host_name:
+        :paramtype host_name: str
+        :keyword connection_string_key_vault_uri:
+        :paramtype connection_string_key_vault_uri: str
+        """
+        super().__init__(**kwargs)
+        self.component: str = "CosmosDBMongoVCore"
+        self.database_name = database_name
+        self.collection_name = collection_name
+        self.host_name = host_name
+        self.connection_string_key_vault_uri = connection_string_key_vault_uri
+
+
 class CosmosSqlDataTransferDataSourceSink(BaseCosmosDataTransferDataSourceSink):
     """A CosmosDB No Sql API data source/sink.
 
     All required parameters must be populated in order to send to server.
 
-    :ivar component: Known values are: "CosmosDBCassandra", "CosmosDBMongo", "CosmosDBSql", and
-     "AzureBlobStorage".
+    :ivar component: Known values are: "CosmosDBCassandra", "CosmosDBMongo", "CosmosDBMongoVCore",
+     "CosmosDBSql", and "AzureBlobStorage".
     :vartype component: str or ~azure.mgmt.cosmosdb.models.DataTransferComponent
     :ivar remote_account_name:
     :vartype remote_account_name: str
@@ -5610,7 +5832,7 @@ class DataTransferJobGetResults(ARMProxyResource):  # pylint: disable=too-many-i
     :ivar worker_count: Worker count.
     :vartype worker_count: int
     :ivar error: Error response for Faulted job.
-    :vartype error: ~azure.mgmt.cosmosdb.models.ErrorResponseAutoGenerated
+    :vartype error: ~azure.mgmt.cosmosdb.models.ErrorResponse
     :ivar duration: Total Duration of Job.
     :vartype duration: str
     :ivar mode: Mode of job execution. Known values are: "Offline" and "Online".
@@ -5643,7 +5865,7 @@ class DataTransferJobGetResults(ARMProxyResource):  # pylint: disable=too-many-i
         "total_count": {"key": "properties.totalCount", "type": "int"},
         "last_updated_utc_time": {"key": "properties.lastUpdatedUtcTime", "type": "iso-8601"},
         "worker_count": {"key": "properties.workerCount", "type": "int"},
-        "error": {"key": "properties.error", "type": "ErrorResponseAutoGenerated"},
+        "error": {"key": "properties.error", "type": "ErrorResponse"},
         "duration": {"key": "properties.duration", "type": "str"},
         "mode": {"key": "properties.mode", "type": "str"},
     }
@@ -5705,7 +5927,7 @@ class DataTransferJobProperties(_serialization.Model):  # pylint: disable=too-ma
     :ivar worker_count: Worker count.
     :vartype worker_count: int
     :ivar error: Error response for Faulted job.
-    :vartype error: ~azure.mgmt.cosmosdb.models.ErrorResponseAutoGenerated
+    :vartype error: ~azure.mgmt.cosmosdb.models.ErrorResponse
     :ivar duration: Total Duration of Job.
     :vartype duration: str
     :ivar mode: Mode of job execution. Known values are: "Offline" and "Online".
@@ -5734,7 +5956,7 @@ class DataTransferJobProperties(_serialization.Model):  # pylint: disable=too-ma
         "total_count": {"key": "totalCount", "type": "int"},
         "last_updated_utc_time": {"key": "lastUpdatedUtcTime", "type": "iso-8601"},
         "worker_count": {"key": "workerCount", "type": "int"},
-        "error": {"key": "error", "type": "ErrorResponseAutoGenerated"},
+        "error": {"key": "error", "type": "ErrorResponse"},
         "duration": {"key": "duration", "type": "str"},
         "mode": {"key": "mode", "type": "str"},
     }
@@ -6200,27 +6422,6 @@ class ErrorDetail(_serialization.Model):
 
 
 class ErrorResponse(_serialization.Model):
-    """Common error response for all Azure Resource Manager APIs to return error details for failed
-    operations. (This also follows the OData error response format.).
-
-    :ivar error: The error object.
-    :vartype error: ~azure.mgmt.cosmosdb.models.ErrorDetail
-    """
-
-    _attribute_map = {
-        "error": {"key": "error", "type": "ErrorDetail"},
-    }
-
-    def __init__(self, *, error: Optional["_models.ErrorDetail"] = None, **kwargs: Any) -> None:
-        """
-        :keyword error: The error object.
-        :paramtype error: ~azure.mgmt.cosmosdb.models.ErrorDetail
-        """
-        super().__init__(**kwargs)
-        self.error = error
-
-
-class ErrorResponseAutoGenerated(_serialization.Model):
     """Error Response.
 
     :ivar code: Error code.
@@ -6244,6 +6445,27 @@ class ErrorResponseAutoGenerated(_serialization.Model):
         super().__init__(**kwargs)
         self.code = code
         self.message = message
+
+
+class ErrorResponseAutoGenerated(_serialization.Model):
+    """Common error response for all Azure Resource Manager APIs to return error details for failed
+    operations. (This also follows the OData error response format.).
+
+    :ivar error: The error object.
+    :vartype error: ~azure.mgmt.cosmosdb.models.ErrorDetail
+    """
+
+    _attribute_map = {
+        "error": {"key": "error", "type": "ErrorDetail"},
+    }
+
+    def __init__(self, *, error: Optional["_models.ErrorDetail"] = None, **kwargs: Any) -> None:
+        """
+        :keyword error: The error object.
+        :paramtype error: ~azure.mgmt.cosmosdb.models.ErrorDetail
+        """
+        super().__init__(**kwargs)
+        self.error = error
 
 
 class ExcludedPath(_serialization.Model):
@@ -9739,67 +9961,6 @@ class NetworkSecurityPerimeter(_serialization.Model):
         self.id = id
         self.perimeter_guid = perimeter_guid
         self.location = location
-
-
-class Resource(_serialization.Model):
-    """Common fields that are returned in the response for all Azure Resource Manager resources.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar id: Fully qualified resource ID for the resource. E.g.
-     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
-    :vartype id: str
-    :ivar name: The name of the resource.
-    :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
-    :vartype type: str
-    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
-     information.
-    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    """
-
-    _validation = {
-        "id": {"readonly": True},
-        "name": {"readonly": True},
-        "type": {"readonly": True},
-        "system_data": {"readonly": True},
-    }
-
-    _attribute_map = {
-        "id": {"key": "id", "type": "str"},
-        "name": {"key": "name", "type": "str"},
-        "type": {"key": "type", "type": "str"},
-        "system_data": {"key": "systemData", "type": "SystemData"},
-    }
-
-    def __init__(self, **kwargs: Any) -> None:
-        """ """
-        super().__init__(**kwargs)
-        self.id = None
-        self.name = None
-        self.type = None
-        self.system_data = None
-
-
-class ProxyResource(Resource):
-    """The resource model definition for a Azure Resource Manager proxy resource. It will not have
-    tags and a location.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    :ivar id: Fully qualified resource ID for the resource. E.g.
-     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
-    :vartype id: str
-    :ivar name: The name of the resource.
-    :vartype name: str
-    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
-     "Microsoft.Storage/storageAccounts".
-    :vartype type: str
-    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
-     information.
-    :vartype system_data: ~azure.mgmt.cosmosdb.models.SystemData
-    """
 
 
 class NetworkSecurityPerimeterConfiguration(ProxyResource):
