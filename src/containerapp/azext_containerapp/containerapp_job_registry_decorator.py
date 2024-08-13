@@ -98,7 +98,7 @@ class ContainerAppJobRegistryPreviewSetDecorator(ContainerAppJobRegistrySetDecor
         self.set_up_registry_identity()
 
     def set_up_registry_identity(self):
-        identity = self.get_argument_identity() 
+        identity = self.get_argument_identity()
         if identity:
             identity_def = safe_get(self.containerappjob_def, "identity", default={})
             safe_set(self.new_containerappjob, "identity", value=identity_def)

@@ -539,7 +539,7 @@ class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
         # preview logic
         self.check_create_acrpull_role_assignment()
         # end preview logic
-        
+
         if self.get_argument_yaml():
             return self.set_up_create_containerapp_job_yaml(name=self.get_argument_name(), file_name=self.get_argument_yaml())
 
