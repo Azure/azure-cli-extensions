@@ -11,7 +11,7 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError)
 
 from azure.cli.command_modules.containerapp.containerapp_job_registry_decorator import ContainerAppJobRegistrySetDecorator
-from azure.cli.command_modules.containerapp._utils import safe_get, _get_acr_cred, store_as_secret_and_return_secret_ref, safe_set, is_registry_msi_system, \
+from azure.cli.command_modules.containerapp._utils import safe_get, _get_acr_cred, store_as_secret_and_return_secret_ref, safe_set, \
     is_registry_msi_system, set_managed_identity
 
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
@@ -30,8 +30,10 @@ class ContainerAppJobRegistryPreviewSetDecorator(ContainerAppJobRegistrySetDecor
         super().validate_arguments()
         validate_create(registry_identity=self.get_argument_identity(), registry_pass=self.get_argument_password(), registry_user=self.get_argument_username(), registry_server=self.get_argument_server(), no_wait=self.get_argument_no_wait())
 
-    def construct_payload(self):
+    # copy from parent
+    def parent_construct_payload(self):
         self.set_up_get_existing_secrets()
+
         registries_def = safe_get(self.containerappjob_def, "properties", "configuration", "registries", default=[])
         safe_set(self.new_containerappjob, "properties", "configuration", "registries", value=registries_def)
 
@@ -92,17 +94,25 @@ class ContainerAppJobRegistryPreviewSetDecorator(ContainerAppJobRegistrySetDecor
 
             registries_def.append(registry)
 
-        if self.get_argument_identity():
+        # preview logic
+        self.set_up_registry_identity()
+
+    def set_up_registry_identity(self):
+        identity = self.get_argument_identity() 
+        if identity:
             identity_def = safe_get(self.containerappjob_def, "identity", default={})
             safe_set(self.new_containerappjob, "identity", value=identity_def)
 
-            if is_registry_msi_system(self.get_argument_identity()):
+            if is_registry_msi_system(identity):
                 set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.new_containerappjob, system_assigned=True)
 
-            if is_valid_resource_id(self.get_argument_identity()):
+            if is_valid_resource_id(identity):
                 env_id = safe_get(self.containerappjob_def, "properties", "environmentId", default="")
                 parsed_managed_env = parse_resource_id(env_id)
                 managed_env_name = parsed_managed_env['name']
                 managed_env_rg = parsed_managed_env['resource_group']
-                if not env_has_managed_identity(self.cmd, managed_env_rg, managed_env_name, self.get_argument_identity()):
-                    set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.new_containerappjob, user_assigned=[self.get_argument_identity()])
+                if not env_has_managed_identity(self.cmd, managed_env_rg, managed_env_name, identity):
+                    set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.new_containerappjob, user_assigned=[identity])
+
+    def construct_payload(self):
+        self.parent_construct_payload()

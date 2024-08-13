@@ -3114,6 +3114,7 @@ def create_dotnet_component(cmd, dotnet_component_name, environment_name, resour
 
 
 def set_registry(cmd, name, resource_group_name, server, username=None, password=None, disable_warnings=False, identity=None, no_wait=False):
+    # copy from parent
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
     if (username or password) and identity:
         raise MutuallyExclusiveArgumentError("Use either identity or username/password.")
@@ -3186,6 +3187,7 @@ def set_registry(cmd, name, resource_group_name, server, username=None, password
 
         registries_def.append(registry)
 
+    # preview logic
     if identity:
         if is_registry_msi_system(identity):
             set_managed_identity(cmd, resource_group_name, containerapp_def, system_assigned=True)

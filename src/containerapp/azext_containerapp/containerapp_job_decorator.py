@@ -16,7 +16,7 @@ from azure.cli.command_modules.containerapp._utils import safe_get, _convert_obj
     _populate_secret_values, _add_or_update_tags, ensure_workload_profile_supported, _add_or_update_env_vars, \
     parse_env_var_flags, _remove_env_vars, _get_acr_cred, store_as_secret_and_return_secret_ref, \
     parse_metadata_flags, parse_auth_flags, safe_set, _ensure_identity_resource_id, is_registry_msi_system, \
-    is_registry_msi_system, create_acrpull_role_assignment, _ensure_location_allowed, get_default_workload_profile_name_from_env, \
+    create_acrpull_role_assignment, _ensure_location_allowed, get_default_workload_profile_name_from_env, \
     _infer_acr_credentials, set_managed_identity, parse_secret_flags, validate_container_app_name, AppType
 from azure.cli.command_modules.containerapp._constants import (CONTAINER_APPS_RP, HELLO_WORLD_IMAGE)
 from azure.cli.command_modules.containerapp._models import (
@@ -514,11 +514,32 @@ class ContainerAppJobUpdateDecorator(ContainerAppJobDecorator):
 
 
 class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
-    def parent_construct_payload(self):
-        if self.get_argument_registry_identity() and not is_registry_msi_system(self.get_argument_registry_identity()) and not is_registry_msi_system_environment(self.get_argument_registry_identity()):
+    # not craete role assignment if it's env system msi
+    def check_create_acrpull_role_assignment(self):
+        identity = self.get_argument_registry_identity()
+        if identity and not is_registry_msi_system(identity) and not is_registry_msi_system_environment(identity):
             logger.info("Creating an acrpull role assignment for the registry identity")
-            create_acrpull_role_assignment(self.cmd, self.get_argument_registry_server(), self.get_argument_registry_identity(), skip_error=True)
+            create_acrpull_role_assignment(self.cmd, self.get_argument_registry_server(), identity, skip_error=True)
 
+    # not set up msi for current containerapp if it's env msi
+    def set_up_registry_identity(self):
+        identity = self.get_argument_registry_identity()
+        if identity:
+            if is_registry_msi_system(identity):
+                set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.containerappjob_def, system_assigned=True)
+            elif is_valid_resource_id(identity):
+                parsed_managed_env = parse_resource_id(self.get_argument_managed_env())
+                managed_env_name = parsed_managed_env['name']
+                managed_env_rg = parsed_managed_env['resource_group']
+                if not env_has_managed_identity(self.cmd, managed_env_rg, managed_env_name, identity):
+                    set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.containerappjob_def, user_assigned=[identity])
+
+    # copy from parent
+    def parent_construct_payload(self):
+        # preview logic
+        self.check_create_acrpull_role_assignment()
+        # end preview logic
+        
         if self.get_argument_yaml():
             return self.set_up_create_containerapp_job_yaml(name=self.get_argument_name(), file_name=self.get_argument_yaml())
 
@@ -686,15 +707,8 @@ class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
             ensure_workload_profile_supported(self.cmd, managed_env_name, managed_env_rg, self.get_argument_workload_profile_name(),
                                               managed_env_info)
 
-        if self.get_argument_registry_identity():
-            if is_registry_msi_system(self.get_argument_registry_identity()):
-                set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.containerappjob_def, system_assigned=True)
-            elif is_valid_resource_id(self.get_argument_registry_identity()):
-                parsed_managed_env = parse_resource_id(self.get_argument_managed_env())
-                managed_env_name = parsed_managed_env['name']
-                managed_env_rg = parsed_managed_env['resource_group']
-                if not env_has_managed_identity(self.cmd, managed_env_rg, managed_env_name, self.get_argument_registry_identity()):
-                    set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.containerappjob_def, user_assigned=[self.get_argument_registry_identity()])
+        # preview logic
+        self.set_up_registry_identity()
 
     def construct_payload(self):
         self.parent_construct_payload()
@@ -708,9 +722,12 @@ class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
                     identity = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), identity)
                 self.containerappjob_def["properties"]["configuration"]["eventTriggerConfig"]["scale"]["rules"][0]["identity"] = identity
 
-    def validate_arguments(self):
-        # copy from parent
+    # copy from parent
+    def parent_validate_arguments(self):
         validate_container_app_name(self.get_argument_name(), AppType.ContainerAppJob.name)
+        # preview logic
+        self.validate_create()
+        # end preview logic
         if self.get_argument_yaml() is None:
             if self.get_argument_replica_timeout() is None:
                 raise RequiredArgumentMissingError('Usage error: --replica-timeout is required')
@@ -720,10 +737,12 @@ class ContainerAppJobPreviewCreateDecorator(ContainerAppJobCreateDecorator):
 
             if self.get_argument_managed_env() is None:
                 raise RequiredArgumentMissingError('Usage error: --environment is required if not using --yaml')
-        # end copy
 
+    def validate_create(self):
         validate_create(registry_identity=self.get_argument_registry_identity(), registry_pass=self.get_argument_registry_pass(), registry_user=self.get_argument_registry_user(), registry_server=self.get_argument_registry_server(), no_wait=self.get_argument_no_wait())
 
+    def validate_arguments(self):
+        self.parent_validate_arguments()
         if self.get_argument_yaml() is None:
             if self.get_argument_trigger_type() is None:
                 raise RequiredArgumentMissingError('Usage error: --trigger-type is required')
