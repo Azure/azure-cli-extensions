@@ -174,7 +174,10 @@ def get_health_endpoint(grafana_url, http_get_headers):
 def send_grafana_get(url, http_get_headers):
     r = requests.get(url, headers=http_get_headers)
     log_response(r)
-    return (r.status_code, r.json())
+    try:
+        return (r.status_code, r.json())
+    except ValueError:
+        return (r.status_code, r.text)
 
 
 def send_grafana_post(url, json_payload, http_post_headers):

@@ -19,8 +19,13 @@ logger = get_logger(__name__)
 def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run,
             overwrite, folders_to_include=None, folders_to_exclude=None):
     # pylint: disable=too-many-locals
-    folders_to_include_set = set(s.lower() for s in folders_to_include)
-    folders_to_exclude_set = set(s.lower() for s in folders_to_exclude)
+    folders_to_include_set = set()
+    folders_to_exclude_set = set()
+
+    if folders_to_include:
+        folders_to_include_set = set(s.lower() for s in folders_to_include)
+    if folders_to_exclude:
+        folders_to_exclude_set = set(s.lower() for s in folders_to_exclude)
     if folders_to_include_set.intersection(folders_to_exclude_set):
         raise ArgumentUsageError("Folders to include and exclude cannot have the same folder")
 

@@ -300,7 +300,7 @@ def restore_grafana(cmd, grafana_name, archive_file, components=None, remap_data
 def migrate_grafana(cmd, grafana_name, source_grafana_endpoint, source_grafana_token_or_api_key, dry_run=False,
                     overwrite=False, folders_to_include=None, folders_to_exclude=None, resource_group_name=None):
     from .migrate import migrate
-    from .utils import get_health_endpoint
+    from .utils import get_health_endpoint, send_grafana_get
 
     # for source instance (backing up from)
     headers_src = {
@@ -308,6 +308,11 @@ def migrate_grafana(cmd, grafana_name, source_grafana_endpoint, source_grafana_t
         "authorization": "Bearer " + source_grafana_token_or_api_key
     }
     (status, _) = get_health_endpoint(source_grafana_endpoint, headers_src)
+    if status == 400:
+        # https://github.com/grafana/grafana/pull/27536
+        # Some Grafana instances might block/not support "/api/health" endpoint
+        (status, _) = send_grafana_get(f"{source_grafana_endpoint}/healthz", headers_src)
+
     if status == 401:
         raise ArgumentUsageError(f"Access to source grafana endpoint was denied")
     elif status >= 400:
