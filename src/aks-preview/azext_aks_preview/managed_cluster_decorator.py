@@ -135,6 +135,7 @@ ManagedClusterStorageProfileFileCSIDriver = TypeVar('ManagedClusterStorageProfil
 ManagedClusterStorageProfileBlobCSIDriver = TypeVar('ManagedClusterStorageProfileBlobCSIDriver')
 ManagedClusterStorageProfileSnapshotController = TypeVar('ManagedClusterStorageProfileSnapshotController')
 ManagedClusterIngressProfileWebAppRouting = TypeVar("ManagedClusterIngressProfileWebAppRouting")
+ManagedClusterIngressProfileNginx = TypeVar("ManagedClusterIngressProfileNginx")
 ManagedClusterSecurityProfileDefender = TypeVar("ManagedClusterSecurityProfileDefender")
 ManagedClusterSecurityProfileNodeRestriction = TypeVar("ManagedClusterSecurityProfileNodeRestriction")
 ManagedClusterWorkloadProfileVerticalPodAutoscaler = TypeVar("ManagedClusterWorkloadProfileVerticalPodAutoscaler")
@@ -751,6 +752,61 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 "(--enable-advanced-network-observability)."
             )
         return tls_management
+
+    def get_enable_fqdn_policy(self) -> Optional[bool]:
+        """Get the value of enable_fqdn_policy
+
+        :return: bool or None
+        """
+        enable_fqdn_policy = self.raw_param.get("enable_fqdn_policy")
+        disable_fqdn_policy = self.raw_param.get("disable_fqdn_policy")
+        if enable_fqdn_policy and disable_fqdn_policy:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-fqdn-policy and "
+                "--disable-fqdn-policy at the same time."
+            )
+        if enable_fqdn_policy is False and disable_fqdn_policy is False:
+            return None
+        if enable_fqdn_policy is not None:
+            return enable_fqdn_policy
+        if disable_fqdn_policy is not None:
+            return not disable_fqdn_policy
+        return None
+
+    def get_enable_acns(self) -> Optional[bool]:
+        """Get the value of enable_acns
+
+        :return: bool or None
+        """
+        enable_acns = self.raw_param.get("enable_acns")
+        disable_acns = self.raw_param.get("disable_acns")
+        enable_advanced_network_observability = self.raw_param.get("enable_advanced_network_observability")
+        disable_advanced_network_observability = self.raw_param.get("disable_advanced_network_observability")
+        enable_fqdn_policy = self.raw_param.get("enable_fqdn_policy")
+        disable_fqdn_policy = self.raw_param.get("disable_fqdn_policy")
+
+        if enable_acns and disable_acns:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-acns and "
+                "--disable-acns at the same time."
+            )
+        if enable_acns and (disable_advanced_network_observability or disable_fqdn_policy):
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-acns and "
+                "--disable-advanced-networking-observability or --disable-fqdn-policy at the same time."
+            )
+        if disable_acns and (enable_advanced_network_observability or enable_fqdn_policy):
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --disable-acns and "
+                "--enable-advanced-networking-observability or --enable-fqdn-policy at the same time."
+            )
+        if enable_acns is False and disable_acns is False:
+            return None
+        if enable_acns is not None:
+            return enable_acns
+        if disable_acns is not None:
+            return not disable_acns
+        return None
 
     def get_load_balancer_managed_outbound_ip_count(self) -> Union[int, None]:
         """Obtain the value of load_balancer_managed_outbound_ip_count.
@@ -2780,6 +2836,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("update_dns_zone")
 
+    def get_app_routing_default_nginx_controller(self) -> str:
+        """Obtain the value of app_routing_default_nginx_controller.
+
+        :return: str
+        """
+        return self.raw_param.get("app_routing_default_nginx_controller")
+
+    def get_nginx(self):
+        """Obtain the value of nginx, written to the update decorator context by _aks_approuting_update
+
+        :return: string
+        """
+        return self.raw_param.get("nginx")
+
     def get_node_provisioning_mode(self) -> Union[str, None]:
         """Obtain the value of node_provisioning_mode.
         """
@@ -3006,17 +3076,42 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         else:
             network_profile.network_dataplane = self.context.get_network_dataplane()
 
+        acns = self.context.get_enable_acns()
+        if acns is not None:
+            network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
+                observability=self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
+                    enabled=acns
+                ),
+                security=self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
+                    fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
+                        enabled=acns
+                    )
+                )
+            )
+
         advanced_network_observability = self.context.get_enable_advanced_network_observability()
         if advanced_network_observability is not None:
-            # Create an advanced networking model with an observability model if it does not exist.
             if network_profile.advanced_networking is None:
-                network_profile.advanced_networking = self.models.AdvancedNetworking()  # pylint: disable=no-member
+                network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
+                )
             network_profile.advanced_networking.observability = self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
                 enabled=advanced_network_observability
             )
             tls_management = self.context.get_advanced_networking_observability_tls_management()
             if tls_management is not None:
                 network_profile.advanced_networking.observability.tls_management = tls_management
+
+        fqdn_policy = self.context.get_enable_fqdn_policy()
+        if fqdn_policy is not None:
+            if network_profile.advanced_networking is None:
+                network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
+                )
+            network_profile.advanced_networking.security = self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
+                fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
+                    enabled=fqdn_policy
+                )
+            )
+
         return mc
 
     def set_up_api_server_access_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -3158,6 +3253,16 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             mc.ingress_profile.web_app_routing = (
                 self.models.ManagedClusterIngressProfileWebAppRouting(enabled=True)  # pylint: disable=no-member
             )
+
+            nginx_ingress_controller = self.context.get_app_routing_default_nginx_controller()
+
+            if nginx_ingress_controller:
+                mc.ingress_profile.web_app_routing.nginx = (
+                    self.models.ManagedClusterIngressProfileNginx(
+                        default_ingress_controller_type=nginx_ingress_controller
+                    )
+                )
+
             if "web_application_routing" in addons:
                 dns_zone_resource_ids = self.context.get_dns_zone_resource_ids()
                 mc.ingress_profile.web_app_routing.dns_zone_resource_ids = dns_zone_resource_ids
@@ -4096,6 +4201,47 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         tls_management = self.context.get_advanced_networking_observability_tls_management()
         if tls_management is not None:
             mc.network_profile.advanced_networking.observability.tls_management = tls_management
+        return mc
+
+    def update_enable_fqdn_policy_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update enable fqdn policy of network profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        fqdn_policy = self.context.get_enable_fqdn_policy()
+        if fqdn_policy is not None:
+            if mc.network_profile.advanced_networking is None:
+                mc.network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
+                )
+            mc.network_profile.advanced_networking.security = self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
+                fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
+                    enabled=fqdn_policy
+                )
+            )
+        return mc
+
+    def update_enable_acns_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update enable fqdn policy of network profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        acns = self.context.get_enable_acns()
+        if acns is not None:
+            # Override anything previously set
+            mc.network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
+                observability=self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
+                    enabled=acns
+                ),
+                security=self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
+                    fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
+                        enabled=acns
+                    )
+                )
+            )
         return mc
 
     # pylint: disable=too-many-statements,too-many-locals,too-many-branches
@@ -5066,6 +5212,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         enable_app_routing = self.context.get_enable_app_routing()
         enable_keyvault_secret_provider = self.context.get_enable_kv()
         dns_zone_resource_ids = self.context.get_dns_zone_resource_ids_from_input()
+        nginx = self.context.get_nginx()
 
         # update ManagedCluster object with app routing settings
         mc.ingress_profile = (
@@ -5094,6 +5241,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if dns_zone_resource_ids:
             self._update_dns_zone_resource_ids(mc, dns_zone_resource_ids)
 
+        # modify default nic config
+        if nginx:
+            self._update_app_routing_nginx(mc, nginx)
+
         return mc
 
     def _enable_keyvault_secret_provider_addon(self, mc: ManagedCluster) -> None:
@@ -5118,6 +5269,19 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 CONST_SECRET_ROTATION_ENABLED: "false",
                 CONST_ROTATION_POLL_INTERVAL: "2m",
             }
+
+    def _update_app_routing_nginx(self, mc: ManagedCluster, nginx) -> None:
+        """Helper function to set default nginx ingress controller config for app routing
+
+        :return: None
+        """
+        # web app routing object has been created
+        if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
+            if mc.ingress_profile.web_app_routing.nginx is None:
+                mc.ingress_profile.web_app_routing.nginx = self.models.ManagedClusterIngressProfileNginx()
+            mc.ingress_profile.web_app_routing.nginx.default_ingress_controller_type = nginx
+        else:
+            raise CLIError('App Routing must be enabled to modify the default nginx ingress controller.\n')
 
     # pylint: disable=too-many-nested-blocks
     def _update_dns_zone_resource_ids(self, mc: ManagedCluster, dns_zone_resource_ids) -> None:
@@ -5372,6 +5536,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nodepool_initialization_taints_mc(mc)
         # update advanced_networking_observability in network_profile
         mc = self.update_advanced_networking_observability_in_network_profile(mc)
+        # update fqdn policy in network_profile
+        mc = self.update_enable_fqdn_policy_in_network_profile(mc)
+        # update acns in network_profile
+        mc = self.update_enable_acns_in_network_profile(mc)
         # update kubernetes support plan
         mc = self.update_k8s_support_plan(mc)
         # update AI toolchain operator

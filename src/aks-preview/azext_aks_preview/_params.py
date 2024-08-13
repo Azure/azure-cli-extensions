@@ -122,6 +122,10 @@ from azext_aks_preview._consts import (
     CONST_ARTIFACT_SOURCE_DIRECT,
     CONST_ARTIFACT_SOURCE_CACHE,
     CONST_OUTBOUND_TYPE_NONE,
+    CONST_APP_ROUTING_ANNOTATION_CONTROLLED_NGINX,
+    CONST_APP_ROUTING_EXTERNAL_NGINX,
+    CONST_APP_ROUTING_INTERNAL_NGINX,
+    CONST_APP_ROUTING_NONE_NGINX,
     CONST_TLS_MANAGEMENT_MANAGED,
     CONST_TLS_MANAGEMENT_NONE,
 )
@@ -401,6 +405,14 @@ bootstrap_artifact_source_types = [
     CONST_ARTIFACT_SOURCE_CACHE,
 ]
 
+# consts for app routing add-on
+app_routing_nginx_configs = [
+    CONST_APP_ROUTING_ANNOTATION_CONTROLLED_NGINX,
+    CONST_APP_ROUTING_EXTERNAL_NGINX,
+    CONST_APP_ROUTING_INTERNAL_NGINX,
+    CONST_APP_ROUTING_NONE_NGINX
+]
+
 tls_management_types = [
     CONST_TLS_MANAGEMENT_MANAGED,
     CONST_TLS_MANAGEMENT_NONE,
@@ -651,6 +663,11 @@ def load_arguments(self, _):
         c.argument("rotation_poll_interval")
         c.argument("enable_sgxquotehelper", action="store_true")
         c.argument("enable_app_routing", action="store_true", is_preview=True)
+        c.argument(
+            "app_routing_default_nginx_controller",
+            arg_type=get_enum_type(app_routing_nginx_configs),
+            options_list=["--app-routing-default-nginx-controller", "--ardnc"]
+        )
         # nodepool paramerters
         c.argument(
             "nodepool_name",
@@ -825,6 +842,16 @@ def load_arguments(self, _):
             "advanced_networking_observability_tls_management",
             arg_type=get_enum_type(tls_management_types),
             default=CONST_TLS_MANAGEMENT_MANAGED,
+            is_preview=True,
+        )
+        c.argument(
+            "enable_fqdn_policy",
+            action="store_true",
+            is_preview=True,
+        )
+        c.argument(
+            "enable_acns",
+            action="store_true",
             is_preview=True,
         )
         c.argument(
@@ -1330,6 +1357,26 @@ def load_arguments(self, _):
             arg_type=get_enum_type(tls_management_types),
             is_preview=True,
         )
+        c.argument(
+            "enable_fqdn_policy",
+            action="store_true",
+            is_preview=True,
+        )
+        c.argument(
+            "disable_fqdn_policy",
+            action="store_true",
+            is_preview=True,
+        )
+        c.argument(
+            "enable_acns",
+            action="store_true",
+            is_preview=True,
+        )
+        c.argument(
+            "disable_acns",
+            action="store_true",
+            is_preview=True,
+        )
         c.argument("enable_cost_analysis", action="store_true")
         c.argument("disable_cost_analysis", action="store_true")
         c.argument('enable_ai_toolchain_operator', is_preview=True, action='store_true')
@@ -1670,12 +1717,10 @@ def load_arguments(self, _):
         c.argument("if_none_match")
         c.argument(
             "enable_fips_image",
-            is_preview=True,
             action="store_true"
         )
         c.argument(
             "disable_fips_image",
-            is_preview=True,
             action="store_true"
         )
 
@@ -2290,10 +2335,12 @@ def load_arguments(self, _):
     with self.argument_context("aks approuting enable") as c:
         c.argument("enable_kv", action="store_true")
         c.argument("keyvault_id", options_list=["--attach-kv"])
+        c.argument("nginx", arg_type=get_enum_type(app_routing_nginx_configs))
 
     with self.argument_context("aks approuting update") as c:
         c.argument("keyvault_id", options_list=["--attach-kv"])
         c.argument("enable_kv", action="store_true")
+        c.argument("nginx", arg_type=get_enum_type(app_routing_nginx_configs))
 
     with self.argument_context("aks approuting zone add") as c:
         c.argument("dns_zone_resource_ids", options_list=["--ids"], required=True)
