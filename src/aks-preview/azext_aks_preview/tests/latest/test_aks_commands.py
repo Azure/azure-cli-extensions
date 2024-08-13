@@ -13545,6 +13545,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "Managed"),
             ],
         )
 
@@ -13712,6 +13713,22 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
+            ],
+        )
+
+        # update: set tls management to "Managed"
+        update_cmd4 = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--advanced-networking-observability-tls-management Managed "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
+        )
+        self.cmd(
+            update_cmd4,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "Managed"),
             ],
         )
 
