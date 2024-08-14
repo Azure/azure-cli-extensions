@@ -2831,12 +2831,12 @@ class PrintExistingPolicy(unittest.TestCase):
             f.write(template2)
         try:
             with self.assertRaises(SystemExit) as exc_info:
-                acipolicygen_confcom(None, "test_template.json", None, None, None, None, print_existing_policy=True)
+                acipolicygen_confcom(None, "test_template.json", None, None, None, None, None, print_existing_policy=True)
 
             self.assertEqual(exc_info.exception.code, 1)
 
             with self.assertRaises(SystemExit) as exc_info:
-                acipolicygen_confcom(None, "test_template2.json", None, None, None, None, print_existing_policy=True)
+                acipolicygen_confcom(None, "test_template2.json", None, None, None, None, None, print_existing_policy=True)
 
             self.assertEqual(exc_info.exception.code, 0)
         finally:

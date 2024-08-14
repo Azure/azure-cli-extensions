@@ -3,6 +3,7 @@
 - [Microsoft Azure CLI 'confcom acipolicygen' Extension Examples and Security Policy Rules Documentation](#microsoft-azure-cli-confcom-acipolicygen-extension-examples-and-security-policy-rules-documentation)
   - [Microsoft Azure CLI 'confcom acipolicygen' Extension Examples](#microsoft-azure-cli-confcom-extension-examples)
   - [dmverity Layer Hashing](#dmverity-layer-hashing)
+  - [AKS Virtual Node](#aks-virtual-node)
   - [Security Policy Information Sources](#security-policy-information-sources)
   - [Security Policy Rules Documentation](#security-policy-rules-documentation)
     - [mount_device](#mount_device)
@@ -275,6 +276,16 @@ An OCI image can be made available for policy generation in three ways:
 3. The image is locally saved as a tar file in the form specified by `docker save`.
 
 Mixed-mode policy generation is available in the `confcom` tooling, meaning images within the same security policy can be in any of these three locations with no issues.
+
+## AKS Virtual Node
+
+It is possible to use ACI (Azure Container Instances) as a destination for pods in AKS (Azure Kubernetes Service) using the [Virtual Node](https://learn.microsoft.com/en-us/azure/aks/virtual-nodes) feature. The `confcom` tooling can generate security policies for these pods in the same way as for standalone ACI container groups. The only difference is that the `confcom` tooling will ingest the AKS pod spec instead of an ARM Template. An example of this `confcom` run is shown below:
+
+```bash
+az confcom acipolicygen -k ./pod.yaml --print-policy
+```
+
+Note that this option is distinct from the `katapolicygen` command, which is used for generating security policies for the [Confidential Containers on AKS](https://learn.microsoft.com/en-us/azure/aks/confidential-containers-overview) feature.
 
 ## Security Policy Information Sources
 
