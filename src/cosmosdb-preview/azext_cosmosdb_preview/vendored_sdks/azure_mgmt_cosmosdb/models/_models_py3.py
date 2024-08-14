@@ -2242,20 +2242,25 @@ class ChaosFaultListResponse(_serialization.Model):
 
     :ivar value: List of Chaos Faults.
     :vartype value: list[~azure.mgmt.cosmosdb.models.ChaosFaultResource]
+    :ivar next_link: The link used to get the next page of results.
+    :vartype next_link: str
     """
 
     _validation = {
         "value": {"readonly": True},
+        "next_link": {"readonly": True},
     }
 
     _attribute_map = {
         "value": {"key": "value", "type": "[ChaosFaultResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
     }
 
     def __init__(self, **kwargs: Any) -> None:
         """ """
         super().__init__(**kwargs)
         self.value = None
+        self.next_link = None
 
 
 class Resource(_serialization.Model):
