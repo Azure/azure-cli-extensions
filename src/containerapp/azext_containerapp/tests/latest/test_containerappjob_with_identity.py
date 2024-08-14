@@ -228,7 +228,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
             JMESPathCheck("properties.template.containers[0].image", image_name),
         ])
 
-        # update containerapp to create new revision
+        # update containerapp job
         self.cmd(f'containerapp job update -g {resource_group} -n {job}  --replica-timeout 30')
         self.cmd(f'containerapp job show -g {resource_group} -n {job}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
@@ -237,4 +237,25 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
             JMESPathCheck("properties.configuration.registries[0].identity", user_identity_id, case_sensitive=False),
             JMESPathCheck("properties.template.containers[0].image", image_name),
             JMESPathCheck("properties.configuration.replicaTimeout", "30")
+        ])
+
+        # update use env system managed identity
+        self.cmd(f'containerapp job registry set -g {resource_group} -n {job} --server {acr}.azurecr.io --identity system-environment')
+        self.cmd(f'containerapp job show -g {resource_group} -n {job}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("identity.type", "None"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io"),
+            JMESPathCheck("properties.configuration.registries[0].identity", "system-environment"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+        ])
+
+        # update containerapp job
+        self.cmd(f'containerapp job update -g {resource_group} -n {job}  --replica-timeout 20')
+        self.cmd(f'containerapp job show -g {resource_group} -n {job}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("identity.type", "None"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io"),
+            JMESPathCheck("properties.configuration.registries[0].identity", "system-environment"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+            JMESPathCheck("properties.configuration.replicaTimeout", "20")
         ])

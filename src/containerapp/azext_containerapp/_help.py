@@ -2014,3 +2014,27 @@ helps['containerapp env dotnet-component show'] = """
       text: |
           az containerapp env dotnet-component show -n MyDotNetComponentName --environment MyContainerappEnvironment -g MyResourceGroup
 """
+
+helps['containerapp registry set'] = """
+    type: command
+    short-summary: Add or update a container registry's details.
+    examples:
+    - name: Configure a container app to use a registry.
+      text: |
+          az containerapp registry set -n my-containerapp -g MyResourceGroup \\
+              --server MyExistingContainerappRegistry.azurecr.io --username MyRegistryUsername --password MyRegistryPassword
+    - name: Configure a container app to use environment system assigned managed identity to authenticate Azure container registry.
+      text: |
+          az containerapp registry set -n my-containerapp -g MyResourceGroup \\
+              --server MyExistingContainerappRegistry.azurecr.io --identity system-environment
+"""
+
+helps['containerapp job registry set'] = """
+    type: command
+    short-summary: Add or update a container registry's details in a Container App Job.
+    examples:
+    - name: Configure a Container App Job to use environment system assigned managed identity to authenticate Azure container registry.
+      text: |
+          az containerapp job registry set -n my-containerapp-job -g MyResourceGroup \\
+              --server MyContainerappJobRegistry.azurecr.io --identity system-environment
+"""

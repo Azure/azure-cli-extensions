@@ -1666,6 +1666,27 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
             JMESPathCheck("properties.template.revisionSuffix", "v2")
         ])
 
+        # update use env system managed identity
+        self.cmd(f'containerapp registry set -g {resource_group} -n {ca_name} --server {acr}.azurecr.io --identity system-environment')
+        self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("identity.type", "None"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io"),
+            JMESPathCheck("properties.configuration.registries[0].identity", "system-environment"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+        ])
+
+        # update containerapp to create new revision
+        self.cmd(f'containerapp update -g {resource_group} -n {ca_name}  --revision-suffix v3')
+        self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("identity.type", "None"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io"),
+            JMESPathCheck("properties.configuration.registries[0].identity", "system-environment"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+            JMESPathCheck("properties.template.revisionSuffix", "v3")
+        ])
+
 
 class ContainerappScaleTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
