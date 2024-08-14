@@ -33,7 +33,7 @@ class AmgScenarioTest(ScenarioTest):
             'location': 'westcentralus'
         })
 
-        self.cmd('grafana create -g {rg} -n {name} -l {location} --tags foo=doo --skip-role-assignments', checks=[
+        self.cmd('grafana create -g {rg} -n {name} -l {location} --tags foo=doo --skip-role-assignments True', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
@@ -46,20 +46,20 @@ class AmgScenarioTest(ScenarioTest):
         ])
 
         self.cmd('grafana update -g {rg} -n {name} --deterministic-outbound-ip Enabled --api-key Enabled', checks=[
-            self.check('properties.deterministicOutboundIp', 'Enabled'),
+            self.check('properties.deterministicOutboundIP', 'Enabled'),
             self.check('properties.apiKey', 'Enabled'),
             self.check('length(properties.outboundIPs)', 2)
         ])
 
         self.cmd('grafana show -g {rg} -n {name}', checks=[
-            self.check('properties.deterministicOutboundIp', 'Enabled'),
+            self.check('properties.deterministicOutboundIP', 'Enabled'),
             self.check('properties.apiKey', 'Enabled'),
             self.check('length(properties.outboundIPs)', 2)
         ])
 
         self.cmd('grafana update -g {rg} -n {name} --deterministic-outbound-ip Disabled --api-key Disabled --public-network-access Disabled')
         self.cmd('grafana show -g {rg} -n {name}', checks=[
-            self.check('properties.deterministicOutboundIp', 'Disabled'),
+            self.check('properties.deterministicOutboundIP', 'Disabled'),
             self.check('properties.apiKey', 'Disabled'),
             self.check('properties.publicNetworkAccess', 'Disabled'),
             self.check('properties.outboundIPs', None)
