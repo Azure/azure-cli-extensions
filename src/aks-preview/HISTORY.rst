@@ -11,7 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-[AKS] `az aks create/update`: Support in place param updates for managed prom
+[AKS] `az aks create/update`: Support UserAssigned Managed Identity for grafana linking in managed prometheus
 
 7.0.0b5
 +++++++
