@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long, broad-except, logging-format-interpolation, too-many-branches, too-many-boolean-expressions, no-else-return, logging-fstring-interpolation
+# pylint: disable=line-too-long, broad-except, logging-format-interpolation, too-many-branches, too-many-boolean-expressions, no-else-return, logging-fstring-interpolation, too-many-locals
 
 from typing import Dict, Any
 from urllib.parse import urlparse

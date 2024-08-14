@@ -42,8 +42,8 @@ class ContainerAppJobRegistryPreviewSetDecorator(ContainerAppJobRegistrySetDecor
             if ACR_IMAGE_SUFFIX not in self.get_argument_server():
                 raise RequiredArgumentMissingError(
                     'Registry username and password are required if you are not using Azure Container Registry.')
-            not self.get_argument_disable_warnings() and logger.warning(
-                'No credential was provided to access Azure Container Registry. Trying to look up...')
+            if not self.get_argument_disable_warnings():
+                logger.warning('No credential was provided to access Azure Container Registry. Trying to look up...')
             parsed = urlparse(self.get_argument_server())
             registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
 
@@ -59,7 +59,8 @@ class ContainerAppJobRegistryPreviewSetDecorator(ContainerAppJobRegistrySetDecor
         updating_existing_registry = False
         for r in registries_def:
             if r['server'].lower() == self.get_argument_server().lower():
-                not self.get_argument_disable_warnings() and logger.warning("Updating existing registry.")
+                if not self.get_argument_disable_warnings():
+                    logger.warning("Updating existing registry.")
                 updating_existing_registry = True
                 if self.get_argument_username():
                     r["username"] = self.get_argument_username()
