@@ -1094,6 +1094,91 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd("network firewall policy delete -n {policy} -g {rg}")
 
+
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_app_rules_with_custom_headers_', location="westus2")
+    def test_azure_firewall_policy_app_rules_with_custom_headers(self, resource_group):
+        self.kwargs.update({
+            'location': "westus2",
+            'rg': resource_group,
+            'policy_name': 'policy1',
+            'rule_collection_group_name': 'RCG1',
+            'rule_collection_name': 'RC1',
+            'app_rule_name_1': 'app-rule1',
+            'header_name_1': 'MyHeaderName',
+            'header_value_1': 'MyHeaderValue',
+            'app_rule_name_2': 'app-rule2',
+            'header_name_2': 'MyHeaderName2',
+            'header_value_2': 'MyHeaderValue2',
+            'header_name_3': 'MyHeaderName3',
+            'header_value_3': 'MyHeaderValue3'
+        })
+        
+        # Create policy
+        self.cmd('network firewall policy create -g {rg} -n {policy_name} -l {location} --sku Premium --idps-mode Off', 
+            checks=[
+                    self.check('type', 'Microsoft.Network/FirewallPolicies'),
+                    self.check('name', '{policy_name}')
+        ])
+
+        # Create RCG
+        self.cmd('network firewall policy rule-collection-group create -g {rg} --priority 400 --policy-name {policy_name} -n {rule_collection_group_name}', 
+                checks=[
+                    self.check('type', 'Microsoft.Network/FirewallPolicies/RuleCollectionGroups'),
+                    self.check('name', '{rule_collection_group_name}')
+        ])
+
+        # Add a new RC with app rule with custom headers to RCG
+        self.cmd('network firewall policy rule-collection-group collection add-filter-collection -g {rg} --policy-name {policy_name} \
+                 --rule-collection-group-name {rule_collection_group_name} -n {rule_collection_name} --collection-priority 13000 \
+                 --action Allow --rule-name {app_rule_name_1} --rule-type ApplicationRule \
+                 --source-addresses 202.120.36.13 202.120.36.14 --destination-addresses 10.120.36.15 10.120.36.16 --target-urls microsoft.com \
+                 --http-headers-to-insert {header_name_1}={header_value_1} ',
+                 checks=[
+                    self.check('length(ruleCollections)', 1),
+                    self.check('ruleCollections[0].ruleCollectionType', "FirewallPolicyFilterRuleCollection"),
+                    self.check('ruleCollections[0].name', "{rule_collection_name}"),
+                    self.check('length(ruleCollections[0].rules)', 1),
+                    self.check('ruleCollections[0].rules[0].name', '{app_rule_name_1}'),
+                    self.check('ruleCollections[0].rules[0].httpHeadersToInsert[0].headerName', "{header_name_1}"),
+                    self.check('ruleCollections[0].rules[0].httpHeadersToInsert[0].headerValue', "{header_value_1}")
+                ])
+
+        self.cmd('network firewall policy rule-collection-group collection rule add -g {rg} --policy-name {policy_name} \
+                --rule-collection-group-name {rule_collection_group_name} --collection-name {rule_collection_name} --name {app_rule_name_2} \
+                --rule-type ApplicationRule --description "test" --source-addresses 202.120.22.11 202.120.11.11 \
+                --destination-addresses 10.120.36.11 --protocols Http=12800 --target-fqdns microsoft.com \
+                --http-headers-to-insert {header_name_2}={header_value_2} {header_name_3}={header_value_3}',
+                checks=[
+                    self.check('length(ruleCollections[0].rules)',2),
+                    self.check('ruleCollections[0].rules[1].name', '{app_rule_name_2}'),
+                    self.check('ruleCollections[0].rules[1].httpHeadersToInsert[0].headerName', "{header_name_2}"),
+                    self.check('ruleCollections[0].rules[1].httpHeadersToInsert[0].headerValue', "{header_value_2}"),
+                    self.check('ruleCollections[0].rules[1].httpHeadersToInsert[1].headerName', "{header_name_3}"),
+                    self.check('ruleCollections[0].rules[1].httpHeadersToInsert[1].headerValue', "{header_value_3}")
+            ])      
+
+        # delete Rule
+        self.cmd('network firewall policy rule-collection-group collection rule remove -g {rg} --policy-name {policy_name} \
+                --rule-collection-group-name {rule_collection_group_name} --collection-name {rule_collection_name} --name {app_rule_name_2}',
+                checks=[
+                    self.check('length(ruleCollections[0].rules)', 1),
+                    self.check('ruleCollections[0].rules[0].name', '{app_rule_name_1}')
+                ])
+
+        # delete RC
+        self.cmd('network firewall policy rule-collection-group collection remove -g {rg} --policy-name {policy_name} \
+                 --rule-collection-group-name {rule_collection_group_name} --name {rule_collection_name}', 
+                 checks=[
+            self.check('length(ruleCollections)', 0)
+        ])
+
+        # delete RCG
+        self.cmd('network firewall policy rule-collection-group delete -g {rg} --policy-name {policy_name} --name {rule_collection_group_name} -y')
+        self.cmd('network firewall policy rule-collection-group list -g {rg} --policy-name {policy_name}', 
+        checks=[
+            self.check('length(@)', 0)
+        ])
+
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_draft', location='westus2')
     def test_azure_policy_draft(self, resource_group, resource_group_location):
@@ -1341,3 +1426,49 @@ class AzureFirewallScenario(ScenarioTest):
 
         self.cmd('network firewall policy delete -g {rg} --name {policy}')
 
+
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_azure_firewall_policy_idps_profiles', location='westus2')
+    def test_azure_policy_idps_profiles(self, resource_group, resource_group_location):
+        self.kwargs.update({
+            'location': "westus2",
+            'rg': resource_group,
+            'policy_name_1': 'policy1',
+            'policy_name_2': 'policy2',
+        })
+
+        # create policy without idps profile        
+        self.cmd('network firewall policy create -g {rg} -n {policy_name_1} -l {location} --sku Premium', 
+                 checks=[
+                    self.check('type', 'Microsoft.Network/FirewallPolicies'),
+                    self.check('name', '{policy_name_1}')
+        ])
+
+        # add idps mode and profile to policy        
+        self.cmd('network firewall policy update -g {rg} -n {policy_name_1} --idps-mode Alert --idps-profile Advanced',
+                 checks=[
+                     self.check('intrusionDetection.mode', 'Alert'),
+                     self.check('intrusionDetection.profile', 'Advanced')
+                 ])
+        
+        # delete policy 1
+        self.cmd('network firewall policy delete -g {rg} --name {policy_name_1}')
+
+        # create policy 2 with idps profile        
+        self.cmd('network firewall policy create -g {rg} -n {policy_name_2} -l {location} --sku Premium --idps-mode Deny --idps-profile Standard',
+                 checks=[
+                     self.check('type', 'Microsoft.Network/FirewallPolicies'),
+                     self.check('name', '{policy_name_2}'),
+                     self.check('intrusionDetection.mode', 'Deny'),
+                     self.check('intrusionDetection.profile', 'Standard')
+        ])
+
+        # change idps profile in policy 2
+        self.cmd('network firewall policy update -g {rg} -n {policy_name_2} --idps-mode Deny --idps-profile Basic',
+                 checks=[
+                     self.check('intrusionDetection.mode', 'Deny'),
+                     self.check('intrusionDetection.profile', 'Basic')
+        ])  
+
+        # delete policy 2
+        self.cmd('network firewall policy delete -g {rg} --name {policy_name_2}')

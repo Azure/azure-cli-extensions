@@ -76,6 +76,15 @@ Release History
 * `az grafana folder delete`: remove folder lookup by id due to deprecated API
 * `az grafana dashboard import`: update call from deprecated dashboard import API to dashboard create/update API
 
-1.4.0
+2.0.0
+++++++
+* Move existing Grafana CRUD command implementations to AAZ CodeGen
+* `az grafana create`: Migrate to AAZDev Tool & implicitly support role assignment principal types
+* `az grafana update`: Migrate to AAZDev Tool
+* `az grafana list`: Migrate to AAZDev Tool
+* `az grafana show`: Migrate to AAZDev Tool
+* `az grafana delete`: Migrate to AAZDev Tool
+
+2.1.0
 ++++++
 * `az grafana migrate`: support migration from other Grafana instances to AMG

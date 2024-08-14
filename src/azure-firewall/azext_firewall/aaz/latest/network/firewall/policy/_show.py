@@ -48,6 +48,7 @@ class Show(AAZCommand):
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="The name of the resource group.",
             required=True,
         )
         _args_schema.expand = AAZStrArg(
@@ -318,6 +319,7 @@ class Show(AAZCommand):
             intrusion_detection = cls._schema_on_200.properties.intrusion_detection
             intrusion_detection.configuration = AAZObjectType()
             intrusion_detection.mode = AAZStrType()
+            intrusion_detection.profile = AAZStrType()
 
             configuration = cls._schema_on_200.properties.intrusion_detection.configuration
             configuration.bypass_traffic_settings = AAZListType(
