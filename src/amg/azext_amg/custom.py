@@ -14,7 +14,7 @@ from azure.cli.core.util import should_disable_connection_verify
 from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError, ManualInterrupt
 from ._validators import process_grafana_create_namespace
 
-from azure.cli.core.aaz import AAZListArg, AAZStrArg
+from azure.cli.core.aaz import AAZBoolArg, AAZListArg, AAZStrArg
 from .aaz.latest.grafana._create import Create as _GrafanaCreate
 from .aaz.latest.grafana._delete import Delete as _GrafanaDelete
 from .aaz.latest.grafana._update import Update as _GrafanaUpdate
@@ -32,15 +32,17 @@ class GrafanaCreate(_GrafanaCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema['skip_system_assigned_identity'] = AAZStrArg(
+        args_schema['skip_system_assigned_identity'] = AAZBoolArg(
             options=['--skip-system-assigned-identity', '--skip-identity'],
             help='Do not enable system assigned identity. Use this option if you want to manage the identity '
                  'yourself.',
+            default=False,
         )
-        args_schema['skip_role_assignments'] = AAZStrArg(
+        args_schema['skip_role_assignments'] = AAZBoolArg(
             options=['--skip-role-assignments'],
             help='Skip creating default role assignments for the managed identity of the Grafana instance and '
                  'the current CLI account. Use this option if you want to manage role assignments yourself.',
+            default=False,
         )
         args_schema['principal_ids'] = AAZListArg(
             options=['--principal-ids'],
@@ -54,10 +56,10 @@ class GrafanaCreate(_GrafanaCreate):
 
     def pre_operations(self):
         args = self.ctx.args
-        if has_value(args.skip_role_assignments) and has_value(args.principal_ids):
-            raise ArgumentUsageError("--skip-role-assignments | --assignee-object-ids")
+        if args.skip_role_assignments and args.principal_ids:
+            raise ArgumentUsageError("--skip-role-assignments | --principal-ids")
 
-        if not has_value(args.skip_system_assigned_identity):
+        if not args.skip_system_assigned_identity:
             args.identity = {"type": "SystemAssigned"}
 
         process_grafana_create_namespace(self.ctx, self.ctx.args)
