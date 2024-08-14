@@ -23,6 +23,7 @@ result_path = os.environ.get('result_path', None)
 output_file = os.environ.get('output_file', None)
 add_labels_file = os.environ.get('add_labels_file', None)
 remove_labels_file = os.environ.get('remove_labels_file', None)
+pr_user = os.environ.get('pr_user', "")
 
 changed_module_list = os.environ.get('changed_module_list', "").split()
 diff_code_file = os.environ.get('diff_code_file', "")
@@ -65,21 +66,24 @@ def extract_module_version_update_info(mod_update_info, mod):
     --- a/src/monitor-control-service/HISTORY.RST
     py files exclude tests, vendored_sdks and aaz folder
     """
-    mod_update_info["setup_updated"] = False
+    diff_file_started = False
     module_setup_update_pattern = re.compile(r"\+\+\+.*?src/%s/(?!.*(?:tests|vendored_sdks|aaz)/).*?.py" % mod)
     module_version_update_pattern = re.compile(r"\+\s?VERSION\s?\=\s?[\'\"]([0-9\.b]+)[\'\"]")
     with open(diff_code_file, "r") as f:
         for line in f:
-            if mod_update_info["setup_updated"]:
-                if line.find("---") == 0 or mod_update_info.get("version_diff", None):
+            if diff_file_started:
+                if mod_update_info.get("version_diff", None):
                     break
+                if line.find("diff") == 0:
+                    diff_file_started = False
+                    continue
                 mod_version_update_match = re.findall(module_version_update_pattern, line)
                 if mod_version_update_match and len(mod_version_update_match) == 1:
                     mod_update_info["version_diff"] = mod_version_update_match[0]
             else:
                 mod_setup_update_match = re.findall(module_setup_update_pattern, line)
                 if mod_setup_update_match:
-                    mod_update_info["setup_updated"] = True
+                    diff_file_started = True
 
 
 def extract_module_metadata_update_info(mod_update_info, mod):
@@ -211,16 +215,17 @@ def get_next_version_segment_tag():
 
 def add_suggest_header(comment_message):
     comment_message.insert(0, "## :warning: Release Suggestions")
+    comment_message.insert(0, "Hi @" + pr_user)
 
 
 def gen_history_comment_message(mod, mod_update_info, mod_message):
     if not mod_update_info["history_updated"]:
-        mod_message.append(" - :warning: Please log updates into to `src/{0}/HISTORY.rst`".format(mod))
+        mod_message.append(" - Please log updates into to `src/{0}/HISTORY.rst`".format(mod))
 
 
 def gen_version_comment_message(mod, mod_update_info, mod_message):
     global block_pr
-    if not mod_update_info["setup_updated"]:
+    if not mod_update_info.get("version_diff", None):
         if mod_update_info.get("version", None):
             mod_message.append(" - Update `VERSION` to `{0}` in `src/{1}/setup.py`".format(mod_update_info.get("version", "-"), mod))
     else:
@@ -241,7 +246,7 @@ def gen_preview_comment_message(mod, mod_update_info, mod_message):
     if mod_update_info.get("preview_tag", "-") == mod_update_info.get("preview_tag_diff", "-"):
         return
     preview_comment_message = " - "
-    if mod_update_info["setup_updated"] and mod_update_info.get("version_diff", None):
+    if mod_update_info.get("version_diff", None):
         block_pr = 1
         preview_comment_message += ":warning: "
     if mod_update_info.get("preview_tag", None) and mod_update_info.get("preview_tag_diff", None):
@@ -267,7 +272,7 @@ def gen_exp_comment_message(mod, mod_update_info, mod_message):
     if mod_update_info.get("exp_tag", "-") == mod_update_info.get("exp_tag_diff", "-"):
         return
     exp_comment_message = " - "
-    if mod_update_info["setup_updated"]:
+    if mod_update_info.get("version_diff", None):
         block_pr = 1
         exp_comment_message += ":warning: "
     if mod_update_info.get("exp_tag", None) and mod_update_info.get("exp_tag_diff", None):
@@ -301,11 +306,11 @@ def gen_comment_message(mod, mod_update_info, comment_message):
 
 def add_label_hint_message(comment_message):
     comment_message.append("#### Notes")
-    comment_message.append(" - Stable/preview tag is inherited from last release. "
-                           "If needed, please add `stable`/`preview` label to modify it.")
-    comment_message.append(" - Major/minor/patch/pre increment of version number is calculated by pull request "
-                           "code changes automatically. "
-                           "If needed, please add `major`/`minor`/`patch`/`pre` label to adjust it.")
+    # comment_message.append(" - Stable/preview tag is inherited from last release. "
+    #                        "If needed, please add `stable`/`preview` label to modify it.")
+    # comment_message.append(" - Major/minor/patch/pre increment of version number is calculated by pull request "
+    #                        "code changes automatically. "
+    #                        "If needed, please add `major`/`minor`/`patch`/`pre` label to adjust it.")
     comment_message.append(DEFAULT_MESSAGE)
 
 
