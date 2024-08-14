@@ -282,9 +282,9 @@ def migrate_grafana(cmd, grafana_name, source_grafana_endpoint, source_grafana_t
         (status, _) = send_grafana_get(f"{source_grafana_endpoint}/healthz", headers_src)
 
     if status == 401:
-        raise ArgumentUsageError(f"Access to source grafana endpoint was denied")
-    elif status >= 400:
-        raise ArgumentUsageError(f"Source grafana endpoint is not reachable")
+        raise ArgumentUsageError("Access to source grafana endpoint was denied")
+    if status >= 400:
+        raise ArgumentUsageError("Source grafana endpoint is not reachable")
 
     # for destination instance (restoring to)
     _health_endpoint_reachable(cmd, grafana_name, resource_group_name=resource_group_name)
