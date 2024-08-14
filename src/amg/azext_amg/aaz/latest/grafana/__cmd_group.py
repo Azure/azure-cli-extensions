@@ -15,9 +15,7 @@ from azure.cli.core.aaz import *
     "grafana",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Commands to manage Azure Grafana instances
-
-    For optimized experience, not all data plane APIs, documented at https://grafana.com/docs/grafana/latest/http_api/, are exposed. On coverage gap, please reach out to ad4g@microsoft.com
+    """Commands to manage Azure Managed Grafana resources.
     """
     pass
 
