@@ -11,6 +11,7 @@ from urllib.parse import urlparse
 from azure.cli.core.azclierror import (ValidationError, InvalidArgumentValueError,
                                        MutuallyExclusiveArgumentError, RequiredArgumentMissingError)
 from azure.cli.command_modules.containerapp._utils import is_registry_msi_system
+from ._utils import is_registry_msi_system_environment
 
 from ._constants import ACR_IMAGE_SUFFIX, \
     CONNECTED_ENVIRONMENT_TYPE, \
@@ -44,8 +45,8 @@ def validate_create(registry_identity, registry_pass, registry_user, registry_se
         raise MutuallyExclusiveArgumentError("Cannot provide both registry identity and username/password")
     if is_registry_msi_system(registry_identity) and no_wait:
         raise MutuallyExclusiveArgumentError("--no-wait is not supported with system registry identity")
-    if registry_identity and not is_valid_resource_id(registry_identity) and not is_registry_msi_system(registry_identity):
-        raise InvalidArgumentValueError("--registry-identity must be an identity resource ID or 'system'")
+    if registry_identity and not is_valid_resource_id(registry_identity) and not is_registry_msi_system(registry_identity) and not is_registry_msi_system_environment(registry_identity):
+        raise InvalidArgumentValueError("--registry-identity must be an identity resource ID or 'system' or 'system-environment'")
     if registry_identity and ACR_IMAGE_SUFFIX not in (registry_server or ""):
         raise InvalidArgumentValueError("--registry-identity: expected an ACR registry (*.azurecr.io) for --registry-server")
 

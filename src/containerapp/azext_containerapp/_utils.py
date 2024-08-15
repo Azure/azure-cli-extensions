@@ -24,6 +24,8 @@ from azure.cli.command_modules.containerapp._client_factory import handle_raw_ex
 from azure.cli.core._profile import Profile
 from azure.cli.core.azclierror import (ValidationError, ResourceNotFoundError, CLIError, InvalidArgumentValueError)
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
+from azure.cli.command_modules.containerapp._utils import is_registry_msi_system
+
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.servicelinker import ServiceLinkerManagementClient
 
@@ -31,7 +33,7 @@ from knack.log import get_logger
 from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
 from ._managed_service_utils import ManagedRedisUtils, ManagedCosmosDBUtils, ManagedPostgreSQLFlexibleUtils, ManagedMySQLFlexibleUtils
-from ._clients import ConnectedEnvCertificateClient, ContainerAppPreviewClient, JavaComponentPreviewClient
+from ._clients import ConnectedEnvCertificateClient, ContainerAppPreviewClient, JavaComponentPreviewClient, ManagedEnvironmentPreviewClient
 from ._client_factory import custom_location_client_factory, k8s_extension_client_factory, providers_client_factory, \
     connected_k8s_client_factory, handle_non_404_status_code_exception
 from ._models import OryxRunImageTagProperty
@@ -737,3 +739,24 @@ class AppType(Enum):
     ContainerApp = 1
     ContainerAppJob = 2
     SessionPool = 3
+
+
+def is_registry_msi_system_environment(identity):
+    if identity is None:
+        return False
+    return identity.lower() == "system-environment"
+
+
+def env_has_managed_identity(cmd, resource_group_name, env_name, identity):
+    identity = identity.lower()
+    # caller should handle exception
+    managed_env_info = ManagedEnvironmentPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=env_name)
+    if is_registry_msi_system(identity) and managed_env_info["identity"]["type"].__contains__("SystemAssigned"):
+        return True
+
+    result = False
+    for msi in managed_env_info["identity"]["userAssignedIdentities"]:
+        if msi.lower() == identity:
+            result = True
+            break
+    return result
