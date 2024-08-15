@@ -126,6 +126,8 @@ from azext_aks_preview._consts import (
     CONST_APP_ROUTING_EXTERNAL_NGINX,
     CONST_APP_ROUTING_INTERNAL_NGINX,
     CONST_APP_ROUTING_NONE_NGINX,
+    CONST_TLS_MANAGEMENT_MANAGED,
+    CONST_TLS_MANAGEMENT_NONE,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -409,6 +411,11 @@ app_routing_nginx_configs = [
     CONST_APP_ROUTING_EXTERNAL_NGINX,
     CONST_APP_ROUTING_INTERNAL_NGINX,
     CONST_APP_ROUTING_NONE_NGINX
+]
+
+tls_management_types = [
+    CONST_TLS_MANAGEMENT_MANAGED,
+    CONST_TLS_MANAGEMENT_NONE,
 ]
 
 
@@ -829,6 +836,12 @@ def load_arguments(self, _):
         c.argument(
             "enable_advanced_network_observability",
             action="store_true",
+            is_preview=True,
+        )
+        c.argument(
+            "advanced_networking_observability_tls_management",
+            arg_type=get_enum_type(tls_management_types),
+            default=CONST_TLS_MANAGEMENT_MANAGED,
             is_preview=True,
         )
         c.argument(
@@ -1337,6 +1350,11 @@ def load_arguments(self, _):
         c.argument(
             "disable_advanced_network_observability",
             action="store_true",
+            is_preview=True,
+        )
+        c.argument(
+            "advanced_networking_observability_tls_management",
+            arg_type=get_enum_type(tls_management_types),
             is_preview=True,
         )
         c.argument(
