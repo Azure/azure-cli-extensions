@@ -36,21 +36,21 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run,
         all_source_datasources, all_destination_datasources, restore_url, restore_headers, dry_run)
 
     all_source_folders = get_all_folders(backup_url,
-                                  backup_headers,
-                                  folders_to_include=folders_to_include,
-                                  folders_to_exclude=folders_to_exclude)
+                                         backup_headers,
+                                         folders_to_include=folders_to_include,
+                                         folders_to_exclude=folders_to_exclude)
     all_destination_folders = get_all_folders(restore_url,
-                                          restore_headers,
-                                          folders_to_include=folders_to_include,
-                                          folders_to_exclude=folders_to_exclude)
+                                              restore_headers,
+                                              folders_to_include=folders_to_include,
+                                              folders_to_exclude=folders_to_exclude)
     (folders_created_summary, folders_overwrote_summary) = _migrate_folders(
         all_source_folders, all_destination_folders, restore_url, restore_headers, dry_run, overwrite)
 
     valid_folder_uids = set(folder[0]['uid'] for folder in all_source_folders + all_destination_folders)
     all_source_dashboards = get_all_dashboards(backup_url,
-                                        backup_headers,
-                                        folders_to_include=folders_to_include,
-                                        folders_to_exclude=folders_to_exclude)
+                                               backup_headers,
+                                               folders_to_include=folders_to_include,
+                                               folders_to_exclude=folders_to_exclude)
     all_source_lib_panels = get_all_library_panels(backup_url, backup_headers)
 
     if 'general' in folders_to_include_set or 'general' not in folders_to_exclude_set:
