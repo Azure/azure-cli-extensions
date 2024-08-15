@@ -2033,6 +2033,10 @@ helps['containerapp job registry set'] = """
     type: command
     short-summary: Add or update a container registry's details in a Container App Job.
     examples:
+    - name: Configure a Container App Job to use a registry.
+      text: |
+          az containerapp job registry set -n my-containerapp-job -g MyResourceGroup \\
+              --server MyContainerappJobRegistry.azurecr.io --username MyRegistryUsername --password MyRegistryPassword
     - name: Configure a Container App Job to use environment system assigned managed identity to authenticate Azure container registry.
       text: |
           az containerapp job registry set -n my-containerapp-job -g MyResourceGroup \\
