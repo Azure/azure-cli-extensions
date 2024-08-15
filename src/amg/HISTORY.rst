@@ -84,3 +84,7 @@ Release History
 * `az grafana list`: Migrate to AAZDev Tool
 * `az grafana show`: Migrate to AAZDev Tool
 * `az grafana delete`: Migrate to AAZDev Tool
+
+2.1.0
+++++++
+* `az grafana migrate`: migrate data from a self-hosted Grafana instance to Azure Managed Grafana instance

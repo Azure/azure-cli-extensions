@@ -166,10 +166,18 @@ def get_folder_id(dashboard, grafana_url, http_post_headers):
         return 0
 
 
+def get_health_endpoint(grafana_url, http_get_headers):
+    (status_code, content) = send_grafana_get(f'{grafana_url}/api/health', http_get_headers)
+    return (status_code, content)
+
+
 def send_grafana_get(url, http_get_headers):
     r = requests.get(url, headers=http_get_headers)
     log_response(r)
-    return (r.status_code, r.json())
+    try:
+        return (r.status_code, r.json())
+    except ValueError:
+        return (r.status_code, r.text)
 
 
 def send_grafana_post(url, json_payload, http_post_headers):
@@ -192,5 +200,11 @@ def send_grafana_patch(url, json_payload, http_post_headers):
 
 def send_grafana_put(url, json_payload, http_post_headers):
     r = requests.put(url, headers=http_post_headers, data=json_payload)
+    log_response(r)
+    return (r.status_code, r.json())
+
+
+def send_grafana_delete(url, http_post_headers):
+    r = requests.delete(url, headers=http_post_headers)
     log_response(r)
     return (r.status_code, r.json())
