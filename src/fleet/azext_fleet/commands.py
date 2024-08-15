@@ -6,9 +6,9 @@
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
 from azext_fleet._client_factory import (
-    cf_fleets, 
-    cf_fleet_members, 
-    cf_update_runs, 
+    cf_fleets,
+    cf_fleet_members,
+    cf_update_runs,
     cf_fleet_update_strategies,
     cf_auto_upgrade_profiles
 )
