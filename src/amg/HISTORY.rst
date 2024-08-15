@@ -87,4 +87,4 @@ Release History
 
 2.1.0
 ++++++
-* `az grafana migrate`: support migration from other Grafana instances to AMG
+* `az grafana migrate`: migrate data from a self-hosted Grafana instance to Azure Managed Grafana instance
