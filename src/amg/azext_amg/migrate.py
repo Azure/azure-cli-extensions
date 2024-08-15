@@ -35,23 +35,23 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run,
     (datasources_created_summary, datasources_remapped_summary) = _migrate_datasources(
         all_source_datasources, all_destination_datasources, restore_url, restore_headers, dry_run)
 
-    all_folders = get_all_folders(backup_url,
+    all_source_folders = get_all_folders(backup_url,
                                   backup_headers,
                                   folders_to_include=folders_to_include,
                                   folders_to_exclude=folders_to_exclude)
-    all_restore_folders = get_all_folders(restore_url,
+    all_destination_folders = get_all_folders(restore_url,
                                           restore_headers,
                                           folders_to_include=folders_to_include,
                                           folders_to_exclude=folders_to_exclude)
     (folders_created_summary, folders_overwrote_summary) = _migrate_folders(
-        all_folders, all_restore_folders, restore_url, restore_headers, dry_run, overwrite)
+        all_source_folders, all_destination_folders, restore_url, restore_headers, dry_run, overwrite)
 
-    valid_folder_uids = set(folder[0]['uid'] for folder in all_folders + all_restore_folders)
-    all_dashboards = get_all_dashboards(backup_url,
+    valid_folder_uids = set(folder[0]['uid'] for folder in all_source_folders + all_destination_folders)
+    all_source_dashboards = get_all_dashboards(backup_url,
                                         backup_headers,
                                         folders_to_include=folders_to_include,
                                         folders_to_exclude=folders_to_exclude)
-    all_library_panels = get_all_library_panels(backup_url, backup_headers)
+    all_source_lib_panels = get_all_library_panels(backup_url, backup_headers)
 
     valid_folder_uids.add('')
     if folders_to_include:
@@ -62,11 +62,11 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run,
             valid_folder_uids.discard('')
 
     # needs to be meta since in Grafana 8, the folderUid is in the meta.
-    all_lib_panels_filtered = [panel for panel in all_library_panels if panel['meta']['folderUid'] in valid_folder_uids]
+    all_lib_panels_filtered = [p for p in all_source_lib_panels if p['meta']['folderUid'] in valid_folder_uids]
     (library_panels_created_summary,
      library_panels_overwrote_summary,
      dashboards_created_summary,
-     dashboards_overwrote_summary) = _migrate_library_panels_and_dashboards(all_dashboards,
+     dashboards_overwrote_summary) = _migrate_library_panels_and_dashboards(all_source_dashboards,
                                                                             all_lib_panels_filtered,
                                                                             restore_url,
                                                                             restore_headers,
@@ -74,14 +74,14 @@ def migrate(backup_url, backup_headers, restore_url, restore_headers, dry_run,
                                                                             overwrite)
 
     # get the list of snapshots to backup
-    all_snapshots = get_all_snapshots(backup_url, backup_headers)
+    all_source_snapshots = get_all_snapshots(backup_url, backup_headers)
     snapshots_synced_summary, snapshots_overwrote_summary = _migrate_snapshots(
-        all_snapshots, restore_url, restore_headers, dry_run, overwrite)
+        all_source_snapshots, restore_url, restore_headers, dry_run, overwrite)
 
     # get all the annotations (ONLY up the PAST 13 months)
-    all_annotations = get_all_annotations(backup_url, backup_headers)
+    all_source_annotations = get_all_annotations(backup_url, backup_headers)
     annotations_synced_summary, annotations_overwrote_summary = _migrate_annotations(
-        all_annotations, restore_url, restore_headers, dry_run, overwrite)
+        all_source_annotations, restore_url, restore_headers, dry_run, overwrite)
 
     dry_run_status = "to be " if dry_run else ""
     output = [
@@ -155,14 +155,14 @@ def _migrate_datasources(all_source_datasources, all_destination_datasources, re
     return (datasources_created_summary, datasources_remapped_summary)
 
 
-def _migrate_folders(all_folders, all_restore_folders, restore_url, restore_headers, dry_run, overwrite):
+def _migrate_folders(all_source_folders, all_destination_folders, restore_url, restore_headers, dry_run, overwrite):
     folders_created_summary = []
     folders_overwrote_summary = []
 
-    restore_folder_uids = {restore_content['uid'] for (restore_content, _) in all_restore_folders}
+    restore_folder_uids = {restore_content['uid'] for (restore_content, _) in all_destination_folders}
     restore_folder_uids = set()
 
-    for folder in all_folders:
+    for folder in all_source_folders:
         content_folder_settings, _ = folder
 
         if content_folder_settings['uid'] in restore_folder_uids:
@@ -187,8 +187,8 @@ def _migrate_folders(all_folders, all_restore_folders, restore_url, restore_head
     return folders_created_summary, folders_overwrote_summary
 
 
-def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels_filtered, restore_url, restore_headers,
-                                           dry_run, overwrite):
+def _migrate_library_panels_and_dashboards(all_source_dashboards, all_library_panels_filtered, restore_url,
+                                           restore_headers, dry_run, overwrite):
     library_panels_created_summary = {}
     library_panels_overwrote_summary = {}
     dashboards_created_summary = {}
@@ -217,7 +217,7 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels_fi
                             library_panels_overwrote_summary)
 
     # we don't backup provisioned dashboards, so we don't need to restore them
-    for dashboard in all_dashboards:
+    for dashboard in all_source_dashboards:
         exists_before = check_dashboard_exists(restore_url, dashboard, restore_headers)
         dashboard_title = dashboard['dashboard'].get('title', '')
 
@@ -263,10 +263,10 @@ def _migrate_library_panels_and_dashboards(all_dashboards, all_library_panels_fi
             dashboards_created_summary, dashboards_overwrote_summary)
 
 
-def _migrate_snapshots(all_snapshots, restore_url, restore_headers, dry_run, overwrite):
+def _migrate_snapshots(all_source_snapshots, restore_url, restore_headers, dry_run, overwrite):
     snapshots_synced_summary = {}
     snapshots_overwrote_summary = {}
-    for snapshot_key, snapshot in all_snapshots:
+    for snapshot_key, snapshot in all_source_snapshots:
         snapshot['key'] = snapshot_key
         exists_before = check_snapshot_exists(restore_url, snapshot['key'], restore_headers)
 
@@ -292,10 +292,10 @@ def _migrate_snapshots(all_snapshots, restore_url, restore_headers, dry_run, ove
     return snapshots_synced_summary, snapshots_overwrote_summary
 
 
-def _migrate_annotations(all_annotations, restore_url, restore_headers, dry_run, overwrite):
+def _migrate_annotations(all_source_annotations, restore_url, restore_headers, dry_run, overwrite):
     annotations_synced_summary = []
     annotations_overwrote_summary = []
-    for annotation in all_annotations:
+    for annotation in all_source_annotations:
         exists_before, _ = check_annotation_exists_and_return_id(restore_url, annotation, restore_headers)
 
         is_successful = True
