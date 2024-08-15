@@ -102,3 +102,7 @@ Release History
 1.2.1
 ++++++
 * Fixed --vm-size parameter mapping
+
+1.2.2
+++++++
+* Add fleet autoupgradeprofile commands.
