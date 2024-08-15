@@ -811,29 +811,25 @@ class ResetNICWithASG(LiveScenarioTest):
         vm_power_state = vm_instance_view['instanceView']['statuses'][1]['code']
         assert vm_power_state == 'PowerState/running'
 
-
+@pytest.mark.ConfVM
 class WindowsConfidentialVMRepair(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
     def test_vmrepair_ConfidentialVMAndUnlockDisk(self, resource_group):
         self.kwargs.update({
-            'vm': 'vm1'
+            'vm': 'vm1',  
+            'rg': resource_group  
         })
-        
-        adminPassword = "!Passw0rd2024"
-        adminUsername = "azureadmin"
-        imageGen2 = "Win2022AzureEditionCore"
 
         # Create test VM
         # need to create a cvm
-        # self.cmd('vm create -g {rg} -n {vm} --admin-username {} --admin-password {} --image {} --size Standard_DC4es_v5 --enable-vtpm true --public-ip-sku Standard --security-type ConfidentialVM --os-disk-security-encryption-type VMGuestStateOnly --enable-secure-boot true'.format(adminUsername, adminPassword, imageGen2))
-        self.cmd('vm create -g {rg} -n {vm} --admin-username {} --admin-password {} --image {}'.format(adminUsername, adminPassword, imageGen2))
+        self.cmd('vm create -g {rg} -n {vm} --admin-username azureadmin --admin-password !Passw0rd2024 --image Win2022Datacenter')
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
 
         # Test create
-        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username {} --repair-password {} --unlock-encrypted-vm --encrypt-recovery-key {} --yes --verbose -o json'.format(adminUsername, adminPassword, adminPassword)).get_output_in_json()
+        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2024 --unlock-encrypted-vm --encrypt-recovery-key !Passw0rd2024 --yes --verbose -o json').get_output_in_json()
         assert result['status'] == STATUS_SUCCESS, result['error_message']
 
         # Check repair VM
