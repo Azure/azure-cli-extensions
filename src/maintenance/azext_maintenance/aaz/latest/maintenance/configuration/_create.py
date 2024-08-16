@@ -135,7 +135,7 @@ class Create(AAZCommand):
         )
         install_patches_windows_parameters.kb_numbers_to_include_list = AAZListArg(
             options=["kb-numbers-to-include-list"],
-            singular_options=["kb-numbers-to-exclude"],
+            singular_options=["kb-numbers-to-include"],
             help="Windows KBID to be included for patching.",
         )
 
