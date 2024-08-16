@@ -288,8 +288,8 @@ class AzureFirewallUpdate(_AzureFirewallUpdate):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.private_ranges = AAZListArg(
             options=['--private-ranges'],
-            help="Space-separated list of SNAT privaterange. Validate values are single Ip, "
-                 "Ipprefixes or a single special value \"IANAPrivateRanges\".",
+            help="Space-separated list of SNAT private ranges. Valid values are single IP, "
+                 "IP prefixes or a single special value \"IANAPrivateRanges\".",
             nullable=True)
         args_schema.private_ranges.Element = AAZStrArg(nullable=True)
         args_schema.allow_active_ftp = AAZBoolArg(
@@ -911,7 +911,7 @@ class AzureFirewallPoliciesUpdate(_AzureFirewallPoliciesUpdate):
 
 class AzureFirewallPolicyIntrusionDetectionAdd(_AzureFirewallPoliciesUpdate):
     """
-    Add overrided intrusion signature or a bypass rule or private ranges list for intrusion detection
+    Add override for intrusion signature or a bypass rule or private ranges list for intrusion detection
     """
 
     @classmethod
@@ -921,11 +921,11 @@ class AzureFirewallPolicyIntrusionDetectionAdd(_AzureFirewallPoliciesUpdate):
         args_schema.name._options = ['--policy-name']
         args_schema.signature_id = AAZStrArg(
             options=['--signature-id'],
-            help="Signature id."
+            help="Signature id for override"
         )
         args_schema.signature_mode = AAZStrArg(
             options=['--mode'],
-            help="The signature state"
+            help="The override signature state"
         )
         args_schema.signature_mode.enum = AAZArgEnum({'Off': 'off', 'Alert': 'Alert', 'Deny': 'Deny'})
         args_schema.bypass_rule_name = AAZStrArg(
@@ -938,7 +938,7 @@ class AzureFirewallPolicyIntrusionDetectionAdd(_AzureFirewallPoliciesUpdate):
         )
         args_schema.bypass_rule_protocol = AAZStrArg(
             options=['--rule-protocol'],
-            help="The rule bypass protocol"
+            help="The bypass traffic rule protocol"
         )
         args_schema.bypass_rule_protocol.enum = AAZArgEnum({'TCP': 'TCP', 'UDP': 'UDP', 'ICMP': 'ICMP', 'Any': 'Any'})
         args_schema.bypass_rule_source_addresses = AAZListArg(
@@ -948,22 +948,22 @@ class AzureFirewallPolicyIntrusionDetectionAdd(_AzureFirewallPoliciesUpdate):
         args_schema.bypass_rule_source_addresses.Element = AAZStrArg()
         args_schema.bypass_rule_destination_addresses = AAZListArg(
             options=['--rule-dest-addresses'],
-            help="Space-separated list of destination IP addresses or ranges for this rule"
+            help="Space-separated list of destination IP addresses or ranges for bypass traffic rule"
         )
         args_schema.bypass_rule_destination_addresses.Element = AAZStrArg()
         args_schema.bypass_rule_destination_ports = AAZListArg(
             options=['--rule-dest-ports'],
-            help="Space-separated list of destination ports or ranges"
+            help="Space-separated list of destination ports or ranges for bypass traffic rule"
         )
         args_schema.bypass_rule_destination_ports.Element = AAZStrArg()
         args_schema.bypass_rule_source_ip_groups = AAZListArg(
             options=['--rule-src-ip-groups'],
-            help="Space-separated list of source IpGroups"
+            help="Space-separated list of source IpGroups for bypass traffic rule"
         )
         args_schema.bypass_rule_source_ip_groups.Element = AAZStrArg()
         args_schema.bypass_rule_destination_ip_groups = AAZListArg(
             options=['--rule-dest-ip-groups'],
-            help="Space-separated list of destination IpGroups for this rule"
+            help="Space-separated list of destination IpGroups for bypass traffic rule"
         )
         args_schema.bypass_rule_destination_ip_groups.Element = AAZResourceIdArg(
             fmt=AAZResourceIdArgFormat(
@@ -1041,7 +1041,7 @@ class AzureFirewallPolicyIntrusionDetectionList(_PolicyIntrusionDetectionShow):
 
 class AzureFirewallPolicyIntrusionDetectionRemove(_AzureFirewallPoliciesUpdate):
     """
-    Remove overrided intrusion signature or a bypass rule
+    Remove overridden intrusion signature or a bypass rule
     """
 
     @classmethod
@@ -1651,6 +1651,13 @@ class RuleCollectionGroupFilterCollectionAdd(_RuleCollectionGroupUpdate):
             arg_group="Application Rule"
         )
         args_schema.protocols.Element = AAZStrArg()
+        args_schema.http_headers_to_insert = AAZDictArg(
+            options=["--http-headers-to-insert"],
+            is_preview=True,
+            help="Space-separated list of HTTP headers to insert.",
+            arg_group="Application Rule"
+        )
+        args_schema.http_headers_to_insert.Element = AAZStrArg()
         args_schema.target_fqdns = AAZListArg(
             options=["--target-fqdns"],
             help="Space-separated list of FQDNs for this rule.",
@@ -1704,6 +1711,9 @@ class RuleCollectionGroupFilterCollectionAdd(_RuleCollectionGroupUpdate):
             protocols = []
             if has_value(args.protocols):
                 protocols = list(map(lambda x: {'protocol_type': x[0], 'port': int(x[1])}, args.protocols.to_serialized_data().items()))
+            http_headers_to_insert = []
+            if has_value(args.http_headers_to_insert):
+                http_headers_to_insert = list(map(lambda x: {'header_name': x[0], 'header_value': x[1]}, args.http_headers_to_insert.to_serialized_data().items()))
             rule = {
                 'name': args.rule_name,
                 'description': args.description,
@@ -1716,7 +1726,8 @@ class RuleCollectionGroupFilterCollectionAdd(_RuleCollectionGroupUpdate):
                 'target_urls': args.target_urls,
                 'source_ip_groups': args.source_ip_groups,
                 'terminate_tls': args.enable_tls_inspection,
-                'web_categories': args.web_categories
+                'web_categories': args.web_categories,
+                'http_headers_to_insert': http_headers_to_insert
             }
         rule_collection = {
             'name': args.rule_collection_name,
@@ -1854,6 +1865,12 @@ class RuleCollectionGroupFilterRuleAdd(_RuleCollectionGroupUpdate):
             arg_group="Application Rule"
         )
         args_schema.web_categories.Element = AAZStrArg()
+        args_schema.http_headers_to_insert = AAZDictArg(
+            options=["--http-headers-to-insert"],
+            help="Space-separated list of HTTP headers to insert, in NAME=VALUE format.",
+            arg_group="Application Rule"
+        )
+        args_schema.http_headers_to_insert.Element = AAZStrArg()
         args_schema.ip_protocols = AAZListArg(
             options=["--ip-protocols"],
             help="Space-separated list of IP protocols. This argument is supported for Nat and Network Rule. ",
@@ -1982,6 +1999,9 @@ class RuleCollectionGroupFilterRuleAdd(_RuleCollectionGroupUpdate):
             if has_value(args.protocols):
                 protocols = list(
                     map(lambda x: {'protocol_type': x[0], 'port': int(x[1])}, args.protocols.to_serialized_data().items()))
+            http_headers_to_insert = []
+            if has_value(args.http_headers_to_insert):
+                http_headers_to_insert = list(map(lambda x: {'header_name': x[0], 'header_value': x[1]}, args.http_headers_to_insert.to_serialized_data().items()))
             rule = {
                 'name': args.rule_name,
                 'description': args.description,
@@ -1994,7 +2014,8 @@ class RuleCollectionGroupFilterRuleAdd(_RuleCollectionGroupUpdate):
                 'target_urls': args.target_urls,
                 'source_ip_groups': args.source_ip_groups,
                 'terminate_tls': args.enable_tls_inspection,
-                'web_categories': args.web_categories
+                'web_categories': args.web_categories,
+                'http_headers_to_insert': http_headers_to_insert
             }
 
         elif args.rule_type == 'NatRule':
@@ -2114,48 +2135,61 @@ class RuleCollectionGroupFilterRuleUpdate(_RuleCollectionGroupUpdate):
             required=True,
             arg_group="",
         )
+
         args_schema.rcg_name = AAZStrArg(
             options=["--rcg-name", "--rule-collection-group-name"],
             help="The name of the Firewall Policy Rule Collection Group.",
             required=True,
             arg_group="",
         )
+
         args_schema.enable_tls_inspection = AAZBoolArg(
             options=['--enable-tls-inspection', '--enable-tls-insp'],
             help="Enable flag to terminate TLS connection for this rule",
             default=False,
             arg_group="Application Rule"
         )
+
         args_schema.fqdn_tags = AAZListArg(
             options=["--fqdn-tags"],
             help="Space-separated list of FQDN tags for this rule.",
             arg_group="Application Rule"
         )
         args_schema.fqdn_tags.Element = AAZStrArg()
+
         args_schema.protocols = AAZDictArg(
             options=["--protocols"],
             help="Space-separated list of protocols and port numbers to use, in PROTOCOL=PORT format.",
             arg_group="Application Rule"
         )
         args_schema.protocols.Element = AAZStrArg()
+
         args_schema.target_fqdns = AAZListArg(
             options=["--target-fqdns"],
             help="Space-separated list of FQDNs for this rule.",
             arg_group="Application Rule"
         )
         args_schema.target_fqdns.Element = AAZStrArg()
+
         args_schema.target_urls = AAZListArg(
             options=["--target-urls"],
             help="Space-separated list of target urls for this rule.",
             arg_group="Application Rule"
         )
         args_schema.target_urls.Element = AAZStrArg()
+
         args_schema.web_categories = AAZListArg(
             options=["--web-categories"],
             help="Space-separated list of web categories for this rule.",
             arg_group="Application Rule"
         )
         args_schema.web_categories.Element = AAZStrArg()
+        args_schema.http_headers_to_insert = AAZDictArg(
+            options=["--http-headers-to-insert"],
+            help="Space-separated list of HTTP headers to insert, in NAME=VALUE format.",
+            arg_group="Application Rule"
+        )
+        args_schema.http_headers_to_insert.Element = AAZStrArg()
         args_schema.ip_protocols = AAZListArg(
             options=["--ip-protocols"],
             help="Space-separated list of IP protocols. This argument is supported for Nat and Network Rule. ",
@@ -2182,7 +2216,7 @@ class RuleCollectionGroupFilterRuleUpdate(_RuleCollectionGroupUpdate):
         args_schema.destination_ports.Element = AAZStrArg()
         args_schema.source_addresses = AAZListArg(
             options=["--source-addresses"],
-            help="Space-separated list of source IP ddresses.",
+            help="Space-separated list of source IP addresses.",
             arg_group="Common Rule"
         )
         args_schema.source_addresses.Element = AAZStrArg()
@@ -2272,6 +2306,9 @@ class RuleCollectionGroupFilterRuleUpdate(_RuleCollectionGroupUpdate):
                         protocols = list(
                             map(lambda x: {'protocol_type': x[0], 'port': int(x[1])},
                                 args.protocols.to_serialized_data().items()))
+                    http_headers_to_insert = []
+                    if has_value(args.http_headers_to_insert):
+                        http_headers_to_insert = list(map(lambda x: {'header_name': x[0], 'header_value': x[1]}, args.http_headers_to_insert.to_serialized_data().items()))
                     new_rule = {
                         'name': args.rule_name,
                         'description': args.description if has_value(args.description) else rule.description,
@@ -2284,7 +2321,8 @@ class RuleCollectionGroupFilterRuleUpdate(_RuleCollectionGroupUpdate):
                         'target_urls': args.target_urls if has_value(args.target_urls) else rule.target_urls,
                         'source_ip_groups': args.source_ip_groups if has_value(args.source_ip_groups) else rule.source_ip_groups,
                         'terminate_tls': args.enable_tls_inspection if has_value(args.enable_tls_inspection) else rule.enable_tls_inspection,
-                        'web_categories': args.web_categories if has_value(args.web_categories) else rule.web_categories
+                        'web_categories': args.web_categories if has_value(args.web_categories) else rule.web_categories,
+                        'http_headers_to_insert': http_headers_to_insert
                     }
                 elif rule.rule_type == 'NatRule':
                     new_rule = {
