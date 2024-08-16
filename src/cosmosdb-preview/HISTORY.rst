@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.2
+* Update CosmosDB RP API Version to 2024-09-01-preview
+
++++++++
 1.0.1
 * Add support for CapacityMode in Global Database Accounts
 * Add support for DistributedQuery flag in SqlDedicatedGateway
