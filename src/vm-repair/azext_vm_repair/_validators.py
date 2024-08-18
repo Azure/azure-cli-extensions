@@ -92,6 +92,38 @@ def validate_create(cmd, namespace):
         _prompt_public_ip(namespace)
 
 
+def validate_reuse(cmd, namespace):
+    check_extension_version(EXTENSION_NAME)
+
+    # Check if VM exists and is not classic VM
+    source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
+    is_linux = _is_linux_os(source_vm)
+
+    # # Check repair vm name
+    # if namespace.repair_vm_name:
+    #     _validate_vm_name(namespace.repair_vm_name, is_linux)
+
+    # Check copy disk name
+    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
+    if namespace.copy_disk_name:
+        _validate_disk_name(namespace.copy_disk_name)
+    else:
+        namespace.copy_disk_name = namespace.vm_name + '-DiskCopy-' + timestamp
+
+    # Check encrypted disk
+    encryption_type, _, _, _ = _fetch_encryption_settings(source_vm)
+    # Currently only supporting single pass
+    if encryption_type in (Encryption.SINGLE_WITH_KEK, Encryption.SINGLE_WITHOUT_KEK):
+        if not namespace.unlock_encrypted_vm:
+            _prompt_encrypted_vm(namespace)
+    elif encryption_type is Encryption.DUAL:
+        logger.warning('The source VM\'s OS disk is encrypted using dual pass method.')
+        raise CLIError('The current command does not support VMs which were encrypted using dual pass.')
+    else:
+        logger.debug('The source VM\'s OS disk is not encrypted')
+
+
+
 def validate_restore(cmd, namespace):
     check_extension_version(EXTENSION_NAME)
 

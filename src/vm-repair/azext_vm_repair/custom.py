@@ -51,7 +51,185 @@ from .exceptions import AzCommandError, RunScriptNotFoundForIdError, SupportingR
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False):
+def reuse(cmd, vm_name, resource_group_name, repair_vm_name, repair_group_name, copy_disk_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False,  yes=False):
+
+    # log all the parameters
+    logger.debug('vm repair reuse command parameters: vm_name: %s, resource_group_name: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s', vm_name, resource_group_name, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, yes)
+
+    # Init command helper object
+    command = command_helper(logger, cmd, 'vm repair reuse')
+    # Main command calling block
+    try:
+        # Fetch source VM data
+        source_vm = get_vm(cmd, resource_group_name, vm_name)
+        source_vm_instance_view = get_vm(cmd, resource_group_name, vm_name, 'instanceView')
+
+        is_linux = _is_linux_os(source_vm)
+        vm_hypervgen = _is_gen2(source_vm_instance_view)
+
+        target_disk_name = source_vm.storage_profile.os_disk.name
+        is_managed = _uses_managed_disk(source_vm)
+        copy_disk_id = None
+        resource_tag = _get_repair_resource_tag(resource_group_name, vm_name)
+        created_resources = []
+        architecture_type = _fetch_architecture(source_vm)
+
+        # Set up base create vm command
+        vm_exists_cmd = 'az vm list -g {repair_group_name} --query "[?name==\'{repair_vm_name}\']" -o tsv'.format(repair_group_name=repair_group_name, repair_vm_name=repair_vm_name)
+
+        reuse_vm = _call_az_command(vm_exists_cmd)
+
+        if not reuse_vm:
+            raise Exception('Reuse not applicable, cannot find VM')
+        else:
+            # detach all data disks
+            logger.info('Fetching data disks attached to reusable repair vm.\n')
+            get_vm_command = 'az vm show -g {resource_group} -n {vm_name} --query storageProfile.dataDisks -o json'\
+            .format(resource_group=repair_group_name, vm_name=repair_vm_name)
+
+            data_disks = json.loads(_call_az_command(get_vm_command))
+            logger.info('Detaching data disks attached to reusable repair vm.\n')
+
+            # Detach each data disk
+            for disk in data_disks:
+                disk_name = disk['name']
+                detach_disk_command = f"az vm disk detach --resource-group {repair_group_name} --vm-name {repair_vm_name} --name {disk_name}"
+                _call_az_command(detach_disk_command)
+                print(f"Detached disk: {disk_name}")
+
+        # MANAGED DISK
+        if is_managed:
+            logger.info('Source VM uses managed disks. Reusing repair VM with managed disks.\n')
+
+            # Copy OS disk command
+            disk_sku, location, os_type, hyperV_generation = _fetch_disk_info(resource_group_name, target_disk_name)
+            os_disk_id_cmd = 'az disk show -g {g} --name {s} --query id -o tsv' \
+                                .format(g=resource_group_name, s=target_disk_name)
+            os_disk_id = _call_az_command(os_disk_id_cmd).strip('\n')
+
+            copy_disk_command = 'az disk create -g {g} -n {n} --source {s} --sku {sku} --location {loc} --os-type {os_type} --query id -o tsv' \
+                                .format(g=repair_group_name, n=copy_disk_name, s=os_disk_id, sku=disk_sku, loc=location, os_type=os_type)
+
+            # Only add hyperV variable when available
+            if hyperV_generation:
+                copy_disk_command += ' --hyper-v-generation {hyperV}'.format(hyperV=hyperV_generation)
+            elif is_linux and hyperV_generation_linux == 'V2':
+                logger.info('The disk did not contain the information of gen2 , but the machine is created from gen2 image')
+                copy_disk_command += ' --hyper-v-generation {hyperV}'.format(hyperV=hyperV_generation_linux)
+            # Set availability zone for vm when available
+            if source_vm.zones:
+                zone = source_vm.zones[0]
+                copy_disk_command += ' --zone {zone}'.format(zone=zone)
+            # Copy OS Disk
+            logger.info('Copying OS disk of source VM...')
+            copy_disk_id = _call_az_command(copy_disk_command).strip('\n')
+
+            # wait a few seconds
+            import time
+            time.sleep(10)
+
+            attach_disk_command = "az vm disk attach -g {g} --name {disk_id} --vm-name {vm_name} ".format(g=repair_group_name, disk_id=copy_disk_id, vm_name=repair_vm_name)
+            _call_az_command(attach_disk_command)
+
+        # UNMANAGED DISK
+        else:
+            logger.info('Source VM uses unmanaged disks. Reusing repair VM with unmanaged disks.\n')
+            os_disk_uri = source_vm.storage_profile.os_disk.vhd.uri
+            copy_disk_name = copy_disk_name + '.vhd'
+            storage_account = StorageResourceIdentifier(cmd.cli_ctx.cloud, os_disk_uri)
+
+            # get storage account connection string
+            get_connection_string_command = 'az storage account show-connection-string -g {g} -n {n} --query connectionString -o tsv' \
+                                            .format(g=resource_group_name, n=storage_account.account_name)
+            logger.debug('Fetching storage account connection string...')
+            connection_string = _call_az_command(get_connection_string_command).strip('\n')
+
+            # Create Snapshot of Unmanaged Disk
+            make_snapshot_command = 'az storage blob snapshot -c {c} -n {n} --connection-string "{con_string}" --query snapshot -o tsv' \
+                                    .format(c=storage_account.container, n=storage_account.blob, con_string=connection_string)
+            logger.info('Creating snapshot of OS disk...')
+            snapshot_timestamp = _call_az_command(make_snapshot_command, secure_params=[connection_string]).strip('\n')
+            snapshot_uri = os_disk_uri + '?snapshot={timestamp}'.format(timestamp=snapshot_timestamp)
+
+            # Copy Snapshot into unmanaged Disk
+            copy_snapshot_command = 'az storage blob copy start -c {c} -b {name} --source-uri {source} --connection-string "{con_string}"' \
+                                    .format(c=storage_account.container, name=copy_disk_name, source=snapshot_uri, con_string=connection_string)
+            logger.info('Creating a copy disk from the snapshot...')
+            _call_az_command(copy_snapshot_command, secure_params=[connection_string])
+            # Generate the copied disk uri
+            copy_disk_id = os_disk_uri.rstrip(storage_account.blob) + copy_disk_name
+
+            # Create new repair VM with copied ummanaged disk command
+            logger.info('Checking if disk copy is done...')
+            copy_check_command = 'az storage blob show -c {c} -n {name} --connection-string "{con_string}" --query properties.copy.status -o tsv' \
+                                 .format(c=storage_account.container, name=copy_disk_name, con_string=connection_string)
+            copy_result = _call_az_command(copy_check_command, secure_params=[connection_string]).strip('\n')
+            if copy_result != 'success':
+                raise UnmanagedDiskCopyError('Unmanaged disk copy failed.')
+
+            # Attach copied unmanaged disk to new vm
+            logger.info('Attaching copied disk to repair VM as data disk...')
+            attach_disk_command = "az vm unmanaged-disk attach -g {g} -n {disk_name} --vm-name {vm_name} --vhd-uri {uri}" \
+                                  .format(g=repair_group_name, disk_name=copy_disk_name, vm_name=repair_vm_name, uri=copy_disk_id)
+            _call_az_command(attach_disk_command)
+
+        created_resources = _list_resource_ids_in_rg(repair_group_name)
+        command.set_status_success()
+
+    # Some error happened. Stop command and clean-up resources.
+    except KeyboardInterrupt:
+        command.error_stack_trace = traceback.format_exc()
+        command.error_message = "Command interrupted by user input."
+        command.message = "Command interrupted by user input. Cleaning up resources."
+    except AzCommandError as azCommandError:
+        command.error_stack_trace = traceback.format_exc()
+        command.error_message = str(azCommandError)
+        command.message = "Repair create failed. Cleaning up created resources."
+    except SkuDoesNotSupportHyperV as skuDoesNotSupportHyperV:
+        command.error_stack_trace = traceback.format_exc()
+        command.error_message = str(skuDoesNotSupportHyperV)
+        command.message = "v2 sku does not support nested VM in hyperv. Please run command without --enabled-nested."
+    except ScriptReturnsError as scriptReturnsError:
+        command.error_stack_trace = traceback.format_exc()
+        command.error_message = str(scriptReturnsError)
+        command.message = "Error returned from script when enabling hyperv."
+    except SkuNotAvailableError as skuNotAvailableError:
+        command.error_stack_trace = traceback.format_exc()
+        command.error_message = str(skuNotAvailableError)
+        command.message = "Please check if the current subscription can create more VM resources. Cleaning up created resources."
+    except UnmanagedDiskCopyError as unmanagedDiskCopyError:
+        command.error_stack_trace = traceback.format_exc()
+        command.error_message = str(unmanagedDiskCopyError)
+        command.message = "Repair create failed. Please try again at another time. Cleaning up created resources."
+    except WindowsOsNotAvailableError:
+        command.error_stack_trace = traceback.format_exc()
+        command.error_message = 'Compatible Windows OS image not available.'
+        command.message = 'A compatible Windows OS image is not available at this time, please check subscription.'
+    except Exception as exception:
+        command.error_stack_trace = traceback.format_exc()
+        command.error_message = str(exception)
+        command.message = 'An unexpected error occurred. Try running again with the --debug flag to debug.'
+
+    finally:
+        if command.error_stack_trace:
+            logger.debug(command.error_stack_trace)
+    # Generate return results depending on command state
+    if not command.is_status_success():
+        command.set_status_error()
+        return_dict = command.init_return_dict()
+    else:
+        created_resources.append(copy_disk_id)
+        command.message = 'Your repair VM \'{n}\' is in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
+                          'Please use this VM to troubleshoot and repair. Once the repairs are complete use the command ' \
+                          '\'az vm repair restore -n {source_vm} -g {rg} --verbose\' to restore disk to the source VM. ' \
+                          .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name, rg=resource_group_name, source_vm=vm_name)
+        return_dict = command.init_return_dict()
+        # Add additional custom return properties
+
+        logger.info('\n%s\n', command.message)
+    return return_dict
+
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu',  yes=False):
 
     # log all the parameters
     logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s', vm_name, resource_group_name, repair_password, repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes)
