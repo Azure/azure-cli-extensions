@@ -2,6 +2,10 @@
 
 Release History
 ===============
+2.1.0
+++++++
+* Add new param --new to override the existing database user
+
 2.0.7
 ++++++
 * Fix argument missing
