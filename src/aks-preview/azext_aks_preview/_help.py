@@ -236,6 +236,15 @@ helps['aks create'] = f"""
         - name: --enable-advanced-network-observability
           type: bool
           short-summary: Enable advanced network observability functionalities on a cluster. Note that enabling this will incur additional costs.
+        - name: --enable-fqdn-policy
+          type: bool
+          short-summary: Enable advanced network security FQDN functionalities on a cluster. Note that enabling this will incur additional costs.
+        - name: --enable-acns
+          type: bool
+          short-summary: Enable advanced network functionalities on a cluster. Note that enabling this will incur additional costs.
+        - name: --advanced-networking-observability-tls-management
+          type: string
+          short-summary: Management of TLS certificates for querying network flow logs via the flow log endpoint for Advanced Networking observability clusters. Valid values are "Managed" and "None". If not specified, the default is Managed.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -287,6 +296,12 @@ helps['aks create'] = f"""
         - name: --data-collection-settings
           type: string
           short-summary: Path to JSON file containing data collection settings for Monitoring addon.
+        - name: --enable-high-log-scale-mode
+          type: bool
+          short-summary: Enable High Log Scale Mode for Container Logs.
+        - name: --ampls-resource-id
+          type: string
+          short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
         - name: --enable-cluster-autoscaler
           type: bool
           short-summary: Enable cluster autoscaler, default value is false.
@@ -602,6 +617,9 @@ helps['aks create'] = f"""
         - name: --enable-app-routing
           type: bool
           short-summary: Enable Application Routing addon.
+        - name: --app-routing-default-nginx-controller --ardnc
+          type: string
+          short-summary: Configure default nginx ingress controller type. Valid values are annotationControlled (default behavior), external, internal, or none.
         - name: --enable-ai-toolchain-operator
           type: bool
           short-summary: Enable AI toolchain operator to the cluster.
@@ -1222,6 +1240,21 @@ helps['aks update'] = """
         - name: --disable-advanced-network-observability
           type: bool
           short-summary: Disable advanced network observability functionalities on a cluster
+        - name: --advanced-networking-observability-tls-management
+          type: string
+          short-summary: Management of TLS certificates for querying network flow logs via the flow log endpoint for Advanced Networking observability clusters. Valid values are "Managed" and "None". If not specified, the default is Managed.
+        - name: --enable-fqdn-policy
+          type: bool
+          short-summary: Enable advanced network security FQDN functionalities on a cluster. Note that enabling this will incur additional costs.
+        - name: --disable-fqdn-policy
+          type: bool
+          short-summary: Disable advanced network security FQDN functionalities on a cluster
+        - name: --enable-acns
+          type: bool
+          short-summary: Enable advanced network functionalities on a cluster. Note that enabling this will incur additional costs.
+        - name: --disable-acns
+          type: bool
+          short-summary: Disable advanced network functionalities on a cluster
         - name: --enable-cost-analysis
           type: bool
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
@@ -2307,6 +2340,12 @@ parameters:
   - name: --data-collection-settings
     type: string
     short-summary: Path to JSON file containing data collection settings for Monitoring addon.
+  - name: --enable-high-log-scale-mode
+    type: bool
+    short-summary: Enable High Log Scale Mode for Container Logs.
+  - name: --ampls-resource-id
+    type: string
+    short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
@@ -2374,6 +2413,12 @@ parameters:
   - name: --data-collection-settings
     type: string
     short-summary: Path to JSON file containing data collection settings for Monitoring addon.
+  - name: --enable-high-log-scale-mode
+    type: bool
+    short-summary: Enable High Log Scale Mode for Container Logs.
+  - name: --ampls-resource-id
+    type: string
+    short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
@@ -2455,6 +2500,12 @@ parameters:
   - name: --data-collection-settings
     type: string
     short-summary: Path to JSON file containing data collection settings for Monitoring addon.
+  - name: --enable-high-log-scale-mode
+    type: bool
+    short-summary: Enable High Log Scale Mode for Container Logs.
+  - name: --ampls-resource-id
+    type: string
+    short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
@@ -3130,6 +3181,10 @@ helps['aks approuting enable'] = """
         type: string
         short-summary: Attach a keyvault id to access secrets and certificates.
         long-summary: This optional flag attaches a keyvault id to access secrets and certificates.
+      - name: --nginx
+        type: string
+        short-summary: Configure default NginxIngressController resource
+        long-summary: Configure default nginx ingress controller type. Valid values are annotationControlled (default behavior), external, internal, or none.
 """
 
 helps['aks approuting disable'] = """
@@ -3151,6 +3206,10 @@ helps['aks approuting update'] = """
         type: bool
         short-summary: Enable the keyvault secrets provider addon.
         long-summary: This optional flag enables the keyvault-secrets-provider addon in given cluster. This is required for most App Routing use-cases.
+      - name: --nginx
+        type: string
+        short-summary: Configure default NginxIngressController resource
+        long-summary: Configure default nginx ingress controller type. Valid values are annotationControlled (default behavior), external, internal, or none.
 """
 
 helps['aks approuting zone'] = """

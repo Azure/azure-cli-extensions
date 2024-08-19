@@ -29,41 +29,11 @@ class PolicyGeneratingArm(unittest.TestCase):
             "containers": [
                 {
                     "name": "simple-container",
-                    "containerImage": "python:3.6.14-slim-buster",
+                    "containerImage": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot",
                     "environmentVariables": [
                         {
                             "name":"PATH",
-                            "value":"/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"LANG",
-                            "value":"C.UTF-8",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"GPG_KEY",
-                            "value":"0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"PYTHON_VERSION",
-                            "value":"3.6.14",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"PYTHON_PIP_VERSION",
-                            "value":"21.2.4",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"PYTHON_GET_PIP_URL",
-                            "value":"https://github.com/pypa/get-pip/raw/c20b0cfd643cd4a19246ccf204e2997af70f6b21/public/get-pip.py",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"PYTHON_GET_PIP_SHA256",
-                            "value":"fa6f3fb93cce234cd4e8dd2beb54a51ab9c247653b52855a48dd44e6b21ff28b",
+                            "value":"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
                             "strategy":"string"
                         }
                     ],
@@ -91,7 +61,7 @@ class PolicyGeneratingArm(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -253,7 +223,6 @@ class PolicyGeneratingArm(unittest.TestCase):
 
         normalized_aci_policy[0].pop(config.POLICY_FIELD_CONTAINERS_ID)
         normalized_aci_arm_policy[0].pop(config.POLICY_FIELD_CONTAINERS_ID)
-
         self.assertEqual(
             deepdiff.DeepDiff(
                 normalized_aci_policy, normalized_aci_arm_policy, ignore_order=True
@@ -724,7 +693,7 @@ class PolicyGeneratingArmParametersIncorrect(unittest.TestCase):
         "contentVersion": "1.0.0.0",
         "parameters": {
             "image": {
-            "value": "python:3.6.14-slim-buster"
+            "value": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
             },
             "containername": {
             "value": "simple-container"
@@ -785,7 +754,7 @@ class PolicyGeneratingArmParameters(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the image"
                 },
-                "defaultValue": "python:3.6.14-slim-buster"
+                "defaultValue": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
             },
 
             "port": {
@@ -925,7 +894,7 @@ class PolicyGeneratingArmParameters2(unittest.TestCase):
             "metadata": {
                 "description": "Name for the container group"
             },
-            "defaultValue":"python:3.6.14-slim-buster"
+            "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
             },
              "imagebase": {
             "type": "string",
@@ -1094,7 +1063,7 @@ class PolicyGeneratingArmContainerConfig(unittest.TestCase):
             "metadata": {
                 "description": "Name for the container group"
             },
-            "defaultValue":"python:3.6.14-slim-buster"
+            "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
             },
              "imagebase": {
             "type": "string",
@@ -1281,7 +1250,7 @@ class PolicyGeneratingArmParametersCleanRoom(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"alpine:3.16"
+                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
             },
             "containername": {
                 "type": "string",
@@ -1387,7 +1356,7 @@ class PolicyGeneratingArmParametersCleanRoom(unittest.TestCase):
     """
         with DockerClient() as client:
             # client = docker.from_env()
-            original_image = "alpine:3.16"
+            original_image = "mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
             try:
                 client.images.remove(original_image)
             except:
@@ -1442,7 +1411,7 @@ class PolicyDiff(unittest.TestCase):
     "contentVersion": "1.0.0.0",
     "variables": {
         "container1name": "aci-test",
-        "container1image": "alpine:3.16"
+        "container1image": "mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
     },
     "resources": [
         {
@@ -1521,7 +1490,7 @@ class PolicyDiff(unittest.TestCase):
     "contentVersion": "1.0.0.0",
     "variables": {
         "container1name": "aci-test",
-        "container1image": "alpine:3.16"
+        "container1image": "mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
     },
     "resources": [
         {
@@ -1653,7 +1622,7 @@ class PolicyGeneratingArmInfrastructureSvn(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -1821,9 +1790,9 @@ class MultiplePolicyTemplate(unittest.TestCase):
     "contentVersion": "1.0.0.0",
     "variables": {
         "container1name": "aci-test",
-        "container1image": "alpine:3.16",
+        "container1image": "mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0",
         "container2name": "aci-test2",
-        "container2image": "python:3.6.14-slim-buster"
+        "container2image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
     },
     "resources": [
         {
@@ -2081,7 +2050,7 @@ class MultiplePolicyTemplate(unittest.TestCase):
         is_valid, diff = self.aci_policy.validate_cce_policy()
         self.assertFalse(is_valid)
         # just check to make sure the containers in both policies are different
-        expected_diff = {"aci-test": "alpine:3.16 not found in policy"}
+        expected_diff = {"aci-test": "mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 not found in policy"}
         self.assertEqual(diff, expected_diff)
 
     def test_multiple_diffs(self):
@@ -2118,7 +2087,7 @@ class PolicyGeneratingArmInitContainer(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"alpine:3.16"
+                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
             },
             "containername": {
                 "type": "string",
@@ -2200,7 +2169,7 @@ class PolicyGeneratingArmInitContainer(unittest.TestCase):
                     {
                         "name": "init-container-python",
                         "properties": {
-                            "image": "python:3.6.14-slim-buster",
+                            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot",
                             "environmentVariables": [
                                 {
                                     "name":"PATH",
@@ -2303,7 +2272,7 @@ class PolicyGeneratingDisableStdioAccess(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"alpine:3.16"
+                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
             },
             "containername": {
                 "type": "string",
@@ -2449,7 +2418,7 @@ class PolicyGeneratingAllowElevated(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"alpine:3.16"
+                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
             },
             "containername": {
                 "type": "string",
@@ -2584,7 +2553,7 @@ class PrintExistingPolicy(unittest.TestCase):
             "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
             "contentVersion": "1.0.0.0",
             "variables": {
-                "image": "python:3.6.14-slim-buster"
+                "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
             },
 
 
@@ -2724,7 +2693,7 @@ class PrintExistingPolicy(unittest.TestCase):
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "variables": {
-    "image": "python:3.6.14-slim-buster"
+    "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
   },
   "parameters": {
     "containergroupname": {
@@ -2883,41 +2852,11 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
             "containers": [
                 {
                     "name": "simple-container",
-                    "containerImage": "python:3.6.14-slim-buster",
+                    "containerImage": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot",
                     "environmentVariables": [
                         {
                             "name":"PATH",
                             "value":"/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"LANG",
-                            "value":"C.UTF-8",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"GPG_KEY",
-                            "value":"0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"PYTHON_VERSION",
-                            "value":"3.6.14",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"PYTHON_PIP_VERSION",
-                            "value":"21.2.4",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"PYTHON_GET_PIP_URL",
-                            "value":"https://github.com/pypa/get-pip/raw/c20b0cfd643cd4a19246ccf204e2997af70f6b21/public/get-pip.py",
-                            "strategy":"string"
-                        },
-                        {
-                            "name":"PYTHON_GET_PIP_SHA256",
-                            "value":"fa6f3fb93cce234cd4e8dd2beb54a51ab9c247653b52855a48dd44e6b21ff28b",
                             "strategy":"string"
                         },
                         {
@@ -2939,7 +2878,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -3057,7 +2996,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -3173,7 +3112,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -3307,7 +3246,7 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -3483,7 +3422,6 @@ class PolicyGeneratingArmWildcardEnvs(unittest.TestCase):
         normalized_aci_policy[0].pop(config.POLICY_FIELD_CONTAINERS_ID)
 
         normalized_aci_arm_policy[0].pop(config.POLICY_FIELD_CONTAINERS_ID)
-
         self.assertEqual(
             deepdiff.DeepDiff(
                 normalized_aci_policy, normalized_aci_arm_policy, ignore_order=True
@@ -3563,7 +3501,7 @@ class PolicyGeneratingEdgeCases(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"alpine:3.16"
+                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
             },
             "containername": {
                 "type": "string",
@@ -3691,7 +3629,7 @@ class PolicyGeneratingEdgeCases(unittest.TestCase):
 
         # see if the remote image and the local one produce the same output
         self.assertEqual(env_var, "PORT=parameters('abc')")
-        self.assertEqual(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ID], "alpine:3.16")
+        self.assertEqual(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ID], "mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0")
 
     def test_arm_template_config_map_sidecar(self):
         regular_image_json = json.loads(
@@ -3711,7 +3649,7 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -3852,7 +3790,7 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -4003,7 +3941,7 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -4150,7 +4088,7 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -4322,8 +4260,8 @@ class PolicyGeneratingSecurityContext(unittest.TestCase):
         expected_user_json = json.loads("""{
             "user_idname":
             {
-                "pattern": "",
-                "strategy": "any"
+                "pattern": "nonroot",
+                "strategy": "name"
             },
             "group_idnames": [
                 {
@@ -4438,7 +4376,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -4588,7 +4526,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 
@@ -5196,7 +5134,7 @@ class PolicyGeneratingSecurityContextSeccompProfileEdgeCases(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "python:3.6.14-slim-buster"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 

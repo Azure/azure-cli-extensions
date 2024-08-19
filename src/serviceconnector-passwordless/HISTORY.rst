@@ -2,6 +2,10 @@
 
 Release History
 ===============
+2.0.7
+++++++
+* Fix argument missing
+
 2.0.6
 ++++++
 * Add create permission in postgresql

@@ -4,7 +4,16 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp create': Support --registry-identity to use Environment identity for ACR authentication.
+* 'az containerapp job create': Support --registry-identity to use Environment identity for ACR authentication.
+* 'az containerapp registry set': Support --identity to use Environment identity for ACR authentication.
+* 'az containerapp job registry set': Support --identity to use Environment identity for ACR authentication.
+
+0.3.54
+++++++
 * 'az containerapp env create/update': Support `--public-network-access` to allow or block public network
+* Update azure cli dependency version >= "2.62.0"
+* Remove GA commands which exist in azure-cli version 2.62.0
 
 0.3.53
 ++++++
