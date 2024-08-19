@@ -17,6 +17,7 @@ Release History
   * KubernetesClusters commands are enhanced to support an alternative load balancer configuration that represents an L2 load balancer in property `l2ServiceLoadBalancerConfiguration`.
   * KubernetesClusters commands are enhanced to support additional upgrade settings `drainTimeout` and `maxUnavailable` for initial agent pools.
   * KubernetesClusters agentpool commands are enhanced to support additional upgrade settings `drainTimeout` and `maxUnavailable`.
+* This version requires a minimum of 2.61 Azure core CLI.
   
 2.0.0b2
 ++++++++
