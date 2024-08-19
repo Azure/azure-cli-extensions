@@ -617,7 +617,7 @@ class LinuxSinglepassKekEncryptedManagedDiskWithRHEL8DistroCreateRestoreTest(Liv
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
-
+@pytest.mark.linuxSles
 class LinuxSinglepassNoKekEncryptedManagedDiskWithSLES15CreateRestoreTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -645,8 +645,8 @@ class LinuxSinglepassNoKekEncryptedManagedDiskWithSLES15CreateRestoreTest(LiveSc
         # Add buffer time for encryption settings to be set
         time.sleep(300)
 
-        # Test create
-        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018 --distro sles15 --unlock-encrypted-vm --yes -o json').get_output_in_json()
+        # Test create # SuseSles15SP3
+        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018 --distro ubuntu20 --unlock-encrypted-vm --yes -o json').get_output_in_json()
         assert result['status'] == STATUS_SUCCESS, result['error_message']
 
         # Check repair VM
