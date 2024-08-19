@@ -75,3 +75,16 @@ Release History
 * `az grafana folder show`: remove folder lookup by id due to deprecated API
 * `az grafana folder delete`: remove folder lookup by id due to deprecated API
 * `az grafana dashboard import`: update call from deprecated dashboard import API to dashboard create/update API
+
+2.0.0
+++++++
+* Move existing Grafana CRUD command implementations to AAZ CodeGen
+* `az grafana create`: Migrate to AAZDev Tool & implicitly support role assignment principal types
+* `az grafana update`: Migrate to AAZDev Tool
+* `az grafana list`: Migrate to AAZDev Tool
+* `az grafana show`: Migrate to AAZDev Tool
+* `az grafana delete`: Migrate to AAZDev Tool
+
+2.1.0
+++++++
+* `az grafana migrate`: migrate data from a self-hosted Grafana instance to Azure Managed Grafana instance
