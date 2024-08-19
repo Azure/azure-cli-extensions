@@ -29,6 +29,15 @@ helps['grafana restore'] = """
            az grafana restore -g MyResourceGroup -n MyGrafana --archive-file backup\\dashboards\\ServiceHealth-202307051036.tar.gz --components dashboards folders --remap-data-sources
 """
 
+helps['grafana migrate'] = """
+    type: command
+    short-summary: Migrate an existing Grafana instance to an Azure Managed Grafana instance.
+    examples:
+       - name: Migrate dashboards and folders from a local Grafana instance to an Azure Managed Grafana instance.
+         text: |
+           az grafana migrate -g MyResourceGroup -n MyGrafana -s http://localhost:3000 -t YourServiceTokenOrAPIKey
+"""
+
 
 helps['grafana data-source'] = """
     type: group
