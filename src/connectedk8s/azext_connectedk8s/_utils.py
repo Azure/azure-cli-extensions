@@ -1107,3 +1107,59 @@ def parse_helm_values(helm_content_values, cmd_helm):
 
 def get_utctimestring():
     return time.strftime("%Y-%m-%dT%H-%M-%SZ", time.gmtime())
+
+
+def helm_update_agent(helm_client_location, kube_config, kube_context, helm_content_values, values_file, 
+                      cluster_name, release_namespace, chart_path):
+    cmd_helm_values = [helm_client_location, "get", "values", "azure-arc", "--namespace", release_namespace]
+    if kube_config:
+        cmd_helm_values.extend(["--kubeconfig", kube_config])
+    if kube_context:
+        cmd_helm_values.extend(["--kube-context", kube_context])
+
+    user_values_location = os.path.join(os.path.expanduser('~'), '.azure', 'userValues.txt')
+    existing_user_values = open(user_values_location, 'w+')
+    response_helm_values_get = Popen(cmd_helm_values, stdout=existing_user_values, stderr=PIPE)
+    _, error_helm_get_values = response_helm_values_get.communicate()
+    if response_helm_values_get.returncode != 0:
+        if ('forbidden' in error_helm_get_values.decode("ascii") or
+                'timed out waiting for the condition' in error_helm_get_values.decode("ascii")):
+            telemetry.set_user_fault()
+            telemetry.set_exception(
+                exception=error_helm_get_values.decode("ascii"),
+                fault_type=consts.Get_Helm_Values_Failed,
+                summary='Error while doing helm get values azure-arc')
+            raise CLIInternalError(str.format(consts.Update_Agent_Failure, error_helm_get_values.decode("ascii")))
+    
+    cmd_helm_upgrade = [helm_client_location, "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
+                        "-f", user_values_location, "--wait", "--output", "json"]
+    # Add helmValues content response from DP
+    cmd_helm_upgrade = parse_helm_values(helm_content_values, cmd_helm=cmd_helm_upgrade)
+    if values_file:
+        cmd_helm_upgrade.extend(["-f", values_file])
+    if kube_config:
+        cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
+    if kube_context:
+        cmd_helm_upgrade.extend(["--kube-context", kube_context])
+    response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
+    _, error_helm_upgrade = response_helm_upgrade.communicate()
+    if response_helm_upgrade.returncode != 0:
+        helm_upgrade_error_message = error_helm_upgrade.decode("ascii")
+        if any(message in helm_upgrade_error_message for message in consts.Helm_Install_Release_Userfault_Messages):
+            telemetry.set_user_fault()
+        telemetry.set_exception(
+            exception=error_helm_upgrade.decode("ascii"),
+            fault_type=consts.Install_HelmRelease_Fault_Type,
+            summary='Unable to install helm release')
+        try:
+            os.remove(user_values_location)
+        except OSError:
+            pass
+        raise CLIInternalError(str.format(consts.Update_Agent_Failure, error_helm_upgrade.decode("ascii")))
+
+    logger.info(str.format(consts.Update_Agent_Success, cluster_name))
+    try:
+        os.remove(user_values_location)
+    except OSError:
+        pass
+    return

@@ -426,11 +426,41 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                               distribution_version, azure_hybrid_benefit, enable_oidc_issuer,
                                               enable_workload_identity, gateway, arc_agentry_configurations, arc_agent_profile)
                 cc_response = create_cc_resource(client, resource_group_name, cluster_name, cc, no_wait)
+                dp_request_payload = cc_response.result()
                 cc_response = LongRunningOperation(cmd.cli_ctx)(cc_response)
                 # Disabling cluster-connect if private link is getting enabled
                 if enable_private_link is True:
                     disable_cluster_connect(cmd, client, resource_group_name, cluster_name, kube_config,
                                             kube_context, values_file, release_namespace, helm_client_location)
+                
+                # Perform helm upgrade if gateway
+                if gateway is not None:
+                    # Perform DP health check
+                    _ = utils.health_check_dp(cmd, config_dp_endpoint)
+
+                    # Retrieving Helm chart OCI Artifact location
+                    helm_values_dp = utils.get_helm_values(cmd, config_dp_endpoint, release_train, request_body=dp_request_payload)
+
+                    registry_path = os.getenv('HELMREGISTRY') if os.getenv('HELMREGISTRY') else \
+                        helm_values_dp["repositoryPath"]
+
+                    # Get azure-arc agent version for telemetry
+                    azure_arc_agent_version = registry_path.split(':')[1]
+                    telemetry.add_extension_event('connectedk8s',
+                                                {'Context.Default.AzureCLI.AgentVersion': azure_arc_agent_version})
+
+                    # Get helm chart path
+                    chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location)
+
+                    helm_content_values = helm_values_dp["helmValuesContent"]
+
+                    # Substitute any protected helm values as the value for that will be null
+                    for helm_parameter, helm_value in protected_helm_values.items():
+                        helm_content_values[helm_parameter] = helm_value
+
+                    # Perform helm upgrade
+                    utils.helm_update_agent(helm_client_location, kube_config, kube_context, helm_content_values,
+                                             values_file, cluster_name, release_namespace, chart_path)
                 return cc_response
 
             # else
@@ -1520,57 +1550,9 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
     # Get Helm chart path
     chart_path = utils.get_chart_path(registry_path, kube_config, kube_context, helm_client_location)
 
-    cmd_helm_values = [helm_client_location, "get", "values", "azure-arc", "--namespace", release_namespace]
-    if kube_config:
-        cmd_helm_values.extend(["--kubeconfig", kube_config])
-    if kube_context:
-        cmd_helm_values.extend(["--kube-context", kube_context])
-
-    user_values_location = os.path.join(os.path.expanduser('~'), '.azure', 'userValues.txt')
-    existing_user_values = open(user_values_location, 'w+')
-    response_helm_values_get = Popen(cmd_helm_values, stdout=existing_user_values, stderr=PIPE)
-    _, error_helm_get_values = response_helm_values_get.communicate()
-    if response_helm_values_get.returncode != 0:
-        if ('forbidden' in error_helm_get_values.decode("ascii") or
-                'timed out waiting for the condition' in error_helm_get_values.decode("ascii")):
-            telemetry.set_user_fault()
-            telemetry.set_exception(
-                exception=error_helm_get_values.decode("ascii"),
-                fault_type=consts.Get_Helm_Values_Failed,
-                summary='Error while doing helm get values azure-arc')
-            raise CLIInternalError(str.format(consts.Update_Agent_Failure, error_helm_get_values.decode("ascii")))
-
-    cmd_helm_upgrade = [helm_client_location, "upgrade", "azure-arc", chart_path, "--namespace", release_namespace,
-                        "-f", user_values_location, "--wait", "--output", "json"]
-    # Add helmValues content response from DP
-    cmd_helm_upgrade = utils.parse_helm_values(helm_content_values, cmd_helm=cmd_helm_upgrade)
-    if values_file:
-        cmd_helm_upgrade.extend(["-f", values_file])
-    if kube_config:
-        cmd_helm_upgrade.extend(["--kubeconfig", kube_config])
-    if kube_context:
-        cmd_helm_upgrade.extend(["--kube-context", kube_context])
-    response_helm_upgrade = Popen(cmd_helm_upgrade, stdout=PIPE, stderr=PIPE)
-    _, error_helm_upgrade = response_helm_upgrade.communicate()
-    if response_helm_upgrade.returncode != 0:
-        helm_upgrade_error_message = error_helm_upgrade.decode("ascii")
-        if any(message in helm_upgrade_error_message for message in consts.Helm_Install_Release_Userfault_Messages):
-            telemetry.set_user_fault()
-        telemetry.set_exception(
-            exception=error_helm_upgrade.decode("ascii"),
-            fault_type=consts.Install_HelmRelease_Fault_Type,
-            summary='Unable to install helm release')
-        try:
-            os.remove(user_values_location)
-        except OSError:
-            pass
-        raise CLIInternalError(str.format(consts.Update_Agent_Failure, error_helm_upgrade.decode("ascii")))
-
-    logger.info(str.format(consts.Update_Agent_Success, connected_cluster.name))
-    try:
-        os.remove(user_values_location)
-    except OSError:
-        pass
+    # Perform helm upgrade
+    utils.helm_update_agent(helm_client_location, kube_config, kube_context, helm_content_values,
+                            values_file, cluster_name, release_namespace, chart_path)
     if not arm_properties_unset:
         return patch_cc_response
 
