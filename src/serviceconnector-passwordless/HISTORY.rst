@@ -2,7 +2,7 @@
 
 Release History
 ===============
-2.1.0
+3.0.0
 ++++++
 * Add new param --new to override the existing database user and deprecate Postgres single server
 
