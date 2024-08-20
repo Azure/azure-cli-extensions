@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.0.3
+* Support new features in ADF
+
 1.0.2
 * Support new features in ADF
 
