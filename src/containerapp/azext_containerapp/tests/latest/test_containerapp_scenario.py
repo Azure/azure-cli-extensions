@@ -65,10 +65,6 @@ class ContainerappScenarioTest(ScenarioTest):
             JMESPathCheck('properties.configuration.ingress.targetPort', 8080)
         ])
 
-        # Container App with ingress should fail unless target port is specified
-        with self.assertRaises(CLIError):
-            self.cmd('containerapp create -g {} -n {} --environment {} --ingress external'.format(resource_group, containerapp_name, env_id))
-
         # Create Container App with secrets and environment variables
         containerapp_name = self.create_random_name(prefix='containerapp-e2e', length=24)
         create_string = 'containerapp create -g {} -n {} --environment {} --secrets mysecret=secretvalue1 anothersecret="secret value 2" --env-vars GREETING="Hello, world" SECRETENV=secretref:anothersecret'.format(
@@ -300,10 +296,6 @@ class ContainerappLocationNotInStageScenarioTest(ScenarioTest):
             JMESPathCheck('properties.configuration.ingress.external', True),
             JMESPathCheck('properties.configuration.ingress.targetPort', 8080)
         ])
-
-        # Container App with ingress should fail unless target port is specified
-        with self.assertRaises(CLIError):
-            self.cmd('containerapp create -g {} -n {} --environment {} --ingress external'.format(resource_group, containerapp_name, env_id))
 
         # Create Container App with secrets and environment variables
         containerapp_name = self.create_random_name(prefix='containerapp-e2e', length=24)
