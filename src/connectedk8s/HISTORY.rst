@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.9.1
+++++++
+* Fixed the issue where executing a second `connectedk8s connect` command would inadvertently delete the "azure-arc-release" namespace.
+
 1.9.0
 ++++++
 * Upgrading to v0.2.2 of ArcK8sDiagnoser
