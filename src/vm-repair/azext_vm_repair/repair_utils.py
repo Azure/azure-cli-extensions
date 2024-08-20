@@ -493,7 +493,6 @@ def _fetch_compatible_windows_os_urn(source_vm):
 
 def _select_distro_linux(distro):
     image_lookup = {
-        'rhel6': 'RedHat:RHEL:6.10:latest',
         'rhel7': 'RedHat:rhel-raw:7-raw:latest',
         'rhel8': 'RedHat:rhel-raw:8-raw:latest',
         'ubuntu18': 'Canonical:UbuntuServer:18.04-LTS:latest',
@@ -502,10 +501,8 @@ def _select_distro_linux(distro):
         'centos7': 'OpenLogic:CentOS:7_9:latest',
         'centos8': 'OpenLogic:CentOS:8_4:latest',
         'oracle6': 'Oracle:Oracle-Linux:6.10:latest',
-        'oracle7': 'Oracle:Oracle-Linux:ol79:latest',
-        'oracle8': 'Oracle:Oracle-Linux:ol82:latest',
-        'sles12': 'SUSE:sles-12-sp5:gen1:latest',
-        'sles15': 'SUSE:sles-15-sp3:gen1:latest',
+        'sles12': 'SUSE:sles-12-sp5-hpc:gen1:latest',
+        'sles15': 'SUSE:sles-15-sp3-sapcal:gen1:latest',
     }
     if distro in image_lookup:
         os_image_urn = image_lookup[distro]
@@ -521,7 +518,7 @@ def _select_distro_linux(distro):
 
 def _select_distro_linux_Arm64(distro):
     image_lookup = {
-        'rhel8': 'RedHat:rhel-arm64:8_8-arm64:latest',
+        'rhel8': 'RedHat:rhel-arm64:8_8-arm64-gen2:latest',
         'rhel9': 'RedHat:rhel-arm64:9_2-arm64:latest',
         'ubuntu18': 'Canonical:UbuntuServer:18_04-lts-arm64:latest',
         'ubuntu20': 'Canonical:0001-com-ubuntu-server-focal:20_04-lts-arm64:latest',
@@ -542,19 +539,14 @@ def _select_distro_linux_Arm64(distro):
 def _select_distro_linux_gen2(distro):
     # base on the document : https://docs.microsoft.com/en-us/azure/virtual-machines/generation-2#generation-2-vm-images-in-azure-marketplace
     image_lookup = {
-        'rhel6': 'RedHat:rhel-raw:7-raw-gen2:latest',
-        'rhel7': 'RedHat:rhel-raw:7-raw-gen2:latest',
-        'rhel8': 'RedHat:rhel-raw:8-raw-gen2:latest',
+        'rhel8': 'RedHat:RHEL:8-lvm-gen2:latest',
         'ubuntu18': 'Canonical:UbuntuServer:18_04-lts-gen2:latest',
         'ubuntu20': 'Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:latest',
-        'centos6': 'OpenLogic:CentOS:7_9-gen2:latest',
         'centos7': 'OpenLogic:CentOS:7_9-gen2:latest',
         'centos8': 'OpenLogic:CentOS:8_4-gen2:latest',
-        'oracle6': 'Oracle:Oracle-Linux:ol79-gen2:latest',
-        'oracle7': 'Oracle:Oracle-Linux:ol79-gen2:latest',
-        'oracle8': 'Oracle:Oracle-Linux:ol82-gen2:latest',
+        'oracle8': 'Oracle:Oracle-Linux:o194-lvm-gen2:latest',
         'sles12': 'SUSE:sles-12-sp5:gen2:latest',
-        'sles15': 'SUSE:sles-15-sp3:gen2:latest',
+        'sles15': 'SUSE:sles-15-sp3-sapcal:gen2:latest',
     }
     if distro in image_lookup:
         os_image_urn = image_lookup[distro]
