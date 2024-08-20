@@ -4622,11 +4622,11 @@ interactions:
       - python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.60.0
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spjupyterpython000004?api-version=2024-02-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000004?api-version=2024-02-02-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spjupyterpython000004","name":"spjupyterpython000004","type":"Microsoft.App/sessionpools","location":"North
-        Central US (Stage)","systemData":{"createdBy":"stacyzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-16T01:25:38.8756939Z","lastModifiedBy":"stacyzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-16T01:25:38.8756939Z"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spjupyterpython000004"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000004","name":"spnodelts000004","type":"Microsoft.App/sessionpools","location":"North
+        Central US (Stage)","systemData":{"createdBy":"stacyzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-16T01:25:38.8756939Z","lastModifiedBy":"stacyzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-16T01:25:38.8756939Z"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000004"}}'
     headers:
       api-supported-versions:
       - 2023-08-01-preview, 2023-11-02-preview, 2024-02-02-preview
@@ -4709,7 +4709,7 @@ interactions:
       code: 200
       message: OK
 - request:
-    body: '{"properties": {"roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spjupyterpython000004/providers/Microsoft.Authorization/roleDefinitions/0fb8eba5-a2bb-4abe-b1c1-49dfad359bb0",
+    body: '{"properties": {"roleDefinitionId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000004/providers/Microsoft.Authorization/roleDefinitions/0fb8eba5-a2bb-4abe-b1c1-49dfad359bb0",
       "principalId": "f2ef724c-3583-44f5-9f7e-1b520fbb7ff6"}}'
     headers:
       Accept:
@@ -4730,10 +4730,10 @@ interactions:
       - python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.60.0
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spjupyterpython000004/providers/Microsoft.Authorization/roleAssignments/9d50b4e6-d55e-4736-9fbb-10853a88ac95?api-version=2022-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000004/providers/Microsoft.Authorization/roleAssignments/9d50b4e6-d55e-4736-9fbb-10853a88ac95?api-version=2022-04-01
   response:
     body:
-      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/0fb8eba5-a2bb-4abe-b1c1-49dfad359bb0","principalId":"f2ef724c-3583-44f5-9f7e-1b520fbb7ff6","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spjupyterpython000004","condition":null,"conditionVersion":null,"createdOn":"2024-05-16T01:25:39.8830921Z","updatedOn":"2024-05-16T01:25:40.4151027Z","createdBy":null,"updatedBy":"f2ef724c-3583-44f5-9f7e-1b520fbb7ff6","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spjupyterpython000004/providers/Microsoft.Authorization/roleAssignments/9d50b4e6-d55e-4736-9fbb-10853a88ac95","type":"Microsoft.Authorization/roleAssignments","name":"9d50b4e6-d55e-4736-9fbb-10853a88ac95"}'
+      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/0fb8eba5-a2bb-4abe-b1c1-49dfad359bb0","principalId":"f2ef724c-3583-44f5-9f7e-1b520fbb7ff6","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000004","condition":null,"conditionVersion":null,"createdOn":"2024-05-16T01:25:39.8830921Z","updatedOn":"2024-05-16T01:25:40.4151027Z","createdBy":null,"updatedBy":"f2ef724c-3583-44f5-9f7e-1b520fbb7ff6","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000004/providers/Microsoft.Authorization/roleAssignments/9d50b4e6-d55e-4736-9fbb-10853a88ac95","type":"Microsoft.Authorization/roleAssignments","name":"9d50b4e6-d55e-4736-9fbb-10853a88ac95"}'
     headers:
       cache-control:
       - no-cache
@@ -5064,8 +5064,8 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools?api-version=2024-02-02-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spjupyterpython000004","name":"spjupyterpython000004","type":"Microsoft.App/sessionpools","location":"North
-        Central US (Stage)","systemData":{"createdBy":"stacyzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-16T01:25:38.8756939","lastModifiedBy":"stacyzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-16T01:25:38.8756939"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spjupyterpython000004"}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000004","name":"spnodelts000004","type":"Microsoft.App/sessionpools","location":"North
+        Central US (Stage)","systemData":{"createdBy":"stacyzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-16T01:25:38.8756939","lastModifiedBy":"stacyzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-16T01:25:38.8756939"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000004"}}]}'
     headers:
       api-supported-versions:
       - 2023-08-01-preview, 2023-11-02-preview, 2024-02-02-preview
@@ -5395,11 +5395,11 @@ interactions:
       - python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.60.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spjupyterpython000004?api-version=2024-02-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000004?api-version=2024-02-02-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spjupyterpython000004","name":"spjupyterpython000004","type":"Microsoft.App/sessionpools","location":"North
-        Central US (Stage)","systemData":{"createdBy":"stacyzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-16T01:25:38.8756939","lastModifiedBy":"stacyzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-16T01:25:38.8756939"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spjupyterpython000004"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000004","name":"spnodelts000004","type":"Microsoft.App/sessionpools","location":"North
+        Central US (Stage)","systemData":{"createdBy":"stacyzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-16T01:25:38.8756939","lastModifiedBy":"stacyzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-16T01:25:38.8756939"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000004"}}'
     headers:
       api-supported-versions:
       - 2023-08-01-preview, 2023-11-02-preview, 2024-02-02-preview
@@ -5453,7 +5453,7 @@ interactions:
       - python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.60.0
     method: POST
-    uri: https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spjupyterpython000004/code/execute?identifier=testidentifier000005&api-version=2024-02-02-preview
+    uri: https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000004/code/execute?identifier=testidentifier000005&api-version=2024-02-02-preview
   response:
     body:
       string: '{"$id":"1","properties":{"$id":"2","status":"Success","stdout":"Hello
@@ -5797,7 +5797,7 @@ interactions:
       User-Agent:
       - python-requests/2.31.0
     method: POST
-    uri: https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spjupyterpython000004/files/upload?identifier=testidentifier000005&api-version=2024-02-02-preview
+    uri: https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000004/files/upload?identifier=testidentifier000005&api-version=2024-02-02-preview
   response:
     body:
       string: '{"$id":"1","value":[{"$id":"2","properties":{"$id":"3","filename":"cert.txt","size":7,"lastModifiedTime":"2024-05-16T01:25:49.3717303Z"}}]}'
@@ -6122,11 +6122,11 @@ interactions:
       - python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.60.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spjupyterpython000004?api-version=2024-02-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000004?api-version=2024-02-02-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spjupyterpython000004","name":"spjupyterpython000004","type":"Microsoft.App/sessionpools","location":"North
-        Central US (Stage)","systemData":{"createdBy":"stacyzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-16T01:25:38.8756939","lastModifiedBy":"stacyzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-16T01:25:38.8756939"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spjupyterpython000004"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000004","name":"spnodelts000004","type":"Microsoft.App/sessionpools","location":"North
+        Central US (Stage)","systemData":{"createdBy":"stacyzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-16T01:25:38.8756939","lastModifiedBy":"stacyzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-16T01:25:38.8756939"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000004"}}'
     headers:
       api-supported-versions:
       - 2023-08-01-preview, 2023-11-02-preview, 2024-02-02-preview
@@ -6174,7 +6174,7 @@ interactions:
       - python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.60.0
     method: GET
-    uri: https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spjupyterpython000004/files?identifier=testidentifier000005&path=&api-version=2024-02-02-preview
+    uri: https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000004/files?identifier=testidentifier000005&path=&api-version=2024-02-02-preview
   response:
     body:
       string: '{"$id":"1","value":[{"$id":"2","properties":{"$id":"3","filename":"cert.txt","size":7,"lastModifiedTime":"2024-05-16T01:25:49.3717303Z"}}]}'
@@ -6499,11 +6499,11 @@ interactions:
       - python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.60.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spjupyterpython000004?api-version=2024-02-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000004?api-version=2024-02-02-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spjupyterpython000004","name":"spjupyterpython000004","type":"Microsoft.App/sessionpools","location":"North
-        Central US (Stage)","systemData":{"createdBy":"stacyzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-16T01:25:38.8756939","lastModifiedBy":"stacyzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-16T01:25:38.8756939"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spjupyterpython000004"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000004","name":"spnodelts000004","type":"Microsoft.App/sessionpools","location":"North
+        Central US (Stage)","systemData":{"createdBy":"stacyzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-16T01:25:38.8756939","lastModifiedBy":"stacyzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-16T01:25:38.8756939"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000004"}}'
     headers:
       api-supported-versions:
       - 2023-08-01-preview, 2023-11-02-preview, 2024-02-02-preview
@@ -6551,7 +6551,7 @@ interactions:
       - python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.60.0
     method: GET
-    uri: https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spjupyterpython000004/files/content/cert.txt?identifier=testidentifier000005&api-version=2024-02-02-preview
+    uri: https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000004/files/content/cert.txt?identifier=testidentifier000005&api-version=2024-02-02-preview
   response:
     body:
       string: testing
@@ -6872,11 +6872,11 @@ interactions:
       - python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.60.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spjupyterpython000004?api-version=2024-02-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000004?api-version=2024-02-02-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spjupyterpython000004","name":"spjupyterpython000004","type":"Microsoft.App/sessionpools","location":"North
-        Central US (Stage)","systemData":{"createdBy":"stacyzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-16T01:25:38.8756939","lastModifiedBy":"stacyzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-16T01:25:38.8756939"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spjupyterpython000004"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000004","name":"spnodelts000004","type":"Microsoft.App/sessionpools","location":"North
+        Central US (Stage)","systemData":{"createdBy":"stacyzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-16T01:25:38.8756939","lastModifiedBy":"stacyzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-16T01:25:38.8756939"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000004"}}'
     headers:
       api-supported-versions:
       - 2023-08-01-preview, 2023-11-02-preview, 2024-02-02-preview
@@ -6924,7 +6924,7 @@ interactions:
       - python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.60.0
     method: GET
-    uri: https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spjupyterpython000004/files/cert.txt?identifier=testidentifier000005&api-version=2024-02-02-preview
+    uri: https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000004/files/cert.txt?identifier=testidentifier000005&api-version=2024-02-02-preview
   response:
     body:
       string: '{"$id":"1","properties":{"$id":"2","filename":"cert.txt","size":7,"lastModifiedTime":"2024-05-16T01:25:49.3717303Z"}}'
@@ -7249,11 +7249,11 @@ interactions:
       - python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.60.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spjupyterpython000004?api-version=2024-02-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000004?api-version=2024-02-02-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spjupyterpython000004","name":"spjupyterpython000004","type":"Microsoft.App/sessionpools","location":"North
-        Central US (Stage)","systemData":{"createdBy":"stacyzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-16T01:25:38.8756939","lastModifiedBy":"stacyzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-16T01:25:38.8756939"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spjupyterpython000004"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000004","name":"spnodelts000004","type":"Microsoft.App/sessionpools","location":"North
+        Central US (Stage)","systemData":{"createdBy":"stacyzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-16T01:25:38.8756939","lastModifiedBy":"stacyzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-16T01:25:38.8756939"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000004"}}'
     headers:
       api-supported-versions:
       - 2023-08-01-preview, 2023-11-02-preview, 2024-02-02-preview
@@ -7303,7 +7303,7 @@ interactions:
       - python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.60.0
     method: DELETE
-    uri: https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spjupyterpython000004/files/cert.txt?identifier=testidentifier000005&api-version=2024-02-02-preview
+    uri: https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000004/files/cert.txt?identifier=testidentifier000005&api-version=2024-02-02-preview
   response:
     body:
       string: ''
@@ -7620,11 +7620,11 @@ interactions:
       - python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.60.0
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spjupyterpython000004?api-version=2024-02-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000004?api-version=2024-02-02-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spjupyterpython000004","name":"spjupyterpython000004","type":"Microsoft.App/sessionpools","location":"North
-        Central US (Stage)","systemData":{"createdBy":"stacyzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-16T01:25:38.8756939","lastModifiedBy":"stacyzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-16T01:25:38.8756939"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spjupyterpython000004"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000004","name":"spnodelts000004","type":"Microsoft.App/sessionpools","location":"North
+        Central US (Stage)","systemData":{"createdBy":"stacyzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-16T01:25:38.8756939","lastModifiedBy":"stacyzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-16T01:25:38.8756939"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000004"}}'
     headers:
       api-supported-versions:
       - 2023-08-01-preview, 2023-11-02-preview, 2024-02-02-preview
@@ -7672,7 +7672,7 @@ interactions:
       - python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.60.0
     method: GET
-    uri: https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spjupyterpython000004/files?identifier=testidentifier000005&path=&api-version=2024-02-02-preview
+    uri: https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000004/files?identifier=testidentifier000005&path=&api-version=2024-02-02-preview
   response:
     body:
       string: '{"$id":"1","value":[]}'
@@ -7717,7 +7717,7 @@ interactions:
       - python/3.10.12 (Linux-5.15.146.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
         AZURECLI/2.60.0
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spjupyterpython000004?api-version=2024-02-02-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000004?api-version=2024-02-02-preview
   response:
     body:
       string: ''
