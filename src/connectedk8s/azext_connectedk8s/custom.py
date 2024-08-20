@@ -71,8 +71,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                         kube_config=None, kube_context=None, no_wait=False, tags=None, distribution='generic', infrastructure='generic',
                         disable_auto_upgrade=False, cl_oid=None, onboarding_timeout=consts.DEFAULT_MAX_ONBOARDING_TIMEOUT_HELMVALUE_SECONDS, enable_private_link=None,
                         private_link_scope_resource_id=None, distribution_version=None, azure_hybrid_benefit=None, skip_ssl_verification=False, yes=False, container_log_path=None,
-                        enable_oidc_issuer=False, enable_workload_identity=False, self_hosted_issuer="", enable_gateway=False, gateway_resource_id="",
-                        configuration_settings=None, configuration_protected_settings=None):
+                        enable_oidc_issuer=False, enable_workload_identity=False, self_hosted_issuer="", gateway_resource_id="", configuration_settings=None,
+                        configuration_protected_settings=None):
     logger.warning("This operation might take a while...\n")
     # changing cli config to push telemetry in 1 hr interval
     try:
@@ -149,11 +149,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     # Set preview client if latest preview properties are provided.
     if enable_private_link is not None or distribution_version is not None or azure_hybrid_benefit is not None \
-        or enable_workload_identity or enable_oidc_issuer or enable_gateway:
+        or enable_workload_identity or enable_oidc_issuer or gateway_resource_id != "":
         client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
 
     gateway = None
-    if enable_gateway:
+    if gateway_resource_id != "":
         gateway = Gateway(
             enabled=True,
             resource_id=gateway_resource_id
@@ -1334,7 +1334,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
                              disable_proxy=False, kube_config=None, kube_context=None, auto_upgrade=None, tags=None,
                              distribution=None, distribution_version=None, azure_hybrid_benefit=None, skip_ssl_verification=False, yes=False,
                              container_log_path=None, enable_oidc_issuer=None, enable_workload_identity=None, self_hosted_issuer="",
-                             disable_workload_identity=None, enable_gateway=False, gateway_resource_id="", disable_gateway=False,
+                             disable_workload_identity=None, gateway_resource_id="", disable_gateway=False,
                              configuration_settings=None, configuration_protected_settings=None):
 
     # Prompt for confirmation for few parameters
@@ -1414,7 +1414,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
         and not container_log_path
         and enable_oidc_issuer is None
         and enable_workload_identity is None
-        and not enable_gateway
+        and gateway_resource_id == ""
         and not disable_gateway
     ):
         raise RequiredArgumentMissingError(consts.No_Param_Error)
@@ -1458,7 +1458,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
     # If gateway is enabled
     gateway = None
-    if enable_gateway:
+    if gateway_resource_id != "":
         gateway = Gateway(
             enabled=True,
             resource_id=gateway_resource_id

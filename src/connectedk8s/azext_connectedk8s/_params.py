@@ -14,7 +14,6 @@ from knack.arguments import (CLIArgumentType, CaseInsensitiveList)
 from ._validators import (
     validate_private_link_properties,
     override_client_request_id_header,
-    validate_gateway_properties,
     validate_gateway_updates
 )
 from .action import (
@@ -62,8 +61,7 @@ def load_arguments(self, _):
         c.argument('enable_oidc_issuer', arg_type=get_three_state_flag(), help="Enable creation of OIDC issuer url used for workload identity", is_preview=True)
         c.argument('self_hosted_issuer', options_list=['--self-hosted-issuer'], help="Self hosted issuer url for public cloud clusters - AKS, GKE, EKS", is_preview=True)
         c.argument('enable_workload_identity', options_list=["--enable-workload-identity", "--enable-wi"], arg_type=get_three_state_flag(), help="Enable workload identity webhook", is_preview=True)
-        c.argument('enable_gateway', options_list=['--enable-gateway'], arg_group='Gateway', help='Pass this value to enable Arc Gateway.', validator=validate_gateway_properties)
-        c.argument('gateway_resource_id', options_list=['--gateway-resource-id'], arg_group='Gateway', help='ArmID of the Arc Gateway resource.', validator=validate_gateway_properties)
+        c.argument('gateway_resource_id', options_list=['--gateway-resource-id'], arg_group='Gateway', help='ArmID of the Arc Gateway resource.')
         c.argument('configuration_settings', options_list=['--configuration-settings', '--config'], action=AddConfigurationSettings, nargs='+', help='Configuration Settings as key=value pair.  Repeat parameter for each setting. Do not use this for secrets, as this value is returned in response.', is_preview=True)
         c.argument('configuration_protected_settings', options_list=['--config-protected-settings', '--config-protected'], action=AddConfigurationProtectedSettings, nargs='+', help='Configuration Protected Settings as key=value pair.  Repeat parameter for each setting.  Only the key is returned in response, the value is not.', is_preview=True)
 
@@ -88,8 +86,7 @@ def load_arguments(self, _):
         c.argument('self_hosted_issuer', options_list=["--self-hosted-issuer"], help="Self hosted issuer url for public cloud clusters - AKS, GKE, EKS", is_preview=True)
         c.argument('enable_workload_identity', options_list=["--enable-workload-identity", "--enable-wi"], arg_type=get_three_state_flag(), help="Enable workload identity webhook", is_preview=True)
         c.argument('disable_workload_identity', options_list=["--disable-workload-identity", "--disable-wi"], arg_type=get_three_state_flag(), help="Disable workload identity webhook", is_preview=True)
-        c.argument('enable_gateway', options_list=['--enable-gateway'], arg_group='Gateway', help='Flag to enable Arc Gateway.', validator=validate_gateway_updates)
-        c.argument('gateway_resource_id', options_list=['--gateway-resource-id'], arg_group='Gateway', help='ArmID of the Arc Gateway resource.', validator=validate_gateway_properties)
+        c.argument('gateway_resource_id', options_list=['--gateway-resource-id'], arg_group='Gateway', help='ArmID of the Arc Gateway resource.', validator=validate_gateway_updates)
         c.argument('disable_gateway', options_list=['--disable-gateway'], arg_group='Gateway', help='Flag to disable Arc Gateway', validator=validate_gateway_updates)
         c.argument('configuration_settings', options_list=['--configuration-settings', '--config'], action=AddConfigurationSettings, nargs='+', help='Configuration Settings as key=value pair.  Repeat parameter for each setting. Do not use this for secrets, as this value is returned in response.', is_preview=True)
         c.argument('configuration_protected_settings', options_list=['--config-protected-settings', '--config-protected'], action=AddConfigurationProtectedSettings, nargs='+', help='Configuration Protected Settings as key=value pair.  Repeat parameter for each setting.  Only the key is returned in response, the value is not.', is_preview=True)
