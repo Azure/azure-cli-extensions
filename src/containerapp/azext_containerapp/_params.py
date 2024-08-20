@@ -20,7 +20,6 @@ from ._validators import (validate_env_name_or_id, validate_build_env_vars,
                           validate_custom_location_name_or_id, validate_env_name_or_id_for_up,
                           validate_otlp_headers, validate_target_port_range, validate_timeout_in_seconds)
 from ._constants import MAXIMUM_CONTAINER_APP_NAME_LENGTH, MAXIMUM_APP_RESILIENCY_NAME_LENGTH, MAXIMUM_COMPONENT_RESILIENCY_NAME_LENGTH
-from enum import Enum
 
 
 def load_arguments(self, _):
