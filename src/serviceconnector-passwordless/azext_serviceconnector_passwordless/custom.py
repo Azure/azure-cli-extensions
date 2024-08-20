@@ -17,7 +17,7 @@ def connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-ma
                           private_endpoint=None,
                           store_in_connection_string=False,
                           new_addon=False, no_wait=False,
-                          yes=False,
+                          yes=False, new=False,
                           # Resource.KubernetesCluster
                           cluster=None, scope=None, enable_csi=False,
                           customized_keys=None,
@@ -46,7 +46,7 @@ def connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-ma
                                   site, slot,
                                   spring, app, deployment,
                                   server, database,
-                                  enable_mi_for_db_linker=get_enable_mi_for_db_linker_func(yes),
+                                  enable_mi_for_db_linker=get_enable_mi_for_db_linker_func(yes, new),
                                   customized_keys=customized_keys,
                                   opt_out_list=opt_out_list,
                                   app_config_id=app_config_id,
@@ -64,7 +64,7 @@ def local_connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,
                                 service_principal_auth_info_secret=None,
                                 no_wait=False,
                                 customized_keys=None,
-                                yes=False,
+                                yes=False, new=False,
                                 # Resource.*Postgres, Resource.*Sql*
                                 server=None, database=None,
                                 **kwargs
@@ -83,6 +83,6 @@ def local_connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,
                                         no_wait,
                                         # Resource.*Postgres, Resource.*Sql*
                                         server, database,
-                                        enable_mi_for_db_linker=get_enable_mi_for_db_linker_func(yes),
+                                        enable_mi_for_db_linker=get_enable_mi_for_db_linker_func(yes, new),
                                         customized_keys=customized_keys,
                                         **kwargs)

@@ -29,7 +29,7 @@ PASSWORDLESS_SOURCE_RESOURCES = [
 ]
 
 PASSWORDLESS_TARGET_RESOURCES = [
-    RESOURCE.Postgres,
+    # RESOURCE.Postgres,
     RESOURCE.PostgresFlexible,
     RESOURCE.MysqlFlexible,
     RESOURCE.Sql
@@ -37,7 +37,7 @@ PASSWORDLESS_TARGET_RESOURCES = [
 
 # pylint: disable=line-too-long
 EX_SUPPORTED_AUTH_TYPE[RESOURCE.Local] = {
-    RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
+    # RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
     RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
     RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
     RESOURCE.Sql: [AUTH_TYPE.Secret, AUTH_TYPE.UserAccount, AUTH_TYPE.ServicePrincipalSecret],
@@ -45,30 +45,30 @@ EX_SUPPORTED_AUTH_TYPE[RESOURCE.Local] = {
 
 for resourceType in PASSWORDLESS_SOURCE_RESOURCES:
     EX_SUPPORTED_AUTH_TYPE[resourceType] = {
-        RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
+        # RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
         RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
         RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
         RESOURCE.Sql: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
     }
 
 TARGET_RESOURCES_PARAMS = {
-    RESOURCE.Postgres: {
-        'target_resource_group': {
-            'options': ['--target-resource-group', '--tg'],
-            'help': 'The resource group which contains the postgres service',
-            'placeholder': 'PostgresRG'
-        },
-        'server': {
-            'options': ['--server'],
-            'help': 'Name of postgres server',
-            'placeholder': 'MyServer'
-        },
-        'database': {
-            'options': ['--database'],
-            'help': 'Name of postgres database',
-            'placeholder': 'MyDB'
-        }
-    },
+    # RESOURCE.Postgres: {
+    #     'target_resource_group': {
+    #         'options': ['--target-resource-group', '--tg'],
+    #         'help': 'The resource group which contains the postgres service',
+    #         'placeholder': 'PostgresRG'
+    #     },
+    #     'server': {
+    #         'options': ['--server'],
+    #         'help': 'Name of postgres server',
+    #         'placeholder': 'MyServer'
+    #     },
+    #     'database': {
+    #         'options': ['--database'],
+    #         'help': 'Name of postgres database',
+    #         'placeholder': 'MyDB'
+    #     }
+    # },
     RESOURCE.PostgresFlexible: {
         'target_resource_group': {
             'options': ['--target-resource-group', '--tg'],
