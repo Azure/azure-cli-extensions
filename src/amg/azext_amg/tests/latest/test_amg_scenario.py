@@ -471,13 +471,13 @@ class AmgScenarioTest(ScenarioTest):
 
             self.cmd('monitor account create -n {monitor_name} -g {rg} -l {location}')
 
-            self.cmd('grafana managed-private-endpoint create -g {rg} --workspace-name {name} -n {mpe_name} -l {location} --group-ids prometheusMetrics --private-link-resource-region {location} --private-link-resource-id /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Monitor/accounts/{monitor_name}')
+            self.cmd('grafana mpe create -g {rg} --workspace-name {name} -n {mpe_name} -l {location} --group-ids prometheusMetrics --private-link-resource-region {location} --private-link-resource-id /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Monitor/accounts/{monitor_name}')
 
-            self.cmd('grafana managed-private-endpoint list -g {rg} --workspace-name {name}', checks=[
+            self.cmd('grafana mpe list -g {rg} --workspace-name {name}', checks=[
                 self.check('length([])', 1)
             ])
 
-            self.cmd('grafana managed-private-endpoint show -g {rg} --workspace-name {name} -n {mpe_name}', checks=[
+            self.cmd('grafana mpe show -g {rg} --workspace-name {name} -n {mpe_name}', checks=[
                 self.check('name', '{mpe_name}')
             ])
 
@@ -491,19 +491,19 @@ class AmgScenarioTest(ScenarioTest):
 
             self.cmd('network private-endpoint-connection approve --id {mpe_id} -d "Approved" ')
 
-            self.cmd('grafana managed-private-endpoint show -g {rg} --workspace-name {name} -n {mpe_name}', checks=[
+            self.cmd('grafana mpe show -g {rg} --workspace-name {name} -n {mpe_name}', checks=[
                 self.check('connectionState.status', 'Pending')
             ])
 
-            self.cmd('grafana managed-private-endpoint refresh -g {rg} --workspace-name {name}')
+            self.cmd('grafana mpe refresh -g {rg} --workspace-name {name}')
 
-            self.cmd('grafana managed-private-endpoint show -g {rg} --workspace-name {name} -n {mpe_name}', checks=[
+            self.cmd('grafana mpe show -g {rg} --workspace-name {name} -n {mpe_name}', checks=[
                 self.check('connectionState.status', 'Approved')
             ])
 
-            self.cmd('grafana managed-private-endpoint delete -g {rg} --workspace-name {name} -n {mpe_name} --yes')
+            self.cmd('grafana mpe delete -g {rg} --workspace-name {name} -n {mpe_name} --yes')
 
-            self.cmd('grafana managed-private-endpoint list -g {rg} --workspace-name {name}', checks=[
+            self.cmd('grafana mpe list -g {rg} --workspace-name {name}', checks=[
                 self.check('length([])', 0)
             ])
 

@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "grafana managed-private-endpoint",
+    "grafana mpe",
 )
 class __CMDGroup(AAZCommandGroup):
     """Commands to manage managed private endpoints.

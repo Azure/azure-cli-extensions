@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "grafana managed-private-endpoint create",
+    "grafana mpe create",
 )
 class Create(AAZCommand):
     """Create a managed private endpoint.
 
     :example: connect to an Azure SQL Server by resource ID
-        az grafana managed-private-endpoint create -n MyManagedPrivateEndpoint -g MyResourceGroup --workspace-name MyGrafana --group-ids sqlServer --private-link-resource-id /subscriptions/3a7edf7d-1488-4017-a908-111111111111/resourceGroups/MyResourceGroup/providers/Microsoft.Sql/servers/MySQLServer
+        az grafana mpe create -n MyManagedPrivateEndpoint -g MyResourceGroup --workspace-name MyGrafana --group-ids sqlServer --private-link-resource-id /subscriptions/3a7edf7d-1488-4017-a908-111111111111/resourceGroups/MyResourceGroup/providers/Microsoft.Sql/servers/MySQLServer
     """
 
     _aaz_info = {

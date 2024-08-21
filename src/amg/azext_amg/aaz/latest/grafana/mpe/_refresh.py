@@ -12,17 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "grafana managed-private-endpoint delete",
-    confirmation="Are you sure you want to perform this operation?",
+    "grafana mpe refresh",
 )
-class Delete(AAZCommand):
-    """Delete a managed private endpoint.
+class Refresh(AAZCommand):
+    """Refresh and sync managed private endpoints to latest state.
     """
 
     _aaz_info = {
         "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dashboard/grafana/{}/managedprivateendpoints/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dashboard/grafana/{}/refreshmanagedprivateendpoints", "2023-09-01"],
         ]
     }
 
@@ -43,12 +42,6 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.managed_private_endpoint_name = AAZStrArg(
-            options=["-n", "--name", "--managed-private-endpoint-name"],
-            help="The managed private endpoint name of Azure Managed Grafana.",
-            required=True,
-            id_part="child_name_1",
-        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -62,7 +55,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.ManagedPrivateEndpointsDelete(ctx=self.ctx)()
+        yield self.ManagedPrivateEndpointsRefresh(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -73,7 +66,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class ManagedPrivateEndpointsDelete(AAZHttpOperation):
+    class ManagedPrivateEndpointsRefresh(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -97,28 +90,19 @@ class Delete(AAZCommand):
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [204]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_204,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Dashboard/grafana/{workspaceName}/managedPrivateEndpoints/{managedPrivateEndpointName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Dashboard/grafana/{workspaceName}/refreshManagedPrivateEndpoints",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "DELETE"
+            return "POST"
 
         @property
         def error_format(self):
@@ -127,10 +111,6 @@ class Delete(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
-                **self.serialize_url_param(
-                    "managedPrivateEndpointName", self.ctx.args.managed_private_endpoint_name,
-                    required=True,
-                ),
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
@@ -159,12 +139,9 @@ class Delete(AAZCommand):
         def on_200(self, session):
             pass
 
-        def on_204(self, session):
-            pass
+
+class _RefreshHelper:
+    """Helper class for Refresh"""
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
-
-
-__all__ = ["Delete"]
+__all__ = ["Refresh"]

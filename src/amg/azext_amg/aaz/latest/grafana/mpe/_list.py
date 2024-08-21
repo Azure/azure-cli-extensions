@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "grafana managed-private-endpoint list",
+    "grafana mpe list",
 )
 class List(AAZCommand):
     """List all managed private endpoints.
