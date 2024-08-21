@@ -12,8 +12,8 @@
 from knack.log import get_logger
 
 from azure.cli.core.commands import AzCliCommand
-from azure.mgmt.kubernetesconfiguration import SourceControlConfigurationClient
-from azure.mgmt.kubernetesconfiguration.models import Extension, Identity
+from ..vendored_sdks.kubernetesconfiguration import SourceControlConfigurationClient
+from ..vendored_sdks.kubernetesconfiguration.models import Extension, Identity
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
 from .common import ConnectedClusterResourceId, check_rp_registration, query_rp_oid

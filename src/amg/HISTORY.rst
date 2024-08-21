@@ -87,5 +87,9 @@ Release History
 
 2.1.0
 ++++++
+* `az grafana migrate`: migrate data from a self-hosted Grafana instance to Azure Managed Grafana instance
+
+2.2.0
+++++++
 * `az grafana private-endpoint-connection`: support private endpoint connection management
-* `az grafana managed-private-endpoint`: support managed private endpoint management
+* `az grafana mpe`: support managed private endpoint management

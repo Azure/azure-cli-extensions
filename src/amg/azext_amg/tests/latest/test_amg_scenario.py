@@ -440,6 +440,12 @@ class AmgScenarioTest(ScenarioTest):
                 self.check("length([?uid == '{dashboardUid}'])", 1)
             ])
 
+            # Close-out Instance
+            self.cmd('grafana delete -g {rg} -n {name} --yes')
+            self.cmd('grafana delete -g {rg} -n {name2} --yes')
+            final_count = len(self.cmd('grafana list').get_output_in_json())
+            self.assertTrue(final_count, 0)
+
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
     def test_amg_private_endpoint(self, resource_group):
 

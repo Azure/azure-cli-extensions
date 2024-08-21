@@ -15,6 +15,7 @@ def load_command_table(self, _):
         self.command_table['grafana update'] = GrafanaUpdate(loader=self)
         g.custom_command('backup', 'backup_grafana', is_preview=True)
         g.custom_command('restore', 'restore_grafana', is_preview=True)
+        g.custom_command('migrate', 'migrate_grafana', is_preview=True)
 
     with self.command_group('grafana dashboard') as g:
         g.custom_command('create', 'create_dashboard')
