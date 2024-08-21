@@ -12,7 +12,7 @@ from azure.cli.command_modules.containerapp._utils import format_location
 from azure.cli.core.azclierror import ValidationError, CLIInternalError
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckNotExists, JMESPathCheckExists)
 from msrestazure.tools import parse_resource_id
 
 from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
@@ -166,6 +166,41 @@ class ContainerappIdentityTests(ScenarioTest):
 
         self.cmd('containerapp identity show -g {} -n {}'.format(resource_group, ca_name), checks=[
             JMESPathCheck('type', 'None'),
+        ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_identity_keda(self, resource_group):
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
+
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+        user_identity_name1 = self.create_random_name(prefix='containerapp-user1', length=24)
+
+        env = prepare_containerapp_env_for_app_e2e_tests(self, location=location)
+
+        user_identity_id = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name1)).get_output_in_json()["id"]
+
+        self.cmd(f'containerapp create -g {resource_group} -n {ca_name} --environment {env} --system-assigned --user-assigned {user_identity_name1} --scale-rule-name azure-queue --scale-rule-type azure-queue --scale-rule-metadata "accountName=account1" "queueName=queue1" "queueLength=1" --scale-rule-identity {user_identity_name1}')
+        self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[
+            JMESPathCheck("properties.template.scale.rules[0].name", "azure-queue"),
+            JMESPathCheck("properties.template.scale.rules[0].azureQueue.accountName", "account1"),
+            JMESPathCheck("properties.template.scale.rules[0].azureQueue.queueName", "queue1"),
+            JMESPathCheck("properties.template.scale.rules[0].azureQueue.queueLength", "1"),
+            JMESPathCheck("properties.template.scale.rules[0].azureQueue.identity", user_identity_id, case_sensitive=False),
+        ])
+
+        self.cmd(f'containerapp update -g {resource_group} -n {ca_name} --scale-rule-name azure-blob --scale-rule-type azure-blob --scale-rule-metadata "accountName=account2" "blobContainerName=blob2" "blobCount=2" --scale-rule-identity {user_identity_id}')
+        self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[
+            JMESPathCheck("properties.template.scale.rules[0].name", "azure-blob"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.accountName", "account2"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.blobContainerName", "blob2"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.metadata.blobCount", "2"),
+            JMESPathCheck("properties.template.scale.rules[0].custom.identity", user_identity_id, case_sensitive=False),
+            JMESPathCheck("properties.template.scale.rules[0].custom.type", "azure-blob"),
         ])
 
 
@@ -1559,6 +1594,99 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
             JMESPathCheck("properties.configuration.secrets[0].name", f"{acr}azurecrio-{acr}")
         ])
 
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_identity_registry(self, resource_group):
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
+
+        env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+        user_identity_name = self.create_random_name(prefix='containerapp', length=24)
+        acr = self.create_random_name(prefix='acr', length=24)
+        image_source = "mcr.microsoft.com/k8se/quickstart:latest"
+        image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
+
+        # prepare env
+        user_identity_name = self.create_random_name(prefix='env-msi', length=24)
+        identity_json = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
+        user_identity_id = identity_json["id"]
+        
+        self.cmd('containerapp env create -g {} -n {} --mi-system-assigned --mi-user-assigned {} --logs-destination none'.format(resource_group, env_name, user_identity_id))
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        env = containerapp_env["id"]
+
+        # prepare acr
+        acr_id = self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --location {location}').get_output_in_json()["id"]
+        # role assign
+        roleAssignmentName1 = self.create_guid()
+        roleAssignmentName2 = self.create_guid()
+        self.cmd(f'role assignment create --role acrpull --assignee {containerapp_env["identity"]["principalId"]} --scope {acr_id} --name {roleAssignmentName1}')
+        self.cmd(f'role assignment create --role acrpull --assignee {identity_json["principalId"]} --scope {acr_id} --name {roleAssignmentName2}')
+        # upload image
+        self.cmd(f'acr import -n {acr} --source {image_source}')
+
+        # wait for role assignment take effect
+        time.sleep(30)
+
+        # use env system msi to pull image
+        self.cmd(f'containerapp create -g {resource_group} -n {ca_name}  --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io --registry-identity system-environment')
+        self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("identity.type", "None"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io"),
+            JMESPathCheck("properties.configuration.registries[0].identity", "system-environment", case_sensitive=False),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+        ])
+
+        # update use env user assigned identity
+        self.cmd(f'containerapp registry set -g {resource_group} -n {ca_name} --server {acr}.azurecr.io --identity {user_identity_id}')
+        self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("identity.type", "None"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io"),
+            JMESPathCheck("properties.configuration.registries[0].identity", user_identity_id, case_sensitive=False),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+        ])
+
+        # update containerapp to create new revision
+        self.cmd(f'containerapp update -g {resource_group} -n {ca_name}  --revision-suffix v2')
+        self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("identity.type", "None"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io"),
+            JMESPathCheck("properties.configuration.registries[0].identity", user_identity_id, case_sensitive=False),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+            JMESPathCheck("properties.template.revisionSuffix", "v2")
+        ])
+
+        # update use env system managed identity
+        self.cmd(f'containerapp registry set -g {resource_group} -n {ca_name} --server {acr}.azurecr.io --identity system-environment')
+        self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("identity.type", "None"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io"),
+            JMESPathCheck("properties.configuration.registries[0].identity", "system-environment"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+        ])
+
+        # update containerapp to create new revision
+        self.cmd(f'containerapp update -g {resource_group} -n {ca_name}  --revision-suffix v3')
+        self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("identity.type", "None"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io"),
+            JMESPathCheck("properties.configuration.registries[0].identity", "system-environment"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+            JMESPathCheck("properties.template.revisionSuffix", "v3")
+        ])
+
 
 class ContainerappScaleTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
@@ -2501,12 +2629,6 @@ class ContainerappRuntimeTests(ScenarioTest):
         # Create container app with runtime=java, it should have default java runtime settings
         create_containerapp_with_runtime_java_metrics_args_and_check('--runtime=java', checks=[
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
-                JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False)
-            ])
-
-        # Create container app with runtime=java and enable java metrics
-        create_containerapp_with_runtime_java_metrics_args_and_check('--runtime=java --enable-java-metrics', checks=[
-                JMESPathCheck('properties.provisioningState', "Succeeded"),
                 JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True)
             ])
 
@@ -2514,6 +2636,12 @@ class ContainerappRuntimeTests(ScenarioTest):
         create_containerapp_with_runtime_java_metrics_args_and_check('--runtime=java --enable-java-metrics=false', checks=[
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
                 JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False)
+            ])
+
+        # Create container app with runtime=java and enable java metrics
+        create_containerapp_with_runtime_java_metrics_args_and_check('--runtime=java --enable-java-metrics', checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True)
             ])
 
         # Create container app with enable java metrics without setting runtime explicitly
@@ -2567,7 +2695,13 @@ class ContainerappRuntimeTests(ScenarioTest):
         # Update container app with runtime=java, it should setup default java runtime settings if not set before
         self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=java', checks=[
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
-                JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False)
+                JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True)
+            ])
+
+        # Update container app with only runtime=java will keep the previous settings if set before
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=java', checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True)
             ])
 
         self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=java --enable-java-metrics', checks=[
@@ -2586,6 +2720,7 @@ class ContainerappRuntimeTests(ScenarioTest):
                 JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False)
             ])
 
+        # Update container app with only runtime=java will keep the previous settings if set before
         self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=java', checks=[
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
                 JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False)
@@ -2601,6 +2736,210 @@ class ContainerappRuntimeTests(ScenarioTest):
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
                 JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False)
             ])
+
+        # Update container app failed with wrong runtime
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=generic --enable-java-metrics',
+                 expect_failure=True)
+
+        # Delete container app
+        self.cmd(f'containerapp delete  -g {resource_group} -n {app} --yes')
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northcentralus")
+    def test_containerapp_runtime_java_create(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        app = self.create_random_name(prefix='aca', length=24)
+        image = "mcr.microsoft.com/azurespringapps/samples/hello-world:0.0.1"
+
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
+
+        def create_containerapp_with_runtime_java_agent_args_and_check(args, expect_failure=False, checks=[]):
+            self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --environment {env} {args}',
+                     expect_failure=expect_failure)
+            if not expect_failure:
+                self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=checks)
+
+                # Delete container app
+                self.cmd(f'containerapp delete  -g {resource_group} -n {app} --yes')
+
+        create_containerapp_with_runtime_java_agent_args_and_check('', checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime", None)
+        ])
+
+        # Create container app with runtime=java, it should have default java runtime settings
+        create_containerapp_with_runtime_java_agent_args_and_check('--runtime=java', checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True),
+        ])
+
+        # Create container app with runtime=java and enable java agent
+        create_containerapp_with_runtime_java_agent_args_and_check('--runtime=java --enable-java-agent', checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True),
+            JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", True)
+        ])
+
+        # Create container app with runtime=java and enable java metrics
+        create_containerapp_with_runtime_java_agent_args_and_check('--runtime=java --enable-java-metrics', checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True),
+            JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", True)
+        ])
+
+        # Create container app with runtime=java and disable java agent
+        create_containerapp_with_runtime_java_agent_args_and_check('--runtime=java --enable-java-agent=false',checks=[
+           JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True),
+            JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", False)
+        ])
+
+        # Create container app with runtime=java and disable java metrics
+        create_containerapp_with_runtime_java_agent_args_and_check('--runtime=java --enable-java-metrics=false', checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False),
+            JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", False)
+        ])
+
+        # Create container app with runtime=java and enable java metrics and disable java agent
+        create_containerapp_with_runtime_java_agent_args_and_check('--runtime=java --enable-java-metrics=true --enable-java-agent=false',checks=[
+             JMESPathCheck('properties.provisioningState', "Succeeded"),
+             JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True),
+             JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", False)
+         ])
+
+        # Create container app with runtime=java and disable java metrics and enable java agent
+        create_containerapp_with_runtime_java_agent_args_and_check('--runtime=java --enable-java-metrics=false --enable-java-agent=true', checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False),
+            JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", True)
+        ])
+
+        # Create container app with runtime=java and enable java metrics and enable java agent
+        create_containerapp_with_runtime_java_agent_args_and_check('--runtime=java --enable-java-metrics=true --enable-java-agent=true', checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True),
+            JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", True)
+        ])
+
+        # Create container app with runtime=java and disable java metrics and disable java agent
+        create_containerapp_with_runtime_java_agent_args_and_check('--runtime=java --enable-java-metrics=false --enable-java-agent=false', checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False),
+            JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", False)
+        ])
+
+        # Unmatched runtime, runtime should be java when enable-java-agent is set
+        create_containerapp_with_runtime_java_agent_args_and_check('--runtime=generic --enable-java-agent',
+                                                                     expect_failure=True)
+
+        # Unmatched runtime, runtime should be java when enable-java-metrics is set
+        create_containerapp_with_runtime_java_agent_args_and_check('--runtime=generic --enable-java-metrics',
+                                                                   expect_failure=True)
+
+        # Unmatched runtime, runtime should be java when enable-java-metrics and enable-java-agent are set
+        create_containerapp_with_runtime_java_agent_args_and_check('--runtime=generic --enable-java-metrics --enable-java-agent',
+                                                                   expect_failure=True)
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northcentralus")
+    def test_containerapp_runtime_java_update(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        app = self.create_random_name(prefix='aca', length=24)
+        image = "mcr.microsoft.com/azurespringapps/samples/hello-world:0.0.1"
+
+        env = prepare_containerapp_env_for_app_e2e_tests(self)
+
+        # Create container app without enabling java metrics
+        self.cmd(f'containerapp create -g {resource_group} -n {app} --image {image} --environment {env}')
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime", None)
+        ])
+
+        # Update contaier app without runtime settings, it should keep the same runtime settings
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --cpu 0.5 --memory 1Gi', checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime", None)
+        ])
+
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --enable-java-metrics --enable-java-agent', checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True),
+            JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", True)
+        ])
+
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --cpu 0.25 --memory 0.5Gi', checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True),
+            JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", True)
+        ])
+
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --enable-java-agent=false', checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True),
+            JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", False)
+        ])
+
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --enable-java-metrics=false', checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False),
+            JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", False)
+        ])
+
+        # Update container app with runtime=generic, it should erase runtime settings
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=generic', checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime", None)
+        ])
+
+        # Update container app with runtime=java, it should setup default java runtime settings if not set before
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=java', checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True),
+            JMESPathCheckNotExists("properties.configuration.runtime.java.javaAgent")
+        ])
+
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=java --enable-java-metrics', checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True),
+            JMESPathCheckNotExists("properties.configuration.runtime.java.javaAgent")
+        ])
+
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=java --enable-java-agent', checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True),
+            JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", True)
+        ])
+
+        # Update container app with runtime=java, it should keep the same runtime settings
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=java', checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True),
+            JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", True)
+        ])
+
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=java --enable-java-metrics=false',
+                 checks=[
+                     JMESPathCheck('properties.provisioningState', "Succeeded"),
+                     JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False),
+                     JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", True)
+                 ])
+
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=java', checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", False),
+            JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", True)
+        ])
+
+        # It will imply runtime=java when enable-java-metrics is set
+        self.cmd(f'containerapp update -g {resource_group} -n {app} --enable-java-metrics', checks=[
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck("properties.configuration.runtime.java.enableMetrics", True),
+            JMESPathCheck("properties.configuration.runtime.java.javaAgent.enabled", True)
+        ])
 
         # Update container app failed with wrong runtime
         self.cmd(f'containerapp update -g {resource_group} -n {app} --runtime=generic --enable-java-metrics',

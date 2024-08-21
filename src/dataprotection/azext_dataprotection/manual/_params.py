@@ -128,6 +128,9 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('vault_name', vault_name_type)
         c.argument('policy_id', type=str, help="specify the ID of the new policy with which backup instance will be associated with.")
+        c.argument('resource_guard_operation_requests', options_list=['--resource-guard-operation-requests', '--operation-requests'],
+                   type=str, nargs='+', help='Critical operation request which is protected by the resourceGuard.')
+        c.argument('tenant_id', type=str, help='ID of the tenant if the Resource Guard protecting the vault exists in a different tenant.')
 
     with self.argument_context('dataprotection backup-policy get-default-policy-template') as c:
         c.argument('datasource_type', arg_type=get_enum_type(get_datasource_types()), help="Specify the datasource type of the resource to be backed up")
@@ -255,6 +258,13 @@ def load_arguments(self, _):
                    type=namespaced_name_resource_type,
                    options_list=['--restore-hook-references', '--restore-hook-refs'],
                    help='Property sets the hook reference to be executed during restore.')
+        c.argument('staging_resource_group_id', type=str, options_list=['--staging-resource-group-id', '--staging-rg-id'],
+                   help='Resource group of the staging storage account for AKS vaulted backups')
+        c.argument('staging_storage_account_id', type=str, options_list=['--staging-storage-account-id', '--staging-storage-id'],
+                   help='Storage Account ID for AKS vaulted backups')
+        c.argument('resource_modifier_reference', type=validate_file_or_dict,
+                   options_list=['--resource-modifier-reference', '--resource-modifier'],
+                   help='Key value mapping for resource modifier reference')
 
     with self.argument_context('dataprotection backup-instance restore initialize-for-data-recovery') as c:
         c.argument('target_resource_id', type=str, help="specify the resource ID to which the data will be restored.")

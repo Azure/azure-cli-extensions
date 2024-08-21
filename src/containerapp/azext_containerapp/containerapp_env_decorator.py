@@ -2,13 +2,16 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from azure.cli.command_modules.containerapp._utils import get_default_workload_profiles, safe_set, _ensure_identity_resource_id, load_cert_file
+# pylint: disable=line-too-long, broad-except, logging-format-interpolation
+
 from knack.log import get_logger
 
+from azure.cli.command_modules.containerapp._utils import get_default_workload_profiles, safe_set, _ensure_identity_resource_id, load_cert_file
 from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvCreateDecorator, \
     ContainerAppEnvUpdateDecorator
 from azure.cli.core.azclierror import RequiredArgumentMissingError, ValidationError
 from azure.cli.core.commands.client_factory import get_subscription_id
+
 from ._models import ManagedServiceIdentity, CustomDomainConfiguration
 from ._utils import safe_get
 from ._client_factory import handle_non_404_status_code_exception
@@ -21,7 +24,7 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
         return self.get_param("infrastructure_resource_group")
 
     def construct_payload(self):
-        ### copy from the parent construct_payload
+        # copy from the parent construct_payload
         self.set_up_app_log_configuration()
 
         self.managed_env_def["location"] = self.get_argument_location()
@@ -37,14 +40,15 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
         self.set_up_vnet_configuration()
 
         self.set_up_peer_to_peer_encryption()
-        ### copy end
+        # copy end
 
-        ### overwrite custom_domain_configuration
+        # overwrite custom_domain_configuration
         self.set_up_custom_domain_configuration()
 
         self.set_up_infrastructure_resource_group()
         self.set_up_dynamic_json_columns()
         self.set_up_managed_identity()
+        self.set_up_public_network_access()
 
     def validate_arguments(self):
         super().validate_arguments()
@@ -64,14 +68,15 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                 raise ValidationError("Cannot use --certificate-file with --certificate-akv-url at the same time")
             if (not self.get_argument_certificate_file()) and (not self.get_argument_certificate_key_vault_url()):
                 raise ValidationError("Either --certificate-file or --certificate-akv-url should be set when --dns-suffix is set")
-            
-        # validate mtls and p2p traffic encryption
-        if self.get_argument_p2p_encryption_enabled() is False and self.get_argument_mtls_enabled() is True:
-            raise ValidationError("Cannot use '--enable-mtls' with '--enable-peer-to-peer-encryption False'")
+
+    def set_up_public_network_access(self):
+        if self.get_argument_public_network_access():
+            safe_set(self.managed_env_def, "properties", "publicNetworkAccess",
+                     value=self.get_argument_public_network_access())
 
     def set_up_dynamic_json_columns(self):
         if self.get_argument_logs_destination() == "log-analytics" and self.get_argument_logs_dynamic_json_columns() is not None:
-            self.managed_env_def["properties"]["appLogsConfiguration"]["logAnalyticsConfiguration"]["dynamicJsonColumns"] = self.get_argument_logs_dynamic_json_columns()
+            safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", "dynamicJsonColumns", value=self.get_argument_logs_dynamic_json_columns())
 
     def set_up_infrastructure_resource_group(self):
         if self.get_argument_enable_workload_profiles() and self.get_argument_infrastructure_subnet_resource_id() is not None:
@@ -152,16 +157,6 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
                 }
             self.managed_env_def["properties"]["customDomainConfiguration"] = custom_domain
 
-    def set_up_peer_to_peer_encryption(self):
-        is_p2p_encryption_enabled = self.get_argument_p2p_encryption_enabled()
-        is_mtls_enabled = self.get_argument_mtls_enabled()
-
-        if is_p2p_encryption_enabled is not None:
-            safe_set(self.managed_env_def, "properties", "peerTrafficConfiguration", "encryption", "enabled", value=is_p2p_encryption_enabled)
-
-        if is_mtls_enabled is not None:
-            safe_set(self.managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=is_mtls_enabled)
-
     def get_argument_enable_workload_profiles(self):
         return self.get_param("enable_workload_profiles")
 
@@ -183,8 +178,8 @@ class ContainerappEnvPreviewCreateDecorator(ContainerAppEnvCreateDecorator):
     def get_argument_certificate_key_vault_url(self):
         return self.get_param("certificate_key_vault_url")
 
-    def get_argument_p2p_encryption_enabled(self):
-        return self.get_param("p2p_encryption_enabled")
+    def get_argument_public_network_access(self):
+        return self.get_param("public_network_access")
 
 
 class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
@@ -194,22 +189,25 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
         # validate custom domain configuration
         if self.get_argument_certificate_file() and self.get_argument_certificate_key_vault_url():
             raise ValidationError("Cannot use certificate --certificate-file with --certificate-akv-url at the same time")
-        
-        # validate mtls and p2p traffic encryption
-        if self.get_argument_p2p_encryption_enabled() is False and self.get_argument_mtls_enabled() is True:
-            raise ValidationError("Cannot use '--enable-mtls' with '--enable-peer-to-peer-encryption False'")
 
     def construct_payload(self):
         super().construct_payload()
 
-        self.set_up_peer_to_peer_encryption()
+        self.set_up_public_network_access()
+
+    def set_up_public_network_access(self):
+        if self.get_argument_public_network_access():
+            safe_set(self.managed_env_def, "properties", "publicNetworkAccess", value=self.get_argument_public_network_access())
 
     def set_up_app_log_configuration(self):
         logs_destination = self.get_argument_logs_destination()
 
         if logs_destination:
-            logs_destination = None if logs_destination == "none" else logs_destination
-            safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "destination", value=logs_destination)
+            if logs_destination == "none":
+                safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "destination", value=None)
+                safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", value=None)
+            else:
+                safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "destination", value=logs_destination)
 
         if logs_destination == "azure-monitor":
             safe_set(self.managed_env_def, "properties", "appLogsConfiguration", "logAnalyticsConfiguration", value=None)
@@ -242,16 +240,6 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
             safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificateValue", value="")
             safe_set(self.managed_env_def, "properties", "customDomainConfiguration", "certificatePassword", value="")
 
-    def set_up_peer_to_peer_encryption(self):
-        is_p2p_encryption_enabled = self.get_argument_p2p_encryption_enabled()
-        is_mtls_enabled = self.get_argument_mtls_enabled()
-
-        if is_p2p_encryption_enabled is not None:
-            safe_set(self.managed_env_def, "properties", "peerTrafficConfiguration", "encryption", "enabled", value=is_p2p_encryption_enabled)
-
-        if is_mtls_enabled is not None:
-            safe_set(self.managed_env_def, "properties", "peerAuthentication", "mtls", "enabled", value=is_mtls_enabled)
-
     def get_argument_logs_dynamic_json_columns(self):
         return self.get_param("logs_dynamic_json_columns")
 
@@ -261,5 +249,5 @@ class ContainerappEnvPreviewUpdateDecorator(ContainerAppEnvUpdateDecorator):
     def get_argument_certificate_key_vault_url(self):
         return self.get_param("certificate_key_vault_url")
 
-    def get_argument_p2p_encryption_enabled(self):
-        return self.get_param("p2p_encryption_enabled")
+    def get_argument_public_network_access(self):
+        return self.get_param("public_network_access")

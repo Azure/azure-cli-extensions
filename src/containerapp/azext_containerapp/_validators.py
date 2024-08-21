@@ -2,21 +2,22 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long, unused-argument
 
-import re
-from azure.cli.core.azclierror import (ValidationError, InvalidArgumentValueError,
-                                       MutuallyExclusiveArgumentError, RequiredArgumentMissingError)
 from msrestazure.tools import is_valid_resource_id
 from knack.log import get_logger
+from urllib.parse import urlparse
 
+from azure.cli.core.azclierror import (ValidationError, InvalidArgumentValueError,
+                                       MutuallyExclusiveArgumentError, RequiredArgumentMissingError)
 from azure.cli.command_modules.containerapp._utils import is_registry_msi_system
+from ._utils import is_registry_msi_system_environment
+
 from ._constants import ACR_IMAGE_SUFFIX, \
     CONNECTED_ENVIRONMENT_TYPE, \
     EXTENDED_LOCATION_RP, CUSTOM_LOCATION_RESOURCE_TYPE, MAXIMUM_SECRET_LENGTH, CONTAINER_APPS_RP, \
     CONNECTED_ENVIRONMENT_RESOURCE_TYPE, MANAGED_ENVIRONMENT_RESOURCE_TYPE, MANAGED_ENVIRONMENT_TYPE, \
-    SUPPORTED_RUNTIME_LIST, RUNTIME_GENERIC
-from urllib.parse import urlparse
+    RUNTIME_GENERIC
 
 logger = get_logger(__name__)
 
@@ -44,20 +45,25 @@ def validate_create(registry_identity, registry_pass, registry_user, registry_se
         raise MutuallyExclusiveArgumentError("Cannot provide both registry identity and username/password")
     if is_registry_msi_system(registry_identity) and no_wait:
         raise MutuallyExclusiveArgumentError("--no-wait is not supported with system registry identity")
-    if registry_identity and not is_valid_resource_id(registry_identity) and not is_registry_msi_system(registry_identity):
-        raise InvalidArgumentValueError("--registry-identity must be an identity resource ID or 'system'")
+    if registry_identity and not is_valid_resource_id(registry_identity) and not is_registry_msi_system(registry_identity) and not is_registry_msi_system_environment(registry_identity):
+        raise InvalidArgumentValueError("--registry-identity must be an identity resource ID or 'system' or 'system-environment'")
     if registry_identity and ACR_IMAGE_SUFFIX not in (registry_server or ""):
         raise InvalidArgumentValueError("--registry-identity: expected an ACR registry (*.azurecr.io) for --registry-server")
 
 
-def validate_runtime(runtime, enable_java_metrics):
-    if runtime and runtime.lower() == RUNTIME_GENERIC and enable_java_metrics is not None:
-        raise ValidationError("Not support enable Java metrics with --enable-java-metrics for generic runtime with --runtime generic")
+def validate_runtime(runtime, enable_java_metrics, enable_java_agent):
+    def is_java_enhancement_enabled():
+        return enable_java_agent is not None or enable_java_metrics is not None
+
+    if runtime is None:
+        return
+    if runtime.lower() == RUNTIME_GENERIC and is_java_enhancement_enabled():
+        raise ValidationError("Usage error: --runtime java is required when using --enable-java-metrics or --enable-java-agent")
 
 
 def validate_env_name_or_id(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import is_valid_resource_id, resource_id, parse_resource_id
+    from msrestazure.tools import resource_id, parse_resource_id
 
     if not namespace.managed_env:
         return
@@ -100,7 +106,7 @@ def validate_env_name_or_id(cmd, namespace):
 
 def validate_env_name_or_id_for_up(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import is_valid_resource_id, resource_id, parse_resource_id
+    from msrestazure.tools import resource_id, parse_resource_id
 
     if not namespace.environment:
         return
@@ -143,7 +149,7 @@ def validate_env_name_or_id_for_up(cmd, namespace):
 
 def validate_custom_location_name_or_id(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import is_valid_resource_id, resource_id
+    from msrestazure.tools import resource_id
 
     if not namespace.custom_location or not namespace.resource_group_name:
         return
@@ -201,3 +207,10 @@ def validate_target_port_range(cmd, namespace):
     if target_port is not None:
         if target_port < 1 or target_port > 65535:
             raise ValidationError("Port must be in range [1, 65535].")
+
+
+def validate_timeout_in_seconds(cmd, namespace):
+    timeout_in_seconds = namespace.timeout_in_seconds
+    if timeout_in_seconds is not None:
+        if timeout_in_seconds < 0 or timeout_in_seconds > 60:
+            raise ValidationError("timeout in seconds must be in range [0, 60].")

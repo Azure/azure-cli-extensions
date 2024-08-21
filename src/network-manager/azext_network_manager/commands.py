@@ -21,8 +21,8 @@ def load_command_table(self, _):
         from .custom import ConnectConfigCreate, ConnectConfigUpdate
         self.command_table["network manager connect-config create"] = ConnectConfigCreate(loader=self)
         self.command_table["network manager connect-config update"] = ConnectConfigUpdate(loader=self)
-        g.custom_command('create', 'network_manager_connect_config_create')
-        g.custom_command('update', 'network_manager_connect_config_update')
+        # g.custom_command('create', 'network_manager_connect_config_create')
+        # g.custom_command('update', 'network_manager_connect_config_update')
 
     with self.command_group('network manager security-admin-config rule-collection rule') as g:
         g.custom_command('create', 'network_manager_admin_rule_create')

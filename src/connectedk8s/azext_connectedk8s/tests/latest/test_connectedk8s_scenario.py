@@ -29,8 +29,6 @@ CONFIG = {}  # dictionary of configurations
 config_path = os.path.join(os.path.dirname(__file__), "config.json")
 if not os.path.isfile(config_path):
     CONFIG["customLocationsOid"] = ""
-    CONFIG["rbacAppId"] = "fakeRbacAppId"
-    CONFIG["rbacAppSecret"] = "fakeRbacAppSecret"
     CONFIG["location"] = "eastus2euap"
 else:
     with open(config_path, 'r') as f:
@@ -38,7 +36,7 @@ else:
     for key in CONFIG:
         if not CONFIG[key]:
             raise RequiredArgumentMissingError(f"Missing required configuration in {config_path} file. Make sure all \
-                properties are populated.")
+properties are populated.")
 
 
 def _get_test_data_file(filename):
@@ -134,7 +132,7 @@ def install_kubectl_client():
             kubectl_path = os.path.join(kubectl_filepath, 'kubectl')
         else:
             logger.warning(f'The {operating_system} platform is not currently supported for installing kubectl \
-                client.')
+client.')
             return
 
         if os.path.isfile(kubectl_path):
@@ -175,6 +173,73 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             self.check('tags.foo', 'doo'),
             self.check('resourceGroup', '{rg}'),
             self.check('name', '{name}')
+        ])
+
+        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context \
+            {managed_cluster_name}-admin -y')
+        self.cmd('aks delete -g {rg} -n {managed_cluster_name} -y')
+
+        # delete the kube config
+        os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
+        
+    @live_only()
+    @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
+    def test_connect_withoidcandworkloadidentity(self,resource_group):
+        managed_cluster_name = self.create_random_name(prefix='test-connect', length=24)
+        kubeconfig = "%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
+        self.kwargs.update({
+            'rg': resource_group,
+            'name': self.create_random_name(prefix='cc-', length=12),
+            'kubeconfig': kubeconfig,
+            'managed_cluster_name': managed_cluster_name,
+            'location': CONFIG['location']
+        })
+
+        # scenario - oidc issuer and workload identity enabled
+        self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
+        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
+        self.cmd('connectedk8s connect -n {name} -g {rg} -l {location} --tags foo=doo --enable-oidc-issuer \
+            --enable-workload-identity --kube-config {kubeconfig} --kube-context {managed_cluster_name}-admin')
+        self.cmd('connectedk8s show -g {rg} -n {name}', checks=[
+            self.check('tags.foo', 'doo'),
+            self.check('name', '{name}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('oidcIssuerProfile.enabled', True),
+            self.check('securityProfile.workloadIndentity.enabled', True)
+        ])
+
+        self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context \
+            {managed_cluster_name}-admin -y')
+        self.cmd('aks delete -g {rg} -n {managed_cluster_name} -y')
+
+        # delete the kube config
+        os.remove("%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml')))
+        
+    @live_only()
+    @ResourceGroupPreparer(name_prefix='conk8stest', location=CONFIG['location'], random_name_length=16)
+    def test_connect_withoidcandselfhostedissuer(self,resource_group):
+        managed_cluster_name = self.create_random_name(prefix='test-connect', length=24)
+        kubeconfig = "%s" % (_get_test_data_file(managed_cluster_name + '-config.yaml'))
+        self.kwargs.update({
+            'rg': resource_group,
+            'name': self.create_random_name(prefix='cc-', length=12),
+            'kubeconfig': kubeconfig,
+            'managed_cluster_name': managed_cluster_name,
+            'location': CONFIG['location']
+        })
+
+        # scenario - oidc issuer enabled and self hosted issuer url set
+        self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
+        self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
+        self.cmd('connectedk8s connect -n {name} -g {rg} -l {location} --tags foo=doo --enable-oidc-issuer \
+            --self-hosted-issuer "https://oidcissuer-selfhosted.azure.net/" --kube-config {kubeconfig} \
+            --kube-context {managed_cluster_name}-admin')
+        self.cmd('connectedk8s show -g {rg} -n {name}', checks=[
+            self.check('tags.foo', 'doo'),
+            self.check('name', '{name}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('oidcIssuerProfile.enabled', True),
+            self.check('oidcIssuerProfile.selfHostedIssuerUrl', 'https://oidcissuer-selfhosted.azure.net/')
         ])
 
         self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context \
@@ -247,8 +312,6 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             'kubeconfig': kubeconfig,
             'managed_cluster_name': managed_cluster_name,
             'custom_locations_oid': CONFIG['customLocationsOid'],
-            'rbac_app_id': CONFIG['rbacAppId'],
-            'rbac_app_secret': CONFIG['rbacAppSecret'],
             'location': CONFIG['location']
         })
 
@@ -288,7 +351,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
 
         # scenario-2 : custom loc is enabled , check if disabling cluster connect results in an error
         with self.assertRaisesRegexp(CLIError, "Disabling 'cluster-connect' feature is not allowed when \
-            'custom-locations' feature is enabled."):
+'custom-locations' feature is enabled."):
             self.cmd('connectedk8s disable-features -n {name} -g {rg} --features cluster-connect --kube-config \
                 {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
 
@@ -452,7 +515,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         cmd = [helm_client_location, 'get', 'values', 'azure-arc', "--namespace", "azure-arc-release", "-ojson"]
 
         with self.assertRaisesRegexp(CLIError, "az connectedk8s upgrade to manually upgrade agents and extensions is \
-            only supported when auto-upgrade is set to false"):
+only supported when auto-upgrade is set to false"):
             self.cmd('connectedk8s upgrade -g {rg} -n {name} --kube-config {kubeconfig} --kube-context \
                 {managed_cluster_name}-admin')
 
@@ -552,6 +615,28 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             self.check('resourceGroup', '{rg}'),
             self.check('tags.foo', 'moo')
         ])
+        
+        # scenario - oidc issuer and workload identity enabled
+        self.cmd('connectedk8s update -n {name} -g {rg} --enable-oidc-issuer \
+            --enable-workload-identity --kube-config {kubeconfig} \
+            --kube-context {managed_cluster_name}-admin')
+        self.cmd('connectedk8s show -g {rg} -n {name}', checks=[
+            self.check('name', '{name}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('oidcIssuerProfile.enabled', True),
+            self.check('securityProfile.workloadIndentity.enabled', True)
+        ])
+        
+        # scenario - oidc issuer enabled and self hosted issuer url set
+        self.cmd('connectedk8s update -n {name} -g {rg} --enable-oidc-issuer \
+            --self-hosted-issuer "https://oidcissuer-selfhosted.azure.net/" --kube-config {kubeconfig} \
+            --kube-context {managed_cluster_name}-admin')
+        self.cmd('connectedk8s show -g {rg} -n {name}', checks=[
+            self.check('name', '{name}'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('oidcIssuerProfile.enabled', True),
+            self.check('oidcIssuerProfile.selfHostedIssuerUrl', 'https://oidcissuer-selfhosted.azure.net/')
+        ])
 
         self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context \
             {managed_cluster_name}-admin -y')
@@ -625,9 +710,9 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             try:
                 for conn in proc.connections():
                     if conn.laddr.port == consts.API_SERVER_PORT or conn.laddr.port == consts.CLIENT_PROXY_PORT:
-                        raise ValidationError(f"Ports {consts.API_SERVER_PORT} or {consts.CLIENT_PROXY_PORT} are in \
-                            use by process named {proc.name()}. Please kill it before proceeding with the live test.\
-                                \nProcess currently using the ports: {proc}")
+                        raise ValidationError(f"""Ports {consts.API_SERVER_PORT} or {consts.CLIENT_PROXY_PORT} are in \
+use by process named {proc.name()}. Please kill it before proceeding with the live test.
+Process currently using the ports: {proc}""")
             # Might get AccessDenied in Unix environments. This is because elevated privilege is required to view \
                 # system and root processes.
             # The proxy process is not a system or root process, so we ignore the AccessDenied exceptions.
@@ -636,9 +721,9 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
                 continue
         if access_denied:
             print(f"""Warning: the test does not have elevated privileges to access some processes to verify that \
-                they are not using the ports required by the proxy process.
+they are not using the ports required by the proxy process.
 If there are any issues with the test, please verify manually that there are no processes using ports \
-    {consts.API_SERVER_PORT} and {consts.CLIENT_PROXY_PORT}.""")
+{consts.API_SERVER_PORT} and {consts.CLIENT_PROXY_PORT}.""")
         self.cmd('aks create -g {rg} -n {managed_cluster_name} --generate-ssh-keys')
         self.cmd('aks get-credentials -g {rg} -n {managed_cluster_name} -f {kubeconfig} --admin')
         self.cmd('connectedk8s connect -g {rg} -n {name} -l {location} --tags foo=doo --kube-config {kubeconfig} \
@@ -748,8 +833,9 @@ Proxy process stderr retrieval attempt:\n{proxy_process_stderr}""")
         proxy_process_stdout = proxy_process_stdout.decode("utf-8") if proxy_process_stdout else None
         proxy_process_stderr = proxy_process_stderr.decode("utf-8") if proxy_process_stderr else None
         # For some reason logger.info doesn't output to stdout during the test.
-        print(f"Output received while exiting proxy process:\nstdout:\n{proxy_process_stdout}\
-              \nstderr:{proxy_process_stderr}")
+        print(f"""Output received while exiting proxy process:
+stdout: {proxy_process_stdout}
+stderr: {proxy_process_stderr}""")
 
         # Clean up the cluster.
         self.cmd('connectedk8s delete -g {rg} -n {name} --kube-config {kubeconfig} --kube-context \

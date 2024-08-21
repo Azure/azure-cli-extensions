@@ -6,7 +6,7 @@
 
 from knack.arguments import CLIArgumentType
 
-from azure.cli.core.commands.parameters import (resource_group_name_type, get_location_type,
+from azure.cli.core.commands.parameters import (resource_group_name_type,
                                                 file_type,
                                                 get_three_state_flag, get_enum_type, tags_type)
 from azure.cli.command_modules.containerapp._validators import (validate_memory, validate_cpu,
@@ -18,7 +18,7 @@ from azure.cli.command_modules.containerapp._validators import (validate_memory,
 from .action import AddCustomizedKeys
 from ._validators import (validate_env_name_or_id, validate_build_env_vars,
                           validate_custom_location_name_or_id, validate_env_name_or_id_for_up,
-                          validate_otlp_headers, validate_target_port_range)
+                          validate_otlp_headers, validate_target_port_range, validate_timeout_in_seconds)
 from ._constants import MAXIMUM_CONTAINER_APP_NAME_LENGTH, MAXIMUM_APP_RESILIENCY_NAME_LENGTH, MAXIMUM_COMPONENT_RESILIENCY_NAME_LENGTH
 
 
@@ -32,6 +32,7 @@ def load_arguments(self, _):
         c.argument('build_env_vars', nargs='*', help="A list of environment variable(s) for the build. Space-separated values in 'key=value' format.",
                    validator=validate_build_env_vars, is_preview=True)
         c.argument('max_inactive_revisions', type=int, help="Max inactive revisions a Container App can have.", is_preview=True)
+        c.argument('registry_identity', help="The managed identity with which to authenticate to the Azure Container Registry (instead of username/password). Use 'system' for a system-defined identity, Use 'system-environment' for an environment level system-defined identity or a resource id for a user-defined environment/containerapp level identity. The managed identity should have been assigned acrpull permissions on the ACR before deployment (use 'az role assignment create --role acrpull ...').")
 
     # Springboard
     with self.argument_context('containerapp create', arg_group='Service Binding', is_preview=True) as c:
@@ -53,6 +54,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp create', arg_group='Runtime', is_preview=True) as c:
         c.argument('runtime', arg_type=get_enum_type(['generic', 'java']), help='The runtime of the container app.', is_preview=True)
         c.argument('enable_java_metrics', arg_type=get_three_state_flag(), help='Boolean indicating whether to enable Java metrics for the app. Only applicable for Java runtime.', is_preview=True)
+        c.argument('enable_java_agent', arg_type=get_three_state_flag(), help='Boolean indicating whether to enable Java agent for the app. Only applicable for Java runtime.', is_preview=True)
 
     # Source and Artifact
     with self.argument_context('containerapp update') as c:
@@ -72,6 +74,7 @@ def load_arguments(self, _):
     with self.argument_context('containerapp update', arg_group='Runtime', is_preview=True) as c:
         c.argument('runtime', arg_type=get_enum_type(['generic', 'java']), help='The runtime of the container app.', is_preview=True)
         c.argument('enable_java_metrics', arg_type=get_three_state_flag(), help='Boolean indicating whether to enable Java metrics for the app. Only applicable for Java runtime.', is_preview=True)
+        c.argument('enable_java_agent', arg_type=get_three_state_flag(), help='Boolean indicating whether to enable Java agent for the app. Only applicable for Java runtime.', is_preview=True)
 
     with self.argument_context('containerapp env', arg_group='Virtual Network') as c:
         c.argument('infrastructure_resource_group', options_list=['--infrastructure-resource-group', '-i'], help='Name for resource group that will contain infrastructure resources. If not provided, a resource group name will be generated.', is_preview=True)
@@ -118,7 +121,7 @@ def load_arguments(self, _):
     # App Resiliency
     with self.argument_context('containerapp resiliency') as c:
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
-        c.argument('container_app_name', options_list=['--container-app-name'], help=f"The name of the existing Container App.")
+        c.argument('container_app_name', options_list=['--container-app-name'], help="The name of the existing Container App.")
         c.argument('name', name_type, help=f"The name of the Container App Resiliency Policy. A name must consist of lower case alphanumeric characters or '-', start with a letter, end with an alphanumeric character, cannot have '--', and must be less than {MAXIMUM_APP_RESILIENCY_NAME_LENGTH} characters.")
         c.argument('yaml', type=file_type, help='Path to a .yaml file with the configuration of a container app resiliency policy. All other parameters will be ignored.')
         c.argument('default', options_list=['--recommended'], help='Set recommended values of resiliency policies for a container app.')
@@ -158,6 +161,10 @@ def load_arguments(self, _):
         c.argument('service_name', options_list=['--name', '-n'], help="The service name.")
         c.argument('environment_name', options_list=['--environment'], help="The environment name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+
+    with self.argument_context('containerapp env') as c:
+        c.argument('public_network_access', arg_type=get_enum_type(['Enabled', 'Disabled']),
+                   help="Allow or block all public traffic", is_preview=True)
 
     with self.argument_context('containerapp env', arg_group='Custom Domain') as c:
         c.argument('certificate_identity', options_list=['--custom-domain-certificate-identity', '--certificate-identity'],
@@ -250,12 +257,6 @@ def load_arguments(self, _):
         c.argument('service_principal_client_secret', help='The service principal client secret. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-client-secret", "--sp-sec"])
         c.argument('service_principal_tenant_id', help='The service principal tenant ID. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-tenant-id", "--sp-tid"])
 
-    with self.argument_context('containerapp auth') as c:
-        # subgroup update
-        c.argument('token_store', arg_type=get_three_state_flag(), help='Boolean indicating if token store is enabled for the app.', is_preview=True)
-        c.argument('sas_url_secret', help='The blob storage SAS URL to be used for token store.', is_preview=True)
-        c.argument('sas_url_secret_name', help='The secret name that contains blob storage SAS URL to be used for token store.', is_preview=True)
-
     with self.argument_context('containerapp env workload-profile set') as c:
         c.argument('workload_profile_type', help="The type of workload profile to add or update. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
         c.argument('min_nodes', help="The minimum node count for the workload profile")
@@ -280,6 +281,7 @@ def load_arguments(self, _):
         c.argument('min_executions', type=int, help="Minimum number of job executions that are created for a trigger")
         c.argument('max_executions', type=int, help="Maximum number of job executions that are created for a trigger")
         c.argument('polling_interval', type=int, help="Interval to check each event source in seconds.")
+        c.argument('registry_identity', help="The managed identity with which to authenticate to the Azure Container Registry (instead of username/password). Use 'system' for a system-defined identity, Use 'system-environment' for an environment level system-defined identity or a resource id for a user-defined environment/containerappjob level identity. The managed identity should have been assigned acrpull permissions on the ACR before deployment (use 'az role assignment create --role acrpull ...').")
 
     with self.argument_context('containerapp job create') as c:
         c.argument('system_assigned', options_list=['--mi-system-assigned', c.deprecate(target='--system-assigned', redirect='--mi-system-assigned', hide=True)], help='Boolean indicating whether to assign system-assigned identity.', action='store_true')
@@ -293,11 +295,17 @@ def load_arguments(self, _):
         c.argument('max_executions', type=int, help="Maximum number of job executions that are created for a trigger", default=100)
         c.argument('polling_interval', type=int, help="Interval to check each event source in seconds.", default=30)
 
+    # scale
+    with self.argument_context('containerapp', arg_group='Scale') as c:
+        c.argument('scale_rule_identity', options_list=['--scale-rule-identity', '--sri'],
+                   help='Resource ID of a managed identity to authenticate with Azure scaler resource(storage account/eventhub or else), or System to use a system-assigned identity.', is_preview=True)
+
     with self.argument_context('containerapp job', arg_group='Scale') as c:
         c.argument('min_executions', type=int, help="Minimum number of job executions to run per polling interval.")
         c.argument('max_executions', type=int, help="Maximum number of job executions to run per polling interval.")
         c.argument('polling_interval', type=int, help="Interval to check each event source in seconds. Defaults to 30s.")
         c.argument('scale_rule_type', options_list=['--scale-rule-type', '--srt'], help="The type of the scale rule.")
+        c.argument('scale_rule_identity', options_list=['--scale-rule-identity', '--sri'], help='Resource ID of a managed identity to authenticate with Azure scaler resource(storage account/eventhub or else), or System to use a system-assigned identity.', is_preview=True)
 
     # params for preview
     with self.argument_context('containerapp') as c:
@@ -344,11 +352,35 @@ def load_arguments(self, _):
         c.argument('build_env_vars', nargs='*', help="A list of environment variable(s) for the build. Space-separated values in 'key=value' format.",
                    validator=validate_build_env_vars, is_preview=True)
 
+    with self.argument_context('containerapp registry') as c:
+        c.argument('identity', help="The managed identity with which to authenticate to the Azure Container Registry (instead of username/password). Use 'system' for a system-defined identity, Use 'system-environment' for an environment level system-defined identity or a resource id for a user-defined environment/containerapp level identity. The managed identity should have been assigned acrpull permissions on the ACR before deployment (use 'az role assignment create --role acrpull ...').")
+
     with self.argument_context('containerapp env java-component') as c:
         c.argument('java_component_name', options_list=['--name', '-n'], help="The Java component name.")
         c.argument('environment_name', options_list=['--environment'], help="The environment name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
-        c.argument('configuration', nargs="*", help="Java component configuration. Configuration must be in format \"<propertyName>=<value> <propertyName>=<value> ...\".")
+        c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services, bindings or other Java components to be connected to this Java Component. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
+        c.argument('unbind_service_bindings', nargs='*', options_list=['--unbind'], help="Space separated list of services, bindings or Java components to be removed from this Java Component. e.g. BIND_NAME1...")
+        c.argument('configuration', nargs="*", help="Java component configuration. Configuration must be in format \"<propertyName>=<value>\" \"<propertyName>=<value>\"...")
+
+    with self.argument_context('containerapp job logs show') as c:
+        c.argument('follow', help="Print logs in real time if present.", arg_type=get_three_state_flag())
+        c.argument('tail', help="The number of past logs to print (0-300)", type=int, default=20)
+        c.argument('container', help="The name of the container")
+        c.argument('output_format', options_list=["--format"], help="Log output format", arg_type=get_enum_type(["json", "text"]), default="json")
+        c.argument('replica', help="The name of the replica. List replicas with 'az containerapp job replica list'. A replica may not exist if the job pod has been cleaned up.")
+        c.argument('execution', help="The name of the container app execution. Defaults to the latest execution.")
+        c.argument('name', name_type, id_part=None, help="The name of the Containerapp job.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+
+    with self.argument_context('containerapp job replica') as c:
+        c.argument('replica', help="The name of the replica. ")
+        c.argument('execution', help="The name of the container app execution. Defaults to the latest execution.")
+        c.argument('name', name_type, id_part=None, help="The name of the Containerapp.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+
+    with self.argument_context('containerapp job registry') as c:
+        c.argument('identity', help="The managed identity with which to authenticate to the Azure Container Registry (instead of username/password). Use 'system' for a system-defined identity, Use 'system-environment' for an environment level system-defined identity or a resource id for a user-defined environment/containerapp level identity. The managed identity should have been assigned acrpull permissions on the ACR before deployment (use 'az role assignment create --role acrpull ...').")
 
     with self.argument_context('containerapp env dotnet-component') as c:
         c.argument('dotnet_component_name', options_list=['--name', '-n'], help="The DotNet component name.")
@@ -356,9 +388,6 @@ def load_arguments(self, _):
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
         c.argument('dotnet_component_type', options_list=['--type'], arg_type=get_enum_type(['AspireDashboard']), help="The type of DotNet component.")
 
-    with self.argument_context('containerapp env', arg_group='Peer Traffic Configuration') as c:
-        c.argument('p2p_encryption_enabled', arg_type=get_three_state_flag(), options_list=['--enable-peer-to-peer-encryption'], is_preview=True, help='Boolean indicating whether the peer-to-peer traffic encryption is enabled for the environment.')
-    
     with self.argument_context('containerapp sessionpool') as c:
         c.argument('name', options_list=['--name', '-n'], help="The Session Pool name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
@@ -376,12 +405,12 @@ def load_arguments(self, _):
     with self.argument_context('containerapp sessionpool', arg_group='Container') as c:
         c.argument('managed_env', validator=validate_managed_env_name_or_id, options_list=['--environment'], help="Name or resource ID of the container app's environment.")
         c.argument('image', options_list=['--image', '-i'], help="Container image, e.g. publisher/image-name:tag.")
-        c.argument('container_name', help="Name of the container.")
+        c.argument('container_name', help="Name of the container. On create if no container name is provided the container name will default to the name of the session pool coverted to lower case.")
         c.argument('cpu', type=float, validator=validate_cpu, help="Required CPU in cores from 0.25 - 2.0, e.g. 0.5")
         c.argument('memory', validator=validate_memory, help="Required memory from 0.5 - 4.0 ending with \"Gi\", e.g. 1.0Gi")
-        c.argument('env_vars', nargs='*',  help="A list of environment variable(s) for the container. Space-separated values in 'key=value' format. Empty string to clear existing values. Prefix value with 'secretref:' to reference a secret.")
+        c.argument('env_vars', nargs='*', help="A list of environment variable(s) for the container. Space-separated values in 'key=value' format. Empty string to clear existing values. Prefix value with 'secretref:' to reference a secret.")
         c.argument('startup_command', nargs='*', options_list=['--command'], help="A list of supported commands on the container that will executed during startup. Space-separated values e.g. \"/bin/queue\" \"mycommand\". Empty string to clear existing values")
-        c.argument('args', nargs='*',  help="A list of container startup command argument(s). Space-separated values e.g. \"-c\" \"mycommand\". Empty string to clear existing values")
+        c.argument('args', nargs='*', help="A list of container startup command argument(s). Space-separated values e.g. \"-c\" \"mycommand\". Empty string to clear existing values")
         c.argument('target_port', type=int, validator=validate_target_port_range, help="The session port used for ingress traffic.")
 
     with self.argument_context('containerapp sessionpool', arg_group='Registry') as c:
@@ -389,3 +418,23 @@ def load_arguments(self, _):
         c.argument('registry_pass', validator=validate_registry_pass, options_list=['--registry-password'], help="The password to log in to container registry. If stored as a secret, value must start with \'secretref:\' followed by the secret name.")
         c.argument('registry_user', validator=validate_registry_user, options_list=['--registry-username'], help="The username to log in to container registry.")
 
+    # sessions code interpreter commands
+    with self.argument_context('containerapp session code-interpreter') as c:
+        c.argument('name', options_list=['--name', '-n'], help="The Session Pool name.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+        c.argument('identifier', options_list=['--identifier', '-i'], help="The Session Identifier")
+        c.argument('session_pool_location', help="The location of the session pool")
+
+    with self.argument_context('containerapp session code-interpreter', arg_group='file') as c:
+        c.argument('filename', help="The file to delete or show from the session")
+        c.argument('filepath', help="The local path to the file to upload to the session")
+        c.argument('path', help="The path to list files from the session")
+
+    with self.argument_context('containerapp session code-interpreter', arg_group='execute') as c:
+        c.argument('code', help="The code to execute in the code interpreter session")
+        c.argument('timeout_in_seconds', type=int, validator=validate_timeout_in_seconds, default=60, help="Duration in seconds code in session can run prior to timing out 0 - 60 secs, e.g. 30")
+
+    with self.argument_context('containerapp java logger') as c:
+        c.argument('logger_name', help="The logger name.")
+        c.argument('logger_level', arg_type=get_enum_type(["off", "error", "info", "debug", "trace", "warn"]), help="Set the log level for the specific logger name.")
+        c.argument('all', help="The flag to indicate all logger settings.", action="store_true")

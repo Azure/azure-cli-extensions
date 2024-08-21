@@ -9,9 +9,3 @@
 # --------------------------------------------------------------------------
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
-
-from .generated.custom import *  # noqa: F403
-try:
-    from .manual.custom import *  # noqa: F403
-except ImportError:
-    pass

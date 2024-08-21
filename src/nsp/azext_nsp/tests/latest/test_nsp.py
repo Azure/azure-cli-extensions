@@ -83,6 +83,7 @@ class NspScenario(ScenarioTest):
             'nsp_accessrule_name': 'TestNspAccessRule_nsp',
             'sms_accessrule_name': 'TestNspAccessRule_sms',
             'email_accessrule_name': 'TestNspAccessRule_email',
+            'servicetag_accessrule_name': 'TestNspAccessRule_servicetag',
             'sub': self.get_subscription_id()
         })
 
@@ -114,6 +115,11 @@ class NspScenario(ScenarioTest):
         # SMS based access rule
         self.cmd('az network perimeter profile access-rule create --name {sms_accessrule_name} --profile-name {profile_name} --perimeter-name {nsp_name} --resource-group {rg} --phone-numbers "[\'+919898989898\', \'+929898989898\']" --direction "Outbound"')
 
+        # ServiceTag based access rule
+        self.cmd('az network perimeter profile access-rule create --name {servicetag_accessrule_name} --profile-name {profile_name} --perimeter-name {nsp_name} --resource-group {rg} --service-tags  [MicrosoftPublicIPSpace]', checks=[
+            self.check('properties.serviceTags', "['MicrosoftPublicIPSpace']")
+        ])
+        
     @ResourceGroupPreparer(name_prefix='test_nsp_association_crud', location='eastus2euap')
     def test_nsp_association_crud(self, resource_group):
 
@@ -121,7 +127,7 @@ class NspScenario(ScenarioTest):
             'nsp_name': 'TestNetworkSecurityPerimeter',
             'profile_name': 'TestNspProfile',
             'association_name': 'TestNspAssociation',
-            'resource_name': 'kvclinsp17',
+            'resource_name': 'kvclinsp18',
             'sub': self.get_subscription_id()
         })
 

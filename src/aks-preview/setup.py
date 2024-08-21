@@ -9,11 +9,11 @@ from codecs import open as open1
 
 from setuptools import setup, find_packages
 
-VERSION = "4.0.0b2"
+VERSION = "7.0.0b6"
 
 CLASSIFIERS = [
     "Development Status :: 4 - Beta",
-    "Intended Audience :: Developvalidate_nodepool_taintsers",
+    "Intended Audience :: Developers",
     "Intended Audience :: System Administrators",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",

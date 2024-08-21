@@ -10,23 +10,30 @@ import unittest
 
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, MSGraphNameReplacer, MOCKED_USER_NAME)
-from azure.cli.testsdk .scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+
 from .test_definitions import (test_data_source, test_notification_channel, test_dashboard)
+from .recording_processors import ApiKeyServiceAccountTokenReplacer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class AmgScenarioTest(ScenarioTest):
 
+    def __init__(self, method_name):
+        super().__init__(method_name, recording_processors=[
+            ApiKeyServiceAccountTokenReplacer()
+        ])
+
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
     def test_amg_crud(self, resource_group):
 
         self.kwargs.update({
-            'name': 'clitestamg2',
+            'name': self.create_random_name(prefix='clitestamg', length=23),
             'location': 'westcentralus'
         })
 
-        self.cmd('grafana create -g {rg} -n {name} -l {location} --tags foo=doo --skip-role-assignments', checks=[
+        self.cmd('grafana create -g {rg} -n {name} -l {location} --tags foo=doo --skip-role-assignments True', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
@@ -39,20 +46,20 @@ class AmgScenarioTest(ScenarioTest):
         ])
 
         self.cmd('grafana update -g {rg} -n {name} --deterministic-outbound-ip Enabled --api-key Enabled', checks=[
-            self.check('properties.deterministicOutboundIp', 'Enabled'),
+            self.check('properties.deterministicOutboundIP', 'Enabled'),
             self.check('properties.apiKey', 'Enabled'),
             self.check('length(properties.outboundIPs)', 2)
         ])
 
         self.cmd('grafana show -g {rg} -n {name}', checks=[
-            self.check('properties.deterministicOutboundIp', 'Enabled'),
+            self.check('properties.deterministicOutboundIP', 'Enabled'),
             self.check('properties.apiKey', 'Enabled'),
             self.check('length(properties.outboundIPs)', 2)
         ])
 
         self.cmd('grafana update -g {rg} -n {name} --deterministic-outbound-ip Disabled --api-key Disabled --public-network-access Disabled')
         self.cmd('grafana show -g {rg} -n {name}', checks=[
-            self.check('properties.deterministicOutboundIp', 'Disabled'),
+            self.check('properties.deterministicOutboundIP', 'Disabled'),
             self.check('properties.apiKey', 'Disabled'),
             self.check('properties.publicNetworkAccess', 'Disabled'),
             self.check('properties.outboundIPs', None)
@@ -66,7 +73,7 @@ class AmgScenarioTest(ScenarioTest):
     def test_api_key_e2e(self, resource_group):
 
         self.kwargs.update({
-            'name': 'clitestamgapikey',
+            'name': self.create_random_name(prefix='clitestamgapikey', length=23),
             'location': 'westcentralus',
             "key": "apikey1",
             "key2": "apikey2"
@@ -97,7 +104,7 @@ class AmgScenarioTest(ScenarioTest):
     def test_service_account_e2e(self, resource_group):
 
         self.kwargs.update({
-            'name': 'clitestserviceaccount',
+            'name': self.create_random_name(prefix='clitestamgsvcacct', length=23),
             'location': 'westcentralus',
             "account": "myServiceAccount",
             "token": "myToken"
@@ -141,7 +148,7 @@ class AmgScenarioTest(ScenarioTest):
 
         # Test Instance
         self.kwargs.update({
-            'name': 'clitestamge2e',
+            'name': self.create_random_name(prefix='clitestamge2e', length=23),
             'location': 'westeurope'
         })
 
@@ -295,9 +302,9 @@ class AmgScenarioTest(ScenarioTest):
 
         # Test Instance
         self.kwargs.update({
-            'name': 'clitestbackup',
+            'name': self.create_random_name(prefix='clitestamgbackup', length=23),
             'location': 'westcentralus',
-            'name2': 'clitestbackup2'
+            'name2': self.create_random_name(prefix='clitestamgbackup', length=23)
         })
 
         owner = self._get_signed_in_user()
@@ -432,6 +439,12 @@ class AmgScenarioTest(ScenarioTest):
                 self.check("length([?uid == '{dashboardUid3}'])", 0),
                 self.check("length([?uid == '{dashboardUid}'])", 1)
             ])
+
+            # Close-out Instance
+            self.cmd('grafana delete -g {rg} -n {name} --yes')
+            self.cmd('grafana delete -g {rg} -n {name2} --yes')
+            final_count = len(self.cmd('grafana list').get_output_in_json())
+            self.assertTrue(final_count, 0)
 
     def _get_signed_in_user(self):
         account_info = self.cmd('account show').get_output_in_json()

@@ -12,8 +12,6 @@
 from .custom import ImportSpecificationExtension
 from .custom import ExportSpecificationExtension
 from .custom import ExportMetadataSchemaExtension
-from .custom import CreateMetadataSchemaExtension
-from .custom import UpdateMetadataSchemaExtension
 
 
 def load_custom_commands(self, _):  # pylint: disable=unused-argument
@@ -21,8 +19,6 @@ def load_custom_commands(self, _):  # pylint: disable=unused-argument
         self.command_table['apic api definition import-specification'] = ImportSpecificationExtension(loader=self)
         self.command_table['apic api definition export-specification'] = ExportSpecificationExtension(loader=self)
     with self.command_group('apic metadata') as g:
-        self.command_table['apic metadata create'] = CreateMetadataSchemaExtension(loader=self)
-        self.command_table['apic metadata update'] = UpdateMetadataSchemaExtension(loader=self)
         self.command_table['apic metadata export'] = ExportMetadataSchemaExtension(loader=self)
     with self.command_group('apic api') as g:
         g.custom_command("register", "register_apic", is_preview=True)

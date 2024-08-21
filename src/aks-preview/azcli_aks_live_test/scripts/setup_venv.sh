@@ -32,8 +32,7 @@ setupAZ(){
     ext_repo=${2:-""}
 
     # install azdev, used later to install azcli and extension
-    # TODO: update to a new version with dependency version fixed
-    pip install azdev==0.1.36
+    pip install azdev==0.1.60
 
     # pre-install-az: check existing az
     which az || az version || az extension list || true
@@ -66,14 +65,6 @@ installAZAKSTOOLFromLocal(){
     wheel_file=${1}
     pip install "${wheel_file}"
     pip show az-aks-tool
-}
-
-# need to be executed in a venv
-installAZAKSTOOL(){
-    wheel_file="az_aks_tool-latest-py3-none-any.whl"
-    wheel_url="https://akspreview.blob.core.windows.net/azakstool/${wheel_file}"
-    curl -sLO "${wheel_url}"
-    installAZAKSTOOLFromLocal "${wheel_file}"
 }
 
 # need to be executed in a venv with kusto related modules installed
@@ -150,13 +141,8 @@ if [[ -n ${setup_option} ]]; then
         installBuildTools
     elif [[ ${setup_option} == "setup-tool" ]]; then
         echo "Start to setup az-aks-tool!"
-        local_setup=${3:-"n"}
-        if [[ ${local_setup} == "y" ]]; then
-            wheel_file=${4:-"/az_aks_tool-latest-py3-none-any.whl"}
-            installAZAKSTOOLFromLocal "${wheel_file}"
-        else
-            installAZAKSTOOL
-        fi
+        wheel_file=${3:-$(find / -type f -name "az_aks_tool*" | head -n 1)}
+        installAZAKSTOOLFromLocal "${wheel_file}"
         removeKustoPTHFile
     elif [[ ${setup_option} == "setup-az" ]]; then
         echo "Start to setup azure-cli!"
