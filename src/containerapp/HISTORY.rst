@@ -5,6 +5,13 @@ Release History
 upcoming
 ++++++
 
+0.3.55
+++++++
+* 'az containerapp create': Support --registry-identity to use Environment identity for ACR authentication.
+* 'az containerapp job create': Support --registry-identity to use Environment identity for ACR authentication.
+* 'az containerapp registry set': Support --identity to use Environment identity for ACR authentication.
+* 'az containerapp job registry set': Support --identity to use Environment identity for ACR authentication.
+
 0.3.54
 ++++++
 * 'az containerapp env create/update': Support `--public-network-access` to allow or block public network

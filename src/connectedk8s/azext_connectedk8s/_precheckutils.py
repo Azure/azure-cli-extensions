@@ -271,8 +271,6 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
 
         # Clearing all the resources after fetching the cluster diagnostic checks container logs
         Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
-        delete_release_namespace = [kubectl_client_location, "delete", "namespace", "azure-arc-release"]
-        Popen(delete_release_namespace, stdout=PIPE, stderr=PIPE)
 
     # To handle any exception that may occur during the execution
     except Exception as e:
