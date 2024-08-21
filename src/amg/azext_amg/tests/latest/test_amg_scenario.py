@@ -470,7 +470,10 @@ class AmgScenarioTest(ScenarioTest):
 
             self.cmd('monitor account create -n {monitor_name} -g {rg} -l {location}')
 
-            self.cmd('grafana mpe create -g {rg} --workspace-name {name} -n {mpe_name} -l {location} --group-ids prometheusMetrics --private-link-resource-region {location} --private-link-resource-id /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Monitor/accounts/{monitor_name}')
+            self.cmd('grafana mpe create -g {rg} --workspace-name {name} -n {mpe_name} -l {location} --group-ids prometheusMetrics --private-link-resource-region {location} --private-link-resource-id /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Monitor/accounts/{monitor_name}', checks=[
+                self.check('name', '{mpe_name}'),
+                self.check('connectionState.status', 'Pending')
+            ])
 
             self.cmd('grafana mpe list -g {rg} --workspace-name {name}', checks=[
                 self.check('length([])', 1)
