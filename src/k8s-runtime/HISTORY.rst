@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.3
+++++++
+* Vendor sdks and remove sdks from dependencies
+
 1.0.2
 ++++++
 * Use `preview` release train storage class extension when enabling storage class service
