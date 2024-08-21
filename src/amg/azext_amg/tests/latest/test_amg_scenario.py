@@ -450,14 +450,14 @@ class AmgScenarioTest(ScenarioTest):
     def test_amg_private_endpoint(self, resource_group):
 
         self.kwargs.update({
-            'name': 'clitestamgmpe',
+            'name': self.create_random_name(prefix='clitestamgmpe', length=23),
             'location': 'westcentralus',
-            'monitor_name': 'clitestamgmonitor',
-            'mpe_name': 'clitestmpe',
-            'pe_name': 'clitestpe',
-            'vnet_name': 'clitestvnet',
-            'subnet_name': 'clitestsubnet',
-            'conn_name': 'clitestconn',
+            'monitor_name': self.create_random_name(prefix='clitestmon', length=20),
+            'mpe_name': self.create_random_name(prefix='clitestmpe', length=20),
+            'pe_name': self.create_random_name(prefix='clitestpe', length=20),
+            'vnet_name': self.create_random_name(prefix='clitestvnet', length=20),
+            'subnet_name': self.create_random_name(prefix='clitestsubnet', length=20),
+            'conn_name': self.create_random_name(prefix='clitestconn', length=20),
             'sub': self.get_subscription_id(),
         })
 
@@ -467,7 +467,6 @@ class AmgScenarioTest(ScenarioTest):
         with unittest.mock.patch('azext_amg.custom._gen_guid', side_effect=self.create_guid):
 
             self.cmd('grafana create -g {rg} -n {name} -l {location}')
-            time.sleep(120)
 
             self.cmd('monitor account create -n {monitor_name} -g {rg} -l {location}')
 
