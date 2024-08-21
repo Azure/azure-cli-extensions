@@ -33,6 +33,7 @@ STORAGE_CLASS_CONTRIBUTOR_ROLE_ID = "/providers/Microsoft.Authorization/roleDefi
 STORAGE_CLASS_EXTENSION_NAME = "arc-k8s-storage-class"
 STORAGE_CLASS_EXTENSION_TYPE = "Microsoft.ManagedStorageClass"
 
+
 def enable_storage_class(cmd: AzCliCommand, resource_uri: str):
     """
     Enable storage class service in a connected cluster
