@@ -5,7 +5,7 @@ Release History
 
 1.0.3
 ++++++
-* Vendor sdks and remove sdks from dependencies
+* Vendor Azure SDKs and remove Azure SDKs from dependencies
 
 1.0.2
 ++++++
