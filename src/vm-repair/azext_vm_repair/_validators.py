@@ -8,7 +8,7 @@ from json import loads
 from re import match, search, findall
 from knack.log import get_logger
 from knack.util import CLIError
-from azure.cli.core.azclierror import ValidationError
+from azure.cli.core.azclierror import ValidationError, RequiredArgumentMissingError
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.resource._client_factory import _resource_client_factory
@@ -74,7 +74,7 @@ def validate_create(cmd, namespace):
 
     if namespace.encrypt_recovery_key:
         if not namespace.unlock_encrypted_vm:
-            raise CLIError('Recovery password is provided in the argument, but unlock_encypted_vm is not passed. Rerun command adding --unlock_encypted_vm.')
+            raise RequiredArgumentMissingError('Recovery password is provided in the argument, but unlock_encypted_vm is not passed. Rerun command adding --unlock_encypted_vm.')
 
     if namespace.enable_nested:
         if is_linux:
