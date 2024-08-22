@@ -302,10 +302,10 @@ def create_annotation(grafana_url, annotation, http_headers, overwrite):
             logger.info("delete status: %s, msg: %s", status, content)
         else:
             print_styled_text([
-                (Style.WARNING, f'Create annotation id {old_id}: '),
+                (Style.WARNING, f'Create annotation id {annotation_id}: '),
                 (Style.ERROR, 'FAILURE'),
                 (Style.ERROR, ' (annotation with same time period, dashboardUID, and text already exists,'),
-                (Style.ERROR, ' please enable --overwrite if you want to overwrite the snapshot)')
+                (Style.ERROR, ' please enable --overwrite if you want to overwrite the annotation)')
             ])
             return False
 
