@@ -1,10 +1,13 @@
 
 Release History
 ===============
+1.0.9
+++++++
+Added `encrypt_recovery_key` string parameter to `vm repair create` to use recovery key provided by the user to unlock the disk for a confidential VM. 
+
 1.0.8
 ++++++
 SELFHELP telemetry added as initiator. Extra parameters is introduced at the backend to capture the telemetry data.
-Made changes to `repair create` for confidential VM to use recovery key provided by the user to unlock the disk. 
 
 1.0.7
 ++++++
