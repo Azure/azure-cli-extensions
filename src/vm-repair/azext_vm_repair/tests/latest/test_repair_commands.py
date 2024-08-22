@@ -780,7 +780,7 @@ class RepairAndRestoreLinuxVM(LiveScenarioTest):
 class LinuxARMManagedDiskCreateRestoreTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='eastus')
-    def test_vmrepair_LinuxManagedCreateRestore(self, resource_group):
+    def test_vmrepair_LinuxARMManagedCreateRestore(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
         })
@@ -814,7 +814,7 @@ class LinuxARMManagedDiskCreateRestoreTest(LiveScenarioTest):
 class ResetNICWithASG(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_vmrepair_ResetNicWindowsVM(self, resource_group):
+    def test_vmrepair_ResetNicWithASGWindowsVM(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
         })
