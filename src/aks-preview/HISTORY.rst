@@ -17,14 +17,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 +++++++
 * Add option `--enable-acns`, `--disable-acns` to `az aks create/update`
 * Add option `--enable-fqdn-policy`, `--disable-fqdn-policy` to `az aks create/update`
-* az aks create/update: Support in place param updates for managed prom
-* Vendor new SDK and bump API version to 2024-06-02-preview.
+* Add support for default nginx ingress controller config for app routing add-on
+* `az aks create/update`: Support in place param updates for managed prom
 
 7.0.0b4
 ++++++++
 * Fix bug related to the --ampls-resource-id option in the `az aks enable-addons` command.
 * Vendor new SDK and bump API version to 2024-06-02-preview.
-* Add support for default nginx ingress controller config for app routing add-on
 
 7.0.0b3
 ++++++++
