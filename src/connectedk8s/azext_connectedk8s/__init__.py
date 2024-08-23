@@ -5,7 +5,7 @@
 
 from azure.cli.core import AzCommandsLoader
 
-from azext_connectedk8s._help import helps  # pylint: disable=unused-import
+from azext_connectedk8s._help import helps
 
 
 class Connectedk8sCommandsLoader(AzCommandsLoader):
@@ -34,3 +34,9 @@ class Connectedk8sCommandsLoader(AzCommandsLoader):
 
 
 COMMAND_LOADER_CLS = Connectedk8sCommandsLoader
+
+__all__ = [
+    "helps",
+    "Connectedk8sCommandsLoader",
+    "COMMAND_LOADER_CLS",
+]
