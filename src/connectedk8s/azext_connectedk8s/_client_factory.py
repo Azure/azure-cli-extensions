@@ -5,12 +5,8 @@
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.profiles import ResourceType
-from azure.cli.core._profile import Profile
 from azure.cli.core import telemetry
 from azure.cli.core.azclierror import ValidationError
-from azure.cli.core.commands.client_factory import configure_common_settings
-from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.graphrbac import GraphRbacManagementClient
 
 import os
 import requests
@@ -133,8 +129,6 @@ def cf_resource_groups(cli_ctx, subscription_id=None):
 
 
 def _resource_client_factory(cli_ctx, subscription_id=None):
-    from azure.mgmt.resource import ResourceManagementClient
-
     if os.getenv(consts.Azure_Access_Token_Variable):
         credential = AccessTokenCredential(
             access_token=os.getenv(consts.Azure_Access_Token_Variable)

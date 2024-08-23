@@ -5,10 +5,7 @@
 import azext_connectedk8s._constants as consts
 
 
-from os import name
 from azure.cli.core.azclierror import ArgumentUsageError
-from azure.cli.core.azclierror import InvalidArgumentValueError, ArgumentUsageError
-import re
 
 
 def example_name_or_id_validator(cmd, namespace):

@@ -11,9 +11,7 @@ import subprocess
 from subprocess import Popen, PIPE
 import time
 from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
 import json
-from knack.util import CLIError
 from knack.log import get_logger
 from knack.prompting import NoTTYException, prompt_y_n
 from azure.cli.core.commands.client_factory import get_subscription_id

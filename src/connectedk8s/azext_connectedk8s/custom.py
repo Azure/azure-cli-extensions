@@ -47,7 +47,6 @@ from Crypto.Util import asn1
 from azext_connectedk8s._client_factory import cf_resource_groups
 from azext_connectedk8s._client_factory import resource_providers_client
 from azext_connectedk8s._client_factory import (
-    cf_connected_cluster_prev_2022_10_01,
     cf_connected_cluster_prev_2023_11_01,
     cf_connected_cluster_prev_2024_07_01,
 )
@@ -62,9 +61,6 @@ from .vendored_sdks.models import (
     ConnectedCluster,
     ConnectedClusterIdentity,
     ListClusterUserCredentialProperties,
-)
-from .vendored_sdks.preview_2022_10_01.models import (
-    ConnectedCluster as ConnectedClusterPreview,
 )
 from .vendored_sdks.preview_2022_10_01.models import (
     ConnectedClusterPatch as ConnectedClusterPatchPreview,
