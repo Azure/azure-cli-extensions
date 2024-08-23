@@ -576,27 +576,8 @@ class LinuxSinglepassKekEncryptedManagedDiskWithRHEL8DistroCreateRestoreTest(Liv
         })
 
         # Create test VM
-        resultVM = self.cmd('vm create -g {rg} -n {vm} --image Canonical:UbuntuServer:18.04-LTS:latest --admin-username azureadmin --admin-password !Passw0rd2018 --size Standard_D2s_v3').get_output_in_json() 
+        self.cmd('vm create -g {rg} -n {vm} --image Canonical:UbuntuServer:18.04-LTS:latest --admin-username azureadmin --admin-password !Passw0rd2018 --size Standard_D2s_v3')
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
-        getVM = self.cmd('az vm show --name {vm} --resource-group {rg} --output json').get_output_in_json()
-        print("PRINTING VMS")
-        # print(vms['resourceGroup'])
-        # print(resultVM["name"])
-        # print(json.dumps(vms, indent=4))
-        # Define the regular expressions to match subscription ID, resource group, and VM name  
-        vmId = getVM['id']
-        sub_re = re.compile(r'/subscriptions/(.*?)/')  
-        rg_re = re.compile(r'/resourceGroups/(.*?)/')  
-        vm_re = re.compile(r'/virtualMachines/(.*)') 
-        # Use the regular expressions to search the string  
-        try:
-            subscription_id = sub_re.search(vmId).group(1)  
-            resource_group = rg_re.search(vmId).group(1)  
-            vm_name = vm_re.search(vmId).group(1)
-            print('successfully parsed id')
-        except AttributeError:
-            raise Exception("The VM Id did not match the expected format and could not be parsed!")
-
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
 
@@ -604,17 +585,10 @@ class LinuxSinglepassKekEncryptedManagedDiskWithRHEL8DistroCreateRestoreTest(Liv
         self.cmd('keyvault create -n {kv} -g {rg} --enabled-for-disk-encryption True')
 
         # Check keyvault
-        subId = self.cmd('az account show --query id --output tsv')
         keyvault = self.cmd('keyvault list -g {rg} -o json').get_output_in_json()
         assert len(keyvault) == 1
 
         # Create key
-        print('trying to create key')
-        roleAssignmentCmd = self.cmd('az role assignment create --assignee f90057dd-422f-49fc-a88f-91e965bc00c8 --role "Key Vault Contributor" --scope /subscriptions/{}/resourceGroups/{}/providers/Microsoft.Compute/virtualMachines/{}'.format(subscription_id, resource_group, vm_name)).get_output_in_json()
-        print(roleAssignmentCmd)
-        listRoles = self.cmd('az role assignment list --scope /subscriptions/{}/resourceGroups/{}/providers/Microsoft.Compute/virtualMachines/{} --query "[?principalId==\'f90057dd-422f-49fc-a88f-91e965bc00c8\']"'.format(subscription_id, resource_group, vm_name)).get_output_in_json()
-        print(listRoles)
-        print('listed out role assignments above')
         self.cmd('keyvault key create --vault-name {kv} --name {key} --protection software')
 
         # Check key
