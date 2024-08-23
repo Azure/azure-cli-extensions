@@ -319,11 +319,11 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
         # Fetch source and repair VM data
         source_vm = get_vm(cmd, resource_group_name, vm_name)
         is_managed = _uses_managed_disk(source_vm)
-
-        logger.info('Repair VM ID: %s', repair_vm_id)
-        repair_vm_id = parse_resource_id(repair_vm_id)
-        repair_vm_name = repair_vm_id['name']
-        repair_resource_group = repair_vm_id['resource_group']
+        if repair_vm_id:
+            logger.info('Repair VM ID: %s', repair_vm_id)
+            repair_vm_id = parse_resource_id(repair_vm_id)
+            repair_vm_name = repair_vm_id['name']
+            repair_resource_group = repair_vm_id['resource_group']
         source_disk = None
 
         # MANAGED DISK
