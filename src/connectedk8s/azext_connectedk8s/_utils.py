@@ -156,7 +156,7 @@ def get_chart_path(
     try:
         if os.path.isdir(chart_export_path):
             shutil.rmtree(chart_export_path)
-    except:
+    except OSError:
         logger.warning(
             "Unable to cleanup the {} already present on the machine. In case of failure, please cleanup "
             "the directory '{}' and try again.".format(

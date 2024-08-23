@@ -162,11 +162,6 @@ def create_connectedk8s(
         if custom_token_passed is True
         else get_subscription_id(cmd.cli_ctx)
     )
-    if custom_token_passed is True:
-        onboarding_tenant_id = os.getenv("AZURE_TENANT_ID")
-    else:
-        account = Profile().get_subscription(subscription_id)
-        onboarding_tenant_id = account["homeTenantId"]
 
     resource_id = f"/subscriptions/{subscription_id}/resourcegroups/{resource_group_name}/providers/Microsoft.\
         Kubernetes/connectedClusters/{cluster_name}/location/{location}"
@@ -1309,11 +1304,7 @@ def install_helm_client():
 
 def resource_group_exists(ctx, resource_group_name, subscription_id=None):
     groups = cf_resource_groups(ctx, subscription_id=subscription_id)
-    try:
-        groups.get(resource_group_name)
-        return True
-    except:  # pylint: disable=bare-except
-        return False
+    return groups.check_existence(resource_group_name)
 
 
 def connected_cluster_exists(client, resource_group_name, cluster_name):
@@ -1529,9 +1520,7 @@ def generate_arc_agent_configuration(
     if redacted_protected_settings is None:
         redacted_protected_settings = {}
 
-    for feature in set(
-        list(configuration_settings.keys()) + list(redacted_protected_settings.keys())
-    ):
+    for feature in configuration_settings.keys() | redacted_protected_settings.keys():
         settings = configuration_settings.get(feature)
         protected_settings = redacted_protected_settings.get(feature)
         configuration = ArcAgentryConfigurations(
@@ -3679,7 +3668,7 @@ def client_side_proxy_wrapper(
             for f in older_version_files:
                 try:
                     os.remove(f)
-                except:
+                except OSError:
                     logger.warning("failed to delete older version files")
 
         try:
