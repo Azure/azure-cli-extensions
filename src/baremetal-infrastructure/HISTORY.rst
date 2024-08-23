@@ -3,6 +3,6 @@
 Release History
 ===============
 
-1.0.0b1
+3.0.0
 ++++++
-* Initial release.
+* Release of 2024-08-01 preview version which introduces PUT and DELETE operations for compute and storage instances.
