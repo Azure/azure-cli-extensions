@@ -214,7 +214,10 @@ def get_next_version_segment_tag():
 
 
 def add_suggest_header(comment_message):
-    comment_message.insert(0, "## :warning: Release Suggestions")
+    if block_pr == 1:
+        comment_message.insert(0, "## :warning: Release Requirements")
+    else:
+        comment_message.insert(0, "## Release Suggestions")
     comment_message.insert(0, "Hi @" + pr_user)
 
 
@@ -232,7 +235,7 @@ def gen_version_comment_message(mod, mod_update_info, mod_message):
         if mod_update_info.get("version", None):
             bot_version = parse(mod_update_info['version'])
             if mod_update_info.get("version_diff", None):
-                diff_version =  parse(mod_update_info['version_diff'])
+                diff_version = parse(mod_update_info['version_diff'])
                 if diff_version != bot_version:
                     if diff_version < bot_version:
                         block_pr = 1
