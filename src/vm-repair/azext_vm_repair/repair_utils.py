@@ -546,7 +546,7 @@ def _select_distro_linux_gen2(distro):
         'centos8': 'OpenLogic:CentOS:8_4-gen2:latest',
         'oracle8': 'Oracle:Oracle-Linux:o194-lvm-gen2:latest',
         'sles12': 'SUSE:sles-12-sp5:gen2:latest',
-        'sles15': 'SUSE:sles-15-sp3-sapcal:gen2:latest',
+        'sles15': 'SUSE:sles-15-sp3:gen2:latest',
     }
     if distro in image_lookup:
         os_image_urn = image_lookup[distro]
