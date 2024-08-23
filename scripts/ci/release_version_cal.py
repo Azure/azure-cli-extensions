@@ -237,8 +237,7 @@ def gen_version_comment_message(mod, mod_update_info, mod_message):
             if mod_update_info.get("version_diff", None):
                 diff_version = parse(mod_update_info['version_diff'])
                 if diff_version != bot_version:
-                    if diff_version < bot_version:
-                        block_pr = 1
+                    block_pr = 1
                     mod_message.append(" - :warning: Please update `VERSION` to be `{0}` in `src/{1}/setup.py`".format(mod_update_info.get("version", "-"), mod))
             else:
                 mod_message.append(" - Update `VERSION` to `{0}` in `src/{1}/setup.py`".format(mod_update_info.get("version", "-"), mod))
