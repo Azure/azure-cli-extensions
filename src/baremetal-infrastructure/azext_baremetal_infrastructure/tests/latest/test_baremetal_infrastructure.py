@@ -9,5 +9,21 @@ from azure.cli.testsdk import *
 
 
 class BaremetalInfrastructureScenario(ScenarioTest):
-    # TODO: add tests here
-    pass
+    def test_list_baremetalinstances_in_subscription(self):
+        self.cmd('az baremetalinstance list')
+    
+    def test_list_baremetalinstances_in_resourcegroup(self):
+        self.kwargs.update({
+            'resource_group': 'DSM05A-T210'
+        })
+
+        self.cmd('az baremetalinstance list --resource-group {resource_group}')
+    
+    def test_list_baremetalstorageinstances_in_subscription(self):
+        self.cmd('az baremetalstorageinstance list')
+    
+    def test_list_baremetalstorageinstances_in_resourcegroup(self):
+        self.kwargs.update({
+            'resource_group': 'DSM05A-T210'
+        })
+        self.cmd('az baremetalstorageinstance list --resource-group {resource_group}')
