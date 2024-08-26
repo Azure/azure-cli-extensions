@@ -58,7 +58,7 @@ class ContainerappJavaComponentTests(ScenarioTest):
         self.assertTrue(len(java_component_list) == 2)
      
         # Create SBA and bind with eureka
-        self.cmd('containerapp env java-component admin-for-spring create -g {} -n {} --environment {} --minReplicas 2 --maxReplicas 2 '.format(resource_group, sba_name, env_name), checks=[
+        self.cmd('containerapp env java-component admin-for-spring create -g {} -n {} --environment {} --min-replicas 2 --max-replicas 2 --configuration'.format(resource_group, sba_name, env_name), checks=[
             JMESPathCheck('name', sba_name),
             JMESPathCheck('properties.componentType', "SpringBootAdmin"),
             JMESPathCheck('properties.ingress.fqdn', sba_name + "-azure-java.ext." + default_domain),
@@ -90,7 +90,7 @@ class ContainerappJavaComponentTests(ScenarioTest):
                 JMESPathCheck('properties.scale.minReplicas', 1),
                 JMESPathCheck('properties.scale.maxReplicas', 1)
         ])
-        self.cmd('containerapp env java-component admin-for-spring update -g {} -n {} --environment {} --bind {}:myeureka --minReplicas 1 --maxReplicas 1'.format(resource_group, sba_name, env_name, eureka_name), checks=[
+        self.cmd('containerapp env java-component admin-for-spring update -g {} -n {} --environment {} --bind {}:myeureka --min-replicas 1 --max-replicas 1 --configuration'.format(resource_group, sba_name, env_name, eureka_name), checks=[
                 JMESPathCheck('name', sba_name),
                 JMESPathCheck('properties.componentType', "SpringBootAdmin"),
                 JMESPathCheck('properties.serviceBinds[0].name', eureka_name),
