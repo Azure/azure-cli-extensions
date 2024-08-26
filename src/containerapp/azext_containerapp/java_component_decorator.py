@@ -54,10 +54,20 @@ class JavaComponentDecorator(BaseResource):
     def get_argument_unbind_service_bindings(self):
         return self.get_param("unbind_service_bindings")
 
+    def get_argument_min_replicas(self):
+        return self.get_param("min_replicas")
+
+    def get_argument_max_replicas(self):
+        return self.get_param("max_replicas")
+    
     def construct_payload(self):
         self.java_component_def["properties"]["componentType"] = self.get_argument_target_java_component_type()
         self.set_up_service_bindings()
         self.set_up_unbind_service_bindings()
+        self.java_component_def["properties"]["scale"] = {
+            "minReplicas": self.get_argument_min_replicas(),
+            "maxReplicas": self.get_argument_max_replicas()
+        }
 
         if self.get_argument_configuration() is not None:
             configuration_list = []
