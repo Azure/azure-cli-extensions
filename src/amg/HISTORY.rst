@@ -91,5 +91,9 @@ Release History
 
 2.2.0
 ++++++
+* `az grafana list-available-plugin`: list all available plugins available for installation
+
+2.3.0
+++++++
 * `az grafana private-endpoint-connection`: support private endpoint connection management
 * `az grafana mpe`: support managed private endpoint management
