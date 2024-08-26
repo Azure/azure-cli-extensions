@@ -544,7 +544,7 @@ def _select_distro_linux_gen2(distro):
         'ubuntu20': 'Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:latest',
         'centos7': 'OpenLogic:CentOS:7_9-gen2:latest',
         'centos8': 'OpenLogic:CentOS:8_4-gen2:latest',
-        'oracle8': 'Oracle:Oracle-Linux:o194-lvm-gen2:latest',
+        'oracle8': 'Oracle:Oracle-Linux:ol82-gen2:latest',
         'sles12': 'SUSE:sles-12-sp5:gen2:latest',
         'sles15': 'SUSE:sles-15-sp3:gen2:latest',
     }
