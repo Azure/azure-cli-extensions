@@ -88,3 +88,7 @@ Release History
 2.1.0
 ++++++
 * `az grafana migrate`: migrate data from a self-hosted Grafana instance to Azure Managed Grafana instance
+
+2.2.0
+++++++
+* `az grafana list-available-plugin`: list all available plugins available for installation
