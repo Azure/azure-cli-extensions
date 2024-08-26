@@ -111,52 +111,52 @@ Released version and adopted API version
       - **Deprecated** on 2023/09/01
     * - 0.5.94 ~ 0.5.100
       - 2022-07-02-preview
-      - **Deprecated** on 2024/02/14
+      - **Deprecated** on 2024/09/01
     * - 0.5.101 ~ 0.5.104
       - 2022-08-02-preview
-      - Plan to **retire** on 2024/05/20
+      - **Deprecated** on 2024/09/01
     * - 0.5.105 ~ 0.5.107
       - 2022-08-03-preview
-      - Plan to **retire** on 2024/05/20
+      - **Deprecated** on 2024/09/01
     * - 0.5.108 ~ 0.5.115
       - 2022-09-02-preview
-      - Plan to **retire** on 2024/05/20
+      - Plan to **retire** on 2024/09/30
     * - 0.5.116 ~ 0.5.121
       - 2022-10-02-preview
-      - Plan to **retire** on 2024/05/20
+      - Plan to **retire** on 2024/09/30
     * - 0.5.122 ~ 0.5.128
       - 2022-11-02-preview
-      - Plan to **retire** on 2024/05/20
+      - **Deprecated** on 2024/09/01
     * - 0.5.129 ~ 0.5.132
       - 2023-01-02-preview
-      - Plan to **retire** on 2024/05/20
+      - Plan to **retire** on 2024/09/30
     * - 0.5.133 ~ 0.5.137
       - 2023-02-02-preview
-      - Plan to **retire** on 2024/05/20
+      - Plan to **retire** on 2024/09/30
     * - 0.5.138 ~ 0.5.139
       - 2023-03-02-preview
-      - 
+      - Plan to **retire** on 2024/12/01
     * - 0.5.140 ~ 0.5.142
       - 2023-04-02-preview
-      - 
+      - Plan to **retire** on 2024/12/01
     * - 0.5.143 ~ 0.5.149
       - 2023-05-02-preview
-      - 
+      - Plan to **retire** on 2024/12/01
     * - 0.5.150 ~ 0.5.153
       - 2023-06-02-preview
-      - 
+      - Plan to **retire** on 2024/12/01
     * - 0.5.154 ~ 0.5.161
       - 2023-07-02-preview
-      - 
+      - Plan to **retire** on 2024/12/01
     * - 0.5.162 ~ 0.5.166
       - 2023-08-02-preview
-      - 
+      - Plan to **retire** on 2024/12/01
     * - 0.5.167 ~ 0.5.171
       - 2023-09-02-preview
-      - 
+      - Plan to **retire** on 2024/12/01
     * - 0.5.172 ~ 1.0.0b5
       - 2023-10-02-preview
-      - 
+      - Plan to **retire** on 2024/12/01
     * - 1.0.0b6 ~ 1.0.0b6
       - 2023-11-02-preview
       - 
