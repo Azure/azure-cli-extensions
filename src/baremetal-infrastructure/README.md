@@ -6,7 +6,7 @@ This is an extension to Azure CLI to manage BaremetalInfrastructure resources.
 To install this extension just use the CLI extension add command:
 
 ```
-az extension add --name baremetal-infrastructure
+az extension add baremetal-infrastructure
 ```
 
 # Usage
