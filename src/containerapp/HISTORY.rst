@@ -7,6 +7,10 @@ upcoming
 
 0.3.55
 ++++++
+* 'az containerapp env java-component`: Support --min-replicas and --max-replicas for Java components'
+
+0.3.55
+++++++
 * 'az containerapp create': Support --registry-identity to use Environment identity for ACR authentication.
 * 'az containerapp job create': Support --registry-identity to use Environment identity for ACR authentication.
 * 'az containerapp registry set': Support --identity to use Environment identity for ACR authentication.
