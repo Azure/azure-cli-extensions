@@ -2,6 +2,10 @@
 Release History
 ===============
 
+1.0.9
+++++++
+Fixed and updated several vm-repair tests for better coverage. 
+
 1.0.8
 ++++++
 SELFHELP telemetry added as initiator. Extra parameters is introduced at the backend to capture the telemetry data.
