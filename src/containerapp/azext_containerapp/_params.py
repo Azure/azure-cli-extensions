@@ -362,6 +362,8 @@ def load_arguments(self, _):
         c.argument('service_bindings', nargs='*', options_list=['--bind'], help="Space separated list of services, bindings or other Java components to be connected to this Java Component. e.g. SVC_NAME1[:BIND_NAME1] SVC_NAME2[:BIND_NAME2]...")
         c.argument('unbind_service_bindings', nargs='*', options_list=['--unbind'], help="Space separated list of services, bindings or Java components to be removed from this Java Component. e.g. BIND_NAME1...")
         c.argument('configuration', nargs="*", help="Java component configuration. Configuration must be in format \"<propertyName>=<value>\" \"<propertyName>=<value>\"...")
+        c.argument('min_replicas', type=int, help="Minimum number of replicas to run for the Java component.")
+        c.argument('max_replicas', type=int, help="Maximum number of replicas to run for the Java component.")
 
     with self.argument_context('containerapp job logs show') as c:
         c.argument('follow', help="Print logs in real time if present.", arg_type=get_three_state_flag())
