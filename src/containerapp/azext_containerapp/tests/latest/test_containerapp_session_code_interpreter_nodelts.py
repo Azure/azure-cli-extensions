@@ -121,7 +121,7 @@ class ContainerAppSessionCodeInterperterNodeLTSTests(ScenarioTest):
         location = TEST_LOCATION
         self.cmd('configure --defaults location={}'.format(location))
 
-        env_name = self.create_random_name(prefix='aca-sp-env', length=24)
+        env_name = self.create_random_name(prefix='aca-sp-env-registry', length=24)
         create_containerapp_env(self, env_name, resource_group, TEST_LOCATION)
 
         # List Session Pools
