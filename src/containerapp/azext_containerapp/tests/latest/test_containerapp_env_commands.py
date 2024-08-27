@@ -646,7 +646,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.infrastructureResourceGroup', infra_rg),
         ])
 
-        self.cmd(f'containerapp env delete -n {env} -g {resource_group} --yes')
+        self.cmd(f'containerapp env delete -n {env} -g {resource_group} --yes --no-wait')
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
