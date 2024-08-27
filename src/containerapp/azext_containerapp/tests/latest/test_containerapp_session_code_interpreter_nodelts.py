@@ -28,9 +28,19 @@ class ContainerAppSessionCodeInterperterNodeLTSTests(ScenarioTest):
         sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
         self.assertTrue(len(sessionpool_list) == 0)
 
+        # Create PythonLTS SessionPool with default container type which is PythonLTS
+        sessionpool_name_pythonlts = self.create_random_name(prefix='sppythonlts', length=24)
+        self.cmd('containerapp sessionpool create -g {} -n {} --cooldown-period {}'.format(
+            resource_group, sessionpool_name_pythonlts, 300), checks=[
+            JMESPathCheck('name', sessionpool_name_pythonlts),
+            JMESPathCheck('properties.containerType', "PythonLTS"),
+            JMESPathCheck('properties.provisioningState', "Succeeded"),
+            JMESPathCheck('properties.dynamicPoolConfiguration.cooldownPeriodInSeconds', 300)
+        ])
+
         # Create NodeLTS SessionPool
         sessionpool_name_nodelts = self.create_random_name(prefix='spnodelts', length=24)
-        self.cmd('containerapp sessionpool create -g {} -n {} --cooldown-period {}'.format(
+        self.cmd('containerapp sessionpool create -g {} -n {} --container-type NodeLTS --cooldown-period {}'.format(
             resource_group, sessionpool_name_nodelts, 300), checks=[
             JMESPathCheck('name', sessionpool_name_nodelts),
             JMESPathCheck('properties.containerType', "NodeLTS"),
@@ -40,7 +50,7 @@ class ContainerAppSessionCodeInterperterNodeLTSTests(ScenarioTest):
 
         # List Session Pools
         sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
-        self.assertTrue(len(sessionpool_list) == 1)
+        self.assertTrue(len(sessionpool_list) == 2)
 
         # execute python code
         identifier_name = self.create_random_name(prefix='testidentifier', length=24)
@@ -109,6 +119,11 @@ class ContainerAppSessionCodeInterperterNodeLTSTests(ScenarioTest):
         # delete sessionpool to clean up test resources
         self.cmd("containerapp sessionpool delete -n {} -g {} --yes".format(
             sessionpool_name_nodelts,
+            resource_group,
+            ))
+        
+        self.cmd("containerapp sessionpool delete -n {} -g {} --yes".format(
+            sessionpool_name_pythonlts,
             resource_group,
             ))
         
