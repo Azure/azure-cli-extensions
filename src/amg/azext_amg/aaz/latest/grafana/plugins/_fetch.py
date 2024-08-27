@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "grafana list-available-plugin",
+    "grafana plugins fetch",
 )
-class ListAvailablePlugin(AAZCommand):
-    """list all the available plugins
+class Fetch(AAZCommand):
+    """List all the available plugins of a specific workspace for a Grafana resource.
     """
 
     _aaz_info = {
@@ -170,8 +170,8 @@ class ListAvailablePlugin(AAZCommand):
             return cls._schema_on_200
 
 
-class _ListAvailablePluginHelper:
-    """Helper class for ListAvailablePlugin"""
+class _FetchHelper:
+    """Helper class for Fetch"""
 
 
-__all__ = ["ListAvailablePlugin"]
+__all__ = ["Fetch"]
