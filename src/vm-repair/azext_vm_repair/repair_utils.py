@@ -501,8 +501,9 @@ def _select_distro_linux(distro):
         'centos7': 'OpenLogic:CentOS:7_9:latest',
         'centos8': 'OpenLogic:CentOS:8_4:latest',
         'oracle6': 'Oracle:Oracle-Linux:6.10:latest',
+        'oracle7': 'Oracle:Oracle-Linux:ol79:latest',
         'sles12': 'SUSE:sles-12-sp5:gen1:latest',
-        'sles15': 'SUSE:sles-15-sp3:gen1:latest',
+        'sles15': 'SUSE:sles-15-sp6:gen1:latest',
     }
     if distro in image_lookup:
         os_image_urn = image_lookup[distro]
@@ -539,11 +540,13 @@ def _select_distro_linux_Arm64(distro):
 def _select_distro_linux_gen2(distro):
     # base on the document : https://docs.microsoft.com/en-us/azure/virtual-machines/generation-2#generation-2-vm-images-in-azure-marketplace
     image_lookup = {
-        'rhel8': 'RedHat:RHEL:8-lvm-gen2:latest',
+        'rhel7': 'RedHat:rhel-raw:7-raw-gen2:latest',
+        'rhel8': 'RedHat:rhel-raw:8-raw-gen2:latest',
         'ubuntu18': 'Canonical:UbuntuServer:18_04-lts-gen2:latest',
         'ubuntu20': 'Canonical:0001-com-ubuntu-server-focal:20_04-lts-gen2:latest',
         'centos7': 'OpenLogic:CentOS:7_9-gen2:latest',
         'centos8': 'OpenLogic:CentOS:8_4-gen2:latest',
+        'oracle7': 'Oracle:Oracle-Linux:ol79-gen2:latest',
         'oracle8': 'Oracle:Oracle-Linux:ol82-gen2:latest',
         'sles12': 'SUSE:sles-12-sp5:gen2:latest',
         'sles15': 'SUSE:sles-15-sp3:gen2:latest',
