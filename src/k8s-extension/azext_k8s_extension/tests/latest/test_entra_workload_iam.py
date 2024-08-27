@@ -67,7 +67,7 @@ class TestEntraWorkloadIAM(unittest.TestCase):
         def mock_extension_init(_self, *, extension_type, auto_upgrade_minor_version, release_train,
                 version, scope, configuration_settings, configuration_protected_settings):
             assert(release_train == "dev")
-            assert(configuration_settings[CONFIG_SETTINGS_HELM_JOIN_TOKEN] == mock_join_token);
+            assert(configuration_protected_settings[CONFIG_SETTINGS_HELM_JOIN_TOKEN] == mock_join_token);
             assert(configuration_settings[CONFIG_SETTINGS_HELM_TRUST_DOMAIN] == mock_trust_domain_name)
             assert(configuration_settings[CONFIG_SETTINGS_HELM_TENANT_ID] == mock_tenant_id)
 
@@ -107,13 +107,16 @@ class TestEntraWorkloadIAM(unittest.TestCase):
             CONFIG_SETTINGS_USER_TRUST_DOMAIN: mock_trust_domain_name,
             CONFIG_SETTINGS_USER_LOCAL_AUTHORITY: mock_local_authority_name,
             CONFIG_SETTINGS_USER_TENANT_ID: mock_tenant_id,
+        }
+
+        protected_settings = {
             CONFIG_SETTINGS_USER_JOIN_TOKEN: mock_join_token,
         }
 
         def mock_extension_init(_self, *, extension_type, auto_upgrade_minor_version, release_train,
                 version, scope, configuration_settings, configuration_protected_settings):
             assert(release_train == "dev")
-            assert(configuration_settings[CONFIG_SETTINGS_HELM_JOIN_TOKEN] == mock_join_token);
+            assert(configuration_protected_settings[CONFIG_SETTINGS_HELM_JOIN_TOKEN] == mock_join_token);
             assert(configuration_settings[CONFIG_SETTINGS_HELM_TRUST_DOMAIN] == mock_trust_domain_name)
             assert(configuration_settings[CONFIG_SETTINGS_HELM_TENANT_ID] == mock_tenant_id)
 
@@ -130,11 +133,41 @@ class TestEntraWorkloadIAM(unittest.TestCase):
                 extension_type=None, scope='cluster', auto_upgrade_minor_version=None,
                 release_train='dev', version='0.1.0', target_namespace=None,
                 release_namespace=None, configuration_settings=settings,
+                configuration_protected_settings=protected_settings,
+                configuration_settings_file=None, configuration_protected_settings_file=None,
+                plan_name=None, plan_publisher=None, plan_product=None)
+            self.assertEqual(name, 'workload-iam')
+
+    def test_workload_iam_create_with_join_token_as_regular_configuration_setting(self):
+        """
+        Test that, when the user provides a join token as a regular configuration setting, the
+        Create() method fails and asks the user to pass it as a configuration protected setting.
+        """
+
+        mock_trust_domain_name = 'any_trust_domain_name.com'
+        mock_tenant_id = 'any_tenant_id'
+        mock_join_token = 'any_join_token'
+
+        settings = {
+            CONFIG_SETTINGS_USER_TRUST_DOMAIN: mock_trust_domain_name,
+            CONFIG_SETTINGS_USER_TENANT_ID: mock_tenant_id,
+            CONFIG_SETTINGS_USER_JOIN_TOKEN: mock_join_token,
+        }
+
+        with self.assertRaises(InvalidArgumentValueError) as context:
+            workload_iam = EntraWorkloadIAM()
+            workload_iam.Create(cmd=None, client=None, resource_group_name=None,
+                cluster_name=None, name='workload-iam', cluster_type=None, cluster_rp=None,
+                extension_type=None, scope='cluster', auto_upgrade_minor_version=None,
+                release_train='dev', version='0.1.0', target_namespace=None,
+                release_namespace=None, configuration_settings=settings,
                 configuration_protected_settings=None, configuration_settings_file=None,
                 configuration_protected_settings_file=None, plan_name=None, plan_publisher=None,
                 plan_product=None)
-            self.assertEqual(name, 'workload-iam')
 
+        self.assertEqual(str(context.exception),
+            "'joinToken' must be provided with --config-protected-settings, not "
+            "--configuration-settings.")
 
     def test_workload_iam_create_with_join_token_and_no_local_authority_success(self):
         """
@@ -150,14 +183,17 @@ class TestEntraWorkloadIAM(unittest.TestCase):
 
         settings = {
             CONFIG_SETTINGS_USER_TRUST_DOMAIN: mock_trust_domain_name,
-            CONFIG_SETTINGS_USER_JOIN_TOKEN: mock_join_token,
             CONFIG_SETTINGS_USER_TENANT_ID: mock_tenant_id,
+        }
+
+        protected_settings = {
+            CONFIG_SETTINGS_USER_JOIN_TOKEN: mock_join_token,
         }
 
         def mock_extension_init(_self, *, extension_type, auto_upgrade_minor_version, release_train,
                 version, scope, configuration_settings, configuration_protected_settings):
             assert(release_train == "dev")
-            assert(configuration_settings[CONFIG_SETTINGS_HELM_JOIN_TOKEN] == mock_join_token);
+            assert(configuration_protected_settings[CONFIG_SETTINGS_HELM_JOIN_TOKEN] == mock_join_token);
             assert(configuration_settings[CONFIG_SETTINGS_HELM_TRUST_DOMAIN] == mock_trust_domain_name)
             assert(configuration_settings[CONFIG_SETTINGS_HELM_TENANT_ID] == mock_tenant_id)
 
@@ -174,9 +210,9 @@ class TestEntraWorkloadIAM(unittest.TestCase):
                 extension_type=None, scope='cluster', auto_upgrade_minor_version=None,
                 release_train='dev', version='0.1.0', target_namespace=None,
                 release_namespace=None, configuration_settings=settings,
-                configuration_protected_settings=None, configuration_settings_file=None,
-                configuration_protected_settings_file=None, plan_name=None, plan_publisher=None,
-                plan_product=None)
+                configuration_protected_settings=protected_settings,
+                configuration_settings_file=None, configuration_protected_settings_file=None,
+                plan_name=None, plan_publisher=None, plan_product=None)
             self.assertEqual(name, 'workload-iam')
 
     def test_workload_iam_create_with_trust_domain_local_authority_no_tenant_id(self):
@@ -258,7 +294,7 @@ class TestEntraWorkloadIAM(unittest.TestCase):
 
         str_settings = str(settings)
         self.assertEqual(str(context.exception),
-                f"Invalid configuration settings. Either a join token or a local authority name "
+                f"Invalid configuration settings. One of 'joinToken' or 'localAuthority' "
                 "must be provided.")
 
         # Missing trust domain
