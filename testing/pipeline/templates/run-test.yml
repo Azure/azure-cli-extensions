@@ -55,7 +55,7 @@ jobs:
 
   - bash : |
       echo "Downloading the kind script"
-      curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64
+      curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.23.0/kind-linux-amd64
       chmod +x ./kind
       ./kind create cluster
     displayName: "Create and Start the Kind cluster"
