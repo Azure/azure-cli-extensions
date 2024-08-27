@@ -13,6 +13,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 +++++++
 * [BREAKING CHANGE]: Remove enable/disable node restriction feature, since it is always enabled and not changeable since k8s version 1.24.0
 
+7.0.0b8
++++++++
+* Update validations to enable Azure Container Storage to install on a larger set of nodepool skus.
+
 7.0.0b7
 +++++++
 * [AKS] `az aks create/update`: Support UserAssigned Managed Identity for grafana linking in managed prometheus
