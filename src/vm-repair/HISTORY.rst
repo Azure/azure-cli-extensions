@@ -5,6 +5,7 @@ Release History
 1.0.9
 ++++++
 Fixed and updated several vm-repair tests for better coverage. 
+Removed and updated broken image aliases pointing at images that no longer existed. 
 
 1.0.8
 ++++++
