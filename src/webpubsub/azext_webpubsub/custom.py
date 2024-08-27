@@ -16,6 +16,7 @@ from .vendored_sdks.azure_mgmt_webpubsub.operations import (
 
 
 def webpubsub_create(client: WebPubSubOperations, resource_group_name, webpubsub_name, sku, unit_count=1, location=None, tags=None, kind=None, service_mode=None):
+    socketio = None
     if kind is not None and kind.casefold() == "socketio".casefold():
         socketio = WebPubSubSocketIOSettings(service_mode=service_mode)
     sku = ResourceSku(name=sku, capacity=unit_count)
