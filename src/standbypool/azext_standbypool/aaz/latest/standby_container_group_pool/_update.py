@@ -19,9 +19,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-12-01-preview",
+        "version": "2024-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2023-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2024-03-01"],
         ]
     }
 
@@ -45,6 +45,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="The resource group",
             required=True,
         )
         _args_schema.name = AAZStrArg(
@@ -55,6 +56,69 @@ class Update(AAZCommand):
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
+        )
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.container_group_properties = AAZObjectArg(
+            options=["--container-group-properties"],
+            arg_group="Properties",
+            help="Specifies container group properties of standby container group pools.",
+        )
+        _args_schema.elasticity_profile = AAZObjectArg(
+            options=["--elasticity-profile"],
+            arg_group="Properties",
+            help="Specifies elasticity profile of standby container group pools.",
+        )
+
+        container_group_properties = cls._args_schema.container_group_properties
+        container_group_properties.container_group_profile = AAZObjectArg(
+            options=["container-group-profile"],
+            help="Specifies container group profile of standby container groups.",
+        )
+        container_group_properties.subnet_ids = AAZListArg(
+            options=["subnet-ids"],
+            help="Specifies subnet Ids for container group.",
+            nullable=True,
+        )
+
+        container_group_profile = cls._args_schema.container_group_properties.container_group_profile
+        container_group_profile.id = AAZResourceIdArg(
+            options=["id"],
+            help="Specifies container group profile id of standby container groups.",
+        )
+        container_group_profile.revision = AAZIntArg(
+            options=["revision"],
+            help="Specifies revision of container group profile.",
+            nullable=True,
+        )
+
+        subnet_ids = cls._args_schema.container_group_properties.subnet_ids
+        subnet_ids.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.container_group_properties.subnet_ids.Element
+        _element.id = AAZResourceIdArg(
+            options=["id"],
+            help="Specifies ARM resource id of the subnet.",
+        )
+
+        elasticity_profile = cls._args_schema.elasticity_profile
+        elasticity_profile.max_ready_capacity = AAZIntArg(
+            options=["max-ready-capacity"],
+            help="Specifies maximum number of standby container groups in the standby pool.",
+            fmt=AAZIntArgFormat(
+                maximum=2000,
+                minimum=0,
+            ),
+        )
+        elasticity_profile.refill_policy = AAZStrArg(
+            options=["refill-policy"],
+            help="Specifies refill policy of the pool.",
+            nullable=True,
+            enum={"always": "always"},
         )
 
         # define Arg Group "Resource"
@@ -151,7 +215,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-12-01-preview",
+                    "api-version", "2024-03-01",
                     required=True,
                 ),
             }
@@ -250,7 +314,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-12-01-preview",
+                    "api-version", "2024-03-01",
                     required=True,
                 ),
             }
@@ -308,7 +372,36 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("containerGroupProperties", AAZObjectType, ".container_group_properties", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("elasticityProfile", AAZObjectType, ".elasticity_profile", typ_kwargs={"flags": {"required": True}})
+
+            container_group_properties = _builder.get(".properties.containerGroupProperties")
+            if container_group_properties is not None:
+                container_group_properties.set_prop("containerGroupProfile", AAZObjectType, ".container_group_profile", typ_kwargs={"flags": {"required": True}})
+                container_group_properties.set_prop("subnetIds", AAZListType, ".subnet_ids")
+
+            container_group_profile = _builder.get(".properties.containerGroupProperties.containerGroupProfile")
+            if container_group_profile is not None:
+                container_group_profile.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
+                container_group_profile.set_prop("revision", AAZIntType, ".revision")
+
+            subnet_ids = _builder.get(".properties.containerGroupProperties.subnetIds")
+            if subnet_ids is not None:
+                subnet_ids.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.containerGroupProperties.subnetIds[]")
+            if _elements is not None:
+                _elements.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
+
+            elasticity_profile = _builder.get(".properties.elasticityProfile")
+            if elasticity_profile is not None:
+                elasticity_profile.set_prop("maxReadyCapacity", AAZIntType, ".max_ready_capacity", typ_kwargs={"flags": {"required": True}})
+                elasticity_profile.set_prop("refillPolicy", AAZStrType, ".refill_policy")
 
             tags = _builder.get(".tags")
             if tags is not None:

@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "standby-container-group-pool show",
+    "standby-container-group-pool status",
 )
-class Show(AAZCommand):
-    """Get a StandbyContainerGroupPoolResource
+class Status(AAZCommand):
+    """Get a StandbyContainerGroupPoolRuntimeViewResource
 
-    :example: Get standby container group pool
-        az standby-container-group-pool show --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool
+    :example: Get StandbyContainerGroup RuntimeView
+        az standby-container-group-pool get-runtime-view --resource-group myrg --name mypool --subscription 461fa159-654a-415f-853a-40b801021944 --version latest
     """
 
     _aaz_info = {
         "version": "2024-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2024-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}/runtimeviews/{}", "2024-03-01"],
         ]
     }
 
@@ -48,6 +48,16 @@ class Show(AAZCommand):
             help="The resource group",
             required=True,
         )
+        _args_schema.version = AAZStrArg(
+            options=["-v", "--version"],
+            help="The unique identifier for the runtime view. The input string should be the word 'latest', which will get the latest runtime view of the pool, otherwise the request will fail with NotFound exception.",
+            required=True,
+            id_part="child_name_1",
+            default="latest",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{0,24}$",
+            ),
+        )
         _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
             help="Name of the standby container group pool",
@@ -61,7 +71,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.StandbyContainerGroupPoolsGet(ctx=self.ctx)()
+        self.StandbyContainerGroupPoolRuntimeViewsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,7 +86,7 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class StandbyContainerGroupPoolsGet(AAZHttpOperation):
+    class StandbyContainerGroupPoolRuntimeViewsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -90,7 +100,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StandbyPool/standbyContainerGroupPools/{standbyContainerGroupPoolName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StandbyPool/standbyContainerGroupPools/{standbyContainerGroupPoolName}/runtimeViews/{runtimeView}",
                 **self.url_parameters
             )
 
@@ -107,6 +117,10 @@ class Show(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "runtimeView", self.ctx.args.version,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -160,9 +174,6 @@ class Show(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -173,55 +184,38 @@ class Show(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.properties
-            properties.container_group_properties = AAZObjectType(
-                serialized_name="containerGroupProperties",
-                flags={"required": True},
-            )
-            properties.elasticity_profile = AAZObjectType(
-                serialized_name="elasticityProfile",
-                flags={"required": True},
+            properties.instance_count_summary = AAZListType(
+                serialized_name="instanceCountSummary",
+                flags={"required": True, "read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
 
-            container_group_properties = cls._schema_on_200.properties.container_group_properties
-            container_group_properties.container_group_profile = AAZObjectType(
-                serialized_name="containerGroupProfile",
-                flags={"required": True},
-            )
-            container_group_properties.subnet_ids = AAZListType(
-                serialized_name="subnetIds",
-            )
+            instance_count_summary = cls._schema_on_200.properties.instance_count_summary
+            instance_count_summary.Element = AAZObjectType()
 
-            container_group_profile = cls._schema_on_200.properties.container_group_properties.container_group_profile
-            container_group_profile.id = AAZStrType(
-                flags={"required": True},
-            )
-            container_group_profile.revision = AAZIntType()
-
-            subnet_ids = cls._schema_on_200.properties.container_group_properties.subnet_ids
-            subnet_ids.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.container_group_properties.subnet_ids.Element
-            _element.id = AAZStrType(
+            _element = cls._schema_on_200.properties.instance_count_summary.Element
+            _element.instance_counts_by_state = AAZListType(
+                serialized_name="instanceCountsByState",
                 flags={"required": True},
             )
 
-            elasticity_profile = cls._schema_on_200.properties.elasticity_profile
-            elasticity_profile.max_ready_capacity = AAZIntType(
-                serialized_name="maxReadyCapacity",
+            instance_counts_by_state = cls._schema_on_200.properties.instance_count_summary.Element.instance_counts_by_state
+            instance_counts_by_state.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.instance_count_summary.Element.instance_counts_by_state.Element
+            _element.count = AAZIntType(
                 flags={"required": True},
             )
-            elasticity_profile.refill_policy = AAZStrType(
-                serialized_name="refillPolicy",
+            _element.state = AAZStrType(
+                flags={"required": True},
             )
 
             system_data = cls._schema_on_200.system_data
@@ -244,14 +238,11 @@ class Show(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
-
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _StatusHelper:
+    """Helper class for Status"""
 
 
-__all__ = ["Show"]
+__all__ = ["Status"]
