@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "workloads",
+    "workloads sap-virtual-instance application-instance",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Manage workloads
+    """Update the SAP Application Server Instance resource. This will be used by service only. PUT by end user will return a Bad Request error.
     """
     pass
 
