@@ -11,7 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 8.0.0b1
 +++++++
-* Remove enable/disable node restriction feature, since it is always enabled and not changeable since k8s version 1.24.0
+* [BREAKING CHANGE]: Remove enable/disable node restriction feature, since it is always enabled and not changeable since k8s version 1.24.0
 
 7.0.0b7
 +++++++
