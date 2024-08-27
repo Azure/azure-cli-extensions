@@ -4,10 +4,8 @@ Release History
 ===============
 upcoming
 ++++++
-
-0.3.56
-++++++
 * 'az containerapp sessionpool create/update': Add NodeLTS container-type.
+
 
 0.3.55
 ++++++
