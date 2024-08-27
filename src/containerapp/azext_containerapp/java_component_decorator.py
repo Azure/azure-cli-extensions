@@ -59,7 +59,7 @@ class JavaComponentDecorator(BaseResource):
 
     def get_argument_max_replicas(self):
         return self.get_param("max_replicas")
-    
+
     def construct_payload(self):
         self.java_component_def["properties"]["componentType"] = self.get_argument_target_java_component_type()
         self.set_up_service_bindings()
