@@ -6,7 +6,6 @@ upcoming
 ++++++
 * 'az containerapp sessionpool create/update': Add NodeLTS container-type.
 
-
 0.3.55
 ++++++
 * 'az containerapp create': Support --registry-identity to use Environment identity for ACR authentication.
