@@ -960,15 +960,15 @@ class PostgresSingleHandler(PostgresFlexHandler):
         ]
 
 
-def getSourceHandler(cmd, source_id, source_type):
+def getSourceHandler(source_id, source_type):
     if source_type in {RESOURCE.WebApp, RESOURCE.FunctionApp}:
-        return WebappHandler(cmd, source_id, source_type)
+        return WebappHandler(source_id, source_type)
     if source_type in {RESOURCE.ContainerApp}:
-        return ContainerappHandler(cmd, source_id, source_type)
+        return ContainerappHandler(source_id, source_type)
     if source_type in {RESOURCE.SpringCloud, RESOURCE.SpringCloudDeprecated}:
-        return SpringHandler(cmd, source_id, source_type)
+        return SpringHandler(source_id, source_type)
     if source_type in {RESOURCE.Local}:
-        return LocalHandler(cmd, source_id, source_type)
+        return LocalHandler(source_id, source_type)
     return None
 
 
