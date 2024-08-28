@@ -154,6 +154,7 @@ Failed_To_Merge_Kubeconfig_File = "failed-to-merge-kubeconfig-file"
 Download_Helm_Fault_Type = "helm-client-download-error"
 Create_HelmExe_Fault_Type = "helm-client-create-error"
 Extract_HelmExe_Fault_Type = "helm-client-extract-error"
+DP_Health_Check_Fault_Type = "dp-health-check-error"
 Different_Object_With_Same_Name_Fault_Type = "Kubeconfig has an object with same name"
 Download_Exe_Fault_Type = (
     "Error while downloading client proxy executable from storage account"

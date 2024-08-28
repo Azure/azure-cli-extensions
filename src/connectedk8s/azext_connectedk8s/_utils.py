@@ -543,7 +543,7 @@ def check_cluster_outbound_connectivity(
                     + "\nIf your cluster is behind an outbound proxy server, "
                     " please ensure that you have passed proxy parameters during the onboarding of your cluster.\n"
                     "For more details visit "
-                    + consts.Quick_Start_Outbound_Proxy_Url
+                    + consts.Doc_Quick_Start_Outbound_Proxy_Url
                     + " \n"
                 )
                 logger.warning(outbound_connectivity_failed_warning_message)
@@ -884,20 +884,20 @@ def health_check_dp(cmd, config_dp_endpoint):
         "post",
         chart_location_url,
         headers=headers,
-        fault_type=consts.Get_HelmRegistery_Path_Fault_Type,
+        fault_type=consts.DP_Health_Check_Fault_Type,
         summary="Error while performing DP health check",
         uri_parameters=uri_parameters,
         resource=resource,
     )
     if r.status_code == 200:
         return True
-    else:
-        telemetry.set_exception(
-            exception="Error while performing DP health check",
-            fault_type=consts.DP_Health_Check,
-            summary="Error while performing DP health check",
-        )
-        raise CLIInternalError("Error while performing DP health check")
+
+    telemetry.set_exception(
+        exception="Error while performing DP health check",
+        fault_type=consts.DP_Health_Check_Fault_Type,
+        summary="Error while performing DP health check",
+    )
+    raise CLIInternalError("Error while performing DP health check")
 
 
 def send_request_with_retries(
@@ -1168,7 +1168,7 @@ def cleanup_release_install_namespace_if_exists():
     api_instance = kube_client.CoreV1Api()
     try:
         api_instance.read_namespace(consts.Release_Install_Namespace)
-    except Exception as ex:
+    except ApiException as ex:
         if ex.status == 404:
             # Nothing to delete, exiting here
             return
@@ -1656,7 +1656,7 @@ def get_metadata(arm_endpoint, api_version="2022-09-01"):
             f"Please ensure you have network connection. Error: {str(err)}",
             file=sys.stderr,
         )
-        arm_exception_handler(err, msg)
+        arm_exception_handler(err, msg, "Failed to get ARM metadata")
 
 
 def parse_helm_values(helm_content_values, cmd_helm):

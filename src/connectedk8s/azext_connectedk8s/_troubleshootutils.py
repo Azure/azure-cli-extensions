@@ -60,8 +60,8 @@ def fetch_kubectl_cluster_info(
                 )
                 diagnoser_output.append(
                     "Error while doing 'kubectl cluster-info'. We were not able to capture "
-                    "cluster-info logs in arc_diganostic_logs folder. Exception: ",
-                    error_cluster_info.decode("ascii"),
+                    "cluster-info logs in arc_diganostic_logs folder. Exception: "
+                    + error_cluster_info.decode("ascii"),
                 )
                 return consts.Diagnostic_Check_Failed, storage_space_available
             output_cluster_info_decoded = output_cluster_info.decode()
@@ -357,8 +357,8 @@ def retrieve_arc_agents_event_logs(
                 )
                 diagnoser_output.append(
                     "Error while doing kubectl get events. We were not able to capture events "
-                    "log in arc_diganostic_logs folder. Exception: ",
-                    error_kubectl_get_events.decode("ascii"),
+                    "log in arc_diganostic_logs folder. Exception: "
+                    + error_kubectl_get_events.decode("ascii"),
                 )
                 return consts.Diagnostic_Check_Failed, storage_space_available
 
@@ -654,8 +654,8 @@ def retrieve_arc_workload_identity_event_logs(
                 )
                 diagnoser_output.append(
                     "Error while doing kubectl get events for arc-workload-identity namespace. "
-                    "We were not able to capture events log in arc_diganostic_logs folder. Exception: ",
-                    error_kubectl_get_events.decode("ascii"),
+                    "We were not able to capture events log in arc_diganostic_logs folder. Exception: "
+                    + error_kubectl_get_events.decode("ascii"),
                 )
                 return consts.Diagnostic_Check_Failed, storage_space_available
 
@@ -1074,13 +1074,13 @@ def check_agent_version(connected_cluster, azure_arc_agent_version):
             logger.warning(
                 "We found that you are on an older agent version that is not supported.\n Please visit this link to "
                 " know the agent version support policy '"
-                + consts.Agent_Version_Support_Policy_Link
+                + consts.Doc_Agent_Version_Support_Policy_Url
                 + "'.\n"
             )
             diagnoser_output.append(
                 "We found that you are on an older agent version that is not supported.\n Please visit this link to "
                 "know the agent version support policy '"
-                + consts.Agent_Version_Support_Policy_Link
+                + consts.Doc_Agent_Version_Support_Policy_Url
                 + "'.\n"
             )
             return consts.Diagnostic_Check_Failed
@@ -1394,7 +1394,7 @@ def executing_diagnoser_job(
             response_kubectl_delete_job.communicate()
         )
         # If any error occured while execution of delete command
-        if response_kubectl_delete_job != 0:
+        if response_kubectl_delete_job.returncode != 0:
             # Converting the string of multiple errors to list
             error_msg_list = error_kubectl_delete_job.decode("ascii").split("\n")
             error_msg_list.pop(-1)
@@ -1564,13 +1564,10 @@ def executing_diagnoser_job(
                             )
                             diagnoser_output.append(
                                 "Error while doing kubectl get events. We were not able to "
-                                "capture events log in arc_diganostic_logs folder. Exception: ",
-                                error_kubectl_get_events.decode("ascii"),
+                                "capture events log in arc_diganostic_logs folder. Exception: "
+                                + error_kubectl_get_events.decode("ascii"),
                             )
-                            return (
-                                consts.Diagnostic_Check_Failed,
-                                storage_space_available,
-                            )
+                            return None
                         # Converting output obtained in json format and fetching the clusterconnect-agent feature
                         events_json = json.loads(output_kubectl_get_events)
                         if len(events_json["items"]) != 0:
