@@ -27,10 +27,10 @@ class EventHandlerTemplateUpdateAction(argparse._AppendAction):
                 if key == 'system-event':
                     system_events.append(value)
                     continue
-                elif key == 'auth-type':
+                if key == 'auth-type':
                     auth_type = value
                     continue
-                elif key == 'auth-resource':
+                if key == 'auth-resource':
                     auth_resource = value
                     continue
 

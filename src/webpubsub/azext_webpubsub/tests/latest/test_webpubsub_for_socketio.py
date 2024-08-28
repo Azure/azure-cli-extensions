@@ -37,6 +37,9 @@ class WebpubsubForSocketIOTest(ScenarioTest):
             'updated_tags': '{}={}'.format(tags_key, updated_tags_val),
             'updated_sku': 'Free_F1',
             'kind': 'SocketIO',
+            'sku2': "Premium_P1",
+            'unit_count2': 2,
+            'service_mode': 'Serverless'
         })
 
         # Test Web PubSub for Socket.IO
@@ -68,15 +71,16 @@ class WebpubsubForSocketIOTest(ScenarioTest):
             self.exists('externalIp'),
         ])
 
-        # Test Web PubSub for Socket.IO
-        self.cmd('webpubsub create -g {rg} -n {name} --tags {tags} -l {location} --sku {sku} --unit-count {unit_count} --kind SocketIO', checks=[
+        # Test update Web PubSub for Socket.IO
+        self.cmd('webpubsub update -g {rg} -n {name} --sku {sku2} --tags {updated_tags} --unit-count {unit_count2} --service-mode {service_mode}', checks=[
             self.check('name', '{name}'),
             self.check('location', '{location}'),
             self.check('provisioningState', 'Succeeded'),
-            self.check('sku.name', '{sku}'),
-            self.check('sku.capacity', '{unit_count}'),
-            self.check('tags.{}'.format(tags_key), tags_val),
+            self.check('sku.name', '{sku2}'),
+            self.check('sku.capacity', '{unit_count2}'),
+            self.check('tags.{}'.format(tags_key), updated_tags_val),
             self.check('kind', "SocketIO"),
+            self.check('socketIo.serviceMode', '{service_mode}'),
             self.exists('hostName'),
             self.exists('publicPort'),
             self.exists('serverPort'),
