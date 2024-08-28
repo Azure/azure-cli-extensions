@@ -18,7 +18,7 @@ class Restart(AAZCommand):
     """The operation to restart an Azure Bare Metal Instance
 
     :example: Restart an Azure Bare Metal Instance
-        az baremetalinstance restart --resource-group myResourceGroup --instance-name myABMInstance
+        az baremetalinstance restart -g myResourceGroup -n myABMInstance
     """
 
     _aaz_info = {

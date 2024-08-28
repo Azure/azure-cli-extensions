@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete an Azure Bare Metal Storage Instance for the specified subscription, resource group, and instance name.
 
     :example: Delete a storage resource
-        az baremetalstorageinstance delete --resource-group myResourceGroup --instance-name myAzureBareMetalStorageInstance
+        az baremetalstorageinstance delete -g myResourceGroup -n myAzureBareMetalStorageInstance
     """
 
     _aaz_info = {

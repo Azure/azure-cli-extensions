@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update an Azure Bare Metal Instance for the specified subscription, resource group, and instance name.
 
     :example: To add a key-value pair to the Tags field of a specific BareMetal instance:
-        az baremetalinstance update --resource-group $RESOURCE_GROUP --instance-name $BM_INSTANCE_NAME --set tags.newKey=value
+        az baremetalinstance update -g $RESOURCE_GROUP -n $BM_INSTANCE_NAME --set tags.newKey=value
 
     :example: To update a key-value pair in the Tags field of a specific BareMetal instance:
         az baremetalinstance update --resource-group $RESOURCE_GROUP --instance-name $BM_INSTANCE_NAME --set tags.key=updatedValue

@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create an Azure Bare Metal Instance for the specified subscription, resource group, and instance name.
 
     :example: Create a compute resource
-        az baremetalinstance create --resource-group myResourceGroup --instance-name myBMIInstance --location westus --azure-bare-metal-instance-id 23415635-4d7e-41dc-9598-8194f22c24e1 --hw-revision Rev 3 --hardware-profile "{hardware-type:Cisco_UCS,azure-bare-metal-instance-size:S72}"
+        az baremetalinstance create -g myResourceGroup -name myBMIInstance --location westus --bmi-id 23415635-4d7e-41dc-9598-8194f22c24e1 --hw-revision Rev 3 --hardware-profile "{hardware-type:Cisco_UCS,azure-bare-metal-instance-size:S72}"
     """
 
     _aaz_info = {
@@ -59,8 +59,8 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.azure_bare_metal_instance_id = AAZStrArg(
-            options=["--azure-bare-metal-instance-id"],
+        _args_schema.instance_id = AAZStrArg(
+            options=["--bmi-id", "--instance-id"],
             arg_group="Properties",
             help="Specifies the Azure Bare Metal Instance unique ID.",
         )
@@ -96,7 +96,7 @@ class Create(AAZCommand):
             enum={"restarting": "restarting", "started": "started", "starting": "starting", "stopped": "stopped", "stopping": "stopping", "unknown": "unknown"},
         )
         _args_schema.proximity_placement_group = AAZStrArg(
-            options=["--proximity-placement-group"],
+            options=["--ppg", "--proximity-placement-group"],
             arg_group="Properties",
             help="Resource proximity placement group",
         )
@@ -295,7 +295,7 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("azureBareMetalInstanceId", AAZStrType, ".azure_bare_metal_instance_id")
+                properties.set_prop("azureBareMetalInstanceId", AAZStrType, ".instance_id")
                 properties.set_prop("hardwareProfile", AAZObjectType, ".hardware_profile")
                 properties.set_prop("hwRevision", AAZStrType, ".hw_revision")
                 properties.set_prop("networkProfile", AAZObjectType, ".network_profile")

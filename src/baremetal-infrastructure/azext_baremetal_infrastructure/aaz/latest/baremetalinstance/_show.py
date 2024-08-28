@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get an Azure Bare Metal Instance for the specified subscription, resource group, and instance name.
 
     :example: Get an Azure Bare Metal Instance
-        az baremetalinstance show --resource-group myResourceGroup --instance-name myAzureBareMetalInstance
+        az baremetalinstance show -g myResourceGroup -n myAzureBareMetalInstance
     """
 
     _aaz_info = {

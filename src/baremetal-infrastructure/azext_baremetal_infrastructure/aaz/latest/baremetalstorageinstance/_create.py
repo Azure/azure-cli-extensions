@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create an Azure Bare Metal Storage Instance for the specified subscription, resource group, and instance name.
 
     :example: Create a storage resource
-        az baremetalstorageinstance create --resource-group myResourceGroup --azure-bare-metal-storage-instance-name myAzureBareMetalStorageInstance --location westus2 --tags "{key:value}" --azure-bare-metal-storage-instance-unique-identifier 23415635-4d7e-41dc-9598-8194f22c24e9 --storage-properties "{offering-type:EPIC,storage-type:FC,generation:Gen4,hardware-type:NetApp,workload-type:ODB,storage-billing-properties:{billing-mode:PAYG,azure-bare-metal-storage-instance-size:}}"
+        az baremetalstorageinstance create -g myResourceGroup -n myAzureBareMetalStorageInstance --location westus2 --tags "{key:value}" --bmsi-id 23415635-4d7e-41dc-9598-8194f22c24e9 --storage-properties "{offering-type:EPIC,storage-type:FC,generation:Gen4,hardware-type:NetApp,workload-type:ODB,storage-billing-properties:{billing-mode:PAYG,azure-bare-metal-storage-instance-size:}}"
     """
 
     _aaz_info = {
@@ -59,8 +59,8 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.azure_bare_metal_storage_instance_unique_identifier = AAZStrArg(
-            options=["--azure-bare-metal-storage-instance-unique-identifier"],
+        _args_schema.instance_id = AAZStrArg(
+            options=["--bmsi-id", "--instance-id"],
             arg_group="Properties",
             help="Specifies the AzureBareMetaStorageInstance unique ID.",
         )
@@ -245,7 +245,7 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("azureBareMetalStorageInstanceUniqueIdentifier", AAZStrType, ".azure_bare_metal_storage_instance_unique_identifier")
+                properties.set_prop("azureBareMetalStorageInstanceUniqueIdentifier", AAZStrType, ".instance_id")
                 properties.set_prop("storageProperties", AAZObjectType, ".storage_properties")
 
             storage_properties = _builder.get(".properties.storageProperties")
