@@ -173,6 +173,10 @@ class AmgScenarioTest(ScenarioTest):
                 self.check('tags.foo', 'doo')
             ])
 
+            # Test plugins
+            available_plugns = self.cmd('grafana plugins fetch -g {rg} -n {name}').get_output_in_json()
+            self.assertTrue(len(available_plugns) > 0)
+
             # Test User
             response_list = self.cmd('grafana user list -g {rg} -n {name}').get_output_in_json()
             self.assertTrue(len(response_list) > 0)
