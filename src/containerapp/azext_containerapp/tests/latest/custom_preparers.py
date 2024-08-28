@@ -60,7 +60,7 @@ class ConnectedClusterPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
 
 class SubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
     def __init__(self, name_prefix='vnet', location='eastus2euap', resource_group_parameter_name='resource_group', vnet_name=None, vnet_address_prefixes='14.0.0.0/23', subnet_address_prefixes='14.0.0.0/23',
-                 delegations='Microsoft.App/environments', subnet_name="sub", service_endpoints=None, skip_delete=False):
+                 delegations=None, subnet_name="default", service_endpoints=None, skip_delete=False):
         super(SubnetPreparer, self).__init__(name_prefix, 15)
         self.cli_ctx = get_dummy_cli()
         self.location = location
@@ -79,14 +79,17 @@ class SubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
         resource_group = self._get_resource_group(**kwargs)
         subnet_id = None
         try:
-            self.live_only_execute(self.cli_ctx, f"az network vnet create --address-prefixes {self.vnet_address_prefixes} -g {resource_group} -n {self.vnet_name} --location {self.location}")
-            subnet_command = f"az network vnet subnet create --address-prefixes {self.subnet_address_prefixes} " \
-                             f"--delegations {self.delegations} " \
+            self.live_only_execute(self.cli_ctx, f"az network vnet create --address-prefixes {self.vnet_address_prefixes} -g {resource_group} -n {self.vnet_name} --subnet-name {self.subnet_name} --location {self.location}")
+            subnet_command = f"az network vnet subnet update --address-prefixes {self.subnet_address_prefixes} " \
                              f"-n {self.subnet_name} " \
                              f"-g {resource_group} " \
                              f"--vnet-name {self.vnet_name} "
             if self.service_endpoints is not None:
                 subnet_command += f'--service-endpoints {self.service_endpoints} '
+
+            if self.delegations is not None:
+                subnet_command += f'--delegations {self.delegations} '
+
             subnet_id = self.live_only_execute(self.cli_ctx, subnet_command).get_output_in_json()["id"]
         except AttributeError:  # live only execute returns None if playing from record
             pass

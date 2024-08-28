@@ -620,7 +620,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         ])
 
     @ResourceGroupPreparer(location="eastus")
-    @SubnetPreparer(location="centralus", vnet_address_prefixes='14.0.0.0/23', subnet_address_prefixes='14.0.0.0/23')
+    @SubnetPreparer(location="centralus", vnet_address_prefixes='14.0.0.0/23',  delegations='Microsoft.App/environments', subnet_address_prefixes='14.0.0.0/23')
     def test_containerapp_env_infrastructure_rg(self, resource_group, subnet_id):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
