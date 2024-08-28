@@ -49,7 +49,7 @@ class ContainerAppSessionCodeInterperterNodeLTSTests(ScenarioTest):
         sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
         self.assertTrue(len(sessionpool_list) == 2)
 
-        # execute python code
+        # execute nodejs code
         identifier_name = self.create_random_name(prefix='testidentifier', length=24)
         code = '\'console.log("'"Hello world"'")\''
         self.cmd("containerapp session code-interpreter execute -n {} -g {} --identifier {} --code {}".format(
