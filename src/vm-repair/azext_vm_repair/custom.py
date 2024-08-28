@@ -32,7 +32,6 @@ from .repair_utils import (
     _parse_run_script_raw_logs,
     _check_script_succeeded,
     _fetch_disk_info,
-    _unlock_singlepass_encrypted_disk,
     _invoke_run_command,
     _get_cloud_init_script,
     _select_distro_linux,
@@ -47,14 +46,14 @@ from .repair_utils import (
     _fetch_architecture,
     _select_distro_linux_Arm64
 )
-from .exceptions import AzCommandError, RunScriptNotFoundForIdError, SupportingResourceNotFoundError, CommandCanceledByUserError
+
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False):
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False, no=False):
 
     # log all the parameters
-    logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s', vm_name, resource_group_name, repair_password, repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes)
+    logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s, no: %s', vm_name, resource_group_name, repair_password, repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes, no)
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
@@ -91,13 +90,17 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
             os_type = 'Windows'
 
+        public_ip_name = '""'
+        if associate_public_ip or yes and (not no):
+            public_ip_name = ('repair-' + vm_name + '_PublicIP')
+
         # Set up base create vm command
         if is_linux:
             create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password} --public-ip-address {option} --custom-data {cloud_init_script}' \
-                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, option=associate_public_ip, cloud_init_script=_get_cloud_init_script())
+                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, option=public_ip_name, cloud_init_script=_get_cloud_init_script())
         else:
             create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password} --public-ip-address {option}' \
-                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, option=associate_public_ip)
+                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, option=public_ip_name)
 
         # Fetch VM size of repair VM
         sku = _fetch_compatible_sku(source_vm, enable_nested)
@@ -438,6 +441,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
         if preview:
             parts = preview.split('/')
             if len(parts) < 7 or parts.index('map.json') == -1:
+                # pylint: disable=W0719
                 raise Exception('Invalid preview url. Write full URL of map.json file. example https://github.com/Azure/repair-script-library/blob/main/map.json')
             last_index = parts.index('map.json')
             fork_name = parts[last_index - 4]
@@ -612,18 +616,17 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         vnet_resource_group = subnet_id_tokens[-7]
         ipconfig_name = ip_config_object['name']
         orig_ip_address = ip_config_object['privateIPAddress']
-        application_names=""
-        applicationSecurityGroups='applicationSecurityGroups'
+        application_names = ""
+        applicationSecurityGroups = 'applicationSecurityGroups'
         if applicationSecurityGroups in ip_config_object:
             for item in ip_config_object[applicationSecurityGroups]:
                 application_id_tokens = item['id'].split('/')
                 if application_id_tokens[-1] is not None:
 
-                    application_names+=application_id_tokens[-1]+ " "
-                    
+                    application_names += application_id_tokens[-1] + " "
+
         logger.info('applicationSecurityGroups {application_names}...\n')
 
-        
         # Dynamic | Static
         orig_ip_allocation_method = ip_config_object['privateIPAllocationMethod']
 
@@ -640,19 +643,18 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         # Update IP address
         if application_names:
             update_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} --asgs {asgs}' \
-                                .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address,asgs=application_names)
+                                .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address, asgs=application_names)
         else:
             logger.info('applicationSecurityGroups do not exist...\n')
             update_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip}' \
                                 .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address)
         _call_az_command(update_ip_command)
-        
-         # Wait for IP updated
+
+        # Wait for IP updated
         wait_ip_update_command = 'az network nic ip-config wait --updated -g {g} --nic-name {nic}' \
-                                .format(g=resource_group_name, nic=primary_nic_name)
+            .format(g=resource_group_name, nic=primary_nic_name)
         _call_az_command(wait_ip_update_command)
 
-            
         # 4) Change things back. This will also invoke and wait for a VM restart.
         logger.info('NIC reset is complete. Now reverting back to your original configuration...\n')
         # If user had dynamic config, change back to dynamic
@@ -661,7 +663,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
             # Revert Static to Dynamic
             if application_names:
                 revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method} --asgs {asgs}' \
-                                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG,asgs=application_names)
+                                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG, asgs=application_names)
             else:
                 revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method}' \
                                     .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG)
@@ -669,7 +671,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
             # Revert to original static ip
             if application_names:
                 revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} --asgs {asgs}' \
-                                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address,asgs=application_names)
+                                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address, asgs=application_names)
             else:
                 revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} ' \
                                     .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address)

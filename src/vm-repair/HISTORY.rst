@@ -2,6 +2,11 @@
 Release History
 ===============
 
+1.0.9
+++++++
+Added --no to az vm repair create.
+Fixed bug with Public IP naming in NoTTY mode. Name was a boolean instead of repair-<vm>-PublicIp
+
 1.0.8
 ++++++
 SELFHELP telemetry added as initiator. Extra parameters is introduced at the backend to capture the telemetry data.

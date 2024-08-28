@@ -88,7 +88,7 @@ def validate_create(cmd, namespace):
     # Validate vm password
     validate_vm_password(namespace.repair_password, is_linux)
     # Prompt input for public ip usage
-    if (not namespace.associate_public_ip) and (not namespace.yes):
+    if (not namespace.associate_public_ip) and (not namespace.yes) and (not namespace.no):
         _prompt_public_ip(namespace)
 
 
@@ -175,6 +175,7 @@ def validate_run(cmd, namespace):
         raise CLIError('Repair resource id is not valid.')
 
 
+# pylint: disable=W0212
 def validate_reset_nic(cmd, namespace):
     check_extension_version(EXTENSION_NAME)
     if namespace._subscription:
