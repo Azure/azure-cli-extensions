@@ -5,6 +5,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, broad-except, logging-format-interpolation, too-many-public-methods, too-many-boolean-expressions
 
+from copy import deepcopy
 from knack.log import get_logger
 from msrestazure.tools import resource_id
 from typing import Any, Dict
@@ -25,7 +26,7 @@ logger = get_logger(__name__)
 class JavaComponentDecorator(BaseResource):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
-        self.java_component_def = JavaComponentModel
+        self.java_component_def = deepcopy(JavaComponentModel)
 
     def get_argument_configuration(self):
         return self.get_param("configuration")
@@ -64,10 +65,11 @@ class JavaComponentDecorator(BaseResource):
         self.java_component_def["properties"]["componentType"] = self.get_argument_target_java_component_type()
         self.set_up_service_bindings()
         self.set_up_unbind_service_bindings()
-        self.java_component_def["properties"]["scale"] = {
-            "minReplicas": self.get_argument_min_replicas(),
-            "maxReplicas": self.get_argument_max_replicas()
-        }
+        if self.get_argument_min_replicas() is not None and self.get_argument_max_replicas() is not None:
+            self.java_component_def["properties"]["scale"] = {
+                "minReplicas": self.get_argument_min_replicas(),
+                "maxReplicas": self.get_argument_max_replicas()
+            }
 
         if self.get_argument_configuration() is not None:
             configuration_list = []
