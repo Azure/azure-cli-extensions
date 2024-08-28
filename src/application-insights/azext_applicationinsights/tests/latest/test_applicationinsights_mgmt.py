@@ -346,7 +346,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
         output_json = self.cmd('monitor app-insights component linked-storage update --app {name_a} -g {resource_group} -s {storage_account_2}').get_output_in_json()
         assert self.kwargs['storage_account_2'] in output_json['linkedStorageAccount']
         self.cmd('monitor app-insights component linked-storage unlink --app {name_a} -g {resource_group} -y')
-        with self.assertRaisesRegexp(ResourceNotFoundError, "Operation returned an invalid status 'Not Found'"):
+        with self.assertRaisesRegex(ResourceNotFoundError, "Operation returned an invalid status 'Not Found'"):
             self.cmd('monitor app-insights component linked-storage show --app {name_a} -g {resource_group}')
 
     @AllowLargeResponse()
