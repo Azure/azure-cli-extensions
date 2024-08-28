@@ -45,7 +45,7 @@ class ContainerAppMountNfsAzureFileTest(ScenarioTest):
             f'az storage account network-rule add --resource-group {resource_group} --account-name {storage} --vnet-name {vnet_name} --subnet {subnet_name}'
         )
 
-        print(*subnet_id, file=sys.stdout)
+        print(subnet_id, file=sys.stdout)
         create_containerapp_env(self, env, resource_group, TEST_LOCATION, subnet_id)
         containerapp_env = self.cmd('containerapp env show -n {} -g {}'.format(env, resource_group), checks=[
             JMESPathCheck('name', env)

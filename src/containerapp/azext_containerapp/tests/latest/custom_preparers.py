@@ -88,13 +88,6 @@ class SubnetPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
             if self.service_endpoints is not None:
                 subnet_command += f'--service-endpoints {self.service_endpoints} '
             subnet_id = self.live_only_execute(self.cli_ctx, subnet_command).get_output_in_json()["id"]
-            # if self.service_endpoints is not None:
-            #     self.live_only_execute(self.cli_ctx, f'az network vnet subnet update '
-            #                                          f'--resource-group {resource_group} '
-            #                                          f'--vnet-name {vnet} '
-            #                                          f'--name {subnet} '
-            #                                          f'--service-endpoints Microsoft.Storage.Global '
-            #                                          f'--delegations Microsoft.App/environments')
         except AttributeError:  # live only execute returns None if playing from record
             pass
         return {'subnet_id': subnet_id,
