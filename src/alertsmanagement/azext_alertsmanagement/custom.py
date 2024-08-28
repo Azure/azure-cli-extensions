@@ -60,7 +60,7 @@ def _alert_rule_ids(subscription, resource_group, alert_ids):
     """
     if alert_ids is None:
         return None
-    from msrestazure.tools import resource_id, is_valid_resource_id
+    from azure.mgmt.core.tools import resource_id, is_valid_resource_id
     ids = []
     ids.append(alert_ids[0])
     for id in alert_ids[1:]:
