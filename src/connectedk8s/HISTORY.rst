@@ -6,8 +6,16 @@ Release History
 1.10.0
 ++++++
 * Added support for arc gateway feature.
-* Bug fix for Workload Identity poll or agent state
-* Bug fix for connectedk8s update with workload identity enabled
+* Bug fix for Workload Identity poll or agent state.
+* Bug fix for connectedk8s update with workload identity enabled.
+
+1.9.2
+++++++
+* Fixed the issue where pre-onboarding diagnostic checks failed for clusters running Kubernetes v1.31.0.
+
+1.9.1
+++++++
+* Fixed the issue where executing a second `connectedk8s connect` command would inadvertently delete the "azure-arc-release" namespace.
 
 1.9.0
 ++++++
