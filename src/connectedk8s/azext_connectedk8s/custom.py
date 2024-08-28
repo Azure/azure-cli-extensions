@@ -141,7 +141,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
-    configuration_settings, configuration_protected_settings, protected_helm_values = add_config_protected_settings(http_proxy, https_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings)
+    configuration_settings, configuration_protected_settings = add_config_protected_settings(http_proxy, https_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings)
     arc_agentry_configurations = None
     if configuration_protected_settings is not None or configuration_settings is not None:
         arc_agentry_configurations = generate_arc_agent_configuration(configuration_settings, configuration_protected_settings)
@@ -454,9 +454,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
                     helm_content_values = helm_values_dp["helmValuesContent"]
 
-                    # Substitute any protected helm values as the value for that will be null
-                    for helm_parameter, helm_value in protected_helm_values.items():
-                        helm_content_values[helm_parameter] = helm_value
+                    # Substitute any protected helm values as the value for that will be '<feature>.<setting>.ClientKnown'
+                    for helm_parameter, helm_value in helm_content_values.items():
+                        if 'ClientKnown' in helm_value:
+                            feature, setting, _ = helm_value.split('.')
+                            helm_content_values[helm_parameter] = configuration_protected_settings[feature][setting]
 
                     # Perform helm upgrade
                     utils.helm_update_agent(helm_client_location, kube_config, kube_context, helm_content_values,
@@ -562,9 +564,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     helm_content_values = helm_values_dp["helmValuesContent"]
 
-    # Substitute any protected helm values as the value for that will be null
-    for helm_parameter, helm_value in protected_helm_values.items():
-        helm_content_values[helm_parameter] = helm_value
+    # Substitute any protected helm values as the value for that will be '<feature>.<setting>.ClientKnown'
+    for helm_parameter, helm_value in helm_content_values.items():
+        if 'ClientKnown' in helm_value:
+            feature, setting, _ = helm_value.split('.')
+            helm_content_values[helm_parameter] = configuration_protected_settings[feature][setting]
 
     print("Step: {}: Starting to install Azure arc agents on the Kubernetes cluster.".format(utils.get_utctimestring()))
     # Install azure-arc agents
@@ -1404,7 +1408,7 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
-    configuration_settings, configuration_protected_settings, protected_helm_values = add_config_protected_settings(http_proxy, https_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings)
+    configuration_settings, configuration_protected_settings = add_config_protected_settings(http_proxy, https_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings)
     arc_agentry_configurations = None
     if configuration_protected_settings is not None or configuration_settings is not None:
         arc_agentry_configurations = generate_arc_agent_configuration(configuration_settings, configuration_protected_settings)
@@ -1534,9 +1538,11 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
     helm_content_values = helm_values_dp["helmValuesContent"]
 
-    # Substitute any protected helm values as the value for that will be null
-    for helm_parameter, helm_value in protected_helm_values.items():
-        helm_content_values[helm_parameter] = helm_value
+    # Substitute any protected helm values as the value for that will be '<feature>.<setting>.ClientKnown'
+    for helm_parameter, helm_value in helm_content_values.items():
+        if 'ClientKnown' in helm_value:
+            feature, setting, _ = helm_value.split('.')
+            helm_content_values[helm_parameter] = configuration_protected_settings[feature][setting]
 
     # Set agent version in registry path
     if connected_cluster.agent_version is not None:
@@ -3186,8 +3192,6 @@ def check_operation_support(operation_name, agent_version):
 
 
 def add_config_protected_settings(https_proxy, http_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings):
-    protected_helm_values = {}
-
     # Initialize configuration_protected_settings if it is None
     if configuration_protected_settings is None:
         configuration_protected_settings = {}
@@ -3210,19 +3214,9 @@ def add_config_protected_settings(https_proxy, http_proxy, no_proxy, proxy_cert,
             configuration_protected_settings["proxy"]["proxy_cert"] = proxy_cert
 
     for feature, protected_settings in configuration_protected_settings.items():
-        if feature == "proxy":
-            for setting, value in protected_settings.items():
-                if setting == "https_proxy":
-                    protected_helm_values["global.httpsProxy"] = value
-                    configuration_settings["proxy"]["https_proxy"] = "ClientKnown"
-                if setting == "http_proxy":
-                    protected_helm_values["global.httpProxy"] = value
-                    configuration_settings["proxy"]["http_proxy"] = "ClientKnown"
-                if setting == "no_proxy":
-                    protected_helm_values["global.noProxy"] = value
-                    configuration_settings["proxy"]["no_proxy"] = "ClientKnown"
-                if setting == "proxy_cert":
-                    protected_helm_values["global.proxyCert"] = value
-                    configuration_settings["proxy"]["proxy_cert"] = "ClientKnown"
+        for setting, _ in protected_settings.items():
+            if feature not in configuration_settings:
+                configuration_settings[feature] = {}
+            configuration_settings[feature][setting] = feature + "." + setting + "." + "ClientKnown"
 
-    return configuration_settings, configuration_protected_settings, protected_helm_values
+    return configuration_settings, configuration_protected_settings
