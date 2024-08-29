@@ -43,15 +43,15 @@ class DatabricksWorkspaceCreate(_DatabricksWorkspaceCreate):
         workspace_name = args.name.to_serialized_data()
         if has_value(args.managed_resource_group):
             managed_resource_group = args.managed_resource_group.to_serialized_data()
+            if not is_valid_resource_id(managed_resource_group):
+                args.managed_resource_group = resource_id(
+                    subscription=subscription_id,
+                    resource_group=managed_resource_group)
 
         if not has_value(args.managed_resource_group):
             args.managed_resource_group = resource_id(
                 subscription=subscription_id,
                 resource_group='databricks-rg-' + workspace_name + '-' + id_generator())
-        elif not is_valid_resource_id(args.managed_resource_group.to_serialized_data()):
-            args.managed_resource_group = resource_id(
-                subscription=subscription_id,
-                resource_group=managed_resource_group)
 
         if has_value(args.disk_key_name):
             args.disk_key_source = 'Microsoft.Keyvault'
