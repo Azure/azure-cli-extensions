@@ -8,6 +8,7 @@ steps:
   - id: print-inputs
     cmd: |
         bash -c 'echo "Scanning image for vulnerability and patch {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}} for tag {{.Values.SOURCE_IMAGE_ORIGINAL_TAG}}"'
+        bash -c 'echo "Scanning repo: {{.Values.SOURCE_REPOSITORY}}, Tag:{{.Values.SOURCE_IMAGE_TAG}}, OriginalTag:{{.Values.SOURCE_IMAGE_ORIGINAL_TAG}}"'
   - id: setup-data-dir
     cmd: bash mkdir ./data
 
