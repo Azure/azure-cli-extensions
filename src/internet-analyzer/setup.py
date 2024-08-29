@@ -43,7 +43,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='internet_analyzer',
+    name='internet-analyzer',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools Internet Analyzer Extension',
     # TODO: Update author and email, if applicable
