@@ -3,9 +3,9 @@
 Release History
 ===============
 
-0.2.4
-++++++
-remove ADAL dependencies
+1.0.0b1
++++++++
+* Remove ADAL dependencies
 
 0.2.3
 ++++++
