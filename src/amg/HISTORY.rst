@@ -92,3 +92,7 @@ Release History
 2.2.0
 ++++++
 * `az grafana list-available-plugin`: list all available plugins available for installation
+
+2.2.1
+++++++
+* `az grafana sync`: fix issue with syncing empty dashboards from Grafana 9

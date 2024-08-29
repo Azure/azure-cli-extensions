@@ -135,7 +135,9 @@ def sync(cmd, source, destination, folders_to_include=None, folders_to_exclude=N
 
         # sync library panels
         library_panel_skipped = False
-        panel_uids = {p["libraryPanel"]["uid"] for p in source_dashboard["dashboard"]["panels"] if "libraryPanel" in p}
+        panel_uids = []
+        if "panels" in source_dashboard["dashboard"]:  # Grafana 9 empty dashboards won't have "panels" property
+            panel_uids = [p["libraryPanel"]["uid"] for p in source_dashboard["dashboard"]["panels"] if "libraryPanel" in p]
         for library_panel_uid in panel_uids:
             (status, content) = send_grafana_get(f'{source_endpoint}/api/library-elements/{library_panel_uid}',
                                                  http_headers)
