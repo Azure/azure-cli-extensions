@@ -141,7 +141,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
-    configuration_settings, configuration_protected_settings = add_config_protected_settings(http_proxy, https_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings)
+    configuration_settings, configuration_protected_settings, redacted_protected_values = add_config_protected_settings(http_proxy, https_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings)
     arc_agentry_configurations = None
     if configuration_protected_settings is not None or configuration_settings is not None:
         arc_agentry_configurations = generate_arc_agent_configuration(configuration_settings, configuration_protected_settings)
@@ -435,6 +435,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                 
                 # Perform helm upgrade if gateway
                 if gateway is not None:
+                    # Update arc agent configuration to include protected parameters in dp call
+                    arc_agentry_configurations = generate_arc_agent_configuration(configuration_settings, redacted_protected_values, is_dp_call=True)
+                    dp_request_payload.arc_agentry_configurations = arc_agentry_configurations
+
                     # Perform DP health check
                     _ = utils.health_check_dp(cmd, config_dp_endpoint)
 
@@ -454,11 +458,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
                     helm_content_values = helm_values_dp["helmValuesContent"]
 
-                    # Substitute any protected helm values as the value for that will be '<feature>.<setting>.ClientKnown'
+                    # Substitute any protected helm values as the value for that will be 'redacted-<feature>-<protectedSetting>'
                     for helm_parameter, helm_value in helm_content_values.items():
-                        if 'ClientKnown' in helm_value:
-                            feature, setting, _ = helm_value.split('.')
-                            helm_content_values[helm_parameter] = configuration_protected_settings[feature][setting]
+                        if 'redacted' in helm_value:
+                            _, feature, protectedSetting = helm_value.split('-')
+                            helm_content_values[helm_parameter] = configuration_protected_settings[feature][protectedSetting]
 
                     # Perform helm upgrade
                     utils.helm_update_agent(helm_client_location, kube_config, kube_context, helm_content_values,
@@ -545,6 +549,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     # Checking if custom locations rp is registered and fetching oid if it is registered
     enable_custom_locations, custom_locations_oid = check_cl_registration_and_get_oid(cmd, cl_oid, subscription_id)
 
+    # Update arc agent configuration to include protected parameters in dp call
+    arc_agentry_configurations = generate_arc_agent_configuration(configuration_settings, redacted_protected_values, is_dp_call=True)
+    dp_request_payload.arc_agentry_configurations = arc_agentry_configurations
+
     # Perform DP health check
     _ = utils.health_check_dp(cmd, config_dp_endpoint)
 
@@ -564,11 +572,11 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
 
     helm_content_values = helm_values_dp["helmValuesContent"]
 
-    # Substitute any protected helm values as the value for that will be '<feature>.<setting>.ClientKnown'
+    # Substitute any protected helm values as the value for that will be 'redacted-<feature>-<protectedSetting>'
     for helm_parameter, helm_value in helm_content_values.items():
-        if 'ClientKnown' in helm_value:
-            feature, setting, _ = helm_value.split('.')
-            helm_content_values[helm_parameter] = configuration_protected_settings[feature][setting]
+        if 'redacted' in helm_value:
+            _, feature, protectedSetting = helm_value.split('-')
+            helm_content_values[helm_parameter] = configuration_protected_settings[feature][protectedSetting]
 
     print("Step: {}: Starting to install Azure arc agents on the Kubernetes cluster.".format(utils.get_utctimestring()))
     # Install azure-arc agents
@@ -1012,21 +1020,22 @@ def set_security_profile(enable_workload_identity):
     return security_profile
 
 
-def generate_arc_agent_configuration(configuration_settings, configuration_protected_settings):
+def generate_arc_agent_configuration(configuration_settings, redacted_protected_settings, is_dp_call=False):
     arc_agentry_configurations = []
 
     # Initialize configuration_settings and configuration_protected_settings if they are None
     if configuration_settings is None:
         configuration_settings = {}
-    if configuration_protected_settings is None:
-        configuration_protected_settings = {}
+    if redacted_protected_settings is None:
+        redacted_protected_settings = {}
 
-    for feature in set(list(configuration_settings.keys()) + list(configuration_protected_settings.keys())):
+    for feature in set(list(configuration_settings.keys()) + list(redacted_protected_settings.keys())):
         settings = configuration_settings.get(feature)
-        protected_settings = configuration_protected_settings.get(feature)
+        protected_settings = redacted_protected_settings.get(feature)
         configuration = ArcAgentryConfigurations(
             feature=feature,
-            settings=settings
+            settings=settings,
+            protected_settings=protected_settings if is_dp_call else None
         )
         arc_agentry_configurations.append(configuration)
     return arc_agentry_configurations
@@ -1408,10 +1417,10 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
     proxy_cert = proxy_cert.replace('\\', r'\\\\')
 
-    configuration_settings, configuration_protected_settings = add_config_protected_settings(http_proxy, https_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings)
+    configuration_settings, configuration_protected_settings, redacted_protected_values = add_config_protected_settings(http_proxy, https_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings)
     arc_agentry_configurations = None
     if configuration_protected_settings is not None or configuration_settings is not None:
-        arc_agentry_configurations = generate_arc_agent_configuration(configuration_settings, configuration_protected_settings)
+        arc_agentry_configurations = generate_arc_agent_configuration(configuration_settings, redacted_protected_values)
 
     # Fetch Connected Cluster for agent version
     connected_cluster = get_connectedk8s_2024_07_01(cmd, resource_group_name, cluster_name)
@@ -1523,6 +1532,10 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
     config_dp_endpoint, release_train = get_config_dp_endpoint(cmd, connected_cluster.location, values_file)
 
+    # Update arc agent configuration to include protected parameters in dp call
+    arc_agentry_configurations = generate_arc_agent_configuration(configuration_settings, redacted_protected_values, is_dp_call=True)
+    dp_request_payload.arc_agentry_configurations = arc_agentry_configurations
+
     # Perform DP health check
     _ = utils.health_check_dp(cmd, config_dp_endpoint)
 
@@ -1538,11 +1551,11 @@ def update_connected_cluster(cmd, client, resource_group_name, cluster_name, htt
 
     helm_content_values = helm_values_dp["helmValuesContent"]
 
-    # Substitute any protected helm values as the value for that will be '<feature>.<setting>.ClientKnown'
+    # Substitute any protected helm values as the value for that will be 'redacted-<feature>-<protectedSetting>'
     for helm_parameter, helm_value in helm_content_values.items():
-        if 'ClientKnown' in helm_value:
-            feature, setting, _ = helm_value.split('.')
-            helm_content_values[helm_parameter] = configuration_protected_settings[feature][setting]
+        if 'redacted' in helm_value:
+            _, feature, protectedSetting = helm_value.split('-')
+            helm_content_values[helm_parameter] = configuration_protected_settings[feature][protectedSetting]
 
     # Set agent version in registry path
     if connected_cluster.agent_version is not None:
@@ -3192,6 +3205,7 @@ def check_operation_support(operation_name, agent_version):
 
 
 def add_config_protected_settings(https_proxy, http_proxy, no_proxy, proxy_cert, container_log_path, configuration_settings, configuration_protected_settings):
+    redacted_protected_values = {}
     # Initialize configuration_protected_settings if it is None
     if configuration_protected_settings is None:
         configuration_protected_settings = {}
@@ -3215,8 +3229,8 @@ def add_config_protected_settings(https_proxy, http_proxy, no_proxy, proxy_cert,
 
     for feature, protected_settings in configuration_protected_settings.items():
         for setting, _ in protected_settings.items():
-            if feature not in configuration_settings:
-                configuration_settings[feature] = {}
-            configuration_settings[feature][setting] = feature + "." + setting + "." + "ClientKnown"
+            if feature not in redacted_protected_values:
+                redacted_protected_values[feature] = {}
+            redacted_protected_values[feature][setting] = f"redacted-{feature}-{setting}"
 
-    return configuration_settings, configuration_protected_settings
+    return configuration_settings, configuration_protected_settings, redacted_protected_values
