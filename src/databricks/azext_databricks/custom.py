@@ -36,7 +36,7 @@ class DatabricksWorkspaceCreate(_DatabricksWorkspaceCreate):
         return args_schema
 
     def pre_operations(self):
-        from msrestazure.tools import is_valid_resource_id, resource_id
+        from azure.mgmt.core.tools import is_valid_resource_id, resource_id
         # """Parse managed resource_group which can be either resource group name or id, generate a randomized name if not provided"""
         args = self.ctx.args
         subscription_id = self.ctx.subscription_id

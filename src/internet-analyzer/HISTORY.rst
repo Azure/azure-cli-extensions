@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0
++++++
+* Replace msrestazure with azure.core
+
 0.1.0rc6
 ++++++
 * Migrate to Track2 SDK.
