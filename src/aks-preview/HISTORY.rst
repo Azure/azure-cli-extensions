@@ -9,6 +9,18 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
+Pending
++++++++
+* new supportPlan column on `az aks get-versions -o table`, to tell if the version is supported by KubernetesOfficial or AKSLongTermSupport.
+
+7.0.0b8
++++++++
+* Update validations to enable Azure Container Storage to install on a larger set of nodepool skus.
+
+7.0.0b7
++++++++
+* [AKS] `az aks create/update`: Support UserAssigned Managed Identity for grafana linking in managed prometheus
+
 7.0.0b6
 +++++++
 * Add `--advanced-networking-observability-tls-management` to `az aks create/update` command.
@@ -17,14 +29,13 @@ To release a new version, please select a new version number (usually plus 1 to 
 +++++++
 * Add option `--enable-acns`, `--disable-acns` to `az aks create/update`
 * Add option `--enable-fqdn-policy`, `--disable-fqdn-policy` to `az aks create/update`
-* az aks create/update: Support in place param updates for managed prom
-* Vendor new SDK and bump API version to 2024-06-02-preview.
+* Add support for default nginx ingress controller config for app routing add-on
+* `az aks create/update`: Support in place param updates for managed prom
 
 7.0.0b4
 ++++++++
 * Fix bug related to the --ampls-resource-id option in the `az aks enable-addons` command.
 * Vendor new SDK and bump API version to 2024-06-02-preview.
-* Add support for default nginx ingress controller config for app routing add-on
 
 7.0.0b3
 ++++++++
