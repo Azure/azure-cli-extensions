@@ -2014,3 +2014,12 @@ helps['containerapp env dotnet-component show'] = """
       text: |
           az containerapp env dotnet-component show -n MyDotNetComponentName --environment MyContainerappEnvironment -g MyResourceGroup
 """
+
+helps['containerapp debug'] = """
+    type: command
+    short-summary: Open an SSH-like interactive shell within a container app ephemeral container.
+    examples:
+    - name: debug into a particular container app replica and revision
+      text: |
+          az containerapp debug -n MyContainerapp -g MyResourceGroup --revision MyRevision --replica MyReplica --runtime Java_17
+"""

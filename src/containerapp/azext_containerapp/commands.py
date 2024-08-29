@@ -7,6 +7,8 @@
 # from azure.cli.core.commands import CliCommandType
 # from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from azure.cli.command_modules.containerapp._transformers import (transform_containerapp_output, transform_containerapp_list_output)
+from azure.cli.command_modules.containerapp._validators import validate_ssh
+
 from azext_containerapp._client_factory import ex_handler_factory
 from ._transformers import (transform_sensitive_values,
                             transform_telemetry_data_dog_values,
@@ -24,6 +26,8 @@ def load_command_table(self, args):
         g.custom_command('update', 'update_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory(), table_transformer=transform_containerapp_output, transform=transform_sensitive_values)
         g.custom_command('delete', 'delete_containerapp', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
         g.custom_command('up', 'containerapp_up', supports_no_wait=False, exception_handler=ex_handler_factory())
+        # g.custom_command('debug', 'containerapp_debug', is_preview=True, validator=validate_ssh)
+        g.custom_command('debug', 'containerapp_debug', is_preview=True)
 
     with self.command_group('containerapp replica') as g:
         g.custom_show_command('show', 'get_replica')  # TODO implement the table transformer
