@@ -178,7 +178,7 @@ def load_command_table(self, args):
             g.custom_command('set', 'connected_env_create_or_update_storage', supports_no_wait=True, exception_handler=ex_handler_factory())
             g.custom_command('remove', 'connected_env_remove_storage', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
 
-    with self.command_group('containerapp env java-component', is_preview=True) as g:
+    with self.command_group('containerapp env java-component') as g:
         g.custom_command('list', 'list_java_components')
 
     with self.command_group('containerapp env java-component spring-cloud-config',
@@ -252,7 +252,7 @@ def load_command_table(self, args):
         g.custom_show_command('list-files', 'list_files_session_code_interpreter')
         g.custom_command('delete-file', 'delete_file_session_code_interpreter', confirmation=True, supports_no_wait=True)
 
-    with self.command_group('containerapp java logger', is_preview=True) as g:
+    with self.command_group('containerapp java logger') as g:
         g.custom_command('set', 'create_or_update_java_logger', supports_no_wait=True)
         g.custom_command('delete', 'delete_java_logger', supports_no_wait=True)
         g.custom_show_command('show', 'show_java_logger')

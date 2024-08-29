@@ -1316,6 +1316,12 @@ helps['containerapp env java-component config-server-for-spring create'] = """
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration PropertyName1=Value1 PropertyName2=Value2
+    - name: Create a Config Server for Spring with multiple replicas.
+      text: |
+          az containerapp env java-component config-server-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --min-replicas 2 --max-replicas 2
 """
 
 helps['containerapp env java-component config-server-for-spring delete'] = """
@@ -1503,6 +1509,12 @@ helps['containerapp env java-component admin-for-spring create'] = """
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration PropertyName1=Value1 PropertyName2=Value2
+    - name: Create an Admin for Spring with multiple replicas.
+      text: |
+          az containerapp env java-component admin-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --min-replicas 2 --max-replicas 2
 """
 
 helps['containerapp env java-component admin-for-spring delete'] = """
