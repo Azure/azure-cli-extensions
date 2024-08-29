@@ -1316,6 +1316,12 @@ helps['containerapp env java-component config-server-for-spring create'] = """
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration PropertyName1=Value1 PropertyName2=Value2
+    - name: Create a Config Server for Spring with multiple replicas.
+      text: |
+          az containerapp env java-component config-server-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --min-replicas 2 --max-replicas 2
 """
 
 helps['containerapp env java-component config-server-for-spring delete'] = """
@@ -1503,6 +1509,12 @@ helps['containerapp env java-component admin-for-spring create'] = """
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration PropertyName1=Value1 PropertyName2=Value2
+    - name: Create an Admin for Spring with multiple replicas.
+      text: |
+          az containerapp env java-component admin-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --min-replicas 2 --max-replicas 2
 """
 
 helps['containerapp env java-component admin-for-spring delete'] = """
@@ -2013,4 +2025,32 @@ helps['containerapp env dotnet-component show'] = """
     - name: Show the details of an environment.
       text: |
           az containerapp env dotnet-component show -n MyDotNetComponentName --environment MyContainerappEnvironment -g MyResourceGroup
+"""
+
+helps['containerapp registry set'] = """
+    type: command
+    short-summary: Add or update a container registry's details.
+    examples:
+    - name: Configure a container app to use a registry.
+      text: |
+          az containerapp registry set -n my-containerapp -g MyResourceGroup \\
+              --server MyExistingContainerappRegistry.azurecr.io --username MyRegistryUsername --password MyRegistryPassword
+    - name: Configure a container app to use environment system assigned managed identity to authenticate Azure container registry.
+      text: |
+          az containerapp registry set -n my-containerapp -g MyResourceGroup \\
+              --server MyExistingContainerappRegistry.azurecr.io --identity system-environment
+"""
+
+helps['containerapp job registry set'] = """
+    type: command
+    short-summary: Add or update a container registry's details in a Container App Job.
+    examples:
+    - name: Configure a Container App Job to use a registry.
+      text: |
+          az containerapp job registry set -n my-containerapp-job -g MyResourceGroup \\
+              --server MyContainerappJobRegistry.azurecr.io --username MyRegistryUsername --password MyRegistryPassword
+    - name: Configure a Container App Job to use environment system assigned managed identity to authenticate Azure container registry.
+      text: |
+          az containerapp job registry set -n my-containerapp-job -g MyResourceGroup \\
+              --server MyContainerappJobRegistry.azurecr.io --identity system-environment
 """
