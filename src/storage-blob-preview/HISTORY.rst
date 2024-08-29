@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+0.7.3
+++++++
+* Remove ADAL dependencies
+
 0.7.2
 ++++++
 * Remove commands supported in azure cli
