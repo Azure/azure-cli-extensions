@@ -443,8 +443,8 @@ class ClusterScenarioTest(ScenarioTest):
                 "bareMetalMachineConfigurationData": CONFIG.get(
                     "CLUSTER", "bare_metal_machine_configuration_data"
                 ),
-                "aggregatorOrSingleRackDefinitionDirectory": json.load(open(CONFIG.get(
-                    "CLUSTER", "aggregator_or_single_rack_definition_directory").strip("'"))
+                "aggregatorOrSingleRackDefinitionDirectory": CONFIG.get(
+                    "CLUSTER", "aggregator_or_single_rack_definition_directory"
                 ),
                 "tags": CONFIG.get("CLUSTER", "tags"),
                 "tagsUpdate": CONFIG.get("CLUSTER", "tags_update"),
