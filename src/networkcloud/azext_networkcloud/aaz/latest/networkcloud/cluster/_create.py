@@ -167,7 +167,7 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.command_output_settings = AAZObjectArg(
-            options=["--command-output-settings"],
+            options=["--co-settings", "--command-output-settings"],
             arg_group="Properties",
             help="The settings for commands run in this cluster, such as bare metal machine run read only commands and data extracts.",
         )

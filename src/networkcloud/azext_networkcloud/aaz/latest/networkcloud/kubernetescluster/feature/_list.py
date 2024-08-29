@@ -47,7 +47,7 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.kubernetes_cluster_name = AAZStrArg(
-            options=["--kubernetes-cluster-name"],
+            options=["--kc-name", "--kubernetes-cluster-name"],
             help="The name of the Kubernetes cluster.",
             required=True,
             fmt=AAZStrArgFormat(

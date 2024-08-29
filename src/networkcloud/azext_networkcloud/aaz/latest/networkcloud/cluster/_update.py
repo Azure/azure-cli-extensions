@@ -135,7 +135,7 @@ class Update(AAZCommand):
             help="The service principal to be used by the cluster during Arc Appliance installation.",
         )
         _args_schema.command_output_settings = AAZObjectArg(
-            options=["--command-output-settings"],
+            options=["--co-settings", "--command-output-settings"],
             arg_group="Properties",
             help="The settings for commands run in this cluster, such as bare metal machine run read only commands and data extracts.",
         )

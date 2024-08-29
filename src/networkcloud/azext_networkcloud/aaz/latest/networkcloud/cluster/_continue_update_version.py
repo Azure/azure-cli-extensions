@@ -63,7 +63,7 @@ class ContinueUpdateVersion(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.machine_group_targeting_mode = AAZStrArg(
-            options=["--machine-group-targeting-mode"],
+            options=["--mode", "--machine-group-targeting-mode"],
             arg_group="ClusterContinueUpdateVersionParameters",
             help="The mode by which the cluster will target the next grouping of servers to continue the update.",
             default="AlphaByRack",
