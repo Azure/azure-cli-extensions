@@ -20,6 +20,7 @@ from ._models_py3 import EventListener
 from ._models_py3 import EventListenerEndpoint
 from ._models_py3 import EventListenerFilter
 from ._models_py3 import EventNameFilter
+from ._models_py3 import IPRule
 from ._models_py3 import LiveTraceCategory
 from ._models_py3 import LiveTraceConfiguration
 from ._models_py3 import LogSpecification
@@ -71,6 +72,7 @@ from ._models_py3 import WebPubSubKeys
 from ._models_py3 import WebPubSubNetworkACLs
 from ._models_py3 import WebPubSubResource
 from ._models_py3 import WebPubSubResourceList
+from ._models_py3 import WebPubSubSocketIOSettings
 from ._models_py3 import WebPubSubTlsSettings
 
 from ._web_pub_sub_management_client_enums import ACLAction
@@ -106,6 +108,7 @@ __all__ = [
     "EventListenerEndpoint",
     "EventListenerFilter",
     "EventNameFilter",
+    "IPRule",
     "LiveTraceCategory",
     "LiveTraceConfiguration",
     "LogSpecification",
@@ -157,6 +160,7 @@ __all__ = [
     "WebPubSubNetworkACLs",
     "WebPubSubResource",
     "WebPubSubResourceList",
+    "WebPubSubSocketIOSettings",
     "WebPubSubTlsSettings",
     "ACLAction",
     "CreatedByType",
