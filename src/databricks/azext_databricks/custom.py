@@ -48,7 +48,7 @@ class DatabricksWorkspaceCreate(_DatabricksWorkspaceCreate):
             args.managed_resource_group = resource_id(
                 subscription=subscription_id,
                 resource_group='databricks-rg-' + workspace_name + '-' + id_generator())
-        elif not is_valid_resource_id(managed_resource_group):
+        elif not is_valid_resource_id(args.managed_resource_group.to_serialized_data()):
             args.managed_resource_group = resource_id(
                 subscription=subscription_id,
                 resource_group=managed_resource_group)
