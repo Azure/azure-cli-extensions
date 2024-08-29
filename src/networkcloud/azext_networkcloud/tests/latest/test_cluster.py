@@ -14,6 +14,8 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
 
+import json
+
 
 def setup_scenario1(test):
     """Env setup_scenario1"""
@@ -441,8 +443,8 @@ class ClusterScenarioTest(ScenarioTest):
                 "bareMetalMachineConfigurationData": CONFIG.get(
                     "CLUSTER", "bare_metal_machine_configuration_data"
                 ),
-                "aggregatorOrSingleRackDefinitionDirectory": CONFIG.get(
-                    "CLUSTER", "aggregator_or_single_rack_definition_directory"
+                "aggregatorOrSingleRackDefinitionDirectory": json.load(open(CONFIG.get(
+                    "CLUSTER", "aggregator_or_single_rack_definition_directory"))
                 ),
                 "tags": CONFIG.get("CLUSTER", "tags"),
                 "tagsUpdate": CONFIG.get("CLUSTER", "tags_update"),
