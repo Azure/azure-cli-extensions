@@ -3,7 +3,7 @@ Release History
 ===============
 1.0.9
 ++++++
-Added `--encrypt-recovery-key` string parameter to `vm repair create` to use recovery key provided by the user to unlock the disk for a confidential VM. 
+Add `--encrypt-recovery-key` string parameter to `vm repair create` to use recovery key provided by the user to unlock the disk for a confidential VM. 
 
 1.0.8
 ++++++
