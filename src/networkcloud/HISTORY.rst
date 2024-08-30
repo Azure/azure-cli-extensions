@@ -3,7 +3,7 @@
 Release History
 ===============
 
-3.0.0b1
+2.0.0b3
 ++++++++
 * This beta version supports NetworkCloud 2024-06-01-preview APIs.
 * Note is added regarding Virtual machine memory and disk size being in gibibytes. Avoid using property names `--memory-size-gb` and `--disk-size-gb`.
