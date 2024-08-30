@@ -41,7 +41,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='log_analytics_solution',
+    name='log-analytics-solution',
     version=VERSION,
     description='Support for Azure Log Analytics Solution',
     # TODO: Update author and email, if applicable
