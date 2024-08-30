@@ -17,6 +17,7 @@ from knack.log import get_logger
 from azure.cli.core import telemetry
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as azext_utils
+from azext_connectedk8s._utils import get_utctimestring
 logger = get_logger(__name__)
 # pylint: disable=unused-argument, too-many-locals, too-many-branches, too-many-statements, line-too-long
 
@@ -25,7 +26,7 @@ diagnoser_output = []
 
 def fetch_kubectl_cluster_info(filepath_with_timestamp, storage_space_available,
                                kubectl_client_location, kube_config, kube_context):
-
+    print("Step: {}: Capture cluster-info logs".format(get_utctimestring()))
     global diagnoser_output
     try:
         # If storage space available then only store the azure-arc events
@@ -45,7 +46,7 @@ def fetch_kubectl_cluster_info(filepath_with_timestamp, storage_space_available,
                     fault_type=consts.Kubectl_Cluster_Info_Failed_Fault_Type,
                     summary="Error while doing kubectl cluster-info")
                 logger.warning("Error while doing 'kubectl cluster-info'. We were not able to capture cluster-info "
-                               "logs in arc_diganostic_logs folder. Exception: ",
+                               "logs in arc_diagnostic_logs folder. Exception: ",
                                error_cluster_info.decode("ascii"))
                 diagnoser_output.append("Error while doing 'kubectl cluster-info'. We were not able to capture "
                                         "cluster-info logs in arc_diganostic_logs folder. Exception: ",
@@ -101,7 +102,7 @@ def fetch_kubectl_cluster_info(filepath_with_timestamp, storage_space_available,
 
 
 def fetch_connected_cluster_resource(filepath_with_timestamp, connected_cluster, storage_space_available):
-
+    print("Step: {}: Fetch connected cluster resource".format(get_utctimestring()))
     global diagnoser_output
     try:
         # Path to add the connected_cluster resource
@@ -166,7 +167,7 @@ def fetch_connected_cluster_resource(filepath_with_timestamp, connected_cluster,
 
 
 def retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, storage_space_available):
-
+    print("Step: {}: Retrieve arc agents logs".format(get_utctimestring()))
     global diagnoser_output
     try:
         if storage_space_available:
@@ -240,7 +241,7 @@ def retrieve_arc_agents_logs(corev1_api_instance, filepath_with_timestamp, stora
 
 def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_available,
                                    kubectl_client_location, kube_config, kube_context):
-
+    print("Step: {}: Retrieve arc agents event logs".format(get_utctimestring()))
     global diagnoser_output
     try:
         # If storage space available then only store the azure-arc events
@@ -314,7 +315,7 @@ def retrieve_arc_agents_event_logs(filepath_with_timestamp, storage_space_availa
 
 
 def retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, storage_space_available):
-
+    print("Step: {}: Retrieve deployments logs".format(get_utctimestring()))
     global diagnoser_output
     try:
         if storage_space_available:
@@ -371,7 +372,7 @@ def retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, stora
 
 
 def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_space_available):
-
+    print("Step: {}: Check agent state".format(get_utctimestring()))
     global diagnoser_output
     # If all agents are stuck we will skip the certificates check
     all_agents_stuck = True
@@ -535,7 +536,7 @@ def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_spac
 
 
 def check_agent_version(connected_cluster, azure_arc_agent_version):
-
+    print("Step: {}: Check agent version".format(get_utctimestring()))
     global diagnoser_output
     try:
 
@@ -578,7 +579,7 @@ def check_diagnoser_container(corev1_api_instance, batchv1_api_instance, filepat
                               storage_space_available, absolute_path, probable_sufficient_resource_for_agents,
                               helm_client_location, kubectl_client_location, release_namespace,
                               probable_pod_security_policy_presence, kube_config, kube_context):
-
+    print("Step: {}: Check diagnoser container".format(get_utctimestring()))
     global diagnoser_output
     try:
 
@@ -824,7 +825,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
                     is_job_scheduled = True
                 # Checking if job reached completed stage or not
                 if event["object"].metadata.name == "azure-arc-diagnoser-job" and \
-                        event["object"].status.conditions[0].type == "Complete":
+                    any(condition.type == "Complete" for condition in event["object"].status.conditions):
                     is_job_complete = True
                     w.stop()
             except Exception:
@@ -932,7 +933,7 @@ def executing_diagnoser_job(corev1_api_instance, batchv1_api_instance, filepath_
 
 
 def check_msi_certificate_presence(corev1_api_instance):
-
+    print("Step: {}: Check MSI certificate presence".format(get_utctimestring()))
     global diagnoser_output
     try:
         # Initializing msi certificate as not present
@@ -972,7 +973,7 @@ def check_msi_certificate_presence(corev1_api_instance):
 
 def check_probable_cluster_security_policy(corev1_api_instance, helm_client_location,
                                            release_namespace, kube_config, kube_context):
-
+    print("Step: {}: Check probable cluster security policy".format(get_utctimestring()))
     global diagnoser_output
     try:
         # Intializing the kap_pod_present and cluster_connect_feature variable as False
@@ -1034,7 +1035,7 @@ def check_probable_cluster_security_policy(corev1_api_instance, helm_client_loca
 
 
 def check_kap_cert(corev1_api_instance):
-
+    print("Step: {}: Check Kube aad proxy certificate".format(get_utctimestring()))
     global diagnoser_output
     try:
         # Initialize the kap_cert_present as False
@@ -1078,7 +1079,7 @@ def check_kap_cert(corev1_api_instance):
 
 
 def check_msi_expiry(connected_cluster):
-
+    print("Step: {}: Check MSI certificate expiry".format(get_utctimestring()))
     global diagnoser_output
     try:
         # Fetch the expiry time of the msi certificate
@@ -1163,7 +1164,7 @@ def describe_non_ready_agent_log(filepath_with_timestamp, corev1_api_instance, a
 
 def get_secrets_azure_arc(corev1_api_instance, kubectl_client_location, kube_config, kube_context,
                           filepath_with_timestamp, storage_space_available):
-
+    print("Step: {}: Fetching secrets in azure arc namespace".format(get_utctimestring()))
     try:
         if storage_space_available:
             command = [kubectl_client_location, "get", "secrets", "-n", "azure-arc"]
@@ -1232,7 +1233,7 @@ def get_secrets_azure_arc(corev1_api_instance, kubectl_client_location, kube_con
 
 def get_helm_values_azure_arc(corev1_api_instance, helm_client_location, release_namespace, kube_config, kube_context,
                               filepath_with_timestamp, storage_space_available):
-
+    print("Step: {}: Fetching helm values of azure-arc release".format(get_utctimestring()))
     try:
         if storage_space_available:
             command = [helm_client_location, "get", "values", "azure-arc", "-n", release_namespace, "--output", "json"]
@@ -1320,7 +1321,7 @@ def get_helm_values_azure_arc(corev1_api_instance, helm_client_location, release
 
 def get_metadata_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_config, kube_context,
                              filepath_with_timestamp, storage_space_available):
-
+    print("Step: {}: Fetching metadata CR details".format(get_utctimestring()))
     try:
         if storage_space_available:
             command = [kubectl_client_location, "describe", "connectedclusters.arc.azure.com/clustermetadata", "-n",
@@ -1391,7 +1392,7 @@ def get_metadata_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_
 
 def get_kubeaadproxy_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_config, kube_context,
                                  filepath_with_timestamp, storage_space_available):
-
+    print("Step: {}: Fetching kube-aad-proxy CR details".format(get_utctimestring()))
     try:
         if storage_space_available:
             command = [kubectl_client_location, "describe", "arccertificates.clusterconfig.azure.com/kube-aad-proxy",
@@ -1409,10 +1410,10 @@ def get_kubeaadproxy_cr_snapshot(corev1_api_instance, kubectl_client_location, k
                     fault_type=consts.KAP_CR_Save_Failed_Fault_Type,
                     summary='Error occured while fetching KAP CR details')
                 logger.warning("Error while doing kubectl describe for kube-aad-proxy CR. We were not able to "
-                               "capture this log in arc_diganostic_logs folder. Exception: ",
+                               "capture this log in arc_diagnostic_logs folder. Exception: ",
                                error_kubectl_get_kap_cr.decode("ascii"))
                 diagnoser_output.append("Error occured while fetching kube-aad-proxy CR details. We were not able to "
-                                        "capture this log in arc_diganostic_logs folder. Exception: " +
+                                        "capture this log in arc_diagnostic_logs folder. Exception: " +
                                         error_kubectl_get_kap_cr.decode("ascii"))
                 return storage_space_available
 
@@ -1460,9 +1461,9 @@ def get_kubeaadproxy_cr_snapshot(corev1_api_instance, kubectl_client_location, k
 
 
 def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, flag):
-
+    print("Step: {}: Fetching the CLI output logs".format(get_utctimestring()))
     # This function is used to store the output that is obtained throughout the Diagnoser process
-
+    print("Step: {}: Storing the diagnoser output".format(get_utctimestring()))
     global diagnoser_output
     try:
         # If storage space is available then only we store the output
