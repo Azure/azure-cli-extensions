@@ -3,15 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from argparse import Namespace
-from pydoc import cli
 from kubernetes import client, config, watch, utils
-from logging import exception
 import os
 import yaml
 import json
 import datetime
-from subprocess import Popen, PIPE, run, STDOUT, call, DEVNULL
+from subprocess import Popen, PIPE
 import shutil
 from knack.log import get_logger
 from azure.cli.core import telemetry
