@@ -7,12 +7,12 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
-helps['connectedk8s'] = """
+helps["connectedk8s"] = """
     type: group
     short-summary: Commands to manage connected kubernetes clusters.
 """
 
-helps['connectedk8s connect'] = """
+helps["connectedk8s connect"] = """
     type: command
     short-summary: Onboard a connected kubernetes cluster to azure.
     examples:
@@ -39,7 +39,7 @@ helps['connectedk8s connect'] = """
 
 """
 
-helps['connectedk8s update'] = """
+helps["connectedk8s update"] = """
     type: command
     short-summary: Update properties of the arc onboarded kubernetes cluster.
     examples:
@@ -61,7 +61,7 @@ helps['connectedk8s update'] = """
       text: az connectedk8s update -g resourceGroupName -n connectedClusterName --disable-gateway
 """
 
-helps['connectedk8s upgrade'] = """
+helps["connectedk8s upgrade"] = """
     type: command
     short-summary: Atomically upgrade onboarded agents to the specific version or default to the latest version.
     examples:
@@ -73,7 +73,7 @@ helps['connectedk8s upgrade'] = """
       text: az connectedk8s upgrade -g resourceGroupName -n connectedClusterName --upgrade-timeout 600
 """
 
-helps['connectedk8s list'] = """
+helps["connectedk8s list"] = """
     type: command
     short-summary: List connected kubernetes clusters.
     examples:
@@ -84,7 +84,7 @@ helps['connectedk8s list'] = """
 
 """
 
-helps['connectedk8s delete'] = """
+helps["connectedk8s delete"] = """
     type: command
     short-summary: Delete a connected kubernetes cluster along with connected cluster agents.
     examples:
@@ -94,7 +94,7 @@ helps['connectedk8s delete'] = """
       text: az connectedk8s delete -g resourceGroupName -n connectedClusterName --kube-config /path/to/kubeconfig --kube-context kubeContextName
 """
 
-helps['connectedk8s show'] = """
+helps["connectedk8s show"] = """
     type: command
     short-summary: Show details of a connected kubernetes cluster.
     examples:
@@ -102,7 +102,7 @@ helps['connectedk8s show'] = """
       text: az connectedk8s show -g resourceGroupName -n connectedClusterName
 """
 
-helps['connectedk8s proxy'] = """
+helps["connectedk8s proxy"] = """
   type: command
   short-summary: Get access to a connected kubernetes cluster.
   examples:
@@ -118,7 +118,7 @@ helps['connectedk8s proxy'] = """
     text: az connectedk8s proxy -n clusterName -g resourceGroupName --kube-context contextName
 """
 
-helps['connectedk8s enable-features'] = """
+helps["connectedk8s enable-features"] = """
   type: command
   short-summary: Enables the selective features on the connected cluster.
   examples:
@@ -130,7 +130,7 @@ helps['connectedk8s enable-features'] = """
     text: az connectedk8s enable-features -n clusterName -g resourceGroupName --features cluster-connect custom-locations
 """
 
-helps['connectedk8s disable-features'] = """
+helps["connectedk8s disable-features"] = """
   type: command
   short-summary: Disables the selective features on the connected cluster.
   examples:
@@ -140,7 +140,7 @@ helps['connectedk8s disable-features'] = """
     text: az connectedk8s disable-features -n clusterName -g resourceGroupName --features custom-locations azure-rbac
 """
 
-helps['connectedk8s troubleshoot'] = """
+helps["connectedk8s troubleshoot"] = """
   type: command
   short-summary: Perform diagnostic checks on an Arc enabled Kubernetes cluster.
   examples:
