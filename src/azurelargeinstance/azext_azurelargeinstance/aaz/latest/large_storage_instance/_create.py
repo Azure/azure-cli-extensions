@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "large-storage-instance create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create an Azure Large Storage Instance for the specified subscription,

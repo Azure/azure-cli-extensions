@@ -13,14 +13,13 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "large-instance create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create an Azure Large Instance for the specified subscription,
 resource group, and instance name.
 
     :example: AzureLargeInstance_Create
-        az large-instance create -g myResourceGroup -n myALInstance -l westus --tags "{testkey:testvalue}" --instance-id 23415635-4d7e-41dc-9598-8194f22c24e1 --power-state started --proximity-placement-group /subscriptions/f0f4887f-d13c-4943-a8ba-d7da28d2a3fd/resourceGroups/myResourceGroup/providers/Microsoft.Compute/proximityPlacementGroups/myplacementgroup --hw-revision Rev 3 --hardware-profile "{hardware-type:Cisco_UCS,azure-large-instance-size:S72}" --network-profile "{network-interfaces:[{ip-address:100.100.100.100}],circuit-id:/subscriptions/f0f4887f-d13c-4943-a8ba-d7da28d2a3fd/resourceGroups/myResourceGroup/providers/Microsoft.Network/expressRouteCircuit}" --storage-profile "{nfs-ip-address:200.200.200.200}" --os-profile "{computer-name:myComputerName,os-type:SUSE,version:'12 SP1',ssh-public-key:'{ssh-rsa public key}'}"
+        az large-instance create -g myResourceGroup -n myALInstance -l westus --tags "{testkey:testvalue}" --instance-id 23415635-4d7e-41dc-9598-8194f22c24e1 --power-state started --ppg /subscriptions/f0f4887f-d13c-4943-a8ba-d7da28d2a3fd/resourceGroups/myResourceGroup/providers/Microsoft.Compute/proximityPlacementGroups/myplacementgroup --hw-revision Rev 3 --hardware-profile "{hardware-type:Cisco_UCS,azure-large-instance-size:S72}" --network-profile "{network-interfaces:[{ip-address:100.100.100.100}],circuit-id:/subscriptions/f0f4887f-d13c-4943-a8ba-d7da28d2a3fd/resourceGroups/myResourceGroup/providers/Microsoft.Network/expressRouteCircuit}" --storage-profile "{nfs-ip-address:200.200.200.200}" --os-profile "{computer-name:myComputerName,os-type:SUSE,version:'12 SP1',ssh-public-key:'{ssh-rsa public key}'}"
     """
 
     _aaz_info = {
@@ -93,7 +92,7 @@ resource group, and instance name.
             enum={"restarting": "restarting", "started": "started", "starting": "starting", "stopped": "stopped", "stopping": "stopping", "unknown": "unknown"},
         )
         _args_schema.proximity_placement_group = AAZStrArg(
-            options=["--proximity-placement-group"],
+            options=["--ppg", "--proximity-placement-group"],
             arg_group="Properties",
             help="Resource proximity placement group",
         )
