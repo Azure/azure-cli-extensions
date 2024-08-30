@@ -60,7 +60,7 @@ def fetch_kubectl_cluster_info(
                 )
                 diagnoser_output.append(
                     "Error while doing 'kubectl cluster-info'. We were not able to capture "
-                    "cluster-info logs in arc_diganostic_logs folder. Exception: "
+                    "cluster-info logs in arc_diagnostic_logs folder. Exception: "
                     + error_cluster_info.decode("ascii"),
                 )
                 return consts.Diagnostic_Check_Failed, storage_space_available
@@ -352,12 +352,12 @@ def retrieve_arc_agents_event_logs(
                 )
                 logger.warning(
                     "Error while doing kubectl get events. We were not able to capture events log in "
-                    "arc_diganostic_logs folder. Exception: ",
+                    "arc_diagnostic_logs folder. Exception: ",
                     error_kubectl_get_events.decode("ascii"),
                 )
                 diagnoser_output.append(
                     "Error while doing kubectl get events. We were not able to capture events "
-                    "log in arc_diganostic_logs folder. Exception: "
+                    "log in arc_diagnostic_logs folder. Exception: "
                     + error_kubectl_get_events.decode("ascii"),
                 )
                 return consts.Diagnostic_Check_Failed, storage_space_available
@@ -649,12 +649,12 @@ def retrieve_arc_workload_identity_event_logs(
                 )
                 logger.warning(
                     "Error while doing kubectl get events for arc-workload-identity namespace. "
-                    "We were not able to capture events log in arc_diganostic_logs folder. Exception: ",
+                    "We were not able to capture events log in arc_diagnostic_logs folder. Exception: ",
                     error_kubectl_get_events.decode("ascii"),
                 )
                 diagnoser_output.append(
                     "Error while doing kubectl get events for arc-workload-identity namespace. "
-                    "We were not able to capture events log in arc_diganostic_logs folder. Exception: "
+                    "We were not able to capture events log in arc_diagnostic_logs folder. Exception: "
                     + error_kubectl_get_events.decode("ascii"),
                 )
                 return consts.Diagnostic_Check_Failed, storage_space_available
@@ -1559,12 +1559,12 @@ def executing_diagnoser_job(
                             )
                             logger.warning(
                                 "Error while doing kubectl get events. We were not able to capture events "
-                                "log in arc_diganostic_logs folder. Exception: ",
+                                "log in arc_diagnostic_logs folder. Exception: ",
                                 error_kubectl_get_events.decode("ascii"),
                             )
                             diagnoser_output.append(
                                 "Error while doing kubectl get events. We were not able to "
-                                "capture events log in arc_diganostic_logs folder. Exception: "
+                                "capture events log in arc_diagnostic_logs folder. Exception: "
                                 + error_kubectl_get_events.decode("ascii"),
                             )
                             return None
@@ -1992,12 +1992,12 @@ def get_secrets_azure_arc(
                 )
                 logger.warning(
                     "Error while doing kubectl get secrets for azure-arc namespace. We were not able to "
-                    "capture this log in arc_diganostic_logs folder. Exception: ",
+                    "capture this log in arc_diagnostic_logs folder. Exception: ",
                     error_kubectl_get_secrets.decode("ascii"),
                 )
                 diagnoser_output.append(
                     "Error while doing kubectl get secrets in azure-arc namespace. We were not "
-                    "able to capture this log in arc_diganostic_logs folder. Exception: "
+                    "able to capture this log in arc_diagnostic_logs folder. Exception: "
                     + error_kubectl_get_secrets.decode("ascii")
                 )
                 return storage_space_available
@@ -2105,12 +2105,12 @@ def get_helm_values_azure_arc(
                 )
                 logger.warning(
                     "Error while doing helm get values for azure-arc release. We were not able to capture "
-                    "this log in arc_diganostic_logs folder. Exception: ",
+                    "this log in arc_diagnostic_logs folder. Exception: ",
                     error_kubectl_get_helmvalues.decode("ascii"),
                 )
                 diagnoser_output.append(
                     "Error while doing helm get values for azure-arc release. We were not able "
-                    "to capture this log in arc_diganostic_logs folder. Exception: "
+                    "to capture this log in arc_diagnostic_logs folder. Exception: "
                     + error_kubectl_get_helmvalues.decode("ascii")
                 )
                 return storage_space_available
@@ -2237,12 +2237,12 @@ def get_helm_values_arc_workload_identity(
                 )
                 logger.warning(
                     "Error while doing helm get values for wiextension release. We were not able to capture "
-                    "this log in arc_diganostic_logs folder. Exception: ",
+                    "this log in arc_diagnostic_logs folder. Exception: ",
                     error_kubectl_get_helmvalues.decode("ascii"),
                 )
                 diagnoser_output.append(
                     "Error while doing helm get values for wiextension release. We were not able "
-                    "to capture this log in arc_diganostic_logs folder. Exception: "
+                    "to capture this log in arc_diagnostic_logs folder. Exception: "
                     + error_kubectl_get_helmvalues.decode("ascii")
                 )
                 return storage_space_available
@@ -2345,12 +2345,12 @@ def get_metadata_cr_snapshot(
                 )
                 logger.warning(
                     "Error while doing kubectl describe for clustermetadata CR. We were not able to "
-                    "capture this log in arc_diganostic_logs folder. Exception: ",
+                    "capture this log in arc_diagnostic_logs folder. Exception: ",
                     error_kubectl_get_metadata_cr.decode("ascii"),
                 )
                 diagnoser_output.append(
                     "Error occured while fetching metadata CR details. We were not able to "
-                    "capture this log in arc_diganostic_logs folder. Exception: "
+                    "capture this log in arc_diagnostic_logs folder. Exception: "
                     + error_kubectl_get_metadata_cr.decode("ascii")
                 )
                 return storage_space_available
@@ -2557,12 +2557,12 @@ def get_signingkey_cr_snapshot(
                 )
                 logger.warning(
                     "Error while doing kubectl describe for signingkey CR. We were not able to "
-                    "capture this log in arc_diganostic_logs folder. Exception: ",
+                    "capture this log in arc_diagnostic_logs folder. Exception: ",
                     error_kubectl_get_signingkey_cr.decode("ascii"),
                 )
                 diagnoser_output.append(
                     "Error occured while fetching signingkey CR details. We were not able to "
-                    "capture this log in arc_diganostic_logs folder. Exception: "
+                    "capture this log in arc_diagnostic_logs folder. Exception: "
                     + error_kubectl_get_signingkey_cr.decode("ascii")
                 )
                 return storage_space_available
