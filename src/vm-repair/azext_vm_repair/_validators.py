@@ -8,7 +8,7 @@ from json import loads
 from re import match, search, findall
 from knack.log import get_logger
 from knack.util import CLIError
-from azure.cli.core.azclierror import ValidationError
+from azure.cli.core.azclierror import ValidationError, RequiredArgumentMissingError
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.resource._client_factory import _resource_client_factory
@@ -71,6 +71,10 @@ def validate_create(cmd, namespace):
         raise CLIError('The current command does not support VMs which were encrypted using dual pass.')
     else:
         logger.debug('The source VM\'s OS disk is not encrypted')
+
+    if namespace.encrypt_recovery_key:
+        if not namespace.unlock_encrypted_vm:
+            raise RequiredArgumentMissingError('Recovery password is provided in the argument, but --unlock-encrypted-vm is not passed. Rerun command adding --unlock-encrypted-vm.')
 
     if namespace.enable_nested:
         if is_linux:

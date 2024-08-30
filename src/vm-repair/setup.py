@@ -47,6 +47,7 @@ setup(
             'scripts/enable-nestedhyperv.ps1',
             'scripts/linux-mount-encrypted-disk.sh',
             'scripts/win-mount-encrypted-disk.ps1',
+            'scripts/win-mount-encrypted-disk-bitlockerV.ps1',
             'scripts/linux-build_setup-cloud-init.txt',
             'azext_metadata.json'
         ]
