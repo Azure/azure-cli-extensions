@@ -42,6 +42,7 @@ logger = get_logger(__name__)
 class ContainerType(Enum):
     PythonLTS = 0
     CustomContainer = 2
+    NodeLTS = 3
 
 
 class SessionPoolPreviewDecorator(BaseResource):
