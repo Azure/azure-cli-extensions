@@ -61,7 +61,7 @@ def remap_datasource_uids(dashboard, uid_mapping, data_source_missed):
     for key, value in dashboard.items():
         if isinstance(value, dict):
             if key == "datasource" and isinstance(value, dict) and ("uid" in value):
-                if(_is_valid_uid(value["uid"])):  # validate datasource via uid field
+                if _is_valid_uid(value["uid"]):  # validate datasource via uid field
                     if value["uid"] in uid_mapping:
                         value["uid"] = uid_mapping[value["uid"]]  # sets to destination datasource uid in dashboard
                     else:
