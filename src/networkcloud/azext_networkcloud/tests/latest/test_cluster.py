@@ -9,12 +9,13 @@
 Cluster tests scenarios
 """
 
+
+import os
+
 from azure.cli.testsdk import ResourceGroupPreparer, ScenarioTest
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
-
-import json
 
 
 def setup_scenario1(test):
@@ -443,7 +444,10 @@ class ClusterScenarioTest(ScenarioTest):
                 "bareMetalMachineConfigurationData": CONFIG.get(
                     "CLUSTER", "bare_metal_machine_configuration_data"
                 ),
-                "aggregatorOrSingleRackDefinitionDirectory": CONFIG.get(
+                "aggregatorOrSingleRackDefinitionDirectory": os.environ.get(
+                    "AAZ_EXT_DIR", "."
+                )
+                + CONFIG.get(
                     "CLUSTER", "aggregator_or_single_rack_definition_directory"
                 ),
                 "tags": CONFIG.get("CLUSTER", "tags"),
