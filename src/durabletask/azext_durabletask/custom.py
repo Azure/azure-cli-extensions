@@ -15,7 +15,6 @@ def create_durabletask(cmd, client, resource_group_name, durabletask_name, locat
 def list_durabletask(cmd, client, resource_group_name=None):
     client = cf_durabletask(cmd.cli_ctx, None)
     return client.namespaces.list_by_subscription()
-    # raise CLIError('TODO: Implement `durabletask list`')
 
 
 def update_durabletask(cmd, instance, tags=None):
@@ -26,16 +25,13 @@ def update_durabletask(cmd, instance, tags=None):
 
 
 # Namespace Operations
-def create_namespace(cmd, client, resource_group_name, durabletask_name, location=None, tags=None):
-    namespace = TrackedResource(location='eastus')
+def create_namespace(cmd, client, resource_group_name, namespace_name, location="northcentralus", tags=None):
     client = cf_durabletask_namespaces(cmd.cli_ctx, None)
-    return client.begin_create_or_update(resource_group_name, "test-namespace-api", resource=Namespace(location="eastus"))
-    raise CLIError('TODO: Implement `durabletask namespace create`')
+    return client.begin_create_or_update(resource_group_name, namespace_name, resource=Namespace(location=location))
 
 def list_namespace(cmd, client, resource_group_name=None):
     client = cf_durabletask_namespaces(cmd.cli_ctx, None)
-    return client.list_by_resource_group(resource_group_name="test-rp-rg-eastus")
-    raise CLIError('TODO: Implement `durabletask namespace list`')
+    return client.list_by_resource_group(resource_group_name=resource_group_name)
 
 def show_namespace(cmd, client, resource_group_name=None):
     raise CLIError('TODO: Implement `durabletask namespace show`')

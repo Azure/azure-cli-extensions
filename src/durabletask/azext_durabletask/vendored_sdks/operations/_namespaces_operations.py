@@ -304,11 +304,6 @@ class NamespacesOperations:
                 _request.url = self._client.format_url(_request.url)
                 _request.method = "GET"
 
-            print("RRL REQUEST")
-            #print(_request)
-            #_request.url = "https://eastus.management.azure.com/subscriptions/a0d0be64-6f56-451c-a392-2ec805aedfcb/providers/Microsoft.DurableTask/namespaces?api-version=2024-02-01-preview"
-            print(_request)
-            # _request.url = "https://northcentralus.management.azure.com/subscriptions/f103df57-5fdd-4f9b-984b-b479bcc8a682/providers/Microsoft.DurableTask/namespaces?api-version=2024-02-01-preview"
             return _request
 
         def extract_data(pipeline_response):
@@ -321,15 +316,11 @@ class NamespacesOperations:
         def get_next(next_link=None):
             _request = prepare_request(next_link)
 
-            print("RRL REQUEST")
-            print(_request)
             _stream = False
             pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
                 _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
-            print("RRL response:")
-            print(response)
 
             if response.status_code not in [200]:
                 map_error(status_code=response.status_code, response=response, error_map=error_map)
@@ -501,13 +492,9 @@ class NamespacesOperations:
         _json = None
         _content = None
         if isinstance(resource, (IOBase, bytes)):
-            print("RRL isinstance")
             _content = resource
         else:
             _json = self._serialize.body(resource, "Namespace")
-            print("RRL _json")
-            # _json = '{"type": "Microsoft.DurableTask/namespaces","location": "northcentralus", "properties": {"ipAllowlist": [ "0.0.0.0/0" ] }}'
-        print(_json)
 
         _request = build_create_or_update_request(
             resource_group_name=resource_group_name,
@@ -529,11 +516,6 @@ class NamespacesOperations:
         )
 
         response = pipeline_response.http_response
-        print("RRL response")
-        print(response)
-
-        print("RRL _request")
-        print(_request)
 
         if response.status_code not in [200, 201]:
             try:

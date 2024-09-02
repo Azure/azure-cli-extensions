@@ -17,7 +17,7 @@ def load_arguments(self, _):
     with self.argument_context('durabletask') as c:
         c.argument('tags', tags_type)
         c.argument('location', validator=get_default_location_from_resource_group)
-        c.argument('durabletask_name', durabletask_name_type, options_list=['--name', '-n'])
+        c.argument('namespace_name', durabletask_name_type, options_list=['--name', '-n'])
 
     with self.argument_context('durabletask list') as c:
         c.argument('durabletask_name', durabletask_name_type, id_part=None)
