@@ -716,6 +716,16 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.peerTrafficConfiguration.encryption.enabled', False),
         ])
 
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_env_dapr_connection_string_extension(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+
+        self.cmd('containerapp env create -g {} -n {} --logs-destination none -d "Endpoint=https://foo.azconfig.io;Id=osOX-l9-s0:sig;InstrumentationKey=00000000000000000000000000000000000000000000"'.format(resource_group, env_name), expect_failure=False)
+
+        self.cmd('containerapp env delete -g {} -n {} --yes --no-wait'.format(resource_group, env_name), expect_failure=False)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_env_usages(self, resource_group):

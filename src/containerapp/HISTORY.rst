@@ -4,9 +4,12 @@ Release History
 ===============
 upcoming
 ++++++
-* 'az containerapp sessionpool create/update': Add NodeLTS container-type.
 
-* 'az containerapp env java-component`: Support --min-replicas and --max-replicas for Java components'
+1.0.0b1
+++++++
+* 'az containerapp sessionpool create/update': Add NodeLTS container-type.
+* 'az containerapp env java-component': Support --min-replicas and --max-replicas for Java components
+* 'az containerapp env create': Support `--dapr-connection-string` to set application insight connection string
 
 0.3.55
 ++++++

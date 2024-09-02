@@ -34,6 +34,7 @@ class ContainerAppUpConnectedEnvImageTest(ScenarioTest):
     # If the process contains create_extension, it contains _generate_log_analytics_if_not_provided, which cause playback failed.
     # If the process contains create custom location, it will use a random name, which will cause playback failed too.
     # So prepare extension and custom location before execute the `up` command
+    @live_only()  # Remove this after connected k8s issue fixed
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus", random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)

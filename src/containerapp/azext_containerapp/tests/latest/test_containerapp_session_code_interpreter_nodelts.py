@@ -64,7 +64,7 @@ class ContainerAppSessionCodeInterperterNodeLTSTests(ScenarioTest):
 
         # upload a file also add session pool location
         txt_file = os.path.join(TEST_DIR, 'cert.txt')
-        self.cmd("containerapp session code-interpreter upload-file -n {} -g {} --identifier {} --filepath {} --session-pool-location {}".format(
+        self.cmd('containerapp session code-interpreter upload-file -n {} -g {} --identifier {} --filepath "{}" --session-pool-location {}'.format(
             sessionpool_name_nodelts,
             resource_group,
             identifier_name,
