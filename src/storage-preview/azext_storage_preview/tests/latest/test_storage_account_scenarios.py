@@ -341,8 +341,8 @@ class StorageAccountLocalUserTests(StorageScenarioMixin, ScenarioTest):
         self.cmd('{cmd} create --account-name {sa} -g {rg} -n {username} --home-directory home '
                  '--permission-scope permissions=r service=blob resource-name=container1 '
                  '--permission-scope permissions=rw service=file resource-name=share2 '
-                 '--has-ssh-key false --has-shared-key false --group-id 1 '
-                 '--allow-acl-authorization true').assert_with_checks(
+                 '--has-ssh-key false --has-shared-key false --group-id 1 --allow-acl-authorization true '
+                 '--extended-groups 3 4 --is-nfsv3-enabled true').assert_with_checks(
             JMESPathCheck('hasSharedKey', False),
             JMESPathCheck('hasSshKey', False),
             JMESPathCheck('hasSshPassword', None),
@@ -353,19 +353,23 @@ class StorageAccountLocalUserTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('permissionScopes[0].service', 'blob'),
             JMESPathCheck('permissionScopes[0].resourceName', 'container1'),
             JMESPathCheck('groupId', 1),
-            JMESPathCheck('allowAclAuthorization', True)
+            JMESPathCheck('allowAclAuthorization', True),
+            JMESPathCheck('extendedGroups', [3, 4]),
+            JMESPathCheck('isNfSv3Enabled', True)
         )
 
         self.cmd('{cmd} update --account-name {sa} -g {rg} -n {username} --home-directory home2 '
                  '--permission-scope permissions=rw service=file resource-name=share2 --group-id 2 '
-                 '--allow-acl-authorization false').assert_with_checks(
+                 '--allow-acl-authorization false --extended-groups 5 6 --is-nfsv3-enabled false').assert_with_checks(
             JMESPathCheck('homeDirectory', 'home2'),
             JMESPathCheck('length(permissionScopes)', 1),
             JMESPathCheck('permissionScopes[0].permissions', 'rw'),
             JMESPathCheck('permissionScopes[0].service', 'file'),
             JMESPathCheck('permissionScopes[0].resourceName', 'share2'),
             JMESPathCheck('groupId', 2),
-            JMESPathCheck('allowAclAuthorization', False)
+            JMESPathCheck('allowAclAuthorization', False),
+            JMESPathCheck('extendedGroups', [5, 6]),
+            JMESPathCheck('isNfSv3Enabled', False)
         )
 
         self.cmd('{cmd} list --account-name {sa} -g {rg}').assert_with_checks(
