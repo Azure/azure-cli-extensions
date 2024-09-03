@@ -31,6 +31,7 @@ Helm_Install_Release_Userfault_Messages = ['forbidden', 'timed out waiting for t
 Custom_Locations_Provider_Namespace = 'Microsoft.ExtendedLocation'
 Connected_Cluster_Provider_Namespace = 'Microsoft.Kubernetes'
 Kubernetes_Configuration_Provider_Namespace = 'Microsoft.KubernetesConfiguration'
+Hybrid_Compute_Provider_Namespace = 'Microsoft.HybridCompute'
 Arc_Namespace = 'azure-arc'
 Azure_PublicCloudName = 'AZUREPUBLICCLOUD'
 Azure_USGovCloudName = 'AZUREUSGOVERNMENTCLOUD'
@@ -157,6 +158,7 @@ Error_disabling_Features = 'Error while updating agents for disabling features. 
 Proxy_Kubeconfig_During_Deletion_Fault_Type = 'Encountered proxy kubeconfig during deletion.'
 Cannot_Create_ClusterRoleBindings_Fault_Type = 'Cannot create cluster role bindings on this Kubernets cluster'
 CC_Provider_Namespace_Not_Registered_Fault_Type = "Connected Cluster Provider MS.K8 namespace not registered"
+HC_Provider_Namespace_Not_Registered_Fault_Type = "Hybrid Compute Provider MS.HybridCompute namespace not registered"
 Default_Namespace_Does_Not_Exist_Fault_Type = \
     "The default namespace defined in the kubeconfig doesn't exist on the kubernetes cluster."
 KAP_1P_Server_App_Scope = "6256c85f-0aad-4d50-b960-e6e9b21efe35/.default"

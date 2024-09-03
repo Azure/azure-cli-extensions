@@ -984,7 +984,7 @@ def try_list_node_fix():
         logger.debug("Error while trying to monkey patch the fix for list_node(): {}".format(str(ex)))
 
 
-def check_provider_registrations(cli_ctx, subscription_id):
+def check_provider_registrations(cli_ctx, subscription_id, is_gateway_enabled):
     print("Step: {}: Checking Provider Registrations".format(get_utctimestring()))
     try:
         rp_client = resource_providers_client(cli_ctx, subscription_id)
@@ -1001,6 +1001,16 @@ def check_provider_registrations(cli_ctx, subscription_id):
         if kc_registration_state != "Registered":
             telemetry.set_user_fault()
             logger.warning("{} provider is not registered".format(consts.Kubernetes_Configuration_Provider_Namespace))
+        if is_gateway_enabled:
+            hc_registration_state = rp_client.get(consts.Hybrid_Compute_Provider_Namespace).registration_state
+            if hc_registration_state != "Registered":
+                telemetry.set_exception(
+                    exception="{} provider is not registered".format(consts.Hybrid_Compute_Provider_Namespace),
+                    fault_type=consts.HC_Provider_Namespace_Not_Registered_Fault_Type,
+                    summary="{} provider is not registered".format(consts.Hybrid_Compute_Provider_Namespace))
+                err_msg = "{} provider is not registered. Please register it using 'az provider register -n 'Microsoft." \
+                    "HybridCompute' before running the connect command.".format(consts.Hybrid_Compute_Provider_Namespace)
+                raise ValidationError(err_msg)
     except ValidationError as e:
         raise e
     except Exception as ex:
