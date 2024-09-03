@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.5.0
++++++
+* Add `service-mode` for Web PubSub for Socket.IO
+
 1.4.0
 +++++
 * Add `az webpubsub replica create/delete/list/show` support for replica

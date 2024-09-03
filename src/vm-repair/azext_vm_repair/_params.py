@@ -29,9 +29,10 @@ def load_arguments(self, _):
         c.argument('copy_disk_name', help='Name of OS disk copy.')
         c.argument('repair_group_name', help='Name for new or existing resource group that will contain repair VM.')
         c.argument('unlock_encrypted_vm', help='Option to auto-unlock encrypted VMs using current subscription auth.')
+        c.argument('encrypt_recovery_key', help='Option to auto-unlock encrypted VMs using provided recovery password.')
         c.argument('enable_nested', help='enable nested hyperv.')
         c.argument('associate_public_ip', help='Option to create repair vm with public ip')
-        c.argument('distro', help='Option to create repair vm from a specific linux distro (rhel7|rhel8|suse12|ubuntu20|centos7|oracle7)')
+        c.argument('distro', help='Option to create repair vm from a specific linux distro (rhel7|rhel8|sles12|sles15|ubuntu20|centos7|centos8|oracle7)')
         c.argument('yes', help='Option to skip prompt for associating public ip and confirm yes to it in no Tty mode')
 
     with self.argument_context('vm repair restore') as c:

@@ -546,6 +546,7 @@ def aks_create(
     enable_secret_rotation=False,
     rotation_poll_interval=None,
     enable_app_routing=False,
+    app_routing_default_nginx_controller=None,
     # nodepool paramerters
     nodepool_name="nodepool1",
     node_vm_size=None,
@@ -602,10 +603,12 @@ def aks_create(
     enable_keda=False,
     enable_vpa=False,
     enable_addon_autoscaling=False,
-    enable_node_restriction=False,
     enable_cilium_dataplane=False,
     custom_ca_trust_certificates=None,
     enable_advanced_network_observability=None,
+    advanced_networking_observability_tls_management=None,
+    enable_fqdn_policy=None,
+    enable_acns=None,
     # nodepool
     crg_id=None,
     message_of_the_day=None,
@@ -809,8 +812,6 @@ def aks_update(
     apiserver_subnet_id=None,
     enable_keda=False,
     disable_keda=False,
-    enable_node_restriction=False,
-    disable_node_restriction=False,
     enable_private_cluster=False,
     disable_private_cluster=False,
     private_dns_zone=None,
@@ -838,6 +839,11 @@ def aks_update(
     safeguards_excluded_ns=None,
     enable_advanced_network_observability=None,
     disable_advanced_network_observability=None,
+    advanced_networking_observability_tls_management=None,
+    enable_fqdn_policy=None,
+    disable_fqdn_policy=None,
+    enable_acns=None,
+    disable_acns=None,
     # metrics profile
     enable_cost_analysis=False,
     disable_cost_analysis=False,
@@ -2219,6 +2225,11 @@ def aks_enable_addons(
         enable_msi_auth_for_monitoring = False
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
+
+    is_private_cluster = False
+    if instance.api_server_access_profile and instance.api_server_access_profile.enable_private_cluster:
+        is_private_cluster = True
+
     instance = _update_addons(
         cmd,
         instance,
@@ -2272,6 +2283,7 @@ def aks_enable_addons(
                 create_dcra=True,
                 enable_syslog=enable_syslog,
                 data_collection_settings=data_collection_settings,
+                is_private_cluster=is_private_cluster,
                 ampls_resource_id=ampls_resource_id,
                 enable_high_log_scale_mode=enable_high_log_scale_mode
             )
@@ -3401,7 +3413,8 @@ def aks_approuting_enable(
         resource_group_name,
         name,
         enable_kv=False,
-        keyvault_id=None
+        keyvault_id=None,
+        nginx=None,
 ):
     return _aks_approuting_update(
         cmd,
@@ -3410,7 +3423,8 @@ def aks_approuting_enable(
         name,
         enable_app_routing=True,
         keyvault_id=keyvault_id,
-        enable_kv=enable_kv)
+        enable_kv=enable_kv,
+        nginx=nginx)
 
 
 def aks_approuting_disable(
@@ -3433,7 +3447,8 @@ def aks_approuting_update(
         resource_group_name,
         name,
         keyvault_id=None,
-        enable_kv=False
+        enable_kv=False,
+        nginx=None
 ):
     return _aks_approuting_update(
         cmd,
@@ -3441,7 +3456,8 @@ def aks_approuting_update(
         resource_group_name,
         name,
         keyvault_id=keyvault_id,
-        enable_kv=enable_kv)
+        enable_kv=enable_kv,
+        nginx=nginx)
 
 
 def aks_approuting_zone_add(
@@ -3536,7 +3552,8 @@ def _aks_approuting_update(
         delete_dns_zone=None,
         update_dns_zone=None,
         dns_zone_resource_ids=None,
-        attach_zones=None
+        attach_zones=None,
+        nginx=None
 ):
     from azure.cli.command_modules.acs._consts import DecoratorEarlyExitException
     from azext_aks_preview.managed_cluster_decorator import AKSPreviewManagedClusterUpdateDecorator

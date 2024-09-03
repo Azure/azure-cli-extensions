@@ -135,8 +135,8 @@ ManagedClusterStorageProfileFileCSIDriver = TypeVar('ManagedClusterStorageProfil
 ManagedClusterStorageProfileBlobCSIDriver = TypeVar('ManagedClusterStorageProfileBlobCSIDriver')
 ManagedClusterStorageProfileSnapshotController = TypeVar('ManagedClusterStorageProfileSnapshotController')
 ManagedClusterIngressProfileWebAppRouting = TypeVar("ManagedClusterIngressProfileWebAppRouting")
+ManagedClusterIngressProfileNginx = TypeVar("ManagedClusterIngressProfileNginx")
 ManagedClusterSecurityProfileDefender = TypeVar("ManagedClusterSecurityProfileDefender")
-ManagedClusterSecurityProfileNodeRestriction = TypeVar("ManagedClusterSecurityProfileNodeRestriction")
 ManagedClusterWorkloadProfileVerticalPodAutoscaler = TypeVar("ManagedClusterWorkloadProfileVerticalPodAutoscaler")
 ManagedClusterLoadBalancerProfile = TypeVar("ManagedClusterLoadBalancerProfile")
 ServiceMeshProfile = TypeVar("ServiceMeshProfile")
@@ -726,6 +726,86 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             return enable_advanced_network_observability
         if disable_advanced_network_observability is not None:
             return not disable_advanced_network_observability
+        return None
+
+    def get_advanced_networking_observability_tls_management(self) -> Union[str, None]:
+        """Obtain the value of advanced_networking_observability_tls_management.
+
+        :return str or None
+        """
+        tls_management = self.raw_param.get("advanced_networking_observability_tls_management")
+        enable_advanced_network_observability = self.raw_param.get("enable_advanced_network_observability")
+        enable_acns = self.raw_param.get("enable_acns")
+        if tls_management is not None:
+            if (
+                self.mc and
+                self.mc.network_profile is not None and
+                self.mc.network_profile.advanced_networking is not None and
+                self.mc.network_profile.advanced_networking.observability is not None and
+                self.mc.network_profile.advanced_networking.observability.enabled
+            ):
+                return tls_management
+            if enable_advanced_network_observability or enable_acns:
+                return tls_management
+            raise ArgumentUsageError(
+                "Cannot set --tls-management without enabling advanced network observability"
+                "(--enable-advanced-network-observability or --enable-acns)."
+            )
+        return tls_management
+
+    def get_enable_fqdn_policy(self) -> Optional[bool]:
+        """Get the value of enable_fqdn_policy
+
+        :return: bool or None
+        """
+        enable_fqdn_policy = self.raw_param.get("enable_fqdn_policy")
+        disable_fqdn_policy = self.raw_param.get("disable_fqdn_policy")
+        if enable_fqdn_policy and disable_fqdn_policy:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-fqdn-policy and "
+                "--disable-fqdn-policy at the same time."
+            )
+        if enable_fqdn_policy is False and disable_fqdn_policy is False:
+            return None
+        if enable_fqdn_policy is not None:
+            return enable_fqdn_policy
+        if disable_fqdn_policy is not None:
+            return not disable_fqdn_policy
+        return None
+
+    def get_enable_acns(self) -> Optional[bool]:
+        """Get the value of enable_acns
+
+        :return: bool or None
+        """
+        enable_acns = self.raw_param.get("enable_acns")
+        disable_acns = self.raw_param.get("disable_acns")
+        enable_advanced_network_observability = self.raw_param.get("enable_advanced_network_observability")
+        disable_advanced_network_observability = self.raw_param.get("disable_advanced_network_observability")
+        enable_fqdn_policy = self.raw_param.get("enable_fqdn_policy")
+        disable_fqdn_policy = self.raw_param.get("disable_fqdn_policy")
+
+        if enable_acns and disable_acns:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-acns and "
+                "--disable-acns at the same time."
+            )
+        if enable_acns and (disable_advanced_network_observability or disable_fqdn_policy):
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-acns and "
+                "--disable-advanced-networking-observability or --disable-fqdn-policy at the same time."
+            )
+        if disable_acns and (enable_advanced_network_observability or enable_fqdn_policy):
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --disable-acns and "
+                "--enable-advanced-networking-observability or --enable-fqdn-policy at the same time."
+            )
+        if enable_acns is False and disable_acns is False:
+            return None
+        if enable_acns is not None:
+            return enable_acns
+        if disable_acns is not None:
+            return not disable_acns
         return None
 
     def get_load_balancer_managed_outbound_ip_count(self) -> Union[int, None]:
@@ -1915,25 +1995,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             )
         return certs
 
-    def _get_enable_node_restriction(self, enable_validation: bool = False) -> bool:
-        """Internal function to obtain the value of enable_node_restriction.
-        This function supports the option of enable_node_restriction. When enabled, if both enable_node_restriction and
-        disable_node_restriction are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        # Read the original value passed by the command.
-        enable_node_restriction = self.raw_param.get("enable_node_restriction")
-
-        # This parameter does not need dynamic completion.
-        if enable_validation:
-            if enable_node_restriction and self._get_disable_node_restriction(enable_validation=False):
-                raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-node-restriction and --disable-node-restriction at the same time."
-                )
-
-        return enable_node_restriction
-
     def _get_enable_azure_monitor_metrics(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_azure_monitor_metrics.
         This function supports the option of enable_validation. When enabled, if both enable_azure_monitor_metrics and
@@ -2054,47 +2115,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool
         """
         return self._get_disable_azure_monitor_app_monitoring(enable_validation=True)
-
-    def get_enable_node_restriction(self) -> bool:
-        """Obtain the value of enable_node_restriction.
-
-        This function will verify the parameter by default. If both enable_node_restriction and
-        disable_node_restriction are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        return self._get_enable_node_restriction(enable_validation=True)
-
-    def _get_disable_node_restriction(self, enable_validation: bool = False) -> bool:
-        """Internal function to obtain the value of disable_node_restriction.
-
-        This function supports the option of enable_validation. When enabled, if both enable_node_restriction and
-        disable_node_restriction are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        # Read the original value passed by the command.
-        disable_node_restriction = self.raw_param.get("disable_node_restriction")
-
-        # This option is not supported in create mode, hence we do not read the property value from the `mc` object.
-        # This parameter does not need dynamic completion.
-        if enable_validation:
-            if disable_node_restriction and self._get_enable_node_restriction(enable_validation=False):
-                raise MutuallyExclusiveArgumentError(
-                    "Cannot specify --enable-node-restriction and --disable-node-restriction at the same time."
-                )
-
-        return disable_node_restriction
-
-    def get_disable_node_restriction(self) -> bool:
-        """Obtain the value of disable_node_restriction.
-
-        This function will verify the parameter by default. If both enable_node_restriction and
-        disable_node_restriction are specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        return self._get_disable_node_restriction(enable_validation=True)
 
     def _get_enable_vpa(self, enable_validation: bool = False) -> bool:
         """Internal function to obtain the value of enable_vpa.
@@ -2756,6 +2776,20 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return self.raw_param.get("update_dns_zone")
 
+    def get_app_routing_default_nginx_controller(self) -> str:
+        """Obtain the value of app_routing_default_nginx_controller.
+
+        :return: str
+        """
+        return self.raw_param.get("app_routing_default_nginx_controller")
+
+    def get_nginx(self):
+        """Obtain the value of nginx, written to the update decorator context by _aks_approuting_update
+
+        :return: string
+        """
+        return self.raw_param.get("nginx")
+
     def get_node_provisioning_mode(self) -> Union[str, None]:
         """Obtain the value of node_provisioning_mode.
         """
@@ -2982,13 +3016,45 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         else:
             network_profile.network_dataplane = self.context.get_network_dataplane()
 
-        advanced_network_observability = self.context.get_enable_advanced_network_observability()
-        if advanced_network_observability is not None:
+        acns = self.context.get_enable_acns()
+        if acns is not None:
             network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
                 observability=self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
-                    enabled=advanced_network_observability
+                    enabled=acns
+                ),
+                security=self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
+                    fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
+                        enabled=acns
+                    )
                 )
             )
+            tls_management = self.context.get_advanced_networking_observability_tls_management()
+            if tls_management is not None:
+                network_profile.advanced_networking.observability.tls_management = tls_management
+
+        advanced_network_observability = self.context.get_enable_advanced_network_observability()
+        if advanced_network_observability is not None:
+            if network_profile.advanced_networking is None:
+                network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
+                )
+            network_profile.advanced_networking.observability = self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
+                enabled=advanced_network_observability
+            )
+            tls_management = self.context.get_advanced_networking_observability_tls_management()
+            if tls_management is not None:
+                network_profile.advanced_networking.observability.tls_management = tls_management
+
+        fqdn_policy = self.context.get_enable_fqdn_policy()
+        if fqdn_policy is not None:
+            if network_profile.advanced_networking is None:
+                network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
+                )
+            network_profile.advanced_networking.security = self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
+                fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
+                    enabled=fqdn_policy
+                )
+            )
+
         return mc
 
     def set_up_api_server_access_profile(self, mc: ManagedCluster) -> ManagedCluster:
@@ -3130,6 +3196,16 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             mc.ingress_profile.web_app_routing = (
                 self.models.ManagedClusterIngressProfileWebAppRouting(enabled=True)  # pylint: disable=no-member
             )
+
+            nginx_ingress_controller = self.context.get_app_routing_default_nginx_controller()
+
+            if nginx_ingress_controller:
+                mc.ingress_profile.web_app_routing.nginx = (
+                    self.models.ManagedClusterIngressProfileNginx(
+                        default_ingress_controller_type=nginx_ingress_controller
+                    )
+                )
+
             if "web_application_routing" in addons:
                 dns_zone_resource_ids = self.context.get_dns_zone_resource_ids()
                 mc.ingress_profile.web_app_routing.dns_zone_resource_ids = dns_zone_resource_ids
@@ -3167,23 +3243,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 mc.security_profile = self.models.ManagedClusterSecurityProfile()  # pylint: disable=no-member
 
             mc.security_profile.custom_ca_trust_certificates = ca_certs
-
-        return mc
-
-    def set_up_node_restriction(self, mc: ManagedCluster) -> ManagedCluster:
-        """Set up security profile nodeRestriction for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        if self.context.get_enable_node_restriction():
-            if mc.security_profile is None:
-                mc.security_profile = self.models.ManagedClusterSecurityProfile()  # pylint: disable=no-member
-            # pylint: disable=no-member
-            mc.security_profile.node_restriction = self.models.ManagedClusterSecurityProfileNodeRestriction(
-                enabled=True,
-            )
 
         return mc
 
@@ -3592,8 +3651,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         mc = self.set_up_pod_identity_profile(mc)
         # set up workload identity profile
         mc = self.set_up_workload_identity_profile(mc)
-        # set up node restriction
-        mc = self.set_up_node_restriction(mc)
         # set up image cleaner
         mc = self.set_up_image_cleaner(mc)
         # set up image integrity
@@ -4051,8 +4108,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
-    def update_enable_advanced_network_observability_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update enable advanced network observability of network profile for the ManagedCluster object.
+    def update_advanced_networking_observability_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update the advanced network observability model of network profile for the ManagedCluster object.
 
         :return: the ManagedCluster object
         """
@@ -4060,11 +4117,66 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         advanced_network_observability = self.context.get_enable_advanced_network_observability()
         if advanced_network_observability is not None:
-            mc.network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
-                observability=self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
-                    enabled=advanced_network_observability
+            if mc.network_profile.advanced_networking is None:
+                mc.network_profile.advanced_networking = self.models.AdvancedNetworking()  # pylint: disable=no-member
+            if mc.network_profile.advanced_networking.observability is None:
+                mc.network_profile.advanced_networking.observability = self.models.AdvancedNetworkingObservability()  # pylint: disable=no-member
+            mc.network_profile.advanced_networking.observability.enabled = advanced_network_observability
+        tls_management = self.context.get_advanced_networking_observability_tls_management()
+        if (
+            mc.network_profile.advanced_networking is not None and
+            mc.network_profile.advanced_networking.observability is not None and
+            tls_management is not None
+        ):
+            mc.network_profile.advanced_networking.observability.tls_management = tls_management
+        return mc
+
+    def update_enable_fqdn_policy_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update enable fqdn policy of network profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        fqdn_policy = self.context.get_enable_fqdn_policy()
+        if fqdn_policy is not None:
+            if mc.network_profile.advanced_networking is None:
+                mc.network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
+                )
+            mc.network_profile.advanced_networking.security = self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
+                fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
+                    enabled=fqdn_policy
                 )
             )
+        return mc
+
+    def update_enable_acns_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update enable fqdn policy of network profile for the ManagedCluster object.
+
+        :return: the ManagedCluster object
+        """
+        self._ensure_mc(mc)
+
+        acns = self.context.get_enable_acns()
+        if acns is not None:
+            # Override anything previously set
+            mc.network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
+                observability=self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
+                    enabled=acns
+                ),
+                security=self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
+                    fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
+                        enabled=acns
+                    )
+                )
+            )
+            tls_management = self.context.get_advanced_networking_observability_tls_management()
+            if (
+                mc.network_profile.advanced_networking is not None and
+                mc.network_profile.advanced_networking.observability is not None and
+                tls_management is not None
+            ):
+                mc.network_profile.advanced_networking.observability.tls_management = tls_management
         return mc
 
     # pylint: disable=too-many-statements,too-many-locals,too-many-branches
@@ -4694,38 +4806,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
-    def update_node_restriction(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update security profile nodeRestriction for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        if self.context.get_enable_node_restriction():
-            if mc.security_profile is None:
-                mc.security_profile = self.models.ManagedClusterSecurityProfile()  # pylint: disable=no-member
-            if mc.security_profile.node_restriction is None:
-                mc.security_profile.node_restriction = (
-                    self.models.ManagedClusterSecurityProfileNodeRestriction()  # pylint: disable=no-member
-                )
-
-            # set enabled
-            mc.security_profile.node_restriction.enabled = True
-
-        if self.context.get_disable_node_restriction():
-            if mc.security_profile is None:
-                mc.security_profile = self.models.ManagedClusterSecurityProfile()  # pylint: disable=no-member
-            if mc.security_profile.node_restriction is None:
-                mc.security_profile.node_restriction = (
-                    # pylint: disable=no-member
-                    self.models.ManagedClusterSecurityProfileNodeRestriction()
-                )
-
-            # set disabled
-            mc.security_profile.node_restriction.enabled = False
-
-        return mc
-
     def update_vpa(self, mc: ManagedCluster) -> ManagedCluster:
         """Update workload auto-scaler profile vertical pod auto-scaler for the ManagedCluster object.
 
@@ -5035,6 +5115,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         enable_app_routing = self.context.get_enable_app_routing()
         enable_keyvault_secret_provider = self.context.get_enable_kv()
         dns_zone_resource_ids = self.context.get_dns_zone_resource_ids_from_input()
+        nginx = self.context.get_nginx()
 
         # update ManagedCluster object with app routing settings
         mc.ingress_profile = (
@@ -5063,6 +5144,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         if dns_zone_resource_ids:
             self._update_dns_zone_resource_ids(mc, dns_zone_resource_ids)
 
+        # modify default nic config
+        if nginx:
+            self._update_app_routing_nginx(mc, nginx)
+
         return mc
 
     def _enable_keyvault_secret_provider_addon(self, mc: ManagedCluster) -> None:
@@ -5087,6 +5172,19 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 CONST_SECRET_ROTATION_ENABLED: "false",
                 CONST_ROTATION_POLL_INTERVAL: "2m",
             }
+
+    def _update_app_routing_nginx(self, mc: ManagedCluster, nginx) -> None:
+        """Helper function to set default nginx ingress controller config for app routing
+
+        :return: None
+        """
+        # web app routing object has been created
+        if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:
+            if mc.ingress_profile.web_app_routing.nginx is None:
+                mc.ingress_profile.web_app_routing.nginx = self.models.ManagedClusterIngressProfileNginx()
+            mc.ingress_profile.web_app_routing.nginx.default_ingress_controller_type = nginx
+        else:
+            raise CLIError('App Routing must be enabled to modify the default nginx ingress controller.\n')
 
     # pylint: disable=too-many-nested-blocks
     def _update_dns_zone_resource_ids(self, mc: ManagedCluster, dns_zone_resource_ids) -> None:
@@ -5297,8 +5395,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_pod_identity_profile(mc)
         # update workload identity profile
         mc = self.update_workload_identity_profile(mc)
-        # update node restriction
-        mc = self.update_node_restriction(mc)
         # update image cleaner
         mc = self.update_image_cleaner(mc)
         # update image integrity
@@ -5339,8 +5435,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nodepool_taints_mc(mc)
         # update nodepool initialization taints
         mc = self.update_nodepool_initialization_taints_mc(mc)
-        # update advanced_network_observability in network_profile
-        mc = self.update_enable_advanced_network_observability_in_network_profile(mc)
+        # update advanced_networking_observability in network_profile
+        mc = self.update_advanced_networking_observability_in_network_profile(mc)
+        # update fqdn policy in network_profile
+        mc = self.update_enable_fqdn_policy_in_network_profile(mc)
+        # update acns in network_profile
+        mc = self.update_enable_acns_in_network_profile(mc)
         # update kubernetes support plan
         mc = self.update_k8s_support_plan(mc)
         # update AI toolchain operator

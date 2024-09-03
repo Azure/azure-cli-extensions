@@ -48,6 +48,9 @@ def load_command_table(self, args):
         g.custom_command('update', 'update_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory(), transform=transform_sensitive_values)
         g.custom_command('delete', 'delete_containerappsjob', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
 
+    with self.command_group('containerapp job registry', is_preview=True) as g:
+        g.custom_command('set', 'set_registry_job', exception_handler=ex_handler_factory())
+
     with self.command_group('containerapp env certificate') as g:
         g.custom_command('upload', 'upload_certificate')
         g.custom_command('list', 'list_certificates')
@@ -97,6 +100,9 @@ def load_command_table(self, args):
     with self.command_group('containerapp add-on milvus') as g:
         g.custom_command('create', 'create_milvus_service', supports_no_wait=True)
         g.custom_command('delete', 'delete_milvus_service', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp registry', is_preview=True) as g:
+        g.custom_command('set', 'set_registry', exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp resiliency', is_preview=True) as g:
         g.custom_command('create', 'create_container_app_resiliency', supports_no_wait=True, exception_handler=ex_handler_factory())
@@ -176,7 +182,7 @@ def load_command_table(self, args):
             g.custom_command('set', 'connected_env_create_or_update_storage', supports_no_wait=True, exception_handler=ex_handler_factory())
             g.custom_command('remove', 'connected_env_remove_storage', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
 
-    with self.command_group('containerapp env java-component', is_preview=True) as g:
+    with self.command_group('containerapp env java-component') as g:
         g.custom_command('list', 'list_java_components')
 
     with self.command_group('containerapp env java-component spring-cloud-config',
@@ -250,7 +256,7 @@ def load_command_table(self, args):
         g.custom_show_command('list-files', 'list_files_session_code_interpreter')
         g.custom_command('delete-file', 'delete_file_session_code_interpreter', confirmation=True, supports_no_wait=True)
 
-    with self.command_group('containerapp java logger', is_preview=True) as g:
+    with self.command_group('containerapp java logger') as g:
         g.custom_command('set', 'create_or_update_java_logger', supports_no_wait=True)
         g.custom_command('delete', 'delete_java_logger', supports_no_wait=True)
         g.custom_show_command('show', 'show_java_logger')

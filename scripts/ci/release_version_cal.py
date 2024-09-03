@@ -23,6 +23,7 @@ result_path = os.environ.get('result_path', None)
 output_file = os.environ.get('output_file', None)
 add_labels_file = os.environ.get('add_labels_file', None)
 remove_labels_file = os.environ.get('remove_labels_file', None)
+pr_user = os.environ.get('pr_user', "")
 
 changed_module_list = os.environ.get('changed_module_list', "").split()
 diff_code_file = os.environ.get('diff_code_file', "")
@@ -213,12 +214,16 @@ def get_next_version_segment_tag():
 
 
 def add_suggest_header(comment_message):
-    comment_message.insert(0, "## :warning: Release Suggestions")
+    if block_pr == 1:
+        comment_message.insert(0, "## :warning: Release Requirements")
+    else:
+        comment_message.insert(0, "## Release Suggestions")
+    comment_message.insert(0, "Hi @" + pr_user)
 
 
 def gen_history_comment_message(mod, mod_update_info, mod_message):
     if not mod_update_info["history_updated"]:
-        mod_message.append(" - :warning: Please log updates into to `src/{0}/HISTORY.rst`".format(mod))
+        mod_message.append(" - Please log updates into to `src/{0}/HISTORY.rst`".format(mod))
 
 
 def gen_version_comment_message(mod, mod_update_info, mod_message):
@@ -230,10 +235,9 @@ def gen_version_comment_message(mod, mod_update_info, mod_message):
         if mod_update_info.get("version", None):
             bot_version = parse(mod_update_info['version'])
             if mod_update_info.get("version_diff", None):
-                diff_version =  parse(mod_update_info['version_diff'])
+                diff_version = parse(mod_update_info['version_diff'])
                 if diff_version != bot_version:
-                    if diff_version < bot_version:
-                        block_pr = 1
+                    block_pr = 1
                     mod_message.append(" - :warning: Please update `VERSION` to be `{0}` in `src/{1}/setup.py`".format(mod_update_info.get("version", "-"), mod))
             else:
                 mod_message.append(" - Update `VERSION` to `{0}` in `src/{1}/setup.py`".format(mod_update_info.get("version", "-"), mod))
@@ -304,11 +308,11 @@ def gen_comment_message(mod, mod_update_info, comment_message):
 
 def add_label_hint_message(comment_message):
     comment_message.append("#### Notes")
-    comment_message.append(" - Stable/preview tag is inherited from last release. "
-                           "If needed, please add `stable`/`preview` label to modify it.")
-    comment_message.append(" - Major/minor/patch/pre increment of version number is calculated by pull request "
-                           "code changes automatically. "
-                           "If needed, please add `major`/`minor`/`patch`/`pre` label to adjust it.")
+    # comment_message.append(" - Stable/preview tag is inherited from last release. "
+    #                        "If needed, please add `stable`/`preview` label to modify it.")
+    # comment_message.append(" - Major/minor/patch/pre increment of version number is calculated by pull request "
+    #                        "code changes automatically. "
+    #                        "If needed, please add `major`/`minor`/`patch`/`pre` label to adjust it.")
     comment_message.append(DEFAULT_MESSAGE)
 
 
