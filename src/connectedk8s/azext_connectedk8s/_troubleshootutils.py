@@ -370,6 +370,208 @@ def retrieve_deployments_logs(appv1_api_instance, filepath_with_timestamp, stora
 
     return consts.Diagnostic_Check_Failed, storage_space_available
 
+def retrieve_arc_workload_identity_pod_logs(corev1_api_instance, filepath_with_timestamp, storage_space_available):
+    print("Step: {}: Retrieve arc-workload-identity pod logs".format(get_utctimestring()))
+    global diagnoser_output
+    try:
+        if storage_space_available:
+            # To retrieve all of the arc agents pods that are present in the Cluster
+            arc_workload_identity_pod_list = corev1_api_instance.list_namespaced_pod(namespace="arc-workload-identity")
+            # Traversing through all agents
+            for each_workload_identity_agent_pod in arc_workload_identity_pod_list.items:
+                # Fetching the current Pod name and creating a folder with that name inside the timestamp folder
+                agent_name = each_workload_identity_agent_pod.metadata.name
+                arc_workload_identity_logs_path = os.path.join(filepath_with_timestamp, consts.Arc_Workload_Identity_Pod_Logs)
+                try:
+                    os.mkdir(arc_workload_identity_logs_path)
+                except FileExistsError:
+                    pass
+                agent_name_logs_path = os.path.join(arc_workload_identity_logs_path, agent_name)
+                try:
+                    os.mkdir(agent_name_logs_path)
+                except FileExistsError:
+                    pass
+                # If the agent is not in Running state we wont be able to get logs of the containers
+                if (each_workload_identity_agent_pod.status.phase != "Running"):
+                    continue
+                # Traversing through all of the containers present inside each pods
+                for each_container in each_workload_identity_agent_pod.spec.containers:
+                    # Fetching the Container name
+                    container_name = each_container.name
+                    # Creating a text file with the name of the container and adding that containers logs in it
+                    container_log = corev1_api_instance.read_namespaced_pod_log(
+                        name=agent_name,
+                        container=container_name,
+                        namespace="arc-workload-identity")
+                    # Path to add the arc agents container logs.
+                    arc_workload_identity_container_logs_path = os.path.join(agent_name_logs_path, container_name + ".txt")
+                    with open(arc_workload_identity_container_logs_path, 'w+') as container_file:
+                        container_file.write(str(container_log))
+
+        return consts.Diagnostic_Check_Passed, storage_space_available
+
+    # For handling storage or OS exception that may occur during the execution
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            storage_space_available = False
+            telemetry.set_exception(
+                exception=e,
+                fault_type=consts.No_Storage_Space_Available_Fault_Type,
+                summary="No space left on device")
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+        else:
+            logger.warning("An exception has occured while trying to fetch the azure arc agents logs from the "
+                           "cluster. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(
+                exception=e,
+                fault_type=consts.Fetch_Arc_Workload_Identity_Pod_Logs_Failed_Fault_Type,
+                summary="Error occured in arc agents logger")
+            diagnoser_output.append("An exception has occured while trying to fetch the azure arc agents logs from "
+                                    "the cluster. Exception: {}".format(str(e)) + "\n")
+
+    # To handle any exception that may occur during the execution
+    except Exception as e:
+        logger.warning("An exception has occured while trying to fetch the azure arc agents logs from the cluster. "
+                       "Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(
+            exception=e,
+            fault_type=consts.Fetch_Arc_Workload_Identity_Pod_Logs_Failed_Fault_Type,
+            summary="Error occured in arc agents logger")
+        diagnoser_output.append("An exception has occured while trying to fetch the azure arc agents logs from the "
+                                "cluster. Exception: {}".format(str(e)) + "\n")
+
+    return consts.Diagnostic_Check_Failed, storage_space_available
+
+def retrieve_arc_workload_identity_event_logs(filepath_with_timestamp, storage_space_available,
+                                   kubectl_client_location, kube_config, kube_context):
+    print("Step: {}: Retrieve arc agents event logs".format(get_utctimestring()))
+    global diagnoser_output
+    try:
+        # If storage space available then only store the azure-arc events
+        if storage_space_available:
+            # CMD command to get events using kubectl and converting it to json format
+            command = [kubectl_client_location, "get", "events", "-n", "arc-workload-identity", "--output", "json"]
+            if kube_config:
+                command.extend(["--kubeconfig", kube_config])
+            if kube_context:
+                command.extend(["--context", kube_context])
+            # Using Popen to execute the command and fetching the output
+            response_kubectl_get_events = Popen(command, stdout=PIPE, stderr=PIPE)
+            output_kubectl_get_events, error_kubectl_get_events = response_kubectl_get_events.communicate()
+            if response_kubectl_get_events.returncode != 0:
+                telemetry.set_exception(
+                    exception=error_kubectl_get_events.decode("ascii"),
+                    fault_type=consts.Kubectl_Get_Events_Failed_Fault_Type,
+                    summary='Error while doing kubectl get events for arc-workload-identity namespace')
+                logger.warning("Error while doing kubectl get events for arc-workload-identity namespace. "
+                               "We were not able to capture events log in arc_diganostic_logs folder. Exception: ",
+                               error_kubectl_get_events.decode("ascii"))
+                diagnoser_output.append("Error while doing kubectl get events for arc-workload-identity namespace. "
+                                        "We were not able to capture events log in arc_diganostic_logs folder. Exception: ",
+                                        error_kubectl_get_events.decode("ascii"))
+                return consts.Diagnostic_Check_Failed, storage_space_available
+
+            # Converting output obtained in json format and fetching the arc-workload-identity events
+            events_json = json.loads(output_kubectl_get_events)
+            # Path to add the azure-arc events
+            event_logs_path = os.path.join(filepath_with_timestamp, consts.Arc_Workload_Identity_Events)
+            if len(events_json["items"]) != 0:
+                with open(event_logs_path, 'w+') as event_log:
+                    # Adding all the individual events
+                    for events in events_json["items"]:
+                        event_log.write(str(events) + "\n")
+            return consts.Diagnostic_Check_Passed, storage_space_available
+        else:
+            return consts.Diagnostic_Check_Passed, storage_space_available
+
+    # For handling storage or OS exception that may occur during the execution
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            storage_space_available = False
+            telemetry.set_exception(
+                exception=e,
+                fault_type=consts.No_Storage_Space_Available_Fault_Type,
+                summary="No space left on device")
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+        else:
+            logger.warning("An exception has occured while trying to fetch the events occured in arc-workload-identity namespace "
+                           "from the cluster. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(
+                exception=e,
+                fault_type=consts.Fetch_Arc_Workload_Identity_Events_Logs_Failed_Fault_Type,
+                summary="Error occured in arc agents events logger")
+            diagnoser_output.append("An exception has occured while trying to fetch the events occured in "
+                                    "arc-workload-identity namespace from the cluster. Exception: {}".format(str(e)) + "\n")
+
+    # To handle any exception that may occur during the execution
+    except Exception as e:
+        logger.warning("An exception has occured while trying to fetch the events occured in arc-workload-identity namespace "
+                       "from the cluster. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(
+            exception=e,
+            fault_type=consts.Fetch_Arc_Workload_Identity_Events_Logs_Failed_Fault_Type,
+            summary="Error occured in arc agents events logger")
+        diagnoser_output.append("An exception has occured while trying to fetch the events occured in "
+                                "arc-workload-identity namespace from the cluster. Exception: {}".format(str(e)) + "\n")
+
+    return consts.Diagnostic_Check_Failed, storage_space_available
+
+
+def retrieve_arc_workload_identity_deployments_logs(appv1_api_instance, filepath_with_timestamp, storage_space_available):
+    print("Step: {}: Retrieve arc-workload-identity deployments logs".format(get_utctimestring()))
+    global diagnoser_output
+    try:
+        if storage_space_available:
+            # Creating new Deployment Logs folder in the given timestamp folder
+            deployments_path = os.path.join(filepath_with_timestamp, consts.Arc_Workload_Identity_Deployment_Logs)
+            try:
+                os.mkdir(deployments_path)
+            except FileExistsError:
+                pass
+            # To retrieve all the deployment that are present in the Cluster
+            deployments_list = appv1_api_instance.list_namespaced_deployment("arc-workload-identity")
+            # Traversing through all the deployments present
+            for deployment in deployments_list.items:
+                # Fetching the deployment name
+                deployment_name = deployment.metadata.name
+                arc_workload_identity_deployment_logs_path = os.path.join(deployments_path, deployment_name + ".txt")
+                # Creating a text file with the name of the deployment and adding deployment status in it
+                with open(arc_workload_identity_deployment_logs_path, 'w+') as deployment_file:
+                    deployment_file.write(str(deployment.status))
+
+        return consts.Diagnostic_Check_Passed, storage_space_available
+
+    # For handling storage or OS exception that may occur during the execution
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            storage_space_available = False
+            telemetry.set_exception(
+                exception=e,
+                fault_type=consts.No_Storage_Space_Available_Fault_Type,
+                summary="No space left on device")
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+        else:
+            logger.warning("An exception has occured while trying to fetch the arc-workload-identity deployment logs from the "
+                           "cluster. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(
+                exception=e,
+                fault_type=consts.Fetch_Arc_Workload_Identity_Deployment_Logs_Failed_Fault_Type,
+                summary="Error occured in deployments logger")
+            diagnoser_output.append("An exception has occured while trying to fetch the arc-workload-identity deployment logs "
+                                    "from the cluster. Exception: {}".format(str(e)) + "\n")
+
+    # To handle any exception that may occur during the execution
+    except Exception as e:
+        logger.warning("An exception has occured while trying to fetch the arc-workload-identity deployment logs from the "
+                       "cluster. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(
+            exception=e,
+            fault_type=consts.Fetch_Arc_Workload_Identity_Deployment_Logs_Failed_Fault_Type,
+            summary="Error occured in deployments logger")
+        diagnoser_output.append("An exception has occured while trying to fetch the arc-workload-identity deployment logs from "
+                                "the cluster. Exception: {}".format(str(e)) + "\n")
+
+    return consts.Diagnostic_Check_Failed, storage_space_available
 
 def check_agent_state(corev1_api_instance, filepath_with_timestamp, storage_space_available):
     print("Step: {}: Check agent state".format(get_utctimestring()))
@@ -1318,6 +1520,77 @@ def get_helm_values_azure_arc(corev1_api_instance, helm_client_location, release
 
     return storage_space_available
 
+def get_helm_values_arc_workload_identity(corev1_api_instance, helm_client_location, release_namespace, kube_config, kube_context,
+                              filepath_with_timestamp, storage_space_available):
+    print("Step: {}: Fetching helm values of wiextension release".format(get_utctimestring()))
+    try:
+        if storage_space_available:
+            command = [helm_client_location, "get", "values", consts.Workload_Identity_Release_Name, "-n", consts.Workload_Identity_Release_Namespace, "--output", "json"]
+            if kube_config:
+                command.extend(["--kubeconfig", kube_config])
+            if kube_context:
+                command.extend(["--kube-context", kube_context])
+            # Using Popen to execute the command and fetching the output
+            response_kubectl_get_helmvalues = Popen(command, stdout=PIPE, stderr=PIPE)
+            output_kubectl_get_helmvalues, error_kubectl_get_helmvalues = response_kubectl_get_helmvalues.communicate()
+            if response_kubectl_get_helmvalues.returncode != 0:
+                telemetry.set_exception(
+                    exception=error_kubectl_get_helmvalues.decode("ascii"),
+                    fault_type=consts.Wiextension_Helm_Values_Save_Failed_Fault_Type,
+                    summary='Error while doing helm get values for wiextension release')
+                logger.warning("Error while doing helm get values for wiextension release. We were not able to capture "
+                               "this log in arc_diganostic_logs folder. Exception: ",
+                               error_kubectl_get_helmvalues.decode("ascii"))
+                diagnoser_output.append("Error while doing helm get values for wiextension release. We were not able "
+                                        "to capture this log in arc_diganostic_logs folder. Exception: " +
+                                        error_kubectl_get_helmvalues.decode("ascii"))
+                return storage_space_available
+
+            # Converting output obtained in json format
+            helmvalues_json = output_kubectl_get_helmvalues.decode("ascii")
+            helmvalues_json = json.loads(helmvalues_json)
+
+            helmvalues_json = yaml.dump(helmvalues_json)
+            # Path to add the helm values of wiextension release
+            helmvalues_logs_path = os.path.join(filepath_with_timestamp, consts.Wiextension_Helm_Values)
+
+            with open(helmvalues_logs_path, 'w') as helmvalues_log:
+                helmvalues_log.write(helmvalues_json)
+
+            return storage_space_available
+
+    # For handling storage or OS exception that may occur during the execution
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            storage_space_available = False
+            telemetry.set_exception(
+                exception=e,
+                fault_type=consts.No_Storage_Space_Available_Fault_Type,
+                summary="No space left on device")
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+        else:
+            logger.warning("An exception has occured while storing helm values of wiextension release in the user "
+                           "local machine. Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(
+                exception=e,
+                fault_type=consts.Fetch_Wiextension_Helm_Values_Save_Failed_Fault_Type,
+                summary="Exception occured while storing helm values of wiextension release")
+            diagnoser_output.append("An exception has occured while storing helm values of wiextension release in the "
+                                    "user local machine. Exception: {}".format(str(e)) + "\n")
+
+    # To handle any exception that may occur during the execution
+    except Exception as e:
+        logger.warning("An exception has occured while storing helm values of wiextension release in the user local "
+                       "machine. Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(
+            exception=e,
+            fault_type=consts.Fetch_Wiextension_Helm_Values_Save_Failed_Fault_Type,
+            summary="Exception occured while storing helm values of wiextension release")
+        diagnoser_output.append("An exception has occured while storing helm values of wiextension release in the user "
+                                "local machine. Exception: {}".format(str(e)) + "\n")
+
+    return storage_space_available
+
 
 def get_metadata_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_config, kube_context,
                              filepath_with_timestamp, storage_space_available):
@@ -1455,6 +1728,76 @@ def get_kubeaadproxy_cr_snapshot(corev1_api_instance, kubectl_client_location, k
             fault_type=consts.Fetch_KAP_CR_Save_Failed_Fault_Type,
             summary="Exception occured while storing kube-aad-proxy CR details")
         diagnoser_output.append("An exception has occured while storing kube-aad-proxy CR details in the user local "
+                                "machine. Exception: {}".format(str(e)) + "\n")
+
+    return storage_space_available
+
+def get_signingkey_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_config, kube_context,
+                             filepath_with_timestamp, storage_space_available):
+    print("Step: {}: Fetching signingkey CR details".format(get_utctimestring()))
+    try:
+        if storage_space_available:
+            command = [kubectl_client_location, "describe", "signingkeys.clusterconfig.azure.com/signingkey", "-n",
+                       "azure-arc"]
+            if kube_config:
+                command.extend(["--kubeconfig", kube_config])
+            if kube_context:
+                command.extend(["--context", kube_context])
+            # Using Popen to execute the command and fetching the output
+            response_kubectl_get_signingkey_cr = Popen(command, stdout=PIPE, stderr=PIPE)
+            output_kubectl_get_signingkey_cr, error_kubectl_get_signingkey_cr = \
+                response_kubectl_get_signingkey_cr.communicate()
+            if response_kubectl_get_signingkey_cr.returncode != 0:
+                telemetry.set_exception(
+                    exception=error_kubectl_get_signingkey_cr.decode("ascii"),
+                    fault_type=consts.Signingkey_CR_Save_Failed_Fault_Type,
+                    summary='Error occured while fetching signingkey CR details')
+                logger.warning("Error while doing kubectl describe for signingkey CR. We were not able to "
+                               "capture this log in arc_diganostic_logs folder. Exception: ",
+                               error_kubectl_get_signingkey_cr.decode("ascii"))
+                diagnoser_output.append("Error occured while fetching signingkey CR details. We were not able to "
+                                        "capture this log in arc_diganostic_logs folder. Exception: " +
+                                        error_kubectl_get_signingkey_cr.decode("ascii"))
+                return storage_space_available
+
+            # Converting output obtained in json format
+            signingkey_cr_json = output_kubectl_get_signingkey_cr.decode()
+            # Path to add the signingkey CR details
+            signingkey_cr_logs_path = os.path.join(filepath_with_timestamp, consts.SigningKey_CR_Snapshot)
+
+            with open(signingkey_cr_logs_path, 'w+') as signingkey_cr_log:
+                signingkey_cr_log.write(signingkey_cr_json)
+
+            return storage_space_available
+
+    # For handling storage or OS exception that may occur during the execution
+    except OSError as e:
+        if "[Errno 28]" in str(e):
+            storage_space_available = False
+            telemetry.set_exception(
+                exception=e,
+                fault_type=consts.No_Storage_Space_Available_Fault_Type,
+                summary="No space left on device")
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+        else:
+            logger.warning("An exception has occured while storing signingkey CR details in the user local machine. "
+                           "Exception: {}".format(str(e)) + "\n")
+            telemetry.set_exception(
+                exception=e,
+                fault_type=consts.Fetch_Signingkey_CR_Save_Failed_Fault_Type,
+                summary="Error occured while storing signingkey CR details")
+            diagnoser_output.append("An exception has occured while storing signingkey CR details in the user local "
+                                    "machine. Exception: {}".format(str(e)) + "\n")
+
+    # To handle any exception that may occur during the execution
+    except Exception as e:
+        logger.warning("An exception has occured while storing signingkey CR details in the user local machine. "
+                       "Exception: {}".format(str(e)) + "\n")
+        telemetry.set_exception(
+            exception=e,
+            fault_type=consts.Fetch_Signingkey_CR_Save_Failed_Fault_Type,
+            summary="Error occured while storing signingkey CR details")
+        diagnoser_output.append("An exception has occured while storing signingkey CR details in the user local "
                                 "machine. Exception: {}".format(str(e)) + "\n")
 
     return storage_space_available
