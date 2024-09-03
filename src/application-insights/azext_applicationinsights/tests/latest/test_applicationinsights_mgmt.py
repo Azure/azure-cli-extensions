@@ -596,7 +596,7 @@ class ApplicationInsightsManagementClientTests(ScenarioTest):
     @ResourceGroupPreparer(name_prefix="cli_test_appinsights_my_workbook")
     def test_appinsights_my_workbook(self, resource_group):
         from azure.core.exceptions import ResourceNotFoundError
-        message = "Resource type 'myWorkbooks' of provider namespace 'Microsoft.Insights' was not found in global location for api version '2021-03-08'."
+        message = "The resource type could not be found in the namespace 'Microsoft.Insights' for api version '2021-03-08'."
         with self.assertRaisesRegex(ResourceNotFoundError, message):
             self.cmd('monitor app-insights my-workbook list -g {rg} --category performance')
 
