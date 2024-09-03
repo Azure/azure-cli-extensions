@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b3
++++++++
+* Remove ADAL dependencies
+
 1.0.0b2(2024-07-15)
 ++++++++++++++++++
 * `az storage account local-user`: Support `--group-id` and `--allow-acl-authorization`. Support list paging and filtering
