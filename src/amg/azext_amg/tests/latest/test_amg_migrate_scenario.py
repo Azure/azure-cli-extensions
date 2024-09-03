@@ -241,7 +241,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
             self.kwargs.update({
                 'dashboardDefinitionDatasource': test_dashboard_with_datasource,
                 'dashboardTitle4': dashboard_title + '4',
-                'dataSourceDefinitionDifferentUID': test_data_source_different_uid,
+                'dataSourceDefinitionDifferentUid': test_data_source_different_uid,
                 'dashboardDefinitionDatasourceShortUid': test_dashboard_with_datasource_short_uid,
                 'dashboardTitle5': dashboard_title + '5',
                 'dataSourceDefinitionLongUid2': test_data_source_long_uid2,
@@ -255,7 +255,7 @@ class AmgMigrateScenarioTest(ScenarioTest):
                 'dashboardUid4': response_create["uid"],
             })
 
-            ds2 = self.cmd('grafana data-source create -g {rg} -n {name2} --definition "{dataSourceDefinitionDifferentUID}"').get_output_in_json()
+            ds2 = self.cmd('grafana data-source create -g {rg} -n {name2} --definition "{dataSourceDefinitionDifferentUid}"').get_output_in_json()
             self.kwargs.update({
                 'amg2_datasource_uid': ds2['datasource']['uid']
             })
