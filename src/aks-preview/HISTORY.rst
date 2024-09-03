@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Fixing tests after RP-side issue patched for AKS app routing commands in 2024-06-02-preview API.
 
 8.0.0b1
 +++++++
