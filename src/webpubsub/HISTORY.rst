@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.5.1
++++++
+* Update the min core version to `2.56.0`
+
 1.5.0
 +++++
 * Add `service-mode` for Web PubSub for Socket.IO
