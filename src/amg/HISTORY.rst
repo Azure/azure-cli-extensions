@@ -95,4 +95,4 @@ Release History
 
 2.2.1
 ++++++
-* `az grafana migrate`: fix issue with datasources remapping with short uids
+* `az grafana migrate`: fix issue with remapping logic for Grafana datasources with short uids
