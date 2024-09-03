@@ -14048,7 +14048,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="uksouth",
     )
     def test_aks_approuting_enable_disable(
         self, resource_group, resource_group_location
@@ -14088,7 +14088,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("ingressProfile.webAppRouting.enabled", True),
-                self.check("ingressProfile.webAppRouting.nginx", None)
+                self.check("ingressProfile.webAppRouting.nginx.defaultIngressControllerType", "AnnotationControlled")
             ],
         )
 
@@ -14240,7 +14240,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="eastus2",
     )
     def test_aks_approuting_update(self, resource_group, resource_group_location):
         """This test case exercises updating app routing addon in an AKS cluster with a specific ingress controller."""
@@ -14277,7 +14277,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create cluster with app routing enabled
         create_cmd = (
-            "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version 1.30 "
+            "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version 1.30.0 "
             "--ssh-key-value={ssh_key_value} --enable-app-routing"
         )
         result = self.cmd(
@@ -14285,6 +14285,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("ingressProfile.webAppRouting.enabled", True),
+                self.check("ingressProfile.webAppRouting.nginx", None)
             ],
         ).get_output_in_json()
         object_id = result["ingressProfile"]["webAppRouting"]["identity"]["objectId"]
@@ -14301,7 +14302,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("ingressProfile.webAppRouting.enabled", True),
-                self.check("ingressProfile.webAppRouting.nginx.defaultIngressController", "External"),
+                self.check("ingressProfile.webAppRouting.nginx.defaultIngressControllerType", "External"),
                 self.check("addonProfiles.azureKeyvaultSecretsProvider.enabled", True),
             ],
         )
@@ -14427,7 +14428,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="uksouth",
     )
     def test_aks_approuting_zone_add_delete_list(
         self, resource_group, resource_group_location
@@ -14549,7 +14550,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="uksouth",
     )
     def test_aks_approuting_zone_update(self, resource_group, resource_group_location):
         """This test case exercises updating zones to app routing addon in an AKS cluster."""
