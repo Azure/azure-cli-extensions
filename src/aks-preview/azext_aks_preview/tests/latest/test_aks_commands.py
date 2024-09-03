@@ -14240,7 +14240,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus2",
+        location="eastus",
     )
     def test_aks_approuting_update(self, resource_group, resource_group_location):
         """This test case exercises updating app routing addon in an AKS cluster with a specific ingress controller."""
