@@ -20,7 +20,7 @@ def get_network_resource_name_or_id(dest, res_type):
 
         id_list = []
 
-        from msrestazure.tools import is_valid_resource_id, resource_id
+        from azure.mgmt.core.tools import is_valid_resource_id, resource_id
         for item in dest_val:
             if not is_valid_resource_id(item):
                 item = resource_id(
