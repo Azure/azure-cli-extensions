@@ -8,7 +8,7 @@ import struct
 import sys
 import re
 from knack.log import get_logger
-from msrestazure.tools import parse_resource_id
+from azure.mgmt.core.tools import parse_resource_id
 from azure.cli.core import telemetry
 from azure.cli.core.azclierror import (
     AzureConnectionError,
