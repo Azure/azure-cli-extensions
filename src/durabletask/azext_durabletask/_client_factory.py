@@ -8,8 +8,10 @@ def cf_durabletask(cli_ctx, aux_subscriptions=None, **_):
     from azext_durabletask.vendored_sdks import DurabletaskMgmtClient
     return get_mgmt_service_client(cli_ctx, DurabletaskMgmtClient)
 
+
 def cf_durabletask_namespaces(cli_ctx, aux_subscriptions=None, **_):
     return cf_durabletask(cli_ctx).namespaces
+
 
 def cf_durabletask_taskhubs(cli_ctx, aux_subscriptions=None, **_):
     return cf_durabletask(cli_ctx).task_hubs

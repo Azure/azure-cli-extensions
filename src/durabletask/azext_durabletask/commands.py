@@ -29,15 +29,13 @@ def load_command_table(self, _):
         # g.show_command('show', 'get')
         g.generic_update_command('update', setter_name='update', custom_func_name='update_durabletask')
 
-
     with self.command_group('durabletask namespace', durabletask_namespace_sdk, client_factory=cf_durabletask_namespaces) as g:
         g.custom_command('create', 'create_namespace')
         g.custom_command('list', 'list_namespace')
         # g.delete_command('delete', 'delete_namespace')
         g.generic_update_command('update', setter_name='update', custom_func_name='update_namespace')
 
-
-    with self.command_group('durabletask taskhub', durabletask_sdk, client_factory=cf_durabletask_taskhubs) as g:
+    with self.command_group('durabletask taskhub', durabletask_taskhub_sdk, client_factory=cf_durabletask_taskhubs) as g:
         g.custom_command('create', 'create_taskhub')
         g.custom_command('list', 'list_taskhub')
         # g.show_command('show', 'show_taskhub')
@@ -45,4 +43,3 @@ def load_command_table(self, _):
 
     with self.command_group('durabletask', is_preview=True):
         pass
-

@@ -17,7 +17,7 @@ class DurabletaskCommandsLoader(AzCommandsLoader):
             operations_tmpl='azext_durabletask.custom#{}',
             client_factory=cf_durabletask)
         super(DurabletaskCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                  custom_command_type=durabletask_custom)
+                                                        custom_command_type=durabletask_custom)
 
     def load_command_table(self, args):
         from azext_durabletask.commands import load_command_table
