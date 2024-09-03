@@ -2956,7 +2956,7 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
         # To verify if arc agents have been added to the cluster
         if arc_agents_pod_list.items:
 
-            # For storing all the agent logs using the CoreV1Api
+            # For storing all arc agent logs using the CoreV1Api
             diagnostic_checks[consts.Retrieve_Arc_Agents_Logs], storage_space_available = \
                 troubleshootutils.retrieve_arc_agents_logs(corev1_api_instance,
                                                            filepath_with_timestamp,
@@ -3060,6 +3060,41 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
                 troubleshootutils.get_kubeaadproxy_cr_snapshot(corev1_api_instance, kubectl_client_location,
                                                                kube_config, kube_context, filepath_with_timestamp,
                                                                storage_space_available)
+                
+        connected_cluster = get_connectedk8s_2024_07_01(cmd, client, resource_group_name, cluster_name)
+        # saving signing key CR snapshot only if oidc issuer prfile is enabled
+        if connected_cluster.oidc_issuer_profile.enabled:
+            storage_space_available = \
+                troubleshootutils.get_signingkey_cr_snapshot(corev1_api_instance, kubectl_client_location, kube_config,
+                                                            kube_context, filepath_with_timestamp, storage_space_available)
+
+        # saving all other workload identity related information if enabled
+        if connected_cluster.oidc_issuer_profile.enabled or connected_cluster.security_profile.workload_identity.enabled:
+            # saving helm values of wiextension release
+            storage_space_available = \
+                troubleshootutils.get_helm_values_arc_workload_identity(corev1_api_instance, helm_client_location, release_namespace,
+                                                            kube_config, kube_context, filepath_with_timestamp,
+                                                            storage_space_available)
+
+            # saving arc-workload-identity logs
+            diagnostic_checks[consts.Retrieve_Arc_Workload_Identity_Pod_Logs], storage_space_available = \
+                troubleshootutils.retrieve_arc_workload_identity_pod_logs(corev1_api_instance,
+                                                           filepath_with_timestamp,
+                                                           storage_space_available)
+
+            # saving arc-workload-identity event logs
+            diagnostic_checks[consts.Retrieve_Arc_Workload_Identity_Events_Logs], storage_space_available = \
+                troubleshootutils.retrieve_arc_workload_identity_event_logs(filepath_with_timestamp,
+                                                                 storage_space_available,
+                                                                 kubectl_client_location,
+                                                                 kube_config, kube_context)
+
+            # saving arc-workload-identity deployment logs
+            appv1_api_instance = kube_client.AppsV1Api()
+            diagnostic_checks[consts.Retrieve_Arc_Workload_Identity_Deployments_Logs], storage_space_available = \
+                troubleshootutils.retrieve_arc_workload_identity_deployments_logs(appv1_api_instance,
+                                                            filepath_with_timestamp,
+                                                            storage_space_available)
 
         # checking cluster connectivity status
         cluster_connectivity_status = connected_cluster.connectivity_status
