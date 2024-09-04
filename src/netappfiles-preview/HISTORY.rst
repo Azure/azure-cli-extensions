@@ -2,6 +2,10 @@
 
 Release History
 ===============
+0.5.2
++++++
+Support for api-version 2024-03-01-preview
+
 0.4.2
 +++++
 Support for api-version 2022-11-01-preview
