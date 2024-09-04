@@ -9,7 +9,7 @@ import unittest
 from unittest import mock
 from datetime import ( datetime,timezone)
 from ..._validators import (
-    _validate_cadence, check_continuous_task_exists, validate_continuouspatch_config_v1
+    _validate_schedule, check_continuous_task_exists, validate_continuouspatch_config_v1
 )
 
 from azure.cli.core.azclierror import AzCLIError, InvalidArgumentValueError
@@ -19,7 +19,7 @@ from unittest.mock import patch
 
 class AcrCsscCommandsTests(unittest.TestCase):
 
-    def test_validate_cadence_valid(self):
+    def test_validate_schedule_valid(self):
         test_cases = [
             ('1d' ),
             ('5d'),
@@ -28,13 +28,13 @@ class AcrCsscCommandsTests(unittest.TestCase):
 
         for timespan in test_cases:
             with self.subTest(timespan=timespan):
-               _validate_cadence(timespan)
+               _validate_schedule(timespan)
     
-    def test_validate_cadence_invalid(self):
+    def test_validate_schedule_invalid(self):
         test_cases = [('df'),('12'),('dd'),('41d'), ('21dd')]
 
         for timespan in test_cases:
-            self.assertRaises(InvalidArgumentValueError, _validate_cadence, timespan)
+            self.assertRaises(InvalidArgumentValueError, _validate_schedule, timespan)
 
 
     @patch('azext_acrcssc._validators.cf_acr_tasks')
@@ -110,8 +110,8 @@ class AcrCsscCommandsTests(unittest.TestCase):
                     "tags": ["v1"],
                     "enabled": True
                 }],
-            "version": "1"
-            }
+            "version": "v1"
+        }
         mock_load.return_value = mock_config
 
         with patch('os.path.exists', return_value=True), \
@@ -136,11 +136,46 @@ class AcrCsscCommandsTests(unittest.TestCase):
         mock_load.return_value = mock_invalid_config
 
         with patch('os.path.exists', return_value=True), \
-             patch('os.path.isfile', return_value=True), \
-             patch('os.path.getsize', return_value=100), \
-             patch('os.access', return_value=True):
-             self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
-    
+            patch('os.path.isfile', return_value=True), \
+            patch('os.path.getsize', return_value=100), \
+            patch('os.access', return_value=True):
+            self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
+
+    @patch('azext_acrcssc._validators.json.load')
+    def test_validate_continuouspatch_json_invalid_tags_should_fail(self, mock_load):
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            temp_file_path = temp_file.name
+
+        mock_invalid_config = {
+            "repositories": [
+                {
+                    "repository": "docker-local",
+                    "tags": ["v1-patched"],
+                }],
+            }
+        mock_load.return_value = mock_invalid_config
+
+        with patch('os.path.exists', return_value=True), \
+            patch('os.path.isfile', return_value=True), \
+            patch('os.path.getsize', return_value=100), \
+            patch('os.access', return_value=True):
+            self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
+
+        mock_invalid_config = {
+            "repositories": [
+                {
+                    "repository": "docker-local",
+                    "tags": ["v1-999"],
+                }],
+        }
+        mock_load.return_value = mock_invalid_config
+
+        with patch('os.path.exists', return_value=True), \
+            patch('os.path.isfile', return_value=True), \
+            patch('os.path.getsize', return_value=100), \
+            patch('os.access', return_value=True):
+            self.assertRaises(AzCLIError, validate_continuouspatch_config_v1, temp_file_path)
+
     def _setup_cmd(self):
         cmd = mock.MagicMock()
         cmd.cli_ctx = DummyCli()

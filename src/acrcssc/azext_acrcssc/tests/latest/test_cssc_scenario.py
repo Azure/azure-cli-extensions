@@ -20,16 +20,16 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 #         self.kwargs.update({
 #             'taskType': 'continuouspatchv1',
 #             'configpath': file_name,
-#             'cadence': '1d',
+#             'schedule': '1d',
 #             'registry':self.create_random_name(prefix='cli', length=24),
 #         })
 
 #         self.cmd('az acr create -g {rg} -n {registry} --sku Basic')
-#         self.cmd('az acr supply-chain workflow create -g {rg} -t {taskType} -r {registry} --config {configpath} --cadence {cadence} --defer-immediate-run'.format(**self.kwargs))
+#         self.cmd('az acr supply-chain workflow create -g {rg} -t {taskType} -r {registry} --config {configpath} --schedule {schedule}'.format(**self.kwargs))
 #         cssc_tasks = self.cmd('az acr supply-chain workflow show -g {rg} -t {taskType} -r {registry}').get_output_in_json()
 #         # Verify all the cssc tasks are created
 #         assert len(cssc_tasks) == 3
 #         cssc_trigger_scan_task = next((task for task in cssc_tasks if task['name'] == 'cssc-trigger-scan'), None)
 #         # Verify cssc_trigger_scan_task properties
 #         assert cssc_trigger_scan_task is not None
-#         assert cssc_trigger_scan_task['cadence'] == '1d'
+#         assert cssc_trigger_scan_task['schedule'] == '1d'

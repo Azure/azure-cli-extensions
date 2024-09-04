@@ -14,9 +14,9 @@ logger = get_logger(__name__)
 # pylint: disable=logging-fstring-interpolation
 
 
-def convert_timespan_to_cron(cadence, date_time=None):
+def convert_timespan_to_cron(schedule, date_time=None):
     # Regex to look for pattern 1d, 2d, 3d, etc.
-    match = re.match(r'(\d+)([d])', cadence)
+    match = re.match(r'(\d+)([d])', schedule)
     value = int(match.group(1))
     unit = match.group(2)
 
@@ -34,7 +34,7 @@ def convert_timespan_to_cron(cadence, date_time=None):
     return cron_expression
 
 
-def transform_cron_to_cadence(cron_expression):
+def transform_cron_to_schedule(cron_expression):
     parts = cron_expression.split()
     # The third part of the cron expression
     third_part = parts[2]

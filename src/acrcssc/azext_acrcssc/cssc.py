@@ -26,23 +26,23 @@ def _perform_continuous_patch_operation(cmd,
                                         resource_group_name,
                                         registry_name,
                                         config,
-                                        cadence,
+                                        schedule,
                                         dryrun=False,
-                                        defer_immediate_run=False,
+                                        run_immediately=False,
                                         is_create=True):
     acr_client_registries = cf_acr_registries(cmd.cli_ctx, None)
     registry = acr_client_registries.get(resource_group_name, registry_name)
 
-    validate_inputs(cadence, config)
+    validate_inputs(schedule, config)
 
     if not is_create:
-        validate_cssc_optional_inputs(config, cadence)
+        validate_cssc_optional_inputs(config, schedule)
 
     logger.debug('validations completed successfully.')
     if dryrun:
         acr_cssc_dry_run(cmd, registry=registry, config_file_path=config, is_create=is_create)
     else:
-        create_update_continuous_patch_v1(cmd, registry, config, cadence, dryrun, defer_immediate_run, is_create)
+        create_update_continuous_patch_v1(cmd, registry, config, schedule, dryrun, run_immediately, is_create)
 
 
 def create_acrcssc(cmd,
@@ -50,18 +50,18 @@ def create_acrcssc(cmd,
                    registry_name,
                    workflow_type,
                    config,
-                   cadence,
+                   schedule,
                    dryrun=False,
-                   defer_immediate_run=False):
+                   run_immediately=False):
     '''Create a continuous patch task in the registry.'''
-    logger.debug(f"Entering create_acrcssc with parameters: {registry_name} {workflow_type} {config} {cadence} {dryrun}")
+    logger.debug(f"Entering create_acrcssc with parameters: {registry_name} {workflow_type} {config} {schedule} {dryrun}")
     _perform_continuous_patch_operation(cmd,
                                         resource_group_name,
                                         registry_name,
                                         config,
-                                        cadence,
+                                        schedule,
                                         dryrun,
-                                        defer_immediate_run,
+                                        run_immediately,
                                         is_create=True)
 
 
@@ -70,18 +70,18 @@ def update_acrcssc(cmd,
                    registry_name,
                    workflow_type,
                    config,
-                   cadence,
+                   schedule,
                    dryrun=False,
-                   defer_immediate_run=False):
+                   run_immediately=False):
     '''Update a continuous patch task in the registry.'''
-    logger.debug(f'Entering update_acrcssc with parameters: {registry_name} {workflow_type} {config} {cadence} {dryrun} {defer_immediate_run}')
+    logger.debug(f'Entering update_acrcssc with parameters: {registry_name} {workflow_type} {config} {schedule} {dryrun} {run_immediately}')
     _perform_continuous_patch_operation(cmd,
                                         resource_group_name,
                                         registry_name,
                                         config,
-                                        cadence,
+                                        schedule,
                                         dryrun,
-                                        defer_immediate_run,
+                                        run_immediately,
                                         is_create=False)
 
 

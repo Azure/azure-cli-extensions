@@ -16,7 +16,7 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = '1.0.0b1'
+VERSION = '1.0.0c1'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -33,7 +33,7 @@ CLASSIFIERS = [
 ]
 
 # TODO: Add any additional SDK dependencies here
-DEPENDENCIES = ["oras~=0.1.19"]
+DEPENDENCIES = ["oras~=0.1.19", "croniter~=3.0.0"]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
     README = f.read()

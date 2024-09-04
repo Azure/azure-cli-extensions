@@ -16,12 +16,13 @@ from .helper._constants import (
     CONTINUOSPATCH_OCI_ARTIFACT_CONFIG,
     CONTINUOUSPATCH_CONFIG_SCHEMA_V1,
     CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT,
+    CONTINUOUSPATCH_CONFIG_SUPPORTED_VERSIONS,
     CONTINUOSPATCH_ALL_TASK_NAMES,
     ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT,
     ERROR_MESSAGE_INVALID_TIMESPAN_VALUE,
     RESOURCE_GROUP,
     SUBSCRIPTION)
-from .helper._constants import CSSCTaskTypes, ERROR_MESSAGE_INVALID_TASK, RECOMMENDATION_CADENCE
+from .helper._constants import CSSCTaskTypes, ERROR_MESSAGE_INVALID_TASK, RECOMMENDATION_SCHEDULE
 from .helper._ociartifactoperations import _get_acr_token
 from azure.mgmt.core.tools import (parse_resource_id)
 from azure.cli.core.azclierror import InvalidArgumentValueError
@@ -31,7 +32,8 @@ logger = get_logger(__name__)
 
 def validate_continuouspatch_config_v1(config_path):
     _validate_continuouspatch_file(config_path)
-    _validate_continuouspatch_json(config_path)
+    config = _validate_continuouspatch_json(config_path)
+    _validate_continuouspatch_config(config)
 
 
 def _validate_continuouspatch_file(config_path):
@@ -53,11 +55,25 @@ def _validate_continuouspatch_json(config_path):
         with open(config_path, 'r') as f:
             config = json.load(f)
             validate(config, CONTINUOUSPATCH_CONFIG_SCHEMA_V1)
+            return config
     except Exception as e:
         logger.debug(f"Error validating the continuous patch config file: {e}")
         raise InvalidArgumentValueError("File used for --config is not a valid config JSON file. Use --help to see the schema of the config file.")
     finally:
         f.close()
+
+
+def _validate_continuouspatch_config(config):
+    if not isinstance(config, dict):
+        raise InvalidArgumentValueError("Config file is not a valid JSON file. Use --help to see the schema of the config file.")
+    for repository in config.get("repositories", []):
+        for tag in repository.get("tags", []):
+            if re.match(r'.*-patched$', tag) or re.match(r'.*-[0-9]{1,3}$', tag):
+                raise InvalidArgumentValueError(f"Configuration error: Repository {repository['repository']} Tag {tag} is not allowed. Tags ending with '*-patched' (floating tag) or '*-[0-9]\\{{1,3}}' (incremental tag) are reserved for internal use.")
+            if tag == "*" and len(repository.get("tags", [])) > 1:
+                raise InvalidArgumentValueError("Configuration error: Tag '*' is not allowed with other tags in the same repository. Use '*' as the only tag in the repository to avoid overlaps.")
+    if config.get("version","") not in CONTINUOUSPATCH_CONFIG_SUPPORTED_VERSIONS:
+        raise InvalidArgumentValueError(f"Configuration error: Version {config.get('version','')} is not supported. Supported versions are {CONTINUOUSPATCH_CONFIG_SUPPORTED_VERSIONS}")
 
 
 def check_continuous_task_exists(cmd, registry):
@@ -104,23 +120,23 @@ def _check_task_exists(cmd, registry, task_name=""):
     return False
 
 
-def _validate_cadence(cadence):
-    # during update, cadence can be null if we are only updating the config
-    if cadence is None:
+def _validate_schedule(schedule):
+    # during update, schedule can be null if we are only updating the config
+    if schedule is None:
         return
     # Extract the numeric value and unit from the timespan expression
-    match = re.match(r'(\d+)(d)$', cadence)
+    match = re.match(r'(\d+)(d)$', schedule)
     if not match:
-        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT, recommendation=RECOMMENDATION_CADENCE)
+        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT, recommendation=RECOMMENDATION_SCHEDULE)
     if match is not None:
         value = int(match.group(1))
         unit = match.group(2)
     if unit == 'd' and (value < 1 or value > 30):  # day of the month
-        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE, recommendation=RECOMMENDATION_CADENCE)
+        raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TIMESPAN_VALUE, recommendation=RECOMMENDATION_SCHEDULE)
 
 
-def validate_inputs(cadence, config_file_path=None):
-    _validate_cadence(cadence)
+def validate_inputs(schedule, config_file_path=None):
+    _validate_schedule(schedule)
     if config_file_path is not None:
         validate_continuouspatch_config_v1(config_file_path)
 
@@ -130,6 +146,6 @@ def validate_task_type(task_type):
         raise InvalidArgumentValueError(error_msg=ERROR_MESSAGE_INVALID_TASK)
 
 
-def validate_cssc_optional_inputs(cssc_config_path, cadence):
-    if cssc_config_path is None and cadence is None:
-        raise InvalidArgumentValueError(error_msg="Provide at least one parameter to update: --cadence or --config")
+def validate_cssc_optional_inputs(cssc_config_path, schedule):
+    if cssc_config_path is None and schedule is None:
+        raise InvalidArgumentValueError(error_msg="Provide at least one parameter to update: --schedule or --config")

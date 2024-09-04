@@ -35,6 +35,32 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         mock_convert_timespan_to_cron.assert_called_once_with("1d")
         mock_create_oci_artifact_continuous_patch.assert_called_once()
         mock_validate_and_deploy_template.assert_called_once()
+        mock_trigger_task_run.assert_not_called()
+        
+    @mock.patch("azext_acrcssc.helper._taskoperations.check_continuous_task_exists")
+    @mock.patch("azext_acrcssc.helper._taskoperations.convert_timespan_to_cron")
+    @mock.patch("azext_acrcssc.helper._taskoperations.create_oci_artifact_continuous_patch")
+    @mock.patch("azext_acrcssc.helper._taskoperations.parse_resource_id")
+    @mock.patch("azext_acrcssc.helper._taskoperations.validate_and_deploy_template")
+    @mock.patch("azext_acrcssc.helper._taskoperations._trigger_task_run")
+    def test_create_continuous_patch_v1_create_run_immediately_triggers_task(self, mock_trigger_task_run, mock_validate_and_deploy_template, mock_parse_resource_id, mock_create_oci_artifact_continuous_patch, mock_convert_timespan_to_cron, mock_check_continuoustask_exists):
+        # Mock the necessary dependencies
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            temp_file_path = temp_file.name
+        mock_check_continuoustask_exists.return_value = False
+        mock_convert_timespan_to_cron.return_value = "0 0 * * *"
+        mock_parse_resource_id.return_value = {"resource_group": "test_rg"}
+        cmd = self._setup_cmd()
+        registry = mock.MagicMock()
+        registry.id = "/subscriptions/11111111-0000-0000-0000-0000000000006/resourceGroups/test-rg/providers/Microsoft.ContainerRegistry/registries/testregistry"
+
+        # Call the function
+        create_update_continuous_patch_v1(cmd, registry, temp_file_path, "1d", False, True)
+        
+        # Assert that the dependencies were called with the correct arguments
+        mock_convert_timespan_to_cron.assert_called_once_with("1d")
+        mock_create_oci_artifact_continuous_patch.assert_called_once()
+        mock_validate_and_deploy_template.assert_called_once()
         mock_trigger_task_run.assert_called_once()
 
     @mock.patch("azext_acrcssc.helper._taskoperations._update_task_schedule")
@@ -44,7 +70,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
     @mock.patch("azext_acrcssc.helper._taskoperations.parse_resource_id")
     @mock.patch("azext_acrcssc.helper._taskoperations.validate_and_deploy_template")
     @mock.patch("azext_acrcssc.helper._taskoperations._trigger_task_run")
-    def test_update_continuous_patch_v1_cadence_update_should_not_update_config(self, mock_trigger_task_run, mock_validate_and_deploy_template, mock_parse_resource_id, mock_create_oci_artifact_continuous_patch, mock_convert_timespan_to_cron, mock_check_continuoustask_exists, mock_update_task_schedule):
+    def test_update_continuous_patch_v1_schedule_update_should_not_update_config(self, mock_trigger_task_run, mock_validate_and_deploy_template, mock_parse_resource_id, mock_create_oci_artifact_continuous_patch, mock_convert_timespan_to_cron, mock_check_continuoustask_exists, mock_update_task_schedule):
         # Mock the necessary dependencies
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file_path = temp_file.name
@@ -62,7 +88,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         mock_convert_timespan_to_cron.assert_called_once_with("2d")
         mock_create_oci_artifact_continuous_patch.assert_not_called()
         mock_validate_and_deploy_template.assert_not_called()
-        mock_trigger_task_run.assert_called_once()
+        mock_trigger_task_run.assert_not_called()
         mock_update_task_schedule.assert_called_once()
 
     @mock.patch("azext_acrcssc.helper._taskoperations.check_continuous_task_exists")
@@ -85,7 +111,35 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         
         # Assert that the dependencies were called with the correct arguments
         mock_convert_timespan_to_cron.assert_called_once_with("2d")
-        mock_create_oci_artifact_continuous_patch.not_called()
+        mock_create_oci_artifact_continuous_patch.assert_not_called()
+        
+    @mock.patch("azext_acrcssc.helper._taskoperations._update_task_schedule")
+    @mock.patch("azext_acrcssc.helper._taskoperations.check_continuous_task_exists")
+    @mock.patch("azext_acrcssc.helper._taskoperations.convert_timespan_to_cron")
+    @mock.patch("azext_acrcssc.helper._taskoperations.create_oci_artifact_continuous_patch")
+    @mock.patch("azext_acrcssc.helper._taskoperations.parse_resource_id")
+    @mock.patch("azext_acrcssc.helper._taskoperations.validate_and_deploy_template")
+    @mock.patch("azext_acrcssc.helper._taskoperations._trigger_task_run")
+    def test_update_continuous_patch_v1_schedule_update_run_immediately_triggers_task(self, mock_trigger_task_run, mock_validate_and_deploy_template, mock_parse_resource_id, mock_create_oci_artifact_continuous_patch, mock_convert_timespan_to_cron, mock_check_continuoustask_exists, mock_update_task_schedule):
+        # Mock the necessary dependencies
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            temp_file_path = temp_file.name
+        mock_check_continuoustask_exists.return_value = True
+        mock_convert_timespan_to_cron.return_value = "0 0 * * *"
+        mock_parse_resource_id.return_value = {"resource_group": "test_rg"}
+        cmd = self._setup_cmd()
+        registry = mock.MagicMock()
+        registry.id = "/subscriptions/11111111-0000-0000-0000-0000000000006/resourceGroups/test-rg/providers/Microsoft.ContainerRegistry/registries/testregistry"
+
+        # Call the function
+        create_update_continuous_patch_v1(cmd, registry, None, "2d", False, True, False)
+        
+        # Assert that the dependencies were called with the correct arguments
+        mock_convert_timespan_to_cron.assert_called_once_with("2d")
+        mock_create_oci_artifact_continuous_patch.assert_not_called()
+        mock_validate_and_deploy_template.assert_not_called()
+        mock_trigger_task_run.assert_called_once()
+        mock_update_task_schedule.assert_called_once()
 
     @mock.patch("azext_acrcssc.helper._taskoperations.check_continuous_task_config_exists")
     @mock.patch('azext_acrcssc.helper._taskoperations.delete_oci_artifact_continuous_patch')

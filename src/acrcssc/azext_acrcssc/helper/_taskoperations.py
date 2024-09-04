@@ -40,20 +40,21 @@ from azext_acrcssc._client_factory import cf_acr_tasks, cf_authorization, cf_acr
 from azext_acrcssc.helper._deployment import validate_and_deploy_template
 from azext_acrcssc.helper._ociartifactoperations import create_oci_artifact_continuous_patch, delete_oci_artifact_continuous_patch
 from azext_acrcssc._validators import check_continuous_task_exists, check_continuous_task_config_exists
+from datetime import datetime, timezone
 from msrestazure.azure_exceptions import CloudError
-from ._utility import convert_timespan_to_cron, transform_cron_to_cadence, create_temporary_dry_run_file, delete_temporary_dry_run_file
+from ._utility import convert_timespan_to_cron, transform_cron_to_schedule, create_temporary_dry_run_file, delete_temporary_dry_run_file
+
 
 logger = get_logger(__name__)
-DEFAULT_CHUNK_SIZE = 1024 * 4
 
 
-def create_update_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, dryrun, defer_immediate_run, is_create_workflow=True):
-    logger.debug(f"Entering continuousPatchV1_creation {cssc_config_file} {dryrun} {defer_immediate_run}")
+def create_update_continuous_patch_v1(cmd, registry, cssc_config_file, schedule, dryrun, run_immediately, is_create_workflow=True):
+    logger.debug(f"Entering continuousPatchV1_creation {cssc_config_file} {dryrun} {run_immediately}")
     resource_group = parse_resource_id(registry.id)[RESOURCE_GROUP]
     schedule_cron_expression = None
-    if cadence is not None:
-        schedule_cron_expression = convert_timespan_to_cron(cadence)
-    logger.debug(f"converted cadence to cron expression: {schedule_cron_expression}")
+    if schedule is not None:
+        schedule_cron_expression = convert_timespan_to_cron(schedule)
+    logger.debug(f"converted schedule to cron expression: {schedule_cron_expression}")
     cssc_tasks_exists = check_continuous_task_exists(cmd, registry)
     if is_create_workflow:
         if cssc_tasks_exists:
@@ -68,7 +69,17 @@ def create_update_continuous_patch_v1(cmd, registry, cssc_config_file, cadence, 
         create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun)
         logger.debug(f"Uploading of {cssc_config_file} completed successfully.")
 
-    _eval_trigger_run(cmd, registry, resource_group, defer_immediate_run)
+    _eval_trigger_run(cmd, registry, resource_group, run_immediately)
+
+    # on 'update' schedule is optional
+    if schedule is None:
+        task = get_task(cmd, registry, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME)
+        trigger = task.trigger
+        if trigger and trigger.timer_triggers:
+            schedule_cron_expression = trigger.timer_triggers[0].schedule
+            
+    next_date = get_next_date(schedule_cron_expression)
+    print(f"Continuous Patching workflow scheduled to run next at: {next_date} UTC")
 
 
 def _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_group, dry_run):
@@ -101,8 +112,8 @@ def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
         _update_task_schedule(cmd, registry, schedule_cron_expression, resource_group, dry_run)
 
 
-def _eval_trigger_run(cmd, registry, resource_group, defer_immediate_run):
-    if not defer_immediate_run:
+def _eval_trigger_run(cmd, registry, resource_group, run_immediately):
+    if run_immediately:
         logger.warning(f'Triggering the {CONTINUOSPATCH_TASK_SCANREGISTRY_NAME} to run immediately')
         # Seen Managed Identity taking time, see if there can be an alternative (one alternative is to schedule the cron expression with delay)
         # NEED TO SKIP THE TIME.SLEEP IN UNIT TEST CASE OR FIND AN ALTERNATIVE SOLUITION TO MI COMPLETE
@@ -228,7 +239,7 @@ def _create_encoded_task(task_file):
 
 
 def _update_task_schedule(cmd, registry, cron_expression, resource_group_name, dryrun):
-    logger.debug(f"converted cadence to cron_expression: {cron_expression}")
+    logger.debug(f"converted schedule to cron_expression: {cron_expression}")
     acr_task_client = cf_acr_tasks(cmd.cli_ctx)
     taskUpdateParameters = acr_task_client.models.TaskUpdateParameters(
         trigger=acr_task_client.models.TriggerUpdateParameters(
@@ -248,7 +259,7 @@ def _update_task_schedule(cmd, registry, cron_expression, resource_group_name, d
         acr_task_client.begin_update(resource_group_name, registry.name,
                                      CONTINUOSPATCH_TASK_SCANREGISTRY_NAME,
                                      taskUpdateParameters)
-        print("Cadence has been successfully updated.")
+        print("Schedule has been successfully updated.")
     except Exception as exception:
         raise AzCLIError(f"Failed to update the task schedule: {exception}")
 
@@ -316,14 +327,14 @@ def _transform_task_list(tasks):
             "name": task.name,
             "provisioningState": task.provisioning_state,
             "systemData": task.system_data,
-            "cadence": None,
+            "schedule": None,
             "description": CONTINUOUS_PATCH_WORKFLOW[task.name][DESCRIPTION]
         }
 
-        # Extract cadence from trigger.timerTriggers if available
+        # Extract schedule from trigger.timerTriggers if available
         trigger = task.trigger
         if trigger and trigger.timer_triggers:
-            transformed_obj["cadence"] = transform_cron_to_cadence(trigger.timer_triggers[0].schedule)
+            transformed_obj["schedule"] = transform_cron_to_schedule(trigger.timer_triggers[0].schedule)
         transformed.append(transformed_obj)
 
     return transformed
@@ -473,3 +484,23 @@ def _remove_internal_acr_statements(blob_content):
 
         if print_line:
             print(line)
+
+
+def get_next_date(cron_expression):
+    from croniter import croniter
+    now = datetime.now(timezone.utc)
+    cron = croniter(cron_expression, now, expand_from_start_time=False)
+    next_date = cron.get_next(datetime)
+    return str(next_date)
+
+
+def get_task(cmd, registry, task_name=""):
+    acrtask_client = cf_acr_tasks(cmd.cli_ctx)
+    resourceid = parse_resource_id(registry.id)
+    resource_group = resourceid[RESOURCE_GROUP]
+
+    try:
+        return acrtask_client.get(resource_group, registry.name, task_name)
+    except Exception as exception:
+        logger.debug(f"Failed to find task {task_name} from registry {registry.name} : {exception}")
+        return None
