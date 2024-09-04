@@ -26,6 +26,7 @@ def connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-ma
                           spring=None, app=None, deployment='default',           # Resource.SpringCloud
                           # Resource.*Postgres, Resource.*Sql*
                           server=None, database=None,
+                          connstr_props=None,                                    # Resource.FabricSql
                           **kwargs,
                           ):
     from azure.cli.command_modules.serviceconnector.custom import connection_create_func
@@ -50,6 +51,7 @@ def connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-ma
                                   customized_keys=customized_keys,
                                   opt_out_list=opt_out_list,
                                   app_config_id=app_config_id,
+                                  connstr_props=connstr_props,
                                   **kwargs)
 
 
