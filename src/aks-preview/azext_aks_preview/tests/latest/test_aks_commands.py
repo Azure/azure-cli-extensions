@@ -14030,10 +14030,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             }
         )
 
-        _, create_version = self._get_versions(resource_group_location)
-
         create_cmd = (
-            "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version {create_version} "
+            "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version {k8s_version} "
             "--ssh-key-value={ssh_key_value} --enable-app-routing --ardnc none"
         )
         self.cmd(
@@ -14292,7 +14290,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create cluster with app routing enabled
         create_cmd = (
-            "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version 1.30.0 "
+            "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version {k8s_version} "
             "--ssh-key-value={ssh_key_value} --enable-app-routing"
         )
         result = self.cmd(
