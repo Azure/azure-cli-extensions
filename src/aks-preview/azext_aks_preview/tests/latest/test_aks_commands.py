@@ -14298,7 +14298,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("ingressProfile.webAppRouting.enabled", True),
-                self.check("ingressProfile.webAppRouting.nginx", None)
+                self.check("ingressProfile.webAppRouting.nginx.defaultIngressControllerType", "AnnotationControlled")
             ],
         ).get_output_in_json()
         object_id = result["ingressProfile"]["webAppRouting"]["identity"]["objectId"]
