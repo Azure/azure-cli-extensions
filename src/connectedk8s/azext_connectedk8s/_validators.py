@@ -17,7 +17,7 @@ import re
 def example_name_or_id_validator(cmd, namespace):
     # Example of a storage account name or ID validator.
     from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import is_valid_resource_id, resource_id
+    from azure.mgmt.core.tools import is_valid_resource_id, resource_id
     if namespace.storage_account:
         if not is_valid_resource_id(namespace.RESOURCE):
             namespace.storage_account = resource_id(
