@@ -14,6 +14,7 @@ from .aaz.latest.azure_terraform import ExportTerraform as _ExportTerraform
 from azure.cli.core.aaz import has_value
 from azure.cli.core.azclierror import ArgumentUsageError
 
+
 class ExportTerraform(_ExportTerraform):
     def pre_operations(self):
         args = self.ctx.args
@@ -25,7 +26,9 @@ class ExportTerraform(_ExportTerraform):
         if has_value(args.export_query):
             count += 1
         if count != 1:
-            err_msg = 'Exactly one of "--export-resource", "--export-resource-group", "--export-query" should be specified'
+            err_msg = 'Exactly one of "--export-resource", "--export-resource-group", ' \
+                      '"--export-query" should be specified'
             raise ArgumentUsageError(err_msg)
+
 
 logger = get_logger(__name__)
