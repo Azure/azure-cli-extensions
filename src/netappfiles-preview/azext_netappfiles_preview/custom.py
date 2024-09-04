@@ -144,7 +144,7 @@ class VolumeCreate(_VolumeCreate):
             maximum=2457600,
             minimum=100,
         )
-        
+
         # The API does only support setting Basic and Standard
         args_schema.network_features.enum = AAZArgEnum({"Basic": "Basic", "Standard": "Standard"}, case_sensitive=False)
 
