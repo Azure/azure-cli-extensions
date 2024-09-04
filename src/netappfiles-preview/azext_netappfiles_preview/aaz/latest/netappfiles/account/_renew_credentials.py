@@ -12,17 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "netappfiles volume migrate-backup",
-    is_preview=True,
+    "netappfiles account renew-credentials",
 )
-class MigrateBackup(AAZCommand):
-    """Migrate the backups under volume to backup vault
+class RenewCredentials(AAZCommand):
+    """Renew identity credentials that are used to authenticate to key vault, for customer-managed key encryption. If encryption.identity.principalId does not match identity.principalId, running this operation will fix it.
+
+    :example: Renew identity credentials
+        az netappfiles account renew-credentials -g mygroup --a myname
     """
 
     _aaz_info = {
-        "version": "2024-03-01-preview",
+        "version": "2023-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/capacitypools/{}/volumes/{}/migratebackups", "2024-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/renewcredentials", "2023-05-01"],
         ]
     }
 
@@ -52,46 +54,14 @@ class MigrateBackup(AAZCommand):
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,127}$",
             ),
         )
-        _args_schema.pool_name = AAZStrArg(
-            options=["-p", "--pool-name"],
-            help="The name of the capacity pool",
-            required=True,
-            id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$",
-                max_length=64,
-                min_length=1,
-            ),
-        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            required=True,
-        )
-        _args_schema.volume_name = AAZStrArg(
-            options=["-v", "--volume-name"],
-            help="The name of the volume",
-            required=True,
-            id_part="child_name_2",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z][a-zA-Z0-9\\-_]{0,63}$",
-                max_length=64,
-                min_length=1,
-            ),
-        )
-
-        # define Arg Group "Body"
-
-        _args_schema = cls._args_schema
-        _args_schema.backup_vault_id = AAZStrArg(
-            options=["--backup-vault-id"],
-            arg_group="Body",
-            help="The ResourceId of the Backup Vault",
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.BackupsUnderVolumeMigrateBackups(ctx=self.ctx)()
+        yield self.AccountsRenewCredentials(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -102,7 +72,7 @@ class MigrateBackup(AAZCommand):
     def post_operations(self):
         pass
 
-    class BackupsUnderVolumeMigrateBackups(AAZHttpOperation):
+    class AccountsRenewCredentials(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -112,9 +82,18 @@ class MigrateBackup(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    None,
+                    self.on_200,
                     self.on_error,
-                    lro_options={"final-state-via": "location"},
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -123,7 +102,7 @@ class MigrateBackup(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/capacityPools/{poolName}/volumes/{volumeName}/migrateBackups",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/renewCredentials",
                 **self.url_parameters
             )
 
@@ -143,19 +122,11 @@ class MigrateBackup(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "poolName", self.ctx.args.pool_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "volumeName", self.ctx.args.volume_name,
                     required=True,
                 ),
             }
@@ -165,35 +136,18 @@ class MigrateBackup(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-01-preview",
+                    "api-version", "2023-05-01",
                     required=True,
                 ),
             }
             return parameters
 
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-            }
-            return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
-            )
-            _builder.set_prop("backupVaultId", AAZStrType, ".backup_vault_id", typ_kwargs={"flags": {"required": True}})
-
-            return self.serialize_content(_content_value)
+        def on_200(self, session):
+            pass
 
 
-class _MigrateBackupHelper:
-    """Helper class for MigrateBackup"""
+class _RenewCredentialsHelper:
+    """Helper class for RenewCredentials"""
 
 
-__all__ = ["MigrateBackup"]
+__all__ = ["RenewCredentials"]
