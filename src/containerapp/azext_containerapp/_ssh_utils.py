@@ -4,14 +4,13 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=logging-fstring-interpolation
 
-import os
 import shutil
 import sys
 import time
 import threading
 
 import requests
-import websocket, ssl
+import websocket
 
 from knack.log import get_logger
 from azure.cli.core.azclierror import CLIInternalError, ValidationError
@@ -60,7 +59,7 @@ class WebSocketConnection:
         self._url = self._get_url(cmd=cmd, resource_group_name=resource_group_name, name=name, revision=revision,
                                   replica=replica, container=container)
 
-        self._socket = websocket.WebSocket(sslopt={"cert_reqs": ssl.CERT_NONE}, enable_multithread=True)
+        self._socket = websocket.WebSocket(enable_multithread=True)
 
         logger.info("Attempting to connect to %s", self._url)
         self._socket.connect(self._url, header=[f"Authorization: Bearer {self._token}"])

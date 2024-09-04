@@ -3229,6 +3229,7 @@ def set_registry_job(cmd, name, resource_group_name, server, username=None, pass
     r = containerapp_job_registry_set_decorator.set()
     return r
 
+
 def containerapp_debug(cmd, resource_group_name, name, container=None, revision=None, replica=None):
     conn = WebSocketConnection(cmd=cmd, resource_group_name=resource_group_name, name=name, revision=revision,
                                replica=replica, container=container)
