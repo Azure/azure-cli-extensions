@@ -116,7 +116,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     azure_cloud = send_cloud_telemetry(cmd)
 
     # Checking provider registration status
-    utils.check_provider_registrations(cmd.cli_ctx, subscription_id, is_gateway_enabled=bool(gateway_resource_id))
+    utils.check_provider_registrations(cmd.cli_ctx, subscription_id, is_gateway_enabled=bool(gateway_resource_id), 
+                                        is_workload_identity_enabled=(enable_workload_identity or enable_oidc_issuer))
 
     # Setting kubeconfig
     kube_config = set_kube_config(kube_config)

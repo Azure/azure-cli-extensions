@@ -158,6 +158,8 @@ Error_disabling_Features = 'Error while updating agents for disabling features. 
 Proxy_Kubeconfig_During_Deletion_Fault_Type = 'Encountered proxy kubeconfig during deletion.'
 Cannot_Create_ClusterRoleBindings_Fault_Type = 'Cannot create cluster role bindings on this Kubernets cluster'
 CC_Provider_Namespace_Not_Registered_Fault_Type = "Connected Cluster Provider MS.K8 namespace not registered"
+Kubernetes_Configuration_Provider_Namespace_Not_Registered_Fault_Type = \
+    "Kubernetes Configuration Provider MS.KubernetesConfiguration namespace not registered"
 HC_Provider_Namespace_Not_Registered_Fault_Type = "Hybrid Compute Provider MS.HybridCompute namespace not registered"
 Default_Namespace_Does_Not_Exist_Fault_Type = \
     "The default namespace defined in the kubeconfig doesn't exist on the kubernetes cluster."
