@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class ExportTerraform(AAZCommand):
-    """Exports the Terraform configuration used for the specified scope.
+    """Exports the Terraform configuration of the specified resource(s)
 
     :example: Export a resource group targeting to `azurerm` provider
         az azure-terraform export-terraform --export-resource-group '{resource-group-name:my-rg}'
@@ -57,17 +57,17 @@ class ExportTerraform(AAZCommand):
         _args_schema.export_query = AAZObjectArg(
             options=["--export-query"],
             arg_group="ExportParameter",
-            help="Export parameter for resources queried by ARG (Azure Resource Graph)",
+            help="Export parameter for resources queried by ARG (Azure Resource Graph).",
         )
         _args_schema.export_resource = AAZObjectArg(
             options=["--export-resource"],
             arg_group="ExportParameter",
-            help="Export parameter for single resources",
+            help="Export parameter for individual resources.",
         )
         _args_schema.export_resource_group = AAZObjectArg(
             options=["--export-resource-group"],
             arg_group="ExportParameter",
-            help="Export parameter for a resource group",
+            help="Export parameter for a resource group.",
         )
         _args_schema.full_properties = AAZBoolArg(
             options=["--full-properties"],
