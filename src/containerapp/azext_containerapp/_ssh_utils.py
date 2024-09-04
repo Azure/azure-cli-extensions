@@ -122,7 +122,7 @@ def _decode_and_output_to_terminal(connection: WebSocketConnection, response, en
 
 
 def read_ssh(connection: WebSocketConnection, response_encodings):
-    # We just need to do resize once for the whole session
+    # We need to do resize for the whole session
     _resize_terminal(connection)
 
     # response_encodings is the ordered list of Unicode encodings to try to decode with before raising an exception
@@ -156,7 +156,7 @@ def _send_stdin(connection: WebSocketConnection, getch_fn):
 def _resize_terminal(connection: WebSocketConnection):
     size = shutil.get_terminal_size()
     if connection.is_connected:
-        # send twice with different width to make sure the terminal will display username prefix
+        # send twice with different width to make sure the terminal will display username prefix correctly
         # refer kubectl debug command implementation:
         # https://github.com/kubernetes/kubectl/blob/14f6a11dd84315dc5179ff04156b338def935eaa/pkg/cmd/attach/attach.go#L296
         connection.send(b"".join([SSH_TERM_RESIZE_PREFIX,
