@@ -241,7 +241,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.accept_grow_capacity_pool_for_short_term_clone_split = AAZStrArg(
-            options=["--accept-grow-capacity-pool-for-short-term-clone-split"],
+            options=["--grow-pool-clone-split", "--accept-grow-capacity-pool-for-short-term-clone-split"],
             arg_group="Properties",
             help="While auto splitting the short term clone volume, if the parent pool does not have enough space to accommodate the volume after split, it will be automatically resized, which will lead to increased billing. To accept capacity pool size auto grow and create a short term clone volume, set the property as accepted.",
             enum={"Accepted": "Accepted", "Declined": "Declined"},
