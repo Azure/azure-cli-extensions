@@ -5,10 +5,11 @@
 # pylint: disable=logging-fstring-interpolation
 
 import os
+import shutil
 import sys
 import time
 import threading
-import urllib
+
 import requests
 import websocket, ssl
 
@@ -51,18 +52,16 @@ SSH_CTRL_C_MSG = b"\x00\x00\x03"
 
 class WebSocketConnection:
     def __init__(self, cmd, resource_group_name, name, revision, replica, container):
-        # token_response = ContainerAppClient.get_auth_token(cmd, resource_group_name, name)
-        # self._token = token_response["properties"]["token"]
-        self._token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYXBwX3N1YiI6ImQwODIyYjAxLTYyZWEtNGViOS04ODViLTk1YzYwZTQyNTBiNCIsImNhcHBfcmciOiJjYXBwcy1oYW5yZW4tZWEtcmciLCJjYXBwX25hbWUiOiJqYXZhMTdkaXN0cm8iLCJjYXBwX2ppdF9leHBpcnkiOiIyMDI0LTAxLTE3VDAwOjQ0OjAxLjU0NzAyODJaIiwibmJmIjoxNzA1NDQ4NjQxLCJleHAiOjE3MDU0NTIyNDEsImlhdCI6MTcwNTQ0ODY0MSwiaXNzIjoiQXp1cmVDb250YWluZXJBcHBzIiwiYXVkIjoiaHR0cHM6Ly9oYW5yZW4tZWEuYXp1cmVjb250YWluZXJhcHBzLXRlc3QuZGV2In0.jpqpnSs1TeINX7Wj3Jg8BxAah0Xms0dTSKfM-dE1axw"
+        token_response = ContainerAppClient.get_auth_token(cmd, resource_group_name, name)
+        self._token = token_response["properties"]["token"]
 
-        self._debug_endpoint = self._get_debug_endpoint(cmd, resource_group_name, name,
+        self._logstream_endpoint = self._get_logstream_endpoint(cmd, resource_group_name, name,
                                                                 revision, replica, container)
         self._url = self._get_url(cmd=cmd, resource_group_name=resource_group_name, name=name, revision=revision,
                                   replica=replica, container=container)
 
         self._socket = websocket.WebSocket(sslopt={"cert_reqs": ssl.CERT_NONE}, enable_multithread=True)
 
-        print("Attempting to connect to " + self._url)
         logger.info("Attempting to connect to %s", self._url)
         self._socket.connect(self._url, header=[f"Authorization: Bearer {self._token}"])
 
@@ -74,36 +73,23 @@ class WebSocketConnection:
             self._windows_conin_mode = _get_conin_mode()
 
     @classmethod
-    def _get_debug_endpoint(cls, cmd, resource_group_name, name, revision, replica, container):
-        """
+    def _get_logstream_endpoint(cls, cmd, resource_group_name, name, revision, replica, container):
         containers = ContainerAppClient.get_replica(cmd,
                                                     resource_group_name,
                                                     name, revision, replica)["properties"]["containers"]
         container_info = [c for c in containers if c["name"] == container]
         if not container_info:
             raise ValidationError(f"No such container: {container}")
-        return container_info[0]["debugEndpoint"]
-        """
-        return ("")
+        return container_info[0]["logStreamEndpoint"]
 
     def _get_url(self, cmd, resource_group_name, name, revision, replica, container):
         sub = get_subscription_id(cmd.cli_ctx)
-        base_url = self._debug_endpoint
-        # proxy_api_url = base_url[:base_url.index("/subscriptions/")].replace("https://", "")
-        proxy_api_url = "localhost:5000"
+        base_url = self._logstream_endpoint
+        proxy_api_url = base_url[:base_url.index("/subscriptions/")].replace("https://", "")
 
-        print(f"ws://{proxy_api_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/containerApps/{name}"
+        return (f"wss://{proxy_api_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/containerApps/{name}"
                 f"/revisions/{revision}/replicas/{replica}/debug"
                 f"?targetContainer={container}")
-
-        return (f"ws://{proxy_api_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/containerApps/{name}"
-                f"/revisions/{revision}/replicas/{replica}/debug"
-                f"?targetContainer={container}")
-
-        # return (f"wss://{proxy_api_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/containerApps/{name}"
-        #         f"/revisions/{revision}/replicas/{replica}/debug"
-        #         f"?targetContainer={container}")
-
 
     def disconnect(self):
         logger.warning("Disconnecting...")
@@ -168,8 +154,14 @@ def _send_stdin(connection: WebSocketConnection, getch_fn):
 
 
 def _resize_terminal(connection: WebSocketConnection):
-    size = os.get_terminal_size()
+    size = shutil.get_terminal_size()
     if connection.is_connected:
+        # send twice with different width to make sure the terminal will display username prefix
+        # refer kubectl debug command implementation:
+        # https://github.com/kubernetes/kubectl/blob/14f6a11dd84315dc5179ff04156b338def935eaa/pkg/cmd/attach/attach.go#L296
+        connection.send(b"".join([SSH_TERM_RESIZE_PREFIX,
+                                  f'{{"Width": {size.columns + 1}, '
+                                  f'"Height": {size.lines}}}'.encode(SSH_DEFAULT_ENCODING)]))
         connection.send(b"".join([SSH_TERM_RESIZE_PREFIX,
                                   f'{{"Width": {size.columns}, '
                                   f'"Height": {size.lines}}}'.encode(SSH_DEFAULT_ENCODING)]))

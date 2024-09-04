@@ -10,6 +10,7 @@ upcoming
 * 'az containerapp sessionpool create': Add NodeLTS container-type.
 * 'az containerapp env java-component': Support --min-replicas and --max-replicas for Java components
 * 'az containerapp env create': Support `--dapr-connection-string` to set application insight connection string
+* 'az containerapp debug': Open an SSH-like interactive shell within a container app ephemeral container.
 
 0.3.55
 ++++++

@@ -26,8 +26,7 @@ def load_command_table(self, args):
         g.custom_command('update', 'update_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory(), table_transformer=transform_containerapp_output, transform=transform_sensitive_values)
         g.custom_command('delete', 'delete_containerapp', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
         g.custom_command('up', 'containerapp_up', supports_no_wait=False, exception_handler=ex_handler_factory())
-        # g.custom_command('debug', 'containerapp_debug', is_preview=True, validator=validate_ssh)
-        g.custom_command('debug', 'containerapp_debug', is_preview=True)
+        g.custom_command('debug', 'containerapp_debug', is_preview=True, validator=validate_ssh)
 
     with self.command_group('containerapp replica') as g:
         g.custom_show_command('show', 'get_replica')  # TODO implement the table transformer
