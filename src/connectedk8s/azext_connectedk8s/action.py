@@ -15,7 +15,7 @@ class AddConfigurationSettings(argparse._AppendAction):
             config_settings = {}
         for item in values:
             try:
-                key, value = item.split('=', 1)
+                key, value = item.split("=", 1)
                 feature, setting = key.split(".")
                 # Check if the feature is already in the dictionary
                 if feature not in config_settings:
@@ -24,8 +24,11 @@ class AddConfigurationSettings(argparse._AppendAction):
                 # Update the setting in the feature's dictionary
                 config_settings[feature][setting] = value
             except ValueError as ex:
-                raise ArgumentUsageError('Usage error: {} configuration_setting_key=configuration_setting_value'.
-                                         format(option_string)) from ex
+                raise ArgumentUsageError(
+                    "Usage error: {} configuration_setting_key=configuration_setting_value".format(
+                        option_string
+                    )
+                ) from ex
         setattr(namespace, self.dest, config_settings)
 
 
@@ -37,7 +40,7 @@ class AddConfigurationProtectedSettings(argparse._AppendAction):
             prot_settings = {}
         for item in values:
             try:
-                key, value = item.split('=', 1)
+                key, value = item.split("=", 1)
                 feature, setting = key.split(".")
                 # Check if the feature is already in the dictionary
                 if feature not in prot_settings:
@@ -46,6 +49,8 @@ class AddConfigurationProtectedSettings(argparse._AppendAction):
                 # Add the setting to the feature's dictionary
                 prot_settings[feature][setting] = value
             except ValueError as ex:
-                raise ArgumentUsageError('Usage error: {} configuration_protected_setting_key='
-                                         'configuration_protected_setting_value'.format(option_string)) from ex
+                raise ArgumentUsageError(
+                    "Usage error: {} configuration_protected_setting_key="
+                    "configuration_protected_setting_value".format(option_string)
+                ) from ex
         setattr(namespace, self.dest, prot_settings)
