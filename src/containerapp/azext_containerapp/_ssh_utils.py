@@ -13,10 +13,10 @@ import websocket
 from azure.cli.command_modules.containerapp._ssh_utils import SSH_PROXY_INFO, SSH_DEFAULT_ENCODING, SSH_PROXY_ERROR, \
     SSH_PROXY_FORWARD, SSH_CLUSTER_STDOUT, SSH_CLUSTER_STDERR, SSH_TERM_RESIZE_PREFIX, SSH_INPUT_PREFIX
 from azure.cli.command_modules.containerapp._utils import is_platform_windows
-
-from knack.log import get_logger
 from azure.cli.core.azclierror import CLIInternalError, ValidationError
 from azure.cli.core.commands.client_factory import get_subscription_id
+
+from knack.log import get_logger
 
 from ._clients import ContainerAppClient
 
