@@ -726,7 +726,7 @@ def create_connectedk8s(
                     # Substitute any protected helm values as the value for that will be 'redacted-<feature>-<protectedSetting>'
                     for helm_parameter, helm_value in helm_content_values.items():
                         if "redacted" in helm_value:
-                            _, feature, protectedSetting = helm_value.split("-")
+                            _, feature, protectedSetting = helm_value.split(":")
                             helm_content_values[helm_parameter] = (
                                 configuration_protected_settings[
                                     feature
@@ -933,7 +933,7 @@ def create_connectedk8s(
     # Substitute any protected helm values as the value for that will be 'redacted-<feature>-<protectedSetting>'
     for helm_parameter, helm_value in helm_content_values.items():
         if "redacted" in helm_value:
-            _, feature, protectedSetting = helm_value.split("-")
+            _, feature, protectedSetting = helm_value.split(":")
             helm_content_values[helm_parameter] = configuration_protected_settings[
                 feature
             ][protectedSetting]
@@ -2291,7 +2291,7 @@ def update_connected_cluster(
     # Substitute any protected helm values as the value for that will be 'redacted-<feature>-<protectedSetting>'
     for helm_parameter, helm_value in helm_content_values.items():
         if "redacted" in helm_value:
-            _, feature, protectedSetting = helm_value.split("-")
+            _, feature, protectedSetting = helm_value.split(":")
             helm_content_values[helm_parameter] = configuration_protected_settings[
                 feature
             ][protectedSetting]
@@ -4661,9 +4661,11 @@ def install_kubectl_client():
             "Downloading kubectl client for first time. This can take few minutes..."
         )
         logging.disable(logging.CRITICAL)
-        get_default_cli().invoke(
+        exit_code = get_default_cli().invoke(
             ["aks", "install-cli", "--install-location", kubectl_path]
         )
+        if exit_code != 0:
+            raise CLIInternalError("Failed to download and install kubectl.")
         logging.disable(logging.NOTSET)
         logger.warning("\n")
         # Return the path of the kubectl executable
@@ -4799,7 +4801,7 @@ def add_config_protected_settings(
             if feature not in redacted_protected_values:
                 redacted_protected_values[feature] = {}
             redacted_protected_values[feature][setting] = (
-                f"redacted-{feature}-{setting}"
+                f"redacted:{feature}:{setting}"
             )
 
     return (
