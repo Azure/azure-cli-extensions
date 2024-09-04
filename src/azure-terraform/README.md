@@ -21,4 +21,4 @@ Below is a high-level overview of azure-terraform commands.
 
 | Commands                                       | Description                                                                        |
 |------------------------------------------------|------------------------------------------------------------------------------------|
-| az azure-terraform export-terraform            | Exports the Terraform configuration used for the specified scope                   |
+| az azure-terraform export-terraform            | Exports the Terraform configuration of the specified scope                         |
