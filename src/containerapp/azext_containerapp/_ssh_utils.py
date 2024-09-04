@@ -3,21 +3,22 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=logging-fstring-interpolation
+# pylint: disable=possibly-used-before-assignment
 
-import shutil
 import sys
 import time
 import threading
 
-import requests
 import websocket
+from azure.cli.command_modules.containerapp._ssh_utils import SSH_PROXY_INFO, SSH_DEFAULT_ENCODING, SSH_PROXY_ERROR, \
+    SSH_PROXY_FORWARD, SSH_CLUSTER_STDOUT, SSH_CLUSTER_STDERR, SSH_TERM_RESIZE_PREFIX, SSH_INPUT_PREFIX
+from azure.cli.command_modules.containerapp._utils import is_platform_windows
 
 from knack.log import get_logger
 from azure.cli.core.azclierror import CLIInternalError, ValidationError
 from azure.cli.core.commands.client_factory import get_subscription_id
 
 from ._clients import ContainerAppClient
-from ._utils import safe_get, is_platform_windows
 
 # pylint: disable=import-error,ungrouped-imports
 if is_platform_windows():
@@ -26,27 +27,6 @@ if is_platform_windows():
                                                                 _set_conout_mode, _get_conin_mode, _set_conin_mode)
 
 logger = get_logger(__name__)
-
-# SSH control byte values for container app proxy
-SSH_PROXY_FORWARD = 0
-SSH_PROXY_INFO = 1
-SSH_PROXY_ERROR = 2
-
-# SSH control byte values for container app cluster
-SSH_CLUSTER_STDIN = 0
-SSH_CLUSTER_STDOUT = 1
-SSH_CLUSTER_STDERR = 2
-
-# forward byte + stdin byte
-SSH_INPUT_PREFIX = b"\x00\x00"
-
-# forward byte + terminal resize byte
-SSH_TERM_RESIZE_PREFIX = b"\x00\x04"
-
-SSH_DEFAULT_ENCODING = "utf-8"
-SSH_BACKUP_ENCODING = "latin_1"
-
-SSH_CTRL_C_MSG = b"\x00\x00\x03"
 
 
 class WebSocketConnection:
@@ -153,10 +133,11 @@ def _send_stdin(connection: WebSocketConnection, getch_fn):
 
 
 def _resize_terminal(connection: WebSocketConnection):
-    size = shutil.get_terminal_size()
+    from shutil import get_terminal_size
+    size = get_terminal_size()
     if connection.is_connected:
         # send twice with different width to make sure the terminal will display username prefix correctly
-        # refer kubectl debug command implementation:
+        # refer `kubectl debug` command implementation:
         # https://github.com/kubernetes/kubectl/blob/14f6a11dd84315dc5179ff04156b338def935eaa/pkg/cmd/attach/attach.go#L296
         connection.send(b"".join([SSH_TERM_RESIZE_PREFIX,
                                   f'{{"Width": {size.columns + 1}, '
@@ -174,19 +155,6 @@ def _getch_windows():
     while not msvcrt.kbhit():
         time.sleep(0.01)
     return msvcrt.getch()
-
-
-def ping_container_app(app):
-    site = safe_get(app, "properties", "configuration", "ingress", "fqdn")
-    if site:
-        try:
-            resp = requests.get(f'https://{site}', timeout=30)
-            if not resp.ok:
-                logger.info(f"Got bad status pinging app: {resp.status_code}")
-        except requests.exceptions.ReadTimeout:
-            logger.info("Timed out while pinging app external URL")
-    else:
-        logger.info("Could not fetch site external URL")
 
 
 def get_stdin_writer(connection: WebSocketConnection):

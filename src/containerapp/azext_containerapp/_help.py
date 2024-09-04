@@ -2061,5 +2061,5 @@ helps['containerapp debug'] = """
     examples:
     - name: debug into a particular container app replica and revision
       text: |
-          az containerapp debug -n MyContainerapp -g MyResourceGroup --revision MyRevision --replica MyReplica --runtime Java_17
+          az containerapp debug -n MyContainerapp -g MyResourceGroup --revision MyRevision --replica MyReplica --container MyContainer
 """

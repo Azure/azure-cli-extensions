@@ -223,10 +223,6 @@ def parse_service_bindings(cmd, service_bindings_list, resource_group_name, name
     return service_connector_def_list, service_bindings_def_list
 
 
-def is_platform_windows():
-    return platform.system() == "Windows"
-
-
 def connected_env_check_cert_name_availability(cmd, resource_group_name, name, cert_name):
     name_availability_request = {}
     name_availability_request["name"] = cert_name
