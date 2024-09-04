@@ -4513,7 +4513,7 @@ def troubleshoot(
             )
 
         connected_cluster = get_connectedk8s_2024_07_01(
-            cmd, client, resource_group_name, cluster_name
+            cmd, resource_group_name, cluster_name
         )
         # saving signing key CR snapshot only if oidc issuer prfile is enabled
         if connected_cluster.oidc_issuer_profile.enabled:
