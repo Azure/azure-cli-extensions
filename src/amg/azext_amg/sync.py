@@ -5,8 +5,8 @@
 
 import json
 
-from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from knack.log import get_logger
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from azure.cli.core.azclierror import ArgumentUsageError
 from azure.cli.core.style import print_styled_text, Style
 
