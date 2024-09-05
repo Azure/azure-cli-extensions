@@ -813,7 +813,7 @@ helps['storage account local-user create'] = """
               az storage account local-user create --account-name {account-name} -g {resource-group} -n {username}
               --home-directory home --permission-scope permissions=r service=blob resource-name=container1
               --permission-scope permissions=rw service=file resource-name=share2 --ssh-authorized-key key="ssh-rsa a2V5"
-              --has-ssh-key true --has-ssh-password --has-shared-key false --group-id 1 --allow-acl-authorization true 
+              --has-ssh-key true --has-ssh-password --has-shared-key false --group-id 1 --allow-acl-authorization true
               --extended-groups 3 4 --is-nfsv3-enabled true
 """
 

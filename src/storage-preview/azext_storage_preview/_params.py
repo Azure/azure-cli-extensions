@@ -958,4 +958,4 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
 
     with self.argument_context('storage account local-user create') as c:
         c.argument('is_nfsv3_enabled', arg_type=get_three_state_flag(),
-            help='Indicates if the local user is enabled for access with NFSv3 protocol.')
+                   help='Indicates if the local user is enabled for access with NFSv3 protocol.')
