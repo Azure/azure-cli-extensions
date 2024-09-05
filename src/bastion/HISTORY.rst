@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.1.1
+2.0.0
 ++++++
 * Update SDk to 2024-01-01
 * Allow create bastion with zones and session recording
