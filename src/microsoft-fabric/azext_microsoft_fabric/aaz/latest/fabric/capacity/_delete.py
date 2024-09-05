@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a FabricCapacity
+
+    :example: Delete a capacity
+        az fabric capacity delete --resource-group TestRG --capacity-name azsdktest
     """
 
     _aaz_info = {

@@ -16,6 +16,12 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List FabricCapacity resources by subscription ID
+
+    :example: List capacities by subscription
+        az fabric capacity list
+
+    :example: List capacities by resource group
+        az fabric capacity list --resource-group TestRG
     """
 
     _aaz_info = {
@@ -167,7 +173,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
             )
             _element.sku = AAZObjectType(
                 flags={"required": True},
@@ -328,7 +334,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
             )
             _element.sku = AAZObjectType(
                 flags={"required": True},

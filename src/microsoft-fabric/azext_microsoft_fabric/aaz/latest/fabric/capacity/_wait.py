@@ -164,7 +164,7 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
             )
             _schema_on_200.sku = AAZObjectType(
                 flags={"required": True},

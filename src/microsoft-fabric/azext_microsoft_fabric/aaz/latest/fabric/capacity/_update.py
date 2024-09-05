@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a FabricCapacity
+
+    :example: Update capacity properties
+        az fabric capacity update --resource-group TestRG --capacity-name azsdktest --administration "{members:[azsdktest@microsoft.com,azsdktest2@microsoft.com]}" --sku "{name:F4,tier:Fabric}"
     """
 
     _aaz_info = {
@@ -346,7 +349,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("sku", AAZObjectType, ".sku", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
@@ -413,7 +416,7 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         fabric_capacity_read.properties = AAZObjectType(
-            flags={"required": True, "client_flatten": True},
+            flags={"client_flatten": True},
         )
         fabric_capacity_read.sku = AAZObjectType(
             flags={"required": True},

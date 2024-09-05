@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class CheckNameAvailability(AAZCommand):
     """Implements local CheckNameAvailability operations
+
+    :example: Check name availability of a capacity
+        az fabric capacity check-name-availability --location westcentralus --name azsdktest --type Microsoft.Fabric/capacities
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Suspend(AAZCommand):
     """Suspend operation of the specified Fabric capacity instance.
+
+    :example: Suspend capacity
+        az fabric capacity suspend --resource-group TestRG --capacity-name azsdktest
     """
 
     _aaz_info = {
@@ -81,16 +84,7 @@ class Suspend(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
+                    None,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -140,9 +134,6 @@ class Suspend(AAZCommand):
                 ),
             }
             return parameters
-
-        def on_200(self, session):
-            pass
 
 
 class _SuspendHelper:

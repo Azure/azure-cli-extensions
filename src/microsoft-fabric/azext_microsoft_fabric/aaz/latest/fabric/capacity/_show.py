@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a FabricCapacity
+
+    :example: Get a capacity
+        az fabric capacity show --resource-group TestRG --capacity-name azsdktest
     """
 
     _aaz_info = {
@@ -165,7 +168,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
             )
             _schema_on_200.sku = AAZObjectType(
                 flags={"required": True},

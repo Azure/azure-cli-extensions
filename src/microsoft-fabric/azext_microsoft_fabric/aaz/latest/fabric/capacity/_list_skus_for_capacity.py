@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListSkusForCapacity(AAZCommand):
     """List eligible SKUs for a Microsoft Fabric resource
+
+    :example: List eligible SKUs for an existing capacity
+        az fabric capacity list-skus-for-capacity --resource-group TestRG --capacity-name azsdktest
     """
 
     _aaz_info = {

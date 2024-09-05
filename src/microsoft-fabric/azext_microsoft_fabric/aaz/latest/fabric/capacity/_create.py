@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a FabricCapacity
+
+    :example: Create or update a capacity
+        az fabric capacity create --resource-group TestRG --capacity-name azsdktest --administration "{members:[azsdktest@microsoft.com,azsdktest2@microsoft.com]}" --sku "{name:F2,tier:Fabric}" --location westcentralus
     """
 
     _aaz_info = {
@@ -63,7 +66,6 @@ class Create(AAZCommand):
             options=["--administration"],
             arg_group="Properties",
             help="The capacity administration",
-            required=True,
         )
 
         administration = cls._args_schema.administration
@@ -223,7 +225,7 @@ class Create(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("sku", AAZObjectType, ".sku", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
@@ -278,7 +280,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
             )
             _schema_on_200_201.sku = AAZObjectType(
                 flags={"required": True},

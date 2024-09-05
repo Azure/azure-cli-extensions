@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class ListSkus(AAZCommand):
     """List eligible SKUs for Microsoft Fabric resource provider
+
+    :example: List eligible SKUs for a new capacity
+        az fabric capacity list-skus
     """
 
     _aaz_info = {
