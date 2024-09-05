@@ -31,6 +31,7 @@ def load_command_table(self, _):
         g.custom_show_command('show', 'get_connectedk8s', table_transformer=connectedk8s_show_table_format)
         g.custom_command('proxy', 'client_side_proxy_wrapper')
         g.custom_command('troubleshoot', 'troubleshoot', is_preview=True)
+        g.custom_command('show-issuer-url', 'get_issuer_url', is_preview=True)
 
     with self.command_group('connectedk8s', connectedk8s_sdk_prev, client_factory=cf_connected_cluster_prev_2022_10_01) as g:
         pass
