@@ -2,7 +2,7 @@ Release History
 ===============
 1.25.1
 ---
-* Drop 1msrestazure1 dependency.
+* Drop `msrestazure` dependency.
 
 1.25.0
 ---
