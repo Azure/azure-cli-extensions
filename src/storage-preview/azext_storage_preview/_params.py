@@ -316,7 +316,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                    help='Enable or disable public network access to the storage account. '
                         'Possible values include: `Enabled` or `Disabled`.')
         c.argument('enable_extended_groups', arg_type=get_three_state_flag(),
-                   help='Enables extended group support with local users feature, if set to true.')
+                   help='Enable extended group support with local users feature, if set to true.')
 
     with self.argument_context('storage account update', resource_type=CUSTOM_MGMT_STORAGE) as c:
         t_tls_version = self.get_models('MinimumTlsVersion', resource_type=CUSTOM_MGMT_STORAGE)
@@ -390,7 +390,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
         c.argument('account_name', acct_name_type, options_list=['--name', '-n'])
         c.argument('resource_group_name', required=False, validator=process_resource_group)
         c.argument('enable_extended_groups', arg_type=get_three_state_flag(),
-                   help='Enables extended group support with local users feature, if set to true.')
+                   help='Enable extended group support with local users feature, if set to true.')
 
     for scope in ['storage account create', 'storage account update']:
         with self.argument_context(scope, arg_group='Customer managed key', min_api='2017-06-01',
@@ -951,11 +951,11 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals, too-many-statem
                        help='An identifier for associating a group of users.')
             c.argument('allow_acl_authorization', options_list=['--allow-acl-authorization', '--allow-acl-auth'],
                        arg_type=get_three_state_flag(),
-                       help='Indicates whether ACL authorization is allowed for this user. '
+                       help='Indicate whether ACL authorization is allowed for this user. '
                             'Set it to false to disallow using ACL authorization.')
             c.argument('extended_groups', nargs='+',
                        help='Supplementary group membership. Only applicable for local users enabled for NFSv3 access.')
 
     with self.argument_context('storage account local-user create') as c:
         c.argument('is_nfsv3_enabled', arg_type=get_three_state_flag(),
-                   help='Indicates if the local user is enabled for access with NFSv3 protocol.')
+                   help='Indicate if the local user is enabled for access with NFSv3 protocol.')
