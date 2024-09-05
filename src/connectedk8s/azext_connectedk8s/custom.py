@@ -4764,8 +4764,8 @@ def check_operation_support(operation_name, agent_version):
 
 
 def add_config_protected_settings(
-    https_proxy,
     http_proxy,
+    https_proxy,
     no_proxy,
     proxy_cert,
     container_log_path,
