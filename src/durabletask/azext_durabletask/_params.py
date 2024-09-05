@@ -13,6 +13,7 @@ def load_arguments(self, _):
     from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
     durabletask_name_type = CLIArgumentType(options_list='--durabletask-name-name', help='Name of the Durabletask.', id_part='name')
+    durabletask_rg_type = CLIArgumentType(options_list='--durabletask-rg-name', help='Name of the Resource Group.', id_part='name')
     durabletask_taskhub_type = CLIArgumentType(options_list='--durabletask-taskhub-name', help='Name of the Taskhub.', id_part='name')
     durabletask_namespace_type = CLIArgumentType(options_list='--durabletask-namespace-name', help='Name of the Namespace.', id_part='name')
 
@@ -30,7 +31,8 @@ def load_arguments(self, _):
 
     # Taskhub Commands
     with self.argument_context('durabletask taskhub list') as c:
-        c.argument('task_hub_name', durabletask_taskhub_type, options_list=['--task-hub-name', '-t'])
+        c.argument('namespace_name', durabletask_namespace_type, options_list=['--name', '-n'], id_part=None)
+        c.argument('resource_group_name', durabletask_rg_type, options_list=['--resource-group', '-g'], id_part=None)
 
     with self.argument_context('durabletask taskhub show') as c:
         c.argument('namespace_name', durabletask_namespace_type, options_list=['--name', '-n'])
