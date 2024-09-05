@@ -2,6 +2,10 @@
 
 Release History
 ===============
+3.0.2
+++++++
+* Support Fabric SQL target service
+
 3.0.1
 ++++++
 * Some improvements and security issue fixes.
