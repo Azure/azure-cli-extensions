@@ -21,7 +21,6 @@ from azure.cli.core._profile import Profile
 from azure.cli.command_modules.serviceconnector._utils import (
     generate_random_string,
     is_packaged_installed,
-    get_object_id_of_current_user
 )
 from azure.cli.command_modules.serviceconnector._resource_config import (
     RESOURCE,
@@ -31,7 +30,11 @@ from azure.cli.command_modules.serviceconnector._validators import (
     get_source_resource_name,
     get_target_resource_name,
 )
-from ._utils import run_cli_cmd, get_local_ip, confirm_all_ip_allow, confirm_admin_set, confirm_enable_entra_auth
+from ._utils import (
+    run_cli_cmd, get_local_ip,
+    confirm_all_ip_allow, confirm_admin_set,
+    confirm_enable_entra_auth, get_object_id_of_current_user_new
+)
 logger = get_logger(__name__)
 
 AUTHTYPES = {
@@ -57,7 +60,7 @@ def get_enable_mi_for_db_linker_func(yes=False, new=False):
 
         source_type = get_source_resource_name(cmd)
         target_type = get_target_resource_name(cmd)
-        source_handler = getSourceHandler(source_id, source_type)
+        source_handler = getSourceHandler(cmd, source_id, source_type)
         if source_handler is None:
             return None
         target_handler = getTargetHandler(
@@ -70,7 +73,7 @@ def get_enable_mi_for_db_linker_func(yes=False, new=False):
             'principal_id') if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserAccount] else auth_info.get("user_object_id")
         if user_object_id is None:
             try:
-                user_object_id = get_object_id_of_current_user()
+                user_object_id = get_object_id_of_current_user_new(cmd.cli_ctx)
             except CLIInternalError as e:
                 telemetry.set_exception(e, "No-User-Oid")
                 if auth_info['auth_type'] == AUTHTYPES[AUTH_TYPE.UserAccount]:
@@ -92,6 +95,7 @@ def get_enable_mi_for_db_linker_func(yes=False, new=False):
                     target_handler.identity_name = source_handler.get_identity_name()
                 elif target_type in [RESOURCE.Postgres, RESOURCE.MysqlFlexible]:
                     identity_info = run_cli_cmd(
+                        cmd.cli_ctx,
                         'az ad sp show --id "{}"'.format(source_object_id), 15, 10)
                     target_handler.identity_client_id = identity_info.get(
                         'appId')
@@ -106,6 +110,7 @@ def get_enable_mi_for_db_linker_func(yes=False, new=False):
             mi_client_id = auth_info.get('client_id')
             mi_sub_id = auth_info.get('subscription_id')
             umi_info = run_cli_cmd(
+                cmd.cli_ctx,
                 f'az identity list --subscription "{mi_sub_id}" --query "[?clientId==\'{mi_client_id}\']"')
             if umi_info is None or len(umi_info) == 0:
                 e = ResourceNotFoundError(
@@ -121,6 +126,7 @@ def get_enable_mi_for_db_linker_func(yes=False, new=False):
             sp_object_id = auth_info.get('principal_id')
             try:
                 sp_info = run_cli_cmd(
+                    cmd.cli_ctx,
                     'az ad sp show --id "{}"'.format(sp_client_id))
                 if sp_info is None:
                     e = ResourceNotFoundError(
@@ -175,8 +181,10 @@ class TargetHandler:
         self.auth_type = auth_info['auth_type']
         self.auth_info = auth_info
         self.login_username = run_cli_cmd(
+            self.cmd.cli_ctx,
             'az account show').get("user").get("name")
         self.login_usertype = run_cli_cmd(
+            self.cmd.cli_ctx,
             'az account show').get("user").get("type")  # servicePrincipal, user
         if (self.login_usertype not in ['servicePrincipal', 'user']):
             e = CLIInternalError(
@@ -263,6 +271,7 @@ class MysqlFlexibleHandler(TargetHandler):
     def check_db_existence(self):
         try:
             db_info = run_cli_cmd(
+                self.cmd.cli_ctx,
                 'az mysql flexible-server db show --ids "{}"'.format(self.target_id))
             if db_info is None:
                 e = ResourceNotFoundError(
@@ -276,6 +285,7 @@ class MysqlFlexibleHandler(TargetHandler):
     def set_user_admin(self, user_object_id, **kwargs):
         mysql_identity_id = kwargs['mysql_identity_id']
         admins = run_cli_cmd(
+            self.cmd.cli_ctx,
             'az mysql flexible-server ad-admin list -g "{}" -s "{}" --subscription "{}"'.format(
                 self.resource_group, self.server, self.subscription)
         )
@@ -303,12 +313,17 @@ class MysqlFlexibleHandler(TargetHandler):
             telemetry.set_exception(e, "Missing-Mysql-Umi")
             raise e
         mysql_umi = run_cli_cmd(
+            self.cmd.cli_ctx,
             'az mysql flexible-server identity list -g "{}" -s "{}" --subscription "{}"'.format(self.resource_group, self.server, self.subscription))
         if (not mysql_umi) or (not mysql_umi.get("userAssignedIdentities")) or mysql_identity_id not in mysql_umi.get("userAssignedIdentities"):
-            run_cli_cmd('az mysql flexible-server identity assign -g "{}" -s "{}" --subscription "{}" --identity "{}"'.format(
-                self.resource_group, self.server, self.subscription, mysql_identity_id))
-        run_cli_cmd('az mysql flexible-server ad-admin create -g "{}" -s "{}" --subscription "{}" -u "{}" -i "{}" --identity "{}"'.format(
-            self.resource_group, self.server, self.subscription, self.login_username, user_object_id, mysql_identity_id))
+            run_cli_cmd(
+                self.cmd.cli_ctx,
+                'az mysql flexible-server identity assign -g "{}" -s "{}" --subscription "{}" --identity "{}"'.format(
+                    self.resource_group, self.server, self.subscription, mysql_identity_id))
+        run_cli_cmd(
+            self.cmd.cli_ctx,
+            'az mysql flexible-server ad-admin create -g "{}" -s "{}" --subscription "{}" -u "{}" -i "{}" --identity "{}"'.format(
+                self.resource_group, self.server, self.subscription, self.login_username, user_object_id, mysql_identity_id))
         self.admin_username = self.login_username
 
     def create_aad_user(self):
@@ -352,6 +367,7 @@ class MysqlFlexibleHandler(TargetHandler):
     def set_target_firewall(self, is_add, ip_name, start_ip=None, end_ip=None):
         if is_add:
             target = run_cli_cmd(
+                self.cmd.cli_ctx,
                 'az mysql flexible-server show --ids "{}"'.format(self.target_id))
             if target.get('network').get('publicNetworkAccess') == "Disabled":
                 ex = AzureConnectionError(
@@ -362,6 +378,7 @@ class MysqlFlexibleHandler(TargetHandler):
                            ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[
                                AUTH_TYPE.UserAccount] else '(Please delete it manually if it has security risk.)'))
             run_cli_cmd(
+                self.cmd.cli_ctx,
                 'az mysql flexible-server firewall-rule create --resource-group "{0}" --name "{1}" --rule-name "{2}" '
                 '--subscription "{3}" --start-ip-address {4} --end-ip-address {5}'.format(
                     self.resource_group, self.server, ip_name, self.subscription, start_ip, end_ip)
@@ -373,6 +390,7 @@ class MysqlFlexibleHandler(TargetHandler):
                 "Remove database server firewall rule %s to recover...", ip_name)
             try:
                 run_cli_cmd(
+                    self.cmd.cli_ctx,
                     'az mysql flexible-server firewall-rule delete --resource-group "{0}" --name "{1}" --rule-name "{2}" '
                     '--subscription "{3}" --yes'.format(
                         self.resource_group, self.server, ip_name, self.subscription)
@@ -419,6 +437,7 @@ class MysqlFlexibleHandler(TargetHandler):
 
     def get_connection_string(self, dbname=""):
         password = run_cli_cmd(
+            self.cmd.cli_ctx,
             'az account get-access-token --resource-type oss-rdbms').get('accessToken')
 
         return {
@@ -459,6 +478,7 @@ class SqlHandler(TargetHandler):
     def check_db_existence(self):
         try:
             db_info = run_cli_cmd(
+                self.cmd.cli_ctx,
                 'az sql db show --ids "{}"'.format(self.target_id))
             if db_info is None:
                 e = ResourceNotFoundError(
@@ -472,6 +492,7 @@ class SqlHandler(TargetHandler):
     def set_user_admin(self, user_object_id, **kwargs):
         # pylint: disable=not-an-iterable
         admins = run_cli_cmd(
+            self.cmd.cli_ctx,
             'az sql server ad-admin list --ids "{}"'.format(self.target_id))
         if not user_object_id:
             if not admins:
@@ -491,8 +512,10 @@ class SqlHandler(TargetHandler):
             if set_admin:
                 logger.warning('Setting current user as database server Microsoft Entra admin:'
                                ' user=%s object id=%s', self.login_username, user_object_id)
-                admin_info = run_cli_cmd('az sql server ad-admin create -g "{}" --server-name "{}" --display-name "{}" --object-id "{}" --subscription "{}"'.format(
-                    self.resource_group, self.server, self.login_username, user_object_id, self.subscription))
+                admin_info = run_cli_cmd(
+                    self.cmd.cli_ctx,
+                    'az sql server ad-admin create -g "{}" --server-name "{}" --display-name "{}" --object-id "{}" --subscription "{}"'.format(
+                        self.resource_group, self.server, self.login_username, user_object_id, self.subscription))
         self.admin_username = admin_info.get('login', self.login_username) if admin_info else self.login_username
 
     def create_aad_user(self):
@@ -541,6 +564,7 @@ class SqlHandler(TargetHandler):
     def set_target_firewall(self, is_add, ip_name, start_ip=None, end_ip=None):
         if is_add:
             target = run_cli_cmd(
+                self.cmd.cli_ctx,
                 'az sql server show --ids "{}"'.format(self.target_id))
             # logger.warning("Update database server firewall rule to connect...")
             if target.get('publicNetworkAccess') == "Disabled":
@@ -552,6 +576,7 @@ class SqlHandler(TargetHandler):
                            ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[
                                AUTH_TYPE.UserAccount] else '(Please delete it manually if it has security risk.)'))
             run_cli_cmd(
+                self.cmd.cli_ctx,
                 'az sql server firewall-rule create -g "{0}" -s "{1}" -n "{2}" '
                 '--subscription "{3}" --start-ip-address {4} --end-ip-address {5}'.format(
                     self.resource_group, self.server, ip_name, self.subscription, start_ip, end_ip)
@@ -563,6 +588,7 @@ class SqlHandler(TargetHandler):
                 "Remove database server firewall rule %s to recover...", ip_name)
             try:
                 run_cli_cmd(
+                    self.cmd.cli_ctx,
                     'az sql server firewall-rule delete -g "{0}" -s "{1}" -n "{2}" --subscription "{3}"'.format(
                         self.resource_group, self.server, ip_name, self.subscription)
                 )
@@ -610,6 +636,7 @@ class SqlHandler(TargetHandler):
 
     def get_connection_string(self, dbname=""):
         token_bytes = run_cli_cmd(
+            self.cmd.cli_ctx,
             'az account get-access-token --output json --resource https://database.windows.net/').get('accessToken').encode('utf-16-le')
 
         token_struct = struct.pack(
@@ -654,6 +681,7 @@ class PostgresFlexHandler(TargetHandler):
             # `az postgres flexible-server db show -d postgres` will throw exception
             if self.dbname == "postgres":
                 server_info = run_cli_cmd(
+                    self.cmd.cli_ctx,
                     'az postgres flexible-server show -n "{}" -g "{}" --subscription "{}"'.format(
                         self.db_server, self.resource_group, self.subscription))
                 if server_info is None:
@@ -664,6 +692,7 @@ class PostgresFlexHandler(TargetHandler):
                 else:
                     return
             db_info = run_cli_cmd(
+                self.cmd.cli_ctx,
                 'az postgres flexible-server db show --server-name "{}" --database-name "{}" -g "{}" --subscription "{}"'.format(
                     self.db_server, self.dbname, self.resource_group, self.subscription))
             if db_info is None:
@@ -677,18 +706,22 @@ class PostgresFlexHandler(TargetHandler):
 
     def enable_target_aad_auth(self):
         target = run_cli_cmd(
+            self.cmd.cli_ctx,
             'az postgres flexible-server show -g "{}" -n "{}" --subscription "{}"'.format(
                 self.resource_group, self.db_server, self.subscription))
         if target.get('authConfig').get('activeDirectoryAuth') == "Enabled":
             return
         if not self.skip_prompt:
             confirm_enable_entra_auth()
-        run_cli_cmd('az postgres flexible-server update --ids "{}" --active-directory-auth Enabled'.format(
-            self.target_id))
+        run_cli_cmd(
+            self.cmd.cli_ctx,
+            'az postgres flexible-server update --ids "{}" --active-directory-auth Enabled'.format(self.target_id))
 
     def set_user_admin(self, user_object_id, **kwargs):
-        admins = run_cli_cmd('az postgres flexible-server ad-admin list -g "{}" -s "{}" --subscription "{}"'.format(
-            self.resource_group, self.db_server, self.subscription))
+        admins = run_cli_cmd(
+            self.cmd.cli_ctx,
+            'az postgres flexible-server ad-admin list -g "{}" -s "{}" --subscription "{}"'.format(
+                self.resource_group, self.db_server, self.subscription))
 
         if not user_object_id:
             if not admins or not any(admin.get('name', "") == self.login_username for admin in admins):
@@ -703,8 +736,10 @@ class PostgresFlexHandler(TargetHandler):
         admin_info = next((ad for ad in admins if ad.get('objectId', "") == user_object_id), None)
         if not admin_info:
             logger.warning('Set current user as DB Server Microsoft Entra Administrators.')
-            admin_info = run_cli_cmd('az postgres flexible-server ad-admin create -u "{}" -i "{}" -g "{}" -s "{}" --subscription "{}" -t {}'.format(
-                self.login_username, user_object_id, self.resource_group, self.db_server, self.subscription, self.login_usertype))
+            admin_info = run_cli_cmd(
+                self.cmd.cli_ctx,
+                'az postgres flexible-server ad-admin create -u "{}" -i "{}" -g "{}" -s "{}" --subscription "{}" -t {}'.format(
+                    self.login_username, user_object_id, self.resource_group, self.db_server, self.subscription, self.login_usertype))
         self.admin_username = admin_info.get('principalName', self.login_username)
 
     def create_aad_user(self):
@@ -758,6 +793,7 @@ class PostgresFlexHandler(TargetHandler):
     def set_target_firewall(self, is_add, ip_name, start_ip=None, end_ip=None):
         if is_add:
             target = run_cli_cmd(
+                self.cmd.cli_ctx,
                 'az postgres flexible-server show --ids "{}"'.format(self.target_id))
             if target.get('network').get('publicNetworkAccess') == "Disabled":
                 ex = AzureConnectionError(
@@ -768,6 +804,7 @@ class PostgresFlexHandler(TargetHandler):
                            ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[
                                AUTH_TYPE.UserAccount] else '(Please delete it manually if it has security risk.)'))
             run_cli_cmd(
+                self.cmd.cli_ctx,
                 'az postgres flexible-server firewall-rule create --resource-group "{0}" --name "{1}" --rule-name "{2}" '
                 '--subscription "{3}" --start-ip-address {4} --end-ip-address {5}'.format(
                     self.resource_group, self.db_server, ip_name, self.subscription, start_ip, end_ip)
@@ -779,6 +816,7 @@ class PostgresFlexHandler(TargetHandler):
                 "Remove database server firewall rule %s to recover...", ip_name)
             try:
                 run_cli_cmd(
+                    self.cmd.cli_ctx,
                     'az postgres flexible-server firewall-rule delete --resource-group "{0}" --name "{1}" --rule-name "{2}" '
                     '--subscription "{3}" --yes'.format(
                         self.resource_group, self.db_server, ip_name, self.subscription)
@@ -827,6 +865,7 @@ class PostgresFlexHandler(TargetHandler):
 
     def get_connection_string(self, dbname="postgres"):
         password = run_cli_cmd(
+            self.cmd.cli_ctx,
             'az account get-access-token --resource-type oss-rdbms').get('accessToken')
 
         # extension functions require the extension to be available, which is the case for postgres (default) database.
@@ -863,6 +902,7 @@ class PostgresSingleHandler(PostgresFlexHandler):
     def check_db_existence(self):
         try:
             db_info = run_cli_cmd(
+                self.cmd.cli_ctx,
                 'az postgres db show --ids "{}" -n "{}"'.format(self.target_id, self.dbname))
             if db_info is None:
                 e = ResourceNotFoundError(
@@ -880,6 +920,7 @@ class PostgresSingleHandler(PostgresFlexHandler):
 
         # pylint: disable=not-an-iterable
         admins = run_cli_cmd(
+            self.cmd.cli_ctx,
             'az postgres server ad-admin list --ids "{}"'.format(self.target_id))
 
         if not user_object_id:
@@ -896,8 +937,10 @@ class PostgresSingleHandler(PostgresFlexHandler):
         if not admin_info:
             logger.warning('Setting current user as database server Microsoft Entra admin:'
                            ' user=%s object id=%s', self.login_username, user_object_id)
-            admin_info = run_cli_cmd('az postgres server ad-admin create -g "{}" --server-name "{}" --display-name "{}" --object-id "{}"'
-                                     ' --subscription "{}"'.format(rg, server, self.login_username, user_object_id, sub))
+            admin_info = run_cli_cmd(
+                self.cmd.cli_ctx,
+                'az postgres server ad-admin create -g "{}" --server-name "{}" --display-name "{}" --object-id "{}"'
+                ' --subscription "{}"'.format(rg, server, self.login_username, user_object_id, sub))
         self.admin_username = admin_info.get('login', self.login_username)
 
     def set_target_firewall(self, is_add, ip_name, start_ip=None, end_ip=None):
@@ -907,6 +950,7 @@ class PostgresSingleHandler(PostgresFlexHandler):
         target_id = self.target_id
         if is_add:
             target = run_cli_cmd(
+                self.cmd.cli_ctx,
                 'az postgres server show --ids "{}"'.format(target_id))
             if target.get('publicNetworkAccess') == "Disabled":
                 ex = AzureConnectionError(
@@ -917,6 +961,7 @@ class PostgresSingleHandler(PostgresFlexHandler):
                            ('(it will be removed after connection is created)' if self.auth_type != AUTHTYPES[
                                AUTH_TYPE.UserAccount] else '(Please delete it manually if it has security risk.)'))
             run_cli_cmd(
+                self.cmd.cli_ctx,
                 'az postgres server firewall-rule create -g "{0}" -s "{1}" -n "{2}" --subscription "{3}"'
                 ' --start-ip-address {4} --end-ip-address {5}'.format(
                     rg, server, ip_name, sub, start_ip, end_ip)
@@ -928,6 +973,7 @@ class PostgresSingleHandler(PostgresFlexHandler):
                 "Remove database server firewall rule %s to recover...", ip_name)
             try:
                 run_cli_cmd(
+                    self.cmd.cli_ctx,
                     'az postgres server firewall-rule delete -g "{0}" -s "{1}" -n "{2}" -y'.format(rg, server, ip_name))
             except CLIInternalError as e:
                 logger.warning(
@@ -935,6 +981,7 @@ class PostgresSingleHandler(PostgresFlexHandler):
 
     def get_connection_string(self, dbname=""):
         password = run_cli_cmd(
+            self.cmd.cli_ctx,
             'az account get-access-token --resource-type oss-rdbms').get('accessToken')
 
         # extension functions require the extension to be available, which is the case for postgres (default) database.
@@ -960,24 +1007,25 @@ class PostgresSingleHandler(PostgresFlexHandler):
         ]
 
 
-def getSourceHandler(source_id, source_type):
+def getSourceHandler(cmd, source_id, source_type):
     if source_type in {RESOURCE.WebApp, RESOURCE.FunctionApp}:
-        return WebappHandler(source_id, source_type)
+        return WebappHandler(cmd, source_id, source_type)
     if source_type in {RESOURCE.ContainerApp}:
-        return ContainerappHandler(source_id, source_type)
+        return ContainerappHandler(cmd, source_id, source_type)
     if source_type in {RESOURCE.SpringCloud, RESOURCE.SpringCloudDeprecated}:
-        return SpringHandler(source_id, source_type)
+        return SpringHandler(cmd, source_id, source_type)
     if source_type in {RESOURCE.Local}:
-        return LocalHandler(source_id, source_type)
+        return LocalHandler(cmd, source_id, source_type)
     return None
 
 
 # pylint: disable=too-few-public-methods
 class SourceHandler:
 
-    def __init__(self, source_id, source_type: RESOURCE):
+    def __init__(self, cmd, source_id, source_type: RESOURCE):
         self.source_id = source_id
         self.source_type = source_type.value
+        self.cmd = cmd
 
     def get_identity_pid(self):
         return
@@ -987,7 +1035,7 @@ class SourceHandler:
 
 
 def output_is_none(output):
-    return not output.stdout
+    return not output['stdout']
 
 
 class LocalHandler(SourceHandler):
@@ -1010,17 +1058,22 @@ class SpringHandler(SourceHandler):
         rg = segments.get('resource_group')
         logger.warning(
             'Checking if Spring app enables System Identity...')
-        identity = run_cli_cmd('az {} app identity show -g "{}" -s "{}" -n "{}" --subscription "{}"'.format(
-            self.source_type, rg, spring, app, sub))
+        identity = run_cli_cmd(
+            self.cmd.cli_ctx,
+            'az {} app identity show -g "{}" -s "{}" -n "{}" --subscription "{}"'.format(
+                self.source_type, rg, spring, app, sub))
         if (identity is None or identity.get('type') != "SystemAssigned"):
             # assign system identity for spring-cloud
             logger.warning('Enabling Spring app System Identity...')
             run_cli_cmd(
+                self.cmd.cli_ctx,
                 'az {} app identity assign -g "{}" -s "{}" -n "{}" --subscription "{}"'.format(
                     self.source_type, rg, spring, app, sub))
 
-            identity = run_cli_cmd('az {} app identity show -g "{}" -s "{}" -n "{}" --subscription "{}"'.format(
-                self.source_type, rg, spring, app, sub), 15, 5, output_is_none)
+            identity = run_cli_cmd(
+                self.cmd.cli_ctx,
+                'az {} app identity show -g "{}" -s "{}" -n "{}" --subscription "{}"'.format(
+                    self.source_type, rg, spring, app, sub), 15, 5, output_is_none)
 
         if identity is None:
             ex = CLIInternalError(
@@ -1031,8 +1084,8 @@ class SpringHandler(SourceHandler):
 
 
 class WebappHandler(SourceHandler):
-    def __init__(self, source_id, source_type: RESOURCE):
-        super().__init__(source_id, source_type)
+    def __init__(self, cmd, source_id, source_type: RESOURCE):
+        super().__init__(cmd, source_id, source_type)
         segments = parse_resource_id(self.source_id)
         self.app_name = segments.get('name')
         self.slot_name = segments.get('child_name_1', None)
@@ -1045,22 +1098,29 @@ class WebappHandler(SourceHandler):
     def get_identity_pid(self):
         logger.warning('Checking if WebApp enables System Identity...')
         identity = run_cli_cmd(
+            self.cmd.cli_ctx,
             'az webapp identity show --ids "{}"'.format(self.source_id)) if self.slot_name is None else run_cli_cmd(
-            'az webapp identity show --ids "{}" --slot "{}"'.format(self.source_id, self.slot_name))
+                self.cmd.cli_ctx,
+                'az webapp identity show --ids "{}" --slot "{}"'.format(self.source_id, self.slot_name))
         if (identity is None or "SystemAssigned" not in identity.get('type')):
             # assign system identity for spring-cloud
             logger.warning('Enabling WebApp System Identity...')
             if self.slot_name is None:
                 run_cli_cmd(
+                    self.cmd.cli_ctx,
                     'az webapp identity assign --ids "{}"'.format(self.source_id))
 
                 identity = run_cli_cmd(
+                    self.cmd.cli_ctx,
                     'az webapp identity show --ids "{}"'.format(self.source_id), 15, 5, output_is_none)
             else:
                 run_cli_cmd(
+                    self.cmd.cli_ctx,
                     'az webapp identity assign --ids "{}" --slot "{}"'.format(self.source_id, self.slot_name))
                 identity = run_cli_cmd(
-                    'az webapp identity show --ids "{}" --slot "{}"'.format(self.source_id, self.slot_name), 15, 5, output_is_none)
+                    self.cmd.cli_ctx,
+                    'az webapp identity show --ids "{}" --slot "{}"'.format(
+                        self.source_id, self.slot_name), 15, 5, output_is_none)
 
         if identity is None:
             ex = CLIInternalError(
@@ -1079,13 +1139,16 @@ class ContainerappHandler(SourceHandler):
     def get_identity_pid(self):
         logger.warning('Checking if Container App enables System Identity...')
         identity = run_cli_cmd(
+            self.cmd.cli_ctx,
             'az containerapp identity show --ids "{}"'.format(self.source_id))
         if (identity is None or "SystemAssigned" not in identity.get('type')):
             # assign system identity for spring-cloud
             logger.warning('Enabling Container App System Identity...')
             run_cli_cmd(
+                self.cmd.cli_ctx,
                 'az containerapp identity assign --ids "{}" --system-assigned'.format(self.source_id))
             identity = run_cli_cmd(
+                self.cmd.cli_ctx,
                 'az containerapp identity show --ids "{}"'.format(self.source_id), 15, 5, output_is_none)
 
         if identity is None:
