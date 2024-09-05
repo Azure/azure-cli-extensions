@@ -13,6 +13,8 @@ def load_arguments(self, _):
     from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
     durabletask_name_type = CLIArgumentType(options_list='--durabletask-name-name', help='Name of the Durabletask.', id_part='name')
+    durabletask_taskhub_type = CLIArgumentType(options_list='--durabletask-taskhub-name', help='Name of the Taskhub.', id_part='name')
+    durabletask_namespace_type = CLIArgumentType(options_list='--durabletask-namespace-name', help='Name of the Namespace.', id_part='name')
 
     with self.argument_context('durabletask') as c:
         c.argument('tags', tags_type)
@@ -21,3 +23,21 @@ def load_arguments(self, _):
 
     with self.argument_context('durabletask list') as c:
         c.argument('durabletask_name', durabletask_name_type, id_part=None)
+
+    # Namespace Commands
+    with self.argument_context('durabletask namespace delete') as c:
+        c.argument('namespace_name', durabletask_namespace_type, options_list=['--name', '-n'])
+
+    # Taskhub Commands
+    with self.argument_context('durabletask taskhub list') as c:
+        c.argument('task_hub_name', durabletask_taskhub_type, options_list=['--task-hub-name', '-t'])
+
+    with self.argument_context('durabletask taskhub show') as c:
+        c.argument('namespace_name', durabletask_namespace_type, options_list=['--name', '-n'])
+        c.argument('task_hub_name', durabletask_taskhub_type, options_list=['--task-hub-name', '-t'])
+
+    with self.argument_context('durabletask taskhub create') as c:
+        c.argument('task_hub_name', durabletask_taskhub_type, options_list=['--task-hub-name', '-t'])
+
+    with self.argument_context('durabletask taskhub delete') as c:
+        c.argument('task_hub_name', durabletask_taskhub_type, options_list=['--task-hub-name', '-t'])

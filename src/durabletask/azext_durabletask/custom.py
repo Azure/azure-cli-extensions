@@ -4,25 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.util import CLIError
-from azext_durabletask._client_factory import cf_durabletask, cf_durabletask_namespaces, cf_durabletask_taskhubs
-from azext_durabletask.vendored_sdks.models import Namespace, TrackedResource
-
-
-def create_durabletask(cmd, client, resource_group_name, durabletask_name, location=None, tags=None):
-    # client = cf_durabletask(cmd.cli_ctx, None)
-    raise CLIError('TODO: Implement `durabletask create`')
-
-
-def list_durabletask(cmd, client, resource_group_name=None):
-    # client = cf_durabletask(cmd.cli_ctx, None)
-    return client.namespaces.list_by_subscription()
-
-
-def update_durabletask(cmd, instance, tags=None):
-    # client = cf_durabletask(cmd.cli_ctx, None)
-    with cmd.update_context(instance) as c:
-        c.set_param('tags', tags)
-    return instance
+from azext_durabletask._client_factory import cf_durabletask_namespaces, cf_durabletask_taskhubs
+from azext_durabletask.vendored_sdks.models import Namespace, TaskHub
 
 
 # Namespace Operations
@@ -36,12 +19,14 @@ def list_namespace(cmd, client, resource_group_name=None):
     return client.list_by_resource_group(resource_group_name=resource_group_name)
 
 
-def show_namespace(cmd, client, resource_group_name=None):
-    raise CLIError('TODO: Implement `durabletask namespace show`')
+def show_namespace(cmd, client, resource_group_name=None, namespace_name=None):
+    client = cf_durabletask_namespaces(cmd.cli_ctx, None)
+    return client.get(resource_group_name=resource_group_name, namespace_name=namespace_name)
 
 
-def delete_namespace(cmd, client, resource_group_name=None):
-    raise CLIError('TODO: Implement `durabletask namespace delete`')
+def delete_namespace(cmd, client, resource_group_name=None, namespace_name=None):
+    client = cf_durabletask_namespaces(cmd.cli_ctx, None)
+    return client.begin_delete(resource_group_name, namespace_name)
 
 
 def update_namespace(cmd, instance):
@@ -49,16 +34,26 @@ def update_namespace(cmd, instance):
 
 
 # Taskhub Operations
-def create_taskhub(cmd, client, resource_group_name, durabletask_name, location=None):
-    raise CLIError('TODO: Implement `durabletask taskhub create`')
+def create_taskhub(cmd, client, resource_group_name, namespace_name, task_hub_name, location=None):
+    client = cf_durabletask_taskhubs(cmd.cli_ctx, None)
+    return client.create_or_update(resource_group_name, namespace_name, task_hub_name,
+                                   resource=TaskHub(location=location))
 
 
-def list_taskhub(cmd, client, resource_group_name=None):
-    raise CLIError('TODO: Implement `durabletask taskhub list`')
+def list_taskhub(cmd, client, resource_group_name, namespace_name=None):
+    client = cf_durabletask_taskhubs(cmd.cli_ctx, None)
+    return client.list_by_namespace(resource_group_name=resource_group_name, namespace_name=namespace_name)
 
 
-def show_taskhub(cmd, client, resource_group_name=None):
-    raise CLIError('TODO: Implement `durabletask taskhub show`')
+def show_taskhub(cmd, client, resource_group_name, namespace_name=None, task_hub_name=None):
+    client = cf_durabletask_taskhubs(cmd.cli_ctx, None)
+    return client.get(resource_group_name=resource_group_name, namespace_name=namespace_name,
+                      task_hub_name=task_hub_name)
+
+
+def delete_taskhub(cmd, client, resource_group_name, namespace_name, task_hub_name):
+    client = cf_durabletask_taskhubs(cmd.cli_ctx, None)
+    return client.delete(resource_group_name, namespace_name, task_hub_name)
 
 
 def update_taskhub(cmd, instance):

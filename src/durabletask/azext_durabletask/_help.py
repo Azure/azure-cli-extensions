@@ -12,60 +12,29 @@ helps['durabletask'] = """
     short-summary: Commands to manage Durabletasks.
 """
 
-helps['durabletask create'] = """
-    type: command
-    short-summary: Create a Durabletask.
-"""
-
-helps['durabletask list'] = """
-    type: command
-    short-summary: List Durabletasks.
-"""
-
-helps['durabletask delete'] = """
-    type: command
-    short-summary: Delete a Durabletask.
-"""
-
-helps['durabletask show'] = """
-    type: command
-    short-summary: Show details of a Durabletask.
-"""
-
-helps['durabletask update'] = """
-    type: command
-    short-summary: Update a Durabletask.
-"""
-
-
 helps['durabletask namespace'] = """
     type: group
     short-summary: Commands to manage Durabletask namespaces.
 """
 
-helps['durabletask-namespace create'] = """
+helps['durabletask namespace create'] = """
     type: command
     short-summary: Create a Durabletask namespace.
 """
 
-helps['durabletask-namespace list'] = """
+helps['durabletask namespace list'] = """
     type: command
     short-summary: List Durabletasks namespaces.
 """
 
-helps['durabletask-namespace show'] = """
+helps['durabletask namespace show'] = """
     type: command
     short-summary: Show details of a Durabletask namespace.
 """
 
-helps['durabletask-namespace delete'] = """
+helps['durabletask namespace delete'] = """
     type: command
     short-summary: Delete a Durabletask namespace.
-"""
-
-helps['durabletask-namespace update'] = """
-    type: command
-    short-summary: Update a Durabletask namespace.
 """
 
 
@@ -79,6 +48,11 @@ helps['durabletask taskhub create'] = """
     short-summary: Create a Durabletask taskhub.
 """
 
+helps['durabletask taskhub delete'] = """
+    type: command
+    short-summary: Delete a Durabletask taskhub.
+"""
+
 helps['durabletask taskhub list'] = """
     type: command
     short-summary: List Durabletasks taskhubs.
@@ -87,9 +61,4 @@ helps['durabletask taskhub list'] = """
 helps['durabletask taskhub show'] = """
     type: command
     short-summary: Show details of a Durabletask taskhub.
-"""
-
-helps['durabletask taskhub update'] = """
-    type: command
-    short-summary: Update a Durabletask taskhub.
 """
