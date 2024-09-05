@@ -3,6 +3,22 @@
 Release History
 ===============
 
+2.0.0b3
+++++++++
+* This beta version supports NetworkCloud 2024-06-01-preview APIs.
+* Note is added regarding Virtual machine memory and disk size being in gibibytes. Avoid using property names `--memory-size-gb` and `--disk-size-gb`.
+* New functionality supported in this release:
+  * ClusterManager commands are updated with custom parameters --mi-system-assigned --mi-user-assigned to support managing identity.
+  * Cluster commands are updated with custom parameters --mi-system-assigned --mi-user-assigned to support managing identity.
+  * Cluster can now configure a storage account that will be used for downloading BareMetalMachine command execution results.
+  * Cluster rack pause functionality support is added with the new command `continue-update-version`.
+  * KubernetesCluster feature commands are added to manage addons for the Kubernetes cluster.
+  * BareMetalMachines and StorageAppliance are updated with new properties for secret rotation status.
+  * KubernetesClusters commands are enhanced to support an alternative load balancer configuration that represents an L2 load balancer in property `l2ServiceLoadBalancerConfiguration`.
+  * KubernetesClusters commands are enhanced to support additional upgrade settings `drainTimeout` and `maxUnavailable` for initial agent pools.
+  * KubernetesClusters agentpool commands are enhanced to support additional upgrade settings `drainTimeout` and `maxUnavailable`.
+* This version requires a minimum of 2.61 Azure core CLI.
+  
 2.0.0b2
 ++++++++
 * Examples updated to include new property user-principal-name for baremetalmachinekeyset and bmckeyset create and update commands.

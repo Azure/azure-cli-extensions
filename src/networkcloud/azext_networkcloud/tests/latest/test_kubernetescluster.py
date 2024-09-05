@@ -203,7 +203,12 @@ class KubernetesClusterScenarioTest(ScenarioTest):
         )
 
     @AllowLargeResponse()
-    @ResourceGroupPreparer(name_prefix="clitest_rg"[:7], key="rg", parameter_name="rg")
+    @ResourceGroupPreparer(
+        name_prefix="clitest_rg"[:7],
+        key="rg",
+        parameter_name="rg",
+        random_name_length=16,
+    )
     def test_kubernetescluster_scenario(self):
         """test scenario for kubernetes cluster CRUD operations"""
         call_scenario1(self)
