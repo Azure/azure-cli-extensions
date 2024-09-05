@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2024-06-01-preview"],
         ]
     }
 
@@ -119,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-06-01-preview",
                     required=True,
                 ),
             }
@@ -160,6 +160,7 @@ class Wait(AAZWaitCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.identity = AAZObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -178,6 +179,37 @@ class Wait(AAZWaitCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200.properties
             properties.aggregator_or_single_rack_definition = AAZObjectType(
                 serialized_name="aggregatorOrSingleRackDefinition",
@@ -193,6 +225,7 @@ class Wait(AAZWaitCommand):
             )
             properties.cluster_capacity = AAZObjectType(
                 serialized_name="clusterCapacity",
+                flags={"read_only": True},
             )
             properties.cluster_connection_status = AAZStrType(
                 serialized_name="clusterConnectionStatus",
@@ -200,6 +233,7 @@ class Wait(AAZWaitCommand):
             )
             properties.cluster_extended_location = AAZObjectType(
                 serialized_name="clusterExtendedLocation",
+                flags={"read_only": True},
             )
             _WaitHelper._build_schema_extended_location_read(properties.cluster_extended_location)
             properties.cluster_location = AAZStrType(
@@ -224,6 +258,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="clusterVersion",
                 flags={"required": True},
             )
+            properties.command_output_settings = AAZObjectType(
+                serialized_name="commandOutputSettings",
+            )
             properties.compute_deployment_threshold = AAZObjectType(
                 serialized_name="computeDeploymentThreshold",
             )
@@ -240,6 +277,7 @@ class Wait(AAZWaitCommand):
             )
             properties.hybrid_aks_extended_location = AAZObjectType(
                 serialized_name="hybridAksExtendedLocation",
+                flags={"read_only": True},
             )
             _WaitHelper._build_schema_extended_location_read(properties.hybrid_aks_extended_location)
             properties.managed_resource_group_configuration = AAZObjectType(
@@ -345,6 +383,22 @@ class Wait(AAZWaitCommand):
             cluster_service_principal.tenant_id = AAZStrType(
                 serialized_name="tenantId",
                 flags={"required": True},
+            )
+
+            command_output_settings = cls._schema_on_200.properties.command_output_settings
+            command_output_settings.associated_identity = AAZObjectType(
+                serialized_name="associatedIdentity",
+            )
+            command_output_settings.container_url = AAZStrType(
+                serialized_name="containerUrl",
+            )
+
+            associated_identity = cls._schema_on_200.properties.command_output_settings.associated_identity
+            associated_identity.identity_type = AAZStrType(
+                serialized_name="identityType",
+            )
+            associated_identity.user_assigned_identity_resource_id = AAZStrType(
+                serialized_name="userAssignedIdentityResourceId",
             )
 
             compute_deployment_threshold = cls._schema_on_200.properties.compute_deployment_threshold

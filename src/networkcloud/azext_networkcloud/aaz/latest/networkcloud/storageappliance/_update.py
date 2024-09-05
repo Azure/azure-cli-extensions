@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/storageappliances/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/storageappliances/{}", "2024-06-01-preview"],
         ]
     }
 
@@ -162,7 +162,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-06-01-preview",
                     required=True,
                 ),
             }
@@ -303,6 +303,12 @@ class _UpdateHelper:
             serialized_name="managementIpv4Address",
             flags={"read_only": True},
         )
+        properties.manufacturer = AAZStrType(
+            flags={"read_only": True},
+        )
+        properties.model = AAZStrType(
+            flags={"read_only": True},
+        )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
@@ -323,6 +329,10 @@ class _UpdateHelper:
             serialized_name="remoteVendorManagementStatus",
             flags={"read_only": True},
         )
+        properties.secret_rotation_status = AAZListType(
+            serialized_name="secretRotationStatus",
+            flags={"read_only": True},
+        )
         properties.serial_number = AAZStrType(
             serialized_name="serialNumber",
             flags={"required": True},
@@ -331,6 +341,9 @@ class _UpdateHelper:
             serialized_name="storageApplianceSkuId",
             flags={"required": True},
         )
+        properties.version = AAZStrType(
+            flags={"read_only": True},
+        )
 
         administrator_credentials = _schema_storage_appliance_read.properties.administrator_credentials
         administrator_credentials.password = AAZStrType(
@@ -338,6 +351,45 @@ class _UpdateHelper:
         )
         administrator_credentials.username = AAZStrType(
             flags={"required": True},
+        )
+
+        secret_rotation_status = _schema_storage_appliance_read.properties.secret_rotation_status
+        secret_rotation_status.Element = AAZObjectType()
+
+        _element = _schema_storage_appliance_read.properties.secret_rotation_status.Element
+        _element.expire_period_days = AAZIntType(
+            serialized_name="expirePeriodDays",
+            flags={"read_only": True},
+        )
+        _element.last_rotation_time = AAZStrType(
+            serialized_name="lastRotationTime",
+            flags={"read_only": True},
+        )
+        _element.rotation_period_days = AAZIntType(
+            serialized_name="rotationPeriodDays",
+            flags={"read_only": True},
+        )
+        _element.secret_archive_reference = AAZObjectType(
+            serialized_name="secretArchiveReference",
+            flags={"read_only": True},
+        )
+        _element.secret_type = AAZStrType(
+            serialized_name="secretType",
+            flags={"read_only": True},
+        )
+
+        secret_archive_reference = _schema_storage_appliance_read.properties.secret_rotation_status.Element.secret_archive_reference
+        secret_archive_reference.key_vault_id = AAZStrType(
+            serialized_name="keyVaultId",
+            flags={"read_only": True},
+        )
+        secret_archive_reference.secret_name = AAZStrType(
+            serialized_name="secretName",
+            flags={"read_only": True},
+        )
+        secret_archive_reference.secret_version = AAZStrType(
+            serialized_name="secretVersion",
+            flags={"read_only": True},
         )
 
         system_data = _schema_storage_appliance_read.system_data

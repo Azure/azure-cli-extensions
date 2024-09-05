@@ -22,7 +22,6 @@ logger = get_logger(__name__)
 
 
 class Update(_Update, CustomSshOptions):
-
     """
     This custom code inherits from generate kubernetescluster functions. It is
     integrated into the generated code via:

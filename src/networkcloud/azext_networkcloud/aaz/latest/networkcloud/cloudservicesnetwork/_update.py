@@ -19,13 +19,13 @@ class Update(AAZCommand):
     """Update properties of the provided cloud services network, or update the tags associated with it. Properties and tag updates can be done independently.
 
     :example: Patch cloud services network
-        az networkcloud cloudservicesnetwork update --name "cloudServicesNetworkName" --additional-egress-endpoints "[{category:'azure-resource-management',endpoints:[{domainName:'https://storageaccountex.blob.core.windows.net',port:443}]}]" --enable-default-egress-endpoints "False" --tags key1="myvalue1" key2="myvalue2" --resource-group "resourceGroupName"
+        az networkcloud cloudservicesnetwork update --name "cloudServicesNetworkName" --additional-egress-endpoints "[{category:'azure-resource-management',endpoints:[{domainName:'storageaccountex.blob.core.windows.net',port:443}]}]" --enable-default-egress-endpoints "False" --tags key1="myvalue1" key2="myvalue2" --resource-group "resourceGroupName"
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/cloudservicesnetworks/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/cloudservicesnetworks/{}", "2024-06-01-preview"],
         ]
     }
 
@@ -83,7 +83,6 @@ class Update(AAZCommand):
             options=["--enable-default-egress-endpoints"],
             arg_group="Properties",
             help="The indicator of whether the platform default endpoints are allowed for the egress traffic.",
-            default="True",
             enum={"False": "False", "True": "True"},
         )
 
@@ -202,7 +201,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-06-01-preview",
                     required=True,
                 ),
             }

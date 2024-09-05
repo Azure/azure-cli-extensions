@@ -23,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/virtualmachines/{}", "2024-06-01-preview"],
         ]
     }
 
@@ -98,10 +98,10 @@ class Create(AAZCommand):
                 minimum=2,
             ),
         )
-        _args_schema.memory_size_gb = AAZIntArg(
-            options=["--memory-size", "--memory-size-gb"],
+        _args_schema.memory_size_gib = AAZIntArg(
+            options=["--memory-size", "--memory-size-gb", "--memory-size-gib"],
             arg_group="Properties",
-            help="The memory size of the virtual machine in GB.",
+            help="The memory size of the virtual machine in gibibytes.",
             required=True,
             fmt=AAZIntArgFormat(
                 minimum=1,
@@ -280,9 +280,9 @@ class Create(AAZCommand):
             default="Delete",
             enum={"Delete": "Delete"},
         )
-        storage_profile.disk_size_gb = AAZIntArg(
-            options=["disk-size", "disk-size-gb"],
-            help="The size of the disk in gigabytes. Required if the createOption is Ephemeral.",
+        storage_profile.disk_size_gib = AAZIntArg(
+            options=["disk-size", "disk-size-gb", "disk-size-gib"],
+            help="The size of the disk in gibibytes. Required if the createOption is Ephemeral.",
             required=True,
         )
         storage_profile.volume_attachments = AAZListArg(
@@ -436,7 +436,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-06-01-preview",
                     required=True,
                 ),
             }
@@ -477,7 +477,7 @@ class Create(AAZCommand):
                 properties.set_prop("bootMethod", AAZStrType, ".boot_method")
                 properties.set_prop("cloudServicesNetworkAttachment", AAZObjectType, ".cloud_services_network_attachment", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("cpuCores", AAZIntType, ".cpu_cores", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("memorySizeGB", AAZIntType, ".memory_size_gb", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("memorySizeGB", AAZIntType, ".memory_size_gib", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("networkAttachments", AAZListType, ".network_attachments")
                 properties.set_prop("networkData", AAZStrType, ".network_data")
                 properties.set_prop("placementHints", AAZListType, ".placement_hints")
@@ -538,7 +538,7 @@ class Create(AAZCommand):
             if os_disk is not None:
                 os_disk.set_prop("createOption", AAZStrType, ".create_option")
                 os_disk.set_prop("deleteOption", AAZStrType, ".delete_option")
-                os_disk.set_prop("diskSizeGB", AAZIntType, ".disk_size_gb", typ_kwargs={"flags": {"required": True}})
+                os_disk.set_prop("diskSizeGB", AAZIntType, ".disk_size_gib", typ_kwargs={"flags": {"required": True}})
 
             volume_attachments = _builder.get(".properties.storageProfile.volumeAttachments")
             if volume_attachments is not None:
