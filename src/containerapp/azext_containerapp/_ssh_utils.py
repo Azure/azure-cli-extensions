@@ -97,7 +97,7 @@ def _decode_and_output_to_terminal(connection: WebSocketConnection, response, en
                 logger.info("Cluster Control Byte: %s", response[1])
                 logger.info("Hexdump: %s", response[2:].hex())
                 raise CLIInternalError("Failed to decode server data") from e
-            logger.info("Failed to encode with encoding %s", encoding)
+            logger.info("Failed to decode with encoding %s", encoding)
 
 
 def read_ssh(connection: WebSocketConnection, response_encodings):
