@@ -10,6 +10,7 @@ Volume tests scenarios
 """
 
 from azure.cli.testsdk import ScenarioTest
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 from .config import CONFIG
 
@@ -30,8 +31,8 @@ def call_scenario1(test):
     step_create(test, checks=[])
     step_update(test, checks=[])
     step_show(test, checks=[])
-    step_list_by_resource_group(test, checks=[])
-    step_list_by_subscription(test, checks=[])
+    step_list_by_resource_group(test)
+    step_list_by_subscription(test)
     step_delete(test, checks=[])
     cleanup_scenario1(test)
 
@@ -68,6 +69,7 @@ def step_show(test, checks=None):
     )
 
 
+@AllowLargeResponse
 def step_list_by_resource_group(test, checks=None):
     """Volume list by resource group operation"""
     if checks is None:
@@ -77,6 +79,7 @@ def step_list_by_resource_group(test, checks=None):
     )
 
 
+@AllowLargeResponse
 def step_list_by_subscription(test, checks=None):
     """Volume list by subscription operation"""
     if checks is None:

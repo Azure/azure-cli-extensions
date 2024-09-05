@@ -7,10 +7,12 @@ import time
 
 import pytest
 from azure.cli.testsdk import LiveScenarioTest, ResourceGroupPreparer
+import json
+import re
 
 STATUS_SUCCESS = 'SUCCESS'
 
-
+@pytest.mark.WindowsManaged
 class WindowsManagedDiskCreateRestoreTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -44,7 +46,7 @@ class WindowsManagedDiskCreateRestoreTest(LiveScenarioTest):
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
-
+@pytest.mark.WindowsUnmanaged
 class WindowsUnmanagedDiskCreateRestoreTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -79,10 +81,10 @@ class WindowsUnmanagedDiskCreateRestoreTest(LiveScenarioTest):
         assert source_vm['storageProfile']['osDisk']['vhd']['uri'] == result['copied_disk_uri']
 
 
-@pytest.mark.linux
+@pytest.mark.linuxManaged
 class LinuxManagedDiskCreateRestoreTest(LiveScenarioTest):
 
-    @ResourceGroupPreparer(location='eastus')
+    @ResourceGroupPreparer(location='westus2')
     def test_vmrepair_LinuxManagedCreateRestore(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
@@ -114,10 +116,10 @@ class LinuxManagedDiskCreateRestoreTest(LiveScenarioTest):
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
 
-@pytest.mark.linux
+@pytest.mark.linuxUnmanaged
 class LinuxUnmanagedDiskCreateRestoreTest(LiveScenarioTest):
 
-    @ResourceGroupPreparer(location='eastus')
+    @ResourceGroupPreparer(location='westus2')
     def test_vmrepair_LinuxUnmanagedCreateRestore(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
@@ -148,7 +150,7 @@ class LinuxUnmanagedDiskCreateRestoreTest(LiveScenarioTest):
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['vhd']['uri'] == result['copied_disk_uri']
 
-
+@pytest.mark.WinManagedDiskPubIpRestore
 class WindowsManagedDiskCreateRestoreTestwithpublicip(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -182,7 +184,7 @@ class WindowsManagedDiskCreateRestoreTestwithpublicip(LiveScenarioTest):
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
-
+@pytest.mark.WinUnmanagedDiskPubIpRestore
 class WindowsUnmanagedDiskCreateRestoreTestwithpublicip(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -192,7 +194,7 @@ class WindowsUnmanagedDiskCreateRestoreTestwithpublicip(LiveScenarioTest):
         })
 
         # Create test VM
-        self.cmd('vm create -g {rg} -n {vm} --admin-username azureadmin --image Win2016Datacenter --admin-password !Passw0rd2018 --use-unmanaged-disk')
+        self.cmd('vm create -g {rg} -n {vm} --admin-username azureadmin --image Win2022Datacenter --admin-password !Passw0rd2018 --use-unmanaged-disk')
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
@@ -216,10 +218,10 @@ class WindowsUnmanagedDiskCreateRestoreTestwithpublicip(LiveScenarioTest):
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['vhd']['uri'] == result['copied_disk_uri']
 
-
+@pytest.mark.LinuxManagedDiskPubIpRestore
 class LinuxManagedDiskCreateRestoreTestwithpublicip(LiveScenarioTest):
 
-    @ResourceGroupPreparer(location='eastus')
+    @ResourceGroupPreparer(location='westus2')
     def test_vmrepair_LinuxManagedCreateRestorePublicIp(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
@@ -250,7 +252,7 @@ class LinuxManagedDiskCreateRestoreTestwithpublicip(LiveScenarioTest):
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
-
+@pytest.mark.LinuxUnmanagedDiskPubIpRestore
 class LinuxUnmanagedDiskCreateRestoreTestwithpublicip(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -394,7 +396,7 @@ class LinuxSinglepassKekEncryptedManagedDiskCreateRestoreTest(LiveScenarioTest):
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
-
+@pytest.mark.WindowsNoKekRestore
 class WindowsSinglepassNoKekEncryptedManagedDiskCreateRestoreTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -439,7 +441,7 @@ class WindowsSinglepassNoKekEncryptedManagedDiskCreateRestoreTest(LiveScenarioTe
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
-
+@pytest.mark.LinuxNoKekRestore
 class LinuxSinglepassNoKekEncryptedManagedDiskCreateRestoreTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -486,7 +488,7 @@ class LinuxSinglepassNoKekEncryptedManagedDiskCreateRestoreTest(LiveScenarioTest
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
-
+@pytest.mark.WindHelloWorld
 class WindowsRunHelloWorldTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -507,7 +509,7 @@ class WindowsRunHelloWorldTest(LiveScenarioTest):
         # Check Output
         assert 'Hello World!' in result['output']
 
-
+@pytest.mark.LinHelloWorld
 class LinuxRunHelloWorldTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -528,7 +530,7 @@ class LinuxRunHelloWorldTest(LiveScenarioTest):
         # Check Output
         assert 'Hello World!' in result['output']
 
-
+@pytest.mark.ManagedDiskGen2
 class WindowsManagedDiskCreateRestoreGen2Test(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -562,7 +564,7 @@ class WindowsManagedDiskCreateRestoreGen2Test(LiveScenarioTest):
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
-
+@pytest.mark.linuxKekRHEL
 class LinuxSinglepassKekEncryptedManagedDiskWithRHEL8DistroCreateRestoreTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -617,7 +619,7 @@ class LinuxSinglepassKekEncryptedManagedDiskWithRHEL8DistroCreateRestoreTest(Liv
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
-
+@pytest.mark.linuxNoKekWithSles
 class LinuxSinglepassNoKekEncryptedManagedDiskWithSLES15CreateRestoreTest(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -645,7 +647,7 @@ class LinuxSinglepassNoKekEncryptedManagedDiskWithSLES15CreateRestoreTest(LiveSc
         # Add buffer time for encryption settings to be set
         time.sleep(300)
 
-        # Test create
+        # Test create SUSE
         result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2018 --distro sles15 --unlock-encrypted-vm --yes -o json').get_output_in_json()
         assert result['status'] == STATUS_SUCCESS, result['error_message']
 
@@ -664,7 +666,7 @@ class LinuxSinglepassNoKekEncryptedManagedDiskWithSLES15CreateRestoreTest(LiveSc
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
-
+@pytest.mark.LinuxManagedPubIpOracle
 class LinuxManagedDiskCreateRestoreTestwithOracle8andpublicip(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -698,7 +700,7 @@ class LinuxManagedDiskCreateRestoreTestwithOracle8andpublicip(LiveScenarioTest):
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
-
+@pytest.mark.WindowsResetNic
 class ResetNICWindowsVM(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
@@ -751,8 +753,8 @@ class RepairAndRestoreLinuxVM(LiveScenarioTest):
 @pytest.mark.arm64
 class LinuxARMManagedDiskCreateRestoreTest(LiveScenarioTest):
 
-    @ResourceGroupPreparer(location='eastus')
-    def test_vmrepair_LinuxManagedCreateRestore(self, resource_group):
+    @ResourceGroupPreparer(location='westus2')
+    def test_vmrepair_LinuxARMManagedCreateRestore(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
         })
@@ -786,7 +788,7 @@ class LinuxARMManagedDiskCreateRestoreTest(LiveScenarioTest):
 class ResetNICWithASG(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_vmrepair_ResetNicWindowsVM(self, resource_group):
+    def test_vmrepair_ResetNicWithASGWindowsVM(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
         })
@@ -810,3 +812,39 @@ class ResetNICWithASG(LiveScenarioTest):
         vm_instance_view = self.cmd('vm get-instance-view -g {rg} -n {vm} -o json').get_output_in_json()
         vm_power_state = vm_instance_view['instanceView']['statuses'][1]['code']
         assert vm_power_state == 'PowerState/running'
+
+@pytest.mark.ConfVM
+class WindowsConfidentialVMRepair(LiveScenarioTest):
+
+    @ResourceGroupPreparer(location='westus2')
+    def test_vmrepair_ConfidentialVMAndUnlockDisk(self, resource_group):
+        self.kwargs.update({
+            'vm': 'vm1',  
+            'rg': resource_group  
+        })
+
+        # Create test VM
+        # need to create a cvm
+        self.cmd('vm create -g {rg} -n {vm} --admin-username azureadmin --admin-password !Passw0rd2024 --image Win2022Datacenter')
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
+        # Something wrong with vm create command if it fails here
+        assert len(vms) == 1
+
+        # Test create
+        result = self.cmd('vm repair create -g {rg} -n {vm} --repair-username azureadmin --repair-password !Passw0rd2024 --unlock-encrypted-vm --encrypt-recovery-key !Passw0rd2024 --yes --verbose -o json').get_output_in_json()
+        assert result['status'] == STATUS_SUCCESS, result['error_message']
+
+        # Check repair VM
+        repair_vms = self.cmd('vm list -g {} -o json'.format(result['repair_resource_group'])).get_output_in_json()
+        assert len(repair_vms) == 1
+        repair_vm = repair_vms[0]
+        # Check attached data disk
+        assert repair_vm['storageProfile']['dataDisks'][0]['name'] == result['copied_disk_name']
+
+        # Call Restore
+        self.cmd('vm repair restore -g {rg} -n {vm} --yes')
+
+        # Check swapped OS disk
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
+        source_vm = vms[0]
+        assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
