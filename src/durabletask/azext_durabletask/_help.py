@@ -55,7 +55,7 @@ helps['durabletask taskhub delete'] = """
 
 helps['durabletask taskhub list'] = """
     type: command
-    short-summary: List Durabletasks taskhubs.
+    short-summary: List Durabletask taskhubs.
 """
 
 helps['durabletask taskhub show'] = """
