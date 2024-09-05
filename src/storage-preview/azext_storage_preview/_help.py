@@ -825,8 +825,7 @@ helps['storage account local-user update'] = """
           text: >
               az storage account local-user update --account-name {account-name} -g {resource-group} -n {username}
               --permission-scope permissions=rw service=file resource-name=share2
-              --has-ssh-key false --group-id 2 --allow-acl-authorization false --extended-groups 3 4 
-              --is-nfsv3-enabled true
+              --has-ssh-key false --group-id 2 --allow-acl-authorization false --extended-groups 3 4
 """
 
 helps['storage account local-user delete'] = """
