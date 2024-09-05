@@ -83,7 +83,7 @@ class Create(AAZCommand):
         _args_schema.sku = AAZStrArg(
             options=["--sku"],
             help="Sku of this Bastion Host.",
-            default="Premium",
+            default="Standard",
             enum={"Basic": "Basic", "Premium": "Premium", "Standard": "Standard"},
         )
 
