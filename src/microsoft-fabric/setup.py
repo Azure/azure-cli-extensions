@@ -34,16 +34,16 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='fabric',
+    name='microsoft-fabric',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Fabric Extension.',
+    description='Microsoft Azure Command-Line Tools Microsoft Fabric Extension.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/fabric',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/microsoft-fabric',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
-    package_data={'azext_fabric': ['azext_metadata.json']},
+    package_data={'azext_microsoft_fabric': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )
