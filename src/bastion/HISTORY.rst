@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.1.1
+++++++
+* Update SDk to 2024-01-01
+* Allow create bastion with zones and session recording
+
 1.1.0
 ++++++
 * Allow to pass `ssh_args` as positional parameter in command `az network bastion ssh`
