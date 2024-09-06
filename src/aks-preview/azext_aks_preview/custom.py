@@ -120,7 +120,6 @@ from azure.core.exceptions import (
     HttpResponseError,
 )
 from dateutil.parser import parse
-from dateutil.relativedelta import relativedelta
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.util import CLIError
