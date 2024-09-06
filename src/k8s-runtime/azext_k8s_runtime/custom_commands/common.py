@@ -51,10 +51,10 @@ def check_rp_registration(cmd: AzCliCommand, resource_id: str):
 
     """
     resource_management_client: ResourceManagementClient = get_mgmt_service_client(cmd.cli_ctx, ResourceManagementClient, subscription_id=resource_id.subscription_id)
-    # resource_provider = resource_management_client.providers.get(KUBERNETES_RUNTIME_RP)
-    # if resource_provider.registration_state == "Registered":
-    #     print(f"Kubernetes Runtime RP has been registered in subscription {resource_id.subscription_id}...")
-    #     return
+    resource_provider = resource_management_client.providers.get(KUBERNETES_RUNTIME_RP)
+    if resource_provider.registration_state == "Registered":
+        print(f"Kubernetes Runtime RP has been registered in subscription {resource_id.subscription_id}...")
+        return
 
     print(f"Registering Kubernetes Runtime RP in subscription {resource_id.subscription_id}...")
 
