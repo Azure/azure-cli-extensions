@@ -317,7 +317,7 @@ class BillingShow(_BillingShow):
             }
         result = {
             "currentBillingFeatures": output["CurrentBillingFeatures"],
-            "dataVolumeCap": new_data_volume_cap
+            "dataVolumeCap": new_data_volume_cap  # pylint: disable=possibly-used-before-assignment
         }
         return result
 
