@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+1.0.1
++++++
+* Replace msrestazure with azure.core
+
 1.0.0
 +++++
 az databricks workspace create/update: Add --access-connector to associate an Access Connector Resource with workspace.
