@@ -1,5 +1,9 @@
 Release History
 ===============
+1.25.1
+---
+* Drop `msrestazure` dependency.
+
 1.25.0
 ---
 * Add arguments `--disable-test-endpoint-auth` in `spring app create` and `spring app update`.
