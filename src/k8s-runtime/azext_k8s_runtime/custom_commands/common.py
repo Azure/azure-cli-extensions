@@ -13,8 +13,6 @@ from azure.mgmt.resource import ResourceManagementClient
 from azure.cli.command_modules.role import graph_client_factory
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.mgmt.authorization import AuthorizationManagementClient
-from azure.graphrbac import GraphRbacManagementClient
-from azure.cli.core._profile import Profile
 
 logger = get_logger(__name__)
 
@@ -22,7 +20,7 @@ KUBERNETES_RUNTIME_RP = "Microsoft.KubernetesRuntime"
 KUBERNETES_RUNTIME_FPA_APP_ID = "087fca6e-4606-4d41-b3f6-5ebdf75b8b4c"
 AZURE_ROLE_CONTRIBUTOR = "b24988ac-6180-42a0-ab88-20f7382dd24c"
 AZURE_ROLE_OWNER = "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
-AUTHOTIZATION_RP = "Microsoft.Authorization"
+AUTHORIZATION_RP = "Microsoft.Authorization"
 
 
 def query_rp_oid(cmd: AzCliCommand):
@@ -59,14 +57,13 @@ def check_rp_registration(cmd: AzCliCommand, resource_id: str):
         return
 
     print(f"Registering Kubernetes Runtime RP in subscription {resource_id.subscription_id}...")
-    profile = Profile(cli_ctx=cmd.cli_ctx)
-    cred, _, tenant_id = profile.get_login_credentials(resource=cmd.cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
-    graph_rbac_management_client = GraphRbacManagementClient(cred, tenant_id, base_url=cmd.cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
-    current_user = graph_rbac_management_client.signed_in_user.get()
+
+    graph_client = graph_client_factory(cmd.cli_ctx)
+    current_user = graph_client.signed_in_user_get()
 
     authorization_management_client: AuthorizationManagementClient = get_mgmt_service_client(cmd.cli_ctx, AuthorizationManagementClient, subscription_id=resource_id.subscription_id)
-    role_assignments = authorization_management_client.role_assignments.list_for_subscription(filter=f"atScope() and assignedTo('{current_user.object_id}')")
-    role_definition_id_prefix = f"/subscriptions/{resource_id.subscription_id}/providers/{AUTHOTIZATION_RP}/roleDefinitions/"
+    role_assignments = authorization_management_client.role_assignments.list_for_subscription(filter=f"atScope() and assignedTo('{current_user['id']}')")
+    role_definition_id_prefix = f"/subscriptions/{resource_id.subscription_id}/providers/{AUTHORIZATION_RP}/roleDefinitions/"
     for role_assignment in role_assignments:
         if role_assignment.role_definition_id == role_definition_id_prefix + AZURE_ROLE_CONTRIBUTOR or role_assignment.role_definition_id == role_definition_id_prefix + AZURE_ROLE_OWNER:
             resource_management_client.providers.register(
