@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.0.0b4
++++++++
+* `az storage account create/update`: Support `--enable-extended-groups`
+* `az storage account local-user create/update`: Support `--extended-group`
+* `az storage account local-user create`: Support `--is-nfsv3-enabled`
+
 1.0.0b3
 +++++++
 * Remove ADAL dependencies
