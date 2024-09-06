@@ -14,13 +14,11 @@ import ssl
 import sys
 import threading
 import time
-import uuid
 import webbrowser
 
 from azext_aks_preview._client_factory import (
     CUSTOM_MGMT_AKS_PREVIEW,
     cf_agent_pools,
-    get_graph_rbac_management_client,
     get_msi_client,
     get_compute_client,
 )
@@ -121,12 +119,6 @@ from azure.core.exceptions import (
     ResourceNotFoundError,
     HttpResponseError,
 )
-from azure.graphrbac.models import (
-    ApplicationCreateParameters,
-    KeyCredential,
-    PasswordCredential,
-    ServicePrincipalCreateParameters,
-)
 from dateutil.parser import parse
 from dateutil.relativedelta import relativedelta
 from knack.log import get_logger
@@ -209,86 +201,6 @@ def load_service_principals(config_path):
             return shell_safe_json_parse(f.read())
     except:  # pylint: disable=bare-except
         return None
-
-
-def create_application(client, display_name, homepage, identifier_uris,
-                       available_to_other_tenants=False, password=None, reply_urls=None,
-                       key_value=None, key_type=None, key_usage=None, start_date=None,
-                       end_date=None):
-    from azure.graphrbac.models import GraphErrorException
-    password_creds, key_creds = _build_application_creds(password=password, key_value=key_value, key_type=key_type,
-                                                         key_usage=key_usage, start_date=start_date, end_date=end_date)
-
-    app_create_param = ApplicationCreateParameters(available_to_other_tenants=available_to_other_tenants,
-                                                   display_name=display_name,
-                                                   identifier_uris=identifier_uris,
-                                                   homepage=homepage,
-                                                   reply_urls=reply_urls,
-                                                   key_credentials=key_creds,
-                                                   password_credentials=password_creds)
-    try:
-        return client.create(app_create_param)
-    except GraphErrorException as ex:
-        if 'insufficient privileges' in str(ex).lower():
-            link = 'https://docs.microsoft.com/azure/azure-resource-manager/resource-group-create-service-principal-portal'  # pylint: disable=line-too-long
-            raise CLIError(
-                "Directory permission is needed for the current user to register the application. "
-                f"For how to configure, please refer '{link}'."
-            ) from ex
-        raise
-
-
-def _build_application_creds(password=None, key_value=None, key_type=None,
-                             key_usage=None, start_date=None, end_date=None):
-    if password and key_value:
-        raise CLIError(
-            'specify either --password or --key-value, but not both.')
-
-    if not start_date:
-        start_date = datetime.datetime.utcnow()
-    elif isinstance(start_date, str):
-        start_date = parse(start_date)
-
-    if not end_date:
-        end_date = start_date + relativedelta(years=1)
-    elif isinstance(end_date, str):
-        end_date = parse(end_date)
-
-    key_type = key_type or 'AsymmetricX509Cert'
-    key_usage = key_usage or 'Verify'
-
-    password_creds = None
-    key_creds = None
-    if password:
-        password_creds = [PasswordCredential(start_date=start_date, end_date=end_date,
-                                             key_id=str(uuid.uuid4()), value=password)]
-    elif key_value:
-        key_creds = [KeyCredential(start_date=start_date, end_date=end_date, value=key_value,
-                                   key_id=str(uuid.uuid4()), usage=key_usage, type=key_type)]
-
-    return (password_creds, key_creds)
-
-
-def create_service_principal(cli_ctx, identifier, resolve_app=True, rbac_client=None):
-    if rbac_client is None:
-        rbac_client = get_graph_rbac_management_client(cli_ctx)
-
-    if resolve_app:
-        try:
-            uuid.UUID(identifier)
-            result = list(rbac_client.applications.list(
-                filter=f"appId eq '{identifier}'"))
-        except ValueError:
-            result = list(rbac_client.applications.list(
-                filter=f"identifierUris/any(s:s eq '{identifier}')"))
-
-        if not result:  # assume we get an object id
-            result = [rbac_client.applications.get(identifier)]
-        app_id = result[0].app_id
-    else:
-        app_id = identifier
-
-    return rbac_client.service_principals.create(ServicePrincipalCreateParameters(app_id=app_id, account_enabled=True))
 
 
 _re_user_assigned_identity_resource_id = re.compile(
