@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# pylint: disable=protected-access
+# pylint: disable=protected-access, unnecessary-comprehension
 
 import os
 import argparse
@@ -870,7 +870,7 @@ def services_type(loader):
 
 def get_char_options_validator(types, property_name):
     def _validator(namespace):
-        service_types = set(getattr(namespace, property_name, list()))
+        service_types = set(getattr(namespace, property_name, []))
 
         if not service_types:
             raise ValueError('Missing options --{}.'.format(property_name.replace('_', '-')))
