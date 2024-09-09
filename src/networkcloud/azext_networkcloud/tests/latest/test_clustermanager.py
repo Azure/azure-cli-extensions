@@ -49,6 +49,78 @@ def call_scenario1(test):
     cleanup_scenario1(test)
 
 
+def call_scenario2(test):
+    """# Testcase: scenario2"""
+    setup_scenario1(test)
+    step_create_systemassigned_managedidentity(
+        test,
+        checks=[
+            test.check("name", "{name}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+    step_update(
+        test,
+        checks=[
+            test.check("tags", "{tagsUpdate}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+    step_show(test, checks=[])
+    step_list_subscription(test)
+    step_list_resource_group(test, checks=[])
+    step_delete(test, checks=[])
+    cleanup_scenario1(test)
+
+
+def call_scenario3(test):
+    """# Testcase: scenario3"""
+    setup_scenario1(test)
+    step_create_userassigned_managedidentity(
+        test,
+        checks=[
+            test.check("name", "{name}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+    step_update(
+        test,
+        checks=[
+            test.check("tags", "{tagsUpdate}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+    step_show(test, checks=[])
+    step_list_subscription(test)
+    step_list_resource_group(test, checks=[])
+    step_delete(test, checks=[])
+    cleanup_scenario1(test)
+
+
+def call_scenario4(test):
+    """# Testcase: scenario4"""
+    setup_scenario1(test)
+    step_create_UA_SA_managedidentity(
+        test,
+        checks=[
+            test.check("name", "{name}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+    step_update(
+        test,
+        checks=[
+            test.check("tags", "{tagsUpdate}"),
+            test.check("provisioningState", "Succeeded"),
+        ],
+    )
+    step_show(test, checks=[])
+    step_list_subscription(test)
+    step_list_resource_group(test, checks=[])
+    step_delete(test, checks=[])
+    cleanup_scenario1(test)
+
+
 def step_create(test, checks=None):
     """ClusterManager create operation"""
     if checks is None:
@@ -59,6 +131,55 @@ def step_create(test, checks=None):
         "--fabric-controller-id {fabricControllerId} "
         "--tags {tags} "
         "--managed-resource-group-configuration name={mrg_name} "
+        "--analytics-workspace-id {analyticsWorkspaceId}",
+        checks=checks,
+    )
+
+
+def step_create_systemassigned_managedidentity(test, checks=None):
+    """ClusterManager create operation with system assigned managed identity"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud clustermanager create --name {name} "
+        "--location {location} --resource-group {rg} "
+        "--fabric-controller-id {fabricControllerId} "
+        "--tags {tags} "
+        "--managed-resource-group-configuration name={mrg_name} "
+        "--mi-system-assigned "
+        "--analytics-workspace-id {analyticsWorkspaceId}",
+        checks=checks,
+    )
+
+
+def step_create_userassigned_managedidentity(test, checks=None):
+    """ClusterManager create operation with user assigned managed identity"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud clustermanager create --name {name} "
+        "--location {location} --resource-group {rg} "
+        "--fabric-controller-id {fabricControllerId} "
+        "--tags {tags} "
+        "--managed-resource-group-configuration name={mrg_name} "
+        "--mi-user-assigned {uai} "
+        "--analytics-workspace-id {analyticsWorkspaceId}",
+        checks=checks,
+    )
+
+
+def step_create_UA_SA_managedidentity(test, checks=None):
+    """ClusterManager create operation with system assigned and user assigned managed identity"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud clustermanager create --name {name} "
+        "--location {location} --resource-group {rg} "
+        "--fabric-controller-id {fabricControllerId} "
+        "--tags {tags} "
+        "--managed-resource-group-configuration name={mrg_name} "
+        "--mi-system-assigned "
+        "--mi-user-assigned {uai} "
         "--analytics-workspace-id {analyticsWorkspaceId}",
         checks=checks,
     )
@@ -108,6 +229,17 @@ def step_update(test, checks=None):
     )
 
 
+def step_update_SA_to_UA_managedidentity(test, checks=None):
+    """ClusterManager update operation SA to UA"""
+    if checks is None:
+        checks = []
+    test.cmd(
+        "az networkcloud clustermanager update --name {name} "
+        "--mi-user-assigned {uai}"
+        "--tags {tagsUpdate} --resource-group {rg}"
+    )
+
+
 class ClusterManagerScenarioTest(ScenarioTest):
     """ClusterManager scenario test"""
 
@@ -128,6 +260,7 @@ class ClusterManagerScenarioTest(ScenarioTest):
                 ),
                 "tags": CONFIG.get("CLUSTER_MANAGER", "tags"),
                 "tagsUpdate": CONFIG.get("CLUSTER_MANAGER", "tags_update"),
+                "uai": CONFIG.get("CLUSTER_MANAGER", "uai"),
             }
         )
 
@@ -135,3 +268,18 @@ class ClusterManagerScenarioTest(ScenarioTest):
     def test_clustermanager_scenario1(self):
         """test scenario for ClusterManager CRUD operations"""
         call_scenario1(self)
+
+    @ResourceGroupPreparer(name_prefix="clitest_rg"[:7], key="rg", parameter_name="rg")
+    def test_clustermanager_scenario2(self):
+        """test scenario for ClusterManager CRUD operations using system assigned managed identity"""
+        call_scenario2(self)
+
+    @ResourceGroupPreparer(name_prefix="clitest_rg"[:7], key="rg", parameter_name="rg")
+    def test_clustermanager_scenario3(self):
+        """test scenario for ClusterManager CRUD operations using user assigned managed identity"""
+        call_scenario3(self)
+
+    @ResourceGroupPreparer(name_prefix="clitest_rg"[:7], key="rg", parameter_name="rg")
+    def test_clustermanager_scenario4(self):
+        """test scenario for ClusterManager CRUD operations using systemAssigned and user assigned managed identity"""
+        call_scenario4(self)
