@@ -772,7 +772,6 @@ def aks_update(
     ephemeral_disk_volume_type=None,
     ephemeral_disk_nvme_perf_tier=None,
     node_provisioning_mode=None,
-    ssh_access=None,
     cluster_service_load_balancer_health_probe_mode=None,
     if_match=None,
     if_none_match=None,
@@ -1184,6 +1183,7 @@ def aks_agentpool_list(cmd,     # pylint: disable=unused-argument
 def aks_agentpool_add(
     cmd,
     client,
+    mc_client,
     resource_group_name,
     cluster_name,
     nodepool_name,
