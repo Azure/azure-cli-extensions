@@ -181,7 +181,12 @@ def create_sig(self):
         '--admin-password "{computeVmPassword}" '
         '--vnet-name "{vNetName}" '
         '--subnet "{subnetName}" '
-        '--admin-username "{computeUserName}"'
+        '--admin-username "{computeUserName}" '
+        '--nsg-rule NONE'
+    )
+    # Disable default outbound access
+    self.cmd(
+        'az network vnet subnet update -g {rg} --vnet-name {vNetName} -n {subnetName} --default-outbound-access false'
     )
 
     compute_vm = self.cmd(
