@@ -6,6 +6,19 @@ This is an extension to Azure CLI to manage Azure Large Instance resources.
 2. Install the extension by running `az extension add -n azurelargeinstance`
 
 ## Usage Examples:
+### Compute Operations
+To create an Azure Large Instance
+
+```bash
+az large-instance create -g $RESOURCE_GROUP -n $NAME --location westus2 --ali-id $UNIQUE_MACHINE_ID --hardware-profile "{hardware-type:Cisco_UCS,azure-large-instance-size:S72}" --storage-profile "{nfs-ip-address:00.000.000.00,os-disks:[{name:t250_sles_boot_vol,diskSizeGB:50}]}" --network-profile "{circuit-id:none,network-interfaces:[{ipAddress:10.0.61.31}]}" --os-profile "{computer-name:test,osType:'SLES 12 SP5',version:'12 SP5'}"
+```
+
+To delete an Azure Large Instance
+```bash
+az large-instance delete -g $RESOURCE_GROUP -n $NAME
+```
+
+
 To list Azure Large Instances in a subscription
 
 `az large-instance list --subscription $SUBSCRIPTION_ID`
@@ -33,6 +46,19 @@ To start an Azure Large Instance
 To add an Azure Large Instance tag
 
 `az large-instance update --subscription $SUBSCRIPTION_ID --instance-name=$INSTANCE_NAME --resource-group=$RESOURCE_GROUP --tags newKey=value`
+
+### Storage Operations
+To create an Azure Large Storage Instance
+
+```bash
+az large-storage-instance create -g $RESOURCE_GROUP -n $INSTANCE_NAME -l westus2 --alsi-id $UNIQUE_MACHINE_ID --storage-properties "{offering-type:EPIC,storage-type:FC,generation:Gen4.5,hardware-type:NetApp,workload-type:ODB,storage-billing-properties:{billing-mode:PAYG,sku:n10}}"
+```
+
+To delete an Azure Large Storage Instance
+
+```bash
+az large-storage-instance delete -g $RESOURCE_GROUP -n $INSTANCE_NAME
+```
 
 To list Azure Large Storage Instances in a subscription
 

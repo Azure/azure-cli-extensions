@@ -26,9 +26,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}/agentpools/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}/agentpools/{}", "2024-06-01-preview"],
         ]
     }
 
@@ -59,7 +59,7 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.kubernetes_cluster_name = AAZStrArg(
-            options=["--kubernetes-cluster-name"],
+            options=["--kc-name", "--kubernetes-cluster-name"],
             help="The name of the Kubernetes cluster.",
             required=True,
             id_part="name",
@@ -120,10 +120,22 @@ class Update(AAZCommand):
         )
 
         upgrade_settings = cls._args_schema.upgrade_settings
+        upgrade_settings.drain_timeout = AAZIntArg(
+            options=["drain-timeout"],
+            help="The maximum time in seconds that is allowed for a node drain to complete before proceeding with the upgrade of the agent pool. If not specified during creation, a value of 1800 seconds is used.",
+            fmt=AAZIntArgFormat(
+                maximum=86400,
+                minimum=60,
+            ),
+        )
         upgrade_settings.max_surge = AAZStrArg(
             options=["max-surge"],
             help="The maximum number or percentage of nodes that are surged during upgrade. This can either be set to an integer (e.g. '5') or a percentage (e.g. '50%'). If a percentage is specified, it is the percentage of the total agent pool size at the time of the upgrade. For percentages, fractional nodes are rounded up. If not specified, the default is 1.",
             default="1",
+        )
+        upgrade_settings.max_unavailable = AAZStrArg(
+            options=["max-unavailable"],
+            help="The maximum number or percentage of nodes that can be unavailable during upgrade. This can either be set to an integer (e.g. '5') or a percentage (e.g. '50%'). If a percentage is specified, it is the percentage of the total agent pool size at the time of the upgrade. For percentages, fractional nodes are rounded up. If not specified during creation, a value of 0 is used. One of MaxSurge and MaxUnavailable must be greater than 0.",
         )
         return cls._args_schema
 
@@ -212,7 +224,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-06-01-preview",
                     required=True,
                 ),
             }
@@ -260,7 +272,9 @@ class Update(AAZCommand):
 
             upgrade_settings = _builder.get(".properties.upgradeSettings")
             if upgrade_settings is not None:
+                upgrade_settings.set_prop("drainTimeout", AAZIntType, ".drain_timeout")
                 upgrade_settings.set_prop("maxSurge", AAZStrType, ".max_surge")
+                upgrade_settings.set_prop("maxUnavailable", AAZStrType, ".max_unavailable")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -475,8 +489,14 @@ class _UpdateHelper:
         cls._build_schema_kubernetes_label_read(taints.Element)
 
         upgrade_settings = _schema_agent_pool_read.properties.upgrade_settings
+        upgrade_settings.drain_timeout = AAZIntType(
+            serialized_name="drainTimeout",
+        )
         upgrade_settings.max_surge = AAZStrType(
             serialized_name="maxSurge",
+        )
+        upgrade_settings.max_unavailable = AAZStrType(
+            serialized_name="maxUnavailable",
         )
 
         system_data = _schema_agent_pool_read.system_data

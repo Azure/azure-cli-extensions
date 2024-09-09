@@ -23,9 +23,9 @@ and instance name.
     """
 
     _aaz_info = {
-        "version": "2024-04-10",
+        "version": "2024-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstances/{}", "2024-04-10"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstances/{}", "2024-08-01-preview"],
         ]
     }
 
@@ -124,7 +124,7 @@ and instance name.
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-10",
+                    "api-version", "2024-08-01-preview",
                     required=True,
                 ),
             }
@@ -181,14 +181,12 @@ and instance name.
             properties = cls._schema_on_200.properties
             properties.azure_large_instance_id = AAZStrType(
                 serialized_name="azureLargeInstanceId",
-                flags={"read_only": True},
             )
             properties.hardware_profile = AAZObjectType(
                 serialized_name="hardwareProfile",
             )
             properties.hw_revision = AAZStrType(
                 serialized_name="hwRevision",
-                flags={"read_only": True},
             )
             properties.network_profile = AAZObjectType(
                 serialized_name="networkProfile",
@@ -198,7 +196,6 @@ and instance name.
             )
             properties.power_state = AAZStrType(
                 serialized_name="powerState",
-                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -206,7 +203,6 @@ and instance name.
             )
             properties.proximity_placement_group = AAZStrType(
                 serialized_name="proximityPlacementGroup",
-                flags={"read_only": True},
             )
             properties.storage_profile = AAZObjectType(
                 serialized_name="storageProfile",
@@ -215,17 +211,14 @@ and instance name.
             hardware_profile = cls._schema_on_200.properties.hardware_profile
             hardware_profile.azure_large_instance_size = AAZStrType(
                 serialized_name="azureLargeInstanceSize",
-                flags={"read_only": True},
             )
             hardware_profile.hardware_type = AAZStrType(
                 serialized_name="hardwareType",
-                flags={"read_only": True},
             )
 
             network_profile = cls._schema_on_200.properties.network_profile
             network_profile.circuit_id = AAZStrType(
                 serialized_name="circuitId",
-                flags={"read_only": True},
             )
             network_profile.network_interfaces = AAZListType(
                 serialized_name="networkInterfaces",
@@ -245,19 +238,15 @@ and instance name.
             )
             os_profile.os_type = AAZStrType(
                 serialized_name="osType",
-                flags={"read_only": True},
             )
             os_profile.ssh_public_key = AAZStrType(
                 serialized_name="sshPublicKey",
             )
-            os_profile.version = AAZStrType(
-                flags={"read_only": True},
-            )
+            os_profile.version = AAZStrType()
 
             storage_profile = cls._schema_on_200.properties.storage_profile
             storage_profile.nfs_ip_address = AAZStrType(
                 serialized_name="nfsIpAddress",
-                flags={"read_only": True},
             )
             storage_profile.os_disks = AAZListType(
                 serialized_name="osDisks",
