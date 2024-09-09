@@ -178,15 +178,7 @@ def create_sig(self):
         '--image "MicrosoftWindowsDesktop:Windows-10:win10-21h2-entn-g2:19044.3324.230801" '
         '--location "{location}" '
         "--security-type TrustedLaunch "
-        '--admin-password "{computeVmPassword}" '
-        '--vnet-name "{vNetName}" '
-        '--subnet "{subnetName}" '
-        '--admin-username "{computeUserName}" '
-        '--nsg-rule NONE'
-    )
-    # Disable default outbound access
-    self.cmd(
-        'az network vnet subnet update -g {rg} --vnet-name {vNetName} -n {subnetName} --default-outbound-access false'
+        '--admin-password "{computeVmPassword}"'
     )
 
     compute_vm = self.cmd(
