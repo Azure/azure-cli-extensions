@@ -1,6 +1,6 @@
 # Release History
 
-## 7.0.1 (2024-09)
+## 7.1.0 (2024-09)
 
 - Update `--license-key` to optional for `az vmware srm create` and `az vmware srm update`
 - Update `--vcenter` to optional for `az vmware arc create` and `az vmware arc update`
