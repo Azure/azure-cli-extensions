@@ -178,7 +178,10 @@ def create_sig(self):
         '--image "MicrosoftWindowsDesktop:Windows-10:win10-21h2-entn-g2:19044.3324.230801" '
         '--location "{location}" '
         "--security-type TrustedLaunch "
-        '--admin-password "{computeVmPassword}"'
+        '--admin-password "{computeVmPassword}" '
+        '--vnet-name "{vNetName}" '
+        '--subnet "{subnetName}" '
+        '--admin-username "{computeUserName}"'
     )
 
     compute_vm = self.cmd(
