@@ -12,7 +12,7 @@ import unittest
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, MSGraphNameReplacer, MOCKED_USER_NAME)
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
-from .test_definitions import (test_data_source, test_data_source_different_uid, test_notification_channel, test_dashboard, test_dashboard_with_datasource)
+from .test_definitions import (test_data_source, test_data_source_different_uid, test_notification_channel, test_dashboard, test_dashboard_with_datasource, test_dashboard_with_datasource_short_uid, test_data_source_long_uid2, test_data_source_short_uid2)
 from .recording_processors import ApiKeyServiceAccountTokenReplacer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
@@ -241,18 +241,38 @@ class AmgMigrateScenarioTest(ScenarioTest):
             self.kwargs.update({
                 'dashboardDefinitionDatasource': test_dashboard_with_datasource,
                 'dashboardTitle4': dashboard_title + '4',
-                'dataSourceDefinitionDifferentUID': test_data_source_different_uid
+                'dataSourceDefinitionDifferentUid': test_data_source_different_uid,
+                'dashboardDefinitionDatasourceShortUid': test_dashboard_with_datasource_short_uid,
+                'dashboardTitle5': dashboard_title + '5',
+                'dataSourceDefinitionLongUid2': test_data_source_long_uid2,
+                'dataSourceDefinitionShortUid2': test_data_source_short_uid2,
             })
             self.kwargs['dashboardDefinitionDatasource']['dashboard']['uid'] = 'mg2OAlTVd'  # control the uid to prevent auto generated uid with possible '-' that breaks the command
+            self.kwargs['dashboardDefinitionDatasourceShortUid']['dashboard']['uid'] = 'mg2OAlTVe'  # control the uid to prevent auto generated uid with possible '-' that breaks the command
 
             response_create = self.cmd('grafana dashboard create -g {rg} -n {name}  --definition "{dashboardDefinitionDatasource}" --title "{dashboardTitle4}"').get_output_in_json()
             self.kwargs.update({
                 'dashboardUid4': response_create["uid"],
             })
 
-            ds2 = self.cmd('grafana data-source create -g {rg} -n {name2} --definition "{dataSourceDefinitionDifferentUID}"').get_output_in_json()
+            ds2 = self.cmd('grafana data-source create -g {rg} -n {name2} --definition "{dataSourceDefinitionDifferentUid}"').get_output_in_json()
             self.kwargs.update({
                 'amg2_datasource_uid': ds2['datasource']['uid']
+            })
+
+            # create short uid in amg 1 (to do shortuid -> longuid remapping test)
+            self.cmd('grafana data-source create -g {rg} -n {name} --definition "{dataSourceDefinitionShortUid2}"').get_output_in_json()
+
+            # Create the dashboard
+            response_create2 = self.cmd('grafana dashboard create -g {rg} -n {name}  --definition "{dashboardDefinitionDatasourceShortUid}" --title "{dashboardTitle5}"').get_output_in_json()
+            self.kwargs.update({
+                'dashboardUid5': response_create2["uid"],
+            })
+
+            # create the long data source for amg2.
+            ds2 = self.cmd('grafana data-source create -g {rg} -n {name2} --definition "{dataSourceDefinitionLongUid2}"').get_output_in_json()
+            self.kwargs.update({
+                'amg2_datasource_uid_long': ds2['datasource']['uid']
             })
 
             # prepare to migrate
@@ -277,6 +297,11 @@ class AmgMigrateScenarioTest(ScenarioTest):
             self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid4}"', checks=[
                 self.check("[dashboard.title]", "['{dashboardTitle4}']"),
                 self.check("[dashboard.panels[0].datasource.uid]", "['{amg2_datasource_uid}']"),
+                self.check("[meta.folderTitle]", "['General']")])
+            
+            self.cmd('grafana dashboard show -g {rg} -n {name2} --dashboard "{dashboardUid5}"', checks=[
+                self.check("[dashboard.title]", "['{dashboardTitle5}']"),
+                self.check("[dashboard.panels[0].datasource.uid]", "['{amg2_datasource_uid_long}']"),
                 self.check("[meta.folderTitle]", "['General']")])
             
             # Close-out Instance
