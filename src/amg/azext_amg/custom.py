@@ -218,7 +218,7 @@ def _delete_role_assignment(cli_ctx, principal_id):
 
 
 def backup_grafana(cmd, grafana_name, components=None, directory=None, folders_to_include=None,
-                   folders_to_exclude=None, resource_group_name=None):
+                   folders_to_exclude=None, resource_group_name=None, skip_folder_permissions=False):
     import os
     from pathlib import Path
     from .backup import backup
@@ -236,7 +236,8 @@ def backup_grafana(cmd, grafana_name, components=None, directory=None, folders_t
            components=components,
            http_headers=headers,
            folders_to_include=folders_to_include,
-           folders_to_exclude=folders_to_exclude)
+           folders_to_exclude=folders_to_exclude,
+           skip_folder_permissions=skip_folder_permissions)
 
 
 def restore_grafana(cmd, grafana_name, archive_file, components=None, remap_data_sources=None,

@@ -33,35 +33,9 @@ def load_arguments(self, _):
         c.argument("time_to_live", default="1d", help="The life duration. For example, 1d if your key is going to last fr one day. Supported units are: s,m,h,d,w,M,y")
         c.ignore("subscription")  # a help argument
 
-    with self.argument_context("grafana create") as c:
-        c.argument("grafana_name", grafana_name_type, options_list=["--name", "-n"], validator=None)
-        c.argument("zone_redundancy", arg_type=get_enum_type(ZoneRedundancy), help="Indicates whether or not zone redundancy should be enabled. Default: Disabled")
-        c.argument("deterministic_outbound_ip", get_enum_type(["Enabled", "Disabled"]), options_list=["-i", "--deterministic-outbound-ip"],
-                   help="If enabled, the Grafana workspace will have fixed egress IPs you can use them in the firewall of datasources. Default: Disabled")
-        c.argument("skip_system_assigned_identity", options_list=["-s", "--skip-system-assigned-identity"], arg_type=get_three_state_flag(), help="Do not enable system assigned identity")
-        c.argument("skip_role_assignments", arg_type=get_three_state_flag(), help="Do not create role assignments for managed identity and the current login user")
-        c.argument("principal_ids", nargs="+", help="space-separated Azure AD object ids for users, groups, etc to be made as Grafana Admins. Once provided, CLI won't make the current logged-in user as Grafana Admin")
-        c.argument("principal_types", get_enum_type(["User", "Group", "ServicePrincipal"]), nargs="+", help="space-separated Azure AD principal types to pair with --principal-ids")
-
-    with self.argument_context("grafana update") as c:
-        c.argument("api_key_and_service_account", get_enum_type(["Enabled", "Disabled"]), options_list=['--api-key', '--service-account'],
-                   help="If enabled, you will be able to configure Grafana API keys and service accounts")
-        c.argument("deterministic_outbound_ip", get_enum_type(["Enabled", "Disabled"]), options_list=["-i", "--deterministic-outbound-ip"],
-                   help="If enabled, the Grafana workspace will have fixed egress IPs you can use them in the firewall of datasources")
-        c.argument("major_version", options_list=["--major-version"], help="Grafana major version number")
-        c.argument("public_network_access", get_enum_type(["Enabled", "Disabled"]), options_list=["-p", "--public-network-access"],
-                   help="allow public network access")
-        c.argument("smtp", get_enum_type(["Enabled", "Disabled"]), arg_group='SMTP', help="allow Grafana to send email")
-        c.argument("host", arg_group='SMTP', help="SMTP server url (port included)")
-        c.argument("user", arg_group='SMTP', help="SMTP server user name")
-        c.argument("password", arg_group='SMTP', help="SMTP server user password")
-        c.argument("from_address", arg_group='SMTP', help="Address used when sending out emails")
-        c.argument("from_name", arg_group='SMTP', help="Name to be used when sending out emails")
-        c.argument("start_tls_policy", get_enum_type(["OpportunisticStartTLS", "MandatoryStartTLS", "NoStartTLS"]), arg_group='SMTP', help="TLS policy")
-        c.argument("skip_verify", arg_group='SMTP', arg_type=get_three_state_flag(), help="Skip verifying SSL for SMTP server")
-
     with self.argument_context("grafana backup") as c:
         c.argument("directory", options_list=["-d", "--directory"], help="directory to backup Grafana artifacts")
+        c.argument("skip_folder_permissions", options_list=["--skip-folder-permissions"], arg_type=get_three_state_flag(), help="skip backing up Grafana folder permissions. Default: false")
 
     with self.argument_context("grafana restore") as c:
         c.argument("archive_file", options_list=["-a", "--archive-file"], help="archive to restore Grafana artifacts from")
