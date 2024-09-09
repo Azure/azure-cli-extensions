@@ -169,8 +169,8 @@ def get_all_folders(grafana_url, http_headers, **kwargs):
 
         skip_folder_permissions = kwargs.get('skip_folder_permissions')
         (status_folder_permissions, content_folder_permissions) = get_folder_permissions(folder['uid'],
-                                                                                            grafana_url,
-                                                                                            http_headers)
+                                                                                         grafana_url,
+                                                                                         http_headers)
         if skip_folder_permissions and status_folder_settings == 200:
             logger.info("Skipping folder permissions for folder %s", folder['title'])
             individual_folders.append((content_folder_settings, None))
