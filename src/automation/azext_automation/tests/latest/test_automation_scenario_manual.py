@@ -211,14 +211,14 @@ class AutomationScenarioTest(ScenarioTest):
         self.kwargs.update({
             'account_name': self.create_random_name('account-', 15),
             'schedule_name': self.create_random_name('schedule-', 15),
-            'start_time': '2023-03-01 15:38:00',
+            'start_time': '2025-03-01 15:38:00',
         })
 
         self.cmd('automation account create -n {account_name} -g {rg} --location "West US 2"')
         self.cmd('automation schedule create -n {schedule_name} -g {rg} --automation-account-name {account_name} --description test --frequency Hour --interval 1 --start-time {start_time} --time-zone UTC+08:00', checks=[
             self.check('frequency', 'Hour'),
             self.check('interval', '1'),
-            self.check('startTime', '2023-03-01T15:38:00+08:00'),
+            self.check('startTime', '2025-03-01T15:38:00+08:00'),
             self.check('timeZone', 'UTC+08:00'),
             self.check('description', 'test'),
             self.check('isEnabled', True)
@@ -226,7 +226,7 @@ class AutomationScenarioTest(ScenarioTest):
         self.cmd('automation schedule update -n {schedule_name} -g {rg} --automation-account-name {account_name} --description test1 --is-enabled false', checks=[
             self.check('frequency', 'Hour'),
             self.check('interval', '1'),
-            self.check('startTime', '2023-03-01T15:38:00+08:00'),
+            self.check('startTime', '2025-03-01T15:38:00+08:00'),
             self.check('timeZone', 'UTC+08:00'),
             self.check('description', 'test1'),
             self.check('isEnabled', False)
@@ -234,7 +234,7 @@ class AutomationScenarioTest(ScenarioTest):
         self.cmd('automation schedule list -g {rg} --automation-account-name {account_name} ', checks=[
             self.check('[0].frequency', 'Hour'),
             self.check('[0].interval', '1'),
-            self.check('[0].startTime', '2023-03-01T15:38:00+08:00'),
+            self.check('[0].startTime', '2025-03-01T15:38:00+08:00'),
             self.check('[0].timeZone', 'UTC+08:00'),
             self.check('[0].description', 'test1'),
             self.check('[0].isEnabled', False)
@@ -242,7 +242,7 @@ class AutomationScenarioTest(ScenarioTest):
         self.cmd('automation schedule show -n {schedule_name} -g {rg} --automation-account-name {account_name} ', checks=[
             self.check('frequency', 'Hour'),
             self.check('interval', '1'),
-            self.check('startTime', '2023-03-01T15:38:00+08:00'),
+            self.check('startTime', '2025-03-01T15:38:00+08:00'),
             self.check('timeZone', 'UTC+08:00'),
             self.check('description', 'test1'),
             self.check('isEnabled', False),
