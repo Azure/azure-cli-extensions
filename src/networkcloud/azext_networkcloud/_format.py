@@ -138,3 +138,62 @@ def transform_resource_table_output(result):
         final_result.append(new_item)
 
     return final_result if is_list else final_result[0]
+
+
+def transform_kubernetescluster_agentpool_table_output(result):
+    """Custom formatting of table output for a kubernetescluster agentpool resource"""
+
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    final_result = []
+    for item in result:
+        new_item = OrderedDict()
+        new_item["Name"] = item["name"]
+        new_item["ProvisioningState"] = item["provisioningState"]
+        new_item["Mode"] = item["mode"]
+        new_item["KubernetesVersion"] = item["kubernetesVersion"]
+        if item.get("detailedStatus"):
+            new_item["DetailedStatus"] = item["detailedStatus"]
+        else:
+            new_item["DetailedStatus"] = ""
+        if item.get("detailedStatusMessage"):
+            new_item["DetailedStatusMessage"] = item["detailedStatusMessage"]
+        else:
+            new_item["DetailedStatusMessage"] = ""
+
+        final_result.append(new_item)
+
+    return final_result if is_list else final_result[0]
+
+
+def transform_kubernetescluster_feature_table_output(result):
+    """Custom formatting of table output for a kubernetescluster feature resource"""
+
+    is_list = isinstance(result, list)
+
+    if not is_list:
+        result = [result]
+
+    final_result = []
+    for item in result:
+        new_item = OrderedDict()
+        new_item["Name"] = item["name"]
+        new_item["ProvisioningState"] = item["provisioningState"]
+        new_item["Required"] = item["required"]
+        new_item["AvailabilityLifecycle"] = item["availabilityLifecycle"]
+        new_item["Version"] = item["version"]
+        if item.get("detailedStatus"):
+            new_item["DetailedStatus"] = item["detailedStatus"]
+        else:
+            new_item["DetailedStatus"] = ""
+        if item.get("detailedStatusMessage"):
+            new_item["DetailedStatusMessage"] = item["detailedStatusMessage"]
+        else:
+            new_item["DetailedStatusMessage"] = ""
+
+        final_result.append(new_item)
+
+    return final_result if is_list else final_result[0]
