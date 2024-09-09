@@ -2,7 +2,7 @@
 
 Release History
 ===============
-0.5.2
+1.0.0b2
 +++++
 Support for api-version 2024-03-01-preview
 
