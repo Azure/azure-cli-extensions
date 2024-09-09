@@ -10,9 +10,9 @@ from time import sleep
 from requests.auth import HTTPBasicAuth
 from knack.log import get_logger
 from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalError, DeploymentError
-from msrestazure.tools import parse_resource_id
+from azure.mgmt.core.tools import parse_resource_id
 from azure.cli.core.commands.client_factory import get_subscription_id
-from msrestazure.azure_exceptions import CloudError
+from azure.core.exceptions import HttpResponseError
 from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from ._deployment_uploadable_factory import uploader_selector
 from ._log_stream import LogStream
@@ -57,7 +57,7 @@ class BuildService:
             if not response.upload_url:
                 raise AzureInternalError("Failed to get a SAS URL to upload context.")
             return response
-        except CloudError as e:
+        except HttpResponseError as e:
             raise AzureInternalError("Failed to get a SAS URL to upload context. Error: {}".format(e.message))
         except AttributeError as e:
             raise AzureInternalError("Failed to get a SAS URL to upload context. Error: {}".format(e))
@@ -92,7 +92,7 @@ class BuildService:
                                                                     self.name,
                                                                     build_name,
                                                                     build).properties.triggered_build_result.id
-        except (AttributeError, CloudError) as e:
+        except (AttributeError, HttpResponseError) as e:
             raise DeploymentError("Failed to create or update a build. Error: {}".format(e.message))
 
     def _wait_build_finished(self, build_result_id):

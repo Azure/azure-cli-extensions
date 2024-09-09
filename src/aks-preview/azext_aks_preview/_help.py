@@ -1181,12 +1181,6 @@ helps['aks update'] = """
         - name: --disable-azure-monitor-app-monitoring
           type: bool
           short-summary: Disable Azure Monitor Application Monitoring
-        - name: --enable-node-restriction
-          type: bool
-          short-summary: Enable node restriction option on cluster.
-        - name: --disable-node-restriction
-          type: bool
-          short-summary: Disable node restriction option on cluster.
         - name: --enable-private-cluster
           type: bool
           short-summary: Enable private cluster for apiserver vnet integration cluster.

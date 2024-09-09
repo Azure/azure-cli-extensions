@@ -102,3 +102,8 @@ Release History
 1.2.1
 ++++++
 * Fixed --vm-size parameter mapping
+
+1.2.2
+++++++
+* Added missing help text
+* Removed dependency on msrestazure library
