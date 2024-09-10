@@ -66,8 +66,112 @@ resource group, and instance name.
             help="Specifies the Azure Large Instance SKU.",
             enum={"S112": "S112", "S144": "S144", "S144m": "S144m", "S192": "S192", "S192m": "S192m", "S192xm": "S192xm", "S224": "S224", "S224m": "S224m", "S224om": "S224om", "S224oo": "S224oo", "S224oom": "S224oom", "S224ooo": "S224ooo", "S224se": "S224se", "S384": "S384", "S384m": "S384m", "S384xm": "S384xm", "S384xxm": "S384xxm", "S448": "S448", "S448m": "S448m", "S448om": "S448om", "S448oo": "S448oo", "S448oom": "S448oom", "S448ooo": "S448ooo", "S448se": "S448se", "S576m": "S576m", "S576xm": "S576xm", "S672": "S672", "S672m": "S672m", "S672om": "S672om", "S672oo": "S672oo", "S672oom": "S672oom", "S672ooo": "S672ooo", "S72": "S72", "S72m": "S72m", "S768": "S768", "S768m": "S768m", "S768xm": "S768xm", "S896": "S896", "S896m": "S896m", "S896om": "S896om", "S896oo": "S896oo", "S896oom": "S896oom", "S896ooo": "S896ooo", "S96": "S96", "S960m": "S960m"},
         )
+        _args_schema.hardware_type = AAZStrArg(
+            options=["--hardware-type"],
+            arg_group="HardwareProfile",
+            help="Name of the hardware type (vendor and/or their product name)",
+            enum={"Cisco_UCS": "Cisco_UCS", "HPE": "HPE", "SDFLEX": "SDFLEX"},
+        )
 
         # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.instance_id = AAZStrArg(
+            options=["--ali-id", "--instance-id"],
+            arg_group="Properties",
+            help="Specifies the Azure Large Instance unique ID.",
+        )
+        _args_schema.hw_revision = AAZStrArg(
+            options=["--hw-revision"],
+            arg_group="Properties",
+            help="Hardware revision of an Azure Large Instance",
+        )
+        _args_schema.network_profile = AAZObjectArg(
+            options=["--network-profile"],
+            arg_group="Properties",
+            help="Specifies the network settings for the Azure Large Instance.",
+        )
+        _args_schema.os_profile = AAZObjectArg(
+            options=["--os-profile"],
+            arg_group="Properties",
+            help="Specifies the operating system settings for the Azure Large Instance.",
+        )
+        _args_schema.power_state = AAZStrArg(
+            options=["--power-state"],
+            arg_group="Properties",
+            help="Resource power state",
+            enum={"restarting": "restarting", "started": "started", "starting": "starting", "stopped": "stopped", "stopping": "stopping", "unknown": "unknown"},
+        )
+        _args_schema.proximity_placement_group = AAZStrArg(
+            options=["--ppg", "--proximity-placement-group"],
+            arg_group="Properties",
+            help="Resource proximity placement group",
+        )
+        _args_schema.storage_profile = AAZObjectArg(
+            options=["--storage-profile"],
+            arg_group="Properties",
+            help="Specifies the storage settings for the Azure Large Instance disks.",
+        )
+
+        network_profile = cls._args_schema.network_profile
+        network_profile.circuit_id = AAZStrArg(
+            options=["circuit-id"],
+            help="Specifies the circuit id for connecting to express route.",
+        )
+        network_profile.network_interfaces = AAZListArg(
+            options=["network-interfaces"],
+            help="Specifies the network interfaces for the Azure Large Instance.",
+        )
+
+        network_interfaces = cls._args_schema.network_profile.network_interfaces
+        network_interfaces.Element = AAZObjectArg()
+
+        _element = cls._args_schema.network_profile.network_interfaces.Element
+        _element.ip_address = AAZStrArg(
+            options=["ip-address"],
+            help="Specifies the IP address of the network interface.",
+        )
+
+        os_profile = cls._args_schema.os_profile
+        os_profile.computer_name = AAZStrArg(
+            options=["computer-name"],
+            help="Specifies the host OS name of the Azure Large Instance.",
+        )
+        os_profile.os_type = AAZStrArg(
+            options=["os-type"],
+            help="This property allows you to specify the type of the OS.",
+        )
+        os_profile.ssh_public_key = AAZStrArg(
+            options=["ssh-public-key"],
+            help="Specifies the SSH public key used to access the operating system.",
+        )
+        os_profile.version = AAZStrArg(
+            options=["version"],
+            help="Specifies version of operating system.",
+        )
+
+        storage_profile = cls._args_schema.storage_profile
+        storage_profile.nfs_ip_address = AAZStrArg(
+            options=["nfs-ip-address"],
+            help="IP Address to connect to storage.",
+        )
+        storage_profile.os_disks = AAZListArg(
+            options=["os-disks"],
+            help="Specifies information about the operating system disk used by Azure Large Instance.",
+        )
+
+        os_disks = cls._args_schema.storage_profile.os_disks
+        os_disks.Element = AAZObjectArg()
+
+        _element = cls._args_schema.storage_profile.os_disks.Element
+        _element.disk_size_gb = AAZIntArg(
+            options=["disk-size-gb"],
+            help="Specifies the size of an empty data disk in gigabytes.",
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+            help="The disk name.",
+        )
 
         # define Arg Group "Resource"
 
@@ -80,6 +184,14 @@ resource group, and instance name.
                 resource_group_arg="resource_group",
             ),
         )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Resource",
+            help="Resource tags.",
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -174,14 +286,61 @@ resource group, and instance name.
             )
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("azureLargeInstanceId", AAZStrType, ".instance_id")
                 properties.set_prop("hardwareProfile", AAZObjectType)
+                properties.set_prop("hwRevision", AAZStrType, ".hw_revision")
+                properties.set_prop("networkProfile", AAZObjectType, ".network_profile")
+                properties.set_prop("osProfile", AAZObjectType, ".os_profile")
+                properties.set_prop("powerState", AAZStrType, ".power_state")
+                properties.set_prop("proximityPlacementGroup", AAZStrType, ".proximity_placement_group")
+                properties.set_prop("storageProfile", AAZObjectType, ".storage_profile")
 
             hardware_profile = _builder.get(".properties.hardwareProfile")
             if hardware_profile is not None:
                 hardware_profile.set_prop("azureLargeInstanceSize", AAZStrType, ".azure_large_instance_size")
+                hardware_profile.set_prop("hardwareType", AAZStrType, ".hardware_type")
+
+            network_profile = _builder.get(".properties.networkProfile")
+            if network_profile is not None:
+                network_profile.set_prop("circuitId", AAZStrType, ".circuit_id")
+                network_profile.set_prop("networkInterfaces", AAZListType, ".network_interfaces")
+
+            network_interfaces = _builder.get(".properties.networkProfile.networkInterfaces")
+            if network_interfaces is not None:
+                network_interfaces.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.networkProfile.networkInterfaces[]")
+            if _elements is not None:
+                _elements.set_prop("ipAddress", AAZStrType, ".ip_address")
+
+            os_profile = _builder.get(".properties.osProfile")
+            if os_profile is not None:
+                os_profile.set_prop("computerName", AAZStrType, ".computer_name")
+                os_profile.set_prop("osType", AAZStrType, ".os_type")
+                os_profile.set_prop("sshPublicKey", AAZStrType, ".ssh_public_key")
+                os_profile.set_prop("version", AAZStrType, ".version")
+
+            storage_profile = _builder.get(".properties.storageProfile")
+            if storage_profile is not None:
+                storage_profile.set_prop("nfsIpAddress", AAZStrType, ".nfs_ip_address")
+                storage_profile.set_prop("osDisks", AAZListType, ".os_disks")
+
+            os_disks = _builder.get(".properties.storageProfile.osDisks")
+            if os_disks is not None:
+                os_disks.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.storageProfile.osDisks[]")
+            if _elements is not None:
+                _elements.set_prop("diskSizeGB", AAZIntType, ".disk_size_gb")
+                _elements.set_prop("name", AAZStrType, ".name")
+
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 

@@ -59,9 +59,21 @@ resource group, and instance name.
 
         # define Arg Group "Properties"
 
+        _args_schema = cls._args_schema
+        _args_schema.instance_id = AAZStrArg(
+            options=["--alsi-id", "--instance-id"],
+            arg_group="Properties",
+            help="Specifies the AzureLargeStorageInstance unique ID.",
+        )
+
         # define Arg Group "Resource"
 
         _args_schema = cls._args_schema
+        _args_schema.identity = AAZObjectArg(
+            options=["--identity"],
+            arg_group="Resource",
+            help="The managed service identities assigned to this resource.",
+        )
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Resource",
             help="The geo-location where the resource lives",
@@ -70,14 +82,71 @@ resource group, and instance name.
                 resource_group_arg="resource_group",
             ),
         )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Resource",
+            help="Resource tags.",
+        )
+
+        identity = cls._args_schema.identity
+        identity.type = AAZStrArg(
+            options=["type"],
+            help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
+            required=True,
+            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
+        )
+        identity.user_assigned_identities = AAZDictArg(
+            options=["user-assigned-identities"],
+            help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
+        )
+
+        user_assigned_identities = cls._args_schema.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectArg(
+            nullable=True,
+            blank={},
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
 
         # define Arg Group "StorageProperties"
 
         _args_schema = cls._args_schema
+        _args_schema.generation = AAZStrArg(
+            options=["--generation"],
+            arg_group="StorageProperties",
+            help="the kind of storage instance",
+        )
+        _args_schema.hardware_type = AAZStrArg(
+            options=["--hardware-type"],
+            arg_group="StorageProperties",
+            help="the hardware type of the storage instance",
+            enum={"Cisco_UCS": "Cisco_UCS", "HPE": "HPE", "SDFLEX": "SDFLEX"},
+        )
+        _args_schema.offering_type = AAZStrArg(
+            options=["--offering-type"],
+            arg_group="StorageProperties",
+            help="the offering type for which the resource is getting provisioned",
+        )
+        _args_schema.billing_mode = AAZStrArg(
+            options=["--billing-mode"],
+            arg_group="StorageProperties",
+            help="the billing mode for the storage instance",
+        )
         _args_schema.azure_large_storage_instance_size = AAZStrArg(
             options=["--sku", "--azure-large-storage-instance-size"],
             arg_group="StorageProperties",
             help="the SKU type that is provisioned",
+        )
+        _args_schema.storage_type = AAZStrArg(
+            options=["--storage-type"],
+            arg_group="StorageProperties",
+            help="the storage protocol for which the resource is getting provisioned",
+        )
+        _args_schema.workload_type = AAZStrArg(
+            options=["--workload-type"],
+            arg_group="StorageProperties",
+            help="the workload for which the resource is getting provisioned",
         )
         return cls._args_schema
 
@@ -171,20 +240,42 @@ resource group, and instance name.
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("identity", AAZObjectType, ".identity")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("tags", AAZDictType, ".tags")
+
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+
+            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
+            if user_assigned_identities is not None:
+                user_assigned_identities.set_elements(AAZObjectType, ".", typ_kwargs={"nullable": True})
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("azureLargeStorageInstanceUniqueIdentifier", AAZStrType, ".instance_id")
                 properties.set_prop("storageProperties", AAZObjectType)
 
             storage_properties = _builder.get(".properties.storageProperties")
             if storage_properties is not None:
+                storage_properties.set_prop("generation", AAZStrType, ".generation")
+                storage_properties.set_prop("hardwareType", AAZStrType, ".hardware_type")
+                storage_properties.set_prop("offeringType", AAZStrType, ".offering_type")
                 storage_properties.set_prop("storageBillingProperties", AAZObjectType)
+                storage_properties.set_prop("storageType", AAZStrType, ".storage_type")
+                storage_properties.set_prop("workloadType", AAZStrType, ".workload_type")
 
             storage_billing_properties = _builder.get(".properties.storageProperties.storageBillingProperties")
             if storage_billing_properties is not None:
+                storage_billing_properties.set_prop("billingMode", AAZStrType, ".billing_mode")
                 storage_billing_properties.set_prop("sku", AAZStrType, ".azure_large_storage_instance_size")
+
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
