@@ -23,7 +23,7 @@ def load_arguments(self, _):
         c.argument('namespace_name', durabletask_name_type, options_list=['--name', '-n'])
 
     with self.argument_context('durabletask list') as c:
-        c.argument('durabletask_name', durabletask_name_type, id_part=None)
+        c.argument('resource_group_name', durabletask_rg_type, options_list=['--resource-group', '-g'], id_part=None)
 
     # Namespace Commands
     with self.argument_context('durabletask namespace delete') as c:
@@ -39,7 +39,8 @@ def load_arguments(self, _):
         c.argument('task_hub_name', durabletask_taskhub_type, options_list=['--task-hub-name', '-t'])
 
     with self.argument_context('durabletask taskhub create') as c:
-        c.argument('task_hub_name', durabletask_taskhub_type, options_list=['--task-hub-name', '-t'])
+        c.argument('task_hub_name', durabletask_taskhub_type, options_list=['--task-hub-name', '-n'])
+        c.argument('namespace_name', durabletask_namespace_type, options_list=['--namespace', '-s'], id_part=None)
 
     with self.argument_context('durabletask taskhub delete') as c:
         c.argument('task_hub_name', durabletask_taskhub_type, options_list=['--task-hub-name', '-t'])
