@@ -8,6 +8,7 @@
 # --------------------------------------------------------------------------
 from io import IOBase
 import sys
+import json
 from typing import Any, Callable, Dict, IO, Iterable, Optional, Type, TypeVar, Union, overload
 import urllib.parse
 
@@ -506,12 +507,15 @@ class TaskHubsOperations:
 
         response = pipeline_response.http_response
 
-        if response.status_code not in [200, 201]:
+        if response.status_code not in [200, 201, 409]:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             error = self._deserialize.failsafe_deserialize(_models.ErrorResponse, pipeline_response)
             raise HttpResponseError(response=response, model=error, error_format=ARMErrorFormat)
 
         deserialized = self._deserialize("TaskHub", pipeline_response.http_response)
+
+        if response.status_code == 409:
+            deserialized.additional_properties["error"]["message"] = "ResourceCreationFailed: Cannot provision taskhub while namespace provisioning pending"
 
         if cls:
             return cls(pipeline_response, deserialized, {})  # type: ignore
