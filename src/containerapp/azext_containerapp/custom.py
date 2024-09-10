@@ -3231,8 +3231,14 @@ def set_registry_job(cmd, name, resource_group_name, server, username=None, pass
 
 
 def containerapp_debug(cmd, resource_group_name, name, container=None, revision=None, replica=None):
-    conn = DebugWebSocketConnection(cmd=cmd, resource_group_name=resource_group_name, name=name, revision=revision,
-                               replica=replica, container=container)
+    conn = DebugWebSocketConnection(
+        cmd=cmd,
+        resource_group_name=resource_group_name,
+        name=name,
+        revision=revision,
+        replica=replica,
+        container=container
+    )
 
     encodings = [SSH_DEFAULT_ENCODING, SSH_BACKUP_ENCODING]
     reader = threading.Thread(target=read_debug_ssh, args=(conn, encodings))
