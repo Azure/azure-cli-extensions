@@ -31,7 +31,8 @@ def read_debug_ssh(connection: WebSocketConnection, response_encodings):
     from shutil import get_terminal_size
     size = get_terminal_size()
     if connection.is_connected:
-        # We need to send resize for the whole session two times. First time is here and second time is in `read_ssh` method
+        # We need to send resize for the whole session two times.
+        # First time is here and second time is in `read_ssh` method.
         # refer `kubectl debug` command implementation:
         # https://github.com/kubernetes/kubectl/blob/14f6a11dd84315dc5179ff04156b338def935eaa/pkg/cmd/attach/attach.go#L296
         connection.send(b"".join([SSH_TERM_RESIZE_PREFIX,
