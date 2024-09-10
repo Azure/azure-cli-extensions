@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+9.0.0b1
++++++++
+* [BREAKING CHANGE]: Remove support for `az aks update --ssh-access` command to avoid misleading. To update existing cluster's SSH access, please use `az aks nodepool update --ssh-access` to update node pool's SSH access one by one.
+
 8.0.0b1
 +++++++
 * [BREAKING CHANGE]: Remove enable/disable node restriction feature, since it is always enabled and not changeable since k8s version 1.24.0
