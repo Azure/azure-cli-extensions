@@ -17,7 +17,7 @@ az extension add baremetal-infrastructure
 To create a BareMetal instance:
 
 ```bash
-az baremetalinstance create -g $RESOURCE_GROUP -n $BM_INSTANCE_NAME --location $LOCATION --sku $SKU
+az baremetalinstance create -g $RESOURCE_GROUP -n $BM_INSTANCE_NAME -l $LOCATION --sku $SKU
 ```
 
 To delete a BareMetal instance:
@@ -97,7 +97,7 @@ az baremetalinstance shutdown --resource-group $RESOURCE_GROUP --instance-name $
 To create a BareMetal Storage instance:
 
 ```bash
-az baremetalstorageinstance create -g myResourceGroup -n myAzureBareMetalStorageInstance --location westus2 --sku S72
+az baremetalstorageinstance create -g myResourceGroup -n myAzureBareMetalStorageInstance -l westus2 --sku S72
 ```
 
 To delete a BareMetal Storage instance:
