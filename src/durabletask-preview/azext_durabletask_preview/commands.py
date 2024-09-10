@@ -5,17 +5,17 @@
 
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
-from azext_durabletask._client_factory import cf_durabletask_namespaces, cf_durabletask_taskhubs
+from azext_durabletask_preview._client_factory import cf_durabletask_namespaces, cf_durabletask_taskhubs
 
 
 def load_command_table(self, _):
 
     durabletask_namespace_sdk = CliCommandType(
-        operations_tmpl='azext_durabletask.vendored_sdks.operations#NamespacesOperations.{}',
+        operations_tmpl='azext_durabletask_preview.vendored_sdks.operations#NamespacesOperations.{}',
         client_factory=cf_durabletask_namespaces)
 
     durabletask_taskhub_sdk = CliCommandType(
-        operations_tmpl='azext_durabletask.vendored_sdks.operations#TaskHubsOperations.{}',
+        operations_tmpl='azext_durabletask_preview.vendored_sdks.operations#TaskHubsOperations.{}',
         client_factory=cf_durabletask_taskhubs)
 
     with self.command_group('durabletask namespace', durabletask_namespace_sdk, client_factory=cf_durabletask_namespaces) as g:

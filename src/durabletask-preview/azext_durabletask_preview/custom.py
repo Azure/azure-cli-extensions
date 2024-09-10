@@ -4,8 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 from knack.util import CLIError
-from azext_durabletask._client_factory import cf_durabletask_namespaces, cf_durabletask_taskhubs
-from azext_durabletask.vendored_sdks.models import Namespace, TaskHub
+from azext_durabletask_preview._client_factory import cf_durabletask_namespaces, cf_durabletask_taskhubs
+from azext_durabletask_preview.vendored_sdks.models import Namespace, TaskHub
 
 
 # Namespace Operations

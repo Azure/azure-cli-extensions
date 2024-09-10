@@ -5,7 +5,7 @@
 
 def cf_durabletask(cli_ctx, *_):
     from azure.cli.core.commands.client_factory import get_mgmt_service_client
-    from azext_durabletask.vendored_sdks import DurabletaskMgmtClient
+    from azext_durabletask_preview.vendored_sdks import DurabletaskMgmtClient
     return get_mgmt_service_client(cli_ctx, DurabletaskMgmtClient)
 
 
