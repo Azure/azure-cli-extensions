@@ -16,16 +16,73 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.AzureLargeInstance/azureLargeStorageInstances?api-version=2024-08-01-preview
   response:
     body:
-      string: '{"value":[]}'
+      string: "{\n  \"value\": [\n   {\n    \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/bmsi-rg-canchliya/providers/Microsoft.AzureLargeInstance/azureLargeStorageInstances/testcmkbmsi\"\
+        ,\n    \"location\": \"centraluseuap\",\n    \"name\": \"testcmkbmsi\",\n\
+        \    \"tags\": {},\n    \"type\": \"Microsoft.BareMetalInfrastructure/bareMetalStorageInstances\"\
+        ,\n    \"systemData\": {},\n    \"properties\": {\n     \"azureLargeStorageInstanceUniqueIdentifier\"\
+        : \"bcb58551-e106-4b66-a9b9-d73db0bd07ad\",\n     \"storageProperties\": {\n\
+        \      \"provisioningState\": \"Succeeded\",\n      \"offeringType\": \"EPIC\"\
+        ,\n      \"storageType\": \"FC\",\n      \"generation\": \"Gen4.5\",\n   \
+        \   \"hardwareType\": \"NetApp\",\n      \"workloadType\": \"ODB\",\n    \
+        \  \"storageBillingProperties\": {\n       \"billingMode\": \"Internal\",\n\
+        \       \"sku\": \"n100\"\n      }\n     }\n    }\n   },\n   {\n    \"id\"\
+        : \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DSM05A-T210/providers/Microsoft.AzureLargeInstance/azureLargeStorageInstances/alistorage\"\
+        ,\n    \"location\": \"centraluseuap\",\n    \"name\": \"alistorage\",\n \
+        \   \"tags\": {},\n    \"type\": \"Microsoft.AzureLargeInstance/azureLargeStorageInstances\"\
+        ,\n    \"systemData\": {},\n    \"properties\": {\n     \"azureLargeStorageInstanceUniqueIdentifier\"\
+        : \"a582472d-2a29-4c2b-a0d0-0ebd39e46904\",\n     \"storageProperties\": {\n\
+        \      \"provisioningState\": \"Accepted\",\n      \"offeringType\": \"EPIC\"\
+        ,\n      \"storageType\": \"FC\",\n      \"generation\": \"Gen4\",\n     \
+        \ \"hardwareType\": \"NetApp\",\n      \"workloadType\": \"ODB\",\n      \"\
+        storageBillingProperties\": {\n       \"billingMode\": \"PAYG\",\n       \"\
+        sku\": \"n100\"\n      }\n     }\n    }\n   },\n   {\n    \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DSM05A-T210/providers/Microsoft.AzureLargeInstance/azureLargeStorageInstances/dummyRN1\"\
+        ,\n    \"location\": \"centraluseuap\",\n    \"name\": \"dummyRN1\",\n   \
+        \ \"tags\": {},\n    \"type\": \"Microsoft.BareMetalInfrastructure/bareMetalStorageInstances\"\
+        ,\n    \"systemData\": {},\n    \"properties\": {\n     \"azureLargeStorageInstanceUniqueIdentifier\"\
+        : \"cfcffde1-63b3-46a4-9881-2e9f4e59ff8d\",\n     \"storageProperties\": {\n\
+        \      \"provisioningState\": \"Accepted\",\n      \"offeringType\": \"EPIC\"\
+        ,\n      \"storageType\": \"FC\",\n      \"generation\": \"Gen4.5\",\n   \
+        \   \"hardwareType\": \"NetApp\",\n      \"workloadType\": \"ODB\",\n    \
+        \  \"storageBillingProperties\": {\n       \"billingMode\": \"PAYG\",\n  \
+        \     \"sku\": \"n100\"\n      }\n     }\n    }\n   },\n   {\n    \"id\":\
+        \ \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DSM05A-T210/providers/Microsoft.AzureLargeInstance/azureLargeStorageInstances/testHydration\"\
+        ,\n    \"location\": \"centraluseuap\",\n    \"name\": \"testHydration\",\n\
+        \    \"tags\": {},\n    \"type\": \"Microsoft.BareMetalInfrastructure/bareMetalStorageInstances\"\
+        ,\n    \"systemData\": {},\n    \"properties\": {\n     \"azureLargeStorageInstanceUniqueIdentifier\"\
+        : \"88997721-4d6b-4abc-b885-d92a22860ec9\",\n     \"storageProperties\": {\n\
+        \      \"provisioningState\": \"Succeeded\",\n      \"offeringType\": \"EPIC\"\
+        ,\n      \"storageType\": \"NFS\",\n      \"generation\": \"Gen4.5\",\n  \
+        \    \"hardwareType\": \"NetApp\",\n      \"workloadType\": \"ODB\",\n   \
+        \   \"storageBillingProperties\": {\n       \"billingMode\": \"RI\",\n   \
+        \    \"sku\": \"n10\"\n      }\n     }\n    }\n   },\n   {\n    \"id\": \"\
+        /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DSM05A-T210/providers/Microsoft.AzureLargeInstance/azureLargeStorageInstances/testHydration1\"\
+        ,\n    \"location\": \"centraluseuap\",\n    \"name\": \"testHydration1\"\
+        ,\n    \"tags\": {},\n    \"type\": \"Microsoft.BareMetalInfrastructure/bareMetalStorageInstances\"\
+        ,\n    \"systemData\": {},\n    \"properties\": {\n     \"azureLargeStorageInstanceUniqueIdentifier\"\
+        : \"4d74e40f-4704-4654-9839-576cea61dc45\",\n     \"storageProperties\": {\n\
+        \      \"provisioningState\": \"Succeeded\",\n      \"offeringType\": \"EPIC\"\
+        ,\n      \"storageType\": \"FC\",\n      \"generation\": \"Gen4\",\n     \
+        \ \"hardwareType\": \"NetApp\",\n      \"workloadType\": \"ODB\",\n      \"\
+        storageBillingProperties\": {\n       \"billingMode\": \"PAYG\",\n       \"\
+        sku\": \"n10\"\n      }\n     }\n    }\n   },\n   {\n    \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/testnewbillingmeters/providers/Microsoft.AzureLargeInstance/azureLargeStorageInstances/testnewbmsi\"\
+        ,\n    \"location\": \"centraluseuap\",\n    \"name\": \"testnewbmsi\",\n\
+        \    \"tags\": {},\n    \"type\": \"Microsoft.BareMetalInfrastructure/bareMetalStorageInstances\"\
+        ,\n    \"systemData\": {},\n    \"properties\": {\n     \"azureLargeStorageInstanceUniqueIdentifier\"\
+        : \"63a5dff1-317c-4537-8079-357a44405d10\",\n     \"storageProperties\": {\n\
+        \      \"provisioningState\": \"Succeeded\",\n      \"offeringType\": \"EPIC\"\
+        ,\n      \"storageType\": \"FC\",\n      \"generation\": \"4\",\n      \"\
+        hardwareType\": \"NetApp\",\n      \"workloadType\": \"ODB\",\n      \"storageBillingProperties\"\
+        : {\n       \"billingMode\": \"RI\",\n       \"sku\": \"n100v3\"\n      }\n\
+        \     }\n    }\n   }\n  ]\n }"
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '12'
+      - '4751'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Tue, 10 Sep 2024 22:14:00 GMT
+      - Thu, 29 Aug 2024 23:29:40 GMT
       expires:
       - '-1'
       pragma:
@@ -37,7 +94,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: E8F71B45F5074CCB812ECDF4D8FE0E4B Ref B: CO6AA3150217023 Ref C: 2024-09-10T22:14:01Z'
+      - 'Ref A: 12E797C68E5548289F236C4227C5A431 Ref B: CO6AA3150220021 Ref C: 2024-08-29T23:29:39Z'
     status:
       code: 200
       message: OK

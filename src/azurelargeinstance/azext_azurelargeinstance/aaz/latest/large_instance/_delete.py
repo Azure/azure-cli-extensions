@@ -18,9 +18,6 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete an Azure Large Instance for the specified subscription, resource group,
 and instance name.
-
-    :example: AzureLargeInstance_Delete
-        az large-instance delete --resource-group myResourceGroup --instance-name myAzureLargeInstance
     """
 
     _aaz_info = {
