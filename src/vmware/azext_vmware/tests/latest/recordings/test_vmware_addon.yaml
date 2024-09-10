@@ -39,7 +39,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:04:30 GMT
+      - Mon, 09 Sep 2024 12:14:34 GMT
       server:
       - Rocket
     status:
@@ -79,7 +79,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:04:32 GMT
+      - Mon, 09 Sep 2024 12:14:37 GMT
       server:
       - Rocket
     status:
@@ -123,7 +123,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:04:35 GMT
+      - Mon, 09 Sep 2024 12:14:39 GMT
       server:
       - Rocket
     status:
@@ -163,7 +163,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:04:37 GMT
+      - Mon, 09 Sep 2024 12:14:41 GMT
       server:
       - Rocket
     status:
@@ -207,7 +207,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:04:37 GMT
+      - Mon, 09 Sep 2024 12:14:41 GMT
       server:
       - Rocket
     status:
@@ -247,7 +247,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:04:40 GMT
+      - Mon, 09 Sep 2024 12:14:44 GMT
       server:
       - Rocket
     status:
@@ -287,7 +287,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:04:42 GMT
+      - Mon, 09 Sep 2024 12:14:47 GMT
       server:
       - Rocket
     status:
@@ -329,7 +329,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:04:44 GMT
+      - Mon, 09 Sep 2024 12:14:49 GMT
       server:
       - Rocket
     status:
@@ -369,7 +369,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:04:47 GMT
+      - Mon, 09 Sep 2024 12:14:52 GMT
       server:
       - Rocket
     status:
@@ -413,7 +413,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:04:49 GMT
+      - Mon, 09 Sep 2024 12:14:54 GMT
       server:
       - Rocket
     status:
@@ -453,7 +453,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:04:52 GMT
+      - Mon, 09 Sep 2024 12:14:56 GMT
       server:
       - Rocket
     status:
@@ -497,7 +497,135 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:04:52 GMT
+      - Mon, 09 Sep 2024 12:14:56 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"addonType": "SRM"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware addon srm create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '36'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -c
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/srm?api-version=2023-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/arc","name":"arc","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"Arc","provisioningState":"Succeeded","vCenter":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg_test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/test-vcenter"}}'
+    headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '411'
+      content-type:
+      - application/json
+      date:
+      - Mon, 09 Sep 2024 12:14:59 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware addon srm update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -c
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/srm?api-version=2023-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/arc","name":"arc","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"Arc","provisioningState":"Succeeded","vCenter":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg_test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/test-vcenter"}}'
+    headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '411'
+      content-type:
+      - application/json
+      date:
+      - Mon, 09 Sep 2024 12:15:02 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"addonType": "SRM"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware addon srm update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '36'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -c
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/srm?api-version=2023-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/arc","name":"arc","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"Arc","provisioningState":"Succeeded","vCenter":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg_test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/test-vcenter"}}'
+    headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '411'
+      content-type:
+      - application/json
+      date:
+      - Mon, 09 Sep 2024 12:15:02 GMT
       server:
       - Rocket
     status:
@@ -537,7 +665,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:04:54 GMT
+      - Mon, 09 Sep 2024 12:15:04 GMT
       server:
       - Rocket
     status:
@@ -577,7 +705,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:04:56 GMT
+      - Mon, 09 Sep 2024 12:15:07 GMT
       server:
       - Rocket
     status:
@@ -619,7 +747,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:04:59 GMT
+      - Mon, 09 Sep 2024 12:15:09 GMT
       server:
       - Rocket
     status:
@@ -663,7 +791,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:05:01 GMT
+      - Mon, 09 Sep 2024 12:15:11 GMT
       server:
       - Rocket
     status:
@@ -703,7 +831,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:05:04 GMT
+      - Mon, 09 Sep 2024 12:15:14 GMT
       server:
       - Rocket
     status:
@@ -745,7 +873,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:05:07 GMT
+      - Mon, 09 Sep 2024 12:15:16 GMT
       server:
       - Rocket
     status:
@@ -789,7 +917,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:05:09 GMT
+      - Mon, 09 Sep 2024 12:15:19 GMT
       server:
       - Rocket
     status:
@@ -829,7 +957,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:05:12 GMT
+      - Mon, 09 Sep 2024 12:15:22 GMT
       server:
       - Rocket
     status:
@@ -873,7 +1001,135 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:05:12 GMT
+      - Mon, 09 Sep 2024 12:15:22 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"addonType": "Arc"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware addon arc create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '36'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -c
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/arc?api-version=2023-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/arc","name":"arc","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"Arc","provisioningState":"Succeeded","vCenter":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg_test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/test-vcenter"}}'
+    headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '411'
+      content-type:
+      - application/json
+      date:
+      - Mon, 09 Sep 2024 12:15:24 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware addon arc update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -c
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/arc?api-version=2023-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/arc","name":"arc","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"Arc","provisioningState":"Succeeded","vCenter":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg_test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/test-vcenter"}}'
+    headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '411'
+      content-type:
+      - application/json
+      date:
+      - Mon, 09 Sep 2024 12:15:27 GMT
+      server:
+      - Rocket
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"addonType": "Arc", "vCenter": "subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg_test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/test-vcenter"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - vmware addon arc update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '189'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -c
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://localhost/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vmware_addon000001/providers/Microsoft.AVS/privateClouds/mycloud1/addons/arc?api-version=2023-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1/providers/Microsoft.AVS/privateClouds/cloud1/addons/arc","name":"arc","type":"Microsoft.AVS/privateClouds/addons","properties":{"addonType":"Arc","provisioningState":"Succeeded","vCenter":"subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg_test/providers/Microsoft.ConnectedVMwarevSphere/VCenters/test-vcenter"}}'
+    headers:
+      access-control-allow-credentials:
+      - 'true'
+      access-control-allow-headers:
+      - '*'
+      access-control-allow-methods:
+      - PUT, GET, HEAD, POST, DELETE, PATCH, OPTIONS
+      access-control-allow-origin:
+      - '*'
+      content-length:
+      - '411'
+      content-type:
+      - application/json
+      date:
+      - Mon, 09 Sep 2024 12:15:27 GMT
       server:
       - Rocket
     status:
@@ -913,7 +1169,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:05:15 GMT
+      - Mon, 09 Sep 2024 12:15:29 GMT
       server:
       - Rocket
     status:
@@ -955,7 +1211,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:05:17 GMT
+      - Mon, 09 Sep 2024 12:15:32 GMT
       server:
       - Rocket
     status:
@@ -995,7 +1251,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Fri, 28 Jun 2024 20:05:20 GMT
+      - Mon, 09 Sep 2024 12:15:34 GMT
       server:
       - Rocket
     status:

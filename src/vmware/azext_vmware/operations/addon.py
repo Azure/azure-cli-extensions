@@ -293,8 +293,7 @@ class AddonSrmCreate(_AddonCreate):
 
         args_schema.license_key = AAZStrArg(
             options=["--license-key"],
-            help="The Site Recovery Manager (SRM) license",
-            required=True,
+            help="The Site Recovery Manager (SRM) license"
         )
 
         args_schema.vr._registered = False
@@ -309,6 +308,7 @@ class AddonSrmCreate(_AddonCreate):
     def pre_operations(self):
         args = self.ctx.args
         args.addon_name = "srm"
+        args.srm = {}
         args.srm.license_key = args.license_key
 
 
@@ -329,8 +329,7 @@ class AddonSrmUpdate(_AddonUpdate):
 
         args_schema.license_key = AAZStrArg(
             options=["--license-key"],
-            help="The Site Recovery Manager (SRM) license",
-            required=True,
+            help="The Site Recovery Manager (SRM) license"
         )
 
         args_schema.vr._registered = False
@@ -345,6 +344,7 @@ class AddonSrmUpdate(_AddonUpdate):
     def pre_operations(self):
         args = self.ctx.args
         args.addon_name = "srm"
+        args.srm = {}
         args.srm.license_key = args.license_key
 
 
@@ -415,8 +415,7 @@ class AddonArcCreate(_AddonCreate):
 
         args_schema.vcenter = AAZStrArg(
             options=["--vcenter"],
-            help="The VMware vCenter resource ID",
-            required=True,
+            help="The VMware vCenter resource ID"
         )
 
         args_schema.vr._registered = False
@@ -431,6 +430,7 @@ class AddonArcCreate(_AddonCreate):
     def pre_operations(self):
         args = self.ctx.args
         args.addon_name = "arc"
+        args.arc = {}
         args.arc.vcenter = args.vcenter
 
 
@@ -451,8 +451,7 @@ class AddonArcUpdate(_AddonUpdate):
 
         args_schema.vcenter = AAZStrArg(
             options=["--vcenter"],
-            help="The VMware vCenter resource ID",
-            required=True,
+            help="The VMware vCenter resource ID"
         )
 
         args_schema.vr._registered = False
@@ -467,6 +466,7 @@ class AddonArcUpdate(_AddonUpdate):
     def pre_operations(self):
         args = self.ctx.args
         args.addon_name = "arc"
+        args.arc = {}
         args.arc.vcenter = args.vcenter
 
 
