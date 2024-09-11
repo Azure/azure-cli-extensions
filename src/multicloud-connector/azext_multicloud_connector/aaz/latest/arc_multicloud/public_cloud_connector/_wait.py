@@ -12,24 +12,22 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "hybrid-connectivity solution-configuration list",
+    "arc-multicloud public-cloud-connector wait",
 )
-class List(AAZCommand):
-    """List SolutionConfiguration resources by parent
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2024-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.hybridconnectivity/solutionconfigurations", "2024-08-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridconnectivity/publiccloudconnectors/{}", "2024-12-01"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -42,16 +40,23 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_uri = AAZStrArg(
-            options=["--resource-uri"],
-            help="The fully qualified Azure Resource manager identifier of the resource.",
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            help="Represent public cloud connector name.",
+            required=True,
+            id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,63}$",
+            ),
+        )
+        _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SolutionConfigurationsList(ctx=self.ctx)()
+        self.PublicCloudConnectorsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -63,11 +68,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
+        return result
 
-    class SolutionConfigurationsList(AAZHttpOperation):
+    class PublicCloudConnectorsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -81,7 +85,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/{resourceUri}/providers/Microsoft.HybridConnectivity/solutionConfigurations",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{publicCloudConnector}",
                 **self.url_parameters
             )
 
@@ -97,8 +101,15 @@ class List(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "resourceUri", self.ctx.args.resource_uri,
-                    skip_quote=True,
+                    "publicCloudConnector", self.ctx.args.name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
             }
@@ -108,7 +119,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-08-01-preview",
+                    "api-version", "2024-12-01",
                     required=True,
                 ),
             }
@@ -141,60 +152,48 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
             )
-            _schema_on_200.value = AAZListType(
+            _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType()
-            _element.system_data = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.type = AAZStrType(
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
-            properties.last_sync_time = AAZStrType(
-                serialized_name="lastSyncTime",
+            properties = cls._schema_on_200.properties
+            properties.aws_cloud_profile = AAZObjectType(
+                serialized_name="awsCloudProfile",
+                flags={"required": True},
+            )
+            properties.connector_primary_identifier = AAZStrType(
+                serialized_name="connectorPrimaryIdentifier",
                 flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.solution_settings = AAZDictType(
-                serialized_name="solutionSettings",
-            )
-            properties.solution_type = AAZStrType(
-                serialized_name="solutionType",
-                flags={"required": True},
-            )
-            properties.status = AAZStrType(
-                flags={"read_only": True},
-            )
-            properties.status_details = AAZStrType(
-                serialized_name="statusDetails",
-                flags={"read_only": True},
+
+            aws_cloud_profile = cls._schema_on_200.properties.aws_cloud_profile
+            aws_cloud_profile.excluded_accounts = AAZListType(
+                serialized_name="excludedAccounts",
             )
 
-            solution_settings = cls._schema_on_200.value.Element.properties.solution_settings
-            solution_settings.Element = AAZStrType()
+            excluded_accounts = cls._schema_on_200.properties.aws_cloud_profile.excluded_accounts
+            excluded_accounts.Element = AAZStrType()
 
-            system_data = cls._schema_on_200.value.Element.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -214,11 +213,14 @@ class List(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
+
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _WaitHelper:
+    """Helper class for Wait"""
 
 
-__all__ = ["List"]
+__all__ = ["Wait"]

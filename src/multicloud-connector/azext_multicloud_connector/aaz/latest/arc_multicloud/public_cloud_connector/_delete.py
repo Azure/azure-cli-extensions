@@ -12,17 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "hybrid-connectivity solution-configuration delete",
+    "arc-multicloud public-cloud-connector delete",
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a SolutionConfiguration
+    """Delete a PublicCloudConnector
     """
 
     _aaz_info = {
-        "version": "2024-08-01-preview",
+        "version": "2024-12-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.hybridconnectivity/solutionconfigurations/{}", "2024-08-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridconnectivity/publiccloudconnectors/{}", "2024-12-01"],
         ]
     }
 
@@ -42,24 +42,23 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_uri = AAZStrArg(
-            options=["--resource-uri"],
-            help="The fully qualified Azure Resource manager identifier of the resource.",
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            help="Represent public cloud connector name.",
             required=True,
-        )
-        _args_schema.solution_configuration = AAZStrArg(
-            options=["--solution-configuration"],
-            help="Represent Solution Configuration Resource.",
-            required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,63}$",
             ),
+        )
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SolutionConfigurationsDelete(ctx=self.ctx)()
+        self.PublicCloudConnectorsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -70,7 +69,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class SolutionConfigurationsDelete(AAZHttpOperation):
+    class PublicCloudConnectorsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -86,7 +85,7 @@ class Delete(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/{resourceUri}/providers/Microsoft.HybridConnectivity/solutionConfigurations/{solutionConfiguration}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{publicCloudConnector}",
                 **self.url_parameters
             )
 
@@ -102,12 +101,15 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "resourceUri", self.ctx.args.resource_uri,
-                    skip_quote=True,
+                    "publicCloudConnector", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "solutionConfiguration", self.ctx.args.solution_configuration,
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
             }
@@ -117,7 +119,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-08-01-preview",
+                    "api-version", "2024-12-01",
                     required=True,
                 ),
             }

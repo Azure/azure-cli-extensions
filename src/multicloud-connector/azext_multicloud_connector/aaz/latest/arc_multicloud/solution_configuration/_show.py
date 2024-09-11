@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "hybrid-connectivity solution-configuration show",
+    "arc-multicloud solution-configuration show",
 )
 class Show(AAZCommand):
     """Get a SolutionConfiguration
     """
 
     _aaz_info = {
-        "version": "2024-08-01-preview",
+        "version": "2024-12-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.hybridconnectivity/solutionconfigurations/{}", "2024-08-01-preview"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.hybridconnectivity/solutionconfigurations/{}", "2024-12-01"],
         ]
     }
 
@@ -41,14 +41,14 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_uri = AAZStrArg(
-            options=["--resource-uri"],
+        _args_schema.connector_id = AAZStrArg(
+            options=["--connector-id"],
             help="The fully qualified Azure Resource manager identifier of the resource.",
             required=True,
         )
-        _args_schema.solution_configuration = AAZStrArg(
-            options=["--solution-configuration"],
-            help="Represent Solution Configuration Resource.",
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            help="Represent Solution Configuration Resource Name",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,63}$",
@@ -103,12 +103,12 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "resourceUri", self.ctx.args.resource_uri,
+                    "resourceUri", self.ctx.args.connector_id,
                     skip_quote=True,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "solutionConfiguration", self.ctx.args.solution_configuration,
+                    "solutionConfiguration", self.ctx.args.name,
                     required=True,
                 ),
             }
@@ -118,7 +118,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-08-01-preview",
+                    "api-version", "2024-12-01",
                     required=True,
                 ),
             }

@@ -12,24 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "hybrid-connectivity solution-configuration sync-now",
+    "arc-multicloud solution-configuration delete",
+    confirmation="Are you sure you want to perform this operation?",
 )
-class SyncNow(AAZCommand):
-    """Trigger immediate sync with source cloud
+class Delete(AAZCommand):
+    """Delete a SolutionConfiguration
     """
 
     _aaz_info = {
-        "version": "2024-08-01-preview",
+        "version": "2024-12-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.hybridconnectivity/solutionconfigurations/{}/syncnow", "2024-08-01-preview"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.hybridconnectivity/solutionconfigurations/{}", "2024-12-01"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, None)
+        self._execute_operations()
+        return None
 
     _args_schema = None
 
@@ -42,14 +42,14 @@ class SyncNow(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_uri = AAZStrArg(
-            options=["--resource-uri"],
+        _args_schema.connector_id = AAZStrArg(
+            options=["--connector-id"],
             help="The fully qualified Azure Resource manager identifier of the resource.",
             required=True,
         )
-        _args_schema.solution_configuration = AAZStrArg(
-            options=["--solution-configuration"],
-            help="Represent Solution Configuration Resource.",
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            help="Represent Solution Configuration Resource Name",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,63}$",
@@ -59,7 +59,7 @@ class SyncNow(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.SolutionConfigurationsSyncNow(ctx=self.ctx)()
+        self.SolutionConfigurationsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -70,34 +70,29 @@ class SyncNow(AAZCommand):
     def post_operations(self):
         pass
 
-    class SolutionConfigurationsSyncNow(AAZHttpOperation):
+    class SolutionConfigurationsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    None,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+            if session.http_response.status_code in [204]:
+                return self.on_204(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/{resourceUri}/providers/Microsoft.HybridConnectivity/solutionConfigurations/{solutionConfiguration}/syncNow",
+                "/{resourceUri}/providers/Microsoft.HybridConnectivity/solutionConfigurations/{solutionConfiguration}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "DELETE"
 
         @property
         def error_format(self):
@@ -107,12 +102,12 @@ class SyncNow(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "resourceUri", self.ctx.args.resource_uri,
+                    "resourceUri", self.ctx.args.connector_id,
                     skip_quote=True,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "solutionConfiguration", self.ctx.args.solution_configuration,
+                    "solutionConfiguration", self.ctx.args.name,
                     required=True,
                 ),
             }
@@ -122,15 +117,21 @@ class SyncNow(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-08-01-preview",
+                    "api-version", "2024-12-01",
                     required=True,
                 ),
             }
             return parameters
 
+        def on_200(self, session):
+            pass
 
-class _SyncNowHelper:
-    """Helper class for SyncNow"""
+        def on_204(self, session):
+            pass
 
 
-__all__ = ["SyncNow"]
+class _DeleteHelper:
+    """Helper class for Delete"""
+
+
+__all__ = ["Delete"]

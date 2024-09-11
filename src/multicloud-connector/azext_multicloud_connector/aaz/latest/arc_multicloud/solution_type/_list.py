@@ -12,17 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "hybrid-connectivity public-cloud-connector list",
+    "arc-multicloud solution-type list",
 )
 class List(AAZCommand):
-    """List PublicCloudConnector resources by subscription ID
+    """List SolutionTypeResource resources by subscription ID
     """
 
     _aaz_info = {
-        "version": "2024-08-01-preview",
+        "version": "2024-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridconnectivity/publiccloudconnectors", "2024-08-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridconnectivity/publiccloudconnectors", "2024-08-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridconnectivity/solutiontypes", "2024-12-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridconnectivity/solutiontypes", "2024-12-01"],
         ]
     }
 
@@ -51,9 +51,9 @@ class List(AAZCommand):
         condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
         condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
         if condition_0:
-            self.PublicCloudConnectorsListByResourceGroup(ctx=self.ctx)()
+            self.SolutionTypesListByResourceGroup(ctx=self.ctx)()
         if condition_1:
-            self.PublicCloudConnectorsListBySubscription(ctx=self.ctx)()
+            self.SolutionTypesListBySubscription(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -69,7 +69,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class PublicCloudConnectorsListByResourceGroup(AAZHttpOperation):
+    class SolutionTypesListByResourceGroup(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -83,7 +83,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridConnectivity/publicCloudConnectors",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridConnectivity/solutionTypes",
                 **self.url_parameters
             )
 
@@ -113,7 +113,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-08-01-preview",
+                    "api-version", "2024-12-01",
                     required=True,
                 ),
             }
@@ -160,9 +160,6 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.location = AAZStrType(
-                flags={"required": True},
-            )
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -171,32 +168,53 @@ class List(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.aws_cloud_profile = AAZObjectType(
-                serialized_name="awsCloudProfile",
+            properties.description = AAZStrType()
+            properties.solution_settings = AAZListType(
+                serialized_name="solutionSettings",
+            )
+            properties.solution_type = AAZStrType(
+                serialized_name="solutionType",
+            )
+            properties.supported_azure_regions = AAZListType(
+                serialized_name="supportedAzureRegions",
+            )
+
+            solution_settings = cls._schema_on_200.value.Element.properties.solution_settings
+            solution_settings.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.solution_settings.Element
+            _element.allowed_values = AAZListType(
+                serialized_name="allowedValues",
                 flags={"required": True},
             )
-            properties.connector_primary_identifier = AAZStrType(
-                serialized_name="connectorPrimaryIdentifier",
-                flags={"read_only": True},
+            _element.default_value = AAZStrType(
+                serialized_name="defaultValue",
+                flags={"required": True},
             )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
+            _element.description = AAZStrType(
+                flags={"required": True},
+            )
+            _element.display_name = AAZStrType(
+                serialized_name="displayName",
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.type = AAZStrType(
+                flags={"required": True},
             )
 
-            aws_cloud_profile = cls._schema_on_200.value.Element.properties.aws_cloud_profile
-            aws_cloud_profile.excluded_accounts = AAZListType(
-                serialized_name="excludedAccounts",
-            )
+            allowed_values = cls._schema_on_200.value.Element.properties.solution_settings.Element.allowed_values
+            allowed_values.Element = AAZStrType()
 
-            excluded_accounts = cls._schema_on_200.value.Element.properties.aws_cloud_profile.excluded_accounts
-            excluded_accounts.Element = AAZStrType()
+            supported_azure_regions = cls._schema_on_200.value.Element.properties.supported_azure_regions
+            supported_azure_regions.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -218,12 +236,9 @@ class List(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
-
             return cls._schema_on_200
 
-    class PublicCloudConnectorsListBySubscription(AAZHttpOperation):
+    class SolutionTypesListBySubscription(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -237,7 +252,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/providers/Microsoft.HybridConnectivity/publicCloudConnectors",
+                "/subscriptions/{subscriptionId}/providers/Microsoft.HybridConnectivity/solutionTypes",
                 **self.url_parameters
             )
 
@@ -263,7 +278,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-08-01-preview",
+                    "api-version", "2024-12-01",
                     required=True,
                 ),
             }
@@ -310,9 +325,6 @@ class List(AAZCommand):
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.location = AAZStrType(
-                flags={"required": True},
-            )
             _element.name = AAZStrType(
                 flags={"read_only": True},
             )
@@ -321,32 +333,53 @@ class List(AAZCommand):
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.tags = AAZDictType()
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.aws_cloud_profile = AAZObjectType(
-                serialized_name="awsCloudProfile",
+            properties.description = AAZStrType()
+            properties.solution_settings = AAZListType(
+                serialized_name="solutionSettings",
+            )
+            properties.solution_type = AAZStrType(
+                serialized_name="solutionType",
+            )
+            properties.supported_azure_regions = AAZListType(
+                serialized_name="supportedAzureRegions",
+            )
+
+            solution_settings = cls._schema_on_200.value.Element.properties.solution_settings
+            solution_settings.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.solution_settings.Element
+            _element.allowed_values = AAZListType(
+                serialized_name="allowedValues",
                 flags={"required": True},
             )
-            properties.connector_primary_identifier = AAZStrType(
-                serialized_name="connectorPrimaryIdentifier",
-                flags={"read_only": True},
+            _element.default_value = AAZStrType(
+                serialized_name="defaultValue",
+                flags={"required": True},
             )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
+            _element.description = AAZStrType(
+                flags={"required": True},
+            )
+            _element.display_name = AAZStrType(
+                serialized_name="displayName",
+                flags={"required": True},
+            )
+            _element.name = AAZStrType(
+                flags={"required": True},
+            )
+            _element.type = AAZStrType(
+                flags={"required": True},
             )
 
-            aws_cloud_profile = cls._schema_on_200.value.Element.properties.aws_cloud_profile
-            aws_cloud_profile.excluded_accounts = AAZListType(
-                serialized_name="excludedAccounts",
-            )
+            allowed_values = cls._schema_on_200.value.Element.properties.solution_settings.Element.allowed_values
+            allowed_values.Element = AAZStrType()
 
-            excluded_accounts = cls._schema_on_200.value.Element.properties.aws_cloud_profile.excluded_accounts
-            excluded_accounts.Element = AAZStrType()
+            supported_azure_regions = cls._schema_on_200.value.Element.properties.supported_azure_regions
+            supported_azure_regions.Element = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -367,9 +400,6 @@ class List(AAZCommand):
             system_data.last_modified_by_type = AAZStrType(
                 serialized_name="lastModifiedByType",
             )
-
-            tags = cls._schema_on_200.value.Element.tags
-            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 

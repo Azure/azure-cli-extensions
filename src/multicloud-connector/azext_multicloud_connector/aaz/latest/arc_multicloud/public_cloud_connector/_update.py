@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "hybrid-connectivity public-cloud-connector update",
+    "arc-multicloud public-cloud-connector update",
 )
 class Update(AAZCommand):
     """Update a PublicCloudConnector
     """
 
     _aaz_info = {
-        "version": "2024-08-01-preview",
+        "version": "2024-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridconnectivity/publiccloudconnectors/{}", "2024-08-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridconnectivity/publiccloudconnectors/{}", "2024-12-01"],
         ]
     }
 
@@ -44,9 +44,9 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.public_cloud_connector = AAZStrArg(
-            options=["-n", "--name", "--public-cloud-connector"],
-            help="Represent public cloud connectors resource.",
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            help="Represent public cloud connector name.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -154,7 +154,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "publicCloudConnector", self.ctx.args.public_cloud_connector,
+                    "publicCloudConnector", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -172,7 +172,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-08-01-preview",
+                    "api-version", "2024-12-01",
                     required=True,
                 ),
             }
@@ -253,7 +253,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "publicCloudConnector", self.ctx.args.public_cloud_connector,
+                    "publicCloudConnector", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -271,7 +271,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-08-01-preview",
+                    "api-version", "2024-12-01",
                     required=True,
                 ),
             }

@@ -12,24 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "hybrid-connectivity public-cloud-connector delete",
-    confirmation="Are you sure you want to perform this operation?",
+    "arc-multicloud solution-configuration sync-now",
 )
-class Delete(AAZCommand):
-    """Delete a PublicCloudConnector
+class SyncNow(AAZCommand):
+    """Trigger immediate sync with source cloud
     """
 
     _aaz_info = {
-        "version": "2024-08-01-preview",
+        "version": "2024-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridconnectivity/publiccloudconnectors/{}", "2024-08-01-preview"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.hybridconnectivity/solutionconfigurations/{}/syncnow", "2024-12-01"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return None
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -42,23 +42,24 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.public_cloud_connector = AAZStrArg(
-            options=["-n", "--name", "--public-cloud-connector"],
-            help="Represent public cloud connectors resource.",
+        _args_schema.connector_id = AAZStrArg(
+            options=["--connector-id"],
+            help="The fully qualified Azure Resource manager identifier of the resource.",
             required=True,
-            id_part="name",
+        )
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
+            help="Represent Solution Configuration Resource Name",
+            required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,63}$",
             ),
-        )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
-            required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.PublicCloudConnectorsDelete(ctx=self.ctx)()
+        yield self.SolutionConfigurationsSyncNow(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -69,29 +70,34 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class PublicCloudConnectorsDelete(AAZHttpOperation):
+    class SolutionConfigurationsSyncNow(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
-            if session.http_response.status_code in [204]:
-                return self.on_204(session)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    None,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{publicCloudConnector}",
+                "/{resourceUri}/providers/Microsoft.HybridConnectivity/solutionConfigurations/{solutionConfiguration}/syncNow",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "DELETE"
+            return "POST"
 
         @property
         def error_format(self):
@@ -101,15 +107,12 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "publicCloudConnector", self.ctx.args.public_cloud_connector,
+                    "resourceUri", self.ctx.args.connector_id,
+                    skip_quote=True,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
+                    "solutionConfiguration", self.ctx.args.name,
                     required=True,
                 ),
             }
@@ -119,21 +122,15 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-08-01-preview",
+                    "api-version", "2024-12-01",
                     required=True,
                 ),
             }
             return parameters
 
-        def on_200(self, session):
-            pass
 
-        def on_204(self, session):
-            pass
+class _SyncNowHelper:
+    """Helper class for SyncNow"""
 
 
-class _DeleteHelper:
-    """Helper class for Delete"""
-
-
-__all__ = ["Delete"]
+__all__ = ["SyncNow"]

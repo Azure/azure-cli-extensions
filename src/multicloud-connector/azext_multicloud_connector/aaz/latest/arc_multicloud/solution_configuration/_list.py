@@ -12,23 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "hybrid-connectivity solution-type show",
+    "arc-multicloud solution-configuration list",
 )
-class Show(AAZCommand):
-    """Get a SolutionTypeResource
+class List(AAZCommand):
+    """List SolutionConfiguration resources by parent
     """
 
     _aaz_info = {
-        "version": "2024-08-01-preview",
+        "version": "2024-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridconnectivity/solutiontypes/{}", "2024-08-01-preview"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.hybridconnectivity/solutionconfigurations", "2024-12-01"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -41,20 +42,16 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg(
+        _args_schema.connector_id = AAZStrArg(
+            options=["--connector-id"],
+            help="The fully qualified Azure Resource manager identifier of the resource.",
             required=True,
-        )
-        _args_schema.solution_type = AAZStrArg(
-            options=["-n", "--name", "--solution-type"],
-            help="Solution Type resource",
-            required=True,
-            id_part="name",
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SolutionTypesGet(ctx=self.ctx)()
+        self.SolutionConfigurationsList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -66,10 +63,11 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class SolutionTypesGet(AAZHttpOperation):
+    class SolutionConfigurationsList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -83,7 +81,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridConnectivity/solutionTypes/{solutionType}",
+                "/{resourceUri}/providers/Microsoft.HybridConnectivity/solutionConfigurations",
                 **self.url_parameters
             )
 
@@ -99,15 +97,8 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "solutionType", self.ctx.args.solution_type,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
+                    "resourceUri", self.ctx.args.connector_id,
+                    skip_quote=True,
                     required=True,
                 ),
             }
@@ -117,7 +108,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-08-01-preview",
+                    "api-version", "2024-12-01",
                     required=True,
                 ),
             }
@@ -150,66 +141,60 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
+            _element.properties = AAZObjectType()
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
-            properties.description = AAZStrType()
-            properties.solution_settings = AAZListType(
+            properties = cls._schema_on_200.value.Element.properties
+            properties.last_sync_time = AAZStrType(
+                serialized_name="lastSyncTime",
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.solution_settings = AAZDictType(
                 serialized_name="solutionSettings",
             )
             properties.solution_type = AAZStrType(
                 serialized_name="solutionType",
+                flags={"required": True},
             )
-            properties.supported_azure_regions = AAZListType(
-                serialized_name="supportedAzureRegions",
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.status_details = AAZStrType(
+                serialized_name="statusDetails",
+                flags={"read_only": True},
             )
 
-            solution_settings = cls._schema_on_200.properties.solution_settings
-            solution_settings.Element = AAZObjectType()
+            solution_settings = cls._schema_on_200.value.Element.properties.solution_settings
+            solution_settings.Element = AAZStrType()
 
-            _element = cls._schema_on_200.properties.solution_settings.Element
-            _element.allowed_values = AAZListType(
-                serialized_name="allowedValues",
-                flags={"required": True},
-            )
-            _element.default_value = AAZStrType(
-                serialized_name="defaultValue",
-                flags={"required": True},
-            )
-            _element.description = AAZStrType(
-                flags={"required": True},
-            )
-            _element.display_name = AAZStrType(
-                serialized_name="displayName",
-                flags={"required": True},
-            )
-            _element.name = AAZStrType(
-                flags={"required": True},
-            )
-            _element.type = AAZStrType(
-                flags={"required": True},
-            )
-
-            allowed_values = cls._schema_on_200.properties.solution_settings.Element.allowed_values
-            allowed_values.Element = AAZStrType()
-
-            supported_azure_regions = cls._schema_on_200.properties.supported_azure_regions
-            supported_azure_regions.Element = AAZStrType()
-
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -232,8 +217,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["Show"]
+__all__ = ["List"]

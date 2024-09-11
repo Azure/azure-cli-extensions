@@ -12,16 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "hybrid-connectivity generate-aws-template",
+    "arc-multicloud generate-aws-template",
 )
 class GenerateAwsTemplate(AAZCommand):
     """Retrieve AWS Cloud Formation template
     """
 
     _aaz_info = {
-        "version": "2024-08-01-preview",
+        "version": "2024-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridconnectivity/generateawstemplate", "2024-08-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridconnectivity/generateawstemplate", "2024-12-01"],
         ]
     }
 
@@ -46,7 +46,7 @@ class GenerateAwsTemplate(AAZCommand):
         _args_schema.connector_id = AAZStrArg(
             options=["--connector-id"],
             arg_group="GenerateAwsTemplateRequest",
-            help="The name of public cloud connector",
+            help="The fully qualified Azure Resource manager identifier of the public cloud connector",
             required=True,
         )
         _args_schema.solution_types = AAZListArg(
@@ -130,7 +130,7 @@ class GenerateAwsTemplate(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-08-01-preview",
+                    "api-version", "2024-12-01",
                     required=True,
                 ),
             }

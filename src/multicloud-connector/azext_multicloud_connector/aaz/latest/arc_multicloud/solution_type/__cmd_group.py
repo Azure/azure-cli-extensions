@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "hybrid-connectivity public-cloud-connector",
+    "arc-multicloud solution-type",
 )
 class __CMDGroup(AAZCommandGroup):
-    """commands for multicloudConnector
+    """commands for solution-type
     """
     pass
 

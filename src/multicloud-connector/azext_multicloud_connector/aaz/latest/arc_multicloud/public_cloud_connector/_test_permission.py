@@ -12,23 +12,24 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "hybrid-connectivity public-cloud-connector show",
+    "arc-multicloud public-cloud-connector test-permission",
 )
-class Show(AAZCommand):
-    """Get a PublicCloudConnector
+class TestPermission(AAZCommand):
+    """A long-running resource action.
     """
 
     _aaz_info = {
-        "version": "2024-08-01-preview",
+        "version": "2024-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridconnectivity/publiccloudconnectors/{}", "2024-08-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridconnectivity/publiccloudconnectors/{}/testpermissions", "2024-12-01"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -41,8 +42,8 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.public_cloud_connector = AAZStrArg(
-            options=["-n", "--name", "--public-cloud-connector"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="Represent public cloud connectors resource.",
             required=True,
             id_part="name",
@@ -57,7 +58,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.PublicCloudConnectorsGet(ctx=self.ctx)()
+        yield self.PublicCloudConnectorsTestPermissions(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -72,27 +73,43 @@ class Show(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class PublicCloudConnectorsGet(AAZHttpOperation):
+    class PublicCloudConnectorsTestPermissions(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{publicCloudConnector}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{publicCloudConnector}/testPermissions",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "POST"
 
         @property
         def error_format(self):
@@ -102,7 +119,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "publicCloudConnector", self.ctx.args.public_cloud_connector,
+                    "publicCloudConnector", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -120,7 +137,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-08-01-preview",
+                    "api-version", "2024-12-01",
                     required=True,
                 ),
             }
@@ -153,75 +170,32 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.location = AAZStrType(
+            _schema_on_200.solution_types = AAZListType(
+                serialized_name="solutionTypes",
                 flags={"required": True},
             )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
 
-            properties = cls._schema_on_200.properties
-            properties.aws_cloud_profile = AAZObjectType(
-                serialized_name="awsCloudProfile",
+            solution_types = cls._schema_on_200.solution_types
+            solution_types.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.solution_types.Element
+            _element.solution_type = AAZStrType(
+                serialized_name="solutionType",
                 flags={"required": True},
             )
-            properties.connector_primary_identifier = AAZStrType(
-                serialized_name="connectorPrimaryIdentifier",
-                flags={"read_only": True},
+            _element.status = AAZStrType(
+                flags={"required": True},
             )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
+            _element.status_details = AAZStrType(
+                serialized_name="statusDetails",
+                flags={"required": True},
             )
-
-            aws_cloud_profile = cls._schema_on_200.properties.aws_cloud_profile
-            aws_cloud_profile.excluded_accounts = AAZListType(
-                serialized_name="excludedAccounts",
-            )
-
-            excluded_accounts = cls._schema_on_200.properties.aws_cloud_profile.excluded_accounts
-            excluded_accounts.Element = AAZStrType()
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _TestPermissionHelper:
+    """Helper class for TestPermission"""
 
 
-__all__ = ["Show"]
+__all__ = ["TestPermission"]
