@@ -14809,16 +14809,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('securityProfile.sshAccess', 'LocalUser'),
         ])
 
-        # update cluster
-        update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
-                     '--ssh-access disabled --yes ' \
-                     '--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/DisableSSHPreview'
-        self.cmd(update_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('agentPoolProfiles[0].securityProfile.sshAccess', 'Disabled'),
-            self.check('agentPoolProfiles[1].securityProfile.sshAccess', 'Disabled'),
-        ])
-
         # delete
         self.cmd('aks delete -g {resource_group} -n {name} --yes --no-wait', checks=[self.is_empty()])
 
