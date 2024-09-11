@@ -11,6 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
+* Remove dependency on `msrestazure.azure_exceptions` and `msrestazure.tools`.
 
 8.0.0b1
 +++++++

@@ -110,12 +110,11 @@ from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import get_file_json, read_file_content
 from azure.mgmt.containerservice.models import KubernetesSupportPlan
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id, resource_id
 from dateutil.parser import parse
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.util import CLIError
-from msrestazure.tools import is_valid_resource_id
-from msrestazure.tools import parse_resource_id
 
 
 logger = get_logger(__name__)
@@ -3810,8 +3809,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 # mdm metrics is supported only in azure public cloud, so add the role assignment only in this cloud
                 cloud_name = self.cmd.cli_ctx.cloud.name
                 if cloud_name.lower() == "azurecloud":
-                    from msrestazure.tools import resource_id
-
                     cluster_resource_id = resource_id(
                         subscription=self.context.get_subscription_id(),
                         resource_group=self.context.get_resource_group_name(),
