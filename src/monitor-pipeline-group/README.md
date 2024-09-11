@@ -1,5 +1,5 @@
-# Azure CLI MonitorPipelineGroup Extension #
-This is an extension to Azure CLI to manage MonitorPipelineGroup resources.
+# Azure CLI monitor-pipeline-group Extension #
+This is an extension to Azure CLI to manage Azure Monitor Pipeline Group (Microsoft.Monitor/pipelineGroups) resources.
 
 ## How to use ##
 Install this extension using the below CLI command
