@@ -18,8 +18,8 @@ class Create(AAZCommand):
     """Create an Azure Large Instance for the specified subscription,
 resource group, and instance name.
 
-    :example: AzureLargeInstance_Create
-        az large-instance create -g myResourceGroup -n myALInstance -l westus --tags "{testkey:testvalue}" --instance-id 23415635-4d7e-41dc-9598-8194f22c24e1 --power-state started --ppg /subscriptions/f0f4887f-d13c-4943-a8ba-d7da28d2a3fd/resourceGroups/myResourceGroup/providers/Microsoft.Compute/proximityPlacementGroups/myplacementgroup --hw-revision Rev 3 --hardware-profile "{hardware-type:Cisco_UCS,azure-large-instance-size:S72}" --network-profile "{network-interfaces:[{ip-address:100.100.100.100}],circuit-id:/subscriptions/f0f4887f-d13c-4943-a8ba-d7da28d2a3fd/resourceGroups/myResourceGroup/providers/Microsoft.Network/expressRouteCircuit}" --storage-profile "{nfs-ip-address:200.200.200.200}" --os-profile "{computer-name:myComputerName,os-type:SUSE,version:'12 SP1',ssh-public-key:'{ssh-rsa public key}'}"
+    :example: Create an Azure Large Storage Instance
+        az large-instance create -g myResourceGroup -n myALInstance -l westus -sku S72
     """
 
     _aaz_info = {
@@ -57,6 +57,22 @@ resource group, and instance name.
             required=True,
         )
 
+        # define Arg Group "HardwareProfile"
+
+        _args_schema = cls._args_schema
+        _args_schema.azure_large_instance_size = AAZStrArg(
+            options=["--sku", "--azure-large-instance-size"],
+            arg_group="HardwareProfile",
+            help="Specifies the Azure Large Instance SKU.",
+            enum={"S112": "S112", "S144": "S144", "S144m": "S144m", "S192": "S192", "S192m": "S192m", "S192xm": "S192xm", "S224": "S224", "S224m": "S224m", "S224om": "S224om", "S224oo": "S224oo", "S224oom": "S224oom", "S224ooo": "S224ooo", "S224se": "S224se", "S384": "S384", "S384m": "S384m", "S384xm": "S384xm", "S384xxm": "S384xxm", "S448": "S448", "S448m": "S448m", "S448om": "S448om", "S448oo": "S448oo", "S448oom": "S448oom", "S448ooo": "S448ooo", "S448se": "S448se", "S576m": "S576m", "S576xm": "S576xm", "S672": "S672", "S672m": "S672m", "S672om": "S672om", "S672oo": "S672oo", "S672oom": "S672oom", "S672ooo": "S672ooo", "S72": "S72", "S72m": "S72m", "S768": "S768", "S768m": "S768m", "S768xm": "S768xm", "S896": "S896", "S896m": "S896m", "S896om": "S896om", "S896oo": "S896oo", "S896oom": "S896oom", "S896ooo": "S896ooo", "S96": "S96", "S960m": "S960m"},
+        )
+        _args_schema.hardware_type = AAZStrArg(
+            options=["--hardware-type"],
+            arg_group="HardwareProfile",
+            help="Name of the hardware type (vendor and/or their product name)",
+            enum={"Cisco_UCS": "Cisco_UCS", "HPE": "HPE", "SDFLEX": "SDFLEX"},
+        )
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -64,11 +80,6 @@ resource group, and instance name.
             options=["--ali-id", "--instance-id"],
             arg_group="Properties",
             help="Specifies the Azure Large Instance unique ID.",
-        )
-        _args_schema.hardware_profile = AAZObjectArg(
-            options=["--hardware-profile"],
-            arg_group="Properties",
-            help="Specifies the hardware settings for the Azure Large Instance.",
         )
         _args_schema.hw_revision = AAZStrArg(
             options=["--hw-revision"],
@@ -100,18 +111,6 @@ resource group, and instance name.
             options=["--storage-profile"],
             arg_group="Properties",
             help="Specifies the storage settings for the Azure Large Instance disks.",
-        )
-
-        hardware_profile = cls._args_schema.hardware_profile
-        hardware_profile.azure_large_instance_size = AAZStrArg(
-            options=["azure-large-instance-size"],
-            help="Specifies the Azure Large Instance SKU.",
-            enum={"S112": "S112", "S144": "S144", "S144m": "S144m", "S192": "S192", "S192m": "S192m", "S192xm": "S192xm", "S224": "S224", "S224m": "S224m", "S224om": "S224om", "S224oo": "S224oo", "S224oom": "S224oom", "S224ooo": "S224ooo", "S224se": "S224se", "S384": "S384", "S384m": "S384m", "S384xm": "S384xm", "S384xxm": "S384xxm", "S448": "S448", "S448m": "S448m", "S448om": "S448om", "S448oo": "S448oo", "S448oom": "S448oom", "S448ooo": "S448ooo", "S448se": "S448se", "S576m": "S576m", "S576xm": "S576xm", "S672": "S672", "S672m": "S672m", "S672om": "S672om", "S672oo": "S672oo", "S672oom": "S672oom", "S672ooo": "S672ooo", "S72": "S72", "S72m": "S72m", "S768": "S768", "S768m": "S768m", "S768xm": "S768xm", "S896": "S896", "S896m": "S896m", "S896om": "S896om", "S896oo": "S896oo", "S896oom": "S896oom", "S896ooo": "S896ooo", "S96": "S96", "S960m": "S960m"},
-        )
-        hardware_profile.hardware_type = AAZStrArg(
-            options=["hardware-type"],
-            help="Name of the hardware type (vendor and/or their product name)",
-            enum={"Cisco_UCS": "Cisco_UCS", "HPE": "HPE", "SDFLEX": "SDFLEX"},
         )
 
         network_profile = cls._args_schema.network_profile
@@ -292,7 +291,7 @@ resource group, and instance name.
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("azureLargeInstanceId", AAZStrType, ".instance_id")
-                properties.set_prop("hardwareProfile", AAZObjectType, ".hardware_profile")
+                properties.set_prop("hardwareProfile", AAZObjectType)
                 properties.set_prop("hwRevision", AAZStrType, ".hw_revision")
                 properties.set_prop("networkProfile", AAZObjectType, ".network_profile")
                 properties.set_prop("osProfile", AAZObjectType, ".os_profile")
