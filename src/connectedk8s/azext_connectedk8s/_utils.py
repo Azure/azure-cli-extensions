@@ -1480,7 +1480,7 @@ def check_provider_registrations(
         cc_registration_state = rp_client.get(
             consts.Connected_Cluster_Provider_Namespace
         ).registration_state
-        if cc_registration_state != "Registered":
+        if cc_registration_state not in consts.allowed_rp_registration_states:
             telemetry.set_exception(
                 exception="{} provider is not registered".format(
                     consts.Connected_Cluster_Provider_Namespace
@@ -1500,7 +1500,7 @@ def check_provider_registrations(
         kc_registration_state = rp_client.get(
             consts.Kubernetes_Configuration_Provider_Namespace
         ).registration_state
-        if kc_registration_state != "Registered":
+        if kc_registration_state not in consts.allowed_rp_registration_states:
             if is_workload_identity_enabled:
                 telemetry.set_exception(
                     exception="{} provider is not registered".format(
@@ -1529,7 +1529,7 @@ def check_provider_registrations(
             hc_registration_state = rp_client.get(
                 consts.Hybrid_Compute_Provider_Namespace
             ).registration_state
-            if hc_registration_state != "Registered":
+            if hc_registration_state not in consts.allowed_rp_registration_states:
                 telemetry.set_exception(
                     exception="{} provider is not registered".format(
                         consts.Hybrid_Compute_Provider_Namespace
