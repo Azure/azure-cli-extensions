@@ -1891,6 +1891,9 @@ helps['aks nodepool add'] = """
         - name: --vm-sizes
           type: string
           short-summary: Comma-separated list of sizes. Must use VirtualMachines agent pool type.
+        - name: --undrainable-node-behavior
+          type: string
+          short-summary: Defines the behavior for undrainable nodes during upgrade. The value should be "Cordon" or "Schedule". The default value is "Schedule".
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1955,6 +1958,9 @@ helps['aks nodepool upgrade'] = """
         - name: --if-none-match
           type: string
           short-summary: Set to '*' to allow a new node pool to be created, but to prevent updating an existing node pool. Other values will be ignored.
+        - name: --undrainable-node-behavior
+          type: string
+          short-summary: Defines the behavior for undrainable nodes during upgrade. The value should be "Cordon" or "Schedule". The default value is "Schedule".
 """
 
 helps['aks nodepool update'] = """
@@ -2046,6 +2052,9 @@ helps['aks nodepool update'] = """
         - name: --disable-fips-image
           type: bool
           short-summary: Switch to use non-FIPS-enabled OS on agent nodes.
+        - name: --undrainable-node-behavior
+          type: string
+          short-summary: Defines the behavior for undrainable nodes during upgrade. The value should be "Cordon" or "Schedule". The default value is "Schedule".
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster

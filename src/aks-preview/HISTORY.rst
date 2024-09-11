@@ -12,6 +12,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 Pending
 +++++++
 
+8.0.0b2
++++++++
+* * Add `--undrainable-node-behavior` to the `az aks nodepool add/update/upgrade` commands.
+
 8.0.0b1
 +++++++
 * [BREAKING CHANGE]: Remove enable/disable node restriction feature, since it is always enabled and not changeable since k8s version 1.24.0
