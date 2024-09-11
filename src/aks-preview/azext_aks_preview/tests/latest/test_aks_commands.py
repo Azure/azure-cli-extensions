@@ -928,7 +928,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_appgw)
 
         # construct group id
-        from msrestazure.tools import parse_resource_id, resource_id
+        from azure.mgmt.core.tools import parse_resource_id, resource_id
 
         parsed_vnet_id = parse_resource_id(vnet_id)
         group_id = resource_id(

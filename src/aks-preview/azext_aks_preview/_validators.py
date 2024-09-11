@@ -20,6 +20,7 @@ from azure.cli.core.azclierror import (
 )
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
+from azure.mgmt.core.tools import is_valid_resource_id
 from azext_aks_preview._consts import (
     ADDONS,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
@@ -323,7 +324,6 @@ def validate_apiserver_subnet_id(namespace):
 def _validate_subnet_id(subnet_id, name):
     if subnet_id is None or subnet_id == '':
         return
-    from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(subnet_id):
         raise CLIError(name + " is not a valid Azure resource ID.")
 
@@ -468,7 +468,6 @@ def validate_assign_identity(namespace):
     if namespace.assign_identity is not None:
         if namespace.assign_identity == '':
             return
-        from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.assign_identity):
             raise CLIError(
                 "--assign-identity is not a valid Azure resource ID.")
@@ -561,7 +560,6 @@ def validate_assign_kubelet_identity(namespace):
     if namespace.assign_kubelet_identity is not None:
         if namespace.assign_kubelet_identity == '':
             return
-        from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.assign_kubelet_identity):
             raise CLIError(
                 "--assign-kubelet-identity is not a valid Azure resource ID.")
@@ -578,14 +576,12 @@ def validate_snapshot_name(namespace):
 
 
 def validate_nodepool_id(namespace):
-    from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(namespace.nodepool_id):
         raise InvalidArgumentValueError(
             "--nodepool-id is not a valid Azure resource ID.")
 
 
 def validate_cluster_id(namespace):
-    from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(namespace.cluster_id):
         raise InvalidArgumentValueError(
             "--cluster-id is not a valid Azure resource ID.")
@@ -593,7 +589,6 @@ def validate_cluster_id(namespace):
 
 def validate_snapshot_id(namespace):
     if namespace.snapshot_id:
-        from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.snapshot_id):
             raise InvalidArgumentValueError(
                 "--snapshot-id is not a valid Azure resource ID.")
@@ -601,7 +596,6 @@ def validate_snapshot_id(namespace):
 
 def validate_cluster_snapshot_id(namespace):
     if namespace.cluster_snapshot_id:
-        from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.cluster_snapshot_id):
             raise InvalidArgumentValueError(
                 "--cluster-snapshot-id is not a valid Azure resource ID.")
@@ -609,7 +603,6 @@ def validate_cluster_snapshot_id(namespace):
 
 def validate_host_group_id(namespace):
     if namespace.host_group_id:
-        from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.host_group_id):
             raise InvalidArgumentValueError(
                 "--host-group-id is not a valid Azure resource ID.")
@@ -617,7 +610,6 @@ def validate_host_group_id(namespace):
 
 def validate_crg_id(namespace):
     if namespace.crg_id:
-        from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.crg_id):
             raise InvalidArgumentValueError(
                 "--crg-id is not a valid Azure resource ID.")
@@ -644,7 +636,6 @@ def validate_azure_keyvault_kms_key_vault_resource_id(namespace):
     key_vault_resource_id = namespace.azure_keyvault_kms_key_vault_resource_id
     if key_vault_resource_id is None or key_vault_resource_id == '':
         return
-    from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(key_vault_resource_id):
         raise InvalidArgumentValueError("--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.")
 
@@ -653,7 +644,6 @@ def validate_bootstrap_container_registry_resource_id(namespace):
     container_registry_resource_id = namespace.bootstrap_container_registry_resource_id
     if container_registry_resource_id is None or container_registry_resource_id == '':
         return
-    from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(container_registry_resource_id):
         raise InvalidArgumentValueError("--bootstrap-container-registry-resource-id is not a valid Azure resource ID.")
 
@@ -773,7 +763,6 @@ def validate_application_security_groups(namespace):
     if not asg_ids:
         return
 
-    from msrestazure.tools import is_valid_resource_id
     for asg in asg_ids.split(","):
         if not is_valid_resource_id(asg):
             raise InvalidArgumentValueError(asg + " is not a valid Azure resource ID.")
