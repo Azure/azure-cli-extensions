@@ -6,6 +6,7 @@
 # pylint: disable=line-too-long
 # pylint: disable=unnecessary-list-index-lookup
 # pylint: disable=unidiomatic-typecheck
+# pylint: disable=possibly-used-before-assignment
 
 import uuid
 import re
@@ -44,7 +45,8 @@ critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContaine
                           "DataProtectionStopProtection": "/backupInstances/stopProtection/action",
                           "DataProtectionSuspendBackup": "/backupInstances/suspendBackups/action",
                           "DataProtectionRestore": "/backupInstances/restore/action",
-                          "DataProtectionModifyEncryptionSettings": "/write#modifyEncryptionSettings"}
+                          "DataProtectionModifyEncryptionSettings": "/write#modifyEncryptionSettings",
+                          "DataProtectionModifyBackupInstance": "/backupInstances/write"}
 
 
 datasource_map = {

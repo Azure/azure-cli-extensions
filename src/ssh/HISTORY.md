@@ -1,5 +1,9 @@
 Release History
 ===============
+2.0.5
+-----
+* Remove ctypes dependency from RDP feature
+
 2.0.4
 -----
 * Install Arc SSH Proxy from MAR

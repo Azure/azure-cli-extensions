@@ -1,0 +1,114 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - oracle-database autonomous-database show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.13 (macOS-10.16-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/eamonterraformtest500/providers/Oracle.Database/autonomousDatabases/eamonterraformtest501?api-version=2023-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/eamonterraformtest500/providers/Oracle.Database/autonomousDatabases/eamonterraformtest501","name":"eamonterraformtest501","type":"oracle.database/autonomousdatabases","location":"eastus","tags":{},"systemData":{"createdBy":"eamon.el-homsi@oracle.com","createdByType":"User","createdAt":"2024-04-17T19:55:06.3169995Z","lastModifiedBy":"857ad006-4380-4712-ba4c-22f7c64d84e7","lastModifiedByType":"Application","lastModifiedAt":"2024-04-17T20:48:27.1444348Z"},"properties":{"dataBaseType":"Regular","autonomousMaintenanceScheduleType":"Regular","characterSet":"AL32UTF8","computeCount":2,"computeModel":"ECPU","connectionStrings":{"allConnectionStrings":{},"high":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_eamonterraformtest501_high.adb.oraclecloud.com","low":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_eamonterraformtest501_low.adb.oraclecloud.com","medium":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_eamonterraformtest501_medium.adb.oraclecloud.com","profiles":[{"consumerGroup":"High","displayName":"eamonterraformtest501_high","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Low","displayName":"eamonterraformtest501_low","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Medium","displayName":"eamonterraformtest501_medium","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"High","displayName":"eamonterraformtest501_high","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Low","displayName":"eamonterraformtest501_low","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Medium","displayName":"eamonterraformtest501_medium","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"}]},"connectionUrls":{"apexUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/ords/apex","databaseTransformsUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/odi/","graphStudioUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/graphstudio/","machineLearningNotebookUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/oml/","ordsUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/ords/","sqlDevWebUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/ords/sql-developer"},"dataStorageSizeInGbs":1024,"dataStorageSizeInTbs":1,"dbVersion":"19c","dbWorkload":"DW","displayName":"eamonterraformtest501","isAutoScalingEnabled":true,"isAutoScalingForStorageEnabled":false,"isLocalDataGuardEnabled":false,"isRemoteDataGuardEnabled":false,"localDisasterRecoveryType":"BackupBased","localStandbyDb":{"lifecycleState":"Standby"},"isMtlsConnectionRequired":false,"licenseModel":"LicenseIncluded","provisioningState":"Failed","ncharacterSet":"AL16UTF16","ociUrl":"https://cloud.oracle.com/db/adbs/ocid1.autonomousdatabase.oc1.iad.anuwcljtnirvylqa6ad253hddyjdmflhjyjxs7ysao2l54lpe2qdgmq6bnja?region=us-ashburn-1&tenant=orpsandbox3&compartmentId=ocid1.compartment.oc1..aaaaaaaazcet2jt2uowjtgxsae5uositfy2thngqgokwdifyzmyygdpckeua","openMode":"ReadWrite","permissionLevel":"Restricted","privateEndpoint":"opkzo7sj.adb.us-ashburn-1.oraclecloud.com","privateEndpointIp":"10.0.1.29","privateEndpointLabel":"opkzo7sj","lifecycleState":"Available","subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/eamonterraformtest500/providers/Microsoft.Network/virtualNetworks/eamonterraformtest501_vnet/subnets/delegated","timeCreated":"2024-04-17T20:04:27.412Z","timeLocalDataGuardEnabled":"Wed
+        Apr 17 20:04:46 UTC 2024","timeMaintenanceBegin":"2024-04-21T12:00:00Z","timeMaintenanceEnd":"2024-04-21T14:00:00Z","vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/eamonterraformtest500/providers/Microsoft.Network/virtualNetworks/eamonterraformtest501_vnet","ocid":"ocid1.autonomousdatabase.oc1.iad.anuwcljtnirvylqa6ad253hddyjdmflhjyjxs7ysao2l54lpe2qdgmq6bnja","backupRetentionPeriodInDays":60,"actualUsedDataStorageSizeInTbs":1,"usedDataStorageSizeInTbs":1}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '5995'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 09 Jul 2024 15:30:22 GMT
+      etag:
+      - '"730330d6-0000-0100-0000-662049a50000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 6224DC4F381E413081FC3F6BF7862A1F Ref B: AMS231020615047 Ref C: 2024-07-09T15:30:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - oracle-database autonomous-database list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.13 (macOS-10.16-x86_64-i386-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/eamonterraformtest500/providers/Oracle.Database/autonomousDatabases?api-version=2023-09-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/eamonterraformtest500/providers/Oracle.Database/autonomousDatabases/eamonterraformtest501","name":"eamonterraformtest501","type":"oracle.database/autonomousdatabases","location":"eastus","tags":{},"systemData":{"createdBy":"eamon.el-homsi@oracle.com","createdByType":"User","createdAt":"2024-04-17T19:55:06.3169995Z","lastModifiedBy":"857ad006-4380-4712-ba4c-22f7c64d84e7","lastModifiedByType":"Application","lastModifiedAt":"2024-04-17T20:48:27.1444348Z"},"properties":{"dataBaseType":"Regular","autonomousMaintenanceScheduleType":"Regular","characterSet":"AL32UTF8","computeCount":2,"computeModel":"ECPU","connectionStrings":{"allConnectionStrings":{},"high":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_eamonterraformtest501_high.adb.oraclecloud.com","low":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_eamonterraformtest501_low.adb.oraclecloud.com","medium":"adb.us-ashburn-1.oraclecloud.com:1522/g65795d1a5ce1e9_eamonterraformtest501_medium.adb.oraclecloud.com","profiles":[{"consumerGroup":"High","displayName":"eamonterraformtest501_high","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Low","displayName":"eamonterraformtest501_low","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Medium","displayName":"eamonterraformtest501_medium","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Server","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"High","displayName":"eamonterraformtest501_high","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Low","displayName":"eamonterraformtest501_low","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"},{"consumerGroup":"Medium","displayName":"eamonterraformtest501_medium","hostFormat":"Fqdn","protocol":"TCPS","sessionMode":"Direct","syntaxFormat":"Long","tlsAuthentication":"Mutual","value":"(description=
+        (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=opkzo7sj.adb.us-ashburn-1.oraclecloud.com))(connect_data=(service_name=g65795d1a5ce1e9_eamonterraformtest501_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=no)))"}]},"connectionUrls":{"apexUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/ords/apex","databaseTransformsUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/odi/","graphStudioUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/graphstudio/","machineLearningNotebookUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/oml/","ordsUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/ords/","sqlDevWebUrl":"https://opkzo7sj.adb.us-ashburn-1.oraclecloudapps.com/ords/sql-developer"},"dataStorageSizeInGbs":1024,"dataStorageSizeInTbs":1,"dbVersion":"19c","dbWorkload":"DW","displayName":"eamonterraformtest501","isAutoScalingEnabled":true,"isAutoScalingForStorageEnabled":false,"isLocalDataGuardEnabled":false,"isRemoteDataGuardEnabled":false,"localDisasterRecoveryType":"BackupBased","localStandbyDb":{"lifecycleState":"Standby"},"isMtlsConnectionRequired":false,"licenseModel":"LicenseIncluded","provisioningState":"Failed","ncharacterSet":"AL16UTF16","ociUrl":"https://cloud.oracle.com/db/adbs/ocid1.autonomousdatabase.oc1.iad.anuwcljtnirvylqa6ad253hddyjdmflhjyjxs7ysao2l54lpe2qdgmq6bnja?region=us-ashburn-1&tenant=orpsandbox3&compartmentId=ocid1.compartment.oc1..aaaaaaaazcet2jt2uowjtgxsae5uositfy2thngqgokwdifyzmyygdpckeua","openMode":"ReadWrite","permissionLevel":"Restricted","privateEndpoint":"opkzo7sj.adb.us-ashburn-1.oraclecloud.com","privateEndpointIp":"10.0.1.29","privateEndpointLabel":"opkzo7sj","lifecycleState":"Available","subnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/eamonterraformtest500/providers/Microsoft.Network/virtualNetworks/eamonterraformtest501_vnet/subnets/delegated","timeCreated":"2024-04-17T20:04:27.412Z","timeLocalDataGuardEnabled":"Wed
+        Apr 17 20:04:46 UTC 2024","timeMaintenanceBegin":"2024-04-21T12:00:00Z","timeMaintenanceEnd":"2024-04-21T14:00:00Z","vnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/eamonterraformtest500/providers/Microsoft.Network/virtualNetworks/eamonterraformtest501_vnet","ocid":"ocid1.autonomousdatabase.oc1.iad.anuwcljtnirvylqa6ad253hddyjdmflhjyjxs7ysao2l54lpe2qdgmq6bnja","backupRetentionPeriodInDays":60,"actualUsedDataStorageSizeInTbs":1,"usedDataStorageSizeInTbs":1}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '6007'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 09 Jul 2024 15:30:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: B1BCC990DF424A3E85298416C966E8B8 Ref B: AMS231020512037 Ref C: 2024-07-09T15:30:22Z'
+    status:
+      code: 200
+      message: OK
+version: 1

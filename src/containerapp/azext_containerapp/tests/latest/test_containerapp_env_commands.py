@@ -14,6 +14,7 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckExists, live_only, StorageAccountPreparer)
 
 from .common import TEST_LOCATION, STAGE_LOCATION
+from .custom_preparers import SubnetPreparer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -619,21 +620,14 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         ])
 
     @ResourceGroupPreparer(location="eastus")
-    def test_containerapp_env_infrastructure_rg(self, resource_group):
+    @SubnetPreparer(location="centralus", vnet_address_prefixes='14.0.0.0/23',  delegations='Microsoft.App/environments', subnet_address_prefixes='14.0.0.0/23')
+    def test_containerapp_env_infrastructure_rg(self, resource_group, subnet_id):
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
 
         env = self.create_random_name(prefix='env', length=24)
-        vnet = self.create_random_name(prefix='name', length=24)
         infra_rg = self.create_random_name(prefix='irg', length=24)
 
-        vnet_location = TEST_LOCATION
-        if format_location(vnet_location) == format_location(STAGE_LOCATION):
-            vnet_location = "centralus"
-
-        self.cmd(f"az network vnet create --address-prefixes '14.0.0.0/23' -g {resource_group} -n {vnet} --location {vnet_location}")
-        sub_id = self.cmd(f"az network vnet subnet create --address-prefixes '14.0.0.0/23' --delegations Microsoft.App/environments -n sub -g {resource_group} --vnet-name {vnet}").get_output_in_json()["id"]
-
-        self.cmd(f'containerapp env create -g {resource_group} -n {env} -s {sub_id} -i {infra_rg} --enable-workload-profiles true --logs-destination none')
+        self.cmd(f'containerapp env create -g {resource_group} -n {env} -s {subnet_id} -i {infra_rg} --enable-workload-profiles true --logs-destination none')
 
         containerapp_env = self.cmd(f'containerapp env show -g {resource_group} -n {env}').get_output_in_json()
 
@@ -646,7 +640,7 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.infrastructureResourceGroup', infra_rg),
         ])
 
-        self.cmd(f'containerapp env delete -n {env} -g {resource_group} --yes')
+        self.cmd(f'containerapp env delete -n {env} -g {resource_group} --yes --no-wait')
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
@@ -722,6 +716,16 @@ class ContainerappEnvScenarioTest(ScenarioTest):
             JMESPathCheck('properties.peerTrafficConfiguration.encryption.enabled', False),
         ])
 
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_env_dapr_connection_string_extension(self, resource_group):
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+
+        self.cmd('containerapp env create -g {} -n {} --logs-destination none -d "Endpoint=https://foo.azconfig.io;Id=osOX-l9-s0:sig;InstrumentationKey=00000000000000000000000000000000000000000000"'.format(resource_group, env_name), expect_failure=False)
+
+        self.cmd('containerapp env delete -g {} -n {} --yes --no-wait'.format(resource_group, env_name), expect_failure=False)
+
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_env_usages(self, resource_group):
@@ -759,6 +763,46 @@ class ContainerappEnvScenarioTest(ScenarioTest):
         self.assertEqual(len(usages), 4)
         self.assertGreater(usages[0]["limit"], 0)
         self.assertGreaterEqual(usages[0]["usage"], 0)
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northeurope")
+    def test_containerapp_env_public_network_access(self, resource_group):
+        location = TEST_LOCATION
+        self.cmd('configure --defaults location={}'.format(location))
+
+        env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+
+        self.cmd(
+            'containerapp env create -g {} -n {} --logs-destination none'.format(resource_group, env_name))
+
+        containerapp_env = self.cmd(
+            'containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd(
+                'containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+
+        self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name), checks=[
+            JMESPathCheck('properties.publicNetworkAccess', 'Enabled'),
+        ])
+
+        self.cmd('containerapp env update -g {} -n {} --public-network-access Disabled'.format(
+            resource_group, env_name),
+                 checks=[
+                     JMESPathCheck('properties.publicNetworkAccess', 'Disabled'),
+                 ])
+
+        self.cmd('containerapp env delete -g {} -n {} -y --no-wait'.format(resource_group, env_name))
+
+        enabled_env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        self.cmd('containerapp env create -g {} -n {} --public-network-access Disabled --logs-destination none'.format(
+            resource_group, enabled_env_name),
+                 checks=[
+                     JMESPathCheck('properties.publicNetworkAccess', 'Disabled'),
+                 ])
+
+        self.cmd('containerapp env delete -g {} -n {} -y --no-wait'.format(resource_group, enabled_env_name))
 
 
 class ContainerappEnvLocationNotInStageScenarioTest(ScenarioTest):

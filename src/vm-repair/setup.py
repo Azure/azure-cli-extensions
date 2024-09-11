@@ -8,7 +8,7 @@
 from codecs import open
 from setuptools import setup, find_packages
 
-VERSION = "1.0.7"
+VERSION = "1.0.9"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -24,7 +24,7 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = ['opencensus~=0.11.4']
 
 with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
@@ -47,6 +47,7 @@ setup(
             'scripts/enable-nestedhyperv.ps1',
             'scripts/linux-mount-encrypted-disk.sh',
             'scripts/win-mount-encrypted-disk.ps1',
+            'scripts/win-mount-encrypted-disk-bitlockerV.ps1',
             'scripts/linux-build_setup-cloud-init.txt',
             'azext_metadata.json'
         ]

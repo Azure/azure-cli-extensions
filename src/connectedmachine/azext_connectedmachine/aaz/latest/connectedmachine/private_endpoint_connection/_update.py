@@ -18,13 +18,13 @@ class Update(AAZCommand):
     """Update a private endpoint connection with a given name.
 
     :example: Sample command for private-endpoint-connection update
-        az connectedmachine private-endpoint-connection update --connection-state "{{"description":"Rejected by AZ CLI", "status":"Rejected"}}" --name private-endpoint-connection-name --resource-group myResourceGroup --scope-name myPrivateLinkScope
+        az connectedmachine private-endpoint-connection update --description "Rejected by AZ CLI" --status "Rejected" --name private-endpoint-connection-name --resource-group myResourceGroup --scope-name myPrivateLinkScope
     """
 
     _aaz_info = {
-        "version": "2024-03-31-preview",
+        "version": "2024-05-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/privateendpointconnections/{}", "2024-03-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/privateendpointconnections/{}", "2024-05-20-preview"],
         ]
     }
 
@@ -66,6 +66,20 @@ class Update(AAZCommand):
             ),
         )
 
+        # define Arg Group "ConnectionState"
+
+        _args_schema = cls._args_schema
+        _args_schema.description = AAZStrArg(
+            options=["--description"],
+            arg_group="ConnectionState",
+            help="The private link service connection description.",
+        )
+        _args_schema.status = AAZStrArg(
+            options=["--status"],
+            arg_group="ConnectionState",
+            help="The private link service connection status.",
+        )
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -75,28 +89,12 @@ class Update(AAZCommand):
             help="Private endpoint which the connection belongs to.",
             nullable=True,
         )
-        _args_schema.private_link_service_connection_state = AAZObjectArg(
-            options=["--connection-state", "--private-link-service-connection-state"],
-            arg_group="Properties",
-            help="Connection state of the private endpoint connection.",
-            nullable=True,
-        )
 
         private_endpoint = cls._args_schema.private_endpoint
         private_endpoint.id = AAZStrArg(
             options=["id"],
             help="Resource id of the private endpoint.",
             nullable=True,
-        )
-
-        private_link_service_connection_state = cls._args_schema.private_link_service_connection_state
-        private_link_service_connection_state.description = AAZStrArg(
-            options=["description"],
-            help="The private link service connection description.",
-        )
-        private_link_service_connection_state.status = AAZStrArg(
-            options=["status"],
-            help="The private link service connection status.",
         )
         return cls._args_schema
 
@@ -182,7 +180,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-31-preview",
+                    "api-version", "2024-05-20-preview",
                     required=True,
                 ),
             }
@@ -285,7 +283,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-31-preview",
+                    "api-version", "2024-05-20-preview",
                     required=True,
                 ),
             }
@@ -348,7 +346,7 @@ class Update(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("privateEndpoint", AAZObjectType, ".private_endpoint")
-                properties.set_prop("privateLinkServiceConnectionState", AAZObjectType, ".private_link_service_connection_state")
+                properties.set_prop("privateLinkServiceConnectionState", AAZObjectType)
 
             private_endpoint = _builder.get(".properties.privateEndpoint")
             if private_endpoint is not None:

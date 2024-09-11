@@ -2,6 +2,22 @@
 
 Release History
 ===============
+3.0.1
+++++++
+* Some improvements and security issue fixes.
+
+3.0.0
+++++++
+* Add new param --new to override the existing database user and deprecate Postgres single server
+
+2.0.7
+++++++
+* Fix argument missing
+
+2.0.6
+++++++
+* Add create permission in postgresql
+
 2.0.5
 ++++++
 * Bump version

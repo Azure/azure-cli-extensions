@@ -7,32 +7,6 @@
 from knack.help_files import helps  # pylint: disable=unused-import
 
 
-helps['grafana'] = """
-    type: group
-    short-summary: Commands to manage Azure Grafana instances.
-    long-summary: For optimized experience, not all data plane APIs, documented at https://grafana.com/docs/grafana/latest/http_api/, are exposed. On coverage gap, please reach out to ad4g@microsoft.com
-"""
-
-helps['grafana create'] = """
-    type: command
-    short-summary: Create an Azure Managed Grafana instance.
-"""
-
-helps['grafana list'] = """
-    type: command
-    short-summary: List Azure Managed Grafana instances.
-"""
-
-helps['grafana delete'] = """
-    type: command
-    short-summary: Delete an Azure Managed Grafana instance.
-"""
-
-helps['grafana show'] = """
-    type: command
-    short-summary: Show details of an Azure Managed Grafana instance.
-"""
-
 helps['grafana backup'] = """
     type: command
     short-summary: Backup an Azure Managed Grafana instance's content to an archive.
@@ -55,17 +29,15 @@ helps['grafana restore'] = """
            az grafana restore -g MyResourceGroup -n MyGrafana --archive-file backup\\dashboards\\ServiceHealth-202307051036.tar.gz --components dashboards folders --remap-data-sources
 """
 
-helps['grafana update'] = """
+helps['grafana migrate'] = """
     type: command
-    short-summary: Update an Azure Managed Grafana instance.
+    short-summary: Migrate an existing Grafana instance to an Azure Managed Grafana instance.
     examples:
-        - name: disable the public network access
-          text: |
-           az grafana update -g MyResourceGroup -n MyGrafana --public-network-access disabled
-        - name: enable mail notification through SMTP relay sevice of mailgun
-          text: |
-           az grafana update -g MyResourceGroup -n MyGrafana --smtp enabled --from-address johndoe@outlook.com --from-name john --host "smtp.mailgun.org:587" --user "postmaster@sandbox12345.mailgun.org" --password "password" --start-tls-policy OpportunisticStartTLS --skip-verify true
+       - name: Migrate dashboards and folders from a local Grafana instance to an Azure Managed Grafana instance.
+         text: |
+           az grafana migrate -g MyResourceGroup -n MyGrafana -s http://localhost:3000 -t YourServiceTokenOrAPIKey
 """
+
 
 helps['grafana data-source'] = """
     type: group
