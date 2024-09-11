@@ -62,8 +62,8 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The exporters specified for a pipeline group instance.",
         )
-        _args_schema.networking_configurations = AAZListArg(
-            options=["--networking-configurations"],
+        _args_schema.network_config = AAZListArg(
+            options=["--network-config"],
             arg_group="Properties",
             help="Networking configurations for the pipeline group instance.",
         )
@@ -253,10 +253,10 @@ class Create(AAZCommand):
             ),
         )
 
-        networking_configurations = cls._args_schema.networking_configurations
-        networking_configurations.Element = AAZObjectArg()
+        network_config = cls._args_schema.network_config
+        network_config.Element = AAZObjectArg()
 
-        _element = cls._args_schema.networking_configurations.Element
+        _element = cls._args_schema.network_config.Element
         _element.external_networking_mode = AAZStrArg(
             options=["external-networking-mode"],
             help="External networking mode.",
@@ -276,10 +276,10 @@ class Create(AAZCommand):
             required=True,
         )
 
-        routes = cls._args_schema.networking_configurations.Element.routes
+        routes = cls._args_schema.network_config.Element.routes
         routes.Element = AAZObjectArg()
 
-        _element = cls._args_schema.networking_configurations.Element.routes.Element
+        _element = cls._args_schema.network_config.Element.routes.Element
         _element.path = AAZStrArg(
             options=["path"],
             help="Route path.",
@@ -654,7 +654,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("exporters", AAZListType, ".exporters", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("networkingConfigurations", AAZListType, ".networking_configurations")
+                properties.set_prop("networkingConfigurations", AAZListType, ".network_config")
                 properties.set_prop("processors", AAZListType, ".processors", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("receivers", AAZListType, ".receivers", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("replicas", AAZIntType, ".replicas")

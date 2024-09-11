@@ -11,7 +11,7 @@ az extension add --name monitor-pipeline-group
 #### pipeline-group
 ##### Create
 ```
-az monitor pipeline-group create --resource-group "myResourceGroup" --location "eastus" --name "myPipeline" --exporters @exporters.json --processors @processors.json --receivers @receivers.json --service @service.json --networking-configurations [] --replicas 1 --extended-location @extendedLocation.json
+az monitor pipeline-group create --resource-group "myResourceGroup" --location "eastus" --name "myPipeline" --exporters @exporters.json --processors @processors.json --receivers @receivers.json --service @service.json --network-config [] --replicas 1 --extended-location @extendedLocation.json
 ```
 ##### Show
 ```
