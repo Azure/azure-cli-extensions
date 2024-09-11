@@ -1415,8 +1415,6 @@ def load_arguments(self, _):
                 'For more information on "Auto" mode see aka.ms/aks/nap.'
             )
         )
-        # In update scenario, use emtpy str as default.
-        c.argument('ssh_access', arg_type=get_enum_type(ssh_accesses), is_preview=True)
         c.argument('enable_static_egress_gateway', is_preview=True, action='store_true')
         c.argument('disable_static_egress_gateway', is_preview=True, action='store_true')
         c.argument("enable_imds_restriction", action="store_true", is_preview=True)
