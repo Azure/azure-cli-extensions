@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* Fix create container app / contianer app job with msi issue
 
 1.0.0b1
 ++++++
