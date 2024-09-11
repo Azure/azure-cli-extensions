@@ -35,7 +35,7 @@ class SolutionCreate(_SolutionCreate):
         return args_schema
 
     def pre_operations(self):
-        from msrestazure.tools import parse_resource_id
+        from azure.mgmt.core.tools import parse_resource_id
         from azure.cli.core.azclierror import ArgumentUsageError
         args = self.ctx.args
         args.workspace_id = args.workspace
