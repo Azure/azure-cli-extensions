@@ -11,11 +11,12 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 Pending
 +++++++
-* Remove dependency on `msrestazure.azure_exceptions` and `msrestazure.tools`.
+* Vendor new SDK and bump API version to 2024-07-02-preview.
 
 9.0.0b1
 +++++++
 * [BREAKING CHANGE]: Remove support for `az aks update --ssh-access` command to avoid misleading. To update existing cluster's SSH access, please use `az aks nodepool update --ssh-access` to update node pool's SSH access one by one.
+* Remove dependency on `msrestazure.azure_exceptions` and `msrestazure.tools`.
 
 8.0.0b1
 +++++++
