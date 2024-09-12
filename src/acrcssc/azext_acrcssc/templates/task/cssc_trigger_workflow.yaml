@@ -2,7 +2,7 @@ version: v1.1.0
 alias:
   values:
     ScanImageAndSchedulePatchTask: cssc-scan-image
-    cssc : mcr.microsoft.com/acr/cssc:56f0765
+    cssc : mcr.microsoft.com/acr/cssc:42e38da
 steps:
   - cmd: bash -c 'echo "Inside cssc-trigger-workflow task, getting list of images to be patched based on --filter-policy for Registry {{.Run.Registry}}."'
   - cmd: cssc acr cssc patch --filter-policy csscpolicies/patchpolicy:v1 --dry-run > filterRepos.txt
@@ -13,18 +13,29 @@ steps:
   - cmd: cssc acr cssc patch --filter-policy csscpolicies/patchpolicy:v1 --show-patch-tags --dry-run> filterReposWithPatchTags.txt
     env:
       - ACR_EXPERIMENTAL_CSSC=true
-  - cmd: bash -c 'sed -n "/^Listing/,/^Total/ {/^Listing/b;/^Total/b;p}" filterReposWithPatchTags.txt' > filteredReposAndTags.txt
+  - cmd: bash -c 'sed -n "/^Listing/,/^Matches/ {/^Listing/b;/^Matches/b;/^Repo/b;p}" filterReposWithPatchTags.txt' > filteredReposAndTags.txt
+  - cmd: bash -c 'sed -n "/^Configured Tag Convention:/p" filterReposWithPatchTags.txt' > tagConvention.txt
   - cmd: az login --identity 
   - cmd: |
         az -c 'while read line;do \
-        RegistryName="${line%%/*}"; \
-        Rest="${line#*/}"; \
-        IFS=':' read -r -a array2 <<< "${Rest}"
-        IFS=',' read -r -a array3 <<< "${array2[1]}"
-        RepoName=${array2[0]};
-        OriginalTag=${array3[0]};
-        TagName=${array3[1]};
-        echo "Scheduling $ScanImageAndSchedulePatchTask for $RegistryName/$RepoName, Tag:$TagName, OriginalTag:$OriginalTag";
-        az acr task run --name $ScanImageAndSchedulePatchTask --registry $RegistryName --set SOURCE_REPOSITORY=$RepoName --set SOURCE_IMAGE_TAG=$TagName --set SOURCE_IMAGE_ORIGINAL_TAG=$OriginalTag --no-wait; \
+        RegistryName={{.Run.Registry}}; \
+        IFS=',' read -r -a array <<< "${line}"
+        RepoName=${array[0]}
+        OriginalTag=${array[1]}
+        TagName=${array[2]}
+        # Extract the number after the last hyphen
+        IncrementedTagNumber=""
+        echo "Tag Convention details: $(cat tagConvention.txt)"        
+        if grep -q "floating" tagConvention.txt; then
+          IncrementedTagNumber="patched"
+        elif [ $TagName == "N/A" ]; then
+          IncrementedTagNumber="1"
+          TagName=$OriginalTag
+        elif [[ $TagName =~ -([0-9]+)$ ]]; then
+          TagNumber=${BASH_REMATCH[1]}
+          IncrementedTagNumber=$((TagNumber+1))
+        fi
+        echo "Scheduling $ScanImageAndSchedulePatchTask for $RegistryName/$RepoName, Tag:$TagName, OriginalTag:$OriginalTag, PatchTag:$OriginalTag-$IncrementedTagNumber"; \
+        az acr task run --name $ScanImageAndSchedulePatchTask --registry $RegistryName --set SOURCE_REPOSITORY=$RepoName --set SOURCE_IMAGE_TAG=$TagName --set SOURCE_IMAGE_ORIGINAL_TAG=$OriginalTag --set SOURCE_IMAGE_NEWPATCH_TAG=$IncrementedTagNumber --no-wait; \
         done < filteredReposAndTags.txt;'
     entryPoint: /bin/bash

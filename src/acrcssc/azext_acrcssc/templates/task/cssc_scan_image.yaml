@@ -3,7 +3,7 @@ alias:
   values:
     patchimagetask: cssc-patch-image
     DATE: $(date "+%Y-%m-%d")
-    cssc : mcr.microsoft.com/acr/cssc:56f0765
+    cssc : mcr.microsoft.com/acr/cssc:42e38da
 steps:
   - id: print-inputs
     cmd: |
@@ -38,8 +38,9 @@ steps:
       if [ "$eoslValue" = "true" ]; then \
         echo "PATCHING will be skipped as EOSL is $eoslValue for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"; \
       elif [ $vulCount -gt 0 ]; then \
-          echo "Scheduling patching task"; \
-          az acr task run --name $patchimagetask --registry $RegistryName --set SOURCE_REPOSITORY={{.Values.SOURCE_REPOSITORY}} --set SOURCE_IMAGE_TAG={{.Values.SOURCE_IMAGE_ORIGINAL_TAG}} --no-wait; \
+          echo "Total OS vulnerabilities found -> $vulCount"; \
+          echo "PATCHING task scheduled for image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}, new patch tag will be {{.Values.SOURCE_IMAGE_ORIGINAL_TAG}}-{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}"; \
+          az acr task run --name $patchimagetask --registry $RegistryName --set SOURCE_REPOSITORY={{.Values.SOURCE_REPOSITORY}} --set SOURCE_IMAGE_TAG={{.Values.SOURCE_IMAGE_ORIGINAL_TAG}} --set SOURCE_IMAGE_NEWPATCH_TAG={{.Values.SOURCE_IMAGE_NEWPATCH_TAG}} --no-wait; \
         else \
           echo "PATCHING will be skipped as no vulnerability found in the image {{.Values.SOURCE_REPOSITORY}}:{{.Values.SOURCE_IMAGE_TAG}}"; \
       fi'
