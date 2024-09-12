@@ -115,19 +115,19 @@ class Create(AAZCommand):
             default=False,
         )
         _args_schema.enable_kerberos = AAZBoolArg(
-            options=["--enable-kerberos"],
+            options=["--kerberos"],
             arg_group="Properties",
             help="Enable/Disable Kerberos feature of the Bastion Host resource.",
             default=False,
         )
         _args_schema.enable_session_recording = AAZBoolArg(
-            options=["--enable-session-recording"],
+            options=["--session-recording"],
             arg_group="Properties",
             help="Enable/Disable Session Recording feature of the Bastion Host resource.",
             default=False,
         )
         _args_schema.enable_shareable_link = AAZBoolArg(
-            options=["--enable-shareable-link"],
+            options=["--shareable-link"],
             arg_group="Properties",
             help="Enable/Disable Shareable Link of the Bastion Host resource.",
             default=False,
