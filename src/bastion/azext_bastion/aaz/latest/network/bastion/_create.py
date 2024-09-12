@@ -103,37 +103,37 @@ class Create(AAZCommand):
             default=False,
         )
         _args_schema.enable_file_copy = AAZBoolArg(
-            options=["--enable-file-copy"],
+            options=["--file-copy"],
             arg_group="Properties",
             help="Enable/Disable File Copy feature of the Bastion Host resource.",
             default=False,
         )
         _args_schema.enable_ip_connect = AAZBoolArg(
-            options=["--enable-ip-connect"],
+            options=["--ip-connect"],
             arg_group="Properties",
             help="Enable/Disable IP Connect feature of the Bastion Host resource.",
             default=False,
         )
         _args_schema.enable_kerberos = AAZBoolArg(
-            options=["--enable-kerberos"],
+            options=["--kerberos"],
             arg_group="Properties",
             help="Enable/Disable Kerberos feature of the Bastion Host resource.",
             default=False,
         )
         _args_schema.enable_session_recording = AAZBoolArg(
-            options=["--enable-session-recording"],
+            options=["--session-recording"],
             arg_group="Properties",
             help="Enable/Disable Session Recording feature of the Bastion Host resource.",
             default=False,
         )
         _args_schema.enable_shareable_link = AAZBoolArg(
-            options=["--enable-shareable-link"],
+            options=["--shareable-link"],
             arg_group="Properties",
             help="Enable/Disable Shareable Link of the Bastion Host resource.",
             default=False,
         )
         _args_schema.enable_tunneling = AAZBoolArg(
-            options=["--enable-tunneling"],
+            options=["--tunneling"],
             arg_group="Properties",
             help="Enable/Disable Tunneling feature of the Bastion Host resource.",
             default=False,
