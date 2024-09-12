@@ -3140,7 +3140,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         add_nodepool_cmd = (
             "aks nodepool add -g {resource_group} --cluster-name {name} -n {nodepool_name} "
-            "--mode user --undrainable_node_behavior Cordon"
+            "--mode user --undrainable-node-behavior Cordon"
         )
         self.cmd(
             add_nodepool_cmd,
@@ -3152,7 +3152,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         update_nodepool_cmd = (
             "aks nodepool update -g {resource_group} --cluster-name {name} -n {nodepool_name} "
-            "--undrainable_node_behavior Schedule"
+            "--undrainable-node-behavior Schedule"
         )
         self.cmd(
             update_nodepool_cmd,
