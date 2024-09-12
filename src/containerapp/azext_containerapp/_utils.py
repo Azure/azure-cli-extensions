@@ -749,12 +749,12 @@ def is_registry_msi_system_environment(identity):
 
 def env_has_managed_identity(cmd, resource_group_name, env_name, identity):
     identity = identity.lower()
-    
+
     try:
         managed_env_info = ManagedEnvironmentPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=env_name)
-    except:
-        return False
-    
+    except Exception as e:
+        handle_raw_exception(e)
+
     if safe_get(managed_env_info, "identity") is None:
         return False
 
