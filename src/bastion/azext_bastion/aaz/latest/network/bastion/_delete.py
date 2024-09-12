@@ -47,7 +47,7 @@ class Delete(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.bastion_host_name = AAZStrArg(
-            options=["-n", "--name", "--bastion-host-name"],
+            options=["-n", "--name"],
             help="The name of the Bastion Host.",
             required=True,
             id_part="name",

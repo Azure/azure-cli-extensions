@@ -24,6 +24,7 @@ class List(AAZCommand):
     _aaz_info = {
         "version": "2024-01-01",
         "resources": [
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.network/bastionhosts", "2024-01-01"],
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/bastionhosts", "2024-01-01"],
         ]
     }
@@ -46,14 +47,18 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Resource group name of the Bastion Host.",
-            required=True,
+            help="Resource group name of the Bastion Host."
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.BastionHostsListByResourceGroup(ctx=self.ctx)()
+        condition_0 = has_value(self.ctx.args.resource_group) and has_value(self.ctx.subscription_id)
+        condition_1 = has_value(self.ctx.subscription_id) and has_value(self.ctx.args.resource_group) is not True
+        if condition_0:
+            self.BastionHostsListByResourceGroup(ctx=self.ctx)()
+        if condition_1:
+            self.BastionHostsList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -274,6 +279,206 @@ class List(AAZCommand):
 
             return cls._schema_on_200
 
+    class BastionHostsList(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/providers/Microsoft.Network/bastionHosts",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "GET"
+
+        @property
+        def error_format(self):
+            return "ODataV4Format"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2024-01-01",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType()
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.etag = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.id = AAZStrType()
+            _element.location = AAZStrType()
+            _element.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _element.sku = AAZObjectType()
+            _element.tags = AAZDictType()
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.zones = AAZListType()
+
+            properties = cls._schema_on_200.value.Element.properties
+            properties.disable_copy_paste = AAZBoolType(
+                serialized_name="disableCopyPaste",
+            )
+            properties.dns_name = AAZStrType(
+                serialized_name="dnsName",
+            )
+            properties.enable_file_copy = AAZBoolType(
+                serialized_name="enableFileCopy",
+            )
+            properties.enable_ip_connect = AAZBoolType(
+                serialized_name="enableIpConnect",
+            )
+            properties.enable_kerberos = AAZBoolType(
+                serialized_name="enableKerberos",
+            )
+            properties.enable_session_recording = AAZBoolType(
+                serialized_name="enableSessionRecording",
+            )
+            properties.enable_shareable_link = AAZBoolType(
+                serialized_name="enableShareableLink",
+            )
+            properties.enable_tunneling = AAZBoolType(
+                serialized_name="enableTunneling",
+            )
+            properties.ip_configurations = AAZListType(
+                serialized_name="ipConfigurations",
+            )
+            properties.network_acls = AAZObjectType(
+                serialized_name="networkAcls",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.scale_units = AAZIntType(
+                serialized_name="scaleUnits",
+            )
+            properties.virtual_network = AAZObjectType(
+                serialized_name="virtualNetwork",
+            )
+            _ListHelper._build_schema_sub_resource_read(properties.virtual_network)
+
+            ip_configurations = cls._schema_on_200.value.Element.properties.ip_configurations
+            ip_configurations.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.ip_configurations.Element
+            _element.etag = AAZStrType(
+                flags={"read_only": True},
+            )
+            _element.id = AAZStrType()
+            _element.name = AAZStrType()
+            _element.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _element.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.value.Element.properties.ip_configurations.Element.properties
+            properties.private_ip_allocation_method = AAZStrType(
+                serialized_name="privateIPAllocationMethod",
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.public_ip_address = AAZObjectType(
+                serialized_name="publicIPAddress",
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_sub_resource_read(properties.public_ip_address)
+            properties.subnet = AAZObjectType(
+                flags={"required": True},
+            )
+            _ListHelper._build_schema_sub_resource_read(properties.subnet)
+
+            network_acls = cls._schema_on_200.value.Element.properties.network_acls
+            network_acls.ip_rules = AAZListType(
+                serialized_name="ipRules",
+            )
+
+            ip_rules = cls._schema_on_200.value.Element.properties.network_acls.ip_rules
+            ip_rules.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.network_acls.ip_rules.Element
+            _element.address_prefix = AAZStrType(
+                serialized_name="addressPrefix",
+            )
+
+            sku = cls._schema_on_200.value.Element.sku
+            sku.name = AAZStrType()
+
+            tags = cls._schema_on_200.value.Element.tags
+            tags.Element = AAZStrType()
+
+            zones = cls._schema_on_200.value.Element.zones
+            zones.Element = AAZStrType()
+
+            return cls._schema_on_200
 
 class _ListHelper:
     """Helper class for List"""
