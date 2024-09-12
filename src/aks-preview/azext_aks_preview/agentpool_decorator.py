@@ -472,7 +472,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 self.agentpool.upgrade_settings.undrainable_node_behavior is not None
             ):
                 undrainable_node_behavior = self.agentpool.upgrade_settings.undrainable_node_behavior
- 
+
         # this parameter does not need dynamic completion
         # this parameter does not need validation
         return undrainable_node_behavior
