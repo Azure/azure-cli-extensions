@@ -477,7 +477,6 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need validation
         return undrainable_node_behavior
 
-
     def get_enable_artifact_streaming(self) -> bool:
         """Obtain the value of enable_artifact_streaming.
         :return: bool
