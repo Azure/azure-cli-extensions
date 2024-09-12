@@ -9,7 +9,6 @@ import json
 import os
 import os.path
 import platform
-import re
 import ssl
 import sys
 import threading
@@ -19,7 +18,6 @@ import webbrowser
 from azext_aks_preview._client_factory import (
     CUSTOM_MGMT_AKS_PREVIEW,
     cf_agent_pools,
-    get_msi_client,
     get_compute_client,
 )
 from azext_aks_preview._consts import (
@@ -90,6 +88,9 @@ from azext_aks_preview.aks_draft.commands import (
 from azext_aks_preview.maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
 )
+from azure.cli.command_modules.acs._helpers import (
+    get_user_assigned_identity_by_resource_id
+)
 from azure.cli.command_modules.acs._validators import (
     extract_comma_separated_string,
 )
@@ -123,7 +124,6 @@ from dateutil.parser import parse
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.util import CLIError
-from msrestazure.azure_exceptions import CloudError
 from six.moves.urllib.error import URLError
 from six.moves.urllib.request import urlopen
 
@@ -200,30 +200,6 @@ def load_service_principals(config_path):
             return shell_safe_json_parse(f.read())
     except:  # pylint: disable=bare-except
         return None
-
-
-_re_user_assigned_identity_resource_id = re.compile(
-    r'/subscriptions/(.*?)/resourcegroups/(.*?)/providers/microsoft.managedidentity/userassignedidentities/(.*)',
-    flags=re.IGNORECASE)
-
-
-def _get_user_assigned_identity(cli_ctx, resource_id):
-    resource_id = resource_id.lower()
-    match = _re_user_assigned_identity_resource_id.search(resource_id)
-    if match:
-        subscription_id = match.group(1)
-        resource_group_name = match.group(2)
-        identity_name = match.group(3)
-        msi_client = get_msi_client(cli_ctx, subscription_id)
-        try:
-            identity = msi_client.user_assigned_identities.get(resource_group_name=resource_group_name,
-                                                               resource_name=identity_name)
-        except CloudError as ex:
-            if 'was not found' in ex.message:
-                raise CLIError(f"Identity {resource_id} not found.") from ex
-            raise ex
-        return identity
-    raise CLIError(f"Cannot parse identity name from provided resource id {resource_id}.")
 
 
 def aks_browse(
@@ -772,7 +748,6 @@ def aks_update(
     ephemeral_disk_volume_type=None,
     ephemeral_disk_nvme_perf_tier=None,
     node_provisioning_mode=None,
-    ssh_access=None,
     cluster_service_load_balancer_health_probe_mode=None,
     if_match=None,
     if_none_match=None,
@@ -2580,7 +2555,7 @@ def aks_pod_identity_add(
     instance = client.get(resource_group_name, cluster_name)
     _ensure_pod_identity_addon_is_enabled(instance)
 
-    user_assigned_identity = _get_user_assigned_identity(
+    user_assigned_identity = get_user_assigned_identity_by_resource_id(
         cmd.cli_ctx, identity_resource_id)
     _ensure_managed_identity_operator_permission(
         cmd, instance, user_assigned_identity.id)
@@ -3434,7 +3409,7 @@ def aks_approuting_zone_list(
         resource_group_name,
         name
 ):
-    from msrestazure.tools import parse_resource_id
+    from azure.mgmt.core.tools import parse_resource_id
     mc = client.get(resource_group_name, name)
 
     if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:

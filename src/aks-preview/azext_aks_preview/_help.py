@@ -625,7 +625,7 @@ helps['aks create'] = f"""
           short-summary: Enable AI toolchain operator to the cluster.
         - name: --ssh-access
           type: string
-          short-summary: Configure SSH setting for all node pools in this cluster. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
+          short-summary: Configure SSH setting for the first system pool in this cluster. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key. Note, this configuration will not take effect for later created new node pools, please use option `az aks nodepool add --ssh-access` to configure SSH access for new node pools.
         - name: --pod-ip-allocation-mode
           type: string
           short-summary: Set the ip allocation mode for how Pod IPs from the Azure Pod Subnet are allocated to the nodes in the AKS cluster. The choice is between dynamic batches of individual IPs or static allocation of a set of CIDR blocks. Accepted Values are "DynamicIndividual" or "StaticBlock".
@@ -1264,9 +1264,6 @@ helps['aks update'] = """
         - name: --disable-ai-toolchain-operator
           type: bool
           short-summary: Disable AI toolchain operator.
-        - name: --ssh-access
-          type: string
-          short-summary: Update SSH setting for all node pools in this cluster. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
         - name: --node-init-taints --nodepool-initialization-taints
           type: string
           short-summary: The node initialization taints for all node pools in cluster.

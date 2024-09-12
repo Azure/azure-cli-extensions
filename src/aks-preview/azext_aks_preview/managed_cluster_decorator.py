@@ -110,12 +110,11 @@ from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.profiles import ResourceType
 from azure.cli.core.util import get_file_json, read_file_content
 from azure.mgmt.containerservice.models import KubernetesSupportPlan
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id, resource_id
 from dateutil.parser import parse
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.util import CLIError
-from msrestazure.tools import is_valid_resource_id
-from msrestazure.tools import parse_resource_id
 
 
 logger = get_logger(__name__)
@@ -3810,8 +3809,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 # mdm metrics is supported only in azure public cloud, so add the role assignment only in this cloud
                 cloud_name = self.cmd.cli_ctx.cloud.name
                 if cloud_name.lower() == "azurecloud":
-                    from msrestazure.tools import resource_id
-
                     cluster_resource_id = resource_id(
                         subscription=self.context.get_subscription_id(),
                         resource_group=self.context.get_resource_group_name(),
@@ -5285,23 +5282,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             mc.ai_toolchain_operator_profile.enabled = False
         return mc
 
-    def update_agentpool_profile_ssh_access(self, mc: ManagedCluster) -> ManagedCluster:
-        self._ensure_mc(mc)
-
-        ssh_access = self.context.get_ssh_access()
-        if ssh_access is not None:
-            msg = (
-                f"You're going to update ALL agentpool ssh access to '{ssh_access}' "
-                "This change will take effect after you upgrade the nodepool. Proceed?"
-            )
-            if not self.context.get_yes() and not prompt_y_n(msg, default="n"):
-                raise DecoratorEarlyExitException()
-            for agent_pool_profile in mc.agent_pool_profiles:
-                if agent_pool_profile.security_profile is None:
-                    agent_pool_profile.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
-                agent_pool_profile.security_profile.ssh_access = ssh_access
-        return mc
-
     def update_bootstrap_profile(self, mc: ManagedCluster) -> ManagedCluster:
         self._ensure_mc(mc)
 
@@ -5449,8 +5429,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_azure_container_storage(mc)
         # update node provisioning profile
         mc = self.update_node_provisioning_profile(mc)
-        # update agentpool profile ssh access
-        mc = self.update_agentpool_profile_ssh_access(mc)
         # update bootstrap profile
         mc = self.update_bootstrap_profile(mc)
         # update static egress gateway

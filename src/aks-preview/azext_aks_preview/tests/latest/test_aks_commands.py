@@ -928,7 +928,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_appgw)
 
         # construct group id
-        from msrestazure.tools import parse_resource_id, resource_id
+        from azure.mgmt.core.tools import parse_resource_id, resource_id
 
         parsed_vnet_id = parse_resource_id(vnet_id)
         group_id = resource_id(
@@ -14869,16 +14869,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(add_nodepool_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('securityProfile.sshAccess', 'LocalUser'),
-        ])
-
-        # update cluster
-        update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
-                     '--ssh-access disabled --yes ' \
-                     '--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/DisableSSHPreview'
-        self.cmd(update_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('agentPoolProfiles[0].securityProfile.sshAccess', 'Disabled'),
-            self.check('agentPoolProfiles[1].securityProfile.sshAccess', 'Disabled'),
         ])
 
         # delete
