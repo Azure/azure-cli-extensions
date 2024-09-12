@@ -4,7 +4,8 @@ Release History
 ===============
 upcoming
 ++++++
-* Fix create container app / contianer app job with msi issue
+* 'az containerapp create': Fix container app create with registry msi
+* 'az containerapp job create': Fix container app job create with registry msi
 
 1.0.0b1
 ++++++
