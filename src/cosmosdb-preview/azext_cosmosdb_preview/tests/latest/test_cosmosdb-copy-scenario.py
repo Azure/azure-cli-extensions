@@ -168,6 +168,38 @@ class Cosmosdb_previewCopyScenarioTest(ScenarioTest):
         assert job['jobName'] == job_name
         assert job['status'] == "Cancelled"
 
+    @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_copy_mongo', location='eastus')
+    @AllowLargeResponse(size_kb=9999)
+    def test_cosmosdb_copy_mongo_vcore(self, resource_group):
+
+        database_name = self.create_random_name(prefix='cli', length=15)
+        collection_name = self.create_random_name(prefix='cli', length=15)
+        collection_name_copied = self.create_random_name(prefix='cli', length=15)
+        job_name = self.create_random_name(prefix='cli', length=15)
+        self.kwargs.update({
+            'acc': self.create_random_name(prefix='cli', length=15),
+            'database_name': database_name,
+            'collection_name': collection_name,
+            'collection_name_copied': collection_name_copied,
+            'connection_string_keyvault_uri': 'https://localhost',
+            'job_name': job_name,
+            'loc': 'eastus'
+        })
+
+        self.cmd('az cosmosdb create -n {acc} -g {rg} --locations regionName={loc} --capabilities EnableMongo --kind MongoDB')
+        self.cmd('az cosmosdb show -n {acc} -g {rg}').get_output_in_json()
+
+        # Create job
+        job = self.cmd('az cosmosdb copy create -g {rg} --job-name {job_name} --src-account {acc} --src-mongo database={database_name} collection={collection_name} --dest-mongo-vcore database={database_name} collection={collection_name_copied} connectionStringKeyVaultUri={connection_string_keyvault_uri}').get_output_in_json()
+        assert job['jobName'] == job_name
+        assert job['source']['component'] == 'CosmosDBMongo'
+        assert job['source']['databaseName'] == database_name
+        assert job['source']['collectionName'] == collection_name
+        assert job['destination']['component'] == 'CosmosDBMongoVCore'
+        assert job['destination']['databaseName'] == database_name
+        assert job['destination']['collectionName'] == collection_name_copied
+        assert job['destination']['connectionStringKeyVaultUri'] == 'https://localhost'
+
     @ResourceGroupPreparer(name_prefix='cli_test_cosmosdb_copy', location='eastus')
     @AllowLargeResponse(size_kb=9999)
     def test_cosmosdb_copy_cassandra(self, resource_group):
