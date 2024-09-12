@@ -4,7 +4,7 @@ Release History
 ===============
 
 1.0.2
-* Update CosmosDB RP API Version to 2024-09-01-preview
+* Add support for Mongo (vCore) destination in container copy jobs.
 
 +++++++
 1.0.1
