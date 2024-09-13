@@ -19,13 +19,11 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-12-01",
+        "version": "2024-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.hybridconnectivity/solutionconfigurations/{}", "2024-12-01"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.hybridconnectivity/solutionconfigurations/{}", "2024-08-01-preview"],
         ]
     }
-
-    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -50,7 +48,7 @@ class Update(AAZCommand):
         )
         _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
-            help="Represent Solution Configuration Resource Name",
+            help="Represent Solution Configuration Resource.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,63}$",
@@ -64,7 +62,6 @@ class Update(AAZCommand):
             options=["--solution-settings"],
             arg_group="Properties",
             help="Solution settings",
-            nullable=True,
         )
         _args_schema.solution_type = AAZStrArg(
             options=["--solution-type"],
@@ -73,19 +70,12 @@ class Update(AAZCommand):
         )
 
         solution_settings = cls._args_schema.solution_settings
-        solution_settings.Element = AAZStrArg(
-            nullable=True,
-        )
+        solution_settings.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SolutionConfigurationsGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
-        self.SolutionConfigurationsCreateOrUpdate(ctx=self.ctx)()
+        self.SolutionConfigurationsUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -96,19 +86,11 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
-    @register_callback
-    def pre_instance_update(self, instance):
-        pass
-
-    @register_callback
-    def post_instance_update(self, instance):
-        pass
-
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SolutionConfigurationsGet(AAZHttpOperation):
+    class SolutionConfigurationsUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -128,7 +110,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "GET"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -153,87 +135,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-12-01",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_solution_configuration_read(cls._schema_on_200)
-
-            return cls._schema_on_200
-
-    class SolutionConfigurationsCreateOrUpdate(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200, 201]:
-                return self.on_200_201(session)
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/{resourceUri}/providers/Microsoft.HybridConnectivity/solutionConfigurations/{solutionConfiguration}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "PUT"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "resourceUri", self.ctx.args.connector_id,
-                    skip_quote=True,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "solutionConfiguration", self.ctx.args.name,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2024-12-01",
+                    "api-version", "2024-08-01-preview",
                     required=True,
                 ),
             }
@@ -255,149 +157,107 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                value=self.ctx.vars.instance,
-            )
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200_201
-            )
-
-        _schema_on_200_201 = None
-
-        @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
-
-            cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_solution_configuration_read(cls._schema_on_200_201)
-
-            return cls._schema_on_200_201
-
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
-
-        def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("solutionSettings", AAZDictType, ".solution_settings")
-                properties.set_prop("solutionType", AAZStrType, ".solution_type", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("solutionType", AAZStrType, ".solution_type")
 
             solution_settings = _builder.get(".properties.solutionSettings")
             if solution_settings is not None:
                 solution_settings.set_elements(AAZStrType, ".")
 
-            return _instance_value
+            return self.serialize_content(_content_value)
 
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
             )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType()
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.last_sync_time = AAZStrType(
+                serialized_name="lastSyncTime",
+                flags={"read_only": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.solution_settings = AAZDictType(
+                serialized_name="solutionSettings",
+            )
+            properties.solution_type = AAZStrType(
+                serialized_name="solutionType",
+                flags={"required": True},
+            )
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
+            properties.status_details = AAZStrType(
+                serialized_name="statusDetails",
+                flags={"read_only": True},
+            )
+
+            solution_settings = cls._schema_on_200.properties.solution_settings
+            solution_settings.Element = AAZStrType()
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            return cls._schema_on_200
 
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    _schema_solution_configuration_read = None
-
-    @classmethod
-    def _build_schema_solution_configuration_read(cls, _schema):
-        if cls._schema_solution_configuration_read is not None:
-            _schema.id = cls._schema_solution_configuration_read.id
-            _schema.name = cls._schema_solution_configuration_read.name
-            _schema.properties = cls._schema_solution_configuration_read.properties
-            _schema.system_data = cls._schema_solution_configuration_read.system_data
-            _schema.type = cls._schema_solution_configuration_read.type
-            return
-
-        cls._schema_solution_configuration_read = _schema_solution_configuration_read = AAZObjectType()
-
-        solution_configuration_read = _schema_solution_configuration_read
-        solution_configuration_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        solution_configuration_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        solution_configuration_read.properties = AAZObjectType()
-        solution_configuration_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        solution_configuration_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        properties = _schema_solution_configuration_read.properties
-        properties.last_sync_time = AAZStrType(
-            serialized_name="lastSyncTime",
-            flags={"read_only": True},
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-        properties.solution_settings = AAZDictType(
-            serialized_name="solutionSettings",
-        )
-        properties.solution_type = AAZStrType(
-            serialized_name="solutionType",
-            flags={"required": True},
-        )
-        properties.status = AAZStrType(
-            flags={"read_only": True},
-        )
-        properties.status_details = AAZStrType(
-            serialized_name="statusDetails",
-            flags={"read_only": True},
-        )
-
-        solution_settings = _schema_solution_configuration_read.properties.solution_settings
-        solution_settings.Element = AAZStrType()
-
-        system_data = _schema_solution_configuration_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        _schema.id = cls._schema_solution_configuration_read.id
-        _schema.name = cls._schema_solution_configuration_read.name
-        _schema.properties = cls._schema_solution_configuration_read.properties
-        _schema.system_data = cls._schema_solution_configuration_read.system_data
-        _schema.type = cls._schema_solution_configuration_read.type
 
 
 __all__ = ["Update"]
