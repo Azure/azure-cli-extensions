@@ -309,3 +309,5 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
             JMESPathCheck("properties.configuration.registries[0].identity", user_identity_id, case_sensitive=False),
             JMESPathCheck("properties.template.containers[0].image", image_name),
         ])
+
+        self.cmd(f'containerapp job delete -g {resource_group} -n {job} --yes', expect_failure=False)

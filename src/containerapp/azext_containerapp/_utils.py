@@ -756,6 +756,9 @@ def env_has_managed_identity(cmd, resource_group_name, env_name, identity):
     except Exception as e:
         handle_non_404_status_code_exception(e)
 
+    if not managed_env_info:
+        raise ValidationError("The managed environment '{}' does not exist. Please specify a valid environment.".format(env_name))
+
     if safe_get(managed_env_info, "identity") is None:
         return False
 
