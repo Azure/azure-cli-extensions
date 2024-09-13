@@ -2,6 +2,10 @@
 
 Release History
 ===============
+3.0.2
+++++++
+* Some improvements and security issue fixes.
+
 3.0.1
 ++++++
 * Some improvements and security issue fixes.
