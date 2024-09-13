@@ -749,13 +749,25 @@ def is_registry_msi_system_environment(identity):
 
 def env_has_managed_identity(cmd, resource_group_name, env_name, identity):
     identity = identity.lower()
-    # caller should handle exception
-    managed_env_info = ManagedEnvironmentPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=env_name)
-    if is_registry_msi_system(identity) and managed_env_info["identity"]["type"].__contains__("SystemAssigned"):
+
+    try:
+        managed_env_info = ManagedEnvironmentPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=env_name)
+    except Exception as e:
+        handle_raw_exception(e)
+
+    if safe_get(managed_env_info, "identity") is None:
+        return False
+
+    identityType = safe_get(managed_env_info, "identity", "type")
+    if is_registry_msi_system(identity) and identityType and identityType.__contains__("SystemAssigned"):
         return True
 
+    userAssignedIdentities = safe_get(managed_env_info, "identity", "userAssignedIdentities")
+    if userAssignedIdentities is None:
+        return False
+
     result = False
-    for msi in managed_env_info["identity"]["userAssignedIdentities"]:
+    for msi in userAssignedIdentities:
         if msi.lower() == identity:
             result = True
             break
