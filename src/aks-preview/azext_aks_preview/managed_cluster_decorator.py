@@ -36,6 +36,7 @@ from azext_aks_preview._consts import (
     CONST_DNS_ZONE_CONTRIBUTOR_ROLE,
     CONST_ARTIFACT_SOURCE_CACHE,
     CONST_OUTBOUND_TYPE_NONE,
+    CONST_OUTBOUND_TYPE_BLOCK,
     CONST_IMDS_RESTRICTION_ENABLED,
     CONST_IMDS_RESTRICTION_DISABLED,
 )
@@ -427,7 +428,8 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
                 CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
                 CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
                 CONST_OUTBOUND_TYPE_USER_DEFINED_ROUTING,
-                CONST_OUTBOUND_TYPE_NONE]
+                CONST_OUTBOUND_TYPE_NONE,
+                CONST_OUTBOUND_TYPE_BLOCK,]
         ):
             outbound_type = CONST_OUTBOUND_TYPE_LOAD_BALANCER
             skuName = self.get_sku_name()

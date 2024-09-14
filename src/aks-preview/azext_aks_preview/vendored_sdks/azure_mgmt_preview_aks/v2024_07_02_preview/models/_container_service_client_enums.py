@@ -550,6 +550,10 @@ class OutboundType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     outbound behavior. Please refer to
     https://azure.microsoft.com/en-us/updates/default-outbound-access-for-vms-in-azure-will-be-retired-transition-to-a-new-method-of-internet-access/"""
 
+    BLOCK = "block"
+    """The AKS cluster will proactively block outbound connections. All AKS nodes follows Azure VM default
+    outbound behavior. Please refer to
+    https://azure.microsoft.com/en-us/updates/default-outbound-access-for-vms-in-azure-will-be-retired-transition-to-a-new-method-of-internet-access/"""
 
 class PodIPAllocationMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The IP allocation mode for pods in the agent pool. Must be used with podSubnetId. The default

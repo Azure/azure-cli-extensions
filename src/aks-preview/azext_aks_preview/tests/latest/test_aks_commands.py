@@ -260,6 +260,53 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="eastus2euap", preserve_default_location=True,
+    )
+    def test_aks_create_with_block_and_update_to_none_outbound(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--vm-set-type VirtualMachineScaleSets -c 1 "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkIsolatedClusterPreview,AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableAPIServerVnetIntegrationPreview,AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableOutboundTypeNoneAndBlock "
+            "--outbound-type block "
+            "--bootstrap-artifact-source Cache "
+            "-k 1.30 "
+            "--enable-apiserver-vnet-integration "
+            "--ssh-key-value={ssh_key_value}"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.outboundType", "block"),
+            ],
+        )
+
+        update_cmd = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkIsolatedClusterPreview,AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableAPIServerVnetIntegrationPreview "
+            "--outbound-type none "
+        )
+        self.cmd(
+            update_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.outboundType", "none"),
+            ],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="eastus"
     )
     def test_aks_update_outbound_from_slb_to_natgateway(
@@ -1162,7 +1209,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "-a open-service-mesh -o json"
         )
 
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
             CLIError, 'Addon "open-service-mesh" is not enabled in this cluster.'
         ):
             self.cmd(show_cmd)
@@ -1510,7 +1557,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         update_cmd = "aks addon update --addon confcom --resource-group={resource_group} --name={name} -o json"
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
             CLIError, 'Addon "confcom" is not enabled in this cluster.'
         ):
             self.cmd(update_cmd)
