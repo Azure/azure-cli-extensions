@@ -12,10 +12,6 @@ To release a new version, please select a new version number (usually plus 1 to 
 9.0.0b2
 +++++++
 * Add block to supported outbound type
-* Vendor new SDK and bump API version to 2024-07-02-preview.
-
-9.0.0b2
-+++++++
 * Add `--undrainable-node-behavior` to the `az aks nodepool add/update/upgrade` commands.
 * Vendor new SDK and bump API version to 2024-07-02-preview.
 
