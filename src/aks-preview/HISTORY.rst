@@ -15,7 +15,8 @@ Pending
 
 9.0.0b2
 +++++++
-* * Add `--undrainable-node-behavior` to the `az aks nodepool add/update/upgrade` commands.
+* Add `--undrainable-node-behavior` to the `az aks nodepool add/update/upgrade` commands.
+* Vendor new SDK and bump API version to 2024-07-02-preview.
 
 9.0.0b1
 +++++++
