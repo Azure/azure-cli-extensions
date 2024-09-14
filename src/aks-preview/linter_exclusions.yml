@@ -338,6 +338,10 @@ aks nodepool update:
     undrainable_node_behavior:
       rule_exclusions:
         - option_length_too_long
+aks nodepool upgrade:
+    undrainable_node_behavior:
+      rule_exclusions:
+        - option_length_too_long
 aks nodepool delete:
   parameters:
     ignore_pod_disruption_budget:
