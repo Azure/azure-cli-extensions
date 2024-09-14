@@ -146,7 +146,7 @@ class AddServicePrincipalAuthInfo(argparse.Action):
             raise ValidationError('Required keys missing for parameter --service-principal. '
                                   'Required keys are: client-id, secret')
         if 'principal_id' not in d:
-            from azure.cli.command_modules.serviceconnector._utils import run_cli_cmd
+            from ._utils import run_cli_cmd
             output = run_cli_cmd(
                 'az ad sp show --id "{}"'.format(d['client_id']))
             if output:
