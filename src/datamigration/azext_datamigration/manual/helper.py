@@ -11,6 +11,7 @@
 # pylint: disable=unused-argument
 # pylint: disable=line-too-long
 
+import base64
 import ctypes
 import json
 import os
@@ -18,6 +19,7 @@ import platform
 import subprocess
 import time
 import urllib.request
+import uuid
 from zipfile import ZipFile
 import shutil
 import requests
@@ -25,6 +27,23 @@ from knack.util import CLIError
 from azure.cli.core.azclierror import CLIInternalError
 from azure.cli.core.azclierror import FileOperationError
 from azure.cli.core.azclierror import InvalidArgumentValueError
+
+# -----------------------------------------------------------------------------------------------------------------
+# Common helper function to check if string is empty or not
+# -----------------------------------------------------------------------------------------------------------------
+def is_string_null_or_empty(value):
+    return value is None or value == "" or value.strip() == ""
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to check if an input string has escape characters.
+# -----------------------------------------------------------------------------------------------------------------
+def has_shell_escape_characters(inputString):
+    escape_characters = ['&', '|', ';', '<', '>', '(', ')', '[', ']', '{', '}', '$', '`', '\\', '"', "'", ' ', '\t', '\n', '\r']
+    for character in escape_characters:
+        if character in inputString:
+            return True
+    return False
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -34,6 +53,26 @@ def validate_os_env():
 
     if 'Windows' not in platform.system():
         raise CLIInternalError("This command cannot be run in non-windows environment. Please run this command in Windows environment")
+    
+
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to check if the input string is in valid Guid format or not
+# -----------------------------------------------------------------------------------------------------------------
+def is_valid_guid(guid):
+    try:
+        _ = uuid.UUID(guid)
+    except ValueError:
+        return False
+    return True
+
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to check if the input string is in valid base64 string or not
+# -----------------------------------------------------------------------------------------------------------------
+def is_base64(s):
+    try:
+        return base64.b64encode(base64.b64decode(s)).decode() == f'{s}'
+    except Exception:
+        return False
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -460,9 +499,36 @@ def is_user_admin():
 # Helper function to validate key input.
 # -----------------------------------------------------------------------------------------------------------------
 def validate_input(key):
-    if key == "":
-        raise InvalidArgumentValueError("Failed: IR Auth key is empty. Please provide a valid auth key.")
+    
+    if is_string_null_or_empty(key):
+        raise InvalidArgumentValueError("Failed: IR Auth key is null or empty. Please provide a valid auth key.")
+    elif has_shell_escape_characters(key):
+        raise InvalidArgumentValueError("Failed: IR Auth key has invalid characters. Please provide a valid auth key.")
+    elif not is_valid_ir_key_format(key):
+        raise InvalidArgumentValueError("Failed: Invalid IR Auth key format. Please provide a valid auth key.")
 
+
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to check if the input key is in valid format.
+# -----------------------------------------------------------------------------------------------------------------
+def is_valid_ir_key_format(key):
+    
+    keyPrefix = "IR"
+    separator = '@'
+
+    key_parts = key.split(separator)
+
+    # Length of the split auth key should be 5
+    if len(key_parts) != 5:
+        return False
+    # Check if the key starts with "IR" and all parts are not null or empty
+    elif key_parts[0] != keyPrefix or is_string_null_or_empty(key_parts[1]) or is_string_null_or_empty(key_parts[2]) or is_string_null_or_empty(key_parts[3]) or is_string_null_or_empty(key_parts[4]):
+        return False
+    # Check pattern of second part as Guid and last part is a base64 string
+    elif not is_valid_guid(key_parts[1]) or not is_base64(key_parts[4]):
+        return False
+    else:
+        return True
 
 # -----------------------------------------------------------------------------------------------------------------
 # Helper function to check whether SHIR is installed or not.
@@ -615,6 +681,8 @@ def get_cmd_file_path_from_input(installed_ir_path):
 
     if not os.path.exists(installed_ir_path):
         raise FileNotFoundError(f"The system cannot find the path specified: {installed_ir_path}")
+    elif has_shell_escape_characters(installed_ir_path):
+        raise InvalidArgumentValueError("Failed: Installed IR path has invalid characters. Please provide a valid path.")
 
     # Create diaCmd default path and check if it is valid or not.
     diaCmdPath = os.path.join(installed_ir_path, "Shared", "diacmd.exe")
