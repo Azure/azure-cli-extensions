@@ -4,6 +4,11 @@ Release History
 ===============
 
 =======
+1.0.1b1
+++++++
+* Minor bug fixes and improvements.
+
+=======
 1.0.0b1
 ++++++
 * Added support for version update in command `az datamigration login-migration`.
