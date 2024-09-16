@@ -28,6 +28,7 @@ from azure.cli.core.azclierror import CLIInternalError
 from azure.cli.core.azclierror import FileOperationError
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
+
 # -----------------------------------------------------------------------------------------------------------------
 # Common helper function to check if string is empty or not
 # -----------------------------------------------------------------------------------------------------------------
@@ -53,7 +54,7 @@ def validate_os_env():
 
     if 'Windows' not in platform.system():
         raise CLIInternalError("This command cannot be run in non-windows environment. Please run this command in Windows environment")
-    
+
 
 # -----------------------------------------------------------------------------------------------------------------
 # Helper function to check if the input string is in valid Guid format or not
@@ -64,6 +65,7 @@ def is_valid_guid(guid):
     except ValueError:
         return False
     return True
+
 
 # -----------------------------------------------------------------------------------------------------------------
 # Helper function to check if the input string is in valid base64 string or not
@@ -317,11 +319,10 @@ def check_and_download_loginMigration_console_app(downloads_folder):
             if user_input == "yes":
                 print("Updating to the new version...")
                 break
-            elif user_input == "no":
+            if user_input == "no":
                 print("You chose not to upgrade.")
                 return latest_local_name_and_version
-            else:
-                print("Invalid input. Please enter 'yes' or 'no'.")
+            print("Invalid input. Please enter 'yes' or 'no'.")
 
     # Download latest version of NuGet
     latest_nuget_org_download_directory = os.path.join(downloads_folder, latest_nuget_org_name_and_version)
@@ -499,12 +500,12 @@ def is_user_admin():
 # Helper function to validate key input.
 # -----------------------------------------------------------------------------------------------------------------
 def validate_input(key):
-    
+
     if is_string_null_or_empty(key):
         raise InvalidArgumentValueError("Failed: IR Auth key is null or empty. Please provide a valid auth key.")
-    elif has_shell_escape_characters(key):
+    if has_shell_escape_characters(key):
         raise InvalidArgumentValueError("Failed: IR Auth key has invalid characters. Please provide a valid auth key.")
-    elif not is_valid_ir_key_format(key):
+    if not is_valid_ir_key_format(key):
         raise InvalidArgumentValueError("Failed: Invalid IR Auth key format. Please provide a valid auth key.")
 
 
@@ -512,7 +513,7 @@ def validate_input(key):
 # Helper function to check if the input key is in valid format.
 # -----------------------------------------------------------------------------------------------------------------
 def is_valid_ir_key_format(key):
-    
+
     keyPrefix = "IR"
     separator = '@'
 
@@ -522,13 +523,13 @@ def is_valid_ir_key_format(key):
     if len(key_parts) != 5:
         return False
     # Check if the key starts with "IR" and all parts are not null or empty
-    elif key_parts[0] != keyPrefix or is_string_null_or_empty(key_parts[1]) or is_string_null_or_empty(key_parts[2]) or is_string_null_or_empty(key_parts[3]) or is_string_null_or_empty(key_parts[4]):
+    if key_parts[0] != keyPrefix or is_string_null_or_empty(key_parts[1]) or is_string_null_or_empty(key_parts[2]) or is_string_null_or_empty(key_parts[3]) or is_string_null_or_empty(key_parts[4]):
         return False
     # Check pattern of second part as Guid and last part is a base64 string
-    elif not is_valid_guid(key_parts[1]) or not is_base64(key_parts[4]):
+    if not is_valid_guid(key_parts[1]) or not is_base64(key_parts[4]):
         return False
-    else:
-        return True
+    return True
+
 
 # -----------------------------------------------------------------------------------------------------------------
 # Helper function to check whether SHIR is installed or not.
@@ -556,10 +557,7 @@ def check_whether_gateway_installed(name):
     # Adding this try to look for Installed IR in Program files (Assumes the IR is always installed there) to tackle x32 bit python
     try:
         diaCmdPath = get_cmd_file_path_static()
-        if os.path.exists(diaCmdPath):
-            return True
-        else:
-            return False
+        return os.path.exists(diaCmdPath)
     except (FileNotFoundError, IndexError):
         return False
 
@@ -681,7 +679,7 @@ def get_cmd_file_path_from_input(installed_ir_path):
 
     if not os.path.exists(installed_ir_path):
         raise FileNotFoundError(f"The system cannot find the path specified: {installed_ir_path}")
-    elif has_shell_escape_characters(installed_ir_path):
+    if has_shell_escape_characters(installed_ir_path):
         raise InvalidArgumentValueError("Failed: Installed IR path has invalid characters. Please provide a valid path.")
 
     # Create diaCmd default path and check if it is valid or not.
