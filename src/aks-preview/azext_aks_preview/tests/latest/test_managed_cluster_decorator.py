@@ -1009,6 +1009,74 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_5.get_enable_advanced_network_observability(), False)
 
+    def test_mc_get_advanced_networking_observability_tls_management(self):
+        # Default, not set.
+        ctx_1 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict({}),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_1.get_advanced_networking_observability_tls_management(), None)
+
+        # Flag set to Managed.
+        ctx_2 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_advanced_network_observability": True,
+                    "advanced_networking_observability_tls_management": "Managed",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.CREATE,
+        )
+        self.assertEqual(ctx_2.get_advanced_networking_observability_tls_management(), "Managed")
+
+        # Flag set to None.
+        ctx_3 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_advanced_network_observability": True,
+                    "advanced_networking_observability_tls_management": "None",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        self.assertEqual(ctx_3.get_advanced_networking_observability_tls_management(), "None")
+
+        # Flag set to Managed when Observability is disabled.
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "disable_advanced_network_observability": True,
+                    "advanced_networking_observability_tls_management": "Managed",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        with self.assertRaises(ArgumentUsageError):
+            ctx_4.get_advanced_networking_observability_tls_management()
+
+        # Flag set to None when Observability is disabled.
+        ctx_4 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "disable_advanced_network_observability": True,
+                    "advanced_networking_observability_tls_management": "None",
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        with self.assertRaises(ArgumentUsageError):
+            ctx_4.get_advanced_networking_observability_tls_management()
+
     def test_mc_get_enable_fqdn_policy(self):
         # Default, not set.
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -3142,116 +3210,6 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertEqual(defender_config_4, ground_truth_defender_config_4)
 
-    def test_get_enable_node_restriction(self):
-        ctx_0 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({}),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertIsNone(ctx_0.get_enable_node_restriction())
-
-        ctx_1 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_node_restriction": False,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertEqual(ctx_1.get_enable_node_restriction(), False)
-
-        ctx_2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_node_restriction": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        security_profile = self.models.ManagedClusterSecurityProfile()
-        security_profile.node_restriction = (
-            self.models.ManagedClusterSecurityProfileNodeRestriction(enabled=True)
-        )
-        mc = self.models.ManagedCluster(
-            location="test_location",
-            security_profile=security_profile,
-        )
-        ctx_2.attach_mc(mc)
-        self.assertEqual(ctx_2.get_enable_node_restriction(), True)
-
-        ctx_3 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_node_restriction": False,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        security_profile = self.models.ManagedClusterSecurityProfile()
-        security_profile.node_restriction = (
-            self.models.ManagedClusterSecurityProfileNodeRestriction(enabled=True)
-        )
-        mc = self.models.ManagedCluster(
-            location="test_location",
-            security_profile=security_profile,
-        )
-        ctx_3.attach_mc(mc)
-        self.assertEqual(ctx_3.get_enable_node_restriction(), False)
-
-    def test_get_disable_node_restriction(self):
-        ctx_0 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({}),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        self.assertIsNone(ctx_0.get_enable_azure_keyvault_kms())
-
-        ctx_1 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "disable_node_restriction": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        self.assertEqual(ctx_1.get_disable_node_restriction(), True)
-
-        ctx_2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "disable_node_restriction": False,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        self.assertEqual(ctx_2.get_disable_node_restriction(), False)
-
-        ctx_3 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_node_restriction": True,
-                    "disable_node_restriction": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_3.get_disable_node_restriction()
-
     def test_get_enable_private_cluster(self):
         # default
         ctx_1 = AKSPreviewManagedClusterContext(
@@ -5129,39 +5087,6 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             ),
         )
         self.assertEqual(dec_mc_1, ground_truth_mc_1)
-
-    def test_set_up_node_restriction(self):
-        dec_1 = AKSPreviewManagedClusterCreateDecorator(
-            self.cmd,
-            self.client,
-            {},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_1 = self.models.ManagedCluster(location="test_location")
-        dec_1.context.attach_mc(mc_1)
-        dec_mc_1 = dec_1.set_up_node_restriction(mc_1)
-        ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
-        self.assertEqual(dec_mc_1, ground_truth_mc_1)
-
-        dec_2 = AKSPreviewManagedClusterCreateDecorator(
-            self.cmd,
-            self.client,
-            {"enable_node_restriction": True},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_2 = self.models.ManagedCluster(location="test_location")
-        dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.set_up_node_restriction(mc_2)
-
-        ground_truth_mc_2 = self.models.ManagedCluster(
-            location="test_location",
-            security_profile=self.models.ManagedClusterSecurityProfile(
-                node_restriction=self.models.ManagedClusterSecurityProfileNodeRestriction(
-                    enabled=True,
-                )
-            ),
-        )
-        self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
     def test_set_up_vpa(self):
         dec_1 = AKSPreviewManagedClusterCreateDecorator(
@@ -7516,65 +7441,6 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_2, ground_truth_mc_2)
 
-    def test_update_node_restriction(self):
-        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_1 = self.models.ManagedCluster(
-            location="test_location",
-        )
-        dec_1.context.attach_mc(mc_1)
-        dec_mc_1 = dec_1.update_node_restriction(mc_1)
-        ground_truth_mc_1 = self.models.ManagedCluster(
-            location="test_location",
-        )
-        self.assertEqual(dec_mc_1, ground_truth_mc_1)
-
-        dec_2 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {"enable_node_restriction": True},
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_2 = self.models.ManagedCluster(location="test_location")
-        dec_2.context.attach_mc(mc_2)
-        dec_mc_2 = dec_2.update_node_restriction(mc_2)
-
-        ground_truth_mc_2 = self.models.ManagedCluster(
-            location="test_location",
-            security_profile=self.models.ManagedClusterSecurityProfile(
-                node_restriction=self.models.ManagedClusterSecurityProfileNodeRestriction(
-                    enabled=True,
-                )
-            ),
-        )
-        self.assertEqual(dec_mc_2, ground_truth_mc_2)
-
-        dec_3 = AKSPreviewManagedClusterUpdateDecorator(
-            self.cmd,
-            self.client,
-            {
-                "disable_node_restriction": True,
-            },
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_3 = self.models.ManagedCluster(location="test_location")
-        dec_3.context.attach_mc(mc_3)
-        dec_mc_3 = dec_3.update_node_restriction(mc_3)
-
-        ground_truth_mc_3 = self.models.ManagedCluster(
-            location="test_location",
-            security_profile=self.models.ManagedClusterSecurityProfile(
-                node_restriction=self.models.ManagedClusterSecurityProfileNodeRestriction(
-                    enabled=False,
-                )
-            ),
-        )
-        self.assertEqual(dec_mc_3, ground_truth_mc_3)
-
     def test_update_vpa(self):
         dec_1 = AKSPreviewManagedClusterUpdateDecorator(
             self.cmd,
@@ -8312,6 +8178,7 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
         ground_truth_ingress_profile_1 = self.models.ManagedClusterIngressProfile(
             web_app_routing=self.models.ManagedClusterIngressProfileWebAppRouting(
                 enabled=True,
+                nginx=None,
             )
         )
         ground_truth_mc_1 = self.models.ManagedCluster(
