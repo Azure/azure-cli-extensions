@@ -241,6 +241,7 @@ def process_env_vars_from_template(params: dict,
 
     return env_vars
 
+
 # pylint: disable=too-many-branches
 def process_env_vars_from_yaml(container, config_maps, secrets, approve_wildcards=False):
     # https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#environment-variables-1
