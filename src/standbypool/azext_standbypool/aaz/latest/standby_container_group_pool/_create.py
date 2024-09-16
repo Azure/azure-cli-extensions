@@ -17,8 +17,8 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a StandbyContainerGroupPoolResource
 
-    :example: StandbyContainerGroupPools_CreateOrUpdate
-        az standby-container-group-pool create --resource-group rgstandbypool --name pool --max-ready-capacity 688 --refill-policy always --container-profile-id /subscriptions/8CC31D61-82D7-4B2B-B9DC-6B924DE7D229/resourceGroups/rgstandbypool/providers/Microsoft.ContainerInstance/containerGroupProfiles/cgProfile --profile-revision 1 --subnet-ids "[{id:/subscriptions/8cf6c1b6-c80f-437c-87ad-45fbaff54f73/resourceGroups/rgstandbypool/providers/Microsoft.Network/virtualNetworks/cgSubnet/subnets/cgSubnet}]" --tags "{}" --location West US
+    :example: Create Standby Container Group Pool
+        az standby-container-group-pool create --resource-group myrg --name mypool --subscription 461fa159-654a-415f-853a-40b801021944 --container-profile-id /subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/myrg/providers/Microsoft.ContainerInstance/containerGroupProfiles/mycg --profile-revision 1 --subnet-ids [0].id=/subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/ru-cli-test-standbypool/providers/Microsoft.Network/virtualNetworks/ru-cli-test-standbypool-vnet/subnets/testSubnet --refill-policy always --max-ready-capacity 1 --location eastus
     """
 
     _aaz_info = {

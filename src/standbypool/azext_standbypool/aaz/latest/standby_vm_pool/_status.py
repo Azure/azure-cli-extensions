@@ -49,7 +49,7 @@ class Status(AAZCommand):
             required=True,
         )
         _args_schema.version = AAZStrArg(
-            options=["-v", "--version"],
+            options=["--version"],
             help="The unique identifier for the runtime view. The input string should be the word 'latest', which will get the latest runtime view of the pool, otherwise the request will fail with NotFound exception.",
             required=True,
             id_part="child_name_1",

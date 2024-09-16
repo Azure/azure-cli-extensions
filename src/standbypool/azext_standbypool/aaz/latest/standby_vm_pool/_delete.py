@@ -18,7 +18,7 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete a StandbyVirtualMachinePoolResource
 
-    :example: Delete Standby Pool
+    :example: Delete standby virtual machine pool
         az standby-vm-pool delete --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool
     """
 
@@ -50,8 +50,8 @@ class Delete(AAZCommand):
             help="The resource group",
             required=True,
         )
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
+        _args_schema.standby_virtual_machine_pool_name = AAZStrArg(
+            options=["-n", "--name", "--standby-virtual-machine-pool-name"],
             help="Name of the standby virtual machine pool",
             required=True,
             id_part="name",
@@ -133,7 +133,7 @@ class Delete(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "standbyVirtualMachinePoolName", self.ctx.args.name,
+                    "standbyVirtualMachinePoolName", self.ctx.args.standby_virtual_machine_pool_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

@@ -17,8 +17,8 @@ from azure.cli.core.aaz import *
 class Status(AAZCommand):
     """Get a StandbyContainerGroupPoolRuntimeViewResource
 
-    :example: Get StandbyContainerGroup RuntimeView
-        az standby-container-group-pool get-runtime-view --resource-group myrg --name mypool --subscription 461fa159-654a-415f-853a-40b801021944 --version latest
+    :example: Get standby container group pool runtime view
+        az standby-container-group-pool status --resource-group myrg --name mypool --subscription 461fa159-654a-415f-853a-40b801021944 --version latest
     """
 
     _aaz_info = {
@@ -49,7 +49,7 @@ class Status(AAZCommand):
             required=True,
         )
         _args_schema.version = AAZStrArg(
-            options=["-v", "--version"],
+            options=["--version"],
             help="The unique identifier for the runtime view. The input string should be the word 'latest', which will get the latest runtime view of the pool, otherwise the request will fail with NotFound exception.",
             required=True,
             id_part="child_name_1",

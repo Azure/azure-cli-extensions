@@ -25,13 +25,10 @@ class Update(AAZCommand):
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
-    AZ_SUPPORT_GENERIC_UPDATE = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -58,93 +55,74 @@ class Update(AAZCommand):
             ),
         )
 
-        # define Arg Group "Properties"
+        # define Arg Group "ContainerGroupProfile"
 
         _args_schema = cls._args_schema
-        _args_schema.container_group_properties = AAZObjectArg(
-            options=["--container-group-properties"],
-            arg_group="Properties",
-            help="Specifies container group properties of standby container group pools.",
-        )
-        _args_schema.elasticity_profile = AAZObjectArg(
-            options=["--elasticity-profile"],
-            arg_group="Properties",
-            help="Specifies elasticity profile of standby container group pools.",
-        )
-
-        container_group_properties = cls._args_schema.container_group_properties
-        container_group_properties.container_group_profile = AAZObjectArg(
-            options=["container-group-profile"],
-            help="Specifies container group profile of standby container groups.",
-        )
-        container_group_properties.subnet_ids = AAZListArg(
-            options=["subnet-ids"],
-            help="Specifies subnet Ids for container group.",
-            nullable=True,
-        )
-
-        container_group_profile = cls._args_schema.container_group_properties.container_group_profile
-        container_group_profile.id = AAZResourceIdArg(
-            options=["id"],
+        _args_schema.container_profile_id = AAZResourceIdArg(
+            options=["--container-profile-id"],
+            arg_group="ContainerGroupProfile",
             help="Specifies container group profile id of standby container groups.",
         )
-        container_group_profile.revision = AAZIntArg(
-            options=["revision"],
+        _args_schema.profile_revision = AAZIntArg(
+            options=["--profile-revision"],
+            arg_group="ContainerGroupProfile",
             help="Specifies revision of container group profile.",
-            nullable=True,
         )
 
-        subnet_ids = cls._args_schema.container_group_properties.subnet_ids
-        subnet_ids.Element = AAZObjectArg(
-            nullable=True,
+        # define Arg Group "ContainerGroupProperties"
+
+        _args_schema = cls._args_schema
+        _args_schema.subnet_ids = AAZListArg(
+            options=["--subnet-ids"],
+            arg_group="ContainerGroupProperties",
+            help="Specifies subnet Ids for container group.",
         )
 
-        _element = cls._args_schema.container_group_properties.subnet_ids.Element
+        subnet_ids = cls._args_schema.subnet_ids
+        subnet_ids.Element = AAZObjectArg()
+
+        _element = cls._args_schema.subnet_ids.Element
         _element.id = AAZResourceIdArg(
             options=["id"],
             help="Specifies ARM resource id of the subnet.",
+            required=True,
         )
 
-        elasticity_profile = cls._args_schema.elasticity_profile
-        elasticity_profile.max_ready_capacity = AAZIntArg(
-            options=["max-ready-capacity"],
+        # define Arg Group "ElasticityProfile"
+
+        _args_schema = cls._args_schema
+        _args_schema.max_ready_capacity = AAZIntArg(
+            options=["--max-ready-capacity"],
+            arg_group="ElasticityProfile",
             help="Specifies maximum number of standby container groups in the standby pool.",
             fmt=AAZIntArgFormat(
                 maximum=2000,
                 minimum=0,
             ),
         )
-        elasticity_profile.refill_policy = AAZStrArg(
-            options=["refill-policy"],
+        _args_schema.refill_policy = AAZStrArg(
+            options=["--refill-policy"],
+            arg_group="ElasticityProfile",
             help="Specifies refill policy of the pool.",
-            nullable=True,
             enum={"always": "always"},
         )
 
-        # define Arg Group "Resource"
+        # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
-            arg_group="Resource",
+            arg_group="Properties",
             help="Resource tags.",
-            nullable=True,
         )
 
         tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.StandbyContainerGroupPoolsGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
-        yield self.StandbyContainerGroupPoolsCreateOrUpdate(ctx=self.ctx)()
+        self.StandbyContainerGroupPoolsUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -155,19 +133,11 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
-    @register_callback
-    def pre_instance_update(self, instance):
-        pass
-
-    @register_callback
-    def post_instance_update(self, instance):
-        pass
-
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class StandbyContainerGroupPoolsGet(AAZHttpOperation):
+    class StandbyContainerGroupPoolsUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -187,106 +157,7 @@ class Update(AAZCommand):
 
         @property
         def method(self):
-            return "GET"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "standbyContainerGroupPoolName", self.ctx.args.name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2024-03-01",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_standby_container_group_pool_resource_read(cls._schema_on_200)
-
-            return cls._schema_on_200
-
-    class StandbyContainerGroupPoolsCreateOrUpdate(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
-
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StandbyPool/standbyContainerGroupPools/{standbyContainerGroupPoolName}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -336,59 +207,26 @@ class Update(AAZCommand):
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                value=self.ctx.vars.instance,
-            )
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200_201
-            )
-
-        _schema_on_200_201 = None
-
-        @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
-
-            cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_standby_container_group_pool_resource_read(cls._schema_on_200_201)
-
-            return cls._schema_on_200_201
-
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
-
-        def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("containerGroupProperties", AAZObjectType, ".container_group_properties", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("elasticityProfile", AAZObjectType, ".elasticity_profile", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("containerGroupProperties", AAZObjectType)
+                properties.set_prop("elasticityProfile", AAZObjectType)
 
             container_group_properties = _builder.get(".properties.containerGroupProperties")
             if container_group_properties is not None:
-                container_group_properties.set_prop("containerGroupProfile", AAZObjectType, ".container_group_profile", typ_kwargs={"flags": {"required": True}})
+                container_group_properties.set_prop("containerGroupProfile", AAZObjectType)
                 container_group_properties.set_prop("subnetIds", AAZListType, ".subnet_ids")
 
             container_group_profile = _builder.get(".properties.containerGroupProperties.containerGroupProfile")
             if container_group_profile is not None:
-                container_group_profile.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
-                container_group_profile.set_prop("revision", AAZIntType, ".revision")
+                container_group_profile.set_prop("id", AAZStrType, ".container_profile_id")
+                container_group_profile.set_prop("revision", AAZIntType, ".profile_revision")
 
             subnet_ids = _builder.get(".properties.containerGroupProperties.subnetIds")
             if subnet_ids is not None:
@@ -400,141 +238,128 @@ class Update(AAZCommand):
 
             elasticity_profile = _builder.get(".properties.elasticityProfile")
             if elasticity_profile is not None:
-                elasticity_profile.set_prop("maxReadyCapacity", AAZIntType, ".max_ready_capacity", typ_kwargs={"flags": {"required": True}})
+                elasticity_profile.set_prop("maxReadyCapacity", AAZIntType, ".max_ready_capacity")
                 elasticity_profile.set_prop("refillPolicy", AAZStrType, ".refill_policy")
 
             tags = _builder.get(".tags")
             if tags is not None:
                 tags.set_elements(AAZStrType, ".")
 
-            return _instance_value
+            return self.serialize_content(_content_value)
 
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
             )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
+            )
+            _schema_on_200.name = AAZStrType(
+                flags={"read_only": True},
+            )
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            properties = cls._schema_on_200.properties
+            properties.container_group_properties = AAZObjectType(
+                serialized_name="containerGroupProperties",
+                flags={"required": True},
+            )
+            properties.elasticity_profile = AAZObjectType(
+                serialized_name="elasticityProfile",
+                flags={"required": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+
+            container_group_properties = cls._schema_on_200.properties.container_group_properties
+            container_group_properties.container_group_profile = AAZObjectType(
+                serialized_name="containerGroupProfile",
+                flags={"required": True},
+            )
+            container_group_properties.subnet_ids = AAZListType(
+                serialized_name="subnetIds",
+            )
+
+            container_group_profile = cls._schema_on_200.properties.container_group_properties.container_group_profile
+            container_group_profile.id = AAZStrType(
+                flags={"required": True},
+            )
+            container_group_profile.revision = AAZIntType()
+
+            subnet_ids = cls._schema_on_200.properties.container_group_properties.subnet_ids
+            subnet_ids.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.container_group_properties.subnet_ids.Element
+            _element.id = AAZStrType(
+                flags={"required": True},
+            )
+
+            elasticity_profile = cls._schema_on_200.properties.elasticity_profile
+            elasticity_profile.max_ready_capacity = AAZIntType(
+                serialized_name="maxReadyCapacity",
+                flags={"required": True},
+            )
+            elasticity_profile.refill_policy = AAZStrType(
+                serialized_name="refillPolicy",
+            )
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
+
+            return cls._schema_on_200
 
 
 class _UpdateHelper:
     """Helper class for Update"""
-
-    _schema_standby_container_group_pool_resource_read = None
-
-    @classmethod
-    def _build_schema_standby_container_group_pool_resource_read(cls, _schema):
-        if cls._schema_standby_container_group_pool_resource_read is not None:
-            _schema.id = cls._schema_standby_container_group_pool_resource_read.id
-            _schema.location = cls._schema_standby_container_group_pool_resource_read.location
-            _schema.name = cls._schema_standby_container_group_pool_resource_read.name
-            _schema.properties = cls._schema_standby_container_group_pool_resource_read.properties
-            _schema.system_data = cls._schema_standby_container_group_pool_resource_read.system_data
-            _schema.tags = cls._schema_standby_container_group_pool_resource_read.tags
-            _schema.type = cls._schema_standby_container_group_pool_resource_read.type
-            return
-
-        cls._schema_standby_container_group_pool_resource_read = _schema_standby_container_group_pool_resource_read = AAZObjectType()
-
-        standby_container_group_pool_resource_read = _schema_standby_container_group_pool_resource_read
-        standby_container_group_pool_resource_read.id = AAZStrType(
-            flags={"read_only": True},
-        )
-        standby_container_group_pool_resource_read.location = AAZStrType(
-            flags={"required": True},
-        )
-        standby_container_group_pool_resource_read.name = AAZStrType(
-            flags={"read_only": True},
-        )
-        standby_container_group_pool_resource_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-        standby_container_group_pool_resource_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        standby_container_group_pool_resource_read.tags = AAZDictType()
-        standby_container_group_pool_resource_read.type = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        properties = _schema_standby_container_group_pool_resource_read.properties
-        properties.container_group_properties = AAZObjectType(
-            serialized_name="containerGroupProperties",
-            flags={"required": True},
-        )
-        properties.elasticity_profile = AAZObjectType(
-            serialized_name="elasticityProfile",
-            flags={"required": True},
-        )
-        properties.provisioning_state = AAZStrType(
-            serialized_name="provisioningState",
-            flags={"read_only": True},
-        )
-
-        container_group_properties = _schema_standby_container_group_pool_resource_read.properties.container_group_properties
-        container_group_properties.container_group_profile = AAZObjectType(
-            serialized_name="containerGroupProfile",
-            flags={"required": True},
-        )
-        container_group_properties.subnet_ids = AAZListType(
-            serialized_name="subnetIds",
-        )
-
-        container_group_profile = _schema_standby_container_group_pool_resource_read.properties.container_group_properties.container_group_profile
-        container_group_profile.id = AAZStrType(
-            flags={"required": True},
-        )
-        container_group_profile.revision = AAZIntType()
-
-        subnet_ids = _schema_standby_container_group_pool_resource_read.properties.container_group_properties.subnet_ids
-        subnet_ids.Element = AAZObjectType()
-
-        _element = _schema_standby_container_group_pool_resource_read.properties.container_group_properties.subnet_ids.Element
-        _element.id = AAZStrType(
-            flags={"required": True},
-        )
-
-        elasticity_profile = _schema_standby_container_group_pool_resource_read.properties.elasticity_profile
-        elasticity_profile.max_ready_capacity = AAZIntType(
-            serialized_name="maxReadyCapacity",
-            flags={"required": True},
-        )
-        elasticity_profile.refill_policy = AAZStrType(
-            serialized_name="refillPolicy",
-        )
-
-        system_data = _schema_standby_container_group_pool_resource_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        tags = _schema_standby_container_group_pool_resource_read.tags
-        tags.Element = AAZStrType()
-
-        _schema.id = cls._schema_standby_container_group_pool_resource_read.id
-        _schema.location = cls._schema_standby_container_group_pool_resource_read.location
-        _schema.name = cls._schema_standby_container_group_pool_resource_read.name
-        _schema.properties = cls._schema_standby_container_group_pool_resource_read.properties
-        _schema.system_data = cls._schema_standby_container_group_pool_resource_read.system_data
-        _schema.tags = cls._schema_standby_container_group_pool_resource_read.tags
-        _schema.type = cls._schema_standby_container_group_pool_resource_read.type
 
 
 __all__ = ["Update"]

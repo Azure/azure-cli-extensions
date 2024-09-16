@@ -44,8 +44,8 @@ class Wait(AAZWaitCommand):
             help="The resource group",
             required=True,
         )
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
+        _args_schema.standby_container_group_pool_name = AAZStrArg(
+            options=["-n", "--name", "--standby-container-group-pool-name"],
             help="Name of the standby container group pool",
             required=True,
             id_part="name",
@@ -106,7 +106,7 @@ class Wait(AAZWaitCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "standbyContainerGroupPoolName", self.ctx.args.name,
+                    "standbyContainerGroupPoolName", self.ctx.args.standby_container_group_pool_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

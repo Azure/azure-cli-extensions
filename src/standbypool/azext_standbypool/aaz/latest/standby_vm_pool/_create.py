@@ -49,8 +49,8 @@ class Create(AAZCommand):
             help="The resource group",
             required=True,
         )
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
+        _args_schema.standby_virtual_machine_pool_name = AAZStrArg(
+            options=["-n", "--name", "--standby-virtual-machine-pool-name"],
             help="Name of the standby virtual machine pool",
             required=True,
             fmt=AAZStrArgFormat(
@@ -183,7 +183,7 @@ class Create(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "standbyVirtualMachinePoolName", self.ctx.args.name,
+                    "standbyVirtualMachinePoolName", self.ctx.args.standby_virtual_machine_pool_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

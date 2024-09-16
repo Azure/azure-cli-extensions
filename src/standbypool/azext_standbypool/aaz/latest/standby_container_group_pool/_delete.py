@@ -18,8 +18,8 @@ from azure.cli.core.aaz import *
 class Delete(AAZCommand):
     """Delete a StandbyContainerGroupPoolResource
 
-    :example: StandbyContainerGroupPools_Delete
-        az standby-container-group-pool delete --resource-group rgstandbypool --name pool
+    :example: Delete Standby Container Group Pool
+        az standby-container-group-pool delete --name mypool --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg
     """
 
     _aaz_info = {
@@ -50,8 +50,8 @@ class Delete(AAZCommand):
             help="The resource group",
             required=True,
         )
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
+        _args_schema.standby_container_group_pool_name = AAZStrArg(
+            options=["-n", "--name", "--standby-container-group-pool-name"],
             help="Name of the standby container group pool",
             required=True,
             id_part="name",
@@ -133,7 +133,7 @@ class Delete(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "standbyContainerGroupPoolName", self.ctx.args.name,
+                    "standbyContainerGroupPoolName", self.ctx.args.standby_container_group_pool_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
