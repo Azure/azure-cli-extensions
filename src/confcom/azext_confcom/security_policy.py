@@ -850,7 +850,7 @@ def load_policy_from_virtual_node_yaml_file(
         debug_mode: bool = False,
         disable_stdio: bool = False,
         approve_wildcards: bool = False
-) -> list[AciPolicy]:
+) -> List[AciPolicy]:
     yaml_contents_str = os_util.load_str_from_file(virtual_node_yaml_path)
     return load_policy_from_virtual_node_yaml_str(
         yaml_contents_str,
@@ -861,11 +861,11 @@ def load_policy_from_virtual_node_yaml_file(
 
 
 def load_policy_from_virtual_node_yaml_str(
-        yaml_contents_str: list[str],
+        yaml_contents_str: List[str],
         debug_mode: bool = False,
         disable_stdio: bool = False,
         approve_wildcards: bool = False
-) -> list[AciPolicy]:
+) -> List[AciPolicy]:
     """
     Load a virtual node yaml file and generate a policy object
     This happens in two passes:
