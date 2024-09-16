@@ -9,5 +9,5 @@ from azure.cli.testsdk import *
 
 
 class DurabletaskScenario(ScenarioTest):
-    # TODO: add tests here
-    pass
+    def test_help(self):
+        pass
