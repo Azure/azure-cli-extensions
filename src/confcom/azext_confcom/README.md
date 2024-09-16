@@ -279,13 +279,17 @@ Mixed-mode policy generation is available in the `confcom` tooling, meaning imag
 
 ## AKS Virtual Node
 
-It is possible to use ACI (Azure Container Instances) as a destination for pods in AKS (Azure Kubernetes Service) using the [Virtual Node](https://learn.microsoft.com/en-us/azure/aks/virtual-nodes) feature. The `confcom` tooling can generate security policies for these pods in the same way as for standalone ACI container groups. The only difference is that the `confcom` tooling will ingest the AKS pod spec instead of an ARM Template. An example of this `confcom` run is shown below:
+Azure Kubernetes Service (AKS) allows pods to be scheduled on Azure Container Instances (ACI) 
+using the [AKS Virtual Node](https://learn.microsoft.com/en-us/azure/aks/virtual-nodes) feature. The `confcom` tooling can generate security policies for these ACI-based pods in the same way as for standalone ACI container groups. The key difference is that the `confcom` tooling will ingest an AKS pod specification (`pod.yaml`) instead of an ARM Template. 
+
+Use the following command to generate and print a security policy for an AKS pod running on ACI:
 
 ```bash
 az confcom acipolicygen --virtual-node-yaml ./pod.yaml --print-policy
 ```
 
-Note that this option is distinct from the `katapolicygen` command, which is used for generating security policies for the [Confidential Containers on AKS](https://learn.microsoft.com/en-us/azure/aks/confidential-containers-overview) feature.
+> [!NOTE]  
+> The `acipolicygen` command is specific to generating policies for ACI-based containers. For generating security policies for the [Confidential Containers on AKS](https://learn.microsoft.com/en-us/azure/aks/confidential-containers-overview) feature, use the `katapolicygen` command.
 
 ## Security Policy Information Sources
 
