@@ -4896,7 +4896,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         self.assertEqual(deepdiff.DeepDiff(regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_USER], expected_user_json, ignore_order=True), {})
 
     def test_arm_template_security_context_uid_gid(self):
-        dockerfile_contents = ["FROM ubuntu\n", "USER 456:123\n"]
+        dockerfile_contents = ["FROM mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0\n", "USER 456:123\n"]
 
         try:
             with open(self.dockerfile_path, "w") as dockerfile:
@@ -4935,7 +4935,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         self.client.images.remove(image[0].attrs.get("Id"))
 
     def test_arm_template_security_context_user_gid(self):
-        dockerfile_contents = ["FROM ubuntu\n", "USER test_user:123\n"]
+        dockerfile_contents = ["FROM mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0\n", "USER test_user:123\n"]
 
         try:
             with open(self.dockerfile_path2, "w") as dockerfile:
@@ -4974,7 +4974,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         self.client.images.remove(image[0].attrs.get("Id"))
 
     def test_arm_template_security_context_user_group(self):
-        dockerfile_contents = ["FROM ubuntu\n", "USER test_user:test_group\n"]
+        dockerfile_contents = ["FROM mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0\n", "USER test_user:test_group\n"]
         try:
             with open(self.dockerfile_path3, "w") as dockerfile:
                 dockerfile.writelines(dockerfile_contents)
@@ -5013,7 +5013,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
 
     def test_arm_template_security_context_uid_group(self):
         # valid values are "user", "uid",
-        dockerfile_contents = ["FROM ubuntu\n", "USER 456:test_group\n"]
+        dockerfile_contents = ["FROM mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0\n", "USER 456:test_group\n"]
         try:
             with open(self.dockerfile_path4, "w") as dockerfile:
                 dockerfile.writelines(dockerfile_contents)
@@ -5052,7 +5052,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         self.client.images.remove(image[0].attrs.get("Id"))
 
     def test_arm_template_security_context_uid(self):
-        dockerfile_contents = ["FROM ubuntu\n", "USER 456\n"]
+        dockerfile_contents = ["FROM mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0\n", "USER 456\n"]
         try:
             with open(self.dockerfile_path5, "w") as dockerfile:
                 dockerfile.writelines(dockerfile_contents)
@@ -5090,7 +5090,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         self.client.images.remove(image[0].attrs.get("Id"))
 
     def test_arm_template_security_context_user_dockerfile(self):
-        dockerfile_contents = ["FROM ubuntu\n", "USER test_user\n"]
+        dockerfile_contents = ["FROM mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0\n", "USER test_user\n"]
         try:
             with open(self.dockerfile_path6, "w") as dockerfile:
                 dockerfile.writelines(dockerfile_contents)
