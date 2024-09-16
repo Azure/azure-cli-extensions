@@ -40,8 +40,8 @@ def load_arguments(self: ConnectedvmwareCommandsLoader, _):
     )
 
     mo_name = CLIArgumentType(
-        options_list=['--mo-name'],
-        help='Name of the managed object.',
+        options_list=["--mo-name"],
+        help="Name of the resource in the VCenter.",
     )
 
     with self.argument_context('connectedvmware') as c:
