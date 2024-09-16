@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update a SolutionConfiguration
+
+    :example: SolutionConfigurations_Update
+        az arc-multicloud solution-configuration update --connector-id ymuj --name keebwujt --solution-type nmtqllkyohwtsthxaimsye --solution-settings "{}"
     """
 
     _aaz_info = {
-        "version": "2024-08-01-preview",
+        "version": "2024-12-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.hybridconnectivity/solutionconfigurations/{}", "2024-08-01-preview"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.hybridconnectivity/solutionconfigurations/{}", "2024-12-01"],
         ]
     }
 
@@ -135,7 +138,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-08-01-preview",
+                    "api-version", "2024-12-01",
                     required=True,
                 ),
             }

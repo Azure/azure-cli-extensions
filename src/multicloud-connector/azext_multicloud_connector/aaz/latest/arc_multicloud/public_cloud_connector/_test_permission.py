@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class TestPermission(AAZCommand):
     """A long-running resource action.
+
+    :example: PublicCloudConnectors_TestPermissions
+        az arc-multicloud public-cloud-connector test-permission --resource-group rgpublicCloud --name sjuahmnojgachluzcbhxhwkxwugbsi
     """
 
     _aaz_info = {
-        "version": "2024-08-01-preview",
+        "version": "2024-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridconnectivity/publiccloudconnectors/{}/testpermissions", "2024-08-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridconnectivity/publiccloudconnectors/{}/testpermissions", "2024-12-01"],
         ]
     }
 
@@ -137,7 +140,7 @@ class TestPermission(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-08-01-preview",
+                    "api-version", "2024-12-01",
                     required=True,
                 ),
             }

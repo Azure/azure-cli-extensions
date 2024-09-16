@@ -17,12 +17,15 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a SolutionConfiguration
+
+    :example: SolutionConfigurations_Delete
+        az arc-multicloud solution-configuration delete --connector-id ymuj --name stu
     """
 
     _aaz_info = {
-        "version": "2024-08-01-preview",
+        "version": "2024-12-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.hybridconnectivity/solutionconfigurations/{}", "2024-08-01-preview"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.hybridconnectivity/solutionconfigurations/{}", "2024-12-01"],
         ]
     }
 
@@ -117,7 +120,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-08-01-preview",
+                    "api-version", "2024-12-01",
                     required=True,
                 ),
             }

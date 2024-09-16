@@ -16,12 +16,15 @@ from azure.cli.core.aaz import *
 )
 class GenerateAwsTemplate(AAZCommand):
     """Retrieve AWS Cloud Formation template
+
+    :example: GenerateAwsTemplate_Post
+        az arc-multicloud generate-aws-template --connector-id pnxcfjidglabnwxit --solution-types "[{solution-type:hjyownzpfxwiufmd,solution-settings:{}}]"
     """
 
     _aaz_info = {
-        "version": "2024-08-01-preview",
+        "version": "2024-12-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridconnectivity/generateawstemplate", "2024-08-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.hybridconnectivity/generateawstemplate", "2024-12-01"],
         ]
     }
 
@@ -130,7 +133,7 @@ class GenerateAwsTemplate(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-08-01-preview",
+                    "api-version", "2024-12-01",
                     required=True,
                 ),
             }
