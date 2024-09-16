@@ -2,7 +2,7 @@
 
 Release History
 ===============
-0.4.0
+1.0.0
 ++++++
 * adding support for Virtual Node
 * updating genpolicy version up through 3.2.0.azl1.genpolicy1
