@@ -5,10 +5,8 @@
 # pylint: disable= too-many-lines, too-many-locals, unused-argument, too-many-branches, too-many-statements
 # pylint: disable= consider-using-dict-items, consider-using-f-string
 
-from ast import In
 from collections import defaultdict
 import json
-from venv import logger
 from azure.cli.command_modules.acs._client_factory import get_resources_client
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import (
@@ -1049,10 +1047,11 @@ ConnectedVMwareVsphereResources
             for i, vm in enumerate(vm_list):
                 logger.warning(
                     "[%s] %s \n%s",
-                    i+1, vm["id"], json.dumps(vm["props"], indent=2)
+                    i + 1, vm["id"], json.dumps(vm["props"], indent=2)
                 )
             logger.warning(
-                "Multiple inventory items found with mo_name '%s' in vCenter '%s'. Please check logs above for the properties of the inventory items.",
+                "Multiple inventory items found with mo_name '%s' in vCenter '%s'. "
+                "Please check the logs above for the properties of the inventory items.",
                 mo_name, vcenter
             )
             selected = prompt_y_n(
@@ -1067,7 +1066,7 @@ ConnectedVMwareVsphereResources
             for i, vm in enumerate(vm_list):
                 logger.warning(
                     "[%s] %s",
-                    i+1, vm["id"]
+                    i + 1, vm["id"]
                 )
             selected = prompt(
                 f"Select one of the inventory items by entering the index between 1 and {len(vm_list)}: "
@@ -1078,7 +1077,7 @@ ConnectedVMwareVsphereResources
                     if 1 <= selected <= len(vm_list):
                         logger.warning(
                             "You selected: %s",
-                            vm_list[selected-1]["id"]
+                            vm_list[selected - 1]["id"]
                         )
                         break
                     selected = prompt(
@@ -1088,7 +1087,7 @@ ConnectedVMwareVsphereResources
                 raise InvalidArgumentValueError(
                     "Invalid input. Please provide a valid index."
                 )
-            inventory_item = vm_list[selected-1]["id"]
+            inventory_item = vm_list[selected - 1]["id"]
         else:
             inventory_item = vm_list[0]["id"]
 
