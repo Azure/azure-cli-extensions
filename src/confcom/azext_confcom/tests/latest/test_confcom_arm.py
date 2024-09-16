@@ -5351,7 +5351,7 @@ class PolicyStopSignal(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "nginx:1.24"
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
         },
 
 

@@ -42,7 +42,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "virtual_node_yaml_path",
-            options_list=("--virtual-node-yaml", "-k"),
+            options_list=("--virtual-node-yaml"),
             required=False,
             help="Virtual node YAML file",
         )

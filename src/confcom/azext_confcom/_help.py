@@ -33,7 +33,7 @@ helps[
           type: string
           short-summary: 'Input parameters file to optionally accompany an ARM Template'
 
-        - name: --virtual-node-yaml, -k
+        - name: --virtual-node-yaml
           type: string
           short-summary: 'Input YAML file for Virtual Node policy generation'
 

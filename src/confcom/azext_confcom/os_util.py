@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import base64
+from typing import List
 import yaml
 import yaml.scanner
 import binascii
@@ -103,7 +104,7 @@ def write_json_to_file(path: str, content: dict) -> None:
     )
 
 
-def write_multiple_yaml_to_file(path: str, content: list[dict]) -> None:
+def write_multiple_yaml_to_file(path: str, content: List[dict]) -> None:
     write_str_to_file(
         path,
         yaml.dump_all(

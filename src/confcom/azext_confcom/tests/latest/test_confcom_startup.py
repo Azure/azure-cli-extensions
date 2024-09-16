@@ -48,5 +48,5 @@ class InitialErrors(ScenarioTest):
 
     def test_input_and_virtual_node(self):
         with self.assertRaises(SystemExit) as wrapped_exit:
-            self.cmd("az confcom acipolicygen -i fakepath/input.json -k fakepath/virtual-node.yaml")
+            self.cmd("az confcom acipolicygen -i fakepath/input.json --virtual-node-yaml fakepath/virtual-node.yaml")
         self.assertEqual(wrapped_exit.exception.code, 1)

@@ -451,7 +451,7 @@ def convert_to_pod_spec_helper(pod_dict):
     return {}
 
 
-def filter_non_pod_resources(resources: list[dict]) -> list[dict]:
+def filter_non_pod_resources(resources: List[dict]) -> List[dict]:
     """
     Filter out non-pod spawning resources from a list of resources.
     """
