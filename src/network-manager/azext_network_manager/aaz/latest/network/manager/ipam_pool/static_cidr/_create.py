@@ -12,19 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "network manager security-admin-config create",
+    "network manager ipam-pool static-cidr create",
+    is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a network manager security admin configuration.
+    """Create the Static CIDR resource.
 
-    :example: Create a network manager security admin configuration.
-        az network manager security-admin-config create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" --apply-on None
+    :example: StaticCidrs_Create
+        az network manager ipam-pool static-cidr create --name "myStaticCidr" --pool-name "myIpamPool" --network-manager-name "myAVNM" --resource-group "myAVNMResourceGroup" --subscription "00000000-0000-0000-0000-000000000000" --address-prefixes "['10.0.0.0/24']" --number-of-ip-addresses-to-allocate "256" --description "New Static Cidr Description"
     """
 
     _aaz_info = {
         "version": "2024-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations/{}", "2024-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/ipampools/{}/staticcidrs/{}", "2024-01-01-preview"],
         ]
     }
 
@@ -44,11 +45,6 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_name = AAZStrArg(
-            options=["-n", "--name", "--configuration-name"],
-            help="Name of the network manager security configuration.",
-            required=True,
-        )
         _args_schema.network_manager_name = AAZStrArg(
             options=["--manager-name", "--network-manager-name"],
             help="The name of the network manager.",
@@ -57,37 +53,51 @@ class Create(AAZCommand):
                 pattern="^[a-zA-Z0-9-]*$",
             ),
         )
+        _args_schema.pool_name = AAZStrArg(
+            options=["--pool-name"],
+            help="IP Address Manager Pool resource name.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]*$",
+            ),
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.apply_on_network_intent_policy = AAZListArg(
-            options=["--apply-on", "--apply-on-network-intent-policy"],
-            help="Enum list of network intent policy based services.",
-        )
-        _args_schema.description = AAZStrArg(
-            options=["--description"],
-            help="Description of the security configuration.",
-        )
-
-        apply_on_network_intent_policy = cls._args_schema.apply_on_network_intent_policy
-        apply_on_network_intent_policy.Element = AAZStrArg(
-            enum={"All": "All", "AllowRulesOnly": "AllowRulesOnly", "None": "None"},
+        _args_schema.static_cidr_name = AAZStrArg(
+            options=["-n", "--name", "--static-cidr-name"],
+            help="Static Cidr allocation name.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]*$",
+            ),
         )
 
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.network_group_address_space_aggregation_option = AAZStrArg(
-            options=["--network-group-address-space-aggregation-option"],
+        _args_schema.address_prefixes = AAZListArg(
+            options=["--address-prefixes"],
             arg_group="Properties",
-            help="Determine update behavior for changes to network groups referenced within the rules in this configuration.",
-            enum={"Manual": "Manual", "None": "None"},
+            help="List of IP address prefixes of the resource.",
         )
+        _args_schema.description = AAZStrArg(
+            options=["--description"],
+            arg_group="Properties",
+        )
+        _args_schema.number_of_ip_addresses_to_allocate = AAZStrArg(
+            options=["--number-of-ip-addresses-to-allocate"],
+            arg_group="Properties",
+            help="Number of IP addresses to allocate for a static CIDR resource. The IP addresses will be assigned based on IpamPools available space.",
+        )
+
+        address_prefixes = cls._args_schema.address_prefixes
+        address_prefixes.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SecurityAdminConfigurationsCreateOrUpdate(ctx=self.ctx)()
+        self.StaticCidrsCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -102,7 +112,7 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SecurityAdminConfigurationsCreateOrUpdate(AAZHttpOperation):
+    class StaticCidrsCreate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -116,7 +126,7 @@ class Create(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityAdminConfigurations/{configurationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/ipamPools/{poolName}/staticCidrs/{staticCidrName}",
                 **self.url_parameters
             )
 
@@ -132,15 +142,19 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "configurationName", self.ctx.args.configuration_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "networkManagerName", self.ctx.args.network_manager_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
+                    "poolName", self.ctx.args.pool_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "staticCidrName", self.ctx.args.static_cidr_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -177,19 +191,19 @@ class Create(AAZCommand):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
                 typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+                typ_kwargs={"flags": {"client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("applyOnNetworkIntentPolicyBasedServices", AAZListType, ".apply_on_network_intent_policy")
+                properties.set_prop("addressPrefixes", AAZListType, ".address_prefixes")
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("networkGroupAddressSpaceAggregationOption", AAZStrType, ".network_group_address_space_aggregation_option")
+                properties.set_prop("numberOfIPAddressesToAllocate", AAZStrType, ".number_of_ip_addresses_to_allocate")
 
-            apply_on_network_intent_policy_based_services = _builder.get(".properties.applyOnNetworkIntentPolicyBasedServices")
-            if apply_on_network_intent_policy_based_services is not None:
-                apply_on_network_intent_policy_based_services.set_elements(AAZStrType, ".")
+            address_prefixes = _builder.get(".properties.addressPrefixes")
+            if address_prefixes is not None:
+                address_prefixes.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -217,9 +231,7 @@ class Create(AAZCommand):
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200_201.properties = AAZObjectType()
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -229,24 +241,24 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.apply_on_network_intent_policy_based_services = AAZListType(
-                serialized_name="applyOnNetworkIntentPolicyBasedServices",
+            properties.address_prefixes = AAZListType(
+                serialized_name="addressPrefixes",
             )
             properties.description = AAZStrType()
-            properties.network_group_address_space_aggregation_option = AAZStrType(
-                serialized_name="networkGroupAddressSpaceAggregationOption",
+            properties.number_of_ip_addresses_to_allocate = AAZStrType(
+                serialized_name="numberOfIPAddressesToAllocate",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.resource_guid = AAZStrType(
-                serialized_name="resourceGuid",
+            properties.total_number_of_ip_addresses = AAZStrType(
+                serialized_name="totalNumberOfIPAddresses",
                 flags={"read_only": True},
             )
 
-            apply_on_network_intent_policy_based_services = cls._schema_on_200_201.properties.apply_on_network_intent_policy_based_services
-            apply_on_network_intent_policy_based_services.Element = AAZStrType()
+            address_prefixes = cls._schema_on_200_201.properties.address_prefixes
+            address_prefixes.Element = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

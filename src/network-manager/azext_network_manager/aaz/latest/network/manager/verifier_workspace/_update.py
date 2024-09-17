@@ -12,19 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "network manager security-admin-config update",
+    "network manager verifier-workspace update",
+    is_preview=True,
 )
 class Update(AAZCommand):
-    """Update a network manager security admin configuration.
+    """Update Verifier Workspace.
 
-    :example: Update a network manager security admin configuration.
-        az network manager security-admin-config update --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" --apply-on None
+    :example: VerifierWorkspaceUpdate
+        az network manager verifier-workspace update --name "myVerifierWorkspace" --network-manager-name "myAVNM" --resource-group "myAVNMResourceGroup" --subscription "00000000-0000-0000-0000-000000000000" --description “hello world workspace”
     """
 
     _aaz_info = {
         "version": "2024-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations/{}", "2024-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/verifierworkspaces/{}", "2024-01-01-preview"],
         ]
     }
 
@@ -46,12 +47,6 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_name = AAZStrArg(
-            options=["-n", "--name", "--configuration-name"],
-            help="Name of the network manager security configuration.",
-            required=True,
-            id_part="child_name_1",
-        )
         _args_schema.network_manager_name = AAZStrArg(
             options=["--manager-name", "--network-manager-name"],
             help="The name of the network manager.",
@@ -64,43 +59,48 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.apply_on_network_intent_policy = AAZListArg(
-            options=["--apply-on", "--apply-on-network-intent-policy"],
-            help="Enum list of network intent policy based services.",
-            nullable=True,
+        _args_schema.workspace_name = AAZStrArg(
+            options=["-n", "--name", "--workspace-name"],
+            help="Workspace name.",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_.-]*$",
+            ),
         )
-        _args_schema.description = AAZStrArg(
-            options=["--description"],
-            help="Description of the security configuration.",
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
             nullable=True,
         )
 
-        apply_on_network_intent_policy = cls._args_schema.apply_on_network_intent_policy
-        apply_on_network_intent_policy.Element = AAZStrArg(
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg(
             nullable=True,
-            enum={"All": "All", "AllowRulesOnly": "AllowRulesOnly", "None": "None"},
         )
 
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.network_group_address_space_aggregation_option = AAZStrArg(
-            options=["--network-group-address-space-aggregation-option"],
+        _args_schema.description = AAZStrArg(
+            options=["--description"],
             arg_group="Properties",
-            help="Determine update behavior for changes to network groups referenced within the rules in this configuration.",
             nullable=True,
-            enum={"Manual": "Manual", "None": "None"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SecurityAdminConfigurationsGet(ctx=self.ctx)()
+        self.VerifierWorkspacesGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        self.SecurityAdminConfigurationsCreateOrUpdate(ctx=self.ctx)()
+        self.VerifierWorkspacesCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -123,7 +123,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SecurityAdminConfigurationsGet(AAZHttpOperation):
+    class VerifierWorkspacesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -137,7 +137,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityAdminConfigurations/{configurationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/verifierWorkspaces/{workspaceName}",
                 **self.url_parameters
             )
 
@@ -153,10 +153,6 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "configurationName", self.ctx.args.configuration_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "networkManagerName", self.ctx.args.network_manager_name,
                     required=True,
                 ),
@@ -166,6 +162,10 @@ class Update(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "workspaceName", self.ctx.args.workspace_name,
                     required=True,
                 ),
             }
@@ -206,11 +206,11 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_security_admin_configuration_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_verifier_workspace_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class SecurityAdminConfigurationsCreateOrUpdate(AAZHttpOperation):
+    class VerifierWorkspacesCreate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -224,7 +224,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityAdminConfigurations/{configurationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/verifierWorkspaces/{workspaceName}",
                 **self.url_parameters
             )
 
@@ -240,10 +240,6 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "configurationName", self.ctx.args.configuration_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "networkManagerName", self.ctx.args.network_manager_name,
                     required=True,
                 ),
@@ -253,6 +249,10 @@ class Update(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "workspaceName", self.ctx.args.workspace_name,
                     required=True,
                 ),
             }
@@ -305,7 +305,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_security_admin_configuration_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_verifier_workspace_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -320,17 +320,16 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("applyOnNetworkIntentPolicyBasedServices", AAZListType, ".apply_on_network_intent_policy")
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("networkGroupAddressSpaceAggregationOption", AAZStrType, ".network_group_address_space_aggregation_option")
 
-            apply_on_network_intent_policy_based_services = _builder.get(".properties.applyOnNetworkIntentPolicyBasedServices")
-            if apply_on_network_intent_policy_based_services is not None:
-                apply_on_network_intent_policy_based_services.set_elements(AAZStrType, ".")
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
 
             return _instance_value
 
@@ -346,59 +345,48 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_security_admin_configuration_read = None
+    _schema_verifier_workspace_read = None
 
     @classmethod
-    def _build_schema_security_admin_configuration_read(cls, _schema):
-        if cls._schema_security_admin_configuration_read is not None:
-            _schema.id = cls._schema_security_admin_configuration_read.id
-            _schema.name = cls._schema_security_admin_configuration_read.name
-            _schema.properties = cls._schema_security_admin_configuration_read.properties
-            _schema.system_data = cls._schema_security_admin_configuration_read.system_data
-            _schema.type = cls._schema_security_admin_configuration_read.type
+    def _build_schema_verifier_workspace_read(cls, _schema):
+        if cls._schema_verifier_workspace_read is not None:
+            _schema.id = cls._schema_verifier_workspace_read.id
+            _schema.location = cls._schema_verifier_workspace_read.location
+            _schema.name = cls._schema_verifier_workspace_read.name
+            _schema.properties = cls._schema_verifier_workspace_read.properties
+            _schema.system_data = cls._schema_verifier_workspace_read.system_data
+            _schema.tags = cls._schema_verifier_workspace_read.tags
+            _schema.type = cls._schema_verifier_workspace_read.type
             return
 
-        cls._schema_security_admin_configuration_read = _schema_security_admin_configuration_read = AAZObjectType()
+        cls._schema_verifier_workspace_read = _schema_verifier_workspace_read = AAZObjectType()
 
-        security_admin_configuration_read = _schema_security_admin_configuration_read
-        security_admin_configuration_read.id = AAZStrType(
+        verifier_workspace_read = _schema_verifier_workspace_read
+        verifier_workspace_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        security_admin_configuration_read.name = AAZStrType(
+        verifier_workspace_read.location = AAZStrType()
+        verifier_workspace_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        security_admin_configuration_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
-        )
-        security_admin_configuration_read.system_data = AAZObjectType(
+        verifier_workspace_read.properties = AAZObjectType()
+        verifier_workspace_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
         )
-        security_admin_configuration_read.type = AAZStrType(
+        verifier_workspace_read.tags = AAZDictType()
+        verifier_workspace_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        properties = _schema_security_admin_configuration_read.properties
-        properties.apply_on_network_intent_policy_based_services = AAZListType(
-            serialized_name="applyOnNetworkIntentPolicyBasedServices",
-        )
+        properties = _schema_verifier_workspace_read.properties
         properties.description = AAZStrType()
-        properties.network_group_address_space_aggregation_option = AAZStrType(
-            serialized_name="networkGroupAddressSpaceAggregationOption",
-        )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
-        properties.resource_guid = AAZStrType(
-            serialized_name="resourceGuid",
-            flags={"read_only": True},
-        )
 
-        apply_on_network_intent_policy_based_services = _schema_security_admin_configuration_read.properties.apply_on_network_intent_policy_based_services
-        apply_on_network_intent_policy_based_services.Element = AAZStrType()
-
-        system_data = _schema_security_admin_configuration_read.system_data
+        system_data = _schema_verifier_workspace_read.system_data
         system_data.created_at = AAZStrType(
             serialized_name="createdAt",
         )
@@ -418,11 +406,16 @@ class _UpdateHelper:
             serialized_name="lastModifiedByType",
         )
 
-        _schema.id = cls._schema_security_admin_configuration_read.id
-        _schema.name = cls._schema_security_admin_configuration_read.name
-        _schema.properties = cls._schema_security_admin_configuration_read.properties
-        _schema.system_data = cls._schema_security_admin_configuration_read.system_data
-        _schema.type = cls._schema_security_admin_configuration_read.type
+        tags = _schema_verifier_workspace_read.tags
+        tags.Element = AAZStrType()
+
+        _schema.id = cls._schema_verifier_workspace_read.id
+        _schema.location = cls._schema_verifier_workspace_read.location
+        _schema.name = cls._schema_verifier_workspace_read.name
+        _schema.properties = cls._schema_verifier_workspace_read.properties
+        _schema.system_data = cls._schema_verifier_workspace_read.system_data
+        _schema.tags = cls._schema_verifier_workspace_read.tags
+        _schema.type = cls._schema_verifier_workspace_read.type
 
 
 __all__ = ["Update"]

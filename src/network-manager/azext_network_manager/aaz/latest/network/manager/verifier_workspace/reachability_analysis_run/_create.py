@@ -12,26 +12,28 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "network manager security-admin-config create",
+    "network manager verifier-workspace reachability-analysis-run create",
+    is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a network manager security admin configuration.
+    """Create Reachability Analysis Runs.
 
-    :example: Create a network manager security admin configuration.
-        az network manager security-admin-config create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" --apply-on None
+    :example: ReachabilityAnalysisRunCreate
+        az network manager verifier-workspace reachability-analysis-run create --name "myAnalysisRun" --workspace-name "myVerifierWorkspace" --network-manager-name "myAVNM" --resource-group "myAVNMResourceGroup" --subscription "00000000-0000-0000-0000-000000000000" --description “hello world analysis run” --intent-id “/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ myAVNMResourceGroup /providers/Microsoft.Network/networkManagers/myAVNM/verifierWorkspaces/myVerifierWorkspace /reachabilityAnalysisIntents/myAnalysisIntent”
     """
 
     _aaz_info = {
         "version": "2024-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations/{}", "2024-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/verifierworkspaces/{}/reachabilityanalysisruns/{}", "2024-01-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -44,11 +46,6 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_name = AAZStrArg(
-            options=["-n", "--name", "--configuration-name"],
-            help="Name of the network manager security configuration.",
-            required=True,
-        )
         _args_schema.network_manager_name = AAZStrArg(
             options=["--manager-name", "--network-manager-name"],
             help="The name of the network manager.",
@@ -57,37 +54,44 @@ class Create(AAZCommand):
                 pattern="^[a-zA-Z0-9-]*$",
             ),
         )
+        _args_schema.reachability_analysis_run_name = AAZStrArg(
+            options=["-n", "--name", "--reachability-analysis-run-name"],
+            help="Reachability Analysis Run name.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_.-]*$",
+            ),
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.apply_on_network_intent_policy = AAZListArg(
-            options=["--apply-on", "--apply-on-network-intent-policy"],
-            help="Enum list of network intent policy based services.",
-        )
-        _args_schema.description = AAZStrArg(
-            options=["--description"],
-            help="Description of the security configuration.",
-        )
-
-        apply_on_network_intent_policy = cls._args_schema.apply_on_network_intent_policy
-        apply_on_network_intent_policy.Element = AAZStrArg(
-            enum={"All": "All", "AllowRulesOnly": "AllowRulesOnly", "None": "None"},
+        _args_schema.workspace_name = AAZStrArg(
+            options=["--workspace-name"],
+            help="Workspace name.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_.-]*$",
+            ),
         )
 
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.network_group_address_space_aggregation_option = AAZStrArg(
-            options=["--network-group-address-space-aggregation-option"],
+        _args_schema.description = AAZStrArg(
+            options=["--description"],
             arg_group="Properties",
-            help="Determine update behavior for changes to network groups referenced within the rules in this configuration.",
-            enum={"Manual": "Manual", "None": "None"},
+        )
+        _args_schema.intent_id = AAZStrArg(
+            options=["--intent-id"],
+            arg_group="Properties",
+            help="Id of the intent resource to run analysis on.",
+            required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SecurityAdminConfigurationsCreateOrUpdate(ctx=self.ctx)()
+        yield self.ReachabilityAnalysisRunsCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -102,21 +106,37 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SecurityAdminConfigurationsCreateOrUpdate(AAZHttpOperation):
+    class ReachabilityAnalysisRunsCreate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200, 201]:
-                return self.on_200_201(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityAdminConfigurations/{configurationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/verifierWorkspaces/{workspaceName}/reachabilityAnalysisRuns/{reachabilityAnalysisRunName}",
                 **self.url_parameters
             )
 
@@ -132,11 +152,11 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "configurationName", self.ctx.args.configuration_name,
+                    "networkManagerName", self.ctx.args.network_manager_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "networkManagerName", self.ctx.args.network_manager_name,
+                    "reachabilityAnalysisRunName", self.ctx.args.reachability_analysis_run_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -145,6 +165,10 @@ class Create(AAZCommand):
                 ),
                 **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "workspaceName", self.ctx.args.workspace_name,
                     required=True,
                 ),
             }
@@ -179,17 +203,12 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("applyOnNetworkIntentPolicyBasedServices", AAZListType, ".apply_on_network_intent_policy")
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("networkGroupAddressSpaceAggregationOption", AAZStrType, ".network_group_address_space_aggregation_option")
-
-            apply_on_network_intent_policy_based_services = _builder.get(".properties.applyOnNetworkIntentPolicyBasedServices")
-            if apply_on_network_intent_policy_based_services is not None:
-                apply_on_network_intent_policy_based_services.set_elements(AAZStrType, ".")
+                properties.set_prop("intentId", AAZStrType, ".intent_id", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 
@@ -218,7 +237,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True},
             )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -229,24 +248,78 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
-            properties.apply_on_network_intent_policy_based_services = AAZListType(
-                serialized_name="applyOnNetworkIntentPolicyBasedServices",
+            properties.analysis_result = AAZStrType(
+                serialized_name="analysisResult",
+                flags={"read_only": True},
             )
             properties.description = AAZStrType()
-            properties.network_group_address_space_aggregation_option = AAZStrType(
-                serialized_name="networkGroupAddressSpaceAggregationOption",
+            properties.error_message = AAZStrType(
+                serialized_name="errorMessage",
+                flags={"read_only": True},
+            )
+            properties.intent_content = AAZObjectType(
+                serialized_name="intentContent",
+                flags={"read_only": True},
+            )
+            properties.intent_id = AAZStrType(
+                serialized_name="intentId",
+                flags={"required": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.resource_guid = AAZStrType(
-                serialized_name="resourceGuid",
-                flags={"read_only": True},
+
+            intent_content = cls._schema_on_200_201.properties.intent_content
+            intent_content.description = AAZStrType()
+            intent_content.destination_resource_id = AAZStrType(
+                serialized_name="destinationResourceId",
+                flags={"required": True},
+            )
+            intent_content.ip_traffic = AAZObjectType(
+                serialized_name="ipTraffic",
+                flags={"required": True},
+            )
+            intent_content.source_resource_id = AAZStrType(
+                serialized_name="sourceResourceId",
+                flags={"required": True},
             )
 
-            apply_on_network_intent_policy_based_services = cls._schema_on_200_201.properties.apply_on_network_intent_policy_based_services
-            apply_on_network_intent_policy_based_services.Element = AAZStrType()
+            ip_traffic = cls._schema_on_200_201.properties.intent_content.ip_traffic
+            ip_traffic.destination_ips = AAZListType(
+                serialized_name="destinationIps",
+                flags={"required": True},
+            )
+            ip_traffic.destination_ports = AAZListType(
+                serialized_name="destinationPorts",
+                flags={"required": True},
+            )
+            ip_traffic.protocols = AAZListType(
+                flags={"required": True},
+            )
+            ip_traffic.source_ips = AAZListType(
+                serialized_name="sourceIps",
+                flags={"required": True},
+            )
+            ip_traffic.source_ports = AAZListType(
+                serialized_name="sourcePorts",
+                flags={"required": True},
+            )
+
+            destination_ips = cls._schema_on_200_201.properties.intent_content.ip_traffic.destination_ips
+            destination_ips.Element = AAZStrType()
+
+            destination_ports = cls._schema_on_200_201.properties.intent_content.ip_traffic.destination_ports
+            destination_ports.Element = AAZStrType()
+
+            protocols = cls._schema_on_200_201.properties.intent_content.ip_traffic.protocols
+            protocols.Element = AAZStrType()
+
+            source_ips = cls._schema_on_200_201.properties.intent_content.ip_traffic.source_ips
+            source_ips.Element = AAZStrType()
+
+            source_ports = cls._schema_on_200_201.properties.intent_content.ip_traffic.source_ports
+            source_ports.Element = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
