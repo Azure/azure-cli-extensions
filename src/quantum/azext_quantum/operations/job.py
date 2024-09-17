@@ -216,8 +216,8 @@ def _convert_numeric_params(job_params):
                     pass
 
 
-def submit(cmd, program_args, resource_group_name, workspace_name, location, target_id, job_input_file, job_input_format,
-           project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None,
+def submit(cmd, resource_group_name, workspace_name, location, target_id, job_input_file, job_input_format,
+           job_name=None, shots=None, storage=None, job_params=None, target_capability=None,
            job_output_format=None, entry_point=None):
     """
     Submit QIR bitcode, QIO problem JSON, or a pass-through job to run on Azure Quantum.
@@ -585,14 +585,14 @@ def job_show(cmd, job_id, resource_group_name, workspace_name, location):
     return job
 
 
-def run(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-        project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None,
+def run(cmd, resource_group_name, workspace_name, location, target_id,
+        job_name=None, shots=None, storage=None, job_params=None, target_capability=None,
         job_input_file=None, job_input_format=None, job_output_format=None, entry_point=None):
     """
     Submit a job to run on Azure Quantum, and wait for the result.
     """
-    job = submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-                 project, job_name, shots, storage, no_build, job_params, target_capability,
+    job = submit(cmd, resource_group_name, workspace_name, location, target_id,
+                 job_name, shots, storage, job_params, target_capability,
                  job_input_file, job_input_format, job_output_format, entry_point)
     logger.warning("Job id: %s", job.id)
     logger.debug(job)
