@@ -14,7 +14,7 @@ from azure.cli.core.azclierror import (
 )
 from azure.cli.core.util import sdk_no_wait
 from azure.core.exceptions import ResourceNotFoundError  # type: ignore
-from msrestazure.tools import is_valid_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id
 from .scvmm_utils import get_resource_id, get_extended_location
 from .scvmm_constants import (
     AVAILABILITYSET_RESOURCE_TYPE,

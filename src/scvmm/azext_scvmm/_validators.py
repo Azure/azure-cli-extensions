@@ -9,7 +9,7 @@ from azure.cli.core.azclierror import (
     MutuallyExclusiveArgumentError,
     InvalidArgumentValueError,
 )
-from msrestazure.tools import is_valid_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id
 from azext_scvmm.scvmm_constants import (
     CLOUD_RESOURCE_TYPE,
     CUSTOM_LOCATION_RESOURCE_TYPE,
