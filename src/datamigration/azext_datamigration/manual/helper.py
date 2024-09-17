@@ -41,10 +41,7 @@ def is_string_null_or_empty(value):
 # -----------------------------------------------------------------------------------------------------------------
 def has_shell_escape_characters(inputString):
     escape_characters = ['&', '|', ';', '<', '>', '(', ')', '[', ']', '{', '}', '$', '`', '\\', '"', "'", ' ', '\t', '\n', '\r']
-    for character in escape_characters:
-        if character in inputString:
-            return True
-    return False
+    return any(character in inputString for character in escape_characters)
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -72,7 +69,7 @@ def is_valid_guid(guid):
 # -----------------------------------------------------------------------------------------------------------------
 def is_base64(s):
     try:
-        return base64.b64encode(base64.b64decode(s)).decode() == f'{s}'
+        return base64.b64encode(base64.b64decode(s)).decode() == s
     except Exception:
         return False
 
@@ -511,24 +508,30 @@ def validate_input(key):
 
 # -----------------------------------------------------------------------------------------------------------------
 # Helper function to check if the input key is in valid format.
+# IR key format: IR@{KeyId : Guid}@{PartitionId: Factory Name}@{Factory Region or Factory ServiceEndpoint}@{Base64String}
 # -----------------------------------------------------------------------------------------------------------------
 def is_valid_ir_key_format(key):
 
-    keyPrefix = "IR"
-    separator = '@'
+    try:
+        keyPrefix = "IR"
+        separator = '@'
+        keyParts = 5
 
-    key_parts = key.split(separator)
+        key_parts = key.split(separator)
 
-    # Length of the split auth key should be 5
-    if len(key_parts) != 5:
+        # Length of the split auth key should be 5 and should start with "IR"
+        if len(key_parts) != keyParts or key.startswith(keyPrefix) is False:
+            return False
+        # Check if all parts are not null or empty
+        for part in key_parts:
+            if is_string_null_or_empty(part):
+                return False
+        # Check pattern of second part as Guid and last part is a base64 string
+        if not is_valid_guid(key_parts[1]) or not is_base64(key_parts[-1]):
+            return False
+        return True
+    except Exception:
         return False
-    # Check if the key starts with "IR" and all parts are not null or empty
-    if key_parts[0] != keyPrefix or is_string_null_or_empty(key_parts[1]) or is_string_null_or_empty(key_parts[2]) or is_string_null_or_empty(key_parts[3]) or is_string_null_or_empty(key_parts[4]):
-        return False
-    # Check pattern of second part as Guid and last part is a base64 string
-    if not is_valid_guid(key_parts[1]) or not is_base64(key_parts[4]):
-        return False
-    return True
 
 
 # -----------------------------------------------------------------------------------------------------------------
