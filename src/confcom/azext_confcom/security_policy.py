@@ -934,6 +934,10 @@ def load_policy_from_virtual_node_yaml_str(
 
             # mounts
             mounts = copy.deepcopy(config.DEFAULT_MOUNTS_VIRTUAL_NODE)
+            volumes = case_insensitive_dict_get(spec, "volumes") or []
+            configmap_volume_names = [
+                case_insensitive_dict_get(volume, "name") if "configmap" in volume else None for volume in volumes
+            ]
             volume_mounts = case_insensitive_dict_get(container, "volumeMounts")
             if volume_mounts:
                 for mount in volume_mounts:
@@ -941,7 +945,9 @@ def load_policy_from_virtual_node_yaml_str(
                         config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE: config.ACI_FIELD_YAML_MOUNT_TYPE,
                         config.ACI_FIELD_CONTAINERS_MOUNTS_PATH: case_insensitive_dict_get(mount, "mountPath"),
                         config.ACI_FIELD_CONTAINERS_MOUNTS_READONLY:
-                            case_insensitive_dict_get(mount, "readOnly") or False,
+                            case_insensitive_dict_get(mount, "name") in configmap_volume_names or
+                            case_insensitive_dict_get(mount, "readOnly") or
+                            False,
                     })
 
             # container security context

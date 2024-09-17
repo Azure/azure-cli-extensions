@@ -128,7 +128,6 @@ spec:
       volumeMounts:
         - mountPath: /aci/configmap
           name: configmap-volume
-          readOnly: true
   volumes:
     - name: configmap-volume
       configMap:
