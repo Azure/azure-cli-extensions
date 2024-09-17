@@ -216,33 +216,12 @@ def _convert_numeric_params(job_params):
                     pass
 
 
-#def submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-#           project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None,
-#           job_input_file=None, job_input_format=None, job_output_format=None, entry_point=None):
-#    """
-#    Submit a quantum program to run on Azure Quantum.
-#    """
-#    if job_input_file is None:
-#        return _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-#                              project, job_name, shots, storage, no_build, job_params, target_capability)
-#
-#    return _submit_directly_to_service(cmd, resource_group_name, workspace_name, location, target_id,
-#                                       job_name, shots, storage, job_params, target_capability,
-#                                       job_input_file, job_input_format, job_output_format, entry_point)
-#
-#
-#def _submit_directly_to_service(cmd, resource_group_name, workspace_name, location, target_id,
-#                                job_name, shots, storage, job_params, target_capability,
-#                                job_input_file, job_input_format, job_output_format, entry_point):
 def submit(cmd, program_args, resource_group_name, workspace_name, location, target_id, job_input_file, job_input_format,
            project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None,
            job_output_format=None, entry_point=None):
     """
     Submit QIR bitcode, QIO problem JSON, or a pass-through job to run on Azure Quantum.
     """
-    # if job_input_format is None:
-    #     raise RequiredArgumentMissingError(ERROR_MSG_MISSING_INPUT_FORMAT, JOB_SUBMIT_DOC_LINK_MSG)
-
     # Get workspace, target, and provider information
     ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     if ws_info is None:
