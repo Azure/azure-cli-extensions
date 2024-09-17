@@ -608,36 +608,36 @@ class NetworkScenarioTest(ScenarioTest):
             'manager_id': manager_group['id'],
         })
 
-        self.cmd('az network manager routing-config create --name {routing_config} --network-manager-name {manager_name} --resource-group {rg}',
+        self.cmd('az network manager routing-config create --name {routing_config} --manager-name {manager_name} --resource-group {rg}',
                  self.check('name', '{routing_config}'))
-        self.cmd('az network manager routing-config list --network-manager-name {manager_name} --resource-group {rg}',
+        self.cmd('az network manager routing-config list --manager-name {manager_name} --resource-group {rg}',
                  self.check('length(@)', 1))
-        self.cmd('az network manager routing-config show --name {routing_config} --network-manager-name {manager_name} --resource-group {rg}',
+        self.cmd('az network manager routing-config show --name {routing_config} --manager-name {manager_name} --resource-group {rg}',
                  self.check('name', '{routing_config}'))
-        self.cmd('az network manager routing-config update --name {routing_config} --network-manager-name {manager_name} --resource-group {rg} --description "test"',
+        self.cmd('az network manager routing-config update --name {routing_config} --manager-name {manager_name} --resource-group {rg} --description "test"',
                  self.check('description', 'test'))
 
-        self.cmd('az network manager routing-config rule-collection create --config-name {routing_config} --network-manager-name {manager_name} --name {rule_collection} --resource-group {rg} --local-route-setting NotSpecified --applies-to [{{"network_group_id":{manager_id}}}] --disable-bgp-route true',
+        self.cmd('az network manager routing-config rule-collection create --config-name {routing_config} --manager-name {manager_name} --name {rule_collection} --resource-group {rg} --local-route-setting NotSpecified --applies-to [{{"network_group_id":{manager_id}}}] --disable-bgp-route true',
                  self.check('name', '{rule_collection}'))
-        self.cmd('az network manager routing-config rule-collection list --config-name {routing_config} --network-manager-name {manager_name} --resource-group {rg}',
+        self.cmd('az network manager routing-config rule-collection list --config-name {routing_config} --manager-name {manager_name} --resource-group {rg}',
                  self.check('length(@)', 1))
-        self.cmd('az network manager routing-config rule-collection show --config-name {routing_config} --network-manager-name {manager_name} --name {rule_collection} --resource-group {rg}',
+        self.cmd('az network manager routing-config rule-collection show --config-name {routing_config} --manager-name {manager_name} --name {rule_collection} --resource-group {rg}',
                  self.check('name', '{rule_collection}'))
-        self.cmd('az network manager routing-config rule-collection update --config-name {routing_config} --network-manager-name {manager_name} --name {rule_collection} --resource-group {rg} --description "test"',
+        self.cmd('az network manager routing-config rule-collection update --config-name {routing_config} --manager-name {manager_name} --name {rule_collection} --resource-group {rg} --description "test"',
                  self.check('description', 'test'))
 
-        self.cmd('az network manager routing-config rule-collection rule create --config-name {routing_config} --network-manager-name {manager_name} --collection-name {rule_collection} --name {rule_name} --resource-group {rg} --destination {{"destination_address":"10.0.0.0/16","type":"AddressPrefix"}} --next-hop {{"next_hop_type":"VirtualNetworkGateway"}}',
+        self.cmd('az network manager routing-config rule-collection rule create --config-name {routing_config} --manager-name {manager_name} --collection-name {rule_collection} --name {rule_name} --resource-group {rg} --destination {{"destination_address":"10.0.0.0/16","type":"AddressPrefix"}} --next-hop {{"next_hop_type":"VirtualNetworkGateway"}}',
                  self.check('name', '{rule_name}'))
-        self.cmd('az network manager routing-config rule-collection rule list --config-name {routing_config} --network-manager-name {manager_name} --collection-name {rule_collection} --resource-group {rg}',
+        self.cmd('az network manager routing-config rule-collection rule list --config-name {routing_config} --manager-name {manager_name} --collection-name {rule_collection} --resource-group {rg}',
                  self.check('length(@)', 1))
-        self.cmd('az network manager routing-config rule-collection rule show --config-name {routing_config} --network-manager-name {manager_name} --collection-name {rule_collection} --name {rule_name} --resource-group {rg}',
+        self.cmd('az network manager routing-config rule-collection rule show --config-name {routing_config} --manager-name {manager_name} --collection-name {rule_collection} --name {rule_name} --resource-group {rg}',
                  self.check('name', '{rule_name}'))
-        self.cmd('az network manager routing-config rule-collection rule update --config-name {routing_config} --network-manager-name {manager_name} --collection-name {rule_collection} --name {rule_name} --resource-group {rg} --description "test"',
+        self.cmd('az network manager routing-config rule-collection rule update --config-name {routing_config} --manager-name {manager_name} --collection-name {rule_collection} --name {rule_name} --resource-group {rg} --description "test"',
                  self.check('description', 'test'))
 
-        self.cmd('az network manager routing-config rule-collection rule delete --config-name {routing_config} --network-manager-name {manager_name} --collection-name {rule_collection} --name {rule_name} --resource-group {rg} -y')
-        self.cmd('az network manager routing-config rule-collection delete --config-name {routing_config} --network-manager-name {manager_name} --name {rule_collection} --resource-group {rg} -y')
-        self.cmd('az network manager routing-config delete --name {routing_config} --network-manager-name {manager_name} --resource-group {rg} -y')
+        self.cmd('az network manager routing-config rule-collection rule delete --config-name {routing_config} --manager-name {manager_name} --collection-name {rule_collection} --name {rule_name} --resource-group {rg} -y')
+        self.cmd('az network manager routing-config rule-collection delete --config-name {routing_config} --manager-name {manager_name} --name {rule_collection} --resource-group {rg} -y')
+        self.cmd('az network manager routing-config delete --name {routing_config} --manager-name {manager_name} --resource-group {rg} -y')
 
         self.cmd('network manager delete --resource-group {rg} --name {manager_name} --force --yes')
 
