@@ -749,13 +749,29 @@ def is_registry_msi_system_environment(identity):
 
 def env_has_managed_identity(cmd, resource_group_name, env_name, identity):
     identity = identity.lower()
-    # caller should handle exception
-    managed_env_info = ManagedEnvironmentPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=env_name)
-    if is_registry_msi_system(identity) and managed_env_info["identity"]["type"].__contains__("SystemAssigned"):
+
+    managed_env_info = None
+    try:
+        managed_env_info = ManagedEnvironmentPreviewClient.show(cmd=cmd, resource_group_name=resource_group_name, name=env_name)
+    except Exception as e:
+        handle_non_404_status_code_exception(e)
+
+    if not managed_env_info:
+        raise ValidationError("The managed environment '{}' does not exist. Please specify a valid environment.".format(env_name))
+
+    if safe_get(managed_env_info, "identity") is None:
+        return False
+
+    identity_type = safe_get(managed_env_info, "identity", "type")
+    if is_registry_msi_system(identity) and identity_type and identity_type.__contains__("SystemAssigned"):
         return True
 
+    user_assigned_identities = safe_get(managed_env_info, "identity", "userAssignedIdentities")
+    if user_assigned_identities is None:
+        return False
+
     result = False
-    for msi in managed_env_info["identity"]["userAssignedIdentities"]:
+    for msi in user_assigned_identities:
         if msi.lower() == identity:
             result = True
             break
