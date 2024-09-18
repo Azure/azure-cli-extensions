@@ -456,3 +456,12 @@ def load_arguments(self, _):
         c.argument('logger_name', help="The logger name.")
         c.argument('logger_level', arg_type=get_enum_type(["off", "error", "info", "debug", "trace", "warn"]), help="Set the log level for the specific logger name.")
         c.argument('all', help="The flag to indicate all logger settings.", action="store_true")
+
+    with self.argument_context('containerapp diagnose dns resolve') as c:
+        c.argument('name', options_list=['--name', '-n'], help="The managed environment name.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+        c.argument('domain', help="The domain to check DNS resolution for. Defaults to azure.com")
+
+    with self.argument_context('containerapp diagnose healthcheck show') as c:
+        c.argument('name', options_list=['--name', '-n'], help="The managed environment name.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)

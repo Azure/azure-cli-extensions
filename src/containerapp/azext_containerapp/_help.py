@@ -2054,3 +2054,21 @@ helps['containerapp job registry set'] = """
           az containerapp job registry set -n my-containerapp-job -g MyResourceGroup \\
               --server MyContainerappJobRegistry.azurecr.io --identity system-environment
 """
+
+helps['containerapp diagnose dns resolve'] = """
+    type: command
+    short-summary: Diagnose issues with a container app environment.
+    examples:
+    - name: Check DNS resolution for a container app environment.
+      text: |
+          az containerapp diagnose dns -n MyContainerappEnvironment -g MyResourceGroup --domain www.microsoft.com
+"""
+
+helps['containerapp diagnose healthcheck show'] = """
+    type: command
+    short-summary: Show health check status for a container app environment.
+    examples:
+    - name: Show health check status for a container app environment.
+      text: |
+          az containerapp diagnose healthcheck show -n MyContainerappEnvironment -g MyResourceGroup
+"""
