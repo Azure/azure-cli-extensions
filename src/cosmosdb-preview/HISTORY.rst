@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.1.0
+1.0.1b2
 * Add support for Mongo (vCore) destination in container copy jobs.
 
 +++++++
