@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.0.0
+++++++
+* adding support for Virtual Node
+* updating genpolicy version up through 3.2.0.azl1.genpolicy1
+
 0.3.6
 ++++++
 * updating genpolicy version up through 3.2.0.azl1.genpolicy0. Please note that this is a breaking change for deploying older policies. With the new node image, 0.3.6 or newer will be required.

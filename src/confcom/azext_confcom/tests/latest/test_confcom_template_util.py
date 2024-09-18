@@ -491,7 +491,7 @@ LmZyYW1ld29yay5lcnJvcnN9Cg=="""
             f.write(template)
 
         with self.assertRaises(SystemExit) as exc_info:
-            acipolicygen_confcom(None, filename, None, None, None, None)
+            acipolicygen_confcom(None, filename, None, None, None, None, None)
 
         self.assertEqual(exc_info.exception.code, 0)
 

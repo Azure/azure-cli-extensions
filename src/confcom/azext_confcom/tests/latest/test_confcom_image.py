@@ -47,6 +47,8 @@ class PolicyGeneratingImage(unittest.TestCase):
 
     def test_image_policy(self):
         # deep diff the output policies from the regular policy.json and the single image
+        print("self.aci_policy.get_serialized_output(): ", self.aci_policy.get_serialized_output(OutputType.PRETTY_PRINT))
+        print("self.custom_policy.get_serialized_output(): ", self.custom_policy.get_serialized_output(OutputType.PRETTY_PRINT))
         self.assertEqual(self.aci_policy.get_serialized_output(), self.custom_policy.get_serialized_output())
 
 
