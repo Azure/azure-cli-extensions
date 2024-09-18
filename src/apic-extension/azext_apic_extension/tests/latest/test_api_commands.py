@@ -184,8 +184,13 @@ class ApiCommandsTests(ScenarioTest):
             self.check('summary', 'Basic REST API service'),
         ])
 
-        self.cmd('az apic api update -g {rg} -n {s} --api-id {api} --set customProperties.internal=false', checks=[
-            self.check('customProperties.internal', 'false'),
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
+    @ApicServicePreparer()
+    @ApicApiPreparer()
+    @ApicMetadataPreparer()
+    def test_examples_update_single_custom_metadata(self, metadata_name):
+        self.cmd('az apic api update -g {rg} -n {s} --api-id {api} --set customProperties.{}=false'.format(metadata_name), checks=[
+            self.check('customProperties.{}'.format(metadata_name), 'false'),
         ])
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
