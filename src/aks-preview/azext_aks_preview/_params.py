@@ -1529,7 +1529,7 @@ def load_arguments(self, _):
         c.argument("max_surge", validator=validate_max_surge)
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
-        c.argument("undrainable_node_behavior", type=str)
+        c.argument("undrainable_node_behavior")
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         c.argument("max_pods", type=int, options_list=["--max-pods", "-m"])
@@ -1642,7 +1642,7 @@ def load_arguments(self, _):
         c.argument("max_surge", validator=validate_max_surge)
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
-        c.argument("undrainable_node_behavior", type=str)
+        c.argument("undrainable_node_behavior")
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         # extensions
@@ -1712,7 +1712,7 @@ def load_arguments(self, _):
         c.argument("max_surge", validator=validate_max_surge)
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
-        c.argument("undrainable_node_behavior", type=str)
+        c.argument("undrainable_node_behavior")
         c.argument("snapshot_id", validator=validate_snapshot_id)
         c.argument(
             "yes",
