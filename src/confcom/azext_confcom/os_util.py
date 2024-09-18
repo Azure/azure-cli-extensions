@@ -4,6 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 import base64
+from typing import List
+import yaml
+import yaml.scanner
 import binascii
 import shutil
 import json
@@ -46,6 +49,34 @@ def load_json_from_file(path: str) -> dict:
     return load_json_from_str(raw_data)
 
 
+def load_yaml_from_str(data: str) -> dict:
+    if data:
+        try:
+            return yaml.load(data, Loader=yaml.SafeLoader)
+        except yaml.YAMLError:
+            eprint(f"Invalid YAML formatting for data: {data}")
+    return {}
+
+
+def load_multiple_yaml_from_file(path: str) -> dict:
+    raw_data = load_str_from_file(path)
+    return load_multiple_yaml_from_str(raw_data)
+
+
+def load_multiple_yaml_from_str(data: str) -> dict:
+    if data:
+        try:
+            return list(yaml.safe_load_all(data))
+        except yaml.YAMLError:
+            eprint(f"Invalid YAML formatting for data: \n{data}")
+    return {}
+
+
+def load_yaml_from_file(path: str) -> dict:
+    raw_data = load_str_from_file(path)
+    return load_yaml_from_str(raw_data)
+
+
 def copy_file(src: str, dest: str) -> None:
     try:
         shutil.copy(src, dest)
@@ -69,6 +100,15 @@ def write_json_to_file(path: str, content: dict) -> None:
         json.dumps(
             content,
             indent=2,
+        ),
+    )
+
+
+def write_multiple_yaml_to_file(path: str, content: List[dict]) -> None:
+    write_str_to_file(
+        path,
+        yaml.dump_all(
+            content
         ),
     )
 
