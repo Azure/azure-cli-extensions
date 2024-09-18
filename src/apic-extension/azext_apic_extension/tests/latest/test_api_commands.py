@@ -185,7 +185,7 @@ class ApiCommandsTests(ScenarioTest):
         ])
 
         self.cmd('az apic api update -g {rg} -n {s} --api-id {api} --set customProperties.internal=false', checks=[
-            self.check('customProperties.internal', False),
+            self.check('customProperties.internal', 'false'),
         ])
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
