@@ -20,9 +20,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-11-01-preview",
+        "version": "2023-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/backupvaults/{}/backups", "2022-11-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/backupvaults/{}/backups", "2023-07-01-preview"],
         ]
     }
 
@@ -141,7 +141,7 @@ class List(AAZCommand):
                     "$filter", self.ctx.args.filter,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-11-01-preview",
+                    "api-version", "2023-07-01-preview",
                     required=True,
                 ),
             }
@@ -203,6 +203,10 @@ class List(AAZCommand):
             properties = cls._schema_on_200.value.Element.properties
             properties.backup_id = AAZStrType(
                 serialized_name="backupId",
+                flags={"read_only": True},
+            )
+            properties.backup_policy_resource_id = AAZStrType(
+                serialized_name="backupPolicyResourceId",
                 flags={"read_only": True},
             )
             properties.backup_type = AAZStrType(

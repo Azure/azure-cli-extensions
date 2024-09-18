@@ -20,9 +20,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-11-01-preview",
+        "version": "2023-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/backupvaults/{}/backups/{}", "2022-11-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/backupvaults/{}/backups/{}", "2023-07-01-preview"],
         ]
     }
 
@@ -57,7 +57,7 @@ class Show(AAZCommand):
             required=True,
             id_part="child_name_2",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9\-_]{0,255}$",
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9\-_.]{0,255}$",
             ),
         )
         _args_schema.backup_vault_name = AAZStrArg(
@@ -147,7 +147,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-01-preview",
+                    "api-version", "2023-07-01-preview",
                     required=True,
                 ),
             }
@@ -200,6 +200,10 @@ class Show(AAZCommand):
             properties = cls._schema_on_200.properties
             properties.backup_id = AAZStrType(
                 serialized_name="backupId",
+                flags={"read_only": True},
+            )
+            properties.backup_policy_resource_id = AAZStrType(
+                serialized_name="backupPolicyResourceId",
                 flags={"read_only": True},
             )
             properties.backup_type = AAZStrType(

@@ -8,18 +8,5 @@
 # pylint: skip-file
 # flake8: noqa
 
-from azure.cli.core.aaz import *
-
-
-@register_command_group(
-    "netappfiles volume",
-)
-class __CMDGroup(AAZCommandGroup):
-    """Manage Azure NetApp Files (ANF) Volume Resources.
-
-    Generated Create update delete operations for Azure NetApp Files (ANF) Volumes
-    """
-    pass
-
-
-__all__ = ["__CMDGroup"]
+from .__cmd_group import *
+from ._show import *

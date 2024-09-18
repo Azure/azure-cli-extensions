@@ -13,16 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "netappfiles volume update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update the specified volume within the capacity pool
+
+    :example: Update an ANF volume
+        az netappfiles volume update -g mygroup --account-name myaccname --pool-name mypoolname --name myvolname --service-level ultra --usage-threshold 100 --tags mytag=specialvol
     """
 
     _aaz_info = {
-        "version": "2022-11-01-preview",
+        "version": "2023-07-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/capacitypools/{}/volumes/{}", "2022-11-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/capacitypools/{}/volumes/{}", "2023-07-01-preview"],
         ]
     }
 
@@ -143,19 +145,19 @@ class Update(AAZCommand):
         # define Arg Group "ExportPolicy"
 
         _args_schema = cls._args_schema
-        _args_schema.rules = AAZListArg(
-            options=["--rules"],
+        _args_schema.export_policy_rules = AAZListArg(
+            options=["--rules", "--export-policy-rules"],
             arg_group="ExportPolicy",
             help="Export policy rule",
             nullable=True,
         )
 
-        rules = cls._args_schema.rules
-        rules.Element = AAZObjectArg(
+        export_policy_rules = cls._args_schema.export_policy_rules
+        export_policy_rules.Element = AAZObjectArg(
             nullable=True,
         )
 
-        _element = cls._args_schema.rules.Element
+        _element = cls._args_schema.export_policy_rules.Element
         _element.allowed_clients = AAZStrArg(
             options=["allowed-clients"],
             help="Client ingress specification as comma separated string with IPv4 CIDRs, IPv4 host addresses and host names",
@@ -255,13 +257,20 @@ class Update(AAZCommand):
             help="Specifies whether Cool Access(tiering) is enabled for the volume.",
             nullable=True,
         )
+        _args_schema.cool_access_retrieval_policy = AAZStrArg(
+            options=["--ca-retrieval-policy", "--cool-access-retrieval-policy"],
+            arg_group="Properties",
+            help="coolAccessRetrievalPolicy determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes. The possible values for this field are:   Default - Data will be pulled from cool tier to standard storage on random reads. This policy is the default.  OnRead - All client-driven data read is pulled from cool tier to standard storage on both sequential and random reads.  Never - No client-driven data is pulled from cool tier to standard storage.",
+            nullable=True,
+            enum={"Default": "Default", "Never": "Never", "OnRead": "OnRead"},
+        )
         _args_schema.coolness_period = AAZIntArg(
             options=["--coolness-period"],
             arg_group="Properties",
             help="Specifies the number of days after which data that is not accessed by clients will be tiered.",
             nullable=True,
             fmt=AAZIntArgFormat(
-                maximum=63,
+                maximum=183,
                 minimum=7,
             ),
         )
@@ -327,9 +336,9 @@ class Update(AAZCommand):
         _args_schema.network_features = AAZStrArg(
             options=["--network-features"],
             arg_group="Properties",
-            help="Basic network, or Standard features available to the volume.",
+            help="Basic network, or Standard features available to the volume. hide me",
             nullable=True,
-            enum={"Basic": "Basic", "Standard": "Standard"},
+            enum={"Basic": "Basic", "Basic_Standard": "Basic_Standard", "Standard": "Standard", "Standard_Basic": "Standard_Basic"},
         )
         _args_schema.placement_rules = AAZListArg(
             options=["--placement-rules"],
@@ -371,7 +380,7 @@ class Update(AAZCommand):
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.smb_continuously_available = AAZBoolArg(
-            options=["--smb-ca", "--smb-continuously-available"],
+            options=["--smb-continuously-avl", "--smb-continuously-available"],
             arg_group="Properties",
             help="Enables continuously available share property for smb volume. Only applicable for SMB volume",
             nullable=True,
@@ -421,7 +430,7 @@ class Update(AAZCommand):
             arg_group="Properties",
             help={"short-summary": "Maximum storage quota allowed for a file system in bytes.", "long-summary": "This is a soft quota used for alerting only. Minimum size is 100 GiB. \nUpper limit is 100TiB, 500Tib for LargeVolume."},
             fmt=AAZIntArgFormat(
-                maximum=549755813888000,
+                maximum=2638827906662400,
                 minimum=107374182400,
             ),
         )
@@ -472,17 +481,6 @@ class Update(AAZCommand):
             options=["--remote-volume-region"],
             arg_group="Replication",
             help="The remote region for the other end of the Volume Replication.",
-            nullable=True,
-        )
-        _args_schema.remote_volume_resource_id = AAZStrArg(
-            options=["--remote-volume-id", "--remote-volume-resource-id"],
-            arg_group="Replication",
-            help="The resource ID of the remote volume.",
-        )
-        _args_schema.replication_id = AAZStrArg(
-            options=["--replication-id"],
-            arg_group="Replication",
-            help="Id",
             nullable=True,
         )
         _args_schema.replication_schedule = AAZStrArg(
@@ -600,7 +598,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-01-preview",
+                    "api-version", "2023-07-01-preview",
                     required=True,
                 ),
             }
@@ -707,7 +705,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-01-preview",
+                    "api-version", "2023-07-01-preview",
                     required=True,
                 ),
             }
@@ -773,6 +771,7 @@ class Update(AAZCommand):
                 properties.set_prop("avsDataStore", AAZStrType, ".avs_data_store")
                 properties.set_prop("capacityPoolResourceId", AAZStrType, ".capacity_pool_resource_id")
                 properties.set_prop("coolAccess", AAZBoolType, ".cool_access")
+                properties.set_prop("coolAccessRetrievalPolicy", AAZStrType, ".cool_access_retrieval_policy")
                 properties.set_prop("coolnessPeriod", AAZIntType, ".coolness_period")
                 properties.set_prop("creationToken", AAZStrType, ".creation_token", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("dataProtection", AAZObjectType)
@@ -793,7 +792,7 @@ class Update(AAZCommand):
                 properties.set_prop("proximityPlacementGroup", AAZStrType, ".proximity_placement_group")
                 properties.set_prop("securityStyle", AAZStrType, ".security_style")
                 properties.set_prop("serviceLevel", AAZStrType, ".service_level")
-                properties.set_prop("smbAccessBasedEnumeration", AAZStrType, ".smb_access_based_enumeration")
+                properties.set_prop("smbAccessBasedEnumeration", AAZStrType, ".smb_access_based_enumeration", typ_kwargs={"nullable": True})
                 properties.set_prop("smbContinuouslyAvailable", AAZBoolType, ".smb_continuously_available")
                 properties.set_prop("smbEncryption", AAZBoolType, ".smb_encryption")
                 properties.set_prop("smbNonBrowsable", AAZStrType, ".smb_non_browsable")
@@ -823,8 +822,6 @@ class Update(AAZCommand):
             if replication is not None:
                 replication.set_prop("endpointType", AAZStrType, ".endpoint_type")
                 replication.set_prop("remoteVolumeRegion", AAZStrType, ".remote_volume_region")
-                replication.set_prop("remoteVolumeResourceId", AAZStrType, ".remote_volume_resource_id", typ_kwargs={"flags": {"required": True}})
-                replication.set_prop("replicationId", AAZStrType, ".replication_id")
                 replication.set_prop("replicationSchedule", AAZStrType, ".replication_schedule")
 
             snapshot = _builder.get(".properties.dataProtection.snapshot")
@@ -837,7 +834,7 @@ class Update(AAZCommand):
 
             export_policy = _builder.get(".properties.exportPolicy")
             if export_policy is not None:
-                export_policy.set_prop("rules", AAZListType, ".rules")
+                export_policy.set_prop("rules", AAZListType, ".export_policy_rules")
 
             rules = _builder.get(".properties.exportPolicy.rules")
             if rules is not None:
@@ -963,6 +960,9 @@ class _UpdateHelper:
         properties.cool_access = AAZBoolType(
             serialized_name="coolAccess",
         )
+        properties.cool_access_retrieval_policy = AAZStrType(
+            serialized_name="coolAccessRetrievalPolicy",
+        )
         properties.coolness_period = AAZIntType(
             serialized_name="coolnessPeriod",
         )
@@ -1004,6 +1004,11 @@ class _UpdateHelper:
         )
         properties.file_system_id = AAZStrType(
             serialized_name="fileSystemId",
+            flags={"read_only": True},
+        )
+        properties.inherited_size_in_bytes = AAZIntType(
+            serialized_name="inheritedSizeInBytes",
+            nullable=True,
             flags={"read_only": True},
         )
         properties.is_default_quota_enabled = AAZBoolType(
@@ -1070,6 +1075,7 @@ class _UpdateHelper:
         )
         properties.smb_access_based_enumeration = AAZStrType(
             serialized_name="smbAccessBasedEnumeration",
+            nullable=True,
         )
         properties.smb_continuously_available = AAZBoolType(
             serialized_name="smbContinuouslyAvailable",
@@ -1148,6 +1154,9 @@ class _UpdateHelper:
         replication.endpoint_type = AAZStrType(
             serialized_name="endpointType",
         )
+        replication.remote_path = AAZObjectType(
+            serialized_name="remotePath",
+        )
         replication.remote_volume_region = AAZStrType(
             serialized_name="remoteVolumeRegion",
         )
@@ -1157,9 +1166,24 @@ class _UpdateHelper:
         )
         replication.replication_id = AAZStrType(
             serialized_name="replicationId",
+            flags={"read_only": True},
         )
         replication.replication_schedule = AAZStrType(
             serialized_name="replicationSchedule",
+        )
+
+        remote_path = _schema_volume_read.properties.data_protection.replication.remote_path
+        remote_path.external_host_name = AAZStrType(
+            serialized_name="externalHostName",
+            flags={"required": True},
+        )
+        remote_path.server_name = AAZStrType(
+            serialized_name="serverName",
+            flags={"required": True},
+        )
+        remote_path.volume_name = AAZStrType(
+            serialized_name="volumeName",
+            flags={"required": True},
         )
 
         snapshot = _schema_volume_read.properties.data_protection.snapshot
