@@ -33,7 +33,7 @@ from azure.cli.command_modules.containerapp._utils import (store_as_secret_and_r
                                                            safe_get, _update_revision_env_secretrefs, _add_or_update_tags, _populate_secret_values,
                                                            clean_null_values, _add_or_update_env_vars, _remove_env_vars, _get_acr_cred, _ensure_identity_resource_id,
                                                            create_acrpull_role_assignment, _ensure_location_allowed, get_default_workload_profile_name_from_env,
-                                                           set_managed_identity, parse_secret_flags, _infer_acr_credentials)
+                                                           set_managed_identity, parse_secret_flags, _infer_acr_credentials, _remove_registry_secret)
 from azure.cli.command_modules.containerapp._constants import (CONTAINER_APPS_RP)
 from azure.cli.command_modules.containerapp._models import (
     Ingress as IngressModel,
@@ -68,7 +68,8 @@ from ._decorator_utils import (create_deserializer,
                                process_loaded_yaml,
                                load_yaml_file,
                                infer_runtime_option)
-from ._utils import parse_service_bindings, check_unique_bindings, is_registry_msi_system_environment, env_has_managed_identity
+from ._utils import parse_service_bindings, check_unique_bindings, is_registry_msi_system_environment, \
+    env_has_managed_identity, create_acrpull_role_assignment_if_needed
 from ._validators import validate_create, validate_runtime
 from ._constants import (HELLO_WORLD_IMAGE,
                          CONNECTED_ENVIRONMENT_TYPE,
@@ -130,6 +131,15 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         return self.get_param("from_revision")
 
     def validate_arguments(self):
+        self.containerapp_def = None
+        try:
+            self.containerapp_def = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
+        except Exception as e:
+            handle_non_404_status_code_exception(e)
+
+        if not self.containerapp_def:
+            raise ResourceNotFoundError("The containerapp '{}' does not exist".format(self.get_argument_name()))
+
         validate_revision_suffix(self.get_argument_revision_suffix())
         # Validate that max_replicas is set to 0-1000
         if self.get_argument_max_replicas() is not None:
@@ -166,15 +176,6 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         if self.get_argument_yaml():
             return self.set_up_update_containerapp_yaml(name=self.get_argument_name(), file_name=self.get_argument_yaml())
 
-        self.containerapp_def = None
-        try:
-            self.containerapp_def = self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
-        except Exception as e:
-            handle_non_404_status_code_exception(e)
-
-        if not self.containerapp_def:
-            raise ResourceNotFoundError("The containerapp '{}' does not exist".format(self.get_argument_name()))
-
         self.new_containerapp["properties"] = {}
 
         self.set_up_from_revision()
@@ -190,7 +191,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
         update_map['scale'] = self.get_argument_min_replicas() is not None or self.get_argument_max_replicas() is not None or self.get_argument_scale_rule_name()
         update_map['container'] = self._need_update_container()
         update_map['ingress'] = self.get_argument_ingress() or self.get_argument_target_port()
-        update_map['registry'] = self.get_argument_registry_server() or self.get_argument_registry_user() or self.get_argument_registry_pass()
+        update_map['registry'] = self.get_argument_registry_server() or self.get_argument_registry_user() or self.get_argument_registry_pass() or self.get_argument_registry_identity()
 
         if self.get_argument_tags():
             _add_or_update_tags(self.new_containerapp, self.get_argument_tags())
@@ -369,7 +370,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
                     self.new_containerapp["properties"]["configuration"]["ingress"]["targetPort"] = self.get_argument_target_port()
 
         # Registry
-        if update_map["registry"]:
+        if update_map["registry"]:  # pylint: disable=too-many-nested-blocks
             self.new_containerapp["properties"]["configuration"] = {} if "configuration" not in self.new_containerapp[
                 "properties"] else self.new_containerapp["properties"]["configuration"]
             if "registries" in self.containerapp_def["properties"]["configuration"]:
@@ -387,7 +388,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
                 self.new_containerapp["properties"]["configuration"]["secrets"] = []
 
             if self.get_argument_registry_server():
-                if not self.get_argument_registry_pass() or not self.get_argument_registry_user():
+                if (not self.get_argument_registry_pass() or not self.get_argument_registry_user()) and not self.get_argument_registry_identity():
                     if ACR_IMAGE_SUFFIX not in self.get_argument_registry_server():
                         raise RequiredArgumentMissingError(
                             'Registry url is required if using Azure Container Registry, otherwise Registry username and password are required if using Dockerhub')
@@ -404,6 +405,9 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
                 for r in registries_def:
                     if r['server'].lower() == self.get_argument_registry_server().lower():
                         updating_existing_registry = True
+                        # registry (username and password) and identity are mutually exclusive, set identity to None when setting username or password
+                        if (self.get_argument_registry_user() or self.get_argument_registry_pass()) and self.get_argument_registry_identity() is None:
+                            r["identity"] = None
                         if self.get_argument_registry_user():
                             r["username"] = self.get_argument_registry_user()
                         if self.get_argument_registry_pass():
@@ -414,19 +418,27 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
                                 self.get_argument_registry_pass(),
                                 update_existing_secret=True,
                                 disable_warnings=True)
+                        if self.get_argument_registry_identity():
+                            r["identity"] = self.get_argument_registry_identity()
+                            if r["username"]:
+                                _remove_registry_secret(containerapp_def=self.new_containerapp, server=r["server"], username=r["username"])
+                            r["username"] = None
+                            r["passwordSecretRef"] = None
 
                 # If not updating existing registry, add as new registry
                 if not updating_existing_registry:
                     registry = RegistryCredentialsModel
                     registry["server"] = self.get_argument_registry_server()
                     registry["username"] = self.get_argument_registry_user()
-                    registry["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
-                        self.new_containerapp["properties"]["configuration"]["secrets"],
-                        self.get_argument_registry_user(),
-                        self.get_argument_registry_server(),
-                        self.get_argument_registry_pass(),
-                        update_existing_secret=True,
-                        disable_warnings=True)
+                    registry["identity"] = self.get_argument_registry_identity()
+                    if self.get_argument_registry_pass():
+                        registry["passwordSecretRef"] = store_as_secret_and_return_secret_ref(
+                            self.new_containerapp["properties"]["configuration"]["secrets"],
+                            self.get_argument_registry_user(),
+                            self.get_argument_registry_server(),
+                            self.get_argument_registry_pass(),
+                            update_existing_secret=True,
+                            disable_warnings=True)
 
                     registries_def.append(registry)
 
@@ -642,6 +654,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def set_argument_service_connectors_def_list(self, service_connectors_def_list):
         self.set_param("service_connectors_def_list", service_connectors_def_list)
 
+    def set_argument_registry_identity(self, registry_identity):
+        self.set_param("registry_identity", registry_identity)
+
     # not craete role assignment if it's env system msi
     def check_create_acrpull_role_assignment(self):
         identity = self.get_argument_registry_identity()
@@ -661,6 +676,16 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
                 managed_env_rg = parsed_managed_env['resource_group']
                 if not env_has_managed_identity(self.cmd, managed_env_rg, managed_env_name, identity):
                     set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.containerapp_def, user_assigned=[identity])
+
+    # If --registry-server is ACR, use system-assigned managed identity for image pull by default
+    def set_up_system_assigned_identity_as_default_if_using_acr(self):
+        registry_server = self.get_argument_registry_server()
+        if registry_server is not None:
+            if ACR_IMAGE_SUFFIX not in registry_server:
+                return
+
+            if self.get_argument_registry_identity() is None and self.get_argument_registry_user() is None and self.get_argument_registry_pass() is None:
+                self.set_argument_registry_identity('system')
 
     def parent_construct_payload(self):
         # preview logic
@@ -849,6 +874,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         self.set_up_registry_identity()
 
     def construct_payload(self):
+        self.set_up_system_assigned_identity_as_default_if_using_acr()
         self.parent_construct_payload()
         self.set_up_service_type()
         self.set_up_service_binds()
@@ -879,6 +905,15 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
             scale_rule_type = self.get_argument_scale_rule_type().lower()
             if scale_rule_type == "http" or scale_rule_type == "tcp":
                 raise InvalidArgumentValueError("--scale-rule-identity cannot be set when --scale-rule-type is 'http' or 'tcp'")
+
+        if self.get_argument_registry_server() is not None and \
+                ACR_IMAGE_SUFFIX in self.get_argument_registry_server() and \
+                self.get_argument_registry_user() is None and \
+                self.get_argument_registry_pass() is None and \
+                self.get_argument_no_wait():
+            raise MutuallyExclusiveArgumentError(
+                "--registry-server use managed identity for image pull by default. --no-wait is not supported with system registry identity.\n"
+                "You can either remove --no-wait, use --registry-username, or use a user-assigned registry identity.")
 
     def set_up_source(self):
         from ._up_utils import (_validate_source_artifact_args)
@@ -1329,6 +1364,9 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     def get_argument_scale_rule_identity(self):
         return self.get_param("scale_rule_identity")
 
+    def set_argument_registry_identity(self, registry_identity):
+        self.set_param("registry_identity", registry_identity)
+
     def validate_arguments(self):
         super().validate_arguments()
         if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
@@ -1339,6 +1377,91 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
             scale_rule_type = self.get_argument_scale_rule_type().lower()
             if scale_rule_type == "http" or scale_rule_type == "tcp":
                 raise InvalidArgumentValueError("--scale-rule-identity cannot be set when --scale-rule-type is 'http' or 'tcp'")
+
+    def check_assign_system_identity(self):
+        identity = self.get_argument_registry_identity()
+        system_sp = safe_get(self.containerapp_def, "identity", "principalId")
+
+        # create system service principalId
+        if system_sp is None and is_registry_msi_system(identity):
+            logger.warning("Assign system identity to containerapp.")
+            self.update()
+            self.containerapp_def = self.show()
+
+    def check_acrpull_role_assignment(self):
+        identity = self.get_argument_registry_identity()
+        system_sp = safe_get(self.containerapp_def, "identity", "principalId")
+        # not create role assignment if it's env system msi or system msi
+        if identity and not is_registry_msi_system(identity) and not is_registry_msi_system_environment(identity):
+            create_acrpull_role_assignment_if_needed(self.cmd, self.get_argument_registry_server(), identity, skip_error=True)
+        # create acrpull role assignment if the containerapp already has principalId
+        if identity and is_registry_msi_system(identity):
+            create_acrpull_role_assignment_if_needed(self.cmd, self.get_argument_registry_server(), registry_identity=None, service_principal=system_sp)
+
+    # not set up msi for current containerapp if it's env msi
+    def set_up_managed_identity(self):
+        identity = self.get_argument_registry_identity()
+        user_assigned_identity = self.get_argument_user_assigned()
+        system_assigned_identity = self.get_argument_system_assigned()
+
+        if identity:
+            safe_set(self.new_containerapp, "identity", value=self.containerapp_def["identity"])
+            if safe_get(self.new_containerapp, "identity", "principalId"):
+                self.new_containerapp["identity"].pop("principalId")
+            if safe_get(self.new_containerapp, "identity", "tenantId"):
+                self.new_containerapp["identity"].pop("tenantId")
+
+            if is_registry_msi_system(identity):
+                set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.new_containerapp,
+                                     system_assigned=True)
+            elif is_valid_resource_id(identity):
+                parsed_managed_env = parse_resource_id(safe_get(self.containerapp_def, "properties", "environmentId"))
+                managed_env_name = parsed_managed_env['name']
+                managed_env_rg = parsed_managed_env['resource_group']
+                if not env_has_managed_identity(self.cmd, managed_env_rg, managed_env_name, identity):
+                    set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.new_containerapp,
+                                         user_assigned=[identity])
+
+        if user_assigned_identity:
+            set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.new_containerapp,
+                                 user_assigned=user_assigned_identity)
+
+        if system_assigned_identity is not None:
+            set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.new_containerapp,
+                                 system_assigned=system_assigned_identity)
+
+    # If --registry-server is ACR, use system-assigned managed identity for image pull by default
+    # Don't update registries unless the registry for the updated image is missing
+    # If the existing registry identity is 'system', keep it consistent
+    def set_up_system_assigned_identity_as_default_if_using_acr(self):
+        registry_server = self.get_argument_registry_server()
+        if registry_server is not None:
+            if ACR_IMAGE_SUFFIX not in registry_server:
+                return
+
+            if self.get_argument_registry_identity() is None and self.get_argument_registry_user() is None and self.get_argument_registry_pass() is None:
+                registries_def = safe_get(self.containerapp_def, "properties", "configuration", "registries")
+                if registries_def is None:
+                    self.set_argument_registry_identity('system')
+                    return
+                registry_exists = False
+                for r in registries_def:
+                    if r['server'].lower() == self.get_argument_registry_server().lower():
+                        registry_exists = True
+                        registry_identity = safe_get(r, "identity")
+                        if registry_identity:
+                            self.set_argument_registry_identity(registry_identity)
+
+                if not registry_exists:
+                    self.set_argument_registry_identity('system')
+
+    def construct_for_pre_process(self):
+        self.set_up_system_assigned_identity_as_default_if_using_acr()
+        self.set_up_managed_identity()
+
+    def pre_process(self):
+        self.check_assign_system_identity()
+        self.check_acrpull_role_assignment()
 
     def construct_payload(self):
         super().construct_payload()

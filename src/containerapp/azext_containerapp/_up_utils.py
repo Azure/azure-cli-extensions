@@ -410,7 +410,10 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         env_vars=None,
         workload_profile_name=None,
         ingress=None,
-        force_single_container_updates=None
+        force_single_container_updates=None,
+        registry_identity=None,
+        user_assigned=None,
+        system_assigned=None,
     ):
 
         super().__init__(cmd, name, resource_group, exists)
@@ -420,6 +423,9 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
         self.registry_server = registry_server
         self.registry_user = registry_user
         self.registry_pass = registry_pass
+        self.registry_identity = registry_identity
+        self.user_assigned = user_assigned
+        self.system_assigned = system_assigned
         self.env_vars = env_vars
         self.ingress = ingress
         self.workload_profile_name = workload_profile_name
@@ -456,7 +462,10 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
             workload_profile_name=self.workload_profile_name,
             ingress=self.ingress,
             environment_type=CONNECTED_ENVIRONMENT_TYPE if self.env.is_connected_environment() else MANAGED_ENVIRONMENT_TYPE,
-            force_single_container_updates=self.force_single_container_updates
+            force_single_container_updates=self.force_single_container_updates,
+            registry_identity=self.registry_identity,
+            system_assigned=self.system_assigned,
+            user_assigned=self.user_assigned
         )
 
     def set_force_single_container_updates(self, force_single_container_updates):
@@ -1247,29 +1256,14 @@ def _get_acr_from_image(cmd, app):
         app.registry_server = app.image.split("/")[
             0
         ]  # TODO what if this conflicts with registry_server param?
+
         parsed = urlparse(app.image)
         registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0]
-        if app.registry_user is None or app.registry_pass is None:
-            logger.info(
-                "No credential was provided to access Azure Container Registry. Trying to look up..."
-            )
-            try:
-                app.registry_user, app.registry_pass, registry_rg = _get_acr_cred(
-                    cmd.cli_ctx, registry_name
-                )
-                app.acr = AzureContainerRegistry(
-                    registry_name, ResourceGroup(cmd, registry_rg, None, None)
-                )
-            except Exception as ex:
-                raise RequiredArgumentMissingError(
-                    "Failed to retrieve credentials for container registry. Please provide the registry username and password"
-                ) from ex
-        else:
-            acr_rg = _get_acr_rg(app)
-            app.acr = AzureContainerRegistry(
-                name=registry_name,
-                resource_group=ResourceGroup(app.cmd, acr_rg, None, None),
-            )
+        acr_rg = _get_acr_rg(app)
+        app.acr = AzureContainerRegistry(
+            name=registry_name,
+            resource_group=ResourceGroup(cmd, acr_rg, None, None),
+        )
 
 
 def _get_registry_from_app(app, source):

@@ -18,6 +18,7 @@ import packaging.version as SemVer
 from enum import Enum
 from urllib.request import urlopen
 
+from azure.cli.command_modules.acr.custom import acr_show
 from azure.cli.command_modules.containerapp._utils import safe_get, _ensure_location_allowed, \
     _generate_log_analytics_if_not_provided
 from azure.cli.command_modules.containerapp._client_factory import handle_raw_exception
@@ -40,7 +41,7 @@ from ._models import OryxRunImageTagProperty
 from ._constants import (CONTAINER_APP_EXTENSION_TYPE,
                          CONNECTED_ENV_CHECK_CERTIFICATE_NAME_AVAILABILITY_TYPE, DEV_SERVICE_LIST,
                          MANAGED_ENVIRONMENT_RESOURCE_TYPE, CONTAINER_APPS_RP, CONNECTED_CLUSTER_TYPE,
-                         DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE)
+                         DEFAULT_CONNECTED_CLUSTER_EXTENSION_NAMESPACE, ACR_IMAGE_SUFFIX)
 
 logger = get_logger(__name__)
 
@@ -776,3 +777,55 @@ def env_has_managed_identity(cmd, resource_group_name, env_name, identity):
             result = True
             break
     return result
+
+
+def create_acrpull_role_assignment_if_needed(cmd, registry_server, registry_identity=None, service_principal=None, skip_error=False):
+    import time
+    from azure.cli.command_modules.acr._utils import ResourceNotFound
+    from azure.cli.core.profiles import ResourceType
+    from azure.mgmt.containerregistry import ContainerRegistryManagementClient
+    from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
+    from azure.cli.core.azclierror import UnauthorizedError
+
+    if registry_identity:
+        registry_identity_parsed = parse_resource_id(registry_identity)
+        registry_identity_name, registry_identity_rg, registry_identity_sub = registry_identity_parsed.get("name"), registry_identity_parsed.get("resource_group"), registry_identity_parsed.get("subscription")
+        sp_id = get_mgmt_service_client(cmd.cli_ctx, ResourceType.MGMT_MSI, subscription_id=registry_identity_sub).user_assigned_identities.get(resource_name=registry_identity_name, resource_group_name=registry_identity_rg).principal_id
+    else:
+        sp_id = service_principal
+
+    client = get_mgmt_service_client(cmd.cli_ctx, ContainerRegistryManagementClient).registries
+    try:
+        acr_id = acr_show(cmd, client, registry_server[: registry_server.rindex(ACR_IMAGE_SUFFIX)]).id
+    except ResourceNotFound as e:
+        message = (f"Role assignment failed with error message: \"{' '.join(e.args)}\". \n"
+                   f"To add the role assignment manually, please run 'az role assignment create --assignee {sp_id} --scope <container-registry-resource-id> --role acrpull'. \n"
+                   "You may have to restart the containerapp with 'az containerapp revision restart'.")
+        logger.warning(message)
+        return
+
+    role_assignments = None
+    # Always assign role assignment even if list role assignments throw error
+    try:
+        role_assignments = list_role_assignments(cmd, assignee=sp_id, role="acrpull", scope=acr_id)
+    except:  # pylint: disable=bare-except
+        pass
+    if not role_assignments:
+        logger.warning("Creating an acrpull role assignment for the registry identity")
+        retries = 10
+        while retries > 0:
+            try:
+                create_role_assignment(cmd, role="acrpull", assignee=sp_id, scope=acr_id)
+                return
+            except Exception as e:
+                retries -= 1
+                if retries <= 0:
+                    message = (f"Role assignment failed with error message: \"{' '.join(e.args)}\". \n"
+                               f"To add the role assignment manually, please run 'az role assignment create --assignee {sp_id} --scope {acr_id} --role acrpull'. \n"
+                               "You may have to restart the containerapp with 'az containerapp revision restart'.")
+                    if skip_error:
+                        logger.error(message)
+                    else:
+                        raise UnauthorizedError(message) from e
+                else:
+                    time.sleep(5)
