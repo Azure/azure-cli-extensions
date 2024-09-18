@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a Task Hub
+
+    :example: Show information on a particular taskhub
+        az durabletask taskhub show -g resource-group-name -s namespace-name -n taskhub-name
     """
 
     _aaz_info = {

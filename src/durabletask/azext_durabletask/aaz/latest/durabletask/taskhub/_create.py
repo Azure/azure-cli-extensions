@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a Task Hub
+
+    :example: Create a taskhub in a namespace
+        az durabletask taskhub create -g resource-grou-name -s testnamespace -n taskhub-name
     """
 
     _aaz_info = {

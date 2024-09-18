@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get a Namespace
+
+    :example: Show information on a particular namespace
+        az durabletask namespace show -g resource-group-name -n namespace-name
     """
 
     _aaz_info = {
@@ -44,7 +47,7 @@ class Show(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.namespace_name = AAZStrArg(
             options=["-n", "--name", "--namespace-name"],
-            help="The name of the service",
+            help="The name of the namespace",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

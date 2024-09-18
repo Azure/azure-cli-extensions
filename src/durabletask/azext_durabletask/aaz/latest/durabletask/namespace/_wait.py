@@ -42,7 +42,7 @@ class Wait(AAZWaitCommand):
         _args_schema = cls._args_schema
         _args_schema.namespace_name = AAZStrArg(
             options=["-n", "--name", "--namespace-name"],
-            help="The name of the service",
+            help="The name of the namespace",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

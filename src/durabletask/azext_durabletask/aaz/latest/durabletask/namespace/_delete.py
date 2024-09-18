@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a Namespace
+
+    :example: Delete a namespace
+        az durabletask namespace delete -g resource-group-name -n namespace-name
     """
 
     _aaz_info = {

@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a Namespace
+
+    :example: Create a namespace in northcentralus
+        az durabletask namespace create -g resource-group-name -n namespace-name --location northcentralus
     """
 
     _aaz_info = {

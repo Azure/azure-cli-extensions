@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List Namespace resources by subscription ID
+
+    :example: List all namespaces in a resource group
+        az durabletask namespace list -g resource-group-name
     """
 
     _aaz_info = {

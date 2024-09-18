@@ -18,6 +18,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete a Task Hub
+
+    :example: Delete a taskhub
+        az durabletask taskhub delete -g resource-grou-name -s namespace-name -n taskhub-name
     """
 
     _aaz_info = {
