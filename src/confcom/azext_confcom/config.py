@@ -78,6 +78,27 @@ ACI_FIELD_SUPPORTED_RESOURCES = [
     ACI_FIELD_TEMPLATE_RESOURCE_LABEL,
     ACI_FIELD_TEMPLATE_RESOURCE_PROFILE_LABEL
 ]
+ACI_FIELD_YAML_MOUNT_TYPE = "emptyDir"
+ACI_FIELD_YAML_LIVENESS_PROBE = "livenessProbe"
+ACI_FIELD_YAML_READINESS_PROBE = "readinessProbe"
+ACI_FIELD_YAML_STARTUP_PROBE = "startupProbe"
+VIRTUAL_NODE_YAML_METADATA = "metadata"
+VIRTUAL_NODE_YAML_NAME = "name"
+VIRTUAL_NODE_YAML_ANNOTATIONS = "annotations"
+VIRTUAL_NODE_YAML_POLICY = "microsoft.containerinstance.virtualnode.ccepolicy"
+VIRTUAL_NODE_YAML_LIFECYCLE = "lifecycle"
+VIRTUAL_NODE_YAML_LIFECYCLE_POST_START = "postStart"
+VIRTUAL_NODE_YAML_LIFECYCLE_PRE_STOP = "preStop"
+VIRTUAL_NODE_YAML_LIFECYCLE_EXEC = "exec"
+VIRTUAL_NODE_YAML_LIFECYCLE_COMMAND = "command"
+VIRTUAL_NODE_YAML_RESOURCES = "resources"
+VIRTUAL_NODE_YAML_RESOURCES_LIMITS = "limits"
+VIRTUAL_NODE_YAML_RESOURCES_REQUESTS = "requests"
+VIRTUAL_NODE_YAML_RESOURCES_CPU = "cpu"
+VIRTUAL_NODE_YAML_RESOURCES_MEMORY = "memory"
+VIRTUAL_NODE_YAML_RESOURCES_HUGEPAGES = "hugepages"
+VIRTUAL_NODE_YAML_RESOURCES_EPHEMERAL_STORAGE = "ephemeral-storage"
+VIRTUAL_NODE_YAML_SPECIAL_ENV_VAR_REGEX = "^===VIRTUALNODE2.CC.THIM.(.+)===$"
 
 # output json values
 POLICY_FIELD_CONTAINERS = "containers"
@@ -127,6 +148,7 @@ POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS_INCLUDES = "includes"
 POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_CONFIGMAP_LOCATION = "/mnt/configmap"
 POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_CONFIGMAP_TYPE = "emptyDir"
 
+
 CONFIG_FILE = "./data/internal_config.json"
 
 script_directory = os.path.dirname(os.path.realpath(__file__))
@@ -147,10 +169,16 @@ OPENGCS_ENV_RULES = _config["openGCS"]["environmentVariables"]
 FABRIC_ENV_RULES = _config["fabric"]["environmentVariables"]
 # Managed Identity environment variables for customer containers
 MANAGED_IDENTITY_ENV_RULES = _config["managedIdentity"]["environmentVariables"]
+# VN2 environment variables
+VIRTUAL_NODE_ENV_RULES = _config["default_envs_virtual_node"]["environmentVariables"]
 # Enable container restart environment variable for all containers
 ENABLE_RESTART_ENV_RULE = _config["enableRestart"]["environmentVariables"]
 # default mounts image for customer containers
 DEFAULT_MOUNTS_USER = _config["mount"]["default_mounts_user"]
+# default mounts used for VN2
+DEFAULT_MOUNTS_USER_VIRTUAL_NODE = _config["mount"]["default_mounts_user_virtual_node"]
+DEFAULT_MOUNTS_VIRTUAL_NODE = _config["mount"]["default_mounts_virtual_node"]
+DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE = _config["mount"]["default_mounts_virtual_node_privileged"]
 # default mounts policy options for all containers
 DEFAULT_MOUNT_POLICY = _config["mount"]["default_policy"]
 # default rego policy to be added to all user containers
