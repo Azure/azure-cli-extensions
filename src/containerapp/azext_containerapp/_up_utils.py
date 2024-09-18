@@ -49,7 +49,7 @@ from azure.core.exceptions import HttpResponseError
 from azure.mgmt.containerregistry import ContainerRegistryManagementClient
 from knack.log import get_logger
 
-from msrestazure.tools import parse_resource_id, is_valid_resource_id, resource_id
+from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id, resource_id
 
 from ._client_factory import handle_non_404_status_code_exception
 from ._clients import ContainerAppPreviewClient, GitHubActionClient, ContainerAppsJobClient, \

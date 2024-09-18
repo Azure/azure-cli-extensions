@@ -48,7 +48,7 @@ from azure.cli.command_modules.containerapp._models import (
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 
-from msrestazure.tools import parse_resource_id, is_valid_resource_id
+from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from .containerapp_env_certificate_decorator import ContainerappPreviewEnvCertificateListDecorator, \
