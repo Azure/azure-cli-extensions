@@ -1,0 +1,155 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - arc-multicloud solution-type show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --resource-group --subscription
+      User-Agent:
+      - AZURECLI/2.64.0 azsdk-python-core/1.30.2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.HybridConnectivity/solutionTypes/Microsoft.AssetManagement?api-version=2024-12-01
+  response:
+    body:
+      string: '{"properties":{"solutionType":"Microsoft.AssetManagement","description":"See
+        resources from different clouds in a single inventory view.","solutionSettings":[{"name":"cloudProviderServiceTypes","displayName":"Cloud
+        Provider Service Types","type":"array","description":"Represents the types
+        of cloud provider services to be inventoried","allowedValues":["apigateway","cloudformation","cloudtrail","cloudwatch","dynamodb","ec2","ecr","ecs","efs","elasticbeanstalk","elasticloadbalancingv2","guardduty","iam","lambda","lightsail","logs","macie","networkfirewall","organizations","rds","redshift","route53","sagemaker","s3","sns","sqs"],"defaultValue":"apigateway,
+        cloudformation, cloudtrail, cloudwatch, dynamodb, ec2, ecr, ecs, efs, elasticbeanstalk,
+        elasticloadbalancingv2, guardduty, iam, lambda, lightsail, logs, macie, networkfirewall,
+        organizations, rds, redshift, route53, sagemaker, s3, sns, sqs"},{"name":"periodicSync","displayName":"Periodic
+        Sync","type":"boolean","description":"Periodically sync resources from multi
+        clouds to Azure","allowedValues":["true","false"],"defaultValue":"true"},{"name":"periodicSyncTime","displayName":"Periodic
+        Sync Time","type":"integer","description":"Represents the time interval (in
+        hours) at which periodic sync occurs","allowedValues":["1","2","4","6","12","24"],"defaultValue":"1"},{"name":"awsGlobalReadOnly","displayName":"Aws
+        Global Read Only","type":"boolean","description":"Controls access permissions
+        for AWS resources, allowing global read-only access when enabled","allowedValues":["true","false"],"defaultValue":"true"},{"name":"cloudProviderRegions","displayName":"Cloud
+        Provider Regions","type":"array","description":"Represents the cloud provider
+        regions to import resources from","allowedValues":["us-east-1","us-east-2","us-west-1","us-west-2","ap-southeast-1","ap-southeast-2","ap-northeast-1","ap-northeast-3","eu-west-1","eu-west-2","eu-central-1","eu-north-1","ca-central-1","sa-east-1"],"defaultValue":"us-east-1,
+        us-east-2, us-west-1, us-west-2, ap-southeast-1, ap-southeast-2, ap-northeast-1,
+        ap-northeast-3, eu-west-1, eu-west-2, eu-central-1, eu-north-1, ca-central-1,
+        sa-east-1"},{"name":"scanAllAWSRegions","displayName":"Scan all supported
+        AWS regions","type":"boolean","description":"Scan all supported AWS regions","allowedValues":["true","false"],"defaultValue":"true"},{"name":"scanAllAWSServices","displayName":"Scan
+        all supported AWS services","type":"boolean","description":"Scan all supported
+        AWS services","allowedValues":["true","false"],"defaultValue":"true"}]}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2546'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Sep 2024 21:19:25 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - f794fd29-b665-4008-9103-099847900249
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: F5A5CBF7A09C4882A70AD7B0C87CCD1D Ref B: CO6AA3150219025 Ref C: 2024-09-16T21:19:26Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - arc-multicloud solution-type list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --subscription
+      User-Agent:
+      - AZURECLI/2.64.0 azsdk-python-core/1.30.2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.HybridConnectivity/solutionTypes?api-version=2024-12-01
+  response:
+    body:
+      string: '{"value":[{"properties":{"solutionType":"Microsoft.HybridCompute.Onboard","description":"Onboard
+        your EC2 instances as Azure Arc machines to leverage key management services.","solutionSettings":[{"name":"periodicSync","displayName":"Periodic
+        Sync","type":"boolean","description":"Periodically sync resources from multi
+        clouds to Azure","allowedValues":["true","false"],"defaultValue":"true"},{"name":"periodicSyncTime","displayName":"Periodic
+        Sync Time","type":"integer","description":"Represents the time interval (in
+        hours) at which periodic sync occurs","allowedValues":["1","2","4","6","12","24"],"defaultValue":"1"},{"name":"proxyServer","displayName":"Proxy
+        Server","type":"string","description":"Represents the proxy server URL, in
+        the format http://ProxyServerIpAddress:ProxyServerPort","allowedValues":[""],"defaultValue":""},{"name":"cloudProviderRegions","displayName":"Cloud
+        Provider Regions","type":"array","description":"Represents the cloud provider
+        regions to import resources from","allowedValues":["us-east-1","us-east-2","us-west-1","us-west-2","ap-southeast-1","ap-southeast-2","ap-northeast-1","ap-northeast-3","eu-west-1","eu-west-2","eu-central-1","eu-north-1","ca-central-1","sa-east-1"],"defaultValue":"us-east-1,
+        us-east-2, us-west-1, us-west-2, ap-southeast-1, ap-southeast-2, ap-northeast-1,
+        ap-northeast-3, eu-west-1, eu-west-2, eu-central-1, eu-north-1, ca-central-1,
+        sa-east-1"},{"name":"arcOnboardEc2FilterTag","displayName":"Arc Onboard EC2
+        Filter Tags","type":"array","description":"Represents the tags to filter EC2
+        instances for onboarding to Azure Arc, in the format key:value. If empty,
+        then all EC2 instances are onboarded","allowedValues":[""],"defaultValue":""},{"name":"scanAllAWSRegions","displayName":"Scan
+        all supported AWS regions","type":"boolean","description":"Scan all supported
+        AWS regions","allowedValues":["true","false"],"defaultValue":"true"}],"supportedAzureRegions":["canadacentral","eastus","westcentralus","westeurope"]}},{"properties":{"solutionType":"Microsoft.AssetManagement","description":"See
+        resources from different clouds in a single inventory view.","solutionSettings":[{"name":"cloudProviderServiceTypes","displayName":"Cloud
+        Provider Service Types","type":"array","description":"Represents the types
+        of cloud provider services to be inventoried","allowedValues":["apigateway","cloudformation","cloudtrail","cloudwatch","dynamodb","ec2","ecr","ecs","efs","elasticbeanstalk","elasticloadbalancingv2","guardduty","iam","lambda","lightsail","logs","macie","networkfirewall","organizations","rds","redshift","route53","sagemaker","s3","sns","sqs"],"defaultValue":"apigateway,
+        cloudformation, cloudtrail, cloudwatch, dynamodb, ec2, ecr, ecs, efs, elasticbeanstalk,
+        elasticloadbalancingv2, guardduty, iam, lambda, lightsail, logs, macie, networkfirewall,
+        organizations, rds, redshift, route53, sagemaker, s3, sns, sqs"},{"name":"periodicSync","displayName":"Periodic
+        Sync","type":"boolean","description":"Periodically sync resources from multi
+        clouds to Azure","allowedValues":["true","false"],"defaultValue":"true"},{"name":"periodicSyncTime","displayName":"Periodic
+        Sync Time","type":"integer","description":"Represents the time interval (in
+        hours) at which periodic sync occurs","allowedValues":["1","2","4","6","12","24"],"defaultValue":"1"},{"name":"awsGlobalReadOnly","displayName":"Aws
+        Global Read Only","type":"boolean","description":"Controls access permissions
+        for AWS resources, allowing global read-only access when enabled","allowedValues":["true","false"],"defaultValue":"true"},{"name":"cloudProviderRegions","displayName":"Cloud
+        Provider Regions","type":"array","description":"Represents the cloud provider
+        regions to import resources from","allowedValues":["us-east-1","us-east-2","us-west-1","us-west-2","ap-southeast-1","ap-southeast-2","ap-northeast-1","ap-northeast-3","eu-west-1","eu-west-2","eu-central-1","eu-north-1","ca-central-1","sa-east-1"],"defaultValue":"us-east-1,
+        us-east-2, us-west-1, us-west-2, ap-southeast-1, ap-southeast-2, ap-northeast-1,
+        ap-northeast-3, eu-west-1, eu-west-2, eu-central-1, eu-north-1, ca-central-1,
+        sa-east-1"},{"name":"scanAllAWSRegions","displayName":"Scan all supported
+        AWS regions","type":"boolean","description":"Scan all supported AWS regions","allowedValues":["true","false"],"defaultValue":"true"},{"name":"scanAllAWSServices","displayName":"Scan
+        all supported AWS services","type":"boolean","description":"Scan all supported
+        AWS services","allowedValues":["true","false"],"defaultValue":"true"}]}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4530'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Sep 2024 21:19:26 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - fbc7bf7f-10d5-479f-863c-46b3f71d1214
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: DA5F0B66E4EB4994AF0D10AF60874842 Ref B: CO6AA3150217039 Ref C: 2024-09-16T21:19:26Z'
+    status:
+      code: 200
+      message: OK
+version: 1
