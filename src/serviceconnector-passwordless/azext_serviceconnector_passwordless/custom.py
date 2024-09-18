@@ -4,12 +4,14 @@
 # --------------------------------------------------------------------------------------------
 
 
-def connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-many-statements
+# pylint: disable=too-many-locals,too-many-statements,unused-argument
+def connection_create_ext(cmd, client,
                           connection_name=None, client_type=None,
                           source_resource_group=None, source_id=None,
                           target_resource_group=None, target_id=None,
                           secret_auth_info=None, secret_auth_info_auto=None,
                           user_identity_auth_info=None, system_identity_auth_info=None,
+                          workload_identity_auth_info=None,                     # only used as arg
                           service_principal_auth_info_secret=None,
                           key_vault_id=None,
                           app_config_id=None,

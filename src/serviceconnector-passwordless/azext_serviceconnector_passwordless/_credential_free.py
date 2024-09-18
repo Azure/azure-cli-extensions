@@ -963,6 +963,8 @@ class PostgresSingleHandler(PostgresFlexHandler):
 def getSourceHandler(source_id, source_type):
     if source_type in {RESOURCE.WebApp, RESOURCE.FunctionApp}:
         return WebappHandler(source_id, source_type)
+    if source_type in {RESOURCE.KubernetesCluster}:
+        return KubernetesHandler(source_id, source_type)
     if source_type in {RESOURCE.ContainerApp}:
         return ContainerappHandler(source_id, source_type)
     if source_type in {RESOURCE.SpringCloud, RESOURCE.SpringCloudDeprecated}:
@@ -993,6 +995,16 @@ def output_is_none(output):
 class LocalHandler(SourceHandler):
     def get_identity_pid(self):
         pass
+
+
+class KubernetesHandler(SourceHandler):
+    def get_identity_name(self):
+        raise CLIInternalError(
+            "System Identity is not supported for Kubernetes cluster.")
+
+    def get_identity_pid(self):
+        raise CLIInternalError(
+            "System Identity is not supported for Kubernetes cluster.")
 
 
 class SpringHandler(SourceHandler):
