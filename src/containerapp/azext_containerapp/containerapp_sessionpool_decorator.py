@@ -3,6 +3,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long, broad-except, logging-format-interpolation, too-many-public-methods
 
 import uuid
 from copy import deepcopy
@@ -41,6 +42,7 @@ logger = get_logger(__name__)
 class ContainerType(Enum):
     PythonLTS = 0
     CustomContainer = 2
+    NodeLTS = 3
 
 
 class SessionPoolPreviewDecorator(BaseResource):
@@ -127,6 +129,7 @@ class SessionPoolPreviewDecorator(BaseResource):
     def get_argument_registry_user(self):
         return self.get_param("registry_user")
 
+    # pylint: disable=no-self-use
     def get_environment_client(self):
         return ManagedEnvironmentClient
 
@@ -264,8 +267,7 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         managed_env_name = parsed_managed_env['name']
         managed_env_rg = parsed_managed_env['resource_group']
         try:
-            managed_env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=managed_env_rg,
-                                                                  name=managed_env_name)
+            self.get_environment_client().show(cmd=self.cmd, resource_group_name=managed_env_rg, name=managed_env_name)
         except Exception as e:
             handle_non_404_status_code_exception(e)
 
@@ -303,8 +305,8 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
                     if error_code == "RoleAssignmentExists":
                         pass
                 else:
-                    raise Exception(e)
-            except:
+                    raise Exception(e)  # pylint: disable=broad-exception-raised
+            except:  # pylint: disable=bare-except
                 logger.warning("Could not add user as session pool creator role to the session pool, please follow the docs https://learn.microsoft.com/en-us/azure/container-apps/sessions-code-interpreter?tabs=azure-cli#authentication to add the needed roll for authentication")
                 logger.warning(e)
 
@@ -436,7 +438,7 @@ class SessionPoolUpdateDecorator(SessionPoolPreviewDecorator):
                 new_secret_names.append(secret["name"])
             deleted_secrets = set(original_secrets_names).difference(new_secret_names)
             if len(deleted_secrets) > 0:
-                logger.warning("the following secrets are going to be deleted: " + str(deleted_secrets) + " If this is not the intended behavior, please add the missing secrets into the --secrets flag.")
+                logger.warning("the following secrets are going to be deleted: " + str(deleted_secrets) + " If this is not the intended behavior, please add the missing secrets into the --secrets flag.")  # pylint: disable=logging-not-lazy
 
             # Update the secrets to the patch payload.
             if len(secrets_def) > 0:

@@ -1,41 +1,37 @@
 interactions:
 - request:
-    body: '{"tags": {"test": "value"}}'
+    body: null
     headers:
       Accept:
       - application/json
       Accept-Encoding:
       - gzip, deflate
       CommandName:
-      - apic service update
+      - apic update
       Connection:
       - keep-alive
-      Content-Length:
-      - '27'
-      Content-Type:
-      - application/json
       ParameterSetName:
-      - -g -s --tags
+      - -g -n --tags
       User-Agent:
       - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
-    method: PATCH
+    method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002?api-version=2024-03-01
   response:
     body:
-      string: '{"type":"Microsoft.ApiCenter/services","location":"eastus","identity":{"type":"None"},"sku":{"name":"None"},"properties":{"dataApiHostname":"clitest000002.data.eastus.azure-apicenter.ms"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002","name":"clitest000002","tags":{"test":"value"},"systemData":{"lastModifiedAt":"2024-04-25T05:47:34.2771576Z"}}'
+      string: '{"type":"Microsoft.ApiCenter/services","location":"eastus","sku":{"name":"Free"},"properties":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002","name":"clitest000002","tags":{},"systemData":{"createdAt":"2024-06-24T07:41:17.4551506Z","lastModifiedAt":"2024-06-24T07:41:17.4551422Z"}}'
     headers:
       api-supported-versions:
       - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
       cache-control:
       - no-cache
       content-length:
-      - '437'
+      - '375'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Apr 2024 05:47:35 GMT
+      - Mon, 24 Jun 2024 07:41:19 GMT
       etag:
-      - 74005a1e-0000-0100-0000-6629ee760000
+      - 1a0001aa-0000-0100-0000-6679231d0000
       expires:
       - '-1'
       pragma:
@@ -48,10 +44,69 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
       x-msedge-ref:
-      - 'Ref A: DEF4CDC2694E41269679420F72147A72 Ref B: MAA201060516019 Ref C: 2024-04-25T05:47:32Z'
+      - 'Ref A: FE306FF527424F5B8D768270F03A2F05 Ref B: MAA201060516031 Ref C: 2024-06-24T07:41:19Z'
+      x-powered-by:
+      - ASP.NET
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {}, "sku": {"name": "Free"}, "tags":
+      {"test": "value"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - apic update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '92'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --tags
+      User-Agent:
+      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002?api-version=2024-03-01
+  response:
+    body:
+      string: '{"type":"Microsoft.ApiCenter/services","location":"eastus","sku":{"name":"Free"},"properties":{"dataApiHostname":"clitest000002.data.eastus.azure-apicenter.ms"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002","name":"clitest000002","tags":{"test":"value"},"systemData":{"createdAt":"2024-06-24T07:41:17.4551506Z","lastModifiedAt":"2024-06-24T07:41:23.490113Z"}}'
+    headers:
+      api-supported-versions:
+      - 2023-07-01-preview, 2024-03-01, 2024-03-15-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '452'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 24 Jun 2024 07:41:25 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 232B150B725448CCAAA5128DB231487F Ref B: MAA201060516031 Ref C: 2024-06-24T07:41:20Z'
       x-powered-by:
       - ASP.NET
     status:

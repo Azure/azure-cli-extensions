@@ -11,7 +11,6 @@ def load_arguments(self, _):
     from azure.cli.core.commands.parameters import tags_type, get_three_state_flag, get_enum_type
     from azure.cli.core.commands.validators import get_default_location_from_resource_group, validate_file_or_dict
     from ._validators import process_missing_resource_group_parameter
-    from azext_amg.vendored_sdks.models import ZoneRedundancy
     grafana_name_type = CLIArgumentType(options_list="--grafana-name",
                                         help="Name of the Azure Managed Grafana.",
                                         id_part="name")
@@ -24,48 +23,29 @@ def load_arguments(self, _):
         c.argument("grafana_name", grafana_name_type, options_list=["--name", "-n"], id_part=None, validator=process_missing_resource_group_parameter)
         c.argument("id", help=("The identifier (id) of a dashboard/data source is an auto-incrementing "
                                "numeric value and is only unique per Grafana install."))
-        c.argument("folder", help="id, uid, title which can identify a folder. CLI will search in the order of id, uid, and title, till finds a match")
+        c.argument("folder", help="uid or title which can identify a folder. CLI will search with uid first, then title, till it finds a match")
         c.argument("api_key_or_token", options_list=["--api-key", "--token", '-t'],
                    help="api key or service account token, a randomly generated string used to interact with Grafana endpoint; if missing, CLI will use current logged-in user's credentials")
         c.argument("components", get_enum_type(["dashboards", "datasources", "folders", "snapshots", "annotations"]), nargs='+', options_list=["-c", "--components"], help="grafana artifact types to backup")
         c.argument("folders_to_include", nargs='+', options_list=["-i", "--folders-to-include"], help="folders to include in backup or sync")
         c.argument("folders_to_exclude", nargs='+', options_list=["-e", "--folders-to-exclude"], help="folders to exclude in backup or sync")
+        c.argument("time_to_live", default="1d", help="The life duration. For example, 1d if your key is going to last fr one day. Supported units are: s,m,h,d,w,M,y")
         c.ignore("subscription")  # a help argument
-
-    with self.argument_context("grafana create") as c:
-        c.argument("grafana_name", grafana_name_type, options_list=["--name", "-n"], validator=None)
-        c.argument("zone_redundancy", arg_type=get_enum_type(ZoneRedundancy), help="Indicates whether or not zone redundancy should be enabled. Default: Disabled")
-        c.argument("deterministic_outbound_ip", get_enum_type(["Enabled", "Disabled"]), options_list=["-i", "--deterministic-outbound-ip"],
-                   help="If enabled, the Grafana workspace will have fixed egress IPs you can use them in the firewall of datasources. Default: Disabled")
-        c.argument("skip_system_assigned_identity", options_list=["-s", "--skip-system-assigned-identity"], arg_type=get_three_state_flag(), help="Do not enable system assigned identity")
-        c.argument("skip_role_assignments", arg_type=get_three_state_flag(), help="Do not create role assignments for managed identity and the current login user")
-        c.argument("principal_ids", nargs="+", help="space-separated Azure AD object ids for users, groups, etc to be made as Grafana Admins. Once provided, CLI won't make the current logged-in user as Grafana Admin")
-        c.argument("principal_types", get_enum_type(["User", "Group", "ServicePrincipal"]), nargs="+", help="space-separated Azure AD principal types to pair with --principal-ids")
-
-    with self.argument_context("grafana update") as c:
-        c.argument("api_key_and_service_account", get_enum_type(["Enabled", "Disabled"]), options_list=['--api-key', '--service-account'],
-                   help="If enabled, you will be able to configure Grafana API keys and service accounts")
-        c.argument("deterministic_outbound_ip", get_enum_type(["Enabled", "Disabled"]), options_list=["-i", "--deterministic-outbound-ip"],
-                   help="If enabled, the Grafana workspace will have fixed egress IPs you can use them in the firewall of datasources")
-        c.argument("major_version", options_list=["--major-version"], help="Grafana major version number")
-        c.argument("public_network_access", get_enum_type(["Enabled", "Disabled"]), options_list=["-p", "--public-network-access"],
-                   help="allow public network access")
-        c.argument("smtp", get_enum_type(["Enabled", "Disabled"]), arg_group='SMTP', help="allow Grafana to send email")
-        c.argument("host", arg_group='SMTP', help="SMTP server url (port included)")
-        c.argument("user", arg_group='SMTP', help="SMTP server user name")
-        c.argument("password", arg_group='SMTP', help="SMTP server user password")
-        c.argument("from_address", arg_group='SMTP', help="Address used when sending out emails")
-        c.argument("from_name", arg_group='SMTP', help="Name to be used when sending out emails")
-        c.argument("start_tls_policy", get_enum_type(["OpportunisticStartTLS", "MandatoryStartTLS", "NoStartTLS"]), arg_group='SMTP', help="TLS policy")
-        c.argument("skip_verify", arg_group='SMTP', arg_type=get_three_state_flag(), help="Skip verifying SSL for SMTP server")
 
     with self.argument_context("grafana backup") as c:
         c.argument("directory", options_list=["-d", "--directory"], help="directory to backup Grafana artifacts")
+        c.argument("skip_folder_permissions", options_list=["-s", "--skip-folder-permissions"], arg_type=get_three_state_flag(), help="skip backing up Grafana folder permissions. Default: false")
 
     with self.argument_context("grafana restore") as c:
         c.argument("archive_file", options_list=["-a", "--archive-file"], help="archive to restore Grafana artifacts from")
         c.argument("remap_data_sources", options_list=["-r", "--remap-data-sources"], arg_type=get_three_state_flag(),
                    help="during restoration, update dashboards to reference data sources defined at the destination workspace through name matching")
+
+    with self.argument_context("grafana migrate") as c:
+        c.argument("source_grafana_endpoint", options_list=["-s", "--src-endpoint"], help="Grafana instance endpoint to migrate from")
+        c.argument("source_grafana_token_or_api_key", options_list=["-t", "--src-token-or-key"], help="Grafana instance service token (or api key) to get access to migrate from")
+        c.argument("dry_run", options_list=["-d", "--dry-run"], arg_type=get_three_state_flag(), help="Preview changes without committing. Takes priority over --overwrite.")
+        c.argument("overwrite", options_list=["--overwrite"], arg_type=get_three_state_flag(), help="Overwrite previous dashboards, library panels, and folders with the same uid or title")
 
     with self.argument_context("grafana dashboard") as c:
         c.argument("uid", options_list=["--dashboard"], help="dashboard uid")
@@ -91,9 +71,6 @@ def load_arguments(self, _):
         c.argument("folders", nargs="+", help="space separated folder list which sync command shall handle dashboards underneath")
         c.argument("dashboards_to_include", nargs='+', help="Space separated titles of dashboards to include in sync. Pair with --folders-to-include for folders specific")
         c.argument("dashboards_to_exclude", nargs='+', help="Space separated titles of dashboards to exclude in sync. Pair with --folders-to-exclude for folders specific")
-
-    with self.argument_context("grafana") as c:
-        c.argument("time_to_live", default="1d", help="The life duration. For example, 1d if your key is going to last fr one day. Supported units are: s,m,h,d,w,M,y")
 
     with self.argument_context("grafana api-key") as c:
         c.argument("key_name", help="api key name")

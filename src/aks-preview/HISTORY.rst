@@ -9,14 +9,96 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
-Pending
+9.0.0b3
 +++++++
+* Add `--undrainable-node-behavior` to the `az aks nodepool add/update/upgrade` commands.
+
+9.0.0b2
++++++++
+* Add block to supported outbound type
+* Vendor new SDK and bump API version to 2024-07-02-preview.
+
+9.0.0b1
++++++++
+* [BREAKING CHANGE]: Remove support for `az aks update --ssh-access` command to avoid misleading. To update existing cluster's SSH access, please use `az aks nodepool update --ssh-access` to update node pool's SSH access one by one.
+* Remove dependency on `msrestazure.azure_exceptions` and `msrestazure.tools`.
+
+8.0.0b1
++++++++
+* [BREAKING CHANGE]: Remove enable/disable node restriction feature, since it is always enabled and not changeable since k8s version 1.24.0
+* new supportPlan column on `az aks get-versions -o table`, to tell if the version is supported by KubernetesOfficial or AKSLongTermSupport.
+
+7.0.0b8
++++++++
+* Update validations to enable Azure Container Storage to install on a larger set of nodepool skus.
+
+7.0.0b7
++++++++
+* [AKS] `az aks create/update`: Support UserAssigned Managed Identity for grafana linking in managed prometheus
+
+7.0.0b6
++++++++
+* Add `--advanced-networking-observability-tls-management` to `az aks create/update` command.
+
+7.0.0b5
++++++++
+* Add option `--enable-acns`, `--disable-acns` to `az aks create/update`
+* Add option `--enable-fqdn-policy`, `--disable-fqdn-policy` to `az aks create/update`
+* Add support for default nginx ingress controller config for app routing add-on
+* `az aks create/update`: Support in place param updates for managed prom
+
+7.0.0b4
+++++++++
+* Fix bug related to the --ampls-resource-id option in the `az aks enable-addons` command.
+* Vendor new SDK and bump API version to 2024-06-02-preview.
+
+7.0.0b3
+++++++++
+* Add option `--enable-high-log-scale-mode` to `az aks create --enable-addons monitoring` and `az aks enable-addons -a monitoring`.
+* Add option `--ampls-resource-id` to `az aks create --enable-addons monitoring` and `az aks enable-addons -a monitoring`.
+* Vendor new SDK and bump API version to 2024-05-02-preview.
+
+7.0.0b2
+++++++++
+* Update the minimum required cli core version to `2.61.0`.
+* Add option `--enable-imds-restriction --disable-imds-restriction` to `az aks create` and `az aks update`.
+* Introduce valdations to `az aks create` and `az aks update` while using PremiumV2 disk during enabling Azure Container Storage.
+* Delete the Azure Container Storage installation after failure to prevent retries.
+
+7.0.0b1
+++++++++
+* [BREAKING CHANGE]: Remove support for `az aks get-os-options` command.
+
+6.0.0b1
+++++++++
+* [BREAKING CHANGE]: Remove support for `az aks mesh` egress gateway commands.
+* Add validation to `az aks create` and `az aks update` while modifying the `--ephemeral-disk-volume-type` and `--ephemeral-disk-nvme-perf-tier` values.
+
+5.0.0b4
+++++++++
+* Add additional unit test cases for mutable fips flags in agentpool update.
+
+5.0.0b3
+++++++++
+* Add support for mutable fips in agentpool update. (enable/disable flags)
+
+5.0.0b2
+++++++++
+* Add option `--ephemeral-disk-volume-type` to `az aks create` and `az aks update` for Azure Container Storage operations.
+* Add option `--azure-container-storage-perf-tier` to `az aks create` and `az aks update` to define resource tiers for Azure Container Storage performance.
+* Vendor new SDK and bump API version to 2024-04-02-preview.
+
+5.0.0b1
+++++++++
+* [BREAKING CHANGE]: Remove --enable-network-observability and --disable-network-observability from aks create and update commands.
 * Update --enable-advanced-network-observability description to note additional costs and add missing flag to create command.
-* Add etag support (--if-match, --if-none-match) to some aks commands for optimistic concurrency control.
+* Change default value of `--vm-set-type` to VirtualMachines when `--vm-sizes` is set.
+
 
 4.0.0b5
 ++++++++
 * Add warnings to `az aks mesh` commands for out of support asm revision in use.
+* Add etag support (--if-match, --if-none-match) to some aks commands for optimistic concurrency control.
 
 4.0.0b4
 ++++++++

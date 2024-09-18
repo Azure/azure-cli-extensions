@@ -6,6 +6,7 @@
 import re
 import json
 import requests
+import uuid
 from knack.log import get_logger
 from azure.cli.core.style import print_styled_text, Style
 
@@ -37,20 +38,39 @@ def create_datasource_mapping(source_data_sources, destination_data_sources):
     return uid_mapping
 
 
+def _is_valid_uid(uid: str) -> bool:
+    valid_short_uid_char_pattern = r'a-zA-Z0-9\-_'
+    valid_short_uid_pattern = re.compile(rf'^[{valid_short_uid_char_pattern}]*$')
+
+    # if it is a valid short uid
+    if bool(valid_short_uid_pattern.match(uid)):
+        return True
+
+    # if it is a noramal uuid
+    try:
+        uuid.UUID(uid)  # validate datasource via uid field
+        return True
+    except ValueError:
+        return False
+
+
 def remap_datasource_uids(dashboard, uid_mapping, data_source_missed):
-    if isinstance(dashboard, dict):
-        for key, value in dashboard.items():
-            if isinstance(value, dict):
-                if key == "datasource" and isinstance(value, dict) and ("uid" in value):
+    if not isinstance(dashboard, dict):
+        return
+
+    for key, value in dashboard.items():
+        if isinstance(value, dict):
+            if key == "datasource" and isinstance(value, dict) and ("uid" in value):
+                if _is_valid_uid(value["uid"]):  # validate datasource via uid field
                     if value["uid"] in uid_mapping:
-                        value["uid"] = uid_mapping[value["uid"]]
-                    elif value["uid"] not in ["-- Grafana --", "grafana"]:
+                        value["uid"] = uid_mapping[value["uid"]]  # sets to destination datasource uid in dashboard
+                    else:
                         data_source_missed.add(value["uid"])
-                else:
-                    remap_datasource_uids(value, uid_mapping, data_source_missed)
-            elif isinstance(value, (list, tuple)):
-                for v in value:
-                    remap_datasource_uids(v, uid_mapping, data_source_missed)
+            else:
+                remap_datasource_uids(value, uid_mapping, data_source_missed)
+        elif isinstance(value, (list, tuple)):
+            for v in value:
+                remap_datasource_uids(v, uid_mapping, data_source_missed)
 
 
 def log_response(resp):
@@ -159,11 +179,18 @@ def get_folder_id(dashboard, grafana_url, http_post_headers):
         return 0
 
 
-def send_grafana_get(url, http_get_headers):
+def get_health_endpoint(grafana_url, http_get_headers):
+    (status_code, content) = send_grafana_get(f'{grafana_url}/api/health', http_get_headers)
+    return (status_code, content)
 
+
+def send_grafana_get(url, http_get_headers):
     r = requests.get(url, headers=http_get_headers)
     log_response(r)
-    return (r.status_code, r.json())
+    try:
+        return (r.status_code, r.json())
+    except ValueError:
+        return (r.status_code, r.text)
 
 
 def send_grafana_post(url, json_payload, http_post_headers):
@@ -186,5 +213,11 @@ def send_grafana_patch(url, json_payload, http_post_headers):
 
 def send_grafana_put(url, json_payload, http_post_headers):
     r = requests.put(url, headers=http_post_headers, data=json_payload)
+    log_response(r)
+    return (r.status_code, r.json())
+
+
+def send_grafana_delete(url, http_post_headers):
+    r = requests.delete(url, headers=http_post_headers)
     log_response(r)
     return (r.status_code, r.json())

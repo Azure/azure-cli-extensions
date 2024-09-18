@@ -180,7 +180,7 @@ helps['aks create'] = f"""
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
-          long-summary: Select between loadBalancer, userDefinedRouting, managedNATGateway and userAssignedNATGateway. If not set, defaults to type loadBalancer. Requires --vnet-subnet-id to be provided with a preconfigured route table and --load-balancer-sku to be Standard.
+          long-summary: Select between loadBalancer, userDefinedRouting, managedNATGateway, userAssignedNATGateway, none and block. If not set, defaults to type loadBalancer. Requires --vnet-subnet-id to be provided with a preconfigured route table and --load-balancer-sku to be Standard.
         - name: --enable-addons -a
           type: string
           short-summary: Enable the Kubernetes addons in a comma-separated list.
@@ -233,12 +233,18 @@ helps['aks create'] = f"""
               Used together with the "azure" network plugin.
               Requires either --pod-subnet-id or --network-plugin-mode=overlay.
               This flag is deprecated in favor of --network-dataplane=cilium.
-        - name: --enable-network-observability
-          type: bool
-          short-summary: Enable network observability on a cluster.
         - name: --enable-advanced-network-observability
           type: bool
           short-summary: Enable advanced network observability functionalities on a cluster. Note that enabling this will incur additional costs.
+        - name: --enable-fqdn-policy
+          type: bool
+          short-summary: Enable advanced network security FQDN functionalities on a cluster. Note that enabling this will incur additional costs.
+        - name: --enable-acns
+          type: bool
+          short-summary: Enable advanced network functionalities on a cluster. Note that enabling this will incur additional costs.
+        - name: --advanced-networking-observability-tls-management
+          type: string
+          short-summary: Management of TLS certificates for querying network flow logs via the flow log endpoint for Advanced Networking observability clusters. Valid values are "Managed" and "None". If not specified, the default is Managed.
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -290,6 +296,12 @@ helps['aks create'] = f"""
         - name: --data-collection-settings
           type: string
           short-summary: Path to JSON file containing data collection settings for Monitoring addon.
+        - name: --enable-high-log-scale-mode
+          type: bool
+          short-summary: Enable High Log Scale Mode for Container Logs.
+        - name: --ampls-resource-id
+          type: string
+          short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
         - name: --enable-cluster-autoscaler
           type: bool
           short-summary: Enable cluster autoscaler, default value is false.
@@ -605,12 +617,15 @@ helps['aks create'] = f"""
         - name: --enable-app-routing
           type: bool
           short-summary: Enable Application Routing addon.
+        - name: --app-routing-default-nginx-controller --ardnc
+          type: string
+          short-summary: Configure default nginx ingress controller type. Valid values are annotationControlled (default behavior), external, internal, or none.
         - name: --enable-ai-toolchain-operator
           type: bool
           short-summary: Enable AI toolchain operator to the cluster.
         - name: --ssh-access
           type: string
-          short-summary: Configure SSH setting for all node pools in this cluster. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
+          short-summary: Configure SSH setting for the first system pool in this cluster. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key. Note, this configuration will not take effect for later created new node pools, please use option `az aks nodepool add --ssh-access` to configure SSH access for new node pools.
         - name: --pod-ip-allocation-mode
           type: string
           short-summary: Set the ip allocation mode for how Pod IPs from the Azure Pod Subnet are allocated to the nodes in the AKS cluster. The choice is between dynamic batches of individual IPs or static allocation of a set of CIDR blocks. Accepted Values are "DynamicIndividual" or "StaticBlock".
@@ -640,6 +655,9 @@ helps['aks create'] = f"""
         - name: --enable-static-egress-gateway
           type: bool
           short-summary: Enable Static Egress Gateway addon to the cluster.
+        - name: --enable-imds-restriction
+          type: bool
+          short-summary: Enable IMDS restriction in the cluster. Non-hostNetwork Pods will not be able to access IMDS.
         - name: --vm-sizes
           type: string
           short-summary: Comma-separated list of sizes. Must use VirtualMachines agent pool type.
@@ -865,7 +883,7 @@ helps['aks update'] = """
         - name: --outbound-type
           type: string
           short-summary: How outbound traffic will be configured for a cluster.
-          long-summary: This option will change the way how the outbound connections are managed in the AKS cluster. Available options are loadbalancer, managedNATGateway, userAssignedNATGateway, userDefinedRouting. For custom vnet, loadbalancer, userAssignedNATGateway and userDefinedRouting are supported. For aks managed vnet, loadbalancer, managedNATGateway and userDefinedRouting are supported.
+          long-summary: This option will change the way how the outbound connections are managed in the AKS cluster. Available options are loadbalancer, managedNATGateway, userAssignedNATGateway, userDefinedRouting, none and block. For custom vnet, loadbalancer, userAssignedNATGateway and userDefinedRouting are supported. For aks managed vnet, loadbalancer, managedNATGateway and userDefinedRouting are supported.
         - name: --enable-pod-security-policy
           type: bool
           short-summary: Enable pod security policy.
@@ -1163,12 +1181,6 @@ helps['aks update'] = """
         - name: --disable-azure-monitor-app-monitoring
           type: bool
           short-summary: Disable Azure Monitor Application Monitoring
-        - name: --enable-node-restriction
-          type: bool
-          short-summary: Enable node restriction option on cluster.
-        - name: --disable-node-restriction
-          type: bool
-          short-summary: Disable node restriction option on cluster.
         - name: --enable-private-cluster
           type: bool
           short-summary: Enable private cluster for apiserver vnet integration cluster.
@@ -1216,18 +1228,27 @@ helps['aks update'] = """
         - name: --nodepool-labels
           type: string
           short-summary: The node labels for all node pool. See https://aka.ms/node-labels for syntax of labels.
-        - name: --enable-network-observability
-          type: bool
-          short-summary: Enable network observability on a cluster.
-        - name: --disable-network-observability
-          type: bool
-          short-summary: Disable network observability on a cluster
         - name: --enable-advanced-network-observability
           type: bool
           short-summary: Enable advanced network observability functionalities on a cluster. Note that enabling this will incur additional costs.
         - name: --disable-advanced-network-observability
           type: bool
           short-summary: Disable advanced network observability functionalities on a cluster
+        - name: --advanced-networking-observability-tls-management
+          type: string
+          short-summary: Management of TLS certificates for querying network flow logs via the flow log endpoint for Advanced Networking observability clusters. Valid values are "Managed" and "None". If not specified, the default is Managed.
+        - name: --enable-fqdn-policy
+          type: bool
+          short-summary: Enable advanced network security FQDN functionalities on a cluster. Note that enabling this will incur additional costs.
+        - name: --disable-fqdn-policy
+          type: bool
+          short-summary: Disable advanced network security FQDN functionalities on a cluster
+        - name: --enable-acns
+          type: bool
+          short-summary: Enable advanced network functionalities on a cluster. Note that enabling this will incur additional costs.
+        - name: --disable-acns
+          type: bool
+          short-summary: Disable advanced network functionalities on a cluster
         - name: --enable-cost-analysis
           type: bool
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
@@ -1243,9 +1264,6 @@ helps['aks update'] = """
         - name: --disable-ai-toolchain-operator
           type: bool
           short-summary: Disable AI toolchain operator.
-        - name: --ssh-access
-          type: string
-          short-summary: Update SSH setting for all node pools in this cluster. Use "disabled" to disable SSH access, "localuser" to enable SSH access using private key.
         - name: --node-init-taints --nodepool-initialization-taints
           type: string
           short-summary: The node initialization taints for all node pools in cluster.
@@ -1263,6 +1281,12 @@ helps['aks update'] = """
         - name: --disable-static-egress-gateway
           type: bool
           short-summary: Disable Static Egress Gateway addon to the cluster.
+        - name: --enable-imds-restriction
+          type: bool
+          short-summary: Enable IMDS restriction in the cluster. Non-hostNetwork Pods will not be able to access IMDS.
+        - name: --disable-imds-restriction
+          type: bool
+          short-summary: Disable IMDS restriction in the cluster. All Pods in the cluster will be able to access IMDS.
     examples:
       - name: Reconcile the cluster back to its current state.
         text: az aks update -g MyResourceGroup -n MyManagedCluster
@@ -1864,6 +1888,9 @@ helps['aks nodepool add'] = """
         - name: --vm-sizes
           type: string
           short-summary: Comma-separated list of sizes. Must use VirtualMachines agent pool type.
+        - name: --undrainable-node-behavior
+          type: string
+          short-summary: Define the behavior for undrainable nodes during upgrade. The value should be "Cordon" or "Schedule". The default value is "Schedule".
     examples:
         - name: Create a nodepool in an existing AKS cluster with ephemeral os enabled.
           text: az aks nodepool add -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster --node-osdisk-type Ephemeral --node-osdisk-size 48
@@ -1928,6 +1955,9 @@ helps['aks nodepool upgrade'] = """
         - name: --if-none-match
           type: string
           short-summary: Set to '*' to allow a new node pool to be created, but to prevent updating an existing node pool. Other values will be ignored.
+        - name: --undrainable-node-behavior
+          type: string
+          short-summary: Define the behavior for undrainable nodes during upgrade. The value should be "Cordon" or "Schedule". The default value is "Schedule".
 """
 
 helps['aks nodepool update'] = """
@@ -2013,6 +2043,15 @@ helps['aks nodepool update'] = """
         - name: --if-none-match
           type: string
           short-summary: Set to '*' to allow a new node pool to be created, but to prevent updating an existing node pool. Other values will be ignored.
+        - name: --enable-fips-image
+          type: bool
+          short-summary: Switch to use FIPS-enabled OS on agent nodes.
+        - name: --disable-fips-image
+          type: bool
+          short-summary: Switch to use non-FIPS-enabled OS on agent nodes.
+        - name: --undrainable-node-behavior
+          type: string
+          short-summary: Define the behavior for undrainable nodes during upgrade. The value should be "Cordon" or "Schedule". The default value is "Schedule".
     examples:
       - name: Reconcile the nodepool back to its current state.
         text: az aks nodepool update -g MyResourceGroup -n nodepool1 --cluster-name MyManagedCluster
@@ -2301,6 +2340,12 @@ parameters:
   - name: --data-collection-settings
     type: string
     short-summary: Path to JSON file containing data collection settings for Monitoring addon.
+  - name: --enable-high-log-scale-mode
+    type: bool
+    short-summary: Enable High Log Scale Mode for Container Logs.
+  - name: --ampls-resource-id
+    type: string
+    short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
@@ -2368,6 +2413,12 @@ parameters:
   - name: --data-collection-settings
     type: string
     short-summary: Path to JSON file containing data collection settings for Monitoring addon.
+  - name: --enable-high-log-scale-mode
+    type: bool
+    short-summary: Enable High Log Scale Mode for Container Logs.
+  - name: --ampls-resource-id
+    type: string
+    short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
@@ -2449,6 +2500,12 @@ parameters:
   - name: --data-collection-settings
     type: string
     short-summary: Path to JSON file containing data collection settings for Monitoring addon.
+  - name: --enable-high-log-scale-mode
+    type: bool
+    short-summary: Enable High Log Scale Mode for Container Logs.
+  - name: --ampls-resource-id
+    type: string
+    short-summary: Resource ID of Azure Monitor Private Link scope for Monitoring Addon.
   - name: --subnet-name -s
     type: string
     short-summary: The subnet name for the virtual node to use.
@@ -2519,15 +2576,6 @@ short-summary: Get the versions available for creating a managed Kubernetes clus
 examples:
   - name: Get the versions available for creating a managed Kubernetes cluster
     text: az aks get-versions --location westus2
-    crafted: true
-"""
-
-helps['aks get-os-options'] = """
-type: command
-short-summary: Get the OS options available for creating a managed Kubernetes cluster.
-examples:
-  - name: Get the OS options available for creating a managed Kubernetes cluster
-    text: az aks get-os-options --location westus2
     crafted: true
 """
 
@@ -2912,8 +2960,8 @@ helps['aks draft generate-workflow'] = """
 
 helps['aks draft up'] = """
     type: command
-    short-summary: Set up GitHub OIDC and generate a GitHub workflow for automatic build and deploy to AKS
-    long-summary: This command combines `az aks draft setup-gh` and `az aks draft generate-workflow`.
+    short-summary: Run `az aks draft setup-gh` then `az aks draft generate-workflow`.
+    long-summary: This command combines `az aks draft setup-gh` and `az aks draft generate-workflow` to set up GitHub OIDC and generate a GitHub workflow for automatic build and deploy to AKS.
                   Before running this command, create a resource group, a container registry and a Kubernetes cluster on Azure and
                   link the three resources using `az aks update -n <cluster-name> -g <resource-group-name> --attach-acr <acr-name>`.
     parameters:
@@ -3113,23 +3161,6 @@ helps['aks mesh upgrade rollback'] = """
         text: az aks mesh upgrade rollback --resource-group MyResourceGroup --name MyManagedCluster
 """
 
-helps['aks mesh enable-egress-gateway'] = """
-    type: command
-    short-summary: Enable an Azure Service Mesh egress gateway.
-    long-summary: This command enables an Azure Service Mesh egress gateway in given cluster.
-    examples:
-      - name: Enable an egress gateway.
-        text: az aks mesh enable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster
-"""
-
-helps['aks mesh disable-egress-gateway'] = """
-    type: command
-    short-summary: Disable an Azure Service Mesh egress gateway.
-    long-summary: This command disables an Azure Service Mesh egress gateway in given cluster.
-    examples:
-      - name: Disable an egress gateway.
-        text: az aks mesh disable-egress-gateway --resource-group MyResourceGroup --name MyManagedCluster
-"""
 
 helps['aks approuting'] = """
     type: group
@@ -3150,6 +3181,10 @@ helps['aks approuting enable'] = """
         type: string
         short-summary: Attach a keyvault id to access secrets and certificates.
         long-summary: This optional flag attaches a keyvault id to access secrets and certificates.
+      - name: --nginx
+        type: string
+        short-summary: Configure default NginxIngressController resource
+        long-summary: Configure default nginx ingress controller type. Valid values are annotationControlled (default behavior), external, internal, or none.
 """
 
 helps['aks approuting disable'] = """
@@ -3171,6 +3206,10 @@ helps['aks approuting update'] = """
         type: bool
         short-summary: Enable the keyvault secrets provider addon.
         long-summary: This optional flag enables the keyvault-secrets-provider addon in given cluster. This is required for most App Routing use-cases.
+      - name: --nginx
+        type: string
+        short-summary: Configure default NginxIngressController resource
+        long-summary: Configure default nginx ingress controller type. Valid values are annotationControlled (default behavior), external, internal, or none.
 """
 
 helps['aks approuting zone'] = """

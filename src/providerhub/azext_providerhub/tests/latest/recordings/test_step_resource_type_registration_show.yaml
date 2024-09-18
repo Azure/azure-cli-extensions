@@ -1,0 +1,48 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub resource-type-registration show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --provider-namespace --resource-type
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourcetypeRegistrations/extensionresourcetype?api-version=2024-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"name":"extensionresourcetype","routingType":"Default","regionality":"Regional","endpoints":[{"kind":"Managed","apiVersions":["2019-01-01"],"locations":["WestUS"]}],"defaultApiVersion":"2019-01-01","enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"templateDeploymentOptions":{"preflightSupported":true,"preflightOptions":["DefaultValidationOnly"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourceTypeRegistrations/extensionresourcetype","type":"Microsoft.ProviderHub/providerRegistrations/resourceTypeRegistrations","name":"extensionresourcetype","kind":"Managed","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-05-31T03:23:33.5645757Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-04T23:30:16.4751488Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '949'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jun 2024 23:33:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/4245872d-dcbb-44a8-8465-33d276a4bf3f
+      x-msedge-ref:
+      - 'Ref A: 75F23A1BC40B4DF2A82EC9A82A12C190 Ref B: DM2AA1091214045 Ref C: 2024-06-04T23:33:07Z'
+    status:
+      code: 200
+      message: OK
+version: 1

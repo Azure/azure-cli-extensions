@@ -94,3 +94,16 @@ Release History
 1.1.2
 ++++++
 * Removed preview markings for hub-related parameters.
+
+1.2.0
+++++++
+* Upgrade SDK version to 2024-05-02-preview
+
+1.2.1
+++++++
+* Fixed --vm-size parameter mapping
+
+1.2.2
+++++++
+* Added missing help text
+* Removed dependency on msrestazure library

@@ -350,7 +350,7 @@ LmZyYW1ld29yay5lcnJvcnN9Cg=="""
             "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
             "contentVersion": "1.0.0.0",
             "variables": {
-                "image": "python:3.6.14-slim-buster"
+                "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
             },
 
 
@@ -491,7 +491,7 @@ LmZyYW1ld29yay5lcnJvcnN9Cg=="""
             f.write(template)
 
         with self.assertRaises(SystemExit) as exc_info:
-            acipolicygen_confcom(None, filename, None, None, None, None)
+            acipolicygen_confcom(None, filename, None, None, None, None, None)
 
         self.assertEqual(exc_info.exception.code, 0)
 

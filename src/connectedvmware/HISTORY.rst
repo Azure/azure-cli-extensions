@@ -2,6 +2,18 @@
 
 Release History
 ===============
+1.2.0
+++++++
+* Add support to enable a VM using managed object name (moName).
+
+1.1.1
+++++++
+* `create-from-machines` : Search for BIOS IDs with both Little Endian and Middle Endian format.
+
+1.1.0
+++++++
+* Prompt credentials if not provided for Guest Agent.
+
 1.0.1
 ++++++
 * Fix bug in `az connectedvmware create` command when RG of machine is different from RG of vCenter.

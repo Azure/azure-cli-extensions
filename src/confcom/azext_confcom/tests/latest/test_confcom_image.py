@@ -25,13 +25,11 @@ class PolicyGeneratingImage(unittest.TestCase):
             "version": "1.0",
             "containers": [
                 {
-                    "containerImage": "python:3.6.14-slim-buster",
+                    "containerImage": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot",
                     "environmentVariables": [
 
                     ],
-                    "command": [
-                        "python3"
-                    ],
+                    "command": [],
                     "workingDir": ""
                 }
             ]
@@ -40,7 +38,7 @@ class PolicyGeneratingImage(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        with load_policy_from_image_name("python:3.6.14-slim-buster") as aci_policy:
+        with load_policy_from_image_name("mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot") as aci_policy:
             aci_policy.populate_policy_content_for_all_images(individual_image=True)
             cls.aci_policy = aci_policy
         with load_policy_from_str(cls.custom_json) as custom_policy:
@@ -49,6 +47,8 @@ class PolicyGeneratingImage(unittest.TestCase):
 
     def test_image_policy(self):
         # deep diff the output policies from the regular policy.json and the single image
+        print("self.aci_policy.get_serialized_output(): ", self.aci_policy.get_serialized_output(OutputType.PRETTY_PRINT))
+        print("self.custom_policy.get_serialized_output(): ", self.custom_policy.get_serialized_output(OutputType.PRETTY_PRINT))
         self.assertEqual(self.aci_policy.get_serialized_output(), self.custom_policy.get_serialized_output())
 
 

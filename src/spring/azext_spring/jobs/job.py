@@ -8,8 +8,10 @@ import time
 from threading import Thread
 
 import requests
+from azure.cli.core.commands.client_factory import get_subscription_id
+from azext_spring._clierror import (PermissionDenyError, JobExecutionInstanceNotFoundError)
 from azext_spring._utils import (get_hostname, get_bearer_auth, wait_till_end, parallel_start_threads,
-                                 sequential_start_threads, string_equals_ignore_case)
+                                 sequential_start_threads, string_equals_ignore_case, get_service_instance_resource_id)
 from azext_spring.jobs.job_deployable_factory import deployable_selector
 from azext_spring.jobs.models.job_execution_instance import (JobExecutionInstanceCollection, JobExecutionInstance)
 from azext_spring.log_stream.log_stream_operations import (attach_logs_query_options, log_stream_from_url,
@@ -27,7 +29,7 @@ LOG_RUNNING_PROMPT = "This command usually takes minutes to run. Add '--verbose'
 DEFAULT_BUILD_RESULT_ID = "<default>"
 # Use this value to reset timeout for job
 JOB_TIMEOUT_RESET_VALUE = -1
-
+JOB_LOG_READER_ROLE_NAME = "Azure Spring Apps Job Log Reader Role"
 
 #  Job's command usually operates an Spring/Job and the Spring/Job/Execution under the job.
 # The general idea of these command is putting all input command in parameter dict and let the Resource factory to construct the payload.
@@ -230,25 +232,24 @@ def job_execution_list(cmd, client, resource_group, service, job):
 
 def job_log_stream(cmd, client, resource_group, service, name, execution, all_instances=None, instance=None,
                    follow=None, max_log_requests=5, lines=100, since=None, limit=2048):
-    queryOptions = LogStreamBaseQueryOptions(follow=follow, lines=lines, since=since, limit=limit)
-    url_dict = _get_log_stream_urls(cmd, client, resource_group, service, name, execution, all_instances,
-                                    instance, queryOptions)
-    validate_thread_number(follow, len(url_dict), max_log_requests)
-    auth = get_bearer_auth(cmd.cli_ctx)
-    exceptions = []
-    threads = _get_log_threads(all_instances, url_dict, auth, exceptions)
-
-    if follow and len(threads) > 1:
-        parallel_start_threads(threads)
-    else:
-        sequential_start_threads(threads)
-
-    if exceptions:
-        raise exceptions[0]
+    try:
+        _job_log_stream(cmd, client, resource_group, service, name, execution, all_instances, instance,
+                        follow, max_log_requests, lines, since, limit)
+    except PermissionDenyError:
+        operation_name = "read the job log stream"
+        _handle_log_stream_permission_deny(cmd, resource_group, service, operation_name)
+    except JobExecutionInstanceNotFoundError:
+        _handle_log_stream_pod_not_found(cmd, resource_group, service, name, execution)
 
 
 def job_execution_instance_list(cmd, client, resource_group, service, job, execution):
-    return _list_job_execution_instances(cmd, client, resource_group, service, job, execution)
+    try:
+        return _list_job_execution_instances(cmd, client, resource_group, service, job, execution)
+    except PermissionDenyError:
+        operation_name = "perform action 'Microsoft.AppPlatform/Spring/jobs/executions/listInstances/action'"
+        _handle_log_stream_permission_deny(cmd, resource_group, service, operation_name)
+    except JobExecutionInstanceNotFoundError:
+        _handle_log_stream_pod_not_found(cmd, resource_group, service, job, execution)
 
 
 def job_has_resource_id_ref_ignore_case(job: models.JobResource, resource_id: str):
@@ -494,7 +495,12 @@ def _handle_and_raise_list_job_execution_instance_error(url, response):
         else:
             failure_reason = f"{failure_reason}:{response.content}"
     msg = f"Failed to access the url '{url}' with status code '{response.status_code}' and reason '{failure_reason}'"
-    raise CLIError(msg)
+    if response.status_code == 401:
+        raise PermissionDenyError(msg)
+    if response.status_code == 404 and "No pod found for job execution" in failure_reason:
+        raise JobExecutionInstanceNotFoundError(msg)
+    else:
+        raise CLIError(msg)
 
 
 def _parse_job_execution_instances(response_json) -> [JobExecutionInstance]:
@@ -530,3 +536,39 @@ def _get_default_writer():
     Define this method, so that we can mock this method in scenario test to test output
     """
     return DefaultWriter()
+
+
+def _job_log_stream(cmd, client, resource_group, service, name, execution, all_instances=None, instance=None,
+                    follow=None, max_log_requests=5, lines=100, since=None, limit=2048):
+    queryOptions = LogStreamBaseQueryOptions(follow=follow, lines=lines, since=since, limit=limit)
+    url_dict = _get_log_stream_urls(cmd, client, resource_group, service, name, execution, all_instances,
+                                    instance, queryOptions)
+    validate_thread_number(follow, len(url_dict), max_log_requests)
+    auth = get_bearer_auth(cmd.cli_ctx)
+    exceptions = []
+    threads = _get_log_threads(all_instances, url_dict, auth, exceptions)
+
+    if follow and len(threads) > 1:
+        parallel_start_threads(threads)
+    else:
+        sequential_start_threads(threads)
+
+    if exceptions:
+        raise exceptions[0]
+
+
+def _handle_log_stream_permission_deny(cmd, resource_group, service, operation_name):
+    sub_id = get_subscription_id(cmd.cli_ctx)
+    resource_id = get_service_instance_resource_id(sub_id=sub_id, group=resource_group, service=service)
+    msg = f"(AuthorizationFailed) You do not have authorization to {operation_name} over the scope '{resource_id}' . " \
+          f"Please check if you have the Azure role '{JOB_LOG_READER_ROLE_NAME}' ." \
+          " If access was recently granted, please refresh your credentials."
+    raise PermissionDenyError(msg)
+
+
+def _handle_log_stream_pod_not_found(cmd, resource_group, service, job, execution):
+    sub_id = get_subscription_id(cmd.cli_ctx)
+    resource_id = get_service_instance_resource_id(sub_id=sub_id, group=resource_group, service=service)
+    execution_resource_id = f"{resource_id}/jobs/{job}/executions/{execution}"
+    msg = f"No instance found for job execution '{execution_resource_id}' ."
+    raise JobExecutionInstanceNotFoundError(msg)

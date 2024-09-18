@@ -5,6 +5,7 @@
 # pylint: disable=line-too-long
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
+# pylint: disable=unused-import
 
 from azure.cli.core.commands.parameters import (
     tags_type,

@@ -45,11 +45,13 @@ class FleetHubfulScenarioTest(ScenarioTest):
         self.kwargs.update({
             'fleet_name': self.create_random_name(prefix='fl-', length=7),
             'member_name': self.create_random_name(prefix='flmc-', length=9),
-            'ssh_key_value': self.generate_ssh_keys()
+            'ssh_key_value': self.generate_ssh_keys(),
+            'vm_size': 'Standard_A8_v2'
         })
 
-        self.cmd('fleet create -g {rg} -n {fleet_name} --enable-hub  --vm-size Standard_DS1 ', checks=[
-            self.check('name', '{fleet_name}')
+        self.cmd('fleet create -g {rg} -n {fleet_name} --enable-hub  --vm-size {vm_size}', checks=[
+            self.check('name', '{fleet_name}'),
+            self.check('hubProfile.agentProfile.vmSize', '{vm_size}')
         ])
 
         self.cmd('fleet wait -g {rg} --fleet-name {fleet_name} --created', checks=[self.is_empty()])

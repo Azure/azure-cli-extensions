@@ -15,16 +15,17 @@ from azure.cli.core.aaz import *
     "large-storage-instance show",
 )
 class Show(AAZCommand):
-    """Get an Azure Large Storage instance for the specified subscription, resource group, and instance name.
+    """Get an Azure Large Storage instance for the specified subscription, resource
+group, and instance name.
 
     :example: To show details about a specific Azure Large Storage Instance
         az large-storage-instance show --subscription $SUBSCRIPTION_ID --instance-name $INSTANCE_NAME --resource-group $RESOURCE_GROUP
     """
 
     _aaz_info = {
-        "version": "2023-07-20-preview",
+        "version": "2024-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargestorageinstances/{}", "2023-07-20-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargestorageinstances/{}", "2024-08-01-preview"],
         ]
     }
 
@@ -123,7 +124,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-07-20-preview",
+                    "api-version", "2024-08-01-preview",
                     required=True,
                 ),
             }
@@ -159,6 +160,7 @@ class Show(AAZCommand):
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200.identity = AAZObjectType()
             _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
@@ -174,6 +176,37 @@ class Show(AAZCommand):
             )
             _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
+                flags={"read_only": True},
+            )
+
+            identity = cls._schema_on_200.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType(
+                nullable=True,
+            )
+
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
                 flags={"read_only": True},
             )
 
@@ -195,6 +228,7 @@ class Show(AAZCommand):
             )
             storage_properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             storage_properties.storage_billing_properties = AAZObjectType(
                 serialized_name="storageBillingProperties",

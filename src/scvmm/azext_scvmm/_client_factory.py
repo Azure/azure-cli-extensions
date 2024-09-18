@@ -5,15 +5,15 @@
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core import AzCli
-from .vendored_sdks.scvmm import SCVMM
+from .vendored_sdks.scvmm import ScVmmMgmtClient
 from .vendored_sdks.hybridcompute import HybridComputeManagementClient
 
 
-def cf_scvmm(cli_ctx: AzCli, *_) -> SCVMM:
+def cf_scvmm(cli_ctx: AzCli, *_) -> ScVmmMgmtClient:
     """
     Client factory for scvmm clients.
     """
-    return get_mgmt_service_client(cli_ctx, SCVMM)
+    return get_mgmt_service_client(cli_ctx, ScVmmMgmtClient)
 
 
 def cf_hybridcompute(cli_ctx: AzCli, *_) -> HybridComputeManagementClient:
@@ -73,7 +73,7 @@ def cf_vminstance_guest_agent(cli_ctx: AzCli, *_):
     """
     Client factory for guest agent.
     """
-    return cf_scvmm(cli_ctx).vm_instance_guest_agents
+    return cf_scvmm(cli_ctx).guest_agents
 
 
 def cf_machine(cli_ctx: AzCli, *_):

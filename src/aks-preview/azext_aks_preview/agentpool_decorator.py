@@ -86,7 +86,17 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         :return: string
         """
         # read the original value passed by the command
-        vm_set_type = self.raw_param.get("vm_set_type", CONST_VIRTUAL_MACHINE_SCALE_SETS)
+        vm_set_type = self.raw_param.get("vm_set_type")
+        if vm_set_type is None:
+            if self.raw_param.get("vm_sizes") is None:
+                vm_set_type = CONST_VIRTUAL_MACHINE_SCALE_SETS
+            else:
+                vm_set_type = CONST_VIRTUAL_MACHINES
+        else:
+            if vm_set_type.lower() != CONST_VIRTUAL_MACHINES.lower() and self.raw_param.get("vm_sizes") is not None:
+                raise InvalidArgumentValueError(
+                    "--vm-sizes can only be used with --vm-set-type VirtualMachines(Preview)"
+                )
         # try to read the property value corresponding to the parameter from the `agentpool` object
         if self.agentpool_decorator_mode == AgentPoolDecoratorMode.MANAGED_CLUSTER:
             if self.agentpool and self.agentpool.type is not None:
@@ -447,6 +457,26 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need validation
         return node_soak_duration
 
+    def get_undrainable_node_behavior(self) -> str:
+        """Obtain the value of undrainable_node_behavior.
+
+        :return: string
+        """
+        # read the original value passed by the command
+        undrainable_node_behavior = self.raw_param.get("undrainable_node_behavior")
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.upgrade_settings and
+                self.agentpool.upgrade_settings.undrainable_node_behavior is not None
+            ):
+                undrainable_node_behavior = self.agentpool.upgrade_settings.undrainable_node_behavior
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return undrainable_node_behavior
+
     def get_enable_artifact_streaming(self) -> bool:
         """Obtain the value of enable_artifact_streaming.
         :return: bool
@@ -640,10 +670,43 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         """
         raw_value = self.raw_param.get("vm_sizes")
         if raw_value is not None:
-            vm_sizes = raw_value.split(",")
+            vm_sizes = [x.strip() for x in raw_value.split(",")]
         else:
             vm_sizes = [self.get_node_vm_size()]
         return vm_sizes
+
+    # Overrides azure-cli command to allow changes after create
+    def get_enable_fips_image(self) -> bool:
+        """Obtain the value of enable_fips_image, default value is False.
+
+        :return: bool
+        """
+
+        # read the original value passed by the command
+        enable_fips_image = self.raw_param.get("enable_fips_image", False)
+        # In create mode, try and read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                hasattr(self.agentpool, "enable_fips") and      # backward compatibility
+                self.agentpool.enable_fips is not None
+            ):
+                enable_fips_image = self.agentpool.enable_fips
+
+        # Verify both flags have not been set
+        if enable_fips_image and self.get_disable_fips_image():
+            raise MutuallyExclusiveArgumentError(
+                'Cannot specify "--enable-fips-image" and "--disable-fips-image" at the same time'
+            )
+
+        return enable_fips_image
+
+    def get_disable_fips_image(self) -> bool:
+        """Obtain the value of disable_fips_image.
+        :return: bool
+        """
+        # read the original value passed by the command
+        return self.raw_param.get("disable_fips_image")
 
 
 class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
@@ -941,6 +1004,10 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         if node_soak_duration:
             upgrade_settings.node_soak_duration_in_minutes = node_soak_duration
 
+        undrainable_node_behavior = self.context.get_undrainable_node_behavior()
+        if undrainable_node_behavior:
+            upgrade_settings.undrainable_node_behavior = undrainable_node_behavior
+
         agentpool.upgrade_settings = upgrade_settings
         return agentpool
 
@@ -1082,6 +1149,21 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         return agentpool
 
+    def update_fips_image(self, agentpool: AgentPool) -> AgentPool:
+        """Update fips image property for the AgentPool object.
+        :return: the AgentPool object
+        """
+        self._ensure_agentpool(agentpool)
+
+        # Updates enable_fips property allowing switching of fips mode
+        if self.context.get_enable_fips_image():
+            agentpool.enable_fips = True
+
+        if self.context.get_disable_fips_image():
+            agentpool.enable_fips = False
+
+        return agentpool
+
     def update_agentpool_profile_preview(self, agentpools: List[AgentPool] = None) -> AgentPool:
         """The overall controller used to update the preview AgentPool profile.
 
@@ -1110,6 +1192,9 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
 
         # update os sku
         agentpool = self.update_os_sku(agentpool)
+
+        # update fips image
+        agentpool = self.update_fips_image(agentpool)
 
         # update ssh access
         agentpool = self.update_ssh_access(agentpool)
@@ -1141,6 +1226,11 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         node_soak_duration = self.context.get_node_soak_duration()
         if node_soak_duration:
             upgrade_settings.node_soak_duration_in_minutes = node_soak_duration
+            agentpool.upgrade_settings = upgrade_settings
+
+        undrainable_node_behavior = self.context.get_undrainable_node_behavior()
+        if undrainable_node_behavior:
+            upgrade_settings.undrainable_node_behavior = undrainable_node_behavior
             agentpool.upgrade_settings = upgrade_settings
 
         return agentpool

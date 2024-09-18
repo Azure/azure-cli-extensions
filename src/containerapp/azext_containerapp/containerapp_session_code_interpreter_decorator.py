@@ -3,6 +3,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long, broad-except, logging-format-interpolation
 
 
 from knack.log import get_logger
@@ -14,7 +15,7 @@ from azure.cli.command_modules.containerapp._utils import (_ensure_location_allo
 from azure.cli.core.commands.client_factory import get_subscription_id
 from ._clients import SessionPoolPreviewClient
 
-from ._models import SessionCodeInterpreterPythonExecution as SessionCodeInterpreterPythonExecutionPreviewModel
+from ._models import SessionCodeInterpreterExecution as SessionCodeInterpreterExecutionPreviewModel
 from ._client_factory import handle_raw_exception
 
 logger = get_logger(__name__)
@@ -23,7 +24,7 @@ logger = get_logger(__name__)
 class SessionCodeInterpreterPreviewDecorator(BaseResource):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
-        self.session_code_interpreter_def = SessionCodeInterpreterPythonExecutionPreviewModel
+        self.session_code_interpreter_def = SessionCodeInterpreterExecutionPreviewModel
         self.session_pool_client = SessionPoolPreviewClient
 
     def get_argument_name(self):
@@ -140,7 +141,7 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
             return self.client.list_files(
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
-                path=self.get_argument_path(), 
+                path=self.get_argument_path(),
                 session_pool_endpoint=self.get_sessionpool_endpoint())
         except Exception as e:
             handle_raw_exception(e)
@@ -150,7 +151,7 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
             return self.client.delete_file(
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
-                filename=self.get_argument_filename(), 
+                filename=self.get_argument_filename(),
                 session_pool_endpoint=self.get_sessionpool_endpoint(),
                 no_wait=self.get_argument_no_wait())
         except Exception as e:

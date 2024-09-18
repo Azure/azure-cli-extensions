@@ -11,11 +11,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --subscription --resource-group
+      - --resource-group
       User-Agent:
-      - AZURECLI/2.53.0 (AAZ) azsdk-python-core/1.26.0 Python/3.8.10 (Linux-5.15.90.1-microsoft-standard-WSL2-x86_64-with-glibc2.29)
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.11 (macOS-14.6.1-arm64-arm-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DSM05A-T100/providers/Microsoft.AzureLargeInstance/azureLargeStorageInstances?api-version=2023-07-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/int-resources-rg/providers/Microsoft.AzureLargeInstance/azureLargeStorageInstances?api-version=2024-08-01-preview
   response:
     body:
       string: '{"value":[]}'
@@ -27,17 +27,19 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 14 Nov 2023 07:05:15 GMT
+      - Tue, 10 Sep 2024 22:25:01 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 2B47022EF84A43588C8FB3DC76A83D49 Ref B: CO6AA3150218035 Ref C: 2024-09-10T22:25:02Z'
     status:
       code: 200
       message: OK
