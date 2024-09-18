@@ -184,6 +184,10 @@ class ApiCommandsTests(ScenarioTest):
             self.check('summary', 'Basic REST API service'),
         ])
 
+        self.cmd('az apic api update -g {rg} -n {s} --api-id {api} --set customProperties.internal=false', checks=[
+            self.check('customProperties.internal', False),
+        ])
+
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
     @ApicApiPreparer()
