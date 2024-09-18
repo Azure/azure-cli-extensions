@@ -75,7 +75,7 @@ helps['datamigration tde-migration'] = """
     examples:
       - name: Migrate TDE certificate from source SQL Server to the target Azure SQL Server.
         text: |-
-               az datamigration tde-migration --source-sql-connection-string "data source=servername;user id=userid;password=;initial catalog=master;TrustServerCertificate=True" --target-subscription-id "00000000-0000-0000-0000-000000000000" --target-resource-group-name "ResourceGroupName" --target-managed-instance-name "TargetManagedInstanceName" --network-share-path "\\NetworkShare\Folder" --network-share-domain "NetworkShare" --network-share-user-name "NetworkShareUserName" --network-share-password "" --database-name "TdeDb_0" "TdeDb_1" "TdeDb_2"
+               az datamigration tde-migration --source-sql-connection-string "data source=servername;user id=userid;password=;initial catalog=master;TrustServerCertificate=True" --target-subscription-id "00000000-0000-0000-0000-000000000000" --target-resource-group-name "ResourceGroupName" --target-managed-instance-name "TargetManagedInstanceName" --network-share-path "\\NetworkShare\\Folder" --network-share-domain "NetworkShare" --network-share-user-name "NetworkShareUserName" --network-share-password "" --database-name "TdeDb_0" "TdeDb_1" "TdeDb_2"
 """
 
 helps['datamigration sql-server-schema'] = """
@@ -87,13 +87,13 @@ helps['datamigration sql-server-schema'] = """
                az datamigration sql-server-schema --action "MigrateSchema" --src-sql-connection-str "Server=;Initial Catalog=;User ID=;Password=" --tgt-sql-connection-str "Server=;Initial Catalog=;User ID=;Password="
       - name: Run Generate TSQL schema script from the source SQL Server using Parameters.
         text: |-
-               az datamigration sql-server-schema --action "GenerateScript" --src-sql-connection-str "Server=;Initial Catalog=;User ID=;Password=" --tgt-sql-connection-str "Server=;Initial Catalog=;User ID=;Password="  --output-folder "C:\OutputFolder"
+               az datamigration sql-server-schema --action "GenerateScript" --src-sql-connection-str "Server=;Initial Catalog=;User ID=;Password=" --tgt-sql-connection-str "Server=;Initial Catalog=;User ID=;Password="  --output-folder "C:\\OutputFolder"
       - name: Run Deploy TSQL script to the target Azure SQL Database using Parameters.
         text: |-
-               az datamigration sql-server-schema --action "GenerateScript" --src-sql-connection-str "Server=;Initial Catalog=;User ID=;Password=" --tgt-sql-connection-str "Server=;Initial Catalog=;User ID=;Password="  --input-script-file-path "C:\OutputFolder\script.sql"
+               az datamigration sql-server-schema --action "GenerateScript" --src-sql-connection-str "Server=;Initial Catalog=;User ID=;Password=" --tgt-sql-connection-str "Server=;Initial Catalog=;User ID=;Password="  --input-script-file-path "C:\\OutputFolder\\script.sql"
       - name: Run Migrate database objects from the source SQL Server to the target Azure SQL Database using ConfigFile.
         text: |-
-               az datamigration sql-server-schema --config-file-path "C:\configfile.json"
+               az datamigration sql-server-schema --config-file-path "C:\\configfile.json"
 """
 
 helps['datamigration register-integration-runtime'] = """
