@@ -57,7 +57,6 @@ from azext_cosmosdb_preview.vendored_sdks.azure_mgmt_cosmosdb.models import (
     CosmosCassandraDataTransferDataSourceSink,
     CosmosSqlDataTransferDataSourceSink,
     CosmosMongoDataTransferDataSourceSink,
-    CosmosMongoVCoreDataTransferDataSourceSink,
     ServiceResourceCreateUpdateParameters,
     SqlDedicatedGatewayServiceResourceCreateUpdateProperties,
     DataTransferServiceResourceCreateUpdateProperties,
@@ -1690,12 +1689,12 @@ def cosmosdb_copy_job(client,
                       host_copy_on_src=False,
                       mode="Offline"):
     job_create_properties = {}
-    if dest_account == None and dest_mongo_vcore == None:
+    if dest_account is None and dest_mongo_vcore is None:
         raise CLIError('Invalid input: dest_account is a required parameter')
 
-    is_cross_account = False if dest_mongo_vcore != None else src_account != dest_account
+    is_cross_account = False if dest_mongo_vcore is not None else src_account != dest_account
     remote_account_name = dest_account if host_copy_on_src else src_account
-    host_account_name = src_account if (dest_mongo_vcore != None or host_copy_on_src) else dest_account
+    host_account_name = src_account if (dest_mongo_vcore is not None or host_copy_on_src) else dest_account
 
     source = None
     if src_cassandra is not None:
