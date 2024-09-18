@@ -34,6 +34,7 @@ def load_arguments(self, _):
         c.argument('associate_public_ip', help='Option to create repair vm with public ip')
         c.argument('distro', help='Option to create repair vm from a specific linux distro (rhel7|rhel8|sles12|sles15|ubuntu20|centos7|centos8|oracle7)')
         c.argument('yes', help='Option to skip prompt for associating public ip and confirm yes to it in no Tty mode')
+        c.argument('disable_trusted_launch', help='Option to disable Trusted Launch security type on the repair vm .')
 
     with self.argument_context('vm repair restore') as c:
         c.argument('repair_vm_id', help='Repair VM resource id.')
