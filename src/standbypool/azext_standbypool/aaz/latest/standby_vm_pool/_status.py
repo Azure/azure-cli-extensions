@@ -12,27 +12,26 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "standby-vm-pool vm list",
+    "standby-vm-pool status",
 )
-class List(AAZCommand):
-    """List virtual machines in standby virtual machine pool
+class Status(AAZCommand):
+    """Get a StandbyVirtualMachinePoolRuntimeViewResource
 
-    :example: List virtual machines in standby virtual machine pool
-        az standby-vm-pool vm list --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool
+    :example: Get standby virtual machine pool runtime view
+        az standby-vm-pool status --resource-group myrg --name mypool --subscription 461fa159-654a-415f-853a-40b801021944 --version latest
     """
 
     _aaz_info = {
-        "version": "2023-12-01-preview",
+        "version": "2024-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbyvirtualmachinepools/{}/standbyvirtualmachines", "2023-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbyvirtualmachinepools/{}/runtimeviews/{}", "2024-03-01"],
         ]
     }
 
-    AZ_SUPPORT_PAGINATION = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_paging(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -46,13 +45,24 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group",
+            help="The resource group",
             required=True,
+        )
+        _args_schema.version = AAZStrArg(
+            options=["--version"],
+            help="The unique identifier for the runtime view. The input string should be the word 'latest', which will get the latest runtime view of the pool, otherwise the request will fail with NotFound exception.",
+            required=True,
+            id_part="child_name_1",
+            default="latest",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{0,24}$",
+            ),
         )
         _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
             help="Name of the standby virtual machine pool",
             required=True,
+            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
@@ -61,7 +71,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.StandbyVirtualMachinesListByStandbyVirtualMachinePoolResource(ctx=self.ctx)()
+        self.StandbyVirtualMachinePoolRuntimeViewsGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -73,11 +83,10 @@ class List(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
-        return result, next_link
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
 
-    class StandbyVirtualMachinesListByStandbyVirtualMachinePoolResource(AAZHttpOperation):
+    class StandbyVirtualMachinePoolRuntimeViewsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -91,7 +100,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StandbyPool/standbyVirtualMachinePools/{standbyVirtualMachinePoolName}/standbyVirtualMachines",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.StandbyPool/standbyVirtualMachinePools/{standbyVirtualMachinePoolName}/runtimeViews/{runtimeView}",
                 **self.url_parameters
             )
 
@@ -111,6 +120,10 @@ class List(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
+                    "runtimeView", self.ctx.args.version,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "standbyVirtualMachinePoolName", self.ctx.args.name,
                     required=True,
                 ),
@@ -125,7 +138,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-12-01-preview",
+                    "api-version", "2024-03-01",
                     required=True,
                 ),
             }
@@ -158,46 +171,55 @@ class List(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.next_link = AAZStrType(
-                serialized_name="nextLink",
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.value = AAZListType(
-                flags={"required": True},
-            )
-
-            value = cls._schema_on_200.value
-            value.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element
-            _element.id = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _element.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _element.properties = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _element.system_data = AAZObjectType(
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _element.type = AAZStrType(
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.value.Element.properties
+            properties = cls._schema_on_200.properties
+            properties.instance_count_summary = AAZListType(
+                serialized_name="instanceCountSummary",
+                flags={"required": True, "read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.virtual_machine_resource_id = AAZStrType(
-                serialized_name="virtualMachineResourceId",
+
+            instance_count_summary = cls._schema_on_200.properties.instance_count_summary
+            instance_count_summary.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.instance_count_summary.Element
+            _element.instance_counts_by_state = AAZListType(
+                serialized_name="instanceCountsByState",
+                flags={"required": True},
+            )
+            _element.zone = AAZIntType()
+
+            instance_counts_by_state = cls._schema_on_200.properties.instance_count_summary.Element.instance_counts_by_state
+            instance_counts_by_state.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.instance_count_summary.Element.instance_counts_by_state.Element
+            _element.count = AAZIntType(
+                flags={"required": True},
+            )
+            _element.state = AAZStrType(
                 flags={"required": True},
             )
 
-            system_data = cls._schema_on_200.value.Element.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -220,8 +242,8 @@ class List(AAZCommand):
             return cls._schema_on_200
 
 
-class _ListHelper:
-    """Helper class for List"""
+class _StatusHelper:
+    """Helper class for Status"""
 
 
-__all__ = ["List"]
+__all__ = ["Status"]
