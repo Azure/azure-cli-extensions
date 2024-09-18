@@ -13,11 +13,6 @@ upcoming
 * 'az containerapp create': Fix container app create with registry msi
 * 'az containerapp job create': Fix container app job create with registry msi
 
-1.0.0b2
-++++++
-* 'az containerapp create': Fix container app create with registry msi
-* 'az containerapp job create': Fix container app job create with registry msi
-
 1.0.0b1
 ++++++
 * 'az containerapp sessionpool create': Add NodeLTS container-type.
