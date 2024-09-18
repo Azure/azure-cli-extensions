@@ -10,11 +10,11 @@ import re
 import codecs
 from io import open
 import requests
-from azure.core.exceptions import HttpResponseError
 from knack.log import get_logger
 from azure.cli.core.azclierror import (CLIInternalError)
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.command_modules.acr._constants import TASK_VALID_VSTS_URLS
+from azure.core.exceptions import HttpResponseError
 
 logger = get_logger(__name__)
 

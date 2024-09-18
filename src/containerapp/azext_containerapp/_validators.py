@@ -4,13 +4,14 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, unused-argument
 
-from azure.mgmt.core.tools import is_valid_resource_id
 from knack.log import get_logger
 from urllib.parse import urlparse
 
 from azure.cli.core.azclierror import (ValidationError, InvalidArgumentValueError,
                                        MutuallyExclusiveArgumentError, RequiredArgumentMissingError)
 from azure.cli.command_modules.containerapp._utils import is_registry_msi_system
+from azure.mgmt.core.tools import is_valid_resource_id
+
 from ._utils import is_registry_msi_system_environment
 
 from ._constants import ACR_IMAGE_SUFFIX, \
