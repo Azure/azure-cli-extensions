@@ -29,7 +29,6 @@ from azure.cli.command_modules.acs._consts import (
     CONST_DEFAULT_NODE_VM_SIZE,
 )
 from azext_aks_preview._consts import (
-    CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE,
     CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
 )
 from azure.cli.command_modules.acs.agentpool_decorator import AKSAgentPoolParamDict
@@ -708,7 +707,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         else:
             self.assertEqual(ctx_4.get_node_vm_size(), CONST_DEFAULT_WINDOWS_NODE_VM_SIZE)
         
-        # if --node-vm-size is not specified, but --sku automatic is explicitly specified
+        # if --node-vm-size is not specified, but --sku automatic is explicitly specified, we will leave it empty string. The RP side will automate to select the ideal vmsize based on toggle.
         ctx_5 = AKSPreviewAgentPoolContext(
             self.cmd,
             AKSAgentPoolParamDict({"sku": "automatic", "os_type": "Linux"}),
@@ -716,7 +715,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             DecoratorMode.CREATE,
             self.agentpool_decorator_mode,
         )
-        self.assertEqual(ctx_5.get_node_vm_size(), CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE)
+        self.assertEqual(ctx_5.get_node_vm_size(), "")
 
     def common_get_gateway_prefix_size(self):
         # default
