@@ -29,8 +29,7 @@ steps:
         if grep -q "incremental" tagConvention.txt; then
           IncrementedTagNumber="1"
         else
-          IncrementedTagNumber="patched"
-          
+          IncrementedTagNumber="patched"          
         fi
 
         if [ $TagName == "N/A" ]; then
