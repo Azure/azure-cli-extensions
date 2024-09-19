@@ -129,6 +129,8 @@ from azext_aks_preview._consts import (
     CONST_APP_ROUTING_NONE_NGINX,
     CONST_TLS_MANAGEMENT_MANAGED,
     CONST_TLS_MANAGEMENT_NONE,
+    CONST_GPU_DRIVER_TYPE_CUDA,
+    CONST_GPU_DRIVER_TYPE_GRID,
 )
 from azext_aks_preview._validators import (
     validate_acr,
@@ -420,6 +422,10 @@ tls_management_types = [
     CONST_TLS_MANAGEMENT_NONE,
 ]
 
+gpu_driver_types = [
+    CONST_GPU_DRIVER_TYPE_CUDA,
+    CONST_GPU_DRIVER_TYPE_GRID,
+]
 
 def load_arguments(self, _):
     acr_arg_type = CLIArgumentType(metavar="ACR_NAME_OR_RESOURCE_ID")
@@ -1589,6 +1595,11 @@ def load_arguments(self, _):
             help="space-separated tags: key[=value] [key[=value] ...].",
         )
         c.argument('skip_gpu_driver_install', action='store_true', is_preview=True)
+        c.argument(
+            "driver_type",
+            arg_type=get_enum_type(gpu_driver_types),
+            is_preview=True,
+        )
         # in creation scenario, use "localuser" as default
         c.argument(
             'ssh_access',

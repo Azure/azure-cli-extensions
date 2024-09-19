@@ -388,6 +388,60 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         ctx_2.attach_agentpool(agentpool_2)
         self.assertEqual(ctx_2.get_skip_gpu_driver_install(), None)
 
+    def common_get_driver_type(self):
+        # default
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"driver_type": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_driver_type(), None)
+        agentpool_1 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.AgentPoolGPUProfile(
+                driver_type="CUDA"
+            )
+        )
+        
+        ctx_1.attach_agentpool(agentpool_1)
+        self.assertEqual(ctx_1.get_driver_type(), "CUDA")
+
+        # default
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"driver_type": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_2.get_driver_type(), "GRID")
+        agentpool_2 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.AgentPoolGPUProfile(
+                driver_type="GRID"
+            )
+        )
+        ctx_2.attach_agentpool(agentpool_2)
+        self.assertEqual(ctx_2.get_driver_type(), "GRID")
+
+        # custom
+        ctx_0 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"driver_type": "CUDA"}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_0.get_driver_type(), "CUDA")
+        agentpool_0 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.AgentPoolGPUProfile(
+                driver_type=None
+            )
+        )
+
+        ctx_0.attach_agentpool(agentpool_0)
+        self.assertEqual(ctx_0.get_driver_type(), "CUDA")
+
     def common_get_os_sku(self):
         # default
         ctx_1 = AKSPreviewAgentPoolContext(
