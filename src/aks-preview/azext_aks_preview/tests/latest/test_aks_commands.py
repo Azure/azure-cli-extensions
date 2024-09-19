@@ -4250,6 +4250,19 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                     self.check('gpuProfile.driverType', "GRID")],
         )
 
+        # Attempt to update the node-vm-size of the existing nodepool
+        update_cmd = (
+            "aks nodepool update --resource-group {resource_group} --cluster-name {name} "
+            "--name {nodepool_name} --driver-type CUDA -o json"
+        )
+        
+        self.cmd(
+            update_cmd,
+            checks=[self.check("provisioningState", "Succeeded"),
+                    self.check('gpuProfile.driverType', "GRID")],
+            expect_failure=True
+        )
+
         # delete the original AKS cluster
         self.cmd(
             "aks delete -g {resource_group} -n {name} --yes --no-wait",
