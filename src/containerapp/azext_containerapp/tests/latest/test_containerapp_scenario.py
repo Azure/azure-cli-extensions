@@ -279,7 +279,7 @@ class ContainerappDebugConsoleScenarioTest(ScenarioTest):
                                             external_containerapp["properties"]["latestRevisionName"])
 
     def containerapp_debug_test_helper(self, resource_group, containerapp_name, latest_revision_name):
-        self.cmd(f'containerapp debug -g {resource_group} -n {containerapp_name}')
+        self.cmd(f'containerapp debug -g {resource_group} -n {containerapp_name}', expect_failure=False)
 
         replica_list = self.cmd(
             f'containerapp replica list -g {resource_group} -n {containerapp_name} --revision {latest_revision_name}',

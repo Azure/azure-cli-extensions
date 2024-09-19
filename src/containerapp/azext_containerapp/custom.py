@@ -3231,6 +3231,7 @@ def set_registry_job(cmd, name, resource_group_name, server, username=None, pass
 
 
 def containerapp_debug(cmd, resource_group_name, name, container=None, revision=None, replica=None):
+    print("Connecting...")
     conn = DebugWebSocketConnection(
         cmd=cmd,
         resource_group_name=resource_group_name,
@@ -3249,7 +3250,6 @@ def containerapp_debug(cmd, resource_group_name, name, container=None, revision=
     writer.daemon = True
     writer.start()
 
-    logger.warning("Use ctrl + D to exit.")
     while conn.is_connected:
         if not reader.is_alive() or not writer.is_alive():
             logger.warning("Reader or Writer for WebSocket is not alive. Closing the connection.")

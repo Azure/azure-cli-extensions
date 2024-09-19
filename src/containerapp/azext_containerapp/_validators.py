@@ -8,9 +8,14 @@ from msrestazure.tools import is_valid_resource_id
 from knack.log import get_logger
 from urllib.parse import urlparse
 
-from azure.cli.core.azclierror import (ValidationError, InvalidArgumentValueError,
-                                       MutuallyExclusiveArgumentError, RequiredArgumentMissingError)
-from azure.cli.command_modules.containerapp._utils import is_registry_msi_system
+from azure.cli.command_modules.containerapp._utils import is_registry_msi_system, safe_get
+from azure.cli.command_modules.containerapp._validators import _validate_revision_exists, _validate_replica_exists, \
+    _validate_container_exists
+from azure.cli.core.azclierror import (InvalidArgumentValueError,
+                                       MutuallyExclusiveArgumentError, RequiredArgumentMissingError,
+                                       ResourceNotFoundError, ValidationError)
+
+from ._clients import ContainerAppPreviewClient
 from ._utils import is_registry_msi_system_environment
 
 from ._constants import ACR_IMAGE_SUFFIX, \
@@ -214,3 +219,49 @@ def validate_timeout_in_seconds(cmd, namespace):
     if timeout_in_seconds is not None:
         if timeout_in_seconds < 0 or timeout_in_seconds > 60:
             raise ValidationError("timeout in seconds must be in range [0, 60].")
+
+
+def validate_debug(cmd, namespace):
+    print("Validating...")
+    revision_already_set = bool(namespace.revision)
+    replica_already_set = bool(namespace.replica)
+    container_already_set = bool(namespace.container)
+    _set_debug_defaults(cmd, namespace)
+    if revision_already_set:
+        _validate_revision_exists(cmd, namespace)
+    if replica_already_set:
+        _validate_replica_exists(cmd, namespace)
+    if container_already_set:
+        _validate_container_exists(cmd, namespace)
+
+
+def _set_debug_defaults(cmd, namespace):
+    app = ContainerAppPreviewClient.show(cmd, namespace.resource_group_name, namespace.name)
+    if not app:
+        raise ResourceNotFoundError("Could not find a container app")
+    if not namespace.revision:
+        namespace.revision = app.get("properties", {}).get("latestRevisionName")
+        if not namespace.revision:
+            raise ResourceNotFoundError("Could not find a revision")
+    if not namespace.replica:
+        replicas = ContainerAppPreviewClient.list_replicas(
+            cmd=cmd,
+            resource_group_name=namespace.resource_group_name,
+            container_app_name=namespace.name,
+            revision_name=namespace.revision
+        )
+        if not replicas:
+            raise ResourceNotFoundError("Could not find a active replica")
+        namespace.replica = replicas[0]["name"]
+        if not namespace.container and replicas[0]["properties"]["containers"]:
+            namespace.container = replicas[0]["properties"]["containers"][0]["name"]
+    if not namespace.container:
+        revision = ContainerAppPreviewClient.show_revision(
+            cmd,
+            resource_group_name=namespace.resource_group_name,
+            container_app_name=namespace.name,
+            name=namespace.revision
+        )
+        revision_containers = safe_get(revision, "properties", "template", "containers")
+        if revision_containers:
+            namespace.container = revision_containers[0]["name"]

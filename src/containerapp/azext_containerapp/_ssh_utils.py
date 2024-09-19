@@ -4,11 +4,14 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=logging-fstring-interpolation
 # pylint: disable=possibly-used-before-assignment
+
 from azure.cli.command_modules.containerapp._ssh_utils import WebSocketConnection, SSH_TERM_RESIZE_PREFIX, \
     SSH_DEFAULT_ENCODING, read_ssh
-from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.azclierror import ValidationError
 
 from knack.log import get_logger
+
+from azext_containerapp._clients import ContainerAppPreviewClient
 
 logger = get_logger(__name__)
 
@@ -17,14 +20,19 @@ class DebugWebSocketConnection(WebSocketConnection):
     def __init__(self, cmd, resource_group_name, name, revision, replica, container):
         super(DebugWebSocketConnection, self).__init__(cmd, resource_group_name, name, revision, replica, container, "")
 
-    def _get_url(self, cmd, resource_group_name, name, revision, replica, container, startup_command):
-        sub = get_subscription_id(cmd.cli_ctx)
-        base_url = self._logstream_endpoint
-        proxy_api_url = base_url[:base_url.index("/subscriptions/")].replace("https://", "")
+    @classmethod
+    def _get_logstream_endpoint(cls, cmd, resource_group_name, name, revision, replica, container):
+        # do nothing
+        return ""
 
-        return (f"wss://{proxy_api_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/containerApps/{name}"
-                f"/revisions/{revision}/replicas/{replica}/debug"
-                f"?targetContainer={container}")
+    def _get_url(self, cmd, resource_group_name, name, revision, replica, container, startup_command):
+        containers = ContainerAppPreviewClient.get_replica(cmd,
+                                                           resource_group_name,
+                                                           name, revision, replica)["properties"]["containers"]
+        container_info = [c for c in containers if c["name"] == container]
+        if not container_info:
+            raise ValidationError(f"No such container: {container}")
+        return container_info[0]["debugEndpoint"]
 
 
 def read_debug_ssh(connection: WebSocketConnection, response_encodings):
