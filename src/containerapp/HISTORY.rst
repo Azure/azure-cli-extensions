@@ -6,6 +6,11 @@ upcoming
 ++++++
 * 'az containerapp debug': Open an SSH-like interactive shell within a container app debug console.
 
+1.0.0b2
+++++++
+* 'az containerapp create': Fix container app create with registry msi
+* 'az containerapp job create': Fix container app job create with registry msi
+
 1.0.0b1
 ++++++
 * 'az containerapp sessionpool create': Add NodeLTS container-type.
