@@ -57,21 +57,6 @@ def acipolicygen_confcom(
     faster_hashing: bool = False,
 ):
 
-    if sum(map(bool, [input_path, arm_template, image_name, virtual_node_yaml_path])) != 1:
-        error_out("Can only generate CCE policy from one source at a time")
-    if sum(map(bool, [print_policy_to_terminal, outraw, outraw_pretty_print])) > 1:
-        error_out("Can only print in one format at a time")
-    elif (diff and input_path) or (diff and image_name):
-        error_out("Can only diff CCE policy from ARM Template or YAML File")
-    elif arm_template_parameters and not arm_template:
-        error_out(
-            "Can only use ARM Template Parameters if ARM Template is also present"
-        )
-    elif save_to_file and arm_template and not (print_policy_to_terminal or outraw or outraw_pretty_print):
-        error_out("Must print policy to terminal when saving to file")
-    elif faster_hashing and tar_mapping_location:
-        error_out("Cannot use --faster-hashing with --tar")
-
     if print_existing_policy or outraw or outraw_pretty_print:
         logger.warning(
             "%s %s %s %s %s",
@@ -215,9 +200,6 @@ def katapolicygen_confcom(
 ):
     kata_proxy = KataPolicyGenProxy()
 
-    if not (yaml_path or print_version):
-        error_out("Either --yaml-path or --print-version is required")
-
     output = kata_proxy.kata_genpolicy(
         yaml_path,
         config_map_file=config_map_file,
@@ -327,8 +309,3 @@ def get_output_type(outraw, outraw_pretty_print):
     elif outraw_pretty_print:
         output_type = security_policy.OutputType.PRETTY_PRINT
     return output_type
-
-
-def error_out(error_string):
-    logger.error(error_string)
-    sys.exit(1)

@@ -5,6 +5,15 @@
 # pylint: disable=line-too-long
 
 from knack.arguments import CLIArgumentType
+from azext_confcom._validators import (
+    validate_params_file,
+    validate_diff,
+    validate_aci_source,
+    validate_print_format,
+    validate_save_to_file,
+    validate_faster_hashing,
+    validate_katapolicygen_input,
+)
 
 
 def load_arguments(self, _):
@@ -27,30 +36,35 @@ def load_arguments(self, _):
             options_list=("--input", "-i"),
             required=False,
             help="Input JSON config file",
+            validator=validate_aci_source
         )
         c.argument(
             "arm_template",
             options_list=("--template-file", "-a"),
             required=False,
             help="ARM template file",
+            validator=validate_aci_source
         )
         c.argument(
             "arm_template_parameters",
             options_list=("--parameters", "-p"),
             required=False,
             help="ARM template parameters",
+            validator=validate_params_file
         )
         c.argument(
             "virtual_node_yaml_path",
             options_list=("--virtual-node-yaml"),
             required=False,
             help="Virtual node YAML file",
+            validator=validate_aci_source
         )
         c.argument(
             "image_name",
             options_list=("--image",),
             required=False,
             help="Image Name",
+            validator=validate_aci_source
         )
         c.argument(
             "tar_mapping_location",
@@ -87,6 +101,7 @@ def load_arguments(self, _):
             options_list=("--diff", "-d"),
             required=False,
             help="Compare the CCE Policy field in the ARM Template to the containers in the ARM Template and make sure they are compatible",
+            validator=validate_diff
         )
         c.argument(
             "validate_sidecar",
@@ -107,6 +122,7 @@ def load_arguments(self, _):
             required=False,
             action="store_true",
             help="Output policy in clear text compact JSON instead of default base64 format",
+            validator=validate_print_format,
         )
         c.argument(
             "outraw_pretty_print",
@@ -114,24 +130,28 @@ def load_arguments(self, _):
             required=False,
             action="store_true",
             help="Output policy in clear text and pretty print format",
+            validator=validate_print_format,
         )
         c.argument(
             "save_to_file",
             options_list=("--save-to-file", "-s"),
             required=False,
             help="Save output policy to given file path",
+            validator=validate_save_to_file,
         )
         c.argument(
             "print_policy_to_terminal",
             options_list=("--print-policy"),
             required=False,
             help="Print the generated policy in the terminal",
+            validator=validate_print_format,
         )
         c.argument(
             "faster_hashing",
             options_list=("--faster-hashing"),
             required=False,
             help="Use buffered image reader for dmverity hashing. This will speed up the hashing process but use much more memory.",
+            validator=validate_faster_hashing,
         )
 
     with self.argument_context("confcom katapolicygen") as c:
@@ -140,58 +160,68 @@ def load_arguments(self, _):
             options_list=("--yaml", "-y"),
             required=False,
             help="Input YAML config file",
+            validator=validate_katapolicygen_input,
         )
         c.argument(
             "outraw",
             options_list=("--outraw"),
             required=False,
             help="Print the generated policy in the terminal in Rego format",
+            validator=validate_katapolicygen_input,
         )
         c.argument(
             "print_policy",
             options_list=("--print-policy"),
             required=False,
             help="Print the generated policy in the terminal in base64",
+            validator=validate_katapolicygen_input,
         )
         c.argument(
             "config_map_file",
             options_list=("--config-map-file", "-c"),
             required=False,
             help="Config map file",
+            validator=validate_katapolicygen_input,
         )
         c.argument(
             "use_cached_files",
             options_list=("--use-cached-files", "-u"),
             required=False,
             help="Use cached files",
+            validator=validate_katapolicygen_input,
         )
         c.argument(
             "settings_file_name",
             options_list=("--settings-file-name", "-j"),
             required=False,
             help="Path for custom settings file",
+            validator=validate_katapolicygen_input,
         )
         c.argument(
             "rules_file_name",
             options_list=("--rules-file-name", "-p"),
             required=False,
             help="Path for custom rules file",
+            validator=validate_katapolicygen_input,
         )
         c.argument(
             "print_version",
             options_list=("--print-version", "-v"),
             required=False,
             help="Print the version of the genpolicy tool",
+            validator=validate_katapolicygen_input,
         )
         c.argument(
             "containerd_pull",
             options_list=("--containerd-pull", "-d"),
             required=False,
             help="Use containerd to pull the image",
+            validator=validate_katapolicygen_input,
         )
         c.argument(
             "containerd_socket_path",
             options_list=("--containerd-socket-path"),
             required=False,
             help="Path to containerd socket if not using the default",
+            validator=validate_katapolicygen_input,
         )

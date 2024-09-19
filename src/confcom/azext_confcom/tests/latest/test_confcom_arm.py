@@ -1362,15 +1362,15 @@ class PolicyGeneratingArmParametersCleanRoom(unittest.TestCase):
             except:
                 # do nothing
                 pass
-            regular_image = load_policy_from_arm_template_str(
-                custom_arm_json_default_value, ""
-            )
-            regular_image[0].populate_policy_content_for_all_images()
+        regular_image = load_policy_from_arm_template_str(
+            custom_arm_json_default_value, ""
+        )
+        regular_image[0].populate_policy_content_for_all_images()
             # create and tag same image to the new name to see if docker will error out that the image is not in a remote repo
-            new_repo = "fakerepo.microsoft.com"
-            new_image_name = "azure-functions"
-            new_tag = "fake-tag"
-
+        new_repo = "fakerepo.microsoft.com"
+        new_image_name = "azure-functions"
+        new_tag = "fake-tag"
+        with DockerClient() as client:
             image = client.images.get(original_image)
             try:
                 client.images.remove(new_repo + "/" + new_image_name + ":" + new_tag)
