@@ -188,12 +188,9 @@ class ApiCommandsTests(ScenarioTest):
     @ApicServicePreparer()
     @ApicApiPreparer()
     @ApicMetadataPreparer()
-    def test_examples_update_single_custom_metadata(self, metadata_name):
-        self.kwargs.update({
-            'customProperty': '{}'.format(metadata_name),
-        })
-        self.cmd('az apic api update -g {rg} -n {s} --api-id {api} --set customProperties.{customProperty}=false', checks=[
-            self.check('customProperties.{customProperty}', False),
+    def test_examples_update_single_custom_metadata(self):
+        self.cmd('az apic api update -g {rg} -n {s} --api-id {api} --set customProperties.{m}=false', checks=[
+            self.check('customProperties.{m}', False),
         ])
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
