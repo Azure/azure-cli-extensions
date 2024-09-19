@@ -72,6 +72,9 @@ helps['webpubsub create'] = """
       - name: Create a Web PubSub for Socket.IO with Premium SKU and unit 1.
         text: >
           az webpubsub create -n MyWebPubSub -g MyResourceGroup --sku Premium_P1 --unit-count 1 --kind SocketIO
+      - name: Create a Web PubSub for Socket.IO in Serverless mode with Premium SKU and unit 1
+        text: >
+          az webpubsub create -n MyWebPubSub -g MyResourceGroup --sku Premium_P1 --unit-count 1 --kind SocketIO --service-mode Serverless
 """
 
 helps['webpubsub list'] = """
@@ -96,6 +99,9 @@ helps['webpubsub update'] = """
       - name: Update a WebPubSub Service to unit 10.
         text: >
           az webpubsub update -n MyWebPubSub -g MyResourceGroup --sku Standard_S1 --unit-count 10
+      - name: Update a Web PubSub for Socket.IO to Serverless mode.
+        text: >
+          az webpubsub update -n MyWebPubSub -g MyResourceGroup --service-mode Serverless
 """
 
 helps['webpubsub restart'] = """
@@ -168,7 +174,7 @@ helps['webpubsub hub delete'] = """
 
 helps['webpubsub hub create'] = """
     type: command
-    short-summary: Create hub settings for WebPubSub Service.
+    short-summary: Create hub settings for WebPubSub Service or Web PubSub for Socket.IO in Serverless Mode.
     examples:
       - name: Create a hub setting with two event handler settings
         text: >
@@ -180,7 +186,7 @@ helps['webpubsub hub create'] = """
 
 helps['webpubsub hub update'] = """
     type: command
-    short-summary: Update hub settings for WebPubSub Service.
+    short-summary: Update hub settings for WebPubSub Service or Web PubSub for Socket.IO in Serverless Mode.
     examples:
       - name: Update event handler settings of a hub
         text: >

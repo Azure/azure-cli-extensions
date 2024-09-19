@@ -260,9 +260,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="eastus2euap", preserve_default_location=True,
     )
-    def test_aks_create_with_loadbalancer_and_update_to_none_outbound(
+    def test_aks_create_with_block_and_update_to_none_outbound(
         self, resource_group, resource_group_location
     ):
         aks_name = self.create_random_name("cliakstest", 16)
@@ -277,19 +277,24 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
             "--vm-set-type VirtualMachineScaleSets -c 1 "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkIsolatedClusterPreview,AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableAPIServerVnetIntegrationPreview,AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableOutboundTypeNoneAndBlock "
+            "--outbound-type block "
+            "--bootstrap-artifact-source Cache "
+            "-k 1.30 "
+            "--enable-apiserver-vnet-integration "
             "--ssh-key-value={ssh_key_value}"
         )
         self.cmd(
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.outboundType", "loadBalancer"),
+                self.check("networkProfile.outboundType", "block"),
             ],
         )
 
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableOutboundTypeNoneAndBlock "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkIsolatedClusterPreview,AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableAPIServerVnetIntegrationPreview "
             "--outbound-type none "
         )
         self.cmd(
@@ -575,67 +580,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("aadProfile.enableAzureRbac", False),
-            ],
-        )
-
-    @AllowLargeResponse()
-    @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="westus2"
-    )
-    def test_aks_create_and_update_with_node_restriction(
-        self, resource_group, resource_group_location
-    ):
-        specific_version = self._get_version_in_range(
-            resource_group_location, "1.22.0", "1.24.0"
-        )
-        if specific_version == "":
-            # supported versions do not meet test requirements, skip
-            return
-        aks_name = self.create_random_name("cliakstest", 16)
-        self.kwargs.update(
-            {
-                "resource_group": resource_group,
-                "name": aks_name,
-                "ssh_key_value": self.generate_ssh_keys(),
-                "k8s_version": specific_version,
-            }
-        )
-
-        create_cmd = (
-            "aks create --resource-group={resource_group} --name={name} "
-            "--vm-set-type VirtualMachineScaleSets -c 1 "
-            "-k {k8s_version} --enable-node-restriction "
-            "--ssh-key-value={ssh_key_value} -o json"
-        )
-        self.cmd(
-            create_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("securityProfile.nodeRestriction.enabled", True),
-            ],
-        )
-
-        update_cmd = (
-            "aks update --resource-group={resource_group} --name={name} "
-            "--disable-node-restriction -o json"
-        )
-        self.cmd(
-            update_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("securityProfile.nodeRestriction.enabled", False),
-            ],
-        )
-
-        update_cmd = (
-            "aks update --resource-group={resource_group} --name={name} "
-            "--enable-node-restriction -o json"
-        )
-        self.cmd(
-            update_cmd,
-            checks=[
-                self.check("provisioningState", "Succeeded"),
-                self.check("securityProfile.nodeRestriction.enabled", True),
             ],
         )
 
@@ -1031,7 +975,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(create_appgw)
 
         # construct group id
-        from msrestazure.tools import parse_resource_id, resource_id
+        from azure.mgmt.core.tools import parse_resource_id, resource_id
 
         parsed_vnet_id = parse_resource_id(vnet_id)
         group_id = resource_id(
@@ -1265,7 +1209,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "-a open-service-mesh -o json"
         )
 
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
             CLIError, 'Addon "open-service-mesh" is not enabled in this cluster.'
         ):
             self.cmd(show_cmd)
@@ -1613,7 +1557,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
 
         update_cmd = "aks addon update --addon confcom --resource-group={resource_group} --name={name} -o json"
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
             CLIError, 'Addon "confcom" is not enabled in this cluster.'
         ):
             self.cmd(update_cmd)
@@ -3200,6 +3144,68 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("upgradeSettings.nodeSoakDurationInMinutes", 10),
+            ],
+        )
+
+        # actually running an upgrade is too expensive for these tests.
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
+    def test_aks_nodepool_undrainable_node_behavior(
+        self, resource_group, resource_group_location
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        np_name = self.create_random_name("clinp", 12)
+        self.kwargs.update(
+            {
+                "name": aks_name,
+                "resource_group": resource_group,
+                "nodepool_name": np_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+            }
+        )
+
+        # create
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} "
+            "--ssh-key-value={ssh_key_value} -c 1"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+            ],
+        )
+
+        add_nodepool_cmd = (
+            "aks nodepool add -g {resource_group} --cluster-name {name} -n {nodepool_name} "
+            "--mode user --undrainable-node-behavior Cordon"
+        )
+        self.cmd(
+            add_nodepool_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("upgradeSettings.undrainableNodeBehavior", "Cordon"),
+            ],
+        )
+
+        update_nodepool_cmd = (
+            "aks nodepool update -g {resource_group} --cluster-name {name} -n {nodepool_name} "
+            "--undrainable-node-behavior Schedule"
+        )
+        self.cmd(
+            update_nodepool_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("upgradeSettings.undrainableNodeBehavior", "Schedule"),
             ],
         )
 
@@ -13042,9 +13048,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="westcentralus",
     )
-    def test_aks_update_enable_advanced_network_observability(
+    def test_aks_update_advanced_network_observability(
         self, resource_group, resource_group_location
     ):
         aks_name = self.create_random_name("cliakstest", 16)
@@ -13063,7 +13069,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         self.cmd(create_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
-        # update to enable network observability
+        # update to enable observability and tls management to "Managed" by default (no value specified)
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} --enable-advanced-network-observability "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
@@ -13073,16 +13079,45 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "Managed"),
             ],
         )
 
-        # update to disable network observability
+        # update to set advanced networking observability tls management to "None"
         update_cmd_two = (
-            "aks update --resource-group={resource_group} --name={name} --disable-advanced-network-observability "
+            "aks update --resource-group={resource_group} --name={name} --advanced-networking-observability-tls-management None "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
         )
         self.cmd(
             update_cmd_two,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "None"),
+            ],
+        )
+
+        # update to set advanced networking observability tls management to "Managed"
+        update_cmd_three = (
+            "aks update --resource-group={resource_group} --name={name} --advanced-networking-observability-tls-management Managed "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
+        )
+        self.cmd(
+            update_cmd_three,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "Managed"),
+            ],
+        )
+
+        # update to disable network observability
+        update_cmd_four = (
+            "aks update --resource-group={resource_group} --name={name} --disable-advanced-network-observability "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
+        )
+        self.cmd(
+            update_cmd_four,
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.advancedNetworking.observability.enabled", False),
@@ -13129,6 +13164,122 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="westcentralus",
+    )
+    def test_aks_create_advanced_networking_observability_tls_management(
+        self, resource_group, resource_group_location
+    ):
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "location": resource_group_location,
+            }
+        )
+
+        # create an advanced networking observability cluster with tls management set to "Managed" by default (no value specified)
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard --enable-advanced-network-observability "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "Managed"),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "location": resource_group_location,
+            }
+        )
+
+        # create an advanced networking observability cluster with tls management set to "Managed" explicitly
+        create_cmd = (
+             "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
+            "--enable-advanced-network-observability --advanced-networking-observability-tls-management Managed "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "Managed"),
+            ],
+        )
+
+        # delete
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+        # reset the count so in replay mode the random names will start with 0
+        self.test_resources_count = 0
+        # kwargs for string formatting
+
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "location": resource_group_location,
+            }
+        )
+
+        # create an advanced networking observability cluster with tls management set to "None"
+        create_cmd = (
+            "aks create --resource-group={resource_group} --name={name} --location={location} "
+            "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
+            "--enable-advanced-network-observability --advanced-networking-observability-tls-management None "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview"
+        )
+        self.cmd(
+            create_cmd,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "None"),
             ],
         )
 
@@ -13391,7 +13542,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update to enable acns
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
-            "--enable-acns "
+            "--enable-acns --advanced-networking-observability-tls-management None "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
         )
         self.cmd(
@@ -13400,6 +13551,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "None"),
             ],
         )
 
@@ -13459,6 +13611,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "Managed"),
             ],
         )
 
@@ -13496,7 +13649,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks create --resource-group={resource_group} --name={name} --location={location} "
             "--ssh-key-value={ssh_key_value} --node-count=1 --tier standard "
             "--network-plugin azure --network-dataplane=cilium --network-plugin-mode overlay "
-            "--enable-acns "
+            "--enable-acns --advanced-networking-observability-tls-management None "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview"
         )
         self.cmd(
@@ -13505,6 +13658,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "None"),
             ],
         )
 
@@ -13565,6 +13719,22 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("provisioningState", "Succeeded"),
                 self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
+            ],
+        )
+
+        # update: set tls management to "Managed"
+        update_cmd4 = (
+            "aks update --resource-group={resource_group} --name={name} "
+            "--advanced-networking-observability-tls-management Managed "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/AdvancedNetworkingPreview "
+        )
+        self.cmd(
+            update_cmd4,
+            checks=[
+                self.check("provisioningState", "Succeeded"),
+                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.enabled", True),
+                self.check("networkProfile.advancedNetworking.observability.tlsManagement", "Managed"),
             ],
         )
 
@@ -13865,7 +14035,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="uksouth"
     )
     def test_aks_create_with_app_routing_enabled(
         self, resource_group, resource_group_location
@@ -13895,7 +14065,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("ingressProfile.webAppRouting.enabled", True),
-                self.check("ingressProfile.webAppRouting.nginx", None)
+                self.check("ingressProfile.webAppRouting.nginx.defaultIngressControllerType", "AnnotationControlled")
             ],
         )
     
@@ -13913,17 +14083,19 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create cluster with app routing addon enabled
         aks_name = self.create_random_name("cliakstest", 16)
+        _, k8s_version = self._get_versions(resource_group_location)
         self.kwargs.update(
             {
                 "resource_group": resource_group,
                 "aks_name": aks_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
+                "k8s_version": k8s_version
             }
         )
 
         create_cmd = (
-            "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version 1.30 "
+            "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version {k8s_version} "
             "--ssh-key-value={ssh_key_value} --enable-app-routing --app-routing-default-nginx-controller none"
         )
         self.cmd(
@@ -13955,17 +14127,20 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create cluster with app routing addon enabled
         aks_name = self.create_random_name("cliakstest", 16)
+        _, k8s_version = self._get_versions(resource_group_location)
+
         self.kwargs.update(
             {
                 "resource_group": resource_group,
                 "aks_name": aks_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
+                "k8s_version": k8s_version
             }
         )
 
         create_cmd = (
-            "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version 1.30 "
+            "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version {k8s_version} "
             "--ssh-key-value={ssh_key_value} --enable-app-routing --ardnc none"
         )
         self.cmd(
@@ -13987,7 +14162,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="uksouth",
     )
     def test_aks_approuting_enable_disable(
         self, resource_group, resource_group_location
@@ -14027,7 +14202,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("ingressProfile.webAppRouting.enabled", True),
-                self.check("ingressProfile.webAppRouting.nginx", None)
+                self.check("ingressProfile.webAppRouting.nginx.defaultIngressControllerType", "AnnotationControlled")
             ],
         )
 
@@ -14062,16 +14237,21 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create cluster without app routing
         aks_name = self.create_random_name("cliakstest", 16)
+        
+        _, k8s_version = self._get_versions(resource_group_location)
+
         self.kwargs.update(
             {
                 "resource_group": resource_group,
                 "aks_name": aks_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
+                "k8s_version": k8s_version
             }
         )
+
         create_cmd = (
-            "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version 1.30 "
+            "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version {k8s_version} "
             "--ssh-key-value={ssh_key_value}"
         )
         self.cmd(
@@ -14190,6 +14370,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         aks_name = self.create_random_name("cliakstest", 16)
         kv_name = self.create_random_name("cliakstestkv", 16)
 
+        _, k8s_version = self._get_versions(resource_group_location)
+
         self.kwargs.update(
             {
                 "resource_group": resource_group,
@@ -14197,6 +14379,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "kv_name": kv_name,
                 "location": resource_group_location,
                 "ssh_key_value": self.generate_ssh_keys(),
+                "k8s_version": k8s_version
             }
         )
 
@@ -14216,7 +14399,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create cluster with app routing enabled
         create_cmd = (
-            "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version 1.30 "
+            "aks create --resource-group={resource_group} --name={aks_name} --location={location} --kubernetes-version {k8s_version} "
             "--ssh-key-value={ssh_key_value} --enable-app-routing"
         )
         result = self.cmd(
@@ -14224,6 +14407,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("ingressProfile.webAppRouting.enabled", True),
+                self.check("ingressProfile.webAppRouting.nginx.defaultIngressControllerType", "AnnotationControlled")
             ],
         ).get_output_in_json()
         object_id = result["ingressProfile"]["webAppRouting"]["identity"]["objectId"]
@@ -14240,7 +14424,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("ingressProfile.webAppRouting.enabled", True),
-                self.check("ingressProfile.webAppRouting.nginx.defaultIngressController", "External"),
+                self.check("ingressProfile.webAppRouting.nginx.defaultIngressControllerType", "External"),
                 self.check("addonProfiles.azureKeyvaultSecretsProvider.enabled", True),
             ],
         )
@@ -14366,7 +14550,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="uksouth",
     )
     def test_aks_approuting_zone_add_delete_list(
         self, resource_group, resource_group_location
@@ -14488,7 +14672,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="uksouth",
     )
     def test_aks_approuting_zone_update(self, resource_group, resource_group_location):
         """This test case exercises updating zones to app routing addon in an AKS cluster."""
@@ -14732,16 +14916,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         self.cmd(add_nodepool_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('securityProfile.sshAccess', 'LocalUser'),
-        ])
-
-        # update cluster
-        update_cmd = 'aks update --resource-group={resource_group} --name={name} ' \
-                     '--ssh-access disabled --yes ' \
-                     '--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/DisableSSHPreview'
-        self.cmd(update_cmd, checks=[
-            self.check('provisioningState', 'Succeeded'),
-            self.check('agentPoolProfiles[0].securityProfile.sshAccess', 'Disabled'),
-            self.check('agentPoolProfiles[1].securityProfile.sshAccess', 'Disabled'),
         ])
 
         # delete
