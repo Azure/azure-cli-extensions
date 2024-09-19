@@ -877,6 +877,8 @@ class WindowsTrustedLaunchVMFlag(LiveScenarioTest):
         repair_vm = repair_vms[0]
         print("Printing repair VM Output")
         print(repair_vm)
+        security_profile_repair_vm = repair_vm.get("securityProfile")  
+        assert security_profile_repair_vm is None
         # Check attached data disk
         assert repair_vm['storageProfile']['dataDisks'][0]['name'] == result['copied_disk_name']
 
