@@ -230,7 +230,7 @@ def _get_rdp_path(rdp_command="mstsc"):
 
     return rdp_path
 
-def _get_rdp_file_path():
+def _get_rdp_file_path(tunnel_server):
     import os
 
     rdp_file_content = (
