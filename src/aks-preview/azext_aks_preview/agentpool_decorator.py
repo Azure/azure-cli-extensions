@@ -583,14 +583,14 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 skip_gpu_driver_install = not self.agentpool.gpu_profile.install_gpu_driver
 
         return skip_gpu_driver_install
-    
+
     def get_driver_type(self) -> Union[str, None]:
         """Obtain the value of driver_type.
         :return: str or None
         """
         # read the original value passed by the command
         driver_type = self.raw_param.get("driver_type")
-        
+
         # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
         if self.decorator_mode == DecoratorMode.CREATE:
             if (
@@ -599,7 +599,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 self.agentpool.gpu_profile.driver_type is not None
             ):
                 driver_type = self.agentpool.gpu_profile.driver_type
-    
+
         return driver_type
 
     def get_enable_secure_boot(self) -> bool:
@@ -884,7 +884,7 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
                 agentpool.gpu_profile = self.models.AgentPoolGPUProfile()  # pylint: disable=no-member
             agentpool.gpu_profile.install_gpu_driver = False
         return agentpool
-    
+
     def set_up_driver_type(self, agentpool: AgentPool) -> AgentPool:
         """Set up driver type property for the AgentPool object."""
         self._ensure_agentpool(agentpool)
