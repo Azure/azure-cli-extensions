@@ -4203,7 +4203,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus2",
+        location="eastus",
     )
     def test_aks_gpu_driver_type(self, resource_group, resource_group_location):
         print(resource_group_location)
