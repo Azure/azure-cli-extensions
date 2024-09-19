@@ -23,7 +23,6 @@ steps:
         RepoName=${array[0]}
         OriginalTag=${array[1]}
         TagName=${array[2]}
-        # Extract the number after the last hyphen
         IncrementedTagNumber=""
         echo "Tag Convention details: $(cat tagConvention.txt)"
         if grep -q "incremental" tagConvention.txt; then
