@@ -1167,10 +1167,6 @@ class BaseContainer(_serialization.Model):
 
     :ivar image: Container image tag.
     :vartype image: str
-    :ivar image_type: The type of the image. Set to CloudBuild to let the system manages the image,
-     where user will not be able to update image through image field. Set to ContainerImage for user
-     provided image. Known values are: "CloudBuild" and "ContainerImage".
-    :vartype image_type: str or ~azure.mgmt.appcontainers.models.ImageType
     :ivar name: Custom container name.
     :vartype name: str
     :ivar command: Container start command.
@@ -1187,7 +1183,6 @@ class BaseContainer(_serialization.Model):
 
     _attribute_map = {
         "image": {"key": "image", "type": "str"},
-        "image_type": {"key": "imageType", "type": "str"},
         "name": {"key": "name", "type": "str"},
         "command": {"key": "command", "type": "[str]"},
         "args": {"key": "args", "type": "[str]"},
@@ -1200,7 +1195,6 @@ class BaseContainer(_serialization.Model):
         self,
         *,
         image: Optional[str] = None,
-        image_type: Optional[Union[str, "_models.ImageType"]] = None,
         name: Optional[str] = None,
         command: Optional[List[str]] = None,
         args: Optional[List[str]] = None,
@@ -1212,10 +1206,6 @@ class BaseContainer(_serialization.Model):
         """
         :keyword image: Container image tag.
         :paramtype image: str
-        :keyword image_type: The type of the image. Set to CloudBuild to let the system manages the
-         image, where user will not be able to update image through image field. Set to ContainerImage
-         for user provided image. Known values are: "CloudBuild" and "ContainerImage".
-        :paramtype image_type: str or ~azure.mgmt.appcontainers.models.ImageType
         :keyword name: Custom container name.
         :paramtype name: str
         :keyword command: Container start command.
@@ -1231,7 +1221,6 @@ class BaseContainer(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.image = image
-        self.image_type = image_type
         self.name = name
         self.command = command
         self.args = args
@@ -2554,10 +2543,6 @@ class Container(BaseContainer):
 
     :ivar image: Container image tag.
     :vartype image: str
-    :ivar image_type: The type of the image. Set to CloudBuild to let the system manages the image,
-     where user will not be able to update image through image field. Set to ContainerImage for user
-     provided image. Known values are: "CloudBuild" and "ContainerImage".
-    :vartype image_type: str or ~azure.mgmt.appcontainers.models.ImageType
     :ivar name: Custom container name.
     :vartype name: str
     :ivar command: Container start command.
@@ -2576,7 +2561,6 @@ class Container(BaseContainer):
 
     _attribute_map = {
         "image": {"key": "image", "type": "str"},
-        "image_type": {"key": "imageType", "type": "str"},
         "name": {"key": "name", "type": "str"},
         "command": {"key": "command", "type": "[str]"},
         "args": {"key": "args", "type": "[str]"},
@@ -2590,7 +2574,6 @@ class Container(BaseContainer):
         self,
         *,
         image: Optional[str] = None,
-        image_type: Optional[Union[str, "_models.ImageType"]] = None,
         name: Optional[str] = None,
         command: Optional[List[str]] = None,
         args: Optional[List[str]] = None,
@@ -2603,10 +2586,6 @@ class Container(BaseContainer):
         """
         :keyword image: Container image tag.
         :paramtype image: str
-        :keyword image_type: The type of the image. Set to CloudBuild to let the system manages the
-         image, where user will not be able to update image through image field. Set to ContainerImage
-         for user provided image. Known values are: "CloudBuild" and "ContainerImage".
-        :paramtype image_type: str or ~azure.mgmt.appcontainers.models.ImageType
         :keyword name: Custom container name.
         :paramtype name: str
         :keyword command: Container start command.
@@ -2624,7 +2603,6 @@ class Container(BaseContainer):
         """
         super().__init__(
             image=image,
-            image_type=image_type,
             name=name,
             command=command,
             args=args,
@@ -2734,10 +2712,6 @@ class ContainerApp(TrackedResource):  # pylint: disable=too-many-instance-attrib
         "managed_environment_id": {"key": "properties.managedEnvironmentId", "type": "str"},
         "environment_id": {"key": "properties.environmentId", "type": "str"},
         "workload_profile_name": {"key": "properties.workloadProfileName", "type": "str"},
-        "patching_configuration": {
-            "key": "properties.patchingConfiguration",
-            "type": "ContainerAppPropertiesPatchingConfiguration",
-        },
         "latest_revision_name": {"key": "properties.latestRevisionName", "type": "str"},
         "latest_ready_revision_name": {"key": "properties.latestReadyRevisionName", "type": "str"},
         "latest_revision_fqdn": {"key": "properties.latestRevisionFqdn", "type": "str"},
@@ -2760,7 +2734,6 @@ class ContainerApp(TrackedResource):  # pylint: disable=too-many-instance-attrib
         managed_environment_id: Optional[str] = None,
         environment_id: Optional[str] = None,
         workload_profile_name: Optional[str] = None,
-        patching_configuration: Optional["_models.ContainerAppPropertiesPatchingConfiguration"] = None,
         configuration: Optional["_models.Configuration"] = None,
         template: Optional["_models.Template"] = None,
         **kwargs: Any
@@ -2790,8 +2763,6 @@ class ContainerApp(TrackedResource):  # pylint: disable=too-many-instance-attrib
         :paramtype environment_id: str
         :keyword workload_profile_name: Workload profile name to pin for container app execution.
         :paramtype workload_profile_name: str
-        :keyword patching_configuration: Container App auto patch configuration.
-        :paramtype patching_configuration:
          ~azure.mgmt.appcontainers.models.ContainerAppPropertiesPatchingConfiguration
         :keyword configuration: Non versioned Container App configuration properties.
         :paramtype configuration: ~azure.mgmt.appcontainers.models.Configuration
@@ -2807,7 +2778,6 @@ class ContainerApp(TrackedResource):  # pylint: disable=too-many-instance-attrib
         self.managed_environment_id = managed_environment_id
         self.environment_id = environment_id
         self.workload_profile_name = workload_profile_name
-        self.patching_configuration = patching_configuration
         self.latest_revision_name = None
         self.latest_ready_revision_name = None
         self.latest_revision_fqdn = None
@@ -7297,10 +7267,6 @@ class InitContainer(BaseContainer):
 
     :ivar image: Container image tag.
     :vartype image: str
-    :ivar image_type: The type of the image. Set to CloudBuild to let the system manages the image,
-     where user will not be able to update image through image field. Set to ContainerImage for user
-     provided image. Known values are: "CloudBuild" and "ContainerImage".
-    :vartype image_type: str or ~azure.mgmt.appcontainers.models.ImageType
     :ivar name: Custom container name.
     :vartype name: str
     :ivar command: Container start command.
