@@ -5,7 +5,6 @@ Release History
 1.1.1
 ++++++
 * Fix for configure option, enabling it for disable gateway and ip connect scenarios.
-* Fix to use resource host name instead of resource name for AAD login to work in scenarios where resource name diverge from host name.
 
 1.1.0
 ++++++
