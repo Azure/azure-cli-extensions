@@ -20,7 +20,7 @@ from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
 
 from .._storage import create_container, upload_blob
 
-from .._client_factory import cf_jobs, _get_data_credentials
+from .._client_factory import cf_jobs
 from .workspace import WorkspaceInfo
 from .target import TargetInfo, get_provider
 
