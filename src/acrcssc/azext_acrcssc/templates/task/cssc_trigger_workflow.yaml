@@ -25,11 +25,11 @@ steps:
         TagName=${array[2]}
         # Extract the number after the last hyphen
         IncrementedTagNumber=""
-        echo "Tag Convention details: $(cat tagConvention.txt)"        
+        echo "Tag Convention details: $(cat tagConvention.txt)"
         if grep -q "incremental" tagConvention.txt; then
           IncrementedTagNumber="1"
         else
-          IncrementedTagNumber="patched"          
+          IncrementedTagNumber="patched"
         fi
 
         if [ $TagName == "N/A" ]; then
