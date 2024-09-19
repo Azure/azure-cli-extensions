@@ -9,7 +9,7 @@ steps:
   - id: check-patch-tag
     cmd: |
        bash -c 'echo "New Patch tag is {{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}"
-       if [ {{.Values.SOURCE_IMAGE_NEWPATCH_TAG}} -gt 999 ]; then
+       if [ "{{.Values.SOURCE_IMAGE_NEWPATCH_TAG}}" != "patched" ] && [ {{.Values.SOURCE_IMAGE_NEWPATCH_TAG}} -gt 999 ]; then
           echo "New Patch tag is greater than 999. No more than 1000 patches can be created for a tag. Exiting the patching workflow."
           exit 1
        fi'
