@@ -333,6 +333,7 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
     else:
         raise UnrecognizedArgumentError("Platform is not supported for this command. Supported platforms: Windows")
 
+
 def _is_ipconnect_request(bastion, target_ip_address):
     if target_ip_address:
         if 'enableIpConnect' in bastion and bastion['enableIpConnect'] is True:
