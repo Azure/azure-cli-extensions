@@ -7,7 +7,7 @@
 
 from azure.cli.command_modules.containerapp._ssh_utils import WebSocketConnection, SSH_TERM_RESIZE_PREFIX, \
     SSH_DEFAULT_ENCODING, read_ssh
-from azure.cli.core.azclierror import ValidationError
+from azure.cli.core.azclierror import ValidationError, CLIInternalError
 
 from knack.log import get_logger
 
@@ -18,7 +18,14 @@ logger = get_logger(__name__)
 
 class DebugWebSocketConnection(WebSocketConnection):
     def __init__(self, cmd, resource_group_name, name, revision, replica, container):
-        super(DebugWebSocketConnection, self).__init__(cmd, resource_group_name, name, revision, replica, container, "")
+        try:
+            super(DebugWebSocketConnection, self).__init__(cmd, resource_group_name,
+                                                           name, revision, replica, container, "")
+        except Exception as e:
+            stringErr = str(e)
+            if "Handshake status 400 Bad Request" in stringErr:
+                raise CLIInternalError("Debug Console feature is not allowed for the subscription.")
+            raise e
 
     @classmethod
     def _get_logstream_endpoint(cls, cmd, resource_group_name, name, revision, replica, container):
