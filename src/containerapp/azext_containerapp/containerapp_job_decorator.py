@@ -31,10 +31,9 @@ from azure.cli.command_modules.containerapp._models import (
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.commands import AzCliCommand
 from azure.core.exceptions import DeserializationError, ResourceNotFoundError
+from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 
 from knack.log import get_logger
-
-from msrestazure.tools import parse_resource_id, is_valid_resource_id
 
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._constants import CONNECTED_ENVIRONMENT_RESOURCE_TYPE, \
