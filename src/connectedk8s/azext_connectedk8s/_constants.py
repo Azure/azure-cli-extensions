@@ -26,6 +26,11 @@ Distribution_Enum_Values = [
     "aks_edge_k3s",
     "aks_edge_k8s",
 ]
+Public_Cloud_Distribution_List = [
+    "gke", 
+    "eks", 
+    "aks"
+]
 Infrastructure_Enum_Values = [
     "generic",
     "azure",
