@@ -45,15 +45,18 @@ from .repair_utils import (
     _check_n_start_vm,
     _check_existing_rg,
     _fetch_architecture,
-    _select_distro_linux_Arm64
+    _select_distro_linux_Arm64,
+    _fetch_vm_security_profile_parameters,
+    _fetch_osdisk_security_profile_parameters,
+    _fetch_compatible_windows_os_urn_v2
 )
 from .exceptions import AzCommandError, RunScriptNotFoundForIdError, SupportingResourceNotFoundError, CommandCanceledByUserError
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False):
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False, encrypt_recovery_key=""):
 
-    # log all the parameters
+    # log all the parameters not logging the bitlocker key
     logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s', vm_name, resource_group_name, repair_password, repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes)
 
     # Init command helper object
@@ -88,7 +91,10 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             else:
                 os_image_urn = _select_distro_linux(distro)
         else:
-            os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
+            if encrypt_recovery_key:
+                os_image_urn = _fetch_compatible_windows_os_urn_v2(source_vm)
+            else:
+                os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
             os_type = 'Windows'
 
         # Set up base create vm command
@@ -109,6 +115,18 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         if source_vm.zones:
             zone = source_vm.zones[0]
             create_repair_vm_command += ' --zone {zone}'.format(zone=zone)
+
+        if encrypt_recovery_key:
+            # For confidential VM and Trusted VM security tags some of the SKU expects the right security type, secure_boot_enabled and vtpm_enabled
+            logger.debug('Fetching VM security profile...')
+            vm_security_params = _fetch_vm_security_profile_parameters(source_vm)
+            if vm_security_params:
+                create_repair_vm_command += vm_security_params
+
+            logger.debug('Fetching OS Disk security profile...')
+            osdisk_security_params = _fetch_osdisk_security_profile_parameters(source_vm)
+            if osdisk_security_params:
+                create_repair_vm_command += osdisk_security_params
 
         # Create new resource group
         existing_rg = _check_existing_rg(repair_group_name)
@@ -151,7 +169,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             if not is_linux and unlock_encrypted_vm:
                 # windows with encryption
                 _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, repair_username)
-                _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux)
+                _unlock_encrypted_vm_run(repair_vm_name, repair_group_name, is_linux, encrypt_recovery_key)
 
             if is_linux and unlock_encrypted_vm:
                 # linux with encryption
@@ -612,18 +630,17 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         vnet_resource_group = subnet_id_tokens[-7]
         ipconfig_name = ip_config_object['name']
         orig_ip_address = ip_config_object['privateIPAddress']
-        application_names=""
-        applicationSecurityGroups='applicationSecurityGroups'
+        application_names = ""
+        applicationSecurityGroups = 'applicationSecurityGroups'
         if applicationSecurityGroups in ip_config_object:
             for item in ip_config_object[applicationSecurityGroups]:
                 application_id_tokens = item['id'].split('/')
                 if application_id_tokens[-1] is not None:
 
-                    application_names+=application_id_tokens[-1]+ " "
-                    
+                    application_names += application_id_tokens[-1] + " "
+
         logger.info('applicationSecurityGroups {application_names}...\n')
 
-        
         # Dynamic | Static
         orig_ip_allocation_method = ip_config_object['privateIPAllocationMethod']
 
@@ -640,19 +657,18 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
         # Update IP address
         if application_names:
             update_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} --asgs {asgs}' \
-                                .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address,asgs=application_names)
+                                .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address, asgs=application_names)
         else:
             logger.info('applicationSecurityGroups do not exist...\n')
             update_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip}' \
                                 .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=swap_ip_address)
         _call_az_command(update_ip_command)
-        
-         # Wait for IP updated
+
+        # Wait for IP updated
         wait_ip_update_command = 'az network nic ip-config wait --updated -g {g} --nic-name {nic}' \
-                                .format(g=resource_group_name, nic=primary_nic_name)
+            .format(g=resource_group_name, nic=primary_nic_name)
         _call_az_command(wait_ip_update_command)
 
-            
         # 4) Change things back. This will also invoke and wait for a VM restart.
         logger.info('NIC reset is complete. Now reverting back to your original configuration...\n')
         # If user had dynamic config, change back to dynamic
@@ -661,7 +677,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
             # Revert Static to Dynamic
             if application_names:
                 revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method} --asgs {asgs}' \
-                                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG,asgs=application_names)
+                                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG, asgs=application_names)
             else:
                 revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --set privateIpAllocationMethod={method}' \
                                     .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, method=DYNAMIC_CONFIG)
@@ -669,7 +685,7 @@ def reset_nic(cmd, vm_name, resource_group_name, yes=False):
             # Revert to original static ip
             if application_names:
                 revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} --asgs {asgs}' \
-                                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address,asgs=application_names)
+                                    .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address, asgs=application_names)
             else:
                 revert_ip_command = 'az network nic ip-config update -g {g} --nic-name {nic} -n {config} --private-ip-address {ip} ' \
                                     .format(g=resource_group_name, nic=primary_nic_name, config=ipconfig_name, ip=orig_ip_address)
@@ -748,7 +764,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
     logger.info('Running fstab run command')
 
     try:
-        run_out = run(cmd, repair_vm_name, repair_group_name, run_id='linux-alar2', parameters=["fstab"])
+        run_out = run(cmd, repair_vm_name, repair_group_name, run_id='linux-alar2', parameters=["fstab", "initiator=SELFHELP"])
 
     except Exception:
         command.set_status_error()

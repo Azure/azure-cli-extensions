@@ -19,15 +19,7 @@ from azure.cli.core.commands.validators import validate_file_or_dict
 from azure.cli.command_modules.monitor.actions import AAZCustomListArg
 
 from .aaz.latest.monitor.data_collection.endpoint import Create as _EndpointCreate
-from .aaz.latest.monitor.data_collection.rule import Create as _RuleCreate, Update as _RuleUpdate, Show as RuleShow
-
-try:
-    from .manual.custom import *  # noqa: F403
-except ImportError as e:
-    if e.name.endswith('manual.custom'):
-        pass
-    else:
-        raise e
+from .aaz.latest.monitor.data_collection.rule import Create as _RuleCreate, Update as _RuleUpdate
 
 
 class EndpointCreate(_EndpointCreate):
@@ -37,20 +29,6 @@ class EndpointCreate(_EndpointCreate):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.public_network_access._required = True
         return args_schema
-
-
-def monitor_data_collection_rule_show(client,
-                                      resource_group_name,
-                                      data_collection_rule_name):
-    return client.get(resource_group_name=resource_group_name,
-                      data_collection_rule_name=data_collection_rule_name)
-
-
-def monitor_data_collection_endpoint_show(client,
-                                          resource_group_name,
-                                          data_collection_endpoint_name):
-    return client.get(resource_group_name=resource_group_name,
-                      data_collection_endpoint_name=data_collection_endpoint_name)
 
 
 def monitor_data_collection_rule_association_list(cmd, resource_group_name=None, data_collection_rule_name=None,
@@ -383,90 +361,3 @@ class RuleUpdate(_RuleUpdate):
         process_data_source_windows_event_logs(args)
         process_destination_log_analytics(args)
         process_destination_monitor_metrics(args)
-
-
-def data_collection_rules_data_flows_list(cmd, resource_group_name, data_collection_rule_name):
-    rule_instance = RuleShow(cli_ctx=cmd.cli_ctx)(command_args={
-        "resource_group": resource_group_name,
-        "data_collection_rule_name": data_collection_rule_name})
-    return rule_instance["dataFlows"]
-
-
-def data_collection_rules_log_analytics_list(cmd, resource_group_name, data_collection_rule_name):
-    rule_instance = RuleShow(cli_ctx=cmd.cli_ctx)(command_args={
-        "resource_group": resource_group_name,
-        "data_collection_rule_name": data_collection_rule_name
-    })
-    return rule_instance["destinations"].get("logAnalytics", [])
-
-
-def data_collection_rules_log_analytics_show(cmd, resource_group_name, data_collection_rule_name, name):
-    rule_instance = RuleShow(cli_ctx=cmd.cli_ctx)(command_args={
-        "resource_group": resource_group_name,
-        "data_collection_rule_name": data_collection_rule_name
-    })
-    item_list = rule_instance["destinations"].get("logAnalytics", [])
-    for item in item_list:
-        if item["name"] == name:
-            return item
-    return {}
-
-
-def data_collection_rules_performance_counters_list(cmd, resource_group_name, data_collection_rule_name):
-    rule_instance = RuleShow(cli_ctx=cmd.cli_ctx)(command_args={
-        "resource_group": resource_group_name,
-        "data_collection_rule_name": data_collection_rule_name
-    })
-    return rule_instance["dataSources"].get("performanceCounters", [])
-
-
-def data_collection_rules_performance_counters_show(cmd, resource_group_name, data_collection_rule_name, name):
-    rule_instance = RuleShow(cli_ctx=cmd.cli_ctx)(command_args={
-        "resource_group": resource_group_name,
-        "data_collection_rule_name": data_collection_rule_name
-    })
-    item_list = rule_instance["dataSources"].get("performanceCounters", [])
-    for item in item_list:
-        if item['name'] == name:
-            return item
-    return {}
-
-
-def data_collection_rules_windows_event_logs_list(cmd, resource_group_name, data_collection_rule_name):
-    rule_instance = RuleShow(cli_ctx=cmd.cli_ctx)(command_args={
-        "resource_group": resource_group_name,
-        "data_collection_rule_name": data_collection_rule_name
-    })
-    return rule_instance["dataSources"].get("windowsEventLogs", [])
-
-
-def data_collection_rules_windows_event_logs_show(cmd, resource_group_name, data_collection_rule_name, name):
-    rule_instance = RuleShow(cli_ctx=cmd.cli_ctx)(command_args={
-        "resource_group": resource_group_name,
-        "data_collection_rule_name": data_collection_rule_name
-    })
-    item_list = rule_instance["dataSources"].get("windowsEventLogs", [])
-    for item in item_list:
-        if item['name'] == name:
-            return item
-    return {}
-
-
-def data_collection_rules_syslog_list(cmd, resource_group_name, data_collection_rule_name):
-    rule_instance = RuleShow(cli_ctx=cmd.cli_ctx)(command_args={
-        "resource_group": resource_group_name,
-        "data_collection_rule_name": data_collection_rule_name
-    })
-    return rule_instance["dataSources"].get("syslog", [])
-
-
-def data_collection_rules_syslog_show(cmd, resource_group_name, data_collection_rule_name, name):
-    rule_instance = RuleShow(cli_ctx=cmd.cli_ctx)(command_args={
-        "resource_group": resource_group_name,
-        "data_collection_rule_name": data_collection_rule_name
-    })
-    item_list = rule_instance["dataSources"].get("syslog", [])
-    for item in item_list:
-        if item['name'] == name:
-            return item
-    return {}

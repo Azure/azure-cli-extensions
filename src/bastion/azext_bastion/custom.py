@@ -136,7 +136,7 @@ def _build_args(cert_file, private_key_file):
 
 
 def ssh_bastion_host(cmd, auth_type, target_resource_id, target_ip_address, resource_group_name, bastion_host_name,
-                     resource_port=None, username=None, ssh_key=None):
+                     resource_port=None, username=None, ssh_key=None, ssh_args=None):
     import os
     from .aaz.latest.network.bastion import Show
 
@@ -198,6 +198,8 @@ def ssh_bastion_host(cmd, auth_type, target_resource_id, target_ip_address, reso
     command = command + ["-p", str(tunnel_server.local_port)]
     command = command + ["-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null"]
     command = command + ["-o", "LogLevel=Error"]
+    if ssh_args:
+        command = command + ssh_args
     logger.debug("Running ssh command %s", " ".join(command))
 
     try:
@@ -227,6 +229,22 @@ def _get_rdp_path(rdp_command="mstsc"):
         raise UnrecognizedArgumentError("Platform is not supported for this command. Supported platforms: Windows")
 
     return rdp_path
+
+
+def _get_rdp_file_path(tunnel_server):
+    import os
+
+    rdp_file_content = (
+        f"full address:s:localhost:{tunnel_server.local_port}\n"
+        f"alternate full address:s:localhost:{tunnel_server.local_port}\n"
+        "use multimon:i:0\n"
+    )
+
+    rdpfilepath = os.path.join(tempfile.gettempdir(), f'conn_{uuid.uuid4().hex}.rdp')
+    with open(rdpfilepath, 'w') as rdp_file:
+        rdp_file.write(rdp_file_content)
+
+    return rdpfilepath
 
 
 def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_name, bastion_host_name,
@@ -284,7 +302,11 @@ def rdp_bastion_host(cmd, target_resource_id, target_ip_address, resource_group_
             t = threading.Thread(target=_start_tunnel, args=(tunnel_server,))
             t.daemon = True
             t.start()
-            command = [_get_rdp_path(), f"/v:localhost:{tunnel_server.local_port}"]
+
+            command = [_get_rdp_path()]
+            if configure:
+                command.append("/edit")
+            command.append(_get_rdp_file_path(tunnel_server))
             launch_and_wait(command)
             tunnel_server.cleanup()
         else:

@@ -10,6 +10,7 @@ import argparse
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.core.commands.validators import validate_key_value_pairs
 from azure.cli.core.profiles import get_sdk
+from azure.cli.core.azclierror import UnrecognizedArgumentError
 from knack.util import CLIError
 from knack.log import get_logger
 from ._client_factory import get_storage_data_service_client, blob_data_service_factory, cf_blob_service, \
@@ -45,7 +46,7 @@ def _query_account_rg(cli_ctx, account_name):
     scf = get_mgmt_service_client(cli_ctx, CUSTOM_MGMT_STORAGE)
     acc = next((x for x in scf.storage_accounts.list() if x.name == account_name), None)
     if acc:
-        from msrestazure.tools import parse_resource_id
+        from azure.mgmt.core.tools import parse_resource_id
         return parse_resource_id(acc.id)['resource_group'], scf
     raise ValueError("Storage account '{}' not found.".format(account_name))
 
@@ -443,7 +444,7 @@ def validate_immutability_arguments(namespace):
 
 
 def validate_subnet(cmd, namespace):
-    from msrestazure.tools import resource_id, is_valid_resource_id
+    from azure.mgmt.core.tools import resource_id, is_valid_resource_id
     from azure.cli.core.commands.client_factory import get_subscription_id
 
     subnet = namespace.subnet
@@ -668,14 +669,18 @@ class PermissionScopeAddAction(argparse._AppendAction):
         try:
             permissions, service, resource_name = '', '', ''
             for s in values:
-                if "permissions" in s:
-                    permissions = s.split('=')[1]
-                elif "service" in s:
-                    service = s.split('=')[1]
-                elif "resource-name" in s:
-                    resource_name = s.split('=')[1]
-        except (ValueError, TypeError):
-            raise CLIError('usage error: --permission-scope VARIABLE OPERATOR VALUE')
+                k, v = s.split('=', 1)
+                if k == "permissions":
+                    permissions = v
+                elif k == "service":
+                    service = v
+                elif k == "resource-name":
+                    resource_name = v
+                else:
+                    raise UnrecognizedArgumentError(
+                        'key error: key must be one of permissions, service, resource-name for --permission-scope')
+        except (ValueError, TypeError, IndexError):
+            raise CLIError('usage error: --permission-scope [Key=Value ...]')
         namespace.permission_scope.append(PermissionScope(
             permissions=permissions,
             service=service,
@@ -691,13 +696,17 @@ class SshPublicKeyAddAction(argparse._AppendAction):
         SshPublicKey = namespace._cmd.get_models('SshPublicKey')
         try:
             description, key = '', ''
-            for k in values:
-                if "description" in k:
-                    description = k.split('=')[1]
-                elif "key" in k:
-                    key = k.split('=')[1]
-        except (ValueError, TypeError):
-            raise CLIError('usage error: --ssh-authorized-key VARIABLE OPERATOR VALUE')
+            for s in values:
+                k, v = s.split('=', 1)
+                if k == "description":
+                    description = v
+                elif k == "key":
+                    key = v
+                else:
+                    raise UnrecognizedArgumentError(
+                        'key error: key must be one of description, key for --ssh-authorized-key')
+        except (ValueError, TypeError, IndexError):
+            raise CLIError('usage error: --ssh-authorized-key [Key=Value ...]')
         namespace.ssh_authorized_key.append(SshPublicKey(description=description, key=key))
 
 

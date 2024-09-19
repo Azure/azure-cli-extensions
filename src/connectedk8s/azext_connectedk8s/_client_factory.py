@@ -64,6 +64,19 @@ def cf_connectedk8s_prev_2023_11_01(cli_ctx, *_):
 def cf_connected_cluster_prev_2023_11_01(cli_ctx, _):
     return cf_connectedk8s_prev_2023_11_01(cli_ctx).connected_cluster
 
+def cf_connectedk8s_prev_2024_07_01(cli_ctx, *_):
+    from azext_connectedk8s.vendored_sdks.preview_2024_07_01 import ConnectedKubernetesClient
+    if os.getenv(consts.Azure_Access_Token_Variable):
+        validate_custom_token()
+        credential = AccessTokenCredential(access_token=os.getenv(consts.Azure_Access_Token_Variable))
+        return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient,
+                                       subscription_id=os.getenv('AZURE_SUBSCRIPTION_ID'),
+                                       credential=credential)
+    return get_mgmt_service_client(cli_ctx, ConnectedKubernetesClient)
+
+
+def cf_connected_cluster_prev_2024_07_01(cli_ctx, _):
+    return cf_connectedk8s_prev_2024_07_01(cli_ctx).connected_cluster
 
 def cf_connectedmachine(cli_ctx, subscription_id):
     from azure.mgmt.hybridcompute import HybridComputeManagementClient
@@ -120,8 +133,10 @@ class AccessTokenCredential:
 
 def validate_custom_token():
     if os.getenv('AZURE_SUBSCRIPTION_ID') is None:
-        telemetry.set_exception(exception='Required environment variables and parameters are not set',
-                                fault_type=consts.Custom_Token_Environments_Fault_Type,
-                                summary='Required environment variables and parameters are not set')
-        raise ValidationError("Environment variable 'AZURE_SUBSCRIPTION_ID' should be set when custom access token \
-            is enabled.")
+        telemetry.set_exception(exception='Required environment variable \'AZURE_SUBSCRIPTION_ID\' is not set, when '
+                                          'using Custom Access Token.',
+                                fault_type=consts.Custom_Token_Env_Var_Sub_Id_Missing_Fault_Type,
+                                summary='Required environment variable \'AZURE_SUBSCRIPTION_ID\' is not set, when '
+                                        'using Custom Access Token.')
+        raise ValidationError("Environment variable 'AZURE_SUBSCRIPTION_ID' should be set when custom access token "
+                              "is enabled.")

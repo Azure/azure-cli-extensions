@@ -13,20 +13,19 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "connectedmachine license delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete operation to delete a license.
+    """Delete a license.
 
     :example: Sample command for license delete
-        az connectedmachine license delete --subscription subscriptionId --resource-group 'dakirbytest' --name 'testLicense'
+        az connectedmachine license delete --resource-group myResourceGroup --license-name licenseName --subscription mySubscription
     """
 
     _aaz_info = {
-        "version": "2024-03-31-preview",
+        "version": "2024-05-20-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses/{}", "2024-03-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/licenses/{}", "2024-05-20-preview"],
         ]
     }
 
@@ -147,7 +146,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-31-preview",
+                    "api-version", "2024-05-20-preview",
                     required=True,
                 ),
             }

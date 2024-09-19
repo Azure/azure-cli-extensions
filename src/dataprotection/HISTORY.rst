@@ -2,6 +2,15 @@
 
 Release History
 ===============
+1.5.3
++++++
+* `az dataprotection backup-instance initialize-for-data-recovery`: Fixed a bug when trying to initialize AKS restore.
+
+1.5.2
++++++
+* Added support for multi-user authentication for dataprotection policy updates
+* `az dataprotection backup-instance update-policy`: New parameters - `--operation-requests` and `--tenant-id` for allowing operations on MUA-protected resources.
+
 1.5.1
 +++++
 * Added support for multi-user authentication for CMK encryption changes

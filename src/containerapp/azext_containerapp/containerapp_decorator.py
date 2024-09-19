@@ -26,23 +26,33 @@ from azure.cli.command_modules.containerapp._utils import (store_as_secret_and_r
                                                            _convert_object_from_snake_to_camel_case,
                                                            _object_to_dict, _remove_additional_attributes,
                                                            _remove_readonly_attributes,
-                                                           is_registry_msi_system,
+                                                           is_registry_msi_system, validate_container_app_name, AppType,
                                                            safe_set, parse_metadata_flags, parse_auth_flags,
                                                            ensure_workload_profile_supported, _generate_secret_volume_name,
                                                            get_linker_client,
                                                            safe_get, _update_revision_env_secretrefs, _add_or_update_tags, _populate_secret_values,
-                                                           clean_null_values, _add_or_update_env_vars, _remove_env_vars, _get_acr_cred, _ensure_identity_resource_id)
+                                                           clean_null_values, _add_or_update_env_vars, _remove_env_vars, _get_acr_cred, _ensure_identity_resource_id,
+                                                           create_acrpull_role_assignment, _ensure_location_allowed, get_default_workload_profile_name_from_env,
+                                                           set_managed_identity, parse_secret_flags, _infer_acr_credentials)
+from azure.cli.command_modules.containerapp._constants import (CONTAINER_APPS_RP)
+from azure.cli.command_modules.containerapp._models import (
+    Ingress as IngressModel,
+    Configuration as ConfigurationModel,
+    Template as TemplateModel,
+    Dapr as DaprModel,
+    ManagedServiceIdentity as ManagedServiceIdentityModel,
+)
+
 from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 
 from knack.log import get_logger
 from knack.util import CLIError
 
-from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from ._clients import ManagedEnvironmentClient, ConnectedEnvironmentClient, ManagedEnvironmentPreviewClient
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
-
 from ._models import (
     RegistryCredentials as RegistryCredentialsModel,
     ContainerResources as ContainerResourcesModel,
@@ -58,9 +68,8 @@ from ._decorator_utils import (create_deserializer,
                                process_loaded_yaml,
                                load_yaml_file,
                                infer_runtime_option)
-from ._utils import parse_service_bindings, check_unique_bindings
+from ._utils import parse_service_bindings, check_unique_bindings, is_registry_msi_system_environment, env_has_managed_identity
 from ._validators import validate_create, validate_runtime
-
 from ._constants import (HELLO_WORLD_IMAGE,
                          CONNECTED_ENVIRONMENT_TYPE,
                          CONNECTED_ENVIRONMENT_RESOURCE_TYPE,
@@ -633,8 +642,214 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def set_argument_service_connectors_def_list(self, service_connectors_def_list):
         self.set_param("service_connectors_def_list", service_connectors_def_list)
 
+    # not craete role assignment if it's env system msi
+    def check_create_acrpull_role_assignment(self):
+        identity = self.get_argument_registry_identity()
+        if identity and not is_registry_msi_system(identity) and not is_registry_msi_system_environment(identity):
+            logger.info("Creating an acrpull role assignment for the registry identity")
+            create_acrpull_role_assignment(self.cmd, self.get_argument_registry_server(), identity, skip_error=True)
+
+    # not set up msi for current containerapp if it's env msi
+    def set_up_registry_identity(self):
+        identity = self.get_argument_registry_identity()
+        if identity:
+            if is_registry_msi_system(identity):
+                set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.containerapp_def, system_assigned=True)
+            elif is_valid_resource_id(identity):
+                parsed_managed_env = parse_resource_id(self.get_argument_managed_env())
+                managed_env_name = parsed_managed_env['name']
+                managed_env_rg = parsed_managed_env['resource_group']
+                if not env_has_managed_identity(self.cmd, managed_env_rg, managed_env_name, identity):
+                    set_managed_identity(self.cmd, self.get_argument_resource_group_name(), self.containerapp_def, user_assigned=[identity])
+
+    def parent_construct_payload(self):
+        # preview logic
+        self.check_create_acrpull_role_assignment()
+        # end preview logic
+
+        if self.get_argument_yaml():
+            return self.set_up_create_containerapp_yaml(name=self.get_argument_name(), file_name=self.get_argument_yaml())
+
+        if not self.get_argument_image():
+            self.set_argument_image(HELLO_WORLD_IMAGE)
+
+        if self.get_argument_managed_env() is None:
+            raise RequiredArgumentMissingError('Usage error: --environment is required if not using --yaml')
+
+        # Validate managed environment
+        parsed_managed_env = parse_resource_id(self.get_argument_managed_env())
+        managed_env_name = parsed_managed_env['name']
+        managed_env_rg = parsed_managed_env['resource_group']
+        managed_env_info = None
+
+        try:
+            managed_env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=managed_env_rg, name=managed_env_name)
+        except Exception as e:
+            handle_non_404_status_code_exception(e)
+
+        if not managed_env_info:
+            raise ValidationError("The environment '{}' does not exist. Specify a valid environment".format(self.get_argument_managed_env()))
+
+        while not self.get_argument_no_wait() and safe_get(managed_env_info, "properties", "provisioningState", default="").lower() in ["inprogress", "updating"]:
+            logger.info("Waiting for environment provisioning to finish before creating container app")
+            time.sleep(5)
+            managed_env_info = self.get_environment_client().show(cmd=self.cmd, resource_group_name=managed_env_rg, name=managed_env_name)
+
+        location = managed_env_info["location"]
+        _ensure_location_allowed(self.cmd, location, CONTAINER_APPS_RP, "containerApps")
+
+        if not self.get_argument_workload_profile_name() and "workloadProfiles" in managed_env_info:
+            workload_profile_name = get_default_workload_profile_name_from_env(self.cmd, managed_env_info, managed_env_rg)
+            self.set_argument_workload_profile_name(workload_profile_name)
+
+        external_ingress = None
+        if self.get_argument_ingress() is not None:
+            if self.get_argument_ingress().lower() == "internal":
+                external_ingress = False
+            elif self.get_argument_ingress().lower() == "external":
+                external_ingress = True
+
+        ingress_def = None
+        if self.get_argument_target_port() is not None and self.get_argument_ingress() is not None:
+            ingress_def = deepcopy(IngressModel)
+            ingress_def["external"] = external_ingress
+            ingress_def["targetPort"] = self.get_argument_target_port()
+            ingress_def["transport"] = self.get_argument_transport()
+            ingress_def["exposedPort"] = self.get_argument_exposed_port() if self.get_argument_transport() == "tcp" else None
+            ingress_def["allowInsecure"] = self.get_argument_allow_insecure()
+
+        secrets_def = None
+        if self.get_argument_secrets() is not None:
+            secrets_def = parse_secret_flags(self.get_argument_secrets())
+
+        registries_def = None
+        if self.get_argument_registry_server() is not None and not is_registry_msi_system(self.get_argument_registry_identity()):
+            registries_def = deepcopy(RegistryCredentialsModel)
+            registries_def["server"] = self.get_argument_registry_server()
+
+            # Infer credentials if not supplied and its azurecr
+            if (self.get_argument_registry_user() is None or self.get_argument_registry_pass() is None) and self.get_argument_registry_identity() is None:
+                registry_user, registry_pass = _infer_acr_credentials(self.cmd, self.get_argument_registry_server(), self.get_argument_disable_warnings())
+                self.set_argument_registry_user(registry_user)
+                self.set_argument_registry_pass(registry_pass)
+
+            if not self.get_argument_registry_identity():
+                registries_def["username"] = self.get_argument_registry_user()
+
+                if secrets_def is None:
+                    secrets_def = []
+                registries_def["passwordSecretRef"] = store_as_secret_and_return_secret_ref(secrets_def, self.get_argument_registry_user(),
+                                                                                            self.get_argument_registry_server(),
+                                                                                            self.get_argument_registry_pass(),
+                                                                                            disable_warnings=self.get_argument_disable_warnings())
+            else:
+                registries_def["identity"] = self.get_argument_registry_identity()
+
+        dapr_def = None
+        if self.get_argument_dapr_enabled():
+            dapr_def = deepcopy(DaprModel)
+            dapr_def["enabled"] = True
+            dapr_def["appId"] = self.get_argument_dapr_app_id()
+            dapr_def["appPort"] = self.get_argument_dapr_app_port()
+            dapr_def["appProtocol"] = self.get_argument_dapr_app_protocol()
+            dapr_def["httpReadBufferSize"] = self.get_argument_dapr_http_read_buffer_size()
+            dapr_def["httpMaxRequestSize"] = self.get_argument_dapr_http_max_request_size()
+            dapr_def["logLevel"] = self.get_argument_dapr_log_level()
+            dapr_def["enableApiLogging"] = self.get_argument_dapr_enable_api_logging()
+
+        config_def = deepcopy(ConfigurationModel)
+        config_def["secrets"] = secrets_def
+        config_def["activeRevisionsMode"] = self.get_argument_revisions_mode()
+        config_def["ingress"] = ingress_def
+        config_def["registries"] = [registries_def] if registries_def is not None else None
+        config_def["dapr"] = dapr_def
+
+        # Identity actions
+        identity_def = deepcopy(ManagedServiceIdentityModel)
+        identity_def["type"] = "None"
+
+        assign_system_identity = self.get_argument_system_assigned()
+        if self.get_argument_user_assigned():
+            assign_user_identities = [x.lower() for x in self.get_argument_user_assigned()]
+        else:
+            assign_user_identities = []
+
+        if assign_system_identity and assign_user_identities:
+            identity_def["type"] = "SystemAssigned, UserAssigned"
+        elif assign_system_identity:
+            identity_def["type"] = "SystemAssigned"
+        elif assign_user_identities:
+            identity_def["type"] = "UserAssigned"
+
+        if assign_user_identities:
+            identity_def["userAssignedIdentities"] = {}
+            subscription_id = get_subscription_id(self.cmd.cli_ctx)
+
+            for r in assign_user_identities:
+                r = _ensure_identity_resource_id(subscription_id, self.get_argument_resource_group_name(), r)
+                identity_def["userAssignedIdentities"][r] = {}  # pylint: disable=unsupported-assignment-operation
+
+        scale_def = self.set_up_scale_rule()
+
+        resources_def = None
+        if self.get_argument_cpu() is not None or self.get_argument_memory() is not None:
+            resources_def = deepcopy(ContainerResourcesModel)
+            resources_def["cpu"] = self.get_argument_cpu()
+            resources_def["memory"] = self.get_argument_memory()
+
+        container_def = deepcopy(ContainerModel)
+        container_def["name"] = self.get_argument_container_name() if self.get_argument_container_name() else self.get_argument_name()
+        container_def["image"] = self.get_argument_image() if not is_registry_msi_system(self.get_argument_registry_identity()) else HELLO_WORLD_IMAGE
+        if self.get_argument_env_vars() is not None:
+            container_def["env"] = parse_env_var_flags(self.get_argument_env_vars())
+        if self.get_argument_startup_command() is not None:
+            container_def["command"] = self.get_argument_startup_command()
+        if self.get_argument_args() is not None:
+            container_def["args"] = self.get_argument_args()
+        if resources_def is not None:
+            container_def["resources"] = resources_def
+
+        template_def = deepcopy(TemplateModel)
+
+        template_def["containers"] = [container_def]
+        template_def["scale"] = scale_def
+
+        if self.get_argument_secret_volume_mount() is not None:
+            volume_def = deepcopy(VolumeModel)
+            volume_mount_def = deepcopy(VolumeMountModel)
+            # generate a volume name
+            volume_def["name"] = _generate_secret_volume_name()
+            volume_def["storageType"] = "Secret"
+
+            # mount the volume to the container
+            volume_mount_def["volumeName"] = volume_def["name"]
+            volume_mount_def["mountPath"] = self.get_argument_secret_volume_mount()
+            container_def["volumeMounts"] = [volume_mount_def]
+            template_def["volumes"] = [volume_def]
+
+        if self.get_argument_revision_suffix() is not None and not is_registry_msi_system(self.get_argument_registry_identity()):
+            template_def["revisionSuffix"] = self.get_argument_revision_suffix()
+
+        if self.get_argument_termination_grace_period() is not None:
+            template_def["terminationGracePeriodSeconds"] = self.get_argument_termination_grace_period()
+
+        self.containerapp_def["location"] = location
+        self.containerapp_def["identity"] = identity_def
+        self.containerapp_def["properties"]["environmentId"] = self.get_argument_managed_env()
+        self.containerapp_def["properties"]["configuration"] = config_def
+        self.containerapp_def["properties"]["template"] = template_def
+        self.containerapp_def["tags"] = self.get_argument_tags()
+
+        if self.get_argument_workload_profile_name():
+            self.containerapp_def["properties"]["workloadProfileName"] = self.get_argument_workload_profile_name()
+            ensure_workload_profile_supported(self.cmd, managed_env_name, managed_env_rg, self.get_argument_workload_profile_name(),
+                                              managed_env_info)
+
+        # preview logic
+        self.set_up_registry_identity()
+
     def construct_payload(self):
-        super().construct_payload()
+        self.parent_construct_payload()
         self.set_up_service_type()
         self.set_up_service_binds()
         self.set_up_extended_location()
@@ -644,9 +859,19 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
             safe_set(self.containerapp_def, "properties", "configuration", "maxInactiveRevisions", value=self.get_argument_max_inactive_revisions())
         self.set_up_runtime()
 
-    def validate_arguments(self):
-        super().validate_arguments()
+    # copy from parent
+    def parent_validate_arguments(self):
+        validate_container_app_name(self.get_argument_name(), AppType.ContainerApp.name)
+        validate_revision_suffix(self.get_argument_revision_suffix())
+        # preview logic
+        self.validate_create()
+        # end preview logic
+
+    def validate_create(self):
         validate_create(self.get_argument_registry_identity(), self.get_argument_registry_pass(), self.get_argument_registry_user(), self.get_argument_registry_server(), self.get_argument_no_wait(), self.get_argument_source(), self.get_argument_artifact(), self.get_argument_repo(), self.get_argument_yaml(), self.get_argument_environment_type())
+
+    def validate_arguments(self):
+        self.parent_validate_arguments()
         if self.get_argument_service_bindings() and len(self.get_argument_service_bindings()) > 1 and self.get_argument_customized_keys():
             raise InvalidArgumentValueError("--bind have multiple values, but --customized-keys only can be set when --bind is single.")
         validate_runtime(self.get_argument_runtime(), self.get_argument_enable_java_metrics(), self.get_argument_enable_java_agent())

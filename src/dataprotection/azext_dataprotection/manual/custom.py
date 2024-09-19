@@ -218,7 +218,8 @@ def dataprotection_backup_instance_update(cmd, resource_group_name, vault_name, 
     })
 
 
-def dataprotection_backup_instance_update_policy(cmd, resource_group_name, vault_name, backup_instance_name, policy_id, no_wait=False):
+def dataprotection_backup_instance_update_policy(cmd, resource_group_name, vault_name, backup_instance_name, policy_id, no_wait=False,
+                                                 resource_guard_operation_requests=None, tenant_id=None):
     # For some reason, the auto-generated Backup Instance Update does not contain some fields. Prominently
     # in this situation, it is missing the properties.policyInfo.policyParameters section entirely, even though
     # Backup Instance Create contains it. To get around this, we have a modified Update function that basically
@@ -243,6 +244,8 @@ def dataprotection_backup_instance_update_policy(cmd, resource_group_name, vault
         "backup_instance": backup_instance,
         "resource_group": resource_group_name,
         "vault_name": vault_name,
+        "resource_guard_operation_requests": resource_guard_operation_requests,
+        "tenant_id": tenant_id,
     })
 
 
@@ -928,7 +931,7 @@ def restore_initialize_for_data_recovery(cmd, datasource_type, source_datastore,
     if datasource_type == 'AzureKubernetesService':
         restore_request["restore_target_info"]["object_type"] = "ItemLevelRestoreTargetInfo"
         restore_request["restore_target_info"]["restore_criteria"] = helper.get_resource_criteria_list(datasource_type, restore_configuration,
-                                                                                                       None, None, None, None)
+                                                                                                       None, None, None, None, None)
 
     return restore_request
 

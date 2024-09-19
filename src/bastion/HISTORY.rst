@@ -2,6 +2,18 @@
 
 Release History
 ===============
+1.1.1
+++++++
+* Fix for configure option, enabling it for disable gateway and ip connect scenarios.
+
+1.1.0
+++++++
+* Allow to pass `ssh_args` as positional parameter in command `az network bastion ssh`
+
+1.0.2
++++++
+* Remove redundant aad login commands from examples section.
+
 1.0.1
 +++++
 * Added support for concurrent connections.

@@ -23,9 +23,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}/agentpools/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/kubernetesclusters/{}/agentpools/{}", "2024-06-01-preview"],
         ]
     }
 
@@ -55,7 +55,7 @@ class Show(AAZCommand):
             ),
         )
         _args_schema.kubernetes_cluster_name = AAZStrArg(
-            options=["--kubernetes-cluster-name"],
+            options=["--kc-name", "--kubernetes-cluster-name"],
             help="The name of the Kubernetes cluster.",
             required=True,
             id_part="name",
@@ -137,7 +137,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-06-01-preview",
                     required=True,
                 ),
             }
@@ -335,8 +335,14 @@ class Show(AAZCommand):
             _ShowHelper._build_schema_kubernetes_label_read(taints.Element)
 
             upgrade_settings = cls._schema_on_200.properties.upgrade_settings
+            upgrade_settings.drain_timeout = AAZIntType(
+                serialized_name="drainTimeout",
+            )
             upgrade_settings.max_surge = AAZStrType(
                 serialized_name="maxSurge",
+            )
+            upgrade_settings.max_unavailable = AAZStrType(
+                serialized_name="maxUnavailable",
             )
 
             system_data = cls._schema_on_200.system_data
