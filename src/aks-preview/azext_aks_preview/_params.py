@@ -122,6 +122,7 @@ from azext_aks_preview._consts import (
     CONST_ARTIFACT_SOURCE_DIRECT,
     CONST_ARTIFACT_SOURCE_CACHE,
     CONST_OUTBOUND_TYPE_NONE,
+    CONST_OUTBOUND_TYPE_BLOCK,
     CONST_APP_ROUTING_ANNOTATION_CONTROLLED_NGINX,
     CONST_APP_ROUTING_EXTERNAL_NGINX,
     CONST_APP_ROUTING_INTERNAL_NGINX,
@@ -281,6 +282,7 @@ outbound_types = [
     CONST_OUTBOUND_TYPE_MANAGED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_USER_ASSIGNED_NAT_GATEWAY,
     CONST_OUTBOUND_TYPE_NONE,
+    CONST_OUTBOUND_TYPE_BLOCK,
 ]
 auto_upgrade_channels = [
     CONST_RAPID_UPGRADE_CHANNEL,
@@ -1527,6 +1529,7 @@ def load_arguments(self, _):
         c.argument("max_surge", validator=validate_max_surge)
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
+        c.argument("undrainable_node_behavior")
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         c.argument("max_pods", type=int, options_list=["--max-pods", "-m"])
@@ -1639,6 +1642,7 @@ def load_arguments(self, _):
         c.argument("max_surge", validator=validate_max_surge)
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
+        c.argument("undrainable_node_behavior")
         c.argument("mode", arg_type=get_enum_type(node_mode_types))
         c.argument("scale_down_mode", arg_type=get_enum_type(scale_down_modes))
         # extensions
@@ -1708,6 +1712,7 @@ def load_arguments(self, _):
         c.argument("max_surge", validator=validate_max_surge)
         c.argument("drain_timeout", type=int)
         c.argument("node_soak_duration", type=int)
+        c.argument("undrainable_node_behavior")
         c.argument("snapshot_id", validator=validate_snapshot_id)
         c.argument(
             "yes",

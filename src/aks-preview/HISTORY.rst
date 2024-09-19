@@ -9,13 +9,19 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
-Pending
+9.0.0b3
 +++++++
-* Remove dependency on `msrestazure.azure_exceptions` and `msrestazure.tools`.
+* Add `--undrainable-node-behavior` to the `az aks nodepool add/update/upgrade` commands.
+
+9.0.0b2
++++++++
+* Add block to supported outbound type
+* Vendor new SDK and bump API version to 2024-07-02-preview.
 
 9.0.0b1
 +++++++
 * [BREAKING CHANGE]: Remove support for `az aks update --ssh-access` command to avoid misleading. To update existing cluster's SSH access, please use `az aks nodepool update --ssh-access` to update node pool's SSH access one by one.
+* Remove dependency on `msrestazure.azure_exceptions` and `msrestazure.tools`.
 
 8.0.0b1
 +++++++
