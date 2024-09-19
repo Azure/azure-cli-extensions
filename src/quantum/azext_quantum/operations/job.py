@@ -585,15 +585,15 @@ def job_show(cmd, job_id, resource_group_name, workspace_name, location):
     return job
 
 
-def run(cmd, resource_group_name, workspace_name, location, target_id,
+def run(cmd, resource_group_name, workspace_name, location, target_id, job_input_file, job_input_format,
         job_name=None, shots=None, storage=None, job_params=None, target_capability=None,
-        job_input_file=None, job_input_format=None, job_output_format=None, entry_point=None):
+        job_output_format=None, entry_point=None):
     """
     Submit a job to run on Azure Quantum, and wait for the result.
     """
-    job = submit(cmd, resource_group_name, workspace_name, location, target_id,
+    job = submit(cmd, resource_group_name, workspace_name, location, target_id, job_input_file, job_input_format,
                  job_name, shots, storage, job_params, target_capability,
-                 job_input_file, job_input_format, job_output_format, entry_point)
+                 job_output_format, entry_point)
     logger.warning("Job id: %s", job.id)
     logger.debug(job)
 
