@@ -122,7 +122,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.enable_file_copy = AAZBoolArg(
-            options=["--enable-file-copy"],
+            options=["--file-copy"],
             arg_group="Properties",
             help="Enable/Disable File Copy feature of the Bastion Host resource.",
             nullable=True,

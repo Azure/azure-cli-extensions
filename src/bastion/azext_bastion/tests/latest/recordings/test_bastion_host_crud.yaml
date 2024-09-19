@@ -100,7 +100,7 @@ interactions:
       - 'Ref A: FDA1D02597BE4D5CA9D6EE83C909133F Ref B: CO6AA3150217023 Ref C: 2024-09-18T18:40:05Z'
     status:
       code: 201
-      message: ''
+      message: Created
 - request:
     body: null
     headers:
@@ -493,7 +493,7 @@ interactions:
       - 'Ref A: A9B5F8086F284AD3BC57094CF96FAE78 Ref B: CO6AA3150218019 Ref C: 2024-09-18T18:40:27Z'
     status:
       code: 201
-      message: Created
+      message: ''
 - request:
     body: null
     headers:
@@ -2080,6 +2080,8 @@ interactions:
         Central US","South Central US","West US","West US 2","North Europe","West
         Europe","East Asia","Southeast Asia","Japan East","Japan West","Brazil South","Australia
         East","Australia Southeast"],"apiVersions":["2019-11-01"],"defaultApiVersion":"2019-11-01","capabilities":"SupportsTags,
+        SupportsLocation"},{"resourceType":"expressRouteCrossConnections","locations":["East
+        US STG"],"apiVersions":["2024-03-01","2024-01-01","2023-11-01","2023-09-01","2023-06-01","2023-05-01","2023-04-01","2023-02-01","2022-11-01","2022-09-01","2022-07-01","2022-05-01","2022-01-01","2021-12-01","2021-08-01","2021-06-01","2021-05-01","2021-04-01","2021-03-01","2021-02-01","2021-01-01","2020-11-01","2020-08-01","2020-07-01","2020-06-01","2020-05-01","2020-04-01","2020-03-01","2020-01-01","2019-12-01","2019-11-01","2019-09-01","2019-08-01","2019-07-01","2019-06-01","2019-04-01","2019-02-01","2018-12-01","2018-11-01","2018-10-01","2018-08-01","2018-07-01","2018-06-01","2018-05-01","2018-04-01","2018-03-01","2018-02-01"],"defaultApiVersion":"2020-03-01","capabilities":"SupportsTags,
         SupportsLocation"},{"resourceType":"networkWatchers/lenses","locations":["Central
         US EUAP","East US 2 EUAP","UAE Central","Switzerland West","Germany North"],"apiVersions":["2024-03-01","2024-01-01","2023-11-01","2023-09-01","2023-06-01","2023-05-01","2023-04-01","2023-02-01","2022-11-01","2022-09-01","2022-07-01","2022-05-01","2022-01-01","2021-12-01","2021-08-01","2021-06-01","2021-05-01","2021-04-01","2021-03-01","2021-02-01","2021-01-01","2020-11-01","2020-08-01","2020-07-01","2020-06-01","2020-05-01","2020-04-01","2020-03-01","2020-01-01","2019-12-01","2019-11-01","2019-09-01","2019-08-01","2019-07-01","2019-06-01","2019-04-01","2019-02-01","2018-12-01","2018-11-01","2018-10-01","2018-08-01","2018-07-01","2018-06-01","2018-05-01","2018-04-01","2018-03-01","2018-02-01","2018-01-01","2017-11-01","2017-10-01","2017-09-01"],"defaultApiVersion":"2020-03-01","capabilities":"CrossResourceGroupResourceMove,
         CrossSubscriptionResourceMove, SupportsTags, SupportsLocation"}],"registrationState":"Registered","registrationPolicy":"RegistrationRequired"}'
@@ -2515,12 +2517,12 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_bastion_host_000001/providers/Microsoft.Resources/deployments/mock-deployment/operationStatuses/08584749220374610375?api-version=2022-09-01
   response:
     body:
-      string: '{"status":"Running"}'
+      string: '{"status":"Accepted"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '20'
+      - '21'
       content-type:
       - application/json; charset=utf-8
       date:
@@ -3535,7 +3537,7 @@ interactions:
       - 'Ref A: 976DF6D649E54743A989ABB06BBBAC8B Ref B: CO6AA3150219047 Ref C: 2024-09-18T18:50:42Z'
     status:
       code: 200
-      message: ''
+      message: OK
 - request:
     body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_bastion_host_000001/providers/Microsoft.Network/bastionHosts/bastion-000006",
       "location": "italynorth", "properties": {"disableCopyPaste": false, "dnsName":

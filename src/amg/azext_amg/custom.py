@@ -171,7 +171,6 @@ def _get_login_account_principal_id(cli_ctx):
 def _create_role_assignment(cli_ctx, principal_id, principal_types, role_definition_id, scope):
     import time
     from azure.core.exceptions import HttpResponseError, ResourceExistsError
-    from msrestazure.azure_exceptions import CloudError
 
     assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
                                                  api_version=MGMT_SERVICE_CLIENT_API_VERSION).role_assignments
@@ -192,7 +191,12 @@ def _create_role_assignment(cli_ctx, principal_id, principal_types, role_definit
         except ResourceExistsError:  # Exception from Track-2 SDK
             logger.info('Role assignment already exists')
             break
-        except CloudError as ex:
+        except HttpResponseError as ex:
+            if 'UnmatchedPrincipalType' in ex.message:  # try each principal_type until we get the right one
+                parameters = RoleAssignmentCreateParameters(role_definition_id=role_definition_id,
+                                                            principal_id=principal_id,
+                                                            principal_type=principal_types.pop())
+                continue
             if 'role assignment already exists' in ex.message:  # Exception from Track-1 SDK
                 logger.info('Role assignment already exists')
                 break
@@ -202,14 +206,6 @@ def _create_role_assignment(cli_ctx, principal_id, principal_types, role_definit
                                retry_times)
                 continue
             raise
-        except HttpResponseError as ex:
-            # try each principal_type until we get the right one
-            if ex.message.find('UnmatchedPrincipalType') != -1:
-                parameters = RoleAssignmentCreateParameters(role_definition_id=role_definition_id,
-                                                            principal_id=principal_id,
-                                                            principal_type=principal_types.pop())
-                continue
-            break
 
 
 def _delete_role_assignment(cli_ctx, principal_id):
@@ -222,7 +218,7 @@ def _delete_role_assignment(cli_ctx, principal_id):
 
 
 def backup_grafana(cmd, grafana_name, components=None, directory=None, folders_to_include=None,
-                   folders_to_exclude=None, resource_group_name=None):
+                   folders_to_exclude=None, resource_group_name=None, skip_folder_permissions=False):
     import os
     from pathlib import Path
     from .backup import backup
@@ -240,7 +236,8 @@ def backup_grafana(cmd, grafana_name, components=None, directory=None, folders_t
            components=components,
            http_headers=headers,
            folders_to_include=folders_to_include,
-           folders_to_exclude=folders_to_exclude)
+           folders_to_exclude=folders_to_exclude,
+           skip_folder_permissions=skip_folder_permissions)
 
 
 def restore_grafana(cmd, grafana_name, archive_file, components=None, remap_data_sources=None,

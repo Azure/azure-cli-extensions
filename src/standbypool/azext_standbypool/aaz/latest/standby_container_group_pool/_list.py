@@ -15,20 +15,17 @@ from azure.cli.core.aaz import *
     "standby-container-group-pool list",
 )
 class List(AAZCommand):
-    """List standby container group pools by subscription or by resource group
+    """List StandbyContainerGroupPoolResource resources by subscription ID or by resource group
 
-    :example: List by subscription id
-        az standby-container-pool list --subscription 461fa159-654a-415f-853a-40b801021944
-
-    :example: List by resource group
+    :example: List by subscription id by resource group
         az standby-container-pool list --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg
     """
 
     _aaz_info = {
-        "version": "2023-12-01-preview",
+        "version": "2024-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.standbypool/standbycontainergrouppools", "2023-12-01-preview"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools", "2023-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.standbypool/standbycontainergrouppools", "2024-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools", "2024-03-01"],
         ]
     }
 
@@ -49,7 +46,9 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg()
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="The resource group",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -119,7 +118,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-12-01-preview",
+                    "api-version", "2024-03-01",
                     required=True,
                 ),
             }
@@ -154,7 +153,6 @@ class List(AAZCommand):
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
-                flags={"read_only": True},
             )
             _schema_on_200.value = AAZListType(
                 flags={"required": True},
@@ -296,7 +294,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-12-01-preview",
+                    "api-version", "2024-03-01",
                     required=True,
                 ),
             }
@@ -331,7 +329,6 @@ class List(AAZCommand):
             _schema_on_200 = cls._schema_on_200
             _schema_on_200.next_link = AAZStrType(
                 serialized_name="nextLink",
-                flags={"read_only": True},
             )
             _schema_on_200.value = AAZListType(
                 flags={"required": True},

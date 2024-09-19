@@ -424,7 +424,7 @@ def add_ingress_appgw_addon_role_assignment(result, cmd):
 
     if service_principal_msi_id is not None:
         config = result.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config
-        from msrestazure.tools import parse_resource_id, resource_id
+        from azure.mgmt.core.tools import parse_resource_id, resource_id
         if CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID in config:
             appgw_id = config[CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID]
             parsed_appgw_id = parse_resource_id(appgw_id)

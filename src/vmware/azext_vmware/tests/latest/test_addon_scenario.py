@@ -57,6 +57,12 @@ class VmwareAddonScenarioTest(ScenarioTest):
         # Update a SRM addon
         self.cmd('az vmware addon srm update -g {rg} -c {privatecloud} --license-key "41915-178A8-FF4A4-DB683-6D735"')
 
+        # Create a SRM addon without license key
+        self.cmd('az vmware addon srm create -g {rg} -c {privatecloud}')
+
+        # Update a SRM addon without license key
+        self.cmd('az vmware addon srm update -g {rg} -c {privatecloud}')
+
         # List all existing addon
         count = len(self.cmd('vmware addon list -g {rg} -c {privatecloud}').get_output_in_json())
         self.assertEqual(count, 1, 'addon count expected to be 1')
@@ -84,6 +90,12 @@ class VmwareAddonScenarioTest(ScenarioTest):
 
         # Update an Arc addon
         self.cmd('az vmware addon arc update -g {rg} -c {privatecloud} --vcenter vcenterId')
+
+        # Create an Arc addon without vCenter id
+        self.cmd('az vmware addon arc create -g {rg} -c {privatecloud}')
+
+        # Update an Arc addon without vCenter id
+        self.cmd('az vmware addon arc update -g {rg} -c {privatecloud}')
 
         # Show a Arc addon
         self.cmd('az vmware addon arc show -g {rg} -c {privatecloud}')
