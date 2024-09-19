@@ -158,6 +158,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_i
             encoding = result['encoding']
 
         # TODO - read other file types later
+        value = None
         if str(api_location).endswith('.yaml') or str(api_location).endswith('.yml'):
             with open(str(api_location), 'r', encoding=encoding) as f:
                 content = f.read()
