@@ -4240,7 +4240,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create nodepool from the cluster without gpu install
         create_nodepool_cmd = (
             "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool_name} --os-type windows --node-count 1 "
-            "--node-vm-size Standard_NC4as_T4_v3 --drivertype GRID "
+            "--node-vm-size Standard_NC4as_T4_v3 --driver-type GRID "
             "-k {k8s_version} -o json"
         )
                
