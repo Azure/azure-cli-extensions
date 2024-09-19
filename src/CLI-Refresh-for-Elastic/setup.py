@@ -35,7 +35,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
 
 setup(
     name='CLI-Refresh-for-Elastic',
-    version=VERSION,
+    version='2024-05-16-preview',
     description='Microsoft Azure Command-Line Tools CLIRefreshForElastic Extension.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
