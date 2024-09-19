@@ -415,7 +415,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             DecoratorMode.CREATE,
             self.agentpool_decorator_mode,
         )
-        self.assertEqual(ctx_2.get_driver_type(), "GRID")
+        self.assertEqual(ctx_2.get_driver_type(), None)
         agentpool_2 = self.create_initialized_agentpool_instance(
             gpu_profile=self.models.AgentPoolGPUProfile(
                 driver_type="GRID"
@@ -889,6 +889,9 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
 
     def test_get_skip_gpu_driver_install(self):
         self.common_get_skip_gpu_driver_install()
+
+    def test_get_driver_type(self):
+        self.common_get_driver_type()
 
     def test_get_enable_secure_boot(self):
         self.common_get_enable_secure_boot()
