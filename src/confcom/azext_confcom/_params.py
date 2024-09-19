@@ -41,6 +41,12 @@ def load_arguments(self, _):
             help="ARM template parameters",
         )
         c.argument(
+            "virtual_node_yaml_path",
+            options_list=("--virtual-node-yaml"),
+            required=False,
+            help="Virtual node YAML file",
+        )
+        c.argument(
             "image_name",
             options_list=("--image",),
             required=False,
