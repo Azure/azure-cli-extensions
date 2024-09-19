@@ -4210,6 +4210,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_version, upgrade_version = self._get_versions(resource_group_location)
         aks_name = self.create_random_name("cliakstest", 16)
         nodepool_name = self.create_random_name("c", 6)
+        nodepool_name_1 = self.create_random_name("n", 6)
 
         self.kwargs.update(
             {
@@ -4248,6 +4249,25 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             create_nodepool_cmd,
             checks=[self.check("provisioningState", "Succeeded"),
                     self.check('gpuProfile.driverType', "GRID")],
+        )
+
+        self.kwargs.update(
+            {
+                "node_pool_name": nodepool_name_1,
+            }
+        )
+
+        # create nodepool from the cluster without custom driver type
+        create_nodepool_cmd = (
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={node_pool_name} --os-type windows --node-count 1 "
+            "--node-vm-size Standard_NC4as_T4_v3 "
+            "-k {k8s_version} -o json"
+        )
+               
+        self.cmd(
+            create_nodepool_cmd,
+            checks=[self.check("provisioningState", "Succeeded"),
+                    self.check('gpuProfile.driverType', "CUDA")],
         )
 
         # delete the original AKS cluster
