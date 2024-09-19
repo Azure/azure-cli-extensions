@@ -7,7 +7,7 @@
 
 from copy import deepcopy
 from knack.log import get_logger
-from msrestazure.tools import resource_id
+from azure.mgmt.core.tools import resource_id
 from typing import Any, Dict
 
 from azure.cli.core.commands import AzCliCommand

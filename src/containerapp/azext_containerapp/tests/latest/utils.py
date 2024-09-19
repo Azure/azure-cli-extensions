@@ -9,7 +9,7 @@ from azure.cli.command_modules.containerapp._utils import format_location
 
 from .common import TEST_LOCATION, STAGE_LOCATION
 from azure.cli.core.azclierror import MutuallyExclusiveArgumentError, RequiredArgumentMissingError, InvalidArgumentValueError
-from msrestazure.tools import parse_resource_id
+from azure.mgmt.core.tools import parse_resource_id
 
 from azure.cli.testsdk import (JMESPathCheck)
 

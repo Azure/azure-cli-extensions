@@ -10,7 +10,7 @@ import time
 import unittest
 
 from azure.cli.command_modules.containerapp._utils import format_location
-from msrestazure.tools import parse_resource_id
+from azure.mgmt.core.tools import parse_resource_id
 
 from azure.cli.testsdk.reverse_dependency import get_dummy_cli
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
