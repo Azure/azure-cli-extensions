@@ -116,21 +116,25 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             zone = source_vm.zones[0]
             create_repair_vm_command += ' --zone {zone}'.format(zone=zone)
 
-        if encrypt_recovery_key:
-            # For confidential VM and Trusted VM security tags some of the SKU expects the right security type, secure_boot_enabled and vtpm_enabled
-            if not disable_trusted_launch:
-                logger.debug('Fetching VM security profile...')
-                vm_security_params = _fetch_vm_security_profile_parameters(source_vm)
-                if vm_security_params:
-                    create_repair_vm_command += vm_security_params
-            else:
-                logger.debug('Set security-type to Standard...')
-                create_repair_vm_command += ' --security-type Standard'
-
-            logger.debug('Fetching OS Disk security profile...')
-            osdisk_security_params = _fetch_osdisk_security_profile_parameters(source_vm)
-            if osdisk_security_params:
-                create_repair_vm_command += osdisk_security_params
+        if disable_trusted_launch:  
+            logger.debug('Set security-type to Standard...')  
+            create_repair_vm_command += ' --security-type Standard'  
+        else:  
+            # For confidential VM and Trusted VM security tags some of the SKU expects the right security type, secure_boot_enabled and vtpm_enabled 
+            
+            # Note: I don't think TL VMs have an envrypted disk, so I don't think they need the encrypt_recovery_key parameter. Needs to be investigated and reworked.
+            # TL VMs still have a security profile to copy over though.  
+            if encrypt_recovery_key:  
+                logger.debug('Fetching VM security profile...')  
+                vm_security_params = _fetch_vm_security_profile_parameters(source_vm)  
+                if vm_security_params:  
+                    create_repair_vm_command += vm_security_params  
+        # For confidential VM and Trusted Launch VM security tags on disks, the disk security profile needs to be brought over as well.  
+        if encrypt_recovery_key:  
+            logger.debug('Fetching OS Disk security profile...')  
+            osdisk_security_params = _fetch_osdisk_security_profile_parameters(source_vm)  
+            if osdisk_security_params:  
+                create_repair_vm_command += osdisk_security_params  
 
         # Create new resource group
         existing_rg = _check_existing_rg(repair_group_name)
