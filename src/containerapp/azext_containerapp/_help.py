@@ -2057,9 +2057,9 @@ helps['containerapp job registry set'] = """
 
 helps['containerapp debug'] = """
     type: command
-    short-summary: Open an SSH-like interactive shell within a container app by debug console.
+    short-summary: Open an SSH-like interactive shell within a container app debug console.
     examples:
-    - name: debug by connecting to a app's debug console by replica, revision and container
+    - name: debug by connecting to a container app's debug console by replica, revision and container
       text: |
           az containerapp debug -n MyContainerapp -g MyResourceGroup --revision MyRevision --replica MyReplica --container MyContainer
 """
