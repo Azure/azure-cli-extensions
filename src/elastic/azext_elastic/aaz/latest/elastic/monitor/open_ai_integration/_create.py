@@ -78,7 +78,7 @@ class Create(AAZCommand):
             help="The connector id of Open AI resource",
         )
         _args_schema.open_ai_resource_endpoint = AAZStrArg(
-            options=["--open-ai-resource-endpoint"],
+            options=["-o","--open-ai-resource-endpoint"],
             arg_group="Properties",
             help="The API endpoint for Open AI resource",
         )

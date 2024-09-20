@@ -69,7 +69,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.monitored_subscription_list = AAZListArg(
-            options=["--monitored-subscription-list"],
+            options=["-m","--monitored-subscription-list"],
             arg_group="Properties",
             help="List of subscriptions and the state of the monitoring.",
         )

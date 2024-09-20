@@ -108,7 +108,7 @@ class Create(AAZCommand):
             help="Plan details of the monitor resource.",
         )
         _args_schema.saa_s_azure_subscription_status = AAZStrArg(
-            options=["--saa-s-azure-subscription-status"],
+            options=["-s","--saa-s-azure-subscription-status"],
             arg_group="Properties",
             help="Status of Azure Subscription where Marketplace SaaS is located.",
         )
