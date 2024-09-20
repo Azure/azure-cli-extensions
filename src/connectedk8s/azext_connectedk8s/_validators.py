@@ -58,3 +58,15 @@ def validate_gateway_updates(namespace):
         raise ArgumentUsageError(
             "Cannot specify both --gateway-resource-id and --disable-gateway simultaneously."
         )
+
+def validate_self_hosted_issuer(namespace):
+    if namespace.self_hosted_issuer != "" and not namespace.enable_oidc_issuer:
+        raise ArgumentUsageError(
+            "Cannot specify a value for --self-hosted-issuer without --enable-oidc-issuer."
+        )
+
+def validate_workload_identity_updates(namespace):
+    if namespace.enable_workload_identity is True and namespace.disable_workload_identity is True:
+        raise ArgumentUsageError(
+            "Cannot specify both --enable-workload-identity and --disable-workload-identity simultaneously."
+        )

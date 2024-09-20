@@ -170,20 +170,23 @@ def load_arguments(self, _):
         )
         c.argument(
             "enable_oidc_issuer",
-            arg_type=get_three_state_flag(),
-            help="Enable creation of OIDC issuer url used for workload identity",
+            options_list=["--enable-oidc-issuer"],
+            arg_group="Workload Identity",
+            help="Enable creation of OIDC issuer url used for workload identity federation",
             is_preview=True,
         )
         c.argument(
             "self_hosted_issuer",
             options_list=["--self-hosted-issuer"],
+            arg_group="Workload Identity",
             help="Self hosted issuer url for public cloud clusters - AKS, GKE, EKS",
             is_preview=True,
+            validator=validate_self_hosted_issuer,
         )
         c.argument(
             "enable_workload_identity",
             options_list=["--enable-workload-identity", "--enable-wi"],
-            arg_type=get_three_state_flag(),
+            arg_group="Workload Identity",
             help="Enable workload identity webhook",
             is_preview=True,
         )
@@ -298,29 +301,34 @@ def load_arguments(self, _):
         )
         c.argument(
             "enable_oidc_issuer",
-            arg_type=get_three_state_flag(),
-            help="Enable creation of OIDC issuer url used for workload identity",
+            options_list=["--enable-oidc-issuer"],
+            arg_group="Workload Identity",
+            help="Enable creation of OIDC issuer url used for workload identity federation",
             is_preview=True,
         )
         c.argument(
             "self_hosted_issuer",
             options_list=["--self-hosted-issuer"],
+            arg_group="Workload Identity",
             help="Self hosted issuer url for public cloud clusters - AKS, GKE, EKS",
             is_preview=True,
+            validator=validate_self_hosted_issuer,
         )
         c.argument(
             "enable_workload_identity",
             options_list=["--enable-workload-identity", "--enable-wi"],
-            arg_type=get_three_state_flag(),
+            arg_group="Workload Identity",
             help="Enable workload identity webhook",
             is_preview=True,
+            validator=validate_workload_identity_updates,
         )
         c.argument(
             "disable_workload_identity",
             options_list=["--disable-workload-identity", "--disable-wi"],
-            arg_type=get_three_state_flag(),
+            arg_group="Workload Identity",
             help="Disable workload identity webhook",
             is_preview=True,
+            validator=validate_workload_identity_updates,
         )
         c.argument(
             "gateway_resource_id",
