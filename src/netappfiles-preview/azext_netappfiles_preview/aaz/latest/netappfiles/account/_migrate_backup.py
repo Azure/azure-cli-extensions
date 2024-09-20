@@ -12,17 +12,16 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "netappfiles account backup-vault backup restore-file",
-    is_preview=True,
+    "netappfiles account migrate-backup",
 )
-class RestoreFile(AAZCommand):
-    """Restore the specified files from the specified backup to the active filesystem
+class MigrateBackup(AAZCommand):
+    """Migrate the backups under a NetApp account to backup vault
     """
 
     _aaz_info = {
-        "version": "2024-03-01-preview",
+        "version": "2023-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/backupvaults/{}/backups/{}/restorefiles", "2024-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/migratebackups", "2023-11-01"],
         ]
     }
 
@@ -52,24 +51,6 @@ class RestoreFile(AAZCommand):
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,127}$",
             ),
         )
-        _args_schema.backup_name = AAZStrArg(
-            options=["-b", "--backup-name"],
-            help="The name of the backup",
-            required=True,
-            id_part="child_name_2",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9\\-_.]{0,255}$",
-            ),
-        )
-        _args_schema.backup_vault_name = AAZStrArg(
-            options=["-v", "--backup-vault-name"],
-            help="The name of the Backup Vault",
-            required=True,
-            id_part="child_name_1",
-            fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9][a-zA-Z0-9\\-_]{0,63}$",
-            ),
-        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
@@ -77,39 +58,17 @@ class RestoreFile(AAZCommand):
         # define Arg Group "Body"
 
         _args_schema = cls._args_schema
-        _args_schema.destination_volume_id = AAZStrArg(
-            options=["--destination-volume-id"],
+        _args_schema.backup_vault_id = AAZStrArg(
+            options=["--backup-vault-id"],
             arg_group="Body",
-            help="Resource Id of the destination volume on which the files need to be restored",
+            help="The ResourceId of the Backup Vault",
             required=True,
-        )
-        _args_schema.file_list = AAZListArg(
-            options=["--file-list"],
-            arg_group="Body",
-            help="List of files to be restored",
-            required=True,
-        )
-        _args_schema.restore_file_path = AAZStrArg(
-            options=["--restore-file-path"],
-            arg_group="Body",
-            help="Destination folder where the files will be restored. The path name should start with a forward slash. If it is omitted from request then restore is done at the root folder of the destination volume by default",
-            fmt=AAZStrArgFormat(
-                pattern="^\\/.*$",
-            ),
-        )
-
-        file_list = cls._args_schema.file_list
-        file_list.Element = AAZStrArg(
-            fmt=AAZStrArgFormat(
-                max_length=1024,
-                min_length=1,
-            ),
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.BackupsUnderBackupVaultRestoreFiles(ctx=self.ctx)()
+        yield self.BackupsUnderAccountMigrateBackups(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -120,7 +79,7 @@ class RestoreFile(AAZCommand):
     def post_operations(self):
         pass
 
-    class BackupsUnderBackupVaultRestoreFiles(AAZHttpOperation):
+    class BackupsUnderAccountMigrateBackups(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -130,7 +89,16 @@ class RestoreFile(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    None,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200, 201]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
                     self.on_error,
                     lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
@@ -141,7 +109,7 @@ class RestoreFile(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/backupVaults/{backupVaultName}/backups/{backupName}/restoreFiles",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/migrateBackups",
                 **self.url_parameters
             )
 
@@ -161,14 +129,6 @@ class RestoreFile(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "backupName", self.ctx.args.backup_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "backupVaultName", self.ctx.args.backup_vault_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
@@ -183,7 +143,7 @@ class RestoreFile(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-03-01-preview",
+                    "api-version", "2023-11-01",
                     required=True,
                 ),
             }
@@ -205,19 +165,16 @@ class RestoreFile(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("destinationVolumeId", AAZStrType, ".destination_volume_id", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("fileList", AAZListType, ".file_list", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("restoreFilePath", AAZStrType, ".restore_file_path")
-
-            file_list = _builder.get(".fileList")
-            if file_list is not None:
-                file_list.set_elements(AAZStrType, ".")
+            _builder.set_prop("backupVaultId", AAZStrType, ".backup_vault_id", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 
+        def on_200_201(self, session):
+            pass
 
-class _RestoreFileHelper:
-    """Helper class for RestoreFile"""
+
+class _MigrateBackupHelper:
+    """Helper class for MigrateBackup"""
 
 
-__all__ = ["RestoreFile"]
+__all__ = ["MigrateBackup"]

@@ -5,19 +5,20 @@
 
 # pylint: disable=line-too-long
 
-from azure.cli.core.commands import CliCommandType
-from ._client_factory import (
-    volumes_mgmt_client_factory)
-from ._exception_handler import netapp_exception_handler
+# from ._exception_handler import netapp_exception_handler
 
 
 def load_command_table(self, _):
+    with self.command_group('netappfiles volume'):
+        from .custom import VolumeCreate, VolumeUpdate
+        self.command_table["netappfiles volume create"] = VolumeCreate(loader=self)
+        self.command_table["netappfiles volume update"] = VolumeUpdate(loader=self)
 
-    netappfiles_volumes_sdk = CliCommandType(
-        operations_tmpl='azext_netappfiles_preview.vendored_sdks.operations.volumes_operations#VolumesOperations.{}',
-        client_factory=volumes_mgmt_client_factory,
-        exception_handler=netapp_exception_handler
-    )
+    # netappfiles_volumes_sdk = CliCommandType(
+    #     operations_tmpl='azext_netappfiles_preview.vendored_sdks.operations.volumes_operations#VolumesOperations.{}',
+    #     client_factory=volumes_mgmt_client_factory,
+    #     exception_handler=netapp_exception_handler
+    # )
 
     # netappfiles_mount_targets_sdk = CliCommandType(
     #     operations_tmpl='azext_netappfiles_preview.vendored_sdks.operations.mount_targets_operations#MountTargetsOperations.{}',
@@ -59,10 +60,6 @@ def load_command_table(self, _):
     #                              doc_string_source='azext_netappfiles_preview.vendored_sdks.models#CapacityPool',
     #                              exception_handler=netapp_exception_handler)
 
-    with self.command_group('netappfiles volume', netappfiles_volumes_sdk):
-        from .custom import VolumeCreate, VolumeUpdate
-        self.command_table["netappfiles volume create"] = VolumeCreate(loader=self)
-        self.command_table["netappfiles volume update"] = VolumeUpdate(loader=self)
     #     g.show_command('show', 'get')
     #     g.command('list', 'list')
     #     g.command('delete', 'delete')
