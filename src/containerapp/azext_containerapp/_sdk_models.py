@@ -240,8 +240,8 @@ class Resource(_serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -282,8 +282,8 @@ class ProxyResource(Resource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -295,32 +295,14 @@ class ProxyResource(Resource):
     :vartype system_data: ~azure.mgmt.appcontainers.models.SystemData
     """
 
-    _validation = {
-        "id": {"readonly": True},
-        "name": {"readonly": True},
-        "type": {"readonly": True},
-        "system_data": {"readonly": True},
-    }
-
-    _attribute_map = {
-        "id": {"key": "id", "type": "str"},
-        "name": {"key": "name", "type": "str"},
-        "type": {"key": "type", "type": "str"},
-        "system_data": {"key": "systemData", "type": "SystemData"},
-    }
-
-    def __init__(self, **kwargs: Any) -> None:
-        """ """
-        super().__init__(**kwargs)
-
 
 class AppResiliency(ProxyResource):
     """Configuration to setup App Resiliency.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -403,7 +385,7 @@ class AppResiliencyCollection(_serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.AppResiliency]
@@ -437,8 +419,8 @@ class AuthConfig(ProxyResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -533,7 +515,7 @@ class AuthConfigCollection(_serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.AuthConfig]
@@ -631,8 +613,8 @@ class AvailableWorkloadProfile(ProxyResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -749,7 +731,7 @@ class AvailableWorkloadProfilesCollection(_serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of workload profiles. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.AvailableWorkloadProfile]
@@ -1247,22 +1229,19 @@ class BaseContainer(_serialization.Model):
         self.volume_mounts = volume_mounts
 
 
-class BillingMeter(ProxyResource):
+class BillingMeter(_serialization.Model):
     """Billing meter.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
     :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
     :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
      "Microsoft.Storage/storageAccounts".
     :vartype type: str
-    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
-     information.
-    :vartype system_data: ~azure.mgmt.appcontainers.models.SystemData
     :ivar location: Region for the billing meter.
     :vartype location: str
     :ivar properties: Revision resource specific properties.
@@ -1273,14 +1252,12 @@ class BillingMeter(ProxyResource):
         "id": {"readonly": True},
         "name": {"readonly": True},
         "type": {"readonly": True},
-        "system_data": {"readonly": True},
     }
 
     _attribute_map = {
         "id": {"key": "id", "type": "str"},
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
-        "system_data": {"key": "systemData", "type": "SystemData"},
         "location": {"key": "location", "type": "str"},
         "properties": {"key": "properties", "type": "BillingMeterProperties"},
     }
@@ -1299,6 +1276,9 @@ class BillingMeter(ProxyResource):
         :paramtype properties: ~azure.mgmt.appcontainers.models.BillingMeterProperties
         """
         super().__init__(**kwargs)
+        self.id = None
+        self.name = None
+        self.type = None
         self.location = location
         self.properties = properties
 
@@ -1306,7 +1286,7 @@ class BillingMeter(ProxyResource):
 class BillingMeterCollection(_serialization.Model):
     """Collection of billing meters.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of billing meters. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.BillingMeter]
@@ -1371,7 +1351,7 @@ class BillingMeterProperties(_serialization.Model):
 class BlobStorageTokenStore(_serialization.Model):
     """The configuration settings of the storage of the tokens if blob storage is used.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar sas_url_setting_name: The name of the app secrets containing the SAS URL of the blob
      storage containing the tokens. Required.
@@ -1399,7 +1379,7 @@ class BlobStorageTokenStore(_serialization.Model):
 class BuildCollection(_serialization.Model):
     """The response of a BuildResource list operation.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: The BuildResource items on this page. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.BuildResource]
@@ -1486,7 +1466,7 @@ class BuildConfiguration(_serialization.Model):
 class BuilderCollection(_serialization.Model):
     """The response of a BuilderResource list operation.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: The BuilderResource items on this page. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.BuilderResource]
@@ -1523,10 +1503,10 @@ class TrackedResource(Resource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -1576,10 +1556,10 @@ class BuilderResource(TrackedResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -1705,8 +1685,8 @@ class BuildResource(ProxyResource):  # pylint: disable=too-many-instance-attribu
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -1824,10 +1804,10 @@ class Certificate(TrackedResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -1888,7 +1868,7 @@ class CertificateCollection(_serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.Certificate]
@@ -2235,10 +2215,15 @@ class Configuration(_serialization.Model):
     :vartype registries: list[~azure.mgmt.appcontainers.models.RegistryCredentials]
     :ivar dapr: Dapr configuration for the Container App.
     :vartype dapr: ~azure.mgmt.appcontainers.models.Dapr
+    :ivar runtime: App runtime configuration for the Container App.
+    :vartype runtime: ~azure.mgmt.appcontainers.models.Runtime
     :ivar max_inactive_revisions: Optional. Max inactive revisions a Container App can have.
     :vartype max_inactive_revisions: int
     :ivar service: Container App to be a dev Container App Service.
     :vartype service: ~azure.mgmt.appcontainers.models.Service
+    :ivar identity_settings: Optional settings for Managed Identities that are assigned to the
+     Container App. If a Managed Identity is not specified here, default settings will be used.
+    :vartype identity_settings: list[~azure.mgmt.appcontainers.models.IdentitySettings]
     """
 
     _attribute_map = {
@@ -2247,8 +2232,10 @@ class Configuration(_serialization.Model):
         "ingress": {"key": "ingress", "type": "Ingress"},
         "registries": {"key": "registries", "type": "[RegistryCredentials]"},
         "dapr": {"key": "dapr", "type": "Dapr"},
+        "runtime": {"key": "runtime", "type": "Runtime"},
         "max_inactive_revisions": {"key": "maxInactiveRevisions", "type": "int"},
         "service": {"key": "service", "type": "Service"},
+        "identity_settings": {"key": "identitySettings", "type": "[IdentitySettings]"},
     }
 
     def __init__(
@@ -2259,8 +2246,10 @@ class Configuration(_serialization.Model):
         ingress: Optional["_models.Ingress"] = None,
         registries: Optional[List["_models.RegistryCredentials"]] = None,
         dapr: Optional["_models.Dapr"] = None,
+        runtime: Optional["_models.Runtime"] = None,
         max_inactive_revisions: Optional[int] = None,
         service: Optional["_models.Service"] = None,
+        identity_settings: Optional[List["_models.IdentitySettings"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -2283,10 +2272,15 @@ class Configuration(_serialization.Model):
         :paramtype registries: list[~azure.mgmt.appcontainers.models.RegistryCredentials]
         :keyword dapr: Dapr configuration for the Container App.
         :paramtype dapr: ~azure.mgmt.appcontainers.models.Dapr
+        :keyword runtime: App runtime configuration for the Container App.
+        :paramtype runtime: ~azure.mgmt.appcontainers.models.Runtime
         :keyword max_inactive_revisions: Optional. Max inactive revisions a Container App can have.
         :paramtype max_inactive_revisions: int
         :keyword service: Container App to be a dev Container App Service.
         :paramtype service: ~azure.mgmt.appcontainers.models.Service
+        :keyword identity_settings: Optional settings for Managed Identities that are assigned to the
+         Container App. If a Managed Identity is not specified here, default settings will be used.
+        :paramtype identity_settings: list[~azure.mgmt.appcontainers.models.IdentitySettings]
         """
         super().__init__(**kwargs)
         self.secrets = secrets
@@ -2294,8 +2288,10 @@ class Configuration(_serialization.Model):
         self.ingress = ingress
         self.registries = registries
         self.dapr = dapr
+        self.runtime = runtime
         self.max_inactive_revisions = max_inactive_revisions
         self.service = service
+        self.identity_settings = identity_settings
 
 
 class ConnectedEnvironment(TrackedResource):  # pylint: disable=too-many-instance-attributes
@@ -2303,10 +2299,10 @@ class ConnectedEnvironment(TrackedResource):  # pylint: disable=too-many-instanc
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -2443,8 +2439,8 @@ class ConnectedEnvironmentStorage(ProxyResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -2489,25 +2485,37 @@ class ConnectedEnvironmentStorageProperties(_serialization.Model):
 
     :ivar azure_file: Azure file properties.
     :vartype azure_file: ~azure.mgmt.appcontainers.models.AzureFileProperties
+    :ivar smb: SMB storage properties.
+    :vartype smb: ~azure.mgmt.appcontainers.models.SmbStorage
     """
 
     _attribute_map = {
         "azure_file": {"key": "azureFile", "type": "AzureFileProperties"},
+        "smb": {"key": "smb", "type": "SmbStorage"},
     }
 
-    def __init__(self, *, azure_file: Optional["_models.AzureFileProperties"] = None, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        *,
+        azure_file: Optional["_models.AzureFileProperties"] = None,
+        smb: Optional["_models.SmbStorage"] = None,
+        **kwargs: Any
+    ) -> None:
         """
         :keyword azure_file: Azure file properties.
         :paramtype azure_file: ~azure.mgmt.appcontainers.models.AzureFileProperties
+        :keyword smb: SMB storage properties.
+        :paramtype smb: ~azure.mgmt.appcontainers.models.SmbStorage
         """
         super().__init__(**kwargs)
         self.azure_file = azure_file
+        self.smb = smb
 
 
 class ConnectedEnvironmentStoragesCollection(_serialization.Model):
     """Collection of Storage for Environments.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of storage resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.ConnectedEnvironmentStorage]
@@ -2611,10 +2619,10 @@ class ContainerApp(TrackedResource):  # pylint: disable=too-many-instance-attrib
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -2638,6 +2646,10 @@ class ContainerApp(TrackedResource):  # pylint: disable=too-many-instance-attrib
      mode deployment will not delete the resource if it is removed from the template since it is
      managed by another resource.
     :vartype managed_by: str
+    :ivar kind: Metadata used to render different experiences for resources of the same type; e.g.
+     WorkflowApp is a kind of Microsoft.App/ContainerApps type. If supported, the resource provider
+     must validate and persist this value. "workflowapp"
+    :vartype kind: str or ~azure.mgmt.appcontainers.models.Kind
     :ivar provisioning_state: Provisioning state of the Container App. Known values are:
      "InProgress", "Succeeded", "Failed", "Canceled", and "Deleting".
     :vartype provisioning_state: str or
@@ -2692,6 +2704,7 @@ class ContainerApp(TrackedResource):  # pylint: disable=too-many-instance-attrib
         "extended_location": {"key": "extendedLocation", "type": "ExtendedLocation"},
         "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "managed_by": {"key": "managedBy", "type": "str"},
+        "kind": {"key": "kind", "type": "str"},
         "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
         "managed_environment_id": {"key": "properties.managedEnvironmentId", "type": "str"},
         "environment_id": {"key": "properties.environmentId", "type": "str"},
@@ -2714,6 +2727,7 @@ class ContainerApp(TrackedResource):  # pylint: disable=too-many-instance-attrib
         extended_location: Optional["_models.ExtendedLocation"] = None,
         identity: Optional["_models.ManagedServiceIdentity"] = None,
         managed_by: Optional[str] = None,
+        kind: Optional[Union[str, "_models.Kind"]] = None,
         managed_environment_id: Optional[str] = None,
         environment_id: Optional[str] = None,
         workload_profile_name: Optional[str] = None,
@@ -2736,6 +2750,10 @@ class ContainerApp(TrackedResource):  # pylint: disable=too-many-instance-attrib
          complete mode deployment will not delete the resource if it is removed from the template since
          it is managed by another resource.
         :paramtype managed_by: str
+        :keyword kind: Metadata used to render different experiences for resources of the same type;
+         e.g. WorkflowApp is a kind of Microsoft.App/ContainerApps type. If supported, the resource
+         provider must validate and persist this value. "workflowapp"
+        :paramtype kind: str or ~azure.mgmt.appcontainers.models.Kind
         :keyword managed_environment_id: Deprecated. Resource ID of the Container App's environment.
         :paramtype managed_environment_id: str
         :keyword environment_id: Resource ID of environment.
@@ -2751,6 +2769,7 @@ class ContainerApp(TrackedResource):  # pylint: disable=too-many-instance-attrib
         self.extended_location = extended_location
         self.identity = identity
         self.managed_by = managed_by
+        self.kind = kind
         self.provisioning_state = None
         self.managed_environment_id = managed_environment_id
         self.environment_id = environment_id
@@ -2770,10 +2789,10 @@ class ContainerAppAuthToken(TrackedResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -2831,7 +2850,7 @@ class ContainerAppCollection(_serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.ContainerApp]
@@ -2864,7 +2883,7 @@ class ContainerAppJobExecutions(_serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.JobExecution]
@@ -3007,7 +3026,7 @@ class ContainerAppProbe(_serialization.Model):
 class ContainerAppProbeHttpGet(_serialization.Model):
     """HTTPGet specifies the http request to perform.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar host: Host name to connect to, defaults to the pod IP. You probably want to set "Host" in
      httpHeaders instead.
@@ -3074,7 +3093,7 @@ class ContainerAppProbeHttpGet(_serialization.Model):
 class ContainerAppProbeHttpGetHttpHeadersItem(_serialization.Model):
     """HTTPHeader describes a custom header to be used in HTTP probes.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar name: The header field name. Required.
     :vartype name: str
@@ -3107,7 +3126,7 @@ class ContainerAppProbeHttpGetHttpHeadersItem(_serialization.Model):
 class ContainerAppProbeTcpSocket(_serialization.Model):
     """TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar host: Optional: Host name to connect to, defaults to the pod IP.
     :vartype host: str
@@ -3136,6 +3155,153 @@ class ContainerAppProbeTcpSocket(_serialization.Model):
         super().__init__(**kwargs)
         self.host = host
         self.port = port
+
+
+class ContainerAppsBuildCollection(_serialization.Model):
+    """The response of a Container Apps Build Resource list operation.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar value: The Container Apps Build Resource items on this page. Required.
+    :vartype value: list[~azure.mgmt.appcontainers.models.ContainerAppsBuildResource]
+    :ivar next_link: The link to the next page of items.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"required": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[ContainerAppsBuildResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(
+        self, *, value: List["_models.ContainerAppsBuildResource"], next_link: Optional[str] = None, **kwargs: Any
+    ) -> None:
+        """
+        :keyword value: The Container Apps Build Resource items on this page. Required.
+        :paramtype value: list[~azure.mgmt.appcontainers.models.ContainerAppsBuildResource]
+        :keyword next_link: The link to the next page of items.
+        :paramtype next_link: str
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
+class ContainerAppsBuildConfiguration(_serialization.Model):
+    """Configuration of the build.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar base_os: Base OS used to build and run the app.
+    :vartype base_os: str
+    :ivar platform: Platform to be used to build and run the app.
+    :vartype platform: str
+    :ivar platform_version: Platform version to be used to build and run the app.
+    :vartype platform_version: str
+    :ivar environment_variables: List of environment variables to be passed to the build, secrets
+     should not be used in environment variable.
+    :vartype environment_variables: list[~azure.mgmt.appcontainers.models.EnvironmentVariable]
+    :ivar pre_build_steps: List of steps to perform before the build.
+    :vartype pre_build_steps: list[~azure.mgmt.appcontainers.models.PreBuildStep]
+    """
+
+    _validation = {
+        "base_os": {"readonly": True},
+        "platform": {"readonly": True},
+        "platform_version": {"readonly": True},
+        "environment_variables": {"readonly": True},
+        "pre_build_steps": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "base_os": {"key": "baseOs", "type": "str"},
+        "platform": {"key": "platform", "type": "str"},
+        "platform_version": {"key": "platformVersion", "type": "str"},
+        "environment_variables": {"key": "environmentVariables", "type": "[EnvironmentVariable]"},
+        "pre_build_steps": {"key": "preBuildSteps", "type": "[PreBuildStep]"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.base_os = None
+        self.platform = None
+        self.platform_version = None
+        self.environment_variables = None
+        self.pre_build_steps = None
+
+
+class ContainerAppsBuildResource(ProxyResource):
+    """Information pertaining to an individual build.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.appcontainers.models.SystemData
+    :ivar provisioning_state: Build provisioning state. Known values are: "Succeeded", "Failed",
+     "Canceled", "Creating", "Updating", and "Deleting".
+    :vartype provisioning_state: str or ~azure.mgmt.appcontainers.models.BuildProvisioningState
+    :ivar build_status: Status of the build once it has been provisioned. Known values are:
+     "NotStarted", "InProgress", "Succeeded", "Canceled", and "Failed".
+    :vartype build_status: str or ~azure.mgmt.appcontainers.models.BuildStatus
+    :ivar destination_container_registry: Container registry that the final image will be uploaded
+     to.
+    :vartype destination_container_registry:
+     ~azure.mgmt.appcontainers.models.ContainerRegistryWithCustomImage
+    :ivar configuration: Configuration of the build.
+    :vartype configuration: ~azure.mgmt.appcontainers.models.ContainerAppsBuildConfiguration
+    :ivar log_stream_endpoint: Endpoint from which the build logs can be streamed.
+    :vartype log_stream_endpoint: str
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+        "provisioning_state": {"readonly": True},
+        "build_status": {"readonly": True},
+        "destination_container_registry": {"readonly": True},
+        "configuration": {"readonly": True},
+        "log_stream_endpoint": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
+        "build_status": {"key": "properties.buildStatus", "type": "str"},
+        "destination_container_registry": {
+            "key": "properties.destinationContainerRegistry",
+            "type": "ContainerRegistryWithCustomImage",
+        },
+        "configuration": {"key": "properties.configuration", "type": "ContainerAppsBuildConfiguration"},
+        "log_stream_endpoint": {"key": "properties.logStreamEndpoint", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.provisioning_state = None
+        self.build_status = None
+        self.destination_container_registry = None
+        self.configuration = None
+        self.log_stream_endpoint = None
 
 
 class ContainerAppSecret(_serialization.Model):
@@ -3178,10 +3344,56 @@ class ContainerAppSecret(_serialization.Model):
         self.key_vault_url = None
 
 
+class ContainerExecutionStatus(_serialization.Model):
+    """Container Apps Job execution container status. Contains status code and reason.
+
+    :ivar name: Container Name.
+    :vartype name: str
+    :ivar code: Exit code.
+    :vartype code: int
+    :ivar additional_information: Additional information for the container status.
+    :vartype additional_information: str
+    :ivar status: Status of the container.
+    :vartype status: str
+    """
+
+    _attribute_map = {
+        "name": {"key": "name", "type": "str"},
+        "code": {"key": "code", "type": "int"},
+        "additional_information": {"key": "additionalInformation", "type": "str"},
+        "status": {"key": "status", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        name: Optional[str] = None,
+        code: Optional[int] = None,
+        additional_information: Optional[str] = None,
+        status: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword name: Container Name.
+        :paramtype name: str
+        :keyword code: Exit code.
+        :paramtype code: int
+        :keyword additional_information: Additional information for the container status.
+        :paramtype additional_information: str
+        :keyword status: Status of the container.
+        :paramtype status: str
+        """
+        super().__init__(**kwargs)
+        self.name = name
+        self.code = code
+        self.additional_information = additional_information
+        self.status = status
+
+
 class ContainerRegistry(_serialization.Model):
     """Model representing a mapping from a container registry to the identity used to connect to it.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar container_registry_server: Login server of the container registry. Required.
     :vartype container_registry_server: str
@@ -3214,7 +3426,7 @@ class ContainerRegistry(_serialization.Model):
 class ContainerRegistryWithCustomImage(_serialization.Model):
     """Container registry that the final image will be uploaded to.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar server: Login server of the container registry that the final image should be uploaded
      to. Builder resource needs to have this container registry defined along with an identity to
@@ -3324,7 +3536,7 @@ class CookieExpiration(_serialization.Model):
 class CorsPolicy(_serialization.Model):
     """Cross-Origin-Resource-Sharing policy.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar allowed_origins: Specifies the content for the access-control-allow-origins header.
      Required.
@@ -3389,10 +3601,51 @@ class CorsPolicy(_serialization.Model):
         self.allow_credentials = allow_credentials
 
 
+class CustomContainerTemplate(_serialization.Model):
+    """Custom container configuration.
+
+    :ivar registry_credentials: Private container registry credentials for containers used by the
+     sessions of the session pool.
+    :vartype registry_credentials: ~azure.mgmt.appcontainers.models.SessionRegistryCredentials
+    :ivar containers: List of container definitions for the sessions of the session pool.
+    :vartype containers: list[~azure.mgmt.appcontainers.models.SessionContainer]
+    :ivar ingress: Session pool ingress configuration.
+    :vartype ingress: ~azure.mgmt.appcontainers.models.SessionIngress
+    """
+
+    _attribute_map = {
+        "registry_credentials": {"key": "registryCredentials", "type": "SessionRegistryCredentials"},
+        "containers": {"key": "containers", "type": "[SessionContainer]"},
+        "ingress": {"key": "ingress", "type": "SessionIngress"},
+    }
+
+    def __init__(
+        self,
+        *,
+        registry_credentials: Optional["_models.SessionRegistryCredentials"] = None,
+        containers: Optional[List["_models.SessionContainer"]] = None,
+        ingress: Optional["_models.SessionIngress"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword registry_credentials: Private container registry credentials for containers used by
+         the sessions of the session pool.
+        :paramtype registry_credentials: ~azure.mgmt.appcontainers.models.SessionRegistryCredentials
+        :keyword containers: List of container definitions for the sessions of the session pool.
+        :paramtype containers: list[~azure.mgmt.appcontainers.models.SessionContainer]
+        :keyword ingress: Session pool ingress configuration.
+        :paramtype ingress: ~azure.mgmt.appcontainers.models.SessionIngress
+        """
+        super().__init__(**kwargs)
+        self.registry_credentials = registry_credentials
+        self.containers = containers
+        self.ingress = ingress
+
+
 class CustomDomain(_serialization.Model):
     """Custom Domain of a Container App.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar name: Hostname. Required.
     :vartype name: str
@@ -3618,7 +3871,9 @@ class CustomHostnameAnalysisResult(_serialization.Model):  # pylint: disable=too
         self.alternate_txt_records = alternate_txt_records
 
 
-class CustomHostnameAnalysisResultCustomDomainVerificationFailureInfo(_serialization.Model):
+class CustomHostnameAnalysisResultCustomDomainVerificationFailureInfo(
+    _serialization.Model
+):  # pylint: disable=name-too-long
     """Raw failure information if DNS verification fails.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -3661,7 +3916,7 @@ class CustomHostnameAnalysisResultCustomDomainVerificationFailureInfo(_serializa
         """
         :keyword details: Details or the error.
         :paramtype details:
-         list[~azure.mgmt.appcontainers.models.CustomHostnameAnalysisResultCustomDomainVerificationFailureInfoDetailsItem]
+         list[~azure.mgmt.appcontainers.models.CustomHostnameAnalysisResultCustomDomainVerificationFailureInfoDetailsItem]  # pylint: disable=line-too-long
         """
         super().__init__(**kwargs)
         self.code = None
@@ -3670,7 +3925,9 @@ class CustomHostnameAnalysisResultCustomDomainVerificationFailureInfo(_serializa
         self.details = details
 
 
-class CustomHostnameAnalysisResultCustomDomainVerificationFailureInfoDetailsItem(_serialization.Model):
+class CustomHostnameAnalysisResultCustomDomainVerificationFailureInfoDetailsItem(
+    _serialization.Model
+):  # pylint: disable=name-too-long
     """Detailed errors.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -3758,12 +4015,16 @@ class CustomScaleRule(_serialization.Model):
     :vartype metadata: dict[str, str]
     :ivar auth: Authentication secrets for the custom scale rule.
     :vartype auth: list[~azure.mgmt.appcontainers.models.ScaleRuleAuth]
+    :ivar identity: The resource ID of a user-assigned managed identity that is assigned to the
+     Container App, or 'system' for system-assigned identity.
+    :vartype identity: str
     """
 
     _attribute_map = {
         "type": {"key": "type", "type": "str"},
         "metadata": {"key": "metadata", "type": "{str}"},
         "auth": {"key": "auth", "type": "[ScaleRuleAuth]"},
+        "identity": {"key": "identity", "type": "str"},
     }
 
     def __init__(
@@ -3772,6 +4033,7 @@ class CustomScaleRule(_serialization.Model):
         type: Optional[str] = None,
         metadata: Optional[Dict[str, str]] = None,
         auth: Optional[List["_models.ScaleRuleAuth"]] = None,
+        identity: Optional[str] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -3782,11 +4044,15 @@ class CustomScaleRule(_serialization.Model):
         :paramtype metadata: dict[str, str]
         :keyword auth: Authentication secrets for the custom scale rule.
         :paramtype auth: list[~azure.mgmt.appcontainers.models.ScaleRuleAuth]
+        :keyword identity: The resource ID of a user-assigned managed identity that is assigned to the
+         Container App, or 'system' for system-assigned identity.
+        :paramtype identity: str
         """
         super().__init__(**kwargs)
         self.type = type
         self.metadata = metadata
         self.auth = auth
+        self.identity = identity
 
 
 class Dapr(_serialization.Model):
@@ -3876,8 +4142,8 @@ class DaprComponent(ProxyResource):  # pylint: disable=too-many-instance-attribu
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -3980,12 +4246,12 @@ class DaprComponent(ProxyResource):  # pylint: disable=too-many-instance-attribu
         self.service_component_bind = service_component_bind
 
 
-class DaprComponentResiliencyPoliciesCollection(_serialization.Model):
+class DaprComponentResiliencyPoliciesCollection(_serialization.Model):  # pylint: disable=name-too-long
     """Dapr Component Resiliency Policies ARM resource.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.DaprComponentResiliencyPolicy]
@@ -4018,8 +4284,8 @@ class DaprComponentResiliencyPolicy(ProxyResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -4073,7 +4339,9 @@ class DaprComponentResiliencyPolicy(ProxyResource):
         self.outbound_policy = outbound_policy
 
 
-class DaprComponentResiliencyPolicyCircuitBreakerPolicyConfiguration(_serialization.Model):
+class DaprComponentResiliencyPolicyCircuitBreakerPolicyConfiguration(
+    _serialization.Model
+):  # pylint: disable=name-too-long
     """Dapr Component Resiliency Policy Circuit Breaker Policy Configuration.
 
     :ivar consecutive_errors: The number of consecutive errors before the circuit is opened.
@@ -4118,7 +4386,7 @@ class DaprComponentResiliencyPolicyCircuitBreakerPolicyConfiguration(_serializat
         self.interval_in_seconds = interval_in_seconds
 
 
-class DaprComponentResiliencyPolicyConfiguration(_serialization.Model):
+class DaprComponentResiliencyPolicyConfiguration(_serialization.Model):  # pylint: disable=name-too-long
     """Dapr Component Resiliency Policy Configuration.
 
     :ivar http_retry_policy: The optional HTTP retry policy configuration.
@@ -4171,7 +4439,7 @@ class DaprComponentResiliencyPolicyConfiguration(_serialization.Model):
         self.circuit_breaker_policy = circuit_breaker_policy
 
 
-class DaprComponentResiliencyPolicyHttpRetryBackOffConfiguration(_serialization.Model):
+class DaprComponentResiliencyPolicyHttpRetryBackOffConfiguration(_serialization.Model):  # pylint: disable=name-too-long
     """Dapr Component Resiliency Policy HTTP Retry Backoff Configuration.
 
     :ivar initial_delay_in_milliseconds: The optional initial delay in milliseconds before an
@@ -4207,7 +4475,7 @@ class DaprComponentResiliencyPolicyHttpRetryBackOffConfiguration(_serialization.
         self.max_interval_in_milliseconds = max_interval_in_milliseconds
 
 
-class DaprComponentResiliencyPolicyHttpRetryPolicyConfiguration(_serialization.Model):
+class DaprComponentResiliencyPolicyHttpRetryPolicyConfiguration(_serialization.Model):  # pylint: disable=name-too-long
     """Dapr Component Resiliency Policy HTTP Retry Policy Configuration.
 
     :ivar max_retries: The optional maximum number of retries.
@@ -4241,7 +4509,7 @@ class DaprComponentResiliencyPolicyHttpRetryPolicyConfiguration(_serialization.M
         self.retry_back_off = retry_back_off
 
 
-class DaprComponentResiliencyPolicyTimeoutPolicyConfiguration(_serialization.Model):
+class DaprComponentResiliencyPolicyTimeoutPolicyConfiguration(_serialization.Model):  # pylint: disable=name-too-long
     """Dapr Component Resiliency Policy Timeout Policy Configuration.
 
     :ivar response_timeout_in_seconds: The optional response timeout in seconds.
@@ -4266,7 +4534,7 @@ class DaprComponentsCollection(_serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.DaprComponent]
@@ -4428,7 +4696,7 @@ class DaprSecret(_serialization.Model):
 class DaprSecretsCollection(_serialization.Model):
     """Dapr component Secrets Collection for ListSecrets Action.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of secrets used by a Dapr component. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.DaprSecret]
@@ -4482,8 +4750,8 @@ class DaprSubscription(ProxyResource):  # pylint: disable=too-many-instance-attr
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -4680,7 +4948,7 @@ class DaprSubscriptionsCollection(_serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.DaprSubscription]
@@ -4939,7 +5207,7 @@ class DiagnosticDataProviderMetadata(_serialization.Model):
         self.property_bag = property_bag
 
 
-class DiagnosticDataProviderMetadataPropertyBagItem(_serialization.Model):
+class DiagnosticDataProviderMetadataPropertyBagItem(_serialization.Model):  # pylint: disable=name-too-long
     """Property details.
 
     :ivar name: Property name.
@@ -5094,8 +5362,8 @@ class Diagnostics(ProxyResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -5138,7 +5406,7 @@ class DiagnosticsCollection(_serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of diagnostic data. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.Diagnostics]
@@ -5377,8 +5645,8 @@ class DotNetComponent(ProxyResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -5388,8 +5656,7 @@ class DotNetComponent(ProxyResource):
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
     :vartype system_data: ~azure.mgmt.appcontainers.models.SystemData
-    :ivar component_type: Type of the .NET Component. Known values are: "AspireDashboard" and
-     "AspireResourceServerApi".
+    :ivar component_type: Type of the .NET Component. "AspireDashboard"
     :vartype component_type: str or ~azure.mgmt.appcontainers.models.DotNetComponentType
     :ivar provisioning_state: Provisioning state of the .NET Component. Known values are:
      "Succeeded", "Failed", "Canceled", "Deleting", and "InProgress".
@@ -5430,8 +5697,7 @@ class DotNetComponent(ProxyResource):
         **kwargs: Any
     ) -> None:
         """
-        :keyword component_type: Type of the .NET Component. Known values are: "AspireDashboard" and
-         "AspireResourceServerApi".
+        :keyword component_type: Type of the .NET Component. "AspireDashboard"
         :paramtype component_type: str or ~azure.mgmt.appcontainers.models.DotNetComponentType
         :keyword configurations: List of .NET Components configuration properties.
         :paramtype configurations:
@@ -5477,7 +5743,7 @@ class DotNetComponentsCollection(_serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.DotNetComponent]
@@ -5531,6 +5797,38 @@ class DotNetComponentServiceBind(_serialization.Model):
         self.service_id = service_id
 
 
+class DynamicPoolConfiguration(_serialization.Model):
+    """Dynamic pool configuration.
+
+    :ivar execution_type: The execution type of the session pool. "Timed"
+    :vartype execution_type: str or ~azure.mgmt.appcontainers.models.ExecutionType
+    :ivar cooldown_period_in_seconds: The cooldown period of a session in seconds.
+    :vartype cooldown_period_in_seconds: int
+    """
+
+    _attribute_map = {
+        "execution_type": {"key": "executionType", "type": "str"},
+        "cooldown_period_in_seconds": {"key": "cooldownPeriodInSeconds", "type": "int"},
+    }
+
+    def __init__(
+        self,
+        *,
+        execution_type: Optional[Union[str, "_models.ExecutionType"]] = None,
+        cooldown_period_in_seconds: Optional[int] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword execution_type: The execution type of the session pool. "Timed"
+        :paramtype execution_type: str or ~azure.mgmt.appcontainers.models.ExecutionType
+        :keyword cooldown_period_in_seconds: The cooldown period of a session in seconds.
+        :paramtype cooldown_period_in_seconds: int
+        """
+        super().__init__(**kwargs)
+        self.execution_type = execution_type
+        self.cooldown_period_in_seconds = cooldown_period_in_seconds
+
+
 class EncryptionSettings(_serialization.Model):
     """The configuration settings of the secrets references of encryption key and signing key for
     ContainerApp Service Authentication/Authorization.
@@ -5573,10 +5871,10 @@ class EnvironmentAuthToken(TrackedResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -5673,7 +5971,7 @@ class EnvironmentVar(_serialization.Model):
 class EnvironmentVariable(_serialization.Model):
     """Model representing an environment variable.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar name: Environment variable name. Required.
     :vartype name: str
@@ -5774,6 +6072,80 @@ class ErrorDetail(_serialization.Model):
         self.additional_info = None
 
 
+class ErrorEntity(_serialization.Model):
+    """Body of the error response returned from the API.
+
+    :ivar extended_code: Type of error.
+    :vartype extended_code: str
+    :ivar message_template: Message template.
+    :vartype message_template: str
+    :ivar parameters: Parameters for the template.
+    :vartype parameters: list[str]
+    :ivar inner_errors: Inner errors.
+    :vartype inner_errors: list[~azure.mgmt.appcontainers.models.ErrorEntity]
+    :ivar details: Error Details.
+    :vartype details: list[~azure.mgmt.appcontainers.models.ErrorEntity]
+    :ivar target: The error target.
+    :vartype target: str
+    :ivar code: Basic error code.
+    :vartype code: str
+    :ivar message: Any details of the error.
+    :vartype message: str
+    """
+
+    _attribute_map = {
+        "extended_code": {"key": "extendedCode", "type": "str"},
+        "message_template": {"key": "messageTemplate", "type": "str"},
+        "parameters": {"key": "parameters", "type": "[str]"},
+        "inner_errors": {"key": "innerErrors", "type": "[ErrorEntity]"},
+        "details": {"key": "details", "type": "[ErrorEntity]"},
+        "target": {"key": "target", "type": "str"},
+        "code": {"key": "code", "type": "str"},
+        "message": {"key": "message", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        extended_code: Optional[str] = None,
+        message_template: Optional[str] = None,
+        parameters: Optional[List[str]] = None,
+        inner_errors: Optional[List["_models.ErrorEntity"]] = None,
+        details: Optional[List["_models.ErrorEntity"]] = None,
+        target: Optional[str] = None,
+        code: Optional[str] = None,
+        message: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword extended_code: Type of error.
+        :paramtype extended_code: str
+        :keyword message_template: Message template.
+        :paramtype message_template: str
+        :keyword parameters: Parameters for the template.
+        :paramtype parameters: list[str]
+        :keyword inner_errors: Inner errors.
+        :paramtype inner_errors: list[~azure.mgmt.appcontainers.models.ErrorEntity]
+        :keyword details: Error Details.
+        :paramtype details: list[~azure.mgmt.appcontainers.models.ErrorEntity]
+        :keyword target: The error target.
+        :paramtype target: str
+        :keyword code: Basic error code.
+        :paramtype code: str
+        :keyword message: Any details of the error.
+        :paramtype message: str
+        """
+        super().__init__(**kwargs)
+        self.extended_code = extended_code
+        self.message_template = message_template
+        self.parameters = parameters
+        self.inner_errors = inner_errors
+        self.details = details
+        self.target = target
+        self.code = code
+        self.message = message
+
+
 class ErrorResponse(_serialization.Model):
     """Common error response for all Azure Resource Manager APIs to return error details for failed
     operations. (This also follows the OData error response format.).
@@ -5793,6 +6165,26 @@ class ErrorResponse(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.error = error
+
+
+class ExecutionStatus(_serialization.Model):
+    """Container Apps Job execution status.
+
+    :ivar replicas: Replicas in the execution.
+    :vartype replicas: list[~azure.mgmt.appcontainers.models.ReplicaExecutionStatus]
+    """
+
+    _attribute_map = {
+        "replicas": {"key": "replicas", "type": "[ReplicaExecutionStatus]"},
+    }
+
+    def __init__(self, *, replicas: Optional[List["_models.ReplicaExecutionStatus"]] = None, **kwargs: Any) -> None:
+        """
+        :keyword replicas: Replicas in the execution.
+        :paramtype replicas: list[~azure.mgmt.appcontainers.models.ReplicaExecutionStatus]
+        """
+        super().__init__(**kwargs)
+        self.replicas = replicas
 
 
 class ExtendedLocation(_serialization.Model):
@@ -6157,6 +6549,32 @@ class Google(_serialization.Model):
         self.validation = validation
 
 
+class Header(_serialization.Model):
+    """Header of otlp configuration.
+
+    :ivar key: The key of otlp configuration header.
+    :vartype key: str
+    :ivar value: The value of otlp configuration header.
+    :vartype value: str
+    """
+
+    _attribute_map = {
+        "key": {"key": "key", "type": "str"},
+        "value": {"key": "value", "type": "str"},
+    }
+
+    def __init__(self, *, key: Optional[str] = None, value: Optional[str] = None, **kwargs: Any) -> None:
+        """
+        :keyword key: The key of otlp configuration header.
+        :paramtype key: str
+        :keyword value: The value of otlp configuration header.
+        :paramtype value: str
+        """
+        super().__init__(**kwargs)
+        self.key = key
+        self.value = value
+
+
 class HeaderMatch(_serialization.Model):
     """Conditions required to match a header.
 
@@ -6245,7 +6663,7 @@ class HttpConnectionPool(_serialization.Model):
 class HttpGet(_serialization.Model):
     """Model representing a http get request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar url: URL to make HTTP GET request against. Required.
     :vartype url: str
@@ -6350,11 +6768,15 @@ class HttpScaleRule(_serialization.Model):
     :vartype metadata: dict[str, str]
     :ivar auth: Authentication secrets for the custom scale rule.
     :vartype auth: list[~azure.mgmt.appcontainers.models.ScaleRuleAuth]
+    :ivar identity: The resource ID of a user-assigned managed identity that is assigned to the
+     Container App, or 'system' for system-assigned identity.
+    :vartype identity: str
     """
 
     _attribute_map = {
         "metadata": {"key": "metadata", "type": "{str}"},
         "auth": {"key": "auth", "type": "[ScaleRuleAuth]"},
+        "identity": {"key": "identity", "type": "str"},
     }
 
     def __init__(
@@ -6362,6 +6784,7 @@ class HttpScaleRule(_serialization.Model):
         *,
         metadata: Optional[Dict[str, str]] = None,
         auth: Optional[List["_models.ScaleRuleAuth"]] = None,
+        identity: Optional[str] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -6369,10 +6792,14 @@ class HttpScaleRule(_serialization.Model):
         :paramtype metadata: dict[str, str]
         :keyword auth: Authentication secrets for the custom scale rule.
         :paramtype auth: list[~azure.mgmt.appcontainers.models.ScaleRuleAuth]
+        :keyword identity: The resource ID of a user-assigned managed identity that is assigned to the
+         Container App, or 'system' for system-assigned identity.
+        :paramtype identity: str
         """
         super().__init__(**kwargs)
         self.metadata = metadata
         self.auth = auth
+        self.identity = identity
 
 
 class HttpSettings(_serialization.Model):
@@ -6525,6 +6952,44 @@ class IdentityProviders(_serialization.Model):
         self.custom_open_id_connect_providers = custom_open_id_connect_providers
 
 
+class IdentitySettings(_serialization.Model):
+    """Optional settings for a Managed Identity that is assigned to the Container App.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar identity: The resource ID of a user-assigned managed identity that is assigned to the
+     Container App, or 'system' for system-assigned identity. Required.
+    :vartype identity: str
+    :ivar lifecycle: Use to select the lifecycle stages of a Container App during which the Managed
+     Identity should be available. Known values are: "Init", "Main", "None", and "All".
+    :vartype lifecycle: str or ~azure.mgmt.appcontainers.models.IdentitySettingsLifeCycle
+    """
+
+    _validation = {
+        "identity": {"required": True},
+    }
+
+    _attribute_map = {
+        "identity": {"key": "identity", "type": "str"},
+        "lifecycle": {"key": "lifecycle", "type": "str"},
+    }
+
+    def __init__(
+        self, *, identity: str, lifecycle: Union[str, "_models.IdentitySettingsLifeCycle"] = "All", **kwargs: Any
+    ) -> None:
+        """
+        :keyword identity: The resource ID of a user-assigned managed identity that is assigned to the
+         Container App, or 'system' for system-assigned identity. Required.
+        :paramtype identity: str
+        :keyword lifecycle: Use to select the lifecycle stages of a Container App during which the
+         Managed Identity should be available. Known values are: "Init", "Main", "None", and "All".
+        :paramtype lifecycle: str or ~azure.mgmt.appcontainers.models.IdentitySettingsLifeCycle
+        """
+        super().__init__(**kwargs)
+        self.identity = identity
+        self.lifecycle = lifecycle
+
+
 class Ingress(_serialization.Model):  # pylint: disable=too-many-instance-attributes
     """Container App Ingress configuration.
 
@@ -6665,7 +7130,7 @@ class Ingress(_serialization.Model):  # pylint: disable=too-many-instance-attrib
 class IngressPortMapping(_serialization.Model):
     """Port mappings of container app ingress.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar external: Specifies whether the app port is accessible outside of the environment.
      Required.
@@ -6744,60 +7209,11 @@ class InitContainer(BaseContainer):
     :vartype volume_mounts: list[~azure.mgmt.appcontainers.models.VolumeMount]
     """
 
-    _attribute_map = {
-        "image": {"key": "image", "type": "str"},
-        "name": {"key": "name", "type": "str"},
-        "command": {"key": "command", "type": "[str]"},
-        "args": {"key": "args", "type": "[str]"},
-        "env": {"key": "env", "type": "[EnvironmentVar]"},
-        "resources": {"key": "resources", "type": "ContainerResources"},
-        "volume_mounts": {"key": "volumeMounts", "type": "[VolumeMount]"},
-    }
-
-    def __init__(
-        self,
-        *,
-        image: Optional[str] = None,
-        name: Optional[str] = None,
-        command: Optional[List[str]] = None,
-        args: Optional[List[str]] = None,
-        env: Optional[List["_models.EnvironmentVar"]] = None,
-        resources: Optional["_models.ContainerResources"] = None,
-        volume_mounts: Optional[List["_models.VolumeMount"]] = None,
-        **kwargs: Any
-    ) -> None:
-        """
-        :keyword image: Container image tag.
-        :paramtype image: str
-        :keyword name: Custom container name.
-        :paramtype name: str
-        :keyword command: Container start command.
-        :paramtype command: list[str]
-        :keyword args: Container start command arguments.
-        :paramtype args: list[str]
-        :keyword env: Container environment variables.
-        :paramtype env: list[~azure.mgmt.appcontainers.models.EnvironmentVar]
-        :keyword resources: Container resource requirements.
-        :paramtype resources: ~azure.mgmt.appcontainers.models.ContainerResources
-        :keyword volume_mounts: Container volume mounts.
-        :paramtype volume_mounts: list[~azure.mgmt.appcontainers.models.VolumeMount]
-        """
-        super().__init__(
-            image=image,
-            name=name,
-            command=command,
-            args=args,
-            env=env,
-            resources=resources,
-            volume_mounts=volume_mounts,
-            **kwargs
-        )
-
 
 class IpSecurityRestrictionRule(_serialization.Model):
     """Rule to restrict incoming IP address.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar name: Name for the IP restriction rule. Required.
     :vartype name: str
@@ -6857,8 +7273,8 @@ class JavaComponent(ProxyResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -6868,18 +7284,8 @@ class JavaComponent(ProxyResource):
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
     :vartype system_data: ~azure.mgmt.appcontainers.models.SystemData
-    :ivar component_type: Type of the Java Component. Known values are: "SpringBootAdmin",
-     "SpringCloudEureka", and "SpringCloudConfig".
-    :vartype component_type: str or ~azure.mgmt.appcontainers.models.JavaComponentType
-    :ivar provisioning_state: Provisioning state of the Java Component. Known values are:
-     "Succeeded", "Failed", "Canceled", "Deleting", and "InProgress".
-    :vartype provisioning_state: str or
-     ~azure.mgmt.appcontainers.models.JavaComponentProvisioningState
-    :ivar configurations: List of Java Components configuration properties.
-    :vartype configurations:
-     list[~azure.mgmt.appcontainers.models.JavaComponentConfigurationProperty]
-    :ivar service_binds: List of Java Components that are bound to the Java component.
-    :vartype service_binds: list[~azure.mgmt.appcontainers.models.JavaComponentServiceBind]
+    :ivar properties: Java Component resource specific properties.
+    :vartype properties: ~azure.mgmt.appcontainers.models.JavaComponentProperties
     """
 
     _validation = {
@@ -6887,7 +7293,6 @@ class JavaComponent(ProxyResource):
         "name": {"readonly": True},
         "type": {"readonly": True},
         "system_data": {"readonly": True},
-        "provisioning_state": {"readonly": True},
     }
 
     _attribute_map = {
@@ -6895,35 +7300,16 @@ class JavaComponent(ProxyResource):
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
-        "component_type": {"key": "properties.componentType", "type": "str"},
-        "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
-        "configurations": {"key": "properties.configurations", "type": "[JavaComponentConfigurationProperty]"},
-        "service_binds": {"key": "properties.serviceBinds", "type": "[JavaComponentServiceBind]"},
+        "properties": {"key": "properties", "type": "JavaComponentProperties"},
     }
 
-    def __init__(
-        self,
-        *,
-        component_type: Optional[Union[str, "_models.JavaComponentType"]] = None,
-        configurations: Optional[List["_models.JavaComponentConfigurationProperty"]] = None,
-        service_binds: Optional[List["_models.JavaComponentServiceBind"]] = None,
-        **kwargs: Any
-    ) -> None:
+    def __init__(self, *, properties: Optional["_models.JavaComponentProperties"] = None, **kwargs: Any) -> None:
         """
-        :keyword component_type: Type of the Java Component. Known values are: "SpringBootAdmin",
-         "SpringCloudEureka", and "SpringCloudConfig".
-        :paramtype component_type: str or ~azure.mgmt.appcontainers.models.JavaComponentType
-        :keyword configurations: List of Java Components configuration properties.
-        :paramtype configurations:
-         list[~azure.mgmt.appcontainers.models.JavaComponentConfigurationProperty]
-        :keyword service_binds: List of Java Components that are bound to the Java component.
-        :paramtype service_binds: list[~azure.mgmt.appcontainers.models.JavaComponentServiceBind]
+        :keyword properties: Java Component resource specific properties.
+        :paramtype properties: ~azure.mgmt.appcontainers.models.JavaComponentProperties
         """
         super().__init__(**kwargs)
-        self.component_type = component_type
-        self.provisioning_state = None
-        self.configurations = configurations
-        self.service_binds = service_binds
+        self.properties = properties
 
 
 class JavaComponentConfigurationProperty(_serialization.Model):
@@ -6952,12 +7338,102 @@ class JavaComponentConfigurationProperty(_serialization.Model):
         self.value = value
 
 
+class JavaComponentIngress(_serialization.Model):
+    """Container App Ingress configuration.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar fqdn: Hostname of the Java Component endpoint.
+    :vartype fqdn: str
+    """
+
+    _validation = {
+        "fqdn": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "fqdn": {"key": "fqdn", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.fqdn = None
+
+
+class JavaComponentProperties(_serialization.Model):
+    """Java Component common properties.
+
+    You probably want to use the sub-classes and not this class directly. Known sub-classes are:
+    NacosComponent, SpringBootAdminComponent, SpringCloudConfigComponent,
+    SpringCloudEurekaComponent
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar component_type: Type of the Java Component. Required. Known values are:
+     "SpringBootAdmin", "SpringCloudEureka", "SpringCloudConfig", and "Nacos".
+    :vartype component_type: str or ~azure.mgmt.appcontainers.models.JavaComponentType
+    :ivar provisioning_state: Provisioning state of the Java Component. Known values are:
+     "Succeeded", "Failed", "Canceled", "Deleting", and "InProgress".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.appcontainers.models.JavaComponentProvisioningState
+    :ivar configurations: List of Java Components configuration properties.
+    :vartype configurations:
+     list[~azure.mgmt.appcontainers.models.JavaComponentConfigurationProperty]
+    :ivar service_binds: List of Java Components that are bound to the Java component.
+    :vartype service_binds: list[~azure.mgmt.appcontainers.models.JavaComponentServiceBind]
+    """
+
+    _validation = {
+        "component_type": {"required": True},
+        "provisioning_state": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "component_type": {"key": "componentType", "type": "str"},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "configurations": {"key": "configurations", "type": "[JavaComponentConfigurationProperty]"},
+        "service_binds": {"key": "serviceBinds", "type": "[JavaComponentServiceBind]"},
+    }
+
+    _subtype_map = {
+        "component_type": {
+            "Nacos": "NacosComponent",
+            "SpringBootAdmin": "SpringBootAdminComponent",
+            "SpringCloudConfig": "SpringCloudConfigComponent",
+            "SpringCloudEureka": "SpringCloudEurekaComponent",
+        }
+    }
+
+    def __init__(
+        self,
+        *,
+        configurations: Optional[List["_models.JavaComponentConfigurationProperty"]] = None,
+        service_binds: Optional[List["_models.JavaComponentServiceBind"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword configurations: List of Java Components configuration properties.
+        :paramtype configurations:
+         list[~azure.mgmt.appcontainers.models.JavaComponentConfigurationProperty]
+        :keyword service_binds: List of Java Components that are bound to the Java component.
+        :paramtype service_binds: list[~azure.mgmt.appcontainers.models.JavaComponentServiceBind]
+        """
+        super().__init__(**kwargs)
+        self.component_type: Optional[str] = None
+        self.provisioning_state = None
+        self.configurations = configurations
+        self.service_binds = service_binds
+
+
 class JavaComponentsCollection(_serialization.Model):
     """Java Components ARM resource.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.JavaComponent]
@@ -7016,10 +7492,10 @@ class ContainerAppsJob(TrackedResource):  # pylint: disable=too-many-instance-at
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -7133,10 +7609,10 @@ class Job(TrackedResource):  # pylint: disable=too-many-instance-attributes
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -7248,7 +7724,7 @@ class Job(TrackedResource):  # pylint: disable=too-many-instance-attributes
 class JobConfiguration(_serialization.Model):
     """Non versioned Container Apps Job configuration properties.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar secrets: Collection of secrets used by a Container Apps Job.
     :vartype secrets: list[~azure.mgmt.appcontainers.models.Secret]
@@ -7263,7 +7739,7 @@ class JobConfiguration(_serialization.Model):
      Properties replicaCompletionCount and parallelism would be set to 1 by default.
     :vartype manual_trigger_config:
      ~azure.mgmt.appcontainers.models.JobConfigurationManualTriggerConfig
-    :ivar schedule_trigger_config: Cron formatted repeating trigger schedule ("\ * * * * *") for
+    :ivar schedule_trigger_config: Cron formatted repeating trigger schedule ("\\ * * * * *") for
      cronjobs. Properties completions and parallelism would be set to 1 by default.
     :vartype schedule_trigger_config:
      ~azure.mgmt.appcontainers.models.JobConfigurationScheduleTriggerConfig
@@ -7273,6 +7749,9 @@ class JobConfiguration(_serialization.Model):
     :ivar registries: Collection of private container registry credentials used by a Container apps
      job.
     :vartype registries: list[~azure.mgmt.appcontainers.models.RegistryCredentials]
+    :ivar identity_settings: Optional settings for Managed Identities that are assigned to the
+     Container App Job. If a Managed Identity is not specified here, default settings will be used.
+    :vartype identity_settings: list[~azure.mgmt.appcontainers.models.IdentitySettings]
     """
 
     _validation = {
@@ -7289,6 +7768,7 @@ class JobConfiguration(_serialization.Model):
         "schedule_trigger_config": {"key": "scheduleTriggerConfig", "type": "JobConfigurationScheduleTriggerConfig"},
         "event_trigger_config": {"key": "eventTriggerConfig", "type": "JobConfigurationEventTriggerConfig"},
         "registries": {"key": "registries", "type": "[RegistryCredentials]"},
+        "identity_settings": {"key": "identitySettings", "type": "[IdentitySettings]"},
     }
 
     def __init__(
@@ -7302,6 +7782,7 @@ class JobConfiguration(_serialization.Model):
         schedule_trigger_config: Optional["_models.JobConfigurationScheduleTriggerConfig"] = None,
         event_trigger_config: Optional["_models.JobConfigurationEventTriggerConfig"] = None,
         registries: Optional[List["_models.RegistryCredentials"]] = None,
+        identity_settings: Optional[List["_models.IdentitySettings"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -7318,8 +7799,8 @@ class JobConfiguration(_serialization.Model):
          Properties replicaCompletionCount and parallelism would be set to 1 by default.
         :paramtype manual_trigger_config:
          ~azure.mgmt.appcontainers.models.JobConfigurationManualTriggerConfig
-        :keyword schedule_trigger_config: Cron formatted repeating trigger schedule ("\ * * * * *") for
-         cronjobs. Properties completions and parallelism would be set to 1 by default.
+        :keyword schedule_trigger_config: Cron formatted repeating trigger schedule ("\\ * * * * *")
+         for cronjobs. Properties completions and parallelism would be set to 1 by default.
         :paramtype schedule_trigger_config:
          ~azure.mgmt.appcontainers.models.JobConfigurationScheduleTriggerConfig
         :keyword event_trigger_config: Trigger configuration of an event driven job.
@@ -7328,6 +7809,9 @@ class JobConfiguration(_serialization.Model):
         :keyword registries: Collection of private container registry credentials used by a Container
          apps job.
         :paramtype registries: list[~azure.mgmt.appcontainers.models.RegistryCredentials]
+        :keyword identity_settings: Optional settings for Managed Identities that are assigned to the
+         Container App Job. If a Managed Identity is not specified here, default settings will be used.
+        :paramtype identity_settings: list[~azure.mgmt.appcontainers.models.IdentitySettings]
         """
         super().__init__(**kwargs)
         self.secrets = secrets
@@ -7338,6 +7822,7 @@ class JobConfiguration(_serialization.Model):
         self.schedule_trigger_config = schedule_trigger_config
         self.event_trigger_config = event_trigger_config
         self.registries = registries
+        self.identity_settings = identity_settings
 
 
 class JobConfigurationEventTriggerConfig(_serialization.Model):
@@ -7413,15 +7898,15 @@ class JobConfigurationManualTriggerConfig(_serialization.Model):
 
 
 class JobConfigurationScheduleTriggerConfig(_serialization.Model):
-    """Cron formatted repeating trigger schedule ("\ * * * * *") for cronjobs. Properties completions
+    """Cron formatted repeating trigger schedule ("\\ * * * * *") for cronjobs. Properties completions
     and parallelism would be set to 1 by default.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar replica_completion_count: Minimum number of successful replica completions before overall
      job completion.
     :vartype replica_completion_count: int
-    :ivar cron_expression: Cron formatted repeating schedule ("\ * * * * *") of a Cron Job.
+    :ivar cron_expression: Cron formatted repeating schedule ("\\ * * * * *") of a Cron Job.
      Required.
     :vartype cron_expression: str
     :ivar parallelism: Number of parallel replicas of a job that can run at a given time.
@@ -7450,7 +7935,7 @@ class JobConfigurationScheduleTriggerConfig(_serialization.Model):
         :keyword replica_completion_count: Minimum number of successful replica completions before
          overall job completion.
         :paramtype replica_completion_count: int
-        :keyword cron_expression: Cron formatted repeating schedule ("\ * * * * *") of a Cron Job.
+        :keyword cron_expression: Cron formatted repeating schedule ("\\ * * * * *") of a Cron Job.
          Required.
         :paramtype cron_expression: str
         :keyword parallelism: Number of parallel replicas of a job that can run at a given time.
@@ -7482,6 +7967,8 @@ class JobExecution(_serialization.Model):
     :vartype end_time: ~datetime.datetime
     :ivar template: Job's execution container.
     :vartype template: ~azure.mgmt.appcontainers.models.JobExecutionTemplate
+    :ivar detailed_status: Detailed status of the job execution.
+    :vartype detailed_status: ~azure.mgmt.appcontainers.models.ExecutionStatus
     """
 
     _validation = {
@@ -7496,6 +7983,7 @@ class JobExecution(_serialization.Model):
         "start_time": {"key": "properties.startTime", "type": "iso-8601"},
         "end_time": {"key": "properties.endTime", "type": "iso-8601"},
         "template": {"key": "properties.template", "type": "JobExecutionTemplate"},
+        "detailed_status": {"key": "properties.detailedStatus", "type": "ExecutionStatus"},
     }
 
     def __init__(
@@ -7507,6 +7995,7 @@ class JobExecution(_serialization.Model):
         start_time: Optional[datetime.datetime] = None,
         end_time: Optional[datetime.datetime] = None,
         template: Optional["_models.JobExecutionTemplate"] = None,
+        detailed_status: Optional["_models.ExecutionStatus"] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -7522,6 +8011,8 @@ class JobExecution(_serialization.Model):
         :paramtype end_time: ~datetime.datetime
         :keyword template: Job's execution container.
         :paramtype template: ~azure.mgmt.appcontainers.models.JobExecutionTemplate
+        :keyword detailed_status: Detailed status of the job execution.
+        :paramtype detailed_status: ~azure.mgmt.appcontainers.models.ExecutionStatus
         """
         super().__init__(**kwargs)
         self.name = name
@@ -7531,6 +8022,7 @@ class JobExecution(_serialization.Model):
         self.start_time = start_time
         self.end_time = end_time
         self.template = template
+        self.detailed_status = detailed_status
 
 
 class JobExecutionBase(_serialization.Model):
@@ -7628,7 +8120,7 @@ class JobExecutionContainer(_serialization.Model):
 class JobExecutionNamesCollection(_serialization.Model):
     """Container App executions names list.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.JobExecutionBase]
@@ -7846,6 +8338,9 @@ class JobScaleRule(_serialization.Model):
     :vartype metadata: JSON
     :ivar auth: Authentication secrets for the scale rule.
     :vartype auth: list[~azure.mgmt.appcontainers.models.ScaleRuleAuth]
+    :ivar identity: The resource ID of a user-assigned managed identity that is assigned to the
+     job, or 'system' for system-assigned identity.
+    :vartype identity: str
     """
 
     _attribute_map = {
@@ -7853,6 +8348,7 @@ class JobScaleRule(_serialization.Model):
         "type": {"key": "type", "type": "str"},
         "metadata": {"key": "metadata", "type": "object"},
         "auth": {"key": "auth", "type": "[ScaleRuleAuth]"},
+        "identity": {"key": "identity", "type": "str"},
     }
 
     def __init__(
@@ -7862,6 +8358,7 @@ class JobScaleRule(_serialization.Model):
         type: Optional[str] = None,
         metadata: Optional[JSON] = None,
         auth: Optional[List["_models.ScaleRuleAuth"]] = None,
+        identity: Optional[str] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -7874,12 +8371,16 @@ class JobScaleRule(_serialization.Model):
         :paramtype metadata: JSON
         :keyword auth: Authentication secrets for the scale rule.
         :paramtype auth: list[~azure.mgmt.appcontainers.models.ScaleRuleAuth]
+        :keyword identity: The resource ID of a user-assigned managed identity that is assigned to the
+         job, or 'system' for system-assigned identity.
+        :paramtype identity: str
         """
         super().__init__(**kwargs)
         self.name = name
         self.type = type
         self.metadata = metadata
         self.auth = auth
+        self.identity = identity
 
 
 class JobsCollection(_serialization.Model):
@@ -7887,7 +8388,7 @@ class JobsCollection(_serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.Job]
@@ -7918,7 +8419,7 @@ class JobsCollection(_serialization.Model):
 class JobSecretsCollection(_serialization.Model):
     """Container Apps Job Secrets Collection ARM resource.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.Secret]
@@ -8108,6 +8609,85 @@ class LogAnalyticsConfiguration(_serialization.Model):
         self.dynamic_json_columns = dynamic_json_columns
 
 
+class LoggerSetting(_serialization.Model):
+    """Logger settings for java workloads.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar logger: Logger name. Required.
+    :vartype logger: str
+    :ivar level: The specified logger's log level. Required. Known values are: "off", "error",
+     "info", "debug", "trace", and "warn".
+    :vartype level: str or ~azure.mgmt.appcontainers.models.Level
+    """
+
+    _validation = {
+        "logger": {"required": True},
+        "level": {"required": True},
+    }
+
+    _attribute_map = {
+        "logger": {"key": "logger", "type": "str"},
+        "level": {"key": "level", "type": "str"},
+    }
+
+    def __init__(self, *, logger: str, level: Union[str, "_models.Level"], **kwargs: Any) -> None:
+        """
+        :keyword logger: Logger name. Required.
+        :paramtype logger: str
+        :keyword level: The specified logger's log level. Required. Known values are: "off", "error",
+         "info", "debug", "trace", and "warn".
+        :paramtype level: str or ~azure.mgmt.appcontainers.models.Level
+        """
+        super().__init__(**kwargs)
+        self.logger = logger
+        self.level = level
+
+
+class LogicApp(ProxyResource):
+    """A logic app extension resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.appcontainers.models.SystemData
+    :ivar properties: The resource-specific properties for this resource.
+    :vartype properties: JSON
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "properties": {"key": "properties", "type": "object"},
+    }
+
+    def __init__(self, *, properties: Optional[JSON] = None, **kwargs: Any) -> None:
+        """
+        :keyword properties: The resource-specific properties for this resource.
+        :paramtype properties: JSON
+        """
+        super().__init__(**kwargs)
+        self.properties = properties
+
+
 class Login(_serialization.Model):
     """The configuration settings of the login flow of users using ContainerApp Service
     Authentication/Authorization.
@@ -8243,10 +8823,10 @@ class ManagedCertificate(TrackedResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -8307,7 +8887,7 @@ class ManagedCertificateCollection(_serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.ManagedCertificate]
@@ -8419,10 +8999,10 @@ class ManagedEnvironment(TrackedResource):  # pylint: disable=too-many-instance-
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -8489,6 +9069,15 @@ class ManagedEnvironment(TrackedResource):  # pylint: disable=too-many-instance-
     :ivar peer_authentication: Peer authentication settings for the Managed Environment.
     :vartype peer_authentication:
      ~azure.mgmt.appcontainers.models.ManagedEnvironmentPropertiesPeerAuthentication
+    :ivar peer_traffic_configuration: Peer traffic settings for the Managed Environment.
+    :vartype peer_traffic_configuration:
+     ~azure.mgmt.appcontainers.models.ManagedEnvironmentPropertiesPeerTrafficConfiguration
+    :ivar private_endpoint_connections: Private endpoint connections to the resource.
+    :vartype private_endpoint_connections:
+     list[~azure.mgmt.appcontainers.models.PrivateEndpointConnection]
+    :ivar public_network_access: Property to allow or block all public traffic. Allowed Values:
+     'Enabled', 'Disabled'. Known values are: "Enabled" and "Disabled".
+    :vartype public_network_access: str or ~azure.mgmt.appcontainers.models.PublicNetworkAccess
     """
 
     _validation = {
@@ -8502,6 +9091,7 @@ class ManagedEnvironment(TrackedResource):  # pylint: disable=too-many-instance-
         "default_domain": {"readonly": True},
         "static_ip": {"readonly": True},
         "event_stream_endpoint": {"readonly": True},
+        "private_endpoint_connections": {"readonly": True},
     }
 
     _attribute_map = {
@@ -8543,6 +9133,15 @@ class ManagedEnvironment(TrackedResource):  # pylint: disable=too-many-instance-
             "key": "properties.peerAuthentication",
             "type": "ManagedEnvironmentPropertiesPeerAuthentication",
         },
+        "peer_traffic_configuration": {
+            "key": "properties.peerTrafficConfiguration",
+            "type": "ManagedEnvironmentPropertiesPeerTrafficConfiguration",
+        },
+        "private_endpoint_connections": {
+            "key": "properties.privateEndpointConnections",
+            "type": "[PrivateEndpointConnection]",
+        },
+        "public_network_access": {"key": "properties.publicNetworkAccess", "type": "str"},
     }
 
     def __init__(  # pylint: disable=too-many-locals
@@ -8565,6 +9164,8 @@ class ManagedEnvironment(TrackedResource):  # pylint: disable=too-many-instance-
         dapr_configuration: Optional["_models.DaprConfiguration"] = None,
         infrastructure_resource_group: Optional[str] = None,
         peer_authentication: Optional["_models.ManagedEnvironmentPropertiesPeerAuthentication"] = None,
+        peer_traffic_configuration: Optional["_models.ManagedEnvironmentPropertiesPeerTrafficConfiguration"] = None,
+        public_network_access: Optional[Union[str, "_models.PublicNetworkAccess"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -8613,6 +9214,12 @@ class ManagedEnvironment(TrackedResource):  # pylint: disable=too-many-instance-
         :keyword peer_authentication: Peer authentication settings for the Managed Environment.
         :paramtype peer_authentication:
          ~azure.mgmt.appcontainers.models.ManagedEnvironmentPropertiesPeerAuthentication
+        :keyword peer_traffic_configuration: Peer traffic settings for the Managed Environment.
+        :paramtype peer_traffic_configuration:
+         ~azure.mgmt.appcontainers.models.ManagedEnvironmentPropertiesPeerTrafficConfiguration
+        :keyword public_network_access: Property to allow or block all public traffic. Allowed Values:
+         'Enabled', 'Disabled'. Known values are: "Enabled" and "Disabled".
+        :paramtype public_network_access: str or ~azure.mgmt.appcontainers.models.PublicNetworkAccess
         """
         super().__init__(tags=tags, location=location, **kwargs)
         self.kind = kind
@@ -8635,9 +9242,12 @@ class ManagedEnvironment(TrackedResource):  # pylint: disable=too-many-instance-
         self.dapr_configuration = dapr_configuration
         self.infrastructure_resource_group = infrastructure_resource_group
         self.peer_authentication = peer_authentication
+        self.peer_traffic_configuration = peer_traffic_configuration
+        self.private_endpoint_connections = None
+        self.public_network_access = public_network_access
 
 
-class ManagedEnvironmentPropertiesPeerAuthentication(_serialization.Model):
+class ManagedEnvironmentPropertiesPeerAuthentication(_serialization.Model):  # pylint: disable=name-too-long
     """Peer authentication settings for the Managed Environment.
 
     :ivar mtls: Mutual TLS authentication settings for the Managed Environment.
@@ -8657,12 +9267,61 @@ class ManagedEnvironmentPropertiesPeerAuthentication(_serialization.Model):
         self.mtls = mtls
 
 
+class ManagedEnvironmentPropertiesPeerTrafficConfiguration(_serialization.Model):  # pylint: disable=name-too-long
+    """Peer traffic settings for the Managed Environment.
+
+    :ivar encryption: Peer traffic encryption settings for the Managed Environment.
+    :vartype encryption:
+     ~azure.mgmt.appcontainers.models.ManagedEnvironmentPropertiesPeerTrafficConfigurationEncryption
+    """
+
+    _attribute_map = {
+        "encryption": {"key": "encryption", "type": "ManagedEnvironmentPropertiesPeerTrafficConfigurationEncryption"},
+    }
+
+    def __init__(
+        self,
+        *,
+        encryption: Optional["_models.ManagedEnvironmentPropertiesPeerTrafficConfigurationEncryption"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword encryption: Peer traffic encryption settings for the Managed Environment.
+        :paramtype encryption:
+         ~azure.mgmt.appcontainers.models.ManagedEnvironmentPropertiesPeerTrafficConfigurationEncryption
+        """
+        super().__init__(**kwargs)
+        self.encryption = encryption
+
+
+class ManagedEnvironmentPropertiesPeerTrafficConfigurationEncryption(
+    _serialization.Model
+):  # pylint: disable=name-too-long
+    """Peer traffic encryption settings for the Managed Environment.
+
+    :ivar enabled: Boolean indicating whether the peer traffic encryption is enabled.
+    :vartype enabled: bool
+    """
+
+    _attribute_map = {
+        "enabled": {"key": "enabled", "type": "bool"},
+    }
+
+    def __init__(self, *, enabled: Optional[bool] = None, **kwargs: Any) -> None:
+        """
+        :keyword enabled: Boolean indicating whether the peer traffic encryption is enabled.
+        :paramtype enabled: bool
+        """
+        super().__init__(**kwargs)
+        self.enabled = enabled
+
+
 class ManagedEnvironmentsCollection(_serialization.Model):
     """Collection of Environments.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.ManagedEnvironment]
@@ -8695,8 +9354,8 @@ class ManagedEnvironmentStorage(ProxyResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -8771,7 +9430,7 @@ class ManagedEnvironmentStorageProperties(_serialization.Model):
 class ManagedEnvironmentStoragesCollection(_serialization.Model):
     """Collection of Storage for Environments.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of storage resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.ManagedEnvironmentStorage]
@@ -8799,7 +9458,7 @@ class ManagedServiceIdentity(_serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar principal_id: The service principal ID of the system assigned identity. This property
      will only be provided for a system assigned identity.
@@ -8813,7 +9472,7 @@ class ManagedServiceIdentity(_serialization.Model):
     :vartype type: str or ~azure.mgmt.appcontainers.models.ManagedServiceIdentityType
     :ivar user_assigned_identities: The set of user assigned identities associated with the
      resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form:
-     '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}.
+     '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}.  # pylint: disable=line-too-long
      The dictionary values can be empty objects ({}) in requests.
     :vartype user_assigned_identities: dict[str,
      ~azure.mgmt.appcontainers.models.UserAssignedIdentity]
@@ -8846,7 +9505,7 @@ class ManagedServiceIdentity(_serialization.Model):
         :paramtype type: str or ~azure.mgmt.appcontainers.models.ManagedServiceIdentityType
         :keyword user_assigned_identities: The set of user assigned identities associated with the
          resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form:
-         '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}.
+         '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}.  # pylint: disable=line-too-long
          The dictionary values can be empty objects ({}) in requests.
         :paramtype user_assigned_identities: dict[str,
          ~azure.mgmt.appcontainers.models.UserAssignedIdentity]
@@ -8896,6 +9555,64 @@ class Mtls(_serialization.Model):
         """
         super().__init__(**kwargs)
         self.enabled = enabled
+
+
+class NacosComponent(JavaComponentProperties):
+    """Nacos properties.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar component_type: Type of the Java Component. Required. Known values are:
+     "SpringBootAdmin", "SpringCloudEureka", "SpringCloudConfig", and "Nacos".
+    :vartype component_type: str or ~azure.mgmt.appcontainers.models.JavaComponentType
+    :ivar provisioning_state: Provisioning state of the Java Component. Known values are:
+     "Succeeded", "Failed", "Canceled", "Deleting", and "InProgress".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.appcontainers.models.JavaComponentProvisioningState
+    :ivar configurations: List of Java Components configuration properties.
+    :vartype configurations:
+     list[~azure.mgmt.appcontainers.models.JavaComponentConfigurationProperty]
+    :ivar service_binds: List of Java Components that are bound to the Java component.
+    :vartype service_binds: list[~azure.mgmt.appcontainers.models.JavaComponentServiceBind]
+    :ivar ingress: Java Component Ingress configurations.
+    :vartype ingress: ~azure.mgmt.appcontainers.models.JavaComponentIngress
+    """
+
+    _validation = {
+        "component_type": {"required": True},
+        "provisioning_state": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "component_type": {"key": "componentType", "type": "str"},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "configurations": {"key": "configurations", "type": "[JavaComponentConfigurationProperty]"},
+        "service_binds": {"key": "serviceBinds", "type": "[JavaComponentServiceBind]"},
+        "ingress": {"key": "ingress", "type": "JavaComponentIngress"},
+    }
+
+    def __init__(
+        self,
+        *,
+        configurations: Optional[List["_models.JavaComponentConfigurationProperty"]] = None,
+        service_binds: Optional[List["_models.JavaComponentServiceBind"]] = None,
+        ingress: Optional["_models.JavaComponentIngress"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword configurations: List of Java Components configuration properties.
+        :paramtype configurations:
+         list[~azure.mgmt.appcontainers.models.JavaComponentConfigurationProperty]
+        :keyword service_binds: List of Java Components that are bound to the Java component.
+        :paramtype service_binds: list[~azure.mgmt.appcontainers.models.JavaComponentServiceBind]
+        :keyword ingress: Java Component Ingress configurations.
+        :paramtype ingress: ~azure.mgmt.appcontainers.models.JavaComponentIngress
+        """
+        super().__init__(configurations=configurations, service_binds=service_binds, **kwargs)
+        self.component_type: str = "Nacos"
+        self.ingress = ingress
 
 
 class NfsAzureFileProperties(_serialization.Model):
@@ -9134,8 +9851,6 @@ class OpenIdConnectRegistration(_serialization.Model):
 class OpenTelemetryConfiguration(_serialization.Model):
     """Configuration of Open Telemetry.
 
-    :ivar include_system_telemetry: Boolean indicating if including system telemetry.
-    :vartype include_system_telemetry: bool
     :ivar destinations_configuration: Open telemetry destinations configuration.
     :vartype destinations_configuration: ~azure.mgmt.appcontainers.models.DestinationsConfiguration
     :ivar traces_configuration: Open telemetry trace configuration.
@@ -9147,7 +9862,6 @@ class OpenTelemetryConfiguration(_serialization.Model):
     """
 
     _attribute_map = {
-        "include_system_telemetry": {"key": "includeSystemTelemetry", "type": "bool"},
         "destinations_configuration": {"key": "destinationsConfiguration", "type": "DestinationsConfiguration"},
         "traces_configuration": {"key": "tracesConfiguration", "type": "TracesConfiguration"},
         "logs_configuration": {"key": "logsConfiguration", "type": "LogsConfiguration"},
@@ -9157,7 +9871,6 @@ class OpenTelemetryConfiguration(_serialization.Model):
     def __init__(
         self,
         *,
-        include_system_telemetry: Optional[bool] = None,
         destinations_configuration: Optional["_models.DestinationsConfiguration"] = None,
         traces_configuration: Optional["_models.TracesConfiguration"] = None,
         logs_configuration: Optional["_models.LogsConfiguration"] = None,
@@ -9165,8 +9878,6 @@ class OpenTelemetryConfiguration(_serialization.Model):
         **kwargs: Any
     ) -> None:
         """
-        :keyword include_system_telemetry: Boolean indicating if including system telemetry.
-        :paramtype include_system_telemetry: bool
         :keyword destinations_configuration: Open telemetry destinations configuration.
         :paramtype destinations_configuration:
          ~azure.mgmt.appcontainers.models.DestinationsConfiguration
@@ -9178,7 +9889,6 @@ class OpenTelemetryConfiguration(_serialization.Model):
         :paramtype metrics_configuration: ~azure.mgmt.appcontainers.models.MetricsConfiguration
         """
         super().__init__(**kwargs)
-        self.include_system_telemetry = include_system_telemetry
         self.destinations_configuration = destinations_configuration
         self.traces_configuration = traces_configuration
         self.logs_configuration = logs_configuration
@@ -9286,12 +9996,15 @@ class OtlpConfiguration(_serialization.Model):
     :vartype endpoint: str
     :ivar insecure: Boolean indicating if otlp configuration is insecure.
     :vartype insecure: bool
+    :ivar headers: Headers of otlp configurations.
+    :vartype headers: list[~azure.mgmt.appcontainers.models.Header]
     """
 
     _attribute_map = {
         "name": {"key": "name", "type": "str"},
         "endpoint": {"key": "endpoint", "type": "str"},
         "insecure": {"key": "insecure", "type": "bool"},
+        "headers": {"key": "headers", "type": "[Header]"},
     }
 
     def __init__(
@@ -9300,6 +10013,7 @@ class OtlpConfiguration(_serialization.Model):
         name: Optional[str] = None,
         endpoint: Optional[str] = None,
         insecure: Optional[bool] = None,
+        headers: Optional[List["_models.Header"]] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -9309,11 +10023,14 @@ class OtlpConfiguration(_serialization.Model):
         :paramtype endpoint: str
         :keyword insecure: Boolean indicating if otlp configuration is insecure.
         :paramtype insecure: bool
+        :keyword headers: Headers of otlp configurations.
+        :paramtype headers: list[~azure.mgmt.appcontainers.models.Header]
         """
         super().__init__(**kwargs)
         self.name = name
         self.endpoint = endpoint
         self.insecure = insecure
+        self.headers = headers
 
 
 class PreBuildStep(_serialization.Model):
@@ -9355,43 +10072,318 @@ class PreBuildStep(_serialization.Model):
         self.http_get = http_get
 
 
+class PrivateEndpoint(_serialization.Model):
+    """The Private Endpoint resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: The ARM identifier for Private Endpoint.
+    :vartype id: str
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.id = None
+
+
+class PrivateEndpointConnection(Resource):
+    """The Private Endpoint Connection resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.appcontainers.models.SystemData
+    :ivar group_ids: The group ids for the private endpoint resource.
+    :vartype group_ids: list[str]
+    :ivar private_endpoint: The resource of private end point.
+    :vartype private_endpoint: ~azure.mgmt.appcontainers.models.PrivateEndpoint
+    :ivar private_link_service_connection_state: A collection of information about the state of the
+     connection between service consumer and provider.
+    :vartype private_link_service_connection_state:
+     ~azure.mgmt.appcontainers.models.PrivateLinkServiceConnectionState
+    :ivar provisioning_state: The provisioning state of the private endpoint connection resource.
+     Known values are: "Succeeded", "Failed", "Canceled", "Waiting", "Updating", "Deleting", and
+     "Pending".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.appcontainers.models.PrivateEndpointConnectionProvisioningState
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+        "group_ids": {"readonly": True},
+        "provisioning_state": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "group_ids": {"key": "properties.groupIds", "type": "[str]"},
+        "private_endpoint": {"key": "properties.privateEndpoint", "type": "PrivateEndpoint"},
+        "private_link_service_connection_state": {
+            "key": "properties.privateLinkServiceConnectionState",
+            "type": "PrivateLinkServiceConnectionState",
+        },
+        "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        private_endpoint: Optional["_models.PrivateEndpoint"] = None,
+        private_link_service_connection_state: Optional["_models.PrivateLinkServiceConnectionState"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword private_endpoint: The resource of private end point.
+        :paramtype private_endpoint: ~azure.mgmt.appcontainers.models.PrivateEndpoint
+        :keyword private_link_service_connection_state: A collection of information about the state of
+         the connection between service consumer and provider.
+        :paramtype private_link_service_connection_state:
+         ~azure.mgmt.appcontainers.models.PrivateLinkServiceConnectionState
+        """
+        super().__init__(**kwargs)
+        self.group_ids = None
+        self.private_endpoint = private_endpoint
+        self.private_link_service_connection_state = private_link_service_connection_state
+        self.provisioning_state = None
+
+
+class PrivateEndpointConnectionListResult(_serialization.Model):
+    """List of private endpoint connection associated with the specified resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: Array of private endpoint connections.
+    :vartype value: list[~azure.mgmt.appcontainers.models.PrivateEndpointConnection]
+    :ivar next_link: URL to get the next set of operation list results (if there are any).
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "next_link": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[PrivateEndpointConnection]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(self, *, value: Optional[List["_models.PrivateEndpointConnection"]] = None, **kwargs: Any) -> None:
+        """
+        :keyword value: Array of private endpoint connections.
+        :paramtype value: list[~azure.mgmt.appcontainers.models.PrivateEndpointConnection]
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.next_link = None
+
+
+class PrivateLinkResource(Resource):
+    """A private link resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.appcontainers.models.SystemData
+    :ivar group_id: The private link resource group id.
+    :vartype group_id: str
+    :ivar required_members: The private link resource required member names.
+    :vartype required_members: list[str]
+    :ivar required_zone_names: The private link resource private link DNS zone name.
+    :vartype required_zone_names: list[str]
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+        "group_id": {"readonly": True},
+        "required_members": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "group_id": {"key": "properties.groupId", "type": "str"},
+        "required_members": {"key": "properties.requiredMembers", "type": "[str]"},
+        "required_zone_names": {"key": "properties.requiredZoneNames", "type": "[str]"},
+    }
+
+    def __init__(self, *, required_zone_names: Optional[List[str]] = None, **kwargs: Any) -> None:
+        """
+        :keyword required_zone_names: The private link resource private link DNS zone name.
+        :paramtype required_zone_names: list[str]
+        """
+        super().__init__(**kwargs)
+        self.group_id = None
+        self.required_members = None
+        self.required_zone_names = required_zone_names
+
+
+class PrivateLinkResourceListResult(_serialization.Model):
+    """A list of private link resources.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar value: Array of private link resources.
+    :vartype value: list[~azure.mgmt.appcontainers.models.PrivateLinkResource]
+    :ivar next_link: URL to get the next set of operation list results (if there are any).
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "next_link": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[PrivateLinkResource]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(self, *, value: Optional[List["_models.PrivateLinkResource"]] = None, **kwargs: Any) -> None:
+        """
+        :keyword value: Array of private link resources.
+        :paramtype value: list[~azure.mgmt.appcontainers.models.PrivateLinkResource]
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.next_link = None
+
+
+class PrivateLinkServiceConnectionState(_serialization.Model):
+    """A collection of information about the state of the connection between service consumer and
+    provider.
+
+    :ivar status: Indicates whether the connection has been Approved/Rejected/Removed by the owner
+     of the service. Known values are: "Pending", "Approved", "Rejected", and "Disconnected".
+    :vartype status: str or ~azure.mgmt.appcontainers.models.PrivateEndpointServiceConnectionStatus
+    :ivar description: The reason for approval/rejection of the connection.
+    :vartype description: str
+    :ivar actions_required: A message indicating if changes on the service provider require any
+     updates on the consumer.
+    :vartype actions_required: str
+    """
+
+    _attribute_map = {
+        "status": {"key": "status", "type": "str"},
+        "description": {"key": "description", "type": "str"},
+        "actions_required": {"key": "actionsRequired", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        status: Optional[Union[str, "_models.PrivateEndpointServiceConnectionStatus"]] = None,
+        description: Optional[str] = None,
+        actions_required: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword status: Indicates whether the connection has been Approved/Rejected/Removed by the
+         owner of the service. Known values are: "Pending", "Approved", "Rejected", and "Disconnected".
+        :paramtype status: str or
+         ~azure.mgmt.appcontainers.models.PrivateEndpointServiceConnectionStatus
+        :keyword description: The reason for approval/rejection of the connection.
+        :paramtype description: str
+        :keyword actions_required: A message indicating if changes on the service provider require any
+         updates on the consumer.
+        :paramtype actions_required: str
+        """
+        super().__init__(**kwargs)
+        self.status = status
+        self.description = description
+        self.actions_required = actions_required
+
+
 class QueueScaleRule(_serialization.Model):
     """Container App container Azure Queue based scaling rule.
 
+    :ivar account_name: Storage account name. required if using managed identity to authenticate.
+    :vartype account_name: str
     :ivar queue_name: Queue name.
     :vartype queue_name: str
     :ivar queue_length: Queue length.
     :vartype queue_length: int
     :ivar auth: Authentication secrets for the queue scale rule.
     :vartype auth: list[~azure.mgmt.appcontainers.models.ScaleRuleAuth]
+    :ivar identity: The resource ID of a user-assigned managed identity that is assigned to the
+     Container App, or 'system' for system-assigned identity.
+    :vartype identity: str
     """
 
     _attribute_map = {
+        "account_name": {"key": "accountName", "type": "str"},
         "queue_name": {"key": "queueName", "type": "str"},
         "queue_length": {"key": "queueLength", "type": "int"},
         "auth": {"key": "auth", "type": "[ScaleRuleAuth]"},
+        "identity": {"key": "identity", "type": "str"},
     }
 
     def __init__(
         self,
         *,
+        account_name: Optional[str] = None,
         queue_name: Optional[str] = None,
         queue_length: Optional[int] = None,
         auth: Optional[List["_models.ScaleRuleAuth"]] = None,
+        identity: Optional[str] = None,
         **kwargs: Any
     ) -> None:
         """
+        :keyword account_name: Storage account name. required if using managed identity to
+         authenticate.
+        :paramtype account_name: str
         :keyword queue_name: Queue name.
         :paramtype queue_name: str
         :keyword queue_length: Queue length.
         :paramtype queue_length: int
         :keyword auth: Authentication secrets for the queue scale rule.
         :paramtype auth: list[~azure.mgmt.appcontainers.models.ScaleRuleAuth]
+        :keyword identity: The resource ID of a user-assigned managed identity that is assigned to the
+         Container App, or 'system' for system-assigned identity.
+        :paramtype identity: str
         """
         super().__init__(**kwargs)
+        self.account_name = account_name
         self.queue_name = queue_name
         self.queue_length = queue_length
         self.auth = auth
+        self.identity = identity
 
 
 class RegistryCredentials(_serialization.Model):
@@ -9488,8 +10480,8 @@ class Replica(ProxyResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -9558,7 +10550,7 @@ class Replica(ProxyResource):
 class ReplicaCollection(_serialization.Model):
     """Container App Revision Replicas collection ARM resource.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.Replica]
@@ -9661,13 +10653,45 @@ class ReplicaContainer(_serialization.Model):
         self.exec_endpoint = None
 
 
+class ReplicaExecutionStatus(_serialization.Model):
+    """Container Apps Job execution replica status.
+
+    :ivar name: Replica Name.
+    :vartype name: str
+    :ivar containers: Containers in the execution replica.
+    :vartype containers: list[~azure.mgmt.appcontainers.models.ContainerExecutionStatus]
+    """
+
+    _attribute_map = {
+        "name": {"key": "name", "type": "str"},
+        "containers": {"key": "containers", "type": "[ContainerExecutionStatus]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        name: Optional[str] = None,
+        containers: Optional[List["_models.ContainerExecutionStatus"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword name: Replica Name.
+        :paramtype name: str
+        :keyword containers: Containers in the execution replica.
+        :paramtype containers: list[~azure.mgmt.appcontainers.models.ContainerExecutionStatus]
+        """
+        super().__init__(**kwargs)
+        self.name = name
+        self.containers = containers
+
+
 class Revision(ProxyResource):  # pylint: disable=too-many-instance-attributes
     """Container App Revision.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -9765,7 +10789,7 @@ class RevisionCollection(_serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.Revision]
@@ -9791,6 +10815,143 @@ class RevisionCollection(_serialization.Model):
         super().__init__(**kwargs)
         self.value = value
         self.next_link = None
+
+
+class Runtime(_serialization.Model):
+    """Container App Runtime configuration.
+
+    :ivar java: Java app configuration.
+    :vartype java: ~azure.mgmt.appcontainers.models.RuntimeJava
+    :ivar dotnet: .NET app configuration.
+    :vartype dotnet: ~azure.mgmt.appcontainers.models.RuntimeDotnet
+    """
+
+    _attribute_map = {
+        "java": {"key": "java", "type": "RuntimeJava"},
+        "dotnet": {"key": "dotnet", "type": "RuntimeDotnet"},
+    }
+
+    def __init__(
+        self,
+        *,
+        java: Optional["_models.RuntimeJava"] = None,
+        dotnet: Optional["_models.RuntimeDotnet"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword java: Java app configuration.
+        :paramtype java: ~azure.mgmt.appcontainers.models.RuntimeJava
+        :keyword dotnet: .NET app configuration.
+        :paramtype dotnet: ~azure.mgmt.appcontainers.models.RuntimeDotnet
+        """
+        super().__init__(**kwargs)
+        self.java = java
+        self.dotnet = dotnet
+
+
+class RuntimeDotnet(_serialization.Model):
+    """.NET app configuration.
+
+    :ivar auto_configure_data_protection: Auto configure the ASP.NET Core Data Protection feature.
+    :vartype auto_configure_data_protection: bool
+    """
+
+    _attribute_map = {
+        "auto_configure_data_protection": {"key": "autoConfigureDataProtection", "type": "bool"},
+    }
+
+    def __init__(self, *, auto_configure_data_protection: Optional[bool] = None, **kwargs: Any) -> None:
+        """
+        :keyword auto_configure_data_protection: Auto configure the ASP.NET Core Data Protection
+         feature.
+        :paramtype auto_configure_data_protection: bool
+        """
+        super().__init__(**kwargs)
+        self.auto_configure_data_protection = auto_configure_data_protection
+
+
+class RuntimeJava(_serialization.Model):
+    """Java app configuration.
+
+    :ivar enable_metrics: Enable jmx core metrics for the java app.
+    :vartype enable_metrics: bool
+    :ivar java_agent: Diagnostic capabilities achieved by java agent.
+    :vartype java_agent: ~azure.mgmt.appcontainers.models.RuntimeJavaAgent
+    """
+
+    _attribute_map = {
+        "enable_metrics": {"key": "enableMetrics", "type": "bool"},
+        "java_agent": {"key": "javaAgent", "type": "RuntimeJavaAgent"},
+    }
+
+    def __init__(
+        self,
+        *,
+        enable_metrics: Optional[bool] = None,
+        java_agent: Optional["_models.RuntimeJavaAgent"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword enable_metrics: Enable jmx core metrics for the java app.
+        :paramtype enable_metrics: bool
+        :keyword java_agent: Diagnostic capabilities achieved by java agent.
+        :paramtype java_agent: ~azure.mgmt.appcontainers.models.RuntimeJavaAgent
+        """
+        super().__init__(**kwargs)
+        self.enable_metrics = enable_metrics
+        self.java_agent = java_agent
+
+
+class RuntimeJavaAgent(_serialization.Model):
+    """Diagnostic capabilities achieved by java agent.
+
+    :ivar enabled: Enable java agent injection for the java app.
+    :vartype enabled: bool
+    :ivar logging: Capabilities on the java logging scenario.
+    :vartype logging: ~azure.mgmt.appcontainers.models.RuntimeJavaAgentLogging
+    """
+
+    _attribute_map = {
+        "enabled": {"key": "enabled", "type": "bool"},
+        "logging": {"key": "logging", "type": "RuntimeJavaAgentLogging"},
+    }
+
+    def __init__(
+        self,
+        *,
+        enabled: Optional[bool] = None,
+        logging: Optional["_models.RuntimeJavaAgentLogging"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword enabled: Enable java agent injection for the java app.
+        :paramtype enabled: bool
+        :keyword logging: Capabilities on the java logging scenario.
+        :paramtype logging: ~azure.mgmt.appcontainers.models.RuntimeJavaAgentLogging
+        """
+        super().__init__(**kwargs)
+        self.enabled = enabled
+        self.logging = logging
+
+
+class RuntimeJavaAgentLogging(_serialization.Model):
+    """Capabilities on the java logging scenario.
+
+    :ivar logger_settings: Settings of the logger for the java app.
+    :vartype logger_settings: list[~azure.mgmt.appcontainers.models.LoggerSetting]
+    """
+
+    _attribute_map = {
+        "logger_settings": {"key": "loggerSettings", "type": "[LoggerSetting]"},
+    }
+
+    def __init__(self, *, logger_settings: Optional[List["_models.LoggerSetting"]] = None, **kwargs: Any) -> None:
+        """
+        :keyword logger_settings: Settings of the logger for the java app.
+        :paramtype logger_settings: list[~azure.mgmt.appcontainers.models.LoggerSetting]
+        """
+        super().__init__(**kwargs)
+        self.logger_settings = logger_settings
 
 
 class Scale(_serialization.Model):
@@ -9831,6 +10992,38 @@ class Scale(_serialization.Model):
         self.min_replicas = min_replicas
         self.max_replicas = max_replicas
         self.rules = rules
+
+
+class ScaleConfiguration(_serialization.Model):
+    """Scale configuration.
+
+    :ivar max_concurrent_sessions: The maximum count of sessions at the same time.
+    :vartype max_concurrent_sessions: int
+    :ivar ready_session_instances: The minimum count of ready session instances.
+    :vartype ready_session_instances: int
+    """
+
+    _attribute_map = {
+        "max_concurrent_sessions": {"key": "maxConcurrentSessions", "type": "int"},
+        "ready_session_instances": {"key": "readySessionInstances", "type": "int"},
+    }
+
+    def __init__(
+        self,
+        *,
+        max_concurrent_sessions: Optional[int] = None,
+        ready_session_instances: Optional[int] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword max_concurrent_sessions: The maximum count of sessions at the same time.
+        :paramtype max_concurrent_sessions: int
+        :keyword ready_session_instances: The minimum count of ready session instances.
+        :paramtype ready_session_instances: int
+        """
+        super().__init__(**kwargs)
+        self.max_concurrent_sessions = max_concurrent_sessions
+        self.ready_session_instances = ready_session_instances
 
 
 class ScaleRule(_serialization.Model):
@@ -9967,7 +11160,7 @@ class Secret(_serialization.Model):
 class SecretsCollection(_serialization.Model):
     """Container App Secrets Collection ARM resource.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.ContainerAppSecret]
@@ -10021,7 +11214,7 @@ class SecretVolumeItem(_serialization.Model):
 class Service(_serialization.Model):
     """Container App to be a dev service.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar type: Dev ContainerApp service type. Required.
     :vartype type: str
@@ -10090,13 +11283,514 @@ class ServiceBind(_serialization.Model):
         self.customized_keys = customized_keys
 
 
+class SessionContainer(_serialization.Model):
+    """Container definitions for the sessions of the session pool.
+
+    :ivar image: Container image tag.
+    :vartype image: str
+    :ivar name: Custom container name.
+    :vartype name: str
+    :ivar command: Container start command.
+    :vartype command: list[str]
+    :ivar args: Container start command arguments.
+    :vartype args: list[str]
+    :ivar env: Container environment variables.
+    :vartype env: list[~azure.mgmt.appcontainers.models.EnvironmentVar]
+    :ivar resources: Container resource requirements.
+    :vartype resources: ~azure.mgmt.appcontainers.models.SessionContainerResources
+    """
+
+    _attribute_map = {
+        "image": {"key": "image", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "command": {"key": "command", "type": "[str]"},
+        "args": {"key": "args", "type": "[str]"},
+        "env": {"key": "env", "type": "[EnvironmentVar]"},
+        "resources": {"key": "resources", "type": "SessionContainerResources"},
+    }
+
+    def __init__(
+        self,
+        *,
+        image: Optional[str] = None,
+        name: Optional[str] = None,
+        command: Optional[List[str]] = None,
+        args: Optional[List[str]] = None,
+        env: Optional[List["_models.EnvironmentVar"]] = None,
+        resources: Optional["_models.SessionContainerResources"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword image: Container image tag.
+        :paramtype image: str
+        :keyword name: Custom container name.
+        :paramtype name: str
+        :keyword command: Container start command.
+        :paramtype command: list[str]
+        :keyword args: Container start command arguments.
+        :paramtype args: list[str]
+        :keyword env: Container environment variables.
+        :paramtype env: list[~azure.mgmt.appcontainers.models.EnvironmentVar]
+        :keyword resources: Container resource requirements.
+        :paramtype resources: ~azure.mgmt.appcontainers.models.SessionContainerResources
+        """
+        super().__init__(**kwargs)
+        self.image = image
+        self.name = name
+        self.command = command
+        self.args = args
+        self.env = env
+        self.resources = resources
+
+
+class SessionContainerResources(_serialization.Model):
+    """Container resource requirements for sessions of the session pool.
+
+    :ivar cpu: Required CPU in cores, e.g. 0.5.
+    :vartype cpu: float
+    :ivar memory: Required memory, e.g. "250Mb".
+    :vartype memory: str
+    """
+
+    _attribute_map = {
+        "cpu": {"key": "cpu", "type": "float"},
+        "memory": {"key": "memory", "type": "str"},
+    }
+
+    def __init__(self, *, cpu: Optional[float] = None, memory: Optional[str] = None, **kwargs: Any) -> None:
+        """
+        :keyword cpu: Required CPU in cores, e.g. 0.5.
+        :paramtype cpu: float
+        :keyword memory: Required memory, e.g. "250Mb".
+        :paramtype memory: str
+        """
+        super().__init__(**kwargs)
+        self.cpu = cpu
+        self.memory = memory
+
+
+class SessionIngress(_serialization.Model):
+    """Session pool ingress configuration.
+
+    :ivar target_port: Target port in containers for traffic from ingress.
+    :vartype target_port: int
+    """
+
+    _attribute_map = {
+        "target_port": {"key": "targetPort", "type": "int"},
+    }
+
+    def __init__(self, *, target_port: Optional[int] = None, **kwargs: Any) -> None:
+        """
+        :keyword target_port: Target port in containers for traffic from ingress.
+        :paramtype target_port: int
+        """
+        super().__init__(**kwargs)
+        self.target_port = target_port
+
+
+class SessionNetworkConfiguration(_serialization.Model):
+    """Session network configuration.
+
+    :ivar status: Network status for the sessions. Known values are: "EgressEnabled" and
+     "EgressDisabled".
+    :vartype status: str or ~azure.mgmt.appcontainers.models.SessionNetworkStatus
+    """
+
+    _attribute_map = {
+        "status": {"key": "status", "type": "str"},
+    }
+
+    def __init__(self, *, status: Optional[Union[str, "_models.SessionNetworkStatus"]] = None, **kwargs: Any) -> None:
+        """
+        :keyword status: Network status for the sessions. Known values are: "EgressEnabled" and
+         "EgressDisabled".
+        :paramtype status: str or ~azure.mgmt.appcontainers.models.SessionNetworkStatus
+        """
+        super().__init__(**kwargs)
+        self.status = status
+
+
+class SessionPool(TrackedResource):  # pylint: disable=too-many-instance-attributes
+    """Container App session pool.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
+    :vartype id: str
+    :ivar name: The name of the resource.
+    :vartype name: str
+    :ivar type: The type of the resource. E.g. "Microsoft.Compute/virtualMachines" or
+     "Microsoft.Storage/storageAccounts".
+    :vartype type: str
+    :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
+     information.
+    :vartype system_data: ~azure.mgmt.appcontainers.models.SystemData
+    :ivar tags: Resource tags.
+    :vartype tags: dict[str, str]
+    :ivar location: The geo-location where the resource lives. Required.
+    :vartype location: str
+    :ivar environment_id: Resource ID of the session pool's environment.
+    :vartype environment_id: str
+    :ivar container_type: The container type of the sessions. Known values are: "CustomContainer"
+     and "PythonLTS".
+    :vartype container_type: str or ~azure.mgmt.appcontainers.models.ContainerType
+    :ivar pool_management_type: The pool management type of the session pool. Known values are:
+     "Manual" and "Dynamic".
+    :vartype pool_management_type: str or ~azure.mgmt.appcontainers.models.PoolManagementType
+    :ivar node_count: The number of nodes the session pool is using.
+    :vartype node_count: int
+    :ivar scale_configuration: The scale configuration of the session pool.
+    :vartype scale_configuration: ~azure.mgmt.appcontainers.models.ScaleConfiguration
+    :ivar secrets: The secrets of the session pool.
+    :vartype secrets: list[~azure.mgmt.appcontainers.models.SessionPoolSecret]
+    :ivar dynamic_pool_configuration: The pool configuration if the poolManagementType is dynamic.
+    :vartype dynamic_pool_configuration: ~azure.mgmt.appcontainers.models.DynamicPoolConfiguration
+    :ivar custom_container_template: The custom container configuration if the containerType is
+     CustomContainer.
+    :vartype custom_container_template: ~azure.mgmt.appcontainers.models.CustomContainerTemplate
+    :ivar session_network_configuration: The network configuration of the sessions in the session
+     pool.
+    :vartype session_network_configuration:
+     ~azure.mgmt.appcontainers.models.SessionNetworkConfiguration
+    :ivar pool_management_endpoint: The endpoint to manage the pool.
+    :vartype pool_management_endpoint: str
+    :ivar provisioning_state: Provisioning state of the session pool. Known values are:
+     "InProgress", "Succeeded", "Failed", "Canceled", and "Deleting".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.appcontainers.models.SessionPoolProvisioningState
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+        "system_data": {"readonly": True},
+        "location": {"required": True},
+        "node_count": {"readonly": True},
+        "pool_management_endpoint": {"readonly": True},
+        "provisioning_state": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "system_data": {"key": "systemData", "type": "SystemData"},
+        "tags": {"key": "tags", "type": "{str}"},
+        "location": {"key": "location", "type": "str"},
+        "environment_id": {"key": "properties.environmentId", "type": "str"},
+        "container_type": {"key": "properties.containerType", "type": "str"},
+        "pool_management_type": {"key": "properties.poolManagementType", "type": "str"},
+        "node_count": {"key": "properties.nodeCount", "type": "int"},
+        "scale_configuration": {"key": "properties.scaleConfiguration", "type": "ScaleConfiguration"},
+        "secrets": {"key": "properties.secrets", "type": "[SessionPoolSecret]"},
+        "dynamic_pool_configuration": {
+            "key": "properties.dynamicPoolConfiguration",
+            "type": "DynamicPoolConfiguration",
+        },
+        "custom_container_template": {"key": "properties.customContainerTemplate", "type": "CustomContainerTemplate"},
+        "session_network_configuration": {
+            "key": "properties.sessionNetworkConfiguration",
+            "type": "SessionNetworkConfiguration",
+        },
+        "pool_management_endpoint": {"key": "properties.poolManagementEndpoint", "type": "str"},
+        "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        location: str,
+        tags: Optional[Dict[str, str]] = None,
+        environment_id: Optional[str] = None,
+        container_type: Optional[Union[str, "_models.ContainerType"]] = None,
+        pool_management_type: Optional[Union[str, "_models.PoolManagementType"]] = None,
+        scale_configuration: Optional["_models.ScaleConfiguration"] = None,
+        secrets: Optional[List["_models.SessionPoolSecret"]] = None,
+        dynamic_pool_configuration: Optional["_models.DynamicPoolConfiguration"] = None,
+        custom_container_template: Optional["_models.CustomContainerTemplate"] = None,
+        session_network_configuration: Optional["_models.SessionNetworkConfiguration"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword tags: Resource tags.
+        :paramtype tags: dict[str, str]
+        :keyword location: The geo-location where the resource lives. Required.
+        :paramtype location: str
+        :keyword environment_id: Resource ID of the session pool's environment.
+        :paramtype environment_id: str
+        :keyword container_type: The container type of the sessions. Known values are:
+         "CustomContainer" and "PythonLTS".
+        :paramtype container_type: str or ~azure.mgmt.appcontainers.models.ContainerType
+        :keyword pool_management_type: The pool management type of the session pool. Known values are:
+         "Manual" and "Dynamic".
+        :paramtype pool_management_type: str or ~azure.mgmt.appcontainers.models.PoolManagementType
+        :keyword scale_configuration: The scale configuration of the session pool.
+        :paramtype scale_configuration: ~azure.mgmt.appcontainers.models.ScaleConfiguration
+        :keyword secrets: The secrets of the session pool.
+        :paramtype secrets: list[~azure.mgmt.appcontainers.models.SessionPoolSecret]
+        :keyword dynamic_pool_configuration: The pool configuration if the poolManagementType is
+         dynamic.
+        :paramtype dynamic_pool_configuration:
+         ~azure.mgmt.appcontainers.models.DynamicPoolConfiguration
+        :keyword custom_container_template: The custom container configuration if the containerType is
+         CustomContainer.
+        :paramtype custom_container_template: ~azure.mgmt.appcontainers.models.CustomContainerTemplate
+        :keyword session_network_configuration: The network configuration of the sessions in the
+         session pool.
+        :paramtype session_network_configuration:
+         ~azure.mgmt.appcontainers.models.SessionNetworkConfiguration
+        """
+        super().__init__(tags=tags, location=location, **kwargs)
+        self.environment_id = environment_id
+        self.container_type = container_type
+        self.pool_management_type = pool_management_type
+        self.node_count = None
+        self.scale_configuration = scale_configuration
+        self.secrets = secrets
+        self.dynamic_pool_configuration = dynamic_pool_configuration
+        self.custom_container_template = custom_container_template
+        self.session_network_configuration = session_network_configuration
+        self.pool_management_endpoint = None
+        self.provisioning_state = None
+
+
+class SessionPoolCollection(_serialization.Model):
+    """Session pool collection Azure resource.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar value: Collection of resources. Required.
+    :vartype value: list[~azure.mgmt.appcontainers.models.SessionPool]
+    :ivar next_link: Link to next page of resources.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"required": True},
+        "next_link": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[SessionPool]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(self, *, value: List["_models.SessionPool"], **kwargs: Any) -> None:
+        """
+        :keyword value: Collection of resources. Required.
+        :paramtype value: list[~azure.mgmt.appcontainers.models.SessionPool]
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.next_link = None
+
+
+class SessionPoolSecret(_serialization.Model):
+    """Secret definition.
+
+    :ivar name: Secret Name.
+    :vartype name: str
+    :ivar value: Secret Value.
+    :vartype value: str
+    """
+
+    _attribute_map = {
+        "name": {"key": "name", "type": "str"},
+        "value": {"key": "value", "type": "str"},
+    }
+
+    def __init__(self, *, name: Optional[str] = None, value: Optional[str] = None, **kwargs: Any) -> None:
+        """
+        :keyword name: Secret Name.
+        :paramtype name: str
+        :keyword value: Secret Value.
+        :paramtype value: str
+        """
+        super().__init__(**kwargs)
+        self.name = name
+        self.value = value
+
+
+class SessionPoolUpdatableProperties(_serialization.Model):
+    """Container App session pool updatable properties.
+
+    :ivar scale_configuration: The scale configuration of the session pool.
+    :vartype scale_configuration: ~azure.mgmt.appcontainers.models.ScaleConfiguration
+    :ivar secrets: The secrets of the session pool.
+    :vartype secrets: list[~azure.mgmt.appcontainers.models.SessionPoolSecret]
+    :ivar dynamic_pool_configuration: The pool configuration if the poolManagementType is dynamic.
+    :vartype dynamic_pool_configuration: ~azure.mgmt.appcontainers.models.DynamicPoolConfiguration
+    :ivar custom_container_template: The custom container configuration if the containerType is
+     CustomContainer.
+    :vartype custom_container_template: ~azure.mgmt.appcontainers.models.CustomContainerTemplate
+    :ivar session_network_configuration: The network configuration of the sessions in the session
+     pool.
+    :vartype session_network_configuration:
+     ~azure.mgmt.appcontainers.models.SessionNetworkConfiguration
+    """
+
+    _attribute_map = {
+        "scale_configuration": {"key": "properties.scaleConfiguration", "type": "ScaleConfiguration"},
+        "secrets": {"key": "properties.secrets", "type": "[SessionPoolSecret]"},
+        "dynamic_pool_configuration": {
+            "key": "properties.dynamicPoolConfiguration",
+            "type": "DynamicPoolConfiguration",
+        },
+        "custom_container_template": {"key": "properties.customContainerTemplate", "type": "CustomContainerTemplate"},
+        "session_network_configuration": {
+            "key": "properties.sessionNetworkConfiguration",
+            "type": "SessionNetworkConfiguration",
+        },
+    }
+
+    def __init__(
+        self,
+        *,
+        scale_configuration: Optional["_models.ScaleConfiguration"] = None,
+        secrets: Optional[List["_models.SessionPoolSecret"]] = None,
+        dynamic_pool_configuration: Optional["_models.DynamicPoolConfiguration"] = None,
+        custom_container_template: Optional["_models.CustomContainerTemplate"] = None,
+        session_network_configuration: Optional["_models.SessionNetworkConfiguration"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword scale_configuration: The scale configuration of the session pool.
+        :paramtype scale_configuration: ~azure.mgmt.appcontainers.models.ScaleConfiguration
+        :keyword secrets: The secrets of the session pool.
+        :paramtype secrets: list[~azure.mgmt.appcontainers.models.SessionPoolSecret]
+        :keyword dynamic_pool_configuration: The pool configuration if the poolManagementType is
+         dynamic.
+        :paramtype dynamic_pool_configuration:
+         ~azure.mgmt.appcontainers.models.DynamicPoolConfiguration
+        :keyword custom_container_template: The custom container configuration if the containerType is
+         CustomContainer.
+        :paramtype custom_container_template: ~azure.mgmt.appcontainers.models.CustomContainerTemplate
+        :keyword session_network_configuration: The network configuration of the sessions in the
+         session pool.
+        :paramtype session_network_configuration:
+         ~azure.mgmt.appcontainers.models.SessionNetworkConfiguration
+        """
+        super().__init__(**kwargs)
+        self.scale_configuration = scale_configuration
+        self.secrets = secrets
+        self.dynamic_pool_configuration = dynamic_pool_configuration
+        self.custom_container_template = custom_container_template
+        self.session_network_configuration = session_network_configuration
+
+
+class SessionRegistryCredentials(_serialization.Model):
+    """Session pool private registry credentials.
+
+    :ivar registry_server: Container registry server.
+    :vartype registry_server: str
+    :ivar username: Container registry username.
+    :vartype username: str
+    :ivar password_secret_ref: The name of the secret that contains the registry login password.
+    :vartype password_secret_ref: str
+    """
+
+    _attribute_map = {
+        "registry_server": {"key": "registryServer", "type": "str"},
+        "username": {"key": "username", "type": "str"},
+        "password_secret_ref": {"key": "passwordSecretRef", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        registry_server: Optional[str] = None,
+        username: Optional[str] = None,
+        password_secret_ref: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword registry_server: Container registry server.
+        :paramtype registry_server: str
+        :keyword username: Container registry username.
+        :paramtype username: str
+        :keyword password_secret_ref: The name of the secret that contains the registry login password.
+        :paramtype password_secret_ref: str
+        """
+        super().__init__(**kwargs)
+        self.registry_server = registry_server
+        self.username = username
+        self.password_secret_ref = password_secret_ref
+
+
+class SmbStorage(_serialization.Model):
+    """SMB storage properties.
+
+    :ivar host: The host name or IP address of the SMB server.
+    :vartype host: str
+    :ivar share_name: The path to the SMB shared folder.
+    :vartype share_name: str
+    :ivar username: The user to log on to the SMB server.
+    :vartype username: str
+    :ivar domain: The domain name for the user.
+    :vartype domain: str
+    :ivar password: The password for the user.
+    :vartype password: str
+    :ivar access_mode: Access mode for storage. Known values are: "ReadOnly" and "ReadWrite".
+    :vartype access_mode: str or ~azure.mgmt.appcontainers.models.AccessMode
+    """
+
+    _attribute_map = {
+        "host": {"key": "host", "type": "str"},
+        "share_name": {"key": "shareName", "type": "str"},
+        "username": {"key": "username", "type": "str"},
+        "domain": {"key": "domain", "type": "str"},
+        "password": {"key": "password", "type": "str"},
+        "access_mode": {"key": "accessMode", "type": "str"},
+    }
+
+    def __init__(
+        self,
+        *,
+        host: Optional[str] = None,
+        share_name: Optional[str] = None,
+        username: Optional[str] = None,
+        domain: Optional[str] = None,
+        password: Optional[str] = None,
+        access_mode: Optional[Union[str, "_models.AccessMode"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword host: The host name or IP address of the SMB server.
+        :paramtype host: str
+        :keyword share_name: The path to the SMB shared folder.
+        :paramtype share_name: str
+        :keyword username: The user to log on to the SMB server.
+        :paramtype username: str
+        :keyword domain: The domain name for the user.
+        :paramtype domain: str
+        :keyword password: The password for the user.
+        :paramtype password: str
+        :keyword access_mode: Access mode for storage. Known values are: "ReadOnly" and "ReadWrite".
+        :paramtype access_mode: str or ~azure.mgmt.appcontainers.models.AccessMode
+        """
+        super().__init__(**kwargs)
+        self.host = host
+        self.share_name = share_name
+        self.username = username
+        self.domain = domain
+        self.password = password
+        self.access_mode = access_mode
+
+
 class SourceControl(ProxyResource):
     """Container App SourceControl.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -10175,7 +11869,7 @@ class SourceControlCollection(_serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.SourceControl]
@@ -10201,6 +11895,173 @@ class SourceControlCollection(_serialization.Model):
         super().__init__(**kwargs)
         self.value = value
         self.next_link = None
+
+
+class SpringBootAdminComponent(JavaComponentProperties):
+    """Spring Boot Admin properties.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar component_type: Type of the Java Component. Required. Known values are:
+     "SpringBootAdmin", "SpringCloudEureka", "SpringCloudConfig", and "Nacos".
+    :vartype component_type: str or ~azure.mgmt.appcontainers.models.JavaComponentType
+    :ivar provisioning_state: Provisioning state of the Java Component. Known values are:
+     "Succeeded", "Failed", "Canceled", "Deleting", and "InProgress".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.appcontainers.models.JavaComponentProvisioningState
+    :ivar configurations: List of Java Components configuration properties.
+    :vartype configurations:
+     list[~azure.mgmt.appcontainers.models.JavaComponentConfigurationProperty]
+    :ivar service_binds: List of Java Components that are bound to the Java component.
+    :vartype service_binds: list[~azure.mgmt.appcontainers.models.JavaComponentServiceBind]
+    :ivar ingress: Java Component Ingress configurations.
+    :vartype ingress: ~azure.mgmt.appcontainers.models.JavaComponentIngress
+    """
+
+    _validation = {
+        "component_type": {"required": True},
+        "provisioning_state": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "component_type": {"key": "componentType", "type": "str"},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "configurations": {"key": "configurations", "type": "[JavaComponentConfigurationProperty]"},
+        "service_binds": {"key": "serviceBinds", "type": "[JavaComponentServiceBind]"},
+        "ingress": {"key": "ingress", "type": "JavaComponentIngress"},
+    }
+
+    def __init__(
+        self,
+        *,
+        configurations: Optional[List["_models.JavaComponentConfigurationProperty"]] = None,
+        service_binds: Optional[List["_models.JavaComponentServiceBind"]] = None,
+        ingress: Optional["_models.JavaComponentIngress"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword configurations: List of Java Components configuration properties.
+        :paramtype configurations:
+         list[~azure.mgmt.appcontainers.models.JavaComponentConfigurationProperty]
+        :keyword service_binds: List of Java Components that are bound to the Java component.
+        :paramtype service_binds: list[~azure.mgmt.appcontainers.models.JavaComponentServiceBind]
+        :keyword ingress: Java Component Ingress configurations.
+        :paramtype ingress: ~azure.mgmt.appcontainers.models.JavaComponentIngress
+        """
+        super().__init__(configurations=configurations, service_binds=service_binds, **kwargs)
+        self.component_type: str = "SpringBootAdmin"
+        self.ingress = ingress
+
+
+class SpringCloudConfigComponent(JavaComponentProperties):
+    """Spring Cloud Config properties.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar component_type: Type of the Java Component. Required. Known values are:
+     "SpringBootAdmin", "SpringCloudEureka", "SpringCloudConfig", and "Nacos".
+    :vartype component_type: str or ~azure.mgmt.appcontainers.models.JavaComponentType
+    :ivar provisioning_state: Provisioning state of the Java Component. Known values are:
+     "Succeeded", "Failed", "Canceled", "Deleting", and "InProgress".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.appcontainers.models.JavaComponentProvisioningState
+    :ivar configurations: List of Java Components configuration properties.
+    :vartype configurations:
+     list[~azure.mgmt.appcontainers.models.JavaComponentConfigurationProperty]
+    :ivar service_binds: List of Java Components that are bound to the Java component.
+    :vartype service_binds: list[~azure.mgmt.appcontainers.models.JavaComponentServiceBind]
+    """
+
+    _validation = {
+        "component_type": {"required": True},
+        "provisioning_state": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "component_type": {"key": "componentType", "type": "str"},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "configurations": {"key": "configurations", "type": "[JavaComponentConfigurationProperty]"},
+        "service_binds": {"key": "serviceBinds", "type": "[JavaComponentServiceBind]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        configurations: Optional[List["_models.JavaComponentConfigurationProperty"]] = None,
+        service_binds: Optional[List["_models.JavaComponentServiceBind"]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword configurations: List of Java Components configuration properties.
+        :paramtype configurations:
+         list[~azure.mgmt.appcontainers.models.JavaComponentConfigurationProperty]
+        :keyword service_binds: List of Java Components that are bound to the Java component.
+        :paramtype service_binds: list[~azure.mgmt.appcontainers.models.JavaComponentServiceBind]
+        """
+        super().__init__(configurations=configurations, service_binds=service_binds, **kwargs)
+        self.component_type: str = "SpringCloudConfig"
+
+
+class SpringCloudEurekaComponent(JavaComponentProperties):
+    """Spring Cloud Eureka properties.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar component_type: Type of the Java Component. Required. Known values are:
+     "SpringBootAdmin", "SpringCloudEureka", "SpringCloudConfig", and "Nacos".
+    :vartype component_type: str or ~azure.mgmt.appcontainers.models.JavaComponentType
+    :ivar provisioning_state: Provisioning state of the Java Component. Known values are:
+     "Succeeded", "Failed", "Canceled", "Deleting", and "InProgress".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.appcontainers.models.JavaComponentProvisioningState
+    :ivar configurations: List of Java Components configuration properties.
+    :vartype configurations:
+     list[~azure.mgmt.appcontainers.models.JavaComponentConfigurationProperty]
+    :ivar service_binds: List of Java Components that are bound to the Java component.
+    :vartype service_binds: list[~azure.mgmt.appcontainers.models.JavaComponentServiceBind]
+    :ivar ingress: Java Component Ingress configurations.
+    :vartype ingress: ~azure.mgmt.appcontainers.models.JavaComponentIngress
+    """
+
+    _validation = {
+        "component_type": {"required": True},
+        "provisioning_state": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "component_type": {"key": "componentType", "type": "str"},
+        "provisioning_state": {"key": "provisioningState", "type": "str"},
+        "configurations": {"key": "configurations", "type": "[JavaComponentConfigurationProperty]"},
+        "service_binds": {"key": "serviceBinds", "type": "[JavaComponentServiceBind]"},
+        "ingress": {"key": "ingress", "type": "JavaComponentIngress"},
+    }
+
+    def __init__(
+        self,
+        *,
+        configurations: Optional[List["_models.JavaComponentConfigurationProperty"]] = None,
+        service_binds: Optional[List["_models.JavaComponentServiceBind"]] = None,
+        ingress: Optional["_models.JavaComponentIngress"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword configurations: List of Java Components configuration properties.
+        :paramtype configurations:
+         list[~azure.mgmt.appcontainers.models.JavaComponentConfigurationProperty]
+        :keyword service_binds: List of Java Components that are bound to the Java component.
+        :paramtype service_binds: list[~azure.mgmt.appcontainers.models.JavaComponentServiceBind]
+        :keyword ingress: Java Component Ingress configurations.
+        :paramtype ingress: ~azure.mgmt.appcontainers.models.JavaComponentIngress
+        """
+        super().__init__(configurations=configurations, service_binds=service_binds, **kwargs)
+        self.component_type: str = "SpringCloudEureka"
+        self.ingress = ingress
 
 
 class SystemData(_serialization.Model):
@@ -10314,11 +12175,15 @@ class TcpScaleRule(_serialization.Model):
     :vartype metadata: dict[str, str]
     :ivar auth: Authentication secrets for the tcp scale rule.
     :vartype auth: list[~azure.mgmt.appcontainers.models.ScaleRuleAuth]
+    :ivar identity: The resource ID of a user-assigned managed identity that is assigned to the
+     Container App, or 'system' for system-assigned identity.
+    :vartype identity: str
     """
 
     _attribute_map = {
         "metadata": {"key": "metadata", "type": "{str}"},
         "auth": {"key": "auth", "type": "[ScaleRuleAuth]"},
+        "identity": {"key": "identity", "type": "str"},
     }
 
     def __init__(
@@ -10326,6 +12191,7 @@ class TcpScaleRule(_serialization.Model):
         *,
         metadata: Optional[Dict[str, str]] = None,
         auth: Optional[List["_models.ScaleRuleAuth"]] = None,
+        identity: Optional[str] = None,
         **kwargs: Any
     ) -> None:
         """
@@ -10333,10 +12199,14 @@ class TcpScaleRule(_serialization.Model):
         :paramtype metadata: dict[str, str]
         :keyword auth: Authentication secrets for the tcp scale rule.
         :paramtype auth: list[~azure.mgmt.appcontainers.models.ScaleRuleAuth]
+        :keyword identity: The resource ID of a user-assigned managed identity that is assigned to the
+         Container App, or 'system' for system-assigned identity.
+        :paramtype identity: str
         """
         super().__init__(**kwargs)
         self.metadata = metadata
         self.auth = auth
+        self.identity = identity
 
 
 class Template(_serialization.Model):
@@ -10643,7 +12513,7 @@ class Usage(_serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar unit: An enum describing the unit of usage measurement. Required. Default value is
      "Count".
@@ -10812,7 +12682,7 @@ class Volume(_serialization.Model):
     :ivar name: Volume name.
     :vartype name: str
     :ivar storage_type: Storage type for the volume. If not provided, use EmptyDir. Known values
-     are: "AzureFile", "EmptyDir", "Secret", and "NfsAzureFile".
+     are: "AzureFile", "EmptyDir", "Secret", "NfsAzureFile", and "Smb".
     :vartype storage_type: str or ~azure.mgmt.appcontainers.models.StorageType
     :ivar storage_name: Name of storage resource. No need to provide for EmptyDir and Secret.
     :vartype storage_name: str
@@ -10846,7 +12716,7 @@ class Volume(_serialization.Model):
         :keyword name: Volume name.
         :paramtype name: str
         :keyword storage_type: Storage type for the volume. If not provided, use EmptyDir. Known values
-         are: "AzureFile", "EmptyDir", "Secret", and "NfsAzureFile".
+         are: "AzureFile", "EmptyDir", "Secret", "NfsAzureFile", and "Smb".
         :paramtype storage_type: str or ~azure.mgmt.appcontainers.models.StorageType
         :keyword storage_name: Name of storage resource. No need to provide for EmptyDir and Secret.
         :paramtype storage_name: str
@@ -10908,10 +12778,222 @@ class VolumeMount(_serialization.Model):
         self.sub_path = sub_path
 
 
+class WorkflowArtifacts(_serialization.Model):
+    """The workflow filter.
+
+    :ivar app_settings: Application settings of the workflow.
+    :vartype app_settings: JSON
+    :ivar files: Files of the app.
+    :vartype files: JSON
+    :ivar files_to_delete: Files of the app to delete.
+    :vartype files_to_delete: list[str]
+    """
+
+    _attribute_map = {
+        "app_settings": {"key": "appSettings", "type": "object"},
+        "files": {"key": "files", "type": "object"},
+        "files_to_delete": {"key": "filesToDelete", "type": "[str]"},
+    }
+
+    def __init__(
+        self,
+        *,
+        app_settings: Optional[JSON] = None,
+        files: Optional[JSON] = None,
+        files_to_delete: Optional[List[str]] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword app_settings: Application settings of the workflow.
+        :paramtype app_settings: JSON
+        :keyword files: Files of the app.
+        :paramtype files: JSON
+        :keyword files_to_delete: Files of the app to delete.
+        :paramtype files_to_delete: list[str]
+        """
+        super().__init__(**kwargs)
+        self.app_settings = app_settings
+        self.files = files
+        self.files_to_delete = files_to_delete
+
+
+class WorkflowEnvelope(_serialization.Model):
+    """Workflow properties definition.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    :ivar id: The resource id.
+    :vartype id: str
+    :ivar name: Gets the resource name.
+    :vartype name: str
+    :ivar type: Gets the resource type.
+    :vartype type: str
+    :ivar kind: The resource kind.
+    :vartype kind: str
+    :ivar location: The resource location.
+    :vartype location: str
+    :ivar properties: Additional workflow properties.
+    :vartype properties: ~azure.mgmt.appcontainers.models.WorkflowEnvelopeProperties
+    """
+
+    _validation = {
+        "id": {"readonly": True},
+        "name": {"readonly": True},
+        "type": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "type": {"key": "type", "type": "str"},
+        "kind": {"key": "kind", "type": "str"},
+        "location": {"key": "location", "type": "str"},
+        "properties": {"key": "properties", "type": "WorkflowEnvelopeProperties"},
+    }
+
+    def __init__(
+        self,
+        *,
+        kind: Optional[str] = None,
+        location: Optional[str] = None,
+        properties: Optional["_models.WorkflowEnvelopeProperties"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword kind: The resource kind.
+        :paramtype kind: str
+        :keyword location: The resource location.
+        :paramtype location: str
+        :keyword properties: Additional workflow properties.
+        :paramtype properties: ~azure.mgmt.appcontainers.models.WorkflowEnvelopeProperties
+        """
+        super().__init__(**kwargs)
+        self.id = None
+        self.name = None
+        self.type = None
+        self.kind = kind
+        self.location = location
+        self.properties = properties
+
+
+class WorkflowEnvelopeCollection(_serialization.Model):
+    """Collection of workflow information elements.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar value: Collection of resources. Required.
+    :vartype value: list[~azure.mgmt.appcontainers.models.WorkflowEnvelope]
+    :ivar next_link: Link to next page of resources.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"required": True},
+        "next_link": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[WorkflowEnvelope]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(self, *, value: List["_models.WorkflowEnvelope"], **kwargs: Any) -> None:
+        """
+        :keyword value: Collection of resources. Required.
+        :paramtype value: list[~azure.mgmt.appcontainers.models.WorkflowEnvelope]
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.next_link = None
+
+
+class WorkflowEnvelopeProperties(_serialization.Model):
+    """Additional workflow properties.
+
+    :ivar files: Gets or sets the files.
+    :vartype files: JSON
+    :ivar flow_state: Gets or sets the state of the workflow. Known values are: "NotSpecified",
+     "Completed", "Enabled", "Disabled", "Deleted", and "Suspended".
+    :vartype flow_state: str or ~azure.mgmt.appcontainers.models.WorkflowState
+    :ivar health: Gets or sets workflow health.
+    :vartype health: ~azure.mgmt.appcontainers.models.WorkflowHealth
+    """
+
+    _attribute_map = {
+        "files": {"key": "files", "type": "object"},
+        "flow_state": {"key": "flowState", "type": "str"},
+        "health": {"key": "health", "type": "WorkflowHealth"},
+    }
+
+    def __init__(
+        self,
+        *,
+        files: Optional[JSON] = None,
+        flow_state: Optional[Union[str, "_models.WorkflowState"]] = None,
+        health: Optional["_models.WorkflowHealth"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword files: Gets or sets the files.
+        :paramtype files: JSON
+        :keyword flow_state: Gets or sets the state of the workflow. Known values are: "NotSpecified",
+         "Completed", "Enabled", "Disabled", "Deleted", and "Suspended".
+        :paramtype flow_state: str or ~azure.mgmt.appcontainers.models.WorkflowState
+        :keyword health: Gets or sets workflow health.
+        :paramtype health: ~azure.mgmt.appcontainers.models.WorkflowHealth
+        """
+        super().__init__(**kwargs)
+        self.files = files
+        self.flow_state = flow_state
+        self.health = health
+
+
+class WorkflowHealth(_serialization.Model):
+    """Represents the workflow health.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar state: Gets or sets the workflow health state. Required. Known values are:
+     "NotSpecified", "Healthy", "Unhealthy", and "Unknown".
+    :vartype state: str or ~azure.mgmt.appcontainers.models.WorkflowHealthState
+    :ivar error: Gets or sets the workflow error.
+    :vartype error: ~azure.mgmt.appcontainers.models.ErrorEntity
+    """
+
+    _validation = {
+        "state": {"required": True},
+    }
+
+    _attribute_map = {
+        "state": {"key": "state", "type": "str"},
+        "error": {"key": "error", "type": "ErrorEntity"},
+    }
+
+    def __init__(
+        self,
+        *,
+        state: Union[str, "_models.WorkflowHealthState"],
+        error: Optional["_models.ErrorEntity"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword state: Gets or sets the workflow health state. Required. Known values are:
+         "NotSpecified", "Healthy", "Unhealthy", and "Unknown".
+        :paramtype state: str or ~azure.mgmt.appcontainers.models.WorkflowHealthState
+        :keyword error: Gets or sets the workflow error.
+        :paramtype error: ~azure.mgmt.appcontainers.models.ErrorEntity
+        """
+        super().__init__(**kwargs)
+        self.state = state
+        self.error = error
+
+
 class WorkloadProfile(_serialization.Model):
     """Workload profile to scope container app execution.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar name: Workload profile type for the workloads to run on. Required.
     :vartype name: str
@@ -10966,8 +13048,8 @@ class WorkloadProfileStates(ProxyResource):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Fully qualified resource ID for the resource. Ex -
-     /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}.
+    :ivar id: Fully qualified resource ID for the resource. E.g.
+     "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/{resourceProviderNamespace}/{resourceType}/{resourceName}".  # pylint: disable=line-too-long
     :vartype id: str
     :ivar name: The name of the resource.
     :vartype name: str
@@ -11012,7 +13094,7 @@ class WorkloadProfileStatesCollection(_serialization.Model):
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
     :ivar value: Collection of resources. Required.
     :vartype value: list[~azure.mgmt.appcontainers.models.WorkloadProfileStates]
