@@ -935,19 +935,38 @@ def load_policy_from_virtual_node_yaml_str(
             # mounts
             mounts = copy.deepcopy(config.DEFAULT_MOUNTS_VIRTUAL_NODE)
             volumes = case_insensitive_dict_get(spec, "volumes") or []
-            configmap_volume_names = [
-                case_insensitive_dict_get(volume, "name") if "configmap" in volume else None for volume in volumes
-            ]
+
+            # set of volume types that are read-only by default
+            read_only_types = {"configMap", "secret", "downwardAPI", "projected"}
+
             volume_mounts = case_insensitive_dict_get(container, "volumeMounts")
             if volume_mounts:
                 for mount in volume_mounts:
+                    mount_name = case_insensitive_dict_get(mount, "name")
+                    mount_path = case_insensitive_dict_get(mount, "mountPath")
+
+                    # find the corresponding volume
+                    volume = next((vol for vol in volumes if case_insensitive_dict_get(vol, "name") == mount_name), None)
+
+                    # determine if this volume is one of the read-only types
+                    read_only_default = any(key in read_only_types for key in volume.keys())
+
+                    if read_only_default:
+                        # log warning if readOnly is explicitly set to false for a read-only volume type
+                        if case_insensitive_dict_get(mount, "readOnly") is False:
+                            logger.warning(
+                                "Volume '%s' in container '%s' is of a type that requires readOnly access (%s), but readOnly: false was specified. Enforcing readOnly: true for policy generation.",
+                                mount_name, case_insensitive_dict_get(container, "name"), ', '.join(read_only_types)
+                            )
+                        mount_readonly = True
+                    else:
+                        # use the readOnly field or default to False for non-read-only volumes
+                        mount_readonly = case_insensitive_dict_get(mount, "readOnly") or False
+                    
                     mounts.append({
                         config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE: config.ACI_FIELD_YAML_MOUNT_TYPE,
-                        config.ACI_FIELD_CONTAINERS_MOUNTS_PATH: case_insensitive_dict_get(mount, "mountPath"),
-                        config.ACI_FIELD_CONTAINERS_MOUNTS_READONLY:
-                            case_insensitive_dict_get(mount, "name") in configmap_volume_names or
-                            case_insensitive_dict_get(mount, "readOnly") or
-                            False,
+                        config.ACI_FIELD_CONTAINERS_MOUNTS_PATH: mount_path,
+                        config.ACI_FIELD_CONTAINERS_MOUNTS_READONLY: mount_readonly,
                     })
 
             # container security context
