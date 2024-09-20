@@ -21,6 +21,10 @@ az monitor pipeline-group show --resource-group "myResourceGroup" --name "myPipe
 ```
 az monitor pipeline-group list --resource-group "myResourceGroup"
 ```
+##### Update
+```
+az monitor pipeline-group update --resource-group "myResourceGroup" --name "myPipeline" --service @service.json --exporters @exporters.json --processors @processors.json --receivers @receivers.json --service @service.json
+```
 ##### Delete
 ```
 az monitor pipeline-group delete --resource-group "myResourceGroup" --name "myPipeline"
