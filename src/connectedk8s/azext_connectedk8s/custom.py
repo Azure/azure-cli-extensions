@@ -194,7 +194,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     # Pre onboarding checks
     diagnostic_checks = "Failed"
     try:
-        # if aks_hci lowbandwidth scenario or Azure local disconnected, skip, otherwise continue to perform pre-onboarding check.
+        # if aks_hci lowbandwidth scenario or Azure local disconnected, skip, otherwise continue pre-onboarding check.
         if not azure_local_disconnected and not lowbandwidth:
             print("Step: {}: Starting Pre-onboarding-check".format(utils.get_utctimestring()))
             batchv1_api_instance = kube_client.BatchV1Api()
@@ -2407,7 +2407,13 @@ def client_side_proxy_wrapper(cmd,
     # initializations
     user_type = 'sat'
     creds = ''
-    dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}, 'identity': {'tenantID': tenant_id}}
+    dict_file = {
+        'server': {
+            'httpPort': int(client_proxy_port), 
+            'httpsPort': int(api_server_port)
+        }, 
+        'identity': {'tenantID': tenant_id}
+    }
 
     # if service account token is not passed
     if token is None:
@@ -2472,7 +2478,10 @@ def client_side_proxy_wrapper(cmd,
         dict_file['cloudConfig'] = {}
         dict_file['cloudConfig']['resourceManagerEndpoint'] = arm_metadata['resourceManager']
         relay_endpoint_suffix = arm_metadata['suffixes']['relayEndpointSuffix']
-        dict_file['cloudConfig']['serviceBusEndpointSuffix'] = (relay_endpoint_suffix)[1:] if relay_endpoint_suffix[0] == '.' else relay_endpoint_suffix
+        if relay_endpoint_suffix[0] == '.':
+            dict_file['cloudConfig']['serviceBusEndpointSuffix'] = (relay_endpoint_suffix)[1:]
+        else:
+            dict_file['cloudConfig']['serviceBusEndpointSuffix'] = relay_endpoint_suffix
         dict_file['cloudConfig']['activeDirectoryEndpoint'] = arm_metadata['authentication']['loginEndpoint']
 
     telemetry.set_debug_info('User type is ', user_type)

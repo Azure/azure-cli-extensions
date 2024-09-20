@@ -760,11 +760,14 @@ def cleanup_release_install_namespace_if_exists():
 
 # DO NOT use this method for re-put scenarios. This method involves new NS creation for helm release. For re-put
 #  scenarios, brownfield scenario needs to be handled where helm release still stays in default NS
-def helm_install_release(resource_manager, chart_path, subscription_id, kubernetes_distro, kubernetes_infra, resource_group_name,
-                         cluster_name, location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert, private_key_pem,
-                         kube_config, kube_context, no_wait, values_file, cloud_name, disable_auto_upgrade, enable_custom_locations,
-                         custom_locations_oid, helm_client_location, enable_private_link, arm_metadata, registry_path, aad_identity_principal_id,
-                         onboarding_timeout=consts.DEFAULT_MAX_ONBOARDING_TIMEOUT_HELMVALUE_SECONDS, container_log_path=None):
+def helm_install_release(resource_manager, chart_path, subscription_id, kubernetes_distro, kubernetes_infra, 
+                         resource_group_name, cluster_name, location, onboarding_tenant_id, http_proxy, https_proxy,
+                         no_proxy, proxy_cert, private_key_pem, kube_config, kube_context, no_wait, values_file,
+                         cloud_name, disable_auto_upgrade, enable_custom_locations, custom_locations_oid,
+                         helm_client_location, enable_private_link, arm_metadata, registry_path,
+                         aad_identity_principal_id, 
+                         onboarding_timeout=consts.DEFAULT_MAX_ONBOARDING_TIMEOUT_HELMVALUE_SECONDS, 
+                         container_log_path=None):
 
     cmd_helm_install = [helm_client_location, "upgrade", "--install", "azure-arc", chart_path,
                         "--set", "global.subscriptionId={}".format(subscription_id),
@@ -793,17 +796,28 @@ def helm_install_release(resource_manager, chart_path, subscription_id, kubernet
             his_endpoint = his_endpoint + f"discovery?location={location}&api-version=1.0-preview"
             relay_endpoint = arm_metadata["suffixes"]["relayEndpointSuffix"]
             active_directory = arm_metadata["authentication"]["loginEndpoint"]
+            if not aad_identity_principal_id:
+                raise CLIInternalError("Failed to create the kubeAadEndpoint endpoint. The identity principal ID of "
+                                       "the created connected cluster is empty.")
             kube_aad_endpoint = f"{aad_identity_principal_id}.k8sproxysvc.connectrp.azs"
             cmd_helm_install.extend(
                 [
-                    "--set", "global.kubeAadEndpoint={}".format(kube_aad_endpoint),
-                    "--set", "systemDefaultValues.azureResourceManagerEndpoint={}".format(resource_manager),
-                    "--set", "systemDefaultValues.azureArcAgents.config_dp_endpoint_override={}".format(config_endpoint),
-                    "--set", "systemDefaultValues.clusterconnect-agent.notification_dp_endpoint_override={}".format(notification_endpoint),
-                    "--set", "systemDefaultValues.clusterconnect-agent.relay_endpoint_suffix_override={}".format(relay_endpoint),
-                    "--set", "systemDefaultValues.clusteridentityoperator.his_endpoint_override={}".format(his_endpoint),
-                    "--set", "systemDefaultValues.activeDirectoryEndpoint={}".format(active_directory),
-                    "--set", "systemDefaultValues.image.repository={}".format(registry_path.split('/')[0])
+                    "--set", "global.kubeAadEndpoint={}".
+                    format(kube_aad_endpoint),
+                    "--set", "systemDefaultValues.azureResourceManagerEndpoint={}".
+                    format(resource_manager),
+                    "--set", "systemDefaultValues.azureArcAgents.config_dp_endpoint_override={}".
+                    format(config_endpoint),
+                    "--set", "systemDefaultValues.clusterconnect-agent.notification_dp_endpoint_override={}".
+                    format(notification_endpoint),
+                    "--set", "systemDefaultValues.clusterconnect-agent.relay_endpoint_suffix_override={}".
+                    format(relay_endpoint),
+                    "--set", "systemDefaultValues.clusteridentityoperator.his_endpoint_override={}".
+                    format(his_endpoint),
+                    "--set", "systemDefaultValues.activeDirectoryEndpoint={}".
+                    format(active_directory),
+                    "--set", "systemDefaultValues.image.repository={}".
+                    format(registry_path.split('/')[0])
                 ]
             )
         else:
