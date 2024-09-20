@@ -58,7 +58,7 @@ class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
         volume_list = self.cmd("netappfiles volume list --resource-group {rg} --account-name %s --pool-name %s" % (account_name, pool_name)).get_output_in_json()
         assert len(volume_list) == 1
 
-        self.cmd("az netappfiles volume delete --resource-group {rg} --account-name %s --pool-name %s --volume-name %s" % (account_name, pool_name, volume_name))
+        self.cmd("az netappfiles volume delete --resource-group {rg} --account-name %s --pool-name %s --volume-name %s -y" % (account_name, pool_name, volume_name))
         volume_list = self.cmd("netappfiles volume list --resource-group {rg} -a %s -p %s" % (account_name, pool_name)).get_output_in_json()
         assert len(volume_list) == 0
 
@@ -74,7 +74,7 @@ class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
         volume_list = self.cmd("netappfiles volume list --resource-group {rg} -a '%s' -p '%s'" % (account_name, pool_name)).get_output_in_json()
         assert len(volume_list) == 2
 
-        self.cmd("az netappfiles volume delete -g {rg} -a %s -p %s -v %s" % (account_name, pool_name, volume_name1))
+        self.cmd("az netappfiles volume delete -g {rg} -a %s -p %s -v %s -y" % (account_name, pool_name, volume_name1))
         volume_list = self.cmd("netappfiles volume list -g {rg} -a '%s' -p '%s'" % (account_name, pool_name)).get_output_in_json()
         assert len(volume_list) == 1
 
