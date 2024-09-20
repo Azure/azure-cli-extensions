@@ -5,8 +5,6 @@
 
 from azure.cli.core import AzCommandsLoader
 
-from azext_loganalytics._help import helps  # pylint: disable=unused-import
-
 
 class LogAnalyticsCommandsLoader(AzCommandsLoader):
 

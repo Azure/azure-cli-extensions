@@ -6,5 +6,5 @@
 # pylint: disable=line-too-long
 
 
-def load_arguments(self, _):
+def load_arguments(self, _):  # pylint: disable=unused-argument
     pass
