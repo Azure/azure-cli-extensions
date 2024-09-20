@@ -12,24 +12,29 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "netappfiles volume latest-backup-status current show",
+    "netappfiles volume delete",
     is_preview=True,
+    confirmation="Are you sure you want to perform this operation?",
 )
-class Show(AAZCommand):
-    """Get the latest status of the backup for a volume
+class Delete(AAZCommand):
+    """Delete the specified volume
+
+    :example: Delete an ANF volume
+        az netappfiles volume delete -g mygroup --account-name myaccname --pool-name mypoolname --name myvolname
     """
 
     _aaz_info = {
         "version": "2024-03-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/capacitypools/{}/volumes/{}/latestbackupstatus/current", "2024-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.netapp/netappaccounts/{}/capacitypools/{}/volumes/{}", "2024-03-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -66,7 +71,7 @@ class Show(AAZCommand):
             required=True,
         )
         _args_schema.volume_name = AAZStrArg(
-            options=["-v", "--volume-name"],
+            options=["-n", "-v", "--name", "--volume-name"],
             help="The name of the volume",
             required=True,
             id_part="child_name_2",
@@ -76,11 +81,15 @@ class Show(AAZCommand):
                 min_length=1,
             ),
         )
+        _args_schema.force_delete = AAZBoolArg(
+            options=["--force", "--force-delete"],
+            help="An option to force delete the volume. Will cleanup resources connected to the particular volume",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.BackupsGetLatestStatus(ctx=self.ctx)()
+        yield self.VolumesDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -91,31 +100,52 @@ class Show(AAZCommand):
     def post_operations(self):
         pass
 
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
-
-    class BackupsGetLatestStatus(AAZHttpOperation):
+    class VolumesDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [200]:
-                return self.on_200(session)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [204]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_204,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200, 201]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/capacityPools/{poolName}/volumes/{volumeName}/latestBackupStatus/current",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.NetApp/netAppAccounts/{accountName}/capacityPools/{poolName}/volumes/{volumeName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "GET"
+            return "DELETE"
 
         @property
         def error_format(self):
@@ -151,80 +181,24 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
+                    "forceDelete", self.ctx.args.force_delete,
+                ),
+                **self.serialize_query_param(
                     "api-version", "2024-03-01-preview",
                     required=True,
                 ),
             }
             return parameters
 
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
+        def on_204(self, session):
+            pass
 
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.error_message = AAZStrType(
-                serialized_name="errorMessage",
-                flags={"read_only": True},
-            )
-            _schema_on_200.healthy = AAZBoolType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.last_transfer_size = AAZIntType(
-                serialized_name="lastTransferSize",
-                flags={"read_only": True},
-            )
-            _schema_on_200.last_transfer_type = AAZStrType(
-                serialized_name="lastTransferType",
-                flags={"read_only": True},
-            )
-            _schema_on_200.mirror_state = AAZStrType(
-                serialized_name="mirrorState",
-                flags={"read_only": True},
-            )
-            _schema_on_200.relationship_status = AAZStrType(
-                serialized_name="relationshipStatus",
-                flags={"read_only": True},
-            )
-            _schema_on_200.total_transfer_bytes = AAZIntType(
-                serialized_name="totalTransferBytes",
-                flags={"read_only": True},
-            )
-            _schema_on_200.transfer_progress_bytes = AAZIntType(
-                serialized_name="transferProgressBytes",
-                flags={"read_only": True},
-            )
-            _schema_on_200.unhealthy_reason = AAZStrType(
-                serialized_name="unhealthyReason",
-                flags={"read_only": True},
-            )
-
-            return cls._schema_on_200
+        def on_200_201(self, session):
+            pass
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _DeleteHelper:
+    """Helper class for Delete"""
 
 
-__all__ = ["Show"]
+__all__ = ["Delete"]
