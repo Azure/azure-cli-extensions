@@ -1,0 +1,29 @@
+[
+    {
+        "name": "gigla1",
+        "type": "AzureMonitorWorkspaceLogs",
+        "azureMonitorWorkspaceLogs": {
+            "api": {
+                "dataCollectionEndpointUrl": "https://myexporter.eastus-1.ingest.monitor.azure.com",
+                "dataCollectionRule": "dcr-00000000000000000000000000000000",
+                "stream": "Custom-MyTableRawData",
+                "schema": {
+                    "recordMap": [
+                        {
+                            "from": "body",
+                            "to": "Body"
+                        },
+                        {
+                            "from": "severity_text",
+                            "to": "SeverityText"
+                        },
+                        {
+                            "from": "time_unix_nano",
+                            "to": "TimeGenerated"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+]
