@@ -11,12 +11,12 @@ from azext_acrcssc.helper._ociartifactoperations import create_oci_artifact_cont
 from azure.cli.core.mock import DummyCli
 from azure.cli.core.azclierror import AzCLIError
 
+
 class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
     @patch('azext_acrcssc.helper._ociartifactoperations._oras_client')
     @patch('azext_acrcssc.helper._ociartifactoperations.tempfile.NamedTemporaryFile')
     def test_create_oci_artifact_continuous_patch(self, mock_NamedTemporaryFile, mock_oras_client):
         # Mock the necessary dependencies
-        cmd = self._setup_cmd()
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             temp_file_path = temp_file.name
         registry = MagicMock()
@@ -29,9 +29,8 @@ class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
         mock_NamedTemporaryFile.return_value = temp_artifact
 
         # Call the function
-        with patch('os.path.exists', return_value=True), \
-             patch('os.remove', return_value=True):
-             create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun)
+        with patch('os.path.exists', return_value=True), patch('os.remove', return_value=True):
+            create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun)
 
         # Assert that the necessary functions were called with the correct arguments
         mock_oras_client.assert_called_once_with(registry)
@@ -95,7 +94,7 @@ class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
     @mock.patch('azext_acrcssc.helper._ociartifactoperations.parse_resource_id')
     @mock.patch('azext_acrcssc.helper._ociartifactoperations.acr_repository_delete')
     def test_delete_oci_artifact_continuous_patch_exception(self, mock_acr_repository_delete, mock_parse_resource_id, mock_logger, mock_get_acr_token):
-         # Mock the necessary dependencies
+        # Mock the necessary dependencies
         cmd = self._setup_cmd()
         registry = MagicMock()
         dryrun = False
@@ -108,7 +107,7 @@ class TestCreateOciArtifactContinuousPatch(unittest.TestCase):
         mock_acr_repository_delete.side_effect = Exception("Test exception")
 
         # Run the function and assert the exception
-        with(self.assertRaises(Exception)):
+        with (self.assertRaises(Exception)):
             delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
 
         # Assert the function calls

@@ -7,8 +7,9 @@ import tempfile
 import unittest
 from unittest import mock
 from azure.cli.core.mock import DummyCli
-from azext_acrcssc.helper._taskoperations import (create_update_continuous_patch_v1, 
-delete_continuous_patch_v1, generate_logs)
+from azext_acrcssc.helper._taskoperations import (create_update_continuous_patch_v1, delete_continuous_patch_v1)
+from azext_acrcssc.helper._workflow_status import WorkflowTaskStatus
+
 
 class TestCreateContinuousPatchV1(unittest.TestCase):
     @mock.patch("azext_acrcssc.helper._taskoperations.check_continuous_task_exists")
@@ -170,8 +171,8 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         ## Assert here
         mock_delete_oci_artifact_continuous_patch.assert_called_once()
 
-    @mock.patch('azext_acrcssc.helper._taskoperations.get_blob_info')
-    @mock.patch('azext_acrcssc.helper._taskoperations.get_sdk')
+    @mock.patch('azext_acrcssc.helper._workflow_status.get_sdk')
+    @mock.patch('azext_acrcssc.helper._workflow_status.get_blob_info')
     def test_generate_logs(self, mock_get_sdk, mock_get_blob_info):
         cmd = mock.MagicMock()
         client = mock.MagicMock()
@@ -179,8 +180,6 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         registry_name = "myregistry"
         resource_group_name = "myresourcegroup"
         timeout = 60
-        no_format = False
-        raise_error_on_failure = False
 
         # Mock the response from client.get_log_sas_url()
         response = mock.MagicMock()
@@ -196,7 +195,7 @@ class TestCreateContinuousPatchV1(unittest.TestCase):
         mock_blob_service.get_blob_to_text.content.return_value = "sample text"
         mock_get_sdk.return_value = mock_blob_service
         # Call the function
-        generate_logs(cmd, client, run_id, registry_name, resource_group_name, timeout)
+        WorkflowTaskStatus.generate_logs(cmd, client, run_id, registry_name, resource_group_name)
 
         # Assert the function calls
         client.get_log_sas_url.assert_called_once_with(resource_group_name=resource_group_name, registry_name=registry_name, run_id=run_id)

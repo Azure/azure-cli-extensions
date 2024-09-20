@@ -9,6 +9,9 @@ from datetime import (datetime, timezone)
 import shutil
 from azure.cli.core.azclierror import InvalidArgumentValueError
 from ._constants import ERROR_MESSAGE_INVALID_TIMESPAN_VALUE, TMP_DRY_RUN_FILE_NAME
+from azure.mgmt.core.tools import parse_resource_id
+from ._constants import RESOURCE_GROUP
+from .._client_factory import cf_acr_tasks
 
 logger = get_logger(__name__)
 # pylint: disable=logging-fstring-interpolation
@@ -34,7 +37,7 @@ def convert_timespan_to_cron(schedule, date_time=None):
     return cron_expression
 
 
-def transform_cron_to_schedule(cron_expression):
+def transform_cron_to_schedule(cron_expression, just_days=False):
     parts = cron_expression.split()
     # The third part of the cron expression
     third_part = parts[2]
@@ -42,6 +45,8 @@ def transform_cron_to_schedule(cron_expression):
     match = re.search(r'\*/(\d+)', third_part)
 
     if match:
+        if just_days:
+            return match.group(1)
         return match.group(1) + 'd'
     return None
 
@@ -66,3 +71,17 @@ def create_temporary_dry_run_file(file_location, tmp_folder):
 def delete_temporary_dry_run_file(tmp_folder):
     logger.debug(f"Deleting contents and directory {tmp_folder}")
     shutil.rmtree(tmp_folder)
+
+
+def get_task(cmd, registry, task_name, task_client=None):
+    if task_client is None:
+        task_client = cf_acr_tasks(cmd.cli_ctx)
+
+    resourceid = parse_resource_id(registry.id)
+    resource_group = resourceid[RESOURCE_GROUP]
+
+    try:
+        return task_client.get(resource_group, registry.name, task_name)
+    except Exception as exception:
+        logger.debug("Failed to find task %s from registry %s : %s", task_name, registry.name, exception)
+        return None

@@ -16,3 +16,5 @@ def load_command_table(self, _):
         g.custom_command("update", "update_acrcssc")
         g.custom_command("delete", "delete_acrcssc")
         g.custom_show_command("show", "show_acrcssc")
+        g.custom_command("cancel-run", "cancel_runs")
+        g.custom_command("list", "list_scan_status")

@@ -17,11 +17,17 @@ from azure.mgmt.core.tools import parse_resource_id
 from knack.log import get_logger
 from ._constants import (
     BEARER_TOKEN_USERNAME,
+    CONTINUOUSPATCH_CONFIG_SCHEMA_V1,
     CONTINUOSPATCH_OCI_ARTIFACT_CONFIG,
     CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1,
     CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN,
+    CONTINUOSPATCH_TASK_SCANREGISTRY_NAME,
     CSSC_WORKFLOW_POLICY_REPOSITORY,
     SUBSCRIPTION
+)
+from ._utility import (
+    transform_cron_to_schedule,
+    get_task
 )
 
 logger = get_logger(__name__)
@@ -61,6 +67,28 @@ def create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun):
         oras_client.logout(hostname=str.lower(registry.login_server))
         if os.path.exists(temp_artifact_name):
             os.remove(temp_artifact_name)
+
+
+def get_oci_artifact_continuous_patch(cmd, registry):
+    logger.debug("Entering get_oci_artifact_continuous_patch with parameter: %s", registry.login_server)
+    config = None
+    try:
+        oras_client = _oras_client(registry)
+
+        oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}"
+
+        oci_artifacts = oras_client.pull(
+            target=oci_target_name,
+            stream=True)
+        trigger_task = get_task(cmd, registry, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME)
+        file_name = oci_artifacts[0]
+        config = ContinuousPatchConfig.from_file(file_name, trigger_task)
+    except Exception as exception:
+        raise AzCLIError(f"Failed to get OCI artifact from ACR: {exception}")
+    finally:
+        oras_client.logout(hostname=str.lower(registry.login_server))
+
+    return config
 
 
 def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):
@@ -145,3 +173,59 @@ def _get_acr_token(registry_name, subscription):
             ) from error
 
     return token
+
+
+class ContinuousPatchConfig:
+    def __init__(self):
+        self.version = ""
+        self.repositories = []
+        self.schedule = None
+
+    @staticmethod
+    def from_file(file_path, trigger_task=None):
+        config = ContinuousPatchConfig()
+        with open(file_path, "r") as file:
+            return config.from_json(file.read(), trigger_task)
+
+    @staticmethod
+    def from_json(json_str, trigger_task=None):
+        import json
+        from jsonschema import validate
+
+        try:
+            json_config = json.loads(json_str)
+            validate(json_config, CONTINUOUSPATCH_CONFIG_SCHEMA_V1)
+        except Exception as e:
+            logger.error("Error validating the continuous patch config file: %s", e)
+            return None
+
+        config = ContinuousPatchConfig()
+        config.version = json_config.get("version", "")
+        repositories = json_config.get("repositories", [])
+        for repo in repositories:
+            enabled = repo.get("enabled", True)  # optional field, default to True
+            repository = Repository(repo["repository"], repo["tags"], enabled)
+            config.repositories.append(repository)
+
+        if trigger_task:
+            trigger = trigger_task.trigger
+            if trigger and trigger.timer_triggers:
+                config.schedule = transform_cron_to_schedule(trigger.timer_triggers[0].schedule, just_days=True)
+
+        return config
+
+    def get_enabled_images(self):
+        enabled_images = []
+        for repository in self.repositories:
+            if repository.enabled:
+                for tag in repository.tags:
+                    image = f"{repository.repository}:{tag}"
+                    enabled_images.append(image)
+        return enabled_images
+
+
+class Repository:
+    def __init__(self, repository, tags, enabled):
+        self.repository = repository
+        self.tags = tags
+        self.enabled = enabled
