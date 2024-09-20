@@ -11,7 +11,6 @@
 def load_command_table(self, _):
 
     with self.command_group('monitor log-analytics'):
-        # g.custom_command('query', 'execute_query', transform=transform_query_output)
 
         from .custom import Query
         self.command_table['monitor log-analytics query'] = Query(loader=self)
