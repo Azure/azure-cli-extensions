@@ -12,17 +12,21 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "redisenterprise delete",
+    "redisenterprise database access-policy-assignment delete",
+    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete a RedisEnterprise cache cluster.
+    """Delete a single access policy assignment.
+
+    :example: Delete the Redis User
+        az redisenterprise database access-policy-assignment delete --resource-group rg1 --cluster-name cache1 --database-name default --access-policy-assignment-name defaultTestEntraApp1
     """
 
     _aaz_info = {
         "version": "2024-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}", "2024-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/accesspolicyassignments/{}", "2024-09-01-preview"],
         ]
     }
 
@@ -43,11 +47,29 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.access_policy_assignment_name = AAZStrArg(
+            options=["-n", "--name", "--access-policy-assignment-name"],
+            help="The name of the Redis Enterprise database access policy assignment.",
+            required=True,
+            id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9]{1,60}$",
+            ),
+        )
         _args_schema.cluster_name = AAZStrArg(
-            options=["-n", "--name", "--cluster-name"],
-            help="The name of the RedisEnterprise cluster.",
+            options=["--cluster-name"],
+            help="The name of the Redis Enterprise cluster.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9]{1,60}$",
+            ),
+        )
+        _args_schema.database_name = AAZStrArg(
+            options=["--database-name"],
+            help="The name of the Redis Enterprise database.",
+            required=True,
+            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9]{1,60}$",
             ),
@@ -59,7 +81,7 @@ class Delete(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.RedisEnterpriseDelete(ctx=self.ctx)()
+        yield self.AccessPolicyAssignmentDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -70,7 +92,7 @@ class Delete(AAZCommand):
     def post_operations(self):
         pass
 
-    class RedisEnterpriseDelete(AAZHttpOperation):
+    class AccessPolicyAssignmentDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -80,16 +102,7 @@ class Delete(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
+                    self.on_200_201,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
@@ -103,13 +116,22 @@ class Delete(AAZCommand):
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
+            if session.http_response.status_code in [200, 201]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "azure-async-operation"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}/databases/{databaseName}/accessPolicyAssignments/{accessPolicyAssignmentName}",
                 **self.url_parameters
             )
 
@@ -125,7 +147,15 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
+                    "accessPolicyAssignmentName", self.ctx.args.access_policy_assignment_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "clusterName", self.ctx.args.cluster_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "databaseName", self.ctx.args.database_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -149,10 +179,10 @@ class Delete(AAZCommand):
             }
             return parameters
 
-        def on_200(self, session):
+        def on_204(self, session):
             pass
 
-        def on_204(self, session):
+        def on_200_201(self, session):
             pass
 
 

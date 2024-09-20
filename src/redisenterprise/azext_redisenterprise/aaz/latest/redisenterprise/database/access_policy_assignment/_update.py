@@ -12,16 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "redisenterprise database update",
+    "redisenterprise database access-policy-assignment update",
+    is_preview=True,
 )
 class Update(AAZCommand):
-    """Update a database
+    """Update access policy assignment for database
     """
 
     _aaz_info = {
         "version": "2024-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}", "2024-09-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/accesspolicyassignments/{}", "2024-09-01-preview"],
         ]
     }
 
@@ -44,9 +45,18 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.access_policy_assignment_name = AAZStrArg(
+            options=["-n", "--name", "--access-policy-assignment-name"],
+            help="The name of the Redis Enterprise database access policy assignment.",
+            required=True,
+            id_part="child_name_2",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9]{1,60}$",
+            ),
+        )
         _args_schema.cluster_name = AAZStrArg(
             options=["--cluster-name"],
-            help="The name of the RedisEnterprise cluster.",
+            help="The name of the Redis Enterprise cluster.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -54,11 +64,10 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.database_name = AAZStrArg(
-            options=["-n", "--name", "--database-name"],
-            help="The name of the database.",
+            options=["--database-name"],
+            help="The name of the Redis Enterprise database.",
             required=True,
             id_part="child_name_1",
-            default="default",
             fmt=AAZStrArgFormat(
                 pattern="^[A-Za-z0-9]{1,60}$",
             ),
@@ -70,74 +79,34 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.access_keys_authentication = AAZStrArg(
-            options=["--access-keys-authentication"],
+        _args_schema.access_policy_name = AAZStrArg(
+            options=["--access-policy-name"],
             arg_group="Properties",
-            help="Access database using keys - default is enabled. This property can be Enabled/Disabled to allow or deny access with the current access keys. Can be updated even after database is created.",
-            nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-        _args_schema.client_protocol = AAZStrArg(
-            options=["--client-protocol"],
-            arg_group="Properties",
-            help="Specifies whether redis clients can connect using TLS-encrypted or plaintext redis protocols. Default is TLS-encrypted.",
-            nullable=True,
-            enum={"Encrypted": "Encrypted", "Plaintext": "Plaintext"},
-        )
-        _args_schema.defer_upgrade = AAZStrArg(
-            options=["--defer-upgrade"],
-            arg_group="Properties",
-            help="Option to defer upgrade when newest version is released - default is NotDeferred. Learn more: https://aka.ms/redisversionupgrade",
-            nullable=True,
-            enum={"Deferred": "Deferred", "NotDeferred": "NotDeferred"},
-        )
-        _args_schema.eviction_policy = AAZStrArg(
-            options=["--eviction-policy"],
-            arg_group="Properties",
-            help="Redis eviction policy - default is VolatileLRU",
-            nullable=True,
-            enum={"AllKeysLFU": "AllKeysLFU", "AllKeysLRU": "AllKeysLRU", "AllKeysRandom": "AllKeysRandom", "NoEviction": "NoEviction", "VolatileLFU": "VolatileLFU", "VolatileLRU": "VolatileLRU", "VolatileRandom": "VolatileRandom", "VolatileTTL": "VolatileTTL"},
-        )
-        _args_schema.persistence = AAZObjectArg(
-            options=["--persistence"],
-            arg_group="Properties",
-            help="Persistence settings",
-            nullable=True,
+            help="Name of access policy under specific access policy assignment. Only \"default\" policy is supported for now.",
+            fmt=AAZStrArgFormat(
+                pattern="^([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]|[a-zA-Z0-9])$",
+            ),
         )
 
-        persistence = cls._args_schema.persistence
-        persistence.aof_enabled = AAZBoolArg(
-            options=["aof-enabled"],
-            help="Sets whether AOF is enabled.",
+        # define Arg Group "User"
+
+        _args_schema = cls._args_schema
+        _args_schema.object_id = AAZStrArg(
+            options=["--object-id"],
+            arg_group="User",
+            help="The object ID of the user.",
             nullable=True,
-        )
-        persistence.aof_frequency = AAZStrArg(
-            options=["aof-frequency"],
-            help="Sets the frequency at which data is written to disk.",
-            nullable=True,
-            enum={"1s": "1s", "always": "always"},
-        )
-        persistence.rdb_enabled = AAZBoolArg(
-            options=["rdb-enabled"],
-            help="Sets whether RDB is enabled.",
-            nullable=True,
-        )
-        persistence.rdb_frequency = AAZStrArg(
-            options=["rdb-frequency"],
-            help="Sets the frequency at which a snapshot of the database is created.",
-            nullable=True,
-            enum={"12h": "12h", "1h": "1h", "6h": "6h"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.DatabasesGet(ctx=self.ctx)()
+        self.AccessPolicyAssignmentGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        yield self.DatabasesCreate(ctx=self.ctx)()
+        yield self.AccessPolicyAssignmentCreateUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -160,7 +129,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class DatabasesGet(AAZHttpOperation):
+    class AccessPolicyAssignmentGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -174,7 +143,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}/databases/{databaseName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}/databases/{databaseName}/accessPolicyAssignments/{accessPolicyAssignmentName}",
                 **self.url_parameters
             )
 
@@ -189,6 +158,10 @@ class Update(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "accessPolicyAssignmentName", self.ctx.args.access_policy_assignment_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "clusterName", self.ctx.args.cluster_name,
                     required=True,
@@ -243,11 +216,11 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_database_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_access_policy_assignment_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class DatabasesCreate(AAZHttpOperation):
+    class AccessPolicyAssignmentCreateUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -277,7 +250,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}/databases/{databaseName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}/databases/{databaseName}/accessPolicyAssignments/{accessPolicyAssignmentName}",
                 **self.url_parameters
             )
 
@@ -292,6 +265,10 @@ class Update(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "accessPolicyAssignmentName", self.ctx.args.access_policy_assignment_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "clusterName", self.ctx.args.cluster_name,
                     required=True,
@@ -358,7 +335,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_database_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_access_policy_assignment_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -377,18 +354,12 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("accessKeysAuthentication", AAZStrType, ".access_keys_authentication")
-                properties.set_prop("clientProtocol", AAZStrType, ".client_protocol")
-                properties.set_prop("deferUpgrade", AAZStrType, ".defer_upgrade")
-                properties.set_prop("evictionPolicy", AAZStrType, ".eviction_policy")
-                properties.set_prop("persistence", AAZObjectType, ".persistence")
+                properties.set_prop("accessPolicyName", AAZStrType, ".access_policy_name", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("user", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
 
-            persistence = _builder.get(".properties.persistence")
-            if persistence is not None:
-                persistence.set_prop("aofEnabled", AAZBoolType, ".aof_enabled")
-                persistence.set_prop("aofFrequency", AAZStrType, ".aof_frequency")
-                persistence.set_prop("rdbEnabled", AAZBoolType, ".rdb_enabled")
-                persistence.set_prop("rdbFrequency", AAZStrType, ".rdb_frequency")
+            user = _builder.get(".properties.user")
+            if user is not None:
+                user.set_prop("objectId", AAZStrType, ".object_id")
 
             return _instance_value
 
@@ -404,141 +375,55 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_database_read = None
+    _schema_access_policy_assignment_read = None
 
     @classmethod
-    def _build_schema_database_read(cls, _schema):
-        if cls._schema_database_read is not None:
-            _schema.id = cls._schema_database_read.id
-            _schema.name = cls._schema_database_read.name
-            _schema.properties = cls._schema_database_read.properties
-            _schema.system_data = cls._schema_database_read.system_data
-            _schema.type = cls._schema_database_read.type
+    def _build_schema_access_policy_assignment_read(cls, _schema):
+        if cls._schema_access_policy_assignment_read is not None:
+            _schema.id = cls._schema_access_policy_assignment_read.id
+            _schema.name = cls._schema_access_policy_assignment_read.name
+            _schema.properties = cls._schema_access_policy_assignment_read.properties
+            _schema.type = cls._schema_access_policy_assignment_read.type
             return
 
-        cls._schema_database_read = _schema_database_read = AAZObjectType()
+        cls._schema_access_policy_assignment_read = _schema_access_policy_assignment_read = AAZObjectType()
 
-        database_read = _schema_database_read
-        database_read.id = AAZStrType(
+        access_policy_assignment_read = _schema_access_policy_assignment_read
+        access_policy_assignment_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        database_read.name = AAZStrType(
+        access_policy_assignment_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        database_read.properties = AAZObjectType(
+        access_policy_assignment_read.properties = AAZObjectType(
             flags={"client_flatten": True},
         )
-        database_read.system_data = AAZObjectType(
-            serialized_name="systemData",
-            flags={"read_only": True},
-        )
-        database_read.type = AAZStrType(
+        access_policy_assignment_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        properties = _schema_database_read.properties
-        properties.access_keys_authentication = AAZStrType(
-            serialized_name="accessKeysAuthentication",
+        properties = _schema_access_policy_assignment_read.properties
+        properties.access_policy_name = AAZStrType(
+            serialized_name="accessPolicyName",
+            flags={"required": True},
         )
-        properties.client_protocol = AAZStrType(
-            serialized_name="clientProtocol",
-        )
-        properties.clustering_policy = AAZStrType(
-            serialized_name="clusteringPolicy",
-        )
-        properties.defer_upgrade = AAZStrType(
-            serialized_name="deferUpgrade",
-        )
-        properties.eviction_policy = AAZStrType(
-            serialized_name="evictionPolicy",
-        )
-        properties.geo_replication = AAZObjectType(
-            serialized_name="geoReplication",
-        )
-        properties.modules = AAZListType()
-        properties.persistence = AAZObjectType()
-        properties.port = AAZIntType()
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
-        properties.redis_version = AAZStrType(
-            serialized_name="redisVersion",
-            flags={"read_only": True},
-        )
-        properties.resource_state = AAZStrType(
-            serialized_name="resourceState",
-            flags={"read_only": True},
-        )
-
-        geo_replication = _schema_database_read.properties.geo_replication
-        geo_replication.group_nickname = AAZStrType(
-            serialized_name="groupNickname",
-        )
-        geo_replication.linked_databases = AAZListType(
-            serialized_name="linkedDatabases",
-        )
-
-        linked_databases = _schema_database_read.properties.geo_replication.linked_databases
-        linked_databases.Element = AAZObjectType()
-
-        _element = _schema_database_read.properties.geo_replication.linked_databases.Element
-        _element.id = AAZStrType()
-        _element.state = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        modules = _schema_database_read.properties.modules
-        modules.Element = AAZObjectType()
-
-        _element = _schema_database_read.properties.modules.Element
-        _element.args = AAZStrType()
-        _element.name = AAZStrType(
+        properties.user = AAZObjectType(
             flags={"required": True},
         )
-        _element.version = AAZStrType(
-            flags={"read_only": True},
+
+        user = _schema_access_policy_assignment_read.properties.user
+        user.object_id = AAZStrType(
+            serialized_name="objectId",
         )
 
-        persistence = _schema_database_read.properties.persistence
-        persistence.aof_enabled = AAZBoolType(
-            serialized_name="aofEnabled",
-        )
-        persistence.aof_frequency = AAZStrType(
-            serialized_name="aofFrequency",
-        )
-        persistence.rdb_enabled = AAZBoolType(
-            serialized_name="rdbEnabled",
-        )
-        persistence.rdb_frequency = AAZStrType(
-            serialized_name="rdbFrequency",
-        )
-
-        system_data = _schema_database_read.system_data
-        system_data.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        _schema.id = cls._schema_database_read.id
-        _schema.name = cls._schema_database_read.name
-        _schema.properties = cls._schema_database_read.properties
-        _schema.system_data = cls._schema_database_read.system_data
-        _schema.type = cls._schema_database_read.type
+        _schema.id = cls._schema_access_policy_assignment_read.id
+        _schema.name = cls._schema_access_policy_assignment_read.name
+        _schema.properties = cls._schema_access_policy_assignment_read.properties
+        _schema.type = cls._schema_access_policy_assignment_read.type
 
 
 __all__ = ["Update"]
