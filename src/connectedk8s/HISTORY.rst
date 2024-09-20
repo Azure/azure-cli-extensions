@@ -6,6 +6,7 @@ Release History
 1.9.3
 ++++++
 * Update for disconnected environment scenario.
+* Update pycryptodome from 3.14.1 to 3.19.1.
 
 1.9.2
 ++++++
