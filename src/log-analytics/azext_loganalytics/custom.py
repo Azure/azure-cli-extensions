@@ -7,6 +7,7 @@
 from collections import OrderedDict
 from .aaz.latest.monitor.log_analytics import Query as _Query
 
+
 class Query(_Query):
     def _output(self, *args, **kwargs):
         result = super()._output(*args, **kwargs)
