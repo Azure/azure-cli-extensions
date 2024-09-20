@@ -707,7 +707,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         else:
             self.assertEqual(ctx_4.get_node_vm_size(), CONST_DEFAULT_WINDOWS_NODE_VM_SIZE)
         
-        # if --node-vm-size is not specified, but --sku automatic is explicitly specified, we will leave it empty string. The RP side will automate to select the ideal vmsize based on toggle.
+        # if --node-vm-size is not specified, but --sku automatic is explicitly specified
         ctx_5 = AKSPreviewAgentPoolContext(
             self.cmd,
             AKSAgentPoolParamDict({"sku": "automatic", "os_type": "Linux"}),
