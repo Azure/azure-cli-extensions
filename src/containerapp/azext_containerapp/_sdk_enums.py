@@ -403,41 +403,6 @@ class ManagedServiceIdentityType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     SYSTEM_ASSIGNED_USER_ASSIGNED = "SystemAssigned,UserAssigned"
 
 
-class PatchApplyStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The status of the patch once it has been provisioned."""
-
-    NOT_STARTED = "NotStarted"
-    REBASE_IN_PROGRESS = "RebaseInProgress"
-    CREATING_REVISION = "CreatingRevision"
-    SUCCEEDED = "Succeeded"
-    CANCELED = "Canceled"
-    REBASE_FAILED = "RebaseFailed"
-    REVISION_CREATION_FAILED = "RevisionCreationFailed"
-    IMAGE_PUSH_PULL_FAILED = "ImagePushPullFailed"
-    MANUALLY_SKIPPED = "ManuallySkipped"
-
-
-class PatchingMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Patching mode for the container app. Null or default in this field will be interpreted as
-    Automatic by RP. Automatic mode will automatically apply available patches. Manual mode will
-    require the user to manually apply patches. Disabled mode will stop patch detection and auto
-    patching.
-    """
-
-    AUTOMATIC = "Automatic"
-    MANUAL = "Manual"
-    DISABLED = "Disabled"
-
-
-class PatchType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The type for the patch."""
-
-    FRAMEWORK_SECURITY = "FrameworkSecurity"
-    OS_SECURITY = "OSSecurity"
-    FRAMEWORK_AND_OS_SECURITY = "FrameworkAndOSSecurity"
-    OTHER = "Other"
-
-
 class PoolManagementType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The pool management type of the session pool."""
 
