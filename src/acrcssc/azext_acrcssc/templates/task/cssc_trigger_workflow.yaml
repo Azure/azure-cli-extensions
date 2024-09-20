@@ -8,7 +8,7 @@ steps:
   - cmd: cssc acr cssc patch --filter-policy csscpolicies/patchpolicy:v1 --dry-run > filterRepos.txt
     env:
       - ACR_EXPERIMENTAL_CSSC=true
-  - cmd: bash -c 'sed -n "/^Listing/,/^Total/ {/^Listing/b;/^Total/b;p}" filterRepos.txt' > filterReposToDisplay.txt
+  - cmd: bash -c 'sed -n "/^Validating/,/^Total/ {/^Validating/b;/^Total/b;p}" filterRepos.txt' > filterReposToDisplay.txt
   - cmd: bash -c 'echo -e "Below images will be scanned and patched (if any os vulnerabilities found) based on --filter-policy.\n$(cat filterReposToDisplay.txt)"'
   - cmd: cssc acr cssc patch --filter-policy csscpolicies/patchpolicy:v1 --show-patch-tags --dry-run> filterReposWithPatchTags.txt
     env:
