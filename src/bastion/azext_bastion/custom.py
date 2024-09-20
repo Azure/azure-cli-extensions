@@ -60,9 +60,11 @@ class BastionCreate(_BastionCreate):
                     f"/providers/Microsoft.Network/virtualNetworks/{args.vnet_name}/subnets/AzureBastionSubnet"
         args.ip_configurations = [{
             "name": "bastion_ip_config",
-            "subnet": {"id": subnet_id},
-            "public_ip_address": {"id": args.public_ip_address}
+            "subnet": {"id": subnet_id}
         }]
+
+        if args.public_ip_address is not None:
+            args.ip_configurations[0]['public_ip_address'] = {"id": args.public_ip_address}
 
 
 SSH_EXTENSION_NAME = "ssh"

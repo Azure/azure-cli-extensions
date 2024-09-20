@@ -6,6 +6,11 @@ Release History
 ++++++
 * Fix for configure option, enabling it for disable gateway and ip connect scenarios.
 
+1.2.0
+++++++
+* Update SDk to 2024-01-01
+* Allow create bastion with zones and session recording
+
 1.1.0
 ++++++
 * Allow to pass `ssh_args` as positional parameter in command `az network bastion ssh`
