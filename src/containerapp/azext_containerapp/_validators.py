@@ -4,13 +4,14 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, unused-argument
 
-from msrestazure.tools import is_valid_resource_id
 from knack.log import get_logger
 from urllib.parse import urlparse
 
 from azure.cli.core.azclierror import (ValidationError, InvalidArgumentValueError,
                                        MutuallyExclusiveArgumentError, RequiredArgumentMissingError)
 from azure.cli.command_modules.containerapp._utils import is_registry_msi_system
+from azure.mgmt.core.tools import is_valid_resource_id
+
 from ._utils import is_registry_msi_system_environment
 
 from ._constants import ACR_IMAGE_SUFFIX, \
@@ -63,7 +64,7 @@ def validate_runtime(runtime, enable_java_metrics, enable_java_agent):
 
 def validate_env_name_or_id(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import resource_id, parse_resource_id
+    from azure.mgmt.core.tools import resource_id, parse_resource_id
 
     if not namespace.managed_env:
         return
@@ -106,7 +107,7 @@ def validate_env_name_or_id(cmd, namespace):
 
 def validate_env_name_or_id_for_up(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import resource_id, parse_resource_id
+    from azure.mgmt.core.tools import resource_id, parse_resource_id
 
     if not namespace.environment:
         return
@@ -149,7 +150,7 @@ def validate_env_name_or_id_for_up(cmd, namespace):
 
 def validate_custom_location_name_or_id(cmd, namespace):
     from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import resource_id
+    from azure.mgmt.core.tools import resource_id
 
     if not namespace.custom_location or not namespace.resource_group_name:
         return

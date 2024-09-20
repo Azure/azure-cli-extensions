@@ -112,6 +112,7 @@ test_invalid_output_flags | Makes sure that the policy fails if we specify more 
 test_invalid_many_input_types | Makes sure we're only getting input from one source i.e. ARM Template, policy.json, or image name
 test_diff_wrong_input_type | Makes sure we're only doing the diff command if we're using a ARM Template as the input type
 test_parameters_without_template | Makes sure we error out if a parameter file is getting passed in without an ARM Template
+test_input_and_virtual_node | Error out if both input and virtual node are specified
 
 ## Tar File [test file](test_confcom_tar.py)
 
@@ -124,7 +125,7 @@ test_arm_template_mixed_mode_tar | mcr.microsoft.com/cbl-mariner/distroless/pyth
 test_arm_template_with_parameter_file_clean_room_tar_invalid | N/A | Fail out if searching for an image in a tar file that does not include it
 test_clean_room_fake_tar_invalid | N/A | Fail out if the path to the tar file doesn't exist
 
-## Tar File [test file](test_confcom_kata.py)
+## Kata Containers File [test file](test_confcom_kata.py)
 
 This is how to generate security policies for Confidential Containers on AKS
 
@@ -134,3 +135,13 @@ test_invalid_input_path | mcr.microsoft.com/aks/e2e/library-busybox:master.22031
 test_invalid_config_map_path | mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64 | Input a path that does not exist for the config-map.yaml file
 test_valid_settings | mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64 | Input a valid path for the pod.yaml with the default config file
 test_print_version | N/A | Print the version of the extension
+
+## Virtual Node File [test file](test_confcom_virtual_node.py)
+
+This is how to generate security policies for Virtual Nodes on AKS
+
+Test Name | Image Used | Purpose
+---|---|---
+test_compare_policy_sources | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot | Compare the output of a policy generated from a Virtual Node file and a policy generated from an input json
+test_configmaps | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot | Check that the configmaps are being added to the policy in env var and mount form
+test_secrets | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot | Check that the secrets are being added to the policy in env var and mount form
