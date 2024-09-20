@@ -13,11 +13,13 @@ helps['quantum'] = """
 
 helps['quantum execute'] = """
     type: command
-    short-summary: Submit a job to run on Azure Quantum, and waits for the result.
+    short-summary: Submit a job to run on Azure Quantum, and wait for the result. Equivalent to `az quantum run`.
     examples:
-      - name: Submit a Q# program from the current folder and wait for the result.
+      - name: Submit QIR bitcode or human-readable LLVM code from a file in the current folder and wait for the result.
         text: |-
-            az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget
+            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
+                --job-name MyJob --job-input-format qir.v1 --job-input-file MyQirBitcode.bc \\
+                --entry-point MyQirEntryPoint
       - name: Submit and wait for a Q# program from the current folder with job and program parameters.
         text: |-
             az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
@@ -30,11 +32,13 @@ helps['quantum execute'] = """
 
 helps['quantum run'] = """
     type: command
-    short-summary: Equivalent to `az quantum execute`
+    short-summary: Submit a job to run on Azure Quantum, and wait for the result. Equivalent to `az quantum execute`
     examples:
-      - name: Submit a Q# program from the current folder and wait for the result.
+      - name: Submit QIR bitcode or human-readable LLVM code from a file in the current folder and wait for the result.
         text: |-
-            az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget
+            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
+                --job-name MyJob --job-input-format qir.v1 --job-input-file MyQirBitcode.bc \\
+                --entry-point MyQirEntryPoint
       - name: Submit and wait for a Q# program from the current folder with job and program parameters.
         text: |-
             az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
@@ -83,10 +87,11 @@ helps['quantum job submit'] = """
     type: command
     short-summary: Submit a program or circuit to run on Azure Quantum.
     examples:
-      - name: Submit a Q# program from the current folder.
+      - name: Submit QIR bitcode or human-readable LLVM code from a file in the current folder.
         text: |-
-            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-               -t MyTarget --job-name MyJob
+            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
+                --job-name MyJob --job-input-format qir.v1 --job-input-file MyQirBitcode.bc \\
+                --entry-point MyQirEntryPoint
       - name: Submit a Q# program from the current folder with job parameters for a target.
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
@@ -99,11 +104,6 @@ helps['quantum job submit'] = """
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
                 --target-capability MyTargetCapability
-      - name: Submit QIR bitcode or human-readable LLVM code from a file in the current folder.
-        text: |-
-            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
-                --job-name MyJob --job-input-format qir.v1 --job-input-file MyQirBitcode.bc \\
-                --entry-point MyQirEntryPoint
 """
 
 helps['quantum job wait'] = """
