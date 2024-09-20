@@ -81,7 +81,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.open_ai_resource_endpoint = AAZStrArg(
-            options=["-o","--open-ai-resource-endpoint"],
+            options=["-e","--open-ai-resource-endpoint"],
             arg_group="Properties",
             help="The API endpoint for Open AI resource",
             nullable=True,
