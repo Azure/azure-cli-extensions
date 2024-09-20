@@ -2660,9 +2660,6 @@ class ContainerApp(TrackedResource):  # pylint: disable=too-many-instance-attrib
     :vartype environment_id: str
     :ivar workload_profile_name: Workload profile name to pin for container app execution.
     :vartype workload_profile_name: str
-    :ivar patching_configuration: Container App auto patch configuration.
-    :vartype patching_configuration:
-     ~azure.mgmt.appcontainers.models.ContainerAppPropertiesPatchingConfiguration
     :ivar latest_revision_name: Name of the latest revision of the Container App.
     :vartype latest_revision_name: str
     :ivar latest_ready_revision_name: Name of the latest ready revision of the Container App.
