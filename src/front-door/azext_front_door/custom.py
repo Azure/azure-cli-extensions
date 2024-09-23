@@ -135,7 +135,7 @@ def delete_frontdoor_resource_property_entry(resource, prop):
 # region Frontdoor
 def _front_door_subresource_id(cmd, resource_group, front_door_name, child_type, child_name):
     from azure.cli.core.commands.client_factory import get_subscription_id
-    from msrestazure.tools import resource_id
+    from azure.mgmt.core.tools import resource_id
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
 
