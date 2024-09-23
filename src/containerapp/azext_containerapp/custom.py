@@ -44,11 +44,11 @@ from azure.cli.command_modules.containerapp._utils import (safe_set,
 from azure.cli.command_modules.containerapp._models import (
     RegistryCredentials as RegistryCredentialsModel,
 )
+from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 
-from msrestazure.tools import parse_resource_id, is_valid_resource_id
 from msrest.exceptions import DeserializationError
 
 from ._validators import validate_create

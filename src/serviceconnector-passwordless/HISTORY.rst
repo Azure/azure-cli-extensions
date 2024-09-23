@@ -2,6 +2,14 @@
 
 Release History
 ===============
+3.1.1
+++++++
+* Fix issue
+
+3.1.0
+++++++
+* Add `az aks connection create`
+
 3.0.2
 ++++++
 * Some improvements and security issue fixes.
