@@ -60,7 +60,7 @@ class Update(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9]{1,60}$",
+                pattern="^[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
             ),
         )
         _args_schema.database_name = AAZStrArg(
@@ -95,7 +95,6 @@ class Update(AAZCommand):
             options=["--object-id"],
             arg_group="User",
             help="The object ID of the user.",
-            nullable=True,
         )
         return cls._args_schema
 
@@ -350,7 +349,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -359,7 +358,7 @@ class Update(AAZCommand):
 
             user = _builder.get(".properties.user")
             if user is not None:
-                user.set_prop("objectId", AAZStrType, ".object_id")
+                user.set_prop("objectId", AAZStrType, ".object_id", typ_kwargs={"flags": {"required": True}})
 
             return _instance_value
 
@@ -396,7 +395,7 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
         access_policy_assignment_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
+            flags={"required": True, "client_flatten": True},
         )
         access_policy_assignment_read.type = AAZStrType(
             flags={"read_only": True},
@@ -418,6 +417,7 @@ class _UpdateHelper:
         user = _schema_access_policy_assignment_read.properties.user
         user.object_id = AAZStrType(
             serialized_name="objectId",
+            flags={"required": True},
         )
 
         _schema.id = cls._schema_access_policy_assignment_read.id

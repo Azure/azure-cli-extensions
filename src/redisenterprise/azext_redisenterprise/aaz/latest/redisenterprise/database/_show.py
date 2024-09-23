@@ -47,7 +47,7 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9]{1,60}$",
+                pattern="^[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
             ),
         )
         _args_schema.database_name = AAZStrArg(

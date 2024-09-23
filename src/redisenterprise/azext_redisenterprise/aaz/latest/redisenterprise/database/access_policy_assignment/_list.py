@@ -51,7 +51,7 @@ class List(AAZCommand):
             help="The name of the Redis Enterprise cluster.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9]{1,60}$",
+                pattern="^[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
             ),
         )
         _args_schema.database_name = AAZStrArg(
@@ -187,7 +187,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.type = AAZStrType(
                 flags={"read_only": True},
@@ -209,6 +209,7 @@ class List(AAZCommand):
             user = cls._schema_on_200.value.Element.properties.user
             user.object_id = AAZStrType(
                 serialized_name="objectId",
+                flags={"required": True},
             )
 
             return cls._schema_on_200

@@ -60,7 +60,7 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9]{1,60}$",
+                pattern="^[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
             ),
         )
         _args_schema.database_name = AAZStrArg(
@@ -190,7 +190,7 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
@@ -212,6 +212,7 @@ class Show(AAZCommand):
             user = cls._schema_on_200.properties.user
             user.object_id = AAZStrType(
                 serialized_name="objectId",
+                flags={"required": True},
             )
 
             return cls._schema_on_200

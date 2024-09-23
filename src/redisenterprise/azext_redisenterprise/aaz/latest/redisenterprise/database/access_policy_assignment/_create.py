@@ -59,7 +59,7 @@ class Create(AAZCommand):
             help="The name of the Redis Enterprise cluster.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9]{1,60}$",
+                pattern="^[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
             ),
         )
         _args_schema.database_name = AAZStrArg(
@@ -81,6 +81,7 @@ class Create(AAZCommand):
             options=["--access-policy-name"],
             arg_group="Properties",
             help="Name of access policy under specific access policy assignment. Only \"default\" policy is supported for now.",
+            required=True,
             default="default",
             fmt=AAZStrArgFormat(
                 pattern="^([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]|[a-zA-Z0-9])$",
@@ -94,6 +95,7 @@ class Create(AAZCommand):
             options=["--object-id"],
             arg_group="User",
             help="The object ID of the user.",
+            required=True,
         )
         return cls._args_schema
 
@@ -211,7 +213,7 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -220,7 +222,7 @@ class Create(AAZCommand):
 
             user = _builder.get(".properties.user")
             if user is not None:
-                user.set_prop("objectId", AAZStrType, ".object_id")
+                user.set_prop("objectId", AAZStrType, ".object_id", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 
@@ -249,7 +251,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
@@ -271,6 +273,7 @@ class Create(AAZCommand):
             user = cls._schema_on_200_201.properties.user
             user.object_id = AAZStrType(
                 serialized_name="objectId",
+                flags={"required": True},
             )
 
             return cls._schema_on_200_201

@@ -47,7 +47,7 @@ class Create(AAZCommand):
             help="The name of the RedisEnterprise cluster.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9]{1,60}$",
+                pattern="^[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
             ),
         )
         _args_schema.database_name = AAZStrArg(
