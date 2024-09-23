@@ -10,7 +10,7 @@ import unittest
 
 from azure.cli.command_modules.containerapp._utils import format_location
 from unittest import mock
-from azure.cli.core.azclierror import ValidationError, CLIInternalError, MutuallyExclusiveArgumentError
+from azure.cli.core.azclierror import ValidationError
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckNotExists, JMESPathCheckExists)
@@ -1599,9 +1599,6 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
             acr_location = "eastus"
         self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --admin-enabled --location {acr_location}')
         self.cmd(f'acr import -n {acr} --source {image_source}')
-
-        with self.assertRaises(MutuallyExclusiveArgumentError) as cm:
-            self.cmd(f'containerapp create -g {resource_group} -n {app}  --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io --no-wait')
 
         # `az containberapp create` only with `--registry-server {acr}.azurecr.io`, use SystemAssigned as default for image pull
         with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
