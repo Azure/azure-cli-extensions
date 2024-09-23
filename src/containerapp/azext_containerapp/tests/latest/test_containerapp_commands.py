@@ -1518,16 +1518,27 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
         with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
             self.cmd(f'containerapp create -g {resource_group} -n {app} --registry-identity "system" --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io')
 
-        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[JMESPathCheck("properties.provisioningState", "Succeeded")])
-
+        self.cmd(f'containerapp show -g {resource_group} -n {app}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+            JMESPathCheck("properties.configuration.registries[0].identity", 'system'),
+            JMESPathCheck("properties.configuration.registries[0].server", f'{acr}.azurecr.io'),
+            JMESPathCheck("properties.configuration.registries[0].username", ""),
+            JMESPathCheck("properties.configuration.registries[0].passwordSecretRef", ""),
+        ])
+        # Default use system-assign registry identity
         app2 = self.create_random_name(prefix='aca', length=24)
         with mock.patch('azure.cli.command_modules.role.custom._gen_guid', side_effect=self.create_guid):
-            self.cmd(f'containerapp create -g {resource_group} -n {app2} --registry-identity "system" --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io --revision-suffix test1')
+            self.cmd(f'containerapp create -g {resource_group} -n {app2} --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io --revision-suffix test1 --no-wait')
 
         self.cmd(f'containerapp show -g {resource_group} -n {app2}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
             JMESPathCheck("properties.template.revisionSuffix", "test1"),
             JMESPathCheck("properties.template.containers[0].image", image_name),
+            JMESPathCheck("properties.configuration.registries[0].identity", 'system'),
+            JMESPathCheck("properties.configuration.registries[0].server", f'{acr}.azurecr.io'),
+            JMESPathCheck("properties.configuration.registries[0].username", ""),
+            JMESPathCheck("properties.configuration.registries[0].passwordSecretRef", ""),
         ])
 
     @AllowLargeResponse(8192)

@@ -657,6 +657,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def set_argument_registry_identity(self, registry_identity):
         self.set_param("registry_identity", registry_identity)
 
+    def set_argument_no_wait(self, no_wait):
+        self.set_param("no_wait", no_wait)
+
     # not craete role assignment if it's env system msi
     def check_create_acrpull_role_assignment(self):
         identity = self.get_argument_registry_identity()
@@ -911,9 +914,10 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
                 self.get_argument_registry_user() is None and \
                 self.get_argument_registry_pass() is None and \
                 self.get_argument_no_wait():
-            raise MutuallyExclusiveArgumentError(
-                "--registry-server use managed identity for image pull by default. --no-wait is not supported with system registry identity.\n"
+            logger.warning(
+                "--registry-server use system assigned managed identity for image pull by default. --no-wait will not take effect when using system-assigned registry identity.\n"
                 "You can either remove --no-wait, use --registry-username, or use a user-assigned registry identity.")
+            self.set_argument_no_wait(False)
 
     def set_up_source(self):
         from ._up_utils import (_validate_source_artifact_args)

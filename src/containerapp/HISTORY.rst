@@ -5,7 +5,7 @@ Release History
 upcoming
 ++++++
 * 'az containerapp containerapp create/up': `--registry-server` use managed identity for image pull by default
-* [Breaking Change] 'az containerapp containerapp create': --registry-server use managed identity for image pull by default. --no-wait is not supported with system registry identity.
+* 'az containerapp containerapp create': --registry-server use managed identity for image pull by default. --no-wait will not take effect with system registry identity.
 * 'az containerapp up': Support `--registry-identity`, `--system-assigned`, `--user-assigned`
 
 1.0.0b3
