@@ -30,7 +30,7 @@ class BastionScenario(ScenarioTest):
 
         self.cmd(
             "network bastion create -n {bastion_name} -g {rg} --public-ip-address {ip_name} --vnet-name {vnet_name} "
-            "--disable-copy-paste --enable-ip-connect --enable-tunneling --scale-units 21 --tags foo=bar",
+            "--disable-copy-paste --enable-ip-connect --enable-tunneling --scale-units 2 --tags foo=bar",
             checks=[
                 self.check("name", "{bastion_name}"),
                 self.check("disableCopyPaste", True),
@@ -38,18 +38,18 @@ class BastionScenario(ScenarioTest):
                 self.check("enableTunneling", True),
                 self.check("sku.name", "Standard"),
                 self.check("tags.foo", "bar"),
-                self.check("scaleUnits", 21),
+                self.check("scaleUnits", 2),
                 self.check("type", "Microsoft.Network/bastionHosts"),
             ]
         )
         self.cmd(
             "network bastion update -n {bastion_name} -g {rg} "
-            "--disable-copy-paste false --enable-ip-connect false --enable-tunneling false --scale-units 42",
+            "--disable-copy-paste false --enable-ip-connect false --enable-tunneling false --scale-units 6",
             checks=[
                 self.check("disableCopyPaste", False),
                 self.check("enableIpConnect", False),
                 self.check("enableTunneling", False),
-                self.check("scaleUnits", 42),
+                self.check("scaleUnits", 6),
             ]
         )
         self.cmd("network bastion list")
@@ -67,4 +67,4 @@ class BastionScenario(ScenarioTest):
                 self.check("type", "Microsoft.Network/bastionHosts"),
             ]
         )
-        self.cmd("network bastion delete -n {bastion_name} -g {rg}")
+        self.cmd("network bastion delete -n {bastion_name} -g {rg} -y")
