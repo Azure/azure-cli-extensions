@@ -989,7 +989,7 @@ class SourceHandler:
 
 
 def output_is_none(output):
-    return not output.stdout
+    return not output.result
 
 
 class LocalHandler(SourceHandler):
