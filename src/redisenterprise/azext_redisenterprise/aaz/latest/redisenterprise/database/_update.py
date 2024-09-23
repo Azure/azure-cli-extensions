@@ -71,7 +71,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.access_keys_authentication = AAZStrArg(
-            options=["--access-keys-authentication"],
+            options=["--access-keys-auth", "--access-keys-authentication"],
             arg_group="Properties",
             help="Access database using keys - default is enabled. This property can be Enabled/Disabled to allow or deny access with the current access keys. Can be updated even after database is created.",
             nullable=True,
