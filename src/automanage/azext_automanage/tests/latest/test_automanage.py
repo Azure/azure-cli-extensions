@@ -6,6 +6,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import *
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from time import sleep
 
 class AutomanageScenario(ScenarioTest):
@@ -77,18 +78,22 @@ class AutomanageScenario(ScenarioTest):
         self.cmd('az automanage configuration-profile delete -n {profile_name} -g {rg} -y')
         self.cmd('az automanage configuration-profile list -g {rg}', checks=[JMESPathCheck('length(@)', 0)])
 
+    @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(location='eastus2euap', name_prefix='clitest.rg.automanage.profileassignment.vm.')
     def test_automanage_configuration_profile_assignment_vm_scenarios(self):
         self.kwargs.update({
             'profile_name': self.create_random_name(prefix='profile', length=24),
             'vm_name': self.create_random_name(prefix='vm', length=24),
             'profile_name_2': self.create_random_name(prefix='profile', length=24),
+            'vnet': 'vnet',
+            'subnet': 'subnet'
         })
         profile_id = self.cmd('az automanage configuration-profile create -n {profile_name} -g {rg} '
                               '--configuration {{\\\"Antimalware/Enable\\\":true}}').get_output_in_json()["id"]
         self.kwargs.update({'profile_id': profile_id})
-        vm_id = self.cmd('az vm create -n {vm_name} -g {rg} --image UbuntuLTS --generate-ssh-keys '
-                         '--public-ip-sku Standard').get_output_in_json()["id"]
+        vm_id = self.cmd('az vm create -n {vm_name} -g {rg} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys '
+                         '--subnet {subnet} --vnet-name {vnet} --nsg-rule NONE').get_output_in_json()["id"]
+        self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
         self.cmd('az automanage configuration-profile-assignment vm create -n default -g {rg} '
                  '--vm-name {vm_name} --configuration-profile {profile_id}')
         self.cmd('az automanage configuration-profile-assignment vm show -n default -g {rg} --vm-name {vm_name}',
@@ -105,7 +110,7 @@ class AutomanageScenario(ScenarioTest):
                  checks=[JMESPathCheck('properties.configurationProfile', profile_id_2),
                          JMESPathCheck('properties.targetId', vm_id)])
 
-        sleep(10)
+        sleep(100)
         report_name = self.cmd('az automanage configuration-profile-assignment vm report list --assignment-name default'
                                ' -g {rg} --vm-name {vm_name}').get_output_in_json()[0]["name"]
         self.kwargs.update({'report_name': report_name})
