@@ -9,6 +9,12 @@
 import sys
 import ast
 from azure.core.exceptions import HttpResponseError
+import base64
+import hashlib
+import hmac
+import requests
+from datetime import datetime
+from urllib.parse import urlparse
 
 
 def communication_identity_create_user(client):
@@ -315,7 +321,7 @@ def communication_rooms_remove_participants(client, room_id, participants):
 
 
 def __get_attachment_content(filename, filetype):
-    import base64
+
     import json
     import os
 
@@ -334,6 +340,25 @@ def __get_attachment_content(filename, filetype):
     return json.dumps(attachment)
 
 
+def prepare_attachments(attachments, attachment_types):
+    from knack.util import CLIError
+
+    attachments_list = []
+    if attachments is None and attachment_types is None:
+        attachments_list = None
+    elif attachments is None or attachment_types is None:
+        raise CLIError('Number of attachments and attachment-types should match.')
+    elif len(attachments) != len(attachment_types):
+        raise CLIError('Number of attachments and attachment-types should match.')
+    else:
+        all_attachments = attachments[0].split(',')
+        all_attachment_types = attachment_types[0].split(',')
+        for i, attachment in enumerate(all_attachments):
+            attachments_list.append(__get_attachment_content(attachment, all_attachment_types[i]))
+
+    return attachments_list
+
+
 def communication_email_send(client,
                              subject,
                              sender,
@@ -350,13 +375,13 @@ def communication_email_send(client,
                              waitUntil='completed'):
 
     import json
-    from knack.util import CLIError 
+    from knack.util import CLIError
     import uuid
 
-    try:  
-        
+    try:
+
         if recipients_to is None and recipients_cc is None and recipients_bcc is None:
-            raise CLIError('At least one recipient is required.')        
+            raise CLIError('At least one recipient is required.')
 
         if importance == 'low':
             priority = '5'
@@ -365,18 +390,7 @@ def communication_email_send(client,
         else:
             priority = '3'
 
-        attachments_list = []
-        if attachments is None and attachment_types is None:
-            attachments_list = None
-        elif attachments is None or attachment_types is None:
-            raise CLIError('Number of attachments and attachment-types should match.')
-        elif len(attachments) != len(attachment_types):
-            raise CLIError('Number of attachments and attachment-types should match.')
-        else:
-            all_attachments = attachments[0].split(',')
-            all_attachment_types = attachment_types[0].split(',')
-            for i, attachment in enumerate(all_attachments):
-                attachments_list.append(__get_attachment_content(attachment, all_attachment_types[i]))
+        attachments_list = prepare_attachments(attachments, attachment_types)
 
         message = {
             "content": {
@@ -400,27 +414,26 @@ def communication_email_send(client,
             "headers": {
                 "x-priority": priority
             }
-        }       
-        
+        }
+
         operationId = str(uuid.uuid4())
-            
-        poller = client.begin_send(message, operation_id = operationId)       
+
+        poller = client.begin_send(message, operation_id=operationId)
 
         if waitUntil == 'started' or waitUntil == '1':
-            print(f"Email send started")
+            print("Email send started")
             print(f"Operation id : {operationId}, status : {poller.status()} ")
         elif waitUntil == 'completed' or waitUntil == '0':
             # Wait until the email is sent and get the result
-             return poller
+            return poller
         else:
-            raise ValueError("Invalid value for waitUntil. Expected 'started' or 'completed'.")        
-        
+            raise ValueError("Invalid value for waitUntil. Expected 'started' or 'completed'.")
+
     except HttpResponseError:
         raise
     except Exception as ex:
         sys.exit(str(ex))
 
-import re
 
 def parse_connection_string(connection_string):
     """
@@ -430,24 +443,18 @@ def parse_connection_string(connection_string):
     for item in connection_string.split(';'):
         key, value = item.split('=', 1)
         params[key.strip()] = value.strip()
-    
+
     api_endpoint = params.get('endpoint')
-    api_key = params.get('accesskey')    
-    
+    api_key = params.get('accesskey')
+
     if not api_endpoint or not api_key:
         raise ValueError("Connection string is missing required parameters.")
-    
+
     return api_endpoint, api_key
 
-import base64
-import hashlib
-import hmac
-import requests
-from datetime import datetime
-from urllib.parse import urlparse
 
 def create_signature_header(method, url, host, api_key):
- 
+
     date_str = datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT')
 
     hashed_body = hashlib.sha256(b'').digest()
@@ -466,26 +473,27 @@ def create_signature_header(method, url, host, api_key):
 
     return headers
 
+
 def communication_email_get_status(connection_string, operation_id):
-    try:                
+    try:
         api_endpoint, api_key = parse_connection_string(connection_string)
 
-        status_endpoint = f"{api_endpoint}emails/operations/{operation_id}?api-version=2023-03-31"          
-                
+        status_endpoint = f"{api_endpoint}emails/operations/{operation_id}?api-version=2023-03-31"
+
         method = "GET"
         url = f'/emails/operations/{operation_id}?api-version=2023-03-31'
         parsed_url = urlparse(api_endpoint)
-        host = parsed_url.netloc       
-        
+        host = parsed_url.netloc
+
         headers = create_signature_header(method, url, host, api_key)
-        
+
         response = requests.get(status_endpoint, headers=headers)
-        
+
         if response.status_code == 200:
             return response.json()
-        else:
-            response.raise_for_status()
-    
+
+        response.raise_for_status()
+
     except HttpResponseError:
         raise
     except Exception as ex:

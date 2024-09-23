@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.9.4
+1.10.0
 ++++++
 * Adding new parameter waituntil to Email communication send mail.
 * Adding new command get send status to Email communication.
