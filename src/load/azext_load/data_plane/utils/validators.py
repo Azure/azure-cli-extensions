@@ -10,8 +10,8 @@ from datetime import datetime
 
 import yaml
 from azure.cli.core.azclierror import InvalidArgumentValueError, FileOperationError
-from knack.log import get_logger
 from azure.mgmt.core.tools import is_valid_resource_id
+from knack.log import get_logger
 
 from . import utils
 from .models import AllowedFileTypes, AllowedIntervals, AllowedMetricNamespaces

@@ -17,8 +17,8 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     CLIInternalError,
 )
-from knack.log import get_logger
 from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
+from knack.log import get_logger
 
 from .models import IdentityType, AllowedFileTypes
 
