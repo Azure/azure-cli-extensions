@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-# pylint: disable=no-member, too-many-lines, anomalous-backslash-in-string, redefined-outer-name, no-else-raise, attribute-defined-outside-init
+# pylint: disable=no-member, too-many-lines, anomalous-backslash-in-string, redefined-outer-name, no-else-raise, attribute-defined-outside-init,too-many-positional-arguments
 
 import struct
 import sys
