@@ -698,8 +698,8 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
                 custom_query_string=custom_query_string
             )
         )
-    return _upsert_frontdoor_subresource(cmd, resource_group_name, front_door_name, 'routing_rules', rule, 'name') # pylint: disable=possibly-used-before-assignment
-
+    return _upsert_frontdoor_subresource(cmd, resource_group_name, front_door_name, 'routing_rules', rule, 'name')  # pylint: disable=possibly-used-before-assignment
+ 
 
 def update_fd_routing_rule(parent, instance, item_name, frontend_endpoints=None, accepted_protocols=None,  # pylint: disable=unused-argument
                            patterns_to_match=None, custom_forwarding_path=None, forwarding_protocol=None,
