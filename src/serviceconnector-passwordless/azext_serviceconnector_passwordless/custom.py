@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 
-# pylint: disable=too-many-locals,too-many-statements,unused-argument
+# pylint: disable=too-many-locals,too-many-statements,unused-argument,too-many-positional-arguments
 def connection_create_ext(cmd, client,
                           connection_name=None, client_type=None,
                           source_resource_group=None, source_id=None,
@@ -55,7 +55,7 @@ def connection_create_ext(cmd, client,
                                   **kwargs)
 
 
-def local_connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-many-statements
+def local_connection_create_ext(cmd, client,  # pylint: disable=too-many-locals,too-many-statements,too-many-positional-arguments
                                 resource_group_name,
                                 connection_name=None,
                                 location=None,
