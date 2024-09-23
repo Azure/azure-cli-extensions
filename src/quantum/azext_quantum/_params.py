@@ -93,7 +93,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('job_input_format', job_input_format_type)
         c.argument('job_output_format', job_output_format_type)
         c.argument('entry_point', entry_point_type)
-        c.positional('program_args', program_args_type)
 
     with self.argument_context('quantum execute') as c:
         c.argument('workspace_name', workspace_name_type)
@@ -107,7 +106,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('job_input_format', job_input_format_type)
         c.argument('job_output_format', job_output_format_type)
         c.argument('entry_point', entry_point_type)
-        c.positional('program_args', program_args_type)
 
     with self.argument_context('quantum run') as c:
         c.argument('workspace_name', workspace_name_type)
@@ -121,7 +119,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('job_input_format', job_input_format_type)
         c.argument('job_output_format', job_output_format_type)
         c.argument('entry_point', entry_point_type)
-        c.positional('program_args', program_args_type)
 
     with self.argument_context('quantum offerings') as c:
         c.argument('provider_id', provider_id_type)
