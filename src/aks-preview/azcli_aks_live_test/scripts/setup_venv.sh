@@ -47,6 +47,9 @@ setupAZ(){
     # fix the issue that vcrpy>=4.3.0 is not compatible with urllib3
     pip install vcrpy==4.2.1
 
+    # fix the issue "Cannot import name 'AccessTokenInfo' from 'azure.core.credentials'"
+    pip install azure-identity==1.17.1
+
     # post-install-az: check installation result
     which az && az version
 }
