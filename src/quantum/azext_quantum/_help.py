@@ -15,15 +15,16 @@ helps['quantum execute'] = """
     type: command
     short-summary: Submit a job to run on Azure Quantum, and wait for the result. Equivalent to `az quantum run`.
     examples:
-      - name: Submit QIR bitcode or human-readable LLVM code from a file in the current folder and wait for the result.
-        text: |-
-            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
-                --job-name MyJob --job-input-format qir.v1 --job-input-file MyQirBitcode.bc \\
-                --entry-point MyQirEntryPoint
-      - name: Submit and wait for a Q# program from the current folder with job and program parameters.
+      - name: Run QIR bitcode from a file in the current folder and wait for the result.
         text: |-
             az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
-                --job-params key1=value1 key2=value2 -- --n-qubits=3
+                --job-name MyJob --job-input-format qir.v1 --job-input-file MyQirBitcode.bc \\
+                --entry-point MyQirEntryPoint
+      - name: Run a Quil pass-through job on the Rigetti simulator and wait for the result.
+        text: |-
+            az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+               -t rigetti.sim.qvm --job-name MyJob --job-input-file MyProgram.quil \\
+               --job-input-format rigetti.quil.v1 --job-output-format rigetti.quil-results.v1\\
       - name: Submit and wait for a Q# program from the current folder with a target-capability parameter.
         text: |-
             az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
@@ -34,15 +35,16 @@ helps['quantum run'] = """
     type: command
     short-summary: Submit a job to run on Azure Quantum, and wait for the result. Equivalent to `az quantum execute`
     examples:
-      - name: Submit QIR bitcode or human-readable LLVM code from a file in the current folder and wait for the result.
+      - name: Run QIR bitcode from a file in the current folder and wait for the result.
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
                 --job-name MyJob --job-input-format qir.v1 --job-input-file MyQirBitcode.bc \\
                 --entry-point MyQirEntryPoint
-      - name: Submit and wait for a Q# program from the current folder with job and program parameters.
+      - name: Run a Quil pass-through job on the Rigetti simulator and wait for the result.
         text: |-
-            az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
-                --job-params key1=value1 key2=value2 -- --n-qubits=3
+            az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+               -t rigetti.sim.qvm --job-name MyJob --job-input-file MyProgram.quil \\
+               --job-input-format rigetti.quil.v1 --job-output-format rigetti.quil-results.v1\\
       - name: Submit and wait for a Q# program from the current folder with a target-capability parameter.
         text: |-
             az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
@@ -87,19 +89,16 @@ helps['quantum job submit'] = """
     type: command
     short-summary: Submit a program or circuit to run on Azure Quantum.
     examples:
-      - name: Submit QIR bitcode or human-readable LLVM code from a file in the current folder.
+      - name: Submit QIR bitcode from a file in the current folder.
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
                 --job-name MyJob --job-input-format qir.v1 --job-input-file MyQirBitcode.bc \\
                 --entry-point MyQirEntryPoint
-      - name: Submit a Q# program from the current folder with job parameters for a target.
+      - name: Submit a Quil pass-through job to the Rigetti simulator.
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-               -t MyTarget --job-name MyJob --job-params param1=value1 param2=value2
-      - name: Submit a Q# program with program parameters (e.g. n-qubits = 2).
-        text: |-
-            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-               -t MyTarget --job-name MyJob -- --n-qubits=2
+               -t rigetti.sim.qvm --job-name MyJob --job-input-file MyProgram.quil \\
+               --job-input-format rigetti.quil.v1 --job-output-format rigetti.quil-results.v1\\
       - name: Submit a Q# program from the current folder with a target-capability parameter.
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
