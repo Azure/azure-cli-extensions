@@ -25,10 +25,13 @@ helps['quantum execute'] = """
             az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation \\
                -t rigetti.sim.qvm --job-name MyJob --job-input-file MyProgram.quil \\
                --job-input-format rigetti.quil.v1 --job-output-format rigetti.quil-results.v1\\
-      - name: Submit and wait for a Q# program from the current folder with a target-capability parameter.
+      - name: Submit a Qiskit circuit to the IonQ simulator with job params and wait for the results.
         text: |-
-            az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
-                --target-capability MyTargetCapability
+            az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+               -t ionq.simulator –job-name MyJobName --job-input-file MyCircuit.json \\
+               --job-input-format ionq.circuit.v1 --job-output-format ionq.quantum-results.v1 \\
+               --job-params count=100 content-type=application/json
+
 """
 
 helps['quantum run'] = """
@@ -45,10 +48,12 @@ helps['quantum run'] = """
             az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation \\
                -t rigetti.sim.qvm --job-name MyJob --job-input-file MyProgram.quil \\
                --job-input-format rigetti.quil.v1 --job-output-format rigetti.quil-results.v1\\
-      - name: Submit and wait for a Q# program from the current folder with a target-capability parameter.
+      - name: Submit a Qiskit circuit to the IonQ simulator with job params and wait for the results.
         text: |-
-            az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
-                --target-capability MyTargetCapability
+            az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+               -t ionq.simulator –job-name MyJobName --job-input-file MyCircuit.json \\
+               --job-input-format ionq.circuit.v1 --job-output-format ionq.quantum-results.v1 \\
+               --job-params count=100 content-type=application/json
 """
 
 helps['quantum job'] = """
@@ -99,10 +104,12 @@ helps['quantum job submit'] = """
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
                -t rigetti.sim.qvm --job-name MyJob --job-input-file MyProgram.quil \\
                --job-input-format rigetti.quil.v1 --job-output-format rigetti.quil-results.v1\\
-      - name: Submit a Q# program from the current folder with a target-capability parameter.
+      - name: Submit a Qiskit circuit to the IonQ simulator with job params.
         text: |-
-            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
-                --target-capability MyTargetCapability
+            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+               -t ionq.simulator –job-name MyJobName --job-input-file MyCircuit.json \\
+               --job-input-format ionq.circuit.v1 --job-output-format ionq.quantum-results.v1 \\
+               --job-params count=100 content-type=application/json
 """
 
 helps['quantum job wait'] = """
