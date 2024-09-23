@@ -3401,7 +3401,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update from sku name Automatic to Base
         update_cmd = (
             "aks update --resource-group={resource_group} --name={name} "
-            "--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/AutomaticSKUPreview "
+            "--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/AutomaticSKUPreview,"
+            "AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableAPIServerVnetIntegrationPreview,"
+            "AKSHTTPCustomFeatures=Microsoft.ContainerService/SafeguardsPreview,"
+            "AKSHTTPCustomFeatures=Microsoft.ContainerService/NRGLockdownPreview,"
+            "AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-PrometheusAddonPreview,"
+            "AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeAutoProvisioningPreview "
             "--sku base "
         )
         self.cmd(
