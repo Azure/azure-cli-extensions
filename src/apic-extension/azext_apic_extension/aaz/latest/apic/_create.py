@@ -19,6 +19,9 @@ class Create(AAZCommand):
 
     :example: Create service Example
         az apic create -g contoso-resources -n contoso -l eastus
+
+    :example: Create Service With System Assigned Identity Example
+        az apic create -g contoso-resources -n contoso -l eastus --identity '{type:systemassigned}'
     """
 
     _aaz_info = {
