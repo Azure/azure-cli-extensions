@@ -23,9 +23,11 @@ from azext_connectedk8s._constants import (
 from knack.arguments import CLIArgumentType, CaseInsensitiveList
 
 from ._validators import (
-    validate_private_link_properties,
     override_client_request_id_header,
     validate_gateway_updates,
+    validate_private_link_properties,
+    validate_self_hosted_issuer,
+    validate_workload_identity_updates,
 )
 from .action import (
     AddConfigurationSettings,
