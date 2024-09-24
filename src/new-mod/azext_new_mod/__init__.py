@@ -7,21 +7,23 @@
 # Changes may cause incorrect behavior and will be lost if the code is
 # regenerated.
 # --------------------------------------------------------------------------
-# pylint disable=unused-import
+# pylint: disable=unused-import
+
+import azext_amcs._help
 from azure.cli.core import AzCommandsLoader
-import azext_network_manager._help  # pylint: disable=unused-import
 
-print("test")
 
-class NetworkManagementClientCommandsLoader(AzCommandsLoader):
+class MonitorClientCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        custom_command_type = CliCommandType(operations_tmpl='azext_network_manager.custom#{}')
-        super().__init__(cli_ctx=cli_ctx, custom_command_type=custom_command_type)
+        from azext_amcs._client_factory import cf_monitor_control_service_cl
+        monitor_control_service_custom = CliCommandType(
+            operations_tmpl='azext_amcs.custom#{}',
+            client_factory=cf_monitor_control_service_cl)
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=monitor_control_service_custom)
 
     def load_command_table(self, args):
-        from azext_network_manager.commands import load_command_table
         from azure.cli.core.aaz import load_aaz_command_table
         try:
             from . import aaz
@@ -33,12 +35,13 @@ class NetworkManagementClientCommandsLoader(AzCommandsLoader):
                 aaz_pkg_name=aaz.__name__,
                 args=args
             )
+        from azext_amcs.commands import load_command_table
         load_command_table(self, args)
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_network_manager._params import load_arguments
+        from azext_amcs._params import load_arguments
         load_arguments(self, command)
 
 
-COMMAND_LOADER_CLS = NetworkManagementClientCommandsLoader
+COMMAND_LOADER_CLS = MonitorClientCommandsLoader
