@@ -661,6 +661,7 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
                               redirect_protocol, custom_host, custom_path,
                               custom_fragment, custom_query_string)
 
+    rule = None
     if route_type == 'Forward':
         rule = RoutingRule(
             name=item_name,
@@ -698,7 +699,7 @@ def create_fd_routing_rules(cmd, resource_group_name, front_door_name, item_name
                 custom_query_string=custom_query_string
             )
         )
-    return _upsert_frontdoor_subresource(cmd, resource_group_name, front_door_name, 'routing_rules', rule, 'name')  # pylint: disable=used-before-assignmenta
+    return _upsert_frontdoor_subresource(cmd, resource_group_name, front_door_name, 'routing_rules', rule, 'name')
 
 
 def update_fd_routing_rule(parent, instance, item_name, frontend_endpoints=None, accepted_protocols=None,  # pylint: disable=unused-argument
