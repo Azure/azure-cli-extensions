@@ -272,7 +272,6 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_i
                 'external_documentation': extracted_api_external_documentation,
                 'description': extracted_api_description,
             }
-            print(f"api_args: {api_args}\n")
 
             CreateAPI(cli_ctx=cmd.cli_ctx)(command_args=api_args)
             logger.warning('API was created successfully')
