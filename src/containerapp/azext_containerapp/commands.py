@@ -5,7 +5,7 @@
 
 # pylint: disable=line-too-long, too-many-statements, bare-except
 # from azure.cli.core.commands import CliCommandType
-# from msrestazure.tools import is_valid_resource_id, parse_resource_id
+# from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from azure.cli.command_modules.containerapp._transformers import (transform_containerapp_output, transform_containerapp_list_output)
 from azext_containerapp._client_factory import ex_handler_factory
 from ._transformers import (transform_sensitive_values,
@@ -178,7 +178,7 @@ def load_command_table(self, args):
             g.custom_command('set', 'connected_env_create_or_update_storage', supports_no_wait=True, exception_handler=ex_handler_factory())
             g.custom_command('remove', 'connected_env_remove_storage', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
 
-    with self.command_group('containerapp env java-component', is_preview=True) as g:
+    with self.command_group('containerapp env java-component') as g:
         g.custom_command('list', 'list_java_components')
 
     with self.command_group('containerapp env java-component spring-cloud-config',
@@ -252,7 +252,7 @@ def load_command_table(self, args):
         g.custom_show_command('list-files', 'list_files_session_code_interpreter')
         g.custom_command('delete-file', 'delete_file_session_code_interpreter', confirmation=True, supports_no_wait=True)
 
-    with self.command_group('containerapp java logger', is_preview=True) as g:
+    with self.command_group('containerapp java logger') as g:
         g.custom_command('set', 'create_or_update_java_logger', supports_no_wait=True)
         g.custom_command('delete', 'delete_java_logger', supports_no_wait=True)
         g.custom_show_command('show', 'show_java_logger')

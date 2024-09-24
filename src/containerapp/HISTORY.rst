@@ -4,6 +4,24 @@ Release History
 ===============
 upcoming
 ++++++
+
+1.0.0b3
+++++++
+* Update models to support new properties with --yaml for api-version 2024-02-02-preview
+
+1.0.0b2
+++++++
+* 'az containerapp create': Fix container app create with registry msi
+* 'az containerapp job create': Fix container app job create with registry msi
+
+1.0.0b1
+++++++
+* 'az containerapp sessionpool create': Add NodeLTS container-type.
+* 'az containerapp env java-component': Support --min-replicas and --max-replicas for Java components
+* 'az containerapp env create': Support `--dapr-connection-string` to set application insight connection string
+
+0.3.55
+++++++
 * 'az containerapp create': Support --registry-identity to use Environment identity for ACR authentication.
 * 'az containerapp job create': Support --registry-identity to use Environment identity for ACR authentication.
 * 'az containerapp registry set': Support --identity to use Environment identity for ACR authentication.

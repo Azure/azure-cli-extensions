@@ -1,0 +1,322 @@
+interactions:
+- request:
+    body: '{"location": "eastus", "properties": {"awsCloudProfile": {"accountId":
+      "471112500375"}, "hostType": "AWS"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - arc-multicloud public-cloud-connector create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '107'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --resource-group --subscription --host-type --aws-cloud-profile --location
+      User-Agent:
+      - AZURECLI/2.64.0 azsdk-python-core/1.30.2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.HybridConnectivity/publicCloudConnectors/testConnector?api-version=2024-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.HybridConnectivity/publicCloudConnectors/testConnector","name":"testConnector","type":"microsoft.hybridconnectivity/publiccloudconnectors","location":"eastus","systemData":{"createdBy":"hongma@microsoft.com","createdByType":"User","createdAt":"2024-09-16T21:19:18.335656Z","lastModifiedBy":"hongma@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-16T21:19:18.335656Z"},"properties":{"provisioningState":"Succeeded","hostType":"AWS","connectorPrimaryIdentifier":"f5c5ff57-37b3-4ede-b0a9-600091a35f21","awsCloudProfile":{"accountId":"471112500375","isOrganizationalAccount":false}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '711'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Sep 2024 21:19:19 GMT
+      etag:
+      - '"f400c07f-0000-0100-0000-66e8a0d70000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 31500c08-52c2-4c36-81ea-0b983e2f4afe
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 35025183ECC64FB1BA835CCA9029C18A Ref B: CO6AA3150217053 Ref C: 2024-09-16T21:19:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"solutionSettings": {"periodicSync": "true", "cloudProviderServiceTypes":
+      "ec2,s3", "awsGlobalReadOnly": "true", "cloudProviderRegions": "us-east-1,us-east-2",
+      "periodicSyncTime": "1"}, "solutionType": "Microsoft.AssetManagement"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - arc-multicloud solution-configuration create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '247'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --connector-id --name --solution-settings --solution-type
+      User-Agent:
+      - AZURECLI/2.64.0 azsdk-python-core/1.30.2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.HybridConnectivity/publicCloudConnectors/testConnector/providers/Microsoft.HybridConnectivity/solutionConfigurations/testAssetManagement?api-version=2024-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.HybridConnectivity/publicCloudConnectors/testConnector/providers/Microsoft.HybridConnectivity/solutionConfigurations/testAssetManagement","name":"testAssetManagement","type":"microsoft.hybridconnectivity/solutionconfigurations","systemData":{"createdBy":"hongma@microsoft.com","createdByType":"User","createdAt":"2024-09-16T21:19:20.9050937Z","lastModifiedBy":"hongma@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-16T21:19:20.9050937Z"},"properties":{"provisioningState":"Succeeded","solutionType":"Microsoft.AssetManagement","solutionSettings":{"periodicSync":"true","cloudProviderServiceTypes":"ec2,s3","awsGlobalReadOnly":"true","cloudProviderRegions":"us-east-1,us-east-2","periodicSyncTime":"1","scanAllAWSRegions":"true","scanAllAWSServices":"true"},"status":"AuthorizationPending","statusDetails":"Aws
+        authorization validation pending in Aws account 471112500375"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1006'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Sep 2024 21:19:20 GMT
+      etag:
+      - '"390076b0-0000-0100-0000-66e8a0d90000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - bbb843e3-0fdd-4d41-838a-7c22f109ee5b
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: D2CC8C2055D843069C2E922E72B0D4EE Ref B: CO6AA3150219049 Ref C: 2024-09-16T21:19:20Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - arc-multicloud solution-configuration list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --connector-id
+      User-Agent:
+      - AZURECLI/2.64.0 azsdk-python-core/1.30.2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.HybridConnectivity/publicCloudConnectors/testConnector/providers/Microsoft.HybridConnectivity/solutionConfigurations?api-version=2024-12-01
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.HybridConnectivity/publicCloudConnectors/testConnector/providers/Microsoft.HybridConnectivity/solutionConfigurations/testAssetManagement","name":"testAssetManagement","type":"microsoft.hybridconnectivity/solutionconfigurations","systemData":{"createdBy":"hongma@microsoft.com","createdByType":"User","createdAt":"2024-09-16T21:19:20.9050937Z","lastModifiedBy":"hongma@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-16T21:19:20.9050937Z"},"properties":{"provisioningState":"Succeeded","solutionType":"Microsoft.AssetManagement","solutionSettings":{"periodicSync":"true","cloudProviderServiceTypes":"ec2,s3","awsGlobalReadOnly":"true","cloudProviderRegions":"us-east-1,us-east-2","periodicSyncTime":"1","scanAllAWSRegions":"true","scanAllAWSServices":"true"},"status":"AuthorizationPending","statusDetails":"Aws
+        authorization validation pending in Aws account 471112500375"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1018'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Sep 2024 21:19:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: 1DC7C59A2F554CAE8397482A065CE322 Ref B: CO6AA3150220051 Ref C: 2024-09-16T21:19:21Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - arc-multicloud solution-configuration show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --connector-id --name
+      User-Agent:
+      - AZURECLI/2.64.0 azsdk-python-core/1.30.2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.HybridConnectivity/publicCloudConnectors/testConnector/providers/Microsoft.HybridConnectivity/solutionConfigurations/testAssetManagement?api-version=2024-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.HybridConnectivity/publicCloudConnectors/testConnector/providers/Microsoft.HybridConnectivity/solutionConfigurations/testAssetManagement","name":"testAssetManagement","type":"microsoft.hybridconnectivity/solutionconfigurations","systemData":{"createdBy":"hongma@microsoft.com","createdByType":"User","createdAt":"2024-09-16T21:19:20.9050937Z","lastModifiedBy":"hongma@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-16T21:19:20.9050937Z"},"properties":{"provisioningState":"Succeeded","solutionType":"Microsoft.AssetManagement","solutionSettings":{"periodicSync":"true","cloudProviderServiceTypes":"ec2,s3","awsGlobalReadOnly":"true","cloudProviderRegions":"us-east-1,us-east-2","periodicSyncTime":"1","scanAllAWSRegions":"true","scanAllAWSServices":"true"},"status":"AuthorizationPending","statusDetails":"Aws
+        authorization validation pending in Aws account 471112500375"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1006'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Sep 2024 21:19:22 GMT
+      etag:
+      - '"390076b0-0000-0100-0000-66e8a0d90000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-msedge-ref:
+      - 'Ref A: AE8BA0861B29437383B0267C8E6C66A9 Ref B: CO6AA3150217053 Ref C: 2024-09-16T21:19:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"solutionSettings": {"periodicSync": "true", "periodicSyncTime":
+      "2"}, "solutionType": "Microsoft.AssetManagement"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - arc-multicloud solution-configuration update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '132'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --connector-id --name --solution-settings --solution-type
+      User-Agent:
+      - AZURECLI/2.64.0 azsdk-python-core/1.30.2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: PATCH
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.HybridConnectivity/publicCloudConnectors/testConnector/providers/Microsoft.HybridConnectivity/solutionConfigurations/testAssetManagement?api-version=2024-12-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.HybridConnectivity/publicCloudConnectors/testConnector/providers/Microsoft.HybridConnectivity/solutionConfigurations/testAssetManagement","name":"testAssetManagement","type":"microsoft.hybridconnectivity/solutionconfigurations","systemData":{"createdBy":"hongma@microsoft.com","createdByType":"User","createdAt":"2024-09-16T21:19:20.9050937Z","lastModifiedBy":"hongma@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-16T21:19:23.0163249Z"},"properties":{"provisioningState":"Succeeded","solutionType":"Microsoft.AssetManagement","solutionSettings":{"periodicSync":"true","cloudProviderServiceTypes":"ec2,s3","awsGlobalReadOnly":"true","cloudProviderRegions":"us-east-1,us-east-2","periodicSyncTime":"2","scanAllAWSRegions":"true","scanAllAWSServices":"true"},"status":"AuthorizationPending","statusDetails":"Aws
+        authorization validation pending in Aws account 471112500375"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1006'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 16 Sep 2024 21:19:22 GMT
+      etag:
+      - '"390078b0-0000-0100-0000-66e8a0db0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - ff6aa0a4-8c3d-4be3-8ee9-23245d51145e
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 0C3BC8753D4E4BED8C5F93B57BEC25F2 Ref B: CO6AA3150218017 Ref C: 2024-09-16T21:19:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - arc-multicloud solution-configuration delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --connector-id --name -y
+      User-Agent:
+      - AZURECLI/2.64.0 azsdk-python-core/1.30.2 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.HybridConnectivity/publicCloudConnectors/testConnector/providers/Microsoft.HybridConnectivity/solutionConfigurations/testAssetManagement?api-version=2024-12-01
+  response:
+    body:
+      string: ''
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Mon, 16 Sep 2024 21:19:23 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 4efbf029-37c0-432b-a80d-2a3235e22c66
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '14999'
+      x-msedge-ref:
+      - 'Ref A: E0621A7C2BDE495E9262AA8296226385 Ref B: CO6AA3150219045 Ref C: 2024-09-16T21:19:23Z'
+    status:
+      code: 200
+      message: OK
+version: 1

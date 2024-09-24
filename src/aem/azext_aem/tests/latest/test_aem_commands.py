@@ -96,8 +96,11 @@ class VMAEM(ScenarioTest):
         self.kwargs.update({
             'vm': vm_name,
             'ident': ident_name,
+            'vnet': 'vnet',
+            'subnet': 'subnet'
         })
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest!@')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
         self.cmd('identity create -g {rg} -n {ident}')
 
         with self.assertRaises(CLIError) as cm:
@@ -126,10 +129,13 @@ class VMAEM(ScenarioTest):
 
         vm_name = 'vm1'
         self.kwargs.update({
-            'vm': vm_name
+            'vm': vm_name,
+            'vnet': 'vnet',
+            'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image RedHat:RHEL:8.2:latest --generate-ssh-keys')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image RedHat:RHEL:8.2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
             self.cmd('vm aem delete --verbose -g {rg} -n {vm}')
@@ -156,10 +162,13 @@ class VMAEM(ScenarioTest):
 
         vm_name = 'vm1'
         self.kwargs.update({
-            'vm': vm_name
+            'vm': vm_name,
+            'vnet': 'vnet',
+            'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image RedHat:RHEL:7.8:latest --generate-ssh-keys')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image RedHat:RHEL:7.8:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
             self.cmd('vm aem delete --verbose -g {rg} -n {vm}')
@@ -189,10 +198,13 @@ class VMAEM(ScenarioTest):
 
         vm_name = 'vm1'
         self.kwargs.update({
-            'vm': vm_name
+            'vm': vm_name,
+            'vnet': 'vnet',
+            'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-15-sp2:gen2:latest --generate-ssh-keys')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-15-sp2:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
             self.cmd('vm aem delete --verbose -g {rg} -n {vm}')
@@ -213,16 +225,20 @@ class VMAEM(ScenarioTest):
 
         self._assert_new_extension(self.IDENT_SYSTEM_ASSIGNED)
 
+    @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer()
     def test_OldExtensionReinstall(self, resource_group):
         os.environ["AZURE_CLI_AEM_TEST"] = "test_OldExtensionReinstall"
 
         vm_name = 'vm1'
         self.kwargs.update({
-            'vm': vm_name
+            'vm': vm_name,
+            'vnet': 'vnet',
+            'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest!@')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
             self.cmd('vm aem delete --verbose -g {rg} -n {vm}')
@@ -252,10 +268,13 @@ class VMAEM(ScenarioTest):
 
         vm_name = 'vm1'
         self.kwargs.update({
-            'vm': vm_name
+            'vm': vm_name,
+            'vnet': 'vnet',
+            'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
             self.cmd('vm aem delete --verbose -g {rg} -n {vm}')
@@ -276,16 +295,20 @@ class VMAEM(ScenarioTest):
 
         self._assert_new_extension(self.IDENT_SYSTEM_ASSIGNED)
 
+    @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer()
     def test_ExtensionUpgrade(self, resource_group):
         os.environ["AZURE_CLI_AEM_TEST"] = "test_ExtensionUpgrade"
 
         vm_name = 'vm1'
         self.kwargs.update({
-            'vm': vm_name
+            'vm': vm_name,
+            'vnet': 'vnet',
+            'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest!@')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
             self.cmd('vm aem delete --verbose -g {rg} -n {vm}')
@@ -315,10 +338,13 @@ class VMAEM(ScenarioTest):
 
         vm_name = 'vm1'
         self.kwargs.update({
-            'vm': vm_name
+            'vm': vm_name,
+            'vnet': 'vnet',
+            'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest!@')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image win2016datacenter --admin-username myadmin --admin-password thisisaTest!@ --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
             self.cmd('vm aem delete --verbose -g {rg} -n {vm}')
@@ -372,6 +398,8 @@ class VMAEM(ScenarioTest):
         self.cmd('network nic create -g {rg} --name {nic1} --vnet-name {vnet} --subnet {subnet1} --network-security-group {nsg}')
         self.cmd('network nic create -g {rg} --name {nic2} --vnet-name {vnet} --subnet {subnet2} --network-security-group {nsg}')
         self.cmd('vm create -g {rg} --name {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --nics {nic1} {nic2}')
+        self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet1} --default-outbound-access false')
+        self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet2} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
             self.cmd('vm aem delete --verbose -g {rg} -n {vm}')
@@ -410,10 +438,13 @@ class VMAEM(ScenarioTest):
 
         vm_name = 'vm1'
         self.kwargs.update({
-            'vm': vm_name
+            'vm': vm_name,
+            'vnet': 'vnet',
+            'subnet': 'subnet'
         })
 
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk -z 1 --size Standard_E2s_v3 --image win2016datacenter --admin-username myadmin --admin-password thisisaTest1234 --ultra-ssd-enabled')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk -z 1 --size Standard_E2s_v3 --image win2016datacenter --admin-username myadmin --admin-password thisisaTest1234 --ultra-ssd-enabled --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
 
         with self.assertRaises(CLIError) as cm:
             self.cmd('vm aem delete --verbose -g {rg} -n {vm}')
@@ -688,14 +719,18 @@ class VMAEM(ScenarioTest):
         self.assertTrue(len(ok) == ok_count)
         self.assertTrue(len(nok) == nok_count)
 
+    @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer()
     def test_vm_aem_configure(self, resource_group):
         os.environ["AZURE_CLI_AEM_TEST"] = "test_vm_aem_configure"
 
         self.kwargs.update({
             'vm': 'vm1',
+            'vnet': 'vnet',
+            'subnet': 'subnet'
         })
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image centos --generate-ssh-keys')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
         self.cmd('vm aem set -g {rg} -n {vm} --verbose')
         self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
         self.cmd('vm aem delete -g {rg} -n {vm} --verbose')
@@ -712,8 +747,11 @@ class VMAEM(ScenarioTest):
 
         self.kwargs.update({
             'vm': 'vm1',
+            'vnet': 'vnet',
+            'subnet': 'subnet'
         })
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image centos --generate-ssh-keys')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
         self.cmd('vm aem set -g {rg} -n {vm} --install-new-extension --verbose')
         self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
         self.cmd('vm aem delete -g {rg} -n {vm} --verbose')
@@ -730,8 +768,11 @@ class VMAEM(ScenarioTest):
 
         self.kwargs.update({
             'vm': 'vm1',
+            'vnet': 'vnet',
+            'subnet': 'subnet'
         })
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image centos --generate-ssh-keys')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
         self.cmd('vm aem set -g {rg} -n {vm} --install-new-extension --set-access-to-individual-resources --verbose')
         self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
         self.cmd('vm aem delete -g {rg} -n {vm} --verbose')
@@ -747,8 +788,11 @@ class VMAEM(ScenarioTest):
 
         self.kwargs.update({
             'vm': 'vm1',
+            'vnet': 'vnet',
+            'subnet': 'subnet'
         })
-        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image centos --generate-ssh-keys')
+        self.cmd('vm create -g {rg} -n {vm} --os-disk-name os-disk --image SUSE:sles-12-sp5:gen2:latest --generate-ssh-keys --subnet {subnet} --vnet-name {vnet} --nsg-rule NONE')
+        self.cmd('network vnet subnet update -g {rg} --vnet-name {vnet} -n {subnet} --default-outbound-access false')
         self.cmd('vm aem set -g {rg} -n {vm} --install-new-extension --proxy-uri http://proxyhost:8080 --verbose')
         self.cmd('vm aem verify -g {rg} -n {vm} --verbose')
         self.cmd('vm aem delete -g {rg} -n {vm} --verbose')

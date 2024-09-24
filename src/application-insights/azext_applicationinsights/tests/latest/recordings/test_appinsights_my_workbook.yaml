@@ -13,33 +13,37 @@ interactions:
       ParameterSetName:
       - -g --category
       User-Agent:
-      - AZURECLI/2.55.0 (AAZ) azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.12.5 (Windows-11-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_appinsights_my_workbook000001/providers/Microsoft.Insights/myWorkbooks?category=performance&api-version=2021-03-08
   response:
     body:
-      string: '{"error":{"code":"InvalidResourceType","message":"Resource type ''myWorkbooks''
-        of provider namespace ''Microsoft.Insights'' was not found in global location
-        for api version ''2021-03-08''."}}'
+      string: '{"error":{"code":"InvalidResourceType","message":"The resource type
+        could not be found in the namespace ''Microsoft.Insights'' for api version
+        ''2021-03-08''."}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '186'
+      - '157'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 21 Dec 2023 09:55:04 GMT
+      - Tue, 03 Sep 2024 07:13:14 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-failure-cause:
       - gateway
+      x-msedge-ref:
+      - 'Ref A: C4A649E7005243E8B214679FA25E4040 Ref B: MAA201060515017 Ref C: 2024-09-03T07:13:14Z'
     status:
       code: 404
       message: Not Found

@@ -105,4 +105,9 @@ Release History
 
 1.2.2
 ++++++
-* Add fleet autoupgradeprofile commands.
+* Added missing help text
+* Removed dependency on msrestazure library
+
+1.2.3
+++++++
+* Add fleet autoupgradeprofile commands

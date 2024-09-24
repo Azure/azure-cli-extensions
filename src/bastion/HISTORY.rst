@@ -2,6 +2,14 @@
 
 Release History
 ===============
+1.1.1
+++++++
+* Fix for configure option, enabling it for disable gateway and ip connect scenarios.
+
+1.2.0
+++++++
+* Update SDk to 2024-01-01
+* Allow create bastion with zones and session recording
 
 1.1.0
 ++++++

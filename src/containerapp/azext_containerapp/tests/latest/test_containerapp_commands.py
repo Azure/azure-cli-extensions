@@ -13,7 +13,7 @@ from azure.cli.core.azclierror import ValidationError, CLIInternalError
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckNotExists, JMESPathCheckExists)
-from msrestazure.tools import parse_resource_id
+from azure.mgmt.core.tools import parse_resource_id
 
 from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
 from .common import TEST_LOCATION, STAGE_LOCATION
@@ -2000,6 +2000,15 @@ properties:
                                             concurrentRequests: '50'
                                             key: value
                                         name: http-scale-rule
+                                      - name: asb-rule
+                                        custom:
+                                         type: azure-servicebus
+                                         metadata:
+                                          topicName: testtopic
+                                          subscriptionName: testsubname
+                                          namespace: test-namespace
+                                          messageCount: 5
+                                         identity: {user_identity_id}
                                 identity:
                                   type: UserAssigned
                                   userAssignedIdentities:
@@ -2034,6 +2043,13 @@ properties:
             JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "value"),
             JMESPathCheck("properties.template.scale.rules[0].http.auth[0].triggerParameter", "trigger"),
             JMESPathCheck("properties.template.scale.rules[0].http.auth[0].secretRef", "secretref"),
+            JMESPathCheck("properties.template.scale.rules[1].name", "asb-rule"),
+            JMESPathCheck("properties.template.scale.rules[1].custom.type", "azure-servicebus"),
+            JMESPathCheck("properties.template.scale.rules[1].custom.metadata.topicName", "testtopic"),
+            JMESPathCheck("properties.template.scale.rules[1].custom.metadata.subscriptionName", "testsubname"),
+            JMESPathCheck("properties.template.scale.rules[1].custom.metadata.namespace", "test-namespace"),
+            JMESPathCheck("properties.template.scale.rules[1].custom.metadata.messageCount", "5"),
+            JMESPathCheck("properties.template.scale.rules[1].custom.identity", user_identity_id),
         ])
 
         # test managedEnvironmentId

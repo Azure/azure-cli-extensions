@@ -188,11 +188,12 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
                         logger.debug("Cluster Diagnostic Checks job Failed")
                         w.stop()
                         break
-                    elif job["object"].status.conditions is not None and \
-                        job["object"].status.conditions[0].type == "Complete":
-                        is_job_complete = True
-                        logger.debug("Cluster Diagnostic Checks Job reached completed state")
-                        w.stop()
+                    elif job["object"].status.conditions is not None:
+                        is_complete = any(condition.type == "Complete" for condition in job["object"].status.conditions)
+                        if is_complete:
+                            is_job_complete = True
+                            logger.debug("Cluster Diagnostic Checks Job reached completed state")
+                            w.stop()
             except Exception:
                 logger.debug("Caught Exception, executing Cluster Diagnostic Checks job: ", Exception)
                 continue
@@ -271,8 +272,6 @@ def executing_cluster_diagnostic_checks_job(corev1_api_instance, batchv1_api_ins
 
         # Clearing all the resources after fetching the cluster diagnostic checks container logs
         Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
-        delete_release_namespace = [kubectl_client_location, "delete", "namespace", "azure-arc-release"]
-        Popen(delete_release_namespace, stdout=PIPE, stderr=PIPE)
 
     # To handle any exception that may occur during the execution
     except Exception as e:
