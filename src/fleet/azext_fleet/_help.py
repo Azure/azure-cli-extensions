@@ -353,7 +353,7 @@ helps['fleet autoupgradeprofile create'] = """
         - name: Create an auto upgrade profile with channel 'Rapid' and disabled by default.
           text: az fleet autoupgradeprofile create -g MyFleetResourceGroup -l MyLocation -f MyFleetName -n MyAutoUpgradeProfileName -c Rapid --disabled
         - name: Create an auto upgrade profile with channel 'NodeImage'.
-          text: az fleet autoupgradeprofile create -g MyFleetResourceGroup -l MyLocation -f MyFleetName -n MyAutoUpgradeProfileName -c NodeImage --node-image-selection-type Latest
+          text: az fleet autoupgradeprofile create -g MyFleetResourceGroup -l MyLocation -f MyFleetName -n MyAutoUpgradeProfileName -c NodeImage
 """
 
 helps['fleet autoupgradeprofile delete'] = """
