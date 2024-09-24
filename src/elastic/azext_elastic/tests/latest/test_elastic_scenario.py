@@ -16,8 +16,7 @@ class ElasticScenario(ScenarioTest):
     def test_elastic_monitor(self, resource_group):
         email = self.cmd('account show').get_output_in_json()['user']['name']
         self.kwargs.update({
-        'monitor': 'joytestingmonitor999',
-        'new_moni': 'xyzfgy',
+        'monitor': self.create_random_name('monitor', 20),
         'rg': resource_group,
         'email': email
         }) 
@@ -241,7 +240,7 @@ class ElasticScenario(ScenarioTest):
              self.check('[0].properties.monitoredSubscriptionList[0].tagRules.logRules.sendAadLogs', True),
              self.check('[0].properties.monitoredSubscriptionList[0].tagRules.logRules.sendActivityLogs', True),
              self.check('[0].properties.monitoredSubscriptionList[0].tagRules.logRules.sendSubscriptionLogs', False)
-])
+        ])
         
 
 
