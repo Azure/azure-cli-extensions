@@ -228,16 +228,29 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_i
             else:
                 extracted_api_terms_of_service = {'url': None}
 
-            # Create API - Get the external documentation from info in spec
-            extracted_api_external_documentation = None
-            external_documentation = info.get('externalDocumentation')
+            # Create API - Get the external documentation in spec
+            cnt_docs = 0
+            external_documentation_list = []
+            external_documentation = data.get('externalDocs')
             if external_documentation:
                 extracted_api_external_documentation_description = external_documentation.get('description')
-                extracted_api_external_documentation_title = external_documentation.get('title')
                 extracted_api_external_documentation_url = external_documentation.get('url')
-                extracted_api_external_documentation = {'description': extracted_api_external_documentation_description, 'title': extracted_api_external_documentation_title, 'url': extracted_api_external_documentation_url}
+                cnt_docs += 1
+                external_documentation_list.append({'description': extracted_api_external_documentation_description, 'title': f'Doc_{cnt_docs}', 'url': extracted_api_external_documentation_url})
             else:
                 extracted_api_external_documentation = None
+            
+            # Create API - Get the external documentation from the tags in the spec
+            tags = data.get('tags')
+            if tags:
+                for item in tags:
+                    doc = item.get('externalDocs')
+                    if doc:
+                        cnt_docs += 1
+                        external_documentation_list.append({'description': doc.get('description'), 'title': f'Doc_{cnt_docs}', 'url': doc.get('url')})
+
+            extracted_api_external_documentation = external_documentation_list if external_documentation_list is not [] else None
+
 
             # TODO: Create API - custom-properties
             # "The custom metadata defined for API catalog entities. #1
@@ -259,6 +272,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_i
                 'external_documentation': extracted_api_external_documentation,
                 'description': extracted_api_description,
             }
+            print(f"api_args: {api_args}\n")
 
             CreateAPI(cli_ctx=cmd.cli_ctx)(command_args=api_args)
             logger.warning('API was created successfully')
