@@ -657,6 +657,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
     def set_argument_registry_identity(self, registry_identity):
         self.set_param("registry_identity", registry_identity)
 
+    def set_argument_registry_server(self, registry_server):
+        self.set_param("registry_server", registry_server)
+
     def set_argument_no_wait(self, no_wait):
         self.set_param("no_wait", no_wait)
 
@@ -944,7 +947,9 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
                     "The container app '{}' does not have any containers. Please use --image to set the image for the container app".format(
                         self.get_argument_name()))
             # Update image
-            containers[0]["image"] = HELLO_WORLD_IMAGE if app.image is None else app.image
+            # If is system registry identity, we will create containerapp with SystemAssigned first, then update the image
+            containers[0]["image"] = HELLO_WORLD_IMAGE if (app.image is None or is_registry_msi_system(self.get_argument_registry_identity())) else app.image
+            self.set_argument_image(app.image)
 
     def set_up_repo(self):
         if self.get_argument_repo():
@@ -994,7 +999,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         return self.client.show(cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(), name=self.get_argument_name())
 
     def _construct_app_and_env_for_source_or_repo(self):
-        from ._up_utils import (ContainerApp, ResourceGroup, ContainerAppEnvironment, _reformat_image, get_token, _has_dockerfile, _get_dockerfile_content, _get_ingress_and_target_port, _get_registry_details, _create_github_action)
+        from ._up_utils import (ContainerApp, ResourceGroup, ContainerAppEnvironment, _reformat_image, get_token, _has_dockerfile, _get_dockerfile_content, _get_ingress_and_target_port, _get_registry_details, _get_registry_details_without_get_creds)
         ingress = self.get_argument_ingress()
         target_port = self.get_argument_target_port()
         dockerfile = "Dockerfile"
@@ -1027,9 +1032,15 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         env = ContainerAppEnvironment(self.cmd, env_name, env_resource_group, location=location)
         app = ContainerApp(self.cmd, self.get_argument_name(), resource_group, None, image, env, target_port, self.get_argument_registry_server(), self.get_argument_registry_user(), self.get_argument_registry_pass(), self.get_argument_env_vars(), self.get_argument_workload_profile_name(), ingress)
 
-        # Fetch registry credentials
-        _get_registry_details(self.cmd, app, self.get_argument_source())  # fetch ACR creds from arguments registry arguments
+        if self.get_argument_source():
+            _get_registry_details_without_get_creds(self.cmd, app, self.get_argument_source())
+        if self.get_argument_repo():
+            _get_registry_details(self.cmd, app, self.get_argument_source())  # fetch ACR creds from arguments registry arguments, --repo will create Github Actions, which requires ACR registry's creds
 
+        # After get registry, backfill registry_server, registry_identity
+        self.set_argument_registry_server(app.registry_server)
+        self.set_up_system_assigned_identity_as_default_if_using_acr()
+        self.set_up_registry_identity()
         return app, env
 
     def post_process(self, r):
@@ -1389,7 +1400,16 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         # create system service principalId
         if system_sp is None and is_registry_msi_system(identity):
             logger.warning("Assign system identity to containerapp.")
-            self.update()
+            patch_identity_def = {}
+            safe_set(patch_identity_def, "identity", value=safe_get(self.new_containerapp, "identity"))
+            try:
+                r = self.client.update(
+                    cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
+                    name=self.get_argument_name(), container_app_envelope=patch_identity_def,
+                    no_wait=False)
+                return r
+            except Exception as e:
+                handle_raw_exception(e)
             self.containerapp_def = self.show()
 
     def check_acrpull_role_assignment(self):
@@ -1506,15 +1526,12 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
             existing_registries = [r for r in existing_registries if ACR_IMAGE_SUFFIX in r["server"]]
             if existing_registries and len(existing_registries) > 0:
                 registry_server = existing_registries[0]["server"]
-                parsed = urlparse(registry_server)
-                registry_name = (parsed.netloc if parsed.scheme else parsed.path).split('.')[0]
-                registry_user, registry_pass, _ = _get_acr_cred(self.cmd.cli_ctx, registry_name)
-                self._update_container_app_source(cmd=self.cmd, source=source, build_env_vars=build_env_vars, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
+                self._update_container_app_source(cmd=self.cmd, source=source, build_env_vars=build_env_vars, registry_server=registry_server)
             else:
-                self._update_container_app_source(cmd=self.cmd, source=source, build_env_vars=build_env_vars, registry_server=None, registry_user=None, registry_pass=None)
+                self._update_container_app_source(cmd=self.cmd, source=source, build_env_vars=build_env_vars, registry_server=None)
 
-    def _update_container_app_source(self, cmd, source, build_env_vars, registry_server, registry_user, registry_pass):
-        from ._up_utils import (ContainerApp, ResourceGroup, ContainerAppEnvironment, _reformat_image, _has_dockerfile, _get_dockerfile_content, _get_ingress_and_target_port, _get_registry_details)
+    def _update_container_app_source(self, cmd, source, build_env_vars, registry_server):
+        from ._up_utils import (ContainerApp, ResourceGroup, ContainerAppEnvironment, _reformat_image, _has_dockerfile, _get_dockerfile_content, _get_ingress_and_target_port, _get_registry_details_without_get_creds)
 
         ingress = self.get_argument_ingress()
         target_port = self.get_argument_target_port()
@@ -1546,12 +1563,12 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         resource_group = ResourceGroup(cmd, self.get_argument_resource_group_name(), location=location)
         env_resource_group = ResourceGroup(cmd, env_rg, location=location)
         env = ContainerAppEnvironment(cmd, env_name, env_resource_group, location=location)
-        app = ContainerApp(cmd=cmd, name=self.get_argument_name(), resource_group=resource_group, image=image, env=env, target_port=target_port, workload_profile_name=self.get_argument_workload_profile_name(), ingress=ingress, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
+        app = ContainerApp(cmd=cmd, name=self.get_argument_name(), resource_group=resource_group, image=image, env=env, target_port=target_port, workload_profile_name=self.get_argument_workload_profile_name(), ingress=ingress, registry_server=registry_server)
 
         # Fetch registry credentials
-        _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments
+        _get_registry_details_without_get_creds(cmd, app, source)  # fetch ACR creds from arguments registry arguments
         # Uses local buildpacks, the Cloud Build or an ACR Task to generate image if Dockerfile was not provided by the user
-        app.run_source_to_cloud_flow(source, dockerfile, build_env_vars, can_create_acr_if_needed=False, registry_server=registry_server)
+        app.run_source_to_cloud_flow(source, dockerfile, build_env_vars, can_create_acr_if_needed=False, registry_server=app.registry_server)
 
         # Validate an image associated with the container app exists
         containers = safe_get(self.containerapp_def, "properties", "template", "containers", default=[])

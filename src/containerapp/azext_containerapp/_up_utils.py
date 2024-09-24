@@ -1343,6 +1343,30 @@ def _get_registry_details(cmd, app: "ContainerApp", source):
     )
 
 
+def _get_registry_details_without_get_creds(cmd, app: "ContainerApp", source):
+    if app.registry_server:
+        if "azurecr.io" not in app.registry_server and source:
+            raise ValidationError(
+                "Cannot supply non-Azure registry when using --source."
+            )
+        parsed = urlparse(app.registry_server)
+        registry_name = (parsed.netloc if parsed.scheme else parsed.path).split(".")[0]
+        registry_rg = _get_acr_rg(app)
+    else:
+        registry_name, registry_rg = find_existing_acr(cmd, app)
+        if registry_name and registry_rg:
+            app.registry_server = registry_name + ACR_IMAGE_SUFFIX
+        else:
+            registry_rg = app.resource_group.name
+            registry_name = _get_default_registry_name(app)
+            app.registry_server = registry_name + ACR_IMAGE_SUFFIX
+            app.should_create_acr = True
+
+    app.acr = AzureContainerRegistry(
+        registry_name, ResourceGroup(cmd, registry_rg, None, None)
+    )
+
+
 # attempt to populate defaults for managed env, RG, ACR, etc
 def _set_up_defaults(
     cmd,

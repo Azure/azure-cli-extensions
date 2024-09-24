@@ -1215,7 +1215,7 @@ def containerapp_up(cmd,
                     connected_cluster_id=None):
     from ._up_utils import (_validate_up_args, _validate_custom_location_connected_cluster_args, _reformat_image, _get_dockerfile_content, _get_ingress_and_target_port,
                             ResourceGroup, Extension, CustomLocation, ContainerAppEnvironment, ContainerApp, _get_registry_from_app,
-                            _get_registry_details, _create_github_action, _set_up_defaults, up_output,
+                            _get_registry_details, _get_registry_details_without_get_creds, _create_github_action, _set_up_defaults, up_output,
                             check_env_name_on_rg, get_token, _has_dockerfile)
     from azure.cli.command_modules.containerapp._github_oauth import cache_github_token
     HELLOWORLD = "mcr.microsoft.com/k8se/quickstart"
@@ -1277,11 +1277,13 @@ def containerapp_up(cmd,
     extension.create_if_needed()
     custom_location.create_if_needed()
     env.create_if_needed(name)
-
     if source or repo:
         if not registry_server:
             _get_registry_from_app(app, source)  # if the app exists, get the registry
-        _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments
+        if source:
+            _get_registry_details_without_get_creds(cmd, app, source)
+        if repo:
+            _get_registry_details(cmd, app, source)  # fetch ACR creds from arguments registry arguments, --repo will create Github Actions, which requires ACR registry's creds
 
     force_single_container_updates = False
     if source:
