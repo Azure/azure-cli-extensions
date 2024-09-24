@@ -202,31 +202,28 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_i
             # TODO -Create API Version lifecycle_stage
 
             # Create API - Get the contact details from info in spec
+            contacts = None
             contact = info.get('contact')
             if contact:
                 extracted_api_contact_email = contact.get('email')
                 extracted_api_contact_name = contact.get('name')
                 extracted_api_contact_url = contact.get('url')
                 contacts = [{'email': extracted_api_contact_email, 'name': extracted_api_contact_name, 'url': extracted_api_contact_url}]
-            else:
-                contacts = None
 
             # Create API - Get the license details from info in spec
+            extracted_api_license = None
             licenseDetails = info.get('license')
             if licenseDetails:
                 extracted_api_license_identifier = licenseDetails.get('identifier')
                 extracted_api_license_name = licenseDetails.get('name')
                 extracted_api_license_url = licenseDetails.get('url')
                 extracted_api_license = {'identifier': extracted_api_license_identifier, 'name': extracted_api_license_name, 'url': extracted_api_license_url}
-            else:
-                extracted_api_license = None
 
             # Create API - Get the terms of service from info in spec
+            extracted_api_terms_of_service = {'url': None}
             extracted_api_terms_of_service_value = info.get('termsOfService')
             if extracted_api_terms_of_service_value:
                 extracted_api_terms_of_service = {'url': extracted_api_terms_of_service_value}
-            else:
-                extracted_api_terms_of_service = {'url': None}
 
             # Create API - Get the external documentation in spec
             cnt_docs = 0
@@ -237,8 +234,6 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_i
                 extracted_api_external_documentation_url = external_documentation.get('url')
                 cnt_docs += 1
                 extracted_api_external_documentation.append({'description': extracted_api_external_documentation_description, 'title': f'Doc_{cnt_docs}', 'url': extracted_api_external_documentation_url})
-            else:
-                extracted_api_external_documentation = None
 
             # Create API - Get the external documentation from the tags in the spec
             tags = data.get('tags')
