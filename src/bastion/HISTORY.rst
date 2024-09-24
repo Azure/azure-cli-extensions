@@ -2,9 +2,9 @@
 
 Release History
 ===============
-1.2.1
+1.3.0
 ++++++
-* Bug fixes for connect.
+* Bug fixes for connect rdp/ssh/tunnel.
 
 1.2.0
 ++++++
