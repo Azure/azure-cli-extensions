@@ -239,7 +239,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_i
                 external_documentation_list.append({'description': extracted_api_external_documentation_description, 'title': f'Doc_{cnt_docs}', 'url': extracted_api_external_documentation_url})
             else:
                 extracted_api_external_documentation = None
-            
+
             # Create API - Get the external documentation from the tags in the spec
             tags = data.get('tags')
             if tags:
@@ -250,7 +250,6 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_i
                         external_documentation_list.append({'description': doc.get('description'), 'title': f'Doc_{cnt_docs}', 'url': doc.get('url')})
 
             extracted_api_external_documentation = external_documentation_list if external_documentation_list is not [] else None
-
 
             # TODO: Create API - custom-properties
             # "The custom metadata defined for API catalog entities. #1
