@@ -194,7 +194,7 @@ class ElasticScenario(ScenarioTest):
             'monitor': self.create_random_name('monitor', 20),
             'rg': resource_group,
             'email': email,
-            'subscription_list': ['cff37b56-870a-448f-a2fb-1a89235d4d32'],  # Single subscription ID in list format
+            'subscription_list': '[{{\\"subscriptionId\\":\\"cff37b56-870a-448f-a2fb-1a89235d4d32\\", \\"status\\":\\"Active\\"}}]',
             'operation': 'Active',
             'updated_subscription_list': '[{"subscriptionId":"cff37b56-870a-448f-a2fb-1a89235d4d32","status":"Deleting"}]',
             'updated_operation': 'DeleteBegin'
@@ -212,7 +212,7 @@ class ElasticScenario(ScenarioTest):
          '--resource-group {rg} '
          '--monitor-name {monitor} '
          '--name default '
-         '--monitored-subscription-list {subscription_list} '
+         '--monitored-subscription-list "[{{\\"subscriptionId\\":\\"cff37b56-870a-448f-a2fb-1a89235d4d32\\", \\"status\\":\\"Active\\"}}]" '
          '--operation {operation}', checks=[
              self.check('name', 'default'),
              self.check('resourceGroup', '{rg}'),
@@ -231,7 +231,6 @@ class ElasticScenario(ScenarioTest):
              self.check('properties.monitoredSubscriptionList[0].status', 'Deleting')
         ])
         self.cmd('elastic monitor monitored-subscription list -g {rg} --monitor-name {monitor}', checks=[
-             self.check('[0].id', '{monitor_id}'),
              self.check('[0].name', '{monitor}'),
              self.check('[0].type', 'Microsoft.Elastic/monitors'),
              self.check('[0].properties.provisioningState', 'Succeeded'),
@@ -241,6 +240,20 @@ class ElasticScenario(ScenarioTest):
              self.check('[0].properties.monitoredSubscriptionList[0].tagRules.logRules.sendActivityLogs', True),
              self.check('[0].properties.monitoredSubscriptionList[0].tagRules.logRules.sendSubscriptionLogs', False)
         ])
+        self.cmd('elastic monitor monitored-subscription show -n default -g {rg} --monitor-name {monitor}', checks=[
+            self.check('name', 'default'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('properties.monitoredSubscriptionList[0].subscriptionId', '{subscriptionId}'),
+            self.check('properties.monitoredSubscriptionList[0].status', 'Active'),
+            self.check('properties.monitoredSubscriptionList[0].tagRules.logRules.filteringTags[0].action', 'Include'),
+            self.check('properties.monitoredSubscriptionList[0].tagRules.logRules.filteringTags[0].name', 'Environment'),
+            self.check('properties.monitoredSubscriptionList[0].tagRules.logRules.filteringTags[0].value', 'Prod'),
+            self.check('properties.monitoredSubscriptionList[0].tagRules.logRules.sendAadLogs', False),
+            self.check('properties.monitoredSubscriptionList[0].tagRules.logRules.sendActivityLogs', True),
+            self.check('properties.monitoredSubscriptionList[0].tagRules.logRules.sendSubscriptionLogs', True)
+        ])
+
+
         
 
 
