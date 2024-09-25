@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.0.0b2
+1.0.0b3
 +++++
 Add new command `az netappfiles volume list-quota-report` 
 Add new command `az netappfiles volume splitclonefromparent` 
