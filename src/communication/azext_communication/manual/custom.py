@@ -9,6 +9,12 @@
 import sys
 import ast
 from azure.core.exceptions import HttpResponseError
+import base64
+import hashlib
+import hmac
+import requests
+from datetime import datetime
+from urllib.parse import urlparse
 
 
 def communication_identity_create_user(client):
@@ -315,7 +321,7 @@ def communication_rooms_remove_participants(client, room_id, participants):
 
 
 def __get_attachment_content(filename, filetype):
-    import base64
+
     import json
     import os
 
@@ -334,6 +340,25 @@ def __get_attachment_content(filename, filetype):
     return json.dumps(attachment)
 
 
+def prepare_attachments(attachments, attachment_types):
+    from knack.util import CLIError
+
+    attachments_list = []
+    if attachments is None and attachment_types is None:
+        attachments_list = None
+    elif attachments is None or attachment_types is None:
+        raise CLIError('Number of attachments and attachment-types should match.')
+    elif len(attachments) != len(attachment_types):
+        raise CLIError('Number of attachments and attachment-types should match.')
+    else:
+        all_attachments = attachments[0].split(',')
+        all_attachment_types = attachment_types[0].split(',')
+        for i, attachment in enumerate(all_attachments):
+            attachments_list.append(__get_attachment_content(attachment, all_attachment_types[i]))
+
+    return attachments_list
+
+
 def communication_email_send(client,
                              subject,
                              sender,
@@ -346,10 +371,12 @@ def communication_email_send(client,
                              recipients_bcc=None,
                              reply_to=None,
                              attachments=None,
-                             attachment_types=None):
+                             attachment_types=None,
+                             waitUntil='completed'):
 
     import json
     from knack.util import CLIError
+    import uuid
 
     try:
 
@@ -363,18 +390,7 @@ def communication_email_send(client,
         else:
             priority = '3'
 
-        attachments_list = []
-        if attachments is None and attachment_types is None:
-            attachments_list = None
-        elif attachments is None or attachment_types is None:
-            raise CLIError('Number of attachments and attachment-types should match.')
-        elif len(attachments) != len(attachment_types):
-            raise CLIError('Number of attachments and attachment-types should match.')
-        else:
-            all_attachments = attachments[0].split(',')
-            all_attachment_types = attachment_types[0].split(',')
-            for i, attachment in enumerate(all_attachments):
-                attachments_list.append(__get_attachment_content(attachment, all_attachment_types[i]))
+        attachments_list = prepare_attachments(attachments, attachment_types)
 
         message = {
             "content": {
@@ -400,7 +416,84 @@ def communication_email_send(client,
             }
         }
 
-        return client.begin_send(message)
+        operationId = str(uuid.uuid4())
+
+        poller = client.begin_send(message, operation_id=operationId)
+
+        if waitUntil == 'started' or waitUntil == '1':
+            print("Email send started")
+            print(f"Operation id : {operationId}, status : {poller.status()} ")
+        elif waitUntil == 'completed' or waitUntil == '0':
+            # Wait until the email is sent and get the result
+            return poller
+        else:
+            raise ValueError("Invalid value for waitUntil. Expected 'started' or 'completed'.")
+
+    except HttpResponseError:
+        raise
+    except Exception as ex:
+        sys.exit(str(ex))
+
+
+def parse_connection_string(connection_string):
+    """
+    Parse the connection string to extract the endpoint and API key.
+    """
+    params = {}
+    for item in connection_string.split(';'):
+        key, value = item.split('=', 1)
+        params[key.strip()] = value.strip()
+
+    api_endpoint = params.get('endpoint')
+    api_key = params.get('accesskey')
+
+    if not api_endpoint or not api_key:
+        raise ValueError("Connection string is missing required parameters.")
+
+    return api_endpoint, api_key
+
+
+def create_signature_header(method, url, host, api_key):
+
+    date_str = datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT')
+
+    hashed_body = hashlib.sha256(b'').digest()
+    hashed_body_base64 = base64.b64encode(hashed_body).decode('utf-8')
+
+    string_to_sign = f"{method}\n{url}\n{date_str};{host};{hashed_body_base64}"
+    signing_key = base64.b64decode(api_key)
+    signature = hmac.new(signing_key, string_to_sign.encode('utf-8'), hashlib.sha256).digest()
+    signature_base64 = base64.b64encode(signature).decode('utf-8')
+
+    headers = {
+        'x-ms-date': date_str,
+        'x-ms-content-sha256': hashed_body_base64,
+        'Authorization': f"HMAC-SHA256 SignedHeaders=x-ms-date;host;x-ms-content-sha256&Signature={signature_base64}"
+    }
+
+    return headers
+
+
+def communication_email_get_status(connection_string, operation_id):
+    try:
+        api_endpoint, api_key = parse_connection_string(connection_string)
+
+        status_endpoint = f"{api_endpoint}emails/operations/{operation_id}?api-version=2023-03-31"
+
+        method = "GET"
+        url = f'/emails/operations/{operation_id}?api-version=2023-03-31'
+        parsed_url = urlparse(api_endpoint)
+        host = parsed_url.netloc
+
+        headers = create_signature_header(method, url, host, api_key)
+
+        response = requests.get(status_endpoint, headers=headers)
+
+        if response.status_code == 200:
+            return response.json()
+
+        response.raise_for_status()
+
     except HttpResponseError:
         raise
     except Exception as ex:

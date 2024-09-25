@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.10.0
+++++++
+* Adding new parameter waituntil to Email communication send mail.
+* Adding new command get send status to Email communication.
+
 1.9.3
 ++++++
 * Update Email service create - Global as the default value for Location 

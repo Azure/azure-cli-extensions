@@ -575,3 +575,17 @@ helps['communication email send'] = """
         text: |-
                az communication email send --sender "NoReply@contoso.com" --subject "Contoso Update" --to "user1@user1-domain.com" "user2@user2-domain.com" --text "Hello valued client. There is an update."
 """
+
+helps['communication email status'] = """
+    type: group
+    short-summary: Commands to get the status of emails previously sent using Azure Communication Services Email service.
+"""
+
+helps['communication email status get'] = """
+    type: command
+    short-summary: "Get status of an email previously sent."
+    examples:
+      - name: Get status of an email
+        text: |-
+              az communication email status get --operation-id "01234567-89ab-cdef-0123-012345678901" --connection-string "endpoint=XXXXXXXXXXXXXXXX;accesskey=XXXXXXXXXXXXXXXXXXXXXX"
+"""
