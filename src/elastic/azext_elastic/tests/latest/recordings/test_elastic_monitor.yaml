@@ -11,14 +11,14 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --user-info --sku
+      - --name --resource-group --user-info --sku --debug
       User-Agent:
-      - AZURECLI/2.49.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_elastic_monitor000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001","name":"cli_test_elastic_monitor000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_elastic_monitor","date":"2023-07-04T08:32:00Z","module":"elastic"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001","name":"cli_test_elastic_monitor000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_elastic_monitor","date":"2024-09-25T16:07:06Z","module":"elastic"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -27,24 +27,28 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jul 2023 08:32:04 GMT
+      - Wed, 25 Sep 2024 16:07:16 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: C20D8696BD134DAE8970F2075EF1092F Ref B: MAA201060516029 Ref C: 2024-09-25T16:07:16Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "eastus", "properties": {"userInfo": {"companyName": "Micosoft",
-      "emailAddress": "v-jingszhang@microsoft.com", "firstName": "Alice", "lastName":
-      "bob"}}, "sku": {"name": "ess-monthly-consumption_Monthly"}}'
+    body: '{"location": "eastus", "properties": {"userInfo": {"companyName": "Microsoft",
+      "emailAddress": "testrefresh199@mpliftrelastic20211117outlo.onmicrosoft.com",
+      "firstName": "Alice", "lastName": "bob"}}, "sku": {"name": "ess-consumption-2024_Monthly"}}'
     headers:
       Accept:
       - application/json
@@ -55,47 +59,53 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '218'
+      - '248'
       Content-Type:
       - application/json
       ParameterSetName:
-      - -n -g --user-info --sku
+      - --name --resource-group --user-info --sku --debug
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002?api-version=2024-06-15-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","name":"monitor000002","type":"microsoft.elastic/monitors","sku":{"name":"ess-monthly-consumption_Monthly"},"location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-07-04T08:32:08.0202765Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-04T08:32:08.0202765Z"},"properties":{"userInfo":{"companyName":"Micosoft","emailAddress":"v-jingszhang@microsoft.com","firstName":"Alice","lastName":"bob"},"provisioningState":"Accepted"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","name":"monitor000002","type":"microsoft.elastic/monitors","sku":{"name":"ess-consumption-2024_Monthly"},"location":"eastus","systemData":{"createdBy":"testrefresh199@mpliftrelastic20211117outlo.onmicrosoft.com","createdByType":"User","createdAt":"2024-09-25T16:07:20.5270431Z","lastModifiedBy":"testrefresh199@mpliftrelastic20211117outlo.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-25T16:07:20.5270431Z"},"properties":{"userInfo":{"companyName":"Microsoft","emailAddress":"testrefresh199@mpliftrelastic20211117outlo.onmicrosoft.com","firstName":"Alice","lastName":"bob"},"provisioningState":"Accepted"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377?api-version=2023-02-01-preview
+      - https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57?api-version=2024-06-15-preview&t=638628772462311214&c=MIIHhzCCBm-gAwIBAgITHgTSAvXh1GCKrw08WQAABNIC9TANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNjI3MTUyNDA3WhcNMjUwNjIyMTUyNDA3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOX5t0OxQxE3upQbbFvsmp5T7gqPC72fDSg6G0QO-q7rqYToC8QZH_q_PRft3qJZILPcMnC3i05PTpzbeogSlCaa_AwlLL7W5xwBRGnsSFi6uqID-boEdPC1XBtfJ14hE4xgTlvyDFkeshYKWfG6lyrFXbpwsk-8W5euzj5uEAU138aMueyASKkhbn0w-sYa2oA_U3jECVOIlAwWtv49Wed78xbdxyOXsueDyzxDOoM-H1uA24aMiLn3z563K9_bYY4a6hsemVB7YhKwCV0dGFB2NlQuW_yO_VNKEK9b5n56xBisqDcyIAGbNaCFxMjAXplvF7azyX5n0rlTcXgQ5EUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQdmu6OxIvudboSaHvi8VnT7XivcjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAE87bMgkwSJkJtWUWHywZrpdkdbMMJKKdyoixpEZVLQBkS9P248tTUDTQq_W-W_H7OUWFz7F2SmgWJcMU4lnrWQB7xGR2SU5N_Uq5D-F95ksx2I3ALBtLB8wC6t2cwtzjFIPYr9NPyCtZrnbgh6CAFqGpOq0mVkPAHZBfOfywStnkVpA4JYP0B8IIBfA4E-YqSFxC_9vSP8doGWlUkJhw7E1ylemxWU0jv_96awij-EayTYpo-pH2U6hG6hdW5nRZ929VEbgHmcDW03GdpvtqiZGWC3RdWgVHTZPvQ5XyUmZOaBQILallvd5D9QYh1VmY4oAl5QfafZ76IVrmfwu6c&s=f8XkIrLqCOg8OHfUbjKJQ1mqs8-mpIp13SpLiYuStS3rGZL46e7tzUDPPI_XkxV5E2g7axejxbChLe2q362dsnI21kdmR42p5qo4nso1aMPkujYXxTrR1zJM-G1XymVnrwCiv95qd-awxXQGKwGQgV6qlCfis7pjJ7jo0KzZbE7y5NYzRBNCjf8Hyb84ogIneouXsQsu6AHPeRbnjVGt9roSe2GP3PRc3Ezg2VYRUtXD4CjarJjGUMomc6-x_YGbss_nq7coQYWqwYIa_QAUom79ViRWHkF9ljjSFXHJ0_e-_AtlCRrzXYd3Q-GInCgqeiXsqjsygapFDhxAQSCMTQ&h=GXDcBU1dz4SlpKkw65ZuBLAbBBtuym63a-63pV9bwg4
       cache-control:
       - no-cache
       content-length:
-      - '694'
+      - '788'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jul 2023 08:32:15 GMT
+      - Wed, 25 Sep 2024 16:07:26 GMT
       etag:
-      - '"fa001ac6-0000-0100-0000-64a3d90e0000"'
+      - '"2c03ec27-0000-0800-0000-66f4353d0000"'
       expires:
       - '-1'
       mise-correlation-id:
-      - 9b469fa4-0e2b-44b0-808e-abf8749eab97
+      - e3d442c5-91ac-40cf-a689-0f8a79a42bd5
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:13f6b276-8851-4983-9417-68bc36807add
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 1886B64DE98C4FC29E990B8D5F576501 Ref B: MAA201060513027 Ref C: 2024-09-25T16:07:17Z'
     status:
       code: 201
       message: Created
@@ -111,14 +121,14 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --user-info --sku
+      - --name --resource-group --user-info --sku --debug
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377?api-version=2023-02-01-preview
+    uri: https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57?api-version=2024-06-15-preview&t=638628772462311214&c=MIIHhzCCBm-gAwIBAgITHgTSAvXh1GCKrw08WQAABNIC9TANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNjI3MTUyNDA3WhcNMjUwNjIyMTUyNDA3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOX5t0OxQxE3upQbbFvsmp5T7gqPC72fDSg6G0QO-q7rqYToC8QZH_q_PRft3qJZILPcMnC3i05PTpzbeogSlCaa_AwlLL7W5xwBRGnsSFi6uqID-boEdPC1XBtfJ14hE4xgTlvyDFkeshYKWfG6lyrFXbpwsk-8W5euzj5uEAU138aMueyASKkhbn0w-sYa2oA_U3jECVOIlAwWtv49Wed78xbdxyOXsueDyzxDOoM-H1uA24aMiLn3z563K9_bYY4a6hsemVB7YhKwCV0dGFB2NlQuW_yO_VNKEK9b5n56xBisqDcyIAGbNaCFxMjAXplvF7azyX5n0rlTcXgQ5EUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQdmu6OxIvudboSaHvi8VnT7XivcjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAE87bMgkwSJkJtWUWHywZrpdkdbMMJKKdyoixpEZVLQBkS9P248tTUDTQq_W-W_H7OUWFz7F2SmgWJcMU4lnrWQB7xGR2SU5N_Uq5D-F95ksx2I3ALBtLB8wC6t2cwtzjFIPYr9NPyCtZrnbgh6CAFqGpOq0mVkPAHZBfOfywStnkVpA4JYP0B8IIBfA4E-YqSFxC_9vSP8doGWlUkJhw7E1ylemxWU0jv_96awij-EayTYpo-pH2U6hG6hdW5nRZ929VEbgHmcDW03GdpvtqiZGWC3RdWgVHTZPvQ5XyUmZOaBQILallvd5D9QYh1VmY4oAl5QfafZ76IVrmfwu6c&s=f8XkIrLqCOg8OHfUbjKJQ1mqs8-mpIp13SpLiYuStS3rGZL46e7tzUDPPI_XkxV5E2g7axejxbChLe2q362dsnI21kdmR42p5qo4nso1aMPkujYXxTrR1zJM-G1XymVnrwCiv95qd-awxXQGKwGQgV6qlCfis7pjJ7jo0KzZbE7y5NYzRBNCjf8Hyb84ogIneouXsQsu6AHPeRbnjVGt9roSe2GP3PRc3Ezg2VYRUtXD4CjarJjGUMomc6-x_YGbss_nq7coQYWqwYIa_QAUom79ViRWHkF9ljjSFXHJ0_e-_AtlCRrzXYd3Q-GInCgqeiXsqjsygapFDhxAQSCMTQ&h=GXDcBU1dz4SlpKkw65ZuBLAbBBtuym63a-63pV9bwg4
   response:
     body:
-      string: '{"id":"/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377","name":"2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","status":"Accepted","startTime":"2023-07-04T08:32:13.6388215Z"}'
+      string: '{"id":"/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57","name":"dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","status":"Accepted","startTime":"2024-09-25T16:07:25.4676004Z"}'
     headers:
       cache-control:
       - no-cache
@@ -127,21 +137,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jul 2023 08:32:15 GMT
+      - Wed, 25 Sep 2024 16:07:27 GMT
       etag:
-      - '"da05f207-0000-0100-0000-64a3d90d0000"'
+      - '"bc00da30-0000-0800-0000-66f4353d0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 0F22D0A7408C4BA9A555E99200B5974D Ref B: MAA201060513027 Ref C: 2024-09-25T16:07:26Z'
     status:
       code: 200
       message: OK
@@ -157,14 +167,14 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --user-info --sku
+      - --name --resource-group --user-info --sku --debug
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377?api-version=2023-02-01-preview
+    uri: https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57?api-version=2024-06-15-preview&t=638628772462311214&c=MIIHhzCCBm-gAwIBAgITHgTSAvXh1GCKrw08WQAABNIC9TANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNjI3MTUyNDA3WhcNMjUwNjIyMTUyNDA3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOX5t0OxQxE3upQbbFvsmp5T7gqPC72fDSg6G0QO-q7rqYToC8QZH_q_PRft3qJZILPcMnC3i05PTpzbeogSlCaa_AwlLL7W5xwBRGnsSFi6uqID-boEdPC1XBtfJ14hE4xgTlvyDFkeshYKWfG6lyrFXbpwsk-8W5euzj5uEAU138aMueyASKkhbn0w-sYa2oA_U3jECVOIlAwWtv49Wed78xbdxyOXsueDyzxDOoM-H1uA24aMiLn3z563K9_bYY4a6hsemVB7YhKwCV0dGFB2NlQuW_yO_VNKEK9b5n56xBisqDcyIAGbNaCFxMjAXplvF7azyX5n0rlTcXgQ5EUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQdmu6OxIvudboSaHvi8VnT7XivcjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAE87bMgkwSJkJtWUWHywZrpdkdbMMJKKdyoixpEZVLQBkS9P248tTUDTQq_W-W_H7OUWFz7F2SmgWJcMU4lnrWQB7xGR2SU5N_Uq5D-F95ksx2I3ALBtLB8wC6t2cwtzjFIPYr9NPyCtZrnbgh6CAFqGpOq0mVkPAHZBfOfywStnkVpA4JYP0B8IIBfA4E-YqSFxC_9vSP8doGWlUkJhw7E1ylemxWU0jv_96awij-EayTYpo-pH2U6hG6hdW5nRZ929VEbgHmcDW03GdpvtqiZGWC3RdWgVHTZPvQ5XyUmZOaBQILallvd5D9QYh1VmY4oAl5QfafZ76IVrmfwu6c&s=f8XkIrLqCOg8OHfUbjKJQ1mqs8-mpIp13SpLiYuStS3rGZL46e7tzUDPPI_XkxV5E2g7axejxbChLe2q362dsnI21kdmR42p5qo4nso1aMPkujYXxTrR1zJM-G1XymVnrwCiv95qd-awxXQGKwGQgV6qlCfis7pjJ7jo0KzZbE7y5NYzRBNCjf8Hyb84ogIneouXsQsu6AHPeRbnjVGt9roSe2GP3PRc3Ezg2VYRUtXD4CjarJjGUMomc6-x_YGbss_nq7coQYWqwYIa_QAUom79ViRWHkF9ljjSFXHJ0_e-_AtlCRrzXYd3Q-GInCgqeiXsqjsygapFDhxAQSCMTQ&h=GXDcBU1dz4SlpKkw65ZuBLAbBBtuym63a-63pV9bwg4
   response:
     body:
-      string: '{"id":"/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377","name":"2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","status":"Accepted","startTime":"2023-07-04T08:32:13.6388215Z"}'
+      string: '{"id":"/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57","name":"dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","status":"Accepted","startTime":"2024-09-25T16:07:25.4676004Z"}'
     headers:
       cache-control:
       - no-cache
@@ -173,21 +183,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jul 2023 08:32:45 GMT
+      - Wed, 25 Sep 2024 16:07:57 GMT
       etag:
-      - '"da05f207-0000-0100-0000-64a3d90d0000"'
+      - '"bc00da30-0000-0800-0000-66f4353d0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: D304F90A3AAB4EE1BFB0912DEB634143 Ref B: MAA201060513027 Ref C: 2024-09-25T16:07:57Z'
     status:
       code: 200
       message: OK
@@ -203,14 +213,14 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --user-info --sku
+      - --name --resource-group --user-info --sku --debug
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377?api-version=2023-02-01-preview
+    uri: https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57?api-version=2024-06-15-preview&t=638628772462311214&c=MIIHhzCCBm-gAwIBAgITHgTSAvXh1GCKrw08WQAABNIC9TANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNjI3MTUyNDA3WhcNMjUwNjIyMTUyNDA3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOX5t0OxQxE3upQbbFvsmp5T7gqPC72fDSg6G0QO-q7rqYToC8QZH_q_PRft3qJZILPcMnC3i05PTpzbeogSlCaa_AwlLL7W5xwBRGnsSFi6uqID-boEdPC1XBtfJ14hE4xgTlvyDFkeshYKWfG6lyrFXbpwsk-8W5euzj5uEAU138aMueyASKkhbn0w-sYa2oA_U3jECVOIlAwWtv49Wed78xbdxyOXsueDyzxDOoM-H1uA24aMiLn3z563K9_bYY4a6hsemVB7YhKwCV0dGFB2NlQuW_yO_VNKEK9b5n56xBisqDcyIAGbNaCFxMjAXplvF7azyX5n0rlTcXgQ5EUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQdmu6OxIvudboSaHvi8VnT7XivcjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAE87bMgkwSJkJtWUWHywZrpdkdbMMJKKdyoixpEZVLQBkS9P248tTUDTQq_W-W_H7OUWFz7F2SmgWJcMU4lnrWQB7xGR2SU5N_Uq5D-F95ksx2I3ALBtLB8wC6t2cwtzjFIPYr9NPyCtZrnbgh6CAFqGpOq0mVkPAHZBfOfywStnkVpA4JYP0B8IIBfA4E-YqSFxC_9vSP8doGWlUkJhw7E1ylemxWU0jv_96awij-EayTYpo-pH2U6hG6hdW5nRZ929VEbgHmcDW03GdpvtqiZGWC3RdWgVHTZPvQ5XyUmZOaBQILallvd5D9QYh1VmY4oAl5QfafZ76IVrmfwu6c&s=f8XkIrLqCOg8OHfUbjKJQ1mqs8-mpIp13SpLiYuStS3rGZL46e7tzUDPPI_XkxV5E2g7axejxbChLe2q362dsnI21kdmR42p5qo4nso1aMPkujYXxTrR1zJM-G1XymVnrwCiv95qd-awxXQGKwGQgV6qlCfis7pjJ7jo0KzZbE7y5NYzRBNCjf8Hyb84ogIneouXsQsu6AHPeRbnjVGt9roSe2GP3PRc3Ezg2VYRUtXD4CjarJjGUMomc6-x_YGbss_nq7coQYWqwYIa_QAUom79ViRWHkF9ljjSFXHJ0_e-_AtlCRrzXYd3Q-GInCgqeiXsqjsygapFDhxAQSCMTQ&h=GXDcBU1dz4SlpKkw65ZuBLAbBBtuym63a-63pV9bwg4
   response:
     body:
-      string: '{"id":"/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377","name":"2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","status":"Accepted","startTime":"2023-07-04T08:32:13.6388215Z"}'
+      string: '{"id":"/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57","name":"dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","status":"Accepted","startTime":"2024-09-25T16:07:25.4676004Z"}'
     headers:
       cache-control:
       - no-cache
@@ -219,21 +229,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jul 2023 08:33:16 GMT
+      - Wed, 25 Sep 2024 16:08:28 GMT
       etag:
-      - '"da05f207-0000-0100-0000-64a3d90d0000"'
+      - '"bc00da30-0000-0800-0000-66f4353d0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 6ADED19F1ABD481A96CF9317E03CA23F Ref B: MAA201060513027 Ref C: 2024-09-25T16:08:28Z'
     status:
       code: 200
       message: OK
@@ -249,14 +259,14 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --user-info --sku
+      - --name --resource-group --user-info --sku --debug
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377?api-version=2023-02-01-preview
+    uri: https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57?api-version=2024-06-15-preview&t=638628772462311214&c=MIIHhzCCBm-gAwIBAgITHgTSAvXh1GCKrw08WQAABNIC9TANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNjI3MTUyNDA3WhcNMjUwNjIyMTUyNDA3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOX5t0OxQxE3upQbbFvsmp5T7gqPC72fDSg6G0QO-q7rqYToC8QZH_q_PRft3qJZILPcMnC3i05PTpzbeogSlCaa_AwlLL7W5xwBRGnsSFi6uqID-boEdPC1XBtfJ14hE4xgTlvyDFkeshYKWfG6lyrFXbpwsk-8W5euzj5uEAU138aMueyASKkhbn0w-sYa2oA_U3jECVOIlAwWtv49Wed78xbdxyOXsueDyzxDOoM-H1uA24aMiLn3z563K9_bYY4a6hsemVB7YhKwCV0dGFB2NlQuW_yO_VNKEK9b5n56xBisqDcyIAGbNaCFxMjAXplvF7azyX5n0rlTcXgQ5EUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQdmu6OxIvudboSaHvi8VnT7XivcjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAE87bMgkwSJkJtWUWHywZrpdkdbMMJKKdyoixpEZVLQBkS9P248tTUDTQq_W-W_H7OUWFz7F2SmgWJcMU4lnrWQB7xGR2SU5N_Uq5D-F95ksx2I3ALBtLB8wC6t2cwtzjFIPYr9NPyCtZrnbgh6CAFqGpOq0mVkPAHZBfOfywStnkVpA4JYP0B8IIBfA4E-YqSFxC_9vSP8doGWlUkJhw7E1ylemxWU0jv_96awij-EayTYpo-pH2U6hG6hdW5nRZ929VEbgHmcDW03GdpvtqiZGWC3RdWgVHTZPvQ5XyUmZOaBQILallvd5D9QYh1VmY4oAl5QfafZ76IVrmfwu6c&s=f8XkIrLqCOg8OHfUbjKJQ1mqs8-mpIp13SpLiYuStS3rGZL46e7tzUDPPI_XkxV5E2g7axejxbChLe2q362dsnI21kdmR42p5qo4nso1aMPkujYXxTrR1zJM-G1XymVnrwCiv95qd-awxXQGKwGQgV6qlCfis7pjJ7jo0KzZbE7y5NYzRBNCjf8Hyb84ogIneouXsQsu6AHPeRbnjVGt9roSe2GP3PRc3Ezg2VYRUtXD4CjarJjGUMomc6-x_YGbss_nq7coQYWqwYIa_QAUom79ViRWHkF9ljjSFXHJ0_e-_AtlCRrzXYd3Q-GInCgqeiXsqjsygapFDhxAQSCMTQ&h=GXDcBU1dz4SlpKkw65ZuBLAbBBtuym63a-63pV9bwg4
   response:
     body:
-      string: '{"id":"/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377","name":"2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","status":"Accepted","startTime":"2023-07-04T08:32:13.6388215Z"}'
+      string: '{"id":"/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57","name":"dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","status":"Accepted","startTime":"2024-09-25T16:07:25.4676004Z"}'
     headers:
       cache-control:
       - no-cache
@@ -265,21 +275,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jul 2023 08:33:46 GMT
+      - Wed, 25 Sep 2024 16:08:59 GMT
       etag:
-      - '"da05f207-0000-0100-0000-64a3d90d0000"'
+      - '"bc00da30-0000-0800-0000-66f4353d0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 2B2691DFA4F046578FD3F29490417902 Ref B: MAA201060513027 Ref C: 2024-09-25T16:08:58Z'
     status:
       code: 200
       message: OK
@@ -295,14 +305,14 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --user-info --sku
+      - --name --resource-group --user-info --sku --debug
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377?api-version=2023-02-01-preview
+    uri: https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57?api-version=2024-06-15-preview&t=638628772462311214&c=MIIHhzCCBm-gAwIBAgITHgTSAvXh1GCKrw08WQAABNIC9TANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNjI3MTUyNDA3WhcNMjUwNjIyMTUyNDA3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOX5t0OxQxE3upQbbFvsmp5T7gqPC72fDSg6G0QO-q7rqYToC8QZH_q_PRft3qJZILPcMnC3i05PTpzbeogSlCaa_AwlLL7W5xwBRGnsSFi6uqID-boEdPC1XBtfJ14hE4xgTlvyDFkeshYKWfG6lyrFXbpwsk-8W5euzj5uEAU138aMueyASKkhbn0w-sYa2oA_U3jECVOIlAwWtv49Wed78xbdxyOXsueDyzxDOoM-H1uA24aMiLn3z563K9_bYY4a6hsemVB7YhKwCV0dGFB2NlQuW_yO_VNKEK9b5n56xBisqDcyIAGbNaCFxMjAXplvF7azyX5n0rlTcXgQ5EUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQdmu6OxIvudboSaHvi8VnT7XivcjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAE87bMgkwSJkJtWUWHywZrpdkdbMMJKKdyoixpEZVLQBkS9P248tTUDTQq_W-W_H7OUWFz7F2SmgWJcMU4lnrWQB7xGR2SU5N_Uq5D-F95ksx2I3ALBtLB8wC6t2cwtzjFIPYr9NPyCtZrnbgh6CAFqGpOq0mVkPAHZBfOfywStnkVpA4JYP0B8IIBfA4E-YqSFxC_9vSP8doGWlUkJhw7E1ylemxWU0jv_96awij-EayTYpo-pH2U6hG6hdW5nRZ929VEbgHmcDW03GdpvtqiZGWC3RdWgVHTZPvQ5XyUmZOaBQILallvd5D9QYh1VmY4oAl5QfafZ76IVrmfwu6c&s=f8XkIrLqCOg8OHfUbjKJQ1mqs8-mpIp13SpLiYuStS3rGZL46e7tzUDPPI_XkxV5E2g7axejxbChLe2q362dsnI21kdmR42p5qo4nso1aMPkujYXxTrR1zJM-G1XymVnrwCiv95qd-awxXQGKwGQgV6qlCfis7pjJ7jo0KzZbE7y5NYzRBNCjf8Hyb84ogIneouXsQsu6AHPeRbnjVGt9roSe2GP3PRc3Ezg2VYRUtXD4CjarJjGUMomc6-x_YGbss_nq7coQYWqwYIa_QAUom79ViRWHkF9ljjSFXHJ0_e-_AtlCRrzXYd3Q-GInCgqeiXsqjsygapFDhxAQSCMTQ&h=GXDcBU1dz4SlpKkw65ZuBLAbBBtuym63a-63pV9bwg4
   response:
     body:
-      string: '{"id":"/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377","name":"2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","status":"Accepted","startTime":"2023-07-04T08:32:13.6388215Z"}'
+      string: '{"id":"/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57","name":"dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","status":"Accepted","startTime":"2024-09-25T16:07:25.4676004Z"}'
     headers:
       cache-control:
       - no-cache
@@ -311,21 +321,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jul 2023 08:34:16 GMT
+      - Wed, 25 Sep 2024 16:09:29 GMT
       etag:
-      - '"da05f207-0000-0100-0000-64a3d90d0000"'
+      - '"bc00da30-0000-0800-0000-66f4353d0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 3B5BF3D6FFA94EA8A127619E92B0BCC6 Ref B: MAA201060513027 Ref C: 2024-09-25T16:09:29Z'
     status:
       code: 200
       message: OK
@@ -341,14 +351,14 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --user-info --sku
+      - --name --resource-group --user-info --sku --debug
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377?api-version=2023-02-01-preview
+    uri: https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57?api-version=2024-06-15-preview&t=638628772462311214&c=MIIHhzCCBm-gAwIBAgITHgTSAvXh1GCKrw08WQAABNIC9TANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNjI3MTUyNDA3WhcNMjUwNjIyMTUyNDA3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOX5t0OxQxE3upQbbFvsmp5T7gqPC72fDSg6G0QO-q7rqYToC8QZH_q_PRft3qJZILPcMnC3i05PTpzbeogSlCaa_AwlLL7W5xwBRGnsSFi6uqID-boEdPC1XBtfJ14hE4xgTlvyDFkeshYKWfG6lyrFXbpwsk-8W5euzj5uEAU138aMueyASKkhbn0w-sYa2oA_U3jECVOIlAwWtv49Wed78xbdxyOXsueDyzxDOoM-H1uA24aMiLn3z563K9_bYY4a6hsemVB7YhKwCV0dGFB2NlQuW_yO_VNKEK9b5n56xBisqDcyIAGbNaCFxMjAXplvF7azyX5n0rlTcXgQ5EUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQdmu6OxIvudboSaHvi8VnT7XivcjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAE87bMgkwSJkJtWUWHywZrpdkdbMMJKKdyoixpEZVLQBkS9P248tTUDTQq_W-W_H7OUWFz7F2SmgWJcMU4lnrWQB7xGR2SU5N_Uq5D-F95ksx2I3ALBtLB8wC6t2cwtzjFIPYr9NPyCtZrnbgh6CAFqGpOq0mVkPAHZBfOfywStnkVpA4JYP0B8IIBfA4E-YqSFxC_9vSP8doGWlUkJhw7E1ylemxWU0jv_96awij-EayTYpo-pH2U6hG6hdW5nRZ929VEbgHmcDW03GdpvtqiZGWC3RdWgVHTZPvQ5XyUmZOaBQILallvd5D9QYh1VmY4oAl5QfafZ76IVrmfwu6c&s=f8XkIrLqCOg8OHfUbjKJQ1mqs8-mpIp13SpLiYuStS3rGZL46e7tzUDPPI_XkxV5E2g7axejxbChLe2q362dsnI21kdmR42p5qo4nso1aMPkujYXxTrR1zJM-G1XymVnrwCiv95qd-awxXQGKwGQgV6qlCfis7pjJ7jo0KzZbE7y5NYzRBNCjf8Hyb84ogIneouXsQsu6AHPeRbnjVGt9roSe2GP3PRc3Ezg2VYRUtXD4CjarJjGUMomc6-x_YGbss_nq7coQYWqwYIa_QAUom79ViRWHkF9ljjSFXHJ0_e-_AtlCRrzXYd3Q-GInCgqeiXsqjsygapFDhxAQSCMTQ&h=GXDcBU1dz4SlpKkw65ZuBLAbBBtuym63a-63pV9bwg4
   response:
     body:
-      string: '{"id":"/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377","name":"2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","status":"Accepted","startTime":"2023-07-04T08:32:13.6388215Z"}'
+      string: '{"id":"/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57","name":"dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","status":"Accepted","startTime":"2024-09-25T16:07:25.4676004Z"}'
     headers:
       cache-control:
       - no-cache
@@ -357,21 +367,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jul 2023 08:34:46 GMT
+      - Wed, 25 Sep 2024 16:10:00 GMT
       etag:
-      - '"da05f207-0000-0100-0000-64a3d90d0000"'
+      - '"bc00da30-0000-0800-0000-66f4353d0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 4CC6155D8AAD469A9717D418308A2BE5 Ref B: MAA201060513027 Ref C: 2024-09-25T16:10:00Z'
     status:
       code: 200
       message: OK
@@ -387,14 +397,14 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --user-info --sku
+      - --name --resource-group --user-info --sku --debug
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377?api-version=2023-02-01-preview
+    uri: https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57?api-version=2024-06-15-preview&t=638628772462311214&c=MIIHhzCCBm-gAwIBAgITHgTSAvXh1GCKrw08WQAABNIC9TANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNjI3MTUyNDA3WhcNMjUwNjIyMTUyNDA3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOX5t0OxQxE3upQbbFvsmp5T7gqPC72fDSg6G0QO-q7rqYToC8QZH_q_PRft3qJZILPcMnC3i05PTpzbeogSlCaa_AwlLL7W5xwBRGnsSFi6uqID-boEdPC1XBtfJ14hE4xgTlvyDFkeshYKWfG6lyrFXbpwsk-8W5euzj5uEAU138aMueyASKkhbn0w-sYa2oA_U3jECVOIlAwWtv49Wed78xbdxyOXsueDyzxDOoM-H1uA24aMiLn3z563K9_bYY4a6hsemVB7YhKwCV0dGFB2NlQuW_yO_VNKEK9b5n56xBisqDcyIAGbNaCFxMjAXplvF7azyX5n0rlTcXgQ5EUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQdmu6OxIvudboSaHvi8VnT7XivcjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAE87bMgkwSJkJtWUWHywZrpdkdbMMJKKdyoixpEZVLQBkS9P248tTUDTQq_W-W_H7OUWFz7F2SmgWJcMU4lnrWQB7xGR2SU5N_Uq5D-F95ksx2I3ALBtLB8wC6t2cwtzjFIPYr9NPyCtZrnbgh6CAFqGpOq0mVkPAHZBfOfywStnkVpA4JYP0B8IIBfA4E-YqSFxC_9vSP8doGWlUkJhw7E1ylemxWU0jv_96awij-EayTYpo-pH2U6hG6hdW5nRZ929VEbgHmcDW03GdpvtqiZGWC3RdWgVHTZPvQ5XyUmZOaBQILallvd5D9QYh1VmY4oAl5QfafZ76IVrmfwu6c&s=f8XkIrLqCOg8OHfUbjKJQ1mqs8-mpIp13SpLiYuStS3rGZL46e7tzUDPPI_XkxV5E2g7axejxbChLe2q362dsnI21kdmR42p5qo4nso1aMPkujYXxTrR1zJM-G1XymVnrwCiv95qd-awxXQGKwGQgV6qlCfis7pjJ7jo0KzZbE7y5NYzRBNCjf8Hyb84ogIneouXsQsu6AHPeRbnjVGt9roSe2GP3PRc3Ezg2VYRUtXD4CjarJjGUMomc6-x_YGbss_nq7coQYWqwYIa_QAUom79ViRWHkF9ljjSFXHJ0_e-_AtlCRrzXYd3Q-GInCgqeiXsqjsygapFDhxAQSCMTQ&h=GXDcBU1dz4SlpKkw65ZuBLAbBBtuym63a-63pV9bwg4
   response:
     body:
-      string: '{"id":"/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377","name":"2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","status":"Accepted","startTime":"2023-07-04T08:32:13.6388215Z"}'
+      string: '{"id":"/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57","name":"dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","status":"Accepted","startTime":"2024-09-25T16:07:25.4676004Z"}'
     headers:
       cache-control:
       - no-cache
@@ -403,21 +413,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jul 2023 08:35:17 GMT
+      - Wed, 25 Sep 2024 16:10:30 GMT
       etag:
-      - '"da05f207-0000-0100-0000-64a3d90d0000"'
+      - '"bc00da30-0000-0800-0000-66f4353d0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 00390D96E23F4321968068BD37684145 Ref B: MAA201060513027 Ref C: 2024-09-25T16:10:30Z'
     status:
       code: 200
       message: OK
@@ -433,14 +443,14 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --user-info --sku
+      - --name --resource-group --user-info --sku --debug
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377?api-version=2023-02-01-preview
+    uri: https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57?api-version=2024-06-15-preview&t=638628772462311214&c=MIIHhzCCBm-gAwIBAgITHgTSAvXh1GCKrw08WQAABNIC9TANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwNjI3MTUyNDA3WhcNMjUwNjIyMTUyNDA3WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOX5t0OxQxE3upQbbFvsmp5T7gqPC72fDSg6G0QO-q7rqYToC8QZH_q_PRft3qJZILPcMnC3i05PTpzbeogSlCaa_AwlLL7W5xwBRGnsSFi6uqID-boEdPC1XBtfJ14hE4xgTlvyDFkeshYKWfG6lyrFXbpwsk-8W5euzj5uEAU138aMueyASKkhbn0w-sYa2oA_U3jECVOIlAwWtv49Wed78xbdxyOXsueDyzxDOoM-H1uA24aMiLn3z563K9_bYY4a6hsemVB7YhKwCV0dGFB2NlQuW_yO_VNKEK9b5n56xBisqDcyIAGbNaCFxMjAXplvF7azyX5n0rlTcXgQ5EUCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBQdmu6OxIvudboSaHvi8VnT7XivcjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAE87bMgkwSJkJtWUWHywZrpdkdbMMJKKdyoixpEZVLQBkS9P248tTUDTQq_W-W_H7OUWFz7F2SmgWJcMU4lnrWQB7xGR2SU5N_Uq5D-F95ksx2I3ALBtLB8wC6t2cwtzjFIPYr9NPyCtZrnbgh6CAFqGpOq0mVkPAHZBfOfywStnkVpA4JYP0B8IIBfA4E-YqSFxC_9vSP8doGWlUkJhw7E1ylemxWU0jv_96awij-EayTYpo-pH2U6hG6hdW5nRZ929VEbgHmcDW03GdpvtqiZGWC3RdWgVHTZPvQ5XyUmZOaBQILallvd5D9QYh1VmY4oAl5QfafZ76IVrmfwu6c&s=f8XkIrLqCOg8OHfUbjKJQ1mqs8-mpIp13SpLiYuStS3rGZL46e7tzUDPPI_XkxV5E2g7axejxbChLe2q362dsnI21kdmR42p5qo4nso1aMPkujYXxTrR1zJM-G1XymVnrwCiv95qd-awxXQGKwGQgV6qlCfis7pjJ7jo0KzZbE7y5NYzRBNCjf8Hyb84ogIneouXsQsu6AHPeRbnjVGt9roSe2GP3PRc3Ezg2VYRUtXD4CjarJjGUMomc6-x_YGbss_nq7coQYWqwYIa_QAUom79ViRWHkF9ljjSFXHJ0_e-_AtlCRrzXYd3Q-GInCgqeiXsqjsygapFDhxAQSCMTQ&h=GXDcBU1dz4SlpKkw65ZuBLAbBBtuym63a-63pV9bwg4
   response:
     body:
-      string: '{"id":"/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377","name":"2b859ded-46d5-4c91-ad50-fb9920548719*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","status":"Succeeded","startTime":"2023-07-04T08:32:13.6388215Z","properties":null}'
+      string: '{"id":"/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57","name":"dfaf5f15-4558-4c64-a020-47ee4a86277c*773F3D630AF4F2F62940E595F35E9CCF8A4E9BF85E8369CEE05176CB6CB5CE57","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","status":"Succeeded","startTime":"2024-09-25T16:07:25.4676004Z","properties":null}'
     headers:
       cache-control:
       - no-cache
@@ -449,21 +459,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jul 2023 08:35:47 GMT
+      - Wed, 25 Sep 2024 16:11:01 GMT
       etag:
-      - '"980012f2-0000-0300-0000-64a3d9cd0000"'
+      - '"bc00b744-0000-0800-0000-66f435fc0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: CAE4B481C9E5471FBEC28E1DD07CAB36 Ref B: MAA201060513027 Ref C: 2024-09-25T16:11:01Z'
     status:
       code: 200
       message: OK
@@ -479,93 +489,41 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g --user-info --sku
+      - --name --resource-group --user-info --sku --debug
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002?api-version=2024-06-15-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","name":"monitor000002","type":"microsoft.elastic/monitors","sku":{"name":"ess-monthly-consumption_Monthly"},"location":"eastus","systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-07-04T08:32:08.0202765Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-04T08:32:08.0202765Z"},"properties":{"provisioningState":"Succeeded","monitoringStatus":"Enabled","elasticProperties":{"elasticCloudUser":{"emailAddress":"v-jingszhang@microsoft.com","id":"2057192889","elasticCloudSsoDefaultUrl":"https://cloud.elastic.co"},"elasticCloudDeployment":{"name":"monitor000002","deploymentId":"2a4d6c6e4513a2bacf6a5574a08c9b5d","azureSubscriptionId":"5a611eed-e33a-44e8-92b1-3f6bf835905e","elasticsearchRegion":"azure-eastus","elasticsearchServiceUrl":"https://3b06dc5ed5d54a1084c9b4d8422092fe.eastus.azure.elastic-cloud.com","kibanaServiceUrl":"https://46c6af5b3b68438b9b345b8a26dc7b07.eastus.azure.elastic-cloud.com:9243","kibanaSsoUrl":"/sso/v1/go/ec:1850505891:kibana-monitor000002?acs=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243/api/security/saml/callback&sp_login_url=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243"}},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0,"generateApiKey":false}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","name":"monitor000002","type":"microsoft.elastic/monitors","sku":{"name":"ess-consumption-2024_Monthly"},"location":"eastus","systemData":{"createdBy":"testrefresh199@mpliftrelastic20211117outlo.onmicrosoft.com","createdByType":"User","createdAt":"2024-09-25T16:07:20.5270431Z","lastModifiedBy":"testrefresh199@mpliftrelastic20211117outlo.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-25T16:07:20.5270431Z"},"properties":{"provisioningState":"Succeeded","monitoringStatus":"Enabled","elasticProperties":{"elasticCloudUser":{"emailAddress":"testrefresh199@mpliftrelastic20211117outlo.onmicrosoft.com","id":"2164737578","elasticCloudSsoDefaultUrl":"https://cloud.elastic.co"},"elasticCloudDeployment":{"name":"monitor000002","deploymentId":"42c92fbd6d3f7e42da722cac06426efa","azureSubscriptionId":"cff37b56-870a-448f-a2fb-1a89235d4d32","elasticsearchRegion":"azure-eastus","elasticsearchServiceUrl":"https://monitor000002.es.eastus.azure.elastic-cloud.com","kibanaServiceUrl":"https://78a60a9243944ccdbc368870d525caa2.eastus.azure.elastic-cloud.com:9243","kibanaSsoUrl":"/sso/v1/go/ec:2419531357:kibana-monitor000002?acs=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243/api/security/saml/callback&sp_login_url=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243"}},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0,"generateApiKey":false}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1479'
+      - '1556'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jul 2023 08:35:48 GMT
+      - Wed, 25 Sep 2024 16:11:02 GMT
       etag:
-      - '"fa00a6d0-0000-0100-0000-64a3d99e0000"'
+      - '"2c038662-0000-0800-0000-66f435f60000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"tags": {"tag": "test", "tag2": "test2"}}'
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - elastic monitor update
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '42'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - -n -g --tags
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
-    method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002?api-version=2023-02-01-preview
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","name":"monitor000002","type":"microsoft.elastic/monitors","sku":{"name":"ess-monthly-consumption_Monthly"},"location":"eastus","tags":{"tag":"test","tag2":"test2"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-07-04T08:32:08.0202765Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-04T08:35:54.2835872Z"},"properties":{"provisioningState":"Succeeded","monitoringStatus":"Enabled","elasticProperties":{"elasticCloudUser":{"emailAddress":"v-jingszhang@microsoft.com","id":"2057192889","elasticCloudSsoDefaultUrl":"https://cloud.elastic.co"},"elasticCloudDeployment":{"name":"monitor000002","deploymentId":"2a4d6c6e4513a2bacf6a5574a08c9b5d","azureSubscriptionId":"5a611eed-e33a-44e8-92b1-3f6bf835905e","elasticsearchRegion":"azure-eastus","elasticsearchServiceUrl":"https://3b06dc5ed5d54a1084c9b4d8422092fe.eastus.azure.elastic-cloud.com","kibanaServiceUrl":"https://46c6af5b3b68438b9b345b8a26dc7b07.eastus.azure.elastic-cloud.com:9243","kibanaSsoUrl":"/sso/v1/go/ec:1850505891:kibana-monitor000002?acs=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243/api/security/saml/callback&sp_login_url=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243"}},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0,"generateApiKey":false}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1516'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 04 Jul 2023 08:35:57 GMT
-      etag:
-      - '"fa0029d5-0000-0100-0000-64a3d9eb0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-providerhub-traffic:
-      - 'True'
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 502A253DE2A54E14B481D398C3C94D3A Ref B: MAA201060513027 Ref C: 2024-09-25T16:11:01Z'
     status:
       code: 200
       message: OK
@@ -583,50 +541,37 @@ interactions:
       ParameterSetName:
       - -g
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors?api-version=2024-06-15-preview
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","name":"monitor000002","type":"microsoft.elastic/monitors","sku":{"name":"ess-monthly-consumption_Monthly"},"location":"eastus","tags":{"tag":"test","tag2":"test2"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-07-04T08:32:08.0202765Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-04T08:35:54.2835872Z"},"properties":{"provisioningState":"Succeeded","monitoringStatus":"Enabled","elasticProperties":{"elasticCloudUser":{"emailAddress":"v-jingszhang@microsoft.com","id":"2057192889","elasticCloudSsoDefaultUrl":"https://cloud.elastic.co"},"elasticCloudDeployment":{"name":"monitor000002","deploymentId":"2a4d6c6e4513a2bacf6a5574a08c9b5d","azureSubscriptionId":"5a611eed-e33a-44e8-92b1-3f6bf835905e","elasticsearchRegion":"azure-eastus","elasticsearchServiceUrl":"https://3b06dc5ed5d54a1084c9b4d8422092fe.eastus.azure.elastic-cloud.com","kibanaServiceUrl":"https://46c6af5b3b68438b9b345b8a26dc7b07.eastus.azure.elastic-cloud.com:9243","kibanaSsoUrl":"/sso/v1/go/ec:1850505891:kibana-monitor000002?acs=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243/api/security/saml/callback&sp_login_url=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243"}},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0,"generateApiKey":false}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","name":"monitor000002","type":"microsoft.elastic/monitors","sku":{"name":"ess-consumption-2024_Monthly"},"location":"eastus","systemData":{"createdBy":"testrefresh199@mpliftrelastic20211117outlo.onmicrosoft.com","createdByType":"User","createdAt":"2024-09-25T16:07:20.5270431Z","lastModifiedBy":"testrefresh199@mpliftrelastic20211117outlo.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-25T16:07:20.5270431Z"},"properties":{"provisioningState":"Succeeded","monitoringStatus":"Enabled","elasticProperties":{"elasticCloudUser":{"emailAddress":"testrefresh199@mpliftrelastic20211117outlo.onmicrosoft.com","id":"2164737578","elasticCloudSsoDefaultUrl":"https://cloud.elastic.co"},"elasticCloudDeployment":{"name":"monitor000002","deploymentId":"42c92fbd6d3f7e42da722cac06426efa","azureSubscriptionId":"cff37b56-870a-448f-a2fb-1a89235d4d32","elasticsearchRegion":"azure-eastus","elasticsearchServiceUrl":"https://monitor000002.es.eastus.azure.elastic-cloud.com","kibanaServiceUrl":"https://78a60a9243944ccdbc368870d525caa2.eastus.azure.elastic-cloud.com:9243","kibanaSsoUrl":"/sso/v1/go/ec:2419531357:kibana-monitor000002?acs=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243/api/security/saml/callback&sp_login_url=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243"}},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0,"generateApiKey":false}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1528'
+      - '1568'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jul 2023 08:35:59 GMT
+      - Wed, 25 Sep 2024 16:11:03 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-ms-original-request-ids:
-      - a62a0f7f-0af0-4c7c-8dff-5335a0695746
-      - 1c543631-1a24-484b-8bf5-520710c30a19
-      - c866b3a1-3e31-426f-b80c-92e7afd47a0d
-      - 9c77f9b1-7ec1-4a09-a53b-8cdcbf6fc27e
-      - e3c0aa4d-ebf6-4e7c-8bb0-6c122ae66153
-      - fca4cd7f-c959-4c7a-a032-688a1219863a
-      - edc5bd1b-bea7-450e-8cd1-8549a103ebae
-      - d75c71bb-6cf4-4e86-908c-158c43cb49f5
-      - 871207a3-095d-4ba9-8afb-c0cb6b771ceb
-      - 9d3a8a16-c87d-4390-b342-eb04d3891aae
-      - 98c1b107-972a-417a-920e-bd7e30995331
-      - 503644bc-388e-491a-bc7c-29284a1cea21
-      - 0167fb54-28a5-4778-8061-32639981062a
-      - 3057f247-e7bc-4cde-89a5-bc8dc1684080
-      - 45854247-53c9-4d5a-b26e-7c2dbc0acacd
-      - cf4f350b-c7d3-4906-81e5-d1c251a8644a
-      - 751281db-3a38-4243-b5b9-4ddb6768a3ee
-      - e81d5401-9588-4faf-b81c-5e747450a651
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: F4DAEF0D09CE4320964144E70AA64EDB Ref B: MAA201060516049 Ref C: 2024-09-25T16:11:03Z'
     status:
       code: 200
       message: OK
@@ -644,37 +589,39 @@ interactions:
       ParameterSetName:
       - -n -g
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002?api-version=2024-06-15-preview
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","name":"monitor000002","type":"microsoft.elastic/monitors","sku":{"name":"ess-monthly-consumption_Monthly"},"location":"eastus","tags":{"tag":"test","tag2":"test2"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-07-04T08:32:08.0202765Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-07-04T08:35:54.2835872Z"},"properties":{"provisioningState":"Succeeded","monitoringStatus":"Enabled","elasticProperties":{"elasticCloudUser":{"emailAddress":"v-jingszhang@microsoft.com","id":"2057192889","elasticCloudSsoDefaultUrl":"https://cloud.elastic.co"},"elasticCloudDeployment":{"name":"monitor000002","deploymentId":"2a4d6c6e4513a2bacf6a5574a08c9b5d","azureSubscriptionId":"5a611eed-e33a-44e8-92b1-3f6bf835905e","elasticsearchRegion":"azure-eastus","elasticsearchServiceUrl":"https://3b06dc5ed5d54a1084c9b4d8422092fe.eastus.azure.elastic-cloud.com","kibanaServiceUrl":"https://46c6af5b3b68438b9b345b8a26dc7b07.eastus.azure.elastic-cloud.com:9243","kibanaSsoUrl":"/sso/v1/go/ec:1850505891:kibana-monitor000002?acs=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243/api/security/saml/callback&sp_login_url=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243"}},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0,"generateApiKey":false}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","name":"monitor000002","type":"microsoft.elastic/monitors","sku":{"name":"ess-consumption-2024_Monthly"},"location":"eastus","systemData":{"createdBy":"testrefresh199@mpliftrelastic20211117outlo.onmicrosoft.com","createdByType":"User","createdAt":"2024-09-25T16:07:20.5270431Z","lastModifiedBy":"testrefresh199@mpliftrelastic20211117outlo.onmicrosoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-25T16:07:20.5270431Z"},"properties":{"provisioningState":"Succeeded","monitoringStatus":"Enabled","elasticProperties":{"elasticCloudUser":{"emailAddress":"testrefresh199@mpliftrelastic20211117outlo.onmicrosoft.com","id":"2164737578","elasticCloudSsoDefaultUrl":"https://cloud.elastic.co"},"elasticCloudDeployment":{"name":"monitor000002","deploymentId":"42c92fbd6d3f7e42da722cac06426efa","azureSubscriptionId":"cff37b56-870a-448f-a2fb-1a89235d4d32","elasticsearchRegion":"azure-eastus","elasticsearchServiceUrl":"https://monitor000002.es.eastus.azure.elastic-cloud.com","kibanaServiceUrl":"https://78a60a9243944ccdbc368870d525caa2.eastus.azure.elastic-cloud.com:9243","kibanaSsoUrl":"/sso/v1/go/ec:2419531357:kibana-monitor000002?acs=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243/api/security/saml/callback&sp_login_url=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243"}},"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0,"generateApiKey":false}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1516'
+      - '1556'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jul 2023 08:36:01 GMT
+      - Wed, 25 Sep 2024 16:11:05 GMT
       etag:
-      - '"fa0029d5-0000-0100-0000-64a3d9eb0000"'
+      - '"2c038662-0000-0800-0000-66f435f60000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: F47B85BF337B4222921CB06E84860775 Ref B: MAA201060514009 Ref C: 2024-09-25T16:11:05Z'
     status:
       code: 200
       message: OK
@@ -697,9 +644,9 @@ interactions:
       ParameterSetName:
       - --monitor-name -g --user-name --full-name --password --email-id --roles
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/createOrUpdateExternalUser?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/createOrUpdateExternalUser?api-version=2024-06-15-preview
   response:
     body:
       string: '{"created":true}'
@@ -711,27 +658,29 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jul 2023 08:36:01 GMT
+      - Wed, 25 Sep 2024 16:11:07 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - ec532793-5ce0-4786-ae63-b19eb41fe37b
+      - d3bdb50e-2a8a-41e9-b8eb-f06a60a1a20c
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:13f6b276-8851-4983-9417-68bc36807add
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: D705AB5E0D34487DB7C8FC3EB25B7AB9 Ref B: MAA201060516045 Ref C: 2024-09-25T16:11:06Z'
     status:
       code: 200
       message: OK
@@ -751,79 +700,43 @@ interactions:
       ParameterSetName:
       - --monitor-name -g
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/listAllTrafficFilters?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/listAllTrafficFilters?api-version=2024-06-15-preview
   response:
     body:
-      string: '{"rulesets":[{"name":"mnt1","description":"Created from Azure Portal","region":"azure-westus2","type":"ip","rules":[{"description":"Filtering
-        IPs","source":"192.168.131.0","id":"4e602a3d8cda44dfbad4a021ef3e78d9"},{"description":"Filtering
-        IPs","source":"192.168.132.6/22","id":"9386154060ac4123a68f4c8949db1127"}],"id":"423c89378e0d4013a40182ea32430de1"},{"name":"mnt1","description":"Created
-        from Azure Portal","region":"azure-westus2","type":"ip","rules":[{"description":"Filtering
-        IPs","source":"192.168.131.0","id":"a5587e26e6e64f50a48220435ba9591f"},{"description":"Filtering
-        IPs","source":"192.168.132.6/22","id":"34783f67fdb84c1e834026279178c541"}],"id":"fbc6c98d09b24d0292a7a4a52bdf9dec"},{"name":"mnt1","description":"Created
-        from Azure Portal","region":"azure-westus2","type":"ip","rules":[{"description":"Filtering
-        IPs","source":"192.168.131.0","id":"efdf9c5c54cb459097a4a769c5be6f52"},{"description":"Filtering
-        IPs","source":"192.168.132.6/22","id":"dfbda747960d47d4ac84fcf146f6eef8"}],"id":"29858fcc77e44423baeb88c6ddd18875"},{"name":"mnt1","description":"Created
-        from Azure Portal","region":"azure-westus2","type":"ip","rules":[{"description":"Filtering
-        IPs","source":"192.168.131.0","id":"d56e36464d38420ba58c9c014b984361"},{"description":"Filtering
-        IPs","source":"192.168.132.6/22","id":"d351e1ebfa594dfa923996c6b137dd70"}],"id":"993a64ea02934e5197fda74fafcdd857"},{"name":"mnt1","description":"Created
-        from Azure Portal","region":"azure-westus2","type":"ip","rules":[{"description":"Filtering
-        IPs","source":"192.168.131.0","id":"30bf84171cbb4b918ccc78cb9e4cb528"},{"description":"Filtering
-        IPs","source":"192.168.132.6/22","id":"192919bed2f540fca335deecb831467e"}],"id":"58da40b6793d4a11aaa37994c3c6e5a2"},{"name":"mnt1","description":"Created
-        from Azure Portal","region":"azure-westus2","type":"ip","rules":[{"description":"Filtering
-        IPs","source":"192.168.131.0","id":"f2f7b718b53d48e3bf4e69dc104db4a1"},{"description":"Filtering
-        IPs","source":"192.168.132.6/22","id":"84406ba59e1f474a894c0790047febf1"}],"id":"04848dd0ad3b466b9ca07ce9d8a46d59"},{"name":"mnt1","description":"Created
-        from Azure Portal","region":"azure-westus2","type":"ip","rules":[{"description":"Filtering
-        IPs","source":"192.168.131.0","id":"eacb197dbf2e4730a4873605d7d3c4c1"},{"description":"Filtering
-        IPs","source":"192.168.132.6/22","id":"a47d319514144a82835311eb3b6cb025"}],"id":"38c3ef7e7508468280195fafafbeb201"},{"name":"mnt1","description":"Created
-        from Azure Portal","region":"azure-westus2","type":"ip","rules":[{"description":"Filtering
-        IPs","source":"192.168.131.0","id":"e490e59df8574a2ea904e2529008a0a4"},{"description":"Filtering
-        IPs","source":"192.168.132.6/22","id":"398ad03fa84d4eb896bfae52872870c2"}],"id":"b723452d3bf840e1a93f19b3472102c0"},{"name":"mnt1","description":"Created
-        from Azure Portal","region":"azure-westus2","type":"ip","rules":[{"description":"Filtering
-        IPs","source":"192.168.131.0","id":"518e9c9037f94b9e971705d0a6b95475"},{"description":"Filtering
-        IPs","source":"192.168.132.6/22","id":"64569dd040cd459092ea4ebc90d54908"}],"id":"ff0014792645477db979519370f488b3"},{"name":"mnt1","description":"Created
-        from Azure Portal","region":"azure-westus2","type":"ip","rules":[{"description":"Filtering
-        IPs","source":"192.168.131.0","id":"23822e5ecd7f4c26982248b60aca4998"},{"description":"Filtering
-        IPs","source":"192.168.132.6/22","id":"f1c6349117a34e24a501e0be56f825e0"}],"id":"9efff00e8ec84670876d3ccd93d399cd"},{"name":"mnt1","description":"Created
-        from Azure Portal","region":"azure-westus2","type":"ip","rules":[{"description":"Filtering
-        IPs","source":"192.168.131.0","id":"70020705a9aa4a30997f3251bfa79e38"},{"description":"Filtering
-        IPs","source":"192.168.132.6/22","id":"f068958ed92c41aa94fbf0c623873003"}],"id":"98613b0fe8cc4929bf924be550203936"},{"name":"mnt1","description":"Created
-        from Azure Portal","region":"azure-westus2","type":"ip","rules":[{"description":"Filtering
-        IPs","source":"192.168.131.0","id":"a2eea558163c4b909ea461415fb7e311"},{"description":"Filtering
-        IPs","source":"192.168.132.6/22","id":"99811e1eb77646fabe322fa405e3b1f3"}],"id":"c9f733f5866e4dca9268bb8823460192"},{"name":"mnt1","description":"Created
-        from Azure Portal","region":"azure-westus2","type":"ip","rules":[{"description":"Filtering
-        IPs","source":"192.168.131.0","id":"071f0d82f55a418b91b8be8dcb08631e"},{"description":"Filtering
-        IPs","source":"192.168.132.6/22","id":"a0c968d7df81422eacf0643df7abf575"}],"id":"42c0774fd98c41d7876847d901d0693e"}]}'
+      string: '{"rulesets":[]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '4460'
+      - '15'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jul 2023 08:36:05 GMT
+      - Wed, 25 Sep 2024 16:11:08 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 6580b768-46f6-4990-b249-368d1db009f1
+      - 65a3e210-9c3d-478d-b76f-ee550fce084c
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:13f6b276-8851-4983-9417-68bc36807add
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: D1CBF01B16F9472183E762AA633A7EEF Ref B: MAA201060515029 Ref C: 2024-09-25T16:11:08Z'
     status:
       code: 200
       message: OK
@@ -843,9 +756,9 @@ interactions:
       ParameterSetName:
       - --monitor-name -g
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/listAssociatedTrafficFilters?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/listAssociatedTrafficFilters?api-version=2024-06-15-preview
   response:
     body:
       string: '{"rulesets":[]}'
@@ -857,27 +770,29 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jul 2023 08:36:06 GMT
+      - Wed, 25 Sep 2024 16:11:10 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - b30d5966-22a0-4b2b-b30f-02e6e44415ae
+      - fa712d11-d930-48f4-bf7e-8a3b1063ca12
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:13f6b276-8851-4983-9417-68bc36807add
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 28C6DD954B144DF497028CDC9601E63E Ref B: MAA201060514045 Ref C: 2024-09-25T16:11:10Z'
     status:
       code: 200
       message: OK
@@ -897,41 +812,155 @@ interactions:
       ParameterSetName:
       - --monitor-name -g
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/listDeploymentInfo?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/listDeploymentInfo?api-version=2024-06-15-preview
   response:
     body:
-      string: '{"status":"Healthy","version":"8.8.2","memoryCapacity":"16384","diskCapacity":"573440","deploymentUrl":"/sso/v1/go/ec:1850505891:kibana-monitor000002?acs=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243/api/security/saml/callback&sp_login_url=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243","marketplaceSaasInfo":{"marketplaceSubscription":{"id":"c8a8ab0b-1c56-43ea-c43d-968daac84556"},"marketplaceName":"AzElastic_515469a1-3450-404b-8334-82576b78ece5_monitor1","marketplaceResourceId":null}}'
+      string: '{"status":"Healthy","version":"8.15.1","memoryCapacity":"16384","diskCapacity":"573440","elasticsearchEndPoint":"https://monitor000002.es.eastus.azure.elastic-cloud.com/","deploymentUrl":"/sso/v1/go/ec:2419531357:kibana-monitor000002?acs=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243/api/security/saml/callback&sp_login_url=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243","marketplaceSaasInfo":{"marketplaceSubscription":{"id":"79ae90f2-7366-4d9a-c36f-0655b3b281a6"},"marketplaceName":"AzElastic_bedde969-f23d-4ec0-82a4-c456823c99ab_testrefresh7809","marketplaceResourceId":null,"marketplaceStatus":"Subscribed","billedAzureSubscriptionId":null,"subscribed":false}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '518'
+      - '694'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jul 2023 08:36:09 GMT
+      - Wed, 25 Sep 2024 16:11:13 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - b105baeb-0b9d-4d11-8f56-807d4c76ab35
+      - 3e0c8f41-3a84-47cc-ba7b-178f8083183d
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:13f6b276-8851-4983-9417-68bc36807add
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 4994B81FBF9442E09C47E26A397162B5 Ref B: MAA201060513021 Ref C: 2024-09-25T16:11:12Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic monitor list-connected-partner-resource
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --monitor-name -g
+      User-Agent:
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/listConnectedPartnerResources?api-version=2024-06-15-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"partnerDeploymentName":"monitoryw2beiijumkec","partnerDeploymentUri":"https://cloud.elastic.co/login/azure?redirectTo=https://cloud.elastic.co/deployments/65867f27cbe13c138fea289adb58ba92","azureResourceId":null,"location":"eastus"}},{"properties":{"partnerDeploymentName":"monitor2k5frd3fi46zh","partnerDeploymentUri":"https://cloud.elastic.co/login/azure?redirectTo=https://cloud.elastic.co/deployments/3fefa318f332dc2e652f21c5c9d7ccbd","azureResourceId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/CLI_TEST_ELASTIC_MONITOR7MKTEKOFSM2V2MP346EFR4KUKNEIXOBKMUFAWASN7S6NLPJEIYH/PROVIDERS/MICROSOFT.ELASTIC/MONITORS/MONITOR2K5FRD3FI46ZH","location":"eastus"}},{"properties":{"partnerDeploymentName":"monitorkkutq5mmzpoed","partnerDeploymentUri":"https://cloud.elastic.co/login/azure?redirectTo=https://cloud.elastic.co/deployments/06864bcfbf76466aa5b5f07c57591fb6","azureResourceId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/CLI_TEST_ELASTIC_MONITORCNCRYVFP3EVKXBYPJHLB7G454GRUA77INFK3CILZAKXOUOPKDMB/PROVIDERS/MICROSOFT.ELASTIC/MONITORS/MONITORKKUTQ5MMZPOED","location":"eastus"}},{"properties":{"partnerDeploymentName":"monitortzsaelb6spaev","partnerDeploymentUri":"https://cloud.elastic.co/login/azure?redirectTo=https://cloud.elastic.co/deployments/bc8a60423a4a976b0d2fe3ad4b98db0d","azureResourceId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/CLI_TEST_ELASTIC_MONITORCCYE755LUDZHEH57VJMG2YF6MBIPT2EKHBOPZS4J23XD6UQVPXT/PROVIDERS/MICROSOFT.ELASTIC/MONITORS/MONITORTZSAELB6SPAEV","location":"eastus"}},{"properties":{"partnerDeploymentName":"monitor000002","partnerDeploymentUri":"https://cloud.elastic.co/login/azure?redirectTo=https://cloud.elastic.co/deployments/42c92fbd6d3f7e42da722cac06426efa","azureResourceId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/CLI_TEST_ELASTIC_MONITORWPLUUP4KJC3II33G2V3N3DJEN5AWOEPU437ZL264A3NUYSG5L2Z/PROVIDERS/MICROSOFT.ELASTIC/MONITORS/MONITOR37SRR7FGIZOAD","location":"eastus"}},{"properties":{"partnerDeploymentName":"monitorvtedut2gq6oqy","partnerDeploymentUri":"https://cloud.elastic.co/login/azure?redirectTo=https://cloud.elastic.co/deployments/94809d17285d013453448f6aa1ece653","azureResourceId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/CLI_TEST_ELASTIC_MONITORU2W2PRCNJCCK4HPFF6LXHBVUMWF44YHIWZ7ZZTIRMSDDSFVBD33/PROVIDERS/MICROSOFT.ELASTIC/MONITORS/MONITORVTEDUT2GQ6OQY","location":"eastus"}},{"properties":{"partnerDeploymentName":"monitorjupqppjnllr6j","partnerDeploymentUri":"https://cloud.elastic.co/login/azure?redirectTo=https://cloud.elastic.co/deployments/5a2876431b0ccc26e1264ef3f726f17d","azureResourceId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/CLI_TEST_ELASTIC_MONITORWCU26TWV2AIALX5GIGD4TJJUAM6SLMSX3MATLHVCE4GNZX34BMH/PROVIDERS/MICROSOFT.ELASTIC/MONITORS/MONITORJUPQPPJNLLR6J","location":"eastus"}},{"properties":{"partnerDeploymentName":"monitornb6f7k53anryo","partnerDeploymentUri":"https://cloud.elastic.co/login/azure?redirectTo=https://cloud.elastic.co/deployments/69ee28dedc31541e00a0d2dead00551b","azureResourceId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/CLI_TEST_ELASTIC_MONITORRRTCFN3Y3Y7X6WMFOVGMNUKDHNQMX2PMMOHRFG54TQRIZFTTGAI/PROVIDERS/MICROSOFT.ELASTIC/MONITORS/MONITORNB6F7K53ANRYO","location":"eastus"}},{"properties":{"partnerDeploymentName":"elastic-pw1mn6","partnerDeploymentUri":"https://cloud.elastic.co/login/azure?redirectTo=https://cloud.elastic.co/deployments/34a4c85b0a6bcedac7776fa6f4d85e61","azureResourceId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/ELASTIC-RG-KTY5VR/PROVIDERS/MICROSOFT.ELASTIC/MONITORS/ELASTIC-PW1MN6","location":"westus2"}},{"properties":{"partnerDeploymentName":"sdxdtyugjkmio","partnerDeploymentUri":"https://cloud.elastic.co/login/azure?redirectTo=https://cloud.elastic.co/deployments/32d660a43db80cf4d8d77bf574a3d4a5","azureResourceId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/PRINCY-TESTING/PROVIDERS/MICROSOFT.ELASTIC/MONITORS/SDXDTYUGJKMIO","location":"westus2"}},{"properties":{"partnerDeploymentName":"testrefresh7809","partnerDeploymentUri":"https://cloud.elastic.co/login/azure?redirectTo=https://cloud.elastic.co/deployments/bcba1f0ddd416060059b7f36f4f5f079","azureResourceId":"/SUBSCRIPTIONS/00000000-0000-0000-0000-000000000000/RESOURCEGROUPS/PRINCY-TEST/PROVIDERS/MICROSOFT.ELASTIC/MONITORS/TESTREFRESH7809","location":"westus2"}}],"nextLink":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '4534'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 25 Sep 2024 16:11:15 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 0b7204a8-bd99-4a6a-bf4d-215ed38311c8
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:13f6b276-8851-4983-9417-68bc36807add
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: F7BDB41BA1E84FF3A8D667C48511BEC6 Ref B: MAA201060516051 Ref C: 2024-09-25T16:11:14Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - elastic monitor get-billing-info
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --monitor-name -g
+      User-Agent:
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/getBillingInfo?api-version=2024-06-15-preview
+  response:
+    body:
+      string: '{"marketplaceSaasInfo":{"marketplaceSubscription":{"id":"79ae90f2-7366-4d9a-c36f-0655b3b281a6"},"marketplaceName":"AzElastic_bedde969-f23d-4ec0-82a4-c456823c99ab_testrefresh7809","marketplaceResourceId":null,"marketplaceStatus":"Subscribed","billedAzureSubscriptionId":"cff37b56-870a-448f-a2fb-1a89235d4d32","subscribed":true},"partnerBillingEntity":{"id":"2419531357","name":"ElasticTestTenant06","partnerEntityUri":"https://cloud.elastic.co/home"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '450'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 25 Sep 2024 16:11:17 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 10191299-912b-4f3c-9f22-702580ba91b5
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:13f6b276-8851-4983-9417-68bc36807add
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 75400D5560344BCFB2FD222BDDB59FA2 Ref B: MAA201060515053 Ref C: 2024-09-25T16:11:16Z'
     status:
       code: 200
       message: OK
@@ -951,9 +980,9 @@ interactions:
       ParameterSetName:
       - --monitor-name -g
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/listMonitoredResources?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/listMonitoredResources?api-version=2024-06-15-preview
   response:
     body:
       string: '{"value":[],"nextLink":null}'
@@ -965,27 +994,29 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jul 2023 08:36:11 GMT
+      - Wed, 25 Sep 2024 16:11:19 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - f336453c-497f-4a62-8f14-273c9cde7f81
+      - 49959b6b-5fda-4fc9-8c98-150a37c48083
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:13f6b276-8851-4983-9417-68bc36807add
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 8981EAE8338F4542A279BB7B44C5CCB0 Ref B: MAA201060513027 Ref C: 2024-09-25T16:11:19Z'
     status:
       code: 200
       message: OK
@@ -1005,41 +1036,43 @@ interactions:
       ParameterSetName:
       - --monitor-name -g
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/listUpgradableVersions?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/listUpgradableVersions?api-version=2024-06-15-preview
   response:
     body:
-      string: '{"currentVersion":"8.8.2","upgradableVersions":[]}'
+      string: '{"currentVersion":"8.15.1","upgradableVersions":[]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '50'
+      - '51'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jul 2023 08:36:14 GMT
+      - Wed, 25 Sep 2024 16:11:23 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 55fe2d96-ad3d-4165-be14-265be9cb95db
+      - ca4a1e06-cb56-4ff5-b14c-563060ba7e9b
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:13f6b276-8851-4983-9417-68bc36807add
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: DE541FFD94C5470F98CF9A2DA9ACCC7C Ref B: MAA201060513037 Ref C: 2024-09-25T16:11:20Z'
     status:
       code: 200
       message: OK
@@ -1059,9 +1092,9 @@ interactions:
       ParameterSetName:
       - --monitor-name -g
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.10.11 (Windows-10-10.0.22631-SP0)
     method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/listVMHost?api-version=2023-02-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/listVMHost?api-version=2024-06-15-preview
   response:
     body:
       string: '{"value":[],"nextLink":null}'
@@ -1073,497 +1106,29 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Tue, 04 Jul 2023 08:36:15 GMT
+      - Wed, 25 Sep 2024 16:11:24 GMT
       expires:
       - '-1'
       mise-correlation-id:
-      - 1569c91b-8b61-472c-a5e9-f18a8b6db7fe
+      - a27acd60-7a2a-4ed1-b54c-757d4a81b111
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:13f6b276-8851-4983-9417-68bc36807add
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - elastic monitor detach-and-delete-traffic-filter
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - --monitor-name -g
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/detachAndDeleteTrafficFilter?api-version=2023-02-01-preview
-  response:
-    body:
-      string: 'null'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '4'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 04 Jul 2023 08:36:16 GMT
-      expires:
-      - '-1'
-      mise-correlation-id:
-      - dd6052fc-1bcc-46f8-af83-b2d6d856b29b
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:13f6b276-8851-4983-9417-68bc36807add
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-providerhub-traffic:
-      - 'True'
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1195'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - elastic monitor delete-traffic-filter
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - --monitor-name -g
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/deleteTrafficFilter?api-version=2023-02-01-preview
-  response:
-    body:
-      string: 'null'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '4'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 04 Jul 2023 08:36:17 GMT
-      expires:
-      - '-1'
-      mise-correlation-id:
-      - 18883219-17ec-4521-9c4c-f95a86096703
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:13f6b276-8851-4983-9417-68bc36807add
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-providerhub-traffic:
-      - 'True'
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: '{"version": "8.0.0"}'
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - elastic monitor upgrade
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '20'
-      Content-Type:
-      - application/json
-      ParameterSetName:
-      - --monitor-name -g --version
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/upgrade?api-version=2023-02-01-preview
-  response:
-    body:
-      string: 'null'
-    headers:
-      azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/32e0cc3b-cf22-4cef-a852-2e476cd54dec*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377?api-version=2023-02-01-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '4'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 04 Jul 2023 08:36:19 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/32e0cc3b-cf22-4cef-a852-2e476cd54dec*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377?api-version=2023-02-01-preview
-      mise-correlation-id:
-      - 34cc3279-f3fc-41dd-9c00-f412a01ec7f1
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:13f6b276-8851-4983-9417-68bc36807add
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-providerhub-traffic:
-      - 'True'
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1194'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - elastic monitor create-and-associate-ip-filter
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - --monitor-name -g --name --ips
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/createAndAssociateIPFilter?ips=192.168.131.0%2C%20192.168.132.6%2F22&name=filter1&api-version=2023-02-01-preview
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","name":"monitor000002","type":"microsoft.elastic/monitors","sku":{"name":"ess-monthly-consumption_Monthly"},"properties":{"provisioningState":"Succeeded","monitoringStatus":"Enabled","elasticProperties":{"elasticCloudUser":{"emailAddress":"v-jingszhang@microsoft.com","id":"2057192889","elasticCloudSsoDefaultUrl":"https://cloud.elastic.co"},"elasticCloudDeployment":{"name":"monitor000002","deploymentId":"2a4d6c6e4513a2bacf6a5574a08c9b5d","azureSubscriptionId":"5a611eed-e33a-44e8-92b1-3f6bf835905e","elasticsearchRegion":"azure-eastus","elasticsearchServiceUrl":"https://3b06dc5ed5d54a1084c9b4d8422092fe.eastus.azure.elastic-cloud.com","kibanaServiceUrl":"https://46c6af5b3b68438b9b345b8a26dc7b07.eastus.azure.elastic-cloud.com:9243","kibanaSsoUrl":"/sso/v1/go/ec:1850505891:kibana-monitor000002?acs=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243/api/security/saml/callback&sp_login_url=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243"}},"internalMetadata":{"marketplaceSubscription":{"id":"c8a8ab0b-1c56-43ea-c43d-968daac84556"},"monitoringPartnerEntityId":"64a3d9153c1a3a817343fd75","username":"elastic","password":"72UogHlMdslV24xmBmjJnxCBaRKFqzFhk0uGyTnlmiM=","passwordEncryptionMetadata":{"encryptionKeyResourceId":"https://etproddata20210531euskv.vault.azure.net:443/secrets/LiftrElasticEncryptionKey/77bbd894e6634715b089e6eb961d8fcf","encryptionAlgorithm":0,"contentEncryptionIV":"eDY4sjs6CCcYWPvt90DlRg=="},"userApiKey":"fVz3sfEb6Xllw4K/ZoPxoAn4Eta7WeaxNcb7ZO5RjelteCO+f06kj97D7DKSZzRvUs8CMHzkBdmJJOoeUGUpnw==","userApiKeyEncryptionMetadata":{"encryptionKeyResourceId":"https://etprodgbl20201201cuskv.vault.azure.net:443/secrets/GlobalDataEncryptionKey/4b4c68cd157b45b8ae47b543bc7486f4","encryptionAlgorithm":0,"contentEncryptionIV":"gNKxjZxSy714r0g3igq80Q=="},"elasticsearchIngestionAPIKey":"pymMO4FoYZ9KzhIIMaDVXGpXDS1i25kWIuTAyokmCJMHQiW4gYkSPIwvYiznZRTbIfTmkNn2T5BtP886JCwq7w==","elasticsearchIngestionAPIKeyEncryptionMetadata":{"encryptionKeyResourceId":"https://etproddata20210531euskv.vault.azure.net:443/secrets/LiftrElasticEncryptionKey/77bbd894e6634715b089e6eb961d8fcf","encryptionAlgorithm":0,"contentEncryptionIV":"AuWsYHcxKU4i8rM7Vxd4JQ=="},"cloudId":"monitor000002:ZWFzdHVzLmF6dXJlLmVsYXN0aWMtY2xvdWQuY29tOjQ0MyQzYjA2ZGM1ZWQ1ZDU0YTEwODRjOWI0ZDg0MjIwOTJmZSQ0NmM2YWY1YjNiNjg0MzhiOWIzNDViOGEyNmRjN2IwNw==","organizationId":"1850505891","introspectErrorCode":null,"introspectErrorMessage":null,"isMarketplaceSubscriptionActive":true,"liftrCorrelationId":"1c48590a-d45e-4ad6-8fbf-244b2401a343"},"userInfo":null,"version":null,"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0,"generateApiKey":false},"identity":null,"tags":{"tag":"test","tag2":"test2"},"location":"eastus"}'
-    headers:
-      azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/8e1e5db8-ef56-4812-863a-a155ee1f3430*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377?api-version=2023-02-01-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '2893'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 04 Jul 2023 08:36:20 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/8e1e5db8-ef56-4812-863a-a155ee1f3430*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377?api-version=2023-02-01-preview
-      mise-correlation-id:
-      - d5b20486-bd56-4102-8496-1f2647c2a1ce
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:13f6b276-8851-4983-9417-68bc36807add
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-providerhub-traffic:
-      - 'True'
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1193'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - elastic monitor create-and-associate-pl-filter
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - --monitor-name -g --name
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/createAndAssociatePLFilter?name=filter2&api-version=2023-02-01-preview
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","name":"monitor000002","type":"microsoft.elastic/monitors","sku":{"name":"ess-monthly-consumption_Monthly"},"properties":{"provisioningState":"Succeeded","monitoringStatus":"Enabled","elasticProperties":{"elasticCloudUser":{"emailAddress":"v-jingszhang@microsoft.com","id":"2057192889","elasticCloudSsoDefaultUrl":"https://cloud.elastic.co"},"elasticCloudDeployment":{"name":"monitor000002","deploymentId":"2a4d6c6e4513a2bacf6a5574a08c9b5d","azureSubscriptionId":"5a611eed-e33a-44e8-92b1-3f6bf835905e","elasticsearchRegion":"azure-eastus","elasticsearchServiceUrl":"https://3b06dc5ed5d54a1084c9b4d8422092fe.eastus.azure.elastic-cloud.com","kibanaServiceUrl":"https://46c6af5b3b68438b9b345b8a26dc7b07.eastus.azure.elastic-cloud.com:9243","kibanaSsoUrl":"/sso/v1/go/ec:1850505891:kibana-monitor000002?acs=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243/api/security/saml/callback&sp_login_url=https://monitor000002.kb.eastus.azure.elastic-cloud.com:9243"}},"internalMetadata":{"marketplaceSubscription":{"id":"c8a8ab0b-1c56-43ea-c43d-968daac84556"},"monitoringPartnerEntityId":"64a3d9153c1a3a817343fd75","username":"elastic","password":"72UogHlMdslV24xmBmjJnxCBaRKFqzFhk0uGyTnlmiM=","passwordEncryptionMetadata":{"encryptionKeyResourceId":"https://etproddata20210531euskv.vault.azure.net:443/secrets/LiftrElasticEncryptionKey/77bbd894e6634715b089e6eb961d8fcf","encryptionAlgorithm":0,"contentEncryptionIV":"eDY4sjs6CCcYWPvt90DlRg=="},"userApiKey":"fVz3sfEb6Xllw4K/ZoPxoAn4Eta7WeaxNcb7ZO5RjelteCO+f06kj97D7DKSZzRvUs8CMHzkBdmJJOoeUGUpnw==","userApiKeyEncryptionMetadata":{"encryptionKeyResourceId":"https://etprodgbl20201201cuskv.vault.azure.net:443/secrets/GlobalDataEncryptionKey/4b4c68cd157b45b8ae47b543bc7486f4","encryptionAlgorithm":0,"contentEncryptionIV":"gNKxjZxSy714r0g3igq80Q=="},"elasticsearchIngestionAPIKey":"pymMO4FoYZ9KzhIIMaDVXGpXDS1i25kWIuTAyokmCJMHQiW4gYkSPIwvYiznZRTbIfTmkNn2T5BtP886JCwq7w==","elasticsearchIngestionAPIKeyEncryptionMetadata":{"encryptionKeyResourceId":"https://etproddata20210531euskv.vault.azure.net:443/secrets/LiftrElasticEncryptionKey/77bbd894e6634715b089e6eb961d8fcf","encryptionAlgorithm":0,"contentEncryptionIV":"AuWsYHcxKU4i8rM7Vxd4JQ=="},"cloudId":"monitor000002:ZWFzdHVzLmF6dXJlLmVsYXN0aWMtY2xvdWQuY29tOjQ0MyQzYjA2ZGM1ZWQ1ZDU0YTEwODRjOWI0ZDg0MjIwOTJmZSQ0NmM2YWY1YjNiNjg0MzhiOWIzNDViOGEyNmRjN2IwNw==","organizationId":"1850505891","introspectErrorCode":null,"introspectErrorMessage":null,"isMarketplaceSubscriptionActive":true,"liftrCorrelationId":"1c48590a-d45e-4ad6-8fbf-244b2401a343"},"userInfo":null,"version":null,"liftrResourceCategory":"MonitorLogs","liftrResourcePreference":0,"generateApiKey":false},"identity":null,"tags":{"tag":"test","tag2":"test2"},"location":"eastus"}'
-    headers:
-      azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/8cbc039f-c822-4903-a54c-6c7b308fcdb7*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377?api-version=2023-02-01-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '2893'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 04 Jul 2023 08:36:21 GMT
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/8cbc039f-c822-4903-a54c-6c7b308fcdb7*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377?api-version=2023-02-01-preview
-      mise-correlation-id:
-      - 23b74727-3f1b-47e1-9b15-b09dabbb4662
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:13f6b276-8851-4983-9417-68bc36807add
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-providerhub-traffic:
-      - 'True'
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1197'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - elastic monitor delete-traffic-filter
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - --monitor-name -g
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
-    method: POST
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002/deleteTrafficFilter?api-version=2023-02-01-preview
-  response:
-    body:
-      string: 'null'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '4'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 04 Jul 2023 08:36:23 GMT
-      expires:
-      - '-1'
-      mise-correlation-id:
-      - be54b202-a980-48d1-b143-2bbc3e35ccfe
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:13f6b276-8851-4983-9417-68bc36807add
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-providerhub-traffic:
-      - 'True'
-      x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - elastic monitor delete
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - -n -g -y
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002?api-version=2023-02-01-preview
-  response:
-    body:
-      string: 'null'
-    headers:
-      azure-asyncoperation:
-      - https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/389a1fc1-a803-4cc7-940e-a961726692ae*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377?api-version=2023-02-01-preview
-      cache-control:
-      - no-cache
-      content-length:
-      - '4'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 04 Jul 2023 08:36:25 GMT
-      etag:
-      - '"fa00cdd7-0000-0100-0000-64a3da090000"'
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/389a1fc1-a803-4cc7-940e-a961726692ae*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377?api-version=2023-02-01-preview
-      mise-correlation-id:
-      - 717519bf-b3e1-43c9-8f21-c698e29615ee
-      pragma:
-      - no-cache
-      request-context:
-      - appId=cid-v1:13f6b276-8851-4983-9417-68bc36807add
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-providerhub-traffic:
-      - 'True'
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - elastic monitor delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g -y
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/389a1fc1-a803-4cc7-940e-a961726692ae*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377?api-version=2023-02-01-preview
-  response:
-    body:
-      string: '{"id":"/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/389a1fc1-a803-4cc7-940e-a961726692ae*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377","name":"389a1fc1-a803-4cc7-940e-a961726692ae*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","status":"Deleting","startTime":"2023-07-04T08:36:25.5854373Z","error":{}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '523'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 04 Jul 2023 08:36:25 GMT
-      etag:
-      - '"da05b42d-0000-0100-0000-64a3da090000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - elastic monitor delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g -y
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.9.10 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/389a1fc1-a803-4cc7-940e-a961726692ae*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377?api-version=2023-02-01-preview
-  response:
-    body:
-      string: '{"id":"/providers/Microsoft.Elastic/locations/EASTUS/operationStatuses/389a1fc1-a803-4cc7-940e-a961726692ae*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377","name":"389a1fc1-a803-4cc7-940e-a961726692ae*AD954E63C301E3574A3155578B24BB5CB102A8905B2BD65CC0B264E83FF42377","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_elastic_monitor000001/providers/Microsoft.Elastic/monitors/monitor000002","status":"Succeeded","startTime":"2023-07-04T08:36:25.5854373Z","endTime":"2023-07-04T08:36:27.2389706Z","error":{},"properties":null}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '583'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Tue, 04 Jul 2023 08:36:56 GMT
-      etag:
-      - '"da05ef2d-0000-0100-0000-64a3da0b0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: EF3994608C314FF5A404D9F7274E7C80 Ref B: MAA201060513045 Ref C: 2024-09-25T16:11:24Z'
     status:
       code: 200
       message: OK
