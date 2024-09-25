@@ -284,3 +284,13 @@ def _load_email_arguments(self):
                    ' Required for each attachment. Known values are: avi, bmp, doc, docm,'
                    ' docx, gif, jpeg, mp3, one, pdf, png, ppsm, ppsx, ppt, pptm, pptx,'
                    ' pub, rpmsg, rtf, tif, txt, vsd, wav, wma, xls, xlsb, xlsm, and xlsx')
+        c.argument('waitUntil', options_list=['--wait-until'],
+                   arg_type=get_enum_type(['started', 'completed', '1', '0']),
+                   help='Indicates whether to wait until the server operation is started or completed. '
+                   'Accepted values are: started, completed, 1, 0.')
+
+    with self.argument_context('communication email status get') as c:
+        c.argument('operation_id', options_list=['--operation-id'], type=str,
+                   help='System generated message id (GUID) returned from a previous call to send email')
+        c.argument('connection_string', options_list=['--connection-string'], type=str,
+                   help='Connection string for Azure Communication Service. Must be provided.')
