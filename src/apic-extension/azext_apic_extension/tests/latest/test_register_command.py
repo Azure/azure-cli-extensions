@@ -82,6 +82,7 @@ class RegisterCommandTests(ScenarioTest):
             self.check('license.url', 'http://www.apache.org/licenses/LICENSE-2.0.html'),
             self.check('lifecycleStage', 'design'),
             self.check('name', 'swaggerpetstore-openapi30'),
+            self.check('summary', None),
             self.check('title', 'Swagger Petstore - OpenAPI 3.0'),
             self.check('externalDocumentation', [{'description': 'Find out more about Swagger', 'title': 'Title', 'url': 'http://swagger.io'}])
         ])
