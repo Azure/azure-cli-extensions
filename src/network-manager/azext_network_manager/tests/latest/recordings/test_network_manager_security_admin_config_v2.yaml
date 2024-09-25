@@ -1,8 +1,8 @@
 interactions:
 - request:
     body: '{"location": "eastus2", "properties": {"description": "My Test Network
-      Manager", "networkManagerScopeAccesses": ["SecurityAdmin", "Connectivity"],
-      "networkManagerScopes": {"subscriptions": ["/subscriptions/00000000-0000-0000-0000-000000000000"]}}}'
+      Manager", "networkManagerScopeAccesses": ["SecurityAdmin"], "networkManagerScopes":
+      {"subscriptions": ["/subscriptions/00000000-0000-0000-0000-000000000000"]}}}'
     headers:
       Accept:
       - application/json
@@ -13,48 +13,46 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '247'
+      - '231'
       Content-Type:
       - application/json
       ParameterSetName:
       - --name --description --scope-accesses --network-manager-scopes -l --resource-group
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?api-version=2023-09-01
+    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?api-version=2023-09-01
   response:
     body:
       string: '{"name":"TestNetworkManager","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager","location":"eastus2","type":"Microsoft.Network/networkManagers","tags":{},"etag":"","properties":{"description":"My
-        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"crossTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["SecurityAdmin","Connectivity"],"resourceGuid":"a8083db7-34e3-45a6-94d3-973b92c4f901"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-30T10:40:02.2229158Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-30T10:40:02.2229158Z"}}'
+        Test Network Manager","networkManagerScopes":{"managementGroups":[],"subscriptions":["/subscriptions/00000000-0000-0000-0000-000000000000"],"crossTenantScopes":[]},"provisioningState":"Succeeded","networkManagerScopeAccesses":["SecurityAdmin"],"resourceGuid":"0033277a-0bfb-4d01-9ef3-4dae37d636ba"},"systemData":{"createdBy":"danlope@microsoft.com","createdByType":"User","createdAt":"2024-09-25T03:03:27.1069079Z","lastModifiedBy":"danlope@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-25T03:03:27.1069079Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '890'
+      - '867'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 30 May 2024 10:40:04 GMT
+      - Wed, 25 Sep 2024 03:03:27 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-      x-msedge-ref:
-      - 'Ref A: 24B61618298C474F869C81298EF117A7 Ref B: TYO201151006011 Ref C: 2024-05-30T10:39:59Z'
+      - '1188'
     status:
       code: 200
       message: OK
 - request:
     body: '{"properties": {"applyOnNetworkIntentPolicyBasedServices": ["None"], "description":
-      "A sample policy"}}'
+      "A sample policy", "networkGroupAddressSpaceAggregationOption": "Manual"}}'
     headers:
       Accept:
       - application/json
@@ -65,42 +63,40 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '103'
+      - '158'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --configuration-name --network-manager-name -g --description --apply-on
+      - --configuration-name --network-manager-name -g --description --apply-on --network-group-address-space-aggregation-option
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig?api-version=2022-05-01
+    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig?api-version=2024-01-01-preview
   response:
     body:
       string: '{"name":"myTestSecurityConfig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig","type":"Microsoft.Network/networkManagers/securityAdminConfigurations","etag":"","properties":{"description":"A
-        sample policy","provisioningState":"Succeeded","resourceGuid":"b7dff4cc-d474-45d4-bd17-db48aaeaac82","applyOnNetworkIntentPolicyBasedServices":["None"],"networkGroupAddressSpaceAggregationOption":"None"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-30T10:40:06.2009217Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-30T10:40:06.2009217Z"}}'
+        sample policy","provisioningState":"Succeeded","resourceGuid":"50c634aa-73db-45c9-aff5-fa264a22475b","applyOnNetworkIntentPolicyBasedServices":["None"],"networkGroupAddressSpaceAggregationOption":"Manual"},"systemData":{"createdBy":"danlope@microsoft.com","createdByType":"User","createdAt":"2024-09-25T03:03:29.2399481Z","lastModifiedBy":"danlope@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-25T03:03:29.2399481Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '827'
+      - '821'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 30 May 2024 10:40:06 GMT
+      - Wed, 25 Sep 2024 03:03:29 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1198'
-      x-msedge-ref:
-      - 'Ref A: 36899560387041E4808BB7ED7DDF1671 Ref B: TYO201100114045 Ref C: 2024-05-30T10:40:05Z'
+      - '1194'
     status:
       code: 200
       message: OK
@@ -116,42 +112,41 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --configuration-name --network-manager-name -g --description --apply-on
+      - --configuration-name --network-manager-name -g --description --apply-on --network-group-address-space-aggregation-option
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig?api-version=2022-05-01
+    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig?api-version=2024-01-01-preview
   response:
     body:
-      string: '{"name":"myTestSecurityConfig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig","type":"Microsoft.Network/networkManagers/securityAdminConfigurations","etag":"\"22029d86-0000-0200-0000-665857890000\"","properties":{"description":"A
-        sample policy","provisioningState":"Succeeded","resourceGuid":"b7dff4cc-d474-45d4-bd17-db48aaeaac82","applyOnNetworkIntentPolicyBasedServices":["None"],"networkGroupAddressSpaceAggregationOption":"None"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-30T10:40:06.2009217Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-30T10:40:06.2009217Z"}}'
+      string: '{"name":"myTestSecurityConfig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig","type":"Microsoft.Network/networkManagers/securityAdminConfigurations","etag":"\"e20127bc-0000-0200-0000-66f37d820000\"","properties":{"description":"A
+        sample policy","provisioningState":"Succeeded","resourceGuid":"50c634aa-73db-45c9-aff5-fa264a22475b","applyOnNetworkIntentPolicyBasedServices":["None"],"networkGroupAddressSpaceAggregationOption":"Manual"},"systemData":{"createdBy":"danlope@microsoft.com","createdByType":"User","createdAt":"2024-09-25T03:03:29.2399481Z","lastModifiedBy":"danlope@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-25T03:03:29.2399481Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '867'
+      - '861'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 30 May 2024 10:40:09 GMT
+      - Wed, 25 Sep 2024 03:03:30 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-msedge-ref:
-      - 'Ref A: 5F910FB6CE5742F887245CAED2952F89 Ref B: TYO201100114031 Ref C: 2024-05-30T10:40:08Z'
     status:
       code: 200
       message: OK
 - request:
     body: '{"properties": {"applyOnNetworkIntentPolicyBasedServices": ["AllowRulesOnly"],
-      "description": "test_description"}}'
+      "description": "test_description", "networkGroupAddressSpaceAggregationOption":
+      "None"}}'
     headers:
       Accept:
       - application/json
@@ -162,41 +157,39 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '114'
+      - '167'
       Content-Type:
       - application/json
       ParameterSetName:
-      - --configuration-name --network-manager-name -g --description --apply-on
+      - --configuration-name --network-manager-name -g --description --apply-on --network-group-address-space-aggregation-option
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig?api-version=2022-05-01
+    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig?api-version=2024-01-01-preview
   response:
     body:
-      string: '{"name":"myTestSecurityConfig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig","type":"Microsoft.Network/networkManagers/securityAdminConfigurations","etag":"","properties":{"description":"test_description","provisioningState":"Succeeded","resourceGuid":"b7dff4cc-d474-45d4-bd17-db48aaeaac82","applyOnNetworkIntentPolicyBasedServices":["AllowRulesOnly"],"networkGroupAddressSpaceAggregationOption":"None"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-30T10:40:06.2009217Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-30T10:40:10.7989568Z"}}'
+      string: '{"name":"myTestSecurityConfig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig","type":"Microsoft.Network/networkManagers/securityAdminConfigurations","etag":"","properties":{"description":"test_description","provisioningState":"Succeeded","resourceGuid":"50c634aa-73db-45c9-aff5-fa264a22475b","applyOnNetworkIntentPolicyBasedServices":["AllowRulesOnly"],"networkGroupAddressSpaceAggregationOption":"None"},"systemData":{"createdBy":"danlope@microsoft.com","createdByType":"User","createdAt":"2024-09-25T03:03:29.2399481Z","lastModifiedBy":"danlope@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-25T03:03:31.4712239Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '838'
+      - '830'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 30 May 2024 10:40:11 GMT
+      - Wed, 25 Sep 2024 03:03:31 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1196'
-      x-msedge-ref:
-      - 'Ref A: 0E62D08851D94BEF870BF2DD7DAF2773 Ref B: TYO201100114031 Ref C: 2024-05-30T10:40:10Z'
+      - '1190'
     status:
       code: 200
       message: OK
@@ -214,33 +207,31 @@ interactions:
       ParameterSetName:
       - --network-manager-name -g
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations?api-version=2022-05-01
+    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations?api-version=2022-05-01
   response:
     body:
-      string: '{"nextLink":"","value":[{"name":"myTestSecurityConfig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig","type":"Microsoft.Network/networkManagers/securityAdminConfigurations","etag":"\"2202a287-0000-0200-0000-6658578e0000\"","properties":{"description":"test_description","provisioningState":"Succeeded","resourceGuid":"b7dff4cc-d474-45d4-bd17-db48aaeaac82","applyOnNetworkIntentPolicyBasedServices":["AllowRulesOnly"],"networkGroupAddressSpaceAggregationOption":"None"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-30T10:40:06.2009217Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-30T10:40:10.7989568Z"}}]}'
+      string: '{"nextLink":"","value":[{"name":"myTestSecurityConfig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig","type":"Microsoft.Network/networkManagers/securityAdminConfigurations","etag":"\"e2012abc-0000-0200-0000-66f37d830000\"","properties":{"description":"test_description","provisioningState":"Succeeded","resourceGuid":"50c634aa-73db-45c9-aff5-fa264a22475b","applyOnNetworkIntentPolicyBasedServices":["AllowRulesOnly"],"networkGroupAddressSpaceAggregationOption":"None"},"systemData":{"createdBy":"danlope@microsoft.com","createdByType":"User","createdAt":"2024-09-25T03:03:29.2399481Z","lastModifiedBy":"danlope@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-25T03:03:31.4712239Z"}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '904'
+      - '896'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 30 May 2024 10:40:14 GMT
+      - Wed, 25 Sep 2024 03:03:32 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-msedge-ref:
-      - 'Ref A: CB6D9D98C03F4D2D8FE5474C17B00126 Ref B: TYO201100113031 Ref C: 2024-05-30T10:40:12Z'
     status:
       code: 200
       message: OK
@@ -258,33 +249,31 @@ interactions:
       ParameterSetName:
       - --configuration-name --network-manager-name -g
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig?api-version=2022-05-01
+    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig?api-version=2022-05-01
   response:
     body:
-      string: '{"name":"myTestSecurityConfig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig","type":"Microsoft.Network/networkManagers/securityAdminConfigurations","etag":"\"22026d88-0000-0200-0000-6658578f0000\"","properties":{"description":"test_description","provisioningState":"Succeeded","resourceGuid":"b7dff4cc-d474-45d4-bd17-db48aaeaac82","applyOnNetworkIntentPolicyBasedServices":["AllowRulesOnly"],"networkGroupAddressSpaceAggregationOption":"None"},"systemData":{"createdBy":"v-taoxuzeng@microsoft.com","createdByType":"User","createdAt":"2024-05-30T10:40:06.2009217Z","lastModifiedBy":"v-taoxuzeng@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-05-30T10:40:10.7989568Z"}}'
+      string: '{"name":"myTestSecurityConfig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig","type":"Microsoft.Network/networkManagers/securityAdminConfigurations","etag":"\"e2012cbc-0000-0200-0000-66f37d850000\"","properties":{"description":"test_description","provisioningState":"Succeeded","resourceGuid":"50c634aa-73db-45c9-aff5-fa264a22475b","applyOnNetworkIntentPolicyBasedServices":["AllowRulesOnly"],"networkGroupAddressSpaceAggregationOption":"None"},"systemData":{"createdBy":"danlope@microsoft.com","createdByType":"User","createdAt":"2024-09-25T03:03:29.2399481Z","lastModifiedBy":"danlope@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-09-25T03:03:31.4712239Z"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '878'
+      - '870'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 30 May 2024 10:40:18 GMT
+      - Wed, 25 Sep 2024 03:03:33 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
-      x-msedge-ref:
-      - 'Ref A: 3C783A9AC6954991B6B137DCC686D30D Ref B: TYO201100115023 Ref C: 2024-05-30T10:40:16Z'
     status:
       code: 200
       message: OK
@@ -304,9 +293,9 @@ interactions:
       ParameterSetName:
       - --configuration-name --network-manager-name -g --force --yes
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig?force=true&api-version=2022-05-01
+    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager/securityAdminConfigurations/myTestSecurityConfig?force=true&api-version=2022-05-01
   response:
     body:
       string: ''
@@ -316,21 +305,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 30 May 2024 10:40:19 GMT
+      - Wed, 25 Sep 2024 03:03:34 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
-      x-msedge-ref:
-      - 'Ref A: F86B83F9DB0E46948B3FACA648514E72 Ref B: TYO201100116027 Ref C: 2024-05-30T10:40:19Z'
+      - '14996'
     status:
       code: 200
       message: OK
@@ -350,9 +337,9 @@ interactions:
       ParameterSetName:
       - --resource-group --name --force --yes
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.9.5 (Windows-10-10.0.22631-SP0)
+      - AZURECLI/2.64.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.26100-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?force=true&api-version=2023-09-01
+    uri: https://brazilus.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_network_manager_security_admin_config_v2000001/providers/Microsoft.Network/networkManagers/TestNetworkManager?force=true&api-version=2023-09-01
   response:
     body:
       string: ''
@@ -362,21 +349,19 @@ interactions:
       content-length:
       - '0'
       date:
-      - Thu, 30 May 2024 10:40:25 GMT
+      - Wed, 25 Sep 2024 03:03:36 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
+      server:
+      - Kestrel
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      x-cache:
-      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
-      x-msedge-ref:
-      - 'Ref A: 1518516D8F274635B0D2E9E5C3D8FBBE Ref B: TYO201100113039 Ref C: 2024-05-30T10:40:21Z'
+      - '14998'
     status:
       code: 200
       message: OK

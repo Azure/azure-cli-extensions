@@ -155,7 +155,7 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
-                 '--scope-accesses "SecurityAdmin" "Connectivity" '
+                 '--scope-accesses "SecurityAdmin" '
                  '--network-manager-scopes subscriptions={sub} -l eastus2 --resource-group {rg}')
 
         #todo
@@ -195,7 +195,7 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
-                 '--scope-accesses "SecurityAdmin" "Connectivity" '
+                 '--scope-accesses "SecurityAdmin" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2 '
@@ -208,26 +208,30 @@ class NetworkScenarioTest(ScenarioTest):
                  '--resource-id="{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualnetworks/{virtual_network}"  -g {rg} ')
 
         self.cmd('network manager security-admin-config create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
-                 '--description {description}')
+                 '--description {description} --apply-on None --network-group-address-space-aggregation-option "Manual"', checks=[
+            self.check('applyOnNetworkIntentPolicyBasedServices', '[\'None\']'),
+            self.check('networkGroupAddressSpaceAggregationOption', 'Manual')
+        ])
 
         self.cmd('network manager security-admin-config rule-collection create --configuration-name {config_name} --network-manager-name {manager_name} -g {rg} '
                  '--rule-collection-name {collection_name} --description {description} '
                  '--applies-to-groups network-group-id={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name}')
 
         self.cmd('network manager security-admin-config rule-collection rule create -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} '
-                 '--rule-name {rule_name} --protocol "Tcp" --access "Allow" --priority 32 --direction "Inbound"',
+                 '--rule-name {rule_name} --protocol "Tcp" --access "Allow" --priority 32 --direction "Inbound" --destination address-prefix={sub}/resourceGroups/{rg}/providers/Microsoft.Network/networkManagers/{manager_name}/networkGroups/{group_name} address-prefix-type=NetworkGroup',
                  checks=[self.check('access', 'Allow'),
                          self.check('direction', 'Inbound'),
-                         #self.check('kind', 'Custom'), # todo: not needed? 
+                         self.check('kind', 'Custom'), 
                          self.check('priority', '32'),
                          self.check('protocol', 'Tcp')])
+        
         self.cmd('network manager security-admin-config rule-collection rule show -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name}')
         self.cmd('network manager security-admin-config rule-collection rule update -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} '
                  '--access "Deny"',
                  checks=[self.check('access', 'Deny'),
                          self.check('direction', 'Inbound'),
-                        #  self.check('kind', 'Custom'),
-                         self.check('priority', '320'),
+                         self.check('kind', 'Custom'),
+                         self.check('priority', '32'),
                          self.check('protocol', 'Tcp')])
         self.cmd('network manager security-admin-config rule-collection rule list -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name}')
         self.cmd('network manager security-admin-config rule-collection rule delete -g {rg} --network-manager-name {manager_name} --configuration-name {config_name} --rule-collection-name {collection_name} --rule-name {rule_name} --force --yes')
@@ -564,19 +568,24 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
-                 '--scope-accesses "SecurityAdmin" "Connectivity" '
+                 '--scope-accesses "SecurityAdmin" '
                  '--network-manager-scopes '
                  ' subscriptions={sub} '
                  '-l eastus2 '
                  '--resource-group {rg}')
 
         self.cmd('network manager security-admin-config create --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
-                 '--description {description} --apply-on None',
-                 checks=self.check('applyOnNetworkIntentPolicyBasedServices', '[\'None\']'))
+                 '--description {description} --apply-on None --network-group-address-space-aggregation-option "Manual"', checks=[
+            self.check('applyOnNetworkIntentPolicyBasedServices', '[\'None\']'),
+            self.check('networkGroupAddressSpaceAggregationOption', 'Manual')
+        ])
 
         self.cmd('network manager security-admin-config update --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
-                 '--description "test_description" --apply-on AllowRulesOnly',
-                 checks=self.check('applyOnNetworkIntentPolicyBasedServices', '[\'AllowRulesOnly\']'))
+                 '--description "test_description" --apply-on AllowRulesOnly --network-group-address-space-aggregation-option "None"', checks=[
+            self.check('applyOnNetworkIntentPolicyBasedServices', '[\'AllowRulesOnly\']'),
+            self.check('networkGroupAddressSpaceAggregationOption', 'None')
+        ])
+
         self.cmd('network manager security-admin-config list --network-manager-name {manager_name} -g {rg}')
         self.cmd('network manager security-admin-config show --configuration-name {name} --network-manager-name {manager_name} -g {rg}')
 
