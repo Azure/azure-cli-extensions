@@ -91,6 +91,7 @@ class Update(AAZCommand):
             options=["--description"],
             arg_group="Properties",
             nullable=True,
+            help="Description of the resource."
         )
         _args_schema.display_name = AAZStrArg(
             options=["--display-name"],

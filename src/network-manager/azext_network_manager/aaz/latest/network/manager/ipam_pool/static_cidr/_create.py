@@ -84,6 +84,7 @@ class Create(AAZCommand):
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
+            help="Description of the resource."
         )
         _args_schema.number_of_ip_addresses_to_allocate = AAZStrArg(
             options=["--number-of-ip-addresses-to-allocate"],

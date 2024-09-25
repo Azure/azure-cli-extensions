@@ -79,6 +79,7 @@ class Create(AAZCommand):
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
+            help="Description of the resource."
         )
         _args_schema.destination_resource_id = AAZResourceIdArg(
             options=["--destination-resource-id"],

@@ -90,6 +90,7 @@ class Update(AAZCommand):
             options=["--description"],
             arg_group="Properties",
             nullable=True,
+            help="Description of the resource."
         )
         return cls._args_schema
 
