@@ -84,6 +84,7 @@ class RegisterCommandTests(ScenarioTest):
             self.check('name', 'swaggerpetstore-openapi30'),
             self.check('summary', 'This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about\nSwagger at [http://swagger.io](http://swagger.io). In the third iteration of the pet store, we\'ve'),
             self.check('title', 'Swagger Petstore - OpenAPI 3.0'),
+            self.check('externalDocumentation', [{'description': 'Find out more about Swagger', 'title': 'Title', 'url': 'http://swagger.io'}])
         ])
 
         self.cmd('az apic api version show -g {rg} -n {s} --api-id swaggerpetstore-openapi30 --version-id 1-0-19', checks=[
