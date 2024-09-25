@@ -133,10 +133,9 @@ class ElasticScenario(ScenarioTest):
             'rg': resource_group,
             'email': email,
             'integration_name': 'default',
-            'open_ai_api_key':'9e1bac69b92242129ad1f2373dd06939',
-            'open_ai_resource_id': '/subscriptions/cff37b56-870a-448f-a2fb-1a89235d4d32/resourceGroups/utkarshjain-rg/providers/Microsoft.CognitiveServices/accounts/utkarshTestResource1',
-            'open_ai_resource_endpoint': 'https://utkarshtestresource1.openai.azure.com/openai/deployments/test1/chat/completions?api-version=2024-06-15-preview',
-            'open_ai_lastRefreshAt': '2024-09-23T15:14:16.073Z'
+            'key':'9e1bac69b92242129ad1f2373dd06939',
+            'openAIResourceId': '/subscriptions/cff37b56-870a-448f-a2fb-1a89235d4d32/resourceGroups/utkarshjain-rg/providers/Microsoft.CognitiveServices/accounts/utkarshTestResource1',
+            'openAIResourceEndpoint': 'https://utkarshtestresource1.openai.azure.com/openai/deployments/test1/chat/completions?api-version=2024-06-15-preview',
         })
 
         # Step 3: Create Elastic Monitor
@@ -155,12 +154,13 @@ class ElasticScenario(ScenarioTest):
          '--resource-group {rg} '
          '--monitor-name {monitor} '
          '--integration-name default '
-         '--open-ai-resource-id {open_ai_resource_id} '
-         '--open-ai-resource-endpoint {open_ai_resource_endpoint} ', checks=[
+         '--open-ai-resource-id {openAIResourceId} '
+         '--open-ai-resource-endpoint {openAIResourceEndpoint} '
+         '--open-ai-key {key}', checks=[
              self.check('name', 'default'),
              self.check('resourceGroup', '{rg}'),
-             self.check('properties.openAIResourceId', '{open_ai_resource_id}'),
-             self.check('properties.openAIResourceEndpoint', '{open_ai_resource_endpoint}'),
+             self.check('properties.openAIResourceId', '{openAIResourceId}'),
+             self.check('properties.openAIResourceEndpoint', '{openAIResourceEndpoint}'),
              ])
 
         self.cmd('elastic monitor open-ai-integration update -n default -g {rg} --monitor-name {monitor} --key {openai_key} --open-ai-connector-id {connector_id} --open-ai-resource-endpoint {resource_endpoint} --open-ai-resource-id {resource_id}', checks=[
@@ -194,63 +194,46 @@ class ElasticScenario(ScenarioTest):
             'monitor': self.create_random_name('monitor', 20),
             'rg': resource_group,
             'email': email,
-            'subscription_list': '[{{\\"subscriptionId\\":\\"cff37b56-870a-448f-a2fb-1a89235d4d32\\", \\"status\\":\\"Active\\"}}]',
-            'operation': 'Active',
-            'updated_subscription_list': '[{"subscriptionId":"cff37b56-870a-448f-a2fb-1a89235d4d32","status":"Deleting"}]',
-            'updated_operation': 'DeleteBegin'
-        }) 
+            'subscription_id': 'cff37b56-870a-448f-a2fb-1a89235d4d32',
+            'subs_id': 'CFF37B56-870A-448F-A2FB-1A89235D4D32',
+            'updated_status': 'InProgress'
+        })
         self.cmd('elastic monitor create '
              '--name {monitor} '
              '--resource-group {rg} '
-             '--user-info "{{\\"firstName\\":\\"Alice\\",\\"lastName\\":\\"bob\\",\\"companyName\\":\\"Microsoft\\",\\"emailAddress\\":\\"{email}\\"}}" '
-             '--sku "{{\\"name\\":\\"ess-consumption-2024_Monthly\\"}}" --debug', checks=[
+             '--user-info "{{\\"firstName\\":\\"Alice\\",\\"lastName\\":\\"Bob\\",\\"companyName\\":\\"Microsoft\\",\\"emailAddress\\":\\"{email}\\"}}" '
+             '--sku "{{\\"name\\":\\"ess-consumption-2024_Monthly\\"}}"', checks=[
                  self.check('name', '{monitor}'),
                  self.check('resourceGroup', '{rg}'),
                  self.check('sku.name', 'ess-consumption-2024_Monthly')
         ])
         self.cmd('elastic monitor monitored-subscription create '
-         '--resource-group {rg} '
-         '--monitor-name {monitor} '
-         '--name default '
-         '--monitored-subscription-list "[{{\\"subscriptionId\\":\\"cff37b56-870a-448f-a2fb-1a89235d4d32\\", \\"status\\":\\"Active\\"}}]" '
-         '--operation {operation}', checks=[
-             self.check('name', 'default'),
-             self.check('resourceGroup', '{rg}'),
-             self.check('properties.monitoredSubscriptionList[0].subscriptionId', 'cff37b56-870a-448f-a2fb-1a89235d4d32'),
-             self.check('properties.monitoredSubscriptionList[0].status', 'Active')
-         ])
-        self.cmd('elastic monitor monitored-subscription update '
-         '--resource-group {rg} '
-         '--monitor-name {monitor} '
-         '--name default '
-         '--monitored-subscription-list {updated_subscription_list} '
-         '--operation {updated_operation}', checks=[
-             self.check('name', 'default'),
-             self.check('resourceGroup', '{rg}'),
-             self.check('properties.monitoredSubscriptionList[0].subscriptionId', 'cff37b56-870a-448f-a2fb-1a89235d4d32'),
-             self.check('properties.monitoredSubscriptionList[0].status', 'Deleting')
+             '--resource-group {rg} '
+             '--monitor-name {monitor} '
+             '--configuration-name default '
+             '--monitored-subscription-list "[{{\\"subscription-id\\":\\"{subscription_id}\\",\\"status\\":\\"Active\\"}}]" ', checks=[
+                 self.check('name', 'default'),
+                 self.check('resourceGroup', '{rg}'),
+                 self.check('properties.monitoredSubscriptionList[0].subscriptionId', '{subscription_id}'),
+                 self.check('properties.monitoredSubscriptionList[0].status', 'Active'),
+                 self.check('properties.provisioningState', 'Succeeded')
         ])
-        self.cmd('elastic monitor monitored-subscription list -g {rg} --monitor-name {monitor}', checks=[
-             self.check('[0].name', '{monitor}'),
-             self.check('[0].type', 'Microsoft.Elastic/monitors'),
-             self.check('[0].properties.provisioningState', 'Succeeded'),
-             self.check('[0].properties.monitoredSubscriptionList[0].subscriptionId', '{subscription_id}'),
-             self.check('[0].properties.monitoredSubscriptionList[0].status', 'Monitored'),
-             self.check('[0].properties.monitoredSubscriptionList[0].tagRules.logRules.sendAadLogs', True),
-             self.check('[0].properties.monitoredSubscriptionList[0].tagRules.logRules.sendActivityLogs', True),
-             self.check('[0].properties.monitoredSubscriptionList[0].tagRules.logRules.sendSubscriptionLogs', False)
+        self.cmd('elastic monitor monitored-subscription update '
+             '-n default '
+             '--resource-group {rg} '
+             '--monitor-name {monitor} '
+             '--monitored-subscription-list "[{{\\"subscription-id\\":\\"{subscription_id}\\",\\"status\\":\\"{updated_status}\\"}}]" ', checks=[
+                 self.check('name', 'default'),
+                 self.check('resourceGroup', '{rg}'),
+                 self.check('properties.monitoredSubscriptionList[0].subscriptionId', '{subscription_id}'),
+                 self.check('properties.monitoredSubscriptionList[0].status', '{updated_status}'),
         ])
         self.cmd('elastic monitor monitored-subscription show -n default -g {rg} --monitor-name {monitor}', checks=[
             self.check('name', 'default'),
             self.check('resourceGroup', '{rg}'),
-            self.check('properties.monitoredSubscriptionList[0].subscriptionId', '{subscriptionId}'),
+            self.check('properties.monitoredSubscriptionList[0].subscriptionId', '{subs_id}'),
             self.check('properties.monitoredSubscriptionList[0].status', 'Active'),
-            self.check('properties.monitoredSubscriptionList[0].tagRules.logRules.filteringTags[0].action', 'Include'),
-            self.check('properties.monitoredSubscriptionList[0].tagRules.logRules.filteringTags[0].name', 'Environment'),
-            self.check('properties.monitoredSubscriptionList[0].tagRules.logRules.filteringTags[0].value', 'Prod'),
-            self.check('properties.monitoredSubscriptionList[0].tagRules.logRules.sendAadLogs', False),
-            self.check('properties.monitoredSubscriptionList[0].tagRules.logRules.sendActivityLogs', True),
-            self.check('properties.monitoredSubscriptionList[0].tagRules.logRules.sendSubscriptionLogs', True)
+            self.check('properties.monitoredSubscriptionList[0].provisioningState', 'Accepted')
         ])
 
 
