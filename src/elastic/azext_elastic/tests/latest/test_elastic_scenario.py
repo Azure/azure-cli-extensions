@@ -18,7 +18,8 @@ class ElasticScenario(ScenarioTest):
         self.kwargs.update({
         'monitor': self.create_random_name('monitor', 20),
         'rg': resource_group,
-        'email': email
+        'email': email,
+        'ruleSetId': '31d91b5afb6f4c2eaaf104c97b1991dd'
         }) 
         self.cmd('elastic monitor create '
              '--name {monitor} '
@@ -58,8 +59,8 @@ class ElasticScenario(ScenarioTest):
         self.cmd('elastic monitor list-resource --monitor-name {monitor} -g {rg}')
         self.cmd('elastic monitor list-upgradable-version --monitor-name {monitor} -g {rg}')
         self.cmd('elastic monitor list-vm-host --monitor-name {monitor} -g {rg}')
-        self.cmd('elastic monitor detach-and-delete-traffic-filter --monitor-name {monitor} -g {rg}')
-        self.cmd('elastic monitor delete-traffic-filter --monitor-name {monitor} -g {rg}')
+        self.cmd('elastic monitor detach-and-delete-traffic-filter --monitor-name {monitor} -g {rg} --ruleset-id {ruleSetId}')
+        self.cmd('elastic monitor delete-traffic-filter --monitor-name {monitor} -g {rg} --ruleset-id {ruleSetId}')
         self.cmd('elastic monitor upgrade --monitor-name {monitor} -g {rg} --version 8.0.0'),
         self.cmd('elastic monitor create-and-associate-ip-filter --monitor-name {monitor} -g {rg} --name filter1 --ips "192.168.131.0, 192.168.132.6/22"')
         self.cmd('elastic monitor create-and-associate-pl-filter --monitor-name {monitor} -g {rg} --name filter2'),
@@ -138,7 +139,6 @@ class ElasticScenario(ScenarioTest):
             'openAIResourceEndpoint': 'https://utkarshtestresource1.openai.azure.com/openai/deployments/test1/chat/completions?api-version=2024-06-15-preview',
         })
 
-        # Step 3: Create Elastic Monitor
         self.cmd('elastic monitor create '
                  '--name {monitor} '
                  '--resource-group {rg} '
@@ -148,43 +148,42 @@ class ElasticScenario(ScenarioTest):
                      self.check('resourceGroup', '{rg}'),
                      self.check('sku.name', 'ess-consumption-2024_Monthly')
                  ])
-
-        # Step 4: Create OpenAI Integration
         self.cmd('elastic monitor open-ai-integration create '
          '--resource-group {rg} '
          '--monitor-name {monitor} '
          '--integration-name default '
          '--open-ai-resource-id {openAIResourceId} '
-         '--open-ai-resource-endpoint {openAIResourceEndpoint} ' , checks=[
+         '--open-ai-resource-endpoint {openAIResourceEndpoint} ' 
+         '--key {key}', checks=[
              self.check('name', 'default'),
              self.check('resourceGroup', '{rg}'),
              self.check('properties.openAIResourceId', '{openAIResourceId}'),
              self.check('properties.openAIResourceEndpoint', '{openAIResourceEndpoint}'),
              ])
 
-        self.cmd('elastic monitor open-ai-integration update -n default -g {rg} --monitor-name {monitor} --key {openai_key} --open-ai-connector-id {connector_id} --open-ai-resource-endpoint {resource_endpoint} --open-ai-resource-id {resource_id}', checks=[
+        self.cmd('elastic monitor open-ai-integration update '
+        '-n default '
+        '-g {rg} '
+        '--monitor-name {monitor} '
+        '--key {key} ' 
+        '--open-ai-resource-endpoint {openAIResourceEndpoint} '
+        '--open-ai-resource-id {openAIResourceId}' , checks=[
             self.check('name', 'default'),
             self.check('resourceGroup', '{rg}'),
-            self.check('properties.key', '{openai_key}'),
-            self.check('properties.openAIConnectorId', '{connector_id}'),
-            self.check('properties.openAIResourceEndpoint', '{resource_endpoint}'),
-            self.check('properties.openAIResourceId', '{resource_id}')
+            self.check('properties.openAIResourceEndpoint', '{openAIResourceEndpoint}'),
+            self.check('properties.openAIResourceId', '{openAIResourceId}')
         ])
         self.cmd('elastic monitor open-ai-integration list -g {rg} --monitor-name {monitor}', checks=[
-            self.check('[0].name', 'openAIIntegrationRule1'),
-            self.check('[0].properties.open_ai_connector_id', 'connectorID1'),
-            self.check('[0].properties.open_ai_resource_id', 'resourceID1'),
-            self.check('[0].properties.open_ai_resource_endpoint', 'https://openai.endpoint'),
-            self.check('[0].properties.last_refresh_at', '2024-09-20T00:00:00Z'),
-            self.check('[0].type', 'Microsoft.Elastic/monitors/openAIIntegrations')
+            self.check('[0].name', 'default'),
+            self.check('[0].properties.openAIResourceId', '{openAIResourceId}'),
+            self.check('[0].properties.openAIResourceEndpoint', '{openAIResourceEndpoint}'),
+            self.check('[0].type', 'microsoft.elastic/monitors/openaiintegrations')
         ])
         self.cmd('elastic monitor open-ai-integration show -n default -g {rg} --monitor-name {monitor}', checks=[
             self.check('name', 'default'),
             self.check('resourceGroup', '{rg}'),
-            self.check('properties.openAIConnectorId', '{open_ai_connector_id}'),
-            self.check('properties.openAIResourceEndpoint', '{open_ai_resource_endpoint}'),
-            self.check('properties.openAIResourceId', '{open_ai_resource_id}'),
-            self.check('properties.lastRefreshAt', '{last_refresh_at}')
+            self.check('properties.openAIResourceEndpoint', '{openAIResourceEndpoint}'),
+            self.check('properties.openAIResourceId', '{openAIResourceId}'),
         ])
     @ResourceGroupPreparer(name_prefix='cli_test_elastic_monitor', location='eastus')
     def test_elastic_monitor_monitored_subscription(self, resource_group):
