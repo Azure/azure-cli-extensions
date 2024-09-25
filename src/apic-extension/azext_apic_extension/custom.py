@@ -226,23 +226,13 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_i
                 extracted_api_terms_of_service = {'url': extracted_api_terms_of_service_value}
 
             # Create API - Get the external documentation in spec
-            cnt_docs = 0
             extracted_api_external_documentation = []
             external_documentation = data.get('externalDocs')
             if external_documentation:
                 extracted_api_external_documentation_description = external_documentation.get('description')
                 extracted_api_external_documentation_url = external_documentation.get('url')
-                cnt_docs += 1
-                extracted_api_external_documentation.append({'description': extracted_api_external_documentation_description, 'title': f'Doc_{cnt_docs}', 'url': extracted_api_external_documentation_url})
+                extracted_api_external_documentation.append({'description': extracted_api_external_documentation_description, 'title': 'Title', 'url': extracted_api_external_documentation_url})
 
-            # Create API - Get the external documentation from the tags in the spec
-            tags = data.get('tags')
-            if tags:
-                for item in tags:
-                    doc = item.get('externalDocs')
-                    if doc:
-                        cnt_docs += 1
-                        extracted_api_external_documentation.append({'description': doc.get('description'), 'title': f'Doc_{cnt_docs}', 'url': doc.get('url')})
             # TODO: Create API - custom-properties
             # "The custom metadata defined for API catalog entities. #1
 
