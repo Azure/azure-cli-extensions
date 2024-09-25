@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 
 
 # HISTORY.rst entry.
-VERSION = '1.0.2'
+VERSION = '1.0.4'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -27,8 +27,6 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    "azure-mgmt-kubernetesconfiguration>=3.1.0",
-    "azure-mgmt-resourcegraph>=8.0.0",
 ]
 
 with open('README.md', 'r', encoding='utf-8') as f:

@@ -30,10 +30,15 @@ from azext_confcom.template_util import (
     process_mounts,
     process_configmap,
     extract_probe,
+    extract_lifecycle_hook,
     process_env_vars_from_template,
     get_image_info,
     get_tar_location_from_mapping,
-    get_diff_size
+    get_diff_size,
+    process_env_vars_from_yaml,
+    convert_to_pod_spec,
+    filter_non_pod_resources,
+    decompose_confidential_properties,
 )
 from azext_confcom.rootfs_proxy import SecurityPolicyProxy
 
@@ -57,6 +62,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         existing_rego_fragments: Any = None,
         debug_mode: bool = False,
         disable_stdio: bool = False,
+        is_vn2: bool = False
     ) -> None:
         self._docker_client = None
         self._rootfs_proxy = None
@@ -122,7 +128,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         # parse and generate each container, either user or sidecar
         for c in containers:
             if not is_sidecar(c[config.POLICY_FIELD_CONTAINERS_ID]):
-                container_image = UserContainerImage.from_json(c)
+                container_image = UserContainerImage.from_json(c, is_vn2=is_vn2)
             else:
                 container_image = ContainerImage.from_json(c)
             container_results.append(container_image)
@@ -713,7 +719,6 @@ def load_policy_from_image_name(
     if isinstance(image_names, str):
         image_names = [image_names]
 
-    client = docker.from_env()
     containers = []
     for image_name in image_names:
         container = {}
@@ -731,14 +736,11 @@ def load_policy_from_image_name(
         container[config.ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS] = not disable_stdio
 
         containers.append(container)
-    client.close()
 
     return AciPolicy(
         {
             config.ACI_FIELD_VERSION: "1.0",
             config.ACI_FIELD_CONTAINERS: containers,
-            # fallback to default fragments if the policy is not present
-            config.POLICY_FIELD_CONTAINERS_ELEMENTS_REGO_FRAGMENTS: config.DEFAULT_REGO_FRAGMENTS,
         },
         debug_mode=debug_mode,
         disable_stdio=disable_stdio,
@@ -841,3 +843,162 @@ def load_policy_from_str(data: str, debug_mode: bool = False) -> AciPolicy:
         rego_fragments=rego_fragments or config.DEFAULT_REGO_FRAGMENTS,
         debug_mode=debug_mode,
     )
+
+
+def load_policy_from_virtual_node_yaml_file(
+        virtual_node_yaml_path: str,
+        debug_mode: bool = False,
+        disable_stdio: bool = False,
+        approve_wildcards: bool = False
+) -> List[AciPolicy]:
+    yaml_contents_str = os_util.load_str_from_file(virtual_node_yaml_path)
+    return load_policy_from_virtual_node_yaml_str(
+        yaml_contents_str,
+        debug_mode=debug_mode,
+        disable_stdio=disable_stdio,
+        approve_wildcards=approve_wildcards
+    )
+
+
+def load_policy_from_virtual_node_yaml_str(
+        yaml_contents_str: List[str],
+        debug_mode: bool = False,
+        disable_stdio: bool = False,
+        approve_wildcards: bool = False
+) -> List[AciPolicy]:
+    """
+    Load a virtual node yaml file and generate a policy object
+    This happens in two passes:
+    1. Parse the yaml file and extract ConfigMaps and Secrets
+    2. Gather the container information
+    """
+    all_policies = []
+    existing_containers = []
+    existing_fragments = []
+    yaml_contents = os_util.load_multiple_yaml_from_str(yaml_contents_str)
+    config_map_data = []
+    secrets_data = []
+    for yaml in yaml_contents:
+        kind = case_insensitive_dict_get(yaml, "kind")
+        if kind == "ConfigMap":
+            config_map_data.append(yaml)
+        elif kind == "Secret":
+            secrets_data.append(yaml)
+
+    # we only want to look at the things that create containers
+    yaml_contents = filter_non_pod_resources(yaml_contents)
+    for yaml in yaml_contents:
+        # extract existing policy and fragments for diff mode
+        metadata = case_insensitive_dict_get(yaml, "metadata")
+        annotations = case_insensitive_dict_get(metadata, config.VIRTUAL_NODE_YAML_ANNOTATIONS)
+        existing_policy = case_insensitive_dict_get(annotations, config.VIRTUAL_NODE_YAML_POLICY)
+        if existing_policy:
+            (existing_containers, existing_fragments) = decompose_confidential_properties(existing_policy)
+
+        # because there are many ways to get pod information, we normalize them so the interface is the same
+        normalized_yaml = convert_to_pod_spec(yaml)
+
+        spec = case_insensitive_dict_get(normalized_yaml, "spec")
+        if not spec:
+            eprint("YAML file does not contain a spec field")
+
+        # pod security context
+        pod_security_context = case_insensitive_dict_get(spec, "securityContext") or {}
+
+        policy_containers = []
+        containers = case_insensitive_dict_get(spec, "containers")
+        if not containers:
+            eprint("YAML file does not contain a containers field")
+        # NOTE: initContainers are not treated differently in the security policy
+        # but they are treated differently in the pod spec
+        # e.g. lifecycle and probes are not supported in initContainers
+        init_containers = case_insensitive_dict_get(spec, "initContainers") or []
+
+        for container in containers + init_containers:
+            # image and name
+            image = case_insensitive_dict_get(container, "image")
+            if not image:
+                eprint("Container does not have an image field")
+
+            # env vars
+            envs = process_env_vars_from_yaml(
+                container,
+                config_map_data,
+                secrets_data,
+                approve_wildcards=approve_wildcards
+            )
+
+            # command
+            command = case_insensitive_dict_get(container, "command") or []
+            args = case_insensitive_dict_get(container, "args") or []
+
+            # mounts
+            mounts = copy.deepcopy(config.DEFAULT_MOUNTS_VIRTUAL_NODE)
+            volumes = case_insensitive_dict_get(spec, "volumes") or []
+            configmap_volume_names = [
+                case_insensitive_dict_get(volume, "name") if "configmap" in volume else None for volume in volumes
+            ]
+            volume_mounts = case_insensitive_dict_get(container, "volumeMounts")
+            if volume_mounts:
+                for mount in volume_mounts:
+                    mounts.append({
+                        config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE: config.ACI_FIELD_YAML_MOUNT_TYPE,
+                        config.ACI_FIELD_CONTAINERS_MOUNTS_PATH: case_insensitive_dict_get(mount, "mountPath"),
+                        config.ACI_FIELD_CONTAINERS_MOUNTS_READONLY:
+                            case_insensitive_dict_get(mount, "name") in configmap_volume_names or
+                            case_insensitive_dict_get(mount, "readOnly") or
+                            False,
+                    })
+
+            # container security context
+            container_security_context = case_insensitive_dict_get(container, "securityContext") or {}
+
+            if case_insensitive_dict_get(container_security_context, "privileged") is True:
+                mounts += config.DEFAULT_MOUNTS_PRIVILEGED_VIRTUAL_NODE
+
+            # security context
+            security_context = pod_security_context.copy()
+            security_context.update(container_security_context)
+
+            # probes
+            # NOTE: this is reused from ARM template parsing in case of future incompatibility
+            exec_processes = []
+            extract_probe(exec_processes, container, config.ACI_FIELD_YAML_LIVENESS_PROBE)
+            extract_probe(exec_processes, container, config.ACI_FIELD_YAML_READINESS_PROBE)
+            extract_probe(exec_processes, container, config.ACI_FIELD_YAML_STARTUP_PROBE)
+            # lifecycle hooks
+            extract_lifecycle_hook(exec_processes, container, config.VIRTUAL_NODE_YAML_LIFECYCLE_POST_START)
+            extract_lifecycle_hook(exec_processes, container, config.VIRTUAL_NODE_YAML_LIFECYCLE_PRE_STOP)
+
+            policy_containers.append(
+                {
+                    config.ACI_FIELD_CONTAINERS_ID: image,
+                    config.ACI_FIELD_CONTAINERS_NAME: case_insensitive_dict_get(container, "name") or image,
+                    config.ACI_FIELD_CONTAINERS_CONTAINERIMAGE: image,
+                    config.ACI_FIELD_CONTAINERS_ENVS: envs,
+                    config.ACI_FIELD_CONTAINERS_COMMAND: command + args,
+                    config.ACI_FIELD_CONTAINERS_MOUNTS: mounts,
+                    config.ACI_FIELD_CONTAINERS_EXEC_PROCESSES: exec_processes
+                    + config.DEBUG_MODE_SETTINGS.get("execProcesses")
+                    if debug_mode
+                    else exec_processes,
+                    config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES: [],
+                    config.ACI_FIELD_CONTAINERS_ALLOW_STDIO_ACCESS: not disable_stdio,
+                    config.ACI_FIELD_CONTAINERS_SECURITY_CONTEXT: security_context
+                }
+            )
+        all_policies.append(
+            AciPolicy(
+                {
+                    config.ACI_FIELD_VERSION: "1.0",
+                    config.ACI_FIELD_CONTAINERS: policy_containers,
+                    config.ACI_FIELD_TEMPLATE_CCE_POLICY: existing_containers,
+                },
+                debug_mode=debug_mode,
+                disable_stdio=disable_stdio,
+                rego_fragments=copy.deepcopy(config.DEFAULT_REGO_FRAGMENTS),
+                is_vn2=True,
+                existing_rego_fragments=existing_fragments,
+            )
+        )
+    return all_policies
