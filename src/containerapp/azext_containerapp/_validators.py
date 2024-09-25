@@ -223,7 +223,7 @@ def validate_timeout_in_seconds(cmd, namespace):
 
 
 def validate_debug(cmd, namespace):
-    print("Validating...")
+    logger.warning("Validating...")
     revision_already_set = bool(namespace.revision)
     replica_already_set = bool(namespace.replica)
     container_already_set = bool(namespace.container)
@@ -252,7 +252,7 @@ def _set_debug_defaults(cmd, namespace):
             revision_name=namespace.revision
         )
         if not replicas:
-            raise ResourceNotFoundError("Could not find a active replica")
+            raise ResourceNotFoundError("Could not find an active replica")
         namespace.replica = replicas[0]["name"]
         if not namespace.container and replicas[0]["properties"]["containers"]:
             namespace.container = replicas[0]["properties"]["containers"][0]["name"]

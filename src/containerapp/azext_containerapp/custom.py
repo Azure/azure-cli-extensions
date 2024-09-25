@@ -3231,7 +3231,7 @@ def set_registry_job(cmd, name, resource_group_name, server, username=None, pass
 
 
 def containerapp_debug(cmd, resource_group_name, name, container=None, revision=None, replica=None):
-    print("Connecting...")
+    logger.warning("Connecting...")
     conn = DebugWebSocketConnection(
         cmd=cmd,
         resource_group_name=resource_group_name,
