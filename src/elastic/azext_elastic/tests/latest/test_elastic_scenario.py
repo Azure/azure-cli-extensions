@@ -233,7 +233,7 @@ class ElasticScenario(ScenarioTest):
             self.check('resourceGroup', '{rg}'),
             self.check('properties.monitoredSubscriptionList[0].subscriptionId', '{subs_id}'),
             self.check('properties.monitoredSubscriptionList[0].status', 'Active'),
-            self.check('properties.monitoredSubscriptionList[0].provisioningState', 'Accepted')
+            self.check('properties.monitoredSubscriptionList[0].tagRules.provisioningState', 'Accepted')
         ])
 
 
