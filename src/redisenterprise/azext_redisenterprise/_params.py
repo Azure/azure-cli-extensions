@@ -43,9 +43,7 @@ def load_arguments(self, _):
         c.argument('tags', tags_type)
         c.argument('location', arg_type=get_location_type(self.cli_ctx), required=False,
                    validator=get_default_location_from_resource_group)
-        c.argument('sku', arg_type=get_enum_type(['Enterprise_E1', 'Enterprise_E5', 'Enterprise_E10', 'Enterprise_E20', 'Enterprise_E50',
-                                                  'Enterprise_E100', 'Enterprise_E200', 'Enterprise_E400', 'EnterpriseFlash_F300', 'EnterpriseFlash_F700',
-                                                  'EnterpriseFlash_F1500']), help='The type of RedisEnterprise cluster '
+        c.argument('sku', arg_type=get_enum_type(['Balanced_B0', 'Balanced_B1', 'Balanced_B10', 'Balanced_B100', 'Balanced_B1000', 'Balanced_B150', 'Balanced_B20', 'Balanced_B250', 'Balanced_B3', 'Balanced_B350', 'Balanced_B5', 'Balanced_B50', 'Balanced_B500', 'Balanced_B700', 'ComputeOptimized_X10', 'ComputeOptimized_X100', 'ComputeOptimized_X150', 'ComputeOptimized_X20', 'ComputeOptimized_X250', 'ComputeOptimized_X3', 'ComputeOptimized_X350', 'ComputeOptimized_X5', 'ComputeOptimized_X50', 'ComputeOptimized_X500', 'ComputeOptimized_X700', 'EnterpriseFlash_F1500', 'EnterpriseFlash_F300', 'EnterpriseFlash_F700', 'Enterprise_E1', 'Enterprise_E10', 'Enterprise_E100', 'Enterprise_E20', 'Enterprise_E200', 'Enterprise_E400', 'Enterprise_E5', 'Enterprise_E50', 'FlashOptimized_A1000', 'FlashOptimized_A1500', 'FlashOptimized_A2000', 'FlashOptimized_A250', 'FlashOptimized_A4500', 'FlashOptimized_A500', 'FlashOptimized_A700', 'MemoryOptimized_M10', 'MemoryOptimized_M100', 'MemoryOptimized_M1000', 'MemoryOptimized_M150', 'MemoryOptimized_M1500', 'MemoryOptimized_M20', 'MemoryOptimized_M2000', 'MemoryOptimized_M250', 'MemoryOptimized_M350', 'MemoryOptimized_M50', 'MemoryOptimized_M500', 'MemoryOptimized_M700']), help='The type of RedisEnterprise cluster '
                    'to deploy. Possible values: (Enterprise_E10, EnterpriseFlash_F300 etc.)')
         c.argument('capacity', type=int, help='The size of the RedisEnterprise cluster. Defaults to 2 or 3 depending '
                    'on SKU. Valid values are (2, 4, 6, ...) for Enterprise SKUs and (3, 9, 15, ...) for Flash SKUs.')
@@ -102,10 +100,8 @@ def load_arguments(self, _):
         c.argument('resource_group_name', resource_group_name_type)
         c.argument('cluster_name', options_list=['--cluster-name', '--name', '-n'], type=str, help='The name of the '
                    'RedisEnterprise cluster.', id_part='name')
-        c.argument('sku', arg_type=get_enum_type(['Enterprise_E1', 'Enterprise_E5', 'Enterprise_E10', 'Enterprise_E20', 'Enterprise_E50',
-                                                  'Enterprise_E100', 'Enterprise_E200', 'Enterprise_E400', 'EnterpriseFlash_F300', 'EnterpriseFlash_F700',
-                                                  'EnterpriseFlash_F1500']), help='The type of RedisEnterprise cluster '
-                   'to deploy. Possible values: (Enterprise_E10, EnterpriseFlash_F300 etc.)')
+        c.argument('sku', arg_type=get_enum_type(['Balanced_B0', 'Balanced_B1', 'Balanced_B10', 'Balanced_B100', 'Balanced_B1000', 'Balanced_B150', 'Balanced_B20', 'Balanced_B250', 'Balanced_B3', 'Balanced_B350', 'Balanced_B5', 'Balanced_B50', 'Balanced_B500', 'Balanced_B700', 'ComputeOptimized_X10', 'ComputeOptimized_X100', 'ComputeOptimized_X150', 'ComputeOptimized_X20', 'ComputeOptimized_X250', 'ComputeOptimized_X3', 'ComputeOptimized_X350', 'ComputeOptimized_X5', 'ComputeOptimized_X50', 'ComputeOptimized_X500', 'ComputeOptimized_X700', 'EnterpriseFlash_F1500', 'EnterpriseFlash_F300', 'EnterpriseFlash_F700', 'Enterprise_E1', 'Enterprise_E10', 'Enterprise_E100', 'Enterprise_E20', 'Enterprise_E200', 'Enterprise_E400', 'Enterprise_E5', 'Enterprise_E50', 'FlashOptimized_A1000', 'FlashOptimized_A1500', 'FlashOptimized_A2000', 'FlashOptimized_A250', 'FlashOptimized_A4500', 'FlashOptimized_A500', 'FlashOptimized_A700', 'MemoryOptimized_M10', 'MemoryOptimized_M100', 'MemoryOptimized_M1000', 'MemoryOptimized_M150', 'MemoryOptimized_M1500', 'MemoryOptimized_M20', 'MemoryOptimized_M2000', 'MemoryOptimized_M250', 'MemoryOptimized_M350', 'MemoryOptimized_M50', 'MemoryOptimized_M500', 'MemoryOptimized_M700']), help='The type of RedisEnterprise cluster '
+                   'to deploy. Possible values: (Balanced_B1, ComputeOptimized_X10, MemoryOptimized_M10, Enterprise_E10, EnterpriseFlash_F300 etc.)')
         c.argument('capacity', type=int, help='The size of the RedisEnterprise cluster. Defaults to 2 or 3 depending '
                    'on SKU. Valid values are (2, 4, 6, ...) for Enterprise SKUs and (3, 9, 15, ...) for Flash SKUs.')
         c.argument('tags', tags_type)

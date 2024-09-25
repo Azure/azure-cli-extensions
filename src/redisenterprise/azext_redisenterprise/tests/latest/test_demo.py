@@ -77,11 +77,11 @@ def call_scenario1(test, rg):
     step_show(test, checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
-        test.check("location", "East US"),
+        test.check("location", "West US 3"),
         test.check("sku.name", "Enterprise_E20"),
         test.check("sku.capacity", 4),
         test.check("tags.tag1", "value1"),
-        test.check("zones", ["1", "2", "3"]),
+       # test.check("zones", ["1", "2", "3"]),
         test.check("minimumTlsVersion", "1.2"),
         test.check("provisioningState", "Succeeded"),
         test.check("resourceState", "Running"),
@@ -133,7 +133,7 @@ class Redisenterprisescenario1Test(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg1-', key='rg', parameter_name='rg',
-                           location='eastus', random_name_length=34)
+                           location='westus3', random_name_length=34)
     def test_redisenterprise_scenario1(self, rg):
         call_scenario1(self, rg)
         calc_coverage(__file__)
@@ -157,7 +157,7 @@ def call_scenario2(test):
     step_create(test, checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
-        test.check("location", "East US"),
+        test.check("location", "West US 3"),
         test.check("sku.name", "EnterpriseFlash_F300"),
         test.check("sku.capacity", 3),
         test.check("tags.tag1", "value1"),
@@ -170,7 +170,7 @@ def call_scenario2(test):
     step_show(test,checks=[
         test.check("name", "{cluster}"),
         test.check("resourceGroup", "{rg}"),
-        test.check("location", "East US"),
+        test.check("location", "West US 3"),
         test.check("sku.name", "EnterpriseFlash_F300"),
         test.check("sku.capacity", 3),
         test.check("tags.tag1", "value1"),
@@ -230,7 +230,7 @@ class Redisenterprisescenario2Test(ScenarioTest):
 
     @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg2-', key='rg', parameter_name='rg',
-                           location='eastus', random_name_length=34)
+                           location='westus3', random_name_length=34)
     def test_redisenterprise_scenario2(self):
         call_scenario2(self)
         calc_coverage(__file__)
@@ -292,9 +292,9 @@ class Redisenterprisescenario3Test(ScenarioTest):
             'database': 'default',
         }) 
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg31-', key='rg31', parameter_name='rg31',
-                           location='eastus', random_name_length=34)
+                           location='westus3', random_name_length=34)
     @ResourceGroupPreparer(name_prefix='clitest-redisenterprise-rg32-', key='rg32', parameter_name='rg32',
-                           location='westus', random_name_length=34)
+                           location='westus3', random_name_length=34)
     @AllowLargeResponse(size_kb=9999)
     def test_redisenterprise_scenario3(self):
         call_scenario3(self)

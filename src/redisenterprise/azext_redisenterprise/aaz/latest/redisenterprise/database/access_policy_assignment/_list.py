@@ -12,16 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "redisenterprise database list",
+    "redisenterprise database access-policy-assignment list",
+    is_preview=True,
 )
 class List(AAZCommand):
-    """List all databases in the specified RedisEnterprise cluster.
+    """List all databases in the specified Redis Enterprise cluster.
+
+    :example: Get the list of Access Policy Assignments (Redis Users) associated with the Cache.
+        az redisenterprise database access-policy-assignment list --resource-group rg1 --cluster-name cache1 --database-name default
     """
 
     _aaz_info = {
-        "version": "2023-03-01-preview",
+        "version": "2024-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases", "2023-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}/accesspolicyassignments", "2024-09-01-preview"],
         ]
     }
 
@@ -44,8 +48,19 @@ class List(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.cluster_name = AAZStrArg(
             options=["--cluster-name"],
-            help="The name of the RedisEnterprise cluster.",
+            help="The name of the Redis Enterprise cluster.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
+            ),
+        )
+        _args_schema.database_name = AAZStrArg(
+            options=["--database-name"],
+            help="The name of the Redis Enterprise database.",
+            required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9]{1,60}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -54,7 +69,7 @@ class List(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.DatabasesListByCluster(ctx=self.ctx)()
+        self.AccessPolicyAssignmentList(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -70,7 +85,7 @@ class List(AAZCommand):
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
         return result, next_link
 
-    class DatabasesListByCluster(AAZHttpOperation):
+    class AccessPolicyAssignmentList(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -84,7 +99,7 @@ class List(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}/databases",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{clusterName}/databases/{databaseName}/accessPolicyAssignments",
                 **self.url_parameters
             )
 
@@ -104,6 +119,10 @@ class List(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
+                    "databaseName", self.ctx.args.database_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
                     "resourceGroupName", self.ctx.args.resource_group,
                     required=True,
                 ),
@@ -118,7 +137,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01-preview",
+                    "api-version", "2024-09-01-preview",
                     required=True,
                 ),
             }
@@ -168,102 +187,29 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
             properties = cls._schema_on_200.value.Element.properties
-            properties.client_protocol = AAZStrType(
-                serialized_name="clientProtocol",
+            properties.access_policy_name = AAZStrType(
+                serialized_name="accessPolicyName",
+                flags={"required": True},
             )
-            properties.clustering_policy = AAZStrType(
-                serialized_name="clusteringPolicy",
-            )
-            properties.eviction_policy = AAZStrType(
-                serialized_name="evictionPolicy",
-            )
-            properties.geo_replication = AAZObjectType(
-                serialized_name="geoReplication",
-            )
-            properties.modules = AAZListType()
-            properties.persistence = AAZObjectType()
-            properties.port = AAZIntType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.resource_state = AAZStrType(
-                serialized_name="resourceState",
-                flags={"read_only": True},
-            )
-
-            geo_replication = cls._schema_on_200.value.Element.properties.geo_replication
-            geo_replication.group_nickname = AAZStrType(
-                serialized_name="groupNickname",
-            )
-            geo_replication.linked_databases = AAZListType(
-                serialized_name="linkedDatabases",
-            )
-
-            linked_databases = cls._schema_on_200.value.Element.properties.geo_replication.linked_databases
-            linked_databases.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.geo_replication.linked_databases.Element
-            _element.id = AAZStrType()
-            _element.state = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            modules = cls._schema_on_200.value.Element.properties.modules
-            modules.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.value.Element.properties.modules.Element
-            _element.args = AAZStrType()
-            _element.name = AAZStrType(
+            properties.user = AAZObjectType(
                 flags={"required": True},
             )
-            _element.version = AAZStrType(
-                flags={"read_only": True},
-            )
 
-            persistence = cls._schema_on_200.value.Element.properties.persistence
-            persistence.aof_enabled = AAZBoolType(
-                serialized_name="aofEnabled",
-            )
-            persistence.aof_frequency = AAZStrType(
-                serialized_name="aofFrequency",
-            )
-            persistence.rdb_enabled = AAZBoolType(
-                serialized_name="rdbEnabled",
-            )
-            persistence.rdb_frequency = AAZStrType(
-                serialized_name="rdbFrequency",
-            )
-
-            system_data = cls._schema_on_200.value.Element.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
+            user = cls._schema_on_200.value.Element.properties.user
+            user.object_id = AAZStrType(
+                serialized_name="objectId",
+                flags={"required": True},
             )
 
             return cls._schema_on_200
