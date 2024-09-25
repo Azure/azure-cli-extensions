@@ -19,6 +19,9 @@ class Query(AAZCommand):
 
     :example: Execute a simple query over past 3.5 days.
         az monitor log-analytics query -w workspace-customId --analytics-query "AzureActivity | summarize count() by bin(TimeGenerated, 1h)" -t P3DT12H
+
+    :example: Execute a saved query in workspace
+        az monitor log-analytics query -w workspace-customId --analytics-query $(az monitor log-analytics workspace saved-search show -g resource-group --workspace-name workspace-name -n query-name --query query --output tsv)
     """
 
     _aaz_info = {
@@ -98,7 +101,7 @@ class Query(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/v1/workspaces/{workspaceId}/query",
+                "/workspaces/{workspaceId}/query",
                 **self.url_parameters
             )
 
