@@ -18,7 +18,7 @@ class SyncNow(AAZCommand):
     """Trigger immediate sync with source cloud
 
     :example: SolutionConfigurations_SyncNow
-        az arc-multicloud solution-configuration sync-now --connector-id ymuj --name tks
+        az arc-multicloud solution-configuration sync-now --connector-id /subscriptions/{}/resourceGroups/{}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{} --name mySolutionConfig
     """
 
     _aaz_info = {

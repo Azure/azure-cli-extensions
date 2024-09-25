@@ -18,7 +18,7 @@ class TestPermission(AAZCommand):
     """A long-running resource action.
 
     :example: PublicCloudConnectors_TestPermissions
-        az arc-multicloud public-cloud-connector test-permission --resource-group rgpublicCloud --name sjuahmnojgachluzcbhxhwkxwugbsi
+        az arc-multicloud public-cloud-connector test-permission --resource-group rgpublicCloud --name myConnector
     """
 
     _aaz_info = {

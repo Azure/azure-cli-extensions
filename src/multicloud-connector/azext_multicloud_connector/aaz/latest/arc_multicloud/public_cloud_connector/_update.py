@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update a PublicCloudConnector
 
     :example: publicCloudConnectors_Update
-        az arc-multicloud public-cloud-connector update --resource-group rgpublicCloud --name advjwoakdusalamomg --aws-cloud-profile "{excluded-accounts:[rwgqpukglvbqmogqcliqolucp]}" --host-type AWS --tags "{}" --location jpiglusfxynfcewcjwvvnn
+        az arc-multicloud public-cloud-connector update --resource-group rgpublicCloud --name myConnector --aws-cloud-profile "{excluded-accounts:[123456789123,123456789124]}" --tags "{}"
     """
 
     _aaz_info = {

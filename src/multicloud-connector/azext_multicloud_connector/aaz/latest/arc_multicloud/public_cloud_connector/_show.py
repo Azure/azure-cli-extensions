@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get a PublicCloudConnector
 
     :example: publicCloudConnectors_Get
-        az arc-multicloud public-cloud-connector show --resource-group rgpublicCloud --name rzygvnpsnrdylwzdbsscjazvamyxmh
+        az arc-multicloud public-cloud-connector show --resource-group rgpublicCloud --name myConnector
     """
 
     _aaz_info = {
