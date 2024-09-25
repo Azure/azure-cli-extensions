@@ -195,7 +195,6 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_i
             # Create API and Create API Version
             extracted_api_name = _generate_api_id(info.get('title', 'Default-API')).lower()
             extracted_api_description = info.get('description', 'API Description')[:1000]
-            extracted_api_summary = info.get('summary', str(extracted_api_description)[:200])
             extracted_api_title = info.get('title', 'API Title')
             extracted_api_version = info.get('version', 'v1').replace(".", "-").lower()
             extracted_api_version_title = info.get('version', 'v1').replace(".", "-").lower()
@@ -245,7 +244,6 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_i
                 'service_name': service_name,
                 'workspace_name': 'default',
                 'title': extracted_api_title,
-                'summary': extracted_api_summary,
                 'type': extracted_api_kind,
                 'contacts': contacts,
                 'license': extracted_api_license,
