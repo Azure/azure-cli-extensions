@@ -45,12 +45,12 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.configuration_name = AAZStrArg(
-            options=["-n", "--name", "--configuration-name"],
+            options=["--configuration-name"],
             help="Name of the network manager security configuration.",
             required=True,
         )
         _args_schema.network_manager_name = AAZStrArg(
-            options=["--manager-name", "--network-manager-name"],
+            options=["-n", "--name", "--network-manager-name"],
             help="The name of the network manager.",
             required=True,
             fmt=AAZStrArgFormat(
