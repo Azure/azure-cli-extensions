@@ -1403,11 +1403,10 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
             patch_identity_def = {}
             safe_set(patch_identity_def, "identity", value=safe_get(self.new_containerapp, "identity"))
             try:
-                r = self.client.update(
+                self.client.update(
                     cmd=self.cmd, resource_group_name=self.get_argument_resource_group_name(),
                     name=self.get_argument_name(), container_app_envelope=patch_identity_def,
                     no_wait=False)
-                return r
             except Exception as e:
                 handle_raw_exception(e)
             self.containerapp_def = self.show()
@@ -1415,6 +1414,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
     def check_acrpull_role_assignment(self):
         identity = self.get_argument_registry_identity()
         system_sp = safe_get(self.containerapp_def, "identity", "principalId")
+
         # not create role assignment if it's env system msi or system msi
         if identity and not is_registry_msi_system(identity) and not is_registry_msi_system_environment(identity):
             create_acrpull_role_assignment_if_needed(self.cmd, self.get_argument_registry_server(), identity, skip_error=True)
@@ -1429,7 +1429,7 @@ class ContainerAppPreviewUpdateDecorator(ContainerAppUpdateDecorator):
         system_assigned_identity = self.get_argument_system_assigned()
 
         if identity:
-            safe_set(self.new_containerapp, "identity", value=self.containerapp_def["identity"])
+            safe_set(self.new_containerapp, "identity", value=deepcopy(self.containerapp_def["identity"]))
             if safe_get(self.new_containerapp, "identity", "principalId"):
                 self.new_containerapp["identity"].pop("principalId")
             if safe_get(self.new_containerapp, "identity", "tenantId"):

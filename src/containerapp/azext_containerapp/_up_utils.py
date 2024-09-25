@@ -432,6 +432,7 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         self.should_create_acr = False
         self.acr: "AzureContainerRegistry" = None
+        self.get_acr_creds = True
 
     def _get(self):
         return ContainerAppPreviewClient.show(self.cmd, self.resource_group.name, self.name)
@@ -492,10 +493,10 @@ class ContainerApp(Resource):  # pylint: disable=too-many-instance-attributes
 
         if not self.acr:
             self.acr = AzureContainerRegistry(registry_name, registry_rg)
-
-        self.registry_user, self.registry_pass, _ = _get_acr_cred(
-            self.cmd.cli_ctx, registry_name
-        )
+        if self.get_acr_creds:
+            self.registry_user, self.registry_pass, _ = _get_acr_cred(
+                self.cmd.cli_ctx, registry_name
+            )
 
     def _docker_push_to_container_registry(self, image_name, forced_acr_login=False):
         from azure.cli.command_modules.acr.custom import acr_login

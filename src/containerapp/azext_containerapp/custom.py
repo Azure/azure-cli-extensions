@@ -1287,6 +1287,7 @@ def containerapp_up(cmd,
 
     force_single_container_updates = False
     if source:
+        app.get_acr_creds = False
         force_single_container_updates = app.run_source_to_cloud_flow(source, dockerfile, build_env_vars, can_create_acr_if_needed=True, registry_server=registry_server)
         app.set_force_single_container_updates(force_single_container_updates)
     else:
