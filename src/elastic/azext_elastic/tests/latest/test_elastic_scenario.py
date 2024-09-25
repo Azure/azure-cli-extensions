@@ -155,8 +155,7 @@ class ElasticScenario(ScenarioTest):
          '--monitor-name {monitor} '
          '--integration-name default '
          '--open-ai-resource-id {openAIResourceId} '
-         '--open-ai-resource-endpoint {openAIResourceEndpoint} '
-         '--open-ai-key {key}', checks=[
+         '--open-ai-resource-endpoint {openAIResourceEndpoint} ' , checks=[
              self.check('name', 'default'),
              self.check('resourceGroup', '{rg}'),
              self.check('properties.openAIResourceId', '{openAIResourceId}'),
