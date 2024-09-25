@@ -105,6 +105,12 @@ class ExportMetadataSchemaExtension(ExportMetadataExtension):
             required=True,
             registered=True
         )
+        args_schema.custom_metadata_only = AAZStrArg(
+            options=["--custom-metadata-only"],
+            help='Export only custom metadata.',
+            required=False,
+            registered=True
+        )
         return args_schema
 
     def _output(self, *args, **kwargs):
@@ -113,12 +119,14 @@ class ExportMetadataSchemaExtension(ExportMetadataExtension):
 
         if result:
             response_format = result['format']
-            exportedResults = result['value']
+            value = result['value']
+            exportedResults = value['customProperties'] if arguments.custom_metadata_only else value
 
             if response_format == 'link':
                 getReponse = requests.get(exportedResults, timeout=10)
                 if getReponse.status_code == 200:
-                    exportedResults = getReponse.content.decode()
+                    content = getReponse.content.decode()
+                    exportedResults = content['customProperties'] if arguments.custom_metadata_only else content
                 else:
                     logger.error('Error while fetching the results from the link. Status code: %s', getReponse.status_code)
 
@@ -195,7 +203,6 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_i
             # Create API and Create API Version
             extracted_api_name = _generate_api_id(info.get('title', 'Default-API')).lower()
             extracted_api_description = info.get('description', 'API Description')[:1000]
-            extracted_api_summary = info.get('summary', str(extracted_api_description)[:200])
             extracted_api_title = info.get('title', 'API Title')
             extracted_api_version = info.get('version', 'v1').replace(".", "-").lower()
             extracted_api_version_title = info.get('version', 'v1').replace(".", "-").lower()
@@ -245,7 +252,6 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_i
                 'service_name': service_name,
                 'workspace_name': 'default',
                 'title': extracted_api_title,
-                'summary': extracted_api_summary,
                 'type': extracted_api_kind,
                 'contacts': contacts,
                 'license': extracted_api_license,
