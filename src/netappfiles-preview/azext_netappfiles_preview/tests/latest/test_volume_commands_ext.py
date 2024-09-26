@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
-
+import unittest
 # POOL_DEFAULT = "--service-level 'Premium' --size 4398046511104"
 POOL_DEFAULT = "--service-level 'Premium' --size 4"
 VOLUME_DEFAULT = "--service-level 'Premium' --usage-threshold 100"
