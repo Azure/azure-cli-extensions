@@ -345,13 +345,16 @@ def load_arguments(self, _):
             arg_group="Gateway",
             help="ArmID of the Arc Gateway resource.",
             validator=validate_gateway_updates,
+            is_preview=True,
         )
         c.argument(
             "disable_gateway",
+            arg_type=get_three_state_flag(),
             options_list=["--disable-gateway"],
             arg_group="Gateway",
             help="Flag to disable Arc Gateway",
             validator=validate_gateway_updates,
+            is_preview=True,
         )
         c.argument(
             "configuration_settings",
