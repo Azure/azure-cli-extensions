@@ -9,7 +9,7 @@ from azext_db_up._validators import db_up_namespace_processor, db_down_namespace
 from azext_db_up._transformers import table_transform_connection_string
 
 
-def _deprecation_message(self):
+def _deprecation_message(self):  # pylint: disable=unused-argument
     msg = "'db-up' extension has been deprecated. All commands included will be removed in near future."
     return msg
 
