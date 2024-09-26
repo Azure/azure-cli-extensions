@@ -119,18 +119,19 @@ class ExportMetadataSchemaExtension(ExportMetadataExtension):
 
         if result:
             response_format = result['format']
-            value = json.loads(result['value'])
-            # Check if custom metadata only
-            exportedResults = value.get('properties').get('customProperties', {}) if arguments.custom_metadata_only else value
+            exportedResults = result['value']
 
             if response_format == 'link':
                 getReponse = requests.get(exportedResults, timeout=10)
                 if getReponse.status_code == 200:
                     content = json.loads(getReponse.content.decode())
                     # Check if custom metadata only
-                    exportedResults = content.get('properties').get('customProperties') if arguments.custom_metadata_only else content
+                    exportedResults = content.get('properties').get('customProperties', {}) if arguments.custom_metadata_only else content
                 else:
                     logger.error('Error while fetching the results from the link. Status code: %s', getReponse.status_code)
+            else:
+                # Check if custom metadata only
+                exportedResults = json.loads(exportedResults).get('properties').get('customProperties', {}) if arguments.custom_metadata_only else exportedResults
 
             if arguments.source_profile:
                 try:
