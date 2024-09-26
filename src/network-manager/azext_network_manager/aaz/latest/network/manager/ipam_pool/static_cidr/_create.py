@@ -84,10 +84,10 @@ class Create(AAZCommand):
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
-            help="Description of the resource."
+            help="Description of the resource.",
         )
         _args_schema.number_of_ip_addresses_to_allocate = AAZStrArg(
-            options=["--number-of-ip-addresses-to-allocate"],
+            options=["-a", "--allocate", "--number-of-ip-addresses-to-allocate"],
             arg_group="Properties",
             help="Number of IP addresses to allocate for a static CIDR resource. The IP addresses will be assigned based on IpamPools available space.",
         )

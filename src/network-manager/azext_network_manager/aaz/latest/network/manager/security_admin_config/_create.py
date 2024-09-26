@@ -78,7 +78,7 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.network_group_address_space_aggregation_option = AAZStrArg(
-            options=["--network-group-address-space-aggregation-option"],
+            options=["--aggregation", "--network-group-address-space-aggregation-option"],
             arg_group="Properties",
             help="Determine update behavior for changes to network groups referenced within the rules in this configuration.",
             enum={"Manual": "Manual", "None": "None"},

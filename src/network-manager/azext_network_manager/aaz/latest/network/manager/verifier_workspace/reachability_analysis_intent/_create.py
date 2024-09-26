@@ -79,10 +79,10 @@ class Create(AAZCommand):
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
-            help="Description of the resource."
+            help="Description of the resource.",
         )
         _args_schema.destination_resource_id = AAZResourceIdArg(
-            options=["--destination-resource-id"],
+            options=["--dest-resource-id", "--destination-resource-id"],
             arg_group="Properties",
             help="Destination resource id to verify the reachability path of.",
             required=True,

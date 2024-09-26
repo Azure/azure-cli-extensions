@@ -89,8 +89,8 @@ class Update(AAZCommand):
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
+            help="Description of the resource.",
             nullable=True,
-            help="Description of the resource."
         )
         return cls._args_schema
 

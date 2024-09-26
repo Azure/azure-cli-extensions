@@ -72,10 +72,9 @@ class Create(AAZCommand):
             arg_group="Body",
             help="The geo-location where the resource lives",
             required=True,
-            # todo: confirm
-            # fmt=AAZResourceLocationArgFormat(
-            #     resource_group_arg="resource_group",
-            # ),
+            fmt=AAZResourceLocationArgFormat(
+                resource_group_arg="resource_group",
+            ),
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
@@ -98,7 +97,7 @@ class Create(AAZCommand):
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
-            help="Description of the resource."
+            help="Description of the resource.",
         )
         _args_schema.display_name = AAZStrArg(
             options=["--display-name"],
