@@ -14896,6 +14896,15 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('agentPoolProfiles[0].securityProfile.sshAccess', 'Disabled'),
         ])
 
+        # create new nodepool without specifying ssh-access, should use disabled as default value because all existing
+        # nodepools has disabled ssh
+        add_nodepool_cmd = 'aks nodepool add -g {resource_group} --cluster-name {name} -n nodepool2 ' \
+                           '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/DisableSSHPreview'
+        self.cmd(add_nodepool_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('securityProfile.sshAccess', 'Disabled'),
+        ])
+
         # update nodepool
         update_nodepool_cmd = 'aks nodepool update --resource-group={resource_group} --cluster-name={name} ' \
                               '--name=nodepool1 --ssh-access localuser --yes ' \
@@ -14905,13 +14914,21 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             self.check('securityProfile.sshAccess', 'LocalUser'),
         ])
 
-        # create new nodepool
-        add_nodepool_cmd = 'aks nodepool add -g {resource_group} --cluster-name {name} -n nodepool2 ' \
-                           '--ssh-access localuser ' \
+        # Now the cluster's node pools has mixed ssh access, default value should be local user.
+        add_nodepool_cmd = 'aks nodepool add -g {resource_group} --cluster-name {name} -n nodepool3 ' \
                            '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/DisableSSHPreview'
         self.cmd(add_nodepool_cmd, checks=[
             self.check('provisioningState', 'Succeeded'),
             self.check('securityProfile.sshAccess', 'LocalUser'),
+        ])
+
+        # explicitly specify ssh-access as disabled should still work
+        add_nodepool_cmd = 'aks nodepool add -g {resource_group} --cluster-name {name} -n nodepool4 ' \
+                           '--ssh-access disabled ' \
+                           '--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/DisableSSHPreview'
+        self.cmd(add_nodepool_cmd, checks=[
+            self.check('provisioningState', 'Succeeded'),
+            self.check('securityProfile.sshAccess', 'Disabled'),
         ])
 
         # delete

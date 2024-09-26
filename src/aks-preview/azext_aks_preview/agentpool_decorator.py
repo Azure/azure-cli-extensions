@@ -37,6 +37,7 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_MACHINES,
     CONST_DEFAULT_NODE_VM_SIZE,
     CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
+    CONST_SSH_ACCESS_LOCALUSER,
 )
 from azext_aks_preview._helpers import get_nodepool_snapshot_by_snapshot_id
 
@@ -850,10 +851,41 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         self._ensure_agentpool(agentpool)
 
         ssh_access = self.context.get_ssh_access()
+        # Customer explicitly specified ssh_access, use the specified value
         if ssh_access is not None:
             if agentpool.security_profile is None:
                 agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
             agentpool.security_profile.ssh_access = ssh_access
+        # else use the smart default value deducted from existing node pool's value
+        else:
+            existing_agentpools = self.client.list(
+                self.context.get_resource_group_name(),
+                self.context.get_cluster_name(),
+            )
+            all_same = True
+            target_ssh_access = CONST_SSH_ACCESS_LOCALUSER
+            initialized = False
+            for existing_agentpool in existing_agentpools:
+                if not initialized:
+                    if existing_agentpool.security_profile is not None:
+                        target_ssh_access = existing_agentpool.security_profile.ssh_access
+                    initialized = True
+                    continue
+                existing_agentpool_behavior = CONST_SSH_ACCESS_LOCALUSER
+                if existing_agentpool.security_profile is not None:
+                    existing_agentpool_behavior = existing_agentpool.security_profile.ssh_access
+                if existing_agentpool_behavior != target_ssh_access:
+                    all_same = False
+                    break
+            if agentpool.security_profile is None:
+                agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
+            # If all existing node pools have the same ssh access, use that value; otherwise, use ssh enabled as the default value
+            if all_same:
+                agentpool.security_profile.ssh_access = target_ssh_access
+                logger.warning(f"SSH access is set to {target_ssh_access} becuase all existing node pools are using this value.")
+            else:
+                agentpool.security_profile.ssh_access = CONST_SSH_ACCESS_LOCALUSER
+                logger.warning(f"SSH access is set to {CONST_SSH_ACCESS_LOCALUSER} as the default value.")
         return agentpool
 
     def set_up_skip_gpu_driver_install(self, agentpool: AgentPool) -> AgentPool:

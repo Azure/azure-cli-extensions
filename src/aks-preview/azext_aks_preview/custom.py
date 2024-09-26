@@ -1215,7 +1215,7 @@ def aks_agentpool_add(
     node_public_ip_tags=None,
     enable_artifact_streaming=False,
     skip_gpu_driver_install=False,
-    ssh_access=CONST_SSH_ACCESS_LOCALUSER,
+    ssh_access=None,
     # trusted launch
     enable_secure_boot=False,
     enable_vtpm=False,

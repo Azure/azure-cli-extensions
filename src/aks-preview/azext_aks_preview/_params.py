@@ -1589,11 +1589,10 @@ def load_arguments(self, _):
             help="space-separated tags: key[=value] [key[=value] ...].",
         )
         c.argument('skip_gpu_driver_install', action='store_true', is_preview=True)
-        # in creation scenario, use "localuser" as default
+        # in create node pool scenario, use empty str as default to use smart CLI
         c.argument(
             'ssh_access',
             arg_type=get_enum_type(ssh_accesses),
-            default=CONST_SSH_ACCESS_LOCALUSER,
             is_preview=True,
         )
         # trusted launch
