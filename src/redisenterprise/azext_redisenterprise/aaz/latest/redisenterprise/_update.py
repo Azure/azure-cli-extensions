@@ -156,7 +156,7 @@ class Update(AAZCommand):
         _args_schema.capacity = AAZIntArg(
             options=["--capacity"],
             arg_group="Sku",
-            help="The size of the RedisEnterprise cluster. Defaults to 2 or 3 depending on SKU. Valid values are (2, 4, 6, ...) for Enterprise SKUs and (3, 9, 15, ...) for Flash SKUs.",
+            help="The size of the RedisEnterprise cluster. Defaults to 2 or 3 or not applicable depending on SKU. Valid values are (2, 4, 6, ...) for Enterprise_* SKUs and (3, 9, 15, ...) for EnterpriseFlash_* SKUs. For other SKUs capacity argument is not supported.",
             nullable=True,
         )
         _args_schema.sku = AAZStrArg(
