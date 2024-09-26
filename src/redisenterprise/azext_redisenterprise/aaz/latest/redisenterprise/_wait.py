@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}", "2023-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}", "2024-09-01-preview"],
         ]
     }
 
@@ -45,6 +45,9 @@ class Wait(AAZWaitCommand):
             help="The name of the RedisEnterprise cluster.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -116,7 +119,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01-preview",
+                    "api-version", "2024-09-01-preview",
                     required=True,
                 ),
             }
@@ -165,11 +168,6 @@ class Wait(AAZWaitCommand):
             _schema_on_200.sku = AAZObjectType(
                 flags={"required": True},
             )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _WaitHelper._build_schema_system_data_read(_schema_on_200.system_data)
             _schema_on_200.tags = AAZDictType()
             _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
@@ -207,6 +205,9 @@ class Wait(AAZWaitCommand):
 
             properties = cls._schema_on_200.properties
             properties.encryption = AAZObjectType()
+            properties.high_availability = AAZStrType(
+                serialized_name="highAvailability",
+            )
             properties.host_name = AAZStrType(
                 serialized_name="hostName",
                 flags={"read_only": True},
@@ -224,6 +225,10 @@ class Wait(AAZWaitCommand):
             )
             properties.redis_version = AAZStrType(
                 serialized_name="redisVersion",
+                flags={"read_only": True},
+            )
+            properties.redundancy_mode = AAZStrType(
+                serialized_name="redundancyMode",
                 flags={"read_only": True},
             )
             properties.resource_state = AAZStrType(
@@ -265,11 +270,6 @@ class Wait(AAZWaitCommand):
             _element.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
-            _element.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _WaitHelper._build_schema_system_data_read(_element.system_data)
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -316,50 +316,6 @@ class Wait(AAZWaitCommand):
 
 class _WaitHelper:
     """Helper class for Wait"""
-
-    _schema_system_data_read = None
-
-    @classmethod
-    def _build_schema_system_data_read(cls, _schema):
-        if cls._schema_system_data_read is not None:
-            _schema.created_at = cls._schema_system_data_read.created_at
-            _schema.created_by = cls._schema_system_data_read.created_by
-            _schema.created_by_type = cls._schema_system_data_read.created_by_type
-            _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
-            _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
-            _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
-            return
-
-        cls._schema_system_data_read = _schema_system_data_read = AAZObjectType(
-            flags={"read_only": True}
-        )
-
-        system_data_read = _schema_system_data_read
-        system_data_read.created_at = AAZStrType(
-            serialized_name="createdAt",
-        )
-        system_data_read.created_by = AAZStrType(
-            serialized_name="createdBy",
-        )
-        system_data_read.created_by_type = AAZStrType(
-            serialized_name="createdByType",
-        )
-        system_data_read.last_modified_at = AAZStrType(
-            serialized_name="lastModifiedAt",
-        )
-        system_data_read.last_modified_by = AAZStrType(
-            serialized_name="lastModifiedBy",
-        )
-        system_data_read.last_modified_by_type = AAZStrType(
-            serialized_name="lastModifiedByType",
-        )
-
-        _schema.created_at = cls._schema_system_data_read.created_at
-        _schema.created_by = cls._schema_system_data_read.created_by
-        _schema.created_by_type = cls._schema_system_data_read.created_by_type
-        _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
-        _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
-        _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
 
 
 __all__ = ["Wait"]

@@ -5,6 +5,10 @@ Release History
 upcoming
 ++++++
 
+1.0.0b3
+++++++
+* Update models to support new properties with --yaml for api-version 2024-02-02-preview
+
 1.0.0b2
 ++++++
 * 'az containerapp create': Fix container app create with registry msi

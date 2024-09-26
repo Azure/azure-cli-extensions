@@ -11,7 +11,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 9.0.0b4
 +++++++
-* Add `--driver-type` to the `az aks nodepool add` command.
+* Set the --node-vm-size to empty string when the cluster sku name is automatic. The node vm size will pick from the candidate toggle based on the logic in automatic vm selection.
+* Removed some features preview flag that automatic depends on in the test_aks_commands.py
 
 9.0.0b3
 +++++++
