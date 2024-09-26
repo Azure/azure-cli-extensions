@@ -35,6 +35,7 @@ from .action import (
     AddConfigurationProtectedSettings,
 )
 
+
 features_types = CLIArgumentType(nargs="+", choices=CaseInsensitiveList(Feature_Values))
 
 
