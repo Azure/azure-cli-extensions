@@ -12088,12 +12088,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--ssh-key-value={ssh_key_value} "
             "--vm-set-type=VirtualMachines "
             "--vm-sizes=Standard_D4s_v3,Standard_D8s_v3 "
-            "--node-count=2 "
-            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
+            "--node-count=2 ",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("agentPoolProfiles[0].type", "VirtualMachines"),
-                self.check("agentPoolProfiles[0].vmSize", ""),
+                self.check("agentPoolProfiles[0].vmSize", None),
                 self.check("agentPoolProfiles[0].count", None),
                 self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].sizes[0]", "Standard_D4s_v3"),
                 self.check("agentPoolProfiles[0].virtualMachinesProfile.scale.manual[0].sizes[1]", "Standard_D8s_v3"),
@@ -12119,12 +12118,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--name={node_pool_name} "
             "--vm-set-type=VirtualMachines "
             "--vm-sizes=Standard_D4s_v3,Standard_D8s_v3 "
-            "--node-count=2 "
-            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
+            "--node-count=2 ",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("typePropertiesType", "VirtualMachines"),
-                self.check("vmSize", ""),
+                self.check("vmSize", None),
                 self.check("count", None),
                 self.check("virtualMachinesProfile.scale.manual[0].sizes[0]", "Standard_D4s_v3"),
                 self.check("virtualMachinesProfile.scale.manual[0].sizes[1]", "Standard_D8s_v3"),
@@ -12154,7 +12152,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("typePropertiesType", "VirtualMachines"),
-                self.check("vmSize", ""),
+                self.check("vmSize", None),
                 self.check("count", None),
                 self.check("virtualMachinesProfile.scale.manual[1].sizes[0]", "Standard_D2s_v3"),
                 self.check("virtualMachinesProfile.scale.manual[1].sizes[1]", "Standard_DS2_v2"),
@@ -12173,7 +12171,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("typePropertiesType", "VirtualMachines"),
-                self.check("vmSize", ""),
+                self.check("vmSize", None),
                 self.check("count", None),
                 self.check("virtualMachinesProfile.scale.manual[1].sizes[0]", "Standard_D2s_v3"),
                 self.check("virtualMachinesProfile.scale.manual[1].sizes[1]", "Standard_DS2_v2"),
