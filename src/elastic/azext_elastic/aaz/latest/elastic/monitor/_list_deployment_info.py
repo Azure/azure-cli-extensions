@@ -22,9 +22,9 @@ class ListDeploymentInfo(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/listdeploymentinfo", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/listdeploymentinfo", "2024-06-15-preview"],
         ]
     }
 
@@ -49,6 +49,9 @@ class ListDeploymentInfo(AAZCommand):
             help="Monitor resource name",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -120,7 +123,7 @@ class ListDeploymentInfo(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -161,31 +164,51 @@ class ListDeploymentInfo(AAZCommand):
                 serialized_name="diskCapacity",
                 flags={"read_only": True},
             )
+            _schema_on_200.elasticsearch_end_point = AAZStrType(
+                serialized_name="elasticsearchEndPoint",
+                flags={"read_only": True},
+            )
             _schema_on_200.marketplace_saas_info = AAZObjectType(
                 serialized_name="marketplaceSaasInfo",
+                flags={"read_only": True},
             )
             _schema_on_200.memory_capacity = AAZStrType(
                 serialized_name="memoryCapacity",
                 flags={"read_only": True},
             )
-            _schema_on_200.status = AAZStrType()
+            _schema_on_200.status = AAZStrType(
+                flags={"read_only": True},
+            )
             _schema_on_200.version = AAZStrType(
                 flags={"read_only": True},
             )
 
             marketplace_saas_info = cls._schema_on_200.marketplace_saas_info
+            marketplace_saas_info.billed_azure_subscription_id = AAZStrType(
+                serialized_name="billedAzureSubscriptionId",
+            )
             marketplace_saas_info.marketplace_name = AAZStrType(
                 serialized_name="marketplaceName",
             )
             marketplace_saas_info.marketplace_resource_id = AAZStrType(
                 serialized_name="marketplaceResourceId",
             )
+            marketplace_saas_info.marketplace_status = AAZStrType(
+                serialized_name="marketplaceStatus",
+            )
             marketplace_saas_info.marketplace_subscription = AAZObjectType(
                 serialized_name="marketplaceSubscription",
             )
+            marketplace_saas_info.subscribed = AAZBoolType()
 
             marketplace_subscription = cls._schema_on_200.marketplace_saas_info.marketplace_subscription
             marketplace_subscription.id = AAZStrType()
+            marketplace_subscription.offer_id = AAZStrType(
+                serialized_name="offerId",
+            )
+            marketplace_subscription.publisher_id = AAZStrType(
+                serialized_name="publisherId",
+            )
 
             return cls._schema_on_200
 

@@ -18,9 +18,11 @@ from ._delete import *
 from ._delete_traffic_filter import *
 from ._detach_and_delete_traffic_filter import *
 from ._detach_traffic_filter import *
+from ._get_billing_info import *
 from ._list import *
 from ._list_all_traffic_filter import *
 from ._list_associated_traffic_filter import *
+from ._list_connected_partner_resource import *
 from ._list_deployment_info import *
 from ._list_resource import *
 from ._list_upgradable_version import *
