@@ -155,10 +155,9 @@ class NetworkScenarioTest(ScenarioTest):
         })
 
         self.cmd('network manager create --name {manager_name} --description "My Test Network Manager" '
-                 '--scope-accesses "SecurityAdmin" '
+                 '--scope-accesses "SecurityAdmin" "Connectivity" '
                  '--network-manager-scopes subscriptions={sub} -l eastus2 --resource-group {rg}')
 
-        #todo
         self.cmd('network manager security-admin-config create --configuration-name {name} --network-manager-name {manager_name} -g {rg} '
                  '--description {description}')
 
