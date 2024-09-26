@@ -4,33 +4,20 @@
 # --------------------------------------------------------------------------------------------
 
 
-def print_managementpartner(partnerresponse):
-    partner = {}
-    partner["objectId"] = partnerresponse.object_id
-    partner["partnerId"] = partnerresponse.partner_id
-    partner["tenantId"] = partnerresponse.tenant_id
-    partner["state"] = partnerresponse.state
-    partner["partnerName"] = partnerresponse.partner_name
-    return partner
+
+from azure.cli.core.aaz import has_value
+from .aaz.latest.managementpartner import Show as _Show
 
 
-def xstr(s):
-    if s is None:
-        return ""
-    return str(s)
+class Show(_Show):
 
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        _args_schema = super()._build_arguments_schema(*args, **kwargs)
+        _args_schema.partner_id._required = False
+        return _args_schema
 
-def create_managementpartner(client, partner_id):
-    return print_managementpartner(client.create(partner_id))
-
-
-def get_managementpartner(client, partner_id=None):
-    return print_managementpartner(client.get(xstr(partner_id)))
-
-
-def update_managementpartner(client, partner_id):
-    return print_managementpartner(client.update(partner_id))
-
-
-def delete_managementpartner(client, partner_id):
-    return client.delete(partner_id)
+    def pre_operations(self):
+        args = self.ctx.args
+        if not has_value(args.partner_id):
+            args.partner_id = ''
