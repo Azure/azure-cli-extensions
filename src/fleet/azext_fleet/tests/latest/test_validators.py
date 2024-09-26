@@ -195,6 +195,22 @@ class TestValidateVmSize(unittest.TestCase):
 
         self.assertIsNone(validators.validate_vm_size(namespace))
 
+class TestValidateUpdateStrategyId(unittest.TestCase):
+    def test_invalid_update_strategy_id(self):
+        invalid_update_strategy_id = "dummy update strategy id"
+        namespace = UpdateStrategyNamespace(update_strategy_name=invalid_update_strategy_id)
+        err = ("--update-strategy-name is not a valid name")
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_update_strategy_name(namespace)
+        self.assertEqual(str(cm.exception), err)
+    
+    def test_valid_update_strategy_id(self):
+        valid_update_strategy_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgname/providers/Microsoft.ContainerService/fleets/flt/updateStrategies/strategy-1"
+        namespace = UpdateStrategyNamespace(update_strategy_name=valid_update_strategy_id)
+
+        self.assertIsNone(validators.validate_update_strategy_name(namespace))
+
 
 if __name__ == "__main__":
     unittest.main()
