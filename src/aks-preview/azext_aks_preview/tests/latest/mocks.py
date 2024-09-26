@@ -26,7 +26,7 @@ class MockClient:
     def get(self):
         pass
 
-    def list(self):
+    def list(self, resource_group_name: str, resource_name: str):
         pass
 
     def begin_create_or_update(
