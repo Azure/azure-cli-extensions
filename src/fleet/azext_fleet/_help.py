@@ -351,9 +351,9 @@ helps['fleet autoupgradeprofile create'] = """
     short-summary: Creates or updates an auto upgrade profile.
     examples:
         - name: Create an auto upgrade profile with channel 'Rapid' and disabled by default.
-          text: az fleet autoupgradeprofile create -g MyFleetResourceGroup -l MyLocation -f MyFleetName -n MyAutoUpgradeProfileName -c Rapid --disabled
+          text: az fleet autoupgradeprofile create -g MyFleetResourceGroup -f MyFleetName -n MyAutoUpgradeProfileName -c Rapid --disabled
         - name: Create an auto upgrade profile with channel 'NodeImage'.
-          text: az fleet autoupgradeprofile create -g MyFleetResourceGroup -l MyLocation -f MyFleetName -n MyAutoUpgradeProfileName -c NodeImage
+          text: az fleet autoupgradeprofile create -g MyFleetResourceGroup -f MyFleetName -n MyAutoUpgradeProfileName -c NodeImage
 """
 
 helps['fleet autoupgradeprofile delete'] = """
@@ -361,7 +361,7 @@ helps['fleet autoupgradeprofile delete'] = """
     short-summary: Deletes an auto upgrade profile.
     examples:
         - name: Delete an auto upgrade profile.
-          text: az fleet autoupgradeprofile delete -g MyFleetResourceGroup -l MyLocation -f MyFleetName -n MyAutoUpgradeProfileName
+          text: az fleet autoupgradeprofile delete -g MyFleetResourceGroup -f MyFleetName -n MyAutoUpgradeProfileName
 """
 
 helps['fleet autoupgradeprofile show'] = """
@@ -369,7 +369,7 @@ helps['fleet autoupgradeprofile show'] = """
     short-summary: Shows an auto upgrade profile.
     examples:
         - name: Show the details of an auto upgrade profile.
-          text: az fleet autoupgradeprofile show -g MyFleetResourceGroup -l MyLocation -f MyFleetName -n MyAutoUpgradeProfileName
+          text: az fleet autoupgradeprofile show -g MyFleetResourceGroup -f MyFleetName -n MyAutoUpgradeProfileName
 """
 
 helps['fleet autoupgradeprofile list'] = """
@@ -377,7 +377,7 @@ helps['fleet autoupgradeprofile list'] = """
     short-summary: Lists all auto upgrade profiles for a given fleet.
     examples:
         - name: List auto upgrade profiles of a fleet.
-          text: az fleet autouprgadeprofile list -g MyFleetResourceGroup -l MyLocation -f MyFleetName
+          text: az fleet autouprgadeprofile list -g MyFleetResourceGroup -f MyFleetName
 """
 
 helps['fleet autoupgradeprofile wait'] = """
