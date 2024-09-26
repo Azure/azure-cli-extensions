@@ -34,9 +34,9 @@ from azext_aks_preview._consts import (
 from azure.cli.command_modules.acs.agentpool_decorator import AKSAgentPoolParamDict
 from azure.cli.command_modules.acs.tests.latest.mocks import (
     MockCLI,
-    MockClient,
     MockCmd,
 )
+from azext_aks_preview.tests.latest.mocks import MockClient
 from azure.cli.core.azclierror import (
     CLIInternalError,
     InvalidArgumentValueError,
