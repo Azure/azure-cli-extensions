@@ -253,6 +253,14 @@ def create_connectedk8s(
     if disable_auto_upgrade:
         arc_agent_profile = ArcAgentProfile(agent_auto_upgrade="Disabled")
 
+    oidc_profile = None
+    if enable_oidc_issuer:
+        oidc_profile = set_oidc_issuer_profile(enable_oidc_issuer)
+
+    security_profile = None
+    if enable_workload_identity:
+        security_profile = set_security_profile(enable_workload_identity)
+
     # Checking whether optional extra values file has been provided.
     values_file = utils.get_values_file()
     if cmd.cli_ctx.cloud.endpoints.resource_manager == consts.Dogfood_RMEndpoint:
@@ -653,8 +661,8 @@ def create_connectedk8s(
                     private_link_scope_resource_id,
                     distribution_version,
                     azure_hybrid_benefit,
-                    enable_oidc_issuer,
-                    enable_workload_identity,
+                    oidc_profile,
+                    security_profile,
                     gateway,
                     arc_agentry_configurations,
                     arc_agent_profile,
@@ -854,6 +862,14 @@ def create_connectedk8s(
         )
         raise CLIInternalError("Failed to export private key." + str(e))
 
+    # Perform validation for self hosted issuer and set oidc issuer profile
+    if enable_oidc_issuer:
+        if self_hosted_issuer == "" and kubernetes_distro in consts.Public_Cloud_Distribution_List:
+            raise ValidationError(
+                f"Self hosted issuer is required for {kubernetes_distro} cluster when OIDC issuer is being enabled."
+            )
+        oidc_profile = set_oidc_issuer_profile(enable_oidc_issuer, self_hosted_issuer)
+
     print("Step: {}: Generating ARM Request Payload".format(utils.get_utctimestring()))
     # Generate request payload
     cc = generate_request_payload(
@@ -866,12 +882,11 @@ def create_connectedk8s(
         private_link_scope_resource_id,
         distribution_version,
         azure_hybrid_benefit,
-        enable_oidc_issuer,
-        enable_workload_identity,
+        oidc_profile,
+        security_profile,
         gateway,
         arc_agentry_configurations,
         arc_agent_profile,
-        self_hosted_issuer,
     )
 
     print(
@@ -1542,12 +1557,11 @@ def generate_request_payload(
     private_link_scope_resource_id,
     distribution_version,
     azure_hybrid_benefit,
-    enable_oidc_issuer,
-    enable_workload_identity,
+    oidc_profile,
+    security_profile,
     gateway,
     arc_agentry_configurations,
     arc_agent_profile,
-    self_hosted_issuer="",
 ):
     # Create connected cluster resource object
     identity = ConnectedClusterIdentity(type="SystemAssigned")
@@ -1566,24 +1580,18 @@ def generate_request_payload(
         enable_private_link is not None
         or distribution_version is not None
         or azure_hybrid_benefit is not None
-        or enable_oidc_issuer
-        or enable_workload_identity
+        or oidc_profile is not None
+        or security_profile is not None
         or gateway is not None
         or arc_agentry_configurations is not None
         or arc_agent_profile is not None
     ):
         # Set additional parameters
-        private_link_state, oidc_issuer, security_profile = None, None, None
+        private_link_state = None
         if enable_private_link is not None:
             private_link_state = (
                 "Enabled" if enable_private_link is True else "Disabled"
             )
-        if enable_oidc_issuer:
-            oidc_issuer = set_oidc_issuer_profile(
-                enable_oidc_issuer, self_hosted_issuer
-            )
-        if enable_workload_identity:
-            security_profile = set_security_profile(enable_workload_identity)
 
         cc = ConnectedCluster2024_07_01_Preview(
             location=location,
@@ -1599,7 +1607,7 @@ def generate_request_payload(
             arc_agent_profile=arc_agent_profile,
             gateway=gateway,
             arc_agentry_configurations=arc_agentry_configurations,
-            oidc_issuer_profile=oidc_issuer,
+            oidc_issuer_profile=oidc_profile,
             security_profile=security_profile,
         )
 
@@ -1608,21 +1616,18 @@ def generate_request_payload(
 
 def generate_reput_request_payload(
     cc,
-    enable_oidc_issuer,
-    enable_workload_identity,
-    self_hosted_issuer,
+    oidc_profile,
+    security_profile,
     gateway,
     arc_agentry_configurations,
     arc_agent_profile,
 ):
     # Update connected cluster resource object
-    if enable_oidc_issuer is not None:
-        cc.oidc_issuer_profile = set_oidc_issuer_profile(
-            enable_oidc_issuer, self_hosted_issuer
-        )
+    if oidc_profile is not None:
+        cc.oidc_issuer_profile = oidc_profile
 
-    if enable_workload_identity is not None:
-        cc.security_profile = set_security_profile(enable_workload_identity)
+    if security_profile is not None:
+        cc.security_profile = security_profile
 
     if gateway is not None:
         cc.gateway = gateway
@@ -2033,14 +2038,6 @@ def update_connected_cluster(
         )
         utils.user_confirmation(confirmation_message, yes)
 
-    # Validation for the workload identity webhook parameter
-    if enable_workload_identity is not None and disable_workload_identity is not None:
-        raise InvalidArgumentValueError(
-            "Do not specify both enable-workload-identity and disable-workload-identity at the same time."
-        )
-    if disable_workload_identity is True:
-        enable_workload_identity = False
-
     # Send cloud information to telemetry
     send_cloud_telemetry(cmd)
 
@@ -2158,6 +2155,7 @@ def update_connected_cluster(
         and arm_properties_unset
         and not container_log_path
         and enable_oidc_issuer is None
+        and disable_workload_identity is None
         and enable_workload_identity is None
         and gateway_resource_id == ""
         and not disable_gateway
@@ -2217,6 +2215,11 @@ def update_connected_cluster(
 
     telemetry.add_extension_event("connectedk8s", kubernetes_properties)
 
+    # Get the connected cluster resource using latest api version and generate reput request payload
+    connected_cluster = get_connectedk8s_2024_07_01(
+        cmd, resource_group_name, cluster_name
+    )
+
     # If gateway is enabled
     gateway = None
     if gateway_resource_id != "":
@@ -2233,15 +2236,26 @@ def update_connected_cluster(
             else ArcAgentProfile(agent_auto_upgrade="Disabled")
         )
 
-    # Get the connected cluster resource using latest api version and generate reput request payload
-    connected_cluster = get_connectedk8s_2024_07_01(
-        cmd, resource_group_name, cluster_name
-    )
+    # Set enable workload identity
+    if disable_workload_identity is True:
+        enable_workload_identity = False
+    security_profile = None
+    if enable_workload_identity is not None:
+        security_profile = set_security_profile(enable_workload_identity)
+
+    # Perform validation for self hosted issuer and set oidc issuer profile
+    oidc_profile = None
+    if enable_oidc_issuer:
+        if self_hosted_issuer == "" and kubernetes_distro in consts.Public_Cloud_Distribution_List:
+            raise ValidationError(
+                f"Self hosted issuer is required for {kubernetes_distro} cluster when OIDC issuer is being enabled."
+            )
+        oidc_profile = set_oidc_issuer_profile(enable_oidc_issuer, self_hosted_issuer)
+
     cc = generate_reput_request_payload(
         connected_cluster,
-        enable_oidc_issuer,
-        enable_workload_identity,
-        self_hosted_issuer,
+        oidc_profile,
+        security_profile,
         gateway,
         arc_agentry_configurations,
         arc_agent_profile,
@@ -4767,8 +4781,8 @@ def check_operation_support(operation_name, agent_version):
 
 
 def add_config_protected_settings(
-    https_proxy,
     http_proxy,
+    https_proxy,
     no_proxy,
     proxy_cert,
     container_log_path,
