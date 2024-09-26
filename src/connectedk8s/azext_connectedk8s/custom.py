@@ -861,7 +861,7 @@ def create_connectedk8s(
             summary="Failed to export private key",
         )
         raise CLIInternalError("Failed to export private key." + str(e))
-    
+
     # Perform validation for self hosted issuer and set oidc issuer profile
     if enable_oidc_issuer:
         if self_hosted_issuer == "" and kubernetes_distro in consts.Public_Cloud_Distribution_List:
@@ -1580,14 +1580,14 @@ def generate_request_payload(
         enable_private_link is not None
         or distribution_version is not None
         or azure_hybrid_benefit is not None
-        or enable_oidc_issuer
-        or enable_workload_identity
+        or oidc_profile is not None
+        or security_profile is not None
         or gateway is not None
         or arc_agentry_configurations is not None
         or arc_agent_profile is not None
     ):
         # Set additional parameters
-        private_link_state, oidc_issuer, security_profile = None, None, None
+        private_link_state = None
         if enable_private_link is not None:
             private_link_state = (
                 "Enabled" if enable_private_link is True else "Disabled"
@@ -2155,6 +2155,7 @@ def update_connected_cluster(
         and arm_properties_unset
         and not container_log_path
         and enable_oidc_issuer is None
+        and disable_workload_identity is None
         and enable_workload_identity is None
         and gateway_resource_id == ""
         and not disable_gateway

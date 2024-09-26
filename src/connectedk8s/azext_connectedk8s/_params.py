@@ -23,9 +23,12 @@ from azext_connectedk8s._constants import (
 from knack.arguments import CLIArgumentType, CaseInsensitiveList
 
 from ._validators import (
-    validate_private_link_properties,
     override_client_request_id_header,
+    validate_enable_oidc_issuer_updates,
     validate_gateway_updates,
+    validate_private_link_properties,
+    validate_self_hosted_issuer,
+    validate_workload_identity_updates,
 )
 from .action import (
     AddConfigurationSettings,
@@ -170,6 +173,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "enable_oidc_issuer",
+            arg_type=get_three_state_flag(),
             options_list=["--enable-oidc-issuer"],
             arg_group="Workload Identity",
             help="Enable creation of OIDC issuer url used for workload identity federation",
@@ -185,6 +189,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "enable_workload_identity",
+            arg_type=get_three_state_flag(),
             options_list=["--enable-workload-identity", "--enable-wi"],
             arg_group="Workload Identity",
             help="Enable workload identity webhook",
@@ -301,10 +306,12 @@ def load_arguments(self, _):
         )
         c.argument(
             "enable_oidc_issuer",
+            arg_type=get_three_state_flag(),
             options_list=["--enable-oidc-issuer"],
             arg_group="Workload Identity",
             help="Enable creation of OIDC issuer url used for workload identity federation",
             is_preview=True,
+            validator=validate_enable_oidc_issuer_updates,
         )
         c.argument(
             "self_hosted_issuer",
@@ -316,6 +323,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "enable_workload_identity",
+            arg_type=get_three_state_flag(),
             options_list=["--enable-workload-identity", "--enable-wi"],
             arg_group="Workload Identity",
             help="Enable workload identity webhook",
@@ -324,6 +332,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "disable_workload_identity",
+            arg_type=get_three_state_flag(),
             options_list=["--disable-workload-identity", "--disable-wi"],
             arg_group="Workload Identity",
             help="Disable workload identity webhook",
