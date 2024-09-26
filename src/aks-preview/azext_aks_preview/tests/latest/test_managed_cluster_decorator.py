@@ -4249,6 +4249,9 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
             gpu_instance_profile="test_gpu_instance_profile",
             workload_runtime=CONST_WORKLOAD_RUNTIME_OCI_CONTAINER,
             network_profile=self.models.AgentPoolNetworkProfile(),
+            security_profile=self.models.AgentPoolSecurityProfile(
+                ssh_access=CONST_SSH_ACCESS_LOCALUSER
+            )
         )
         ground_truth_mc_1 = self.models.ManagedCluster(location="test_location")
         ground_truth_mc_1.agent_pool_profiles = [ground_truth_agentpool_profile_1]
