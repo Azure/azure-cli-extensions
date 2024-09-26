@@ -18,7 +18,7 @@ import requests
 from knack.log import get_logger
 from knack.util import CLIError
 import chardet
-from azure.cli.core.aaz._arg import AAZStrArg
+from azure.cli.core.aaz._arg import AAZStrArg, AAZBoolArg
 from .command_patches import ImportAPIDefinitionExtension
 from .command_patches import ExportAPIDefinitionExtension
 from .command_patches import ExportMetadataExtension
@@ -105,6 +105,12 @@ class ExportMetadataSchemaExtension(ExportMetadataExtension):
             required=True,
             registered=True
         )
+        args_schema.custom_metadata_only = AAZBoolArg(
+            options=["--custom-metadata-only"],
+            help='Export only custom metadata.',
+            required=False,
+            blank=True
+        )
         return args_schema
 
     def _output(self, *args, **kwargs):
@@ -118,9 +124,14 @@ class ExportMetadataSchemaExtension(ExportMetadataExtension):
             if response_format == 'link':
                 getReponse = requests.get(exportedResults, timeout=10)
                 if getReponse.status_code == 200:
-                    exportedResults = getReponse.content.decode()
+                    content = json.loads(getReponse.content.decode())
+                    # Check if custom metadata only
+                    exportedResults = content.get('properties').get('customProperties', {}) if arguments.custom_metadata_only else content
                 else:
                     logger.error('Error while fetching the results from the link. Status code: %s', getReponse.status_code)
+            else:
+                # Check if custom metadata only
+                exportedResults = json.loads(exportedResults).get('properties').get('customProperties', {}) if arguments.custom_metadata_only else exportedResults
 
             if arguments.source_profile:
                 try:
