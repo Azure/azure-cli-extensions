@@ -36,7 +36,6 @@ from azext_aks_preview._consts import (
     CONST_AVAILABILITY_SET,
     CONST_VIRTUAL_MACHINES,
     CONST_DEFAULT_NODE_VM_SIZE,
-    CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE,
     CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
 )
 from azext_aks_preview._helpers import get_nodepool_snapshot_by_snapshot_id
@@ -164,7 +163,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 sku = self.raw_param.get("sku")
                 # if --node-vm-size is not specified, but --sku automatic is explicitly specified
                 if sku is not None and sku == "automatic":
-                    node_vm_size = CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE
+                    node_vm_size = ""
 
         # this parameter does not need validation
         return node_vm_size

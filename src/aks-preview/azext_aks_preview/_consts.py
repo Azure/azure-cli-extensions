@@ -44,7 +44,6 @@ CONST_VIRTUAL_MACHINES = "VirtualMachines"
 
 # vm size
 CONST_DEFAULT_NODE_VM_SIZE = "Standard_DS2_v2"
-CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE = "Standard_DS4_v2"
 CONST_DEFAULT_WINDOWS_NODE_VM_SIZE = "Standard_D2s_v3"
 
 # workload runtime
