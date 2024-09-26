@@ -12,11 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "azure-terraform",
-    is_preview=True,
+    "elastic get elastic organization-to-azure",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Azure Terraform experience
+    """Manage to get Elastic organization
     """
     pass
 
