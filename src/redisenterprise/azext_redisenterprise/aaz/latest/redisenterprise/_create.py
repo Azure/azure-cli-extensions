@@ -133,6 +133,7 @@ class Create(AAZCommand):
             options=["--high-availability"],
             arg_group="Properties",
             help="Enabled by default. If highAvailability is disabled, the data set is not replicated. This affects the availability SLA, and increases the risk of data loss.",
+            is_preview=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.minimum_tls_version = AAZStrArg(

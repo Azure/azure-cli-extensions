@@ -139,6 +139,7 @@ class Update(AAZCommand):
             options=["--high-availability"],
             arg_group="Properties",
             help="Enabled by default. If highAvailability is disabled, the data set is not replicated. This affects the availability SLA, and increases the risk of data loss.",
+            is_preview=True,
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
