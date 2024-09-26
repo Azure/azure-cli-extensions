@@ -16,7 +16,7 @@ def step_create(test, checks=None, cache_num=1):
     if test.kwargs.get('no_database'):
         test.cmd('az redisenterprise create '
                  '--cluster-name "{cluster}" '
-                 '--location "East US" '
+                 '--location "WEST US 3" '
                  '--sku "EnterpriseFlash_F300" '
                  '--tags tag1="value1" '
                  '--no-database '
@@ -27,14 +27,14 @@ def step_create(test, checks=None, cache_num=1):
             test.cmd('az redisenterprise create '
                         '--cluster-name "{cluster31}" '
                         '--sku "EnterpriseFlash_F300" '
-                        '--location "East US" '
+                        '--location "WEST US 3" '
                         '--tags tag1="value1" '
                         '--no-database '
                         '--resource-group "{rg31}"',
                         checks=checks)
         elif cache_num == 2:
                 test.cmd('az redisenterprise create '
-                     '--location "West US" '
+                     '--location "WEST US 3" '
                      '--cluster-name "{cluster32}" '
                      '--sku "EnterpriseFlash_F300" '
                      '--client-protocol "Encrypted" '
@@ -51,9 +51,9 @@ def step_create(test, checks=None, cache_num=1):
                  '--cluster-name "{cluster}" '
                  '--sku "Enterprise_E20" '
                  '--capacity 4 '
-                 '--location "East US" '
+                 '--location "WEST US 3" '
                  '--tags tag1="value1" '
-                 '--zones "1" "2" "3" '
+                 #'--zones "1" "2" "3" '
                  '--minimum-tls-version "1.2" '
                  '--client-protocol "Encrypted" '
                  '--clustering-policy "EnterpriseCluster" '

@@ -9,6 +9,15 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
+9.0.0b4
++++++++
+* Set the --node-vm-size to empty string when the cluster sku name is automatic. The node vm size will pick from the candidate toggle based on the logic in automatic vm selection.
+* Removed some features preview flag that automatic depends on in the test_aks_commands.py
+
+9.0.0b3
++++++++
+* Add `--undrainable-node-behavior` to the `az aks nodepool add/update/upgrade` commands.
+
 9.0.0b2
 +++++++
 * Add block to supported outbound type
