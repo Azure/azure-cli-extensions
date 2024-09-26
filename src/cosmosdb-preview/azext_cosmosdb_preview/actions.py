@@ -196,8 +196,14 @@ class AddMongoVCoreCollectionAction(argparse._AppendAction):
         host_name = None
         connection_string_key_vault_uri = None
 
-        for (k, v) in (x.split('=', 1) for x in values):
-            kl = k.lower()
+        for x in values:
+            kvp = x.split('=', 1)
+            if len(kvp) != 2:
+                # pylint: disable=line-too-long
+                raise CLIError('usage error: --dest-mongo-vcore [connectionStringKeyVaultUri=ConnectionStringKeyVaultUri database=DatabaseName ...]')
+
+            kl = kvp[0].lower()
+            v = kvp[1]
             if kl == 'database':
                 database_name = v
 
