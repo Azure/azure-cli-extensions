@@ -12089,8 +12089,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--ssh-key-value={ssh_key_value} "
             "--vm-set-type=VirtualMachines "
             "--vm-sizes=Standard_D4s_v3,Standard_D8s_v3 "
-            "--node-count=2 ",
-            # "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
+            "--node-count=2 "
+            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("agentPoolProfiles[0].type", "VirtualMachines"),
@@ -12120,8 +12120,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--name={node_pool_name} "
             "--vm-set-type=VirtualMachines "
             "--vm-sizes=Standard_D4s_v3,Standard_D8s_v3 "
-            "--node-count=2 ",
-            # "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
+            "--node-count=2 "
+            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("typePropertiesType", "VirtualMachines"),
