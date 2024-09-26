@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}", "2024-06-15-preview"],
         ]
     }
 
@@ -49,6 +49,9 @@ class Create(AAZCommand):
             options=["-n", "--name", "--monitor-name"],
             help="Monitor resource name",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -68,7 +71,6 @@ class Create(AAZCommand):
             options=["--sku"],
             arg_group="Body",
             help={"short-summary": "SKU of the monitor resource.", "long-summary": "The SKU depends on the Elasticsearch Plans available for your account and is a combination of PlanID_Term.\nEx: If the plan ID is \"planXYZ\" and term is \"Yearly\", the SKU will be \"planXYZ_Yearly\".\nYou may find your eligible plans at https://portal.azure.com/#view/Microsoft_Azure_Marketplace/GalleryItemDetailsBladeNopdl/id/elastic.ec-azure-pp or in the online documentation at https://azuremarketplace.microsoft.com/en-us/marketplace/apps/elastic.ec-azure-pp?tab=PlansAndPrice for more details or in case of any issues with the SKU."},
-            is_experimental=True,
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
@@ -100,6 +102,31 @@ class Create(AAZCommand):
             help="Flag specifying if the resource monitoring is enabled or disabled.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
+        _args_schema.plan_details = AAZObjectArg(
+            options=["--plan-details"],
+            arg_group="Properties",
+            help="Plan details of the monitor resource.",
+        )
+        _args_schema.saa_s_azure_subscription_status = AAZStrArg(
+            options=["-s","--saa-s-azure-subscription-status"],
+            arg_group="Properties",
+            help="Status of Azure Subscription where Marketplace SaaS is located.",
+        )
+        _args_schema.source_campaign_id = AAZStrArg(
+            options=["--source-campaign-id"],
+            arg_group="Properties",
+            help="A unique identifier associated with the campaign.",
+        )
+        _args_schema.source_campaign_name = AAZStrArg(
+            options=["--source-campaign-name"],
+            arg_group="Properties",
+            help="Name of the marketing campaign.",
+        )
+        _args_schema.subscription_state = AAZStrArg(
+            options=["--subscription-state"],
+            arg_group="Properties",
+            help="State of the Azure Subscription containing the monitor resource",
+        )
         _args_schema.user_info = AAZObjectArg(
             options=["--user-info"],
             arg_group="Properties",
@@ -109,6 +136,28 @@ class Create(AAZCommand):
             options=["--version"],
             arg_group="Properties",
             help="Version of elastic of the monitor resource",
+        )
+
+        plan_details = cls._args_schema.plan_details
+        plan_details.offer_id = AAZStrArg(
+            options=["offer-id"],
+            help="Offer ID of the plan",
+        )
+        plan_details.plan_id = AAZStrArg(
+            options=["plan-id"],
+            help="Plan ID",
+        )
+        plan_details.plan_name = AAZStrArg(
+            options=["plan-name"],
+            help="Plan Name",
+        )
+        plan_details.publisher_id = AAZStrArg(
+            options=["publisher-id"],
+            help="Publisher ID of the plan",
+        )
+        plan_details.term_id = AAZStrArg(
+            options=["term-id"],
+            help="Term ID of the plan",
         )
 
         user_info = cls._args_schema.user_info
@@ -127,7 +176,7 @@ class Create(AAZCommand):
             options=["email-address"],
             help="Email of the user used by Elastic for contacting them if needed",
             fmt=AAZStrArgFormat(
-                pattern="^([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)@(([a-zA-Z-_0-9]+\.)+[a-zA-Z]{2,})$",
+                pattern="^([^<>()\\[\\]\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\.,;:\\s@\"]+)*)@(([a-zA-Z-_0-9]+\\.)+[a-zA-Z]{2,})$",
             ),
         )
         user_info.first_name = AAZStrArg(
@@ -264,7 +313,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -298,8 +347,21 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("generateApiKey", AAZBoolType, ".generate_api_key")
                 properties.set_prop("monitoringStatus", AAZStrType, ".monitoring_status")
+                properties.set_prop("planDetails", AAZObjectType, ".plan_details")
+                properties.set_prop("saaSAzureSubscriptionStatus", AAZStrType, ".saa_s_azure_subscription_status")
+                properties.set_prop("sourceCampaignId", AAZStrType, ".source_campaign_id")
+                properties.set_prop("sourceCampaignName", AAZStrType, ".source_campaign_name")
+                properties.set_prop("subscriptionState", AAZStrType, ".subscription_state")
                 properties.set_prop("userInfo", AAZObjectType, ".user_info")
                 properties.set_prop("version", AAZStrType, ".version")
+
+            plan_details = _builder.get(".properties.planDetails")
+            if plan_details is not None:
+                plan_details.set_prop("offerID", AAZStrType, ".offer_id")
+                plan_details.set_prop("planID", AAZStrType, ".plan_id")
+                plan_details.set_prop("planName", AAZStrType, ".plan_name")
+                plan_details.set_prop("publisherID", AAZStrType, ".publisher_id")
+                plan_details.set_prop("termID", AAZStrType, ".term_id")
 
             user_info = _builder.get(".properties.userInfo")
             if user_info is not None:
@@ -395,8 +457,24 @@ class Create(AAZCommand):
             properties.monitoring_status = AAZStrType(
                 serialized_name="monitoringStatus",
             )
+            properties.plan_details = AAZObjectType(
+                serialized_name="planDetails",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.saa_s_azure_subscription_status = AAZStrType(
+                serialized_name="saaSAzureSubscriptionStatus",
+            )
+            properties.source_campaign_id = AAZStrType(
+                serialized_name="sourceCampaignId",
+            )
+            properties.source_campaign_name = AAZStrType(
+                serialized_name="sourceCampaignName",
+            )
+            properties.subscription_state = AAZStrType(
+                serialized_name="subscriptionState",
             )
             properties.version = AAZStrType()
 
@@ -448,6 +526,23 @@ class Create(AAZCommand):
             )
             elastic_cloud_user.id = AAZStrType(
                 flags={"read_only": True},
+            )
+
+            plan_details = cls._schema_on_200_201.properties.plan_details
+            plan_details.offer_id = AAZStrType(
+                serialized_name="offerID",
+            )
+            plan_details.plan_id = AAZStrType(
+                serialized_name="planID",
+            )
+            plan_details.plan_name = AAZStrType(
+                serialized_name="planName",
+            )
+            plan_details.publisher_id = AAZStrType(
+                serialized_name="publisherID",
+            )
+            plan_details.term_id = AAZStrType(
+                serialized_name="termID",
             )
 
             sku = cls._schema_on_200_201.sku
