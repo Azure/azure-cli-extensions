@@ -74,9 +74,9 @@ from azure.cli.command_modules.acs.managed_cluster_decorator import (
 )
 from azure.cli.command_modules.acs.tests.latest.mocks import (
     MockCLI,
-    MockClient,
     MockCmd,
 )
+from azext_aks_preview.tests.latest.mocks import MockClient
 from azure.cli.core.azclierror import (
     ArgumentUsageError,
     CLIInternalError,

@@ -22,6 +22,13 @@ class MockClient:
     def get(self):
         pass
 
+    def list(self):
+        pass
+
+    def begin_create_or_update(
+        self, resource_group_name: str, resource_name: str, parameters: ManagedCluster, **kwargs: Any
+    ):
+        pass
 
 class MockCLI(CLI):
     def __init__(self):

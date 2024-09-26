@@ -879,13 +879,14 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
                     break
             if agentpool.security_profile is None:
                 agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
-            # If all existing node pools have the same ssh access, use that value; otherwise, use ssh enabled as the default value
+            # If all existing node pools have the same ssh access, use that value;
+            # otherwise, use ssh enabled as the default value
             if all_same:
                 agentpool.security_profile.ssh_access = target_ssh_access
-                logger.warning(f"SSH access is set to {target_ssh_access} becuase all existing node pools are using this value.")
+                logger.warning("SSH access is set to %s becuase all existing node pools are using this value.", target_ssh_access)  # pylint: disable=line-too-long
             else:
                 agentpool.security_profile.ssh_access = CONST_SSH_ACCESS_LOCALUSER
-                logger.warning(f"SSH access is set to {CONST_SSH_ACCESS_LOCALUSER} as the default value.")
+                logger.warning("SSH access is set to %s as the default value.", CONST_SSH_ACCESS_LOCALUSER)
         return agentpool
 
     def set_up_skip_gpu_driver_install(self, agentpool: AgentPool) -> AgentPool:
