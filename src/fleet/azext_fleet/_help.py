@@ -377,7 +377,7 @@ helps['fleet autoupgradeprofile list'] = """
     short-summary: Lists all auto upgrade profiles for a given fleet.
     examples:
         - name: List auto upgrade profiles of a fleet.
-          text: az fleet autouprgadeprofile list -g MyFleetResourceGroup -f MyFleetName
+          text: az fleet autoupgradeprofile list -g MyFleetResourceGroup -f MyFleetName
 """
 
 helps['fleet autoupgradeprofile wait'] = """

@@ -538,12 +538,12 @@ def create_auto_upgrade_profile(cmd,  # pylint: disable=unused-argument
                                 name,
                                 channel,
                                 update_strategy_id=None,
-                                node_image_selection_type=None,
+                                node_image_selection=None,
                                 disabled=False,
                                 no_wait=False):
 
-    if channel == "NodeImage" and node_image_selection_type is not None:
-        raise CLIError("node_image_selection_type must NOT be populated when channel type `NodeImage` is selected")
+    if channel == "NodeImage" and node_image_selection is not None:
+        raise CLIError("node_image_selection must NOT be populated when channel type `NodeImage` is selected")
 
     upgrade_channel_model = cmd.get_models(
         "UpgradeChannel",
@@ -553,13 +553,13 @@ def create_auto_upgrade_profile(cmd,  # pylint: disable=unused-argument
     upgrade_channel = upgrade_channel_model(channel)
 
     auto_upgrade_node_image_selection = None
-    if node_image_selection_type:
+    if node_image_selection:
         auto_upgrade_node_image_selection_model = cmd.get_models(
             "AutoUpgradeNodeImageSelection",
             resource_type=CUSTOM_MGMT_FLEET,
             operation_group="auto_upgrade_profiles",
         )
-        auto_upgrade_node_image_selection = auto_upgrade_node_image_selection_model(type=node_image_selection_type)
+        auto_upgrade_node_image_selection = auto_upgrade_node_image_selection_model(type=node_image_selection)
 
     auto_upgrade_profile_model = cmd.get_models(
         "AutoUpgradeProfile",

@@ -102,7 +102,12 @@ def load_arguments(self, _):
                    help='The resource ID of the update strategy that the auto upgrade profile should follow.')
         c.argument('channel', options_list=['--channel', '-c'], arg_type=get_enum_type(['Stable', 'Rapid', 'NodeImage']),
                    help='The auto upgrade channel type.')
-        c.argument('node_image_selection_type', arg_type=get_enum_type(['Latest', 'Consistent']),
+        c.argument('node_image_selection', arg_type=get_enum_type(['Latest', 'Consistent']),
                    help='Node Image Selection is an option that lets you choose how your clusters\' nodes are upgraded')
         c.argument('disabled', action='store_true',
                    help='The disabled flag ensures auto upgrade profile does not run by default')
+    
+    with self.argument_context('fleet autoupgradeprofile wait') as c:
+        c.argument('auto_upgrade_profile_name', options_list=['--auto-upgrade-profile-name', '--profile-name'], 
+                   help='Specify name for the auto upgrade profile.')
+    

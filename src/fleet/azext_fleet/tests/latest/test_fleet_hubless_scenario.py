@@ -167,7 +167,7 @@ class FleetHublessScenarioTest(ScenarioTest):
 
         self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name} --yes')
 
-        self.cmd('fleet autoupgradeprofile create -g {rg} -f {fleet_name} -n {autoupgradeprofile_name} -c Rapid --node-image-selection-type Latest --update-strategy-id {update_strategy_id} --disabled', checks=[
+        self.cmd('fleet autoupgradeprofile create -g {rg} -f {fleet_name} -n {autoupgradeprofile_name} -c Rapid --node-image-selection Latest --update-strategy-id {update_strategy_id} --disabled', checks=[
             self.check('name', '{autoupgradeprofile_name}')
         ])
 
