@@ -59,13 +59,12 @@ class ElasticScenario(ScenarioTest):
         self.cmd('elastic monitor list-resource --monitor-name {monitor} -g {rg}')
         self.cmd('elastic monitor list-upgradable-version --monitor-name {monitor} -g {rg}')
         self.cmd('elastic monitor list-vm-host --monitor-name {monitor} -g {rg}')
-        # self.cmd('elastic monitor detach-and-delete-traffic-filter --monitor-name {monitor} -g {rg} --ruleset-id {ruleSetId}')
-        # self.cmd('elastic monitor delete-traffic-filter --monitor-name {monitor} -g {rg} --ruleset-id {ruleSetId}')
-        # self.cmd('elastic monitor upgrade --monitor-name {monitor} -g {rg} --version 8.0.0')
-       # self.cmd('elastic monitor create-and-associate-ip-filter --monitor-name {monitor} -g {rg} --name filter1 --ips "192.168.131.0, 192.168.132.6/22"')
-        # self.cmd('elastic monitor create-and-associate-pl-filter --monitor-name {monitor} -g {rg} --name filter2')
+        #self.cmd('elastic monitor detach-and-delete-traffic-filter --monitor-name {monitor} -g {rg}')
         # self.cmd('elastic monitor delete-traffic-filter --monitor-name {monitor} -g {rg}')
-        # self.cmd('elastic monitor delete --name {monitor} --resource-group {rg} -y')
+        self.cmd('elastic monitor upgrade --monitor-name {monitor} -g {rg} --version 8.0.0')
+        self.cmd('elastic monitor create-and-associate-ip-filter --monitor-name {monitor} -g {rg} --name filter1 --ips "192.168.131.0, 192.168.132.6/22"')
+        self.cmd('elastic monitor create-and-associate-pl-filter --monitor-name {monitor} -g {rg} --name filter2')
+        self.cmd('elastic monitor delete --name {monitor} --resource-group {rg} -y')
 
     @ResourceGroupPreparer(name_prefix='cli_test_elastic_monitor', location='eastus')
     def test_elastic_monitor_tag_rule(self, resource_group):
