@@ -862,6 +862,13 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
                 self.context.get_resource_group_name(),
                 self.context.get_cluster_name(),
             )
+            # unit test only, in prod, should always have at least one node pool
+            if existing_agentpools is None:
+                if agentpool.security_profile is None:
+                    agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
+                agentpool.security_profile.ssh_access = CONST_SSH_ACCESS_LOCALUSER
+                return agentpool
+
             all_same = True
             target_ssh_access = CONST_SSH_ACCESS_LOCALUSER
             initialized = False
