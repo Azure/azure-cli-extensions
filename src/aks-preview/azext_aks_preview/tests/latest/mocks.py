@@ -5,6 +5,7 @@
 
 from knack import CLI
 import tempfile
+from typing import Any, TypeVar
 
 from azure.cli.core import AzCommandsLoader
 from azure.cli.core.cloud import get_active_cloud
@@ -13,6 +14,9 @@ from azure.cli.core._config import ENV_VAR_PREFIX
 
 MOCK_CLI_CONFIG_DIR = tempfile.mkdtemp()
 MOCK_CLI_ENV_VAR_PREFIX = "MOCK_" + ENV_VAR_PREFIX
+
+# type variables
+ManagedCluster = TypeVar("ManagedCluster")
 
 
 class MockClient:
