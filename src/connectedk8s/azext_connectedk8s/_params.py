@@ -172,6 +172,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "enable_oidc_issuer",
+            arg_type=get_three_state_flag(),
             options_list=["--enable-oidc-issuer"],
             arg_group="Workload Identity",
             help="Enable creation of OIDC issuer url used for workload identity federation",
@@ -187,6 +188,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "enable_workload_identity",
+            arg_type=get_three_state_flag(),
             options_list=["--enable-workload-identity", "--enable-wi"],
             arg_group="Workload Identity",
             help="Enable workload identity webhook",
@@ -303,6 +305,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "enable_oidc_issuer",
+            arg_type=get_three_state_flag(),
             options_list=["--enable-oidc-issuer"],
             arg_group="Workload Identity",
             help="Enable creation of OIDC issuer url used for workload identity federation",
@@ -318,6 +321,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "enable_workload_identity",
+            arg_type=get_three_state_flag(),
             options_list=["--enable-workload-identity", "--enable-wi"],
             arg_group="Workload Identity",
             help="Enable workload identity webhook",
@@ -326,6 +330,7 @@ def load_arguments(self, _):
         )
         c.argument(
             "disable_workload_identity",
+            arg_type=get_three_state_flag(),
             options_list=["--disable-workload-identity", "--disable-wi"],
             arg_group="Workload Identity",
             help="Disable workload identity webhook",
