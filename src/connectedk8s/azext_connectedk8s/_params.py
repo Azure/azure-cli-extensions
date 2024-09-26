@@ -24,6 +24,7 @@ from knack.arguments import CLIArgumentType, CaseInsensitiveList
 
 from ._validators import (
     override_client_request_id_header,
+    validate_enable_oidc_issuer_updates,
     validate_gateway_updates,
     validate_private_link_properties,
     validate_self_hosted_issuer,
@@ -310,6 +311,7 @@ def load_arguments(self, _):
             arg_group="Workload Identity",
             help="Enable creation of OIDC issuer url used for workload identity federation",
             is_preview=True,
+            validator=validate_enable_oidc_issuer_updates,
         )
         c.argument(
             "self_hosted_issuer",
