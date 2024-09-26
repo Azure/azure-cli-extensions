@@ -254,9 +254,10 @@ class WorkflowTaskStatus:
                 patch_task = next(task for task in patch_taskruns if task.run_id == patch_task_id)
                 all_status[image].patch_task = patch_task
 
-        return all_status.values()
+        # don't return a list of WorkflowTaskStatus object, 
+        return [status.get_status() for status in all_status.values()]
 
-    def __str__(self) -> str:
+    def get_status(self):
         scan_status = self.scan_status()
         scan_date = WORKFLOW_STATUS_NOT_AVAILABLE if self.scan_task is None else self.scan_task.create_time
         scan_task_id = WORKFLOW_STATUS_NOT_AVAILABLE if self.scan_task is None else self.scan_task.run_id
@@ -274,19 +275,39 @@ class WorkflowTaskStatus:
         if patched_image == self.image():
             patched_image = WORKFLOW_STATUS_PATCH_NOT_AVAILABLE
 
-        result = f"image: {self.repository}:{self.tag}\n" \
-                 f"\tscan status: {scan_status}\n" \
-                 f"\tscan date: {scan_date}\n" \
-                 f"\tscan task ID: {scan_task_id}\n" \
-                 f"\tpatch status: {patch_status}\n"
+        result = {
+            "image": f"{self.repository}:{self.tag}",
+            "scan_status": scan_status,
+            "scan_date": scan_date,
+            "scan_task_ID": scan_task_id,
+            "patch_status": patch_status
+        }
 
         if skipped_patch_reason != "":
-            result += f"\tskipped patch reason: {skipped_patch_reason}\n"
+            result["skipped_patch_reason"] = skipped_patch_reason
 
-        result += f"\tpatch date: {patch_date}\n" \
-                  f"\tpatch task ID: {patch_task_id}\n" \
-                  f"\tlast patched image: {patched_image}\n" \
-                  f"\tworkflow type: {workflow_type}"
+        result["patch_date"] = patch_date
+        result["patch_task_ID"] = patch_task_id
+        result["last_patched_image"] = patched_image
+        result["workflow_type"] = workflow_type
+
+        return result
+
+    def __str__(self) -> str:
+        status = self.get_status()
+        result = f"image: {status.repository}:{status.tag}\n" \
+                 f"\tscan status: {status.scan_status}\n" \
+                 f"\tscan date: {status.scan_date}\n" \
+                 f"\tscan task ID: {status.scan_task_id}\n" \
+                 f"\tpatch status: {status.patch_status}\n"
+
+        if hasattr(status, "skipped_patch_reason"):
+            result += f"\tskipped patch reason: {status.skipped_patch_reason}\n"
+
+        result += f"\tpatch date: {status.patch_date}\n" \
+                  f"\tpatch task ID: {status.patch_task_id}\n" \
+                  f"\tlast patched image: {status.patched_image}\n" \
+                  f"\tworkflow type: {status.workflow_type}"
 
         return result
 

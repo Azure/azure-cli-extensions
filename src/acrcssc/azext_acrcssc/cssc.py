@@ -139,7 +139,6 @@ def list_scan_status(cmd, registry_name, resource_group_name, status, workflow_t
     registry = acr_client_registries.get(resource_group_name, registry_name)
 
     image_status = track_scan_progress(cmd, resource_group_name, registry, status)
-    for image in image_status:
-        print(image)
-
     print(f"Total images: {len(image_status)}")
+
+    return image_status
