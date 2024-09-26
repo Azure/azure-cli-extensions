@@ -18,7 +18,7 @@ import requests
 from knack.log import get_logger
 from knack.util import CLIError
 import chardet
-from azure.cli.core.aaz._arg import AAZStrArg
+from azure.cli.core.aaz._arg import AAZStrArg, AAZBoolArg
 from .command_patches import ImportAPIDefinitionExtension
 from .command_patches import ExportAPIDefinitionExtension
 from .command_patches import ExportMetadataExtension
@@ -105,11 +105,11 @@ class ExportMetadataSchemaExtension(ExportMetadataExtension):
             required=True,
             registered=True
         )
-        args_schema.custom_metadata_only = AAZStrArg(
+        args_schema.custom_metadata_only = AAZBoolArg(
             options=["--custom-metadata-only"],
             help='Export only custom metadata.',
             required=False,
-            blank='True'
+            blank=True
         )
         return args_schema
 
