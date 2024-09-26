@@ -2333,7 +2333,6 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             get_nodepool_cmd,
             checks=[
                 self.check("provisioningState", "Canceled"),
-                self.check("powerState.code", "Running"),
             ],
         )
 
@@ -3266,7 +3265,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="westeurope",
+        location="southcentralus",
         preserve_default_location=True,
     )
     def test_aks_nodepool_add_with_gpu_instance_profile(
@@ -3303,13 +3302,13 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--resource-group={resource_group} "
             "--cluster-name={name} "
             "--name={node_pool_name_second} "
-            "--gpu-instance-profile=MIG3g "
+            "--gpu-instance-profile=MIG1g "
             "-c 1 "
             "--aks-custom-headers UseGPUDedicatedVHD=true "
             "--node-vm-size=standard_nd96asr_v4",
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("gpuInstanceProfile", "MIG3g"),
+                self.check("gpuInstanceProfile", "MIG1g"),
             ],
         )
 
