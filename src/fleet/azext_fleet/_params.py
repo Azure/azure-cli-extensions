@@ -106,8 +106,7 @@ def load_arguments(self, _):
                    help='Node Image Selection is an option that lets you choose how your clusters\' nodes are upgraded')
         c.argument('disabled', action='store_true',
                    help='The disabled flag ensures auto upgrade profile does not run by default')
-    
+
     with self.argument_context('fleet autoupgradeprofile wait') as c:
-        c.argument('auto_upgrade_profile_name', options_list=['--auto-upgrade-profile-name', '--profile-name'], 
+        c.argument('auto_upgrade_profile_name', options_list=['--auto-upgrade-profile-name', '--profile-name'],
                    help='Specify name for the auto upgrade profile.')
-    
