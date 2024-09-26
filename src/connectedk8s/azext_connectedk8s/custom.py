@@ -2155,6 +2155,7 @@ def update_connected_cluster(
         and arm_properties_unset
         and not container_log_path
         and enable_oidc_issuer is None
+        and disable_workload_identity is None
         and enable_workload_identity is None
         and gateway_resource_id == ""
         and not disable_gateway
