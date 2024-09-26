@@ -213,7 +213,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus3"
     )
     def test_aks_create_and_update_with_managed_nat_gateway_outbound(
         self, resource_group, resource_group_location
@@ -307,7 +307,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus3"
     )
     def test_aks_update_outbound_from_slb_to_natgateway(
         self, resource_group, resource_group_location
@@ -2589,7 +2589,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus3"
     )
     def test_aks_create_with_ossku(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
@@ -2621,7 +2621,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus3"
     )
     def test_aks_nodepool_add_with_workload_runtime(
         self, resource_group, resource_group_location
@@ -2807,7 +2807,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="westus3",
     )
     def test_aks_nodepool_add_with_disable_windows_outbound_nat(
         self, resource_group, resource_group_location
@@ -2875,7 +2875,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus3"
     )
     def test_aks_create_add_nodepool_with_motd(
         self, resource_group, resource_group_location
@@ -2936,7 +2936,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus3"
     )
     def test_aks_custom_ca_trust_flow(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
@@ -2989,7 +2989,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus3"
     )
     def test_aks_create_add_nodepool_with_custom_ca_trust_certificates(
         self, resource_group, resource_group_location
@@ -3266,7 +3266,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="westeurope",
         preserve_default_location=True,
     )
     def test_aks_nodepool_add_with_gpu_instance_profile(
@@ -4143,7 +4143,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="westus3",
     )
     def test_aks_skip_gpu_driver_install(self, resource_group, resource_group_location):
         print(resource_group_location)
@@ -4413,7 +4413,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus3"
     )
     def test_aks_create_with_fips(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
@@ -4465,7 +4465,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus3"
     )
     def test_aks_nodepool_add_with_artifact_streaming(
         self, resource_group, resource_group_location
@@ -4520,7 +4520,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus3"
     )
     def test_aks_create_update_secure_boot_flow(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
@@ -4591,7 +4591,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus3"
     )
     def test_aks_create_update_vtpm_flow(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
@@ -4894,7 +4894,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="westus3",
         preserve_default_location=True,
     )
     def test_aks_create_with_gitops_addon(
@@ -4926,7 +4926,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="westus3",
         preserve_default_location=True,
     )
     def test_aks_enable_addon_with_gitops(
@@ -4967,7 +4967,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="westus3",
         preserve_default_location=True,
     )
     def test_aks_disable_addon_gitops(self, resource_group, resource_group_location):
@@ -7152,7 +7152,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="westus3",
     )
     def test_aks_create_with_network_dataplane_cilium(
         self, resource_group, resource_group_location
@@ -7605,7 +7605,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="westus3",
     )
     def test_aks_azure_cni_overlay_migration_from_kubenet(
         self, resource_group, resource_group_location
@@ -7666,7 +7666,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="westus3",
     )
     def test_aks_migrate_cluster_to_cilium_dataplane(
         self, resource_group, resource_group_location
@@ -11498,7 +11498,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus3"
     )
     def test_aks_update_with_kube_proxy_config(
         self, resource_group, resource_group_location
@@ -11561,7 +11561,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus3"
     )
     def test_aks_create_with_nsg_control(self, resource_group, resource_group_location):
         aks_name = self.create_random_name("cliakstest", 16)
@@ -11636,7 +11636,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus3"
     )
     def test_aks_nodepool_create_with_nsg_control(
         self, resource_group, resource_group_location
@@ -11727,7 +11727,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus3"
     )
     def test_aks_nodepool_update_with_nsg_control(
         self, resource_group, resource_group_location
@@ -11820,7 +11820,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @live_only()
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="westus3"
     )
     def test_aks_nodepool_update_with_artifact_streaming(
         self, resource_group, resource_group_location
@@ -12090,7 +12090,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--vm-set-type=VirtualMachines "
             "--vm-sizes=Standard_D4s_v3,Standard_D8s_v3 "
             "--node-count=2 "
-            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
+            # "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("agentPoolProfiles[0].type", "VirtualMachines"),
@@ -12121,7 +12121,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--vm-set-type=VirtualMachines "
             "--vm-sizes=Standard_D4s_v3,Standard_D8s_v3 "
             "--node-count=2 "
-            "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
+            # "--aks-custom-headers=AKSHTTPCustomFeatures=Microsoft.ContainerService/VMsAgentPoolPreview",
             checks=[
                 self.check("provisioningState", "Succeeded"),
                 self.check("typePropertiesType", "VirtualMachines"),
@@ -13130,7 +13130,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="westus3",
     )
     def test_aks_create_with_enable_advanced_network_observability(
         self, resource_group, resource_group_location
@@ -13958,7 +13958,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="westus3",
     )
     def test_aks_create_with_custom_headers(
         self, resource_group, resource_group_location
@@ -14288,7 +14288,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="westus3",
     )
     def test_aks_approuting_enable_with_keyvault_secrets_provider_addon_and_keyvault_id(
         self, resource_group, resource_group_location
@@ -14355,7 +14355,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="westus3",
     )
     def test_aks_approuting_update(self, resource_group, resource_group_location):
         """This test case exercises updating app routing addon in an AKS cluster with a specific ingress controller."""
@@ -14474,7 +14474,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="eastus",
+        location="westus3",
     )
     def test_aks_approuting_update_with_monitoring_addon_enabled(self, resource_group, resource_group_location):
         """This test case exercises updating app routing addon in an AKS cluster with monitoring addon enabled."""
