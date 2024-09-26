@@ -2229,7 +2229,7 @@ def update_connected_cluster(
     if auto_upgrade is not None:
         arc_agent_profile = (
             ArcAgentProfile(agent_auto_upgrade="Enabled")
-            if auto_upgrade
+            if auto_upgrade.lower() == "true"
             else ArcAgentProfile(agent_auto_upgrade="Disabled")
         )
 
@@ -4664,10 +4664,13 @@ def install_kubectl_client():
         exit_code = get_default_cli().invoke(
             ["aks", "install-cli", "--install-location", kubectl_path]
         )
-        if exit_code != 0:
-            raise CLIInternalError("Failed to download and install kubectl.")
         logging.disable(logging.NOTSET)
         logger.warning("\n")
+        if exit_code != 0 or not os.path.isfile(kubectl_path):
+            logger.error(
+                "Failed to download and install kubectl."
+            )
+            raise CLIInternalError("Failed to download and install kubectl.")
         # Return the path of the kubectl executable
         return kubectl_path
 
