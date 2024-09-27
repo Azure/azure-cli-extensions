@@ -201,6 +201,7 @@ def load_arguments(self, _):
             options_list=["--gateway-resource-id"],
             arg_group="Gateway",
             help="ArmID of the Arc Gateway resource.",
+            is_preview=True,
         )
         c.argument(
             "configuration_settings",
