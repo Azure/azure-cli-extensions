@@ -5,12 +5,10 @@
 
 # pylint: disable=line-too-long
 
-from ._format import table_output
-
 
 def load_command_table(self, _):
 
     with self.command_group('monitor log-analytics'):
 
         from .custom import Query
-        self.command_table['monitor log-analytics query'] = Query(loader=self, table_transformer=table_output)
+        self.command_table['monitor log-analytics query'] = Query(loader=self)
