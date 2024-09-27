@@ -184,6 +184,7 @@ class AddMongoCollectionAction(argparse._AppendAction):
         else:
             namespace.mongo_collection = mongo_collection
 
+
 class AddMongoVCoreCollectionAction(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
         if not values:
@@ -195,23 +196,17 @@ class AddMongoVCoreCollectionAction(argparse._AppendAction):
         host_name = None
         connection_string_key_vault_uri = None
 
-        for x in values:
-            kvp = x.split('=', 1)
-            if len(kvp) != 2:
-                # pylint: disable=line-too-long
-                raise CLIError('usage error: --dest-mongo-vcore [connectionStringKeyVaultUri=ConnectionStringKeyVaultUri database=DatabaseName ...]')
-
-            kl = kvp[0].lower()
-            v = kvp[1]
+        for (k, v) in (x.split('=', 1) for x in values):
+            kl = k.lower()
             if kl == 'database':
                 database_name = v
 
             elif kl == 'collection':
                 collection_name = v
-            
+
             elif kl == 'hostname':
                 host_name = v
-            
+
             elif kl == 'connectionstringkeyvaulturi':
                 connection_string_key_vault_uri = v
 
@@ -226,16 +221,17 @@ class AddMongoVCoreCollectionAction(argparse._AppendAction):
 
         if collection_name is None:
             raise CLIError(f'usage error: missing key collection in {option_string} component')
-        
+
         if host_name is None and connection_string_key_vault_uri is None:
             raise CLIError(f'usage error: missing keys hostName and connectionStringKeyVaultUri in {option_string} component')
 
-        mongo_vcore_collection = CosmosMongoVCoreDataTransferDataSourceSink(database_name=database_name, collection_name=collection_name, host_name = host_name, connection_string_key_vault_uri = connection_string_key_vault_uri)
+        mongo_vcore_collection = CosmosMongoVCoreDataTransferDataSourceSink(database_name=database_name, collection_name=collection_name, host_name=host_name, connection_string_key_vault_uri=connection_string_key_vault_uri)
 
         if option_string == "--dest-mongo-vcore":
             namespace.dest_mongo_vcore = mongo_vcore_collection
         else:
             namespace.mongo_vcore_collection = mongo_vcore_collection
+
 
 class AddSqlContainerAction(argparse._AppendAction):
     def __call__(self, parser, namespace, values, option_string=None):
