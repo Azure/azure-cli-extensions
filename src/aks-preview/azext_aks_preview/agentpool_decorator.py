@@ -37,6 +37,7 @@ from azext_aks_preview._consts import (
     CONST_VIRTUAL_MACHINES,
     CONST_DEFAULT_NODE_VM_SIZE,
     CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
+    CONST_SSH_ACCESS_LOCALUSER,
 )
 from azext_aks_preview._helpers import get_nodepool_snapshot_by_snapshot_id
 
@@ -872,6 +873,9 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             if agentpool.security_profile is None:
                 agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
             agentpool.security_profile.ssh_access = ssh_access
+            if ssh_access == CONST_SSH_ACCESS_LOCALUSER:
+                logger.warning("The new node pool will enable SSH access, recommended to use '--ssh-access disabled' "
+                               "option to disable SSH access for the node pool to make it more secure.")
         return agentpool
 
     def set_up_skip_gpu_driver_install(self, agentpool: AgentPool) -> AgentPool:
