@@ -583,6 +583,24 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
 
         return skip_gpu_driver_install
 
+    def get_driver_type(self) -> Union[str, None]:
+        """Obtain the value of driver_type.
+        :return: str or None
+        """
+        # read the original value passed by the command
+        driver_type = self.raw_param.get("driver_type")
+
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.gpu_profile is not None and
+                self.agentpool.gpu_profile.driver_type is not None
+            ):
+                driver_type = self.agentpool.gpu_profile.driver_type
+
+        return driver_type
+
     def get_enable_secure_boot(self) -> bool:
         """Obtain the value of enable_secure_boot.
         :return: bool
@@ -866,6 +884,17 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             agentpool.gpu_profile.install_gpu_driver = False
         return agentpool
 
+    def set_up_driver_type(self, agentpool: AgentPool) -> AgentPool:
+        """Set up driver type property for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        driver_type = self.context.get_driver_type()
+        if driver_type is not None:
+            if agentpool.gpu_profile is None:
+                agentpool.gpu_profile = self.models.AgentPoolGPUProfile()  # pylint: disable=no-member
+            agentpool.gpu_profile.driver_type = driver_type
+        return agentpool
+
     def set_up_pod_ip_allocation_mode(self, agentpool: AgentPool) -> AgentPool:
         """Set up pod ip allocation mode for the AgentPool object."""
         self._ensure_agentpool(agentpool)
@@ -967,6 +996,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_artifact_streaming(agentpool)
         # set up skip_gpu_driver_install
         agentpool = self.set_up_skip_gpu_driver_install(agentpool)
+        # set up driver_type
+        agentpool = self.set_up_driver_type(agentpool)
         # set up agentpool ssh access
         agentpool = self.set_up_ssh_access(agentpool)
         # set up agentpool pod ip allocation mode
