@@ -3,9 +3,12 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# This file is a reduced version of qdk-python\azure-quantum\azure\quantum\storage.py
+# This file is a reduced version of
+# https://github.com/microsoft/azure-quantum-python/blob/main/azure-quantum/azure/quantum/storage.py
+#
 # It only contains the functions required to do inputData blob upload for job submission.
-# Other cosmetic changes were made to appease the Azure CLI CI/CD checks.
+# Other cosmetic changes were made to appease the Azure CLI CI/CD checks.  It was included 
+# in this repo so there would not be a direct dependency on azure-quantum-python.
 
 # Unused imports were removed to reduce Pylint style-rule violations.
 import logging
