@@ -11,7 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 9.0.0b6
 +++++++
-* Print warning message when new node pool is created with SSH enabled, suggest to create SSH disbaled node pool.
+* Print warning message when new node pool is created with SSH enabled, suggest to create SSH disabled node pool.
 
 9.0.0b5
 +++++++
