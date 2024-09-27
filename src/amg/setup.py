@@ -16,7 +16,7 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = '2.4.0'
+VERSION = '2.5.0'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -33,7 +33,7 @@ CLASSIFIERS = [
 ]
 
 # TODO: Add any additional SDK dependencies here
-DEPENDENCIES = []
+DEPENDENCIES = ['azure-mgmt-monitor >= 6.0.2']
 
 with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
