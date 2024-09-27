@@ -13,7 +13,7 @@ from knack.log import get_logger
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
-from msrestazure.tools import parse_resource_id
+from azure.mgmt.core.tools import parse_resource_id
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError, SupportingResourceNotFoundError, CommandCanceledByUserError
 
 from .command_helper_class import command_helper
@@ -432,7 +432,11 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
             script_name = WINDOWS_RUN_SCRIPT_NAME
 
         # If run_on_repair is False, then repair_vm is the source_vm (scripts run directly on source vm)
+        logger.info('soon, run on repair check about to happen, doing new code and parsing now.')
+        logger.debug('soon, run on repair check about to happen, doing new code and parsing now.')
         if run_on_repair:
+            logger.info('run on repair checked yes, doing new code and parsing now.')
+            logger.debug('run on repair checked yes, doing new code and parsing now.')
             repair_vm_id = parse_resource_id(repair_vm_id)
             repair_vm_name = repair_vm_id['name']
             repair_resource_group = repair_vm_id['resource_group']

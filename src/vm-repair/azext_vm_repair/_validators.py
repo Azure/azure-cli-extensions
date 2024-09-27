@@ -12,8 +12,8 @@ from azure.cli.core.azclierror import ValidationError, RequiredArgumentMissingEr
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.resource._client_factory import _resource_client_factory
-from msrestazure.azure_exceptions import CloudError
-from msrestazure.tools import parse_resource_id, is_valid_resource_id
+from azure.core.exceptions import HttpResponseError
+from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
 
 from .encryption_types import Encryption
 from .exceptions import AzCommandError
@@ -245,9 +245,9 @@ def _classic_vm_exists(cmd, resource_group_name, vm_name):
         api_version = _resolve_api_version(rcf, classic_vm_provider, None, vm_resource_type)
         resource_client = rcf.resources
         resource_client.get(resource_group_name, classic_vm_provider, '', vm_resource_type, vm_name, api_version)
-    except CloudError as cloudError:
+    except HttpResponseError as httpError:
         # Resource does not exist or the API failed
-        logger.debug(cloudError)
+        logger.debug(httpError)
         return False
     except Exception as exception:
         # Unknown error, so return false for default resource not found error message
@@ -262,13 +262,13 @@ def _validate_and_get_vm(cmd, resource_group_name, vm_name):
     source_vm = None
     try:
         source_vm = get_vm(cmd, resource_group_name, vm_name)
-    except CloudError as cloudError:
-        logger.debug(cloudError)
-        if cloudError.error.error == resource_not_found_error and _classic_vm_exists(cmd, resource_group_name, vm_name):
+    except HttpResponseError as httpError:
+        logger.debug(httpError)
+        if httpError.error.error == resource_not_found_error and _classic_vm_exists(cmd, resource_group_name, vm_name):
             # Given VM is classic VM (RDFE)
             raise CLIError('The given VM \'{}\' is a classic VM. VM repair commands do not support classic VMs.'.format(vm_name))
         # Unknown Error
-        raise CLIError(cloudError.message)
+        raise CLIError(httpError.message)
 
     return source_vm
 
