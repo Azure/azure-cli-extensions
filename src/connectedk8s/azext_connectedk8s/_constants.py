@@ -510,3 +510,9 @@ Doc_Provisioned_Cluster_Delete_Url = "https://learn.microsoft.com/en-us/cli/azur
 Doc_Provisioned_Cluster_Update_Url = "https://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-update"
 Doc_Provisioned_Cluster_Upgrade_Url = "https://learn.microsoft.com/en-us/cli/azure/aksarc?view=azure-cli-latest#az-aksarc-upgrade"
 Doc_Agent_Version_Support_Policy_Url = "https://docs.microsoft.com/en-us/azure/azure-arc/kubernetes/agent-upgrade#version-support-policy"
+
+# Acceptable states for required RP registrations to be in
+#
+# "Application code shouldn't block the creation of resources for a resource provider that is in the registering state."
+# See https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/resource-providers-and-types#register-resource-provider
+allowed_rp_registration_states = ["Registering", "Registered"]
