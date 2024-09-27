@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create an admin rule.
 
     :example: Create security admin rules
-        az network manager security-admin-config rule-collection rule create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleAdminRule" --kind "Custom" --protocol "Tcp" --access "Allow" --priority 32 --direction "Inbound" --destinations address-prefix="*" address-prefix-type="IPPrefix"  --dest-port-ranges 22
+        az network manager security-admin-config rule-collection rule create --configuration-name "myTestSecurityConfig" --network-manager-name "TestNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleAdminRule" --kind "Custom" --protocol "Tcp" --access "Allow" --priority 32 --direction "Inbound" --destinations address-prefix="*" address-prefix-type="IPPrefix"  --dest-port-ranges 22
     """
 
     _aaz_info = {

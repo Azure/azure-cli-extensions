@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a network manager security admin configuration.
 
     :example: Create a network manager security admin configuration.
-        az network manager security-admin-config create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" --resource-group "rg1" --description "A sample policy" --apply-on None
+        az network manager security-admin-config create --configuration-name "myTestSecurityConfig" --network-manager-name "TestNetworkManager" --resource-group "rg1" --description "A sample policy" --apply-on None
     """
 
     _aaz_info = {
