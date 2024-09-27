@@ -101,7 +101,7 @@ class Query(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/workspaces/{workspaceId}/query",
+                "/v1/workspaces/{workspaceId}/query",
                 **self.url_parameters
             )
 
