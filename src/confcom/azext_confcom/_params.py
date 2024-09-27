@@ -100,7 +100,7 @@ def load_arguments(self, _):
             "diff",
             options_list=("--diff", "-d"),
             required=False,
-            help="Compare the CCE Policy field in the ARM Template to the containers in the ARM Template and make sure they are compatible",
+            help="Compare the CCE Policy field in the ARM Template file (or YAML file for Virtual Node) to the containers in the file and make sure they are compatible",
             validator=validate_diff
         )
         c.argument(

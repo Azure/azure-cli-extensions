@@ -110,6 +110,7 @@ def acipolicygen_confcom(
             debug_mode=debug_mode,
             disable_stdio=disable_stdio,
             approve_wildcards=approve_wildcards,
+            diff_mode=diff
         )
     elif image_name:
         container_group_policies = security_policy.load_policy_from_image_name(
@@ -121,6 +122,7 @@ def acipolicygen_confcom(
             debug_mode=debug_mode,
             disable_stdio=disable_stdio,
             approve_wildcards=approve_wildcards,
+            diff_mode=diff
         )
         virtual_node_yaml = list(os_util.load_multiple_yaml_from_file(virtual_node_yaml_path))
         filtered_yaml = filter_non_pod_resources(virtual_node_yaml)

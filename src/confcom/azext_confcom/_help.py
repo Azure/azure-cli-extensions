@@ -67,7 +67,7 @@ helps[
 
         - name: --diff -d
           type: boolean
-          short-summary: 'When combined with an input ARM Template, verifies the policy present in the ARM Template under "ccePolicy" and the containers within the ARM Template are compatible. If they are incompatible, a list of reasons is given and the exit status code will be 2.'
+          short-summary: 'When combined with an input ARM Template file (or YAML file for Virtual Node policy generation), verifies the policy present in the ARM Template under "ccePolicy" and the containers within the file are compatible. If they are incompatible, a list of reasons is given and the exit status code will be 2.'
 
         - name: --outraw
           type: boolean

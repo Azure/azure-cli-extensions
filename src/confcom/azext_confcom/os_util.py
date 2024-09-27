@@ -30,8 +30,8 @@ def base64_to_str(data: str) -> str:
     try:
         data_bytes = base64.b64decode(data)
         data_str = data_bytes.decode("ascii")
-    except binascii.Error:
-        eprint(f"Invalid base64 string: {data}")
+    except binascii.Error as e:
+        raise ValueError(f"Invalid base64 string: {data}") from e
     return data_str
 
 
