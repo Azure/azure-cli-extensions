@@ -13,9 +13,10 @@ from typing import Any, Dict
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.azclierror import ValidationError, CLIInternalError
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
+from azure.cli.command_modules.containerapp._decorator_utils import load_yaml_file
 from azure.cli.core.commands.client_factory import get_subscription_id
 
-from ._constants import CONTAINER_APPS_RP, MANAGED_ENVIRONMENT_RESOURCE_TYPE
+from ._constants import CONTAINER_APPS_RP, MANAGED_ENVIRONMENT_RESOURCE_TYPE, JAVA_COMPONENT_GATEWAY
 from ._utils import parse_service_bindings
 from ._models import JavaComponent as JavaComponentModel
 from ._client_factory import handle_raw_exception
@@ -61,10 +62,14 @@ class JavaComponentDecorator(BaseResource):
     def get_argument_max_replicas(self):
         return self.get_param("max_replicas")
 
+    def get_argument_route_yaml(self):
+        return self.get_param("route_yaml")
+
     def construct_payload(self):
         self.java_component_def["properties"]["componentType"] = self.get_argument_target_java_component_type()
         self.set_up_service_bindings()
         self.set_up_unbind_service_bindings()
+        self.set_up_gateway_route()
         if self.get_argument_min_replicas() is not None and self.get_argument_max_replicas() is not None:
             self.java_component_def["properties"]["scale"] = {
                 "minReplicas": self.get_argument_min_replicas(),
@@ -134,6 +139,8 @@ class JavaComponentDecorator(BaseResource):
 
     def set_up_service_bindings(self):
         if self.get_argument_service_bindings() is not None:
+            if self.get_argument_target_java_component_type() == JAVA_COMPONENT_GATEWAY:
+                raise CLIInternalError("Service binding is not supported by Gateway for Spring.")
             _, service_bindings_def_list = parse_service_bindings(self.cmd,
                                                                   self.get_argument_service_bindings(),
                                                                   self.get_argument_resource_group_name(),
@@ -149,7 +156,9 @@ class JavaComponentDecorator(BaseResource):
                     self.java_component_def["properties"]["serviceBinds"].append(update_item)
 
     def set_up_unbind_service_bindings(self):
-        if self.get_argument_unbind_service_bindings():
+        if self.get_argument_unbind_service_bindings() is not None:
+            if self.get_argument_target_java_component_type() == JAVA_COMPONENT_GATEWAY:
+                raise CLIInternalError("Service binding is not supported by Gateway for Spring.")
             new_template = self.java_component_def.setdefault("properties", {})
             existing_template = self.java_component_def["properties"]
 
@@ -165,3 +174,50 @@ class JavaComponentDecorator(BaseResource):
                 if item in service_bindings_dict:
                     new_template["serviceBinds"] = [binding for binding in new_template["serviceBinds"] if
                                                     binding["name"] != item]
+
+    def set_up_gateway_route(self):
+        if self.get_argument_route_yaml() is not None:
+            if self.get_argument_target_java_component_type() != JAVA_COMPONENT_GATEWAY:
+                raise CLIInternalError("The route could only be configured for Gateway for Spring.")
+            self.java_component_def["properties"]["springCloudGatewayRoutes"] = self.process_loaded_scg_route()
+
+    
+    def process_loaded_scg_route(self):
+        yaml_scg_routes = load_yaml_file(self.get_argument_route_yaml())
+
+        # Check if the loaded YAML is a dictionary
+        if not isinstance(yaml_scg_routes, dict):
+            raise ValidationError('Invalid YAML provided. Please ensure the route is defined correctly.')
+        
+        # Ensure that 'springCloudGatewayRoutes' is present and is a list (can be empty)
+        routes = yaml_scg_routes.get('springCloudGatewayRoutes')
+        if routes is None:
+            return []
+        
+        if not isinstance(routes, list):
+            raise ValidationError('The "springCloudGatewayRoutes" field must be a list.')
+        
+        # Loop through each route and validate the required fields
+        for route in routes:
+            if not isinstance(route, dict):
+                raise ValidationError('Each route must be a dictionary.')
+
+            # Ensure each route has 'id' and 'uri' fields
+            if 'id' not in route or not route['id']:
+                raise ValidationError(f'Route is missing required "id" field: {route}')
+            
+            if 'uri' not in route or not route['uri']:
+                raise ValidationError(f'Route is missing required "uri" field: {route}')
+            
+            # Ensure predicates and filters are lists; set to empty lists if not provided
+            if 'predicates' not in route:
+                route['predicates'] = []
+            elif not isinstance(route['predicates'], list):
+                raise ValidationError(f'The "predicates" field must be a list in route {route["id"]}.')
+            
+            if 'filters' not in route:
+                route['filters'] = []
+            elif not isinstance(route['filters'], list):
+                raise ValidationError(f'The "filters" field must be a list in route {route["id"]}.')
+        
+        return yaml_scg_routes.get('springCloudGatewayRoutes')

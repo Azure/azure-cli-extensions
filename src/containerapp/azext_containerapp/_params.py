@@ -364,6 +364,7 @@ def load_arguments(self, _):
         c.argument('configuration', nargs="*", help="Java component configuration. Configuration must be in format \"<propertyName>=<value>\" \"<propertyName>=<value>\"...")
         c.argument('min_replicas', type=int, help="Minimum number of replicas to run for the Java component.")
         c.argument('max_replicas', type=int, help="Maximum number of replicas to run for the Java component.")
+        c.argument('route_yaml', options_list=['--route-yaml', '--yaml'], help="Path to a .yaml file with the configuration of a Spring Cloud Gateway route.")
 
     with self.argument_context('containerapp job logs show') as c:
         c.argument('follow', help="Print logs in real time if present.", arg_type=get_three_state_flag())
