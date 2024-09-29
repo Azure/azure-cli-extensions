@@ -225,7 +225,7 @@ def load_command_table(self, args):
         g.custom_show_command('show', 'show_admin_for_spring')
         g.custom_command('delete', 'delete_admin_for_spring', confirmation=True, supports_no_wait=True)
 
-    with self.command_group('containerapp env java-component gateway-for-spring') as g:
+    with self.command_group('containerapp env java-component gateway-for-spring', is_preview=True) as g:
         g.custom_command('create', 'create_gateway_for_spring', supports_no_wait=True)
         g.custom_command('update', 'update_gateway_for_spring', supports_no_wait=True)
         g.custom_show_command('show', 'show_gateway_for_spring')

@@ -186,7 +186,7 @@ class JavaComponentDecorator(BaseResource):
 
         # Check if the loaded YAML is a dictionary
         if not isinstance(yaml_scg_routes, dict):
-            raise ValidationError('Invalid YAML provided. Please ensure the route is defined correctly.')
+            raise ValidationError('Invalid YAML provided. Please see https://aka.ms/gateway-for-spring-routes-yaml for a valid Gateway for Spring routes YAML spec.')
 
         # Ensure that 'springCloudGatewayRoutes' is present and is a list (can be empty)
         routes = yaml_scg_routes.get('springCloudGatewayRoutes')
@@ -194,29 +194,29 @@ class JavaComponentDecorator(BaseResource):
             return []
 
         if not isinstance(routes, list):
-            raise ValidationError('The "springCloudGatewayRoutes" field must be a list.')
+            raise ValidationError('The "springCloudGatewayRoutes" field must be a list. Please see https://aka.ms/gateway-for-spring-routes-yaml for a valid Gateway for Spring routes YAML spec.')
 
         # Loop through each route and validate the required fields
         for route in routes:
             if not isinstance(route, dict):
-                raise ValidationError('Each route must be a dictionary.')
+                raise ValidationError('Each route must be a dictionary. Please see https://aka.ms/gateway-for-spring-routes-yaml for a valid Gateway for Spring routes YAML spec.')
 
             # Ensure each route has 'id' and 'uri' fields
             if 'id' not in route or not route['id']:
-                raise ValidationError(f'Route is missing required "id" field: {route}')
+                raise ValidationError(f'Route is missing required "id" field: {route} Please see https://aka.ms/gateway-for-spring-routes-yaml for a valid Gateway for Spring routes YAML spec.')
 
             if 'uri' not in route or not route['uri']:
-                raise ValidationError(f'Route is missing required "uri" field: {route}')
+                raise ValidationError(f'Route is missing required "uri" field: {route} Please see https://aka.ms/gateway-for-spring-routes-yaml for a valid Gateway for Spring routes YAML spec.')
 
             # Ensure predicates and filters are lists; set to empty lists if not provided
             if 'predicates' not in route:
                 route['predicates'] = []
             elif not isinstance(route['predicates'], list):
-                raise ValidationError(f'The "predicates" field must be a list in route {route["id"]}.')
+                raise ValidationError(f'The "predicates" field must be a list in route {route["id"]}. Please see https://aka.ms/gateway-for-spring-routes-yaml for a valid Gateway for Spring routes YAML spec.')
 
             if 'filters' not in route:
                 route['filters'] = []
             elif not isinstance(route['filters'], list):
-                raise ValidationError(f'The "filters" field must be a list in route {route["id"]}.')
+                raise ValidationError(f'The "filters" field must be a list in route {route["id"]}. Please see https://aka.ms/gateway-for-spring-routes-yaml for a valid Gateway for Spring routes YAML spec.')
 
         return yaml_scg_routes.get('springCloudGatewayRoutes')
