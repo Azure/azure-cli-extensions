@@ -181,22 +181,21 @@ class JavaComponentDecorator(BaseResource):
                 raise CLIInternalError("The route could only be configured for Gateway for Spring.")
             self.java_component_def["properties"]["springCloudGatewayRoutes"] = self.process_loaded_scg_route()
 
-    
     def process_loaded_scg_route(self):
         yaml_scg_routes = load_yaml_file(self.get_argument_route_yaml())
 
         # Check if the loaded YAML is a dictionary
         if not isinstance(yaml_scg_routes, dict):
             raise ValidationError('Invalid YAML provided. Please ensure the route is defined correctly.')
-        
+
         # Ensure that 'springCloudGatewayRoutes' is present and is a list (can be empty)
         routes = yaml_scg_routes.get('springCloudGatewayRoutes')
         if routes is None:
             return []
-        
+
         if not isinstance(routes, list):
             raise ValidationError('The "springCloudGatewayRoutes" field must be a list.')
-        
+
         # Loop through each route and validate the required fields
         for route in routes:
             if not isinstance(route, dict):
@@ -205,19 +204,19 @@ class JavaComponentDecorator(BaseResource):
             # Ensure each route has 'id' and 'uri' fields
             if 'id' not in route or not route['id']:
                 raise ValidationError(f'Route is missing required "id" field: {route}')
-            
+
             if 'uri' not in route or not route['uri']:
                 raise ValidationError(f'Route is missing required "uri" field: {route}')
-            
+
             # Ensure predicates and filters are lists; set to empty lists if not provided
             if 'predicates' not in route:
                 route['predicates'] = []
             elif not isinstance(route['predicates'], list):
                 raise ValidationError(f'The "predicates" field must be a list in route {route["id"]}.')
-            
+
             if 'filters' not in route:
                 route['filters'] = []
             elif not isinstance(route['filters'], list):
                 raise ValidationError(f'The "filters" field must be a list in route {route["id"]}.')
-        
+
         return yaml_scg_routes.get('springCloudGatewayRoutes')

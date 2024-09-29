@@ -2397,6 +2397,7 @@ def show_admin_for_spring(cmd, java_component_name, environment_name, resource_g
 def delete_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, no_wait=False):
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, no_wait)
 
+
 def create_gateway_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, min_replicas=1, max_replicas=1, route_yaml=None, no_wait=False):
     return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_GATEWAY, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, route_yaml, no_wait)
 
