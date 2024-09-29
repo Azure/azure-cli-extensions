@@ -107,3 +107,7 @@ Release History
 ++++++
 * Added missing help text
 * Removed dependency on msrestazure library
+
+1.3.0
+++++++
+* Add fleet autoupgradeprofile commands

@@ -12,20 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "azure-terraform export-terraform",
+    "terraform export-terraform",
     is_preview=True,
 )
 class ExportTerraform(AAZCommand):
     """Exports the Terraform configuration of the specified resource(s)
 
     :example: Export a resource group targeting to `azurerm` provider
-        az azure-terraform export-terraform --export-resource-group '{resource-group-name:my-rg}'
+        az terraform export-terraform --export-resource-group '{resource-group-name:my-rg}'
 
     :example: Export a list of resources targeting to `azapi` provider
-        az azure-terraform export-terraform --full-properties false --target-provider azapi --export-resource '{resource-ids:[id1,id2,id3]}'
+        az terraform export-terraform --full-properties false --target-provider azapi --export-resource '{resource-ids:[id1,id2,id3]}'
 
     :example: Export all virtual networks in the current subscription, together with their child resources (e.g. subnets) targeting `azapi` provider
-        az azure-terraform export-terraform --full-properties false --target-provider azapi --export-query "{query:'type =~ \\"microsoft.network/virtualnetworks\\"',recursive:true}"
+        az terraform export-terraform --full-properties false --target-provider azapi --export-query "{query:'type =~ \\"microsoft.network/virtualnetworks\\"',recursive:true}"
     """
 
     _aaz_info = {

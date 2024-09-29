@@ -6,20 +6,20 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azext_azure_terraform._help import helps  # pylint: disable=unused-import
+from azext_terraform._help import helps  # pylint: disable=unused-import
 
 
-class AzureTerraformCommandsLoader(AzCommandsLoader):
+class TerraformCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         custom_command_type = CliCommandType(
-            operations_tmpl='azext_azure_terraform.custom#{}')
+            operations_tmpl='azext_terraform.custom#{}')
         super().__init__(cli_ctx=cli_ctx,
                          custom_command_type=custom_command_type)
 
     def load_command_table(self, args):
-        from azext_azure_terraform.commands import load_command_table
+        from azext_terraform.commands import load_command_table
         from azure.cli.core.aaz import load_aaz_command_table
         try:
             from . import aaz
@@ -35,8 +35,8 @@ class AzureTerraformCommandsLoader(AzCommandsLoader):
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_azure_terraform._params import load_arguments
+        from azext_terraform._params import load_arguments
         load_arguments(self, command)
 
 
-COMMAND_LOADER_CLS = AzureTerraformCommandsLoader
+COMMAND_LOADER_CLS = TerraformCommandsLoader

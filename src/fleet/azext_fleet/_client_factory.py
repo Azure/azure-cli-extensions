@@ -36,3 +36,7 @@ def cf_fleet_update_strategies(cli_ctx, *_):
 def get_resource_groups_client(cli_ctx, subscription_id=None):
     return get_mgmt_service_client(
         cli_ctx, ResourceType.MGMT_RESOURCE_RESOURCES, subscription_id=subscription_id).resource_groups
+
+
+def cf_auto_upgrade_profiles(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).auto_upgrade_profiles
