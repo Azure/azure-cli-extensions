@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.2.0
++++++++++
+- Fixes for highAvailability and accessKeysAuthentication argument.
+
 1.1.0
 +++++++++
 - Adds support for using Microsoft Entra token-based authentication.
