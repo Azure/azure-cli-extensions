@@ -2054,3 +2054,12 @@ helps['containerapp job registry set'] = """
           az containerapp job registry set -n my-containerapp-job -g MyResourceGroup \\
               --server MyContainerappJobRegistry.azurecr.io --identity system-environment
 """
+
+helps['containerapp debug'] = """
+    type: command
+    short-summary: Open an SSH-like interactive shell within a container app debug console.
+    examples:
+    - name: Debug by connecting to a container app's debug console by replica, revision and container
+      text: |
+          az containerapp debug -n MyContainerapp -g MyResourceGroup --revision MyRevision --replica MyReplica --container MyContainer
+"""
