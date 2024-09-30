@@ -40,12 +40,12 @@ helps['quantum run'] = """
     examples:
       - name: Run QIR bitcode from a file in the current folder and wait for the result.
         text: |-
-            az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
+            az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation -t MyTarget \\
                 --job-name MyJob --job-input-format qir.v1 --job-input-file MyQirBitcode.bc \\
                 --entry-point MyQirEntryPoint
       - name: Run a Quil pass-through job on the Rigetti simulator and wait for the result.
         text: |-
-            az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation \\
+            az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation \\
                -t rigetti.sim.qvm --job-name MyJob --job-input-file MyProgram.quil \\
                --job-input-format rigetti.quil.v1 --job-output-format rigetti.quil-results.v1
       - name: Submit a Qiskit circuit to the IonQ simulator with job params and wait for the results.
