@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.10.1
+1.11.0
 ++++++
 * Update to email SDK version to 1.0.1b1.
 * Adding new feature inline attachments to Email communication send mail.
