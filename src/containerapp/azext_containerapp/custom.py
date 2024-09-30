@@ -3224,3 +3224,73 @@ def set_registry_job(cmd, name, resource_group_name, server, username=None, pass
     containerapp_job_registry_set_decorator.construct_payload()
     r = containerapp_job_registry_set_decorator.set()
     return r
+
+
+def diagnose_dns(cmd, resource_group_name, name, domain=None):
+    if not domain:
+        domain = "azure.com"
+
+    sub = get_subscription_id(cmd.cli_ctx)
+
+    token_response = ManagedEnvironmentPreviewClient.get_auth_token(cmd, resource_group_name, name)
+    token = token_response["properties"]["token"]
+
+    env = ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
+    base_url = env["properties"]["eventStreamEndpoint"]
+    base_url = base_url[:base_url.index("/subscriptions/")]
+
+    verify = True
+
+    # TODO: Remove this
+    base_url = "https://localhost:51748"
+    verify = False
+
+    url = f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/managedEnvironments/{name}/testdnsresolution?url={domain}"
+
+    
+    headers = {"Authorization": f"Bearer {token}"}
+    try:
+        resp = requests.post(url,
+                            timeout=None,
+                            headers=headers,
+                            verify=verify)
+
+    except requests.exceptions.RequestException as e:
+        raise ValidationError(f"Request failed: {e}")
+
+    display_healthcheck_results(resp.content)
+
+def healthcheck_show(cmd, resource_group_name, name):
+    sub = get_subscription_id(cmd.cli_ctx)
+
+    token_response = ManagedEnvironmentPreviewClient.get_auth_token(cmd, resource_group_name, name)
+    token = token_response["properties"]["token"]
+
+    env = ManagedEnvironmentPreviewClient.show(cmd, resource_group_name, name)
+    base_url = env["properties"]["eventStreamEndpoint"]
+    base_url = base_url[:base_url.index("/subscriptions/")]
+
+    verify = True
+
+    # TODO: Remove this
+    base_url = "https://localhost:51748"
+    verify = False
+
+    url = f"{base_url}/subscriptions/{sub}/resourceGroups/{resource_group_name}/managedEnvironments/{name}/healthcheck"
+
+    
+    headers = {"Authorization": f"Bearer {token}"}
+    try:
+        resp = requests.post(url,
+                            timeout=None,
+                            headers=headers,
+                            verify=verify)
+
+    except requests.exceptions.RequestException as e:
+        raise ValidationError(f"Request failed: {e}")
+
+    display_healthcheck_results(resp.content)
+
+def display_healthcheck_results(result):
+    print(result)
+     
