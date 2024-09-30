@@ -35,7 +35,7 @@ helps["connectedk8s connect"] = """
     - name: Onboard a connected kubernetes cluster with oidc issuer enabled using a self hosted issuer url for public cloud cluster.
       text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --enable-oidc-issuer --self-hosted-issuer aksissuerurl
     - name: Onboard a connected kubernetes cluster with azure gateway feature enabled.
-      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --enable-gateway --gateway-resource-id gatewayResourceId
+      text: az connectedk8s connect -g resourceGroupName -n connectedClusterName --gateway-resource-id gatewayResourceId
 
 """
 
@@ -56,7 +56,7 @@ helps["connectedk8s update"] = """
     - name: Disable the workload identity webhook on a connected kubernetes cluster.
       text: az connectedk8s update -g resourceGroupName -n connectedClusterName --disable-workload-identity
     - name: Update a connected kubernetes cluster with azure gateway feature enabled.
-      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --enable-gateway --gateway-resource-id gatewayResourceId
+      text: az connectedk8s update -g resourceGroupName -n connectedClusterName --gateway-resource-id gatewayResourceId
     - name: Disable the azure gateway feature on a connected kubernetes cluster.
       text: az connectedk8s update -g resourceGroupName -n connectedClusterName --disable-gateway
 """

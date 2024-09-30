@@ -8,6 +8,7 @@ Release History
 * Added support for arc gateway feature.
 * Bug fix for Workload Identity poll or agent state.
 * Bug fix for connectedk8s update with workload identity enabled.
+* Update pycryptodome to 3.20.0.
 
 1.9.2
 ++++++
