@@ -51,7 +51,7 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     autoadd_only_type = CLIArgumentType(help='If specified, only the plans flagged "autoAdd" are displayed.')
     job_input_file_type = CLIArgumentType(help='The location of the input file to submit.')
     job_input_format_type = CLIArgumentType(help='The format of the file to submit.')
-    job_output_format_type = CLIArgumentType(help='The expected job output format. Ignored on Q# jobs.')
+    job_output_format_type = CLIArgumentType(help='The expected job output format')
     entry_point_type = CLIArgumentType(help='The entry point for the QIR program or circuit. Required for QIR jobs.')
     item_type = CLIArgumentType(help='The item index in a batching job.')
     skip_autoadd_type = CLIArgumentType(help='If specified, the plans that offer free credits will not automatically be added.')

@@ -28,7 +28,7 @@ helps['quantum execute'] = """
       - name: Submit a Qiskit circuit to the IonQ simulator with job params and wait for the results.
         text: |-
             az quantum execute -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-               -t ionq.simulator -–job-name MyJobName --job-input-file MyCircuit.json \\
+               -t ionq.simulator --job-name MyJobName --job-input-file MyCircuit.json \\
                --job-input-format ionq.circuit.v1 --job-output-format ionq.quantum-results.v1 \\
                --job-params count=100 content-type=application/json
 
@@ -51,7 +51,7 @@ helps['quantum run'] = """
       - name: Submit a Qiskit circuit to the IonQ simulator with job params and wait for the results.
         text: |-
             az quantum run -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-               -t ionq.simulator -–job-name MyJobName --job-input-file MyCircuit.json \\
+               -t ionq.simulator --job-name MyJobName --job-input-file MyCircuit.json \\
                --job-input-format ionq.circuit.v1 --job-output-format ionq.quantum-results.v1 \\
                --job-params count=100 content-type=application/json
 """
@@ -107,7 +107,7 @@ helps['quantum job submit'] = """
       - name: Submit a Qiskit circuit to the IonQ simulator with job params.
         text: |-
             az quantum job submit -g MyResourceGroup -w MyWorkspace -l MyLocation \\
-               -t ionq.simulator –-job-name MyJobName --job-input-file MyCircuit.json \\
+               -t ionq.simulator --job-name MyJobName --job-input-file MyCircuit.json \\
                --job-input-format ionq.circuit.v1 --job-output-format ionq.quantum-results.v1 \\
                --job-params count=100 content-type=application/json
 """
