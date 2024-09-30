@@ -13,7 +13,7 @@ Release History
 
 **Fixes:**
 * Set external document correctly in ``az apic register`` command.
-* [BREAKING CHANGE] Do not use API description as summary in ``az apic register`` command. 
+* Do not use API description as summary in ``az apic register`` command. 
 
 **Removals:**
 * Eliminated duplicate example for ``az apic create `` command.
