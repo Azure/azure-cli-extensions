@@ -112,6 +112,6 @@ Release History
 ++++++
 * Add fleet autoupgradeprofile commands
 
-1.3.1
+1.4.0
 ++++++
 * Set autoupgradeprofile commands to preview mode
