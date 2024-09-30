@@ -5,19 +5,18 @@ Release History
 
 1.1.0
 ++++++++++++++++++
-Potential Impact: The changes in this release, including the renaming of commands and parameters, may require changes to existing scripts and integrations. Please review the changes carefully and update your code accordingly.
 
 **Updates:**
 * Added example for ``az apic api update`` command.
 * Added examples with system assigned identity for ``az apic create`` and ``az apic update`` commands.
-* [BREAKING CHANGE] Added ``--custom-metadata-only`` parameter to ``az apic metadata export`` command.
+* Added ``--custom-metadata-only`` parameter to ``az apic metadata export`` command.
 
 **Fixes:**
-* Resolved errors occurring when extracting external documentation from spec in ``az apic register`` command.
+* Set external document correctly in ``az apic register`` command.
+* [BREAKING CHANGE] Do not use API description as summary in ``az apic register`` command. 
 
 **Removals:**
 * Eliminated duplicate example for ``az apic create `` command.
-* [BREAKING CHANGE] Removed the ``summary`` scope setting in ``az apic api register`` command. 
 
 1.0.0
 ++++++++++++++++++
