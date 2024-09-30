@@ -320,7 +320,7 @@ def communication_rooms_remove_participants(client, room_id, participants):
         sys.exit(str(ex))
 
 
-def __get_attachment_content(filename, filetype):
+def __get_attachment_content(filename, filetype, inline_attachment=None):
 
     import json
     import os
@@ -331,16 +331,24 @@ def __get_attachment_content(filename, filetype):
         file_bytes = file.read()
     file_bytes_b64 = base64.b64encode(file_bytes)
 
-    attachment = {
-        "name": tail,
-        "contentType": filetype,
-        "contentInBase64": file_bytes_b64.decode(),
-    }
+    if inline_attachment is None:
+        attachment = {
+            "name": tail,
+            "contentType": filetype,
+            "contentInBase64": file_bytes_b64.decode(),
+        }
+    else:
+        attachment = {
+            "name": tail,
+            "contentType": filetype,
+            "contentInBase64": file_bytes_b64.decode(),
+            "contentId": inline_attachment,
+        }
 
     return json.dumps(attachment)
 
 
-def prepare_attachments(attachments, attachment_types):
+def prepare_attachments(attachments, attachment_types, inline_attachments):
     from knack.util import CLIError
 
     attachments_list = []
@@ -351,10 +359,23 @@ def prepare_attachments(attachments, attachment_types):
     elif len(attachments) != len(attachment_types):
         raise CLIError('Number of attachments and attachment-types should match.')
     else:
-        all_attachments = attachments[0].split(',')
-        all_attachment_types = attachment_types[0].split(',')
-        for i, attachment in enumerate(all_attachments):
-            attachments_list.append(__get_attachment_content(attachment, all_attachment_types[i]))
+        inline_index = 0
+
+        for attachment_set, attachment_type_set in zip(attachments, attachment_types):
+            all_attachments = attachment_set.split(',')
+            all_attachment_types = attachment_type_set.split(',')
+
+            for i, attachment in enumerate(all_attachments):
+                inline_attachment = None
+                if inline_attachments and inline_index < len(inline_attachments):
+                    inline_attachment = inline_attachments[inline_index]
+                    inline_index += 1
+
+                attachments_list.append(
+                    __get_attachment_content(
+                        attachment,
+                        all_attachment_types[i],
+                        inline_attachment))
 
     return attachments_list
 
@@ -372,6 +393,7 @@ def communication_email_send(client,
                              reply_to=None,
                              attachments=None,
                              attachment_types=None,
+                             inline_attachments=None,
                              waitUntil='completed'):
 
     import json
@@ -390,7 +412,7 @@ def communication_email_send(client,
         else:
             priority = '3'
 
-        attachments_list = prepare_attachments(attachments, attachment_types)
+        attachments_list = prepare_attachments(attachments, attachment_types, inline_attachments)
 
         message = {
             "content": {

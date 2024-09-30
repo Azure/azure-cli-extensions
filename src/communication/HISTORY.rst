@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.10.1
+++++++
+* Update to email SDK version to 1.0.1b1.
+* Adding new feature inline attachments to Email communication send mail.
+
 1.10.0
 ++++++
 * Adding new parameter waituntil to Email communication send mail.

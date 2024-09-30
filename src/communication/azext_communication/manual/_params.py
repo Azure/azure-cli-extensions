@@ -278,12 +278,14 @@ def _load_email_arguments(self):
                    'This is only applicable if the resource-level user engagement '
                    'tracking setting was already enabled in control plane. Optional.')
         c.argument('attachments', options_list=['--attachments'], nargs='+',
-                   help='List of email attachments. Optional.')
+                   help='List of inline attachments followed by email attachments. Optional.')
         c.argument('attachment_types', options_list=['--attachment-types'], nargs='+',
                    help='List of email attachment types, in the same order of attachments.'
                    ' Required for each attachment. Known values are: avi, bmp, doc, docm,'
                    ' docx, gif, jpeg, mp3, one, pdf, png, ppsm, ppsx, ppt, pptm, pptx,'
                    ' pub, rpmsg, rtf, tif, txt, vsd, wav, wma, xls, xlsb, xlsm, and xlsx')
+        c.argument('inline_attachments', options_list=['--inline-attachments'], nargs='+',
+                   help='List of inline attachments, in the same order of attachments.')
         c.argument('waitUntil', options_list=['--wait-until'],
                    arg_type=get_enum_type(['started', 'completed', '1', '0']),
                    help='Indicates whether to wait until the server operation is started or completed. '
