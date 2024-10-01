@@ -47,8 +47,7 @@ from .repair_utils import (
     _fetch_architecture,
     _select_distro_linux_Arm64,
     _fetch_vm_security_profile_parameters,
-    _fetch_osdisk_security_profile_parameters,
-    _fetch_compatible_windows_os_urn_v2
+    _fetch_osdisk_security_profile_parameters
 )
 from .exceptions import AzCommandError, RunScriptNotFoundForIdError, SupportingResourceNotFoundError, CommandCanceledByUserError
 logger = get_logger(__name__)
@@ -91,7 +90,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             else:
                 os_image_urn = _select_distro_linux(distro)
         else:
-            os_image_urn = _fetch_compatible_windows_os_urn_v2(source_vm)
+            os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
             os_type = 'Windows'
 
         # Set up base create vm command
