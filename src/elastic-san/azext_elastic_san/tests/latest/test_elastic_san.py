@@ -183,7 +183,7 @@ class ElasticSanScenario(ScenarioTest):
                  '--sku {{name:Premium_LRS,tier:Premium}}')
         # 1. Create a key vault with a key in it. Key type should be RSA
         self.cmd('az keyvault create --name {kv_name} --resource-group {rg} --location eastus2 '
-                 '--enable-purge-protection --retention-days 7')
+                 '--enable-purge-protection --retention-days 7 --enable-rbac-authorization false')
         kv = self.cmd('az keyvault show --name {kv_name} --resource-group {rg}').get_output_in_json()
         self.kwargs.update({"vault_uri": kv["properties"]["vaultUri"]})
         self.cmd('az keyvault set-policy -n {kv_name} --object-id {logged_in_user} '
@@ -241,7 +241,7 @@ class ElasticSanScenario(ScenarioTest):
                             "uai_id": uai["id"],
                             "uai_client_id": uai["clientId"]})
         self.cmd('az keyvault create --name {kv_name} --resource-group {rg} --location eastus2 '
-                 '--enable-purge-protection --retention-days 7')
+                 '--enable-purge-protection --retention-days 7 --enable-rbac-authorization false')
         kv = self.cmd('az keyvault show --name {kv_name} --resource-group {rg}').get_output_in_json()
         self.kwargs.update({"vault_uri": kv["properties"]["vaultUri"]})
         self.cmd('az keyvault set-policy -n {kv_name} --object-id {uai_principal_id} '
