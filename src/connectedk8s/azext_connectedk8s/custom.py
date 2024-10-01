@@ -176,6 +176,10 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     if (infrastructure.lower() == 'azure_stack_hci') and (distribution.lower() in lowbandwith_distros):
         lowbandwidth = True
 
+    azure_local_disconnected = False
+    if os.getenv('AZURE_LOCAL_KUBECTL_LOCATION'):
+        azure_local_disconnected = True
+
     # Install kubectl and helm
     try:
         kubectl_client_location = install_kubectl_client()
@@ -190,8 +194,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
     # Pre onboarding checks
     diagnostic_checks = "Failed"
     try:
-        # if aks_hci lowbandwidth scenario skip, otherwise continue to perform pre-onboarding check
-        if not lowbandwidth:
+        # if aks_hci lowbandwidth scenario or Azure local disconnected, skip, otherwise continue pre-onboarding check.
+        if not azure_local_disconnected and not lowbandwidth:
             print("Step: {}: Starting Pre-onboarding-check".format(utils.get_utctimestring()))
             batchv1_api_instance = kube_client.BatchV1Api()
             storage_space_available = True
@@ -247,7 +251,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         raise ManualInterrupt('Process terminated externally.')
 
     # If the checks didnt pass then stop the onboarding
-    if diagnostic_checks != consts.Diagnostic_Check_Passed and lowbandwidth is False:
+    if diagnostic_checks != consts.Diagnostic_Check_Passed and not azure_local_disconnected and not lowbandwidth:
         if storage_space_available:
             logger.warning("The pre-check result logs logs have been saved at this path: "
                            "%s.\nThese logs can be attached while filing a support ticket for further assistance.\n",
@@ -268,7 +272,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
             "cluster onboarding. Please resolve them and try onboarding again."
         raise ValidationError(err_msg)
 
-    if lowbandwidth is False:
+    if not azure_local_disconnected and not lowbandwidth:
         print("Step: {}: The required pre-checks for onboarding have succeeded.".format(utils.get_utctimestring()))
     else:
         print("Step: {}: Skipped onboarding pre-checks for AKS-HCI low bandwidth scenario. "
@@ -517,8 +521,8 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
                                location, onboarding_tenant_id, http_proxy, https_proxy, no_proxy, proxy_cert,
                                private_key_pem, kube_config, kube_context, no_wait, values_file, azure_cloud,
                                disable_auto_upgrade, enable_custom_locations, custom_locations_oid,
-                               helm_client_location, enable_private_link, arm_metadata,
-                               onboarding_timeout, container_log_path)
+                               helm_client_location, enable_private_link, arm_metadata, registry_path,
+                               put_cc_response.identity.principal_id, onboarding_timeout, container_log_path)
     print("Step: {}: Helm install of Azure arc agents Release ended.".format(utils.get_utctimestring()))
     
     # Add 2nd long running operation to wait for Agent State to reach terminal stage with a default 20 minute timeout
@@ -2403,6 +2407,13 @@ def client_side_proxy_wrapper(cmd,
     # initializations
     user_type = 'sat'
     creds = ''
+    dict_file = {
+        'server': {
+            'httpPort': int(client_proxy_port), 
+            'httpsPort': int(api_server_port)
+        }, 
+        'identity': {'tenantID': tenant_id}
+    }
 
     # if service account token is not passed
     if token is None:
@@ -2412,19 +2423,9 @@ def client_side_proxy_wrapper(cmd,
         user_type = account['user']['type']
 
         if user_type == 'user':
-            dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)},
-                         'identity': {'tenantID': tenant_id, 'clientID': consts.CLIENTPROXY_CLIENT_ID}}
+            dict_file['identity']['clientID'] = consts.CLIENTPROXY_CLIENT_ID
         else:
-            dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)},
-                         'identity': {'tenantID': tenant_id, 'clientID': account['user']['name']}}
-
-        if cloud == 'DOGFOOD':
-            dict_file['cloud'] = 'AzureDogFood'
-
-        if cloud == consts.Azure_ChinaCloudName:
-            dict_file['cloud'] = 'AzureChinaCloud'
-        elif cloud == consts.Azure_USGovCloudName:
-            dict_file['cloud'] = 'AzureUSGovernmentCloud'
+            dict_file['identity']['clientID'] = account['user']['name']
 
         if not utils.is_cli_using_msal_auth():
             # Fetching creds
@@ -2461,15 +2462,29 @@ def client_side_proxy_wrapper(cmd,
 
             if user_type != 'user':
                 dict_file['identity']['clientSecret'] = creds
+
+    if cloud == 'DOGFOOD':
+        dict_file['cloud'] = 'AzureDogFood'
+    elif cloud == consts.Azure_ChinaCloudName:
+        dict_file['cloud'] = 'AzureChinaCloud'
+    elif cloud == consts.Azure_USGovCloudName:
+        dict_file['cloud'] = 'AzureUSGovernmentCloud'
     else:
-        dict_file = {'server': {'httpPort': int(client_proxy_port), 'httpsPort': int(api_server_port)}}
-        if cloud == consts.Azure_ChinaCloudName:
-            dict_file['cloud'] = 'AzureChinaCloud'
-        elif cloud == consts.Azure_USGovCloudName:
-            dict_file['cloud'] = 'AzureUSGovernmentCloud'
+        dict_file['cloud'] = cloud
+
+    # Azure local configurations.
+    arm_metadata = utils.get_metadata(cmd.cli_ctx.cloud.endpoints.resource_manager)
+    if "dataplaneEndpoints" in arm_metadata:
+        dict_file['cloudConfig'] = {}
+        dict_file['cloudConfig']['resourceManagerEndpoint'] = arm_metadata['resourceManager']
+        relay_endpoint_suffix = arm_metadata['suffixes']['relayEndpointSuffix']
+        if relay_endpoint_suffix[0] == '.':
+            dict_file['cloudConfig']['serviceBusEndpointSuffix'] = (relay_endpoint_suffix)[1:]
+        else:
+            dict_file['cloudConfig']['serviceBusEndpointSuffix'] = relay_endpoint_suffix
+        dict_file['cloudConfig']['activeDirectoryEndpoint'] = arm_metadata['authentication']['loginEndpoint']
 
     telemetry.set_debug_info('User type is ', user_type)
-
     try:
         with open(config_file_location, 'w') as f:
             yaml.dump(dict_file, f, default_flow_style=False)
@@ -3014,6 +3029,9 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 def install_kubectl_client():
     print("Step: {}: Install Kubectl client if it does not exist".format(utils.get_utctimestring()))
     # Return kubectl client path set by user
+    if os.getenv('AZURE_LOCAL_KUBECTL_LOCATION'):
+        return os.getenv('AZURE_LOCAL_KUBECTL_LOCATION')
+
     try:
 
         # Fetching the current directory where the cli installs the kubectl executable
