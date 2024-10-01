@@ -34,24 +34,31 @@ def setup_scenario(test):
     # Dedicated host
     test.cmd('az vm host group create --name clidhtesthostgroup --resource-group "{rg}" --platform-fault-domain-count 1 ', checks=[])
 
-    test.cmd('az vm host create --host-group clidhtesthostgroup --name clidhtesthost --resource-group "{rg}" --sku ESv3-Type3  --platform-fault-domain 0', checks=[])
+    test.cmd('az vm host create --host-group clidhtesthostgroup --name clidhtesthost --resource-group "{rg}" --sku DDSv4-Type2  --platform-fault-domain 0', checks=[])
 
     # Create NetworkSecurityGroup
     test.cmd('az network nsg create --resource-group "{rg}" --name "clitestnsg"', checks=[])
     test.cmd('az network vnet create --resource-group "{rg}" --name "clitestvnet" --subnet-name "clitestsubnet" --network-security-group "clitestnsg"', checks=[])
     test.cmd('az network vnet subnet create --name "clitestsubnet" --vnet-name "clitestvnet" --resource-group "{rg}" --address-prefixes "10.0.0.0/24"  --network-security-group "clitestnsg"', checks=[])
 
+
+    #Load balancer and health probe
+    test.cmd('az network public-ip create --resource-group "{rg}" --name clitestip')
+    test.cmd('az network lb create --resource-group "{rg}" --name clitestlb --sku Standard --frontend-ip-name clitestfrontendpool --backend-pool-name clitestbackendpool --public-ip-address clitestip')
+    test.cmd('az network lb probe create --resource-group "{rg}" --lb-name clitestlb --name clitestprobe --protocol Http --port 80 --path /')
+    test.cmd('az network lb rule create --resource-group "{rg}" --lb-name clitestlb --name clitestlbrule --protocol Tcp --frontend-port 80 --backend-port 80 --frontend-ip-name clitestfrontendpool --backend-pool-name clitestbackendpool --probe-name clitestprobe')
+    
     # VMSS resource
-    test.cmd('az vmss create -n "clitestvmss" -g "{rg}"  --instance-count 1 --image "Win2016Datacenter" --data-disk-sizes-gb 2 --admin-password "PasswordCLIMaintenanceRP8!" --vnet-name "clitestvnet" --subnet "clitestsubnet" --upgrade-policy-mode Automatic --orchestration-mode Uniform', checks=[])
+    test.cmd('az vmss create -n "clitestvmss" -g "{rg}"  --instance-count 1 --image /sharedGalleries/WINDOWSSERVER.1P/images/2022-DATACENTER-AZURE-EDITION/versions/latest --data-disk-sizes-gb 2 --admin-password "PasswordCLIMaintenanceRP8!" --vnet-name "clitestvnet" --subnet "clitestsubnet" --upgrade-policy-mode Automatic --enable-auto-os-upgrade true --orchestration-mode Uniform --security-type TrustedLaunch --generate-ssh-keys --lb clitestlb --backend-pool-name clitestbackendpool --health-probe clitestprobe', checks=[])
 
     # Disable AutomaticUpdates for VM
-    test.cmd('az vmss update --name  "clitestvmss"  -g "{rg}"  --set virtualMachineProfile.osProfile.windowsConfiguration.enableAutomaticUpdates=false', checks=[])
+   # test.cmd('az vmss update --name  "clitestvmss"  -g "{rg}"  --set virtualMachineProfile.osProfile.windowsConfiguration.enableAutomaticUpdates=false', checks=[])
 
     # Enable Health extension, it is required to enable AutomaticOSUpgradePolicy
-    test.cmd('az vmss extension set --name ApplicationHealthWindows --publisher Microsoft.ManagedServices --version 1.0 --resource-group "{rg}" --vmss-name  clitestvmss --settings \'{HSProbeSettings}\'', checks=[])
+    #test.cmd('az vmss extension set --name ApplicationHealthWindows --publisher Microsoft.ManagedServices --version 1.0 --resource-group "{rg}" --vmss-name  clitestvmss --settings \'{HSProbeSettings}\'', checks=[])
 
     # Enable AutomaticOSUpgradePolicy
-    test.cmd('az vmss update --name "clitestvmss" -g "{rg}" --set UpgradePolicy.AutomaticOSUpgradePolicy.EnableAutomaticOSUpgrade=true', checks=[])
+   # test.cmd('az vmss update --name "clitestvmss" -g "{rg}" --set UpgradePolicy.AutomaticOSUpgradePolicy.EnableAutomaticOSUpgrade=true', checks=[])
 
     pass
 
@@ -287,9 +294,8 @@ def step_assignment_list_parent(test):
 
 
 def step__publicmaintenanceconfigurations_get_publicmaintenanceconfigurations_getforresource(test):
-    test.cmd('az maintenance public-configuration show '
-             '--resource-name "sql2"',
-             checks=[])
+   test.cmd('az maintenance public-configuration show ''--resource-name "sql3"',
+          checks=[])
 
 
 def step__publicmaintenanceconfigurations_get_publicmaintenanceconfigurations_list(test):

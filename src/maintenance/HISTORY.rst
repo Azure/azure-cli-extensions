@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.7.0
+++++++
+* Changed incorrect parameter name
+
 1.6.0
 ++++++
 * Added support for approving scheduled events
