@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.6.1
+1.6.0b2
 ++++++
 * Changed incorrect parameter name
 

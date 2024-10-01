@@ -41,7 +41,6 @@ def setup_scenario(test):
     test.cmd('az network vnet create --resource-group "{rg}" --name "clitestvnet" --subnet-name "clitestsubnet" --network-security-group "clitestnsg"', checks=[])
     test.cmd('az network vnet subnet create --name "clitestsubnet" --vnet-name "clitestvnet" --resource-group "{rg}" --address-prefixes "10.0.0.0/24"  --network-security-group "clitestnsg"', checks=[])
 
-
     #Load balancer and health probe
     test.cmd('az network public-ip create --resource-group "{rg}" --name clitestip')
     test.cmd('az network lb create --resource-group "{rg}" --name clitestlb --sku Standard --frontend-ip-name clitestfrontendpool --backend-pool-name clitestbackendpool --public-ip-address clitestip')
