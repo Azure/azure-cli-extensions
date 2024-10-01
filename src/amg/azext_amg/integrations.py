@@ -9,7 +9,6 @@ from .custom import _create_role_assignment, _delete_role_assignment
 
 from azure.cli.core.azclierror import ArgumentUsageError
 from azure.cli.core.commands.arm import resolve_role_id
-from azure.cli.core.style import print_styled_text, Style
 from knack.log import get_logger
 
 
@@ -89,8 +88,4 @@ def list_amw_linked_to_amg(cmd, grafana_name, grafana_resource_group_name):
     grafana = grafana_client.grafana.get(grafana_resource_group_name, grafana_name)
 
     monitors = grafana.properties.grafana_integrations.azure_monitor_workspace_integrations
-    output = [
-        (Style.PRIMARY, "\n\nLinked Azure Monitor workspace resource ids:"),
-        (Style.SECONDARY, "\n    " + "\n    ".join([m.azure_monitor_workspace_resource_id for m in monitors])),
-    ]
-    print_styled_text(output)
+    return [m.azure_monitor_workspace_resource_id for m in monitors]
