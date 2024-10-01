@@ -50,16 +50,6 @@ def setup_scenario(test):
     
     # VMSS resource
     test.cmd('az vmss create -n "clitestvmss" -g "{rg}"  --instance-count 1 --image /sharedGalleries/WINDOWSSERVER.1P/images/2022-DATACENTER-AZURE-EDITION/versions/latest --data-disk-sizes-gb 2 --admin-password "PasswordCLIMaintenanceRP8!" --vnet-name "clitestvnet" --subnet "clitestsubnet" --upgrade-policy-mode Automatic --enable-auto-os-upgrade true --orchestration-mode Uniform --security-type TrustedLaunch --generate-ssh-keys --lb clitestlb --backend-pool-name clitestbackendpool --health-probe clitestprobe', checks=[])
-
-    # Disable AutomaticUpdates for VM
-   # test.cmd('az vmss update --name  "clitestvmss"  -g "{rg}"  --set virtualMachineProfile.osProfile.windowsConfiguration.enableAutomaticUpdates=false', checks=[])
-
-    # Enable Health extension, it is required to enable AutomaticOSUpgradePolicy
-    #test.cmd('az vmss extension set --name ApplicationHealthWindows --publisher Microsoft.ManagedServices --version 1.0 --resource-group "{rg}" --vmss-name  clitestvmss --settings \'{HSProbeSettings}\'', checks=[])
-
-    # Enable AutomaticOSUpgradePolicy
-   # test.cmd('az vmss update --name "clitestvmss" -g "{rg}" --set UpgradePolicy.AutomaticOSUpgradePolicy.EnableAutomaticOSUpgrade=true', checks=[])
-
     pass
 
 
