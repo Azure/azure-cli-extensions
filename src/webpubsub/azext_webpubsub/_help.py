@@ -104,6 +104,16 @@ helps['webpubsub update'] = """
           az webpubsub update -n MyWebPubSub -g MyResourceGroup --service-mode Serverless
 """
 
+helps['webpubsub start'] = """
+    type: command
+    short-summary: Start a Webpubsub.
+"""
+
+helps['webpubsub stop'] = """
+    type: command
+    short-summary: Stop a Webpubsub.
+"""
+
 helps['webpubsub restart'] = """
     type: command
     short-summary: Restart a Webpubsub.
@@ -155,6 +165,9 @@ helps['webpubsub network-rule update'] = """
       - name: Set denying client connection for both public network and private endpoint connections
         text: >
             az webpubsub network-rule update --public-network --connection-name MyPrivateEndpointConnection1 MyPrivateEndpointConnection2 -n MyWebPubSub -g MyResourceGroup --deny ClientConnection
+      - name: Append IP rule
+        text: >
+            az webpubsub network-rule update -n MyWebPubSub -g MyResourceGroup --ip-rule value="10.0.0.0/24" action="Allow" --ip-rule value="192.168.0.0/24" action="Deny"
 """
 
 helps['webpubsub hub show'] = """
@@ -194,6 +207,9 @@ helps['webpubsub hub update'] = """
       - name: Update to allow anonymous connection
         text: >
             az webpubsub hub update -n MyWebPubSub -g MyResourceGroup --hub-name MyHub --allow-anonymous true
+      - name: Update to web socket keep alive interval in seconds (default is 20 seconds, minimum is 1, maximum is 120)
+        text: >
+            az webpubsub hub update -n MyWebPubSub -g MyResourceGroup --hub-name MyHub --websocket-keepalive 30
 """
 
 helps['webpubsub client start'] = """
@@ -283,6 +299,34 @@ examples:
     text: >
         az webpubsub replica show --replica-name MyReplica --name MyWebPubSub -g MyResourceGroup
 """
+
+helps['webpubsub replica start'] = """
+type: command
+short-summary: Start a replica of WebPubSub Service.
+examples:
+  - name: Start a replica
+    text: >
+        az webpubsub replica start --replica-name MyReplica --name MyWebPubSub -g MyResourceGroup
+"""
+
+helps['webpubsub replica stop'] = """
+type: command
+short-summary: Stop a replica of WebPubSub Service.
+examples:
+  - name: Stop a replica
+    text: >
+        az webpubsub replica stop --replica-name MyReplica --name MyWebPubSub -g MyResourceGroup
+"""
+
+helps['webpubsub replica restart'] = """
+type: command
+short-summary: Restart a replica of WebPubSub Service.
+examples:
+  - name: Restart a replica
+    text: >
+        az webpubsub replica restart --replica-name MyReplica --name MyWebPubSub -g MyResourceGroup
+"""
+
 
 helps['webpubsub replica delete'] = """
 type: command
