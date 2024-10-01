@@ -91,10 +91,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             else:
                 os_image_urn = _select_distro_linux(distro)
         else:
-            if encrypt_recovery_key:
-                os_image_urn = _fetch_compatible_windows_os_urn_v2(source_vm)
-            else:
-                os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
+            os_image_urn = _fetch_compatible_windows_os_urn_v2(source_vm)
             os_type = 'Windows'
 
         # Set up base create vm command
