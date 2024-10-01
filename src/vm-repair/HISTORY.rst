@@ -2,6 +2,10 @@
 Release History
 ===============
 
+2.0.0
+++++++
+Changed the default image for Windows VMs when the source image cannot be found to a Windows 2022 sku as opposed to Windows 2016.
+
 1.0.9
 ++++++
 Fixed and updated several vm-repair tests for better coverage. 
