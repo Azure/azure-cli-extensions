@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Create Verifier Workspace.
 
     :example: VerifierWorkspaceCreate
-        az network manager verifier-workspace create --name "myVerifierWorkspace" --network-manager-name "myAVNM" --resource-group "myAVNMResourceGroup" --subscription "00000000-0000-0000-0000-000000000000" --description “hello world workspace” --tags [“color”: “blue”]
+        az network manager verifier-workspace create --name "myVerifierWorkspace" --network-manager-name "myAVNM" --resource-group "myAVNMResourceGroup" --subscription "00000000-0000-0000-0000-000000000000" --description “hello world workspace” --tags [“color”: “blue”] --location "eastus"
     """
 
     _aaz_info = {
@@ -70,6 +70,8 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
             arg_group="Body",
+            help="The geo-location where the resource lives",
+            required=True,
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
             ),
@@ -77,6 +79,7 @@ class Create(AAZCommand):
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Body",
+            help="Resource tags.",
         )
 
         tags = cls._args_schema.tags
@@ -186,7 +189,7 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("location", AAZStrType, ".location")
+            _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
@@ -221,7 +224,9 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.location = AAZStrType()
+            _schema_on_200_201.location = AAZStrType(
+                flags={"required": True},
+            )
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )

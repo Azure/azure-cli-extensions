@@ -75,6 +75,7 @@ class Update(AAZCommand):
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="Body",
+            help="Resource tags.",
             nullable=True,
         )
 
@@ -89,7 +90,6 @@ class Update(AAZCommand):
         _args_schema.description = AAZStrArg(
             options=["--description"],
             arg_group="Properties",
-            help="Description of the resource.",
             nullable=True,
         )
         return cls._args_schema
@@ -366,7 +366,9 @@ class _UpdateHelper:
         verifier_workspace_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        verifier_workspace_read.location = AAZStrType()
+        verifier_workspace_read.location = AAZStrType(
+            flags={"required": True},
+        )
         verifier_workspace_read.name = AAZStrType(
             flags={"read_only": True},
         )
