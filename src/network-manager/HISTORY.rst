@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.3.0b2
+1.3.0b1
 +++++
 * Add new cmd `az network manager ipam-pool`
 * Add new cmd `az network manager ipam-pool static-cidr`
