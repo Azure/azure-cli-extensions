@@ -14,7 +14,7 @@ from .vendored_sdks.azure_mgmt_webpubsub.operations import (
 
 
 # pylint: disable=dangerous-default-value
-def update_network_rules(client: WebPubSubOperations, webpubsub_name, resource_group_name, public_network, connection_name=[], allow=[], deny=[], ip_rule=None):
+def update_network_rules(client: WebPubSubOperations, webpubsub_name, resource_group_name, public_network, connection_name=[], allow=[], deny=[]):
     resource = client.get(resource_group_name, webpubsub_name)
     network_acl = resource.network_ac_ls
     if public_network:
@@ -27,12 +27,23 @@ def update_network_rules(client: WebPubSubOperations, webpubsub_name, resource_g
                 x.allow = allow
                 x.deny = deny
 
-    if ip_rule:
-        network_acl.ip_rules.extend(ip_rule)
-
     return client.begin_update(resource_group_name, webpubsub_name, WebPubSubResource(location=resource.location, network_ac_ls=network_acl))
 
 
 def list_network_rules(client, webpubsub_name, resource_group_name):
     resource = client.get(resource_group_name, webpubsub_name)
     return resource.network_ac_ls
+
+
+def add_ip_rule(client, webpubsub_name, resource_group_name, ip_rule):
+    resource = client.get(resource_group_name, webpubsub_name)
+    network_acl = resource.network_ac_ls
+    network_acl.ip_rules.extend(ip_rule)
+    return client.begin_update(resource_group_name, webpubsub_name, WebPubSubResource(location=resource.location, network_ac_ls=network_acl))
+
+
+def remove_ip_rule(client, webpubsub_name, resource_group_name, ip_rule):
+    resource = client.get(resource_group_name, webpubsub_name)
+    network_acl = resource.network_ac_ls
+    network_acl.ip_rules = [rule for rule in network_acl.ip_rules if rule not in ip_rule]
+    return client.begin_update(resource_group_name, webpubsub_name, WebPubSubResource(location=resource.location, network_ac_ls=network_acl))

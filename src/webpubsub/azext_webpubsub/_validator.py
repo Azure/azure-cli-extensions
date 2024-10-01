@@ -8,5 +8,10 @@ from azure.cli.core.azclierror import RequiredArgumentMissingError
 
 
 def validate_network_rule(namespace):
-    if not namespace.public_network and not namespace.connection_name and not namespace.ip_rule:
-        raise RequiredArgumentMissingError('Either public network (--public-network) or private endpoint connections (--connection-name) or ip rules (--ip-rule) should be set.')
+    if not namespace.public_network and not namespace.connection_name:
+        raise RequiredArgumentMissingError('Either public network (--public-network) or private endpoint connections (--connection-name) should be set.')
+
+
+def validate_ip_rule(namespace):
+    if not namespace.ip_rule:
+        raise RequiredArgumentMissingError('IP rule should be set.')

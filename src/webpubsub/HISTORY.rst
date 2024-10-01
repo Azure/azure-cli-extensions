@@ -7,8 +7,9 @@ Release History
 +++++
 * Add `az webpubsub start/stop` support
 * Add `az webpubsub replica start/stop/restart` support
+* Add `az webpubsub network-rule ip-rule add/remove` support
 * Update `az webpubsub hub create/update` to support `webSocketKeepAliveIntervalInSeconds`
-* Update `az webpubsub hub update` to support appending ip rules
+
 
 1.5.1
 +++++

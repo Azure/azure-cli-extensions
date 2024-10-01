@@ -15,7 +15,7 @@ from ._actions import (
     EventHandlerTemplateUpdateAction,
     IPRuleTemplateUpdateAction
 )
-from ._validator import validate_network_rule
+from ._validator import validate_network_rule, validate_ip_rule
 
 WEBPUBSUB_KEY_TYPE = ['primary', 'secondary', 'salt']
 PERMISSION_TYPE = ['joinLeaveGroup', 'sendToGroup']
@@ -53,7 +53,10 @@ def load_arguments(self, _):
         c.argument('public_network', arg_type=get_three_state_flag(), help='Set rules for public network.', required=False, arg_group='Public Network')
         c.argument('allow', arg_type=get_enum_type(WebPubSubRequestType), nargs='*', help='The allowed virtual network rule. Space-separeted list of scope to assign.', type=WebPubSubRequestType, required=False)
         c.argument('deny', arg_type=get_enum_type(WebPubSubRequestType), nargs='*', help='The denied virtual network rule. Space-separeted list of scope to assign.', type=WebPubSubRequestType, required=False)
-        c.argument('ip_rule', action=IPRuleTemplateUpdateAction, nargs='*', help='The IP rule for the hub.', required=False)
+
+    for scope in ['webpubsub network-rule ip-rule add', 'webpubsub network-rule ip-rule remove']:
+        with self.argument_context(scope, validator=validate_ip_rule) as c:
+            c.argument('ip_rule', action=IPRuleTemplateUpdateAction, nargs='*', help='The IP rule for the hub.', required=True)
 
     for scope in ['webpubsub hub delete',
                   'webpubsub hub show']:

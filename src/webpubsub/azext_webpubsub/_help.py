@@ -58,8 +58,8 @@ helps['webpubsub service permission'] = """
 """
 
 helps['webpubsub replica'] = """
-type: group
-short-summary: Manage replica settings.
+    type: group
+    short-summary: Manage replica settings.
 """
 
 helps['webpubsub create'] = """
@@ -165,9 +165,29 @@ helps['webpubsub network-rule update'] = """
       - name: Set denying client connection for both public network and private endpoint connections
         text: >
             az webpubsub network-rule update --public-network --connection-name MyPrivateEndpointConnection1 MyPrivateEndpointConnection2 -n MyWebPubSub -g MyResourceGroup --deny ClientConnection
-      - name: Append IP rule
+"""
+
+helps['webpubsub network-rule ip-rule'] = """
+    type: group
+    short-summary: Manage WebPubSub Service IP rules.
+"""
+
+helps['webpubsub network-rule ip-rule add'] = """
+    type: command
+    short-summary: Add IP rule to WebPubSub Service.
+    examples:
+      - name: Add IP rule
         text: >
-            az webpubsub network-rule update -n MyWebPubSub -g MyResourceGroup --ip-rule value="10.0.0.0/24" action="Allow" --ip-rule value="192.168.0.0/24" action="Deny"
+            az webpubsub network-rule ip-rule add -n MyWebPubSub -g MyResourceGroup --ip-rule value="10.0.0.24" action="Allow" --ip-rule value="192.168.0.0/24" action="Deny"
+"""
+
+helps['webpubsub network-rule ip-rule remove'] = """
+    type: command
+    short-summary: Remove IP rule from WebPubSub Service.
+    examples:
+      - name: Remove IP rule
+        text: >
+            az webpubsub network-rule ip-rule remove -n MyWebPubSub -g MyResourceGroup --ip-rule value="10.0.0.24" action="Allow" --ip-rule value="192.168.0.0/24" action="Deny"
 """
 
 helps['webpubsub hub show'] = """

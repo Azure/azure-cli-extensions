@@ -74,6 +74,10 @@ def load_command_table(self, _):
         g.show_command('show', 'list_network_rules')
         g.command('update', 'update_network_rules')
 
+    with self.command_group('webpubsub network-rule ip-rule', webpubsub_network_utils) as g:
+        g.command('add', 'add_ip_rule')
+        g.command('remove', 'remove_ip_rule')
+
     with self.command_group('webpubsub hub', webpubsub_hub_utils) as g:
         g.command('delete', 'hub_delete')
         g.generic_update_command('update', getter_name='get_hub', setter_name='set_hub', custom_func_name='update', custom_func_type=webpubsub_hub_utils, exception_handler=exception_handler)
