@@ -33,10 +33,10 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(name_prefix='cli_test_machineextension')
     def test_machine_and_extension(self):
         self.kwargs.update({
-            'machine': 'testmachine2',
-            'rg': 'ytongtest3',
-            'location': 'eastus2',
-            'customScriptName': 'custom-test',
+            'machine': 'testmachine',
+            'rg': 'ytongtest',
+            'location': 'centraluseuap',
+            'customScriptName': 'custom-test2',
         })
 
         self.cmd('az connectedmachine show -n {machine} -g {rg}', checks=[
@@ -51,16 +51,16 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
         self.cmd('az connectedmachine extension create '
                 '--name "{customScriptName}" '
                 '--location "{location}" '
-                '--type "CustomScriptExtension" '
-                '--publisher "Microsoft.Compute" '
-                '--type-handler-version "1.10.10" '
+                '--type "NetworkWatcherAgentWindows" '
+                '--publisher "Microsoft.Azure.NetworkWatcher" '
+                '--type-handler-version "1.4.2798.3" '
                 '--machine-name "{machine}" '
                 '--resource-group "{rg}" '
                 '--settings "{{\\"commandToExecute\\":\\"powershell.exe ls\\"}}"',
                 checks=[
                     self.check('name', '{customScriptName}'),
                     self.check('properties.enableAutomaticUpgrade', True),
-                    self.check('properties.typeHandlerVersion', '1.10.10'),
+                    self.check('properties.typeHandlerVersion', '1.4.2798.3'),
         ])
 
         self.cmd('az connectedmachine install-patches '

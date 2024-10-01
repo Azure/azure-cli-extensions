@@ -14,21 +14,22 @@ interactions:
       ParameterSetName:
       - --resource-group --scope-name --subscription
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/adrielk_test/providers/Microsoft.HybridCompute/privateLinkScopes/adrielScope/networkSecurityPerimeterConfigurations?api-version=2024-05-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/adrielk_test/providers/Microsoft.HybridCompute/privateLinkScopes/adrielScope/networkSecurityPerimeterConfigurations?api-version=2024-07-10
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/adrielk_test/providers/Microsoft.HybridCompute/privateLinkScopes/adrielScope/networkSecurityPerimeterConfigurations/.adrielScope-00000000-0000-0000-0000-000000000000","type":"Microsoft.HybridCompute/privateLinkScopes/networkSecurityPerimeterConfigurations","name":"fd1289de-e8d3-4f76-8008-de297232dbf6.adrielScope-e1bf45b1-b9a1-4f8b-a76e-3607869aed94","properties":{"provisioningState":"Succeeded","provisioningIssues":[],"networkSecurityPerimeter":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/adrielk_test/providers/Microsoft.Network/networkSecurityPerimeters/adrielNsp","perimeterGuid":"fd1289de-e8d3-4f76-8008-de297232dbf6","location":"centraluseuap"},"resourceAssociation":{"name":"adrielScope-e1bf45b1-b9a1-4f8b-a76e-3607869aed94","accessMode":"Learning"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/adrielk_test/providers/Microsoft.Network/networkSecurityPerimeters/adrielNsp/profiles/defaultProfile","name":"defaultProfile","accessRulesVersion":0,"accessRules":[],"diagnosticSettingsVersion":0,"enabledLogCategories":["NspPublicInboundPerimeterRulesAllowed","NspPublicInboundPerimeterRulesDenied","NspPublicOutboundPerimeterRulesAllowed","NspPublicOutboundPerimeterRulesDenied","NspIntraPerimeterOutboundAllowed","NspPublicInboundResourceRulesAllowed","NspPublicInboundResourceRulesDenied","NspPublicOutboundResourceRulesAllowed","NspPublicOutboundResourceRulesDenied","NspPrivateInboundAllowed","NspIntraPerimeterInboundAllowed","NspOutboundAttempt","NspCrossPerimeterInboundAllowed","NspCrossPerimeterOutboundAllowed"]}}}]}'
+      string: '{"error":{"code":"HCRP500","message":"Unexpected error occurred while
+        processing the request."}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1721'
+      - '96'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 03:53:27 GMT
+      - Mon, 30 Sep 2024 20:35:12 GMT
       expires:
       - '-1'
       pragma:
@@ -39,11 +40,13 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-failure-cause:
+      - service
       x-msedge-ref:
-      - 'Ref A: 698CB94CD34A4AEC8634330BA761AE3F Ref B: MNZ221060619037 Ref C: 2024-07-25T03:53:28Z'
+      - 'Ref A: BC0B2D1114FD4D5E8F34E0F4036FBB08 Ref B: MNZ221060610019 Ref C: 2024-09-30T20:35:12Z'
     status:
-      code: 200
-      message: OK
+      code: 500
+      message: Internal Server Error
 - request:
     body: null
     headers:
@@ -53,27 +56,28 @@ interactions:
       - gzip, deflate
       CommandName:
       - connectedmachine private-link-scope network-security-perimeter-configuration
-        show
+        list
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --scope-name --subscription --perimeter-name
+      - --resource-group --scope-name --subscription
       User-Agent:
-      - AZURECLI/2.62.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/adrielk_test/providers/Microsoft.HybridCompute/privateLinkScopes/adrielScope/networkSecurityPerimeterConfigurations/00000000-0000-0000-0000-000000000000.adrielScope-00000000-0000-0000-0000-000000000000?api-version=2024-05-20-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/adrielk_test/providers/Microsoft.HybridCompute/privateLinkScopes/adrielScope/networkSecurityPerimeterConfigurations?api-version=2024-07-10
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/adrielk_test/providers/Microsoft.HybridCompute/privateLinkScopes/adrielScope/networkSecurityPerimeterConfigurations/00000000-0000-0000-0000-000000000000.adrielScope-00000000-0000-0000-0000-000000000000","type":"Microsoft.HybridCompute/privateLinkScopes/networkSecurityPerimeterConfigurations","name":"fd1289de-e8d3-4f76-8008-de297232dbf6.adrielScope-e1bf45b1-b9a1-4f8b-a76e-3607869aed94","properties":{"provisioningState":"Succeeded","provisioningIssues":[],"networkSecurityPerimeter":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/adrielk_test/providers/Microsoft.Network/networkSecurityPerimeters/adrielNsp","perimeterGuid":"fd1289de-e8d3-4f76-8008-de297232dbf6","location":"centraluseuap"},"resourceAssociation":{"name":"adrielScope-e1bf45b1-b9a1-4f8b-a76e-3607869aed94","accessMode":"Learning"},"profile":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/adrielk_test/providers/Microsoft.Network/networkSecurityPerimeters/adrielNsp/profiles/defaultProfile","name":"defaultProfile","accessRulesVersion":0,"accessRules":[],"diagnosticSettingsVersion":0,"enabledLogCategories":["NspPublicInboundPerimeterRulesAllowed","NspPublicInboundPerimeterRulesDenied","NspPublicOutboundPerimeterRulesAllowed","NspPublicOutboundPerimeterRulesDenied","NspIntraPerimeterOutboundAllowed","NspPublicInboundResourceRulesAllowed","NspPublicInboundResourceRulesDenied","NspPublicOutboundResourceRulesAllowed","NspPublicOutboundResourceRulesDenied","NspPrivateInboundAllowed","NspIntraPerimeterInboundAllowed","NspOutboundAttempt","NspCrossPerimeterInboundAllowed","NspCrossPerimeterOutboundAllowed"]}}}'
+      string: '{"error":{"code":"HCRP500","message":"Unexpected error occurred while
+        processing the request."}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1709'
+      - '96'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 25 Jul 2024 03:53:30 GMT
+      - Mon, 30 Sep 2024 20:35:13 GMT
       expires:
       - '-1'
       pragma:
@@ -84,9 +88,107 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-failure-cause:
+      - service
       x-msedge-ref:
-      - 'Ref A: 7F8F4680955048D4855491B2DFD5A471 Ref B: MNZ221060618009 Ref C: 2024-07-25T03:53:29Z'
+      - 'Ref A: D1BF055074264698992E1E360C20862B Ref B: MNZ221060610019 Ref C: 2024-09-30T20:35:12Z'
     status:
-      code: 200
-      message: OK
+      code: 500
+      message: Internal Server Error
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine private-link-scope network-security-perimeter-configuration
+        list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --scope-name --subscription
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/adrielk_test/providers/Microsoft.HybridCompute/privateLinkScopes/adrielScope/networkSecurityPerimeterConfigurations?api-version=2024-07-10
+  response:
+    body:
+      string: '{"error":{"code":"HCRP500","message":"Unexpected error occurred while
+        processing the request."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '96'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 30 Sep 2024 20:35:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-msedge-ref:
+      - 'Ref A: D834BDD38F2A410EBA38AE82A219A1FE Ref B: MNZ221060610019 Ref C: 2024-09-30T20:35:15Z'
+    status:
+      code: 500
+      message: Internal Server Error
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - connectedmachine private-link-scope network-security-perimeter-configuration
+        list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group --scope-name --subscription
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/adrielk_test/providers/Microsoft.HybridCompute/privateLinkScopes/adrielScope/networkSecurityPerimeterConfigurations?api-version=2024-07-10
+  response:
+    body:
+      string: '{"error":{"code":"HCRP500","message":"Unexpected error occurred while
+        processing the request."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '96'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 30 Sep 2024 20:35:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-msedge-ref:
+      - 'Ref A: B422CA8F4C614F8680E9935C5CE2B524 Ref B: MNZ221060610019 Ref C: 2024-09-30T20:35:19Z'
+    status:
+      code: 500
+      message: Internal Server Error
 version: 1
