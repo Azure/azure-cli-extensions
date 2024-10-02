@@ -2,6 +2,7 @@
 
 Release History
 ===============
+
 1.3.0b1
 +++++
 * Add new cmd `az network manager ipam-pool`
