@@ -13,11 +13,11 @@ from azure.cli.command_modules.acr.repository import acr_repository_show
 from .helper._constants import (
     BEARER_TOKEN_USERNAME,
     CSSC_WORKFLOW_POLICY_REPOSITORY,
-    CONTINUOSPATCH_OCI_ARTIFACT_CONFIG,
+    CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG,
     CONTINUOUSPATCH_CONFIG_SCHEMA_V1,
     CONTINUOUSPATCH_CONFIG_SCHEMA_SIZE_LIMIT,
     CONTINUOUSPATCH_CONFIG_SUPPORTED_VERSIONS,
-    CONTINUOSPATCH_ALL_TASK_NAMES,
+    CONTINUOUSPATCH_ALL_TASK_NAMES,
     ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT,
     ERROR_MESSAGE_INVALID_TIMESPAN_VALUE,
     RESOURCE_GROUP,
@@ -80,7 +80,7 @@ def _validate_continuouspatch_config(config):
 
 def check_continuous_task_exists(cmd, registry):
     exists = False
-    for task_name in CONTINUOSPATCH_ALL_TASK_NAMES:
+    for task_name in CONTINUOUSPATCH_ALL_TASK_NAMES:
         exists = exists or _check_task_exists(cmd, registry, task_name)
     return exists
 
@@ -94,14 +94,14 @@ def check_continuous_task_config_exists(cmd, registry):
         acr_repository_show(
             cmd=cmd,
             registry_name=registry.name,
-            repository=f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}",
+            repository=f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}",
             username=BEARER_TOKEN_USERNAME,
             password=token)
     except Exception as exception:
         if hasattr(exception, 'status_code') and exception.status_code == 404:
             return False
         # report on the error only if we get something other than 404
-        logger.debug(f"Failed to find config {CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG} from registry {registry.name} : {exception}")
+        logger.debug(f"Failed to find config {CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG} from registry {registry.name} : {exception}")
         raise
     return True
 

@@ -39,27 +39,27 @@ TMP_DRY_RUN_FILE_NAME = "tmp_dry_run_template.yaml"
 
 
 # Continuous Patch Constants
-CONTINUOSPATCH_OCI_ARTIFACT_TYPE = "oci-artifact"
+CONTINUOUSPATCH_OCI_ARTIFACT_TYPE = "oci-artifact"
 CSSC_WORKFLOW_POLICY_REPOSITORY = "csscpolicies"
-CONTINUOSPATCH_OCI_ARTIFACT_CONFIG = "patchpolicy"
-CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1 = "v1"
-CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN = "dryrun"
-CONTINUOSPATCH_DEPLOYMENT_NAME = "continuouspatchingdeployment"
-CONTINUOSPATCH_DEPLOYMENT_TEMPLATE = "CSSC-AutoImagePatching-encodedtasks.json"
+CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG = "patchpolicy"
+CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1 = "v1"
+CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN = "dryrun"
+CONTINUOUSPATCH_DEPLOYMENT_NAME = "continuouspatchingdeployment"
+CONTINUOUSPATCH_DEPLOYMENT_TEMPLATE = "CSSC-AutoImagePatching-encodedtasks.json"
 # listing all individual tasks that are required for Continuous Patching to work
-CONTINUOSPATCH_TASK_PATCHIMAGE_NAME = "cssc-patch-image"
+CONTINUOUSPATCH_TASK_PATCHIMAGE_NAME = "cssc-patch-image"
 CONTINUOUSPATCH_TASK_PATCHIMAGE_DESCRIPTION = "This task will patch the OS vulnerabilities on a given image using Copacetic."
-CONTINUOSPATCH_TASK_SCANIMAGE_NAME = "cssc-scan-image"
-CONTINUOUSPATCH_TASK_SCANIMAGE_DESCRIPTION = f"This task will perform vulnerability OS scan on a given image using Trivy. If there are any vulnerabilities found, it will trigger the patching task using {CONTINUOSPATCH_TASK_PATCHIMAGE_NAME} task."
-CONTINUOSPATCH_TASK_SCANREGISTRY_NAME = "cssc-trigger-workflow"
-CONTINUOUSPATCH_TASK_SCANREGISTRY_DESCRIPTION = f"This task will trigger the continuous patching workflow based on the schedule set during the creation. It will match the filter repositories set with config parameter and schedule vulnerability scan check using {CONTINUOSPATCH_TASK_SCANIMAGE_NAME} task."
+CONTINUOUSPATCH_TASK_SCANIMAGE_NAME = "cssc-scan-image"
+CONTINUOUSPATCH_TASK_SCANIMAGE_DESCRIPTION = f"This task will perform vulnerability OS scan on a given image using Trivy. If there are any vulnerabilities found, it will trigger the patching task using {CONTINUOUSPATCH_TASK_PATCHIMAGE_NAME} task."
+CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME = "cssc-trigger-workflow"
+CONTINUOUSPATCH_TASK_SCANREGISTRY_DESCRIPTION = f"This task will trigger the continuous patching workflow based on the schedule set during the creation. It will match the filter repositories set with config parameter and schedule vulnerability scan check using {CONTINUOUSPATCH_TASK_SCANIMAGE_NAME} task."
 CONTINUOUS_PATCHING_WORKFLOW_NAME = CSSCTaskTypes.ContinuousPatchV1.value
 DESCRIPTION = "Description"
 
-CONTINUOSPATCH_ALL_TASK_NAMES = [
-    CONTINUOSPATCH_TASK_PATCHIMAGE_NAME,
-    CONTINUOSPATCH_TASK_SCANIMAGE_NAME,
-    CONTINUOSPATCH_TASK_SCANREGISTRY_NAME
+CONTINUOUSPATCH_ALL_TASK_NAMES = [
+    CONTINUOUSPATCH_TASK_PATCHIMAGE_NAME,
+    CONTINUOUSPATCH_TASK_SCANIMAGE_NAME,
+    CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME
 ]
 
 WORKFLOW_STATUS_NOT_AVAILABLE = "---Not Available---"
@@ -71,20 +71,20 @@ ERROR_MESSAGE_INVALID_TIMESPAN_FORMAT = "Schedule format is invalid. "
 RECOMMENDATION_SCHEDULE = "Schedule must be in the format of <number><unit> where unit is d for days. Example: 1d. Max value for d is 30d."
 # this dictionary can be expanded to handle more configuration of the tasks regarding continuous patching
 # if this gets out of hand, or more types of tasks are supported, this should be a class on its own
-CONTINUOSPATCH_TASK_DEFINITION = {
-    CONTINUOSPATCH_TASK_PATCHIMAGE_NAME:
+CONTINUOUSPATCH_TASK_DEFINITION = {
+    CONTINUOUSPATCH_TASK_PATCHIMAGE_NAME:
         {
             "parameter_name": "imagePatchingEncodedTask",
             "template_file": "task/cssc_patch_image.yaml",
             DESCRIPTION: CONTINUOUSPATCH_TASK_PATCHIMAGE_DESCRIPTION
         },
-    CONTINUOSPATCH_TASK_SCANIMAGE_NAME:
+    CONTINUOUSPATCH_TASK_SCANIMAGE_NAME:
         {
             "parameter_name": "imageScanningEncodedTask",
             "template_file": "task/cssc_scan_image.yaml",
             DESCRIPTION: CONTINUOUSPATCH_TASK_SCANIMAGE_DESCRIPTION
         },
-    CONTINUOSPATCH_TASK_SCANREGISTRY_NAME:
+    CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME:
         {
             "parameter_name": "registryScanningEncodedTask",
             "template_file": "task/cssc_trigger_workflow.yaml",

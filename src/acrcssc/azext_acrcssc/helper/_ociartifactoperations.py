@@ -18,10 +18,10 @@ from knack.log import get_logger
 from ._constants import (
     BEARER_TOKEN_USERNAME,
     CONTINUOUSPATCH_CONFIG_SCHEMA_V1,
-    CONTINUOSPATCH_OCI_ARTIFACT_CONFIG,
-    CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1,
-    CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN,
-    CONTINUOSPATCH_TASK_SCANREGISTRY_NAME,
+    CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG,
+    CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1,
+    CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN,
+    CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME,
     CSSC_WORKFLOW_POLICY_REPOSITORY,
     SUBSCRIPTION
 )
@@ -54,9 +54,9 @@ def create_oci_artifact_continuous_patch(registry, cssc_config_file, dryrun):
         temp_artifact.close()
 
         if dryrun:
-            oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN}"
+            oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_DRYRUN}"
         else:
-            oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}"
+            oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}"
 
         oras_client.push(
             target=oci_target_name,
@@ -75,12 +75,12 @@ def get_oci_artifact_continuous_patch(cmd, registry):
     try:
         oras_client = _oras_client(registry)
 
-        oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}"
+        oci_target_name = f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}"
 
         oci_artifacts = oras_client.pull(
             target=oci_target_name,
             stream=True)
-        trigger_task = get_task(cmd, registry, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME)
+        trigger_task = get_task(cmd, registry, CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME)
         file_name = oci_artifacts[0]
         config = ContinuousPatchConfig.from_file(file_name, trigger_task)
     except Exception as exception:
@@ -106,14 +106,14 @@ def delete_oci_artifact_continuous_patch(cmd, registry, dryrun):
         acr_repository_delete(
             cmd=cmd,
             registry_name=registry.name,
-            repository=f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}",
+            repository=f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}",
             username=BEARER_TOKEN_USERNAME,
             password=token,
             yes=not dryrun)
         logger.debug("Call to acr_repository_delete completed successfully")
     except Exception as exception:
         logger.debug(exception)
-        logger.error(f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1} might not exist or attempt to delete failed.")
+        logger.error(f"{CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1} might not exist or attempt to delete failed.")
         raise
 
 

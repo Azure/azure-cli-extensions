@@ -11,19 +11,19 @@ import tempfile
 import time
 from knack.log import get_logger
 from ._constants import (
-    CONTINUOSPATCH_DEPLOYMENT_NAME,
-    CONTINUOSPATCH_DEPLOYMENT_TEMPLATE,
-    CONTINUOSPATCH_ALL_TASK_NAMES,
-    CONTINUOSPATCH_TASK_DEFINITION,
-    CONTINUOSPATCH_TASK_SCANREGISTRY_NAME,
+    CONTINUOUSPATCH_DEPLOYMENT_NAME,
+    CONTINUOUSPATCH_DEPLOYMENT_TEMPLATE,
+    CONTINUOUSPATCH_ALL_TASK_NAMES,
+    CONTINUOUSPATCH_TASK_DEFINITION,
+    CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME,
     RESOURCE_GROUP,
-    CONTINUOSPATCH_OCI_ARTIFACT_CONFIG,
-    CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1,
+    CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG,
+    CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1,
     TMP_DRY_RUN_FILE_NAME,
     CONTINUOUS_PATCHING_WORKFLOW_NAME,
     CSSC_WORKFLOW_POLICY_REPOSITORY,
-    CONTINUOSPATCH_TASK_PATCHIMAGE_NAME,
-    CONTINUOSPATCH_TASK_SCANIMAGE_NAME,
+    CONTINUOUSPATCH_TASK_PATCHIMAGE_NAME,
+    CONTINUOUSPATCH_TASK_SCANIMAGE_NAME,
     DESCRIPTION,
     TaskRunStatus)
 from azure.cli.core.azclierror import AzCLIError
@@ -68,7 +68,7 @@ def create_update_continuous_patch_v1(cmd, registry, cssc_config_file, schedule,
 
     # on 'update' schedule is optional
     if schedule is None:
-        task = get_task(cmd, registry, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME)
+        task = get_task(cmd, registry, CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME)
         trigger = task.trigger
         if trigger and trigger.timer_triggers:
             schedule_cron_expression = trigger.timer_triggers[0].schedule
@@ -84,17 +84,17 @@ def _create_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
         "taskSchedule": {"value": schedule_cron_expression}
     }
 
-    for task in CONTINUOSPATCH_TASK_DEFINITION:
-        encoded_task = {"value": _create_encoded_task(CONTINUOSPATCH_TASK_DEFINITION[task]["template_file"])}
-        param_name = CONTINUOSPATCH_TASK_DEFINITION[task]["parameter_name"]
+    for task in CONTINUOUSPATCH_TASK_DEFINITION:
+        encoded_task = {"value": _create_encoded_task(CONTINUOUSPATCH_TASK_DEFINITION[task]["template_file"])}
+        param_name = CONTINUOUSPATCH_TASK_DEFINITION[task]["parameter_name"]
         parameters[param_name] = encoded_task
 
     validate_and_deploy_template(
         cmd.cli_ctx,
         registry,
         resource_group,
-        CONTINUOSPATCH_DEPLOYMENT_NAME,
-        CONTINUOSPATCH_DEPLOYMENT_TEMPLATE,
+        CONTINUOUSPATCH_DEPLOYMENT_NAME,
+        CONTINUOUSPATCH_DEPLOYMENT_TEMPLATE,
         parameters,
         dry_run
     )
@@ -109,11 +109,11 @@ def _update_cssc_workflow(cmd, registry, schedule_cron_expression, resource_grou
 
 def _eval_trigger_run(cmd, registry, resource_group, run_immediately):
     if run_immediately:
-        logger.warning(f'Triggering the {CONTINUOSPATCH_TASK_SCANREGISTRY_NAME} to run immediately')
+        logger.warning(f'Triggering the {CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME} to run immediately')
         # Seen Managed Identity taking time, see if there can be an alternative (one alternative is to schedule the cron expression with delay)
         # NEED TO SKIP THE TIME.SLEEP IN UNIT TEST CASE OR FIND AN ALTERNATIVE SOLUITION TO MI COMPLETE
         time.sleep(30)
-        _trigger_task_run(cmd, registry, resource_group, CONTINUOSPATCH_TASK_SCANREGISTRY_NAME)
+        _trigger_task_run(cmd, registry, resource_group, CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME)
 
 
 def delete_continuous_patch_v1(cmd, registry, dryrun):
@@ -121,13 +121,13 @@ def delete_continuous_patch_v1(cmd, registry, dryrun):
     cssc_tasks_exists = check_continuous_task_exists(cmd, registry)
     cssc_config_exists = check_continuous_task_config_exists(cmd, registry)
     if not dryrun and (cssc_tasks_exists or cssc_config_exists):
-        cssc_tasks = ', '.join(CONTINUOSPATCH_ALL_TASK_NAMES)
+        cssc_tasks = ', '.join(CONTINUOUSPATCH_ALL_TASK_NAMES)
         logger.warning(f"All of these tasks will be deleted: {cssc_tasks}")
-        for taskname in CONTINUOSPATCH_ALL_TASK_NAMES:
+        for taskname in CONTINUOUSPATCH_ALL_TASK_NAMES:
             # bug: if one of the deletion fails, the others will not be attempted, we need to attempt to delete all of them
             _delete_task(cmd, registry, taskname, dryrun)
             logger.warning(f"Task {taskname} deleted.")
-        logger.warning(f"Deleting {CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}")
+        logger.warning(f"Deleting {CSSC_WORKFLOW_POLICY_REPOSITORY}/{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG}:{CONTINUOUSPATCH_OCI_ARTIFACT_CONFIG_TAG_V1}")
         delete_oci_artifact_continuous_patch(cmd, registry, dryrun)
 
     if not cssc_tasks_exists:
@@ -215,7 +215,7 @@ def cancel_continuous_patch_runs(cmd, resource_group_name, registry_name):
         registry_name=registry_name,
         resource_group_name=resource_group_name,
         status_filter=[TaskRunStatus.Running.value, TaskRunStatus.Queued.value, TaskRunStatus.Started.value],
-        taskname_filter=[CONTINUOSPATCH_TASK_SCANREGISTRY_NAME, CONTINUOSPATCH_TASK_SCANIMAGE_NAME, CONTINUOSPATCH_TASK_PATCHIMAGE_NAME])
+        taskname_filter=[CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME, CONTINUOUSPATCH_TASK_SCANIMAGE_NAME, CONTINUOUSPATCH_TASK_PATCHIMAGE_NAME])
 
     for task in running_tasks:
         logger.warning("Sending request to cancel task %s", task.name)
@@ -247,14 +247,14 @@ def _retrieve_logs_for_image(cmd, registry, resource_group_name, schedule, workf
         acr_task_run_client,
         registry.name,
         resource_group_name,
-        taskname_filter=[CONTINUOSPATCH_TASK_SCANIMAGE_NAME],
+        taskname_filter=[CONTINUOUSPATCH_TASK_SCANIMAGE_NAME],
         date_filter=previous_date_filter)
 
     patch_taskruns = _get_taskruns_with_filter(
         acr_task_run_client,
         registry.name,
         resource_group_name,
-        taskname_filter=[CONTINUOSPATCH_TASK_PATCHIMAGE_NAME],
+        taskname_filter=[CONTINUOUSPATCH_TASK_PATCHIMAGE_NAME],
         date_filter=previous_date_filter)
 
     start_time = time.time()
@@ -343,7 +343,7 @@ def _update_task_schedule(cmd, registry, cron_expression, resource_group_name, d
         return None
     try:
         acr_task_client.begin_update(resource_group_name, registry.name,
-                                     CONTINUOSPATCH_TASK_SCANREGISTRY_NAME,
+                                     CONTINUOUSPATCH_TASK_SCANREGISTRY_NAME,
                                      taskUpdateParameters)
         print("Schedule has been successfully updated.")
     except Exception as exception:
@@ -414,7 +414,7 @@ def _transform_task_list(tasks):
             "provisioningState": task.provisioning_state,
             "systemData": task.system_data,
             "schedule": None,
-            "description": CONTINUOSPATCH_TASK_DEFINITION[task.name][DESCRIPTION]
+            "description": CONTINUOUSPATCH_TASK_DEFINITION[task.name][DESCRIPTION]
         }
 
         # Extract schedule from trigger.timerTriggers if available
