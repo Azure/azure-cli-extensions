@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update an NGINX deployment
 
     :example: Update tags and enable diagnostics support for a deployment
-        az nginx deployment update --name myDeployment --resource-group myResourceGroup --location eastus2 --tags tag1="value1" tag2="value2" --enable-diagnostics
+        az nginx deployment update --name myDeployment --resource-group myResourceGroup --location eastus2 --tags tag1="value1" tag2="value2" --enable-diagnostics --nginx-app-protect web-application-firewall-settings="{"activation-state":"Enabled"}"
     """
 
     _aaz_info = {
