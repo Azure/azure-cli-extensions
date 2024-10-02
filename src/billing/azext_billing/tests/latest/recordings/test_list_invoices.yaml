@@ -1,0 +1,114 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing invoice-section list-by-billing-profile
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --billing-profile-name --include-deleted
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.12.6 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/e261ef40-3517-515d-3680-8be4252ae148%3A0790f1fc-f274-4457-afc3-f3b0c90850ba_2019-05-31/billingProfiles/B5LA-FLMV-BG7-M77W-SGB/invoiceSections?includeDeleted=true&api-version=2024-04-01
+  response:
+    body:
+      string: '{"totalCount":1,"value":[{"id":"/providers/Microsoft.Billing/billingAccounts/e261ef40-3517-515d-3680-8be4252ae148:0790f1fc-f274-4457-afc3-f3b0c90850ba_2019-05-31/billingProfiles/B5LA-FLMV-BG7-M77W-SGB/invoiceSections/DVPC-HA6G-PJA-MAOR-SGB","name":"DVPC-HA6G-PJA-MAOR-SGB","properties":{"displayName":"Microsoft
+        (P10109641)","state":"Active","systemId":"DVPC-HA6G-PJA-MAOR-SGB"},"type":"Microsoft.Billing/billingAccounts/billingProfiles/invoiceSections","tags":{"pcCode":"P10109641","serviceTreeId":"a9305e6b-3d6c-477c-b3cf-1a81498037be"}}]}'
+    headers:
+      api-supported-versions:
+      - 2018-11-01-preview, 2019-10-01-preview, 2020-05-01, 2020-11-01-privatepreview,
+        2024-04-01, 2024-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '541'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 01 Oct 2024 06:32:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '99'
+      x-ms-service-version:
+      - 10.6.2811.738
+      x-msedge-ref:
+      - 'Ref A: 8B676421F2354AF6A433FFE6F4ADAEB7 Ref B: CO6AA3150218009 Ref C: 2024-10-01T06:32:27Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - billing invoice-section get
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --billing-account-name --billing-profile-name --invoice-section-name
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.12.6 (Windows-11-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Billing/billingAccounts/e261ef40-3517-515d-3680-8be4252ae148%3A0790f1fc-f274-4457-afc3-f3b0c90850ba_2019-05-31/billingProfiles/B5LA-FLMV-BG7-M77W-SGB/invoiceSections/DVPC-HA6G-PJA-MAOR-SGB?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Billing/billingAccounts/e261ef40-3517-515d-3680-8be4252ae148:0790f1fc-f274-4457-afc3-f3b0c90850ba_2019-05-31/billingProfiles/B5LA-FLMV-BG7-M77W-SGB/invoiceSections/DVPC-HA6G-PJA-MAOR-SGB","name":"DVPC-HA6G-PJA-MAOR-SGB","properties":{"displayName":"Microsoft
+        (P10109641)","state":"Active","systemId":"DVPC-HA6G-PJA-MAOR-SGB"},"type":"Microsoft.Billing/billingAccounts/billingProfiles/invoiceSections","tags":{"pcCode":"P10109641","serviceTreeId":"a9305e6b-3d6c-477c-b3cf-1a81498037be"}}'
+    headers:
+      api-supported-versions:
+      - 2018-11-01-preview, 2019-10-01-preview, 2020-05-01, 2020-11-01-privatepreview,
+        2024-04-01, 2024-08-01-preview
+      cache-control:
+      - no-cache
+      content-length:
+      - '514'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 01 Oct 2024 06:32:28 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      vary:
+      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - DENY
+      x-ms-ratelimit-remaining-tenant-resource-requests:
+      - '99'
+      x-ms-service-version:
+      - 10.6.2811.738
+      x-msedge-ref:
+      - 'Ref A: 6B3EAE9FD3C84F9994D616D40DD5BDCD Ref B: CO6AA3150220029 Ref C: 2024-10-01T06:32:28Z'
+    status:
+      code: 200
+      message: OK
+version: 1
