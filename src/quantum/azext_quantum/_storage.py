@@ -14,7 +14,7 @@
 import logging
 from datetime import datetime, timedelta
 from typing import Any
-from azure.storage.blob import (
+from .vendored_sdks.azure_storagev2.blob.v2022_11_02 import (
     BlobServiceClient,
     ContainerClient,
     BlobClient,

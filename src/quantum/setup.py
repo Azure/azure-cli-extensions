@@ -33,10 +33,6 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = [
-    'azure-storage-blob~=12.14.1'
-]
-
 with open('README.rst', 'r', encoding='utf-8') as f:
     README = f.read()
 with open('HISTORY.rst', 'r', encoding='utf-8') as f:
