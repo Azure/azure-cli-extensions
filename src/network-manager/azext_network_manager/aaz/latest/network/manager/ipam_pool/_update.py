@@ -12,19 +12,20 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "network manager security-admin-config update",
+    "network manager ipam-pool update",
+    is_preview=True,
 )
 class Update(AAZCommand):
-    """Update a network manager security admin configuration.
+    """Update the Pool resource.
 
-    :example: Update a network manager security admin configuration.
-        az network manager security-admin-config update --configuration-name "myTestSecurityConfig" --network-manager-name "TestNetworkManager" --resource-group "rg1" --description "A sample policy" --apply-on None
+    :example: IpamPools_Update
+        az network manager ipam-pool update --name "myIpamPool" --network-manager-name "myAVNM" --resource-group "myAVNMResourceGroup" --subscription "00000000-0000-0000-0000-000000000000" --display-name "myIpamPoolDisplayName" --description "New Description" --tags ""
     """
 
     _aaz_info = {
         "version": "2024-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations/{}", "2024-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/ipampools/{}", "2024-01-01-preview"],
         ]
     }
 
@@ -46,14 +47,8 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.configuration_name = AAZStrArg(
-            options=["--configuration-name"],
-            help="Name of the network manager security configuration.",
-            required=True,
-            id_part="child_name_1",
-        )
         _args_schema.network_manager_name = AAZStrArg(
-            options=["-n", "--name", "--network-manager-name"],
+            options=["--manager-name", "--network-manager-name"],
             help="The name of the network manager.",
             required=True,
             id_part="name",
@@ -61,46 +56,59 @@ class Update(AAZCommand):
                 pattern="^[a-zA-Z0-9-]*$",
             ),
         )
+        _args_schema.pool_name = AAZStrArg(
+            options=["-n", "--name", "--pool-name"],
+            help="Pool resource name.",
+            required=True,
+            id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]*$",
+            ),
+        )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.apply_on_network_intent_policy = AAZListArg(
-            options=["--apply-on", "--apply-on-network-intent-policy"],
-            help="Enum list of network intent policy based services.",
-            nullable=True,
-        )
-        _args_schema.description = AAZStrArg(
-            options=["--description"],
-            help="Description of the security configuration.",
+
+        # define Arg Group "Body"
+
+        _args_schema = cls._args_schema
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Body",
+            help="Resource tags.",
             nullable=True,
         )
 
-        apply_on_network_intent_policy = cls._args_schema.apply_on_network_intent_policy
-        apply_on_network_intent_policy.Element = AAZStrArg(
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg(
             nullable=True,
-            enum={"All": "All", "AllowRulesOnly": "AllowRulesOnly", "None": "None"},
         )
 
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.network_group_address_space_aggregation_option = AAZStrArg(
-            options=["--aggregation", "--network-group-address-space-aggregation-option"],
+        _args_schema.description = AAZStrArg(
+            options=["--description"],
             arg_group="Properties",
-            help="Determine update behavior for changes to network groups referenced within the rules in this configuration.",
+            help="Description of the resource.",
             nullable=True,
-            enum={"Manual": "Manual", "None": "None"},
+        )
+        _args_schema.display_name = AAZStrArg(
+            options=["--display-name"],
+            arg_group="Properties",
+            help="String representing a friendly name for the resource.",
+            nullable=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SecurityAdminConfigurationsGet(ctx=self.ctx)()
+        self.IpamPoolsGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        self.SecurityAdminConfigurationsCreateOrUpdate(ctx=self.ctx)()
+        self.IpamPoolsCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -123,7 +131,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SecurityAdminConfigurationsGet(AAZHttpOperation):
+    class IpamPoolsGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -137,7 +145,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityAdminConfigurations/{configurationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/ipamPools/{poolName}",
                 **self.url_parameters
             )
 
@@ -153,11 +161,11 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "configurationName", self.ctx.args.configuration_name,
+                    "networkManagerName", self.ctx.args.network_manager_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "networkManagerName", self.ctx.args.network_manager_name,
+                    "poolName", self.ctx.args.pool_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -206,11 +214,11 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_security_admin_configuration_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_ipam_pool_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class SecurityAdminConfigurationsCreateOrUpdate(AAZHttpOperation):
+    class IpamPoolsCreate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -224,7 +232,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/securityAdminConfigurations/{configurationName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkManagers/{networkManagerName}/ipamPools/{poolName}",
                 **self.url_parameters
             )
 
@@ -240,11 +248,11 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "configurationName", self.ctx.args.configuration_name,
+                    "networkManagerName", self.ctx.args.network_manager_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "networkManagerName", self.ctx.args.network_manager_name,
+                    "poolName", self.ctx.args.pool_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -305,7 +313,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_security_admin_configuration_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_ipam_pool_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -320,17 +328,17 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True}})
+            _builder.set_prop("tags", AAZDictType, ".tags")
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("applyOnNetworkIntentPolicyBasedServices", AAZListType, ".apply_on_network_intent_policy")
                 properties.set_prop("description", AAZStrType, ".description")
-                properties.set_prop("networkGroupAddressSpaceAggregationOption", AAZStrType, ".network_group_address_space_aggregation_option")
+                properties.set_prop("displayName", AAZStrType, ".display_name")
 
-            apply_on_network_intent_policy_based_services = _builder.get(".properties.applyOnNetworkIntentPolicyBasedServices")
-            if apply_on_network_intent_policy_based_services is not None:
-                apply_on_network_intent_policy_based_services.set_elements(AAZStrType, ".")
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
 
             return _instance_value
 
@@ -346,59 +354,72 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_security_admin_configuration_read = None
+    _schema_ipam_pool_read = None
 
     @classmethod
-    def _build_schema_security_admin_configuration_read(cls, _schema):
-        if cls._schema_security_admin_configuration_read is not None:
-            _schema.id = cls._schema_security_admin_configuration_read.id
-            _schema.name = cls._schema_security_admin_configuration_read.name
-            _schema.properties = cls._schema_security_admin_configuration_read.properties
-            _schema.system_data = cls._schema_security_admin_configuration_read.system_data
-            _schema.type = cls._schema_security_admin_configuration_read.type
+    def _build_schema_ipam_pool_read(cls, _schema):
+        if cls._schema_ipam_pool_read is not None:
+            _schema.id = cls._schema_ipam_pool_read.id
+            _schema.location = cls._schema_ipam_pool_read.location
+            _schema.name = cls._schema_ipam_pool_read.name
+            _schema.properties = cls._schema_ipam_pool_read.properties
+            _schema.system_data = cls._schema_ipam_pool_read.system_data
+            _schema.tags = cls._schema_ipam_pool_read.tags
+            _schema.type = cls._schema_ipam_pool_read.type
             return
 
-        cls._schema_security_admin_configuration_read = _schema_security_admin_configuration_read = AAZObjectType()
+        cls._schema_ipam_pool_read = _schema_ipam_pool_read = AAZObjectType()
 
-        security_admin_configuration_read = _schema_security_admin_configuration_read
-        security_admin_configuration_read.id = AAZStrType(
+        ipam_pool_read = _schema_ipam_pool_read
+        ipam_pool_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        security_admin_configuration_read.name = AAZStrType(
+        ipam_pool_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        ipam_pool_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        security_admin_configuration_read.properties = AAZObjectType(
-            flags={"client_flatten": True},
+        ipam_pool_read.properties = AAZObjectType(
+            flags={"required": True},
         )
-        security_admin_configuration_read.system_data = AAZObjectType(
+        ipam_pool_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
         )
-        security_admin_configuration_read.type = AAZStrType(
+        ipam_pool_read.tags = AAZDictType()
+        ipam_pool_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        properties = _schema_security_admin_configuration_read.properties
-        properties.apply_on_network_intent_policy_based_services = AAZListType(
-            serialized_name="applyOnNetworkIntentPolicyBasedServices",
+        properties = _schema_ipam_pool_read.properties
+        properties.address_prefixes = AAZListType(
+            serialized_name="addressPrefixes",
+            flags={"required": True},
         )
         properties.description = AAZStrType()
-        properties.network_group_address_space_aggregation_option = AAZStrType(
-            serialized_name="networkGroupAddressSpaceAggregationOption",
+        properties.display_name = AAZStrType(
+            serialized_name="displayName",
+        )
+        properties.ip_address_type = AAZListType(
+            serialized_name="ipAddressType",
+            flags={"read_only": True},
+        )
+        properties.parent_pool_name = AAZStrType(
+            serialized_name="parentPoolName",
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},
         )
-        properties.resource_guid = AAZStrType(
-            serialized_name="resourceGuid",
-            flags={"read_only": True},
-        )
 
-        apply_on_network_intent_policy_based_services = _schema_security_admin_configuration_read.properties.apply_on_network_intent_policy_based_services
-        apply_on_network_intent_policy_based_services.Element = AAZStrType()
+        address_prefixes = _schema_ipam_pool_read.properties.address_prefixes
+        address_prefixes.Element = AAZStrType()
 
-        system_data = _schema_security_admin_configuration_read.system_data
+        ip_address_type = _schema_ipam_pool_read.properties.ip_address_type
+        ip_address_type.Element = AAZStrType()
+
+        system_data = _schema_ipam_pool_read.system_data
         system_data.created_at = AAZStrType(
             serialized_name="createdAt",
         )
@@ -418,11 +439,16 @@ class _UpdateHelper:
             serialized_name="lastModifiedByType",
         )
 
-        _schema.id = cls._schema_security_admin_configuration_read.id
-        _schema.name = cls._schema_security_admin_configuration_read.name
-        _schema.properties = cls._schema_security_admin_configuration_read.properties
-        _schema.system_data = cls._schema_security_admin_configuration_read.system_data
-        _schema.type = cls._schema_security_admin_configuration_read.type
+        tags = _schema_ipam_pool_read.tags
+        tags.Element = AAZStrType()
+
+        _schema.id = cls._schema_ipam_pool_read.id
+        _schema.location = cls._schema_ipam_pool_read.location
+        _schema.name = cls._schema_ipam_pool_read.name
+        _schema.properties = cls._schema_ipam_pool_read.properties
+        _schema.system_data = cls._schema_ipam_pool_read.system_data
+        _schema.tags = cls._schema_ipam_pool_read.tags
+        _schema.type = cls._schema_ipam_pool_read.type
 
 
 __all__ = ["Update"]
