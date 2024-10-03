@@ -8,7 +8,7 @@ from enum import Enum, auto
 import re
 from functools import lru_cache
 
-from msrestazure.tools import parse_resource_id
+from azure.mgmt.core.tools import parse_resource_id
 from knack.log import get_logger
 from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError, ValidationError
 from azure.cli.core.util import send_raw_request
@@ -113,7 +113,7 @@ class AbstractDbHandler:
     # Needed when doing a GET on the DB doesn't give the location
     @classmethod
     def _get_location_from_server(cls, cmd, resource_id: str) -> str:
-        from msrestazure.tools import resource_id as rid
+        from azure.mgmt.core.tools import resource_id as rid
 
         parsed_rid = cls._parse_resource_id(resource_id)
         unneeded_props = {"child_name_1", "child_type_1", "children", "last_child_num", "child_parent_1"}
