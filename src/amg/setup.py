@@ -33,7 +33,7 @@ CLASSIFIERS = [
 ]
 
 # TODO: Add any additional SDK dependencies here
-DEPENDENCIES = ['azure-mgmt-monitor >= 6.0.2']
+DEPENDENCIES = ['azure-mgmt-monitor ~= 6.0.0']
 
 with open('README.md', 'r', encoding='utf-8') as f:
     README = f.read()
