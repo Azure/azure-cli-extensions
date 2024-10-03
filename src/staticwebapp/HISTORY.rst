@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.0.1
+++++++
+* Patch for removing msrestazure dependency and using azure.mgmt.core.
 
 1.0.0
 ++++++
