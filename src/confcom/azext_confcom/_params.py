@@ -153,6 +153,12 @@ def load_arguments(self, _):
             help="Use buffered image reader for dmverity hashing. This will speed up the hashing process but use much more memory.",
             validator=validate_faster_hashing,
         )
+        c.argument(
+            "omit_id",
+            options_list=("--omit-id"),
+            required=False,
+            help="Omit the id field in the policy. This is helpful if the image being used will be present in multiple registries and used interchangeably.",
+        )
 
     with self.argument_context("confcom katapolicygen") as c:
         c.argument(

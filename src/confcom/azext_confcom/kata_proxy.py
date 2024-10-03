@@ -79,24 +79,19 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
         if host_os == "Linux":
             DEFAULT_LIB += "-linux"
         elif host_os == "Windows":
-            if machine.endswith("64"):
-                DEFAULT_LIB += "-windows.exe"
-            else:
-                eprint(
-                    "32-bit Windows is not supported."
-                )
+            eprint("The katapolicygen subcommand for Windows has not been implemented.")
         elif host_os == "Darwin":
-            eprint("The extension for MacOS has not been implemented.")
+            eprint("The katapolicygen subcommand for MacOS has not been implemented.")
         else:
             eprint(
-                "Unknown target platform. The extension only works with Windows, Linux and MacOS"
+                "Unknown target platform. The katapolicygen subcommand only works with Linux"
             )
 
         self.policy_bin = Path(os.path.join(f"{script_directory}", f"{DEFAULT_LIB}"))
 
         # check if the extension binary exists
         if not os.path.exists(self.policy_bin):
-            eprint("The extension binary file cannot be located.")
+            eprint("The katapolicygen subcommand binary file cannot be located.")
         if not os.access(self.policy_bin, os.X_OK):
             # add executable permissions for the current user if they don't exist
             st = os.stat(self.policy_bin)

@@ -74,7 +74,7 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
             eprint("The extension for MacOS has not been implemented.")
         else:
             eprint(
-                "Unknown target platform. The extension only works with Windows, Linux and MacOS"
+                "Unknown target platform. The extension only works with Windows and Linux"
             )
 
         self.policy_bin = Path(os.path.join(f"{script_directory}", f"{DEFAULT_LIB}"))

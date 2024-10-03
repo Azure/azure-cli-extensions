@@ -14,7 +14,7 @@ from azext_confcom.security_policy import (
 )
 
 import azext_confcom.config as config
-from azext_confcom.template_util import case_insensitive_dict_get
+from azext_confcom.template_util import case_insensitive_dict_get, DockerClient
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 
@@ -571,7 +571,9 @@ class CustomJsonParsing(unittest.TestCase):
         """
         with load_policy_from_str(custom_json) as aci_policy:
             # pull actual image to local for next step
-            aci_policy.pull_image(aci_policy.get_images()[0])
+            with DockerClient() as client:
+                image_ref = aci_policy.get_images()[0]
+                image = client.images.pull(image_ref.base, tag=image_ref.tag)
             aci_policy.populate_policy_content_for_all_images()
             layers = aci_policy.get_images()[0]._layers
             expected_layers = [
@@ -596,7 +598,9 @@ class CustomJsonParsing(unittest.TestCase):
         }
         """
         with load_policy_from_str(custom_json) as aci_policy:
-            image = aci_policy.pull_image(aci_policy.get_images()[0])
+            with DockerClient() as client:
+                image_ref = aci_policy.get_images()[0]
+                image = client.images.pull(image_ref.base, tag=image_ref.tag)
             self.assertIsNotNone(image.id)
 
             self.assertEqual(
@@ -726,6 +730,40 @@ class CustomJsonParsing(unittest.TestCase):
                         output_type=OutputType.RAW, rego_boilerplate=False
                     )
                 )[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ALLOW_STDIO_ACCESS]
+            )
+
+    def test_omit_id(self):
+        image_name = "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+        custom_json = f"""
+        {{
+            "version": "1.0",
+            "containers": [
+                {{
+                    "containerImage": "{image_name}",
+                    "environmentVariables": [],
+                    "command": ["echo", "hello"],
+                    "allowStdioAccess": false
+                }}
+            ]
+        }}
+        """
+        with load_policy_from_str(custom_json) as aci_policy:
+            aci_policy.populate_policy_content_for_all_images()
+
+            self.assertIsNone(
+                json.loads(
+                    aci_policy.get_serialized_output(
+                        output_type=OutputType.RAW, rego_boilerplate=False, omit_id=True
+                    )
+                )[0].get(config.POLICY_FIELD_CONTAINERS_ID)
+            )
+
+            self.assertEqual(
+                json.loads(
+                    aci_policy.get_serialized_output(
+                        output_type=OutputType.RAW, rego_boilerplate=False, omit_id=False
+                    )
+                )[0].get(config.POLICY_FIELD_CONTAINERS_ID), image_name
             )
 
 

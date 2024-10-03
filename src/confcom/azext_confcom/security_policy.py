@@ -8,7 +8,6 @@ import warnings
 import copy
 from typing import Any, List, Dict, Tuple
 from enum import Enum, auto
-import docker
 import deepdiff
 from knack.log import get_logger
 from tqdm import tqdm
@@ -64,7 +63,6 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         disable_stdio: bool = False,
         is_vn2: bool = False
     ) -> None:
-        self._docker_client = None
         self._rootfs_proxy = None
         self._policy_str = None
         self._policy_str_pp = None
@@ -135,17 +133,11 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
         self._images = container_results
 
-    def __enter__(self) -> None:
+    def __enter__(self) -> Any:
         return self
 
     def __exit__(self, exception_type, exception_value, exception_traceback) -> None:
-        self.close()
-
-    def _get_docker_client(self) -> docker.client.DockerClient:
-        if not self._docker_client:
-            self._docker_client = docker.from_env()
-
-        return self._docker_client
+        return None
 
     def _get_rootfs_proxy(self) -> SecurityPolicyProxy:
         if not self._rootfs_proxy:
@@ -153,24 +145,18 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
         return self._rootfs_proxy
 
-    def _close_docker_client(self) -> None:
-        if self._docker_client:
-            self._get_docker_client().close()
-
-    def close(self) -> None:
-        self._close_docker_client()
-
     def get_serialized_output(
         self,
         output_type: OutputType = OutputType.DEFAULT,
         rego_boilerplate=True,
+        omit_id: bool = False,
     ) -> str:
         # error check the output type
         if not isinstance(output_type, Enum) or output_type.value not in [item.value for item in OutputType]:
             eprint("Unknown output type for serialization.")
 
         policy_str = self._policy_serialization(
-            output_type == OutputType.PRETTY_PRINT
+            output_type == OutputType.PRETTY_PRINT, omit_id=omit_id
         )
 
         if rego_boilerplate:
@@ -247,6 +233,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         # the source of truth
         return policy.validate(policy_content, sidecar_validation=True)
 
+    # pylint: disable=too-many-locals
     def validate(self, policy, sidecar_validation=False) -> Tuple[bool, Dict]:
         """Utility method: general method to compare two policies.
         One being the current object and the other is passed in as a parameter.
@@ -272,6 +259,10 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             case_insensitive_dict_get(i, config.POLICY_FIELD_CONTAINERS_ID)
             for i in policy
         ]
+        policy_names = [
+            case_insensitive_dict_get(i, config.POLICY_FIELD_CONTAINERS_NAME)
+            for i in policy
+        ]
 
         for container in arm_containers:
             # see if the IDs match with any container in the policy
@@ -279,18 +270,28 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
             id_val = case_insensitive_dict_get(container, config.ACI_FIELD_CONTAINERS_ID)
             container_name = case_insensitive_dict_get(
                 container,
-                config.ACI_FIELD_CONTAINERS_NAME
+                config.POLICY_FIELD_CONTAINERS_NAME
             )
 
-            # idx = policy_ids.index(id_val) if id_val in policy_ids else None
-            idx_arr = [i for i, item in enumerate(policy_ids) if item == id_val]
+            # container names are required for valid k8s yamls and ARM templates. So this would only happen
+            # in a future scenario where we enable diff mode for pure json files and the user does not provide
+            # a name for the container
+            if id_val is None and container_name is None:
+                raise ValueError(
+                    "Container ID and Name cannot both be None to use diff mode. " +
+                    "Try adding a name to the container and regenerate the CCE policy."
+                )
 
-            if idx_arr == []:
+            idx_arr = [i for i, item in enumerate(policy_ids) if item == id_val]
+            idx_arr_name = [i for i, item in enumerate(policy_names) if item == container_name]
+            set_idx = set(idx_arr + idx_arr_name)
+
+            if len(set_idx) == 0:
                 reason_list[container_name] = f"{id_val} not found in policy"
                 continue
 
             temp_diff_list = []
-            for idx in idx_arr:
+            for idx in set_idx:
                 temp_diff = {}
                 matching_policy_container = policy[idx]
 
@@ -364,14 +365,14 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
         output = self.get_serialized_output(output_type)
         os_util.write_str_to_file(file_path, output)
 
-    def _policy_serialization(self, pretty_print=False) -> str:
+    def _policy_serialization(self, pretty_print=False, omit_id: bool = False) -> str:
         policy = []
         regular_container_images = self.get_images()
 
         is_sidecars = True
         for image in regular_container_images:
             is_sidecars = is_sidecars and is_sidecar(image.containerImage)
-            image_dict = image.get_policy_json()
+            image_dict = image.get_policy_json(omit_id=omit_id)
             policy.append(image_dict)
 
         if not is_sidecars:
@@ -511,7 +512,6 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
                 progress.update()
             progress.close()
-            self.close()
 
             # unload the message queue
             for message in message_queue:
@@ -519,10 +519,6 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
 
     def get_images(self) -> List[ContainerImage]:
         return self._images
-
-    def pull_image(self, image: ContainerImage) -> Any:
-        client = self._get_docker_client()
-        return client.images.pull(image.base, image.tag)
 
 
 # pylint: disable=R0914,

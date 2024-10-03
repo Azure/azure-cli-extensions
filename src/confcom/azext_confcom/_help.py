@@ -89,6 +89,10 @@ helps[
           type: boolean
           short-summary: 'When enabled, the hashing algorithm used to generate the policy is faster but less memory efficient'
 
+        - name: --omit-id
+          type: boolean
+          short-summary: 'When enabled, the generated policy will not contain the ID field. This will keep the policy from being tied to a specific image name and tag.'
+
     examples:
         - name: Input an ARM Template file to inject a base64 encoded Confidential Container Security Policy into the ARM Template
           text: az confcom acipolicygen --template-file "./template.json"

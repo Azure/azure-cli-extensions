@@ -37,6 +37,7 @@ test_update_infrastructure_svn | mcr.microsoft.com/cbl-mariner/distroless/python
 test_multiple_policies | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot & mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | See if two unique policies are generated from a single ARM Template container multiple container groups. Also have an extra resource that is untouched. Also has a secureValue for an environment variable.
 test_arm_template_with_init_container | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot & mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | See if having an initContainer is picked up and added to the list of valid containers
 test_arm_template_without_stdio_access | mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | See if disabling container stdio access gets passed down to individual containers
+test_arm_template_omit_id | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot | Check that the id field is omitted from the policy
 test_arm_template_allow_elevated_false | mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | Disabling allow_elevated via securityContext
 test_arm_template_policy_regex | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot | Make sure the regex generated from the ARM Template workflow matches that of the policy.json workflow
 test_wildcard_env_var | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot | Check that an "allow all" regex is created when a value for env var is not provided via a parameter value
@@ -78,6 +79,7 @@ test_docker_pull | mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | Test p
 test_infrastructure_svn | mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | make sure the correct infrastructure_svn is present in the policy
 test_stdio_access_default | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot | Checking the default value for std I/O access
 test_stdio_access_updated | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot | Checking the value for std I/O when it's set
+test_omit_id | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot | Check that the id field is omitted from the policy
 test_environment_variables_parsing | mcr.microsoft.com/azuredocs/aci-dataprocessing-cc:v1 | Make sure env vars are output in the right format
 test_get_layers_from_not_exists_image | notexists:1.0.0 | Fail out grabbing layers if image doesn't exist
 test_incorrect_allow_elevated_data_type | mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0 | Making allow_elevated fail out if it's not a boolean

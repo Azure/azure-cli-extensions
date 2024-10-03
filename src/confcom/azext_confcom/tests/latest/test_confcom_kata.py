@@ -5,12 +5,13 @@
 
 import os
 import unittest
+import platform
 from azext_confcom.custom import katapolicygen_confcom
 
 import pytest
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
-
+host_os_linux = platform.system() == "Linux"
 
 # @unittest.skip("not in use")
 @pytest.mark.run(order=1)
@@ -74,8 +75,9 @@ spec:
         finally:
             if os.path.exists(filename):
                 os.remove(filename)
-        self.assertEqual(wrapped_exit.exception.code, 0, "Policy not generated successfully")
-        self.assertNotEqual(content, KataPolicyGen.pod_string, "Policy content not changed in yaml")
+        self.assertEqual(wrapped_exit.exception.code, 0 if host_os_linux else 1, "Policy not generated successfully")
+        if host_os_linux:
+            self.assertNotEqual(content, KataPolicyGen.pod_string, "Policy content not changed in yaml")
 
     def test_print_version(self):
         with self.assertRaises(SystemExit) as wrapped_exit:
@@ -83,4 +85,4 @@ spec:
                 None, None, print_version=True
             )
 
-        self.assertEqual(wrapped_exit.exception.code, 0)
+        self.assertEqual(wrapped_exit.exception.code, 0 if host_os_linux else 1)

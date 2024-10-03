@@ -46,5 +46,5 @@ def validate_save_to_file(namespace):
 
 
 def validate_katapolicygen_input(namespace):
-    if namespace.yaml_path and not namespace.print_version:
+    if not (namespace.yaml_path or namespace.print_version):
         raise CLIError("Either --yaml-path or --print-version is required")

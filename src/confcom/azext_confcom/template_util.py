@@ -27,8 +27,7 @@ WHOLE_PARAMETER_AND_VARIABLE = r"(\s*\[\s*(parameters|variables))(\(\s*'([^\.\/]
 
 
 class DockerClient:
-    def __init__(self) -> None:
-        self._client = None
+    _client = None
 
     def __enter__(self) -> docker.DockerClient:
         return self.get_client()
