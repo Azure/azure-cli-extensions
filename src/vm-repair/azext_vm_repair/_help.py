@@ -101,3 +101,11 @@ helps['vm repair repair-and-restore'] = """
           text: >
             az vm repair repair-and-restore --name vmrepairtest --resource-group MyResourceGroup --verbose
 """
+helps['vm repair repair-button'] = """
+    type: command
+    short-summary: repair button script.
+    examples:
+        - name: repair-button.
+          text: >
+            az vm repair repair-button --name vmrepairtest --resource-group MyResourceGroup  --verbose
+"""
