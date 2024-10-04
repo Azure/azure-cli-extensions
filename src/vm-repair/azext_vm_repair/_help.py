@@ -107,5 +107,5 @@ helps['vm repair repair-button'] = """
     examples:
         - name: repair-button.
           text: >
-            az vm repair repair-button --name vmrepairtest --resource-group MyResourceGroup --verbose
+            az vm repair repair-button --name vmrepairtest --resource-group MyResourceGroup --button-command fstab--verbose
 """
