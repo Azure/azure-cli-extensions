@@ -4,15 +4,15 @@
 # --------------------------------------------------------------------------------------------
 
 
-from enum import Enum, auto
+from enum import Enum
 import re
 from functools import lru_cache
 
-from azure.mgmt.core.tools import parse_resource_id
 from knack.log import get_logger
 from azure.cli.core.azclierror import InvalidArgumentValueError, RequiredArgumentMissingError, ValidationError
 from azure.cli.core.util import send_raw_request
 from azure.cli.command_modules.cosmosdb._client_factory import cf_db_accounts
+from azure.mgmt.core.tools import parse_resource_id
 
 
 logger = get_logger(__name__)
@@ -162,8 +162,8 @@ class CosmosDbHandler(AbstractDbHandler):
 
         if connection_type == ConnectionType.CONNECTION_STRING:
             return client.list_connection_strings(resource_group, name).connection_strings[0].connection_string
-        else:
-            return f"AccountEndpoint={client.get(resource_group, name).document_endpoint};"
+
+        return f"AccountEndpoint={client.get(resource_group, name).document_endpoint};"
 
 
 class AzureSqlHandler(AbstractDbHandler):
@@ -195,8 +195,8 @@ class AzureSqlHandler(AbstractDbHandler):
         if connection_type == ConnectionType.CONNECTION_STRING:
             return (f"Server=tcp:{name}.database.windows.net,1433;Database={database_name};"
                     f"User ID={username};Password={password};")
-        else:
-            return f"Server=tcp:{name}.database.windows.net,1433;Database={database_name};"
+
+        return f"Server=tcp:{name}.database.windows.net,1433;Database={database_name};"
 
 
 class MySqlFlexHandler(AbstractDbHandler):
@@ -265,9 +265,9 @@ class PgSqlSingleHandler(AbstractDbHandler):
         if connection_type == ConnectionType.CONNECTION_STRING:
             return (f"Server={server}.postgres.database.azure.com;Database={database_name};Port=5432;"
                     f"User Id={username}@{server};Password={password};")
-        else:
-            return (f"Server={server}.postgres.database.azure.com;Database={database_name};Port=5432;"
-                    f"User Id={username}@{server};")
+
+        return (f"Server={server}.postgres.database.azure.com;Database={database_name};Port=5432;"
+                f"User Id={username}@{server};")
 
 
 class PgSqlFlexHandler(AbstractDbHandler):
