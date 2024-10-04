@@ -811,14 +811,14 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
 
     return return_dict
 
-def repair_button(cmd, vm_name, resource_group_name, button_command, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
+def repair_button(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
     from datetime import datetime
     import secrets
     import string
-
+    button_command='fstab'
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair repair-button')
-
+    
     password_length = 30
     password_characters = string.ascii_lowercase + string.digits + string.ascii_uppercase
     repair_password = ''.join(secrets.choice(password_characters) for i in range(password_length))
