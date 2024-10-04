@@ -1,6 +1,9 @@
 
 Release History
 ===============
+1.1.0
+++++++
+Added script for GT fixit button
 
 1.0.9
 ++++++
