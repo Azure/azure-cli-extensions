@@ -811,7 +811,7 @@ def repair_and_restore(cmd, vm_name, resource_group_name, repair_password=None, 
 
     return return_dict
 
-def repair_button(cmd, vm_name, resource_group_name, button-command, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
+def repair_button(cmd, vm_name, resource_group_name, button_command, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None):
     from datetime import datetime
     import secrets
     import string
