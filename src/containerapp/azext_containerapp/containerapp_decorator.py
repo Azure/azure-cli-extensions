@@ -691,6 +691,11 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
                 return
 
             if self.get_argument_registry_identity() is None and self.get_argument_registry_user() is None and self.get_argument_registry_pass() is None:
+                # Connected ContainerApp Not Support Identity
+                parsed_managed_env = parse_resource_id(self.get_argument_managed_env())
+                if "resource_type" in parsed_managed_env:
+                    if parsed_managed_env["resource_type"].lower() == CONNECTED_ENVIRONMENT_RESOURCE_TYPE.lower():
+                        return
                 self.set_argument_registry_identity('system')
 
     def parent_construct_payload(self):
