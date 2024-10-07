@@ -6,6 +6,7 @@
 import os
 import tempfile
 import time
+import unittest
 
 from azext_load.tests.latest.constants import LoadTestRunConstants
 from azext_load.tests.latest.helper import (
