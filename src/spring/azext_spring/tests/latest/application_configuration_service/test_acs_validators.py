@@ -53,7 +53,7 @@ class TestAcsValidators(unittest.TestCase):
                            service="service",
                            config_file_pattern=pattern)
             validate_pattern_for_show_acs_configs(ns)
-            self.assertEquals(valid_pattern_dict[pattern], ns.config_file_pattern)
+            self.assertEqual(valid_pattern_dict[pattern], ns.config_file_pattern)
 
     def test_invalid_pattern_for_show_acs_configs(self):
         expectedErr = "Pattern should be in the format of 'application' or 'application/profile'"

@@ -36,16 +36,16 @@ class AsaJobScenarioTest(ScenarioTest):
         """
 
         def verify_http_put_request(resource_group, service, name, job: models.JobResource, **kwargs):
-            self.assertEquals(resource_group, self.kwargs['g'])
-            self.assertEquals(service, self.kwargs['s'])
-            self.assertEquals(name, self.kwargs['j'])
-            self.assertEquals(kwargs.get('cpu'), job.properties.template.resource_requests.cpu)
-            self.assertEquals(kwargs.get('memory'), job.properties.template.resource_requests.memory)
+            self.assertEqual(resource_group, self.kwargs['g'])
+            self.assertEqual(service, self.kwargs['s'])
+            self.assertEqual(name, self.kwargs['j'])
+            self.assertEqual(kwargs.get('cpu'), job.properties.template.resource_requests.cpu)
+            self.assertEqual(kwargs.get('memory'), job.properties.template.resource_requests.memory)
             self.assertTrue(isinstance(job.properties.trigger_config, models.ManualJobTriggerConfig))
-            self.assertEquals(kwargs.get('parallelism'), job.properties.trigger_config.parallelism)
-            self.assertEquals(kwargs.get('retry_limit'), job.properties.trigger_config.retry_limit)
-            self.assertEquals(kwargs.get('timeout'), job.properties.trigger_config.timeout_in_seconds)
-            self.assertEquals(kwargs.get('trigger_type'), job.properties.trigger_config.trigger_type)
+            self.assertEqual(kwargs.get('parallelism'), job.properties.trigger_config.parallelism)
+            self.assertEqual(kwargs.get('retry_limit'), job.properties.trigger_config.retry_limit)
+            self.assertEqual(kwargs.get('timeout'), job.properties.trigger_config.timeout_in_seconds)
+            self.assertEqual(kwargs.get('trigger_type'), job.properties.trigger_config.trigger_type)
 
         def construct_job_create_command_str(cpu,
                                              memory,
@@ -190,9 +190,9 @@ class AsaJobScenarioTest(ScenarioTest):
                                     timeout_verifier,
                                     all_envs_verifier,
                                     args_verifier):
-            self.assertEquals(resource_group, self.kwargs['g'])
-            self.assertEquals(service, self.kwargs['s'])
-            self.assertEquals(name, self.kwargs['j'])
+            self.assertEqual(resource_group, self.kwargs['g'])
+            self.assertEqual(service, self.kwargs['s'])
+            self.assertEqual(name, self.kwargs['j'])
             cpu_verifier(job)
             memory_verifier(job)
             parallelism_verifier(job)
@@ -228,22 +228,22 @@ class AsaJobScenarioTest(ScenarioTest):
             """
             expected_value = param_input if param_input is not None else \
                 job_current.properties.template.resource_requests.cpu
-            self.assertEquals(expected_value, job_for_put.properties.template.resource_requests.cpu)
+            self.assertEqual(expected_value, job_for_put.properties.template.resource_requests.cpu)
 
         def memory_verifier(param_input, job_current: models.JobResource, job_for_put: models.JobResource):
             expected_value = param_input if param_input is not None else \
                 job_current.properties.template.resource_requests.memory
-            self.assertEquals(expected_value, job_for_put.properties.template.resource_requests.memory)
+            self.assertEqual(expected_value, job_for_put.properties.template.resource_requests.memory)
 
         def parallelism_verifier(param_input, job_current: models.JobResource, job_for_put: models.JobResource):
             expected_value = param_input if param_input is not None else \
                 job_current.properties.trigger_config.parallelism
-            self.assertEquals(expected_value, job_for_put.properties.trigger_config.parallelism)
+            self.assertEqual(expected_value, job_for_put.properties.trigger_config.parallelism)
 
         def retry_limit_verifier(param_input, job_current: models.JobResource, job_for_put: models.JobResource):
             expected_value = param_input if param_input is not None else \
                 job_current.properties.trigger_config.retry_limit
-            self.assertEquals(expected_value, job_for_put.properties.trigger_config.retry_limit)
+            self.assertEqual(expected_value, job_for_put.properties.trigger_config.retry_limit)
 
         def timeout_verifier(param_input, job_current: models.JobResource, job_for_put: models.JobResource):
             expected_value = job_current.properties.trigger_config.timeout_in_seconds
@@ -251,7 +251,7 @@ class AsaJobScenarioTest(ScenarioTest):
                 expected_value = None
             elif param_input is not None:
                 expected_value = param_input
-            self.assertEquals(expected_value, job_for_put.properties.trigger_config.timeout_in_seconds)
+            self.assertEqual(expected_value, job_for_put.properties.trigger_config.timeout_in_seconds)
 
         def all_envs_verifier(envs_param_input, secret_envs_param_input, job_current: models.JobResource,
                               job_for_put: models.JobResource):
@@ -288,7 +288,7 @@ class AsaJobScenarioTest(ScenarioTest):
                     )
                 ]
             expected_all_envs = expected_envs + expected_secret_envs
-            self.assertEquals(len(expected_all_envs), len(job_for_put.properties.template.environment_variables))
+            self.assertEqual(len(expected_all_envs), len(job_for_put.properties.template.environment_variables))
             if len(expected_all_envs) == 0:
                 return
 

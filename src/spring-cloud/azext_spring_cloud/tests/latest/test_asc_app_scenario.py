@@ -37,7 +37,7 @@ class AppDeploy(ScenarioTest):
         ])
 
         # deploy fake file, the fail is expected
-        with self.assertRaisesRegexp(CLIError, "Failed to wait for deployment instances to be ready"):
+        with self.assertRaisesRegex(CLIError, "Failed to wait for deployment instances to be ready"):
             self.cmd('spring-cloud app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v1')
         deployment = self.cmd('spring-cloud app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
             self.check('name', 'default'),
@@ -64,7 +64,7 @@ class AppDeploy(ScenarioTest):
         ])
 
         # deploy change to .Net
-        with self.assertRaisesRegexp(CLIError, "Failed to wait for deployment instances to be ready"):
+        with self.assertRaisesRegex(CLIError, "Failed to wait for deployment instances to be ready"):
             self.cmd('spring-cloud app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v2 --runtime-version NetCore_31 --main-entry test')
         deployment = self.cmd('spring-cloud app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
             self.check('name', 'default'),
@@ -92,7 +92,7 @@ class AppDeploy(ScenarioTest):
         ])
 
         # keep deploy .net
-        with self.assertRaisesRegexp(CLIError, "Failed to wait for deployment instances to be ready"):
+        with self.assertRaisesRegex(CLIError, "Failed to wait for deployment instances to be ready"):
             self.cmd('spring-cloud app deploy -n {app} -g {rg} -s {serviceName} --artifact-path {file} --version v3 --main-entry test3')
         self.cmd('spring-cloud app deployment show -n default --app {app} -g {rg} -s {serviceName}', checks=[
             self.check('name', 'default'),

@@ -48,7 +48,7 @@ class ContainerAppPatchTest(ScenarioTest):
             # Execute and verify patch list command
             patchable_images = self.cmd(f'containerapp patch list -g {resource_group}').get_output_in_json()
             self.assertTrue(len(patchable_images) == 1)
-            self.assertEquals(patchable_images[0]["oldRunImage"], builder_runtime_image)
+            self.assertEqual(patchable_images[0]["oldRunImage"], builder_runtime_image)
 
             # Execute and verify patch apply command
             self.cmd(f'containerapp patch apply -g {resource_group}')
@@ -91,7 +91,7 @@ class ContainerAppPatchTest(ScenarioTest):
             # Execute and verify patch list command
             patchable_images = self.cmd(f'containerapp patch list -g {resource_group} --environment {env_name}').get_output_in_json()
             self.assertTrue(len(patchable_images) == 1)
-            self.assertEquals(patchable_images[0]["oldRunImage"], builder_runtime_image)
+            self.assertEqual(patchable_images[0]["oldRunImage"], builder_runtime_image)
 
             # Execute and verify patch apply command
             self.cmd(f'containerapp patch apply -g {resource_group} --environment {env_name}')
@@ -119,13 +119,13 @@ class ContainerAppPatchTest(ScenarioTest):
         # Execute and verify patch list command
         patch_cmd = f'containerapp patch list -g {resource_group} --environment {env_name} --show-all'
         output = self.cmd(patch_cmd).get_output_in_json()
-        self.assertEquals(output[0]["targetImageName"], "mcr.microsoft.com/k8se/quickstart:latest")
+        self.assertEqual(output[0]["targetImageName"], "mcr.microsoft.com/k8se/quickstart:latest")
 
         # Execute and verify patch apply command
         self.cmd(f'containerapp patch apply -g {resource_group} --environment {env_name} --show-all')
         app = self.cmd(f"containerapp show -g {resource_group} -n {app_name}").get_output_in_json()
         image = app["properties"]["template"]["containers"][0]["image"]
-        self.assertEquals(image, "mcr.microsoft.com/k8se/quickstart:latest")
+        self.assertEqual(image, "mcr.microsoft.com/k8se/quickstart:latest")
 
 
     @live_only()
@@ -158,7 +158,7 @@ class ContainerAppPatchTest(ScenarioTest):
             self.cmd(f'configure --defaults group={resource_group}')
             patchable_images = self.cmd(f'containerapp patch list').get_output_in_json()
             self.assertTrue(len(patchable_images) == 1)
-            self.assertEquals(patchable_images[0]["oldRunImage"], builder_runtime_image)
+            self.assertEqual(patchable_images[0]["oldRunImage"], builder_runtime_image)
 
             # Execute and verify patch apply command
             self.cmd(f'containerapp patch apply')
@@ -198,7 +198,7 @@ class ContainerAppPatchTest(ScenarioTest):
             self.cmd(f'configure --defaults group={resource_group}')
             patchable_images = self.cmd(f'containerapp patch list').get_output_in_json()
             self.assertTrue(len(patchable_images) == 1)
-            self.assertEquals(patchable_images[0]["oldRunImage"], builder_runtime_image)
+            self.assertEqual(patchable_images[0]["oldRunImage"], builder_runtime_image)
 
             # Execute and verify patch apply command
             self.cmd(f'containerapp patch apply')
@@ -239,7 +239,7 @@ class ContainerAppPatchTest(ScenarioTest):
             self.cmd(f'configure --defaults group={resource_group}')
             patchable_images = self.cmd(f'containerapp patch list').get_output_in_json()
             self.assertTrue(len(patchable_images) == 1)
-            self.assertEquals(patchable_images[0]["oldRunImage"], builder_runtime_image)
+            self.assertEqual(patchable_images[0]["oldRunImage"], builder_runtime_image)
 
             # Execute and verify patch apply command
             self.cmd(f'containerapp patch apply')

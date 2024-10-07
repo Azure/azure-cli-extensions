@@ -29,7 +29,7 @@ class TestValidateJobLogStream(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError) as context:
             validate_job_log_stream(get_test_cmd(), ns)
 
-        self.assertEquals("--all-instances cannot be set together with --instance/-i.", str(context.exception))
+        self.assertEqual("--all-instances cannot be set together with --instance/-i.", str(context.exception))
 
     @mock.patch('azext_spring.jobs.job_validators.only_support_enterprise', autospec=True)
     def test_execution_name_not_set_and_instance_is_none(self, only_support_enterprise_mock):
@@ -70,7 +70,7 @@ class TestValidateJobLogStream(unittest.TestCase):
                 max_log_requests=5
             )
             validate_job_log_stream(get_test_cmd(), ns)
-            self.assertEquals(lines, ns.lines)
+            self.assertEqual(lines, ns.lines)
 
     def test_log_lines_too_small(self):
         ns = Namespace(
@@ -87,7 +87,7 @@ class TestValidateJobLogStream(unittest.TestCase):
         )
         with self.assertRaises(InvalidArgumentValueError) as context:
             validate_job_log_stream(get_test_cmd(), ns)
-        self.assertEquals('--lines must be in the range [1,10000]', str(context.exception))
+        self.assertEqual('--lines must be in the range [1,10000]', str(context.exception))
 
     @mock.patch('azext_spring.jobs.job_validators.only_support_enterprise', autospec=True)
     def test_log_lines_too_big(self, only_support_enterprise_mock):
@@ -109,8 +109,8 @@ class TestValidateJobLogStream(unittest.TestCase):
             validate_job_log_stream(get_test_cmd(), ns)
         expect_error_msgs = ['ERROR:cli.azext_spring.log_stream.log_stream_validators:'
                              '--lines can not be more than 10000, using 10000 instead']
-        self.assertEquals(expect_error_msgs, cm.output)
-        self.assertEquals(10000, ns.lines)
+        self.assertEqual(expect_error_msgs, cm.output)
+        self.assertEqual(10000, ns.lines)
 
     @mock.patch('azext_spring.jobs.job_validators.only_support_enterprise', autospec=True)
     def test_valid_log_since(self, only_support_enterprise_mock):
@@ -141,7 +141,7 @@ class TestValidateJobLogStream(unittest.TestCase):
                 since_in_seconds = since_in_seconds * 3600
             elif last == 'm':
                 since_in_seconds = since_in_seconds * 60
-            self.assertEquals(since_in_seconds, ns.since)
+            self.assertEqual(since_in_seconds, ns.since)
 
     def test_invalid_log_since(self):
         invalid_log_since = ['asdf1h', '1masdf', 'asdfe2m', 'asd5m', '1efef0m', '11mm']
@@ -161,7 +161,7 @@ class TestValidateJobLogStream(unittest.TestCase):
             )
             with self.assertRaises(InvalidArgumentValueError) as context:
                 validate_job_log_stream(get_test_cmd(), ns)
-            self.assertEquals("--since contains invalid characters", str(context.exception))
+            self.assertEqual("--since contains invalid characters", str(context.exception))
 
     def test_log_since_too_big(self):
         invalid_log_since = ['2h', '61m', '3601s', '9000s', '9000']
@@ -181,7 +181,7 @@ class TestValidateJobLogStream(unittest.TestCase):
             )
             with self.assertRaises(InvalidArgumentValueError) as context:
                 validate_job_log_stream(get_test_cmd(), ns)
-            self.assertEquals("--since can not be more than 1h", str(context.exception))
+            self.assertEqual("--since can not be more than 1h", str(context.exception))
 
     @mock.patch('azext_spring.jobs.job_validators.only_support_enterprise', autospec=True)
     def test_valid_log_limit(self, only_support_enterprise_mock):
@@ -203,7 +203,7 @@ class TestValidateJobLogStream(unittest.TestCase):
                 max_log_requests=5
             )
             validate_job_log_stream(get_test_cmd(), ns)
-            self.assertEquals(limit * 1024, ns.limit)
+            self.assertEqual(limit * 1024, ns.limit)
 
     def test_negative_log_limit(self):
         invalid_log_limit = [-1, -2, -3, -4, -10, -100, -1000]
@@ -223,7 +223,7 @@ class TestValidateJobLogStream(unittest.TestCase):
             )
             with self.assertRaises(InvalidArgumentValueError) as context:
                 validate_job_log_stream(get_test_cmd(), ns)
-            self.assertEquals('--limit must be in the range [1,2048]', str(context.exception))
+            self.assertEqual('--limit must be in the range [1,2048]', str(context.exception))
 
     @mock.patch('azext_spring.jobs.job_validators.only_support_enterprise', autospec=True)
     def test_log_limit_too_big(self, only_support_enterprise_mock):
@@ -248,5 +248,5 @@ class TestValidateJobLogStream(unittest.TestCase):
                 validate_job_log_stream(get_test_cmd(), ns)
             error_msgs = ['ERROR:cli.azext_spring.log_stream.log_stream_validators:'
                           '--limit can not be more than 2048, using 2048 instead']
-            self.assertEquals(error_msgs, cm.output)
-            self.assertEquals(2048 * 1024, ns.limit)
+            self.assertEqual(error_msgs, cm.output)
+            self.assertEqual(2048 * 1024, ns.limit)

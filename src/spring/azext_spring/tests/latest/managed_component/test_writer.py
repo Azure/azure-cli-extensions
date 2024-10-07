@@ -13,10 +13,10 @@ class TestValidateComponentList(unittest.TestCase):
         writer = DefaultWriter()
         buffer = io.StringIO()
         writer.write("test-data", end='', file=buffer)
-        self.assertEquals("test-data", buffer.getvalue().strip())
+        self.assertEqual("test-data", buffer.getvalue().strip())
 
     def test_prefix_writer(self):
         writer = PrefixWriter("prefix")
         buffer = io.StringIO()
         writer.write("test-data", end='', file=buffer)
-        self.assertEquals("prefix test-data", buffer.getvalue().strip())
+        self.assertEqual("prefix test-data", buffer.getvalue().strip())

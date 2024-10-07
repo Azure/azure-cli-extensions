@@ -350,7 +350,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         assert(enabled_cmd1["systemDefaultValues"]['customLocations']['enabled'] == bool(1))
 
         # scenario-2 : custom loc is enabled , check if disabling cluster connect results in an error
-        with self.assertRaisesRegexp(CLIError, "Disabling 'cluster-connect' feature is not allowed when \
+        with self.assertRaisesRegex(CLIError, "Disabling 'cluster-connect' feature is not allowed when \
 'custom-locations' feature is enabled."):
             self.cmd('connectedk8s disable-features -n {name} -g {rg} --features cluster-connect --kube-config \
                 {kubeconfig} --kube-context {managed_cluster_name}-admin -y')
@@ -514,7 +514,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         helm_client_location = install_helm_client()
         cmd = [helm_client_location, 'get', 'values', 'azure-arc', "--namespace", "azure-arc-release", "-ojson"]
 
-        with self.assertRaisesRegexp(CLIError, "az connectedk8s upgrade to manually upgrade agents and extensions is \
+        with self.assertRaisesRegex(CLIError, "az connectedk8s upgrade to manually upgrade agents and extensions is \
 only supported when auto-upgrade is set to false"):
             self.cmd('connectedk8s upgrade -g {rg} -n {name} --kube-config {kubeconfig} --kube-context \
                 {managed_cluster_name}-admin')

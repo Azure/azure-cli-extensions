@@ -66,32 +66,32 @@ class TestAppForceSetUserIdentityValitor(unittest.TestCase):
     def test_valid_input_1(self):
         ns = Namespace(user_assigned=["DISable"])
         validate_app_force_set_user_identity_or_warning(ns)
-        self.assertEquals("disable", ns.user_assigned[0])
+        self.assertEqual("disable", ns.user_assigned[0])
 
 
     def test_valid_input_2(self):
         ns = Namespace(user_assigned=["disable"])
         validate_app_force_set_user_identity_or_warning(ns)
-        self.assertEquals("disable", ns.user_assigned[0])
+        self.assertEqual("disable", ns.user_assigned[0])
 
 
     def test_valid_input_3(self):
         ns = Namespace(user_assigned=["DISABLE"])
         validate_app_force_set_user_identity_or_warning(ns)
-        self.assertEquals("disable", ns.user_assigned[0])
+        self.assertEqual("disable", ns.user_assigned[0])
 
 
     def test_valid_input_4(self):
         ns = Namespace(user_assigned=[FAKE_UPPER_USER_IDENTITY_RESOURCE_ID_0])
         validate_app_force_set_user_identity_or_warning(ns)
-        self.assertEquals(FAKE_LOWER_USER_IDENTITY_RESOURCE_ID_0, ns.user_assigned[0])
+        self.assertEqual(FAKE_LOWER_USER_IDENTITY_RESOURCE_ID_0, ns.user_assigned[0])
 
 
     def test_valid_input_5(self):
         ns = Namespace(user_assigned=[FAKE_UPPER_USER_IDENTITY_RESOURCE_ID_0, FAKE_LOWER_USER_IDENTITY_RESOURCE_ID_1])
         validate_app_force_set_user_identity_or_warning(ns)
-        self.assertEquals(FAKE_LOWER_USER_IDENTITY_RESOURCE_ID_0, ns.user_assigned[0])
-        self.assertEquals(FAKE_LOWER_USER_IDENTITY_RESOURCE_ID_1, ns.user_assigned[1])
+        self.assertEqual(FAKE_LOWER_USER_IDENTITY_RESOURCE_ID_0, ns.user_assigned[0])
+        self.assertEqual(FAKE_LOWER_USER_IDENTITY_RESOURCE_ID_1, ns.user_assigned[1])
 
 
     def test_invalid_input_1(self):
