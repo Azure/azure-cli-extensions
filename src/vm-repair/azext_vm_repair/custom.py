@@ -842,16 +842,16 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
     copy_disk_name = create_out['copied_disk_name']
     repair_group_name = create_out['repair_resource_group']
 
-    logger.info('Running {button-command} run command')
+    logger.info('Running command')
 
     try:
-        run_out = run(cmd, repair_vm_name, repair_group_name, run_id='linux-alar2', parameters=[button-command, "initiator=SELFHELP"])
+        run_out = run(cmd, repair_vm_name, repair_group_name, run_id='linux-alar2', parameters=[button_command, "initiator=SELFHELP"])
 
     except Exception:
         command.set_status_error()
         command.error_stack_trace = traceback.format_exc()
-        command.error_message = "Command failed when running {button-command} script."
-        command.message = "Command failed when running {button-command} script."
+        command.error_message = "Command failed when running  script."
+        command.message = "Command failed when running script."
         if existing_rg:
             _clean_up_resources(repair_group_name, confirm=True)
         else:
@@ -862,7 +862,7 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
     logger.info('run_out: %s', run_out)
 
     if run_out['script_status'] == 'ERROR':
-        logger.error(button-command+' script returned an error.')
+        logger.error(' script returned an error.')
         if existing_rg:
             _clean_up_resources(repair_group_name, confirm=True)
         else:
@@ -877,8 +877,8 @@ def repair_button(cmd, vm_name, resource_group_name, button_command, repair_pass
 
     restore(cmd, vm_name, resource_group_name, copy_disk_name, repair_vm_id, yes=True)
 
-    command.message = '{button-command} script has been applied to the source VM. A new repair VM \'{n}\' was created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
-        'The repairs were complete using the {button-command} script and the repair VM was then deleted. ' \
+    command.message = 'script has been applied to the source VM. A new repair VM \'{n}\' was created in the resource group \'{repair_rg}\' with disk \'{d}\' attached as data disk. ' \
+        'The repairs were complete using the script and the repair VM was then deleted. ' \
         'The repair disk was restored to the source VM. ' \
         .format(n=repair_vm_name, repair_rg=repair_group_name, d=copy_disk_name)
 
