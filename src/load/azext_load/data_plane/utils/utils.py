@@ -180,6 +180,7 @@ def upload_file_to_test(client, test_id, file_path, file_type=None, wait=False):
     )
     # pylint: disable-next=protected-access
     file_path = validators._validate_path(file_path, is_dir=False)
+    # pylint: disable-next=protected-access
     validators._validate_file_stats(file_path, file_type)
     with open(file_path, "rb") as file:
         upload_poller = client.begin_upload_test_file(
@@ -612,8 +613,8 @@ def upload_properties_file_helper(
         )
         if wait and file_response.get("validationStatus") != "VALIDATION_SUCCESS":
             raise FileOperationError(
-            f"Properties file {file_name} is not valid. Please check the file and try again."
-        )
+                f"Properties file {file_name} is not valid. Please check the file and try again."
+            )
 
 
 def upload_generic_files_helper(
@@ -660,8 +661,8 @@ def upload_configurations_files_helper(
             )
             if wait and file_response.get("validationStatus") != "VALIDATION_SUCCESS":
                 raise FileOperationError(
-                f"Configuration file {config_file} is not valid. Please check the file and try again."
-            )
+                    f"Configuration file {config_file} is not valid. Please check the file and try again."
+                )
 
 
 def upload_zipped_artifacts_helper(
@@ -678,8 +679,8 @@ def upload_zipped_artifacts_helper(
             )
             if wait and file_response.get("validationStatus") != "VALIDATION_SUCCESS":
                 raise FileOperationError(
-                f"ZIP artifact {zip_artifact} is not valid. Please check the file and try again."
-            )
+                    f"ZIP artifact {zip_artifact} is not valid. Please check the file and try again."
+                )
 
 
 def upload_test_plan_helper(
@@ -719,25 +720,25 @@ def upload_files_helper(
     client, test_id, yaml_data, test_plan, load_test_config_file, wait
 ):
     files = client.list_test_files(test_id)
-    
+
     upload_properties_file_helper(
-        client=client, 
-        test_id=test_id, yaml_data=yaml_data, 
+        client=client,
+        test_id=test_id, yaml_data=yaml_data,
         load_test_config_file=load_test_config_file, existing_test_files=files, wait=wait)
 
     upload_test_plan_helper(
-        client=client, 
-        test_id=test_id, yaml_data=yaml_data, test_plan=test_plan, 
+        client=client,
+        test_id=test_id, yaml_data=yaml_data, test_plan=test_plan,
         load_test_config_file=load_test_config_file, existing_test_files=files, wait=wait)
-    
+
     upload_configurations_files_helper(
-        client=client, 
-        test_id=test_id, yaml_data=yaml_data, 
+        client=client,
+        test_id=test_id, yaml_data=yaml_data,
         load_test_config_file=load_test_config_file, existing_test_files=files, wait=wait)
-    
+
     upload_zipped_artifacts_helper(
-        client=client, 
-        test_id=test_id, yaml_data=yaml_data, 
+        client=client,
+        test_id=test_id, yaml_data=yaml_data,
         load_test_config_file=load_test_config_file, existing_test_files=files, wait=wait)
 
 

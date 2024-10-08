@@ -264,6 +264,7 @@ def _validate_file_stats(path, file_type=None):
         logger.info("zip artifact size %s", os.stat(path).st_size)
         raise FileOperationError(f"Provided ZIP artifact '{path}' exceeds size limit of 50 MB")
 
+
 def validate_file_type(namespace):
     if namespace.file_type is None:
         return
