@@ -46,6 +46,18 @@ def webpubsub_show(client, webpubsub_name, resource_group_name):
     return client.get(resource_group_name, webpubsub_name)
 
 
+def webpubsub_start(client: WebPubSubOperations, webpubsub_name, resource_group_name):
+    resource = client.get(resource_group_name=resource_group_name, resource_name=webpubsub_name)
+    parameter = WebPubSubResource(resource_stopped=False, location=resource.location)
+    return client.begin_update(resource_group_name, webpubsub_name, parameter)
+
+
+def webpubsub_stop(client: WebPubSubOperations, webpubsub_name, resource_group_name):
+    resource = client.get(resource_group_name=resource_group_name, resource_name=webpubsub_name)
+    parameter = WebPubSubResource(resource_stopped=True, location=resource.location)
+    return client.begin_update(resource_group_name, webpubsub_name, parameter)
+
+
 def webpubsub_restart(client, webpubsub_name, resource_group_name):
     return client.begin_restart(resource_group_name, webpubsub_name)
 
