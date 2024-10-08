@@ -51,15 +51,15 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
         self.cmd('az connectedmachine extension create '
                 '--name "{customScriptName}" '
                 '--location "{location}" '
-                '--type "CustomScriptExtension" '
-                '--publisher "Microsoft.Compute" '
-                '--type-handler-version "1.10.10" '
+                '--type "NetworkWatcherAgentWindows" '
+                '--publisher "Microsoft.Azure.NetworkWatcher" '
+                '--type-handler-version "1.4.2798.3" '
                 '--machine-name "{machine}" '
                 '--resource-group "{rg}" '
                 '--settings "{{\\"commandToExecute\\":\\"powershell.exe ls\\"}}"',
                 checks=[
                     self.check('name', '{customScriptName}'),
-                    self.check('properties.typeHandlerVersion', '1.10.10'),
+                    self.check('properties.typeHandlerVersion', '1.4.2798.3'),
         ])
 
         self.cmd('az connectedmachine install-patches '
@@ -91,29 +91,29 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
                 '--resource-group "{rg}"',
                 checks=[
                     self.check('name', '{customScriptName}'),
-                    self.check('properties.typeHandlerVersion', '1.10.10')
+                    self.check('properties.typeHandlerVersion', '1.4.2798.3')
         ])
 
         self.cmd('az connectedmachine extension image show '
-                '--publisher "Microsoft.Compute" '
-                '--extension-type "CustomScriptExtension" '
+                '--publisher "Microsoft.Azure.NetworkWatcher" '
+                '--extension-type "NetworkWatcherAgentWindows" '
                 '--location "{location}" '
-                '--version "1.10.10"',
+                '--version "1.4.2798.3"',
                 checks=[
-                    self.check('version', '1.10.10'),
-                    self.check('publisher', 'microsoft.compute'),
-                    self.check('extensionType', 'customscriptextension')
+                    self.check('version', '1.4.2798.3'),
+                    self.check('publisher', 'microsoft.azure.networkwatcher'),
+                    self.check('extensionType', 'networkwatcheragentwindows')
         ])
 
         self.cmd('az connectedmachine extension image list '
-                '--publisher "Microsoft.Compute" '
-                '--extension-type "CustomScriptExtension" '
+                '--publisher "Microsoft.Azure.NetworkWatcher" '
+                '--extension-type "NetworkWatcherAgentWindows" '
                 '--location "{location}"',
                 checks=[
         ])
 
         self.cmd('az connectedmachine upgrade-extension '
-                '--extension-targets "{{\\"Microsoft.Compute.CustomScriptExtension\\":{{\\"targetVersion\\":\\"1.10.12\\"}}}}" '
+                '--extension-targets "{{\\"Microsoft.Azure.NetworkWatcher\\":{{\\"targetVersion\\":\\"1.4.3135.1\\"}}}}" '
                 '--machine-name "{machine}" '
                 '--resource-group "{rg}"',
                 checks=[])
@@ -129,7 +129,7 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
                     self.check('properties.enableAutomaticUpgrade', False),
                     self.check('properties.provisioningState', 'Succeeded'),
                     self.check('properties.settings.commandToExecute', 'dir'),
-                    self.check('properties.typeHandlerVersion', '1.10.12')
+                    self.check('properties.typeHandlerVersion', '1.4.3135.1')
         ]) 
 
         self.cmd('az connectedmachine extension delete -y '
