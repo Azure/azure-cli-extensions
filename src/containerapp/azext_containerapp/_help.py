@@ -11,23 +11,6 @@ helps['containerapp'] = """
     short-summary: Manage Azure Container Apps.
 """
 
-helps['containerapp list-usages'] = """
-    type: command
-    short-summary: List usages of subscription level quotas in specific region.
-    examples:
-    - name: List usages of  quotas in specific region.
-      text: |
-          az containerapp list-usages -l eastus
-"""
-
-helps['containerapp env list-usages'] = """
-    type: command
-    short-summary: List usages of quotas for specific managed environment.
-    examples:
-    - name: List usages of quotas for specific managed environment.
-      text: |
-          az containerapp env list-usages -n MyEnv -g MyResourceGroup
-"""
 
 helps['containerapp env dapr-component resiliency'] = """
     type: group
@@ -177,17 +160,6 @@ helps['containerapp up'] = """
           az containerapp up -n my-containerapp --image myregistry.azurecr.io/myImage:myTag --environment MyConnectedEnvironmentId
 """
 
-helps['containerapp show-custom-domain-verification-id'] = """
-    type: command
-    short-summary: Show the verification id for binding app or environment custom domains
-    examples:
-    - name: Get the verification id, which needs to be added as a TXT record for app custom domain to verify domain ownership
-      text: |
-          az containerapp show-custom-domain-verification-id
-    - name: Get the verification id, which needs to be added as a TXT record for custom environment DNS suffix to verify domain ownership
-      text: |
-          az containerapp show-custom-domain-verification-id
-"""
 
 helps['containerapp replica count'] = """
     type: command
@@ -1344,6 +1316,12 @@ helps['containerapp env java-component config-server-for-spring create'] = """
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration PropertyName1=Value1 PropertyName2=Value2
+    - name: Create a Config Server for Spring with multiple replicas.
+      text: |
+          az containerapp env java-component config-server-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --min-replicas 2 --max-replicas 2
 """
 
 helps['containerapp env java-component config-server-for-spring delete'] = """
@@ -1531,6 +1509,12 @@ helps['containerapp env java-component admin-for-spring create'] = """
               -n MyJavaComponentName \\
               --environment MyEnvironment \\
               --configuration PropertyName1=Value1 PropertyName2=Value2
+    - name: Create an Admin for Spring with multiple replicas.
+      text: |
+          az containerapp env java-component admin-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --min-replicas 2 --max-replicas 2
 """
 
 helps['containerapp env java-component admin-for-spring delete'] = """
@@ -2041,4 +2025,32 @@ helps['containerapp env dotnet-component show'] = """
     - name: Show the details of an environment.
       text: |
           az containerapp env dotnet-component show -n MyDotNetComponentName --environment MyContainerappEnvironment -g MyResourceGroup
+"""
+
+helps['containerapp registry set'] = """
+    type: command
+    short-summary: Add or update a container registry's details.
+    examples:
+    - name: Configure a container app to use a registry.
+      text: |
+          az containerapp registry set -n my-containerapp -g MyResourceGroup \\
+              --server MyExistingContainerappRegistry.azurecr.io --username MyRegistryUsername --password MyRegistryPassword
+    - name: Configure a container app to use environment system assigned managed identity to authenticate Azure container registry.
+      text: |
+          az containerapp registry set -n my-containerapp -g MyResourceGroup \\
+              --server MyExistingContainerappRegistry.azurecr.io --identity system-environment
+"""
+
+helps['containerapp job registry set'] = """
+    type: command
+    short-summary: Add or update a container registry's details in a Container App Job.
+    examples:
+    - name: Configure a Container App Job to use a registry.
+      text: |
+          az containerapp job registry set -n my-containerapp-job -g MyResourceGroup \\
+              --server MyContainerappJobRegistry.azurecr.io --username MyRegistryUsername --password MyRegistryPassword
+    - name: Configure a Container App Job to use environment system assigned managed identity to authenticate Azure container registry.
+      text: |
+          az containerapp job registry set -n my-containerapp-job -g MyResourceGroup \\
+              --server MyContainerappJobRegistry.azurecr.io --identity system-environment
 """

@@ -2,6 +2,27 @@
 
 Release History
 ===============
+1.3.0
+++++++
+* Bug fixes for connect rdp/ssh/tunnel.
+
+1.2.0
+++++++
+* Update SDk to 2024-01-01
+* Allow create bastion with zones and session recording
+
+1.1.1
+++++++
+* Fix for configure option, enabling it for disable gateway and ip connect scenarios.
+
+1.1.0
+++++++
+* Allow to pass `ssh_args` as positional parameter in command `az network bastion ssh`
+
+1.0.2
++++++
+* Remove redundant aad login commands from examples section.
+
 1.0.1
 +++++
 * Added support for concurrent connections.

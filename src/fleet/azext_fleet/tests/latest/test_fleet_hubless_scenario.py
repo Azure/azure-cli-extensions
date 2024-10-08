@@ -52,6 +52,7 @@ class FleetHublessScenarioTest(ScenarioTest):
             'member_name': self.create_random_name(prefix='flmc-', length=9),
             'updaterun': self.create_random_name(prefix='uprn-', length=9),
             'updateStrategy_name': self.create_random_name(prefix='upstr-', length=10),
+            'autoupgradeprofile_name': self.create_random_name(prefix='aup-', length=10),
             'ssh_key_value': self.generate_ssh_keys(),
             'stages_file': _get_test_data_file('stages.json')
         })
@@ -121,7 +122,7 @@ class FleetHublessScenarioTest(ScenarioTest):
         self.cmd('fleet member wait -g {rg} --fleet-name {fleet_name} --fleet-member-name {member_name} --updated', checks=[self.is_empty()])
         self.cmd('aks wait -g {rg} -n {member_name} --updated', checks=[self.is_empty()])
 
-        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version 1.27.1 --stages {stages_file}', checks=[
+        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version 1.29.2 --stages {stages_file}', checks=[
             self.check('name', '{updaterun}')
         ])
 
@@ -131,9 +132,9 @@ class FleetHublessScenarioTest(ScenarioTest):
 
         self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name} --yes')
 
-        update_strategy_name = self.cmd('fleet updatestrategy create -g {rg} -n {updateStrategy_name} -f {fleet_name} --stages {stages_file}', checks=[
+        update_strategy = self.cmd('fleet updatestrategy create -g {rg} -n {updateStrategy_name} -f {fleet_name} --stages {stages_file}', checks=[
             self.check('name', '{updateStrategy_name}')
-        ]).get_output_in_json()['name']
+        ]).get_output_in_json()
 
         self.cmd('fleet updatestrategy show -g {rg} -n {updateStrategy_name} -f {fleet_name}', checks=[
             self.check('name', '{updateStrategy_name}')
@@ -144,10 +145,11 @@ class FleetHublessScenarioTest(ScenarioTest):
         ])
 
         self.kwargs.update({
-            'update_strategy_name': update_strategy_name,
+            'update_strategy_name': update_strategy['name'],
+            'update_strategy_id': update_strategy['id'],
         })
 
-        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version 1.27.1 --update-strategy-name {update_strategy_name}', checks=[
+        self.cmd('fleet updaterun create -g {rg} -n {updaterun} -f {fleet_name} --upgrade-type Full --node-image-selection Latest --kubernetes-version 1.29.2 --update-strategy-name {update_strategy_name}', checks=[
             self.check('name', '{updaterun}')
         ])
 
@@ -164,6 +166,20 @@ class FleetHublessScenarioTest(ScenarioTest):
         ])
 
         self.cmd('fleet updaterun delete -g {rg} -n {updaterun} -f {fleet_name} --yes')
+
+        self.cmd('fleet autoupgradeprofile create -g {rg} -f {fleet_name} -n {autoupgradeprofile_name} -c Rapid --node-image-selection Latest --update-strategy-id {update_strategy_id} --disabled', checks=[
+            self.check('name', '{autoupgradeprofile_name}')
+        ])
+
+        self.cmd('fleet autoupgradeprofile show -g {rg} -f {fleet_name} -n {autoupgradeprofile_name}', checks=[
+            self.check('name', '{autoupgradeprofile_name}')
+        ])
+
+        self.cmd('fleet autoupgradeprofile list -g {rg} -f {fleet_name}', checks=[
+            self.check('length([])', 1)
+        ])
+
+        self.cmd('fleet autoupgradeprofile delete -g {rg} -f {fleet_name} -n {autoupgradeprofile_name} --yes')
 
         self.cmd('fleet updatestrategy delete -g {rg} -f {fleet_name} -n {updateStrategy_name} --yes')
 

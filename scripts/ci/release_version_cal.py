@@ -8,6 +8,7 @@
 import os
 import re
 import json
+import subprocess
 from packaging.version import parse
 
 from azdev.utilities.path import get_cli_repo_path, get_ext_repo_paths
@@ -18,7 +19,11 @@ from util import get_index_data
 
 base_meta_path = os.environ.get('base_meta_path', None)
 diff_meta_path = os.environ.get('diff_meta_path', None)
+result_path = os.environ.get('result_path', None)
 output_file = os.environ.get('output_file', None)
+add_labels_file = os.environ.get('add_labels_file', None)
+remove_labels_file = os.environ.get('remove_labels_file', None)
+pr_user = os.environ.get('pr_user', "")
 
 changed_module_list = os.environ.get('changed_module_list', "").split()
 diff_code_file = os.environ.get('diff_code_file', "")
@@ -28,6 +33,7 @@ pr_label_list = [name.lower().strip().strip('"').strip("'") for name in json.loa
 
 DEFAULT_VERSION = "0.0.0"
 INIT_RELEASE_VERSION = "1.0.0b1"
+DEFAULT_MESSAGE = " - For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)"
 block_pr = 0
 
 cli_ext_path = get_ext_repo_paths()[0]
@@ -58,22 +64,26 @@ def extract_module_version_update_info(mod_update_info, mod):
     -VERSION = '1.0.1'
     +VERSION = '1.1.1'
     --- a/src/monitor-control-service/HISTORY.RST
+    py files exclude tests, vendored_sdks and aaz folder
     """
-    mod_update_info["setup_updated"] = False
-    module_setup_update_pattern = re.compile(r"\+\+\+.*?src/%s/setup.py" % mod)
+    diff_file_started = False
+    module_setup_update_pattern = re.compile(r"\+\+\+.*?src/%s/(?!.*(?:tests|vendored_sdks|aaz)/).*?.py" % mod)
     module_version_update_pattern = re.compile(r"\+\s?VERSION\s?\=\s?[\'\"]([0-9\.b]+)[\'\"]")
     with open(diff_code_file, "r") as f:
         for line in f:
-            if mod_update_info["setup_updated"]:
-                if line.find("---") == 0 or mod_update_info.get("version_diff", None):
+            if diff_file_started:
+                if mod_update_info.get("version_diff", None):
                     break
+                if line.find("diff") == 0:
+                    diff_file_started = False
+                    continue
                 mod_version_update_match = re.findall(module_version_update_pattern, line)
                 if mod_version_update_match and len(mod_version_update_match) == 1:
                     mod_update_info["version_diff"] = mod_version_update_match[0]
             else:
                 mod_setup_update_match = re.findall(module_setup_update_pattern, line)
                 if mod_setup_update_match:
-                    mod_update_info["setup_updated"] = True
+                    diff_file_started = True
 
 
 def extract_module_metadata_update_info(mod_update_info, mod):
@@ -114,6 +124,14 @@ def extract_module_metadata_update_info(mod_update_info, mod):
                     mod_update_info["meta_updated"] = True
 
 
+def find_module_metadata_of_latest_version(mod):
+    cmd = ["azdev", "extension", "show", "--mod-name", mod, "--query", "pkg_name", "-o", "tsv"]
+    result = subprocess.run(cmd, stdout=subprocess.PIPE)
+    if result.returncode == 0:
+        mod = result.stdout.decode("utf8").strip()
+    return get_module_metadata_of_max_version(mod)
+
+
 def extract_module_version_info(mod_update_info, mod):
     next_version_pre_tag = get_next_version_pre_tag()
     next_version_segment_tag = get_next_version_segment_tag()
@@ -131,7 +149,7 @@ def extract_module_version_info(mod_update_info, mod):
     elif not os.path.exists(diff_meta_file):
         print("no diff meta file found for {0}".format(mod))
         return
-    pre_release = get_module_metadata_of_max_version(mod)
+    pre_release = find_module_metadata_of_latest_version(mod)
     if pre_release is None:
         next_version = cal_next_version(base_meta_file=base_meta_file, diff_meta_file=diff_meta_file,
                                         current_version=DEFAULT_VERSION,
@@ -186,7 +204,7 @@ def get_next_version_segment_tag():
     if VERSION_MAJOR_TAG in pr_label_list:
         return VERSION_MAJOR_TAG
     elif VERSION_MINOR_TAG in pr_label_list:
-        return pr_label_list
+        return VERSION_MINOR_TAG
     elif VERSION_PATCH_TAG in pr_label_list:
         return VERSION_PATCH_TAG
     elif VERSION_PRE_TAG in pr_label_list:
@@ -196,27 +214,30 @@ def get_next_version_segment_tag():
 
 
 def add_suggest_header(comment_message):
-    comment_message.insert(0, "## :warning: Release Suggestions")
+    if block_pr == 1:
+        comment_message.insert(0, "## :warning: Release Requirements")
+    else:
+        comment_message.insert(0, "## Release Suggestions")
+    comment_message.insert(0, "Hi @" + pr_user)
 
 
 def gen_history_comment_message(mod, mod_update_info, mod_message):
     if not mod_update_info["history_updated"]:
-        mod_message.append(" - :warning: Please log updates into to `src/{0}/HISTORY.rst`".format(mod))
+        mod_message.append(" - Please log updates into to `src/{0}/HISTORY.rst`".format(mod))
 
 
 def gen_version_comment_message(mod, mod_update_info, mod_message):
     global block_pr
-    if not mod_update_info["setup_updated"]:
+    if not mod_update_info.get("version_diff", None):
         if mod_update_info.get("version", None):
             mod_message.append(" - Update `VERSION` to `{0}` in `src/{1}/setup.py`".format(mod_update_info.get("version", "-"), mod))
     else:
         if mod_update_info.get("version", None):
             bot_version = parse(mod_update_info['version'])
             if mod_update_info.get("version_diff", None):
-                diff_version =  parse(mod_update_info['version_diff'])
+                diff_version = parse(mod_update_info['version_diff'])
                 if diff_version != bot_version:
-                    if diff_version < bot_version:
-                        block_pr = 1
+                    block_pr = 1
                     mod_message.append(" - :warning: Please update `VERSION` to be `{0}` in `src/{1}/setup.py`".format(mod_update_info.get("version", "-"), mod))
             else:
                 mod_message.append(" - Update `VERSION` to `{0}` in `src/{1}/setup.py`".format(mod_update_info.get("version", "-"), mod))
@@ -227,7 +248,7 @@ def gen_preview_comment_message(mod, mod_update_info, mod_message):
     if mod_update_info.get("preview_tag", "-") == mod_update_info.get("preview_tag_diff", "-"):
         return
     preview_comment_message = " - "
-    if mod_update_info["setup_updated"] and mod_update_info.get("version_diff", None):
+    if mod_update_info.get("version_diff", None):
         block_pr = 1
         preview_comment_message += ":warning: "
     if mod_update_info.get("preview_tag", None) and mod_update_info.get("preview_tag_diff", None):
@@ -253,7 +274,7 @@ def gen_exp_comment_message(mod, mod_update_info, mod_message):
     if mod_update_info.get("exp_tag", "-") == mod_update_info.get("exp_tag_diff", "-"):
         return
     exp_comment_message = " - "
-    if mod_update_info["setup_updated"]:
+    if mod_update_info.get("version_diff", None):
         block_pr = 1
         exp_comment_message += ":warning: "
     if mod_update_info.get("exp_tag", None) and mod_update_info.get("exp_tag_diff", None):
@@ -287,23 +308,36 @@ def gen_comment_message(mod, mod_update_info, comment_message):
 
 def add_label_hint_message(comment_message):
     comment_message.append("#### Notes")
-    comment_message.append(" - Stable/preview tag is inherited from last release. "
-                           "If needed, please add `stable`/`preview` label to modify it.")
-    comment_message.append(" - Major/minor/patch/pre increment of version number is calculated by pull request "
-                           "code changes automatically. "
-                           "If needed, please add `major`/`minor`/`patch`/`pre` label to adjust it.")
-    comment_message.append(" - For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
+    # comment_message.append(" - Stable/preview tag is inherited from last release. "
+    #                        "If needed, please add `stable`/`preview` label to modify it.")
+    # comment_message.append(" - Major/minor/patch/pre increment of version number is calculated by pull request "
+    #                        "code changes automatically. "
+    #                        "If needed, please add `major`/`minor`/`patch`/`pre` label to adjust it.")
+    comment_message.append(DEFAULT_MESSAGE)
 
 
-def save_comment_message(file_name, comment_message):
-    with open(os.path.join(cli_ext_path, file_name), "w") as f:
+def save_comment_message(comment_message):
+    with open(result_path + "/" + output_file, "w") as f:
         for line in comment_message:
             f.write(line + "\n")
 
 
-def save_gh_output():
+def save_label_output():
     with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
         print(f'BlockPR={block_pr}', file=fh)
+    add_label_dict = {
+        "labels": ["release-version-block"]
+    }
+    removed_label = "release-version-block"
+    if block_pr == 0:
+        with open(result_path + "/" + remove_labels_file, "w") as f:
+            f.write(removed_label + "\n")
+    else:
+        # add block label and empty release label file
+        with open(result_path + "/" + add_labels_file, "w") as f:
+            json.dump(add_label_dict, f)
+        with open(result_path + "/" + remove_labels_file, "w") as f:
+            pass
 
 
 def main():
@@ -316,15 +350,15 @@ def main():
     comment_message = []
     modules_update_info = {}
     if len(changed_module_list) == 0:
-        comment_message.append("For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
-        save_comment_message(output_file, comment_message)
-        save_gh_output()
+        comment_message.append(DEFAULT_MESSAGE)
+        save_comment_message(comment_message)
+        save_label_output()
         return
     fill_module_update_info(modules_update_info)
     if len(modules_update_info) == 0:
-        comment_message.append("For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
-        save_comment_message(output_file, comment_message)
-        save_gh_output()
+        comment_message.append(DEFAULT_MESSAGE)
+        save_comment_message(comment_message)
+        save_label_output()
         return
     for mod, update_info in modules_update_info.items():
         gen_comment_message(mod, update_info, comment_message)
@@ -332,12 +366,12 @@ def main():
         add_suggest_header(comment_message)
         add_label_hint_message(comment_message)
     else:
-        comment_message.append("For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)")
+        comment_message.append(DEFAULT_MESSAGE)
     print("comment_message:")
     print(comment_message)
     print("block_pr:", block_pr)
-    save_comment_message(output_file, comment_message)
-    save_gh_output()
+    save_comment_message(comment_message)
+    save_label_output()
 
 
 if __name__ == '__main__':

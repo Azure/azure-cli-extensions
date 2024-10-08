@@ -65,7 +65,9 @@ def enable_addons(
     dns_zone_resource_ids=None,
     enable_msi_auth_for_monitoring=True,
     enable_syslog=False,
-    data_collection_settings=None
+    data_collection_settings=None,
+    ampls_resource_id=None,
+    enable_high_log_scale_mode=False,
 ):
     instance = client.get(resource_group_name, name)
     # this is overwritten by _update_addons(), so the value needs to be recorded here
@@ -74,6 +76,10 @@ def enable_addons(
         msi_auth = True
     else:
         enable_msi_auth_for_monitoring = False
+
+    is_private_cluster = False
+    if instance.api_server_access_profile and instance.api_server_access_profile.enable_private_cluster:
+        is_private_cluster = True
 
     subscription_id = get_subscription_id(cmd.cli_ctx)
     instance = update_addons(
@@ -99,9 +105,7 @@ def enable_addons(
         rotation_poll_interval=rotation_poll_interval,
         no_wait=no_wait,
         dns_zone_resource_id=dns_zone_resource_id,
-        dns_zone_resource_ids=dns_zone_resource_ids,
-        enable_syslog=enable_syslog,
-        data_collection_settings=data_collection_settings,
+        dns_zone_resource_ids=dns_zone_resource_ids
     )
 
     if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
@@ -124,7 +128,10 @@ def enable_addons(
                 create_dcr=True,
                 create_dcra=True,
                 enable_syslog=enable_syslog,
-                data_collection_settings=data_collection_settings
+                data_collection_settings=data_collection_settings,
+                is_private_cluster=is_private_cluster,
+                ampls_resource_id=ampls_resource_id,
+                enable_high_log_scale_mode=enable_high_log_scale_mode
             )
         else:
             # monitoring addon will use legacy path
@@ -204,8 +211,6 @@ def update_addons(
     dns_zone_resource_id=None,
     dns_zone_resource_ids=None,
     no_wait=False,  # pylint: disable=unused-argument
-    enable_syslog=False,  # pylint: disable=unused-argument
-    data_collection_settings=None,  # pylint: disable=unused-argument
 ):
     # parse the comma-separated addons argument
     addon_args = addons.split(',')
@@ -398,6 +403,7 @@ def add_ingress_appgw_addon_role_assignment(result, cmd):
     service_principal_msi_id = None
     # Check if service principal exists, if it does, assign permissions to service principal
     # Else, provide permissions to MSI
+    is_service_principal = False
     if (
             hasattr(result, 'service_principal_profile') and
             hasattr(result.service_principal_profile, 'client_id') and
@@ -418,7 +424,7 @@ def add_ingress_appgw_addon_role_assignment(result, cmd):
 
     if service_principal_msi_id is not None:
         config = result.addon_profiles[CONST_INGRESS_APPGW_ADDON_NAME].config
-        from msrestazure.tools import parse_resource_id, resource_id
+        from azure.mgmt.core.tools import parse_resource_id, resource_id
         if CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID in config:
             appgw_id = config[CONST_INGRESS_APPGW_APPLICATION_GATEWAY_ID]
             parsed_appgw_id = parse_resource_id(appgw_id)

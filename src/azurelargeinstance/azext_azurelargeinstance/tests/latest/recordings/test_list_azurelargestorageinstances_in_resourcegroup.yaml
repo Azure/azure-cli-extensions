@@ -13,41 +13,21 @@ interactions:
       ParameterSetName:
       - --resource-group
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.11 (macOS-14.5-arm64-arm-64bit)
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.11 (macOS-14.6.1-arm64-arm-64bit)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DSM05A-T210/providers/Microsoft.AzureLargeInstance/azureLargeStorageInstances?api-version=2024-04-10
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/int-resources-rg/providers/Microsoft.AzureLargeInstance/azureLargeStorageInstances?api-version=2024-08-01-preview
   response:
     body:
-      string: "{\n  \"value\": [\n   {\n    \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DSM05A-T210/providers/Microsoft.AzureLargeInstance/azureLargeStorageInstances/alistorage\"\
-        ,\n    \"location\": \"centraluseuap\",\n    \"name\": \"alistorage\",\n \
-        \   \"tags\": {},\n    \"type\": \"Microsoft.AzureLargeInstance/azureLargeStorageInstances\"\
-        ,\n    \"systemData\": {},\n    \"properties\": {\n     \"azureLargeStorageInstanceUniqueIdentifier\"\
-        : \"a582472d-2a29-4c2b-a0d0-0ebd39e46904\",\n     \"storageProperties\": {\n\
-        \      \"provisioningState\": \"Accepted\",\n      \"offeringType\": \"EPIC\"\
-        ,\n      \"storageType\": \"FC\",\n      \"generation\": \"Gen4\",\n     \
-        \ \"hardwareType\": \"NetApp\",\n      \"workloadType\": \"ODB\",\n      \"\
-        storageBillingProperties\": {\n       \"billingMode\": \"PAYG\",\n       \"\
-        azureLargeStorageInstanceSize\": \"n100\"\n      }\n     }\n    }\n   },\n\
-        \   {\n    \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DSM05A-T210/providers/Microsoft.AzureLargeInstance/azureLargeStorageInstances/dummyRN1\"\
-        ,\n    \"location\": \"centraluseuap\",\n    \"name\": \"dummyRN1\",\n   \
-        \ \"tags\": {},\n    \"type\": \"Microsoft.BareMetalInfrastructure/bareMetalStorageInstances\"\
-        ,\n    \"systemData\": {},\n    \"properties\": {\n     \"azureLargeStorageInstanceUniqueIdentifier\"\
-        : \"cfcffde1-63b3-46a4-9881-2e9f4e59ff8d\",\n     \"storageProperties\": {\n\
-        \      \"provisioningState\": \"Accepted\",\n      \"offeringType\": \"EPIC\"\
-        ,\n      \"storageType\": \"FC\",\n      \"generation\": \"Gen4.5\",\n   \
-        \   \"hardwareType\": \"NetApp\",\n      \"workloadType\": \"ODB\",\n    \
-        \  \"storageBillingProperties\": {\n       \"billingMode\": \"PAYG\",\n  \
-        \     \"azureLargeStorageInstanceSize\": \"n100\"\n      }\n     }\n    }\n\
-        \   }\n  ]\n }"
+      string: '{"value":[]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1632'
+      - '12'
       content-type:
-      - application/json
+      - application/json; charset=utf-8
       date:
-      - Thu, 27 Jun 2024 19:44:55 GMT
+      - Tue, 10 Sep 2024 22:25:01 GMT
       expires:
       - '-1'
       pragma:
@@ -59,7 +39,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: C2991CBCB8ED40DD93B9935FDBE589D0 Ref B: CO6AA3150218053 Ref C: 2024-06-27T19:44:56Z'
+      - 'Ref A: 2B47022EF84A43588C8FB3DC76A83D49 Ref B: CO6AA3150218035 Ref C: 2024-09-10T22:25:02Z'
     status:
       code: 200
       message: OK

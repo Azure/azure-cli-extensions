@@ -6,15 +6,18 @@
 import json
 import requests
 
-from msrestazure.azure_exceptions import CloudError
-
 from knack.log import get_logger
 
-from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.core.util import should_disable_connection_verify
-from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError
+from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError, ManualInterrupt
+from ._validators import process_grafana_create_namespace
+
+from azure.cli.core.aaz import AAZBoolArg, AAZListArg, AAZStrArg
+from .aaz.latest.grafana._create import Create as _GrafanaCreate
+from .aaz.latest.grafana._delete import Delete as _GrafanaDelete
+from .aaz.latest.grafana._update import Update as _GrafanaUpdate
 
 from ._client_factory import cf_amg
 from .utils import get_yes_or_no_option, MGMT_SERVICE_CLIENT_API_VERSION
@@ -25,55 +28,110 @@ logger = get_logger(__name__)
 grafana_endpoints = {}
 
 
-def create_grafana(cmd, resource_group_name, grafana_name, location=None,
-                   deterministic_outbound_ip=None, skip_system_assigned_identity=False, skip_role_assignments=False,
-                   tags=None, zone_redundancy=None, principal_ids=None, principal_types=None):
-    from azure.cli.core.commands.arm import resolve_role_id
+class GrafanaCreate(_GrafanaCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema['skip_system_assigned_identity'] = AAZBoolArg(
+            options=['--skip-system-assigned-identity', '--skip-identity'],
+            help='Do not enable system assigned identity. Use this option if you want to manage the identity '
+                 'yourself.',
+            default=False,
+        )
+        args_schema['skip_role_assignments'] = AAZBoolArg(
+            options=['--skip-role-assignments'],
+            help='Skip creating default role assignments for the managed identity of the Grafana instance and '
+                 'the current CLI account. Use this option if you want to manage role assignments yourself.',
+            default=False,
+        )
+        args_schema['principal_ids'] = AAZListArg(
+            options=['--principal-ids'],
+            help='Space-separated Azure AD object ids for users, groups, etc. to be made as Grafana Admins. '
+                 'Once provided, CLI won\'t make the current logged-in user as Grafana Admin',
+        )
+        args_schema['principal_ids'].Element = AAZStrArg()
+        args_schema['identity']._registered = False  # pylint: disable=protected-access
 
-    if skip_role_assignments and principal_ids:
-        raise ArgumentUsageError("--skip-role-assignments | --assignee-object-ids")
+        return args_schema
 
-    client = cf_amg(cmd.cli_ctx, subscription=None)
-    resource = {
-        "sku": {
-            "name": "Standard"
-        },
-        "location": location,
-        "identity": None if skip_system_assigned_identity else {"type": "SystemAssigned"},
-        "tags": tags
-    }
-    resource["properties"] = {
-        "zoneRedundancy": zone_redundancy,
-        "deterministicOutboundIP": deterministic_outbound_ip
-    }
+    def pre_operations(self):
+        args = self.ctx.args
+        if args.skip_role_assignments and args.principal_ids:
+            raise ArgumentUsageError("--skip-role-assignments | --principal-ids")
 
-    poller = client.grafana.begin_create(resource_group_name, grafana_name, resource)
-    LongRunningOperation(cmd.cli_ctx)(poller)
+        if not args.skip_system_assigned_identity:
+            args.identity = {"type": "SystemAssigned"}
 
-    if skip_role_assignments:
-        return poller
-    resource = LongRunningOperation(cmd.cli_ctx)(poller)
+        process_grafana_create_namespace(self.ctx, self.ctx.args)
 
-    logger.warning("Grafana instance of '%s' was created. Now creating default role assignments for its "
-                   "managed identity, and current CLI account unless --principal-ids are provided", grafana_name)
+    # override the output method to create role assignments after instance creation
+    def _output(self, *args, **kwargs):
+        from azure.cli.core.commands.arm import resolve_role_id
 
-    subscription_scope = '/subscriptions/' + client._config.subscription_id  # pylint: disable=protected-access
+        cli_ctx = self.ctx.cli_ctx
+        args = self.ctx.args
 
-    if not principal_ids:
-        user_principal_id, user_principal_type = _get_login_account_principal_id(cmd.cli_ctx)
-        principal_ids = [user_principal_id]
-        principal_types = [user_principal_type]
-    grafana_admin_role_id = resolve_role_id(cmd.cli_ctx, "Grafana Admin", subscription_scope)
+        if not args.skip_role_assignments:
+            logger.warning("Grafana instance of '%s' was created. Now creating default role assignments for its "
+                           "managed identity, and current CLI account unless --principal-ids are provided.",
+                           args.workspace_name)
 
-    for p, t in zip(principal_ids, principal_types):
-        _create_role_assignment(cmd.cli_ctx, p, t, grafana_admin_role_id, resource.id)
+            client = cf_amg(cli_ctx, subscription=None)
+            subscription_scope = '/subscriptions/' + client._config.subscription_id  # pylint: disable=protected-access
 
-    if resource.identity:
-        monitoring_reader_role_id = resolve_role_id(cmd.cli_ctx, "Monitoring Reader", subscription_scope)
-        _create_role_assignment(cmd.cli_ctx, resource.identity.principal_id, "ServicePrincipal",
-                                monitoring_reader_role_id, subscription_scope)
+            principal_ids = args.principal_ids
+            if not principal_ids:
+                user_principal_id, _ = _get_login_account_principal_id(cli_ctx)
+                principal_ids = [user_principal_id]
+            grafana_admin_role_id = resolve_role_id(cli_ctx, "Grafana Admin", subscription_scope)
 
-    return resource
+            for principal_id in principal_ids:
+                principal_types = {"User", "Group"}
+                _create_role_assignment(cli_ctx, principal_id, principal_types, grafana_admin_role_id,
+                                        self.ctx.vars.instance.id)
+
+            if self.ctx.vars.instance.identity:
+                monitoring_reader_role_id = resolve_role_id(cli_ctx, "Monitoring Reader", subscription_scope)
+                principal_types = {"ServicePrincipal"}
+                _create_role_assignment(cli_ctx, self.ctx.vars.instance.identity.principal_id, {"ServicePrincipal"},
+                                        monitoring_reader_role_id, subscription_scope)
+
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        return result
+
+
+class GrafanaDelete(_GrafanaDelete):
+    # store principal id for cleanup later
+    principal_id = None
+
+    def pre_operations(self):
+        args = self.ctx.args
+        client = cf_amg(self.ctx.cli_ctx, subscription=None)
+        grafana = client.grafana.get(args.resource_group, args.workspace_name)
+        self.principal_id = grafana.identity.principal_id
+
+    def post_operations(self):
+        args = self.ctx.args
+
+        # delete role assignment
+        logger.warning("Grafana instance of '%s' was deleted. Now removing role assignments for associated with its "
+                       "managed identity.", args.workspace_name)
+        _delete_role_assignment(self.ctx.cli_ctx, self.principal_id)
+
+
+class GrafanaUpdate(_GrafanaUpdate):
+    def pre_operations(self):
+        args = self.ctx.args
+
+        if args.grafana_major_version == "10":
+            # prompt for confirmation, cancel operation if not confirmed
+            if (not get_yes_or_no_option("You are trying to upgrade this workspace to Grafana version 10. By "
+                                         "proceeding, you acknowledge that upgrading to Grafana version 10 is a "
+                                         "permanent and irreversible operation and Grafana legacy alerting has been "
+                                         "deprecated and any migrated legacy alert may require manual adjustments "
+                                         "to function properly under the new alerting system. Do you wish to proceed? "
+                                         "(y/n): ")):
+                raise ManualInterrupt('Operation cancelled.')
 
 
 # for injecting test seams to produce predictable role assignment id for playback
@@ -110,16 +168,17 @@ def _get_login_account_principal_id(cli_ctx):
     return result[0].object_id, principal_type
 
 
-def _create_role_assignment(cli_ctx, principal_id, principal_type, role_definition_id, scope):
+def _create_role_assignment(cli_ctx, principal_id, principal_types, role_definition_id, scope):
     import time
-    from azure.core.exceptions import ResourceExistsError
+    from azure.core.exceptions import HttpResponseError, ResourceExistsError
+
     assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
                                                  api_version=MGMT_SERVICE_CLIENT_API_VERSION).role_assignments
     RoleAssignmentCreateParameters = get_sdk(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
                                              'RoleAssignmentCreateParameters', mod='models',
                                              operation_group='role_assignments')
     parameters = RoleAssignmentCreateParameters(role_definition_id=role_definition_id,
-                                                principal_id=principal_id, principal_type=principal_type)
+                                                principal_id=principal_id, principal_type=principal_types.pop())
 
     logger.info("Creating an assignment with a role '%s' on the scope of '%s'", role_definition_id, scope)
     retry_times = 36
@@ -132,7 +191,12 @@ def _create_role_assignment(cli_ctx, principal_id, principal_type, role_definiti
         except ResourceExistsError:  # Exception from Track-2 SDK
             logger.info('Role assignment already exists')
             break
-        except CloudError as ex:
+        except HttpResponseError as ex:
+            if 'UnmatchedPrincipalType' in ex.message:  # try each principal_type until we get the right one
+                parameters = RoleAssignmentCreateParameters(role_definition_id=role_definition_id,
+                                                            principal_id=principal_id,
+                                                            principal_type=principal_types.pop())
+                continue
             if 'role assignment already exists' in ex.message:  # Exception from Track-1 SDK
                 logger.info('Role assignment already exists')
                 break
@@ -153,108 +217,8 @@ def _delete_role_assignment(cli_ctx, principal_id):
         assignments_client.delete_by_id(a.id)
 
 
-def list_grafana(cmd, resource_group_name=None):
-    client = cf_amg(cmd.cli_ctx, subscription=None)
-    if resource_group_name:
-        return client.grafana.list_by_resource_group(resource_group_name)
-    return client.grafana.list()
-
-
-def update_grafana(cmd, grafana_name, api_key_and_service_account=None, deterministic_outbound_ip=None,
-                   public_network_access=None, smtp=None, host=None, user=None, password=None,
-                   start_tls_policy=None, skip_verify=None, from_address=None, from_name=None,
-                   major_version=None, resource_group_name=None, tags=None):
-
-    if all(param is None for param in (api_key_and_service_account, deterministic_outbound_ip, public_network_access,
-                                       smtp, host, user, password, start_tls_policy, skip_verify, from_address,
-                                       from_name, major_version, tags)):
-        raise ArgumentUsageError("Please supply at least one parameter value to update the Grafana workspace")
-
-    client = cf_amg(cmd.cli_ctx, subscription=None)
-    instance = client.grafana.get(resource_group_name, grafana_name)
-
-    resource = {}
-    resourceProperties = {}
-
-    if api_key_and_service_account:
-        resourceProperties["apiKey"] = api_key_and_service_account
-
-    if deterministic_outbound_ip:
-        resourceProperties["deterministicOutboundIP"] = deterministic_outbound_ip
-
-    if public_network_access:
-        resourceProperties["publicNetworkAccess"] = public_network_access
-
-    if major_version:
-        if major_version == "10":
-            # prompt for confirmation, cancel operation if not confirmed
-            if (not get_yes_or_no_option("You are trying to upgrade this workspace to Grafana version 10. By "
-                                         "proceeding, you acknowledge that upgrading to Grafana version 10 is a "
-                                         "permanent and irreversible operation and Grafana legacy alerting has been "
-                                         "deprecated and any migrated legacy alert may require manual adjustments "
-                                         "to function properly under the new alerting system. Do you wish to proceed? "
-                                         "(Y/N): ")):
-                return None
-        resourceProperties["grafanaMajorVersion"] = major_version
-
-    if tags:
-        resource["tags"] = tags
-
-    if not all(param is None for param in (smtp, host, user, password, start_tls_policy, from_address, from_name,
-                                           skip_verify)):
-        from azext_amg.vendored_sdks.models import GrafanaConfigurations, Smtp
-        resourceProperties["grafanaConfigurations"] = GrafanaConfigurations()
-
-        if not instance.properties.grafana_configurations.smtp:
-            resourceProperties["grafanaConfigurations"].smtp = Smtp()
-        else:
-            resourceProperties["grafanaConfigurations"] = instance.properties.grafana_configurations
-
-        if smtp:
-            resourceProperties["grafanaConfigurations"].smtp.enabled = smtp == "Enabled"
-        if host:
-            resourceProperties["grafanaConfigurations"].smtp.host = host
-        if user:
-            resourceProperties["grafanaConfigurations"].smtp.user = user
-        if password:
-            resourceProperties["grafanaConfigurations"].smtp.password = password
-        if start_tls_policy:
-            resourceProperties["grafanaConfigurations"].smtp.start_tls_policy = start_tls_policy
-        if skip_verify is not None:
-            resourceProperties["grafanaConfigurations"].smtp.skip_verify = skip_verify
-        if from_address:
-            resourceProperties["grafanaConfigurations"].smtp.from_address = from_address
-        if from_name:
-            resourceProperties["grafanaConfigurations"].smtp.from_name = from_name
-
-    if resourceProperties:
-        resource["properties"] = resourceProperties
-
-    # "update" uses PATCH
-    return client.grafana.update(resource_group_name, grafana_name, resource)
-
-
-def show_grafana(cmd, grafana_name, resource_group_name=None, subscription=None):
-    client = cf_amg(cmd.cli_ctx, subscription=subscription)
-    return client.grafana.get(resource_group_name, grafana_name)
-
-
-def delete_grafana(cmd, grafana_name, resource_group_name=None):
-    client = cf_amg(cmd.cli_ctx, subscription=None)
-    grafana = client.grafana.get(resource_group_name, grafana_name)
-
-    # delete first
-    poller = client.grafana.begin_delete(resource_group_name, grafana_name)
-    LongRunningOperation(cmd.cli_ctx)(poller)
-
-    # delete role assignment
-    logger.warning("Grafana instance of '%s' was deleted. Now removing role assignments for associated with its "
-                   "managed identity", grafana_name)
-    _delete_role_assignment(cmd.cli_ctx, grafana.identity.principal_id)
-
-
 def backup_grafana(cmd, grafana_name, components=None, directory=None, folders_to_include=None,
-                   folders_to_exclude=None, resource_group_name=None):
+                   folders_to_exclude=None, resource_group_name=None, skip_folder_permissions=False):
     import os
     from pathlib import Path
     from .backup import backup
@@ -272,7 +236,8 @@ def backup_grafana(cmd, grafana_name, components=None, directory=None, folders_t
            components=components,
            http_headers=headers,
            folders_to_include=folders_to_include,
-           folders_to_exclude=folders_to_exclude)
+           folders_to_exclude=folders_to_exclude,
+           skip_folder_permissions=skip_folder_permissions)
 
 
 def restore_grafana(cmd, grafana_name, archive_file, components=None, remap_data_sources=None,
@@ -295,6 +260,45 @@ def restore_grafana(cmd, grafana_name, archive_file, components=None, remap_data
             components=components,
             http_headers=headers,
             destination_datasources=data_sources)
+
+
+def migrate_grafana(cmd, grafana_name, source_grafana_endpoint, source_grafana_token_or_api_key, dry_run=False,
+                    overwrite=False, folders_to_include=None, folders_to_exclude=None, resource_group_name=None):
+    from .migrate import migrate
+    from .utils import get_health_endpoint, send_grafana_get
+
+    # for source instance (backing up from)
+    headers_src = {
+        "content-type": "application/json",
+        "authorization": "Bearer " + source_grafana_token_or_api_key
+    }
+    (status, _) = get_health_endpoint(source_grafana_endpoint, headers_src)
+    if status == 400:
+        # https://github.com/grafana/grafana/pull/27536
+        # Some Grafana instances might block/not support "/api/health" endpoint
+        (status, _) = send_grafana_get(f"{source_grafana_endpoint}/healthz", headers_src)
+
+    if status == 401:
+        raise ArgumentUsageError("Access to source grafana endpoint was denied")
+    if status >= 400:
+        raise ArgumentUsageError("Source grafana endpoint is not reachable")
+
+    # for destination instance (restoring to)
+    _health_endpoint_reachable(cmd, grafana_name, resource_group_name=resource_group_name)
+    creds_dest = _get_data_plane_creds(cmd, api_key_or_token=None, subscription=None)
+    headers_dest = {
+        "content-type": "application/json",
+        "authorization": "Bearer " + creds_dest[1]
+    }
+
+    migrate(backup_url=source_grafana_endpoint,
+            backup_headers=headers_src,
+            restore_url=_get_grafana_endpoint(cmd, resource_group_name, grafana_name, subscription=None),
+            restore_headers=headers_dest,
+            dry_run=dry_run,
+            overwrite=overwrite,
+            folders_to_include=folders_to_include,
+            folders_to_exclude=folders_to_exclude)
 
 
 def sync_dashboard(cmd, source, destination, folders_to_include=None, folders_to_exclude=None,
@@ -408,7 +412,7 @@ def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
             else:
                 logger.warning("No data source was found matching the required parameter of %s", parameter['pluginId'])
 
-    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/dashboards/import",
+    response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/dashboards/db",
                              payload, api_key_or_token=api_key_or_token)
     return json.loads(response.content)
 
@@ -487,7 +491,7 @@ def list_notification_channels(cmd, grafana_name, resource_group_name=None, shor
     if short is False:
         response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/alert-notifications",
                                  api_key_or_token=api_key_or_token)
-    elif short is True:
+    else:
         response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/alert-notifications/lookup",
                                  api_key_or_token=api_key_or_token)
     return json.loads(response.content)
@@ -569,24 +573,21 @@ def delete_folder(cmd, grafana_name, folder, resource_group_name=None, api_key_o
 
 
 def _find_folder(cmd, resource_group_name, grafana_name, folder, api_key_or_token=None):
-    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders/id/" + folder,
+    response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders/" + folder,
                              raise_for_error_status=False, api_key_or_token=api_key_or_token)
-    if response.status_code >= 400 or not json.loads(response.content)['uid']:
-        response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders/" + folder,
-                                 raise_for_error_status=False, api_key_or_token=api_key_or_token)
+    if response.status_code >= 400:
+        response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders",
+                                 api_key_or_token=api_key_or_token)
         if response.status_code >= 400:
-            response = _send_request(cmd, resource_group_name, grafana_name, "get", "/api/folders",
-                                     api_key_or_token=api_key_or_token)
-            if response.status_code >= 400:
-                raise ArgumentUsageError(f"Couldn't find the folder '{folder}'. Ex: {response.status_code}")
-            result = json.loads(response.content)
-            result = [f for f in result if f["title"] == folder]
-            if len(result) == 0:
-                raise ArgumentUsageError(f"Couldn't find the folder '{folder}'. Ex: {response.status_code}")
-            if len(result) > 1:
-                raise ArgumentUsageError((f"More than one folder has the same title of '{folder}'. Please use other "
-                                          f"unique identifiers"))
-            return result[0]
+            raise ArgumentUsageError(f"Couldn't find the folder '{folder}'. Ex: {response.status_code}")
+        result = json.loads(response.content)
+        result = [f for f in result if f["title"] == folder]
+        if len(result) == 0:
+            raise ArgumentUsageError(f"Couldn't find the folder '{folder}'. Ex: {response.status_code}")
+        if len(result) > 1:
+            raise ArgumentUsageError((f"More than one folder has the same title of '{folder}'. Please use other "
+                                     f"unique identifiers"))
+        return result[0]
     return json.loads(response.content)
 
 
@@ -879,7 +880,8 @@ def _get_data_plane_creds(cmd, api_key_or_token, subscription):
 def _get_grafana_endpoint(cmd, resource_group_name, grafana_name, subscription):
     endpoint = grafana_endpoints.get(grafana_name)
     if not endpoint:
-        grafana = show_grafana(cmd, grafana_name, resource_group_name, subscription=subscription)
+        client = cf_amg(cmd.cli_ctx, subscription=subscription)
+        grafana = client.grafana.get(resource_group_name, grafana_name)
         endpoint = grafana.properties.endpoint
         grafana_endpoints[grafana_name] = endpoint
     return endpoint

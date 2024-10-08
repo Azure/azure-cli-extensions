@@ -8,7 +8,12 @@ import sys
 
 from pkg_resources import parse_version
 from knack.log import get_logger
-from azext_confcom.config import DEFAULT_REGO_FRAGMENTS, DATA_FOLDER
+from azext_confcom.config import (
+    DEFAULT_REGO_FRAGMENTS,
+    VIRTUAL_NODE_YAML_METADATA,
+    VIRTUAL_NODE_YAML_ANNOTATIONS,
+    VIRTUAL_NODE_YAML_POLICY,
+)
 from azext_confcom import os_util
 from azext_confcom.template_util import (
     pretty_print_func,
@@ -16,6 +21,10 @@ from azext_confcom.template_util import (
     str_to_sha256,
     inject_policy_into_template,
     print_existing_policy_from_arm_template,
+    print_existing_policy_from_yaml,
+    deep_dict_update,
+    filter_non_pod_resources,
+    convert_to_pod_spec_helper,
 )
 from azext_confcom.init_checks import run_initial_docker_checks
 from azext_confcom import security_policy
@@ -26,11 +35,13 @@ from azext_confcom.kata_proxy import KataPolicyGenProxy
 logger = get_logger(__name__)
 
 
+# pylint: disable=too-many-locals, too-many-branches
 def acipolicygen_confcom(
     input_path: str,
     arm_template: str,
     arm_template_parameters: str,
     image_name: str,
+    virtual_node_yaml_path: str,
     infrastructure_svn: str,
     tar_mapping_location: str,
     approve_wildcards: str = False,
@@ -46,12 +57,12 @@ def acipolicygen_confcom(
     faster_hashing: bool = False,
 ):
 
-    if sum(map(bool, [input_path, arm_template, image_name])) != 1:
+    if sum(map(bool, [input_path, arm_template, image_name, virtual_node_yaml_path])) != 1:
         error_out("Can only generate CCE policy from one source at a time")
     if sum(map(bool, [print_policy_to_terminal, outraw, outraw_pretty_print])) > 1:
         error_out("Can only print in one format at a time")
     elif (diff and input_path) or (diff and image_name):
-        error_out("Can only diff CCE policy from ARM Template")
+        error_out("Can only diff CCE policy from ARM Template or YAML File")
     elif arm_template_parameters and not arm_template:
         error_out(
             "Can only use ARM Template Parameters if ARM Template is also present"
@@ -71,8 +82,11 @@ def acipolicygen_confcom(
             "For additional information, see http://aka.ms/clisecrets. \n",
         )
 
-    if print_existing_policy:
+    if print_existing_policy and arm_template:
         print_existing_policy_from_arm_template(arm_template, arm_template_parameters)
+        sys.exit(0)
+    elif print_existing_policy and virtual_node_yaml_path:
+        print_existing_policy_from_yaml(virtual_node_yaml_path)
         sys.exit(0)
 
     if debug_mode:
@@ -93,7 +107,7 @@ def acipolicygen_confcom(
     logger.warning(
         "Generating security policy for %s: %s in %s",
         "ARM Template" if arm_template else "Image" if image_name else "Input File",
-        input_path or arm_template or image_name,
+        input_path or arm_template or image_name or virtual_node_yaml_path,
         "base64"
         if output_type == security_policy.OutputType.DEFAULT
         else "clear text",
@@ -116,6 +130,15 @@ def acipolicygen_confcom(
         container_group_policies = security_policy.load_policy_from_image_name(
             image_name, debug_mode=debug_mode, disable_stdio=disable_stdio
         )
+    elif virtual_node_yaml_path:
+        container_group_policies = security_policy.load_policy_from_virtual_node_yaml_file(
+            virtual_node_yaml_path=virtual_node_yaml_path,
+            debug_mode=debug_mode,
+            disable_stdio=disable_stdio,
+            approve_wildcards=approve_wildcards,
+        )
+        virtual_node_yaml = list(os_util.load_multiple_yaml_from_file(virtual_node_yaml_path))
+        filtered_yaml = filter_non_pod_resources(virtual_node_yaml)
 
     exit_code = 0
 
@@ -132,6 +155,27 @@ def acipolicygen_confcom(
 
         if validate_sidecar:
             exit_code = validate_sidecar_in_policy(policy, output_type == security_policy.OutputType.PRETTY_PRINT)
+        elif virtual_node_yaml_path and not (print_policy_to_terminal or outraw or outraw_pretty_print or diff):
+            current_yaml = filtered_yaml[count]
+            # find where this policy needs to go in the original file
+            count_in_file = virtual_node_yaml.index(current_yaml)
+            # use the reference this helper function returns to place the policy in the correct spot
+            pod_item = convert_to_pod_spec_helper(current_yaml)
+            # Metadata to be added to virtual node YAML
+            needed_metadata = {
+                VIRTUAL_NODE_YAML_METADATA: {
+                    VIRTUAL_NODE_YAML_ANNOTATIONS: {
+                        VIRTUAL_NODE_YAML_POLICY: policy.get_serialized_output(),
+                    }
+                }
+            }
+
+            # Update virtual node YAML with metadata
+            deep_dict_update(needed_metadata, pod_item)
+            # replace contents in the original file
+            virtual_node_yaml[count_in_file] = current_yaml
+
+            os_util.write_multiple_yaml_to_file(virtual_node_yaml_path, virtual_node_yaml)
         elif diff:
             exit_code = get_diff_outputs(policy, output_type == security_policy.OutputType.PRETTY_PRINT)
         elif arm_template and not (print_policy_to_terminal or outraw or outraw_pretty_print):
@@ -164,14 +208,15 @@ def katapolicygen_confcom(
     print_policy: bool = False,
     use_cached_files: bool = False,
     settings_file_name: str = None,
+    rules_file_name: str = None,
+    print_version: bool = False,
+    containerd_pull: str = False,
+    containerd_socket_path: str = None,
 ):
-
-    if settings_file_name:
-        if "genpolicy-settings.json" in settings_file_name:
-            error_out("Cannot use default settings file names")
-        os_util.copy_file(settings_file_name, DATA_FOLDER)
-
     kata_proxy = KataPolicyGenProxy()
+
+    if not (yaml_path or print_version):
+        error_out("Either --yaml-path or --print-version is required")
 
     output = kata_proxy.kata_genpolicy(
         yaml_path,
@@ -180,6 +225,10 @@ def katapolicygen_confcom(
         print_policy=print_policy,
         use_cached_files=use_cached_files,
         settings_file_name=settings_file_name,
+        rules_file_name=rules_file_name,
+        print_version=print_version,
+        containerd_pull=containerd_pull,
+        containerd_socket_path=containerd_socket_path,
     )
     print(output)
     sys.exit(0)
@@ -229,7 +278,7 @@ def get_diff_outputs(policy: security_policy.AciPolicy, outraw_pretty_print: boo
         formatted_output = print_func(output)
 
     print(
-        "Existing policy and ARM Template match"
+        "Existing policy and Template match"
         if is_valid
         else formatted_output
     )
@@ -241,7 +290,7 @@ def get_diff_outputs(policy: security_policy.AciPolicy, outraw_pretty_print: boo
         )
     if not is_valid:
         logger.warning(
-            "Existing Policy and ARM Template differ. Consider recreating the base64-encoded policy."
+            "Existing Policy and Template differ. Consider recreating the base64-encoded policy."
         )
         exit_code = 2
     return exit_code

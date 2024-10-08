@@ -87,7 +87,7 @@ class Create(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
     class NetworkSecurityPerimetersCreateOrUpdate(AAZHttpOperation):
@@ -196,9 +196,7 @@ class Create(AAZCommand):
             )
             _schema_on_200_201.location = AAZStrType()
             _schema_on_200_201.name = AAZStrType()
-            _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200_201.properties = AAZObjectType()
             _schema_on_200_201.tags = AAZDictType()
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},

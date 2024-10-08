@@ -11,6 +11,7 @@
 # pylint: disable=unused-argument
 # pylint: disable=line-too-long
 
+import base64
 import ctypes
 import json
 import os
@@ -18,6 +19,7 @@ import platform
 import subprocess
 import time
 import urllib.request
+import uuid
 from zipfile import ZipFile
 import shutil
 import requests
@@ -28,12 +30,48 @@ from azure.cli.core.azclierror import InvalidArgumentValueError
 
 
 # -----------------------------------------------------------------------------------------------------------------
+# Common helper function to check if string is empty or not
+# -----------------------------------------------------------------------------------------------------------------
+def is_string_null_or_empty(value):
+    return value is None or value == "" or value.strip() == ""
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to check if an input string has escape characters.
+# -----------------------------------------------------------------------------------------------------------------
+def has_shell_escape_characters(inputString):
+    escape_characters = ['&', '|', ';', '<', '>', '(', ')', '[', ']', '{', '}', '$', '`', '\\', '"', "'", ' ', '\t', '\n', '\r']
+    return any(character in inputString for character in escape_characters)
+
+
+# -----------------------------------------------------------------------------------------------------------------
 # Common helper function to validate if the commands are running on Windows.
 # -----------------------------------------------------------------------------------------------------------------
 def validate_os_env():
 
     if 'Windows' not in platform.system():
         raise CLIInternalError("This command cannot be run in non-windows environment. Please run this command in Windows environment")
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to check if the input string is in valid Guid format or not
+# -----------------------------------------------------------------------------------------------------------------
+def is_valid_guid(guid):
+    try:
+        _ = uuid.UUID(guid)
+    except ValueError:
+        return False
+    return True
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to check if the input string is in valid base64 string or not
+# -----------------------------------------------------------------------------------------------------------------
+def is_base64(s):
+    try:
+        return base64.b64encode(base64.b64decode(s)).decode() == s
+    except Exception:
+        return False
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -278,11 +316,10 @@ def check_and_download_loginMigration_console_app(downloads_folder):
             if user_input == "yes":
                 print("Updating to the new version...")
                 break
-            elif user_input == "no":
+            if user_input == "no":
                 print("You chose not to upgrade.")
                 return latest_local_name_and_version
-            else:
-                print("Invalid input. Please enter 'yes' or 'no'.")
+            print("Invalid input. Please enter 'yes' or 'no'.")
 
     # Download latest version of NuGet
     latest_nuget_org_download_directory = os.path.join(downloads_folder, latest_nuget_org_name_and_version)
@@ -460,8 +497,41 @@ def is_user_admin():
 # Helper function to validate key input.
 # -----------------------------------------------------------------------------------------------------------------
 def validate_input(key):
-    if key == "":
-        raise InvalidArgumentValueError("Failed: IR Auth key is empty. Please provide a valid auth key.")
+
+    if is_string_null_or_empty(key):
+        raise InvalidArgumentValueError("Failed: IR Auth key is null or empty. Please provide a valid auth key.")
+    if has_shell_escape_characters(key):
+        raise InvalidArgumentValueError("Failed: IR Auth key has invalid characters. Please provide a valid auth key.")
+    if not is_valid_ir_key_format(key):
+        raise InvalidArgumentValueError("Failed: Invalid IR Auth key format. Please provide a valid auth key.")
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# Helper function to check if the input key is in valid format.
+# IR key format: IR@{KeyId : Guid}@{PartitionId: Factory Name}@{Factory Region or Factory ServiceEndpoint}@{Base64String}
+# -----------------------------------------------------------------------------------------------------------------
+def is_valid_ir_key_format(key):
+
+    try:
+        keyPrefix = "IR"
+        separator = '@'
+        keyParts = 5
+
+        key_parts = key.split(separator)
+
+        # Length of the split auth key should be 5 and should start with "IR"
+        if len(key_parts) != keyParts or key.startswith(keyPrefix) is False:
+            return False
+        # Check if all parts are not null or empty
+        for part in key_parts:
+            if is_string_null_or_empty(part):
+                return False
+        # Check pattern of second part as Guid and last part is a base64 string
+        if not is_valid_guid(key_parts[1]) or not is_base64(key_parts[-1]):
+            return False
+        return True
+    except Exception:
+        return False
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -490,10 +560,7 @@ def check_whether_gateway_installed(name):
     # Adding this try to look for Installed IR in Program files (Assumes the IR is always installed there) to tackle x32 bit python
     try:
         diaCmdPath = get_cmd_file_path_static()
-        if os.path.exists(diaCmdPath):
-            return True
-        else:
-            return False
+        return os.path.exists(diaCmdPath)
     except (FileNotFoundError, IndexError):
         return False
 
@@ -615,6 +682,8 @@ def get_cmd_file_path_from_input(installed_ir_path):
 
     if not os.path.exists(installed_ir_path):
         raise FileNotFoundError(f"The system cannot find the path specified: {installed_ir_path}")
+    if has_shell_escape_characters(installed_ir_path):
+        raise InvalidArgumentValueError("Failed: Installed IR path has invalid characters. Please provide a valid path.")
 
     # Create diaCmd default path and check if it is valid or not.
     diaCmdPath = os.path.join(installed_ir_path, "Shared", "diacmd.exe")

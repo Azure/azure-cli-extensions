@@ -27,9 +27,6 @@ aks create:
     enable_apiserver_vnet_integration:
       rule_exclusions:
         - option_length_too_long
-    enable_node_restriction:
-      rule_exclusions:
-        - option_length_too_long
     image_cleaner_interval_hours:
       rule_exclusions:
         - option_length_too_long
@@ -46,6 +43,9 @@ aks create:
       rule_exclusions:
         - option_length_too_long
     data_collection_settings:
+      rule_exclusions:
+      - option_length_too_long
+    enable_high_log_scale_mode:
       rule_exclusions:
       - option_length_too_long
     node_os_upgrade_channel:
@@ -86,6 +86,12 @@ aks create:
         - option_length_too_long
     enable_static_egress_gateway:
       rule_exclusions:
+        - option_length_too_long
+    enable_imds_restriction:
+      rule_exclusions:
+        - option_length_too_long
+    advanced_networking_observability_tls_management:
+      rule_exclusions:  
         - option_length_too_long
 aks update:
   parameters:
@@ -125,12 +131,6 @@ aks update:
     enable_apiserver_vnet_integration:
       rule_exclusions:
         - option_length_too_long
-    enable_node_restriction:
-      rule_exclusions:
-        - option_length_too_long
-    disable_node_restriction:
-      rule_exclusions:
-        - option_length_too_long
     image_cleaner_interval_hours:
       rule_exclusions:
         - option_length_too_long
@@ -156,6 +156,9 @@ aks update:
       rule_exclusions:
         - option_length_too_long
     data_collection_settings:
+      rule_exclusions:
+      - option_length_too_long
+    enable_high_log_scale_mode:
       rule_exclusions:
       - option_length_too_long
     node_os_upgrade_channel:
@@ -195,7 +198,7 @@ aks update:
       rule_exclusions:
         - option_length_too_long
     disable_azure_monitor_app_monitoring:
-      rule_exclusions: 
+      rule_exclusions:
         - option_length_too_long
     bootstrap_artifact_source:
       rule_exclusions:
@@ -208,6 +211,15 @@ aks update:
         - option_length_too_long
     disable_static_egress_gateway:
       rule_exclusions:
+        - option_length_too_long
+    enable_imds_restriction:
+      rule_exclusions:
+        - option_length_too_long
+    disable_imds_restriction:
+      rule_exclusions:
+        - option_length_too_long
+    advanced_networking_observability_tls_management:
+      rule_exclusions:  
         - option_length_too_long
 aks delete:
   parameters:
@@ -228,6 +240,9 @@ aks addon enable:
     data_collection_settings:
       rule_exclusions:
       - option_length_too_long
+    enable_high_log_scale_mode:
+      rule_exclusions:
+      - option_length_too_long
 aks addon update:
   parameters:
     appgw_watch_namespace:
@@ -240,6 +255,9 @@ aks addon update:
       rule_exclusions:
       - option_length_too_long
     data_collection_settings:
+      rule_exclusions:
+      - option_length_too_long
+    enable_high_log_scale_mode:
       rule_exclusions:
       - option_length_too_long
 aks enable-addons:
@@ -257,6 +275,9 @@ aks enable-addons:
       rule_exclusions:
       - option_length_too_long
     data_collection_settings:
+      rule_exclusions:
+      - option_length_too_long
+    enable_high_log_scale_mode:
       rule_exclusions:
       - option_length_too_long
 aks nodepool add:
@@ -288,6 +309,9 @@ aks nodepool add:
     enable_vtpm:
       rule_exclusions:
         - option_length_too_long
+    undrainable_node_behavior:
+      rule_exclusions:
+        - option_length_too_long
 aks nodepool update:
   parameters:
     enable_artifact_streaming:
@@ -309,6 +333,14 @@ aks nodepool update:
       rule_exclusions:
         - option_length_too_long
     disable_fips_image:
+      rule_exclusions:
+        - option_length_too_long
+    undrainable_node_behavior:
+      rule_exclusions:
+        - option_length_too_long
+aks nodepool upgrade:
+  parameters:
+    undrainable_node_behavior:
       rule_exclusions:
         - option_length_too_long
 aks nodepool delete:

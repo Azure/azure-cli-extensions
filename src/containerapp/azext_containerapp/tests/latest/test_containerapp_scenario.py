@@ -10,7 +10,7 @@ import time
 import unittest
 
 from azure.cli.command_modules.containerapp._utils import format_location
-from msrestazure.tools import parse_resource_id
+from azure.mgmt.core.tools import parse_resource_id
 
 from azure.cli.testsdk.reverse_dependency import get_dummy_cli
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
@@ -64,10 +64,6 @@ class ContainerappScenarioTest(ScenarioTest):
             JMESPathCheck('properties.configuration.ingress.external', True),
             JMESPathCheck('properties.configuration.ingress.targetPort', 8080)
         ])
-
-        # Container App with ingress should fail unless target port is specified
-        with self.assertRaises(CLIError):
-            self.cmd('containerapp create -g {} -n {} --environment {} --ingress external'.format(resource_group, containerapp_name, env_id))
 
         # Create Container App with secrets and environment variables
         containerapp_name = self.create_random_name(prefix='containerapp-e2e', length=24)
@@ -300,10 +296,6 @@ class ContainerappLocationNotInStageScenarioTest(ScenarioTest):
             JMESPathCheck('properties.configuration.ingress.external', True),
             JMESPathCheck('properties.configuration.ingress.targetPort', 8080)
         ])
-
-        # Container App with ingress should fail unless target port is specified
-        with self.assertRaises(CLIError):
-            self.cmd('containerapp create -g {} -n {} --environment {} --ingress external'.format(resource_group, containerapp_name, env_id))
 
         # Create Container App with secrets and environment variables
         containerapp_name = self.create_random_name(prefix='containerapp-e2e', length=24)

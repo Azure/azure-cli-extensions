@@ -1782,6 +1782,11 @@ monitor action-rule list:
     target_resource_group:
       rule_exclusions:
       - option_length_too_long
+network bastion ssh:
+  parameters:
+    ssh_args:
+      rule_exclusions:
+        - no_positional_parameters
 network cross-connection peering create:
   parameters:
     advertised_public_prefixes:
@@ -1867,7 +1872,26 @@ network firewall policy rule-collection-group collection add-filter-collection:
     rule_collection_group_name:
       rule_exclusions:
       - option_length_too_long
+network firewall policy rule-collection-group draft collection add-filter-collection:
+  parameters:
+    destination_addresses:
+      rule_exclusions:
+      - option_length_too_long
+    destination_ip_groups:
+      rule_exclusions:
+      - option_length_too_long
+    rule_collection_group_name:
+      rule_exclusions:
+      - option_length_too_long
 network firewall policy rule-collection-group collection add-nat-collection:
+  parameters:
+    destination_addresses:
+      rule_exclusions:
+      - option_length_too_long
+    rule_collection_group_name:
+      rule_exclusions:
+      - option_length_too_long
+network firewall policy rule-collection-group draft collection add-nat-collection:
   parameters:
     destination_addresses:
       rule_exclusions:
@@ -1880,7 +1904,17 @@ network firewall policy rule-collection-group collection list:
     rule_collection_group_name:
       rule_exclusions:
       - option_length_too_long
+network firewall policy rule-collection-group draft collection list:
+  parameters:
+    rule_collection_group_name:
+      rule_exclusions:
+      - option_length_too_long
 network firewall policy rule-collection-group collection remove:
+  parameters:
+    rule_collection_group_name:
+      rule_exclusions:
+      - option_length_too_long
+network firewall policy rule-collection-group draft collection remove:
   parameters:
     rule_collection_group_name:
       rule_exclusions:
@@ -1896,7 +1930,23 @@ network firewall policy rule-collection-group collection rule add:
     rule_collection_group_name:
       rule_exclusions:
       - option_length_too_long
+network firewall policy rule-collection-group draft collection rule add:
+  parameters:
+    destination_addresses:
+      rule_exclusions:
+      - option_length_too_long
+    destination_ip_groups:
+      rule_exclusions:
+      - option_length_too_long
+    rule_collection_group_name:
+      rule_exclusions:
+      - option_length_too_long
 network firewall policy rule-collection-group collection rule remove:
+  parameters:
+    rule_collection_group_name:
+      rule_exclusions:
+      - option_length_too_long
+network firewall policy rule-collection-group draft collection rule remove:
   parameters:
     rule_collection_group_name:
       rule_exclusions:
@@ -1904,6 +1954,36 @@ network firewall policy rule-collection-group collection rule remove:
 network firewall policy update:
   parameters:
     require_dns_proxy_for_network_rules:
+      rule_exclusions:
+      - option_length_too_long
+network firewall policy draft update:
+  parameters:
+    require_dns_proxy_for_network_rules:
+      rule_exclusions:
+      - option_length_too_long
+network firewall policy rule-collection-group draft create:
+  parameters:
+    rule_collection_group_name:
+      rule_exclusions:
+      - option_length_too_long
+network firewall policy rule-collection-group draft delete:
+  parameters:
+    rule_collection_group_name:
+      rule_exclusions:
+      - option_length_too_long
+network firewall policy rule-collection-group draft show:
+  parameters:
+    rule_collection_group_name:
+      rule_exclusions:
+      - option_length_too_long
+network firewall policy rule-collection-group draft update:
+  parameters:
+    rule_collection_group_name:
+      rule_exclusions:
+      - option_length_too_long
+network firewall policy rule-collection-group draft collection rule update:
+  parameters:
+    rule_collection_group_name:
       rule_exclusions:
       - option_length_too_long
 network firewall update:

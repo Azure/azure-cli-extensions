@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-11-01-preview",
+        "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}", "2023-11-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}", "2024-05-01-preview"],
         ]
     }
 
@@ -147,12 +147,22 @@ class Update(AAZCommand):
         )
 
         compute_profile = cls._args_schema.compute_profile
+        compute_profile.availability_zones = AAZListArg(
+            options=["availability-zones"],
+            help="The list of Availability zones to use for AKS VMSS nodes.",
+            nullable=True,
+        )
         compute_profile.workernode_size = AAZStrArg(
             options=["workernode-size"],
             help="The virtual machine SKU.",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9_\-]{0,256}$",
             ),
+        )
+
+        availability_zones = cls._args_schema.compute_profile.availability_zones
+        availability_zones.Element = AAZStrArg(
+            nullable=True,
         )
         return cls._args_schema
 
@@ -234,7 +244,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -333,7 +343,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -408,7 +418,12 @@ class Update(AAZCommand):
 
             compute_profile = _builder.get(".properties.computeProfile")
             if compute_profile is not None:
+                compute_profile.set_prop("availabilityZones", AAZListType, ".availability_zones")
                 compute_profile.set_prop("vmSize", AAZStrType, ".workernode_size", typ_kwargs={"flags": {"required": True}})
+
+            availability_zones = _builder.get(".properties.computeProfile.availabilityZones")
+            if availability_zones is not None:
+                availability_zones.set_elements(AAZStrType, ".")
 
             log_analytics_profile = _builder.get(".properties.logAnalyticsProfile")
             if log_analytics_profile is not None:
@@ -551,6 +566,9 @@ class _UpdateHelper:
         )
 
         compute_profile = _schema_cluster_pool_read.properties.compute_profile
+        compute_profile.availability_zones = AAZListType(
+            serialized_name="availabilityZones",
+        )
         compute_profile.count = AAZIntType(
             flags={"read_only": True},
         )
@@ -558,6 +576,9 @@ class _UpdateHelper:
             serialized_name="vmSize",
             flags={"required": True},
         )
+
+        availability_zones = _schema_cluster_pool_read.properties.compute_profile.availability_zones
+        availability_zones.Element = AAZStrType()
 
         log_analytics_profile = _schema_cluster_pool_read.properties.log_analytics_profile
         log_analytics_profile.enabled = AAZBoolType(

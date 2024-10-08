@@ -12,8 +12,8 @@ from azure.cli.command_modules.containerapp._utils import format_location
 from azure.cli.core.azclierror import ValidationError, CLIInternalError
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse, live_only
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckNotExists)
-from msrestazure.tools import parse_resource_id
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckNotExists, JMESPathCheckExists)
+from azure.mgmt.core.tools import parse_resource_id
 
 from azext_containerapp.tests.latest.common import (write_test_file, clean_up_test_file)
 from .common import TEST_LOCATION, STAGE_LOCATION
@@ -1594,6 +1594,99 @@ class ContainerappRegistryIdentityTests(ScenarioTest):
             JMESPathCheck("properties.configuration.secrets[0].name", f"{acr}azurecrio-{acr}")
         ])
 
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="westeurope")
+    def test_containerapp_identity_registry(self, resource_group):
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
+
+        env_name = self.create_random_name(prefix='containerapp-e2e-env', length=24)
+        ca_name = self.create_random_name(prefix='containerapp', length=24)
+        user_identity_name = self.create_random_name(prefix='containerapp', length=24)
+        acr = self.create_random_name(prefix='acr', length=24)
+        image_source = "mcr.microsoft.com/k8se/quickstart:latest"
+        image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
+
+        # prepare env
+        user_identity_name = self.create_random_name(prefix='env-msi', length=24)
+        identity_json = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
+        user_identity_id = identity_json["id"]
+        
+        self.cmd('containerapp env create -g {} -n {} --mi-system-assigned --mi-user-assigned {} --logs-destination none'.format(resource_group, env_name, user_identity_id))
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        while containerapp_env["properties"]["provisioningState"].lower() == "waiting":
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        env = containerapp_env["id"]
+
+        # prepare acr
+        acr_id = self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --location {location}').get_output_in_json()["id"]
+        # role assign
+        roleAssignmentName1 = self.create_guid()
+        roleAssignmentName2 = self.create_guid()
+        self.cmd(f'role assignment create --role acrpull --assignee {containerapp_env["identity"]["principalId"]} --scope {acr_id} --name {roleAssignmentName1}')
+        self.cmd(f'role assignment create --role acrpull --assignee {identity_json["principalId"]} --scope {acr_id} --name {roleAssignmentName2}')
+        # upload image
+        self.cmd(f'acr import -n {acr} --source {image_source}')
+
+        # wait for role assignment take effect
+        time.sleep(30)
+
+        # use env system msi to pull image
+        self.cmd(f'containerapp create -g {resource_group} -n {ca_name}  --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io --registry-identity system-environment')
+        self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("identity.type", "None"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io"),
+            JMESPathCheck("properties.configuration.registries[0].identity", "system-environment", case_sensitive=False),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+        ])
+
+        # update use env user assigned identity
+        self.cmd(f'containerapp registry set -g {resource_group} -n {ca_name} --server {acr}.azurecr.io --identity {user_identity_id}')
+        self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("identity.type", "None"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io"),
+            JMESPathCheck("properties.configuration.registries[0].identity", user_identity_id, case_sensitive=False),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+        ])
+
+        # update containerapp to create new revision
+        self.cmd(f'containerapp update -g {resource_group} -n {ca_name}  --revision-suffix v2')
+        self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("identity.type", "None"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io"),
+            JMESPathCheck("properties.configuration.registries[0].identity", user_identity_id, case_sensitive=False),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+            JMESPathCheck("properties.template.revisionSuffix", "v2")
+        ])
+
+        # update use env system managed identity
+        self.cmd(f'containerapp registry set -g {resource_group} -n {ca_name} --server {acr}.azurecr.io --identity system-environment')
+        self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("identity.type", "None"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io"),
+            JMESPathCheck("properties.configuration.registries[0].identity", "system-environment"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+        ])
+
+        # update containerapp to create new revision
+        self.cmd(f'containerapp update -g {resource_group} -n {ca_name}  --revision-suffix v3')
+        self.cmd(f'containerapp show -g {resource_group} -n {ca_name}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("identity.type", "None"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io"),
+            JMESPathCheck("properties.configuration.registries[0].identity", "system-environment"),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+            JMESPathCheck("properties.template.revisionSuffix", "v3")
+        ])
+
 
 class ContainerappScaleTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
@@ -1907,6 +2000,15 @@ properties:
                                             concurrentRequests: '50'
                                             key: value
                                         name: http-scale-rule
+                                      - name: asb-rule
+                                        custom:
+                                         type: azure-servicebus
+                                         metadata:
+                                          topicName: testtopic
+                                          subscriptionName: testsubname
+                                          namespace: test-namespace
+                                          messageCount: 5
+                                         identity: {user_identity_id}
                                 identity:
                                   type: UserAssigned
                                   userAssignedIdentities:
@@ -1941,6 +2043,13 @@ properties:
             JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "value"),
             JMESPathCheck("properties.template.scale.rules[0].http.auth[0].triggerParameter", "trigger"),
             JMESPathCheck("properties.template.scale.rules[0].http.auth[0].secretRef", "secretref"),
+            JMESPathCheck("properties.template.scale.rules[1].name", "asb-rule"),
+            JMESPathCheck("properties.template.scale.rules[1].custom.type", "azure-servicebus"),
+            JMESPathCheck("properties.template.scale.rules[1].custom.metadata.topicName", "testtopic"),
+            JMESPathCheck("properties.template.scale.rules[1].custom.metadata.subscriptionName", "testsubname"),
+            JMESPathCheck("properties.template.scale.rules[1].custom.metadata.namespace", "test-namespace"),
+            JMESPathCheck("properties.template.scale.rules[1].custom.metadata.messageCount", "5"),
+            JMESPathCheck("properties.template.scale.rules[1].custom.identity", user_identity_id),
         ])
 
         # test managedEnvironmentId

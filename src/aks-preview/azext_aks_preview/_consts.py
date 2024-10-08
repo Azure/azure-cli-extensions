@@ -44,7 +44,6 @@ CONST_VIRTUAL_MACHINES = "VirtualMachines"
 
 # vm size
 CONST_DEFAULT_NODE_VM_SIZE = "Standard_DS2_v2"
-CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE = "Standard_DS4_v2"
 CONST_DEFAULT_WINDOWS_NODE_VM_SIZE = "Standard_D2s_v3"
 
 # workload runtime
@@ -180,6 +179,10 @@ CONST_GITOPS_ADDON_NAME = "gitops"
 # only used as the key of the corresponding description, not to map to the key name in addonProfiles,
 # since its configuration is actually stored in a separate ingress profile
 CONST_WEB_APPLICATION_ROUTING_KEY_NAME = "ingress/webApplicationRouting"
+CONST_APP_ROUTING_ANNOTATION_CONTROLLED_NGINX = "AnnotationControlled"
+CONST_APP_ROUTING_EXTERNAL_NGINX = "External"
+CONST_APP_ROUTING_INTERNAL_NGINX = "Internal"
+CONST_APP_ROUTING_NONE_NGINX = "None"
 
 # all supported addons
 ADDONS = {
@@ -318,3 +321,16 @@ CONST_ARTIFACT_SOURCE_DIRECT = "Direct"
 CONST_ARTIFACT_SOURCE_CACHE = "Cache"
 
 CONST_OUTBOUND_TYPE_NONE = "none"
+CONST_OUTBOUND_TYPE_BLOCK = "block"
+
+# IMDS restriction consts
+CONST_IMDS_RESTRICTION_ENABLED = "None"
+CONST_IMDS_RESTRICTION_DISABLED = "IMDS"
+
+# TLS Management Consts
+CONST_TLS_MANAGEMENT_MANAGED = "Managed"
+CONST_TLS_MANAGEMENT_NONE = "None"
+
+# GPU Driver Type Consts
+CONST_GPU_DRIVER_TYPE_CUDA = "CUDA"
+CONST_GPU_DRIVER_TYPE_GRID = "GRID"

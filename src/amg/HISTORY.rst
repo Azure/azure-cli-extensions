@@ -69,3 +69,40 @@ Release History
 1.3.5
 ++++++
 * `az grafana dashboard sync`: fix version mismatch issue for library panel sync
+
+1.3.6
+++++++
+* `az grafana folder show`: remove folder lookup by id due to deprecated API
+* `az grafana folder delete`: remove folder lookup by id due to deprecated API
+* `az grafana dashboard import`: update call from deprecated dashboard import API to dashboard create/update API
+
+2.0.0
+++++++
+* Move existing Grafana CRUD command implementations to AAZ CodeGen
+* `az grafana create`: Migrate to AAZDev Tool & implicitly support role assignment principal types
+* `az grafana update`: Migrate to AAZDev Tool
+* `az grafana list`: Migrate to AAZDev Tool
+* `az grafana show`: Migrate to AAZDev Tool
+* `az grafana delete`: Migrate to AAZDev Tool
+
+2.1.0
+++++++
+* `az grafana migrate`: migrate data from a self-hosted Grafana instance to Azure Managed Grafana instance
+
+2.2.0
+++++++
+* `az grafana list-available-plugin`: list all available plugins available for installation
+
+2.3.0
+++++++
+* `az grafana private-endpoint-connection`: support private endpoint connection management
+* `az grafana mpe`: support managed private endpoint management
+
+2.3.1
+++++++
+* `az grafana migrate`: fix issue with remapping logic for Grafana datasources with short uids
+
+2.4.0
+++++++
+* `az grafana sync`: fix issues with syncing empty dashboards from Grafana 9 and syncing dashboards with collapsed rows
+* `az grafana backup`: support skipping Grafana folder permissions argument
