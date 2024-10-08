@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.0.0b6
+++++++
+* Added support for Web Application Firewall.
+
 2.0.0b5
 ++++++
 * Fix configuration
