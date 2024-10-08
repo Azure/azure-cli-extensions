@@ -2,11 +2,15 @@
 
 Release History
 ===============
-1.1.0b2
+1.2.0b1
++++++++++
+- Fix: Make latest version as peview as last 2 versions(1.2.0 abd 1.1.0) are mistakenly not marked as preview.
+
+1.2.0
 +++++++++
 - Fixes for highAvailability and accessKeysAuthentication argument.
 
-1.1.0b1
+1.1.0
 +++++++++
 - Adds support for using Microsoft Entra token-based authentication.
 - Cluster has new properties: highAvailability and redundancyMode.
