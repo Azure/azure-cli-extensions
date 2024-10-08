@@ -919,20 +919,22 @@ class LoadTestScenario(ScenarioTest):
         assert self.kwargs["file_name"] not in [file["fileName"] for file in files]
         
         # INVALID case of ZIP artifact size > 50MB
-        self.kwargs.update({
-            "file_name": LoadTestConstants.INVALID_ZIP_ARTIFACT_NAME,
-            "file_type": LoadTestConstants.ZIP_ARTIFACT_TYPE,
-            "file_path": LoadTestConstants.INVALID_ZIP_ARTIFACT_FILE
-        })
-        try:
-            self.cmd(
-                "az load test file upload "
-                "--test-id {test_id} "
-                "--load-test-resource {load_test_resource} "
-                "--resource-group {resource_group} "
-                "--file-type {file_type} "
-                '--path "{file_path}" '
-            )
-        except Exception as e:
-            assert "exceeds size limit of 50 MB" in str(e)
-        time.sleep(10)
+        # This is commented because it requires a resource of size > 50 MB
+        # storing which in GitHub is not recommended
+        # ----------
+        # self.kwargs.update({
+        #     "file_name": LoadTestConstants.INVALID_ZIP_ARTIFACT_NAME,
+        #     "file_type": LoadTestConstants.ZIP_ARTIFACT_TYPE,
+        #     "file_path": LoadTestConstants.INVALID_ZIP_ARTIFACT_FILE
+        # })
+        # try:
+        #     self.cmd(
+        #         "az load test file upload "
+        #         "--test-id {test_id} "
+        #         "--load-test-resource {load_test_resource} "
+        #         "--resource-group {resource_group} "
+        #         "--file-type {file_type} "
+        #         '--path "{file_path}" '
+        #     )
+        # except Exception as e:
+        #     assert "exceeds size limit of 50 MB" in str(e)

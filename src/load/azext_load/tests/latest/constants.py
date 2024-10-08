@@ -24,8 +24,10 @@ class LoadConstants:
     ZIP_ARTIFACT_TYPE = "ZIPPED_ARTIFACTS"
     ZIP_ARTIFACT_NAME = "sample-ZIP-artifact.zip"
     ZIP_ARTIFACT_FILE = os.path.join(TEST_RESOURCES_DIR, r"sample-ZIP-artifact.zip")
-    INVALID_ZIP_ARTIFACT_NAME = "sample-ZIP-artifact-oversize.zip"
-    INVALID_ZIP_ARTIFACT_FILE = os.path.join(TEST_RESOURCES_DIR, r"sample-ZIP-artifact-oversize.zip")
+    
+    # Constants for UT which is commented due to large test resource
+    # INVALID_ZIP_ARTIFACT_NAME = "sample-ZIP-artifact-oversize.zip"
+    # INVALID_ZIP_ARTIFACT_FILE = os.path.join(TEST_RESOURCES_DIR, r"sample-ZIP-artifact-oversize.zip")
 
     ENV_VAR_DURATION_NAME = "duration_in_sec"
     ENV_VAR_DURATION_SHORT = "1"
