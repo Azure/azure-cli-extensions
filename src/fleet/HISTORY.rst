@@ -102,3 +102,16 @@ Release History
 1.2.1
 ++++++
 * Fixed --vm-size parameter mapping
+
+1.2.2
+++++++
+* Added missing help text
+* Removed dependency on msrestazure library
+
+1.3.0
+++++++
+* Add fleet autoupgradeprofile commands
+
+1.4.0
+++++++
+* Set autoupgradeprofile commands to preview mode

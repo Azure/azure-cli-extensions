@@ -9,19 +9,15 @@ import json
 import os
 import os.path
 import platform
-import re
 import ssl
 import sys
 import threading
 import time
-import uuid
 import webbrowser
 
 from azext_aks_preview._client_factory import (
     CUSTOM_MGMT_AKS_PREVIEW,
     cf_agent_pools,
-    get_graph_rbac_management_client,
-    get_msi_client,
     get_compute_client,
 )
 from azext_aks_preview._consts import (
@@ -92,6 +88,9 @@ from azext_aks_preview.aks_draft.commands import (
 from azext_aks_preview.maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
 )
+from azure.cli.command_modules.acs._helpers import (
+    get_user_assigned_identity_by_resource_id
+)
 from azure.cli.command_modules.acs._validators import (
     extract_comma_separated_string,
 )
@@ -121,18 +120,10 @@ from azure.core.exceptions import (
     ResourceNotFoundError,
     HttpResponseError,
 )
-from azure.graphrbac.models import (
-    ApplicationCreateParameters,
-    KeyCredential,
-    PasswordCredential,
-    ServicePrincipalCreateParameters,
-)
 from dateutil.parser import parse
-from dateutil.relativedelta import relativedelta
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.util import CLIError
-from msrestazure.azure_exceptions import CloudError
 from six.moves.urllib.error import URLError
 from six.moves.urllib.request import urlopen
 
@@ -209,110 +200,6 @@ def load_service_principals(config_path):
             return shell_safe_json_parse(f.read())
     except:  # pylint: disable=bare-except
         return None
-
-
-def create_application(client, display_name, homepage, identifier_uris,
-                       available_to_other_tenants=False, password=None, reply_urls=None,
-                       key_value=None, key_type=None, key_usage=None, start_date=None,
-                       end_date=None):
-    from azure.graphrbac.models import GraphErrorException
-    password_creds, key_creds = _build_application_creds(password=password, key_value=key_value, key_type=key_type,
-                                                         key_usage=key_usage, start_date=start_date, end_date=end_date)
-
-    app_create_param = ApplicationCreateParameters(available_to_other_tenants=available_to_other_tenants,
-                                                   display_name=display_name,
-                                                   identifier_uris=identifier_uris,
-                                                   homepage=homepage,
-                                                   reply_urls=reply_urls,
-                                                   key_credentials=key_creds,
-                                                   password_credentials=password_creds)
-    try:
-        return client.create(app_create_param)
-    except GraphErrorException as ex:
-        if 'insufficient privileges' in str(ex).lower():
-            link = 'https://docs.microsoft.com/azure/azure-resource-manager/resource-group-create-service-principal-portal'  # pylint: disable=line-too-long
-            raise CLIError(
-                "Directory permission is needed for the current user to register the application. "
-                f"For how to configure, please refer '{link}'."
-            ) from ex
-        raise
-
-
-def _build_application_creds(password=None, key_value=None, key_type=None,
-                             key_usage=None, start_date=None, end_date=None):
-    if password and key_value:
-        raise CLIError(
-            'specify either --password or --key-value, but not both.')
-
-    if not start_date:
-        start_date = datetime.datetime.utcnow()
-    elif isinstance(start_date, str):
-        start_date = parse(start_date)
-
-    if not end_date:
-        end_date = start_date + relativedelta(years=1)
-    elif isinstance(end_date, str):
-        end_date = parse(end_date)
-
-    key_type = key_type or 'AsymmetricX509Cert'
-    key_usage = key_usage or 'Verify'
-
-    password_creds = None
-    key_creds = None
-    if password:
-        password_creds = [PasswordCredential(start_date=start_date, end_date=end_date,
-                                             key_id=str(uuid.uuid4()), value=password)]
-    elif key_value:
-        key_creds = [KeyCredential(start_date=start_date, end_date=end_date, value=key_value,
-                                   key_id=str(uuid.uuid4()), usage=key_usage, type=key_type)]
-
-    return (password_creds, key_creds)
-
-
-def create_service_principal(cli_ctx, identifier, resolve_app=True, rbac_client=None):
-    if rbac_client is None:
-        rbac_client = get_graph_rbac_management_client(cli_ctx)
-
-    if resolve_app:
-        try:
-            uuid.UUID(identifier)
-            result = list(rbac_client.applications.list(
-                filter=f"appId eq '{identifier}'"))
-        except ValueError:
-            result = list(rbac_client.applications.list(
-                filter=f"identifierUris/any(s:s eq '{identifier}')"))
-
-        if not result:  # assume we get an object id
-            result = [rbac_client.applications.get(identifier)]
-        app_id = result[0].app_id
-    else:
-        app_id = identifier
-
-    return rbac_client.service_principals.create(ServicePrincipalCreateParameters(app_id=app_id, account_enabled=True))
-
-
-_re_user_assigned_identity_resource_id = re.compile(
-    r'/subscriptions/(.*?)/resourcegroups/(.*?)/providers/microsoft.managedidentity/userassignedidentities/(.*)',
-    flags=re.IGNORECASE)
-
-
-def _get_user_assigned_identity(cli_ctx, resource_id):
-    resource_id = resource_id.lower()
-    match = _re_user_assigned_identity_resource_id.search(resource_id)
-    if match:
-        subscription_id = match.group(1)
-        resource_group_name = match.group(2)
-        identity_name = match.group(3)
-        msi_client = get_msi_client(cli_ctx, subscription_id)
-        try:
-            identity = msi_client.user_assigned_identities.get(resource_group_name=resource_group_name,
-                                                               resource_name=identity_name)
-        except CloudError as ex:
-            if 'was not found' in ex.message:
-                raise CLIError(f"Identity {resource_id} not found.") from ex
-            raise ex
-        return identity
-    raise CLIError(f"Cannot parse identity name from provided resource id {resource_id}.")
 
 
 def aks_browse(
@@ -603,7 +490,6 @@ def aks_create(
     enable_keda=False,
     enable_vpa=False,
     enable_addon_autoscaling=False,
-    enable_node_restriction=False,
     enable_cilium_dataplane=False,
     custom_ca_trust_certificates=None,
     enable_advanced_network_observability=None,
@@ -813,8 +699,6 @@ def aks_update(
     apiserver_subnet_id=None,
     enable_keda=False,
     disable_keda=False,
-    enable_node_restriction=False,
-    disable_node_restriction=False,
     enable_private_cluster=False,
     disable_private_cluster=False,
     private_dns_zone=None,
@@ -864,7 +748,6 @@ def aks_update(
     ephemeral_disk_volume_type=None,
     ephemeral_disk_nvme_perf_tier=None,
     node_provisioning_mode=None,
-    ssh_access=None,
     cluster_service_load_balancer_health_probe_mode=None,
     if_match=None,
     if_none_match=None,
@@ -1304,6 +1187,7 @@ def aks_agentpool_add(
     max_surge=None,
     drain_timeout=None,
     node_soak_duration=None,
+    undrainable_node_behavior=None,
     mode=CONST_NODEPOOL_MODE_USER,
     scale_down_mode=CONST_SCALE_DOWN_MODE_DELETE,
     max_pods=0,
@@ -1331,6 +1215,7 @@ def aks_agentpool_add(
     node_public_ip_tags=None,
     enable_artifact_streaming=False,
     skip_gpu_driver_install=False,
+    driver_type=None,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
     # trusted launch
     enable_secure_boot=False,
@@ -1383,6 +1268,7 @@ def aks_agentpool_update(
     max_surge=None,
     drain_timeout=None,
     node_soak_duration=None,
+    undrainable_node_behavior=None,
     mode=None,
     scale_down_mode=None,
     no_wait=False,
@@ -1473,6 +1359,7 @@ def aks_agentpool_upgrade(cmd,
                           max_surge=None,
                           drain_timeout=None,
                           node_soak_duration=None,
+                          undrainable_node_behavior=None,
                           snapshot_id=None,
                           no_wait=False,
                           aks_custom_headers=None,
@@ -1492,7 +1379,7 @@ def aks_agentpool_upgrade(cmd,
         )
 
     # Note: we exclude this option because node image upgrade can't accept nodepool put fields like max surge
-    if (max_surge or drain_timeout or node_soak_duration) and node_image_only:
+    if (max_surge or drain_timeout or node_soak_duration or undrainable_node_behavior) and node_image_only:
         raise MutuallyExclusiveArgumentError(
             "Conflicting flags. Unable to specify max-surge/drain-timeout/node-soak-duration with node-image-only."
             "If you want to use max-surge/drain-timeout/node-soak-duration with a node image upgrade, please first "
@@ -1555,6 +1442,8 @@ def aks_agentpool_upgrade(cmd,
         instance.upgrade_settings.drain_timeout_in_minutes = drain_timeout
     if node_soak_duration:
         instance.upgrade_settings.node_soak_duration_in_minutes = node_soak_duration
+    if undrainable_node_behavior:
+        instance.upgrade_settings.undrainable_node_behavior = undrainable_node_behavior
 
     # custom headers
     aks_custom_headers = extract_comma_separated_string(
@@ -2667,7 +2556,7 @@ def aks_pod_identity_add(
     instance = client.get(resource_group_name, cluster_name)
     _ensure_pod_identity_addon_is_enabled(instance)
 
-    user_assigned_identity = _get_user_assigned_identity(
+    user_assigned_identity = get_user_assigned_identity_by_resource_id(
         cmd.cli_ctx, identity_resource_id)
     _ensure_managed_identity_operator_permission(
         cmd, instance, user_assigned_identity.id)
@@ -3521,7 +3410,7 @@ def aks_approuting_zone_list(
         resource_group_name,
         name
 ):
-    from msrestazure.tools import parse_resource_id
+    from azure.mgmt.core.tools import parse_resource_id
     mc = client.get(resource_group_name, name)
 
     if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:

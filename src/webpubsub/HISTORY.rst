@@ -3,6 +3,18 @@
 Release History
 ===============
 
+1.6.0
++++++
+* Add `az webpubsub start/stop` support
+* Add `az webpubsub replica start/stop/restart` support
+* Add `az webpubsub network-rule ip-rule add/remove` support
+* Update `az webpubsub hub create/update` to support `webSocketKeepAliveIntervalInSeconds`
+
+
+1.5.1
++++++
+* Update the min core version to `2.56.0`
+
 1.5.0
 +++++
 * Add `service-mode` for Web PubSub for Socket.IO

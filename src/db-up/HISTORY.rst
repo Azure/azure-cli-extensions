@@ -2,7 +2,16 @@
 
 Release History
 ===============
+1.0.0b3
++++++++
+* Deprecate this extension
+
+1.0.0b2
++++++++
+* Replace msrestazure with azure.core
+
 1.0.0b1 (2024-06-12)
+++++++++++++++++++++
 * Fix typos in the examples of commands az mysql up, az postgres up, and az sql up
 
 0.2.9 (2023-08-01)
