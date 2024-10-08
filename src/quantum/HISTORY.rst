@@ -3,6 +3,12 @@
 Release History
 ===============
 
+1.0.0b4
+++++++
+* [2024-10-10] Version intended to work with QDK version 1.9.0
+* The Classic QDK is now fully deprecated.  Jobs must be prepared using the Modern QDK or other QIR tools.
+* See https://github.com/Azure/azure-cli-extensions/pull/7987
+
 1.0.0b3
 ++++++
 * [2024-04-11] Version intended to work with QDK version 0.29.0
