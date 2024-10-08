@@ -598,7 +598,7 @@ def upload_properties_file_helper(
                     test_id,
                 )
                 break
-        file_response = upload_file_to_test(
+        upload_file_to_test(
             client,
             test_id,
             user_prop_file,
@@ -611,10 +611,6 @@ def upload_properties_file_helper(
             AllowedFileTypes.USER_PROPERTIES,
             test_id,
         )
-        if wait and file_response.get("validationStatus") != "VALIDATION_SUCCESS":
-            raise FileOperationError(
-                f"Properties file {file_name} is not valid. Please check the file and try again."
-            )
 
 
 def upload_generic_files_helper(
@@ -653,16 +649,12 @@ def upload_configurations_files_helper(
     if yaml_data and yaml_data.get("configurationFiles") is not None:
         logger.info("Uploading additional artifacts")
         for config_file in yaml_data.get("configurationFiles"):
-            file_response = upload_generic_files_helper(
+            upload_generic_files_helper(
                 client=client,
                 test_id=test_id, load_test_config_file=load_test_config_file, existing_files=existing_test_files,
                 file_to_upload=config_file, file_type=AllowedFileTypes.ADDITIONAL_ARTIFACTS,
                 wait=wait
             )
-            if wait and file_response.get("validationStatus") != "VALIDATION_SUCCESS":
-                raise FileOperationError(
-                    f"Configuration file {config_file} is not valid. Please check the file and try again."
-                )
 
 
 def upload_zipped_artifacts_helper(
@@ -726,11 +718,6 @@ def upload_files_helper(
         test_id=test_id, yaml_data=yaml_data,
         load_test_config_file=load_test_config_file, existing_test_files=files, wait=wait)
 
-    upload_test_plan_helper(
-        client=client,
-        test_id=test_id, yaml_data=yaml_data, test_plan=test_plan,
-        load_test_config_file=load_test_config_file, existing_test_files=files, wait=wait)
-
     upload_configurations_files_helper(
         client=client,
         test_id=test_id, yaml_data=yaml_data,
@@ -739,6 +726,11 @@ def upload_files_helper(
     upload_zipped_artifacts_helper(
         client=client,
         test_id=test_id, yaml_data=yaml_data,
+        load_test_config_file=load_test_config_file, existing_test_files=files, wait=wait)
+
+    upload_test_plan_helper(
+        client=client,
+        test_id=test_id, yaml_data=yaml_data, test_plan=test_plan,
         load_test_config_file=load_test_config_file, existing_test_files=files, wait=wait)
 
 
