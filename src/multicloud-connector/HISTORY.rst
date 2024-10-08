@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.1.0
+1.0.0
 ++++++
 * GA release
 * Register all required RPs before running each command
