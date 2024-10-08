@@ -257,6 +257,10 @@ def load_arguments(self, _):
         c.argument('service_principal_client_secret', help='The service principal client secret. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-client-secret", "--sp-sec"])
         c.argument('service_principal_tenant_id', help='The service principal tenant ID. Used by Github Actions to authenticate with Azure.', options_list=["--service-principal-tenant-id", "--sp-tid"])
 
+    with self.argument_context('containerapp up', arg_group='Identity') as c:
+        c.argument('user_assigned', nargs='+', help="Space-separated user identities to be assigned.")
+        c.argument('system_assigned', help="Boolean indicating whether to assign system-assigned identity.", action='store_true')
+
     with self.argument_context('containerapp env workload-profile set') as c:
         c.argument('workload_profile_type', help="The type of workload profile to add or update. Run 'az containerapp env workload-profile list-supported -l <region>' to check the options for your region.")
         c.argument('min_nodes', help="The minimum node count for the workload profile")
