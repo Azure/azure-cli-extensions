@@ -213,7 +213,7 @@ def load_command_table(self, args):
     with self.command_group('containerapp job replica', is_preview=True) as g:
         g.custom_show_command('list', 'list_replica_containerappsjob')
 
-    with self.command_group('containerapp env java-component nacos') as g:
+    with self.command_group('containerapp env java-component nacos', is_preview=True) as g:
         g.custom_command('create', 'create_nacos', supports_no_wait=True)
         g.custom_command('update', 'update_nacos', supports_no_wait=True)
         g.custom_show_command('show', 'show_nacos')
