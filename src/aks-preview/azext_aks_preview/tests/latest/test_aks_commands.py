@@ -4247,6 +4247,18 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                     self.check('gpuProfile.driverType', "GRID")],
         )
 
+        # aks nodepool update should succeed and should not change the driver type
+        update_cmd = (
+            "aks nodepool update --resource-group {resource_group} --cluster-name {name} "
+            "--name {nodepool_name} --tags team=industry -o json"
+        )
+        
+        self.cmd(
+            update_cmd,
+            checks=[self.check("provisioningState", "Succeeded"),
+                    self.check('gpuProfile.driverType', "GRID")],
+        )
+
         self.kwargs.update(
             {
                 "node_pool_name": nodepool_name_1,
