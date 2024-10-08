@@ -35,12 +35,18 @@ class Update(AAZCommand):
 
     :example: Patch update strategy
         az networkcloud cluster update --name "clusterName" --resource-group "resourceGroupName" --update-strategy strategy-type="Rack" threshold-type="CountSuccess" threshold-value=4 max-unavailable=4 wait-time-minutes=10
+
+    :example: Add user assigned identity and command output settings to cluster
+        az networkcloud cluster update --name "clusterName" --resource-group "resourceGroupName" --mi-user-assigned "/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myUAI" --command-output-settings identity-type="UserAssignedIdentity" identity-resource-id="/subscriptions/subscriptionId/resourceGroups/resourceGroupName/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myUAI" container-url="https://myaccount.blob.core.windows.net/mycontainer?restype=container"
+
+    :example: Add system assigned identity to cluster
+        az networkcloud cluster update --name "clusterName" --resource-group "resourceGroupName" --mi-system-assigned
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.networkcloud/clusters/{}", "2024-06-01-preview"],
         ]
     }
 
@@ -77,10 +83,33 @@ class Update(AAZCommand):
         # define Arg Group "ClusterUpdateParameters"
 
         _args_schema = cls._args_schema
+        _args_schema.identity = AAZObjectArg(
+            options=["--identity"],
+            arg_group="ClusterUpdateParameters",
+            help="The identity for the resource.",
+        )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
             arg_group="ClusterUpdateParameters",
             help="The Azure resource tags that will replace the existing ones.",
+        )
+
+        identity = cls._args_schema.identity
+        identity.type = AAZStrArg(
+            options=["type"],
+            help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
+            required=True,
+            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
+        )
+        identity.user_assigned_identities = AAZDictArg(
+            options=["user-assigned-identities"],
+            help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
+        )
+
+        user_assigned_identities = cls._args_schema.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectArg(
+            nullable=True,
+            blank={},
         )
 
         tags = cls._args_schema.tags
@@ -104,6 +133,11 @@ class Update(AAZCommand):
             options=["--cluster-service-principal"],
             arg_group="Properties",
             help="The service principal to be used by the cluster during Arc Appliance installation.",
+        )
+        _args_schema.command_output_settings = AAZObjectArg(
+            options=["--co-settings", "--command-output-settings"],
+            arg_group="Properties",
+            help="The settings for commands run in this cluster, such as bare metal machine run read only commands and data extracts.",
         )
         _args_schema.compute_deployment_threshold = AAZObjectArg(
             options=["--compute-deployment-threshold"],
@@ -151,6 +185,21 @@ class Update(AAZCommand):
             options=["tenant-id"],
             help="The tenant ID, also known as the directory ID, of the tenant in which the service principal is created.",
             required=True,
+        )
+
+        command_output_settings = cls._args_schema.command_output_settings
+        command_output_settings.identity_type = AAZStrArg(
+            options=["identity-type"],
+            help="The type of managed identity that is being selected.",
+            enum={"SystemAssignedIdentity": "SystemAssignedIdentity", "UserAssignedIdentity": "UserAssignedIdentity"},
+        )
+        command_output_settings.identity_resource_id = AAZResourceIdArg(
+            options=["identity-resource-id"],
+            help="The user assigned managed identity resource ID to use. Mutually exclusive with a system assigned identity type.",
+        )
+        command_output_settings.container_url = AAZStrArg(
+            options=["container-url"],
+            help="The URL of the storage account container that is to be used by the specified identities.",
         )
 
         compute_deployment_threshold = cls._args_schema.compute_deployment_threshold
@@ -212,7 +261,7 @@ class Update(AAZCommand):
             options=["strategy-type"],
             help="The mode of operation for runtime protection.",
             required=True,
-            enum={"Rack": "Rack"},
+            enum={"PauseAfterRack": "PauseAfterRack", "Rack": "Rack"},
         )
         update_strategy.threshold_type = AAZStrArg(
             options=["threshold-type"],
@@ -509,7 +558,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-06-01-preview",
                     required=True,
                 ),
             }
@@ -534,14 +583,25 @@ class Update(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
+            _builder.set_prop("identity", AAZObjectType, ".identity")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+
+            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
+            if user_assigned_identities is not None:
+                user_assigned_identities.set_elements(AAZObjectType, ".", typ_kwargs={"nullable": True})
 
             properties = _builder.get(".properties")
             if properties is not None:
                 _UpdateHelper._build_schema_rack_definition_update(properties.set_prop("aggregatorOrSingleRackDefinition", AAZObjectType, ".aggregator_or_single_rack_definition"))
                 properties.set_prop("clusterLocation", AAZStrType, ".cluster_location")
                 properties.set_prop("clusterServicePrincipal", AAZObjectType, ".cluster_service_principal")
+                properties.set_prop("commandOutputSettings", AAZObjectType, ".command_output_settings")
                 properties.set_prop("computeDeploymentThreshold", AAZObjectType, ".compute_deployment_threshold")
                 properties.set_prop("computeRackDefinitions", AAZListType, ".compute_rack_definitions")
                 properties.set_prop("runtimeProtectionConfiguration", AAZObjectType, ".runtime_protection")
@@ -554,6 +614,16 @@ class Update(AAZCommand):
                 cluster_service_principal.set_prop("password", AAZStrType, ".password", typ_kwargs={"flags": {"secret": True}})
                 cluster_service_principal.set_prop("principalId", AAZStrType, ".principal_id", typ_kwargs={"flags": {"required": True}})
                 cluster_service_principal.set_prop("tenantId", AAZStrType, ".tenant_id", typ_kwargs={"flags": {"required": True}})
+
+            command_output_settings = _builder.get(".properties.commandOutputSettings")
+            if command_output_settings is not None:
+                command_output_settings.set_prop("associatedIdentity", AAZObjectType)
+                command_output_settings.set_prop("containerUrl", AAZStrType, ".container_url")
+
+            associated_identity = _builder.get(".properties.commandOutputSettings.associatedIdentity")
+            if associated_identity is not None:
+                associated_identity.set_prop("identityType", AAZStrType, ".identity_type")
+                associated_identity.set_prop("userAssignedIdentityResourceId", AAZStrType, ".identity_resource_id")
 
             compute_deployment_threshold = _builder.get(".properties.computeDeploymentThreshold")
             if compute_deployment_threshold is not None:
@@ -685,6 +755,7 @@ class _UpdateHelper:
         if cls._schema_cluster_read is not None:
             _schema.extended_location = cls._schema_cluster_read.extended_location
             _schema.id = cls._schema_cluster_read.id
+            _schema.identity = cls._schema_cluster_read.identity
             _schema.location = cls._schema_cluster_read.location
             _schema.name = cls._schema_cluster_read.name
             _schema.properties = cls._schema_cluster_read.properties
@@ -704,6 +775,7 @@ class _UpdateHelper:
         cluster_read.id = AAZStrType(
             flags={"read_only": True},
         )
+        cluster_read.identity = AAZObjectType()
         cluster_read.location = AAZStrType(
             flags={"required": True},
         )
@@ -722,6 +794,37 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
 
+        identity = _schema_cluster_read.identity
+        identity.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
+        identity.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+            flags={"read_only": True},
+        )
+        identity.type = AAZStrType(
+            flags={"required": True},
+        )
+        identity.user_assigned_identities = AAZDictType(
+            serialized_name="userAssignedIdentities",
+        )
+
+        user_assigned_identities = _schema_cluster_read.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectType(
+            nullable=True,
+        )
+
+        _element = _schema_cluster_read.identity.user_assigned_identities.Element
+        _element.client_id = AAZStrType(
+            serialized_name="clientId",
+            flags={"read_only": True},
+        )
+        _element.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
+
         properties = _schema_cluster_read.properties
         properties.aggregator_or_single_rack_definition = AAZObjectType(
             serialized_name="aggregatorOrSingleRackDefinition",
@@ -737,6 +840,7 @@ class _UpdateHelper:
         )
         properties.cluster_capacity = AAZObjectType(
             serialized_name="clusterCapacity",
+            flags={"read_only": True},
         )
         properties.cluster_connection_status = AAZStrType(
             serialized_name="clusterConnectionStatus",
@@ -744,6 +848,7 @@ class _UpdateHelper:
         )
         properties.cluster_extended_location = AAZObjectType(
             serialized_name="clusterExtendedLocation",
+            flags={"read_only": True},
         )
         cls._build_schema_extended_location_read(properties.cluster_extended_location)
         properties.cluster_location = AAZStrType(
@@ -768,6 +873,9 @@ class _UpdateHelper:
             serialized_name="clusterVersion",
             flags={"required": True},
         )
+        properties.command_output_settings = AAZObjectType(
+            serialized_name="commandOutputSettings",
+        )
         properties.compute_deployment_threshold = AAZObjectType(
             serialized_name="computeDeploymentThreshold",
         )
@@ -784,6 +892,7 @@ class _UpdateHelper:
         )
         properties.hybrid_aks_extended_location = AAZObjectType(
             serialized_name="hybridAksExtendedLocation",
+            flags={"read_only": True},
         )
         cls._build_schema_extended_location_read(properties.hybrid_aks_extended_location)
         properties.managed_resource_group_configuration = AAZObjectType(
@@ -891,6 +1000,22 @@ class _UpdateHelper:
             flags={"required": True},
         )
 
+        command_output_settings = _schema_cluster_read.properties.command_output_settings
+        command_output_settings.associated_identity = AAZObjectType(
+            serialized_name="associatedIdentity",
+        )
+        command_output_settings.container_url = AAZStrType(
+            serialized_name="containerUrl",
+        )
+
+        associated_identity = _schema_cluster_read.properties.command_output_settings.associated_identity
+        associated_identity.identity_type = AAZStrType(
+            serialized_name="identityType",
+        )
+        associated_identity.user_assigned_identity_resource_id = AAZStrType(
+            serialized_name="userAssignedIdentityResourceId",
+        )
+
         compute_deployment_threshold = _schema_cluster_read.properties.compute_deployment_threshold
         compute_deployment_threshold.grouping = AAZStrType(
             flags={"required": True},
@@ -972,6 +1097,7 @@ class _UpdateHelper:
 
         _schema.extended_location = cls._schema_cluster_read.extended_location
         _schema.id = cls._schema_cluster_read.id
+        _schema.identity = cls._schema_cluster_read.identity
         _schema.location = cls._schema_cluster_read.location
         _schema.name = cls._schema_cluster_read.name
         _schema.properties = cls._schema_cluster_read.properties
