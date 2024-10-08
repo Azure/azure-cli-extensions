@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.9.3
+++++++
+* Removed a workaround that is no longer needed after updating to MSAL 1.30.0+
+
 1.9.2
 ++++++
 * Fixed the issue where pre-onboarding diagnostic checks failed for clusters running Kubernetes v1.31.0.
