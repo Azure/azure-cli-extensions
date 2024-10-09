@@ -29,8 +29,9 @@ examples:
     text: |
       az acat report download \\
         --report-name yourReportName \\
-        --download-type "CompliancePdfReport"\\
-        --path "C:/workspace"\\
+        --download-type "CompliancePdfReport" \\
+        --path "C:/workspace" \\
+
         --name "out.pdf"
 """
 helps['acat report get-control-assessments'] = """
