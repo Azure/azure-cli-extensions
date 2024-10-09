@@ -30,7 +30,7 @@ examples:
       az acat report download \\
         --report-name $reportName \\
         --download-type "CompliancePdfReport"\\
-        --path "C:\workspace"\\
+        --path "C:/workspace"\\
         --name "out.pdf"
 """
 helps['acat get-control-assessments'] = """
