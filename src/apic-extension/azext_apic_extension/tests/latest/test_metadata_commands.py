@@ -131,6 +131,27 @@ class MetadataCommandsTests(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
     @ApicServicePreparer()
+    @ApicMetadataPreparer()
+    def test_metadata_export_with_custom_metadata_only(self):
+        self.kwargs.update({
+          'filename': 'metadata_export.json'
+        })
+        self.cmd('az apic metadata export -g {rg} -n {s} --assignments api --file-name {filename} --custom-metadata-only')
+        
+        try:
+          with open(self.kwargs['filename'], 'r') as f:
+            data = json.load(f)
+
+          assert 'properties' in data, "properties not found in customProperties"
+          assert data['type'] == 'object', "Type of the customProperties does not match the expected type"
+          assert len(data['properties']) == 1, "The number of properties in customProperties does not match the expected number"
+          assert data['unevaluatedProperties'] == False, "unevaluatedProperties does not match the expected value"
+          assert len(data['required']) == 1, "The number of required does not match the expected number"
+        finally:
+          os.remove(self.kwargs['filename'])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
+    @ApicServicePreparer()
     def test_examples_create_metadata_1(self):
         self.kwargs.update({
             'name': self.create_random_name(prefix='cli', length=24),

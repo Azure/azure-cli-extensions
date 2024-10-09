@@ -49,7 +49,7 @@ class ApicMetadataPreparer(NoTrafficRecordingPreparer, SingleValueReplacer):
                  parameter_name='metadata_name', resource_group_parameter_name='resource_group',
                  apic_service_parameter_name='service_name',
                  schema='{"type":"boolean", "title":"Public Facing"}',
-                 assignments='[{entity:api,required:true,deprecated:false},{entity:environment,required:true,deprecated:false},{entity:deployment,required:true,deprecated:false}]',
+                 assignments='[{entity:api,required:true,deprecated:false},{entity:environment,required:false,deprecated:false},{entity:deployment,required:true,deprecated:false}]',
                  key='m'):
         super(ApicMetadataPreparer, self).__init__(name_prefix, length)
         self.cli_ctx = get_dummy_cli()
