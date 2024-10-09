@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update a new AppComplianceAutomation report or update an exiting AppComplianceAutomation report.
 
     :example: update acat report
-        az acat report update --reportName testName     --offer-guid " 00000000-0000-0000-0000-000000000001"
+        az acat report update --reportName testName     --offer-guid "00000000-0000-0000-0000-000000000001"
 
     :example: update resource list
         az acat report update  --report-name youReportName  --resources test.json

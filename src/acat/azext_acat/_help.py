@@ -10,37 +10,40 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
-helps['acat trigger-evaluation'] = """
+helps['acat quick-evaluation'] = """
 type: command
 short-summary: Triggers quick evaluation for acat report.
 examples:
-  - name: Simple example
+  - name: Trigger a quick evaluation with specified resources
     text: |
-      az acat trigger-evaluation --resource-ids $resources.id
+      az acat quick-evaluation \\
+        --resource-ids \\
+        "/subscriptions/00000000-0000-0000-0000-000000000001/reoourceGroups/yourRg/providers/Microsoft.EventHub/namespaces/yourns1" \\
+        "/subscriptions/00000000-0000-0000-0000-000000000001/resourceGroups/yourRg/providers/Microsoft.EventHub/namespaces/yourns12"
 """
 helps['acat report download'] = """
 type: command
-short-summary: Triggers quick evaluation for acat report.
+short-summary: Downloads the compliance result in acat report.
 examples:
-  - name: Simple example
+  - name: Download pdf compliance report
     text: |
       az acat report download --report-name yourReportName --download-type "ComplianceReport"
   - name: Download the file to specified path
     text: |
       az acat report download \\
         --report-name yourReportName \\
-        --download-type "CompliancePdfReport"\\
-        --path "C:/workspace"\\
+        --download-type "CompliancePdfReport" \\
+        --path "C:/workspace" \\
         --name "out.pdf"
 """
 helps['acat report get-control-assessments'] = """
 type: command
-short-summary: Triggers quick evaluation for acat report.
+short-summary: Get control assessments for acat report.
 examples:
-  - name: Simple example
+  - name: Get all control assessments
     text: |
       az acat report get-control-assessments --report-name yourReportName
-  - name: Simple example
+  - name: Filter the assessments by conpliance status
     text: |
       az acat report get-control-assessments --report-name yourReportName --compliance-status "failed"
 """
