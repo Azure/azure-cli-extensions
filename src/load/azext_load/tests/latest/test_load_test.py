@@ -51,6 +51,7 @@ sa_params = {
     "parameter_name": "storage_account",
     "resource_group_parameter_name": "rg",
     "length": 20,
+    "allow_shared_key_access": False,
 }
 
 
@@ -831,7 +832,6 @@ class LoadTestScenario(ScenarioTest):
             "--resource-group {resource_group} "
             "--file-type {file_type} "
             '--path "{test_plan}" '
-            "--no-wait "
         )
 
         time.sleep(10)

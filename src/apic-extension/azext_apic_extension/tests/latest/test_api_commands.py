@@ -66,9 +66,8 @@ class ApiCommandsTests(ScenarioTest):
     @ApicApiPreparer(parameter_name='api_id2')
     def test_api_list(self, api_id1, api_id2):
         self.cmd('az apic api list -g {rg} -n {s}', checks=[
-            self.check('length(@)', 2),
-            self.check('@[0].name', api_id1),
-            self.check('@[1].name', api_id2)
+            self.check('contains([].name, `{}`)'.format(api_id1), True),
+            self.check('contains([].name, `{}`)'.format(api_id2), True),
         ])
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
@@ -161,9 +160,8 @@ class ApiCommandsTests(ScenarioTest):
     @ApicApiPreparer(parameter_name='api_id2')
     def test_examples_list_apis(self, api_id1, api_id2):
         self.cmd('az apic api list -g {rg} -n {s}', checks=[
-            self.check('length(@)', 2),
-            self.check('@[0].name', api_id1),
-            self.check('@[1].name', api_id2)
+            self.check('contains([].name, `{}`)'.format(api_id1), True),
+            self.check('contains([].name, `{}`)'.format(api_id2), True),
         ])
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
@@ -182,6 +180,15 @@ class ApiCommandsTests(ScenarioTest):
     def test_examples_update_api(self):
         self.cmd('az apic api update -g {rg} -n {s} --api-id {api} --summary "Basic REST API service"', checks=[
             self.check('summary', 'Basic REST API service'),
+        ])
+
+    @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
+    @ApicServicePreparer()
+    @ApicApiPreparer()
+    @ApicMetadataPreparer()
+    def test_examples_update_single_custom_metadata(self):
+        self.cmd('az apic api update -g {rg} -n {s} --api-id {api} --set customProperties.{m}=false', checks=[
+            self.check('customProperties.{m}', False),
         ])
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)

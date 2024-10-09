@@ -471,7 +471,7 @@ class Create(AAZCommand):
         _args_schema.volume_type = AAZStrArg(
             options=["--volume-type"],
             arg_group="Properties",
-            help="What type of volume is this. For destination volumes in Cross Region Replication, set type to DataProtection",
+            help="What type of volume is this. For destination volumes in Cross Region Replication, set type to DataProtection. For creating clone volume, set type to ShortTermClone",
         )
 
         placement_rules = cls._args_schema.placement_rules
