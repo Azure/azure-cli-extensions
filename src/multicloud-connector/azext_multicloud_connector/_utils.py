@@ -70,9 +70,9 @@ def _register_resource_provider(cmd, resource_provider):
                     f"Timed out while waiting for the {resource_provider} resource provider to be registered.")
 
     except Exception as e:
-        msg = ("This operation requires registering the resource provider {0}. "
-               "We were unable to perform that registration on your behalf: "
-               "Server responded with error message -- {1} . "
-               "Please check with your admin on permissions, "
-               "or try running registration manually with: az provider register --wait --namespace {0}")
-        raise ValidationError(resource_provider, msg.format(e.args)) from e
+        raise ValidationError(f"This operation requires registering the resource provider {resource_provider}. \n"
+                              f"We were unable to perform that registration on your behalf. \n"
+                              f"Server responded with error message: {str(e)}. \n"
+                              "Please check with your admin on permissions, "
+                              f"or try running registration manually with: az provider register --wait --namespace {resource_provider}"
+                              )
