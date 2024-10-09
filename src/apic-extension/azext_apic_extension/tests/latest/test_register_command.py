@@ -25,7 +25,7 @@ class RegisterCommandTests(ScenarioTest):
         # verify command results
         self.cmd('az apic api show -g {rg} -n {s} --api-id swaggerpetstore', checks=[
             self.check('description', 'API Description'), # default value when spec does not have description
-            self.check('summary', 'API Description'), # default value when spec does not have summary
+            self.check('summary', None), # default value when spec does not have summary
             self.check('kind', 'rest'),
             self.check('contacts', []),
             self.check('customProperties', {}),

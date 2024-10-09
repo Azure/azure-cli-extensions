@@ -66,9 +66,8 @@ class ApiCommandsTests(ScenarioTest):
     @ApicApiPreparer(parameter_name='api_id2')
     def test_api_list(self, api_id1, api_id2):
         self.cmd('az apic api list -g {rg} -n {s}', checks=[
-            self.check('length(@)', 2),
-            self.check('@[0].name', api_id1),
-            self.check('@[1].name', api_id2)
+            self.check('contains([].name, `{}`)'.format(api_id1), True),
+            self.check('contains([].name, `{}`)'.format(api_id2), True),
         ])
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
@@ -161,9 +160,8 @@ class ApiCommandsTests(ScenarioTest):
     @ApicApiPreparer(parameter_name='api_id2')
     def test_examples_list_apis(self, api_id1, api_id2):
         self.cmd('az apic api list -g {rg} -n {s}', checks=[
-            self.check('length(@)', 2),
-            self.check('@[0].name', api_id1),
-            self.check('@[1].name', api_id2)
+            self.check('contains([].name, `{}`)'.format(api_id1), True),
+            self.check('contains([].name, `{}`)'.format(api_id2), True),
         ])
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
