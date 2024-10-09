@@ -579,40 +579,6 @@ def create_or_update_test_run_body(
     return new_body
 
 
-def upload_properties_file_helper(
-    client, test_id, yaml_data, load_test_config_file, existing_test_files, wait
-):
-    if yaml_data and yaml_data.get("properties", {}).get("userPropertyFile") is not None:
-        user_prop_file = yaml_data.get("properties", {}).get("userPropertyFile")
-        if not os.path.isabs(user_prop_file) and load_test_config_file:
-            yaml_dir = os.path.dirname(load_test_config_file)
-            user_prop_file = os.path.join(yaml_dir, user_prop_file)
-        logger.info("Uploading user property file %s", user_prop_file)
-        file_name = os.path.basename(user_prop_file)
-        for file in existing_test_files:
-            if AllowedFileTypes.USER_PROPERTIES.value == file["fileType"]:
-                client.delete_test_file(test_id, file["fileName"])
-                logger.info(
-                    "File of type '%s' already exists in test %s. Deleting it!",
-                    AllowedFileTypes.USER_PROPERTIES,
-                    test_id,
-                )
-                break
-        upload_file_to_test(
-            client,
-            test_id,
-            user_prop_file,
-            file_type=AllowedFileTypes.USER_PROPERTIES,
-            wait=wait,
-        )
-        logger.info(
-            "Uploaded file '%s' of type %s to test %s",
-            file_name,
-            AllowedFileTypes.USER_PROPERTIES,
-            test_id,
-        )
-
-
 def upload_generic_files_helper(
     client, test_id, load_test_config_file, existing_files, file_to_upload, file_type, wait
 ):
@@ -641,6 +607,22 @@ def upload_generic_files_helper(
         test_id,
     )
     return file_response
+
+
+def upload_properties_file_helper(
+    client, test_id, yaml_data, load_test_config_file, existing_test_files, wait
+):
+    if yaml_data and yaml_data.get("properties", {}).get("userPropertyFile") is not None:
+        user_prop_file = yaml_data.get("properties", {}).get("userPropertyFile")
+        existing_properties_files = []
+        for file in existing_test_files:
+            if AllowedFileTypes.USER_PROPERTIES.value == file["fileType"]:
+                existing_properties_files.append(file)
+        upload_generic_files_helper(
+            client=client, test_id=test_id, load_test_config_file=load_test_config_file,
+            existing_files=existing_properties_files, file_to_upload=user_prop_file,
+            file_type=AllowedFileTypes.USER_PROPERTIES, wait=wait
+        )
 
 
 def upload_configurations_files_helper(
@@ -680,27 +662,18 @@ def upload_test_plan_helper(
 ):
     if test_plan is None and yaml_data is not None and yaml_data.get("testPlan"):
         test_plan = yaml_data.get("testPlan")
-        if not os.path.isabs(test_plan) and load_test_config_file:
-            yaml_dir = os.path.dirname(load_test_config_file)
-            test_plan = os.path.join(yaml_dir, test_plan)
+    existing_test_plan_files = []
+    for file in existing_test_files:
+        if validators.AllowedFileTypes.JMX_FILE.value == file["fileType"]:
+            existing_test_plan_files.append(file)
     if test_plan:
         logger.info("Uploading test plan file %s", test_plan)
-        file_name = os.path.basename(test_plan)
-        for file in existing_test_files:
-            if validators.AllowedFileTypes.JMX_FILE.value == file["fileType"]:
-                client.delete_test_file(test_id, file["fileName"])
-                logger.info(
-                    "File with name '%s' already exists in test %s. Deleting it!",
-                    file_name,
-                    test_id,
-                )
-                break
-        file_response = upload_file_to_test(
-            client,
-            test_id,
-            test_plan,
+        file_response = upload_generic_files_helper(
+            client=client,
+            test_id=test_id, load_test_config_file=load_test_config_file,
+            existing_files=existing_test_plan_files, file_to_upload=test_plan,
             file_type=validators.AllowedFileTypes.JMX_FILE,
-            wait=wait,
+            wait=wait
         )
         if wait and file_response.get("validationStatus") != "VALIDATION_SUCCESS":
             raise FileOperationError(

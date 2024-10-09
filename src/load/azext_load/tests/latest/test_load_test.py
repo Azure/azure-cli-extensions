@@ -918,6 +918,24 @@ class LoadTestScenario(ScenarioTest):
         ).get_output_in_json()
         assert self.kwargs["file_name"] not in [file["fileName"] for file in files]
         
+        # INVALID case of ZIP artifact containing sub-directories
+        self.kwargs.update({
+            "file_name": LoadTestConstants.INVALID_ZIP_ARTIFACT_WITH_SUBDIR_NAME,
+            "file_type": LoadTestConstants.ZIP_ARTIFACT_TYPE,
+            "file_path": LoadTestConstants.INVALID_ZIP_ARTIFACT_WITH_SUBDIR_FILE
+        })
+        try:
+            self.cmd(
+                "az load test file upload "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--file-type {file_type} "
+                '--path "{file_path}" '
+            )
+        except Exception as e:
+            assert "Zip file containing sub-directories in the zip entry are not supported" in str(e)
+        
         # INVALID case of ZIP artifact size > 50MB
         # This is commented because it requires a resource of size > 50 MB
         # storing which in GitHub is not recommended
