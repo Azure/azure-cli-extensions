@@ -24,23 +24,23 @@ short-summary: Triggers quick evaluation for acat report.
 examples:
   - name: Simple example
     text: |
-      az acat report download --report-name $reportName --download-type "ComplianceReport"
+      az acat report download --report-name yourReportName --download-type "ComplianceReport"
   - name: Download the file to specified path
     text: |
       az acat report download \\
-        --report-name $reportName \\
+        --report-name yourReportName \\
         --download-type "CompliancePdfReport"\\
         --path "C:/workspace"\\
         --name "out.pdf"
 """
-helps['acat get-control-assessments'] = """
+helps['acat report get-control-assessments'] = """
 type: command
 short-summary: Triggers quick evaluation for acat report.
 examples:
   - name: Simple example
     text: |
-      az acat report get-control-assessments --report-name $reportName
+      az acat report get-control-assessments --report-name yourReportName
   - name: Simple example
     text: |
-      az acat report get-control-assessments --report-name $reportName --compliance-status "failed"
+      az acat report get-control-assessments --report-name yourReportName --compliance-status "failed"
 """
