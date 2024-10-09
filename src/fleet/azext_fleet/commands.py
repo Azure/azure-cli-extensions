@@ -5,7 +5,13 @@
 
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
-from azext_fleet._client_factory import cf_fleets, cf_fleet_members, cf_update_runs, cf_fleet_update_strategies
+from azext_fleet._client_factory import (
+    cf_fleets,
+    cf_fleet_members,
+    cf_update_runs,
+    cf_fleet_update_strategies,
+    cf_auto_upgrade_profiles
+)
 
 
 def load_command_table(self, _):
@@ -32,6 +38,12 @@ def load_command_table(self, _):
         operations_tmpl="azext_fleet.vendored_sdks.operations._fleet_update_strategies_operations#FleetUpdateStrategiesOperations.{}",
         operation_group="fleet_update_strategies",
         client_factory=cf_fleet_update_strategies
+    )
+
+    auto_upgrade_profiles_sdk = CliCommandType(
+        operations_tmpl="azext_fleet.vendored_sdks.operations._auto_upgrade_profiles_operations#AutoUpgradeProfilesOperations.{}",
+        operation_group="auto_upgrade_profiles",
+        client_factory=cf_auto_upgrade_profiles
     )
 
     # fleets command group
@@ -72,4 +84,12 @@ def load_command_table(self, _):
         g.custom_show_command("show", "show_fleet_update_strategy")
         g.custom_command("list", "list_fleet_update_strategies")
         g.custom_command("delete", "delete_fleet_update_strategy", supports_no_wait=True, confirmation=True)
+        g.wait_command("wait")
+
+    # auto upgrade profiles command group
+    with self.command_group("fleet autoupgradeprofile", auto_upgrade_profiles_sdk, client_factory=cf_auto_upgrade_profiles, is_preview=True) as g:
+        g.custom_command("create", "create_auto_upgrade_profile", supports_no_wait=True)
+        g.custom_show_command("show", "show_auto_upgrade_profile")
+        g.custom_command("list", "list_auto_upgrade_profiles")
+        g.custom_command("delete", "delete_auto_upgrade_profile", supports_no_wait=True, confirmation=True)
         g.wait_command("wait")

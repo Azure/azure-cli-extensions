@@ -13,22 +13,23 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network bastion list",
-    is_preview=True,
 )
 class List(AAZCommand):
-    """List all Azure Bastion host machines.
+    """List all Bastion Hosts in a resource group.
 
-    :example: List all Azure Bastion host machines.
+    :example: List all Azure Bastion host machines in a resource group.
         az network bastion list -g MyResourceGroup
     """
 
     _aaz_info = {
-        "version": "2022-01-01",
+        "version": "2024-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.network/bastionhosts", "2022-01-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/bastionhosts", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.network/bastionhosts", "2024-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/bastionhosts", "2024-01-01"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -45,7 +46,9 @@ class List(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.resource_group = AAZResourceGroupNameArg()
+        _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Resource group name of the Bastion Host."
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -115,7 +118,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2024-01-01",
                     required=True,
                 ),
             }
@@ -173,6 +176,7 @@ class List(AAZCommand):
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.zones = AAZListType()
 
             properties = cls._schema_on_200.value.Element.properties
             properties.disable_copy_paste = AAZBoolType(
@@ -187,6 +191,12 @@ class List(AAZCommand):
             properties.enable_ip_connect = AAZBoolType(
                 serialized_name="enableIpConnect",
             )
+            properties.enable_kerberos = AAZBoolType(
+                serialized_name="enableKerberos",
+            )
+            properties.enable_session_recording = AAZBoolType(
+                serialized_name="enableSessionRecording",
+            )
             properties.enable_shareable_link = AAZBoolType(
                 serialized_name="enableShareableLink",
             )
@@ -196,6 +206,9 @@ class List(AAZCommand):
             properties.ip_configurations = AAZListType(
                 serialized_name="ipConfigurations",
             )
+            properties.network_acls = AAZObjectType(
+                serialized_name="networkAcls",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -203,6 +216,10 @@ class List(AAZCommand):
             properties.scale_units = AAZIntType(
                 serialized_name="scaleUnits",
             )
+            properties.virtual_network = AAZObjectType(
+                serialized_name="virtualNetwork",
+            )
+            _ListHelper._build_schema_sub_resource_read(properties.virtual_network)
 
             ip_configurations = cls._schema_on_200.value.Element.properties.ip_configurations
             ip_configurations.Element = AAZObjectType()
@@ -238,11 +255,27 @@ class List(AAZCommand):
             )
             _ListHelper._build_schema_sub_resource_read(properties.subnet)
 
+            network_acls = cls._schema_on_200.value.Element.properties.network_acls
+            network_acls.ip_rules = AAZListType(
+                serialized_name="ipRules",
+            )
+
+            ip_rules = cls._schema_on_200.value.Element.properties.network_acls.ip_rules
+            ip_rules.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.network_acls.ip_rules.Element
+            _element.address_prefix = AAZStrType(
+                serialized_name="addressPrefix",
+            )
+
             sku = cls._schema_on_200.value.Element.sku
             sku.name = AAZStrType()
 
             tags = cls._schema_on_200.value.Element.tags
             tags.Element = AAZStrType()
+
+            zones = cls._schema_on_200.value.Element.zones
+            zones.Element = AAZStrType()
 
             return cls._schema_on_200
 
@@ -286,7 +319,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2024-01-01",
                     required=True,
                 ),
             }
@@ -344,6 +377,7 @@ class List(AAZCommand):
             _element.type = AAZStrType(
                 flags={"read_only": True},
             )
+            _element.zones = AAZListType()
 
             properties = cls._schema_on_200.value.Element.properties
             properties.disable_copy_paste = AAZBoolType(
@@ -358,6 +392,12 @@ class List(AAZCommand):
             properties.enable_ip_connect = AAZBoolType(
                 serialized_name="enableIpConnect",
             )
+            properties.enable_kerberos = AAZBoolType(
+                serialized_name="enableKerberos",
+            )
+            properties.enable_session_recording = AAZBoolType(
+                serialized_name="enableSessionRecording",
+            )
             properties.enable_shareable_link = AAZBoolType(
                 serialized_name="enableShareableLink",
             )
@@ -367,6 +407,9 @@ class List(AAZCommand):
             properties.ip_configurations = AAZListType(
                 serialized_name="ipConfigurations",
             )
+            properties.network_acls = AAZObjectType(
+                serialized_name="networkAcls",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
@@ -374,6 +417,10 @@ class List(AAZCommand):
             properties.scale_units = AAZIntType(
                 serialized_name="scaleUnits",
             )
+            properties.virtual_network = AAZObjectType(
+                serialized_name="virtualNetwork",
+            )
+            _ListHelper._build_schema_sub_resource_read(properties.virtual_network)
 
             ip_configurations = cls._schema_on_200.value.Element.properties.ip_configurations
             ip_configurations.Element = AAZObjectType()
@@ -409,14 +456,29 @@ class List(AAZCommand):
             )
             _ListHelper._build_schema_sub_resource_read(properties.subnet)
 
+            network_acls = cls._schema_on_200.value.Element.properties.network_acls
+            network_acls.ip_rules = AAZListType(
+                serialized_name="ipRules",
+            )
+
+            ip_rules = cls._schema_on_200.value.Element.properties.network_acls.ip_rules
+            ip_rules.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.network_acls.ip_rules.Element
+            _element.address_prefix = AAZStrType(
+                serialized_name="addressPrefix",
+            )
+
             sku = cls._schema_on_200.value.Element.sku
             sku.name = AAZStrType()
 
             tags = cls._schema_on_200.value.Element.tags
             tags.Element = AAZStrType()
 
-            return cls._schema_on_200
+            zones = cls._schema_on_200.value.Element.zones
+            zones.Element = AAZStrType()
 
+            return cls._schema_on_200
 
 class _ListHelper:
     """Helper class for List"""

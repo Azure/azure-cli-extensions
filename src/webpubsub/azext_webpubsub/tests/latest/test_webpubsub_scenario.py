@@ -23,6 +23,7 @@ class WebpubsubScenarioTest(ScenarioTest):
         )
 
     @ResourceGroupPreparer(random_name_length=20)
+    @AllowLargeResponse()
     def test_webpubsub(self, resource_group):
         tags_key = 'key'
         tags_val = 'value'
@@ -63,6 +64,26 @@ class WebpubsubScenarioTest(ScenarioTest):
             self.exists('publicPort'),
             self.exists('serverPort'),
             self.exists('externalIp'),
+        ])
+
+        # Test start
+        self.cmd('webpubsub start -g {rg} -n {name}', checks=[
+            self.check('name', '{name}'),
+            self.check('location', '{location}'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('sku.name', '{sku}'),
+            self.check('sku.capacity', '{unit_count}'),
+            self.check('resourceStopped', 'false'),
+        ])
+
+        # Test stop
+        self.cmd('webpubsub stop -g {rg} -n {name}', checks=[
+            self.check('name', '{name}'),
+            self.check('location', '{location}'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('sku.name', '{sku}'),
+            self.check('sku.capacity', '{unit_count}'),
+            self.check('resourceStopped', 'true'),
         ])
 
         # Test list

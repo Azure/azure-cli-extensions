@@ -19,9 +19,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01-preview",
+        "version": "2024-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}", "2023-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}", "2024-09-01-preview"],
         ]
     }
 
@@ -46,12 +46,18 @@ class Create(AAZCommand):
             options=["--cluster-name"],
             help="The name of the RedisEnterprise cluster.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
+            ),
         )
         _args_schema.database_name = AAZStrArg(
             options=["-n", "--name", "--database-name"],
             help="The name of the database.",
             required=True,
             default="default",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9]{1,60}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -76,7 +82,7 @@ class Create(AAZCommand):
         linkeddatabase.Element = AAZObjectArg()
 
         _element = cls._args_schema.linkeddatabase.Element
-        _element.id = AAZStrArg(
+        _element.id = AAZResourceIdArg(
             options=["id"],
             help="Resource ID of a database resource to link with this database.",
         )
@@ -84,6 +90,13 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.access_keys_authentication = AAZStrArg(
+            options=["--access-keys-auth", "--access-keys-authentication"],
+            arg_group="Properties",
+            help="Access database using keys - default is enabled. This property can be Enabled/Disabled to allow or deny access with the current access keys. Can be updated even after database is created.",
+            is_preview=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
         _args_schema.client_protocol = AAZStrArg(
             options=["--client-protocol"],
             arg_group="Properties",
@@ -95,6 +108,12 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Clustering policy - default is OSSCluster. Specified at create time.",
             enum={"EnterpriseCluster": "EnterpriseCluster", "OSSCluster": "OSSCluster"},
+        )
+        _args_schema.defer_upgrade = AAZStrArg(
+            options=["--defer-upgrade"],
+            arg_group="Properties",
+            help="Option to defer upgrade when newest version is released - default is NotDeferred. Learn more: https://aka.ms/redisversionupgrade",
+            enum={"Deferred": "Deferred", "NotDeferred": "NotDeferred"},
         )
         _args_schema.eviction_policy = AAZStrArg(
             options=["--eviction-policy"],
@@ -239,7 +258,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01-preview",
+                    "api-version", "2024-09-01-preview",
                     required=True,
                 ),
             }
@@ -268,8 +287,10 @@ class Create(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("accessKeysAuthentication", AAZStrType, ".access_keys_authentication")
                 properties.set_prop("clientProtocol", AAZStrType, ".client_protocol")
                 properties.set_prop("clusteringPolicy", AAZStrType, ".clustering_policy")
+                properties.set_prop("deferUpgrade", AAZStrType, ".defer_upgrade")
                 properties.set_prop("evictionPolicy", AAZStrType, ".eviction_policy")
                 properties.set_prop("geoReplication", AAZObjectType)
                 properties.set_prop("modules", AAZListType, ".mods")
@@ -343,11 +364,17 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.access_keys_authentication = AAZStrType(
+                serialized_name="accessKeysAuthentication",
+            )
             properties.client_protocol = AAZStrType(
                 serialized_name="clientProtocol",
             )
             properties.clustering_policy = AAZStrType(
                 serialized_name="clusteringPolicy",
+            )
+            properties.defer_upgrade = AAZStrType(
+                serialized_name="deferUpgrade",
             )
             properties.eviction_policy = AAZStrType(
                 serialized_name="evictionPolicy",
@@ -360,6 +387,10 @@ class Create(AAZCommand):
             properties.port = AAZIntType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.redis_version = AAZStrType(
+                serialized_name="redisVersion",
                 flags={"read_only": True},
             )
             properties.resource_state = AAZStrType(
