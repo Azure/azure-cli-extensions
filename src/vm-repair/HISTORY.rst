@@ -2,7 +2,7 @@
 Release History
 ===============
 
-1.0.10
+1.1.0
 ++++++
 Added support for `--disable-trusted-launch` flag parameter to set security type to `Standard` on the repair VM no matter what the source VM has.
 
