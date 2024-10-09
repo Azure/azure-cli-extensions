@@ -5,7 +5,7 @@ Release History
 
 1.10.0
 ++++++
-* Added support for arc gateway feature.
+* Add support for Arc Gateway feature using '--gateway-resource-id' and '--disable-gateway' parameters.
 * Bug fix for Workload Identity poll or agent state.
 * Bug fix for connectedk8s update with workload identity enabled.
 * Update pycryptodome to 3.20.0.
