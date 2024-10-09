@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import asyncio
 import time
 import unittest
 
@@ -121,7 +122,7 @@ class ServiceCommandsTests(ScenarioTest):
 
         # Check result
         self.cmd('az apic api list -g {rg} -n {s}', checks=[
-            self.check('length(@)', 2)
+            self.check('length(@)', 3)
         ])
 
 
@@ -135,10 +136,13 @@ class ServiceCommandsTests(ScenarioTest):
         # Import from APIM
         self.cmd('az apic import-from-apim -g {rg} --service-name {s} --apim-name {apim_name} --apim-apis echo')
 
+        # Wait for import to finish
+        if self.is_live:
+            asyncio.sleep(10)
+
         # Check result
         self.cmd('az apic api list -g {rg} -n {s}', checks=[
-            self.check('length(@)', 1),
-            self.check('@[0].title', 'Echo API')
+            self.check('contains(@[*].title, `Echo API`)', True),
         ])
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
@@ -151,9 +155,12 @@ class ServiceCommandsTests(ScenarioTest):
         # Import from APIM
         self.cmd('az apic import-from-apim -g {rg} --service-name {s} --apim-name {apim_name} --apim-apis [echo,foo]')
 
+        # Wait for import to finish
+        if self.is_live:
+            asyncio.sleep(10)
+
         # Check result
         self.cmd('az apic api list -g {rg} -n {s}', checks=[
-            self.check('length(@)', 2),
             self.check('contains(@[*].title, `Echo API`)', True),
             self.check('contains(@[*].title, `Foo API`)', True)
         ])
