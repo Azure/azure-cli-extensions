@@ -46,6 +46,7 @@ sa_params = {
     "parameter_name": "storage_account",
     "resource_group_parameter_name": "rg",
     "length": 20,
+    "allow_shared_key_access": False,
 }
 
 
