@@ -19,9 +19,6 @@ class List(AAZCommand):
 
     :example: Webhook_List
         az acat report webhook list --skip-token 1 --top 100 --report-name testReportName
-
-    :example: Webhook_List
-        az acat report webhook list --skip-token 1 --top 100 --report-name testReportName
         az acat report webhook list --report-name testReportName
     """
 
