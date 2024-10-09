@@ -55,7 +55,9 @@ logger = get_logger(__name__)
 
 
 def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False, encrypt_recovery_key=""):
-
+    # Breaking change warning
+    logger.warning('After the November 2024 release, if the image of the source Windows VM is not found, the \'az vm repair create\' command will default to use a 2022-Datacenter image for the repair VM.')
+    
     # log all the parameters not logging the bitlocker key
     logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s', vm_name, resource_group_name, repair_password, repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes)
 
