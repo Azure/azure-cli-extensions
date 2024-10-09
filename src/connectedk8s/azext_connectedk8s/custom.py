@@ -177,7 +177,7 @@ def create_connectedk8s(cmd, client, resource_group_name, cluster_name, correlat
         lowbandwidth = True
 
     azure_local_disconnected = False
-    if os.getenv('AZURE_LOCAL_KUBECTL_LOCATION'):
+    if os.getenv('AZURE_LOCAL'):
         azure_local_disconnected = True
 
     # Install kubectl and helm
@@ -3029,8 +3029,8 @@ def troubleshoot(cmd, client, resource_group_name, cluster_name, kube_config=Non
 def install_kubectl_client():
     print("Step: {}: Install Kubectl client if it does not exist".format(utils.get_utctimestring()))
     # Return kubectl client path set by user
-    if os.getenv('AZURE_LOCAL_KUBECTL_LOCATION'):
-        return os.getenv('AZURE_LOCAL_KUBECTL_LOCATION')
+    if os.getenv('KUBECTL_CLIENT_PATH'):
+        return os.getenv('KUBECTL_CLIENT_PATH')
 
     try:
 
