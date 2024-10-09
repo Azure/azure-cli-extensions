@@ -715,6 +715,9 @@ def create_connectedk8s(
                         else helm_values_dp["repositoryPath"]
                     )
 
+                    if registry_path == "":
+                        registry_path = utils.get_helm_registry(cmd, config_dp_endpoint, release_train)
+
                     # Get azure-arc agent version for telemetry
                     azure_arc_agent_version = registry_path.split(":")[1]
                     telemetry.add_extension_event(
@@ -930,6 +933,9 @@ def create_connectedk8s(
         if os.getenv("HELMREGISTRY")
         else helm_values_dp["repositoryPath"]
     )
+
+    if registry_path == "":
+        registry_path = utils.get_helm_registry(cmd, config_dp_endpoint, release_train)
 
     # Get azure-arc agent version for telemetry
     azure_arc_agent_version = registry_path.split(":")[1]
@@ -2295,6 +2301,9 @@ def update_connected_cluster(
         if os.getenv("HELMREGISTRY")
         else helm_values_dp["repositoryPath"]
     )
+
+    if registry_path == "":
+        registry_path = utils.get_helm_registry(cmd, config_dp_endpoint, release_train)
 
     # Get azure-arc agent version for telemetry
     reg_path_array = registry_path.split(":")
