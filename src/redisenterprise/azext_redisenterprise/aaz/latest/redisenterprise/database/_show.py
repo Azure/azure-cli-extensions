@@ -19,9 +19,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01-preview",
+        "version": "2024-09-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}", "2023-03-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.cache/redisenterprise/{}/databases/{}", "2024-09-01-preview"],
         ]
     }
 
@@ -46,6 +46,9 @@ class Show(AAZCommand):
             help="The name of the RedisEnterprise cluster.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9]+(-[A-Za-z0-9]+)*$",
+            ),
         )
         _args_schema.database_name = AAZStrArg(
             options=["-n", "--name", "--database-name"],
@@ -53,6 +56,9 @@ class Show(AAZCommand):
             required=True,
             id_part="child_name_1",
             default="default",
+            fmt=AAZStrArgFormat(
+                pattern="^[A-Za-z0-9]{1,60}$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -128,7 +134,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01-preview",
+                    "api-version", "2024-09-01-preview",
                     required=True,
                 ),
             }
@@ -179,11 +185,17 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.properties
+            properties.access_keys_authentication = AAZStrType(
+                serialized_name="accessKeysAuthentication",
+            )
             properties.client_protocol = AAZStrType(
                 serialized_name="clientProtocol",
             )
             properties.clustering_policy = AAZStrType(
                 serialized_name="clusteringPolicy",
+            )
+            properties.defer_upgrade = AAZStrType(
+                serialized_name="deferUpgrade",
             )
             properties.eviction_policy = AAZStrType(
                 serialized_name="evictionPolicy",
@@ -196,6 +208,10 @@ class Show(AAZCommand):
             properties.port = AAZIntType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.redis_version = AAZStrType(
+                serialized_name="redisVersion",
                 flags={"read_only": True},
             )
             properties.resource_state = AAZStrType(

@@ -2,6 +2,17 @@
 
 Release History
 ===============
+1.2.0
++++++++++
+- Fixes for highAvailability and accessKeysAuthentication argument.
+
+1.1.0
++++++++++
+- Adds support for using Microsoft Entra token-based authentication.
+- Cluster has new properties: highAvailability and redundancyMode.
+- New product SKUs added.
+- Database has new properties: accessKeysAuthentication.
+
 1.0.0
 +++++++++
 - Added support for new enterprise SKU E1
