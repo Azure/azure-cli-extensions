@@ -241,6 +241,7 @@ def redisenterprise_create(cmd,
                            tags=None,
                            capacity=None,
                            zones=None,
+                           high_availability=None,
                            key_encryption_key_url=None,
                            identity_type=None,
                            user_assigned_identities=None,
@@ -256,6 +257,7 @@ def redisenterprise_create(cmd,
                            no_database=False,
                            no_wait=False,
                            group_nickname=None,
+                           access_keys_authentication=None,
                            linked_databases=None):
     if (no_database and any(x is not None for x in [client_protocol,
                                                     port,
@@ -264,6 +266,7 @@ def redisenterprise_create(cmd,
                                                     persistence,
                                                     modules,
                                                     group_nickname,
+                                                    access_keys_authentication,
                                                     linked_databases])):
         database_param_list_str = []
         if client_protocol is not None:
@@ -282,6 +285,8 @@ def redisenterprise_create(cmd,
             database_param_list_str.append('--group-nickname')
         if linked_databases is not None:
             database_param_list_str.append('--linked-databases')
+        if access_keys_authentication is not None:
+            database_param_list_str.append('--access-keys-auth')
         error_msg = ('--no-database conflicts with the specified database parameter(s): '
                      '{}'.format(', '.join(database_param_list_str)))
         recommendation = ('Try to use --no-database without specifying database parameters, '
@@ -297,6 +302,7 @@ def redisenterprise_create(cmd,
                                                 persistence,
                                                 modules,
                                                 group_nickname,
+                                                access_keys_authentication,
                                                 linked_databases])):
         return CacheCreate(cli_ctx=cmd.cli_ctx)(command_args={
             "cluster_name": cluster_name,
@@ -307,6 +313,7 @@ def redisenterprise_create(cmd,
             "sku": sku,
             "capacity": capacity,
             "zones": zones,
+            "high_availability": high_availability,
             "minimum_tls_version": minimum_tls_version,
             "key_encryption_key_url": key_encryption_key_url,
             "identity_type": identity_type,
@@ -325,6 +332,7 @@ def redisenterprise_create(cmd,
         "sku": sku,
         "capacity": capacity,
         "zones": zones,
+        "high_availability": high_availability,
         "minimum_tls_version": minimum_tls_version,
         "key_encryption_key_url": key_encryption_key_url,
         "identity_type": identity_type,
@@ -346,6 +354,7 @@ def redisenterprise_create(cmd,
         "persistence": persistence,
         "group_nickname": group_nickname,
         "linkeddatabase": linked_databases,
+        "access_keys_authentication": access_keys_authentication,
         "mods": modules,
         "database_name": 'default',
         "no_wait": no_wait
