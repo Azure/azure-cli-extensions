@@ -7,7 +7,6 @@ Release History
 * Add support for ZIP artifacts upload to a test. Artifacts can be uploaded through YAML config when using --load-test-config-file and through cmd `az load test file upload`, the associate --file-type is `ZIPPED_ARTIFACTS`
 * Upgrade vendored_sdks to use API version '2024-05-01-preview'
 * Fix for uploading files from YAML config when relative path is provided for configurationFiles
-* Refactor code for method 'utils.py:upload_files_helper'
 * Add test cases for ZIP artifacts upload
 
 1.0.2
