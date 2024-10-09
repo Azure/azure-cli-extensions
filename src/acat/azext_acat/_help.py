@@ -46,5 +46,5 @@ examples:
       az acat report get-control-assessments --report-name yourReportName
   - name: Filter the assessments by conpliance status
     text: |
-      az acat report get-control-assessments --report-name yourReportName --compliance-status "failed"
+      az acat report get-control-assessments --report-name yourReportName --compliance-status failed
 """
