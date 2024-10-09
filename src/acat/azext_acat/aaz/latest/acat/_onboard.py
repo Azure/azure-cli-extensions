@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Onboard(AAZCommand):
     """Onboard given subscriptions to Microsoft.AppComplianceAutomation provider.
+
+    :example: Onboard
+        az acat onboard --subscription-ids "[00000000-0000-0000-0000-000000000000,00000000-0000-0000-0000-000000000001]"
     """
 
     _aaz_info = {

@@ -16,6 +16,13 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a new AppComplianceAutomation report or update an exiting AppComplianceAutomation report.
+
+    :example: Report_CreateOrUpdate
+        az acat report create --report-name testReportName --offer-guid 00000000-0000-0000-0000-000000000001,00000000-0000-0000-0000-000000000002 --resources "[{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/myResourceGroup/providers/Microsoft.SignalRService/SignalR/mySignalRService,resource-origin:Azure,resource-type:Microsoft.SignalRService/SignalR}]" --storage-info "{account-name:testStorageAccount,location:'East US',resource-group:testResourceGroup,subscription-id:00000000-0000-0000-0000-000000000000}" --time-zone GMT Standard Time --trigger-time 2022-03-04T05:00:00.000Z
+
+    :example: Report_CreateOrUpdate
+        az acat report create --report-nameddd testReportName --offer-guid 00000000-0000-0000-0000-000000000001,00000000-0000-0000-0000-000000000002 --resources "[{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/myResourceGroup/providers/Microsoft.SignalRService/SignalR/mySignalRService,resource-origin:Azure,resource-type:Microsoft.SignalRService/SignalR}]" --storage-info "{account-name:testStorageAccount,location:'East US',resource-group:testResourceGroup,subscription-id:00000000-0000-0000-0000-000000000000}" --time-zone GMT Standard Time --trigger-time 2022-03-04T05:00:00.000Z
+        az acat report create --report-nameddd testReportName  --resources "[{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/myResourceGroup/providers/Microsoft.SignalRService/SignalR/mySignalRService,resource-origin:Azure,resource-type:Microsoft.SignalRService/SignalR}]"
     """
 
     _aaz_info = {
@@ -42,8 +49,8 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.report_name = AAZStrArg(
-            options=["--report-name"],
+        _args_schema.report_nameddd = AAZStrArg(
+            options=["--report-nameddd"],
             help="Report Name.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -77,8 +84,8 @@ class Create(AAZCommand):
             required=True,
             default="UTC",
         )
-        _args_schema.trigger_time_by_codegen = AAZDateTimeArg(
-            options=["--trigger-time-by-codegen"],
+        _args_schema.trigger_time = AAZDateTimeArg(
+            options=["--trigger-time"],
             arg_group="Properties",
             help="Report collection trigger time.",
             required=True,
@@ -193,7 +200,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "reportName", self.ctx.args.report_name,
+                    "reportName", self.ctx.args.report_nameddd,
                     required=True,
                 ),
             }
@@ -236,7 +243,7 @@ class Create(AAZCommand):
                 properties.set_prop("resources", AAZListType, ".resources", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("storageInfo", AAZObjectType, ".storage_info")
                 properties.set_prop("timeZone", AAZStrType, ".time_zone", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("triggerTime", AAZStrType, ".trigger_time_by_codegen", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("triggerTime", AAZStrType, ".trigger_time", typ_kwargs={"flags": {"required": True}})
 
             resources = _builder.get(".properties.resources")
             if resources is not None:
