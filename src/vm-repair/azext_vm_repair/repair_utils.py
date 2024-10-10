@@ -416,6 +416,7 @@ def _unlock_singlepass_encrypted_disk(repair_vm_name, repair_group_name, is_linu
 
 def _unlock_singlepass_encrypted_disk_fallback(source_vm, resource_group_name, repair_vm_name, repair_group_name, copy_disk_name, is_linux):
     """
+    This method is not actually invoked. 
     Fallback for unlocking disk when script fails. This will install the ADE extension to unlock the Data disk.
     """
 
@@ -507,13 +508,13 @@ def _fetch_compatible_windows_os_urn_v2(source_vm):
         offer = source_vm.storage_profile.image_reference.offer
         publisher = source_vm.storage_profile.image_reference.publisher
         fetch_urn_command = 'az vm image list -s {sku} -f {offer} -p {publisher} -l {loc} --verbose --all --query "[?sku==\'{sku}\'].urn | reverse(sort(@))" -o json'.format(loc=location, sku=sku, offer=offer, publisher=publisher)
-        logger.info('Fetching compatible Windows OS images from gallery...')
+        logger.info('Fetching compatible Windows OS images from gallery V2...')
         urns = loads(_call_az_command(fetch_urn_command))
 
     if not urns or len(urns) == 0:
         # If source SKU not available then defaulting 2022 datacenter image.
         fetch_urn_command = 'az vm image list -s "2022-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2022-datacenter\'].urn | reverse(sort(@))" -o json'.format(loc=location)
-        logger.info('Fetching compatible Windows OS images from gallery for 2022 Datacenter...')
+        logger.info('Fetching compatible Windows OS images from gallery for 2022 Datacenter V2...')
         urns = loads(_call_az_command(fetch_urn_command))
 
     # No OS images available for Windows2016
