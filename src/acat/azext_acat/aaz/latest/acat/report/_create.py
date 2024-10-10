@@ -16,6 +16,13 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create a new AppComplianceAutomation report or update an exiting AppComplianceAutomation report.
+
+    :example: Report_CreateOrUpdate
+        az acat report create --report-name testReportName --offer-guid 00000000-0000-0000-0000-000000000001,00000000-0000-0000-0000-000000000002 --resources "[{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/myResourceGroup/providers/Microsoft.SignalRService/SignalR/mySignalRService,resource-origin:Azure,resource-type:Microsoft.SignalRService/SignalR}]" --storage-info "{account-name:testStorageAccount,location:'East US',resource-group:testResourceGroup,subscription-id:00000000-0000-0000-0000-000000000000}" --time-zone GMT Standard Time --trigger-time 2022-03-04T05:00:00.000Z
+
+    :example: Report_CreateOrUpdate
+        az acat report create --report-nameddd testReportName --offer-guid 00000000-0000-0000-0000-000000000001,00000000-0000-0000-0000-000000000002 --resources "[{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/myResourceGroup/providers/Microsoft.SignalRService/SignalR/mySignalRService,resource-origin:Azure,resource-type:Microsoft.SignalRService/SignalR}]" --storage-info "{account-name:testStorageAccount,location:'East US',resource-group:testResourceGroup,subscription-id:00000000-0000-0000-0000-000000000000}" --time-zone GMT Standard Time --trigger-time 2022-03-04T05:00:00.000Z
+        az acat report create --report-nameddd testReportName  --resources "[{resource-id:/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/myResourceGroup/providers/Microsoft.SignalRService/SignalR/mySignalRService,resource-origin:Azure,resource-type:Microsoft.SignalRService/SignalR}]"
     """
 
     _aaz_info = {

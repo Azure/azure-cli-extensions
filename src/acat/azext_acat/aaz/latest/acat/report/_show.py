@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get the AppComplianceAutomation report and its properties.
+
+    :example: Report_Get
+        az acat report show --report-name testReport
     """
 
     _aaz_info = {
