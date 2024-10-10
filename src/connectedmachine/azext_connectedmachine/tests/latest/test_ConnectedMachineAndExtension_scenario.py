@@ -11,6 +11,7 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .example_steps import step_show
 from .example_steps import step_list
 from .example_steps import step_extension_create
@@ -29,14 +30,14 @@ from .. import (
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
-
+    @AllowLargeResponse(100)
     @ResourceGroupPreparer(name_prefix='cli_test_machineextension')
     def test_machine_and_extension(self):
         self.kwargs.update({
-            'machine': 'testmachine',
+            'machine': 'LAPTOP-S0HSJ7FB',
             'rg': 'ytongtest',
             'location': 'eastus',
-            'customScriptName': 'custom-test2',
+            'customScriptName': 'custom-test',
         })
 
         self.cmd('az connectedmachine show -n {machine} -g {rg}', checks=[
@@ -60,23 +61,6 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
                 checks=[
                     self.check('name', '{customScriptName}'),
                     self.check('properties.typeHandlerVersion', '1.4.2798.3'),
-        ])
-
-        self.cmd('az connectedmachine install-patches '
-                '--resource-group "{rg}" '
-                '--name "{machine}" '
-                '--maximum-duration "PT4H" '
-                '--reboot-setting "IfRequired" '
-                '--windows-parameters "{{\\"classificationsToInclude\\":[\\"Critical\\", \\"Security\\"]}}"',
-                checks=[
-                    self.check('status', 'Succeeded')
-        ])
-
-        self.cmd('az connectedmachine assess-patches '
-                '--resource-group "{rg}" '
-                '--name "{machine}"',
-                checks=[
-                    self.check('status', 'Succeeded')
         ])
 
         self.cmd('az connectedmachine extension list '
@@ -129,8 +113,25 @@ class ConnectedMachineAndExtensionScenarioTest(ScenarioTest):
                     self.check('properties.enableAutomaticUpgrade', False),
                     self.check('properties.provisioningState', 'Succeeded'),
                     self.check('properties.settings.commandToExecute', 'dir'),
-                    self.check('properties.typeHandlerVersion', '1.4.3135.1')
+                    self.check('properties.typeHandlerVersion', '1.4.2798.3')
         ]) 
+
+        self.cmd('az connectedmachine install-patches '
+                '--resource-group "{rg}" '
+                '--name "{machine}" '
+                '--maximum-duration "PT4H" '
+                '--reboot-setting "IfRequired" '
+                '--windows-parameters "{{\\"classificationsToInclude\\":[\\"Critical\\", \\"Security\\"]}}"',
+                checks=[
+                    self.check('status', 'Succeeded')
+        ])
+
+        self.cmd('az connectedmachine assess-patches '
+                '--resource-group "{rg}" '
+                '--name "{machine}"',
+                checks=[
+                    self.check('status', 'Succeeded')
+        ])
 
         self.cmd('az connectedmachine extension delete -y '
                 '--name "{customScriptName}" '
