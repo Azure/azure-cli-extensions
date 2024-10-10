@@ -195,7 +195,7 @@ file_type = CLIArgumentType(
     ),
     options_list=["--file-type"],
     type=str,
-    help=f"Type of file to be uploaded. Allowed values: {', '.join(utils.get_enum_values(models.AllowedFileTypes))}",
+    help=f"Type of file to be uploaded. Allowed values: {', '.join(utils.get_enum_values(models.AllowedFileTypes))}. Ensure that the ZIP file remains below 50 MB in size. Only 5 ZIP artifacts are allowed with a maximum of 1000 files in each and uncompressed size of 1 GB",
 )
 
 test_run_input = CLIArgumentType(

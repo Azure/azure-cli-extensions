@@ -1,11 +1,15 @@
+# Quota limit 5 on the number of ZIP artifacts
 displayName: CLI-Test
 testPlan: sample-JMX-file.jmx
 description: 'Test created from az load test command'
 engineInstances: 1
-configurationFiles:
-  - additional-data.csv
 zipArtifacts:
    - sample-ZIP-artifact.zip
+   - additional-ZIP-artifact-1.zip
+   - additional-ZIP-artifact-2.zip
+   - additional-ZIP-artifact-3.zip
+   - additional-ZIP-artifact-4.zip
+   - additional-ZIP-artifact-5.zip
 failureCriteria:
   - avg(requests_per_sec) > 78
   - percentage(error) > 50
