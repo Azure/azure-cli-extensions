@@ -33,10 +33,6 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = [
-    'azure-storage-blob~=12.14.1'
-]
-
 with open('README.rst', 'r', encoding='utf-8') as f:
     README = f.read()
 with open('HISTORY.rst', 'r', encoding='utf-8') as f:
@@ -53,6 +49,5 @@ setup(
     license='MIT',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
-    install_requires=DEPENDENCIES,
     package_data={'azext_quantum': ['azext_metadata.json', 'operations/templates/create-workspace-and-assign-role.json']},
 )
