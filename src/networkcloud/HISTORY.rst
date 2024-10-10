@@ -3,6 +3,11 @@
 Release History
 ===============
 
+
+2.0.0b5
+++++++++
+* This version updates the baremetalmachine resource commands (run-command, run-read-command, and run-data-extract) to utilize a customer-provided Storage Account for storing command execution results.
+
 2.0.0b4
 ++++++++
 * This beta version supports NetworkCloud 2024-07-01 APIs.
