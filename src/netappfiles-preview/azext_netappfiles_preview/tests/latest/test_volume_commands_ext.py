@@ -4,7 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
-
+import unittest
 # POOL_DEFAULT = "--service-level 'Premium' --size 4398046511104"
 POOL_DEFAULT = "--service-level 'Premium' --size 4"
 VOLUME_DEFAULT = "--service-level 'Premium' --usage-threshold 100"
@@ -58,7 +58,7 @@ class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
         volume_list = self.cmd("netappfiles volume list --resource-group {rg} --account-name %s --pool-name %s" % (account_name, pool_name)).get_output_in_json()
         assert len(volume_list) == 1
 
-        self.cmd("az netappfiles volume delete --resource-group {rg} --account-name %s --pool-name %s --volume-name %s" % (account_name, pool_name, volume_name))
+        self.cmd("az netappfiles volume delete --resource-group {rg} --account-name %s --pool-name %s --volume-name %s -y" % (account_name, pool_name, volume_name))
         volume_list = self.cmd("netappfiles volume list --resource-group {rg} -a %s -p %s" % (account_name, pool_name)).get_output_in_json()
         assert len(volume_list) == 0
 
@@ -74,7 +74,7 @@ class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
         volume_list = self.cmd("netappfiles volume list --resource-group {rg} -a '%s' -p '%s'" % (account_name, pool_name)).get_output_in_json()
         assert len(volume_list) == 2
 
-        self.cmd("az netappfiles volume delete -g {rg} -a %s -p %s -v %s" % (account_name, pool_name, volume_name1))
+        self.cmd("az netappfiles volume delete -g {rg} -a %s -p %s -v %s -y" % (account_name, pool_name, volume_name1))
         volume_list = self.cmd("netappfiles volume list -g {rg} -a '%s' -p '%s'" % (account_name, pool_name)).get_output_in_json()
         assert len(volume_list) == 1
 
@@ -113,3 +113,41 @@ class AzureNetAppFilesExtVolumeServiceScenarioTest(ScenarioTest):
         assert volume['exportPolicy']['rules'][0]['allowedClients'] == '0.0.0.0/0'
         assert not volume['exportPolicy']['rules'][0]['cifs']
         assert volume['exportPolicy']['rules'][0]['ruleIndex'] == 1
+        
+    @unittest.skip('Skip this test due to AFEC issue, enable when fixed')
+    @ResourceGroupPreparer(name_prefix='cli_tests_rg')
+    def test_ext_get_volume_quota_report(self):
+        account_name = self.create_random_name(prefix='cli-acc-', length=24)
+        pool_name = self.create_random_name(prefix='cli-pool-', length=24)
+        volume_name = self.create_random_name(prefix='cli-vol-', length=24)
+        tags = "Tag2=Value1"
+
+        volume = self.create_volume(account_name, pool_name, volume_name, '{rg}', tags)
+        assert volume['name'] == account_name + '/' + pool_name + '/' + volume_name
+
+        volume = self.cmd("az netappfiles volume show --resource-group {rg} -a %s -p %s -v %s" % (account_name, pool_name, volume_name)).get_output_in_json()
+        assert volume['name'] == account_name + '/' + pool_name + '/' + volume_name
+        assert volume['tags']['Tag2'] == 'Value1'
+
+        quota_report_from_id = self.cmd("az netappfiles volume list-quota-report --resource-group {rg} -a %s -p %s -v %s" % (account_name, pool_name, volume_name)).get_output_in_json()
+        assert len(quota_report_from_id) > 0
+
+    @unittest.skip('Skip this test due to service side issue, enable when fixed')
+    @ResourceGroupPreparer(name_prefix='cli_tests_rg')
+    def test_ext_split_clone_from_parent(self):
+        account_name = self.create_random_name(prefix='cli-acc-', length=24)
+        pool_name = self.create_random_name(prefix='cli-pool-', length=24)
+        volume_name = self.create_random_name(prefix='cli-vol-', length=24)
+        tags = "Tag2=Value1"
+
+        volume = self.create_volume(account_name, pool_name, volume_name, '{rg}', tags)
+        assert volume['name'] == account_name + '/' + pool_name + '/' + volume_name
+
+        volume = self.cmd("az netappfiles volume show --resource-group {rg} -a %s -p %s -v %s" % (account_name, pool_name, volume_name)).get_output_in_json()
+        assert volume['name'] == account_name + '/' + pool_name + '/' + volume_name
+        assert volume['tags']['Tag2'] == 'Value1'
+
+        with self.assertRaises(HttpResponseError) as cm:
+            quota_report_from_id = self.cmd("az netappfiles volume splitclonefromparent --resource-group {rg} -a %s -p %s -v %s" % (account_name, pool_name, volume_name)).get_output_in_json()
+        self.assertIn('ShortTermCloneSplitCloneFromParentOperationFailed', str(
+            cm.exception))

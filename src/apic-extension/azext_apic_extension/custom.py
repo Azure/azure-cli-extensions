@@ -18,7 +18,7 @@ import requests
 from knack.log import get_logger
 from knack.util import CLIError
 import chardet
-from azure.cli.core.aaz._arg import AAZStrArg
+from azure.cli.core.aaz._arg import AAZStrArg, AAZBoolArg
 from .command_patches import ImportAPIDefinitionExtension
 from .command_patches import ExportAPIDefinitionExtension
 from .command_patches import ExportMetadataExtension
@@ -105,6 +105,12 @@ class ExportMetadataSchemaExtension(ExportMetadataExtension):
             required=True,
             registered=True
         )
+        args_schema.custom_metadata_only = AAZBoolArg(
+            options=["--custom-metadata-only"],
+            help='Export only custom metadata.',
+            required=False,
+            blank=True
+        )
         return args_schema
 
     def _output(self, *args, **kwargs):
@@ -118,9 +124,14 @@ class ExportMetadataSchemaExtension(ExportMetadataExtension):
             if response_format == 'link':
                 getReponse = requests.get(exportedResults, timeout=10)
                 if getReponse.status_code == 200:
-                    exportedResults = getReponse.content.decode()
+                    content = json.loads(getReponse.content.decode())
+                    # Check if custom metadata only
+                    exportedResults = content.get('properties').get('customProperties', {}) if arguments.custom_metadata_only else content
                 else:
                     logger.error('Error while fetching the results from the link. Status code: %s', getReponse.status_code)
+            else:
+                # Check if custom metadata only
+                exportedResults = json.loads(exportedResults).get('properties').get('customProperties', {}) if arguments.custom_metadata_only else exportedResults
 
             if arguments.source_profile:
                 try:
@@ -158,6 +169,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_i
             encoding = result['encoding']
 
         # TODO - read other file types later
+        value = None
         if str(api_location).endswith('.yaml') or str(api_location).endswith('.yml'):
             with open(str(api_location), 'r', encoding=encoding) as f:
                 content = f.read()
@@ -194,49 +206,42 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_i
             # Create API and Create API Version
             extracted_api_name = _generate_api_id(info.get('title', 'Default-API')).lower()
             extracted_api_description = info.get('description', 'API Description')[:1000]
-            extracted_api_summary = info.get('summary', str(extracted_api_description)[:200])
             extracted_api_title = info.get('title', 'API Title')
             extracted_api_version = info.get('version', 'v1').replace(".", "-").lower()
             extracted_api_version_title = info.get('version', 'v1').replace(".", "-").lower()
             # TODO -Create API Version lifecycle_stage
 
             # Create API - Get the contact details from info in spec
+            contacts = None
             contact = info.get('contact')
             if contact:
                 extracted_api_contact_email = contact.get('email')
                 extracted_api_contact_name = contact.get('name')
                 extracted_api_contact_url = contact.get('url')
                 contacts = [{'email': extracted_api_contact_email, 'name': extracted_api_contact_name, 'url': extracted_api_contact_url}]
-            else:
-                contacts = None
 
             # Create API - Get the license details from info in spec
+            extracted_api_license = None
             licenseDetails = info.get('license')
             if licenseDetails:
                 extracted_api_license_identifier = licenseDetails.get('identifier')
                 extracted_api_license_name = licenseDetails.get('name')
                 extracted_api_license_url = licenseDetails.get('url')
                 extracted_api_license = {'identifier': extracted_api_license_identifier, 'name': extracted_api_license_name, 'url': extracted_api_license_url}
-            else:
-                extracted_api_license = None
 
             # Create API - Get the terms of service from info in spec
+            extracted_api_terms_of_service = {'url': None}
             extracted_api_terms_of_service_value = info.get('termsOfService')
             if extracted_api_terms_of_service_value:
                 extracted_api_terms_of_service = {'url': extracted_api_terms_of_service_value}
-            else:
-                extracted_api_terms_of_service = {'url': None}
 
-            # Create API - Get the external documentation from info in spec
-            extracted_api_external_documentation = None
-            external_documentation = info.get('externalDocumentation')
+            # Create API - Get the external documentation in spec
+            extracted_api_external_documentation = []
+            external_documentation = data.get('externalDocs')
             if external_documentation:
                 extracted_api_external_documentation_description = external_documentation.get('description')
-                extracted_api_external_documentation_title = external_documentation.get('title')
                 extracted_api_external_documentation_url = external_documentation.get('url')
-                extracted_api_external_documentation = {'description': extracted_api_external_documentation_description, 'title': extracted_api_external_documentation_title, 'url': extracted_api_external_documentation_url}
-            else:
-                extracted_api_external_documentation = None
+                extracted_api_external_documentation.append({'description': extracted_api_external_documentation_description, 'title': 'Title', 'url': extracted_api_external_documentation_url})
 
             # TODO: Create API - custom-properties
             # "The custom metadata defined for API catalog entities. #1
@@ -250,7 +255,6 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_i
                 'service_name': service_name,
                 'workspace_name': 'default',
                 'title': extracted_api_title,
-                'summary': extracted_api_summary,
                 'type': extracted_api_kind,
                 'contacts': contacts,
                 'license': extracted_api_license,

@@ -9,7 +9,6 @@ import json
 import os
 import os.path
 import platform
-import re
 import ssl
 import sys
 import threading
@@ -19,7 +18,6 @@ import webbrowser
 from azext_aks_preview._client_factory import (
     CUSTOM_MGMT_AKS_PREVIEW,
     cf_agent_pools,
-    get_msi_client,
     get_compute_client,
 )
 from azext_aks_preview._consts import (
@@ -90,6 +88,9 @@ from azext_aks_preview.aks_draft.commands import (
 from azext_aks_preview.maintenanceconfiguration import (
     aks_maintenanceconfiguration_update_internal,
 )
+from azure.cli.command_modules.acs._helpers import (
+    get_user_assigned_identity_by_resource_id
+)
 from azure.cli.command_modules.acs._validators import (
     extract_comma_separated_string,
 )
@@ -123,7 +124,6 @@ from dateutil.parser import parse
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.util import CLIError
-from msrestazure.azure_exceptions import CloudError
 from six.moves.urllib.error import URLError
 from six.moves.urllib.request import urlopen
 
@@ -200,30 +200,6 @@ def load_service_principals(config_path):
             return shell_safe_json_parse(f.read())
     except:  # pylint: disable=bare-except
         return None
-
-
-_re_user_assigned_identity_resource_id = re.compile(
-    r'/subscriptions/(.*?)/resourcegroups/(.*?)/providers/microsoft.managedidentity/userassignedidentities/(.*)',
-    flags=re.IGNORECASE)
-
-
-def _get_user_assigned_identity(cli_ctx, resource_id):
-    resource_id = resource_id.lower()
-    match = _re_user_assigned_identity_resource_id.search(resource_id)
-    if match:
-        subscription_id = match.group(1)
-        resource_group_name = match.group(2)
-        identity_name = match.group(3)
-        msi_client = get_msi_client(cli_ctx, subscription_id)
-        try:
-            identity = msi_client.user_assigned_identities.get(resource_group_name=resource_group_name,
-                                                               resource_name=identity_name)
-        except CloudError as ex:
-            if 'was not found' in ex.message:
-                raise CLIError(f"Identity {resource_id} not found.") from ex
-            raise ex
-        return identity
-    raise CLIError(f"Cannot parse identity name from provided resource id {resource_id}.")
 
 
 def aks_browse(
@@ -772,7 +748,6 @@ def aks_update(
     ephemeral_disk_volume_type=None,
     ephemeral_disk_nvme_perf_tier=None,
     node_provisioning_mode=None,
-    ssh_access=None,
     cluster_service_load_balancer_health_probe_mode=None,
     if_match=None,
     if_none_match=None,
@@ -1212,6 +1187,7 @@ def aks_agentpool_add(
     max_surge=None,
     drain_timeout=None,
     node_soak_duration=None,
+    undrainable_node_behavior=None,
     mode=CONST_NODEPOOL_MODE_USER,
     scale_down_mode=CONST_SCALE_DOWN_MODE_DELETE,
     max_pods=0,
@@ -1239,6 +1215,7 @@ def aks_agentpool_add(
     node_public_ip_tags=None,
     enable_artifact_streaming=False,
     skip_gpu_driver_install=False,
+    driver_type=None,
     ssh_access=CONST_SSH_ACCESS_LOCALUSER,
     # trusted launch
     enable_secure_boot=False,
@@ -1291,6 +1268,7 @@ def aks_agentpool_update(
     max_surge=None,
     drain_timeout=None,
     node_soak_duration=None,
+    undrainable_node_behavior=None,
     mode=None,
     scale_down_mode=None,
     no_wait=False,
@@ -1381,6 +1359,7 @@ def aks_agentpool_upgrade(cmd,
                           max_surge=None,
                           drain_timeout=None,
                           node_soak_duration=None,
+                          undrainable_node_behavior=None,
                           snapshot_id=None,
                           no_wait=False,
                           aks_custom_headers=None,
@@ -1400,7 +1379,7 @@ def aks_agentpool_upgrade(cmd,
         )
 
     # Note: we exclude this option because node image upgrade can't accept nodepool put fields like max surge
-    if (max_surge or drain_timeout or node_soak_duration) and node_image_only:
+    if (max_surge or drain_timeout or node_soak_duration or undrainable_node_behavior) and node_image_only:
         raise MutuallyExclusiveArgumentError(
             "Conflicting flags. Unable to specify max-surge/drain-timeout/node-soak-duration with node-image-only."
             "If you want to use max-surge/drain-timeout/node-soak-duration with a node image upgrade, please first "
@@ -1463,6 +1442,8 @@ def aks_agentpool_upgrade(cmd,
         instance.upgrade_settings.drain_timeout_in_minutes = drain_timeout
     if node_soak_duration:
         instance.upgrade_settings.node_soak_duration_in_minutes = node_soak_duration
+    if undrainable_node_behavior:
+        instance.upgrade_settings.undrainable_node_behavior = undrainable_node_behavior
 
     # custom headers
     aks_custom_headers = extract_comma_separated_string(
@@ -2575,7 +2556,7 @@ def aks_pod_identity_add(
     instance = client.get(resource_group_name, cluster_name)
     _ensure_pod_identity_addon_is_enabled(instance)
 
-    user_assigned_identity = _get_user_assigned_identity(
+    user_assigned_identity = get_user_assigned_identity_by_resource_id(
         cmd.cli_ctx, identity_resource_id)
     _ensure_managed_identity_operator_permission(
         cmd, instance, user_assigned_identity.id)
@@ -3429,7 +3410,7 @@ def aks_approuting_zone_list(
         resource_group_name,
         name
 ):
-    from msrestazure.tools import parse_resource_id
+    from azure.mgmt.core.tools import parse_resource_id
     mc = client.get(resource_group_name, name)
 
     if mc.ingress_profile and mc.ingress_profile.web_app_routing and mc.ingress_profile.web_app_routing.enabled:

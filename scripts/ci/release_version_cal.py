@@ -204,7 +204,7 @@ def get_next_version_segment_tag():
     if VERSION_MAJOR_TAG in pr_label_list:
         return VERSION_MAJOR_TAG
     elif VERSION_MINOR_TAG in pr_label_list:
-        return pr_label_list
+        return VERSION_MINOR_TAG
     elif VERSION_PATCH_TAG in pr_label_list:
         return VERSION_PATCH_TAG
     elif VERSION_PRE_TAG in pr_label_list:

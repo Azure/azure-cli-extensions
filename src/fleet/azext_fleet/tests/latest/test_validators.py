@@ -46,8 +46,9 @@ class NodeImageSelectionNamespace:
 
 class UpdateStrategyNamespace:
 
-    def __init__(self, update_strategy_name):
+    def __init__(self, update_strategy_name="", update_strategy_id=""):
         self.update_strategy_name = update_strategy_name
+        self.update_strategy_id = update_strategy_id
 
 
 class VMSizeNamespace:
@@ -194,6 +195,22 @@ class TestValidateVmSize(unittest.TestCase):
         namespace = VMSizeNamespace(vm_size=valid_vm_size)
 
         self.assertIsNone(validators.validate_vm_size(namespace))
+
+class TestValidateUpdateStrategyId(unittest.TestCase):
+    def test_invalid_update_strategy_id(self):
+        invalid_update_strategy_id = "dummy update strategy id"
+        namespace = UpdateStrategyNamespace(update_strategy_id=invalid_update_strategy_id)
+        err = ("--update-strategy-id is not a valid Azure resource ID.")
+
+        with self.assertRaises(CLIError) as cm:
+            validators.validate_update_strategy_id(namespace)
+        self.assertEqual(str(cm.exception), err)
+    
+    def test_valid_update_strategy_id(self):
+        valid_update_strategy_id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rgname/providers/Microsoft.ContainerService/fleets/flt/updateStrategies/strategy-1"
+        namespace = UpdateStrategyNamespace(update_strategy_id=valid_update_strategy_id)
+
+        self.assertIsNone(validators.validate_update_strategy_id(namespace))
 
 
 if __name__ == "__main__":
