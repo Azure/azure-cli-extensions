@@ -2328,7 +2328,7 @@ def delete_java_component(cmd, java_component_name, environment_name, resource_g
     return java_component_decorator.delete()
 
 
-def create_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, route_yaml, no_wait):
+def create_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait, route_yaml=None):
     raw_parameters = locals()
     java_component_decorator = JavaComponentDecorator(
         cmd=cmd,
@@ -2340,7 +2340,7 @@ def create_java_component(cmd, java_component_name, environment_name, resource_g
     return java_component_decorator.create()
 
 
-def update_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, route_yaml, no_wait):
+def update_java_component(cmd, java_component_name, environment_name, resource_group_name, target_java_component_type, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait, route_yaml=None):
     raw_parameters = locals()
     java_component_decorator = JavaComponentDecorator(
         cmd=cmd,
@@ -2352,12 +2352,12 @@ def update_java_component(cmd, java_component_name, environment_name, resource_g
     return java_component_decorator.update()
 
 
-def create_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, min_replicas=1, max_replicas=1, route_yaml=None, no_wait=False):
-    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, route_yaml, no_wait)
+def create_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, min_replicas=1, max_replicas=1, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
-def update_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, min_replicas=None, max_replicas=None, route_yaml=None, no_wait=False):
-    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, route_yaml, no_wait)
+def update_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, min_replicas=None, max_replicas=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
 def show_config_server_for_spring(cmd, java_component_name, environment_name, resource_group_name):
@@ -2368,12 +2368,12 @@ def delete_config_server_for_spring(cmd, java_component_name, environment_name, 
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_CONFIG, no_wait)
 
 
-def create_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, min_replicas=1, max_replicas=1, route_yaml=None, no_wait=False):
-    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, route_yaml, no_wait)
+def create_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, min_replicas=1, max_replicas=1, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
-def update_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, min_replicas=None, max_replicas=None, route_yaml=None, no_wait=False):
-    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, route_yaml, no_wait)
+def update_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, unbind_service_bindings=None, service_bindings=None, min_replicas=None, max_replicas=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
 def show_eureka_server_for_spring(cmd, java_component_name, environment_name, resource_group_name):
@@ -2384,12 +2384,12 @@ def delete_eureka_server_for_spring(cmd, java_component_name, environment_name, 
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_EUREKA, no_wait)
 
 
-def create_nacos(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, min_replicas=1, max_replicas=1, route_yaml=None, no_wait=False):
-    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, route_yaml, no_wait)
+def create_nacos(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, min_replicas=1, max_replicas=1, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
-def update_nacos(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, min_replicas=None, max_replicas=None, route_yaml=None, no_wait=False):
-    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, route_yaml, no_wait)
+def update_nacos(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, min_replicas=None, max_replicas=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
 def show_nacos(cmd, java_component_name, environment_name, resource_group_name):
@@ -2400,12 +2400,12 @@ def delete_nacos(cmd, java_component_name, environment_name, resource_group_name
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_NACOS, no_wait)
 
 
-def create_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, min_replicas=1, max_replicas=1, route_yaml=None, no_wait=False):
-    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, route_yaml, no_wait)
+def create_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, min_replicas=1, max_replicas=1, no_wait=False):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
-def update_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, min_replicas=None, max_replicas=None, route_yaml=None, no_wait=False):
-    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, route_yaml, no_wait)
+def update_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, min_replicas=None, max_replicas=None, no_wait=False):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, no_wait)
 
 
 def show_admin_for_spring(cmd, java_component_name, environment_name, resource_group_name):
@@ -2416,12 +2416,12 @@ def delete_admin_for_spring(cmd, java_component_name, environment_name, resource
     return delete_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_ADMIN, no_wait)
 
 
-def create_gateway_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, min_replicas=1, max_replicas=1, route_yaml=None, no_wait=False):
-    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_GATEWAY, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, route_yaml, no_wait)
+def create_gateway_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, min_replicas=1, max_replicas=1, no_wait=False, route_yaml=None):
+    return create_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_GATEWAY, configuration, None, None, min_replicas, max_replicas, no_wait, route_yaml)
 
 
-def update_gateway_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, service_bindings=None, unbind_service_bindings=None, min_replicas=None, max_replicas=None, route_yaml=None, no_wait=False):
-    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_GATEWAY, configuration, service_bindings, unbind_service_bindings, min_replicas, max_replicas, route_yaml, no_wait)
+def update_gateway_for_spring(cmd, java_component_name, environment_name, resource_group_name, configuration=None, min_replicas=None, max_replicas=None, no_wait=False, route_yaml=None):
+    return update_java_component(cmd, java_component_name, environment_name, resource_group_name, JAVA_COMPONENT_GATEWAY, configuration, None, None, min_replicas, max_replicas, no_wait, route_yaml)
 
 
 def show_gateway_for_spring(cmd, java_component_name, environment_name, resource_group_name):

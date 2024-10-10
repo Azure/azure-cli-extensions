@@ -139,8 +139,6 @@ class JavaComponentDecorator(BaseResource):
 
     def set_up_service_bindings(self):
         if self.get_argument_service_bindings() is not None:
-            if self.get_argument_target_java_component_type() == JAVA_COMPONENT_GATEWAY:
-                raise CLIInternalError("Service binding is not supported by Gateway for Spring.")
             _, service_bindings_def_list = parse_service_bindings(self.cmd,
                                                                   self.get_argument_service_bindings(),
                                                                   self.get_argument_resource_group_name(),
@@ -157,8 +155,6 @@ class JavaComponentDecorator(BaseResource):
 
     def set_up_unbind_service_bindings(self):
         if self.get_argument_unbind_service_bindings() is not None:
-            if self.get_argument_target_java_component_type() == JAVA_COMPONENT_GATEWAY:
-                raise CLIInternalError("Service binding is not supported by Gateway for Spring.")
             new_template = self.java_component_def.setdefault("properties", {})
             existing_template = self.java_component_def["properties"]
 
@@ -177,8 +173,6 @@ class JavaComponentDecorator(BaseResource):
 
     def set_up_gateway_route(self):
         if self.get_argument_route_yaml() is not None:
-            if self.get_argument_target_java_component_type() != JAVA_COMPONENT_GATEWAY:
-                raise CLIInternalError("The route could only be configured for Gateway for Spring.")
             self.java_component_def["properties"]["springCloudGatewayRoutes"] = self.process_loaded_scg_route()
 
     def process_loaded_scg_route(self):
