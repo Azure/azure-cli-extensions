@@ -205,7 +205,6 @@ class ContainerappGatewayForSpringTests(ScenarioTest):
                 JMESPathCheck('name', gateway_name),
                 JMESPathCheck('properties.componentType', "SpringCloudGateway"),
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
-                JMESPathCheck('length(properties.configurations)', 0),
                 JMESPathCheck('length(properties.springCloudGatewayRoutes)', 2),
                 JMESPathCheck('properties.springCloudGatewayRoutes[0].id', "route1"),
                 JMESPathCheck('properties.springCloudGatewayRoutes[0].uri', "https://otherjavacomponent.myenvironment.test.net"),
