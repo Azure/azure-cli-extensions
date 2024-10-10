@@ -19,11 +19,11 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class AmgScenarioTest(ScenarioTest):
-
     def __init__(self, method_name):
         super().__init__(method_name, recording_processors=[
             ApiKeyServiceAccountTokenReplacer()
         ])
+
 
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
     def test_amg_crud(self, resource_group):
@@ -69,6 +69,7 @@ class AmgScenarioTest(ScenarioTest):
         final_count = len(self.cmd('grafana list').get_output_in_json())
         self.assertTrue(final_count, count - 1)
 
+
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
     def test_api_key_e2e(self, resource_group):
 
@@ -99,6 +100,7 @@ class AmgScenarioTest(ScenarioTest):
             self.cmd('grafana api-key delete -g {rg} -n {name} --key {key2}')
             number = len(self.cmd('grafana dashboard list -g {rg} -n {name} --api-key ' + api_key).get_output_in_json())
             self.assertTrue(number > 0)
+
 
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
     def test_service_account_e2e(self, resource_group):
@@ -141,6 +143,7 @@ class AmgScenarioTest(ScenarioTest):
                 self.check('length([])', 0)
             ])
             self.cmd('grafana service-account delete -g {rg} -n {name} --service-account {account}')
+
 
     @AllowLargeResponse(size_kb=3072)
     @ResourceGroupPreparer(name_prefix='cli_test_amg', location='westeurope')
@@ -296,6 +299,7 @@ class AmgScenarioTest(ScenarioTest):
             final_count = len(self.cmd('grafana list').get_output_in_json())
             self.assertTrue(final_count, count - 1)
 
+
     @AllowLargeResponse(size_kb=3072)
     @ResourceGroupPreparer(name_prefix='cli_test_amg', location='westcentralus')
     def test_amg_backup_restore(self, resource_group):
@@ -446,6 +450,7 @@ class AmgScenarioTest(ScenarioTest):
             final_count = len(self.cmd('grafana list').get_output_in_json())
             self.assertTrue(final_count, 0)
 
+
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
     def test_amg_private_endpoint(self, resource_group):
 
@@ -531,8 +536,64 @@ class AmgScenarioTest(ScenarioTest):
                 self.check('length([])', 0)
             ])
 
+
+    @AllowLargeResponse(size_kb=3072)
+    @ResourceGroupPreparer(name_prefix='cli_test_amg')
+    def test_amg_integrations_monitor(self, resource_group):
+        self.kwargs.update({
+            'name': self.create_random_name(prefix='clitestamginteg', length=23),
+            'location': 'westcentralus',
+            'monitor_name': self.create_random_name(prefix='clitestamwinteg', length=23)
+        })
+
+        owner = self._get_signed_in_user()
+        self.recording_processors.append(MSGraphNameReplacer(owner, MOCKED_USER_NAME))
+
+        with unittest.mock.patch('azext_amg.custom._gen_guid', side_effect=self.create_guid):
+
+            self.cmd('grafana create -g {rg} -n {name} -l {location}')
+
+            self.cmd('monitor account create -n {monitor_name} -g {rg} -l {location}')
+
+            self.cmd('grafana integrations monitor add -g {rg} -n {name} --monitor-resource-group-name {rg} --monitor-name {monitor_name}')
+
+            monitor_integrations = self.cmd('grafana integrations monitor list -g {rg} -n {name}', checks=[
+                self.check('length([])', 1)
+            ]).get_output_in_json()
+
+            self.cmd(f'role assignment list --scope {monitor_integrations[0]} --role "Monitoring Data Reader"', checks=[
+                self.check('length([])', 1)
+            ])
+
+            self._poll_for_amg_succeeded_state('{rg}', '{name}', timeout=500)  # Wait for workspace to complete 'Updating' provisioning state
+            self.cmd('grafana integrations monitor delete -g {rg} -n {name} --monitor-resource-group-name {rg} --monitor-name {monitor_name}')
+
+            self.cmd('grafana integrations monitor list -g {rg} -n {name}', checks=[
+                self.check('length([])', 0)
+            ])
+
+            self.cmd(f'role assignment list --scope {monitor_integrations[0]} --role "Monitoring Data Reader"', checks=[
+                self.check('length([])', 0)
+            ])
+
+
     def _get_signed_in_user(self):
         account_info = self.cmd('account show').get_output_in_json()
         if account_info['user']['type'] == 'user':
             return account_info['user']['name']
         return None
+    
+
+    def _poll_for_amg_succeeded_state(self, rg, name, timeout):
+        start_time = time.time()
+        interval = 10
+        while time.time() - start_time < timeout:
+            try:
+                result = self.cmd('grafana show -g {rg} -n {name}').get_output_in_json()
+                if result["properties"]['provisioningState'] == 'Succeeded':
+                    return
+                time.sleep(interval)
+                interval *= 2
+            except Exception:
+                raise Exception('Failed to retrieve the AMG provisioning state')
+        raise Exception('Timed out waiting for the AMG to reach the Succeeded provisining state')
