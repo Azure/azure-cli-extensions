@@ -16,7 +16,7 @@ from azure.cli.command_modules.containerapp.base_resource import BaseResource
 from azure.cli.command_modules.containerapp._decorator_utils import load_yaml_file
 from azure.cli.core.commands.client_factory import get_subscription_id
 
-from ._constants import CONTAINER_APPS_RP, MANAGED_ENVIRONMENT_RESOURCE_TYPE, JAVA_COMPONENT_GATEWAY
+from ._constants import CONTAINER_APPS_RP, MANAGED_ENVIRONMENT_RESOURCE_TYPE
 from ._utils import parse_service_bindings
 from ._models import JavaComponent as JavaComponentModel
 from ._client_factory import handle_raw_exception
