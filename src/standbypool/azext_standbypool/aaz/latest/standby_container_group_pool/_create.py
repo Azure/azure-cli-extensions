@@ -15,19 +15,16 @@ from azure.cli.core.aaz import *
     "standby-container-group-pool create",
 )
 class Create(AAZCommand):
-    """Create a standby container group pool
+    """Create a StandbyContainerGroupPoolResource
 
-    :example: Create Standby Container Pool
-        az standby-container-group-pool create --resource-group myrg --name mypool --subscription 461fa159-654a-415f-853a-40b801021944 --container-profile-id /subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/myrg/providers/Microsoft.ContainerInstance/containerGroupProfiles/mycg --profile-revision 1 --subnet-ids [0].id=/subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/ru-cli-test-standbypool/providers/Microsoft.Network/virtualNetworks/ru-cli-test-standbypool-vnet/subnets/testSubnet --max-ready-capacity 1 --refill-policy always --location eastus
-
-    :example: Create with subscription and resource group set with context
-        az standby-container-group-pool create --name mypool --container-profile-id /subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/myrg/providers/Microsoft.ContainerInstance/containerGroupProfiles/mycg --profile-revision 1 --subnet-ids [0].id=/subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/ru-cli-test-standbypool/providers/Microsoft.Network/virtualNetworks/ru-cli-test-standbypool-vnet/subnets/testSubnet --max-ready-capacity 1 --refill-policy always --location eastus
+    :example: Create Standby Container Group Pool
+        az standby-container-group-pool create --resource-group myrg --name mypool --subscription 461fa159-654a-415f-853a-40b801021944 --container-profile-id /subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/myrg/providers/Microsoft.ContainerInstance/containerGroupProfiles/mycg --profile-revision 1 --subnet-ids [0].id=/subscriptions/461fa159-654a-415f-853a-40b801021944/resourceGroups/ru-cli-test-standbypool/providers/Microsoft.Network/virtualNetworks/ru-cli-test-standbypool-vnet/subnets/testSubnet --refill-policy always --max-ready-capacity 1 --location eastus
     """
 
     _aaz_info = {
-        "version": "2023-12-01-preview",
+        "version": "2024-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2023-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbycontainergrouppools/{}", "2024-03-01"],
         ]
     }
 
@@ -49,11 +46,12 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="The resource group",
             required=True,
         )
         _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
-            help="Name of the standby container pool",
+            help="Name of the standby container group pool",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
@@ -66,7 +64,7 @@ class Create(AAZCommand):
         _args_schema.container_profile_id = AAZResourceIdArg(
             options=["--container-profile-id"],
             arg_group="ContainerGroupProfile",
-            help="Specifies container group profile id of standby container pool.",
+            help="Specifies container group profile id of standby container groups.",
         )
         _args_schema.profile_revision = AAZIntArg(
             options=["--profile-revision"],
@@ -99,7 +97,7 @@ class Create(AAZCommand):
         _args_schema.max_ready_capacity = AAZIntArg(
             options=["--max-ready-capacity"],
             arg_group="ElasticityProfile",
-            help="Specifies maximum number of standby containers in the standby pool.",
+            help="Specifies maximum number of standby container groups in the standby pool.",
             fmt=AAZIntArgFormat(
                 maximum=2000,
                 minimum=0,
@@ -214,7 +212,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-12-01-preview",
+                    "api-version", "2024-03-01",
                     required=True,
                 ),
             }

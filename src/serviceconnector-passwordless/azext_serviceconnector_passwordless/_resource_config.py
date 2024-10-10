@@ -17,6 +17,7 @@ from .action import (
     AddUserAssignedIdentityAuthInfo,
     AddServicePrincipalAuthInfo,
     AddUserAccountAuthInfo,
+    AddWorkloadIdentityAuthInfo
 )
 
 EX_SUPPORTED_AUTH_TYPE = SUPPORTED_AUTH_TYPE.copy()
@@ -26,6 +27,7 @@ PASSWORDLESS_SOURCE_RESOURCES = [
     RESOURCE.SpringCloud,
     RESOURCE.SpringCloudDeprecated,
     RESOURCE.FunctionApp,
+    RESOURCE.KubernetesCluster,
 ]
 
 PASSWORDLESS_TARGET_RESOURCES = [
@@ -44,12 +46,19 @@ EX_SUPPORTED_AUTH_TYPE[RESOURCE.Local] = {
 }
 
 for resourceType in PASSWORDLESS_SOURCE_RESOURCES:
-    EX_SUPPORTED_AUTH_TYPE[resourceType] = {
-        # RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
-        RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
-        RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
-        RESOURCE.Sql: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
-    }
+    if RESOURCE.KubernetesCluster == resourceType:
+        EX_SUPPORTED_AUTH_TYPE[resourceType] = {
+            RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.WorkloadIdentity, AUTH_TYPE.ServicePrincipalSecret],
+            RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.WorkloadIdentity, AUTH_TYPE.ServicePrincipalSecret],
+            RESOURCE.Sql: [AUTH_TYPE.Secret, AUTH_TYPE.WorkloadIdentity, AUTH_TYPE.ServicePrincipalSecret],
+        }
+    else:
+        EX_SUPPORTED_AUTH_TYPE[resourceType] = {
+            # RESOURCE.Postgres: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
+            RESOURCE.PostgresFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
+            RESOURCE.MysqlFlexible: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
+            RESOURCE.Sql: [AUTH_TYPE.Secret, AUTH_TYPE.SystemIdentity, AUTH_TYPE.UserIdentity, AUTH_TYPE.ServicePrincipalSecret],
+        }
 
 TARGET_RESOURCES_PARAMS = {
     # RESOURCE.Postgres: {
@@ -150,6 +159,13 @@ AUTH_TYPE_PARAMS = {
             'options': ['--user-identity'],
             'help': 'The user assigned identity auth info',
             'action': AddUserAssignedIdentityAuthInfo
+        }
+    },
+    AUTH_TYPE.WorkloadIdentity: {
+        'workload_identity_auth_info': {
+            'options': ['--workload-identity'],
+            'help': 'The workload identity auth info',
+            'action': AddWorkloadIdentityAuthInfo
         }
     },
     AUTH_TYPE.ServicePrincipalSecret: {

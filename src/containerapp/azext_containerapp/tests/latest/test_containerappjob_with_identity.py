@@ -6,7 +6,7 @@
 import os
 
 from azure.cli.command_modules.containerapp._utils import format_location
-from msrestazure.tools import parse_resource_id
+from azure.mgmt.core.tools import parse_resource_id
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckExists, JMESPathCheckNotExists)
 
@@ -168,7 +168,7 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northcentralus")
     # test for CRUD operations on Container App Job resource with trigger type as manual
-    def test_containerappjob_identity_registry(self, resource_group):
+    def test_containerappjob_identity_registry_env_msi(self, resource_group):
         # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
@@ -208,7 +208,6 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
         time.sleep(30)
 
         # use env system msi to pull image
-        self.cmd(f'containerapp create -g {resource_group} -n {job}  --image {image_name} --ingress external --target-port 80 --environment {env} --registry-server {acr}.azurecr.io --registry-identity system-environment')
         self.cmd(f'containerapp job create -g {resource_group} -n {job} --environment {env} --trigger-type manual --replica-timeout 5 --replica-retry-limit 2 --replica-completion-count 1 --parallelism 1 --image {image_name} --registry-server {acr}.azurecr.io --registry-identity system-environment')
         self.cmd(f'containerapp job show -g {resource_group} -n {job}', checks=[
             JMESPathCheck("properties.provisioningState", "Succeeded"),
@@ -259,3 +258,56 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
             JMESPathCheck("properties.template.containers[0].image", image_name),
             JMESPathCheck("properties.configuration.replicaTimeout", "20")
         ])
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northcentralus")
+    # test for CRUD operations on Container App Job resource with trigger type as manual
+    def test_containerappjob_identity_registry(self, resource_group):
+        # MSI is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
+        location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastus"
+        self.cmd('configure --defaults location={}'.format(location))
+
+        # prepare env
+        job = self.create_random_name(prefix='job1', length=24)
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self, location)
+        env_rg = parse_resource_id(env_id).get('resource_group')
+        env_name = parse_resource_id(env_id).get('name')
+
+        # create msi
+        user_identity_name = self.create_random_name(prefix='containerapp', length=24)
+        identity_json = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
+        user_identity_id = identity_json["id"]
+
+        # create a container app environment for a Container App Job resource
+        self.cmd('containerapp env show -n {} -g {}'.format(env_name, env_rg), checks=[
+            JMESPathCheck('name', env_name)
+        ])
+
+        acr = self.create_random_name(prefix='acr', length=24)
+        image_source = "mcr.microsoft.com/k8se/quickstart:latest"
+        image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
+
+        # prepare acr
+        acr_id = self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} --location {location}').get_output_in_json()["id"]
+        # role assign
+        roleAssignmentName = self.create_guid()
+        self.cmd(f'role assignment create --role acrpull --assignee {identity_json["principalId"]} --scope {acr_id} --name {roleAssignmentName}')
+        # upload image
+        self.cmd(f'acr import -n {acr} --source {image_source}')
+
+        # wait for role assignment take effect
+        time.sleep(30)
+
+        # use msi to pull image
+        self.cmd(f'containerapp job create -g {resource_group} -n {job} --environment {env_id} --trigger-type manual --replica-timeout 5 --replica-retry-limit 2 --replica-completion-count 1 --parallelism 1 --image {image_name} --registry-server {acr}.azurecr.io --registry-identity {user_identity_id}')
+        self.cmd(f'containerapp job show -g {resource_group} -n {job}', checks=[
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("identity.type", "UserAssigned"),
+            JMESPathCheck("properties.configuration.registries[0].server", f"{acr}.azurecr.io"),
+            JMESPathCheck("properties.configuration.registries[0].identity", user_identity_id, case_sensitive=False),
+            JMESPathCheck("properties.template.containers[0].image", image_name),
+        ])
+
+        self.cmd(f'containerapp job delete -g {resource_group} -n {job} --yes', expect_failure=False)

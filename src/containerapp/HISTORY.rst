@@ -4,6 +4,18 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp up': Support `--registry-identity`, `--system-assigned`, `--user-assigned`
+* 'az containerapp containerapp create/up': `--registry-server` and `--source` use managed identity for image pull by default
+* 'az containerapp containerapp create': `--registry-server` use managed identity for image pull by default. `--no-wait` will not take effect with system registry identity.
+
+1.0.0b3
+++++++
+* Update models to support new properties with --yaml for api-version 2024-02-02-preview
+
+1.0.0b2
+++++++
+* 'az containerapp create': Fix container app create with registry msi
+* 'az containerapp job create': Fix container app job create with registry msi
 
 1.0.0b1
 ++++++

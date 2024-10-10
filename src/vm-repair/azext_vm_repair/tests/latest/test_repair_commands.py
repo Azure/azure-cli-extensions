@@ -749,6 +749,29 @@ class RepairAndRestoreLinuxVM(LiveScenarioTest):
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
+@pytest.mark.repairbutton
+class RepairButtonLinuxVM(LiveScenarioTest):
+
+    @ResourceGroupPreparer(location='westus2')
+    def test_vmrepair_RepairAndRestoreLinuxVM(self, resource_group):
+        self.kwargs.update({
+            'vm': 'vm1'
+        })
+
+        # Create test VM
+        self.cmd('vm create -g {rg} -n {vm} --admin-username azureadmin --image Win2022Datacenter --admin-password !Passw0rd2018')
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
+        # Something wrong with vm create command if it fails here
+        assert len(vms) == 1
+
+        # Test Repair and restore
+        result = self.cmd('vm repair repair-button -g {rg} -n {vm} --button-command initrd')
+        assert result['status'] == STATUS_SUCCESS, result['error_message']
+
+        # Check swapped OS disk
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
+        source_vm = vms[0]
+        assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
 @pytest.mark.arm64
 class LinuxARMManagedDiskCreateRestoreTest(LiveScenarioTest):
