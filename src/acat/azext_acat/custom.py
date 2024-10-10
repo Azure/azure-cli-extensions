@@ -11,7 +11,7 @@
 
 import os
 from knack.log import get_logger
-from azure.cli.core.aaz import register_client, AAZClientConfiguration, has_value
+from azure.cli.core.aaz import register_client, AAZClientConfiguration, has_value, register_command
 from azure.cli.core.commands import LongRunningOperation
 from azure.cli.core.aaz._client import AAZMgmtClient
 from .utils import (
