@@ -178,6 +178,7 @@ class DeleteAcatReport(_AcatDeleteReport):
         yield self.DeleteAcatReportWithDupAadToken(ctx=self.ctx)()
         self.post_operations()
 
+
 @register_command(
     "acat report download",
 )
@@ -267,6 +268,7 @@ class DownloadAcatReport(_AcatDownloadSnapshot):
             args.path = os.getcwd()
         if not has_value(args.name):
             args.name = downloadType
+
 
 @register_command(
     "acat report get-control-assessments",
