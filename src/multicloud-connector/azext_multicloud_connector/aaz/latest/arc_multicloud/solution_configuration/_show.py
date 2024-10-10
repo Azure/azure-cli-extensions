@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get a SolutionConfiguration
 
     :example: SolutionConfigurations_Get
-        az arc-multicloud solution-configuration show --connector-id ymuj --name tks
+        az arc-multicloud solution-configuration show --connector-id /subscriptions/{}/resourceGroups/{}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{} --name mySolutionConfig
     """
 
     _aaz_info = {

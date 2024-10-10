@@ -34,7 +34,7 @@ class MulticloudConnectorScenario(ScenarioTest):
             '--resource-group {rg} '
             '--subscription {sub} '
             '--host-type AWS '
-            '--aws-cloud-profile accountId=471112500375 '
+            '--aws-cloud-profile accountId=471112500375 isOrganizationalAccount=false '
             '--location {loc}',
             checks=[self.check('name', 'testConnector'),
                     self.check('type', 'microsoft.hybridconnectivity/publiccloudconnectors')]
