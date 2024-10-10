@@ -160,7 +160,6 @@ class ContainerappJavaComponentTests(ScenarioTest):
         java_component_list = self.cmd("containerapp env java-component list -g {} --environment {}".format(resource_group, env_name)).get_output_in_json()
         self.assertTrue(len(java_component_list) == 0)
 
-class ContainerappGatewayForSpringTests(ScenarioTest):
     @ResourceGroupPreparer(location='eastus')
     def test_containerapp_gateway_for_spring_component(self, resource_group):
         # type "linkers" is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use francecentral as location
