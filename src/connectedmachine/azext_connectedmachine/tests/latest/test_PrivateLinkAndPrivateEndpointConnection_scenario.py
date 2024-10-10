@@ -40,13 +40,13 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
         rand_string = 'test'
         self.kwargs.update({
             'machine': 'testmachine',
-            'rg': 'ytongtest2',
+            'rg': 'ytongtest',
             'scope': 'scope-' + rand_string,
             'vnet': 'vnet-' + rand_string,
             'subnet': 'subnet-' + rand_string,
             'private_endpoint': 'pe-' + rand_string,
             'private_endpoint_connection': 'pec-' + rand_string,
-            'location': 'eastus',
+            'location': 'centraluseuap',
             'customScriptName': 'custom-' + rand_string,
         })
 
