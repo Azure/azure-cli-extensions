@@ -2,7 +2,10 @@
 
 Release History
 ===============
+1.0.1b2
+* Add support for Mongo (vCore) destination in container copy jobs.
 
++++++++
 1.0.1
 * Add support for CapacityMode in Global Database Accounts
 * Add support for DistributedQuery flag in SqlDedicatedGateway
