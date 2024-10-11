@@ -37,7 +37,7 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_privatelink')
     def test_private_link(self):
-        rand_string = 'test3'
+        rand_string = 'test4'
         self.kwargs.update({
             'machine': 'LAPTOP-S0HSJ7FB',
             'rg': 'ytongtest',
