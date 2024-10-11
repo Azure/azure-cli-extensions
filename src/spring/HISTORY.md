@@ -1,6 +1,6 @@
 Release History
 ===============
-1.25.2
+1.26.0
 ---
 * Remove `Preview` tag for config server features in Enterprise tier.
 
