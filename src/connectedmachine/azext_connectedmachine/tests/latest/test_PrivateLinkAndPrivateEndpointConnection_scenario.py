@@ -37,16 +37,16 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(name_prefix='cli_test_privatelink')
     def test_private_link(self):
-        rand_string = 'test'
+        rand_string = 'test2'
         self.kwargs.update({
-            'machine': 'testmachine',
+            'machine': 'LAPTOP-S0HSJ7FB',
             'rg': 'ytongtest',
             'scope': 'scope-' + rand_string,
             'vnet': 'vnet-' + rand_string,
             'subnet': 'subnet-' + rand_string,
             'private_endpoint': 'pe-' + rand_string,
             'private_endpoint_connection': 'pec-' + rand_string,
-            'location': 'centraluseuap',
+            'location': 'eastus',
             'customScriptName': 'custom-' + rand_string,
         })
 
@@ -104,8 +104,9 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
         # Test private link resource list
         self.cmd('az connectedmachine private-link-resource list --scope-name {scope} -g {rg}', checks=[])
         
+        # DO NOT remove --location, otherwise it will print out an error saying vnet-test not found
         result = self.cmd('az network private-endpoint create -g {rg} -n {private_endpoint} --vnet-name {vnet} --subnet {subnet} --private-connection-resource-id {scope_id} '
-        '--connection-name {private_endpoint_connection} --group-id hybridcompute').get_output_in_json()
+        '--connection-name {private_endpoint_connection} --group-id hybridcompute --location {location}').get_output_in_json()
         self.assertTrue(self.kwargs['private_endpoint'].lower() in result['name'].lower())
 
         connection_list = self.cmd('az connectedmachine private-endpoint-connection list '
