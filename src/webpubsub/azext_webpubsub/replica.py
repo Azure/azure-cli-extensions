@@ -22,6 +22,22 @@ def webpubsub_replica_show(client: WebPubSubOperations, webpubsub_name, replica_
     return client.get(resource_group_name=resource_group_name, resource_name=webpubsub_name, replica_name=replica_name)
 
 
+def webpubsub_replica_start(client: WebPubSubOperations, webpubsub_name, replica_name, resource_group_name):
+    resource = client.get(resource_group_name=resource_group_name, resource_name=webpubsub_name, replica_name=replica_name)
+    parameter = Replica(location=resource.location, resource_stopped=False)
+    return client.begin_update(resource_group_name=resource_group_name, resource_name=webpubsub_name, replica_name=replica_name, parameters=parameter)
+
+
+def webpubsub_replica_stop(client: WebPubSubOperations, webpubsub_name, replica_name, resource_group_name):
+    resource = client.get(resource_group_name=resource_group_name, resource_name=webpubsub_name, replica_name=replica_name)
+    parameter = Replica(location=resource.location, resource_stopped=True)
+    return client.begin_update(resource_group_name=resource_group_name, resource_name=webpubsub_name, replica_name=replica_name, parameters=parameter)
+
+
+def webpubsub_replica_restart(client: WebPubSubOperations, webpubsub_name, replica_name, resource_group_name):
+    return client.begin_restart(resource_group_name=resource_group_name, resource_name=webpubsub_name, replica_name=replica_name)
+
+
 def webpubsub_replica_delete(client: WebPubSubOperations, webpubsub_name, replica_name, resource_group_name):
     return client.delete(resource_group_name=resource_group_name, resource_name=webpubsub_name, replica_name=replica_name)
 
