@@ -17,12 +17,12 @@ interactions:
       ParameterSetName:
       - -g -n --assignments --file-name
       User-Agent:
-      - AZURECLI/2.58.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.63.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
     method: POST
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clirg000001/providers/Microsoft.ApiCenter/services/clitest000002/exportMetadataSchema?api-version=2024-03-01
   response:
     body:
-      string: '{"format":"json-schema","value":"{\"type\":\"object\",\"properties\":{\"Id\":{\"type\":\"string\"},\"Name\":{\"type\":\"string\"},\"WorkspaceName\":{\"type\":\"string\"},\"Title\":{\"type\":\"string\"},\"Summary\":{\"type\":\"string\"},\"Description\":{\"type\":\"string\"},\"Kind\":{\"type\":\"string\"},\"LifecycleStage\":{\"type\":\"string\",\"enum\":[\"design\",\"development\",\"testing\",\"preview\",\"production\",\"deprecated\",\"retired\"]},\"TermsOfService\":{\"type\":\"object\",\"properties\":{\"url\":{\"description\":\"URL
+      string: '{"format":"json-schema","value":"{\"type\":\"object\",\"properties\":{\"Name\":{\"type\":\"string\"},\"WorkspaceName\":{\"type\":\"string\"},\"Title\":{\"type\":\"string\"},\"Summary\":{\"type\":\"string\"},\"Description\":{\"type\":\"string\"},\"Kind\":{\"type\":\"string\"},\"LifecycleStage\":{\"type\":\"string\",\"enum\":[\"design\",\"development\",\"testing\",\"preview\",\"production\",\"deprecated\",\"retired\"]},\"TermsOfService\":{\"type\":\"object\",\"properties\":{\"url\":{\"description\":\"URL
         pointing to the terms of service.\",\"type\":\"string\",\"maxLength\":200,\"format\":\"uri\"}}},\"License\":{\"type\":\"object\",\"properties\":{\"name\":{\"description\":\"Name
         of the license.\",\"type\":\"string\",\"maxLength\":50},\"url\":{\"description\":\"URL
         pointing to the license details. The URL field is mutually exclusive of the
@@ -34,7 +34,7 @@ interactions:
         pointing to the documentation.\",\"type\":\"string\",\"maxLength\":200,\"format\":\"uri\"}}}},\"Contacts\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"name\":{\"description\":\"Name
         of the contact.\",\"type\":\"string\",\"maxLength\":100},\"url\":{\"description\":\"URL
         for the contact.\",\"type\":\"string\",\"maxLength\":200,\"format\":\"uri\"},\"email\":{\"description\":\"Email
-        address for the contact.\",\"type\":\"string\",\"maxLength\":100,\"format\":\"email\"}}}},\"CustomPropertiesData\":{},\"CatalogNameTypeSafe\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"Name\":{\"type\":\"string\"}}},\"CatalogName\":{\"type\":\"string\"},\"SubscriptionId\":{\"type\":\"string\"},\"SubscriptionIdTypeSafe\":{\"type\":\"string\"},\"ResourceGroupName\":{\"type\":\"string\"},\"ResourceGroupNameTypeSafe\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"Name\":{\"type\":\"string\"}}},\"ETag\":{\"type\":\"string\"},\"Created\":{\"type\":\"string\",\"format\":\"date-time\"},\"Updated\":{\"type\":\"string\",\"format\":\"date-time\"},\"CreatedBy\":{\"type\":\"string\"},\"UpdatedBy\":{\"type\":\"string\"},\"customProperties\":{\"type\":\"object\",\"properties\":{\"clitest000003\":{\"type\":\"boolean\",\"title\":\"Public
+        address for the contact.\",\"type\":\"string\",\"maxLength\":100,\"format\":\"email\"}}}},\"CustomPropertiesData\":{},\"ApiSourceName\":{\"type\":\"string\"},\"CatalogNameTypeSafe\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"Name\":{\"type\":\"string\"}}},\"CatalogName\":{\"type\":\"string\"},\"SubscriptionId\":{\"type\":\"string\"},\"SubscriptionIdTypeSafe\":{\"type\":\"string\"},\"ResourceGroupName\":{\"type\":\"string\"},\"ResourceGroupNameTypeSafe\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"Name\":{\"type\":\"string\"}}},\"ETag\":{\"type\":\"string\"},\"Created\":{\"type\":\"string\",\"format\":\"date-time\"},\"Updated\":{\"type\":\"string\",\"format\":\"date-time\"},\"CreatedBy\":{\"type\":\"string\"},\"UpdatedBy\":{\"type\":\"string\"},\"customProperties\":{\"type\":\"object\",\"properties\":{\"clitest000003\":{\"type\":\"boolean\",\"title\":\"Public
         Facing\"}},\"unevaluatedProperties\":false,\"required\":[\"clitest000003\"]}}}"}'
     headers:
       api-supported-versions:
@@ -42,11 +42,11 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '2854'
+      - '2865'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 17 Jun 2024 06:07:14 GMT
+      - Wed, 09 Oct 2024 08:19:36 GMT
       expires:
       - '-1'
       pragma:
@@ -64,7 +64,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '199'
       x-msedge-ref:
-      - 'Ref A: 2357567CDDB849F5AB52020BEAC42B01 Ref B: MAA201060514033 Ref C: 2024-06-17T06:07:13Z'
+      - 'Ref A: 5F5A364781674FDB990B2EF5DBFD6E5E Ref B: MAA201060513037 Ref C: 2024-10-09T08:19:35Z'
       x-powered-by:
       - ASP.NET
     status:

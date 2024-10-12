@@ -18,7 +18,7 @@ class GenerateAwsTemplate(AAZCommand):
     """Retrieve AWS Cloud Formation template
 
     :example: GenerateAwsTemplate_Post
-        az arc-multicloud generate-aws-template --connector-id pnxcfjidglabnwxit --solution-types "[{solution-type:hjyownzpfxwiufmd,solution-settings:{}}]"
+        az arc-multicloud generate-aws-template --connector-id /subscriptions/{}/resourceGroups/{}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{} --output-directory example_folder/templates
     """
 
     _aaz_info = {
@@ -52,28 +52,6 @@ class GenerateAwsTemplate(AAZCommand):
             help="The fully qualified Azure Resource manager identifier of the public cloud connector",
             required=True,
         )
-        _args_schema.solution_types = AAZListArg(
-            options=["--solution-types"],
-            arg_group="GenerateAwsTemplateRequest",
-            help="The list of solution types and their settings",
-        )
-
-        solution_types = cls._args_schema.solution_types
-        solution_types.Element = AAZObjectArg()
-
-        _element = cls._args_schema.solution_types.Element
-        _element.solution_settings = AAZDictArg(
-            options=["solution-settings"],
-            help="Solution settings",
-        )
-        _element.solution_type = AAZStrArg(
-            options=["solution-type"],
-            help="The type of the solution",
-            required=True,
-        )
-
-        solution_settings = cls._args_schema.solution_types.Element.solution_settings
-        solution_settings.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -159,20 +137,6 @@ class GenerateAwsTemplate(AAZCommand):
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("connectorId", AAZStrType, ".connector_id", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("solutionTypes", AAZListType, ".solution_types")
-
-            solution_types = _builder.get(".solutionTypes")
-            if solution_types is not None:
-                solution_types.set_elements(AAZObjectType, ".")
-
-            _elements = _builder.get(".solutionTypes[]")
-            if _elements is not None:
-                _elements.set_prop("solutionSettings", AAZDictType, ".solution_settings")
-                _elements.set_prop("solutionType", AAZStrType, ".solution_type", typ_kwargs={"flags": {"required": True}})
-
-            solution_settings = _builder.get(".solutionTypes[].solutionSettings")
-            if solution_settings is not None:
-                solution_settings.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
