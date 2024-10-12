@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b4
+++++++
+* Vendor Azure SDKs and remove Azure SDKs from dependencies
+
 1.0.0b3
 ++++++
 * [2024-04-11] Version intended to work with QDK version 0.29.0
