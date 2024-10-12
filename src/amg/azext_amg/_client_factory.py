@@ -10,9 +10,3 @@ def cf_amg(cli_ctx, subscription, *_):
     # pylint: disable=unused-argument
     from azext_amg.vendored_sdks import DashboardManagementClient
     return get_mgmt_service_client(cli_ctx, DashboardManagementClient, subscription_id=subscription)
-
-
-def cf_amw(cli_ctx, subscription, *_):
-    # pylint: disable=unused-argument
-    from azure.mgmt.monitor import MonitorManagementClient
-    return get_mgmt_service_client(cli_ctx, MonitorManagementClient, subscription_id=subscription)

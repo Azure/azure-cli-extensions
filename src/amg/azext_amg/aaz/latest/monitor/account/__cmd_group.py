@@ -11,11 +11,8 @@
 from azure.cli.core.aaz import *
 
 
-@register_command_group(
-    "grafana mpe",
-)
 class __CMDGroup(AAZCommandGroup):
-    """Commands to manage managed private endpoints.
+    """Manage monitor account
     """
     pass
 
