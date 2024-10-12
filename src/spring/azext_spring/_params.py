@@ -186,7 +186,6 @@ def load_arguments(self, _):
         c.argument('enable_config_server',
                    action='store_true',
                    options_list=['--enable-config-server', '--enable-cs'],
-                   is_preview=True,
                    arg_group="Config Server",
                    help='(Enterprise Tier Only) Enable Config Server.')
         c.argument('enable_application_live_view',
@@ -377,7 +376,6 @@ def load_arguments(self, _):
         c.argument('bind_config_server',
                    action='store_true',
                    options_list=['--bind-config-server', '--bind-cs'],
-                   is_preview=True,
                    validator=validate_create_app_binding_default_config_server,
                    help='Bind the app to the default Config Server automatically.')
         c.argument('cpu', arg_type=cpu_type)

@@ -1,5 +1,9 @@
 Release History
 ===============
+1.26.0
+---
+* Remove `Preview` tag for config server features in Enterprise tier.
+
 1.25.1
 ---
 * Drop `msrestazure` dependency.
