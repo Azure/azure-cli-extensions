@@ -8,11 +8,11 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
 def cf_amg(cli_ctx, subscription, *_):
     # pylint: disable=unused-argument
-    from azext_amg.vendored_sdks.dashboard import DashboardManagementClient
+    from azext_amg.vendored_sdks import DashboardManagementClient
     return get_mgmt_service_client(cli_ctx, DashboardManagementClient, subscription_id=subscription)
 
 
 def cf_amw(cli_ctx, subscription, *_):
     # pylint: disable=unused-argument
-    from azext_amg.vendored_sdks.monitor import MonitorManagementClient
+    from azure.mgmt.monitor import MonitorManagementClient
     return get_mgmt_service_client(cli_ctx, MonitorManagementClient, subscription_id=subscription)
