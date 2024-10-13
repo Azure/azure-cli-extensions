@@ -8,3 +8,13 @@
 # pylint: skip-file
 # flake8: noqa
 
+from azure.cli.core.aaz import *
+
+
+class __CMDGroup(AAZCommandGroup):
+    """Manage Azure Bastion host machines.
+    """
+    pass
+
+
+__all__ = ["__CMDGroup"]

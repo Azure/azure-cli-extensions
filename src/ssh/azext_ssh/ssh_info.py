@@ -21,9 +21,10 @@ class SSHSession():
     def __init__(self, resource_group_name, vm_name, ssh_ip, public_key_file,
                  private_key_file, use_private_ip, local_user, cert_file, port,
                  ssh_client_folder, ssh_args, delete_credentials, resource_type,
-                 ssh_proxy_folder, credentials_folder, winrdp, yes_without_prompt):
+                 ssh_proxy_folder, credentials_folder, winrdp, yes_without_prompt, bastion):
         self.resource_group_name = resource_group_name
         self.vm_name = vm_name
+        self.resource_id = None
         self.ip = ssh_ip
         self.use_private_ip = use_private_ip
         self.local_user = local_user
@@ -31,11 +32,17 @@ class SSHSession():
         self.ssh_args = ssh_args
         self.delete_credentials = delete_credentials
         self.resource_type = resource_type
+        self.bastion = bastion
         self.winrdp = winrdp
         self.proxy_path = None
         self.relay_info = None
         self.new_service_config = False
+        self.bastion_name = None
+        self.bastion_rsg = None
+        self.network_interface = None
+
         self.yes_without_prompt = yes_without_prompt
+
         self.public_key_file = os.path.abspath(public_key_file) if public_key_file else None
         self.private_key_file = os.path.abspath(private_key_file) if private_key_file else None
         self.cert_file = os.path.abspath(cert_file) if cert_file else None
@@ -52,6 +59,8 @@ class SSHSession():
         return False
 
     def get_host(self):
+        if self.bastion:
+            return self.local_user + "@localhost"
         if not self.is_arc() and self.ip:
             return self.ip
 
@@ -96,6 +105,8 @@ class ConfigSession():
         self.local_user = local_user
         self.port = port
         self.resource_type = resource_type
+        self.bastion = False
+        self.network_interface = None
         self.proxy_path = None
         self.relay_info = None
         self.relay_info_path = None

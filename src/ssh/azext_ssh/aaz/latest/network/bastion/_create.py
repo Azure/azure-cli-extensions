@@ -11,23 +11,17 @@
 from azure.cli.core.aaz import *
 
 
-@register_command(
-    "network bastion create",
-)
 class Create(AAZCommand):
-    """Create the specified Bastion Host.
+    """Create a Azure Bastion host machine.
 
     :example: Create a Azure Bastion host machine.
         az network bastion create --location westus2 --name MyBastionHost --public-ip-address MyPublicIpAddress --resource-group MyResourceGroup --vnet-name MyVnet
-
-    :example: Create a Azure Bastion host machine with zones.
-        az network bastion create --location westus2 --name MyBastionHost --public-ip-address MyPublicIpAddress --resource-group MyResourceGroup --vnet-name MyVnet --zones 1 2 3
     """
 
     _aaz_info = {
-        "version": "2024-01-01",
+        "version": "2023-11-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/bastionhosts/{}", "2024-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/bastionhosts/{}", "2023-11-01"],
         ]
     }
 
@@ -50,108 +44,54 @@ class Create(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.name = AAZStrArg(
             options=["-n", "--name"],
-            help="The name of the Bastion Host.",
+            help="Name of the bastion host.",
             required=True,
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Resource group name of the Bastion Host.",
             required=True,
         )
-
-        # define Arg Group "Parameters"
-
-        _args_schema = cls._args_schema
         _args_schema.location = AAZResourceLocationArg(
-            arg_group="Parameters",
-            help="Resource location.",
+            help="Location. Values from: `az account list-locations`. You can configure the default location using `az configure --defaults location=<location>`.",
             fmt=AAZResourceLocationArgFormat(
                 resource_group_arg="resource_group",
             ),
         )
-        
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Parameters",
-            help="Resource tags.",
-        )
-        _args_schema.zones = AAZListArg(
-            options=["--zones"],
-            arg_group="Parameters",
-            help="A list of availability zones denoting where the resource needs to come from.",
-        )
-
-        _args_schema.sku = AAZStrArg(
-            options=["--sku"],
-            help="Sku of this Bastion Host.",
-            default="Standard",
-            enum={"Basic": "Basic", "Premium": "Premium", "Standard": "Standard"},
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
-
-        zones = cls._args_schema.zones
-        zones.Element = AAZStrArg()
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
         _args_schema.disable_copy_paste = AAZBoolArg(
             options=["--disable-copy-paste"],
-            arg_group="Properties",
-            help="Enable/Disable Copy/Paste feature of the Bastion Host resource.",
-            default=False,
-        )
-        _args_schema.enable_file_copy = AAZBoolArg(
-            options=["--file-copy"],
-            arg_group="Properties",
-            help="Enable/Disable File Copy feature of the Bastion Host resource.",
+            help="Disable copy and paste for all sessions on this Azure Bastion resource.",
             default=False,
         )
         _args_schema.enable_ip_connect = AAZBoolArg(
             options=["--enable-ip-connect"],
-            arg_group="Properties",
-            help="Enable/Disable IP Connect feature of the Bastion Host resource.",
-            default=False,
-        )
-        _args_schema.enable_kerberos = AAZBoolArg(
-            options=["--kerberos"],
-            arg_group="Properties",
-            help="Enable/Disable Kerberos feature of the Bastion Host resource.",
-            default=False,
-        )
-        _args_schema.enable_session_recording = AAZBoolArg(
-            options=["--session-recording"],
-            arg_group="Properties",
-            help="Enable/Disable Session Recording feature of the Bastion Host resource.",
-            default=False,
-        )
-        _args_schema.enable_shareable_link = AAZBoolArg(
-            options=["--shareable-link"],
-            arg_group="Properties",
-            help="Enable/Disable Shareable Link of the Bastion Host resource.",
+            help="Enable IP-based Connections on this Azure Bastion resource.",
             default=False,
         )
         _args_schema.enable_tunneling = AAZBoolArg(
             options=["--enable-tunneling"],
-            arg_group="Properties",
-            help="Enable/Disable Tunneling feature of the Bastion Host resource.",
+            help="Enable Native Client Support on this Azure Bastion resource.",
             default=False,
         )
         _args_schema.ip_configurations = AAZListArg(
             options=["--ip-configurations"],
-            arg_group="Properties",
             help="IP configuration of the Bastion Host resource.",
         )
         _args_schema.scale_units = AAZIntArg(
             options=["--scale-units"],
-            arg_group="Properties",
-            help="The scale units for the Bastion Host resource.",
-            default=2,
+            help="Scale units for the Bastion Host resource with the range of [2, 50].",
             fmt=AAZIntArgFormat(
                 maximum=50,
                 minimum=2,
             ),
+        )
+        _args_schema.sku = AAZStrArg(
+            options=["--sku"],
+            help="SKU of this Bastion Host.",
+            default="Standard",
+            enum={"Basic": "Basic", "Developer": "Developer", "Standard": "Standard"},
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            help="Space-separated tags: key[=value] [key[=value] ...].",
         )
 
         ip_configurations = cls._args_schema.ip_configurations
@@ -182,6 +122,55 @@ class Create(AAZCommand):
         )
         cls._build_args_sub_resource_create(_element.subnet)
 
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
+
+        # define Arg Group "Parameters"
+
+        _args_schema = cls._args_schema
+        _args_schema.zones = AAZListArg(
+            options=["--zones"],
+            arg_group="Parameters",
+            help="A list of availability zones denoting where the resource needs to come from.",
+        )
+
+        zones = cls._args_schema.zones
+        zones.Element = AAZStrArg()
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.enable_kerberos = AAZBoolArg(
+            options=["--enable-kerberos"],
+            arg_group="Properties",
+            help="Enable/Disable Kerberos feature of the Bastion Host resource.",
+            default=False,
+        )
+        _args_schema.network_acls = AAZObjectArg(
+            options=["--network-acls"],
+            arg_group="Properties",
+        )
+        _args_schema.virtual_network = AAZObjectArg(
+            options=["--virtual-network"],
+            arg_group="Properties",
+            help="Reference to an existing virtual network required for Developer Bastion Host only.",
+        )
+        cls._build_args_sub_resource_create(_args_schema.virtual_network)
+
+        network_acls = cls._args_schema.network_acls
+        network_acls.ip_rules = AAZListArg(
+            options=["ip-rules"],
+            help="Sets the IP ACL rules for Developer Bastion Host.",
+        )
+
+        ip_rules = cls._args_schema.network_acls.ip_rules
+        ip_rules.Element = AAZObjectArg()
+
+        _element = cls._args_schema.network_acls.ip_rules.Element
+        _element.address_prefix = AAZStrArg(
+            options=["address-prefix"],
+            help="Specifies the IP or IP range in CIDR format. Only IPV4 address is allowed.",
+        )
         return cls._args_schema
 
     _args_sub_resource_create = None
@@ -224,7 +213,6 @@ class Create(AAZCommand):
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
-            print(request)
             session = self.client.send_request(request=request, stream=False, **kwargs)
             if session.http_response.status_code in [202]:
                 return self.client.build_lro_polling(
@@ -284,7 +272,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01",
+                    "api-version", "2023-11-01",
                     required=True,
                 ),
             }
@@ -318,14 +306,13 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("disableCopyPaste", AAZBoolType, ".disable_copy_paste")
-                properties.set_prop("enableFileCopy", AAZBoolType, ".enable_file_copy")
                 properties.set_prop("enableIpConnect", AAZBoolType, ".enable_ip_connect")
                 properties.set_prop("enableKerberos", AAZBoolType, ".enable_kerberos")
-                properties.set_prop("enableSessionRecording", AAZBoolType, ".enable_session_recording")
-                properties.set_prop("enableShareableLink", AAZBoolType, ".enable_shareable_link")
                 properties.set_prop("enableTunneling", AAZBoolType, ".enable_tunneling")
                 properties.set_prop("ipConfigurations", AAZListType, ".ip_configurations")
+                properties.set_prop("networkAcls", AAZObjectType, ".network_acls")
                 properties.set_prop("scaleUnits", AAZIntType, ".scale_units")
+                _CreateHelper._build_schema_sub_resource_create(properties.set_prop("virtualNetwork", AAZObjectType, ".virtual_network"))
 
             ip_configurations = _builder.get(".properties.ipConfigurations")
             if ip_configurations is not None:
@@ -342,6 +329,18 @@ class Create(AAZCommand):
                 properties.set_prop("privateIPAllocationMethod", AAZStrType, ".private_ip_allocation_method")
                 _CreateHelper._build_schema_sub_resource_create(properties.set_prop("publicIPAddress", AAZObjectType, ".public_ip_address", typ_kwargs={"flags": {"required": True}}))
                 _CreateHelper._build_schema_sub_resource_create(properties.set_prop("subnet", AAZObjectType, ".subnet", typ_kwargs={"flags": {"required": True}}))
+
+            network_acls = _builder.get(".properties.networkAcls")
+            if network_acls is not None:
+                network_acls.set_prop("ipRules", AAZListType, ".ip_rules")
+
+            ip_rules = _builder.get(".properties.networkAcls.ipRules")
+            if ip_rules is not None:
+                ip_rules.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.networkAcls.ipRules[]")
+            if _elements is not None:
+                _elements.set_prop("addressPrefix", AAZStrType, ".address_prefix")
 
             sku = _builder.get(".sku")
             if sku is not None:
@@ -409,9 +408,6 @@ class Create(AAZCommand):
             properties.enable_kerberos = AAZBoolType(
                 serialized_name="enableKerberos",
             )
-            properties.enable_session_recording = AAZBoolType(
-                serialized_name="enableSessionRecording",
-            )
             properties.enable_shareable_link = AAZBoolType(
                 serialized_name="enableShareableLink",
             )
@@ -420,6 +416,9 @@ class Create(AAZCommand):
             )
             properties.ip_configurations = AAZListType(
                 serialized_name="ipConfigurations",
+            )
+            properties.network_acls = AAZObjectType(
+                serialized_name="networkAcls",
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
@@ -466,6 +465,20 @@ class Create(AAZCommand):
                 flags={"required": True},
             )
             _CreateHelper._build_schema_sub_resource_read(properties.subnet)
+
+            network_acls = cls._schema_on_200_201.properties.network_acls
+            network_acls.ip_rules = AAZListType(
+                serialized_name="ipRules",
+            )
+
+            ip_rules = cls._schema_on_200_201.properties.network_acls.ip_rules
+            ip_rules.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.properties.network_acls.ip_rules.Element
+            _element.address_prefix = AAZStrType(
+                serialized_name="addressPrefix",
+            )
+
             sku = cls._schema_on_200_201.sku
             sku.name = AAZStrType()
 
