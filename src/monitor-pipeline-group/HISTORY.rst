@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.1.0b1
+1.0.0b2
 ++++++
 * Update API version to 2024-10-01-preview
 
