@@ -1,6 +1,10 @@
 
 Release History
 ===============
+2.0.0
+++++++
+Changed default VM image to 2019-datacenter-gs for better default security. 
+
 1.1.0
 ++++++
 Added script for GT fixit button
