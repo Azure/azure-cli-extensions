@@ -753,7 +753,7 @@ class RepairAndRestoreLinuxVM(LiveScenarioTest):
 class RepairButtonLinuxVM(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_vmrepair_RepairAndRestoreLinuxVM(self, resource_group):
+    def test_vmrepair_RepairButton(self, resource_group):
         self.kwargs.update({
             'vm': 'vm1'
         })
@@ -871,3 +871,56 @@ class WindowsConfidentialVMRepair(LiveScenarioTest):
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
+        
+        
+@pytest.mark.ResourceId
+class WindowsResourceIdParse(LiveScenarioTest):
+
+    @ResourceGroupPreparer(location='westus2')
+    def test_vmrepair_WinRunRepairVMId(self, resource_group):
+        import uuid
+        import secrets
+        import string
+        base_password = "Passw0rd2024"
+        guid_suffix = str(uuid.uuid4())
+        secure_password = base_password + guid_suffix
+        username_length = 8
+        secure_username = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(username_length))
+        self.kwargs.update({
+            'vm': 'vm1',
+            'admin_password': secure_password,
+            'admin_username': secure_username
+        })
+
+        # Create test VM
+        self.cmd('vm create -g {rg} -n {vm} --admin-username {admin_username} --admin-password {admin_password} --image MicrosoftWindowsServer:WindowsServer:2022-datacenter-g2:latest')
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
+        # Something wrong with vm create command if it fails here
+        assert len(vms) == 1
+
+        # Create Repair VM
+        repair_vm = self.cmd('vm repair create -g {rg} -n {vm} --repair-username {admin_username} --repair-password {admin_password}  --yes -o json').get_output_in_json()
+        assert repair_vm['status'] == STATUS_SUCCESS, repair_vm['error_message']
+        # Check repair VM
+        self.kwargs.update({
+            'vm': 'vm1',
+            'admin_password': secure_password,
+            'admin_username': secure_username,
+            'repair_resource_group': repair_vm['repair_resource_group']
+        })
+        repair_vms = self.cmd('vm list -g {repair_resource_group} -o json').get_output_in_json()
+        assert len(repair_vms) == 1
+        repair_vm = repair_vms[0]
+        repair_vm_id = repair_vm['id']
+        self.kwargs.update({
+            'vm': 'vm1',
+            'admin_password': secure_password,
+            'admin_username': secure_username,
+            'repair_vm_id': repair_vm_id
+        })
+        # Run a script for testing repair-vm-id
+        result_run = self.cmd('vm repair run -g {rg} -n {vm} --run-id win-hello-world --repair-vm-id {repair_vm_id} --run-on-repair -o json').get_output_in_json()
+        assert result_run['status'] == STATUS_SUCCESS, result_run['error_message']
+        
+        # Call Restore
+        self.cmd('vm repair restore -g {rg} -n {vm} --yes')
