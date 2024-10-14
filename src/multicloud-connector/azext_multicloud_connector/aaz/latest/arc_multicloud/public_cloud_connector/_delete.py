@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete a PublicCloudConnector
 
     :example: PublicCloudConnectors_Delete
-        az arc-multicloud public-cloud-connector delete --resource-group rgpublicCloud --name skcfyjvflkhibdywjay
+        az arc-multicloud public-cloud-connector delete --resource-group rgpublicCloud --name myConnector
     """
 
     _aaz_info = {
