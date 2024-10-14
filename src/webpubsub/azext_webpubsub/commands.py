@@ -6,7 +6,8 @@
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.util import empty_on_404
-from ._client_factory import (cf_webpubsub, cf_webpubsubhub, cf_webpubsubhub_usage, cf_webpubsub_replicas)
+from ._client_factory import (cf_webpubsub, cf_webpubsubhub, cf_webpubsubhub_usage,
+                              cf_webpubsub_replicas, cf_webpubsub_custom_certificates)
 from ._exception_handler import exception_handler
 
 
@@ -52,6 +53,11 @@ def load_command_table(self, _):
         client_factory=cf_webpubsub_replicas
     )
 
+    webpubsub_custom_certificate_utils = CliCommandType(
+        operations_tmpl='azext_webpubsub.custom-certificate#{}',
+        client_factory=cf_webpubsub_custom_certificates
+    )
+
     with self.command_group('webpubsub', webpubsub_general_utils) as g:
         g.command('create', 'webpubsub_create', exception_handler=exception_handler)
         g.command('delete', 'webpubsub_delete')
@@ -80,7 +86,8 @@ def load_command_table(self, _):
 
     with self.command_group('webpubsub hub', webpubsub_hub_utils) as g:
         g.command('delete', 'hub_delete')
-        g.generic_update_command('update', getter_name='get_hub', setter_name='set_hub', custom_func_name='update', custom_func_type=webpubsub_hub_utils, exception_handler=exception_handler)
+        g.generic_update_command('update', getter_name='get_hub', setter_name='set_hub', custom_func_name='update',
+                                 custom_func_type=webpubsub_hub_utils, exception_handler=exception_handler)
         g.command('create', 'hub_create', exception_handler=exception_handler)
         g.show_command('show', 'hub_show', exception_handler=empty_on_404)
         g.command('list', 'hub_list')
@@ -120,3 +127,9 @@ def load_command_table(self, _):
         g.command('stop', 'webpubsub_replica_stop', exception_handler=empty_on_404)
         g.command('restart', 'webpubsub_replica_restart', exception_handler=empty_on_404)
         g.show_command('delete', 'webpubsub_replica_delete')
+
+    with self.command_group('webpubsub custom-certificate', webpubsub_custom_certificate_utils) as g:
+        g.command('list', 'list_custom_certificate')
+        g.show_command('show', 'show_custom_certificate')
+        g.command('create', 'create_custom_certificate')
+        g.command('delete', 'delete_custom_certificate')

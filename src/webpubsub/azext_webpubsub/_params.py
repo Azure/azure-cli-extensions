@@ -24,7 +24,8 @@ PERMISSION_TYPE = ['joinLeaveGroup', 'sendToGroup']
 def load_arguments(self, _):
     from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
-    webpubsub_name_type = CLIArgumentType(options_list='--webpubsub-name-name', help='Name of the Webpubsub.', id_part='name')
+    webpubsub_name_type = CLIArgumentType(options_list='--webpubsub-name-name',
+                                          help='Name of the Webpubsub.', id_part='name')
     webpubsubhub_name_type = CLIArgumentType(help='Name of the hub.', id_part='child_name_1')
     webpubsub_replica_name_type = CLIArgumentType(help='Name of the replica.', id_part='child_name_1')
 
@@ -49,14 +50,19 @@ def load_arguments(self, _):
 
     # Network Rule
     with self.argument_context('webpubsub network-rule update', validator=validate_network_rule) as c:
-        c.argument('connection_name', nargs='*', help='Space-separeted list of private endpoint connection name.', required=False, arg_group='Private Endpoint Connection')
-        c.argument('public_network', arg_type=get_three_state_flag(), help='Set rules for public network.', required=False, arg_group='Public Network')
-        c.argument('allow', arg_type=get_enum_type(WebPubSubRequestType), nargs='*', help='The allowed virtual network rule. Space-separeted list of scope to assign.', type=WebPubSubRequestType, required=False)
-        c.argument('deny', arg_type=get_enum_type(WebPubSubRequestType), nargs='*', help='The denied virtual network rule. Space-separeted list of scope to assign.', type=WebPubSubRequestType, required=False)
+        c.argument('connection_name', nargs='*', help='Space-separeted list of private endpoint connection name.',
+                   required=False, arg_group='Private Endpoint Connection')
+        c.argument('public_network', arg_type=get_three_state_flag(),
+                   help='Set rules for public network.', required=False, arg_group='Public Network')
+        c.argument('allow', arg_type=get_enum_type(WebPubSubRequestType), nargs='*',
+                   help='The allowed virtual network rule. Space-separeted list of scope to assign.', type=WebPubSubRequestType, required=False)
+        c.argument('deny', arg_type=get_enum_type(WebPubSubRequestType), nargs='*',
+                   help='The denied virtual network rule. Space-separeted list of scope to assign.', type=WebPubSubRequestType, required=False)
 
     for scope in ['webpubsub network-rule ip-rule add', 'webpubsub network-rule ip-rule remove']:
         with self.argument_context(scope, validator=validate_ip_rule) as c:
-            c.argument('ip_rule', action=IPRuleTemplateUpdateAction, nargs='*', help='The IP rule for the hub.', required=True)
+            c.argument('ip_rule', action=IPRuleTemplateUpdateAction, nargs='*',
+                       help='The IP rule for the hub.', required=True)
 
     for scope in ['webpubsub hub delete',
                   'webpubsub hub show']:
@@ -67,9 +73,12 @@ def load_arguments(self, _):
                   'webpubsub hub create']:
         with self.argument_context(scope) as c:
             c.argument('hub_name', help='The hub to manage')
-            c.argument('event_handler', action=EventHandlerTemplateUpdateAction, nargs='*', help='Template item for event handler settings. Use key=value pattern to set properties. Supported keys are "url-template", "user-event-pattern", "system-event", "auth-type" and "auth-resource". Setting multiple "system-event" results in an array and for other properties, only last set takes active.')
-            c.argument('allow_anonymous', arg_type=get_three_state_flag(), help='Set if anonymous connections are allowed for this hub. True means allow and False means deny.')
-            c.argument('websocket_keepalive', help='The WebSocket keep-alive interval in seconds for all clients in the hub. Valid range: 1 to 120. Default to 20 seconds.')
+            c.argument('event_handler', action=EventHandlerTemplateUpdateAction, nargs='*',
+                       help='Template item for event handler settings. Use key=value pattern to set properties. Supported keys are "url-template", "user-event-pattern", "system-event", "auth-type" and "auth-resource". Setting multiple "system-event" results in an array and for other properties, only last set takes active.')
+            c.argument('allow_anonymous', arg_type=get_three_state_flag(
+            ), help='Set if anonymous connections are allowed for this hub. True means allow and False means deny.')
+            c.argument('websocket_keepalive',
+                       help='The WebSocket keep-alive interval in seconds for all clients in the hub. Valid range: 1 to 120. Default to 20 seconds.')
 
     with self.argument_context('webpubsub hub list') as c:
         c.argument('webpubsub_name', webpubsub_name_type, options_list=['--name', '-n'], id_part=None)
@@ -132,3 +141,14 @@ def load_arguments(self, _):
                   'webpubsub replica delete']:
         with self.argument_context(scope) as c:
             c.argument('webpubsub_name', webpubsub_name_type, options_list=['--name', '-n'])
+
+    # Custom Certificate
+    for scope in ['webpubsub custom-certificate show', 'webpubsub custom-certificate delete']:
+        with self.argument_context(scope) as c:
+            c.argument('certificate_name', help='The name of the certificate.',
+                       options_list=['--certificate-name', '-c'])
+
+    with self.argument_context('webpubsub custom-certificate create') as c:
+        c.argument('certificate_name', help='The name of the certificate.', options_list=['--certificate-name', '-c'])
+        c.argument('key_vault_base_uri', help='The base URI of the Key Vault that stores the certificate.')
+        c.argument('key_vault_secret_name', help='The name of the secret in the Key Vault that stores the certificate.')

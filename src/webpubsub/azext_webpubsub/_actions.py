@@ -38,7 +38,8 @@ class EventHandlerTemplateUpdateAction(argparse._AppendAction):
             except ValueError:
                 raise InvalidArgumentValueError('usage error: {} KEY=VALUE [KEY=VALUE ...]'.format(option_string))
         if auth_type is not None:
-            kwargs['auth'] = UpstreamAuthSettings(type=auth_type, managed_identity=ManagedIdentitySettings(resource=auth_resource))
+            kwargs['auth'] = UpstreamAuthSettings(
+                type=auth_type, managed_identity=ManagedIdentitySettings(resource=auth_resource))
         if system_events:
             kwargs['system_events'] = system_events
         value = EventHandler(**kwargs)

@@ -62,6 +62,21 @@ helps['webpubsub replica'] = """
     short-summary: Manage replica settings.
 """
 
+helps['webpubsub network-rule ip-rule'] = """
+    type: group
+    short-summary: Manage WebPubSub Service IP rules.
+"""
+
+helps['webpubsub custom-certificate'] = """
+    type: group
+    short-summary: Manage WebPubSub custom certificates.
+"""
+
+helps['webpubsub custom-domain'] = """
+    type: group
+    short-summary: Manage WebPubSub custom domains.
+"""
+
 helps['webpubsub create'] = """
     type: command
     short-summary: Create a Webpubsub.
@@ -165,11 +180,6 @@ helps['webpubsub network-rule update'] = """
       - name: Set denying client connection for both public network and private endpoint connections
         text: >
             az webpubsub network-rule update --public-network --connection-name MyPrivateEndpointConnection1 MyPrivateEndpointConnection2 -n MyWebPubSub -g MyResourceGroup --deny ClientConnection
-"""
-
-helps['webpubsub network-rule ip-rule'] = """
-    type: group
-    short-summary: Manage WebPubSub Service IP rules.
 """
 
 helps['webpubsub network-rule ip-rule add'] = """
@@ -373,4 +383,40 @@ examples:
   - name: Get the detail of a replica
     text: >
         az webpubsub replica create --sku Premium_P1 -l eastus --replica-name MyReplica --name MyWebPubSub -g MyResourceGroup
+"""
+
+helps['webpubsub custom-certificate list'] = """
+type: command
+short-summary: List custom certificates of WebPubSub Service.
+examples:
+  - name: List custom certificates
+    text: >
+        az webpubsub custom-certificate list --name MyWebPubSub -g MyResourceGroup
+"""
+
+helps['webpubsub custom-certificate show'] = """
+type: command
+short-summary: Show a custom certificate of WebPubSub Service.
+examples:
+  - name: Show custom certificate
+    text: >
+        az webpubsub custom-certificate show --name MyWebPubSub -g MyResourceGroup --certificate-name MyCertificate
+"""
+
+helps['webpubsub custom-certificate create'] = """
+type: command
+short-summary: Create a custom certificate for WebPubSub Service.
+examples:
+  - name: Create a custom certificate
+    text: >
+        az webpubsub custom-certificate create --name MyWebPubSub -g MyResourceGroup --certificate-name MyCertificate --key-vault-base-uri https://myvault.vault.azure.net/ --key-vault-secret-name MySecret --key-vault-secret-version 8d35338681be4cf09b97e899cb7179b8
+"""
+
+helps['webpubsub custom-certificate delete'] = """
+type: command
+short-summary: Delete a custom certificate for WebPubSub Service.
+examples:
+  - name: Delete a custom certificate
+    text: >
+        az webpubsub custom-certificate delete --name MyWebPubSub -g MyResourceGroup --certificate-name MyCertificate
 """
