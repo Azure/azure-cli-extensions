@@ -1,5 +1,13 @@
 Release History
 ===============
+1.26.0
+---
+* Remove `Preview` tag for config server features in Enterprise tier.
+
+1.25.1
+---
+* Drop `msrestazure` dependency.
+
 1.25.0
 ---
 * Add arguments `--disable-test-endpoint-auth` in `spring app create` and `spring app update`.

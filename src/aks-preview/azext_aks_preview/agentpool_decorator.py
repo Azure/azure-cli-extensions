@@ -36,8 +36,8 @@ from azext_aks_preview._consts import (
     CONST_AVAILABILITY_SET,
     CONST_VIRTUAL_MACHINES,
     CONST_DEFAULT_NODE_VM_SIZE,
-    CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE,
     CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
+    CONST_SSH_ACCESS_LOCALUSER,
 )
 from azext_aks_preview._helpers import get_nodepool_snapshot_by_snapshot_id
 
@@ -164,7 +164,7 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 sku = self.raw_param.get("sku")
                 # if --node-vm-size is not specified, but --sku automatic is explicitly specified
                 if sku is not None and sku == "automatic":
-                    node_vm_size = CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE
+                    node_vm_size = ""
 
         # this parameter does not need validation
         return node_vm_size
@@ -457,6 +457,26 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
         # this parameter does not need validation
         return node_soak_duration
 
+    def get_undrainable_node_behavior(self) -> str:
+        """Obtain the value of undrainable_node_behavior.
+
+        :return: string
+        """
+        # read the original value passed by the command
+        undrainable_node_behavior = self.raw_param.get("undrainable_node_behavior")
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.upgrade_settings and
+                self.agentpool.upgrade_settings.undrainable_node_behavior is not None
+            ):
+                undrainable_node_behavior = self.agentpool.upgrade_settings.undrainable_node_behavior
+
+        # this parameter does not need dynamic completion
+        # this parameter does not need validation
+        return undrainable_node_behavior
+
     def get_enable_artifact_streaming(self) -> bool:
         """Obtain the value of enable_artifact_streaming.
         :return: bool
@@ -563,6 +583,24 @@ class AKSPreviewAgentPoolContext(AKSAgentPoolContext):
                 skip_gpu_driver_install = not self.agentpool.gpu_profile.install_gpu_driver
 
         return skip_gpu_driver_install
+
+    def get_driver_type(self) -> Union[str, None]:
+        """Obtain the value of driver_type.
+        :return: str or None
+        """
+        # read the original value passed by the command
+        driver_type = self.raw_param.get("driver_type")
+
+        # In create mode, try to read the property value corresponding to the parameter from the `agentpool` object
+        if self.decorator_mode == DecoratorMode.CREATE:
+            if (
+                self.agentpool and
+                self.agentpool.gpu_profile is not None and
+                self.agentpool.gpu_profile.driver_type is not None
+            ):
+                driver_type = self.agentpool.gpu_profile.driver_type
+
+        return driver_type
 
     def get_enable_secure_boot(self) -> bool:
         """Obtain the value of enable_secure_boot.
@@ -835,6 +873,9 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             if agentpool.security_profile is None:
                 agentpool.security_profile = self.models.AgentPoolSecurityProfile()  # pylint: disable=no-member
             agentpool.security_profile.ssh_access = ssh_access
+            if ssh_access == CONST_SSH_ACCESS_LOCALUSER:
+                logger.warning("The new node pool will enable SSH access, recommended to use '--ssh-access disabled' "
+                               "option to disable SSH access for the node pool to make it more secure.")
         return agentpool
 
     def set_up_skip_gpu_driver_install(self, agentpool: AgentPool) -> AgentPool:
@@ -845,6 +886,17 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
             if agentpool.gpu_profile is None:
                 agentpool.gpu_profile = self.models.AgentPoolGPUProfile()  # pylint: disable=no-member
             agentpool.gpu_profile.install_gpu_driver = False
+        return agentpool
+
+    def set_up_driver_type(self, agentpool: AgentPool) -> AgentPool:
+        """Set up driver type property for the AgentPool object."""
+        self._ensure_agentpool(agentpool)
+
+        driver_type = self.context.get_driver_type()
+        if driver_type is not None:
+            if agentpool.gpu_profile is None:
+                agentpool.gpu_profile = self.models.AgentPoolGPUProfile()  # pylint: disable=no-member
+            agentpool.gpu_profile.driver_type = driver_type
         return agentpool
 
     def set_up_pod_ip_allocation_mode(self, agentpool: AgentPool) -> AgentPool:
@@ -948,6 +1000,8 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         agentpool = self.set_up_artifact_streaming(agentpool)
         # set up skip_gpu_driver_install
         agentpool = self.set_up_skip_gpu_driver_install(agentpool)
+        # set up driver_type
+        agentpool = self.set_up_driver_type(agentpool)
         # set up agentpool ssh access
         agentpool = self.set_up_ssh_access(agentpool)
         # set up agentpool pod ip allocation mode
@@ -983,6 +1037,10 @@ class AKSPreviewAgentPoolAddDecorator(AKSAgentPoolAddDecorator):
         node_soak_duration = self.context.get_node_soak_duration()
         if node_soak_duration:
             upgrade_settings.node_soak_duration_in_minutes = node_soak_duration
+
+        undrainable_node_behavior = self.context.get_undrainable_node_behavior()
+        if undrainable_node_behavior:
+            upgrade_settings.undrainable_node_behavior = undrainable_node_behavior
 
         agentpool.upgrade_settings = upgrade_settings
         return agentpool
@@ -1202,6 +1260,11 @@ class AKSPreviewAgentPoolUpdateDecorator(AKSAgentPoolUpdateDecorator):
         node_soak_duration = self.context.get_node_soak_duration()
         if node_soak_duration:
             upgrade_settings.node_soak_duration_in_minutes = node_soak_duration
+            agentpool.upgrade_settings = upgrade_settings
+
+        undrainable_node_behavior = self.context.get_undrainable_node_behavior()
+        if undrainable_node_behavior:
+            upgrade_settings.undrainable_node_behavior = undrainable_node_behavior
             agentpool.upgrade_settings = upgrade_settings
 
         return agentpool

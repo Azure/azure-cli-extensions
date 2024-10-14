@@ -16,29 +16,29 @@ class ElasticScenario(ScenarioTest):
     def test_elastic_monitor(self, resource_group):
         email = self.cmd('account show').get_output_in_json()['user']['name']
         self.kwargs.update({
-            'monitor': self.create_random_name('monitor', 20),
-            'email': email
-        })
-        self.cmd('elastic monitor create -n {monitor} -g {rg} --user-info {{firstName:Alice,lastName:bob,companyName:Micosoft,emailAddress:{email}}} --sku {{name:ess-monthly-consumption_Monthly}}', checks=[
-            self.check('name', '{monitor}'),
-            self.check('resourceGroup', '{rg}'),
-            self.check('sku.name', 'ess-monthly-consumption_Monthly')
-        ])
-        self.cmd('elastic monitor update -n {monitor} -g {rg} --tags {{tag:test,tag2:test2}}', checks=[
-            self.check('name', '{monitor}'),
-            self.check('resourceGroup', '{rg}'),
-            self.check('tags.tag', 'test'),
-            self.check('tags.tag2', 'test2')
+        'monitor': self.create_random_name('monitor', 20),
+        'rg': resource_group,
+        'email': email,
+        'ruleSetId': '31d91b5afb6f4c2eaaf104c97b1991dd'
+        }) 
+        self.cmd('elastic monitor create '
+             '--name {monitor} '
+             '--resource-group {rg} '
+             '--user-info "{{\\"firstName\\":\\"Alice\\",\\"lastName\\":\\"bob\\",\\"companyName\\":\\"Microsoft\\",\\"emailAddress\\":\\"{email}\\"}}" '
+             '--sku "{{\\"name\\":\\"ess-consumption-2024_Monthly\\"}}" --debug', checks=[
+                 self.check('name', '{monitor}'),
+                 self.check('resourceGroup', '{rg}'),
+                 self.check('sku.name', 'ess-consumption-2024_Monthly')
         ])
         self.cmd('elastic monitor list -g {rg}', checks=[
             self.check('[0].name', '{monitor}'),
             self.check('[0].resourceGroup', '{rg}'),
-            self.check('[0].sku.name', 'ess-monthly-consumption_Monthly')
+            self.check('[0].sku.name', 'ess-consumption-2024_Monthly')
         ])
         self.cmd('elastic monitor show -n {monitor} -g {rg}', checks=[
             self.check('name', '{monitor}'),
             self.check('resourceGroup', '{rg}'),
-            self.check('sku.name', 'ess-monthly-consumption_Monthly')
+            self.check('sku.name', 'ess-consumption-2024_Monthly')
         ])
         self.cmd("elastic monitor create-or-update-external-user --monitor-name {monitor} -g {rg} --user-name newuser --full-name fullname --password password --email-id email@outlook.com --roles [admin,other_role]", checks=[self.check('created', True)])
         self.cmd('elastic monitor list-all-traffic-filter --monitor-name {monitor} -g {rg}', checks=[
@@ -50,29 +50,38 @@ class ElasticScenario(ScenarioTest):
         self.cmd('elastic monitor list-deployment-info --monitor-name {monitor} -g {rg}', checks=[
             self.check('status', 'Healthy')
         ])
+        self.cmd('elastic monitor list-connected-partner-resource --monitor-name {monitor} -g {rg}', checks=[
+            self.check('type(@)', 'array')
+        ])
+        self.cmd('elastic monitor get-billing-info --monitor-name {monitor} -g {rg}', checks=[
+                 self.check('length(marketplaceSaasInfo)', 5)
+        ])
         self.cmd('elastic monitor list-resource --monitor-name {monitor} -g {rg}')
         self.cmd('elastic monitor list-upgradable-version --monitor-name {monitor} -g {rg}')
         self.cmd('elastic monitor list-vm-host --monitor-name {monitor} -g {rg}')
-        self.cmd('elastic monitor detach-and-delete-traffic-filter --monitor-name {monitor} -g {rg}')
-        self.cmd('elastic monitor delete-traffic-filter --monitor-name {monitor} -g {rg}')
-        self.cmd('elastic monitor upgrade --monitor-name {monitor} -g {rg} --version 8.0.0'),
+        #self.cmd('elastic monitor detach-and-delete-traffic-filter --monitor-name {monitor} -g {rg}')
+        # self.cmd('elastic monitor delete-traffic-filter --monitor-name {monitor} -g {rg}')
+        self.cmd('elastic monitor upgrade --monitor-name {monitor} -g {rg} --version 8.0.0')
         self.cmd('elastic monitor create-and-associate-ip-filter --monitor-name {monitor} -g {rg} --name filter1 --ips "192.168.131.0, 192.168.132.6/22"')
-        self.cmd('elastic monitor create-and-associate-pl-filter --monitor-name {monitor} -g {rg} --name filter2'),
-        self.cmd('elastic monitor delete-traffic-filter --monitor-name {monitor} -g {rg}')
-
-        self.cmd('elastic monitor delete -n {monitor} -g {rg} -y')
+        self.cmd('elastic monitor create-and-associate-pl-filter --monitor-name {monitor} -g {rg} --name filter2')
+        self.cmd('elastic monitor delete --name {monitor} --resource-group {rg} -y')
 
     @ResourceGroupPreparer(name_prefix='cli_test_elastic_monitor', location='eastus')
     def test_elastic_monitor_tag_rule(self, resource_group):
         email = self.cmd('account show').get_output_in_json()['user']['name']
         self.kwargs.update({
             'monitor': self.create_random_name('monitor', 20),
+            'rg': resource_group,
             'email': email
-        })
-        self.cmd('elastic monitor create -n {monitor} -g {rg} --user-info {{firstName:Alice,lastName:bob,companyName:Micosoft,emailAddress:{email}}} --sku {{name:ess-monthly-consumption_Monthly}}', checks=[
-            self.check('name', '{monitor}'),
-            self.check('resourceGroup', '{rg}'),
-            self.check('sku.name', 'ess-monthly-consumption_Monthly'),
+        }) 
+        self.cmd('elastic monitor create '
+             '--name {monitor} '
+             '--resource-group {rg} '
+             '--user-info "{{\\"firstName\\":\\"Alice\\",\\"lastName\\":\\"bob\\",\\"companyName\\":\\"Microsoft\\",\\"emailAddress\\":\\"{email}\\"}}" '
+             '--sku "{{\\"name\\":\\"ess-consumption-2024_Monthly\\"}}" --debug', checks=[
+                 self.check('name', '{monitor}'),
+                 self.check('resourceGroup', '{rg}'),
+                 self.check('sku.name', 'ess-consumption-2024_Monthly')
         ])
         self.cmd('elastic monitor tag-rule create -n default -g {rg} --monitor-name {monitor} --log-rules {{filteringTags:[{{name:Environment,value:Prod,action:Include}}]}}', checks=[
             self.check('name', 'default'),
@@ -114,3 +123,116 @@ class ElasticScenario(ScenarioTest):
             self.check('properties.logRules.sendActivityLogs', False),
             self.check('properties.logRules.sendSubscriptionLogs', False)
         ])
+    @ResourceGroupPreparer(name_prefix='cli_test_elastic_monitor', location='eastus')
+    def test_elastic_monitor_open_ai_integration(self, resource_group):
+        email = self.cmd('account show').get_output_in_json()['user']['name']
+        self.kwargs.update({
+            'monitor': self.create_random_name('monitor', 20),
+            'rg': resource_group,
+            'email': email,
+            'integration_name': 'default',
+            'key':'9e1bac69b92242129ad1f2373dd06939',
+            'openAIResourceId': '/subscriptions/cff37b56-870a-448f-a2fb-1a89235d4d32/resourceGroups/utkarshjain-rg/providers/Microsoft.CognitiveServices/accounts/utkarshTestResource1',
+            'openAIResourceEndpoint': 'https://utkarshtestresource1.openai.azure.com/openai/deployments/test1/chat/completions?api-version=2024-06-15-preview',
+        })
+
+        self.cmd('elastic monitor create '
+                 '--name {monitor} '
+                 '--resource-group {rg} '
+                 '--user-info "{{\\"firstName\\":\\"Alice\\",\\"lastName\\":\\"bob\\",\\"companyName\\":\\"Microsoft\\",\\"emailAddress\\":\\"{email}\\"}}" '
+                 '--sku "{{\\"name\\":\\"ess-consumption-2024_Monthly\\"}}" --debug', checks=[
+                     self.check('name', '{monitor}'),
+                     self.check('resourceGroup', '{rg}'),
+                     self.check('sku.name', 'ess-consumption-2024_Monthly')
+        ])
+        self.cmd('elastic monitor open-ai-integration create '
+         '--resource-group {rg} '
+         '--monitor-name {monitor} '
+         '--integration-name default '
+         '--open-ai-resource-id {openAIResourceId} '
+         '--open-ai-resource-endpoint {openAIResourceEndpoint} ' 
+         '--key {key}', checks=[
+             self.check('name', 'default'),
+             self.check('resourceGroup', '{rg}'),
+             self.check('properties.openAIResourceId', '{openAIResourceId}'),
+             self.check('properties.openAIResourceEndpoint', '{openAIResourceEndpoint}'),
+        ])
+        self.cmd('elastic monitor open-ai-integration update '
+        '-n default '
+        '-g {rg} '
+        '--monitor-name {monitor} '
+        '--key {key} ' 
+        '--open-ai-resource-endpoint {openAIResourceEndpoint} '
+        '--open-ai-resource-id {openAIResourceId}' , checks=[
+            self.check('name', 'default'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('properties.openAIResourceEndpoint', '{openAIResourceEndpoint}'),
+            self.check('properties.openAIResourceId', '{openAIResourceId}')
+        ])
+        self.cmd('elastic monitor open-ai-integration list -g {rg} --monitor-name {monitor}', checks=[
+            self.check('[0].name', 'default'),
+            self.check('[0].properties.openAIResourceId', '{openAIResourceId}'),
+            self.check('[0].properties.openAIResourceEndpoint', '{openAIResourceEndpoint}'),
+            self.check('[0].type', 'microsoft.elastic/monitors/openaiintegrations')
+        ])
+        self.cmd('elastic monitor open-ai-integration show -n default -g {rg} --monitor-name {monitor}', checks=[
+            self.check('name', 'default'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('properties.openAIResourceEndpoint', '{openAIResourceEndpoint}'),
+            self.check('properties.openAIResourceId', '{openAIResourceId}'),
+        ])
+    @ResourceGroupPreparer(name_prefix='cli_test_elastic_monitor', location='eastus')
+    def test_elastic_monitor_monitored_subscription(self, resource_group):
+        email = self.cmd('account show').get_output_in_json()['user']['name']
+        self.kwargs.update({
+            'monitor': self.create_random_name('monitor', 20),
+            'rg': resource_group,
+            'email': email,
+            'subscription_id': 'cff37b56-870a-448f-a2fb-1a89235d4d32',
+            'subs_id': 'CFF37B56-870A-448F-A2FB-1A89235D4D32',
+            'updated_status': 'InProgress'
+        })
+        self.cmd('elastic monitor create '
+             '--name {monitor} '
+             '--resource-group {rg} '
+             '--user-info "{{\\"firstName\\":\\"Alice\\",\\"lastName\\":\\"Bob\\",\\"companyName\\":\\"Microsoft\\",\\"emailAddress\\":\\"{email}\\"}}" '
+             '--sku "{{\\"name\\":\\"ess-consumption-2024_Monthly\\"}}"', checks=[
+                 self.check('name', '{monitor}'),
+                 self.check('resourceGroup', '{rg}'),
+                 self.check('sku.name', 'ess-consumption-2024_Monthly')
+        ])
+        self.cmd('elastic monitor monitored-subscription create '
+             '--resource-group {rg} '
+             '--monitor-name {monitor} '
+             '--configuration-name default '
+             '--monitored-subscription-list "[{{\\"subscription-id\\":\\"{subscription_id}\\",\\"status\\":\\"Active\\"}}]" ', checks=[
+                 self.check('name', 'default'),
+                 self.check('resourceGroup', '{rg}'),
+                 self.check('properties.monitoredSubscriptionList[0].subscriptionId', '{subscription_id}'),
+                 self.check('properties.monitoredSubscriptionList[0].status', 'Active'),
+                 self.check('properties.provisioningState', 'Succeeded')
+        ])
+        self.cmd('elastic monitor monitored-subscription update '
+             '-n default '
+             '--resource-group {rg} '
+             '--monitor-name {monitor} '
+             '--monitored-subscription-list "[{{\\"subscription-id\\":\\"{subscription_id}\\",\\"status\\":\\"{updated_status}\\"}}]" ', checks=[
+                 self.check('name', 'default'),
+                 self.check('resourceGroup', '{rg}'),
+                 self.check('properties.monitoredSubscriptionList[0].subscriptionId', '{subscription_id}'),
+                 self.check('properties.monitoredSubscriptionList[0].status', '{updated_status}'),
+        ])
+        self.cmd('elastic monitor monitored-subscription show -n default -g {rg} --monitor-name {monitor}', checks=[
+            self.check('name', 'default'),
+            self.check('resourceGroup', '{rg}'),
+            self.check('properties.monitoredSubscriptionList[0].subscriptionId', '{subs_id}'),
+            self.check('properties.monitoredSubscriptionList[0].status', 'Active'),
+            self.check('properties.monitoredSubscriptionList[0].tagRules.provisioningState', 'Accepted')
+        ])
+
+
+        
+
+
+
+

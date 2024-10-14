@@ -193,13 +193,17 @@ class List(AAZCommand):
                 serialized_name="dispatcherStatus",
                 flags={"read_only": True},
             )
-            properties.errors = AAZObjectType()
+            properties.errors = AAZObjectType(
+                flags={"read_only": True},
+            )
             properties.gateway_port = AAZIntType(
                 serialized_name="gatewayPort",
                 nullable=True,
                 flags={"read_only": True},
             )
-            properties.health = AAZStrType()
+            properties.health = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.hostname = AAZStrType(
                 flags={"read_only": True},
             )
@@ -231,12 +235,15 @@ class List(AAZCommand):
             )
             properties.load_balancer_details = AAZObjectType(
                 serialized_name="loadBalancerDetails",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.status = AAZStrType()
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.subnet = AAZStrType(
                 flags={"read_only": True},
             )

@@ -82,7 +82,7 @@ def verify_aem(cmd, resource_group_name, vm_name, wait_time_in_minutes=15, skip_
     aem.verify(skip_storage_check, wait_time_in_minutes)
 
 
-class EnhancedMonitoring(object):
+class EnhancedMonitoring:  # pylint: disable=too-many-instance-attributes
     def __init__(self, cmd, resource_group, vm_name, vm_client,
                  storage_client, roles_client=None, skip_storage_analytics=None,
                  install_new_extension=None,
