@@ -15,7 +15,7 @@ except ImportError:
     logger.warn("Wheel is not available, disabling bdist_wheel hook")
 
 
-VERSION = '3.1.1'
+VERSION = '3.2.0'
 try:
     from azext_serviceconnector_passwordless.config import VERSION
 except ImportError:
@@ -37,9 +37,9 @@ CLASSIFIERS = [
 # TODO: Add any additional SDK dependencies here
 DEPENDENCIES = [
     'azure-core',
-    'PyMySQL==1.0.2',
-    'pyodbc==4.0.35',
-    'psycopg2-binary==2.9.5',
+    'PyMySQL==1.1.1',
+    'pyodbc==5.1.0',
+    'psycopg2-binary==2.9.9',
     'azure-mgmt-servicelinker==1.2.0b2'
 ]
 
