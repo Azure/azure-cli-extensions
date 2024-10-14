@@ -3,15 +3,19 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-# This file is a reduced version of qdk-python\azure-quantum\azure\quantum\storage.py
+# This file is a reduced version of
+# https://github.com/microsoft/azure-quantum-python/blob/main/azure-quantum/azure/quantum/storage.py
+#
 # It only contains the functions required to do inputData blob upload for job submission.
-# Other cosmetic changes were made to appease the Azure CLI CI/CD checks.
+# Other cosmetic changes were made to appease the Azure CLI CI/CD checks.  It was included
+# in this repo so there would not be a direct dependency on azure-quantum-python.
 
 # Unused imports were removed to reduce Pylint style-rule violations.
 import logging
 from datetime import datetime, timedelta
 from typing import Any
-from azure.storage.blob import (
+# This "from" statment was changed so there is no dependency on the azure.storage.blob PyPI package
+from .vendored_sdks.azure_storage_blob import (
     BlobServiceClient,
     ContainerClient,
     BlobClient,
@@ -32,10 +36,14 @@ def create_container(
     blob_service_client = BlobServiceClient.from_connection_string(
         connection_string
     )
-    logger.info(
-        f'{"Initializing storage client for account:"}'
-        + f"{blob_service_client.account_name}"
-    )
+    # The Azure CLI PR check pipeline fails with the following format:
+    # logger.info(
+    #     f'{"Initializing storage client for account:"}'
+    #     + f"{blob_service_client.account_name}"
+    # )
+    # This passes the style check:
+    logger.info("Initializing storage client for account: %s",
+                blob_service_client.account_name)
 
     container_client = blob_service_client.get_container_client(container_name)
     create_container_using_client(container_client)
@@ -69,11 +77,15 @@ def upload_blob(
     Returns a uri with a SAS token to access the newly created blob.
     """
     create_container_using_client(container)
-    logger.info(
-        f"Uploading blob '{blob_name}'"
-        + f"to container '{container.container_name}'"
-        + f"on account: '{container.account_name}'"
-    )
+    # The Azure CLI PR check pipeline fails with the following format:
+    # logger.info(
+    #     f"Uploading blob '{blob_name}'"
+    #     + f"to container '{container.container_name}'"
+    #     + f"on account: '{container.account_name}'"
+    # )
+    # This passes the style check:
+    logger.info("Uploading blob %s to container %s on account %s",
+                blob_name, container.container_name, container.account_name)
 
     content_settings = ContentSettings(
         content_type=content_type, content_encoding=content_encoding

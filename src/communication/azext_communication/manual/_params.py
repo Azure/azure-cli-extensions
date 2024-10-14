@@ -280,10 +280,13 @@ def _load_email_arguments(self):
         c.argument('attachments', options_list=['--attachments'], nargs='+',
                    help='List of email attachments. Optional.')
         c.argument('attachment_types', options_list=['--attachment-types'], nargs='+',
-                   help='List of email attachment types, in the same order of attachments.'
-                   ' Required for each attachment. Known values are: avi, bmp, doc, docm,'
+                   help='List of email attachment types and inline attachment types, '
+                   'in the same order of attachments followed by inline attachments.'
+                   ' Required for each attachment. Known values for attachments are: avi, bmp, doc, docm,'
                    ' docx, gif, jpeg, mp3, one, pdf, png, ppsm, ppsx, ppt, pptm, pptx,'
                    ' pub, rpmsg, rtf, tif, txt, vsd, wav, wma, xls, xlsb, xlsm, and xlsx')
+        c.argument('inline_attachments', options_list=['--inline-attachments'], nargs='+',
+                   help='List of inline attachments. Optional.')
         c.argument('waitUntil', options_list=['--wait-until'],
                    arg_type=get_enum_type(['started', 'completed', '1', '0']),
                    help='Indicates whether to wait until the server operation is started or completed. '
