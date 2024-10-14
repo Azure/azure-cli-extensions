@@ -873,11 +873,11 @@ class WindowsConfidentialVMRepair(LiveScenarioTest):
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
         
         
-@pytest.mark.ResourceId
-class WindowsResourceIdParse(LiveScenarioTest):
+@pytest.mark.RefactorSanityTest
+class WindowsResourceIdParseAfterRefactor(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_vmrepair_WinRunRepairVMId(self, resource_group):
+    def test_vmrepair_WinRunRepairVMIdafterRefactor(self, resource_group):
         import uuid
         import secrets
         import string
