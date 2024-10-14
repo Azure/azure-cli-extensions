@@ -13,10 +13,6 @@ Added script for GT fixit button
 ++++++
 Added breaking change warning for the default image for Windows source VMs if the source VM image is not found in `az vm repair create`. It will change from a 2016 image to 2022 in November 2024.
 
-2.0.0
-++++++
-Changed the default image for Windows VMs when the source image cannot be found to a Windows 2022 sku as opposed to Windows 2016.
-
 1.0.9
 ++++++
 Fixed and updated several vm-repair tests for better coverage. 
