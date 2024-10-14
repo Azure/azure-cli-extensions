@@ -25,6 +25,7 @@ from .repair_utils import (
     _list_resource_ids_in_rg,
     _get_repair_resource_tag,
     _fetch_compatible_windows_os_urn,
+    _fetch_compatible_windows_os_urn_v2,
     _fetch_run_script_map,
     _fetch_run_script_path,
     _process_ps_parameters,
@@ -90,8 +91,13 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             else:
                 os_image_urn = _select_distro_linux(distro)
         else:
-            os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
             os_type = 'Windows'
+            if encrypt_recovery_key:
+                # Call the new URN matching logic. 
+                os_image_urn = _fetch_compatible_windows_os_urn_v2(source_vm)
+            else:
+                # Use the old default to 2019 logic. 
+                os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
 
         # Set up base create vm command
         if is_linux:

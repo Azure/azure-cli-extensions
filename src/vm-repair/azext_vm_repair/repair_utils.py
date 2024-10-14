@@ -477,15 +477,38 @@ def _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name, encr
 
 def _fetch_compatible_windows_os_urn(source_vm):
     location = source_vm.location
+    fetch_urn_command = 'az vm image list -s "2019-Datacenter-gs" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2019-Datacenter-gs\'].urn | reverse(sort(@))" -o json'.format(loc=location)
+    logger.info('Fetching compatible Windows OS images from gallery...')
+    urns = loads(_call_az_command(fetch_urn_command))
+
+    # No OS images available for Windows2016
+    if not urns:
+        raise WindowsOsNotAvailableError()
+
+    logger.debug('Fetched Urns:\n%s', urns)
+    # temp fix to mitigate Windows disk signature collision error
+    os_image_ref = source_vm.storage_profile.image_reference
+    if os_image_ref and isinstance(os_image_ref.version, str) and os_image_ref.version in urns[0]:
+        if len(urns) < 2:
+            logger.debug('Avoiding Win2019 latest image due to expected disk collision. But no other image available.')
+            raise WindowsOsNotAvailableError()
+        logger.debug('Returning Urn 1 to avoid disk collision error: %s', urns[1])
+        return urns[1]
+    logger.debug('Returning Urn 0: %s', urns[0])
+    return urns[0]
+
+
+def _fetch_compatible_windows_os_urn_v2(source_vm):
+    location = source_vm.location
 
     # We will prefer to fetch image using source vm sku, that we match the CVM requirements.
-    # if source_vm.storage_profile is not None and source_vm.storage_profile.image_reference is not None:
-    #    sku = source_vm.storage_profile.image_reference.sku
-    #    offer = source_vm.storage_profile.image_reference.offer
-    #    publisher = source_vm.storage_profile.image_reference.publisher
-    #    fetch_urn_command = 'az vm image list -s {sku} -f {offer} -p {publisher} -l {loc} --verbose --all --query "[?sku==\'{sku}\'].urn | reverse(sort(@))" -o json'.format(loc=location, sku=sku, offer=offer, publisher=publisher)
-    #    logger.info('Fetching compatible Windows OS images from gallery...')
-    #    urns = loads(_call_az_command(fetch_urn_command))
+    if source_vm.storage_profile is not None and source_vm.storage_profile.image_reference is not None:
+        sku = source_vm.storage_profile.image_reference.sku
+        offer = source_vm.storage_profile.image_reference.offer
+        publisher = source_vm.storage_profile.image_reference.publisher
+        fetch_urn_command = 'az vm image list -s {sku} -f {offer} -p {publisher} -l {loc} --verbose --all --query "[?sku==\'{sku}\'].urn | reverse(sort(@))" -o json'.format(loc=location, sku=sku, offer=offer, publisher=publisher)
+        logger.info('Fetching compatible Windows OS images from gallery...')
+        urns = loads(_call_az_command(fetch_urn_command))
 
     # if not urns or len(urns) == 0:
         # If source SKU not available then defaulting 2022 datacenter image.
