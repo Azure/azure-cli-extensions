@@ -15,13 +15,12 @@ def ex_handler_factory(no_throw=False):
         import json
         try:
             content = json.loads(ex.response.content)
-            detail = None
             if 'message' in content:
                 detail = content['message']
+                ex = CLIInternalError(detail)
             elif 'Message' in content:
                 detail = content['Message']
-
-            ex = CLIInternalError(detail)
+                ex = CLIInternalError(detail)
         except Exception:  # pylint: disable=broad-except
             pass
         if no_throw:

@@ -25,7 +25,7 @@ class RegisterCommandTests(ScenarioTest):
         # verify command results
         self.cmd('az apic api show -g {rg} -n {s} --api-id swaggerpetstore', checks=[
             self.check('description', 'API Description'), # default value when spec does not have description
-            self.check('summary', 'API Description'), # default value when spec does not have summary
+            self.check('summary', None), # default value when spec does not have summary
             self.check('kind', 'rest'),
             self.check('contacts', []),
             self.check('customProperties', {}),
@@ -82,8 +82,9 @@ class RegisterCommandTests(ScenarioTest):
             self.check('license.url', 'http://www.apache.org/licenses/LICENSE-2.0.html'),
             self.check('lifecycleStage', 'design'),
             self.check('name', 'swaggerpetstore-openapi30'),
-            self.check('summary', 'This is a sample Pet Store Server based on the OpenAPI 3.0 specification.  You can find out more about\nSwagger at [http://swagger.io](http://swagger.io). In the third iteration of the pet store, we\'ve'),
+            self.check('summary', None),
             self.check('title', 'Swagger Petstore - OpenAPI 3.0'),
+            self.check('externalDocumentation', [{'description': 'Find out more about Swagger', 'title': 'Title', 'url': 'http://swagger.io'}])
         ])
 
         self.cmd('az apic api version show -g {rg} -n {s} --api-id swaggerpetstore-openapi30 --version-id 1-0-19', checks=[
