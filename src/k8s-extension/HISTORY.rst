@@ -3,7 +3,7 @@
 Release History
 ===============
 
-1.7.0
+1.6.2
 ++++++++++++++++++
 * microsoft.workloadiam: Enhanced security by utilizing protected configuration settings for the join token instead of regular configuration settings.
 * microsoft.azuremonitor.containers.metrics: Expanded support to all clouds, excluding air-gapped environments, for microsoft.azuremonitor.containers.metrics in ARC clusters.
