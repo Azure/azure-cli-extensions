@@ -28,16 +28,11 @@ CLASSIFIERS = [
 
 DEPENDENCIES = []
 
-with open('README.md', 'r', encoding='utf-8') as f:
-    README = f.read()
-with open('HISTORY.rst', 'r', encoding='utf-8') as f:
-    HISTORY = f.read()
-
 setup(
     name='subscription',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools Subscription  Extension.',
-    long_description=README + '\n\n' + HISTORY,
+    long_description='Support for subscription management preview.',
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
