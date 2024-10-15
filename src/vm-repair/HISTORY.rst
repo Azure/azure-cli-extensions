@@ -1,13 +1,13 @@
 
 Release History
 ===============
-1.1.0
+1.2.0
 ++++++
-Added script for GT fixit button
+Migrated VM Repair off of the `msrestazure` API to `azure.core` and `azure.mgmt` APIs.
 
 1.1.0
 ++++++
-Migrated VM Repair off of the `msrestazure` API to `azure.core` and `azure.mgmt` APIs.
+Added script for GT fixit button
 
 1.0.10
 ++++++
