@@ -16,10 +16,8 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 from .aaz.latest.mcc.ent.resource._create import Create as _MccEntResourceCreate
-#from .aaz.latest.mcc.ent.resource._update import Update as _MccEntResourceUpdate
 from .aaz.latest.mcc.ent.resource._delete import Delete as _MccEntResourceDelete
 from .aaz.latest.mcc.ent.resource._list import List as _MccEntResourceList
-#from .aaz.latest.mcc.ent.resource._show import Show as _MccEntResouceShow
 
 class MccEntResourceCreate(_MccEntResourceCreate):
     @classmethod
@@ -27,13 +25,6 @@ class MccEntResourceCreate(_MccEntResourceCreate):
         from azure.cli.core.aaz import AAZBoolArg
 
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-
-        #args_schema.expanded = AAZBoolArg(
-        #    options=["--expand-output"],
-        #    help="Use this flag to expand command output and see more details."
-        #)
-
-        #args_schema.expanded._blank = "True"
 
         args_schema.customer._registered = False
         args_schema.additional_customer_properties._registered = False
@@ -74,69 +65,7 @@ class MccEntResourceCreate(_MccEntResourceCreate):
         except KeyError:
             pass
 
-        #if (has_value(args.expanded)):
-        #    try:
-        #        cleanOutput["fullyQualifiedResourceId"] = result["id"]
-        #    except:
-        #        pass
-        #
-        #    try:
-        #        cleanOutput["type"] = result["type"]
-        #    except:
-        #        pass
-        #
-        #    try:
-        #        cleanOutput["clientTenantId"] = result["customer"]["clientTenantId"]
-        #    except KeyError:
-        #        pass
-
         return cleanOutput
-
-#class MccEntResourceUpdate(_MccEntResourceUpdate):
-#    @classmethod
-#    def _build_arguments_schema(cls, *args, **kwargs):
-#        args_schema = super()._build_arguments_schema(*args, **kwargs)
-#        args_schema.customer._registered = False
-#        args_schema.additional_customer_properties._registered = False
-#        return args_schema
-#    
-#    def _output(self, *args, **kwargs):
-#        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-#
-#        cleanOutput = { }
-#
-#        try:
-#            cleanOutput["customerId"] = result["customer"]["customerId"]
-#        except KeyError:
-#            pass#
-#
-#        try:
-#            cleanOutput["customerName"] = result["customer"]["customerName"]
-#        except KeyError:
-#            pass
-#
-#       try:
-#            cleanOutput["fullyQualifiedResourceId"] = result["id"]
-#        except KeyError:
-#            pass
-#
-#        try:
-#            cleanOutput["location"] = result["location"]
-#        except KeyError:
-#            pass
-#
-#        try:
-#            cleanOutput["provisioningState"] = result["provisioningState"]
-#        except KeyError:
-#            pass
-#
-#        try:
-#            fullyQualifiedResourceIdParts = str(result["id"]).split('/')
-#            cleanOutput["resourceGroup"] = fullyQualifiedResourceIdParts[4]
-#        except KeyError:
-#            pass
-#
-#        return cleanOutput
 
 class MccEntResourceDelete(_MccEntResourceDelete):
     @classmethod
@@ -156,13 +85,6 @@ class MccEntResourceList(_MccEntResourceList):
         from azure.cli.core.aaz import AAZBoolArg
 
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-
-        #args_schema.expanded = AAZBoolArg(
-        #    options=["--expand-output"],
-        #    help="Use this flag to expand command output and see more details."
-        #)
-
-        #args_schema.expanded._blank = "True"
 
         return args_schema
 
@@ -193,88 +115,14 @@ class MccEntResourceList(_MccEntResourceList):
             except KeyError:
                 pass
 
-            #try:
-            #    cleanCustomer["fullyQualifiedResourceId"] = customer["id"]
-            #except KeyError:
-            #    pass
-
             try:
                 cleanCustomer["location"] = customer["location"]
             except KeyError:
                 pass
 
-            #try:
-            #    cleanCustomer["provisioningState"] = customer["provisioningState"]
-            #except KeyError:
-            #    pass
-
-            #try:
-            #    fullyQualifiedResourceIdParts = str(customer["id"]).split('/')
-            #    cleanCustomer["resourceGroup"] = fullyQualifiedResourceIdParts[4]
-            #except KeyError:
-            #    pass
-
-            #if has_value(args.expanded):
-                #try:
-                #    cleanCustomer["fullyQualifiedResourceId"] = customer["id"]
-                #except KeyError:
-                #    pass
-
             cleanOutput.append(cleanCustomer)
 
         return cleanOutput, next_link
-
-#class MccEntResourceShow(_MccEntResouceShow):
-#    @classmethod
-#    def _build_arguments_schema(cls, *args, **kwargs):
-#        args_schema = super()._build_arguments_schema(*args, **kwargs)
-#
-#        args_schema.expanded = AAZBoolArg(
-#            options=["--expand-output"],
-#            help="Use this flag to expand command output and see more details."
-#        )
-#
-#        args_schema.expanded._blank = "True"
-#        
-#        return args_schema
-#    
-#    def _output(self, *args, **kwargs):
-#        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-#
-#        cleanOutput = { }
-#        
-#        try:
-#            cleanOutput["customerId"] = result["customer"]["customerId"]
-#        except KeyError:
-#            pass
-#
-#        try:
-#            cleanOutput["customerName"] = result["customer"]["customerName"]
-#        except KeyError:
-#            pass
-#
-#        try:
-#            cleanOutput["fullyQualifiedResourceId"] = result["id"]
-#        except KeyError:
-#            pass
-#
-#        try:
-#            cleanOutput["location"] = result["location"]
-#        except KeyError:
-#            pass
-#
-#        try:
-#            cleanOutput["provisioningState"] = result["provisioningState"]
-#        except KeyError:
-#            pass
-#
-#        try:
-#            fullyQualifiedResourceIdParts = str(result["id"]).split('/')
-#            cleanOutput["resourceGroup"] = fullyQualifiedResourceIdParts[4]
-#        except KeyError:
-#            pass
-#    
-#        return cleanOutput
 
 from .aaz.latest.mcc.ent.node._create import Create as _MccEntNodeCreate
 from .aaz.latest.mcc.ent.node._update import Update as _MccEntNodeUpdate
@@ -283,31 +131,12 @@ from .aaz.latest.mcc.ent.node._list import List as _MccEntNodeList
 from .aaz.latest.mcc.ent.node._show import Show as _MccEntNodeShow
 from .aaz.latest.mcc.ent.node._get_provisioning_details import GetProvisioningDetails as _MccEntNodeGetProvisioningDetails
 
-#def create_cache_node(cmd, resource_group_name, mcc_resource_name):
-#    from .aaz.latest.mcc.ent.resource._show import Show as _MccEntResouceShow
-#
-#    class CreateCacheNodeWithCheck(_MccEntNodeCreate, _MccEntNodeShow):
-#        def pre_operations(self):
-#            return super().pre_operations()
-#        
-#    return CreateCacheNodeWithCheck(cli_ctx=cmd.cli_ctx)(command_args={
-#        "mcc_resource_name": mcc_resource_name,
-#        "resource_group": resource_group_name
-#    })
-
 class MccEntNodeCreate(_MccEntNodeCreate): 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZBoolArg
 
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-
-        #args_schema.expanded = AAZBoolArg(
-        #    options=["--expand-output"],
-        #    help="Use this flag to expand command output and see more details."
-        #)
-
-        #args_schema.expanded._blank = "True"
 
         args_schema.location._required = False
         args_schema.location._registered = False
@@ -391,53 +220,12 @@ class MccEntNodeCreate(_MccEntNodeCreate):
             cleanOutput["operationStatus"] = result["properties"]["provisioningState"]
         except KeyError:
             pass
-
-        #if has_value(args.expanded):
-        #    try:
-        #        cleanOutput["fullyQualifiedResourceId"] = result["id"]
-        #    except KeyError:
-        #        pass
-        #
-        #    try:
-        #        cleanOutput["type"] = result["type"]
-        #    except KeyError:
-        #        pass
-        # 
-        #    try:
-        #        cleanOutput["location"] = result["location"]
-        #    except KeyError:
-        #        pass
-        #
-        #    try:
-        #        cleanOutput["clientTenantId"] = result["cacheNode"]["clientTenantId"]
-        #    except KeyError:
-        #        pass
-        #
-        #    try:
-        #        cleanOutput["cacheNodeStateDetailed"] = result["additionalCacheNodeProperties"]["cacheNodeStateDetailedText"]
-        #    except KeyError:
-        #        pass
     
         return cleanOutput
 
 class MccEntNodeUpdate(_MccEntNodeUpdate):
     def pre_operations(self):
         args = self.ctx.args
-
-        #if has_value(args.auto_update_day):
-        #    del args["auto_update_day"]
-
-        #if has_value(args.auto_update_time):
-        #    del args["auto_update_time"]
-
-        #if has_value(args.auto_update_week):
-        #    del args["auto_update_week"]
-
-        #if has_value(args.auto_update_ring):
-        #    del args["auto_update_ring"]
-        
-        #if has_value(args.fully_qualified_domain_name):
-        #    del args["fully_qualified_domain_name"]
 
         if has_value(args.auto_update_week):
             week = args.auto_update_week
@@ -543,15 +331,11 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                         newProxyPort = None
 
                         if has_value(args.proxy_host):
-                            #if "http" in str(args.proxy_host):
-                            #    err_msg = "ValidationError: --proxy-host must not include protocol ex. \'http://\'."
-                            #    raise ValidationError(err_msg)
                             if ':' in str(args.proxy_host):
                                 err_msg = "ValidationError: --proxy-host must not include \':\'."
                                 raise ValidationError(err_msg)
                             newProxyHost = args.proxy_host
                         else:
-                            #trimmed_oldProxyUrlParts = oldProxyUrlParts[0].lstrip("http://")
                             newProxyHost = oldProxyUrlParts[0]
                         
                         if has_value(args.proxy_port):
@@ -562,7 +346,6 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                         else:
                             newProxyPort = oldProxyUrlParts[1]
 
-                        #args.proxy_host = "http://" + str(newProxyHost) + ":" + str(newProxyPort)
                         args.proxy_host = str(newProxyHost) + ":" + str(newProxyPort)
                 else:
                     oldProxyUrl = instance.properties.additionalCacheNodeProperties.proxyUrlConfiguration.proxyUrl
@@ -594,15 +377,10 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                             err_msg = "ValidationError: Parameter --enable-proxy is set to \"Enabled\", must provide --proxy-host and --proxy-port parameter."
                             raise ValidationError(err_msg)
                         else:
-                            #if "http" in str(args.proxy_host):
-                            #    err_msg = "ValidationError: --proxy-host must not include protocol ex. \'http://\'."
-                            #    raise ValidationError(err_msg)
-                            
                             if ':' in str(args.proxy_host) or ':' in str(args.proxy_port):
                                 err_msg = "ValidationError: --proxy-host and --proxy-port must not include \':\'."
                                 raise ValidationError(err_msg)
                             
-                            #args.proxy_host = "http://" + str(args.proxy_host) + ":" + str(args.proxy_port) 
                             args.proxy_host = str(args.proxy_host) + ":" + str(args.proxy_port) 
                     else:
                         if has_value(args.proxy_host) or has_value(args.proxy_port):
@@ -618,15 +396,10 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                     err_msg = "ValidationError: Parameter --enable-proxy is set to \"Enabled\", must provide --proxy-host and --proxy-port parameter."
                     raise ValidationError(err_msg)
                 else:
-                    #if "http" in str(args.proxy_host):
-                    #    err_msg = "ValidationError: --proxy-host must not include protocol ex. \'http://\'."
-                    #    raise ValidationError(err_msg)
-                    
                     if ':' in str(args.proxy_host) or ':' in str(args.proxy_port):
                         err_msg = "ValidationError: --proxy-host and --proxy-port must not include \':\'."
                         raise ValidationError(err_msg)
                     
-                    #args.proxy_host = "http://" + str(args.proxy_host) + ":" + str(args.proxy_port)
                     args.proxy_host = str(args.proxy_host) + ":" + str(args.proxy_port) 
             else:
                 if has_value(args.proxy_host) or has_value(args.proxy_port):
@@ -663,35 +436,6 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                             err_msg = "ValidationError: Switching cache node auto update ring from \"Slow\" to \"Fast\", --auto-update-day, --auto-update-week, and --auto-update-time must be Undefined"
                             raise ValidationError(err_msg)
 
-        #if has_value(args.auto_update_day):
-        #    del args["auto_update_day"]
-
-        #if has_value(args.auto_update_time):
-        #    del args["auto_update_time"]
-
-        #if has_value(args.auto_update_week):
-        #    del args["auto_update_week"]
-
-        #if has_value(args.auto_update_ring):
-        #    del args["auto_update_ring"]
-        
-        #if has_value(args.fully_qualified_domain_name):
-        #    del args["fully_qualified_domain_name"]
-
-
-        #try:
-            #instanceCacheNodeId = instance.properties.cacheNode.cacheNodeId
-            #print("GOT CACHE NODE ID" + str(instanceCacheNodeId))
-        #except KeyError:
-            #print("CANT GET CN ID")
-            #pass
-        #try:
-            #instanceCustomerId = instance.properties.cacheNode.customerId
-            #print("GOT CACHE NODE ID" + str(instanceCacheNodeId))
-        #except KeyError:
-            #print("CANT GET CN ID")
-            #pass
-
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZIntArg, AAZBoolArg
@@ -705,33 +449,17 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
             nullable=True
         )
 
-        #args_schema.expanded = AAZBoolArg(
-        #    options=["--expand-output"],
-        #    help="Use this flag to expand command output and see more details."
-        #)
-
-        #args_schema.expanded._blank = "True"
-
-        #args_schema.address_space._registered = False
         args_schema.cache_node_id._registered = False
-        #args_schema.category._registered = False
         args_schema.cidr_csv._registered = False
         args_schema.cidr_selection_type._registered = False
-        #args_schema.client_tenant_id._registered = False
-        #args_schema.container_configurations._registered = False
-        #args_schema.create_async_operation_id._registered = False
         args_schema.customer_asn._registered = False
         args_schema.customer_index._registered = False
         args_schema.customer_name._registered = False
-        #args_schema.delete_async_operation_id._registered = False
         args_schema.fully_qualified_resource_id._registered = False
         args_schema.is_enabled._registered = False
         args_schema.is_enterprise_managed._registered = False
-        #args_schema.last_sync_with_azure_timestamp._registered = False
         args_schema.max_allowable_egress_in_mbps._registered = False
-        #args_schema.release_version._registered = False
         args_schema.should_migrate._registered = False
-        #args_schema.x_cid._registered = False
         args_schema.ip_address._registered = False
 
         args_schema.auto_update_version._registered = False
@@ -771,11 +499,6 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
             cleanOutput["cacheNodeState"] = result["properties"]["additionalCacheNodeProperties"]["cacheNodeStateShortText"]
         except KeyError:
             pass
-        
-        #try:
-        #    cleanOutput["cacheNodeStateDetailedText"] = result["additionalCacheNodeProperties"]["cacheNodeStateDetailedText"]
-        #except KeyError:
-        #    pass
 
         try:
             cleanOutput["hostOs"] = result["properties"]["additionalCacheNodeProperties"]["osType"]
@@ -844,53 +567,10 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                 except KeyError:
                     pass
         
-        #try:
-        #    cleanOutput["customerName"] = result["cacheNode"]["customerName"]
-        #except KeyError:
-        #    pass
-
-        #try:
-        #    cleanOutput["ipAddress"] = result["properties"]["cacheNode"]["ipAddress"]
-        #except KeyError:
-        #    pass
-        
-        #try:
-        #    cleanOutput["fullyQualifiedResourceId"] = result["id"]
-        #except KeyError:
-        #    pass
-        
-        #try:
-        #    cleanOutput["location"] = result["location"]
-        #except KeyError:
-        #    pass
-        
         try:
             cleanOutput["operationStatus"] = result["properties"]["provisioningState"]
         except KeyError:
             pass
-
-        #if has_value(args.expanded):
-        #    try:
-        #        cleanOutput["resourceId"] = result["cacheNode"]["customerId"]
-        #    except KeyError:
-        #        pass
-        #
-        #    try:
-        #        cleanOutput["clientTenantId"] = result["cacheNode"]["clientTenantId"]
-        #    except KeyError:
-        #        pass
-        #
-        #    try:
-        #        cleanOutput["fullyQualifiedResourceId"] = result["id"]
-        #    except KeyError:
-        #        pass
-        #
-        #    try:
-        #        cleanOutput["provisioningState"] = result["provisioningState"]
-        #    except KeyError:
-        #        pass
-            
-
 
         return cleanOutput
 
@@ -942,16 +622,6 @@ class MccEntNodeList(_MccEntNodeList):
                 cleanCacheNode["cacheNodeState"] = cacheNode["properties"]["additionalCacheNodeProperties"]["cacheNodeStateShortText"]
             except KeyError:
                 pass
-
-            #try:
-            #    cleanCacheNode["driveConfiguration"] = cacheNode["additionalCacheNodeProperties"]["driveConfiguration"]
-            #except KeyError:
-            #    pass
-
-            #try:
-            #    cleanCacheNode["proxyConfiguration"] = cacheNode["additionalCacheNodeProperties"]["proxyConfiguration"]
-            #except KeyError:
-            #    pass
         
             try:
                 cleanCacheNode["cacheNodeId"] = cacheNode["properties"]["cacheNode"]["cacheNodeId"]
@@ -995,43 +665,8 @@ class MccEntNodeList(_MccEntNodeList):
                         cleanCacheNode["autoUpdateTime"] = cacheNode["properties"]["cacheNode"]["autoUpdateRequestedTime"]
                     except KeyError:
                         pass
-        
-            #try:
-            #    cleanCacheNode["customerId"] = cacheNode["cacheNode"]["customerId"]
-            #except KeyError:
-            #    pass
-        
-            #try:
-            #    cleanCacheNode["customerName"] = cacheNode["cacheNode"]["customerName"]
-            #except KeyError:
-            #    pass
-
-            #try:
-            #    cleanCacheNode["ipAddress"] = cacheNode["cacheNode"]["ipAddress"]
-            #except KeyError:
-            #    pass
-        
-            #try:
-            #    cleanCacheNode["fullyQualifiedResourceId"] = cacheNode["id"]
-            #except KeyError:
-            #    pass
-        
-            #try:
-            #    cleanCacheNode["location"] = cacheNode["location"]
-            #except KeyError:
-            #    pass
-        
-            #try:
-            #    cleanCacheNode["provisioningState"] = cacheNode["provisioningState"]
-            #except KeyError:
-            #    pass
 
             if has_value(args.expanded):
-                #try:
-                #    cleanCacheNode["fullyQualifiedResourceId"] = cacheNode["id"]
-                #except KeyError:
-                #    pass
-
                 try:
                     cleanCacheNode["cacheNodeStateDetails"] = cacheNode["properties"]["additionalCacheNodeProperties"]["cacheNodeStateDetailedText"]
                 except KeyError:
@@ -1046,11 +681,6 @@ class MccEntNodeList(_MccEntNodeList):
                     cleanCacheNode["location"] = cacheNode["properties"]["location"]
                 except KeyError:
                     pass
-
-                #try:
-                #    cleanCacheNode["ipAddress"] = cacheNode["properties"]["cacheNode"]["ipAddress"]
-                #except KeyError:
-                #    pass
 
                 try:
                     driveArray = cacheNode["properties"]["additionalCacheNodeProperties"]["driveConfiguration"]
@@ -1119,11 +749,6 @@ class MccEntNodeShow(_MccEntNodeShow):
             cleanOutput["driveConfiguration"] = cleanDriveArray
         except KeyError:
             pass
-
-        #try:
-        #    cleanOutput["proxyConfiguration"] = result["additionalCacheNodeProperties"]["proxyConfiguration"]
-        #except KeyError:
-        #    pass
         
         try:
             proxyUrl = result["properties"]["additionalCacheNodeProperties"]["proxyUrlConfiguration"]["proxyUrl"]
@@ -1176,36 +801,6 @@ class MccEntNodeShow(_MccEntNodeShow):
                     cleanOutput["autoUpdateTime"] = result["properties"]["cacheNode"]["autoUpdateRequestedTime"]
                 except KeyError:
                     pass
-        
-        #try:
-        #    cleanOutput["customerId"] = result["cacheNode"]["customerId"]
-        #except KeyError:
-        #    pass
-        
-        #try:
-        #    cleanOutput["customerName"] = result["cacheNode"]["customerName"]
-        #except KeyError:
-        #    pass
-
-        #try:
-        #    cleanOutput["ipAddress"] = result["properties"]["cacheNode"]["ipAddress"]
-        #except KeyError:
-        #    pass
-        
-        #try:
-        #    cleanOutput["fullyQualifiedResourceId"] = result["id"]
-        #except KeyError:
-        #    pass
-        
-        #try:
-        #    cleanOutput["fqdn"] = result["fqdn"]
-        #except KeyError:
-        #    pass
-
-        #try:
-        #    cleanOutput["provisioningState"] = result["provisioningState"]
-        #except KeyError:
-        #    pass
 
         if has_value(args.expanded):
             try:
@@ -1218,11 +813,6 @@ class MccEntNodeShow(_MccEntNodeShow):
             except KeyError:
                 pass
 
-            #try:
-            #    cleanOutput["fullyQualifiedResourceId"] = result["id"]
-            #except KeyError:
-            #    pass
-
         return cleanOutput
     
 class MccEntNodeGetProvisioningDetails(_MccEntNodeGetProvisioningDetails):
@@ -1231,13 +821,6 @@ class MccEntNodeGetProvisioningDetails(_MccEntNodeGetProvisioningDetails):
         from azure.cli.core.aaz import AAZBoolArg
 
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-
-        #args_schema.expanded = AAZBoolArg(
-        #    options=["--expand-output"],
-        #    help="Use this flag to expand command output and see more details."
-        #)
-
-        #args_schema.expanded._blank = "True"
         
         return args_schema
     
@@ -1303,24 +886,9 @@ class MccEntNodeGetProvisioningDetails(_MccEntNodeGetProvisioningDetails):
         except KeyError:
             pass
         
-        #try:
-        #    cleanOutput["secondaryAccountKey"] = result["properties"]["secondaryAccountKey"]
-        #except KeyError:
-        #    pass
-        
         try:
             cleanOutput["registrationKey"] = result["properties"]["registrationKey"]
         except KeyError:
             pass
-        
-        #try:
-        #    cleanOutput["fullyQualifiedResourceId"] = result["id"]
-        #except KeyError:
-        #    pass
-        
-        #try:
-        #    cleanOutput["location"] = result["location"]
-        #except KeyError:
-        #    pass
 
         return cleanOutput

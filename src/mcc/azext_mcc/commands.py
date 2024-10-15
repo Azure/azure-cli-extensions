@@ -14,10 +14,8 @@ def load_command_table(self, _):  # pylint: disable=unused-argument
     with self.command_group('mcc ent resource') as g:
         from .custom import MccEntResourceCreate, MccEntResourceDelete, MccEntResourceList
         self.command_table['mcc ent resource create'] = MccEntResourceCreate(loader=self)
-        #self.command_table['mcc ent resource update'] = MccEntResourceUpdate(loader=self)
         self.command_table['mcc ent resource delete'] = MccEntResourceDelete(loader=self)
         self.command_table['mcc ent resource list'] = MccEntResourceList(loader=self)
-        #self.command_table['mcc ent resource show'] = MccEntResourceShow(loader=self)
     
     with self.command_group('mcc ent node') as g:
         from .custom import MccEntNodeCreate, MccEntNodeUpdate, MccEntNodeDelete, MccEntNodeList, MccEntNodeShow, MccEntNodeGetProvisioningDetails
