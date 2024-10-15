@@ -112,37 +112,21 @@ class WebpubsubScenarioTest(ScenarioTest):
             self.exists('externalIp'),
         ])
 
-        # Test update with client cert enabled
-        self.cmd('webpubsub update -g {rg} -n {name} --client-cert-enabled true', checks=[
+        # Test update with disable local auth enabled
+        self.cmd('webpubsub update -g {rg} -n {name} --disable-local-auth true', checks=[
             self.check('name', '{name}'),
             self.check('location', '{location}'),
             self.check('provisioningState', 'Succeeded'),
-            self.check('tls.clientCertEnabled', 'true'),
+            self.check('disableLocalAuth', True),
         ])
 
-        # Test update with client cert disabled
-        # self.cmd('webpubsub update -g {rg} -n {name} --client-cert-enabled false', checks=[
-        #     self.check('name', '{name}'),
-        #     self.check('location', '{location}'),
-        #     self.check('provisioningState', 'Succeeded'),
-        #     self.check('tls.clientCertEnabled', 'false'),
-        # ])
-
-        # # Test update with disable local auth enabled
-        # self.cmd('webpubsub update -g {rg} -n {name} --disable-local-auth true', checks=[
-        #     self.check('name', '{name}'),
-        #     self.check('location', '{location}'),
-        #     self.check('provisioningState', 'Succeeded'),
-        #     self.check('disableLocalAuth', 'true'),
-        # ])
-
-        # # Test update with disable local auth disabled
-        # self.cmd('webpubsub update -g {rg} -n {name} --disable-local-auth false', checks=[
-        #     self.check('name', '{name}'),
-        #     self.check('location', '{location}'),
-        #     self.check('provisioningState', 'Succeeded'),
-        #     self.check('disableLocalAuth', 'false'),
-        # ])
+        # Test update with disable local auth disabled
+        self.cmd('webpubsub update -g {rg} -n {name} --disable-local-auth false', checks=[
+            self.check('name', '{name}'),
+            self.check('location', '{location}'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('disableLocalAuth', False),
+        ])
 
         # Test key show
         self.cmd('webpubsub key show -n {name} -g {rg}', checks=[

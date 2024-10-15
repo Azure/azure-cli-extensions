@@ -8,7 +8,7 @@ from knack.arguments import CLIArgumentType
 from azure.cli.core.commands.parameters import (
     tags_type,
     get_three_state_flag,
-    get_enum_type
+    get_enum_type,
 )
 from .vendored_sdks.azure_mgmt_webpubsub.models import WebPubSubRequestType
 from ._actions import (
@@ -49,9 +49,9 @@ def load_arguments(self, _):
         c.argument('unit_count', help='The number of webpubsub service unit count', type=int)
         c.argument('service_mode', help='The mode used in kind: SocketIO. Allowed values: Default, Serverless')
         c.argument('client_cert_enabled',
-                   help='Enable or disable client certificate authentication for a WebPubSub Service, Allowed values: true, false, null')
+                   help='Enable or disable client certificate authentication for a WebPubSub Service', arg_type=get_three_state_flag())
         c.argument('disable_local_auth',
-                   help='Enable or disable local auth for a WebPubSub Service, Allowed values: true, false, null')
+                   help='Enable or disable local auth for a WebPubSub Service', arg_type=get_three_state_flag())
 
     with self.argument_context('webpubsub key regenerate') as c:
         c.argument('key_type', arg_type=get_enum_type(WEBPUBSUB_KEY_TYPE), help='The name of access key to regenerate')
