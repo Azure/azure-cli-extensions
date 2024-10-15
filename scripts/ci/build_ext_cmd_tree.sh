@@ -6,8 +6,6 @@ if [[ -z "$changed_content" ]]; then
     exit 0
 fi
 
-# pip install azure-cli-core azure-cli requests
-# pip install azure-storage-blob==1.5.0
 echo "Listing Available Extensions:"
 az extension list-available -otable
 
@@ -40,4 +38,6 @@ for ext in $output; do
     fi
 done
 
+pip install azure-cli-core azure-cli requests
+pip install azure-storage-blob==1.5.0
 python $(cd $(dirname $0); pwd)/update_ext_cmd_tree.py $filter_exts
