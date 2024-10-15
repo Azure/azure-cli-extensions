@@ -128,6 +128,9 @@ helps['webpubsub update'] = """
       - name: Enable or disable local auth for a WebPubSub Service
         text: >
           az webpubsub update -n MyWebPubSub -g MyResourceGroup --disable-local-auth true
+      - name: Enable or disable region endpoint for a WebPubSub Service
+        text: >
+          az webpubsub update -n MyWebPubSub -g MyResourceGroup --region-endpoint-enabled true
 """
 
 helps['webpubsub start'] = """
@@ -394,6 +397,18 @@ examples:
   - name: Get the detail of a replica
     text: >
         az webpubsub replica create --sku Premium_P1 -l eastus --replica-name MyReplica --name MyWebPubSub -g MyResourceGroup
+"""
+
+helps['webpubsub replica update'] = """
+type: command
+short-summary: Update a replica of Webpubsub Service.
+examples:
+  - name: Enable or disable region endpoint for the replica of WebPubSub Service
+    text: >
+        az webpubsub replica update --replica-name MyReplica --name MyWebPubSub -g MyResourceGroup --region-endpoint-enabled true
+  - name: Update the unit count of the replica of WebPubSub Service
+    text: >
+        az webpubsub replica update --replica-name MyReplica --name MyWebPubSub -g MyResourceGroup --unit-count 2
 """
 
 helps['webpubsub custom-certificate list'] = """

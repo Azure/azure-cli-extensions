@@ -25,7 +25,7 @@ def load_arguments(self, _):
     from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
     webpubsub_name_type = CLIArgumentType(options_list='--webpubsub-name',
-                                          help='Name of the Webpubsub.', id_part='name')
+                                          help='Name of the webpubsub.', id_part='name')
     webpubsubhub_name_type = CLIArgumentType(help='Name of the hub.', id_part='child_name_1')
     webpubsub_custom_certificate_name_type = CLIArgumentType(
         help='Name of the custom certificate.', id_part='child_name_1')
@@ -52,6 +52,8 @@ def load_arguments(self, _):
                    help='Enable or disable client certificate authentication for a WebPubSub Service', arg_type=get_three_state_flag())
         c.argument('disable_local_auth',
                    help='Enable or disable local auth for a WebPubSub Service', arg_type=get_three_state_flag())
+        c.argument('region_endpoint_enabled',
+                   help='Enable or disable region endpoint for a WebPubSub Service', arg_type=get_three_state_flag())
 
     with self.argument_context('webpubsub key regenerate') as c:
         c.argument('key_type', arg_type=get_enum_type(WEBPUBSUB_KEY_TYPE), help='The name of access key to regenerate')
@@ -141,7 +143,8 @@ def load_arguments(self, _):
             c.argument('replica_name', webpubsub_replica_name_type)
 
     for scope in ['webpubsub replica create',
-                  'webpubsub replica list']:
+                  'webpubsub replica list',
+                  'webpubsub replica update']:
         with self.argument_context(scope) as c:
             c.argument('webpubsub_name', webpubsub_name_type, options_list=['--name', '-n'], id_part=None)
 
@@ -149,6 +152,12 @@ def load_arguments(self, _):
                   'webpubsub replica delete']:
         with self.argument_context(scope) as c:
             c.argument('webpubsub_name', webpubsub_name_type, options_list=['--name', '-n'])
+
+    with self.argument_context('webpubsub replica update') as c:
+        c.argument('replica_name', webpubsub_replica_name_type)
+        c.argument('unit_count', help='The number of webpubsub service unit count', type=int)
+        c.argument('region_endpoint_enabled',
+                   help='Enable or disable region endpoint for a WebPubSub Service', arg_type=get_three_state_flag())
 
     # Custom Certificate
     for scope in ['webpubsub custom-certificate create',

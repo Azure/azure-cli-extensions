@@ -72,7 +72,7 @@ def webpubsub_set(client, webpubsub_name, resource_group_name, parameters):
 
 
 def update_webpubsub(instance: WebPubSubResource, tags=None, sku=None, unit_count=None, service_mode=None,
-                     client_cert_enabled=None, disable_local_auth=None):
+                     client_cert_enabled=None, disable_local_auth=None, region_endpoint_enabled=None):
     if service_mode is not None and instance.kind is not None and instance.kind.casefold() == "socketio".casefold():
         instance.socket_io = WebPubSubSocketIOSettings(service_mode=service_mode)
     sku = sku if sku else instance.sku.name
@@ -87,6 +87,12 @@ def update_webpubsub(instance: WebPubSubResource, tags=None, sku=None, unit_coun
 
     if disable_local_auth is not None:
         instance.disable_local_auth = disable_local_auth
+
+    if region_endpoint_enabled is not None:
+        if region_endpoint_enabled:
+            instance.region_endpoint_enabled = "Enabled"
+        else:
+            instance.region_endpoint_enabled = "Disabled"
 
     return instance
 

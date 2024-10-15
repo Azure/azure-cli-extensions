@@ -15,3 +15,15 @@ webpubsub custom-domain create:
         certificate_resource_id:
             rule_exclusions:
             - option_length_too_long
+
+webpubsub update:
+    parameters:
+        region_endpoint_enabled:
+            rule_exclusions:
+            - option_length_too_long
+
+webpubsub replica update:
+    parameters:
+        region_endpoint_enabled:
+            rule_exclusions:
+            - option_length_too_long

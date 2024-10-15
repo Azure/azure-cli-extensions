@@ -137,6 +137,8 @@ def load_command_table(self, _):
         g.command('stop', 'webpubsub_replica_stop', exception_handler=empty_on_404)
         g.command('restart', 'webpubsub_replica_restart', exception_handler=empty_on_404)
         g.show_command('delete', 'webpubsub_replica_delete')
+        g.generic_update_command('update', getter_name='webpubsub_replica_get', setter_name='webpubsub_replica_set', custom_func_name='webpubsub_replica_update',
+                                 custom_func_type=webpubsub_replica_utils, exception_handler=exception_handler)
 
     with self.command_group('webpubsub custom-certificate', webpubsub_custom_certificate_utils) as g:
         g.show_command('show', 'custom_certificate_show', exception_handler=empty_on_404)

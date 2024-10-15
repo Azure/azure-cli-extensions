@@ -36,9 +36,8 @@ class WebpubsubScenarioTest(ScenarioTest):
             'location': 'eastus',
             'tags': '{}={}'.format(tags_key, tags_val),
             'unit_count': 1,
-            'updated_tags': '{}={}'.format(tags_key, updated_tags_val),
             'replica_name': replica_name,
-            'replica_location': replica_location
+            'replica_location': replica_location,
         })
 
         # Test create primary
@@ -81,5 +80,8 @@ class WebpubsubScenarioTest(ScenarioTest):
             self.check('[0].sku.name', '{sku}'),
             self.check('[0].tags.{}'.format(tags_key), tags_val),
         ])
-        # test remove replica
+
+        count = len(self.cmd('webpubsub replica list -n {name} -g {rg}').get_output_in_json())
         self.cmd('webpubsub replica delete -n {name} --replica-name {replica_name} -g {rg}')
+        final_count = len(self.cmd('webpubsub replica list -n {name} -g {rg}').get_output_in_json())
+        self.assertTrue(final_count == count - 1)
