@@ -38,6 +38,7 @@ for ext in $output; do
     fi
 done
 
-pip install azure-cli-core azure-cli requests
-pip install azure-storage-blob==1.5.0
+pip install azure-cli-core azure-cli requests azure-storage-blob==1.5.0
+# arcdata: ModuleNotFoundError: No module named 'regex._regex'
+pip install regex
 python $(cd $(dirname $0); pwd)/update_ext_cmd_tree.py $filter_exts
