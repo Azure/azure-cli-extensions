@@ -64,7 +64,7 @@ def _get_object_id(graph_client, subscription=None, spn=None, upn=None):
 def _object_id_args_helper(cli_ctx, object_id=None, spn=None, upn=None):
     if not object_id:
         from azure.cli.core._profile import Profile
-        from azure.graphrbac import GraphRbacManagementClient
+        from azure.graphrbac.graph_rbac_management_client import GraphRbacManagementClient
 
         profile = Profile(cli_ctx=cli_ctx)
         cred, _, tenant_id = profile.get_login_credentials(
