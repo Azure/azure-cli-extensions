@@ -130,7 +130,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000003/sharedKeys?api-version=2020-08-01
   response:
     body:
-      string: '{"primarySharedKey":"I4tNo4iK+TCul+Rwft3cSMlV+wV8+z4eigihdaqRr3UWKGprO36AYc3CFN8p3LNG0NRZNbu7Bth+irPWohaLmg==","secondarySharedKey":"dnpb0BZP8yuC2MNnYRbyRbQWnRZTLsa/04zywmSr8gmOGV8E4NO2ke5DcHlZ0LtlKpTEVMYJrLO3D9ZOJKS9qg=="}'
+      string: '{"primarySharedKey":"abc123","secondarySharedKey":"abc123"}'
     headers:
       access-control-allow-origin:
       - '*'
@@ -1423,7 +1423,7 @@ interactions:
     body: '{"location": "eastus", "tags": null, "properties": {"daprAIInstrumentationKey":
       null, "vnetConfiguration": null, "appLogsConfiguration": {"destination": "log-analytics",
       "logAnalyticsConfiguration": {"customerId": "3a6ede08-2556-4e70-af00-1bfa34a7b7ad",
-      "sharedKey": "I4tNo4iK+TCul+Rwft3cSMlV+wV8+z4eigihdaqRr3UWKGprO36AYc3CFN8p3LNG0NRZNbu7Bth+irPWohaLmg==",
+      "sharedKey":"abc123",
       "dynamicJsonColumns": false}}, "customDomainConfiguration": null, "workloadProfiles":
       [{"workloadProfileType": "Consumption", "Name": "Consumption"}], "zoneRedundant":
       false}, "identity": {"type": "None", "userAssignedIdentities": null}}'
@@ -3914,7 +3914,7 @@ interactions:
 - request:
     body: '{"location": "East US", "properties": {"appLogsConfiguration": {"destination":
       "log-analytics", "logAnalyticsConfiguration": {"customerId": "3a6ede08-2556-4e70-af00-1bfa34a7b7ad",
-      "sharedKey": "I4tNo4iK+TCul+Rwft3cSMlV+wV8+z4eigihdaqRr3UWKGprO36AYc3CFN8p3LNG0NRZNbu7Bth+irPWohaLmg=="}}}}'
+      "sharedKey":"abc123"}}}}'
     headers:
       Accept:
       - '*/*'
@@ -6003,7 +6003,7 @@ interactions:
 - request:
     body: '{"location": "East US", "properties": {"appLogsConfiguration": {"destination":
       "log-analytics", "logAnalyticsConfiguration": {"customerId": "3a6ede08-2556-4e70-af00-1bfa34a7b7ad",
-      "sharedKey": "I4tNo4iK+TCul+Rwft3cSMlV+wV8+z4eigihdaqRr3UWKGprO36AYc3CFN8p3LNG0NRZNbu7Bth+irPWohaLmg=="}}}}'
+      "sharedKey":"abc123"}}}}'
     headers:
       Accept:
       - '*/*'

@@ -130,7 +130,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000003/sharedKeys?api-version=2020-08-01
   response:
     body:
-      string: '{"primarySharedKey":"fmqxY1VOc0uOEG/1qxvyKyuiIT5i1zIUR50hv5ABDEGulucPycX0VnQcdo/ybCRAZrS5KsciTo2j/9nF8UoNXQ==","secondarySharedKey":"H95IwHwln3C2GyiBLWmGs0hXvplqzTUzDgNL8p9CXv4WyWjnI80eZej4cyB+HhGRzDwhm5cgC4PmYEb3XpDJGA=="}'
+      string: '{"primarySharedKey":"abc123","secondarySharedKey":"abc123"}'
     headers:
       access-control-allow-origin:
       - '*'
@@ -1339,7 +1339,7 @@ interactions:
     body: '{"location": "eastasia", "tags": null, "properties": {"daprAIInstrumentationKey":
       null, "vnetConfiguration": null, "appLogsConfiguration": {"destination": "log-analytics",
       "logAnalyticsConfiguration": {"customerId": "61bc4e41-daec-40e3-b3d2-beb521dd87b7",
-      "sharedKey": "fmqxY1VOc0uOEG/1qxvyKyuiIT5i1zIUR50hv5ABDEGulucPycX0VnQcdo/ybCRAZrS5KsciTo2j/9nF8UoNXQ==",
+      "sharedKey":"abc123",
       "dynamicJsonColumns": false}}, "customDomainConfiguration": null, "workloadProfiles":
       [{"workloadProfileType": "Consumption", "Name": "Consumption"}], "zoneRedundant":
       false}, "identity": {"type": "None", "userAssignedIdentities": null}}'
@@ -4049,7 +4049,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000004/listCredentials?api-version=2023-11-01-preview
   response:
     body:
-      string: '{"username":"acr000004","passwords":[{"name":"password","value":"testacrsecret1"},{"name":"password2","value":"testacrsecret2"}]}'
+      string: '{"username":"acr000004","passwords":[{"name":"password","value":"abc123"},{"name":"password2","value":"abc123"}]}'
     headers:
       api-supported-versions:
       - 2023-11-01-preview
