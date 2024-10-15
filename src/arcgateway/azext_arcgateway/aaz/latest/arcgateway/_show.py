@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get information about the view of a gateway.
 
     :example: Sample command for gateway show
-        az arc gateway show --name myArcgateway --resource-group myResourceGroup --subscription mySubscription
+        az arcgateway show --name myArcgateway --resource-group myResourceGroup --subscription mySubscription
     """
 
     _aaz_info = {

@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete operation to delete a gateway.
 
     :example: Sample command or gateway delete
-        az arc gateway delete --name MyArcgateway --resource-group myResourceGroup --subscription mySubscription
+        az arcgateway delete --name MyArcgateway --resource-group myResourceGroup --subscription mySubscription
     """
 
     _aaz_info = {

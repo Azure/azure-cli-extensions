@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update operation to update a gateway.
 
     :example: Sample command for gateway update
-        az arc gateway update --name MyArcgateway --resource-group myResourceGroup --subscription mySubscription
+        az arcgateway update --name MyArcgateway --resource-group myResourceGroup --subscription mySubscription
     """
 
     _aaz_info = {

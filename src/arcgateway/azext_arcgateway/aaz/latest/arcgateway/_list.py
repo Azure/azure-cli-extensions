@@ -18,7 +18,7 @@ class List(AAZCommand):
     """List operation to get all gateways of a non-Azure machine
 
     :example: Sample command or gateway list
-        az arc gateway list --subscription mySubscription
+        az arcgateway list --subscription mySubscription
     """
 
     _aaz_info = {
