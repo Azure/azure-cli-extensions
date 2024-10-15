@@ -4,7 +4,7 @@ Release History
 1.1.0
 ++++++
 Added script for GT fixit button.
-Added code docs and fixed unbound exception bugs for `existing_rg` and `copy_disk_id` variables. 
+Fixed 2 Unbound variable bugs.  
 
 1.0.10
 ++++++
