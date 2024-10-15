@@ -10,7 +10,7 @@ from copy import deepcopy
 from knack.log import get_logger
 from enum import Enum
 from typing import Any, Dict
-from msrestazure.tools import parse_resource_id
+from azure.mgmt.core.tools import parse_resource_id
 from azure.cli.core.util import send_raw_request
 from azure.cli.core.azclierror import HTTPError
 import json
@@ -42,6 +42,7 @@ logger = get_logger(__name__)
 class ContainerType(Enum):
     PythonLTS = 0
     CustomContainer = 2
+    NodeLTS = 3
 
 
 class SessionPoolPreviewDecorator(BaseResource):

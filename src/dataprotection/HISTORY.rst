@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.5.3
++++++
+* `az dataprotection backup-instance initialize-for-data-recovery`: Fixed a bug when trying to initialize AKS restore.
+
 1.5.2
 +++++
 * Added support for multi-user authentication for dataprotection policy updates

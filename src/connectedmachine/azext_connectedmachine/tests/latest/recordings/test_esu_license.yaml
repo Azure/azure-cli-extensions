@@ -20,13 +20,13 @@ interactions:
       - --name --resource-group --location --license-type --state --target --edition
         --type --processors
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ytongtest/providers/Microsoft.HybridCompute/licenses/myESULicense?api-version=2024-03-31-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ytongtest/providers/Microsoft.HybridCompute/licenses/myESULicense?api-version=2024-07-10
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ytongtest/providers/Microsoft.HybridCompute/licenses/myESULicense","name":"myESULicense","location":"centraluseuap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Activated","target":"Windows
-        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"26934d2c-9c34-4b3e-bcd2-fc50b83da3f8"}}}'
+        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"8b07eb5f-ae62-475a-8610-d8f94c397fe9"}}}'
     headers:
       cache-control:
       - no-cache
@@ -35,7 +35,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 03 Jun 2024 02:52:33 GMT
+      - Mon, 30 Sep 2024 20:33:20 GMT
       expires:
       - '-1'
       pragma:
@@ -49,7 +49,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-msedge-ref:
-      - 'Ref A: B244E85B8EB143E081F225E3FC712269 Ref B: BL2AA2010201023 Ref C: 2024-06-03T02:52:33Z'
+      - 'Ref A: 64579277E834406CAB13F5217FE4CD2B Ref B: MNZ221060619029 Ref C: 2024-09-30T20:33:20Z'
     status:
       code: 200
       message: OK
@@ -65,25 +65,32 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group
+      - --subscription
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ytongtest/providers/Microsoft.HybridCompute/licenses?api-version=2024-03-31-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HybridCompute/licenses?api-version=2024-07-10
   response:
     body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ytongtest/providers/Microsoft.HybridCompute/licenses/esu1","name":"esu1","location":"centraluseuap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Activated","target":"Windows
-        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"bf2eded6-2d61-463f-9991-1a3d0b5383fa"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ytongtest/providers/Microsoft.HybridCompute/licenses/myESULicense","name":"myESULicense","location":"centraluseuap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Activated","target":"Windows
-        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"26934d2c-9c34-4b3e-bcd2-fc50b83da3f8"}}}]}'
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dakirbytest/providers/Microsoft.HybridCompute/licenses/testLicense2","name":"testLicense2","location":"uksouth","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Deactivated","target":"Windows
+        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"ab5b736c-bbbb-4ea2-ba48-abd14d87ddc0"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dakirbytest/providers/Microsoft.HybridCompute/licenses/dakirbyTestLicense","name":"dakirbyTestLicense","location":"eastus2euap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Activated","target":"Windows
+        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"1ba125b6-54b8-4984-a372-591f90b44583","volumeLicenseDetails":[{"programYear":"Year
+        1","invoiceId":"1234567890"}]}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dakirbytest/providers/Microsoft.HybridCompute/licenses/testLicense","name":"testLicense","location":"centraluseuap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Activated","target":"Windows
+        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"d95eb0dd-282e-4d3e-9f55-9621f20e095c"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dakirbytest/providers/Microsoft.HybridCompute/licenses/testLicense","name":"testLicense","location":"centraluseuap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Deactivated","target":"Windows
+        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"2d5b6287-781c-4579-a7cb-6bd5368d166c"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dakirbytest/providers/Microsoft.HybridCompute/licenses/testLicense3","name":"testLicense3","location":"centraluseuap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Deactivated","target":"Windows
+        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"079c0d28-9fbb-44da-b5fc-a5400d17d28d"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dakirbytest/providers/Microsoft.HybridCompute/licenses/testLicense4","name":"testLicense4","location":"centraluseuap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Deactivated","target":"Windows
+        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"8ac55106-9e67-4ae5-9895-f8cea06746b5"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dakirbytest/providers/Microsoft.HybridCompute/licenses/testLicense5","name":"testLicense5","location":"centraluseuap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Deactivated","target":"Windows
+        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"9ed37cc3-227f-44bd-919c-3dfb73e84b2c"}}},{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ytongtest/providers/Microsoft.HybridCompute/licenses/myESULicense","name":"myESULicense","location":"centraluseuap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Activated","target":"Windows
+        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"8b07eb5f-ae62-475a-8610-d8f94c397fe9"}}}]}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1027'
+      - '4238'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 03 Jun 2024 02:52:34 GMT
+      - Mon, 30 Sep 2024 20:33:21 GMT
       expires:
       - '-1'
       pragma:
@@ -94,8 +101,12 @@ interactions:
       - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-original-request-ids:
+      - e4031c92-8498-4b99-985a-85145f8bd70c
+      - b7003a0c-1775-4278-b32a-a4cfbab229d6
+      - 1f9b2f20-ee1a-49b4-99cd-4709bd7dddb8
       x-msedge-ref:
-      - 'Ref A: 94B561209D494F55A7289F8E708180AC Ref B: BL2AA2030103027 Ref C: 2024-06-03T02:52:34Z'
+      - 'Ref A: D367D3D649C94ACD853522564311B819 Ref B: MNZ221060618053 Ref C: 2024-09-30T20:33:21Z'
     status:
       code: 200
       message: OK
@@ -111,15 +122,15 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - --resource-group --name
+      - --resource-group --name --subscription
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ytongtest/providers/Microsoft.HybridCompute/licenses/myESULicense?api-version=2024-03-31-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ytongtest/providers/Microsoft.HybridCompute/licenses/myESULicense?api-version=2024-07-10
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ytongtest/providers/Microsoft.HybridCompute/licenses/myESULicense","name":"myESULicense","location":"centraluseuap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Activated","target":"Windows
-        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"26934d2c-9c34-4b3e-bcd2-fc50b83da3f8"}}}'
+        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"8b07eb5f-ae62-475a-8610-d8f94c397fe9"}}}'
     headers:
       cache-control:
       - no-cache
@@ -128,7 +139,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 03 Jun 2024 02:52:35 GMT
+      - Mon, 30 Sep 2024 20:33:22 GMT
       expires:
       - '-1'
       pragma:
@@ -140,7 +151,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 64E56A36DA3E422B93F304809820A6AD Ref B: BL2AA2010205047 Ref C: 2024-06-03T02:52:35Z'
+      - 'Ref A: 16AE566AC22F41EAA00C0EEC3B876CF6 Ref B: MNZ221060618011 Ref C: 2024-09-30T20:33:23Z'
     status:
       code: 200
       message: OK
@@ -158,13 +169,13 @@ interactions:
       ParameterSetName:
       - --name --resource-group --license-type --state --target --edition --type --processors
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ytongtest/providers/Microsoft.HybridCompute/licenses/myESULicense?api-version=2024-03-31-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ytongtest/providers/Microsoft.HybridCompute/licenses/myESULicense?api-version=2024-07-10
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ytongtest/providers/Microsoft.HybridCompute/licenses/myESULicense","name":"myESULicense","location":"centraluseuap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Activated","target":"Windows
-        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"26934d2c-9c34-4b3e-bcd2-fc50b83da3f8"}}}'
+        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"8b07eb5f-ae62-475a-8610-d8f94c397fe9"}}}'
     headers:
       cache-control:
       - no-cache
@@ -173,7 +184,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 03 Jun 2024 02:52:36 GMT
+      - Mon, 30 Sep 2024 20:33:23 GMT
       expires:
       - '-1'
       pragma:
@@ -185,7 +196,7 @@ interactions:
       x-content-type-options:
       - nosniff
       x-msedge-ref:
-      - 'Ref A: 66379411E61640AD9CD9A2090554D1B9 Ref B: BL2AA2030103023 Ref C: 2024-06-03T02:52:36Z'
+      - 'Ref A: 2413C437C9C54DD6BF000EDE9BFC4460 Ref B: MNZ221060610035 Ref C: 2024-09-30T20:33:23Z'
     status:
       code: 200
       message: OK
@@ -209,13 +220,13 @@ interactions:
       ParameterSetName:
       - --name --resource-group --license-type --state --target --edition --type --processors
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ytongtest/providers/Microsoft.HybridCompute/licenses/myESULicense?api-version=2024-03-31-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ytongtest/providers/Microsoft.HybridCompute/licenses/myESULicense?api-version=2024-07-10
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ytongtest/providers/Microsoft.HybridCompute/licenses/myESULicense","name":"myESULicense","location":"centraluseuap","type":"Microsoft.HybridCompute/licenses","properties":{"tenantId":"72f988bf-86f1-41af-91ab-2d7cd011db47","licenseType":"ESU","licenseDetails":{"state":"Deactivated","target":"Windows
-        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"26934d2c-9c34-4b3e-bcd2-fc50b83da3f8"}}}'
+        Server 2012","edition":"Datacenter","type":"pCore","processors":16,"assignedLicenses":8,"immutableId":"8b07eb5f-ae62-475a-8610-d8f94c397fe9"}}}'
     headers:
       cache-control:
       - no-cache
@@ -224,7 +235,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 03 Jun 2024 02:52:37 GMT
+      - Mon, 30 Sep 2024 20:33:24 GMT
       expires:
       - '-1'
       pragma:
@@ -238,7 +249,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
       x-msedge-ref:
-      - 'Ref A: D7829D1283A34E409319578BA4508D08 Ref B: BL2AA2030103029 Ref C: 2024-06-03T02:52:36Z'
+      - 'Ref A: CED3D3DD5B8942FFA71B48A2C01D16DB Ref B: MNZ221060610035 Ref C: 2024-09-30T20:33:24Z'
     status:
       code: 200
       message: OK
@@ -258,9 +269,9 @@ interactions:
       ParameterSetName:
       - -y --name --subscription --resource-group
       User-Agent:
-      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.8.10 (Windows-10-10.0.19045-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.19045-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ytongtest/providers/Microsoft.HybridCompute/licenses/myESULicense?api-version=2024-03-31-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/ytongtest/providers/Microsoft.HybridCompute/licenses/myESULicense?api-version=2024-07-10
   response:
     body:
       string: ''
@@ -272,7 +283,7 @@ interactions:
       content-type:
       - application/json
       date:
-      - Mon, 03 Jun 2024 02:52:39 GMT
+      - Mon, 30 Sep 2024 20:33:26 GMT
       expires:
       - '-1'
       pragma:
@@ -286,7 +297,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-deletes:
       - '14999'
       x-msedge-ref:
-      - 'Ref A: 2638D3DACAD24D72A3DCF2FFC84B9BFD Ref B: BL2AA2030102003 Ref C: 2024-06-03T02:52:38Z'
+      - 'Ref A: 9165576DA4D045AAB22F7AFDB340EECD Ref B: MNZ221060610033 Ref C: 2024-09-30T20:33:25Z'
     status:
       code: 200
       message: OK

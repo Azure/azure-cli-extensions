@@ -402,7 +402,12 @@ helps[
       - name: Enable an exiting VM to azure.
         text: |-
                az connectedvmware vm create --subscription contoso-sub --resource-group contoso-rg \
---inventory-item 01234567-0123-0123-0123-0123456789ab --name contoso-vm
+--inventory-item /subscriptions/12345678-1234-1234-1234-123456789012/resourceGroups/contoso-rg/providers/Microsoft.ConnectedVMwarevSphere/VCenters/contoso-vc/InventoryItems/vm-123456 --name contoso-vm
+
+      - name: Enable an exiting VM using moName.
+        text: |-
+                az connectedvmware vm create --subscription contoso-sub --resource-group contoso-rg \
+--vcenter contoso-vcenter --mo-name contoso-moname --name contoso-vm
 
       - name: Link an HCRP Machine to a vCenter in another subscription using the machine id.
         text: |-

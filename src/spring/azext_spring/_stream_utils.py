@@ -11,7 +11,7 @@ from io import BytesIO
 from random import uniform
 from knack.util import CLIError
 from knack.log import get_logger
-from msrestazure.azure_exceptions import CloudError
+from azure.core.exceptions import HttpResponseError
 from azure.multiapi.storage.v2018_11_09.blob import AppendBlobService
 from azure.common import AzureHttpError
 from ._utils import get_blob_info
@@ -39,7 +39,7 @@ def stream_logs(client,
             service_name=service,
             app_name=app,
             deployment_name=deployment).url
-    except (AttributeError, CloudError) as e:
+    except (AttributeError, HttpResponseError) as e:
         logger.warning("%s Exception: %s", error_msg, e)
         raise CLIError(error_msg)
 

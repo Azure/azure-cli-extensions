@@ -7,7 +7,7 @@ from ._client_factory import network_client_factory
 
 
 def create_vnet_tap(cmd, resource_group_name, tap_name, destination, port=None, tags=None, location=None):
-    from msrestazure.tools import parse_resource_id
+    from azure.mgmt.core.tools import parse_resource_id
     supported_types = ['loadBalancers', 'networkInterfaces']
     client = network_client_factory(cmd.cli_ctx).virtual_network_taps
     SubResource, VTAP = cmd.get_models('SubResource', 'VirtualNetworkTap')

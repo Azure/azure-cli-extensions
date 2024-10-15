@@ -5,8 +5,8 @@
 
 import json
 
-from msrestazure.tools import is_valid_resource_id, parse_resource_id
 from knack.log import get_logger
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from azure.cli.core.azclierror import ArgumentUsageError
 from azure.cli.core.style import print_styled_text, Style
 
@@ -135,8 +135,8 @@ def sync(cmd, source, destination, folders_to_include=None, folders_to_exclude=N
 
         # sync library panels
         library_panel_skipped = False
-        panel_uids = {p["libraryPanel"]["uid"] for p in source_dashboard["dashboard"]["panels"] if "libraryPanel" in p}
-        for library_panel_uid in panel_uids:
+        library_panel_uids = _get_library_panels_uids_in_dashboard(source_dashboard["dashboard"])
+        for library_panel_uid in library_panel_uids:
             (status, content) = send_grafana_get(f'{source_endpoint}/api/library-elements/{library_panel_uid}',
                                                  http_headers)
             if status != 200:
@@ -229,3 +229,16 @@ def sync(cmd, source, destination, folders_to_include=None, folders_to_exclude=N
     output.append((Style.IMPORTANT, f"\n\nDry run: {dry_run if dry_run else False}\n"))
 
     print_styled_text(output)
+
+
+def _get_library_panels_uids_in_dashboard(json_content):
+    library_panel_uids = []
+    if "panels" in json_content:  # Grafana 9 empty dashboards won't have "panels" property
+        library_panel_uids += _get_library_panels_uids_in_dashboard(json_content["panels"])
+    else:
+        for panel in json_content:
+            if "panels" in panel:  # row type
+                library_panel_uids += _get_library_panels_uids_in_dashboard(panel["panels"])
+            elif "libraryPanel" in panel:
+                library_panel_uids.append(panel["libraryPanel"]["uid"])
+    return library_panel_uids

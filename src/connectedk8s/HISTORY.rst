@@ -3,6 +3,31 @@
 Release History
 ===============
 
+1.10.0
+++++++
+* Add support for Arc Gateway feature using '--gateway-resource-id' and '--disable-gateway' parameters.
+* Bug fix for Workload Identity poll or agent state.
+* Bug fix for connectedk8s update with workload identity enabled.
+* Update pycryptodome to 3.20.0.
+
+1.9.3
+++++++
+* Removed a workaround that is no longer needed after updating to MSAL 1.30.0+
+
+1.9.2
+++++++
+* Fixed the issue where pre-onboarding diagnostic checks failed for clusters running Kubernetes v1.31.0.
+
+1.9.1
+++++++
+* Fixed the issue where executing a second `connectedk8s connect` command would inadvertently delete the "azure-arc-release" namespace.
+
+1.9.0
+++++++
+* Upgrading to v0.2.2 of ArcK8sDiagnoser
+* Fix Style and Linter issues.
+* Increase Max Timeout for Onboarding Helm Install to 20 mins (from 10).
+
 1.8.0
 ++++++
 * New api version 2024-07-1-preview added

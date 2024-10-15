@@ -34,6 +34,7 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         c.argument("auth_type", help="Auth type to use for SSH connections.", options_list=["--auth-type"])
         c.argument("ssh_key", help="SSH key file location for SSH connections.", options_list=["--ssh-key"])
         c.argument("username", help="User name for SSH connections.", options_list=["--username"])
+        c.positional("ssh_args", nargs="*", help="Additional arguments passed to OpenSSH.")
     with self.argument_context("network bastion rdp") as c:
         c.argument("configure", help="Flag to configure RDP session.", action="store_true")
         c.argument("disable_gateway", help="Flag to disable access through RD gateway.",

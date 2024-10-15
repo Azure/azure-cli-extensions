@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.1
+++++++
+* Remove ADAL dependencies
+
 1.0.0
 ++++++
 * add new command: `az network p2s-vpn-gateway disconnect`.

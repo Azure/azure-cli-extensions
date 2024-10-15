@@ -41,9 +41,9 @@ class RunCommandScenarioTest(ScenarioTest):
     def test_run_command(self):
         rand_string = 'test'
         self.kwargs.update({
-            'machine': 'testmachine',
-            'rg': 'ytongtest',
-            'location': 'centraluseuap',
+            'machine': 'testmachine2',
+            'rg': 'ytongtest2',
+            'location': 'eastus2euap',
             'subscription': '00000000-0000-0000-0000-000000000000',
             'runcommand': 'myRunCommand',
         })

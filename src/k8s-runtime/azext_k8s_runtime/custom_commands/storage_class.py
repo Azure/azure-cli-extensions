@@ -15,11 +15,11 @@ from knack.log import get_logger
 from azure.cli.core.commands import AzCliCommand
 from azure.mgmt.authorization import AuthorizationManagementClient
 from azure.mgmt.authorization.models import RoleAssignmentCreateParameters, PrincipalType
-from azure.mgmt.kubernetesconfiguration import SourceControlConfigurationClient
-from azure.mgmt.kubernetesconfiguration.models import Extension, Identity
+from ..vendored_sdks.kubernetesconfiguration import SourceControlConfigurationClient
+from ..vendored_sdks.kubernetesconfiguration.models import Extension, Identity
 from azure.cli.core.commands.client_factory import get_mgmt_service_client
-from azure.mgmt.resourcegraph import ResourceGraphClient
-from azure.mgmt.resourcegraph.models import QueryRequest
+from ..vendored_sdks.resourcegraph import ResourceGraphClient
+from ..vendored_sdks.resourcegraph.models import QueryRequest
 
 from .common import KUBERNETES_RUNTIME_FPA_APP_ID, check_rp_registration, ConnectedClusterResourceId, query_rp_oid
 

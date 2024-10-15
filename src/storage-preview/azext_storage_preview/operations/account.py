@@ -34,7 +34,7 @@ def create_storage_account(cmd, resource_group_name, account_name, sku=None, loc
                            enable_nfs_v3=None, subnet=None, vnet_name=None, action='Allow', enable_alw=None,
                            immutability_period_since_creation_in_days=None, immutability_policy_state=None,
                            allow_protected_append_writes=None, public_network_access=None, allowed_copy_scope=None,
-                           dns_endpoint_type=None):
+                           dns_endpoint_type=None, enable_extended_groups=None):
     StorageAccountCreateParameters, Kind, Sku, CustomDomain, AccessTier, Identity, Encryption, NetworkRuleSet = \
         cmd.get_models('StorageAccountCreateParameters', 'Kind', 'Sku', 'CustomDomain', 'AccessTier', 'Identity',
                        'Encryption', 'NetworkRuleSet')
@@ -153,7 +153,7 @@ def create_storage_account(cmd, resource_group_name, account_name, sku=None, loc
         if bypass and not default_action:
             raise CLIError('incorrect usage: --default-action ACTION [--bypass SERVICE ...]')
         if subnet:
-            from msrestazure.tools import is_valid_resource_id
+            from azure.mgmt.core.tools import is_valid_resource_id
             if not is_valid_resource_id(subnet):
                 raise CLIError("Expected fully qualified resource ID: got '{}'".format(subnet))
             VirtualNetworkRule = cmd.get_models('VirtualNetworkRule')
@@ -238,6 +238,9 @@ def create_storage_account(cmd, resource_group_name, account_name, sku=None, loc
     if dns_endpoint_type is not None:
         params.dns_endpoint_type = dns_endpoint_type
 
+    if enable_extended_groups is not None:
+        params.enable_extended_groups = enable_extended_groups
+
     return scf.storage_accounts.begin_create(resource_group_name, account_name, params)
 
 
@@ -280,7 +283,7 @@ def show_storage_account_connection_string(cmd, resource_group_name, account_nam
 
 def get_storage_account_properties(cli_ctx, account_id):
     scf = storage_client_factory(cli_ctx)
-    from msrestazure.tools import parse_resource_id
+    from azure.mgmt.core.tools import parse_resource_id
     result = parse_resource_id(account_id)
     return scf.storage_accounts.get_properties(result['resource_group'], result['name'])
 
@@ -301,7 +304,8 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
                            sas_expiration_period=None, key_expiration_period_in_days=None,
                            allow_cross_tenant_replication=None, default_share_permission=None,
                            immutability_period_since_creation_in_days=None, immutability_policy_state=None,
-                           allow_protected_append_writes=None, public_network_access=None, allowed_copy_scope=None):
+                           allow_protected_append_writes=None, public_network_access=None, allowed_copy_scope=None,
+                           enable_extended_groups=None):
     StorageAccountUpdateParameters, Sku, CustomDomain, AccessTier, Identity, Encryption, NetworkRuleSet = \
         cmd.get_models('StorageAccountUpdateParameters', 'Sku', 'CustomDomain', 'AccessTier', 'Identity', 'Encryption',
                        'NetworkRuleSet')
@@ -553,12 +557,15 @@ def update_storage_account(cmd, instance, sku=None, tags=None, custom_domain=Non
     if enable_local_user is not None:
         params.is_local_user_enabled = enable_local_user
 
+    if enable_extended_groups is not None:
+        params.enable_extended_groups = enable_extended_groups
+
     return params
 
 
 def _generate_local_user(local_user, permission_scope=None, ssh_authorized_key=None,
                          home_directory=None, has_shared_key=None, has_ssh_key=None, has_ssh_password=None,
-                         group_id=None, allow_acl_authorization=None):
+                         group_id=None, allow_acl_authorization=None, extended_groups=None, is_nfsv3_enabled=None):
     if permission_scope is not None:
         local_user.permission_scopes = permission_scope
     if ssh_authorized_key is not None:
@@ -575,28 +582,33 @@ def _generate_local_user(local_user, permission_scope=None, ssh_authorized_key=N
         local_user.group_id = group_id
     if allow_acl_authorization is not None:
         local_user.allow_acl_authorization = allow_acl_authorization
+    if extended_groups is not None:
+        local_user.extended_groups = extended_groups
+    if is_nfsv3_enabled is not None:
+        local_user.is_nf_sv3_enabled = is_nfsv3_enabled
 
 
-def create_local_user(cmd, client, resource_group_name, account_name, username, permission_scope=None, home_directory=None,
-                      has_shared_key=None, has_ssh_key=None, has_ssh_password=None, ssh_authorized_key=None,
-                      group_id=None, allow_acl_authorization=None):
+def create_local_user(cmd, client, resource_group_name, account_name, username, permission_scope=None,
+                      home_directory=None, has_shared_key=None, has_ssh_key=None, has_ssh_password=None,
+                      ssh_authorized_key=None, group_id=None, allow_acl_authorization=None, extended_groups=None,
+                      is_nfsv3_enabled=None):
     LocalUser = cmd.get_models('LocalUser')
     local_user = LocalUser()
 
     _generate_local_user(local_user, permission_scope, ssh_authorized_key,
                          home_directory, has_shared_key, has_ssh_key, has_ssh_password, group_id,
-                         allow_acl_authorization)
+                         allow_acl_authorization, extended_groups, is_nfsv3_enabled)
     return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
                                    username=username, properties=local_user)
 
 
 def update_local_user(cmd, client, resource_group_name, account_name, username, permission_scope=None,
                       home_directory=None, has_shared_key=None, has_ssh_key=None, has_ssh_password=None,
-                      ssh_authorized_key=None, group_id=None, allow_acl_authorization=None):
+                      ssh_authorized_key=None, group_id=None, allow_acl_authorization=None, extended_groups=None):
     local_user = client.get(resource_group_name, account_name, username)
 
     _generate_local_user(local_user, permission_scope, ssh_authorized_key,
                          home_directory, has_shared_key, has_ssh_key, has_ssh_password, group_id,
-                         allow_acl_authorization)
+                         allow_acl_authorization, extended_groups)
     return client.create_or_update(resource_group_name=resource_group_name, account_name=account_name,
                                    username=username, properties=local_user)

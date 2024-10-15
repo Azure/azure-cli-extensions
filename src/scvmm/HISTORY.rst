@@ -3,6 +3,14 @@
 Release History
 ===============
 
+1.1.1
+++++++
+* [Hotfix] Fixed VMMServer connect command parameter error.
+
+1.1.0
+++++++
+* Security upgrades and fixes.
+
 1.0.0
 ++++++
 * First Stable version release.

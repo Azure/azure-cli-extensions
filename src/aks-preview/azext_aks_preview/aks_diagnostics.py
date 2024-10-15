@@ -28,10 +28,11 @@ from azure.cli.core.commands.client_factory import (
     get_mgmt_service_client,
     get_subscription_id,
 )
+from azure.core.exceptions import HttpResponseError
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id, resource_id
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
 from knack.util import CLIError
-from msrestazure.azure_exceptions import CloudError
 from packaging import version
 from tabulate import tabulate
 
@@ -70,8 +71,6 @@ def aks_kollect_cmd(cmd,    # pylint: disable=too-many-statements,too-many-local
             raise CLIError(
                 "A storage account must be specified, since there isn't one in the diagnostic settings.")
 
-    from msrestazure.tools import (is_valid_resource_id, parse_resource_id,
-                                   resource_id)
     if storage_account_id is None:
         if not is_valid_resource_id(storage_account):
             storage_account_id = resource_id(
@@ -86,7 +85,7 @@ def aks_kollect_cmd(cmd,    # pylint: disable=too-many-statements,too-many-local
     if is_valid_resource_id(storage_account_id):
         try:
             parsed_storage_account = parse_resource_id(storage_account_id)
-        except CloudError as ex:
+        except HttpResponseError as ex:
             raise CLIError(ex.message) from ex
     else:
         raise CLIError(f"Invalid storage account id {storage_account_id}")

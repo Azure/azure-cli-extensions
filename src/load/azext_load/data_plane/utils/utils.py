@@ -17,8 +17,8 @@ from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
     CLIInternalError,
 )
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from knack.log import get_logger
-from msrestazure.tools import is_valid_resource_id, parse_resource_id
 
 from .models import IdentityType, AllowedFileTypes
 
@@ -180,6 +180,8 @@ def upload_file_to_test(client, test_id, file_path, file_type=None, wait=False):
     )
     # pylint: disable-next=protected-access
     file_path = validators._validate_path(file_path, is_dir=False)
+    # pylint: disable-next=protected-access
+    validators._validate_file_stats(file_path, file_type)
     with open(file_path, "rb") as file:
         upload_poller = client.begin_upload_test_file(
             test_id,
@@ -577,91 +579,132 @@ def create_or_update_test_run_body(
     return new_body
 
 
-def upload_files_helper(
-    client, test_id, yaml_data, test_plan, load_test_config_file, wait
+def upload_generic_files_helper(
+    client, test_id, load_test_config_file, existing_files, file_to_upload, file_type, wait
 ):
-    files = client.list_test_files(test_id)
-    if yaml_data:
-        user_prop_file = yaml_data.get("properties", {}).get("userPropertyFile")
-        if user_prop_file is not None:
-            logger.info("Uploading user property file %s", user_prop_file)
-            file_name = os.path.basename(user_prop_file)
-            for file in files:
-                if AllowedFileTypes.USER_PROPERTIES.value == file["fileType"]:
-                    client.delete_test_file(test_id, file["fileName"])
-                    logger.info(
-                        "File of type '%s' already exists in test %s. Deleting it!",
-                        AllowedFileTypes.USER_PROPERTIES,
-                        test_id,
-                    )
-                    break
-            file_response = upload_file_to_test(
-                client,
-                test_id,
-                user_prop_file,
-                file_type=AllowedFileTypes.USER_PROPERTIES,
-                wait=wait,
-            )
-            logger.info(
-                "Uploaded file '%s' of type %s to test %s",
-                file_name,
-                AllowedFileTypes.USER_PROPERTIES,
-                test_id,
-            )
+    if not os.path.isabs(file_to_upload) and load_test_config_file:
+        yaml_dir = os.path.dirname(load_test_config_file)
+        file_to_upload = os.path.join(yaml_dir, file_to_upload)
+    file_name = os.path.basename(file_to_upload)
+    if file_name in [file["fileName"] for file in existing_files]:
+        client.delete_test_file(test_id, file_name)
+        logger.info(
+            "File with name '%s' already exists in test %s. Deleting it!",
+            file_name,
+            test_id,
+        )
+    file_response = upload_file_to_test(
+        client,
+        test_id,
+        file_to_upload,
+        file_type=file_type,
+        wait=wait,
+    )
+    logger.info(
+        "Uploaded file '%s' of type %s to test %s",
+        file_name,
+        file_type,
+        test_id,
+    )
+    return file_response
 
+
+def upload_properties_file_helper(
+    client, test_id, yaml_data, load_test_config_file, existing_test_files, wait
+):
+    if yaml_data and yaml_data.get("properties", {}).get("userPropertyFile") is not None:
+        user_prop_file = yaml_data.get("properties", {}).get("userPropertyFile")
+        existing_properties_files = []
+        for file in existing_test_files:
+            if AllowedFileTypes.USER_PROPERTIES.value == file["fileType"]:
+                existing_properties_files.append(file)
+        upload_generic_files_helper(
+            client=client, test_id=test_id, load_test_config_file=load_test_config_file,
+            existing_files=existing_properties_files, file_to_upload=user_prop_file,
+            file_type=AllowedFileTypes.USER_PROPERTIES, wait=wait
+        )
+
+
+def upload_configurations_files_helper(
+    client, test_id, yaml_data, load_test_config_file, existing_test_files, wait
+):
     if yaml_data and yaml_data.get("configurationFiles") is not None:
         logger.info("Uploading additional artifacts")
         for config_file in yaml_data.get("configurationFiles"):
-            file_name = os.path.basename(config_file)
-            if file_name in [file["fileName"] for file in files]:
-                client.delete_test_file(test_id, file_name)
-                logger.info(
-                    "File with name '%s' already exists in test %s. Deleting it!",
-                    file_name,
-                    test_id,
-                )
-            upload_file_to_test(
-                client,
-                test_id,
-                config_file,
-                file_type=AllowedFileTypes.ADDITIONAL_ARTIFACTS,
-                wait=wait,
-            )
-            logger.info(
-                "Uploaded file '%s' of type %s to test %s",
-                file_name,
-                AllowedFileTypes.ADDITIONAL_ARTIFACTS,
-                test_id,
+            upload_generic_files_helper(
+                client=client,
+                test_id=test_id, load_test_config_file=load_test_config_file, existing_files=existing_test_files,
+                file_to_upload=config_file, file_type=AllowedFileTypes.ADDITIONAL_ARTIFACTS,
+                wait=wait
             )
 
+
+def upload_zipped_artifacts_helper(
+    client, test_id, yaml_data, load_test_config_file, existing_test_files, wait
+):
+    if yaml_data and yaml_data.get("zipArtifacts") is not None:
+        logger.info("Uploading zipped artifacts")
+        for zip_artifact in yaml_data.get("zipArtifacts"):
+            file_response = upload_generic_files_helper(
+                client=client,
+                test_id=test_id, load_test_config_file=load_test_config_file, existing_files=existing_test_files,
+                file_to_upload=zip_artifact, file_type=AllowedFileTypes.ZIPPED_ARTIFACTS,
+                wait=wait
+            )
+            if wait and file_response.get("validationStatus") != "VALIDATION_SUCCESS":
+                raise FileOperationError(
+                    f"ZIP artifact {zip_artifact} is not valid. Please check the file and try again."
+                )
+
+
+def upload_test_plan_helper(
+    client, test_id, yaml_data, test_plan, load_test_config_file, existing_test_files, wait
+):
     if test_plan is None and yaml_data is not None and yaml_data.get("testPlan"):
         test_plan = yaml_data.get("testPlan")
-        if not os.path.isabs(test_plan) and load_test_config_file:
-            yaml_dir = os.path.dirname(load_test_config_file)
-            test_plan = os.path.join(yaml_dir, test_plan)
+    existing_test_plan_files = []
+    for file in existing_test_files:
+        if validators.AllowedFileTypes.JMX_FILE.value == file["fileType"]:
+            existing_test_plan_files.append(file)
     if test_plan:
         logger.info("Uploading test plan file %s", test_plan)
-        file_name = os.path.basename(test_plan)
-        for file in files:
-            if validators.AllowedFileTypes.JMX_FILE.value == file["fileType"]:
-                client.delete_test_file(test_id, file["fileName"])
-                logger.info(
-                    "File with name '%s' already exists in test %s. Deleting it!",
-                    file_name,
-                    test_id,
-                )
-                break
-        file_response = upload_file_to_test(
-            client,
-            test_id,
-            test_plan,
+        file_response = upload_generic_files_helper(
+            client=client,
+            test_id=test_id, load_test_config_file=load_test_config_file,
+            existing_files=existing_test_plan_files, file_to_upload=test_plan,
             file_type=validators.AllowedFileTypes.JMX_FILE,
-            wait=wait,
+            wait=wait
         )
         if wait and file_response.get("validationStatus") != "VALIDATION_SUCCESS":
             raise FileOperationError(
                 f"Test plan file {test_plan} is not valid. Please check the file and try again."
             )
+
+
+def upload_files_helper(
+    client, test_id, yaml_data, test_plan, load_test_config_file, wait
+):
+    files = client.list_test_files(test_id)
+
+    upload_properties_file_helper(
+        client=client,
+        test_id=test_id, yaml_data=yaml_data,
+        load_test_config_file=load_test_config_file, existing_test_files=files, wait=wait)
+
+    upload_configurations_files_helper(
+        client=client,
+        test_id=test_id, yaml_data=yaml_data,
+        load_test_config_file=load_test_config_file, existing_test_files=files, wait=wait)
+
+    upload_zipped_artifacts_helper(
+        client=client,
+        test_id=test_id, yaml_data=yaml_data,
+        load_test_config_file=load_test_config_file, existing_test_files=files, wait=wait)
+
+    upload_test_plan_helper(
+        client=client,
+        test_id=test_id, yaml_data=yaml_data, test_plan=test_plan,
+        load_test_config_file=load_test_config_file, existing_test_files=files, wait=wait)
 
 
 def validate_failure_criteria(failure_criteria):

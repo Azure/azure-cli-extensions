@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "connectedmachine private-link-scope network-security-perimeter-configuration",
 )
 class __CMDGroup(AAZCommandGroup):
-    """network-security-perimeter-configuration
+    """Manage network security perimeter configration on an Azure Arc-Enabled Server.
     """
     pass
 

@@ -22,9 +22,9 @@ class Restart(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-04-10",
+        "version": "2024-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstances/{}/restart", "2024-04-10"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstances/{}/restart", "2024-08-01-preview"],
         ]
     }
 
@@ -150,7 +150,7 @@ class Restart(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-10",
+                    "api-version", "2024-08-01-preview",
                     required=True,
                 ),
             }

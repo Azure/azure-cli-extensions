@@ -40,6 +40,7 @@ jobs:
         env:
           bash_sha: ${{ github.event.pull_request.base.sha }}
           base_branch: ${{ github.event.pull_request.base.ref }}
+          base_repo: ${{ github.event.pull_request.base.repo.clone_url }}
           base_branch_pre: "upstream"
           diff_sha: ${{ github.event.pull_request.head.sha }}
           diff_branch: ${{ github.event.pull_request.head.ref }}
@@ -47,19 +48,19 @@ jobs:
         run: |
             set -x
             git --version
-            git log --oneline | head -n 30
+            git log --oneline | head -n 10
             git branch -a
-            git fetch https://github.com/Azure/azure-cli-extensions.git "$base_branch":"$base_branch_pre"/"$base_branch"
+            git fetch "$base_repo" "$base_branch":"$base_branch_pre"/"$base_branch"
             git checkout "$base_branch_pre"/"$base_branch"
-            git log --oneline | head -n 30
+            git log --oneline | head -n 10
             git checkout "$diff_branch"
-            git log --oneline | head -n 30
+            git log --oneline | head -n 10
             git --no-pager diff --name-only --diff-filter=ACMRT "$base_branch_pre"/"$base_branch"..."$diff_branch" > changed_files
             cat changed_files
-            echo "changed_module_list=$(cat changed_files | grep azext_ | awk -F"azext_" '{print $1}'| awk -F"/" '{print $2}' | sort | uniq | xargs)" >> $GITHUB_ENV
+            echo "changed_module_list=$(cat changed_files | grep src/ | awk -F"src/" '{print $2}'| grep / | awk -F"/" '{print $1}' | sort | uniq | xargs)" >> $GITHUB_ENV
       - name: Display Diff Modules
         run: |
-            for mod in "$changed_module_list"
+            for mod in ${changed_module_list[@]}
             do
               echo changed module: "${mod}"
             done

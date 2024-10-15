@@ -5,11 +5,10 @@
 
 # pylint: disable=line-too-long, too-many-statements, bare-except
 # from azure.cli.core.commands import CliCommandType
-# from msrestazure.tools import is_valid_resource_id, parse_resource_id
+# from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from azure.cli.command_modules.containerapp._transformers import (transform_containerapp_output, transform_containerapp_list_output)
 from azext_containerapp._client_factory import ex_handler_factory
-from ._transformers import (transform_usages_output,
-                            transform_sensitive_values,
+from ._transformers import (transform_sensitive_values,
                             transform_telemetry_data_dog_values,
                             transform_telemetry_app_insights_values,
                             transform_telemetry_otlp_values,
@@ -25,8 +24,6 @@ def load_command_table(self, args):
         g.custom_command('update', 'update_containerapp', supports_no_wait=True, exception_handler=ex_handler_factory(), table_transformer=transform_containerapp_output, transform=transform_sensitive_values)
         g.custom_command('delete', 'delete_containerapp', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
         g.custom_command('up', 'containerapp_up', supports_no_wait=False, exception_handler=ex_handler_factory())
-        g.custom_show_command('show-custom-domain-verification-id', 'show_custom_domain_verification_id', is_preview=True)
-        g.custom_command('list-usages', 'list_usages', table_transformer=transform_usages_output, is_preview=True)
 
     with self.command_group('containerapp replica') as g:
         g.custom_show_command('show', 'get_replica')  # TODO implement the table transformer
@@ -39,7 +36,6 @@ def load_command_table(self, args):
         g.custom_command('create', 'create_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
         g.custom_command('delete', 'delete_managed_environment', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
         g.custom_command('update', 'update_managed_environment', supports_no_wait=True, exception_handler=ex_handler_factory())
-        g.custom_command('list-usages', 'list_environment_usages', table_transformer=transform_usages_output, is_preview=True)
 
     with self.command_group('containerapp job') as g:
         g.custom_show_command('show', 'show_containerappsjob')
@@ -48,11 +44,13 @@ def load_command_table(self, args):
         g.custom_command('update', 'update_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory(), transform=transform_sensitive_values)
         g.custom_command('delete', 'delete_containerappsjob', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
 
+    with self.command_group('containerapp job registry', is_preview=True) as g:
+        g.custom_command('set', 'set_registry_job', exception_handler=ex_handler_factory())
+
     with self.command_group('containerapp env certificate') as g:
-        g.custom_command('create', 'create_managed_certificate', is_preview=True)
         g.custom_command('upload', 'upload_certificate')
-        g.custom_command('list', 'list_certificates', is_preview=True)
-        g.custom_command('delete', 'delete_certificate', confirmation=True, exception_handler=ex_handler_factory(), is_preview=True)
+        g.custom_command('list', 'list_certificates')
+        g.custom_command('delete', 'delete_certificate', confirmation=True, exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp env dapr-component') as g:
         g.custom_command('init', 'init_dapr_components', is_preview=True)
@@ -98,6 +96,9 @@ def load_command_table(self, args):
     with self.command_group('containerapp add-on milvus') as g:
         g.custom_command('create', 'create_milvus_service', supports_no_wait=True)
         g.custom_command('delete', 'delete_milvus_service', confirmation=True, supports_no_wait=True)
+
+    with self.command_group('containerapp registry', is_preview=True) as g:
+        g.custom_command('set', 'set_registry', exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp resiliency', is_preview=True) as g:
         g.custom_command('create', 'create_container_app_resiliency', supports_no_wait=True, exception_handler=ex_handler_factory())
@@ -177,7 +178,7 @@ def load_command_table(self, args):
             g.custom_command('set', 'connected_env_create_or_update_storage', supports_no_wait=True, exception_handler=ex_handler_factory())
             g.custom_command('remove', 'connected_env_remove_storage', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
 
-    with self.command_group('containerapp env java-component', is_preview=True) as g:
+    with self.command_group('containerapp env java-component') as g:
         g.custom_command('list', 'list_java_components')
 
     with self.command_group('containerapp env java-component spring-cloud-config',
@@ -251,7 +252,7 @@ def load_command_table(self, args):
         g.custom_show_command('list-files', 'list_files_session_code_interpreter')
         g.custom_command('delete-file', 'delete_file_session_code_interpreter', confirmation=True, supports_no_wait=True)
 
-    with self.command_group('containerapp java logger', is_preview=True) as g:
+    with self.command_group('containerapp java logger') as g:
         g.custom_command('set', 'create_or_update_java_logger', supports_no_wait=True)
         g.custom_command('delete', 'delete_java_logger', supports_no_wait=True)
         g.custom_show_command('show', 'show_java_logger')
