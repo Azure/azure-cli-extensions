@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.0b4
++++++++
+* Update the deprecation message and announce the retirement date
+
 1.0.0b3
 +++++++
 * Deprecate this extension
