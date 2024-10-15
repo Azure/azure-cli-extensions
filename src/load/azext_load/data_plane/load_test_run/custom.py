@@ -60,7 +60,7 @@ def create_test_run(
     if not no_wait:
         response = poller.result()
     logger.info("Test run created with following response %s", response)
-    return response
+    return response.as_dict()
 
 
 def get_test_run(cmd, load_test_resource, test_run_id, resource_group_name=None):
@@ -69,7 +69,7 @@ def get_test_run(cmd, load_test_resource, test_run_id, resource_group_name=None)
     response = client.get_test_run(test_run_id=test_run_id)
     logger.debug("Test run %s", response)
     logger.info("Getting test run completed")
-    return response
+    return response.as_dict()
 
 
 def update_test_run(
@@ -99,10 +99,10 @@ def update_test_run(
     )
     logger.info("Updating test run %s", test_run_id)
     # pylint: disable-next=protected-access
-    response = client._test_run_initial(test_run_id=test_run_id, body=test_run_body)
+    response = client.begin_test_run(test_run_id=test_run_id, body=test_run_body).result()
     logger.debug("Test run updated with following response %s", response)
     logger.info("Update test run completed")
-    return response
+    return response.as_dict()
 
 
 def delete_test_run(cmd, load_test_resource, test_run_id, resource_group_name=None):
@@ -120,13 +120,13 @@ def list_test_runs(cmd, test_id, load_test_resource, resource_group_name=None):
     response = client.list_test_runs(test_id=test_id)
     logger.debug("Test runs listed with following response %s", response)
     logger.info("List test runs completed")
-    return response
+    return [test_run.as_dict() for test_run in response]
 
 
 def stop_test_run(cmd, load_test_resource, test_run_id, resource_group_name=None):
     client = get_testrun_data_plane_client(cmd, load_test_resource, resource_group_name)
     logger.info("Stopping test run %s", test_run_id)
-    response = client.stop_test_run(test_run_id=test_run_id)
+    response = client.stop(test_run_id=test_run_id)
     logger.debug("Test run stopped with following response %s", response)
     logger.info("Stop test run completed")
     return response
@@ -267,7 +267,7 @@ def add_test_run_app_component(
     )
     logger.debug("App component added with following response %s", response)
     logger.info("App component completed")
-    return response
+    return response.as_dict()
 
 
 def list_test_run_app_component(
@@ -283,7 +283,7 @@ def list_test_run_app_component(
         "List of app components completed with following response %s", response
     )
     logger.info("App components completed")
-    return response
+    return response.as_dict()
 
 
 def remove_test_run_app_component(
@@ -301,7 +301,7 @@ def remove_test_run_app_component(
     )
     logger.debug("App component removed completed with following response %s", response)
     logger.info("App component completed")
-    return response
+    return response.as_dict()
 
 
 # server metrics
@@ -341,7 +341,7 @@ def add_test_run_server_metric(
         "Server metrics added completed with following response %s", test_run_id
     )
     logger.info("Server metrics completed")
-    return response
+    return response.as_dict()
 
 
 def list_test_run_server_metric(
@@ -357,7 +357,7 @@ def list_test_run_server_metric(
         "List of server metrics completed with following response %s", response
     )
     logger.info("Server metrics completed")
-    return response
+    return response.as_dict()
 
 
 def remove_test_run_server_metric(
@@ -377,7 +377,7 @@ def remove_test_run_server_metric(
         "Server metrics removed completed with following response %s", response
     )
     logger.info("Server metrics completed")
-    return response
+    return response.as_dict()
 
 
 def get_test_run_metric_namespaces(
@@ -391,7 +391,7 @@ def get_test_run_metric_namespaces(
         response,
     )
     logger.info("Getting client metrics namespaces completed")
-    return response
+    return response.as_dict()
 
 
 def list_test_run_metrics(
@@ -455,7 +455,7 @@ def list_test_run_metrics(
                     interval=interval,
                     time_interval=time_interval,
                 )
-                dimension_filter["values"] = list(metric_dimensions)
+                dimension_filter["values"] = metric_dimensions.value
 
         metrics = client.list_metrics(
             test_run_id,
@@ -468,7 +468,7 @@ def list_test_run_metrics(
                 "filters": dimension_filters,
             },
         )
-        response = list(metrics)
+        response = [metric.as_dict() for metric in metrics]
         logger.debug("All metrics: %s", response)
         logger.info("List metrics completed")
         return response
@@ -490,7 +490,7 @@ def list_test_run_metrics(
             aggregation=aggregation,
             interval=interval,
         )
-        response = list(metrics)
+        response = [metric.as_dict() for metric in metrics]
         aggregated_metrics[metric_name] = response
     logger.debug("Aggregated metrics: %s", aggregated_metrics)
     logger.info("List metrics completed")
@@ -512,7 +512,7 @@ def get_test_run_metric_definitions(
         metric_definitions,
     )
     logger.info("Getting test run metric definitions completed")
-    return metric_definitions
+    return metric_definitions.as_dict()
 
 
 def get_test_run_metric_dimensions(

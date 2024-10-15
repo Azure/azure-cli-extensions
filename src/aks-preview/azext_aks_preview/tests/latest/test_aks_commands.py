@@ -3322,7 +3322,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @live_only() # live only due to workspace is not mocked correctly and role assignment is not mocked
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
-        random_name_length=17, name_prefix="clitest", location="eastus"
+        random_name_length=17, name_prefix="clitest", location="eastus2"
     )
     def test_aks_automatic_sku(self, resource_group, resource_group_location):
         # reset the count so in replay mode the random names will start with 0
@@ -3341,13 +3341,8 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create an Automatic cluster
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} --location={location} "
-            "--sku automatic --node-vm-size standard_ds4_v2 "
-            "--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/AutomaticSKUPreview,"
-            "AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableAPIServerVnetIntegrationPreview,"
-            "AKSHTTPCustomFeatures=Microsoft.ContainerService/SafeguardsPreview,"
-            "AKSHTTPCustomFeatures=Microsoft.ContainerService/NRGLockdownPreview,"
-            "AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-PrometheusAddonPreview,"
-            "AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeAutoProvisioningPreview "
+            "--sku automatic "
+            "--aks-custom-header AKSHTTPCustomFeatures=Microsoft.ContainerService/AutomaticSKUPreview "
             "--ssh-key-value={ssh_key_value}"
         )
         self.cmd(
@@ -3411,6 +3406,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "AKSHTTPCustomFeatures=Microsoft.ContainerService/SafeguardsPreview,"
             "AKSHTTPCustomFeatures=Microsoft.ContainerService/NRGLockdownPreview,"
             "AKSHTTPCustomFeatures=Microsoft.ContainerService/AKS-PrometheusAddonPreview,"
+            "AKSHTTPCustomFeatures=Microsoft.ContainerService/DisableSSHPreview,"
             "AKSHTTPCustomFeatures=Microsoft.ContainerService/NodeAutoProvisioningPreview "
             "--sku base "
         )
@@ -4191,6 +4187,95 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             create_nodepool_cmd,
             checks=[self.check("provisioningState", "Succeeded"),
                     self.check('gpuProfile.installGpuDriver', False)],
+        )
+
+        # delete the original AKS cluster
+        self.cmd(
+            "aks delete -g {resource_group} -n {name} --yes --no-wait",
+            checks=[self.is_empty()],
+        )
+
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17,
+        name_prefix="clitest",
+        location="eastus2",
+    )
+    def test_aks_gpu_driver_type(self, resource_group, resource_group_location):
+        print(resource_group_location)
+        create_version, upgrade_version = self._get_versions(resource_group_location)
+        aks_name = self.create_random_name("cliakstest", 16)
+        nodepool_name = self.create_random_name("c", 6)
+        nodepool_name_1 = self.create_random_name("n", 6)
+
+        self.kwargs.update(
+            {
+                "resource_group": resource_group,
+                "name": aks_name,
+                "location": resource_group_location,
+                "nodepool_name": nodepool_name,
+                "k8s_version": upgrade_version,
+                "ssh_key_value": self.generate_ssh_keys(),
+                "windows_admin_username": "azureuser1",
+                "windows_admin_password": "replace-Password1234$",
+            }
+        )
+
+        # create an aks cluster
+        create_cmd = (
+            "aks create --resource-group {resource_group} --name {name} --location {location} "
+            "--node-count 2 "
+            "--windows-admin-username={windows_admin_username} --windows-admin-password={windows_admin_password} "
+            "--load-balancer-sku=standard --vm-set-type=virtualmachinescalesets --network-plugin=azure "
+            "-k {k8s_version} "
+            "--ssh-key-value={ssh_key_value} -o json"
+        )
+        self.cmd(
+            create_cmd, checks=[self.check("provisioningState", "Succeeded")]
+        )
+
+        # create nodepool from the cluster with custom driver type GRID
+        create_nodepool_cmd = (
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={nodepool_name} --os-type windows --node-count 1 "
+            "--node-vm-size Standard_NC4as_T4_v3 --driver-type GRID "
+            "-k {k8s_version} -o json"
+        )
+               
+        self.cmd(
+            create_nodepool_cmd,
+            checks=[self.check("provisioningState", "Succeeded"),
+                    self.check('gpuProfile.driverType', "GRID")],
+        )
+
+        # aks nodepool update should succeed and should not change the driver type
+        update_cmd = (
+            "aks nodepool update --resource-group {resource_group} --cluster-name {name} "
+            "--name {nodepool_name} --tags team=industry -o json"
+        )
+        
+        self.cmd(
+            update_cmd,
+            checks=[self.check("provisioningState", "Succeeded"),
+                    self.check('gpuProfile.driverType', "GRID")],
+        )
+
+        self.kwargs.update(
+            {
+                "node_pool_name": nodepool_name_1,
+            }
+        )
+
+        # create nodepool from the cluster without custom driver type
+        create_nodepool_cmd = (
+            "aks nodepool add --resource-group={resource_group} --cluster-name={name} --name={node_pool_name} --os-type windows --node-count 1 "
+            "--node-vm-size Standard_NC4as_T4_v3 "
+            "-k {k8s_version} -o json"
+        )
+               
+        self.cmd(
+            create_nodepool_cmd,
+            checks=[self.check("provisioningState", "Succeeded"),
+                    self.check('gpuProfile.driverType', "CUDA")],
         )
 
         # delete the original AKS cluster
@@ -9220,9 +9305,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableAPIServerVnetIntegrationPreview "
             "--assign-identity {identity_id} "
             "--enable-azure-keyvault-kms --azure-keyvault-kms-key-id={key_id} "
             "--azure-keyvault-kms-key-vault-network-access=Private --azure-keyvault-kms-key-vault-resource-id {kv_resource_id} "
+            "--enable-apiserver-vnet-integration "
             "--ssh-key-value={ssh_key_value} -o json"
         )
         self.cmd(
@@ -9397,7 +9484,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableAPIServerVnetIntegrationPreview "
             "--assign-identity {identity_id} "
+            "--enable-apiserver-vnet-integration "
             "--ssh-key-value={ssh_key_value} -o json"
         )
         self.cmd(
@@ -9538,9 +9627,11 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         create_cmd = (
             "aks create --resource-group={resource_group} --name={name} "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/EnableAPIServerVnetIntegrationPreview "
             "--assign-identity {identity_id} --enable-private-cluster "
             "--enable-azure-keyvault-kms --azure-keyvault-kms-key-id={key_id} "
             "--azure-keyvault-kms-key-vault-network-access=Private --azure-keyvault-kms-key-vault-resource-id {kv_resource_id} "
+            "--enable-apiserver-vnet-integration "
             "--ssh-key-value={ssh_key_value} -o json"
         )
         self.cmd(

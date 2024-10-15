@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class TriggerEvaluation(AAZCommand):
     """Trigger quick evaluation for the given subscriptions.
+
+    :example: TriggerEvaluation
+        az acat trigger-evaluation --resource-ids "[/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/myResourceGroup/providers/Microsoft.SignalRService/SignalR/mySignalRService]"
     """
 
     _aaz_info = {

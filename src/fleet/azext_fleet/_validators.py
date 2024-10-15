@@ -10,7 +10,6 @@ from azure.cli.core.util import CLIError
 from azure.mgmt.core.tools import is_valid_resource_id
 
 
-# https://github.com/Azure/azure-cli/blob/master/doc/authoring_command_modules/authoring_commands.md#supporting-name-or-id-parameters
 def validate_member_cluster_id(namespace):
     if not is_valid_resource_id(namespace.member_cluster_id):
         raise InvalidArgumentValueError(
@@ -88,3 +87,12 @@ def _validate_target(target):
     if parts[0] not in valid_keys:
         raise InvalidArgumentValueError("Invalid target type, valid types are the following case-sensitive values:"
                                         "'AfterStageWait', 'Group', 'Member', or 'Stage'.")
+
+
+def validate_update_strategy_id(namespace):
+    update_strategy_id = namespace.update_strategy_id
+    if update_strategy_id is None:
+        return
+    if not is_valid_resource_id(update_strategy_id):
+        raise InvalidArgumentValueError(
+            "--update-strategy-id is not a valid Azure resource ID.")

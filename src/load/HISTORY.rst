@@ -2,6 +2,17 @@
 
 Release History
 ===============
+1.1.0
+++++++
+* Add support for ZIP artifacts upload to a test. Artifacts can be uploaded through YAML config when using --load-test-config-file and through cmd `az load test file upload`, the associate --file-type is `ZIPPED_ARTIFACTS`
+* Upgrade vendored_sdks to use API version '2024-05-01-preview'
+* Fix for uploading files from YAML config when relative path is provided for configurationFiles
+* Add test cases for ZIP artifacts upload
+
+1.0.2
+++++++
+* Patch for removing msrestazure dependency and using azure.mgmt.core.
+
 1.0.1
 ++++++
 * Fix for sending correct failureCriteria request payload when using `az load test create` and `az load test update` commands with `--load-test-config-file` option and config file having failureCriteria.

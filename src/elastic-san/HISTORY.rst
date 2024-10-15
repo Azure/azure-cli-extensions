@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.1.0
+++++++
+* `az elastic-san volume-group create/update`: Add `--enforce-data-integrity-check-for-iscsi`
 
 1.0.0
 ++++++

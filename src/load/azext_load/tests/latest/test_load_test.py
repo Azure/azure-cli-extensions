@@ -51,6 +51,7 @@ sa_params = {
     "parameter_name": "storage_account",
     "resource_group_parameter_name": "rg",
     "length": 20,
+    "allow_shared_key_access": False,
 }
 
 
@@ -282,6 +283,24 @@ class LoadTestScenario(ScenarioTest):
             )
         except Exception as e:
             assert "Invalid failure criteria:" in str(e)
+
+        # 12 Invalid - ZIP artifacts count exceeding limit 5 in config file
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.INVALID_ZIP_COUNT_TEST_ID,
+                "load_test_config_file": LoadTestConstants.INVALID_ZIP_ARTIFACT_LOAD_TEST_CONFIG_FILE,
+            }
+        )
+        try:
+            self.cmd(
+                "az load test create "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                '--load-test-config-file "{load_test_config_file}" '
+            )
+        except Exception as e:
+            assert "QuotaExceeded" in str(e)
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
@@ -831,7 +850,6 @@ class LoadTestScenario(ScenarioTest):
             "--resource-group {resource_group} "
             "--file-type {file_type} "
             '--path "{test_plan}" '
-            "--no-wait "
         )
 
         time.sleep(10)
@@ -861,3 +879,80 @@ class LoadTestScenario(ScenarioTest):
             )
 
             assert os.path.exists(os.path.join(temp_dir, self.kwargs["file_name"]))
+            
+        # SUCCESS case of ZIP artifact load
+        self.kwargs.update({
+            "file_name": LoadTestConstants.ZIP_ARTIFACT_NAME,
+            "file_type": LoadTestConstants.ZIP_ARTIFACT_TYPE,
+            "file_path": LoadTestConstants.ZIP_ARTIFACT_FILE
+        })
+        self.cmd(
+            "az load test file upload "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--file-type {file_type} "
+            '--path "{file_path}" '
+        )
+        time.sleep(10)
+        files = self.cmd(
+            "az load test file list "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+        ).get_output_in_json()
+        assert self.kwargs["file_name"] in [file["fileName"] for file in files]
+        self.cmd(
+            "az load test file delete "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--file-name {file_name} "
+            "--yes"
+        )
+        files = self.cmd(
+            "az load test file list "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+        ).get_output_in_json()
+        assert self.kwargs["file_name"] not in [file["fileName"] for file in files]
+        
+        # INVALID case of ZIP artifact containing sub-directories
+        self.kwargs.update({
+            "file_name": LoadTestConstants.INVALID_ZIP_ARTIFACT_WITH_SUBDIR_NAME,
+            "file_type": LoadTestConstants.ZIP_ARTIFACT_TYPE,
+            "file_path": LoadTestConstants.INVALID_ZIP_ARTIFACT_WITH_SUBDIR_FILE
+        })
+        try:
+            self.cmd(
+                "az load test file upload "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                "--file-type {file_type} "
+                '--path "{file_path}" '
+            )
+        except Exception as e:
+            assert "Zip file containing sub-directories in the zip entry are not supported" in str(e)
+        
+        # INVALID case of ZIP artifact size > 50MB
+        # This is commented because it requires a resource of size > 50 MB
+        # storing which in GitHub is not recommended
+        # ----------
+        # self.kwargs.update({
+        #     "file_name": LoadTestConstants.INVALID_ZIP_ARTIFACT_NAME,
+        #     "file_type": LoadTestConstants.ZIP_ARTIFACT_TYPE,
+        #     "file_path": LoadTestConstants.INVALID_ZIP_ARTIFACT_FILE
+        # })
+        # try:
+        #     self.cmd(
+        #         "az load test file upload "
+        #         "--test-id {test_id} "
+        #         "--load-test-resource {load_test_resource} "
+        #         "--resource-group {resource_group} "
+        #         "--file-type {file_type} "
+        #         '--path "{file_path}" '
+        #     )
+        # except Exception as e:
+        #     assert "exceeds size limit of 50 MB" in str(e)

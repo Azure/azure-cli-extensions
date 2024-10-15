@@ -226,4 +226,7 @@ examples:
     - name: Upload a user property file to a test.
       text: |
         az load test file upload --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --path ~/Resources/user-prop.properties --file-type USER_PROPERTIES
+    - name: Upload zipped artifacts to a test.
+      text: |
+        az load test file upload --test-id sample-test-id --load-test-resource sample-alt-resource --resource-group sample-rg --path ~/Resources/sample-zip.zip --file-type ZIPPED_ARTIFACTS
 """

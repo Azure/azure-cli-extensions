@@ -16,6 +16,10 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List the AppComplianceAutomation webhook list.
+
+    :example: Webhook_List
+        az acat report webhook list --skip-token 1 --top 100 --report-name testReportName
+        az acat report webhook list --report-name testReportName
     """
 
     _aaz_info = {

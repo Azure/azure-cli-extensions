@@ -1,0 +1,23 @@
+# Quota limit 5 on the number of ZIP artifacts
+displayName: CLI-Test
+testPlan: sample-JMX-file.jmx
+description: 'Test created from az load test command'
+engineInstances: 1
+zipArtifacts:
+   - sample-ZIP-artifact.zip
+   - additional-ZIP-artifact-1.zip
+   - additional-ZIP-artifact-2.zip
+   - additional-ZIP-artifact-3.zip
+   - additional-ZIP-artifact-4.zip
+   - additional-ZIP-artifact-5.zip
+failureCriteria:
+  - avg(requests_per_sec) > 78
+  - percentage(error) > 50
+  - GetCustomerDetails: avg(latency) > 200
+env:
+  - name: 'rps'
+    value: 1
+splitAllCSVs: True
+autoStop:
+  errorPercentage: 90
+  timeWindow: 60
