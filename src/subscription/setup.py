@@ -26,7 +26,7 @@ CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
 ]
 
-DEPENDENCIES = []
+DEPENDENCIES = ['azure']
 
 setup(
     name='subscription',
