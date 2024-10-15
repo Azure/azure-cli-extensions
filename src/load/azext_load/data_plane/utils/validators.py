@@ -234,6 +234,7 @@ def validate_test_plan_path(namespace):
 
 
 def _validate_path(path, is_dir=False):
+    logger.info("path: %s", path)
     if not isinstance(path, str):
         raise InvalidArgumentValueError(f"Invalid path type: {type(path)}")
 
@@ -256,6 +257,12 @@ def _validate_path(path, is_dir=False):
         if not os.access(path, os.R_OK):
             raise FileOperationError(f"Provided path '{path}' is not readable")
     return path
+
+
+def _validate_file_stats(path, file_type=None):
+    if file_type == AllowedFileTypes.ZIPPED_ARTIFACTS and os.stat(path).st_size > 52428800:
+        logger.info("zip artifact size %s", os.stat(path).st_size)
+        raise FileOperationError(f"Provided ZIP artifact '{path}' exceeds size limit of 50 MB")
 
 
 def validate_file_type(namespace):
