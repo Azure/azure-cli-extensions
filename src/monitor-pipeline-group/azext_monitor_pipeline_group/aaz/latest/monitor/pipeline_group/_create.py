@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.monitor/pipelinegroups/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.monitor/pipelinegroups/{}", "2024-10-01-preview"],
         ]
     }
 
@@ -50,7 +50,7 @@ class Create(AAZCommand):
             help="The name of pipeline group. The name is case insensitive.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^(?!-)[a-zA-Z0-9-]{3,10}[^-]$",
+                pattern="^(?!-)[a-zA-Z0-9-]{3,32}[^-]$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -429,6 +429,10 @@ class Create(AAZCommand):
                 pattern="^[a-zA-Z0-9-\\.]+:[0-9]+$",
             ),
         )
+        udp.json_array_mapper = AAZObjectArg(
+            options=["json-array-mapper"],
+            help="Json array mapper - allows this udp receiver to parse a value from a given source field as a json array, match a key to each parsed value and output the key-value map to a given output field.",
+        )
         udp.read_queue_length = AAZIntArg(
             options=["read-queue-length"],
             help="Max read queue length.",
@@ -437,6 +441,42 @@ class Create(AAZCommand):
                 maximum=100000,
                 minimum=100,
             ),
+        )
+
+        json_array_mapper = cls._args_schema.receivers.Element.udp.json_array_mapper
+        json_array_mapper.destination_field = AAZObjectArg(
+            options=["destination-field"],
+            help="Define a destination field to which the parsed output will be written. The output is a map, it's keys is the given keys array and the matching values are the parsed json array elements.",
+        )
+        json_array_mapper.keys = AAZListArg(
+            options=["keys"],
+            help="Define the names of the keys in the resulting map. The input json array elements are mapped in order, one for every key.",
+            required=True,
+        )
+        json_array_mapper.source_field = AAZObjectArg(
+            options=["source-field"],
+            help="Define a source field from which a json array will be read and parsed to it's elements. The number of elements in the json array is expected to be the same as the length of keys.",
+        )
+
+        destination_field = cls._args_schema.receivers.Element.udp.json_array_mapper.destination_field
+        destination_field.destination = AAZStrArg(
+            options=["destination"],
+            help="Define the destination's element. The element is the body or the attributes of the message, to which the json array mapper will write the output map.",
+            default="attributes",
+            enum={"attributes": "attributes", "body": "body"},
+        )
+        destination_field.field_name = AAZStrArg(
+            options=["field-name"],
+            help="Define a destination field name under the given element. Leaving this empty, means the root of the element. In case element=attributes and fieldName is empty, the object's attributes themselves will contain the key value output pairs.",
+        )
+
+        keys = cls._args_schema.receivers.Element.udp.json_array_mapper.keys
+        keys.Element = AAZStrArg()
+
+        source_field = cls._args_schema.receivers.Element.udp.json_array_mapper.source_field
+        source_field.field_name = AAZStrArg(
+            options=["field-name"],
+            help="Define a source field name from which the json array mapper will read the json array. Leaving this empty, means reading the body of the message itself.",
         )
 
         service = cls._args_schema.service
@@ -487,7 +527,7 @@ class Create(AAZCommand):
             options=["type"],
             help="The type of pipeline",
             required=True,
-            enum={"logs": "logs"},
+            enum={"Logs": "Logs"},
         )
 
         exporters = cls._args_schema.service.pipelines.Element.exporters
@@ -619,7 +659,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
@@ -646,7 +686,7 @@ class Create(AAZCommand):
             )
             _builder.set_prop("extendedLocation", AAZObjectType, ".extended_location")
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             extended_location = _builder.get(".extendedLocation")
@@ -795,7 +835,27 @@ class Create(AAZCommand):
             if udp is not None:
                 udp.set_prop("encoding", AAZStrType, ".encoding")
                 udp.set_prop("endpoint", AAZStrType, ".endpoint", typ_kwargs={"flags": {"required": True}})
+                udp.set_prop("jsonArrayMapper", AAZObjectType, ".json_array_mapper")
                 udp.set_prop("readQueueLength", AAZIntType, ".read_queue_length")
+
+            json_array_mapper = _builder.get(".properties.receivers[].udp.jsonArrayMapper")
+            if json_array_mapper is not None:
+                json_array_mapper.set_prop("destinationField", AAZObjectType, ".destination_field")
+                json_array_mapper.set_prop("keys", AAZListType, ".keys", typ_kwargs={"flags": {"required": True}})
+                json_array_mapper.set_prop("sourceField", AAZObjectType, ".source_field")
+
+            destination_field = _builder.get(".properties.receivers[].udp.jsonArrayMapper.destinationField")
+            if destination_field is not None:
+                destination_field.set_prop("destination", AAZStrType, ".destination")
+                destination_field.set_prop("fieldName", AAZStrType, ".field_name")
+
+            keys = _builder.get(".properties.receivers[].udp.jsonArrayMapper.keys")
+            if keys is not None:
+                keys.set_elements(AAZStrType, ".")
+
+            source_field = _builder.get(".properties.receivers[].udp.jsonArrayMapper.sourceField")
+            if source_field is not None:
+                source_field.set_prop("fieldName", AAZStrType, ".field_name")
 
             service = _builder.get(".properties.service")
             if service is not None:
@@ -866,9 +926,7 @@ class Create(AAZCommand):
             _schema_on_200_201.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200_201.properties = AAZObjectType()
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -1084,8 +1142,36 @@ class Create(AAZCommand):
             udp.endpoint = AAZStrType(
                 flags={"required": True},
             )
+            udp.json_array_mapper = AAZObjectType(
+                serialized_name="jsonArrayMapper",
+            )
             udp.read_queue_length = AAZIntType(
                 serialized_name="readQueueLength",
+            )
+
+            json_array_mapper = cls._schema_on_200_201.properties.receivers.Element.udp.json_array_mapper
+            json_array_mapper.destination_field = AAZObjectType(
+                serialized_name="destinationField",
+            )
+            json_array_mapper.keys = AAZListType(
+                flags={"required": True},
+            )
+            json_array_mapper.source_field = AAZObjectType(
+                serialized_name="sourceField",
+            )
+
+            destination_field = cls._schema_on_200_201.properties.receivers.Element.udp.json_array_mapper.destination_field
+            destination_field.destination = AAZStrType()
+            destination_field.field_name = AAZStrType(
+                serialized_name="fieldName",
+            )
+
+            keys = cls._schema_on_200_201.properties.receivers.Element.udp.json_array_mapper.keys
+            keys.Element = AAZStrType()
+
+            source_field = cls._schema_on_200_201.properties.receivers.Element.udp.json_array_mapper.source_field
+            source_field.field_name = AAZStrType(
+                serialized_name="fieldName",
             )
 
             service = cls._schema_on_200_201.properties.service
