@@ -16,6 +16,10 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List the AppComplianceAutomation report list for the tenant.
+
+    :example: Report_List
+        az acat report list --skip-token 1 --top 100 --offer-guid 00000000-0000-0000-0000-000000000000 --tenant 00000000-0000-0000-0000-000000000000
+        az acat report list
     """
 
     _aaz_info = {
