@@ -30,7 +30,7 @@ for ext in $output; do
     fi
     filter_exts="${filter_exts} ${ext}"
     echo "Adding extension:" $ext
-    az extension add --upgrade -n $ext --debug
+    az extension add --upgrade -n $ext
     if [ $? != 0 ]
     then
         echo "Failed to load:" $ext
