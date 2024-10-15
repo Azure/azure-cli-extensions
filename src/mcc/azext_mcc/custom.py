@@ -7,6 +7,23 @@
 
 # pylint: disable=too-many-lines
 # pylint: disable=too-many-statements
+# pylint: disable=line-too-long
+# pylint: disable=protected-access
+# pylint: disable=too-many-nested-blocks
+# pylint: disable=too-many-branches
+# pylint: disable=unused-argument
+
+from .aaz.latest.mcc.ent.resource._create import Create as _MccEntResourceCreate
+from .aaz.latest.mcc.ent.resource._delete import Delete as _MccEntResourceDelete
+from .aaz.latest.mcc.ent.resource._list import List as _MccEntResourceList
+
+from .aaz.latest.mcc.ent.node._create import Create as _MccEntNodeCreate
+from .aaz.latest.mcc.ent.node._update import Update as _MccEntNodeUpdate
+from .aaz.latest.mcc.ent.node._delete import Delete as _MccEntNodeDelete
+from .aaz.latest.mcc.ent.node._list import List as _MccEntNodeList
+from .aaz.latest.mcc.ent.node._show import Show as _MccEntNodeShow
+from .aaz.latest.mcc.ent.node._get_provisioning_details import GetProvisioningDetails as _MccEntNodeGetProvisioningDetails
+
 from azure.cli.core.aaz import has_value
 
 from azure.cli.core.util import CLIError
@@ -15,15 +32,10 @@ from azure.cli.core.azclierror import ValidationError
 from knack.log import get_logger
 logger = get_logger(__name__)
 
-from .aaz.latest.mcc.ent.resource._create import Create as _MccEntResourceCreate
-from .aaz.latest.mcc.ent.resource._delete import Delete as _MccEntResourceDelete
-from .aaz.latest.mcc.ent.resource._list import List as _MccEntResourceList
 
 class MccEntResourceCreate(_MccEntResourceCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZBoolArg
-
         args_schema = super()._build_arguments_schema(*args, **kwargs)
 
         args_schema.customer._registered = False
@@ -35,9 +47,8 @@ class MccEntResourceCreate(_MccEntResourceCreate):
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        args = self.ctx.args
 
-        cleanOutput = { }
+        cleanOutput = {}
 
         try:
             cleanOutput["mccResourceId"] = result["properties"]["customer"]["customerId"]
@@ -67,6 +78,7 @@ class MccEntResourceCreate(_MccEntResourceCreate):
 
         return cleanOutput
 
+
 class MccEntResourceDelete(_MccEntResourceDelete):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -74,15 +86,15 @@ class MccEntResourceDelete(_MccEntResourceDelete):
         args_schema.no_wait._registered = False
 
         return args_schema
-    
-    def _output(self, *args, **kwargs):
+
+    def _output(self):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
+
 
 class MccEntResourceList(_MccEntResourceList):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZBoolArg
 
         args_schema = super()._build_arguments_schema(*args, **kwargs)
 
@@ -90,20 +102,18 @@ class MccEntResourceList(_MccEntResourceList):
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
-        args = self.ctx.args
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
 
-        cleanOutput = [ ]
+        cleanOutput = []
 
         for customer in result:
-            
             try:
                 if "isp" in str(customer["type"]):
                     continue
             except KeyError:
                 pass
 
-            cleanCustomer = { }
+            cleanCustomer = {}
 
             try:
                 cleanCustomer["mccResourceId"] = customer["properties"]["customer"]["customerId"]
@@ -124,18 +134,10 @@ class MccEntResourceList(_MccEntResourceList):
 
         return cleanOutput, next_link
 
-from .aaz.latest.mcc.ent.node._create import Create as _MccEntNodeCreate
-from .aaz.latest.mcc.ent.node._update import Update as _MccEntNodeUpdate
-from .aaz.latest.mcc.ent.node._delete import Delete as _MccEntNodeDelete
-from .aaz.latest.mcc.ent.node._list import List as _MccEntNodeList
-from .aaz.latest.mcc.ent.node._show import Show as _MccEntNodeShow
-from .aaz.latest.mcc.ent.node._get_provisioning_details import GetProvisioningDetails as _MccEntNodeGetProvisioningDetails
 
-class MccEntNodeCreate(_MccEntNodeCreate): 
+class MccEntNodeCreate(_MccEntNodeCreate):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZBoolArg
-
         args_schema = super()._build_arguments_schema(*args, **kwargs)
 
         args_schema.location._required = False
@@ -167,7 +169,7 @@ class MccEntNodeCreate(_MccEntNodeCreate):
         args_schema.no_wait._registered = False
 
         return args_schema
-    
+
     def pre_operations(self):
         args = self.ctx.args
 
@@ -194,8 +196,8 @@ class MccEntNodeCreate(_MccEntNodeCreate):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         args = self.ctx.args
 
-        cleanOutput = { }
-        
+        cleanOutput = {}
+
         try:
             cleanOutput["cacheNodeId"] = result["properties"]["cacheNode"]["cacheNodeId"]
         except KeyError:
@@ -205,9 +207,9 @@ class MccEntNodeCreate(_MccEntNodeCreate):
             cleanOutput["hostOs"] = result["properties"]["additionalCacheNodeProperties"]["osType"]
         except KeyError:
             pass
-                
+
         try:
-            cleanOutput["cacheNodeName"]= result["properties"]["cacheNode"]["cacheNodeName"]
+            cleanOutput["cacheNodeName"] = result["properties"]["cacheNode"]["cacheNodeName"]
         except KeyError:
             pass
 
@@ -220,8 +222,9 @@ class MccEntNodeCreate(_MccEntNodeCreate):
             cleanOutput["operationStatus"] = result["properties"]["provisioningState"]
         except KeyError:
             pass
-    
+
         return cleanOutput
+
 
 class MccEntNodeUpdate(_MccEntNodeUpdate):
     def pre_operations(self):
@@ -234,7 +237,7 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                 raise ValidationError(err_msg)
             if week > 4:
                 err_msg = "InvalidArgumentValue: --auto-update-week: Invalid format: \'" + str(week) + "\' is greater than 4"
-                raise ValidationError(err_msg)                    
+                raise ValidationError(err_msg)
 
         if has_value(args.proxy):
             if args.proxy == "Required":
@@ -252,9 +255,9 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                 if has_value(drive.cache_number):
                     err_msg = "ValidationError: --cache-drive[" + str(index) + "].cache-number: Cannot be present"
                     raise ValidationError(err_msg)
-                
+
                 drive.cache_number = driveNumber
-                
+
                 if has_value(drive.nginx_mapping):
                     err_msg = "ValidationError: --cache-drive[" + str(index) + "].nginx-mapping: Cannot be present"
                     raise ValidationError(err_msg)
@@ -262,17 +265,18 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                 if not has_value(drive.physical_path):
                     err_msg = "ValidationError: --cache-drive[" + str(index) + "].physical-path: Cannot be Undefined"
                     raise ValidationError(err_msg)
-                
+
                 if not has_value(drive.size_in_gb):
                     err_msg = "ValidationError: --cache-drive[" + str(index) + "].size-in-gb: Cannot be Undefined"
                     raise ValidationError(err_msg)
-                else:
-                    if drive.size_in_gb < 50:
-                        err_msg = "ValidationError: --cache-drive[" + str(index) + "].size-in-gb: Invalid format: '" + str(drive.size_in_gb) + "' is less than 50"
-                        raise ValidationError(err_msg)
-                    if drive.size_in_gb > 10000:
-                        err_msg = "ValidationError: --cache-drive[" + str(index) + "].size-in-gb: Invalid format: '" + str(drive.size_in_gb) + "' is greater than 10000GB (10TB)"
-                        raise ValidationError(err_msg)
+
+                if drive.size_in_gb < 50:
+                    err_msg = "ValidationError: --cache-drive[" + str(index) + "].size-in-gb: Invalid format: '" + str(drive.size_in_gb) + "' is less than 50"
+                    raise ValidationError(err_msg)
+
+                if drive.size_in_gb > 10000:
+                    err_msg = "ValidationError: --cache-drive[" + str(index) + "].size-in-gb: Invalid format: '" + str(drive.size_in_gb) + "' is greater than 10000GB (10TB)"
+                    raise ValidationError(err_msg)
 
                 index += 1
                 driveNumber += 1
@@ -293,9 +297,9 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                     if len(args.cache_drive) > 1:
                         err_msg = "ValidationError: --cache-drive must not include more than 1 drive when updating a \'Windows\' cache node."
                         raise ValidationError(err_msg)
-                    
+
                     driveArray = args.cache_drive
-                    index = 0 
+                    index = 0
                     for drive in driveArray:
                         if has_value(drive.physical_path):
                             if drive.physical_path != "/var/mcc":
@@ -306,9 +310,8 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                         err_msg = "ValidationError: --cache-drive must not include more than 9 drives when updating a \'Linux\' cache node."
                         raise ValidationError(err_msg)
 
-
         instanceIsProxyRequired = None
-        
+
         try:
             instanceIsProxyRequired = instance.properties.additionalCacheNodeProperties.isProxyRequired
         except KeyError:
@@ -324,7 +327,7 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                         args.proxy_host = None
                         args.proxy_port = None
                         instance.properties.additionalCacheNodeProperties.proxyUrlConfiguration = None
-                    else:                        
+                    else:
                         oldProxyUrl = instance.properties.additionalCacheNodeProperties.proxyUrlConfiguration.proxyUrl
                         oldProxyUrlParts = str(oldProxyUrl).split(":")
                         newProxyHost = None
@@ -337,7 +340,7 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                             newProxyHost = args.proxy_host
                         else:
                             newProxyHost = oldProxyUrlParts[0]
-                        
+
                         if has_value(args.proxy_port):
                             if ':' in str(args.proxy_port):
                                 err_msg = "ValidationError: --proxy-port must not include \':\'."
@@ -360,7 +363,7 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                         newProxyHost = args.proxy_host
                     else:
                         newProxyHost = oldProxyUrlParts[0]
-                        
+
                     if has_value(args.proxy_port):
                         if ':' in str(args.proxy_port):
                             err_msg = "ValidationError: --proxy-port must not include \':\'."
@@ -376,39 +379,38 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                         if not has_value(args.proxy_host) or not has_value(args.proxy_port):
                             err_msg = "ValidationError: Parameter --enable-proxy is set to \"Enabled\", must provide --proxy-host and --proxy-port parameter."
                             raise ValidationError(err_msg)
-                        else:
-                            if ':' in str(args.proxy_host) or ':' in str(args.proxy_port):
-                                err_msg = "ValidationError: --proxy-host and --proxy-port must not include \':\'."
-                                raise ValidationError(err_msg)
-                            
-                            args.proxy_host = str(args.proxy_host) + ":" + str(args.proxy_port) 
+
+                        if ':' in str(args.proxy_host) or ':' in str(args.proxy_port):
+                            err_msg = "ValidationError: --proxy-host and --proxy-port must not include \':\'."
+                            raise ValidationError(err_msg)
+
+                        args.proxy_host = str(args.proxy_host) + ":" + str(args.proxy_port)
                     else:
                         if has_value(args.proxy_host) or has_value(args.proxy_port):
                             err_msg = "ValidationError: Parameter --enable-proxy is set not provided and cache node is in proxy state \"Disabled\": --proxy-host and --proxy-port cannot be provided."
                             raise ValidationError(err_msg)
                 else:
                     if has_value(args.proxy_host) or has_value(args.proxy_port):
-                            err_msg = "ValidationError: Parameter --enable-proxy is set not provided and cache node is in proxy state \"Disabled\": --proxy-host and --proxy-port cannot be provided."
-                            raise ValidationError(err_msg)
+                        err_msg = "ValidationError: Parameter --enable-proxy is set not provided and cache node is in proxy state \"Disabled\": --proxy-host and --proxy-port cannot be provided."
+                        raise ValidationError(err_msg)
         else:
             if args.proxy == "Enabled":
                 if not has_value(args.proxy_host) or not has_value(args.proxy_port):
                     err_msg = "ValidationError: Parameter --enable-proxy is set to \"Enabled\", must provide --proxy-host and --proxy-port parameter."
                     raise ValidationError(err_msg)
-                else:
-                    if ':' in str(args.proxy_host) or ':' in str(args.proxy_port):
-                        err_msg = "ValidationError: --proxy-host and --proxy-port must not include \':\'."
-                        raise ValidationError(err_msg)
-                    
-                    args.proxy_host = str(args.proxy_host) + ":" + str(args.proxy_port) 
+
+                if ':' in str(args.proxy_host) or ':' in str(args.proxy_port):
+                    err_msg = "ValidationError: --proxy-host and --proxy-port must not include \':\'."
+                    raise ValidationError(err_msg)
+
+                args.proxy_host = str(args.proxy_host) + ":" + str(args.proxy_port)
             else:
                 if has_value(args.proxy_host) or has_value(args.proxy_port):
                     err_msg = "ValidationError: Parameter --enable-proxy is set to \"Disabled\": --proxy-host and --proxy-port cannot be provided."
                     raise ValidationError(err_msg)
-        
 
         instanceAutoUpdateRing = None
-        
+
         try:
             instanceAutoUpdateRing = instance.properties.cacheNode.autoUpdateRingType
         except KeyError:
@@ -427,8 +429,8 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                             raise ValidationError(err_msg)
                 else:
                     if has_value(args.auto_update_day) or has_value(args.auto_update_week) or has_value(args.auto_update_time):
-                            err_msg = "ValidationError: Parameter --auto-update-ring is Undefined, --auto-update-day, --auto-update-week, and --auto-update-time must be Undefined"
-                            raise ValidationError(err_msg)
+                        err_msg = "ValidationError: Parameter --auto-update-ring is Undefined, --auto-update-day, --auto-update-week, and --auto-update-time must be Undefined"
+                        raise ValidationError(err_msg)
             else:
                 if has_value(args.auto_update_ring):
                     if str(args.auto_update_ring) == "Fast":
@@ -438,7 +440,7 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZIntArg, AAZBoolArg
+        from azure.cli.core.aaz import AAZIntArg
 
         args_schema = super()._build_arguments_schema(*args, **kwargs)
 
@@ -486,14 +488,14 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
 
         args_schema.no_wait._registered = False
         args_schema.cache_node_name_1._registered = False
-        
+
         return args_schema
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         args = self.ctx.args
 
-        cleanOutput = { }
+        cleanOutput = {}
 
         try:
             cleanOutput["cacheNodeState"] = result["properties"]["additionalCacheNodeProperties"]["cacheNodeStateShortText"]
@@ -523,17 +525,17 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                 cleanOutput["proxyConfiguration"] = proxyConfiguration
             else:
                 proxyConfiguration = { "proxyHostName": result["properties"]["additionalCacheNodeProperties"]["proxyUrlConfiguration"]["proxyUrl"] }
-                cleanOutput["proxyConfiguration"] = proxyConfiguration    
+                cleanOutput["proxyConfiguration"] = proxyConfiguration
         except KeyError:
             pass
-        
+
         try:
             cleanOutput["cacheNodeId"] = result["properties"]["cacheNode"]["cacheNodeId"]
         except KeyError:
             pass
-        
+
         try:
-            cleanOutput["cacheNodeName"]= result["properties"]["cacheNode"]["cacheNodeName"]
+            cleanOutput["cacheNodeName"] = result["properties"]["cacheNode"]["cacheNodeName"]
         except KeyError:
             pass
 
@@ -566,13 +568,14 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                     cleanOutput["autoUpdateTime"] = result["properties"]["cacheNode"]["autoUpdateRequestedTime"]
                 except KeyError:
                     pass
-        
+
         try:
             cleanOutput["operationStatus"] = result["properties"]["provisioningState"]
         except KeyError:
             pass
 
         return cleanOutput
+
 
 class MccEntNodeDelete(_MccEntNodeDelete):
     @classmethod
@@ -581,11 +584,12 @@ class MccEntNodeDelete(_MccEntNodeDelete):
         args_schema.no_wait._registered = False
 
         return args_schema
-    
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
-    
+
+
 class MccEntNodeList(_MccEntNodeList):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -601,13 +605,13 @@ class MccEntNodeList(_MccEntNodeList):
         args_schema.expanded._blank = "True"
 
         return args_schema
-    
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
         args = self.ctx.args
         next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
 
-        cleanOutput = [ ]
+        cleanOutput = []
 
         for cacheNode in result:
             try:
@@ -616,20 +620,20 @@ class MccEntNodeList(_MccEntNodeList):
             except KeyError:
                 pass
 
-            cleanCacheNode = { }
+            cleanCacheNode = {}
 
             try:
                 cleanCacheNode["cacheNodeState"] = cacheNode["properties"]["additionalCacheNodeProperties"]["cacheNodeStateShortText"]
             except KeyError:
                 pass
-        
+
             try:
                 cleanCacheNode["cacheNodeId"] = cacheNode["properties"]["cacheNode"]["cacheNodeId"]
             except KeyError:
                 pass
-        
+
             try:
-                cleanCacheNode["cacheNodeName"]= cacheNode["properties"]["cacheNode"]["cacheNodeName"]
+                cleanCacheNode["cacheNodeName"] = cacheNode["properties"]["cacheNode"]["cacheNodeName"]
             except KeyError:
                 pass
 
@@ -700,14 +704,15 @@ class MccEntNodeList(_MccEntNodeList):
                         cleanCacheNode["proxyConfiguration"] = proxyConfiguration
                     else:
                         proxyConfiguration = { "proxyHostName": cacheNode["properties"]["additionalCacheNodeProperties"]["proxyUrlConfiguration"]["proxyUrl"] }
-                        cleanCacheNode["proxyConfiguration"] = proxyConfiguration    
+                        cleanCacheNode["proxyConfiguration"] = proxyConfiguration
                 except KeyError:
                     pass
 
             cleanOutput.append(cleanCacheNode)
 
         return cleanOutput, next_link
-    
+
+
 class MccEntNodeShow(_MccEntNodeShow):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
@@ -721,15 +726,15 @@ class MccEntNodeShow(_MccEntNodeShow):
         )
 
         args_schema.expanded._blank = "True"
-        
+
         return args_schema
-    
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         args = self.ctx.args
 
-        cleanOutput = { }
-        
+        cleanOutput = {}
+
         try:
             cleanOutput["cacheNodeState"] = result["properties"]["additionalCacheNodeProperties"]["cacheNodeStateShortText"]
         except KeyError:
@@ -749,7 +754,7 @@ class MccEntNodeShow(_MccEntNodeShow):
             cleanOutput["driveConfiguration"] = cleanDriveArray
         except KeyError:
             pass
-        
+
         try:
             proxyUrl = result["properties"]["additionalCacheNodeProperties"]["proxyUrlConfiguration"]["proxyUrl"]
             proxyUrlParts = proxyUrl.split(":")
@@ -758,7 +763,7 @@ class MccEntNodeShow(_MccEntNodeShow):
                 cleanOutput["proxyConfiguration"] = proxyConfiguration
             else:
                 proxyConfiguration = { "proxyHostName": result["properties"]["additionalCacheNodeProperties"]["proxyUrlConfiguration"]["proxyUrl"] }
-                cleanOutput["proxyConfiguration"] = proxyConfiguration    
+                cleanOutput["proxyConfiguration"] = proxyConfiguration
         except KeyError:
             pass
 
@@ -766,9 +771,9 @@ class MccEntNodeShow(_MccEntNodeShow):
             cleanOutput["cacheNodeId"] = result["properties"]["cacheNode"]["cacheNodeId"]
         except KeyError:
             pass
-        
+
         try:
-            cleanOutput["cacheNodeName"]= result["properties"]["cacheNode"]["cacheNodeName"]
+            cleanOutput["cacheNodeName"] = result["properties"]["cacheNode"]["cacheNodeName"]
         except KeyError:
             pass
 
@@ -814,16 +819,15 @@ class MccEntNodeShow(_MccEntNodeShow):
                 pass
 
         return cleanOutput
-    
+
+
 class MccEntNodeGetProvisioningDetails(_MccEntNodeGetProvisioningDetails):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZBoolArg
-
         args_schema = super()._build_arguments_schema(*args, **kwargs)
-        
+
         return args_schema
-    
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True, secret_hidden=False)
         args = self.ctx.args
@@ -841,7 +845,7 @@ class MccEntNodeGetProvisioningDetails(_MccEntNodeGetProvisioningDetails):
             err_msg = "Cache node get-provisioning-details failed. CLI could not find the specified MCC cache node resource with name \'" + str(args.cache_node_name) + "\'."
             raise CLIError(err_msg)
 
-        cleanOutput = { }
+        cleanOutput = {}
 
         if ShowOutput is not None:
             try:
@@ -862,7 +866,7 @@ class MccEntNodeGetProvisioningDetails(_MccEntNodeGetProvisioningDetails):
                     cleanOutput["proxyConfiguration"] = proxyConfiguration
                 else:
                     proxyConfiguration = { "proxyHostName": ShowOutput["properties"]["additionalCacheNodeProperties"]["proxyUrlConfiguration"]["proxyUrl"] }
-                    cleanOutput["proxyConfiguration"] = proxyConfiguration    
+                    cleanOutput["proxyConfiguration"] = proxyConfiguration
             except KeyError:
                 pass
 
@@ -885,7 +889,7 @@ class MccEntNodeGetProvisioningDetails(_MccEntNodeGetProvisioningDetails):
             cleanOutput["customerKey"] = result["properties"]["primaryAccountKey"]
         except KeyError:
             pass
-        
+
         try:
             cleanOutput["registrationKey"] = result["properties"]["registrationKey"]
         except KeyError:
