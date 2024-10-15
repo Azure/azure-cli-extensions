@@ -33,11 +33,11 @@ class MonitorPipelineGroupScenario(ScenarioTest):
                  '--extended-location @{extended_location_path} '
                  '--network-config [] '
                  '--replicas 1 ',
-                 checks=[self.check('provisioningState', 'Succeeded')])
+                 checks=[self.check('properties.provisioningState', 'Succeeded')])
         
         self.cmd('az monitor pipeline-group show -g {rg} -n {name}', checks=[
             self.check('name', '{name}'),
-            self.check('provisioningState', 'Succeeded')
+            self.check('properties.provisioningState', 'Succeeded')
         ])
 
         self.cmd('az monitor pipeline-group list -g {rg}', checks=[
@@ -45,7 +45,7 @@ class MonitorPipelineGroupScenario(ScenarioTest):
         ])
 
         self.cmd('az monitor pipeline-group update -g {rg} -n {name} --service @{servicepatch_path}', checks=[
-            self.check('service.pipelines[0].name', 'MyPipeline2')
+            self.check('properties.service.pipelines[0].name', 'MyPipeline2')
         ])
 
         self.cmd('az monitor pipeline-group delete -g {rg} -n {name} -y')

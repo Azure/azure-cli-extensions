@@ -19,9 +19,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.monitor/pipelinegroups/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.monitor/pipelinegroups/{}", "2024-10-01-preview"],
         ]
     }
 
@@ -47,7 +47,7 @@ class Show(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^(?!-)[a-zA-Z0-9-]{3,10}[^-]$",
+                pattern="^(?!-)[a-zA-Z0-9-]{3,32}[^-]$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -120,7 +120,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
@@ -165,9 +165,7 @@ class Show(AAZCommand):
             _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
+            _schema_on_200.properties = AAZObjectType()
             _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
@@ -383,8 +381,36 @@ class Show(AAZCommand):
             udp.endpoint = AAZStrType(
                 flags={"required": True},
             )
+            udp.json_array_mapper = AAZObjectType(
+                serialized_name="jsonArrayMapper",
+            )
             udp.read_queue_length = AAZIntType(
                 serialized_name="readQueueLength",
+            )
+
+            json_array_mapper = cls._schema_on_200.properties.receivers.Element.udp.json_array_mapper
+            json_array_mapper.destination_field = AAZObjectType(
+                serialized_name="destinationField",
+            )
+            json_array_mapper.keys = AAZListType(
+                flags={"required": True},
+            )
+            json_array_mapper.source_field = AAZObjectType(
+                serialized_name="sourceField",
+            )
+
+            destination_field = cls._schema_on_200.properties.receivers.Element.udp.json_array_mapper.destination_field
+            destination_field.destination = AAZStrType()
+            destination_field.field_name = AAZStrType(
+                serialized_name="fieldName",
+            )
+
+            keys = cls._schema_on_200.properties.receivers.Element.udp.json_array_mapper.keys
+            keys.Element = AAZStrType()
+
+            source_field = cls._schema_on_200.properties.receivers.Element.udp.json_array_mapper.source_field
+            source_field.field_name = AAZStrType(
+                serialized_name="fieldName",
             )
 
             service = cls._schema_on_200.properties.service
