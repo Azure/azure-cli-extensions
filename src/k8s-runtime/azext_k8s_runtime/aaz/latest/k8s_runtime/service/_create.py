@@ -23,9 +23,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-03-01",
         "resources": [
-            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/services/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/{resourceuri}/providers/microsoft.kubernetesruntime/services/{}", "2024-03-01"],
         ]
     }
 
@@ -122,7 +122,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-03-01",
                     required=True,
                 ),
             }
@@ -132,10 +132,23 @@ class Create(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+
+            return self.serialize_content(_content_value)
 
         def on_200_201(self, session):
             data = self.deserialize_http_content(session)

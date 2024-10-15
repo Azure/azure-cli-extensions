@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/schedules/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/schedules/{}", "2024-05-01-preview"],
         ]
     }
 
@@ -124,7 +124,7 @@ class Show(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -156,7 +156,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -208,11 +208,13 @@ class Show(AAZCommand):
             properties.frequency = AAZStrType(
                 flags={"required": True},
             )
+            properties.location = AAZStrType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.state = AAZStrType()
+            properties.tags = AAZDictType()
             properties.time = AAZStrType(
                 flags={"required": True},
             )
@@ -223,6 +225,9 @@ class Show(AAZCommand):
             properties.type = AAZStrType(
                 flags={"required": True},
             )
+
+            tags = cls._schema_on_200.properties.tags
+            tags.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

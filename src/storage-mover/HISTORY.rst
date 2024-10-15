@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.1.0
+++++++
+* Update to 2024-07-01 GA api version
+* `az storage-mover agent update`: support `--upload-limit-schedule`
+
 1.0.0
 ++++++
 * Update to 2023-10-01 GA api version

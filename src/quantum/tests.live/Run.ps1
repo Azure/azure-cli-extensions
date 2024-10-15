@@ -26,7 +26,9 @@ function Invoke-SASTokenObfuscation {
 }
 
 # For debug, print all relevant environment variables:
-Get-ChildItem env:AZURE*, env:*VERSION, env:*OUTDIR | Format-Table | Out-String | Write-Host
+Get-ChildItem env:AZURE*, env:*VERSION, env:*OUTDIR | ForEach-Object {
+    Write-Host $_.Name "=" $_.Value
+}
 
 # Remembering current folder location
 Push-Location .

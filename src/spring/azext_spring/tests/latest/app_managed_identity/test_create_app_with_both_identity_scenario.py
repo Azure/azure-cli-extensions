@@ -5,7 +5,7 @@
 
 
 from azure.cli.testsdk import (ScenarioTest, record_only)
-from ....vendored_sdks.appplatform.v2024_01_01_preview.models import ManagedIdentityType
+from ....vendored_sdks.appplatform.v2024_05_01_preview.models import ManagedIdentityType
 
 """
 In order to re-run this scenario test,

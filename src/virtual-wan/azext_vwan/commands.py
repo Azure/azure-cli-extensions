@@ -141,6 +141,14 @@ def load_command_table(self, _):
     # endregion
 
     # region VpnGateways
+    with self.command_group("network vpn-gateway nat-rule"):
+        from .custom import VPNGatewayNatRuleCreate, VPNGatewayNatRuleUpdate, VPNGatewayNatRuleList, \
+            VPNGatewayNatRuleShow
+        self.command_table["network vpn-gateway nat-rule create"] = VPNGatewayNatRuleCreate(loader=self)
+        self.command_table["network vpn-gateway nat-rule update"] = VPNGatewayNatRuleUpdate(loader=self)
+        self.command_table["network vpn-gateway nat-rule list"] = VPNGatewayNatRuleList(loader=self)
+        self.command_table["network vpn-gateway nat-rule show"] = VPNGatewayNatRuleShow(loader=self)
+
     with self.command_group('network vpn-gateway connection', network_vpn_gateway_connection_sdk) as g:
         g.custom_command('create', 'create_vpn_gateway_connection', supports_no_wait=True)
         g.command('list', 'list_by_vpn_gateway')

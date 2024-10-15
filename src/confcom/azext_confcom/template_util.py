@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import base64
 import re
 import json
 import copy
@@ -56,6 +57,23 @@ def case_insensitive_dict_get(dictionary, search_key) -> Any:
     return None
 
 
+def deep_dict_update(source: dict, destination: dict):
+    """
+    https://stackoverflow.com/questions/20656135/python-deep-merge-dictionary-data
+    """
+    for key, value in source.items():
+        if isinstance(value, dict):
+            node = destination.setdefault(key, {})
+            if node is None:
+                destination[key] = {}
+                node = destination[key]
+            deep_dict_update(value, node)
+        else:
+            destination[key] = value
+
+    return destination
+
+
 def image_has_hash(image: str) -> bool:
     return "@sha256:" in image
 
@@ -81,9 +99,14 @@ def get_image_info(progress, message_queue, tar_mapping, image):
         if tar_location:
             with tarfile.open(tar_location) as tar:
                 # get all the info out of the tarfile
-                image_info = os_util.map_image_from_tar(
-                    image_name, tar, tar_location
-                )
+                try:
+                    image_info = os_util.map_image_from_tar_backwards_compatibility(
+                        image_name, tar, tar_location
+                    )
+                except IndexError:
+                    image_info = os_util.map_image_from_tar(
+                        image_name, tar, tar_location
+                    )
                 if image_info is not None:
                     tar = True
                     message_queue.append(f"{image_name} read from local tar file")
@@ -183,7 +206,10 @@ def process_env_vars_from_template(params: dict,
     if template_env_vars:
         for env_var in template_env_vars:
             name = case_insensitive_dict_get(env_var, "name")
-            value = case_insensitive_dict_get(env_var, "value") or case_insensitive_dict_get(env_var, "secureValue")
+            value = case_insensitive_dict_get(env_var, "value")
+            # "value" is allowed to be empty string
+            if value is None:
+                value = case_insensitive_dict_get(env_var, "secureValue")
 
             if not name:
                 eprint(
@@ -214,6 +240,223 @@ def process_env_vars_from_template(params: dict,
                 eprint(f'Environment variable {name} does not have a value. Please check the template file.')
 
     return env_vars
+
+
+# pylint: disable=too-many-branches
+def process_env_vars_from_yaml(container, config_maps, secrets, approve_wildcards=False):
+    # https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#environment-variables-1
+    output_env_vars = []
+    wildcarded_resource_names = []
+    not_wildcarded_resource_names = []
+
+    # convert lists of config_maps and secrets to dictionaries for quick lookup
+    config_maps_lookup = {cm['metadata']['name']: cm for cm in config_maps}
+    secrets_lookup = {sec['metadata']['name']: sec for sec in secrets}
+
+    for var in container.get("env", []):
+        name = var['name']
+
+        if 'value' in var:
+            # some special values that get updated by VN2. This allows those to be wildcarded
+            if re.match(config.VIRTUAL_NODE_YAML_SPECIAL_ENV_VAR_REGEX, var['value']):
+                output_env_vars.append({
+                    config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
+                    config.ACI_FIELD_CONTAINERS_ENVS_VALUE: ".*",
+                    config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY: "re2",
+                })
+            else:
+                output_env_vars.append({
+                    config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
+                    config.ACI_FIELD_CONTAINERS_ENVS_VALUE: var['value'],
+                    config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY: "string",
+                })
+        elif 'valueFrom' in var:
+            value = None
+            # 'valueFrom' to get the val from a config map / secret
+            ref = var['valueFrom']
+            if 'configMapKeyRef' in ref:
+                value = get_value_from_configmap(
+                    ref=ref['configMapKeyRef'],
+                    config_maps_lookup=config_maps_lookup)
+                configmap_name = ref['configMapKeyRef']['name']
+                if value is None and configmap_name not in not_wildcarded_resource_names:
+
+                    response = (approve_wildcards or
+                                configmap_name in wildcarded_resource_names or
+                                input("Would you like to use a wildcard value for ConfigMap " +
+                                      f"{configmap_name}? (y/n): "
+                                      )
+                                )
+
+                    if (
+                        approve_wildcards or
+                        configmap_name in wildcarded_resource_names or
+                            response.lower() == 'y'
+                    ):
+                        wildcarded_resource_names.append(configmap_name)
+                        output_env_vars.append({
+                            config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
+                            config.ACI_FIELD_CONTAINERS_ENVS_VALUE: ".*",
+                            config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY: "re2",
+                        })
+                    else:
+                        not_wildcarded_resource_names.append(configmap_name)
+                        output_env_vars.append({
+                            config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
+                            config.ACI_FIELD_CONTAINERS_ENVS_VALUE: "",
+                            config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY: "string",
+                        })
+                elif configmap_name in not_wildcarded_resource_names:
+                    output_env_vars.append({
+                        config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
+                        config.ACI_FIELD_CONTAINERS_ENVS_VALUE: "",
+                        config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY: "string",
+                    })
+                else:
+                    output_env_vars.append({
+                        config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
+                        config.ACI_FIELD_CONTAINERS_ENVS_VALUE: value,
+                        config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY: "string",
+                    })
+
+            elif 'secretKeyRef' in ref:
+                value = get_value_from_secret(
+                    ref=ref['secretKeyRef'],
+                    secrets_lookup=secrets_lookup)
+                secret_name = ref['secretKeyRef']['name']
+
+                if value is None and secret_name not in not_wildcarded_resource_names:
+                    response = (approve_wildcards or
+                                secret_name in wildcarded_resource_names or
+                                input("Would you like to use a wildcard value for Secret " +
+                                      f"{secret_name}? (y/n): "
+                                      )
+                                )
+
+                    if (
+                            approve_wildcards or
+                            secret_name in wildcarded_resource_names or
+                            response.lower() == 'y'
+                    ):
+                        wildcarded_resource_names.append(secret_name)
+                        output_env_vars.append({
+                            config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
+                            config.ACI_FIELD_CONTAINERS_ENVS_VALUE: ".*",
+                            config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY: "re2",
+                        })
+                    else:
+                        eprint(f"Secret {name} needs a value. " +
+                               "Either attach the Secret resource " +
+                               "to the yaml file or use a wildcard.")
+
+                elif secret_name in not_wildcarded_resource_names:
+                    output_env_vars.append({
+                        config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
+                        config.ACI_FIELD_CONTAINERS_ENVS_VALUE: "",
+                        config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY: "string",
+                    })
+                else:
+                    output_env_vars.append({
+                        config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
+                        config.ACI_FIELD_CONTAINERS_ENVS_VALUE: value,
+                        config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY: "string",
+                    })
+            elif 'fieldRef' in ref:
+                # https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/#use-pod-fields-as-values-for-environment-variables
+                field_path = ref.get('fieldRef').get('fieldPath')
+
+                if not field_path:
+                    continue
+
+                output_env_vars.append({
+                    config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
+                    config.ACI_FIELD_CONTAINERS_ENVS_VALUE: ".*",
+                    config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY: "re2",
+                })
+            elif 'resourceFieldRef' in ref:
+                # https://kubernetes.io/docs/tasks/inject-data-application/environment-variable-expose-pod-information/#use-container-fields-as-values-for-environment-variables
+                container_name = ref.get('resourceFieldRef').get('containerName')
+
+                if container_name != container.get('name'):
+                    eprint("Container names other than the current " +
+                           f"container are not currently supported: {container_name}")
+                resource = ref.get('resourceFieldRef').get('resource')
+                request_or_limit, resource_type = resource.split('.')
+
+                resources = container.get(config.VIRTUAL_NODE_YAML_RESOURCES)
+                if not resources:
+                    continue
+                # get the resource field
+                resource_field = resources.get(request_or_limit)
+                if not resource_field:
+                    continue
+                # get the value of the resource field
+                value = resource_field.get(resource_type)
+                if not value:
+                    continue
+
+                output_env_vars.append({
+                    config.ACI_FIELD_CONTAINERS_ENVS_NAME: name,
+                    config.ACI_FIELD_CONTAINERS_ENVS_VALUE: value,
+                    config.ACI_FIELD_CONTAINERS_ENVS_STRATEGY: "string",
+                })
+    return output_env_vars
+
+
+def get_value_from_configmap(ref, config_maps_lookup):
+    """
+    Retrieve a value from a ConfigMap using the reference.
+    """
+    normal_data = binary_data = None
+    config_map = config_maps_lookup.get(ref['name'])
+    if config_map:
+        normal_data = config_map.get('data', {}).get(ref['key'])
+        if not normal_data:
+            binary_data = base64.b64decode(config_map.get('binaryData', {}).get(ref['key'])).decode('utf-8')
+        return normal_data or binary_data
+    return None
+
+
+def get_value_from_secret(ref, secrets_lookup):
+    """
+    Retrieve a value from a Secret using the reference.
+    """
+    secret = secrets_lookup.get(ref['name'])
+    if secret:
+        return base64.b64decode(
+            secret.get('data', {}).get(ref['key']) or ""
+        ).decode('utf-8') or secret.get('stringData', {}).get(ref['key'])
+    return None
+
+
+def convert_to_pod_spec(yaml_dict: dict):
+    results = convert_to_pod_spec_helper(yaml_dict)
+    return add_kind_to_pod_spec(results) if results else {}
+
+
+def add_kind_to_pod_spec(pod_spec: dict):
+    pod_spec["kind"] = "Pod"
+    pod_spec["apiVersion"] = "v1"
+    return pod_spec
+
+
+def convert_to_pod_spec_helper(pod_dict):
+    possible_keys = ["spec", "template", "jobTemplate"]
+
+    if "spec" in pod_dict and "containers" in pod_dict["spec"]:
+        return pod_dict
+    for key in possible_keys:
+        if key in pod_dict:
+            return convert_to_pod_spec_helper(pod_dict[key])
+    return {}
+
+
+def filter_non_pod_resources(resources: List[dict]) -> List[dict]:
+    """
+    Filter out non-pod spawning resources from a list of resources.
+    """
+    important_resource_names = ["Pod", "Deployment", "StatefulSet", "DaemonSet", "Job", "CronJob", "ReplicaSet"]
+    return [resource for resource in resources if resource and resource.get("kind") in important_resource_names]
 
 
 def process_mounts(image_properties: dict, volumes: List[dict]) -> List[Dict[str, str]]:
@@ -270,6 +513,22 @@ def process_mounts(image_properties: dict, volumes: List[dict]) -> List[Dict[str
     return mounts
 
 
+def process_configmap(image_properties: dict) -> List[Dict[str, str]]:
+    # return empty list if we don't have a configmap
+    if not case_insensitive_dict_get(
+        image_properties, config.ACI_FIELD_CONTAINERS_CONFIGMAP
+    ):
+        return []
+
+    return [{
+            config.ACI_FIELD_CONTAINERS_MOUNTS_TYPE:
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_CONFIGMAP_TYPE,
+            config.ACI_FIELD_CONTAINERS_MOUNTS_PATH:
+                config.POLICY_FIELD_CONTAINERS_ELEMENTS_MOUNTS_CONFIGMAP_LOCATION,
+            config.ACI_FIELD_CONTAINERS_MOUNTS_READONLY: False,
+            }]
+
+
 def get_values_for_params(input_parameter_json: dict, all_params: dict) -> Dict[str, Any]:
     # combine the parameter file into a single dictionary with the template
     # parameters
@@ -323,6 +582,39 @@ def extract_probe(exec_processes: List[dict], image_properties: dict, probe: str
                 config.ACI_FIELD_CONTAINERS_PROBE_COMMAND: probe_command,
                 config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES: [],
             })
+
+
+def extract_lifecycle_hook(exec_processes: List[dict], image_properties: dict, hook: str):
+    lifecycle = case_insensitive_dict_get(
+        image_properties, config.VIRTUAL_NODE_YAML_LIFECYCLE
+    )
+
+    if not lifecycle:
+        return
+
+    hook_val = case_insensitive_dict_get(
+        lifecycle, hook
+    )
+
+    if not hook_val:
+        return
+
+    hook_exec = case_insensitive_dict_get(
+        hook_val, config.VIRTUAL_NODE_YAML_LIFECYCLE_EXEC
+    )
+    if not hook_exec:
+        return
+
+    hook_command = case_insensitive_dict_get(
+        hook_exec,
+        config.VIRTUAL_NODE_YAML_LIFECYCLE_COMMAND,
+    )
+    if not hook_command:
+        eprint("Hooks must have a 'command' declaration")
+    exec_processes.append({
+        config.ACI_FIELD_CONTAINERS_PROBE_COMMAND: hook_command,
+        config.ACI_FIELD_CONTAINERS_SIGNAL_CONTAINER_PROCESSES: [],
+    })
 
 
 def readable_diff(diff_dict) -> Dict[str, Any]:
@@ -390,12 +682,35 @@ def change_key_names(dictionary) -> Dict:
     return dictionary
 
 
+def get_diff_size(diff: dict) -> int:
+    """Utility function: get the size of the diff dictionary"""
+    size = 0
+    for key in diff:
+        if isinstance(diff[key], dict):
+            size += get_diff_size_helper(diff[key])
+        else:
+            size += 1
+    return size
+
+
+def get_diff_size_helper(diff: dict) -> int:
+    size = 0
+    for key in diff:
+        if isinstance(diff[key], dict):
+            size += get_diff_size_helper(diff[key])
+        elif isinstance(diff[key], list) and key == "env_rules":
+            size += len(diff[key])
+        else:
+            size += 1
+    return size
+
+
 def replace_params_and_vars(params: dict, vars_dict: dict, attribute):
     out = None
     if isinstance(attribute, (int, float, bool)):
         out = attribute
     elif isinstance(attribute, str):
-        out = find_value_in_params_and_vars(params, vars_dict, attribute)
+        out = find_value_in_params_and_vars(params, vars_dict, attribute, ignore_undefined_parameters=True)
         param_name = re.finditer(WHOLE_PARAMETER_AND_VARIABLE, attribute)
 
         # there should only be one match
@@ -512,18 +827,13 @@ def extract_containers_from_text(text, start) -> str:
 def extract_confidential_properties(
     container_group_properties,
 ) -> Tuple[List[Dict], List[Dict]]:
-    container_start = "containers := "
-    fragment_start = "fragments := "
     # extract the existing cce policy if that's what was being asked
     confidential_compute_properties = case_insensitive_dict_get(
         container_group_properties, config.ACI_FIELD_TEMPLATE_CONFCOM_PROPERTIES
     )
 
     if confidential_compute_properties is None:
-        eprint(
-            f"""Field ["{config.ACI_FIELD_TEMPLATE_CONFCOM_PROPERTIES}"]
-             not found in ["{config.ACI_FIELD_TEMPLATE_PROPERTIES}"]"""
-        )
+        return ([], [])
 
     cce_policy = case_insensitive_dict_get(
         confidential_compute_properties, config.ACI_FIELD_TEMPLATE_CCE_POLICY
@@ -531,6 +841,13 @@ def extract_confidential_properties(
     # special case when "ccePolicy" field is blank, indicating the use of the "allow all" policy
     if not cce_policy:
         return ([], config.DEFAULT_REGO_FRAGMENTS)
+
+    return decompose_confidential_properties(cce_policy)
+
+
+def decompose_confidential_properties(cce_policy: str) -> Tuple[List[Dict], List[Dict]]:
+    container_start = "containers := "
+    fragment_start = "fragments := "
 
     cce_policy = os_util.base64_to_str(cce_policy)
     # error check that the decoded policy existing in the template is not in JSON format
@@ -676,7 +993,7 @@ def compare_env_vars(
 
 
 def inject_policy_into_template(
-    arm_template_path: str, parameter_data_path: str, policy: str, count: int, hashes: dict
+    arm_template_path: str, parameter_data_path: str, policy: str, count: int
 ) -> bool:
     write_flag = False
     parameter_data = None
@@ -694,12 +1011,12 @@ def inject_policy_into_template(
     aci_list = [
         item
         for item in arm_resources
-        if item["type"] == config.ACI_FIELD_TEMPLATE_RESOURCE_LABEL
+        if item["type"] in config.ACI_FIELD_SUPPORTED_RESOURCES
     ]
 
     if not aci_list:
         eprint(
-            f'Field ["type"] must contain value of ["{config.ACI_FIELD_TEMPLATE_RESOURCE_LABEL}"]'
+            f'Field ["type"] must contain one of {config.ACI_FIELD_SUPPORTED_RESOURCES}'
         )
 
     resource = aci_list[count]
@@ -713,10 +1030,11 @@ def inject_policy_into_template(
         container_group_properties, config.ACI_FIELD_TEMPLATE_CONFCOM_PROPERTIES
     )
 
-    if confidential_compute_properties is None:
-        eprint(
-            f'Field ["{config.ACI_FIELD_TEMPLATE_CONFCOM_PROPERTIES}"] ' +
-            f'not found in ["{config.ACI_FIELD_TEMPLATE_PROPERTIES}"]'
+    if not confidential_compute_properties:
+        # initialize the confcom properties and reassign the variable to the empty dict
+        container_group_properties[config.ACI_FIELD_TEMPLATE_CONFCOM_PROPERTIES] = {}
+        confidential_compute_properties = case_insensitive_dict_get(
+            container_group_properties, config.ACI_FIELD_TEMPLATE_CONFCOM_PROPERTIES
         )
 
     cce_policy = case_insensitive_dict_get(
@@ -739,25 +1057,7 @@ def inject_policy_into_template(
                 config.ACI_FIELD_TEMPLATE_CCE_POLICY
             ] = policy
             write_flag = True
-    # get containers to inject the base64 encoding of seccom profile hash into template if exists
-    containers = case_insensitive_dict_get(
-        container_group_properties, config.ACI_FIELD_CONTAINERS
-    )
-    for c in containers:
-        container_image = case_insensitive_dict_get(c, config.ACI_FIELD_TEMPLATE_IMAGE)
-        container_properties = case_insensitive_dict_get(c, config.ACI_FIELD_TEMPLATE_PROPERTIES)
-        security_context = case_insensitive_dict_get(
-            container_properties, config.ACI_FIELD_TEMPLATE_SECURITY_CONTEXT
-        )
-        if security_context:
-            seccomp_profile = case_insensitive_dict_get(
-                security_context, config.ACI_FIELD_CONTAINERS_SECCOMP_PROFILE
-            )
-            if seccomp_profile:
-                hash_base64 = os_util.str_to_base64(hashes.get(container_image, ""))
-                security_context[config.ACI_FIELD_CONTAINERS_SECCOMP_PROFILE] = hash_base64
-                write_flag = True
-    # write base64 encoding of seccomp profile hash to the template
+
     if write_flag:
         os_util.write_json_to_file(arm_template_path, input_arm_json)
         return True
@@ -810,12 +1110,12 @@ def get_container_group_name(
     aci_list = [
         item
         for item in arm_resources
-        if item["type"] == config.ACI_FIELD_TEMPLATE_RESOURCE_LABEL
+        if item["type"] in config.ACI_FIELD_SUPPORTED_RESOURCES
     ]
 
     if not aci_list:
         eprint(
-            f'Field ["type"] must contain value of ["{config.ACI_FIELD_TEMPLATE_RESOURCE_LABEL}"]'
+            f'Field ["type"] must contain one of {config.ACI_FIELD_SUPPORTED_RESOURCES}'
         )
 
     resource = aci_list[count]
@@ -843,12 +1143,12 @@ def print_existing_policy_from_arm_template(arm_template_path, parameter_data_pa
     aci_list = [
         item
         for item in arm_resources
-        if item["type"] == config.ACI_FIELD_TEMPLATE_RESOURCE_LABEL
+        if item["type"] in config.ACI_FIELD_SUPPORTED_RESOURCES
     ]
 
     if not aci_list:
         eprint(
-            f'Field ["type"] must contain value of ["{config.ACI_FIELD_TEMPLATE_RESOURCE_LABEL}"]'
+            f'Field ["type"] must contain one of {config.ACI_FIELD_SUPPORTED_RESOURCES}'
         )
     for i, resource in enumerate(aci_list):
         container_group_properties = case_insensitive_dict_get(
@@ -877,6 +1177,40 @@ def print_existing_policy_from_arm_template(arm_template_path, parameter_data_pa
         cce_policy = os_util.base64_to_str(cce_policy)
         print(f"CCE Policy for Container Group: {container_group_name}\n")
         print(cce_policy)
+
+
+def print_existing_policy_from_yaml(virtual_node_yaml_path: str) -> None:
+    if not virtual_node_yaml_path:
+        eprint("Can only print existing policy from Virtual Node YAML file")
+    yaml_contents = os_util.load_multiple_yaml_from_file(virtual_node_yaml_path)
+    yaml_contents = filter_non_pod_resources(yaml_contents)
+    for resource in yaml_contents:
+        # normalize the resource to be a pod spec
+        resource = convert_to_pod_spec(resource)
+        # get the policy from the pod spec
+        metadata = case_insensitive_dict_get(
+            resource, config.VIRTUAL_NODE_YAML_METADATA
+        )
+
+        if not metadata:
+            eprint("Metadata not found in Virtual Node YAML resource")
+
+        annotations = case_insensitive_dict_get(metadata, config.VIRTUAL_NODE_YAML_ANNOTATIONS)
+
+        name = case_insensitive_dict_get(metadata, config.VIRTUAL_NODE_YAML_NAME)
+
+        if not annotations:
+            eprint(f"Annotations not found in Virtual Node YAML resource: {name}")
+
+        policy = case_insensitive_dict_get(
+            annotations, config.VIRTUAL_NODE_YAML_POLICY
+        )
+
+        if not policy:
+            eprint(f"Policy not found in Virtual Node YAML resource: {name}")
+
+        print(f"Policy for Pod: {name}\n")
+        print(os_util.base64_to_str(policy))
 
 
 def process_seccomp_policy(policy2):

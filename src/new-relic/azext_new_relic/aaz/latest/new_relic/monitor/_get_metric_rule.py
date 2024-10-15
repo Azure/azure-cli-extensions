@@ -22,9 +22,9 @@ class GetMetricRule(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-07-01",
+        "version": "2024-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/getmetricrules", "2022-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/getmetricrules", "2024-01-01"],
         ]
     }
 
@@ -46,11 +46,12 @@ class GetMetricRule(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.monitor_name = AAZStrArg(
             options=["-n", "--name", "--monitor-name"],
-            help="Name of the Monitors resource",
+            help="Name of the Monitoring resource",
             required=True,
             id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
+            help="Name of resource group. You can configure the default group using az configure --defaults group=<name>.",
             required=True,
         )
 
@@ -133,7 +134,7 @@ class GetMetricRule(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01",
+                    "api-version", "2024-01-01",
                     required=True,
                 ),
             }

@@ -30,7 +30,7 @@ class Scheduled_queryScenarioTest(ScenarioTest):
             'action_group2': self.create_random_name('clitest', 20)
         })
         with mock.patch('azure.cli.command_modules.vm.custom._gen_guid', side_effect=self.create_guid):
-            vm = self.cmd('vm create -n {vm} -g {rg} --image UbuntuLTS --nsg-rule None --workspace {ws} --generate-ssh-keys').get_output_in_json()
+            vm = self.cmd('vm create -n {vm} -g {rg} --image Ubuntu2204 --nsg-rule None --workspace {ws} --generate-ssh-keys').get_output_in_json()
         self.kwargs.update({
             'vm_id': vm['id'],
             'rg_id': resource_id(subscription=self.get_subscription_id(),
@@ -90,11 +90,11 @@ class Scheduled_queryScenarioTest(ScenarioTest):
         })
         self.cmd('monitor scheduled-query create -g {rg} -n {name3} --scopes {rg_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' > 360 resource id _ResourceId" --description "Test rule" --action-groups {action_group_id_1} --custom-properties k1=v1', checks=[
             self.check('actions.actionGroups', [action_group_1['id']]),
-            self.check('actions.customProperties', {'k1':'v1'})
+            self.check('actions.customProperties', {'k1': 'v1'})
         ])
         self.cmd('monitor scheduled-query update -g {rg} -n {name3} --action-groups {action_group_id_2} --custom-properties k2=v2', checks=[
             self.check('actions.actionGroups', [action_group_2['id']]),
-            self.check('actions.customProperties', {'k2':'v2'})
+            self.check('actions.customProperties', {'k2': 'v2'})
         ])
         self.cmd('monitor scheduled-query show -g {rg} -n {name1}',
                  checks=[
@@ -112,6 +112,90 @@ class Scheduled_queryScenarioTest(ScenarioTest):
             self.cmd('monitor scheduled-query show -g {rg} -n {name1}')
 
 
+    @ResourceGroupPreparer(name_prefix='cli_test_scheduled_query_update', location='eastus')
+    def test_scheduled_query_update_action_group(self, resource_group):
+        from azure.mgmt.core.tools import resource_id
+        import time
+        from unittest import mock
+        self.kwargs.update({
+            'name1': 'sq01',
+            'name2': 'sq02',
+            'rg': resource_group,
+            'vm': 'myvm1',
+            'ws': self.create_random_name('clitest', 20),
+            'action_group1': self.create_random_name('clitest', 20),
+            'action_group2': self.create_random_name('clitest', 20),
+            'action_group3': self.create_random_name('clitest', 20)
+        })
+        with mock.patch('azure.cli.command_modules.vm.custom._gen_guid', side_effect=self.create_guid):
+            vm = self.cmd('vm create -n {vm} -g {rg} --image Ubuntu2204 --nsg-rule None --workspace {ws} --generate-ssh-keys').get_output_in_json()
+        self.kwargs.update({
+            'vm_id': vm['id'],
+            'rg_id': resource_id(subscription=self.get_subscription_id(),
+                                 resource_group=resource_group),
+            'sub_id': resource_id(subscription=self.get_subscription_id(),
+                                  resource_group=resource_group),
+        })
+        action_group_1 = self.cmd('monitor action-group create -n {action_group1} -g {rg}').get_output_in_json()
+        action_group_2 = self.cmd('monitor action-group create -n {action_group2} -g {rg}').get_output_in_json()
+        action_group_3 = self.cmd('monitor action-group create -n {action_group3} -g {rg}').get_output_in_json()
+        self.kwargs.update({
+            'action_group_id_1': action_group_1['id'],
+            'action_group_id_2': action_group_2['id'],
+            'action_group_id_3': action_group_3['id']
+        })
+        self.cmd('monitor scheduled-query create -g {rg} -n {name1} --scopes {vm_id} --condition "count \'placeholder_1\' > 360" --condition-query placeholder_1="union Event, Syslog | where TimeGenerated > ago(1h)" --description "Test rule"',
+                 checks=[
+                     self.check('name', '{name1}'),
+                     self.check('scopes[0]', '{vm_id}'),
+                     self.check('severity', 2),
+                     self.check('actions', None),
+                     self.check('criteria.allOf[0].query', 'union Event, Syslog | where TimeGenerated > ago(1h)'),
+                     self.check('criteria.allOf[0].threshold', 360),
+                     self.check('criteria.allOf[0].timeAggregation', 'Count'),
+                     self.check('criteria.allOf[0].operator', 'GreaterThan'),
+                     self.check('criteria.allOf[0].failingPeriods.minFailingPeriodsToAlert', 1),
+                     self.check('criteria.allOf[0].failingPeriods.numberOfEvaluationPeriods', 1),
+                     self.check('criteria.allOf[0].failingPeriods.minFailingPeriodsToAlert', 1),
+                     self.check('criteria.allOf[0].failingPeriods.numberOfEvaluationPeriods', 1),
+                     self.check('autoMitigate', True),
+                     self.check('skipQueryValidation', False),
+                     self.check('checkWorkspaceAlertsStorageConfigured', False)
+                 ])
+        self.cmd('monitor scheduled-query update -g {rg} -n {name1} --description "Test rule 2" --severity 4 --disabled --evaluation-frequency 10m --window-size 10m',
+                 checks=[
+                     self.check('name', '{name1}'),
+                     self.check('scopes[0]', '{vm_id}'),
+                     self.check('severity', 4),
+                     self.check('windowSize', '0:10:00'),
+                     self.check('evaluationFrequency', '0:10:00')
+                 ])
+        self.cmd('monitor scheduled-query update -g {rg} -n {name1} --mad PT30M --auto-mitigate False --skip-query-validation True --action-groups {action_group_id_1} --custom-properties k1=v1',
+                 checks=[
+                     self.check('skipQueryValidation', True),
+                     self.check('muteActionsDuration', '0:30:00'),
+                     self.check('actions.actionGroups', [action_group_1['id']]),
+                     self.check('actions.customProperties', {'k1': 'v1'}),
+                     self.check('autoMitigate', False)
+                 ])
+
+        self.cmd('monitor scheduled-query create -g {rg} -n {name2} --scopes {rg_id} --condition "count \'union Event, Syslog | where TimeGenerated > ago(1h)\' > 360 resource id _ResourceId" --description "Test rule" --action-groups {action_group_id_1} --custom-properties k1=v1', checks=[
+            self.check('actions.actionGroups', [action_group_1['id']]),
+            self.check('actions.customProperties', {'k1':'v1'})
+        ])
+
+        self.cmd('monitor scheduled-query update -g {rg} -n {name2} --action-groups {action_group_id_2} --custom-properties k2=v2', checks=[
+            self.check('actions.actionGroups', [action_group_2['id']]),
+            self.check('actions.customProperties', {'k2':'v2'})
+        ])
+        self.cmd('monitor scheduled-query list -g {rg}',
+                 checks=[
+                     self.check('length(@)', 2)
+                 ])
+        self.cmd('monitor scheduled-query delete -g {rg} -n {name1} -y')
+        self.cmd('monitor scheduled-query delete -g {rg} -n {name2} -y')
+
+
     @ResourceGroupPreparer(name_prefix='cli_test_scheduled_query_operator', location='eastus')
     def test_scheduled_query_condition_operator(self, resource_group):
         from azure.mgmt.core.tools import resource_id
@@ -124,7 +208,7 @@ class Scheduled_queryScenarioTest(ScenarioTest):
             'ws': self.create_random_name('clitest', 20),
         })
         with mock.patch('azure.cli.command_modules.vm.custom._gen_guid', side_effect=self.create_guid):
-            vm = self.cmd('vm create -n {vm} -g {rg} --image UbuntuLTS --nsg-rule None --workspace {ws} --generate-ssh-keys').get_output_in_json()
+            vm = self.cmd('vm create -n {vm} -g {rg} --image Ubuntu2204 --nsg-rule None --workspace {ws} --generate-ssh-keys').get_output_in_json()
         self.kwargs.update({
             'vm_id': vm['id'],
             'rg_id': resource_id(subscription=self.get_subscription_id(),

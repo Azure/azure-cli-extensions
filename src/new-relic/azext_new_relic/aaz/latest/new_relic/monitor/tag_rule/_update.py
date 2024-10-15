@@ -18,13 +18,13 @@ class Update(AAZCommand):
     """Update a TagRule
 
     :example: Update a TagRule.
-        az new-relic monitor tag-rule update --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --name default --log-rules send-aad-logs="Enabled" send-subscription-logs="Enabled" send-activity-logs="Disabled" filtering-tags=[]
+        az new-relic monitor tag-rule update --resource-group MyResourceGroup --monitor-name MyNewRelicMonitor --name default --log-rules "{send-aad-logs:'Enabled',send-subscription-logs:'Enabled',send-activity-logs:'Enabled',filtering-tags:[{name:'Environment',value:'Prod',action:'Include'}]}" --metric-rules "{user-email:'UserEmail@123.com',filtering-tags:[{name:'Environment',value:'Prod',action:'Include'}]}"
     """
 
     _aaz_info = {
-        "version": "2022-07-01",
+        "version": "2024-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/tagrules/{}", "2022-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/newrelic.observability/monitors/{}/tagrules/{}", "2024-01-01"],
         ]
     }
 
@@ -222,7 +222,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01",
+                    "api-version", "2024-01-01",
                     required=True,
                 ),
             }

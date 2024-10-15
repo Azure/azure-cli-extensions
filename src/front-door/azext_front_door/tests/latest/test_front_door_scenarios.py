@@ -9,10 +9,10 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathChec
 class FrontDoorBasicScenarioTests(ScenarioTest):
 
     # @record_only()  # This test requires resources in the specific subscription
-    @ResourceGroupPreparer(location='westus')
+    @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_front_door_basic_scenario(self, resource_group):
         front_endpoint_name = f"{self.create_random_name('clife', 16)}"
-        front_endpoint_host_name = f"{front_endpoint_name}.cdne2e.azfdtest.xyz"
+        front_endpoint_host_name = f"{front_endpoint_name}.clitest.azfdtest.xyz"
         self.kwargs.update({
             'front_door': self.create_random_name('clifrontdoor', 20),
             'front_endpoint_host_name': front_endpoint_host_name,
@@ -29,7 +29,7 @@ class FrontDoorBasicScenarioTests(ScenarioTest):
         # Create CNAME record which point to front door CANME
         # Custom frontend endpoint must have a CNAME pointing to the default frontend host.
         # More information can be found in https://docs.microsoft.com/en-us/azure/frontdoor/front-door-custom-domain#create-a-cname-dns-record
-        self.cmd(f'network dns record-set cname set-record -g azfdtest.xyz -n {front_endpoint_name} -z cdne2e.azfdtest.xyz -c {output["frontendEndpoints"][0]["hostName"]}')
+        self.cmd(f'network dns record-set cname set-record -g azfdtest.xyz -n {front_endpoint_name} -z clitest.azfdtest.xyz -c {output["frontendEndpoints"][0]["hostName"]}')
 
         check_custom_domain_check = [JMESPathCheck('customDomainValidated', True),
                                      JMESPathCheck('reason', None)]
@@ -39,7 +39,7 @@ class FrontDoorBasicScenarioTests(ScenarioTest):
         self.cmd('network front-door frontend-endpoint create -g {rg} -f {front_door} -n {front_endpoint_name} '
                  '--host-name {front_endpoint_host_name} --session-affinity-enabled')
 
-    @ResourceGroupPreparer(location='westus')
+    @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_front_door_check_name_availability(self, resource_group):
         front_door_name = self.create_random_name(prefix='frontdoor', length=20)
         available_checks = [JMESPathCheck('nameAvailability', 'Available')]
@@ -50,7 +50,7 @@ class FrontDoorBasicScenarioTests(ScenarioTest):
         unavailable_checks = [JMESPathCheck('nameAvailability', "Not Available")]
         self.cmd(f'network front-door check-name-availability --name {front_door_name} --resource-type Microsoft.Network/frontdoors', checks=unavailable_checks)
 
-    @ResourceGroupPreparer(location='westus')
+    @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_front_door_purge_endpoint(self, resource_group):
         front_door_name = self.create_random_name(prefix='frontdoor', length=20)
 

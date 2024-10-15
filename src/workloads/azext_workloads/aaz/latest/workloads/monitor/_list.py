@@ -30,6 +30,8 @@ class List(AAZCommand):
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
         return self.build_paging(self._execute_operations, self._output)
@@ -204,8 +206,9 @@ class List(AAZCommand):
             properties.app_location = AAZStrType(
                 serialized_name="appLocation",
             )
-            properties.errors = AAZObjectType()
-            _ListHelper._build_schema_error_read(properties.errors)
+            properties.errors = AAZObjectType(
+                flags={"read_only": True},
+            )
             properties.log_analytics_workspace_arm_id = AAZStrType(
                 serialized_name="logAnalyticsWorkspaceArmId",
             )
@@ -233,6 +236,23 @@ class List(AAZCommand):
             properties.zone_redundancy_preference = AAZStrType(
                 serialized_name="zoneRedundancyPreference",
             )
+
+            errors = cls._schema_on_200.value.Element.properties.errors
+            errors.code = AAZStrType()
+            errors.details = AAZListType()
+            errors.inner_error = AAZStrType(
+                serialized_name="innerError",
+            )
+            errors.message = AAZStrType()
+            errors.target = AAZStrType()
+
+            details = cls._schema_on_200.value.Element.properties.errors.details
+            details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.errors.details.Element
+            _element.code = AAZStrType()
+            _element.message = AAZStrType()
+            _element.target = AAZStrType()
 
             managed_resource_group_configuration = cls._schema_on_200.value.Element.properties.managed_resource_group_configuration
             managed_resource_group_configuration.name = AAZStrType()
@@ -391,8 +411,9 @@ class List(AAZCommand):
             properties.app_location = AAZStrType(
                 serialized_name="appLocation",
             )
-            properties.errors = AAZObjectType()
-            _ListHelper._build_schema_error_read(properties.errors)
+            properties.errors = AAZObjectType(
+                flags={"read_only": True},
+            )
             properties.log_analytics_workspace_arm_id = AAZStrType(
                 serialized_name="logAnalyticsWorkspaceArmId",
             )
@@ -420,6 +441,23 @@ class List(AAZCommand):
             properties.zone_redundancy_preference = AAZStrType(
                 serialized_name="zoneRedundancyPreference",
             )
+
+            errors = cls._schema_on_200.value.Element.properties.errors
+            errors.code = AAZStrType()
+            errors.details = AAZListType()
+            errors.inner_error = AAZStrType(
+                serialized_name="innerError",
+            )
+            errors.message = AAZStrType()
+            errors.target = AAZStrType()
+
+            details = cls._schema_on_200.value.Element.properties.errors.details
+            details.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.errors.details.Element
+            _element.code = AAZStrType()
+            _element.message = AAZStrType()
+            _element.target = AAZStrType()
 
             managed_resource_group_configuration = cls._schema_on_200.value.Element.properties.managed_resource_group_configuration
             managed_resource_group_configuration.name = AAZStrType()
@@ -452,54 +490,6 @@ class List(AAZCommand):
 
 class _ListHelper:
     """Helper class for List"""
-
-    _schema_error_read = None
-
-    @classmethod
-    def _build_schema_error_read(cls, _schema):
-        if cls._schema_error_read is not None:
-            _schema.code = cls._schema_error_read.code
-            _schema.details = cls._schema_error_read.details
-            _schema.inner_error = cls._schema_error_read.inner_error
-            _schema.message = cls._schema_error_read.message
-            _schema.target = cls._schema_error_read.target
-            return
-
-        cls._schema_error_read = _schema_error_read = AAZObjectType()
-
-        error_read = _schema_error_read
-        error_read.code = AAZStrType(
-            flags={"read_only": True},
-        )
-        error_read.details = AAZListType(
-            flags={"read_only": True},
-        )
-        error_read.inner_error = AAZObjectType(
-            serialized_name="innerError",
-            flags={"read_only": True},
-        )
-        error_read.message = AAZStrType(
-            flags={"read_only": True},
-        )
-        error_read.target = AAZStrType(
-            flags={"read_only": True},
-        )
-
-        details = _schema_error_read.details
-        details.Element = AAZObjectType()
-        cls._build_schema_error_read(details.Element)
-
-        inner_error = _schema_error_read.inner_error
-        inner_error.inner_error = AAZObjectType(
-            serialized_name="innerError",
-        )
-        cls._build_schema_error_read(inner_error.inner_error)
-
-        _schema.code = cls._schema_error_read.code
-        _schema.details = cls._schema_error_read.details
-        _schema.inner_error = cls._schema_error_read.inner_error
-        _schema.message = cls._schema_error_read.message
-        _schema.target = cls._schema_error_read.target
 
 
 __all__ = ["List"]

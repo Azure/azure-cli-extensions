@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0
+++++++
+*Migrate to aaz commands
+
 0.2.0
 ++++++
 * Bump version to 2021-07-12.

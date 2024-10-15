@@ -19,23 +19,27 @@ class Update(AAZCommand):
     """Update a Virtual Instance for SAP solutions (VIS) resource
 
     :example: Add tags for an existing Virtual Instance for SAP solutions (VIS) resource
-        az workloads sap-virtual-instance update -g <Resource-group-name> -n <ResourceName> --tags tag=test tag2=test2
+        az workloads sap-virtual-instance update -g <resource-group-name> -n <vis-name> --tags tag1=test1 tag2=test2
 
     :example: Add tags for an existing Virtual Instance for SAP solutions (VIS) resource using the Azure resource ID of the VIS
-        az workloads sap-virtual-instance update --id <ResourceID> --tags tag=test1
+        az workloads sap-virtual-instance update --id <resource-id> --tags tag1=test1
+
+    :example: Add/Change Identity and Managed Resource Network Access for an existing Virtual Instance for SAP Solutions (VIS) resource
+        az workloads sap-virtual-instance update -g <resource-group-name> -n <vis-name> --identity "{type:UserAssigned,userAssignedIdentities:{<managed-identity-resource-id>:{}}}" --managed-resources-network-access-type <public/private>
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}", "2023-10-01-preview"],
         ]
     }
 
+    AZ_SUPPORT_NO_WAIT = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_lro_poller(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -56,6 +60,9 @@ class Update(AAZCommand):
             help="The name of the Virtual Instances for SAP solutions resource",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z][a-zA-Z0-9]{2}$",
+            ),
         )
 
         # define Arg Group "Body"
@@ -64,7 +71,7 @@ class Update(AAZCommand):
         _args_schema.identity = AAZObjectArg(
             options=["--identity"],
             arg_group="Body",
-            help="A pre-created user assigned identity with appropriate roles assigned. To learn more on identity and roles required, visit the ACSS how-to-guide.",
+            help="Managed service identity (user assigned identities)",
         )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
@@ -86,16 +93,28 @@ class Update(AAZCommand):
 
         user_assigned_identities = cls._args_schema.identity.user_assigned_identities
         user_assigned_identities.Element = AAZObjectArg(
+            nullable=True,
             blank={},
         )
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
+
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.managed_resources_network_access_type = AAZStrArg(
+            options=["--managed-resources-network-access-type"],
+            arg_group="Properties",
+            help="Specifies the network access configuration for the resources that will be deployed in the Managed Resource Group. The options to choose from are Public and Private. If 'Private' is chosen, the Storage Account service tag should be enabled on the subnets in which the SAP VMs exist. This is required for establishing connectivity between VM extensions and the managed resource group storage account. This setting is currently applicable only to Storage Account. Learn more here https://go.microsoft.com/fwlink/?linkid=2247228",
+            default="Public",
+            enum={"Private": "Private", "Public": "Public"},
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SAPVirtualInstancesUpdate(ctx=self.ctx)()
+        yield self.SAPVirtualInstancesUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -116,8 +135,24 @@ class Update(AAZCommand):
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [202]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
             if session.http_response.status_code in [200]:
-                return self.on_200(session)
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
 
             return self.on_error(session.http_response)
 
@@ -158,7 +193,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -184,6 +219,7 @@ class Update(AAZCommand):
                 typ_kwargs={"flags": {"client_flatten": True}}
             )
             _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             identity = _builder.get(".identity")
@@ -193,7 +229,11 @@ class Update(AAZCommand):
 
             user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
             if user_assigned_identities is not None:
-                user_assigned_identities.set_elements(AAZObjectType, ".")
+                user_assigned_identities.set_elements(AAZObjectType, ".", typ_kwargs={"nullable": True})
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("managedResourcesNetworkAccessType", AAZStrType, ".managed_resources_network_access_type")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -217,164 +257,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.identity = AAZObjectType()
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            identity = cls._schema_on_200.identity
-            identity.type = AAZStrType(
-                flags={"required": True},
-            )
-            identity.user_assigned_identities = AAZDictType(
-                serialized_name="userAssignedIdentities",
-            )
-
-            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
-            user_assigned_identities.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.identity.user_assigned_identities.Element
-            _element.client_id = AAZStrType(
-                serialized_name="clientId",
-                flags={"read_only": True},
-            )
-            _element.principal_id = AAZStrType(
-                serialized_name="principalId",
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.configuration = AAZObjectType(
-                flags={"required": True},
-            )
-            properties.environment = AAZStrType(
-                flags={"required": True},
-            )
-            properties.errors = AAZObjectType()
-            properties.health = AAZStrType()
-            properties.managed_resource_group_configuration = AAZObjectType(
-                serialized_name="managedResourceGroupConfiguration",
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.sap_product = AAZStrType(
-                serialized_name="sapProduct",
-                flags={"required": True},
-            )
-            properties.state = AAZStrType()
-            properties.status = AAZStrType()
-
-            configuration = cls._schema_on_200.properties.configuration
-            configuration.configuration_type = AAZStrType(
-                serialized_name="configurationType",
-                flags={"required": True},
-            )
-
-            disc_deployment = cls._schema_on_200.properties.configuration.discriminate_by("configuration_type", "Deployment")
-            disc_deployment.app_location = AAZStrType(
-                serialized_name="appLocation",
-            )
-            disc_deployment.infrastructure_configuration = AAZObjectType(
-                serialized_name="infrastructureConfiguration",
-            )
-            _UpdateHelper._build_schema_infrastructure_configuration_read(disc_deployment.infrastructure_configuration)
-            disc_deployment.software_configuration = AAZObjectType(
-                serialized_name="softwareConfiguration",
-            )
-            _UpdateHelper._build_schema_software_configuration_read(disc_deployment.software_configuration)
-
-            disc_deployment_with_os_config = cls._schema_on_200.properties.configuration.discriminate_by("configuration_type", "DeploymentWithOSConfig")
-            disc_deployment_with_os_config.app_location = AAZStrType(
-                serialized_name="appLocation",
-            )
-            disc_deployment_with_os_config.infrastructure_configuration = AAZObjectType(
-                serialized_name="infrastructureConfiguration",
-            )
-            _UpdateHelper._build_schema_infrastructure_configuration_read(disc_deployment_with_os_config.infrastructure_configuration)
-            disc_deployment_with_os_config.os_sap_configuration = AAZObjectType(
-                serialized_name="osSapConfiguration",
-            )
-            disc_deployment_with_os_config.software_configuration = AAZObjectType(
-                serialized_name="softwareConfiguration",
-            )
-            _UpdateHelper._build_schema_software_configuration_read(disc_deployment_with_os_config.software_configuration)
-
-            os_sap_configuration = cls._schema_on_200.properties.configuration.discriminate_by("configuration_type", "DeploymentWithOSConfig").os_sap_configuration
-            os_sap_configuration.deployer_vm_packages = AAZObjectType(
-                serialized_name="deployerVmPackages",
-            )
-            os_sap_configuration.sap_fqdn = AAZStrType(
-                serialized_name="sapFqdn",
-            )
-
-            deployer_vm_packages = cls._schema_on_200.properties.configuration.discriminate_by("configuration_type", "DeploymentWithOSConfig").os_sap_configuration.deployer_vm_packages
-            deployer_vm_packages.storage_account_id = AAZStrType(
-                serialized_name="storageAccountId",
-            )
-            deployer_vm_packages.url = AAZStrType()
-
-            disc_discovery = cls._schema_on_200.properties.configuration.discriminate_by("configuration_type", "Discovery")
-            disc_discovery.app_location = AAZStrType(
-                serialized_name="appLocation",
-                flags={"read_only": True},
-            )
-            disc_discovery.central_server_vm_id = AAZStrType(
-                serialized_name="centralServerVmId",
-            )
-            disc_discovery.managed_rg_storage_account_name = AAZStrType(
-                serialized_name="managedRgStorageAccountName",
-            )
-
-            errors = cls._schema_on_200.properties.errors
-            errors.properties = AAZObjectType()
-            _UpdateHelper._build_schema_error_definition_read(errors.properties)
-
-            managed_resource_group_configuration = cls._schema_on_200.properties.managed_resource_group_configuration
-            managed_resource_group_configuration.name = AAZStrType()
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
+            _UpdateHelper._build_schema_sap_virtual_instance_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
@@ -461,7 +344,7 @@ class _UpdateHelper:
         )
         high_availability_software_configuration_read.fencing_client_password = AAZStrType(
             serialized_name="fencingClientPassword",
-            flags={"required": True},
+            flags={"secret": True},
         )
 
         _schema.fencing_client_id = cls._schema_high_availability_software_configuration_read.fencing_client_id
@@ -803,6 +686,203 @@ class _UpdateHelper:
 
         _schema.is_secondary_ip_enabled = cls._schema_network_configuration_read.is_secondary_ip_enabled
 
+    _schema_sap_virtual_instance_read = None
+
+    @classmethod
+    def _build_schema_sap_virtual_instance_read(cls, _schema):
+        if cls._schema_sap_virtual_instance_read is not None:
+            _schema.id = cls._schema_sap_virtual_instance_read.id
+            _schema.identity = cls._schema_sap_virtual_instance_read.identity
+            _schema.location = cls._schema_sap_virtual_instance_read.location
+            _schema.name = cls._schema_sap_virtual_instance_read.name
+            _schema.properties = cls._schema_sap_virtual_instance_read.properties
+            _schema.system_data = cls._schema_sap_virtual_instance_read.system_data
+            _schema.tags = cls._schema_sap_virtual_instance_read.tags
+            _schema.type = cls._schema_sap_virtual_instance_read.type
+            return
+
+        cls._schema_sap_virtual_instance_read = _schema_sap_virtual_instance_read = AAZObjectType()
+
+        sap_virtual_instance_read = _schema_sap_virtual_instance_read
+        sap_virtual_instance_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        sap_virtual_instance_read.identity = AAZObjectType()
+        sap_virtual_instance_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        sap_virtual_instance_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        sap_virtual_instance_read.properties = AAZObjectType(
+            flags={"required": True, "client_flatten": True},
+        )
+        sap_virtual_instance_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        sap_virtual_instance_read.tags = AAZDictType()
+        sap_virtual_instance_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        identity = _schema_sap_virtual_instance_read.identity
+        identity.type = AAZStrType(
+            flags={"required": True},
+        )
+        identity.user_assigned_identities = AAZDictType(
+            serialized_name="userAssignedIdentities",
+        )
+
+        user_assigned_identities = _schema_sap_virtual_instance_read.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectType(
+            nullable=True,
+        )
+
+        _element = _schema_sap_virtual_instance_read.identity.user_assigned_identities.Element
+        _element.client_id = AAZStrType(
+            serialized_name="clientId",
+            flags={"read_only": True},
+        )
+        _element.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
+
+        properties = _schema_sap_virtual_instance_read.properties
+        properties.configuration = AAZObjectType(
+            flags={"required": True},
+        )
+        properties.environment = AAZStrType(
+            flags={"required": True},
+        )
+        properties.errors = AAZObjectType(
+            flags={"read_only": True},
+        )
+        properties.health = AAZStrType(
+            flags={"read_only": True},
+        )
+        properties.managed_resource_group_configuration = AAZObjectType(
+            serialized_name="managedResourceGroupConfiguration",
+        )
+        properties.managed_resources_network_access_type = AAZStrType(
+            serialized_name="managedResourcesNetworkAccessType",
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.sap_product = AAZStrType(
+            serialized_name="sapProduct",
+            flags={"required": True},
+        )
+        properties.state = AAZStrType(
+            flags={"read_only": True},
+        )
+        properties.status = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        configuration = _schema_sap_virtual_instance_read.properties.configuration
+        configuration.configuration_type = AAZStrType(
+            serialized_name="configurationType",
+            flags={"required": True},
+        )
+
+        disc_deployment = _schema_sap_virtual_instance_read.properties.configuration.discriminate_by("configuration_type", "Deployment")
+        disc_deployment.app_location = AAZStrType(
+            serialized_name="appLocation",
+        )
+        disc_deployment.infrastructure_configuration = AAZObjectType(
+            serialized_name="infrastructureConfiguration",
+        )
+        cls._build_schema_infrastructure_configuration_read(disc_deployment.infrastructure_configuration)
+        disc_deployment.software_configuration = AAZObjectType(
+            serialized_name="softwareConfiguration",
+        )
+        cls._build_schema_software_configuration_read(disc_deployment.software_configuration)
+
+        disc_deployment_with_os_config = _schema_sap_virtual_instance_read.properties.configuration.discriminate_by("configuration_type", "DeploymentWithOSConfig")
+        disc_deployment_with_os_config.app_location = AAZStrType(
+            serialized_name="appLocation",
+        )
+        disc_deployment_with_os_config.infrastructure_configuration = AAZObjectType(
+            serialized_name="infrastructureConfiguration",
+        )
+        cls._build_schema_infrastructure_configuration_read(disc_deployment_with_os_config.infrastructure_configuration)
+        disc_deployment_with_os_config.os_sap_configuration = AAZObjectType(
+            serialized_name="osSapConfiguration",
+        )
+        disc_deployment_with_os_config.software_configuration = AAZObjectType(
+            serialized_name="softwareConfiguration",
+        )
+        cls._build_schema_software_configuration_read(disc_deployment_with_os_config.software_configuration)
+
+        os_sap_configuration = _schema_sap_virtual_instance_read.properties.configuration.discriminate_by("configuration_type", "DeploymentWithOSConfig").os_sap_configuration
+        os_sap_configuration.deployer_vm_packages = AAZObjectType(
+            serialized_name="deployerVmPackages",
+        )
+        os_sap_configuration.sap_fqdn = AAZStrType(
+            serialized_name="sapFqdn",
+        )
+
+        deployer_vm_packages = _schema_sap_virtual_instance_read.properties.configuration.discriminate_by("configuration_type", "DeploymentWithOSConfig").os_sap_configuration.deployer_vm_packages
+        deployer_vm_packages.storage_account_id = AAZStrType(
+            serialized_name="storageAccountId",
+        )
+        deployer_vm_packages.url = AAZStrType()
+
+        disc_discovery = _schema_sap_virtual_instance_read.properties.configuration.discriminate_by("configuration_type", "Discovery")
+        disc_discovery.app_location = AAZStrType(
+            serialized_name="appLocation",
+            flags={"read_only": True},
+        )
+        disc_discovery.central_server_vm_id = AAZStrType(
+            serialized_name="centralServerVmId",
+        )
+        disc_discovery.managed_rg_storage_account_name = AAZStrType(
+            serialized_name="managedRgStorageAccountName",
+        )
+
+        errors = _schema_sap_virtual_instance_read.properties.errors
+        errors.properties = AAZObjectType()
+        cls._build_schema_error_definition_read(errors.properties)
+
+        managed_resource_group_configuration = _schema_sap_virtual_instance_read.properties.managed_resource_group_configuration
+        managed_resource_group_configuration.name = AAZStrType()
+
+        system_data = _schema_sap_virtual_instance_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        tags = _schema_sap_virtual_instance_read.tags
+        tags.Element = AAZStrType()
+
+        _schema.id = cls._schema_sap_virtual_instance_read.id
+        _schema.identity = cls._schema_sap_virtual_instance_read.identity
+        _schema.location = cls._schema_sap_virtual_instance_read.location
+        _schema.name = cls._schema_sap_virtual_instance_read.name
+        _schema.properties = cls._schema_sap_virtual_instance_read.properties
+        _schema.system_data = cls._schema_sap_virtual_instance_read.system_data
+        _schema.tags = cls._schema_sap_virtual_instance_read.tags
+        _schema.type = cls._schema_sap_virtual_instance_read.type
+
     _schema_software_configuration_read = None
 
     @classmethod
@@ -889,7 +969,7 @@ class _UpdateHelper:
         )
         disc_service_initiated.ssh_private_key = AAZStrType(
             serialized_name="sshPrivateKey",
-            flags={"required": True},
+            flags={"secret": True},
         )
 
         _schema.software_installation_type = cls._schema_software_configuration_read.software_installation_type
@@ -945,6 +1025,7 @@ class _UpdateHelper:
         )
 
         image_reference = _schema_virtual_machine_configuration_read.image_reference
+        image_reference.id = AAZStrType()
         image_reference.offer = AAZStrType()
         image_reference.publisher = AAZStrType()
         image_reference.sku = AAZStrType()
@@ -953,6 +1034,7 @@ class _UpdateHelper:
         os_profile = _schema_virtual_machine_configuration_read.os_profile
         os_profile.admin_password = AAZStrType(
             serialized_name="adminPassword",
+            flags={"secret": True},
         )
         os_profile.admin_username = AAZStrType(
             serialized_name="adminUsername",
@@ -992,6 +1074,7 @@ class _UpdateHelper:
         ssh_key_pair = _schema_virtual_machine_configuration_read.os_profile.os_configuration.discriminate_by("os_type", "Linux").ssh_key_pair
         ssh_key_pair.private_key = AAZStrType(
             serialized_name="privateKey",
+            flags={"secret": True},
         )
         ssh_key_pair.public_key = AAZStrType(
             serialized_name="publicKey",

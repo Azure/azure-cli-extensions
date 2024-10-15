@@ -39,6 +39,10 @@ def cf_machines(cli_ctx, *_):
     return get_container_service_client(cli_ctx).machines
 
 
+def cf_operations(cli_ctx, *_):
+    return get_container_service_client(cli_ctx).operation_status_result
+
+
 def cf_maintenance_configurations(cli_ctx, *_):
     return get_container_service_client(cli_ctx).maintenance_configurations
 
@@ -101,21 +105,6 @@ def get_auth_management_client(cli_ctx, scope=None, **_):
         else:
             raise CLIError(f"{scope} does not contain subscription Id.")
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION, subscription_id=subscription_id)
-
-
-def get_graph_rbac_management_client(cli_ctx, **_):
-    from azure.cli.core.commands.client_factory import configure_common_settings
-    from azure.cli.core._profile import Profile
-    from azure.graphrbac import GraphRbacManagementClient
-
-    profile = Profile(cli_ctx=cli_ctx)
-    cred, _, tenant_id = profile.get_login_credentials(
-        resource=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
-    client = GraphRbacManagementClient(
-        cred, tenant_id,
-        base_url=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
-    configure_common_settings(cli_ctx, client)
-    return client
 
 
 def get_resource_by_name(cli_ctx, resource_name, resource_type):

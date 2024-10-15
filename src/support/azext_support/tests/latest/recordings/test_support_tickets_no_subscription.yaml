@@ -1,0 +1,1296 @@
+interactions:
+- request:
+    body: '{"name": "test_ticket_from_cli_000001", "type": "Microsoft.Support/supportTickets"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription tickets create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '83'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --debug --description --severity --ticket-name --title --contact-country --contact-email
+        --contact-first-name --contact-language --contact-last-name --contact-method
+        --contact-timezone --advanced-diagnostic-consent --problem-classification
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Support/checkNameAvailability?api-version=2024-04-01
+  response:
+    body:
+      string: '{"nameAvailable":true}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:05:04 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: CA170E604D404EFCA88300DA12D1F713 Ref B: CO6AA3150220053 Ref C: 2024-05-10T19:05:04Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"advancedDiagnosticConsent": "No", "contactDetails": {"country":
+      "USA", "firstName": "Foo", "lastName": "Bar", "preferredContactMethod": "email",
+      "preferredSupportLanguage": "en-us", "preferredTimeZone": "Pacific Standard
+      Time", "primaryEmailAddress": "azengcase@microsoft.com"}, "description": "test
+      ticket from python cli test. Do not assign and close after a day.", "problemClassificationId":
+      "/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f",
+      "severity": "minimal", "title": "test ticket from python cli test. Do not assign
+      and close after a day.", "serviceId": "/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc",
+      "problemStartTime": "2024-05-10T19:05:06Z"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription tickets create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '791'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --debug --description --severity --ticket-name --title --contact-country --contact-email
+        --contact-first-name --contact-language --contact-last-name --contact-method
+        --contact-timezone --advanced-diagnostic-consent --problem-classification
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2024-04-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Support/operationsStatus/dcbf8f25-8df5-4cb0-a5de-144ef5705d11?api-version=2024-04-01&t=638509647065567277&c=MIIHSDCCBjCgAwIBAgITfwMhOTmqQoo0tkRvGgAEAyE5OTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwNTAxMDYzNDQ2WhcNMjUwNDI2MDYzNDQ2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALkgKuEwzHMIEnb6DqvlNEjOIBhriDkMVQHin8X3Hp4QWm6IPRhyE4finiNV8v-yzYRoKrEZGVZaMZKQ4LmVw70qsr45wY42Ci7OmjxbZ9yY71jkU7t5-XqiLknJsYmibeU-bj-ivIZNhs9z7vXrozzI5s2EIkeMhDFjZzSU8Tyg8BrDHeWJ0xxYmUcnUl05ClWLHwD3yQABogqndT-JejHbedyKkseKHis9KEIiZZwib0VLMozFG9gHXHSyy_eXkaXhcZh0hT1WV1JcjMoQ1LfxsrMDdAyJLPP-6I7rydsOZvo9bnz9FJSJg8CCaJ87-DZghAmjgUC95n9xNr7VvRUCAwEAAaOCBDUwggQxMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBRycMIgZ8U6O44581iRUxcqHqpbnzAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMEEGA1UdIAQ6MDgwDAYKKwYBBAGCN3sBATAMBgorBgEEAYI3ewIBMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAA_4ful6PqtXLj0fhr2yqM0Q8lN7gu3uJtR9HkeWQr-_sb0h21FXp2pZE10ud7q-bFkL4i3rV85FJt1JQJMyPCDfHflYeNJKjpKDf5fgr-t-bmq7lKGDrV7m663uTPOo3NTM_tBv168Au1J4zmara1_zcov-nSVCI35S-uOrU2ig4a9R2em9hUF87NwH4u64yc_Fjf7L5uzQ3ixAKetCh1UG4_DDNBGLUppGxw8kJAqHBFD0ENZVTGewsGaej68yalWqwEpZ7Ih8r4nW1IGx6i9zJvZYiNfrt0OI-JYBSK4dZMzfJ5fOd21X-XU30qoO_OehEgT9IZe7TtreUfLH0-o&s=ou2mnU8FVv7dGuccMPpzEkL8wL7_upd7Gi0E_30fgaCsVDmgAlDWF4m3IxPuIGAOMJzoPb47By0fmmpokfR0dEwX-dMc5Z3iQhr_yATQ_Pyt2PnRSbFkP-QeXgBgeknTq1zyPoZBthaf5R169lJaGXC-yM-ykFFLmScm_Nj78aVTcWJV6kZqNRYChHcWrnRGLkUXalhC9Fg4sPUEY-tQ3glsv_zKMaYUEiqzBnNiRT7_xMXIueAPSRuqWb_sPpZhw2tzBi7YgTV__aj6Rt2Cne_MTleAyuoA7S8MUUEHuVHQCfbnosAr4U-G0nFf_v9kzKsbBJcFxVU7Tzbxv47pxQ&h=3thyieLnvk04q1kZ29G-4BLjaedAbSjNz2zUg_h9WjY
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 10 May 2024 19:05:06 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Support/operationResults/dcbf8f25-8df5-4cb0-a5de-144ef5705d11?api-version=2024-04-01&t=638509647065567277&c=MIIHSDCCBjCgAwIBAgITfwMhOTmqQoo0tkRvGgAEAyE5OTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwNTAxMDYzNDQ2WhcNMjUwNDI2MDYzNDQ2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALkgKuEwzHMIEnb6DqvlNEjOIBhriDkMVQHin8X3Hp4QWm6IPRhyE4finiNV8v-yzYRoKrEZGVZaMZKQ4LmVw70qsr45wY42Ci7OmjxbZ9yY71jkU7t5-XqiLknJsYmibeU-bj-ivIZNhs9z7vXrozzI5s2EIkeMhDFjZzSU8Tyg8BrDHeWJ0xxYmUcnUl05ClWLHwD3yQABogqndT-JejHbedyKkseKHis9KEIiZZwib0VLMozFG9gHXHSyy_eXkaXhcZh0hT1WV1JcjMoQ1LfxsrMDdAyJLPP-6I7rydsOZvo9bnz9FJSJg8CCaJ87-DZghAmjgUC95n9xNr7VvRUCAwEAAaOCBDUwggQxMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBRycMIgZ8U6O44581iRUxcqHqpbnzAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMEEGA1UdIAQ6MDgwDAYKKwYBBAGCN3sBATAMBgorBgEEAYI3ewIBMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAA_4ful6PqtXLj0fhr2yqM0Q8lN7gu3uJtR9HkeWQr-_sb0h21FXp2pZE10ud7q-bFkL4i3rV85FJt1JQJMyPCDfHflYeNJKjpKDf5fgr-t-bmq7lKGDrV7m663uTPOo3NTM_tBv168Au1J4zmara1_zcov-nSVCI35S-uOrU2ig4a9R2em9hUF87NwH4u64yc_Fjf7L5uzQ3ixAKetCh1UG4_DDNBGLUppGxw8kJAqHBFD0ENZVTGewsGaej68yalWqwEpZ7Ih8r4nW1IGx6i9zJvZYiNfrt0OI-JYBSK4dZMzfJ5fOd21X-XU30qoO_OehEgT9IZe7TtreUfLH0-o&s=sjxwEn76ofdVtk3Y2pEKiwzhQwros3T4deg7m95FGkx4gjvjiJMKSieQKx8YtI49KxMGvA28lESTWRfj0z63nFZWxeHXnHRST_DaYzOI9FNKLTlBFACvWfQU8fCavtWR3TaPauo_1_yb4YPYCFEWwVwJOUiGyh2UxpaSY90nF_dowlw4vRigMHVXKS-rrZ28w0u8AXi_UeKw9nchXSC4Eoo0E5-YANuZ0ORXCTK1H8yhg3xv9yycPDWbM3oTfW0A_TCLe0uSN6Ss90q6LLCiZUECWmCtozAxA5hB36ZsO3oPG-IP_KaDXPFB_XcdzAhSWd4kaNJzTvfotmoDdCCZfQ&h=tGj-HtqXSJaqeDTzYrcdnRSBUqfe1p1_QekpQA4KSz4
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 21B5678487954AB6AE5928E39684D4D3 Ref B: CO6AA3150219025 Ref C: 2024-05-10T19:05:06Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription tickets create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --debug --description --severity --ticket-name --title --contact-country --contact-email
+        --contact-first-name --contact-language --contact-last-name --contact-method
+        --contact-timezone --advanced-diagnostic-consent --problem-classification
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Support/operationsStatus/dcbf8f25-8df5-4cb0-a5de-144ef5705d11?api-version=2024-04-01&t=638509647065567277&c=MIIHSDCCBjCgAwIBAgITfwMhOTmqQoo0tkRvGgAEAyE5OTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwNTAxMDYzNDQ2WhcNMjUwNDI2MDYzNDQ2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALkgKuEwzHMIEnb6DqvlNEjOIBhriDkMVQHin8X3Hp4QWm6IPRhyE4finiNV8v-yzYRoKrEZGVZaMZKQ4LmVw70qsr45wY42Ci7OmjxbZ9yY71jkU7t5-XqiLknJsYmibeU-bj-ivIZNhs9z7vXrozzI5s2EIkeMhDFjZzSU8Tyg8BrDHeWJ0xxYmUcnUl05ClWLHwD3yQABogqndT-JejHbedyKkseKHis9KEIiZZwib0VLMozFG9gHXHSyy_eXkaXhcZh0hT1WV1JcjMoQ1LfxsrMDdAyJLPP-6I7rydsOZvo9bnz9FJSJg8CCaJ87-DZghAmjgUC95n9xNr7VvRUCAwEAAaOCBDUwggQxMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBRycMIgZ8U6O44581iRUxcqHqpbnzAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMEEGA1UdIAQ6MDgwDAYKKwYBBAGCN3sBATAMBgorBgEEAYI3ewIBMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAA_4ful6PqtXLj0fhr2yqM0Q8lN7gu3uJtR9HkeWQr-_sb0h21FXp2pZE10ud7q-bFkL4i3rV85FJt1JQJMyPCDfHflYeNJKjpKDf5fgr-t-bmq7lKGDrV7m663uTPOo3NTM_tBv168Au1J4zmara1_zcov-nSVCI35S-uOrU2ig4a9R2em9hUF87NwH4u64yc_Fjf7L5uzQ3ixAKetCh1UG4_DDNBGLUppGxw8kJAqHBFD0ENZVTGewsGaej68yalWqwEpZ7Ih8r4nW1IGx6i9zJvZYiNfrt0OI-JYBSK4dZMzfJ5fOd21X-XU30qoO_OehEgT9IZe7TtreUfLH0-o&s=ou2mnU8FVv7dGuccMPpzEkL8wL7_upd7Gi0E_30fgaCsVDmgAlDWF4m3IxPuIGAOMJzoPb47By0fmmpokfR0dEwX-dMc5Z3iQhr_yATQ_Pyt2PnRSbFkP-QeXgBgeknTq1zyPoZBthaf5R169lJaGXC-yM-ykFFLmScm_Nj78aVTcWJV6kZqNRYChHcWrnRGLkUXalhC9Fg4sPUEY-tQ3glsv_zKMaYUEiqzBnNiRT7_xMXIueAPSRuqWb_sPpZhw2tzBi7YgTV__aj6Rt2Cne_MTleAyuoA7S8MUUEHuVHQCfbnosAr4U-G0nFf_v9kzKsbBJcFxVU7Tzbxv47pxQ&h=3thyieLnvk04q1kZ29G-4BLjaedAbSjNz2zUg_h9WjY
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Support/operationsStatus/dcbf8f25-8df5-4cb0-a5de-144ef5705d11","status":"InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '113'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:05:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: B148005A1CA74004803636A4E9D1F861 Ref B: CO6AA3150219025 Ref C: 2024-05-10T19:05:06Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription tickets create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --debug --description --severity --ticket-name --title --contact-country --contact-email
+        --contact-first-name --contact-language --contact-last-name --contact-method
+        --contact-timezone --advanced-diagnostic-consent --problem-classification
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Support/operationsStatus/dcbf8f25-8df5-4cb0-a5de-144ef5705d11?api-version=2024-04-01&t=638509647065567277&c=MIIHSDCCBjCgAwIBAgITfwMhOTmqQoo0tkRvGgAEAyE5OTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwNTAxMDYzNDQ2WhcNMjUwNDI2MDYzNDQ2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALkgKuEwzHMIEnb6DqvlNEjOIBhriDkMVQHin8X3Hp4QWm6IPRhyE4finiNV8v-yzYRoKrEZGVZaMZKQ4LmVw70qsr45wY42Ci7OmjxbZ9yY71jkU7t5-XqiLknJsYmibeU-bj-ivIZNhs9z7vXrozzI5s2EIkeMhDFjZzSU8Tyg8BrDHeWJ0xxYmUcnUl05ClWLHwD3yQABogqndT-JejHbedyKkseKHis9KEIiZZwib0VLMozFG9gHXHSyy_eXkaXhcZh0hT1WV1JcjMoQ1LfxsrMDdAyJLPP-6I7rydsOZvo9bnz9FJSJg8CCaJ87-DZghAmjgUC95n9xNr7VvRUCAwEAAaOCBDUwggQxMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBRycMIgZ8U6O44581iRUxcqHqpbnzAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMEEGA1UdIAQ6MDgwDAYKKwYBBAGCN3sBATAMBgorBgEEAYI3ewIBMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAA_4ful6PqtXLj0fhr2yqM0Q8lN7gu3uJtR9HkeWQr-_sb0h21FXp2pZE10ud7q-bFkL4i3rV85FJt1JQJMyPCDfHflYeNJKjpKDf5fgr-t-bmq7lKGDrV7m663uTPOo3NTM_tBv168Au1J4zmara1_zcov-nSVCI35S-uOrU2ig4a9R2em9hUF87NwH4u64yc_Fjf7L5uzQ3ixAKetCh1UG4_DDNBGLUppGxw8kJAqHBFD0ENZVTGewsGaej68yalWqwEpZ7Ih8r4nW1IGx6i9zJvZYiNfrt0OI-JYBSK4dZMzfJ5fOd21X-XU30qoO_OehEgT9IZe7TtreUfLH0-o&s=ou2mnU8FVv7dGuccMPpzEkL8wL7_upd7Gi0E_30fgaCsVDmgAlDWF4m3IxPuIGAOMJzoPb47By0fmmpokfR0dEwX-dMc5Z3iQhr_yATQ_Pyt2PnRSbFkP-QeXgBgeknTq1zyPoZBthaf5R169lJaGXC-yM-ykFFLmScm_Nj78aVTcWJV6kZqNRYChHcWrnRGLkUXalhC9Fg4sPUEY-tQ3glsv_zKMaYUEiqzBnNiRT7_xMXIueAPSRuqWb_sPpZhw2tzBi7YgTV__aj6Rt2Cne_MTleAyuoA7S8MUUEHuVHQCfbnosAr4U-G0nFf_v9kzKsbBJcFxVU7Tzbxv47pxQ&h=3thyieLnvk04q1kZ29G-4BLjaedAbSjNz2zUg_h9WjY
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Support/operationsStatus/dcbf8f25-8df5-4cb0-a5de-144ef5705d11","status":"Succeeded","properties":{"supportTicketCreationWarning":"","supportTicketId":"2405100010003369"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '198'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:05:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: B29E4BFDE39E4C70A84D368D58BD2657 Ref B: CO6AA3150219025 Ref C: 2024-05-10T19:05:36Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription tickets create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --debug --description --severity --ticket-name --title --contact-country --contact-email
+        --contact-first-name --contact-language --contact-last-name --contact-method
+        --contact-timezone --advanced-diagnostic-consent --problem-classification
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-05-10T19:05:10Z","expirationTime":"2024-05-13T15:06:00Z","slaMinutes":480},"supportEngineer":{},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
+        support","advancedDiagnosticConsent":"No","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkZyZWUsRnJlZUlkOjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwOSw=","fileWorkspaceName":"2405100010003369","supportTicketId":"2405100010003369","title":"test
+        ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2024-05-10T19:05:06Z","createdDate":"2024-05-10T19:05:10Z","modifiedDate":"2024-05-10T19:05:21Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1590'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:05:37 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: B180326614C044838DE750D26E2DB04F Ref B: CO6AA3150219025 Ref C: 2024-05-10T19:05:37Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "12345678-1234-1234-1234-123412341234", "type": "Microsoft.Support/communications"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription communication create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '92'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --debug --ticket-name --communication-name --communication-sender --communication-subject
+        --communication-body
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/checkNameAvailability?api-version=2024-04-01
+  response:
+    body:
+      string: '{"nameAvailable":true}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:05:39 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: E240BD3B2F2C4C0594929939BBA7BF04 Ref B: CO6AA3150218023 Ref C: 2024-05-10T19:05:39Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"body": "test body for communication posted from azure
+      python cli", "sender": "rushar@microsoft.com", "subject": "test subject for
+      communication posted from azure python cli"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription communication create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '192'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --debug --ticket-name --communication-name --communication-sender --communication-subject
+        --communication-body
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/12345678-1234-1234-1234-123412341234?api-version=2024-04-01
+  response:
+    body:
+      string: '{"error":{"code":"ResourceNameInvalid","message":"Resource name is
+        invalid. Please provide a valid name","details":[]}}'
+    headers:
+      cache-control:
+      - no-store, no-cache
+      content-length:
+      - '119'
+      content-type:
+      - application/json
+      date:
+      - Fri, 10 May 2024 19:05:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: EF179139F3AC4070AA42144544658B18 Ref B: CO6AA3150217033 Ref C: 2024-05-10T19:05:40Z'
+    status:
+      code: 400
+      message: Bad Request
+- request:
+    body: '{"name": "test_communication_from_cli_000002", "type": "Microsoft.Support/communications"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription communication create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '90'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --debug --ticket-name --communication-name --communication-sender --communication-subject
+        --communication-body
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/checkNameAvailability?api-version=2024-04-01
+  response:
+    body:
+      string: '{"nameAvailable":true}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:05:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 936AECDB1E114CEA8BC31B503CBEE6AD Ref B: CO6AA3150217039 Ref C: 2024-05-10T19:05:42Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"properties": {"body": "test body for communication posted from azure
+      python cli", "sender": "rushar@microsoft.com", "subject": "test subject for
+      communication posted from azure python cli"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription communication create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '192'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --debug --ticket-name --communication-name --communication-sender --communication-subject
+        --communication-body
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002?api-version=2024-04-01
+  response:
+    body:
+      string: ''
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/providers/Microsoft.Support/operationsStatus/be475fe0-0b11-4741-854b-39d0129fcb3b?api-version=2024-04-01&t=638509647446515986&c=MIIHSDCCBjCgAwIBAgITfwMhOTmqQoo0tkRvGgAEAyE5OTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwNTAxMDYzNDQ2WhcNMjUwNDI2MDYzNDQ2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALkgKuEwzHMIEnb6DqvlNEjOIBhriDkMVQHin8X3Hp4QWm6IPRhyE4finiNV8v-yzYRoKrEZGVZaMZKQ4LmVw70qsr45wY42Ci7OmjxbZ9yY71jkU7t5-XqiLknJsYmibeU-bj-ivIZNhs9z7vXrozzI5s2EIkeMhDFjZzSU8Tyg8BrDHeWJ0xxYmUcnUl05ClWLHwD3yQABogqndT-JejHbedyKkseKHis9KEIiZZwib0VLMozFG9gHXHSyy_eXkaXhcZh0hT1WV1JcjMoQ1LfxsrMDdAyJLPP-6I7rydsOZvo9bnz9FJSJg8CCaJ87-DZghAmjgUC95n9xNr7VvRUCAwEAAaOCBDUwggQxMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBRycMIgZ8U6O44581iRUxcqHqpbnzAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMEEGA1UdIAQ6MDgwDAYKKwYBBAGCN3sBATAMBgorBgEEAYI3ewIBMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAA_4ful6PqtXLj0fhr2yqM0Q8lN7gu3uJtR9HkeWQr-_sb0h21FXp2pZE10ud7q-bFkL4i3rV85FJt1JQJMyPCDfHflYeNJKjpKDf5fgr-t-bmq7lKGDrV7m663uTPOo3NTM_tBv168Au1J4zmara1_zcov-nSVCI35S-uOrU2ig4a9R2em9hUF87NwH4u64yc_Fjf7L5uzQ3ixAKetCh1UG4_DDNBGLUppGxw8kJAqHBFD0ENZVTGewsGaej68yalWqwEpZ7Ih8r4nW1IGx6i9zJvZYiNfrt0OI-JYBSK4dZMzfJ5fOd21X-XU30qoO_OehEgT9IZe7TtreUfLH0-o&s=G2JFVmtDSxkSPQW9OTQMISFyUu9faCUomNh9JeT9s1agtQK-PngINnizQpwwQOWhjJtMRYFfSF8pEhWuhMeXaOGciJtl7vJnXKeqYTZGCfIeAt7Zu34Q__QfB_OnGwEoVRFanJqY90mzTCWYR2q7Q1eiZeNnLXT5rT1OIZChGkesQbSEYI133xMtfDRoeart-FBVMXnJDTBApTCn32qyLh2TG-gOd5QUGc449KXkfQSYtXUDizHk6KZhEF4qB2ZpHcpeQXkIRYHqS1WTjX4A9dyCyvHxUTqw6RO8ImoYCizhC53bABvydqGoC3RGBkDzt64r1QuJUSIHRsNhpF-uUQ&h=aahxm9TXScMwyXJ0H9GmnYbUYY69b1c_fCRnQKVNNjs
+      cache-control:
+      - no-cache
+      content-length:
+      - '0'
+      date:
+      - Fri, 10 May 2024 19:05:44 GMT
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/providers/Microsoft.Support/operationResults/be475fe0-0b11-4741-854b-39d0129fcb3b?api-version=2024-04-01&t=638509647446515986&c=MIIHSDCCBjCgAwIBAgITfwMhOTmqQoo0tkRvGgAEAyE5OTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwNTAxMDYzNDQ2WhcNMjUwNDI2MDYzNDQ2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALkgKuEwzHMIEnb6DqvlNEjOIBhriDkMVQHin8X3Hp4QWm6IPRhyE4finiNV8v-yzYRoKrEZGVZaMZKQ4LmVw70qsr45wY42Ci7OmjxbZ9yY71jkU7t5-XqiLknJsYmibeU-bj-ivIZNhs9z7vXrozzI5s2EIkeMhDFjZzSU8Tyg8BrDHeWJ0xxYmUcnUl05ClWLHwD3yQABogqndT-JejHbedyKkseKHis9KEIiZZwib0VLMozFG9gHXHSyy_eXkaXhcZh0hT1WV1JcjMoQ1LfxsrMDdAyJLPP-6I7rydsOZvo9bnz9FJSJg8CCaJ87-DZghAmjgUC95n9xNr7VvRUCAwEAAaOCBDUwggQxMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBRycMIgZ8U6O44581iRUxcqHqpbnzAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMEEGA1UdIAQ6MDgwDAYKKwYBBAGCN3sBATAMBgorBgEEAYI3ewIBMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAA_4ful6PqtXLj0fhr2yqM0Q8lN7gu3uJtR9HkeWQr-_sb0h21FXp2pZE10ud7q-bFkL4i3rV85FJt1JQJMyPCDfHflYeNJKjpKDf5fgr-t-bmq7lKGDrV7m663uTPOo3NTM_tBv168Au1J4zmara1_zcov-nSVCI35S-uOrU2ig4a9R2em9hUF87NwH4u64yc_Fjf7L5uzQ3ixAKetCh1UG4_DDNBGLUppGxw8kJAqHBFD0ENZVTGewsGaej68yalWqwEpZ7Ih8r4nW1IGx6i9zJvZYiNfrt0OI-JYBSK4dZMzfJ5fOd21X-XU30qoO_OehEgT9IZe7TtreUfLH0-o&s=kcx7F-1HmngzVa82nW7kL8YTf-KBa7e6UBefdwSsV0zM3F1eIuf81cvrMB1ypTaFcQrnpfkzeHzc1v8G4Yc1_dqZlaK9IWqxdDdITOO1B7sW8WurqTJIGJtfe3DONAD6waz3H_1IHPSRCn2eKPKj4onD6P_DNvKhZbf1hDRO0Xp8v70sa8P3kscd9V2igLpzjHKyvMZbprnWKGKl8JRGIAjphHe6EjbuYSj7K3vvheMBPcBPALFiXQlT4mQpXNvtDda247ChUa3CUJKZSpjxoD8NUpPpLlpux0DU5XiMClu8avX19wEB0lrAtq6Vf9WmtBRu9thUcT8kakFntJdThg&h=TTb2jzidH3fpCe1_EnqbjRx395kCfmzt4Jg5gGKxaLY
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 3156517F68A242BAABBA4705ACC85E25 Ref B: CO6AA3150219039 Ref C: 2024-05-10T19:05:43Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription communication create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --debug --ticket-name --communication-name --communication-sender --communication-subject
+        --communication-body
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Support/operationsStatus/be475fe0-0b11-4741-854b-39d0129fcb3b?api-version=2024-04-01&t=638509647446515986&c=MIIHSDCCBjCgAwIBAgITfwMhOTmqQoo0tkRvGgAEAyE5OTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwNTAxMDYzNDQ2WhcNMjUwNDI2MDYzNDQ2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALkgKuEwzHMIEnb6DqvlNEjOIBhriDkMVQHin8X3Hp4QWm6IPRhyE4finiNV8v-yzYRoKrEZGVZaMZKQ4LmVw70qsr45wY42Ci7OmjxbZ9yY71jkU7t5-XqiLknJsYmibeU-bj-ivIZNhs9z7vXrozzI5s2EIkeMhDFjZzSU8Tyg8BrDHeWJ0xxYmUcnUl05ClWLHwD3yQABogqndT-JejHbedyKkseKHis9KEIiZZwib0VLMozFG9gHXHSyy_eXkaXhcZh0hT1WV1JcjMoQ1LfxsrMDdAyJLPP-6I7rydsOZvo9bnz9FJSJg8CCaJ87-DZghAmjgUC95n9xNr7VvRUCAwEAAaOCBDUwggQxMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBRycMIgZ8U6O44581iRUxcqHqpbnzAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMEEGA1UdIAQ6MDgwDAYKKwYBBAGCN3sBATAMBgorBgEEAYI3ewIBMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAA_4ful6PqtXLj0fhr2yqM0Q8lN7gu3uJtR9HkeWQr-_sb0h21FXp2pZE10ud7q-bFkL4i3rV85FJt1JQJMyPCDfHflYeNJKjpKDf5fgr-t-bmq7lKGDrV7m663uTPOo3NTM_tBv168Au1J4zmara1_zcov-nSVCI35S-uOrU2ig4a9R2em9hUF87NwH4u64yc_Fjf7L5uzQ3ixAKetCh1UG4_DDNBGLUppGxw8kJAqHBFD0ENZVTGewsGaej68yalWqwEpZ7Ih8r4nW1IGx6i9zJvZYiNfrt0OI-JYBSK4dZMzfJ5fOd21X-XU30qoO_OehEgT9IZe7TtreUfLH0-o&s=G2JFVmtDSxkSPQW9OTQMISFyUu9faCUomNh9JeT9s1agtQK-PngINnizQpwwQOWhjJtMRYFfSF8pEhWuhMeXaOGciJtl7vJnXKeqYTZGCfIeAt7Zu34Q__QfB_OnGwEoVRFanJqY90mzTCWYR2q7Q1eiZeNnLXT5rT1OIZChGkesQbSEYI133xMtfDRoeart-FBVMXnJDTBApTCn32qyLh2TG-gOd5QUGc449KXkfQSYtXUDizHk6KZhEF4qB2ZpHcpeQXkIRYHqS1WTjX4A9dyCyvHxUTqw6RO8ImoYCizhC53bABvydqGoC3RGBkDzt64r1QuJUSIHRsNhpF-uUQ&h=aahxm9TXScMwyXJ0H9GmnYbUYY69b1c_fCRnQKVNNjs
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Support/operationsStatus/be475fe0-0b11-4741-854b-39d0129fcb3b","status":"InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '113'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:05:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 8CAB87B2596C46FF84852AE6DAE2D59B Ref B: CO6AA3150219039 Ref C: 2024-05-10T19:05:44Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription communication create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --debug --ticket-name --communication-name --communication-sender --communication-subject
+        --communication-body
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Support/operationsStatus/be475fe0-0b11-4741-854b-39d0129fcb3b?api-version=2024-04-01&t=638509647446515986&c=MIIHSDCCBjCgAwIBAgITfwMhOTmqQoo0tkRvGgAEAyE5OTANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDIwHhcNMjQwNTAxMDYzNDQ2WhcNMjUwNDI2MDYzNDQ2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALkgKuEwzHMIEnb6DqvlNEjOIBhriDkMVQHin8X3Hp4QWm6IPRhyE4finiNV8v-yzYRoKrEZGVZaMZKQ4LmVw70qsr45wY42Ci7OmjxbZ9yY71jkU7t5-XqiLknJsYmibeU-bj-ivIZNhs9z7vXrozzI5s2EIkeMhDFjZzSU8Tyg8BrDHeWJ0xxYmUcnUl05ClWLHwD3yQABogqndT-JejHbedyKkseKHis9KEIiZZwib0VLMozFG9gHXHSyy_eXkaXhcZh0hT1WV1JcjMoQ1LfxsrMDdAyJLPP-6I7rydsOZvo9bnz9FJSJg8CCaJ87-DZghAmjgUC95n9xNr7VvRUCAwEAAaOCBDUwggQxMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFggvX2K4Py0SACAWQCAQowggHaBggrBgEFBQcBAQSCAcwwggHIMGYGCCsGAQUFBzAChlpodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MFYGCCsGAQUFBzAChkpodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDAyKDQpLmNydDBWBggrBgEFBQcwAoZKaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwMig0KS5jcnQwVgYIKwYBBQUHMAKGSmh0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3J0MB0GA1UdDgQWBBRycMIgZ8U6O44581iRUxcqHqpbnzAOBgNVHQ8BAf8EBAMCBaAwggE1BgNVHR8EggEsMIIBKDCCASSgggEgoIIBHIZCaHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JshjRodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDIoNCkuY3JsMEEGA1UdIAQ6MDgwDAYKKwYBBAGCN3sBATAMBgorBgEEAYI3ewIBMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEATAfBgNVHSMEGDAWgBSuecJrXSWIEwb2BwnDl3x7l48dVTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAA_4ful6PqtXLj0fhr2yqM0Q8lN7gu3uJtR9HkeWQr-_sb0h21FXp2pZE10ud7q-bFkL4i3rV85FJt1JQJMyPCDfHflYeNJKjpKDf5fgr-t-bmq7lKGDrV7m663uTPOo3NTM_tBv168Au1J4zmara1_zcov-nSVCI35S-uOrU2ig4a9R2em9hUF87NwH4u64yc_Fjf7L5uzQ3ixAKetCh1UG4_DDNBGLUppGxw8kJAqHBFD0ENZVTGewsGaej68yalWqwEpZ7Ih8r4nW1IGx6i9zJvZYiNfrt0OI-JYBSK4dZMzfJ5fOd21X-XU30qoO_OehEgT9IZe7TtreUfLH0-o&s=G2JFVmtDSxkSPQW9OTQMISFyUu9faCUomNh9JeT9s1agtQK-PngINnizQpwwQOWhjJtMRYFfSF8pEhWuhMeXaOGciJtl7vJnXKeqYTZGCfIeAt7Zu34Q__QfB_OnGwEoVRFanJqY90mzTCWYR2q7Q1eiZeNnLXT5rT1OIZChGkesQbSEYI133xMtfDRoeart-FBVMXnJDTBApTCn32qyLh2TG-gOd5QUGc449KXkfQSYtXUDizHk6KZhEF4qB2ZpHcpeQXkIRYHqS1WTjX4A9dyCyvHxUTqw6RO8ImoYCizhC53bABvydqGoC3RGBkDzt64r1QuJUSIHRsNhpF-uUQ&h=aahxm9TXScMwyXJ0H9GmnYbUYY69b1c_fCRnQKVNNjs
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Support/operationsStatus/be475fe0-0b11-4741-854b-39d0129fcb3b","status":"Succeeded","properties":{"supportTicketCreationWarning":"","supportTicketId":"2405100010003369"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '198'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:06:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 450669A5CF33464598270718374BECE3 Ref B: CO6AA3150219039 Ref C: 2024-05-10T19:06:14Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription communication create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --debug --ticket-name --communication-name --communication-sender --communication-subject
+        --communication-body
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/f1a4ef49-000f-ef11-9f89-7c1e5216fdf9","name":"f1a4ef49-000f-ef11-9f89-7c1e5216fdf9","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Outbound","sender":"rushar@microsoft.com","subject":"test
+        subject for communication posted from azur... - TrackingID#2405100010003369","body":"<pre>test
+        body for communication posted from azure python cli</pre>","createdDate":"2024-05-10T19:05:47Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '536'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:06:15 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 35F786C867B3428B8E49DC0503010E36 Ref B: CO6AA3150219039 Ref C: 2024-05-10T19:06:15Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription communication list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ticket-name
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications?api-version=2024-04-01
+  response:
+    body:
+      string: "{\"value\":[{\"id\":\"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/f1a4ef49-000f-ef11-9f89-7c1e5216fdf9\"\
+        ,\"name\":\"f1a4ef49-000f-ef11-9f89-7c1e5216fdf9\",\"type\":\"Microsoft.Support/communications\"\
+        ,\"properties\":{\"communicationType\":\"Web\",\"communicationDirection\"\
+        :\"Outbound\",\"sender\":\"rushar@microsoft.com\",\"subject\":\"test subject\
+        \ for communication posted from azur... - TrackingID#2405100010003369\",\"\
+        body\":\"<pre>test body for communication posted from azure python cli</pre>\"\
+        ,\"createdDate\":\"2024-05-10T19:05:47Z\"}},{\"id\":\"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/a93a873b-000f-ef11-9f8a-00224833c206\"\
+        ,\"name\":\"a93a873b-000f-ef11-9f8a-00224833c206\",\"type\":\"Microsoft.Support/communications\"\
+        ,\"properties\":{\"communicationType\":\"Web\",\"communicationDirection\"\
+        :\"Inbound\",\"sender\":\"support@mail.support.microsoft.com\",\"subject\"\
+        :\"\\nCase 2405100010003369\u2009 Your question was successfully submitted\
+        \ to Microsoft Support TrackingID#2405100010003369\",\"body\":\"<html>\\n<head>\\\
+        n<meta http-equiv=\\\"Content-Type\\\" content=\\\"text/html; charset=utf-8\\\
+        \">\\n</head>\\n<body>\\n<div data-wrapper=\\\"true\\\" style=\\\"font-size:9pt;\
+        \ font-family:'Segoe UI','Helvetica Neue',sans-serif\\\">\\n<div>\\n<div data-wrapper=\\\
+        \"true\\\" style=\\\"font-size:9pt; font-family:'Segoe UI','Helvetica Neue',sans-serif\\\
+        \">\\n<div>\\n<div style=\\\"font-size:9pt; font-family:'Segoe UI','Helvetica\
+        \ Neue',sans-serif\\\">\\n<div>\\n<div style=\\\"font-size:9pt; font-family:'Segoe\
+        \ UI','Helvetica Neue',sans-serif\\\">\\n<div>\\n<div style=\\\"font-size:9pt;\
+        \ font-family:'Segoe UI','Helvetica Neue',sans-serif\\\">\\n<div>\\n<div>\\\
+        n<table class=\\\"x_x_x_x_x_MsoTableGrid\\\" width=\\\"100%\\\" style=\\\"\
+        width:100.0%; border-collapse:collapse; border:solid windowtext 1.0pt\\\"\
+        >\\n<tbody>\\n<tr>\\n<td valign=\\\"top\\\" style=\\\"border:solid windowtext\
+        \ 1.0pt; background:#ebebeb; padding:0in 5.4pt 0in 5.4pt\\\">\\n<table class=\\\
+        \"x_x_x_x_MsoTableGrid\\\" width=\\\"99%\\\" style=\\\"width:99.9%; border-collapse:collapse;\
+        \ border:none\\\">\\n<tbody>\\n<tr>\\n<td valign=\\\"top\\\" width=\\\"100%\\\
+        \" style=\\\"border:none; background:#f2f2f2; width:100.0%; padding:0mm 5.4pt\
+        \ 0mm 5.4pt\\\">\\n<table align=\\\"center\\\" class=\\\"x_x_x_x_MsoTableGrid\\\
+        \" width=\\\"80%\\\" style=\\\"max-width:700px; border-collapse:collapse;\
+        \ border:none\\\">\\n<tbody>\\n<tr>\\n<td colspan=\\\"2\\\" width=\\\"80%\\\
+        \" style=\\\"border:none; border-bottom:solid silver 1.0pt; width:80.0%; padding:0mm\
+        \ 1.45pt 0mm 14.4pt\\\">\\n<div>\\n<div style=\\\"text-align:right\\\"><span\
+        \ style=\\\"font-size:11pt\\\"><span style=\\\"line-height:normal\\\"><span\
+        \ style=\\\"font-family:Calibri,sans-serif\\\"><strong><span style=\\\"font-size:8.0pt\\\
+        \"><span style=\\\"font-family:'Segoe UI',sans-serif\\\">Having trouble viewing\
+        \ this email?&nbsp;</span></span></strong><a href=\\\"https://portal.azure.com/\\\
+        \" style=\\\"color:blue; text-decoration:none\\\"><b><span style=\\\"font-size:8.0pt\\\
+        \"><span style=\\\"font-family:'Segoe UI',sans-serif\\\"><span style=\\\"\
+        color:#3da5dd\\\">View\\n your request online</span></span></span></b></a></span></span></span></div>\\\
+        n</div>\\n</td>\\n</tr>\\n<tr>\\n<td width=\\\"79%\\\" style=\\\"border-bottom:solid\
+        \ #f2f2f2 1.0pt; width:79.78%; border-top:solid silver 1.0pt; border-left:solid\
+        \ silver 1.0pt; border-right:none; padding:0mm 14.4pt 0mm 14.4pt\\\">\\n<br>\\\
+        n<span style=\\\"font-size:11pt\\\"><span style=\\\"font-family:Calibri,sans-serif\\\
+        \"><img alt=\\\"Microsoft\\\" src=\\\"data:image/png;base64,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\\\
+        \" style=\\\"width:103px; height:22px\\\"></span></span><br>\\n&nbsp;</td>\\\
+        n<td width=\\\"20%\\\" style=\\\"border-bottom:solid #f2f2f2 1.0pt; width:20.22%;\
+        \ border-top:solid silver 1.0pt; border-left:none; border-right:solid silver\
+        \ 1.0pt; padding:0mm 14.4pt 0mm 14.4pt\\\">\\n<div>\\n<div style=\\\"text-align:right\\\
+        \"><span style=\\\"font-size:11pt\\\"><span style=\\\"font-family:Calibri,sans-serif\\\
+        \"><span style=\\\"font-size:16.0pt\\\"><span style=\\\"font-family:'Segoe\
+        \ UI',sans-serif\\\">Support</span></span></span></span></div>\\n</div>\\\
+        n</td>\\n</tr>\\n<tr>\\n<td colspan=\\\"2\\\" width=\\\"100%\\\" style=\\\"\
+        border-bottom:solid #f2f2f2 1.0pt; background:white; width:100.0%; border-top:none;\
+        \ border-left:solid silver 1.0pt; border-right:solid silver 1.0pt; padding:0mm\
+        \ 14.4pt 0mm 14.4pt\\\">\\n<div>&nbsp;</div>\\n<div><span style=\\\"font-size:10pt\\\
+        \"><span><span style=\\\"line-height:normal\\\"><span style=\\\"font-family:Calibri,sans-serif\\\
+        \"><span><span style=\\\"font-family:'Segoe UI',sans-serif\\\"><span style=\\\
+        \"color:black\\\">Your question was successfully submitted to Microsoft Support\\\
+        n using your Basic support plan. A Microsoft support professional will contact\
+        \ you.</span></span></span></span></span></span><br>\\n<span><span style=\\\
+        \"line-height:normal\\\"><span style=\\\"font-family:Calibri,sans-serif\\\"\
+        >&nbsp;</span></span></span><br>\\n<span><span style=\\\"line-height:normal\\\
+        \"><span style=\\\"font-family:Calibri,sans-serif\\\"><span><span style=\\\
+        \"font-family:'Segoe UI',sans-serif\\\"><span style=\\\"color:black\\\">Please\
+        \ note: First time is based on Severity and if the case is classified as \u201C\
+        24x7\u201D (\u201CSeverity\\n A\u201D response cases are always 24x7, \u201C\
+        Severity B\u201D are optionally 24x7, and \u201CSeverity C\u201D cases are\
+        \ business hours only). Learn more about&nbsp;</span></span></span><span style=\\\
+        \"color:black\\\"><a href=\\\"https://azure.microsoft.com/support/plans/response/\\\
+        \" style=\\\"color:blue; text-decoration:none\\\"><span><span style=\\\"font-family:'Segoe\
+        \ UI',sans-serif\\\"><span style=\\\"color:#3da5dd\\\">support\\n response\
+        \ times</span></span></span></a></span><span><span style=\\\"font-family:'Segoe\
+        \ UI',sans-serif\\\"><span style=\\\"color:black\\\">.</span></span></span></span></span></span></span></div>\\\
+        n<div>&nbsp;</div>\\n<div><span style=\\\"color:#0078d4\\\"><span style=\\\
+        \"font-size:10pt\\\"><span style=\\\"font-family:'Segoe UI','Helvetica Neue',sans-serif\\\
+        \"><span><span>Please keep in mind: microsoftsupport.com and microsoft.com\
+        \ are both valid email domains used for communications related\\n to your\
+        \ support request.</span></span></span></span></span></div>\\n<div>&nbsp;</div>\\\
+        n</td>\\n</tr>\\n<tr>\\n<td colspan=\\\"2\\\" width=\\\"100%\\\" style=\\\"\
+        border-bottom:solid #f2f2f2 1.0pt; background:#f2f2f2; width:100.0%; border-top:none;\
+        \ border-left:solid silver 1.0pt; border-right:solid silver 1.0pt; padding:14.4pt\
+        \ 14.4pt 14.4pt 14.4pt\\\">\\n<table class=\\\"x_x_x_MsoTableGrid\\\" width=\\\
+        \"99%\\\" style=\\\"width:99.92%; border-collapse:collapse; border:none\\\"\
+        >\\n<tbody>\\n<tr>\\n<td valign=\\\"top\\\" width=\\\"40%\\\" style=\\\"border:none;\
+        \ border-bottom:solid #f2f2f2 1.0pt; background:white; width:40.0%; padding:2.85pt\
+        \ 5.4pt 2.85pt 5.4pt\\\">\\n<span style=\\\"font-size:10pt\\\"><span><span\
+        \ style=\\\"line-height:normal\\\"><span style=\\\"font-family:Calibri,sans-serif\\\
+        \"><b><span><span style=\\\"font-family:'Segoe UI',sans-serif\\\"><span style=\\\
+        \"color:black\\\">Incident title:</span></span></span></b></span></span></span></span></td>\\\
+        n<td valign=\\\"top\\\" width=\\\"60%\\\" style=\\\"border-top:none; border-right:none;\
+        \ border-left:none; border-bottom:1pt solid rgb(242,242,242); background:white;\
+        \ width:60%; padding:2.85pt 5.4pt; text-align:center\\\">\\n<span style=\\\
+        \"font-size:10pt\\\"><span><span>test ticket from python cli test. Do not\
+        \ assign and close after a day.</span></span></span></td>\\n</tr>\\n<tr>\\\
+        n<td valign=\\\"top\\\" width=\\\"40%\\\" style=\\\"border:none; border-bottom:solid\
+        \ #f2f2f2 1.0pt; background:white; width:40.0%; padding:2.85pt 5.4pt 2.85pt\
+        \ 5.4pt\\\">\\n<span style=\\\"font-size:10pt\\\"><span><span style=\\\"line-height:normal\\\
+        \"><span style=\\\"font-family:Calibri,sans-serif\\\"><b><span><span style=\\\
+        \"font-family:'Segoe UI',sans-serif\\\"><span style=\\\"color:black\\\">Support\
+        \ request number:</span></span></span></b></span></span></span></span></td>\\\
+        n<td valign=\\\"top\\\" width=\\\"60%\\\" style=\\\"border-top:none; border-right:none;\
+        \ border-left:none; border-bottom:1pt solid rgb(242,242,242); background:white;\
+        \ width:60%; padding:2.85pt 5.4pt; text-align:center\\\">\\n<span style=\\\
+        \"font-size:10pt\\\"><span><span>2405100010003369</span></span></span></td>\\\
+        n</tr>\\n<tr>\\n<td valign=\\\"top\\\" width=\\\"40%\\\" style=\\\"border:none;\
+        \ border-bottom:solid #f2f2f2 1.0pt; background:white; width:40.0%; padding:2.85pt\
+        \ 5.4pt 2.85pt 5.4pt\\\">\\n<span style=\\\"font-size:10pt\\\"><span><span\
+        \ style=\\\"line-height:normal\\\"><span style=\\\"font-family:Calibri,sans-serif\\\
+        \"><b><span><span style=\\\"font-family:'Segoe UI',sans-serif\\\"><span style=\\\
+        \"color:black\\\">Severity rating:</span></span></span></b></span></span></span></span></td>\\\
+        n<td valign=\\\"top\\\" width=\\\"60%\\\" style=\\\"border-top:none; border-right:none;\
+        \ border-left:none; border-bottom:1pt solid rgb(242,242,242); background:white;\
+        \ width:60%; padding:2.85pt 5.4pt; text-align:center\\\">\\n<span style=\\\
+        \"font-size:10pt\\\"><span><span>C</span></span></span></td>\\n</tr>\\n<tr>\\\
+        n<td valign=\\\"top\\\" width=\\\"40%\\\" style=\\\"border:none; border-bottom:solid\
+        \ #f2f2f2 1.0pt; background:white; width:40.0%; padding:2.85pt 5.4pt 2.85pt\
+        \ 5.4pt\\\">\\n<span style=\\\"font-size:10pt\\\"><span><span style=\\\"line-height:normal\\\
+        \"><span style=\\\"font-family:Calibri,sans-serif\\\"><b><span><span style=\\\
+        \"font-family:'Segoe UI',sans-serif\\\"><span style=\\\"color:black\\\">Contact\
+        \ preference:</span></span></span></b></span></span></span></span></td>\\\
+        n<td valign=\\\"top\\\" width=\\\"60%\\\" style=\\\"border:none; border-bottom:solid\
+        \ #f2f2f2 1.0pt; background:white; width:60.0%; padding:2.85pt 5.4pt 2.85pt\
+        \ 5.4pt\\\">\\n<div>\\n<div style=\\\"text-align:center\\\"><span style=\\\
+        \"font-size:10pt\\\"><span><span style=\\\"line-height:normal\\\"><span style=\\\
+        \"font-family:Calibri,sans-serif\\\"><span><span style=\\\"font-family:'Segoe\
+        \ UI',sans-serif\\\"><span style=\\\"color:black\\\">Email</span></span></span></span></span></span></span></div>\\\
+        n</div>\\n</td>\\n</tr>\\n<tr>\\n<td valign=\\\"top\\\" width=\\\"40%\\\"\
+        \ style=\\\"border:none; border-bottom:solid #f2f2f2 1.0pt; background:white;\
+        \ width:40.0%; padding:2.85pt 5.4pt 2.85pt 5.4pt\\\">\\n<span style=\\\"font-size:10pt\\\
+        \"><span><span style=\\\"line-height:normal\\\"><span style=\\\"font-family:Calibri,sans-serif\\\
+        \"><b><span><span style=\\\"font-family:'Segoe UI',sans-serif\\\"><span style=\\\
+        \"color:black\\\">Name:</span></span></span></b></span></span></span></span></td>\\\
+        n<td valign=\\\"top\\\" width=\\\"60%\\\" style=\\\"border-top:none; border-right:none;\
+        \ border-left:none; border-bottom:1pt solid rgb(242,242,242); background:white;\
+        \ width:60%; padding:2.85pt 5.4pt; text-align:center\\\">\\n<span style=\\\
+        \"font-size:10pt\\\"><span><span>Foo Bar</span></span></span></td>\\n</tr>\\\
+        n<tr>\\n<td valign=\\\"top\\\" width=\\\"40%\\\" style=\\\"border:none; border-bottom:solid\
+        \ #f2f2f2 1.0pt; background:white; width:40.0%; padding:2.85pt 5.4pt 2.85pt\
+        \ 5.4pt\\\">\\n<span style=\\\"font-size:10pt\\\"><span><span style=\\\"line-height:normal\\\
+        \"><span style=\\\"font-family:Calibri,sans-serif\\\"><b><span><span style=\\\
+        \"font-family:'Segoe UI',sans-serif\\\"><span style=\\\"color:black\\\">Email\
+        \ address:</span></span></span></b></span></span></span></span></td>\\n<td\
+        \ valign=\\\"top\\\" width=\\\"60%\\\" style=\\\"border:none; border-bottom:solid\
+        \ #f2f2f2 1.0pt; background:white; width:60.0%; padding:2.85pt 5.4pt 2.85pt\
+        \ 5.4pt\\\">\\n<div>\\n<div style=\\\"text-align:center\\\"><span style=\\\
+        \"font-size:10pt\\\"><span><span style=\\\"line-height:normal\\\"><span style=\\\
+        \"font-family:Calibri,sans-serif\\\"><span><span style=\\\"font-family:'Segoe\
+        \ UI',sans-serif\\\"><span style=\\\"color:black\\\">azengcase@microsoft.com</span></span></span></span></span></span></span></div>\\\
+        n</div>\\n</td>\\n</tr>\\n<tr>\\n<td valign=\\\"top\\\" width=\\\"40%\\\"\
+        \ style=\\\"border:none; background:white; width:40.0%; padding:2.85pt 5.4pt\
+        \ 2.85pt 5.4pt\\\">\\n<span style=\\\"font-size:10pt\\\"><span><span style=\\\
+        \"line-height:normal\\\"><span style=\\\"font-family:Calibri,sans-serif\\\"\
+        ><b><span><span style=\\\"font-family:'Segoe UI',sans-serif\\\"><span style=\\\
+        \"color:black\\\">Contact numbers:</span></span></span></b></span></span></span></span></td>\\\
+        n<td valign=\\\"top\\\" width=\\\"60%\\\" style=\\\"border:none; background:white;\
+        \ width:60.0%; padding:2.85pt 5.4pt 2.85pt 5.4pt\\\">\\n<div>\\n<div style=\\\
+        \"text-align:center\\\"><span style=\\\"font-size:10pt\\\"><span><span style=\\\
+        \"line-height:normal\\\"><span style=\\\"font-family:Calibri,sans-serif\\\"\
+        ><span><span style=\\\"font-family:'Segoe UI',sans-serif\\\"><span style=\\\
+        \"color:black\\\"></span></span></span></span></span></span></span></div>\\\
+        n</div>\\n</td>\\n</tr>\\n</tbody>\\n</table>\\n</td>\\n</tr>\\n<tr>\\n<td\
+        \ colspan=\\\"2\\\" width=\\\"100%\\\" style=\\\"border:solid silver 1.0pt;\
+        \ background:white; width:100.0%; border-top:none; padding:0mm 14.4pt 0mm\
+        \ 14.4pt\\\">\\n<div>&nbsp;</div>\\n<div><span style=\\\"font-size:10pt\\\"\
+        ><span><span style=\\\"line-height:normal\\\"><span style=\\\"font-family:Calibri,sans-serif\\\
+        \"><span><span style=\\\"font-family:'Segoe UI',sans-serif\\\"><span style=\\\
+        \"color:black\\\">You can contact us again about this incident at any time\
+        \ on\\n the&nbsp;</span></span></span><span style=\\\"color:black\\\"><a href=\\\
+        \"https://portal.azure.com/\\\" style=\\\"color:blue; text-decoration:none\\\
+        \"><span><span style=\\\"font-family:'Segoe UI',sans-serif\\\"><span style=\\\
+        \"color:#3da5dd\\\">Microsoft Azure portal</span></span></span></a></span><span><span\
+        \ style=\\\"font-family:'Segoe UI',sans-serif\\\"><span style=\\\"color:black\\\
+        \">.\\n See the&nbsp;</span></span></span><span style=\\\"color:black\\\"\
+        ><a href=\\\"http://azure.microsoft.com/support/faq/\\\" style=\\\"color:blue;\
+        \ text-decoration:none\\\"><span><span style=\\\"font-family:'Segoe UI',sans-serif\\\
+        \"><span style=\\\"color:#3da5dd\\\">Azure Support FAQ</span></span></span></a></span><span><span\
+        \ style=\\\"font-family:'Segoe UI',sans-serif\\\"><span style=\\\"color:black\\\
+        \">&nbsp;for\\n additional information about Azure Support, including terms\
+        \ and conditions.</span></span></span></span></span></span><br>\\n<span><span\
+        \ style=\\\"line-height:normal\\\"><span style=\\\"font-family:Calibri,sans-serif\\\
+        \">&nbsp;</span></span></span><br>\\n<span><span style=\\\"line-height:normal\\\
+        \"><span style=\\\"font-family:Calibri,sans-serif\\\"><span><span style=\\\
+        \"font-family:'Segoe UI',sans-serif\\\"><span style=\\\"color:black\\\">This\
+        \ email is generated from an unmonitored account. Please do not reply.</span></span></span></span></span></span><br>\\\
+        n<br>\\n<span><span style=\\\"line-height:normal\\\"><span style=\\\"font-family:Calibri,sans-serif\\\
+        \"><span><span style=\\\"font-family:'Segoe UI',sans-serif\\\"><span style=\\\
+        \"color:black\\\">Thank you,<br>\\nMicrosoft Azure Support</span></span></span></span></span></span></span></div>\\\
+        n<div>&nbsp;</div>\\n</td>\\n</tr>\\n<tr>\\n<td colspan=\\\"2\\\" width=\\\
+        \"100%\\\" style=\\\"border-bottom:none; background:white; width:100.0%; border-top:none;\
+        \ border-left:solid silver 1.0pt; border-right:solid silver 1.0pt; padding:0mm\
+        \ 14.4pt 0mm 14.4pt\\\">\\n<div>&nbsp;</div>\\n<div><span style=\\\"font-size:10pt\\\
+        \"><span style=\\\"font-size:12pt\\\"><span><span style=\\\"line-height:normal\\\
+        \"><span style=\\\"font-family:Calibri,sans-serif\\\"><span><span style=\\\
+        \"font-family:'Segoe UI',sans-serif\\\"><span style=\\\"color:black\\\">Additional\
+        \ Information</span></span></span></span></span></span></span><br>\\n<br>\\\
+        n<span><span><span style=\\\"line-height:150%\\\"><span style=\\\"font-family:Calibri,sans-serif\\\
+        \"><b><span style=\\\"line-height:150%\\\"><span style=\\\"font-family:'Segoe\
+        \ UI',sans-serif\\\"><span style=\\\"color:black\\\">Product:</span></span></span></b><span\
+        \ style=\\\"line-height:150%\\\"><span style=\\\"font-family:'Segoe UI',sans-serif\\\
+        \"><span style=\\\"color:black\\\">&nbsp;</span></span></span></span></span>Azure/Billing/Cost\\\
+        n Management/I have access but cost is not loading for me<br>\\n<span style=\\\
+        \"line-height:150%\\\"><span style=\\\"font-family:Calibri,sans-serif\\\"\
+        ><b><span style=\\\"line-height:150%\\\"><span style=\\\"font-family:'Segoe\
+        \ UI',sans-serif\\\"><span style=\\\"color:black\\\">Azure Subscription:</span></span></span></b><span><span\
+        \ style=\\\"line-height:150%\\\"><span style=\\\"font-family:'Segoe UI',sans-serif\\\
+        \"><span style=\\\"color:black\\\"><span>&nbsp;</span></span></span></span></span></span></span></span><br>\\\
+        n<span><span style=\\\"line-height:150%\\\"><span style=\\\"font-family:Calibri,sans-serif\\\
+        \"><b><span style=\\\"line-height:150%\\\"><span style=\\\"font-family:'Segoe\
+        \ UI',sans-serif\\\"><span style=\\\"color:black\\\">Azure Subscription ID:</span></span></span></b><span\
+        \ style=\\\"line-height:150%\\\"><span style=\\\"font-family:'Segoe UI',sans-serif\\\
+        \"><span style=\\\"color:black\\\">&nbsp;</span></span></span></span></span></span></span></span></div>\\\
+        n<div>&nbsp;</div>\\n</td>\\n</tr>\\n<tr>\\n<td colspan=\\\"2\\\" width=\\\
+        \"100%\\\" style=\\\"border:none; background:#505050; width:100.0%; padding:0mm\
+        \ 14.4pt 0mm 14.4pt\\\">\\n<br>\\n<span style=\\\"font-size:11pt\\\"><span\
+        \ style=\\\"line-height:normal\\\"><span style=\\\"font-family:Calibri,sans-serif\\\
+        \"><span style=\\\"font-size:10.0pt\\\"><span style=\\\"font-family:'Segoe\
+        \ UI',sans-serif\\\"><span style=\\\"color:white\\\">This message from Microsoft\
+        \ is an important part\\n of a program, service, or product that you or your\
+        \ company purchased or participates in. Microsoft respects your privacy. Please\
+        \ read our&nbsp;</span></span></span><span style=\\\"color:black\\\"><a href=\\\
+        \"http://azure.microsoft.com/support/trust-center/privacy/\\\" title=\\\"\
+        Privacy Statement\\\" style=\\\"color:blue; text-decoration:none\\\"><span\
+        \ style=\\\"font-size:10.0pt\\\"><span style=\\\"font-family:'Segoe UI',sans-serif\\\
+        \"><span style=\\\"color:#3da5dd\\\">Privacy\\n Statement</span></span></span></a></span><span\
+        \ style=\\\"font-size:10.0pt\\\"><span style=\\\"font-family:'Segoe UI',sans-serif\\\
+        \"><span style=\\\"color:white\\\">.</span></span></span></span></span></span><br>\\\
+        n&nbsp;</td>\\n</tr>\\n<tr>\\n<td width=\\\"79%\\\" style=\\\"border:none;\
+        \ border-bottom:solid #bfbfbf 1.0pt; background:#505050; width:79.78%; padding:0mm\
+        \ 14.4pt 0mm 14.4pt\\\">\\n<br>\\n<span style=\\\"font-size:11pt\\\"><span\
+        \ style=\\\"font-family:Calibri,sans-serif\\\"><span style=\\\"font-size:9.0pt\\\
+        \"><span style=\\\"background:#505050\\\"><span style=\\\"font-family:'Segoe\
+        \ UI',sans-serif\\\"><span style=\\\"color:white\\\">One Microsoft Way, Redmond,\
+        \ WA 98052 USA</span></span></span></span></span></span><br>\\n&nbsp;</td>\\\
+        n<td width=\\\"20%\\\" style=\\\"border:none; border-bottom:solid #bfbfbf\
+        \ 1.0pt; background:#505050; width:20.22%; padding:0mm 14.4pt 0mm 14.4pt\\\
+        \">\\n<div>\\n<div style=\\\"text-align:center\\\">&nbsp;</div>\\n</div>\\\
+        n<div>\\n<div style=\\\"text-align:right\\\"><img align=\\\"none\\\" alt=\\\
+        \"Microsoft\\\" height=\\\"15\\\" src=\\\"data:image/png;base64,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\\\
+        \" width=\\\"71\\\" style=\\\"width:71px; height:15px\\\"></div>\\n</div>\\\
+        n</td>\\n</tr>\\n</tbody>\\n</table>\\n</td>\\n</tr>\\n</tbody>\\n</table>\\\
+        n</td>\\n</tr>\\n</tbody>\\n</table>\\n</div>\\n</div>\\n</div>\\n</div>\\\
+        n</div>\\n</div>\\n</div>\\n</div>\\n</div>\\n</div>\\n</div>\\n</body>\\\
+        n</html>\\n\",\"createdDate\":\"2024-05-10T19:05:16Z\"}}]}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '25197'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:06:18 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: DFEF431240A94F6EAA75E04C02227072 Ref B: CO6AA3150218027 Ref C: 2024-05-10T19:06:17Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription communication show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ticket-name --communication-name
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/test_communication_from_cli_000002?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001/communications/f1a4ef49-000f-ef11-9f89-7c1e5216fdf9","name":"f1a4ef49-000f-ef11-9f89-7c1e5216fdf9","type":"Microsoft.Support/communications","properties":{"communicationType":"Web","communicationDirection":"Outbound","sender":"rushar@microsoft.com","subject":"test
+        subject for communication posted from azur... - TrackingID#2405100010003369","body":"<pre>test
+        body for communication posted from azure python cli</pre>","createdDate":"2024-05-10T19:05:47Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '536'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:06:20 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 14EB5B76A462497E950A719676C16B2A Ref B: CO6AA3150219049 Ref C: 2024-05-10T19:06:19Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription tickets list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --max-items --filter
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Support/supportTickets?$filter=status%20eq%20%27Open%27&api-version=2024-04-01
+  response:
+    body:
+      string: '{"value":[{"id":"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-05-10T19:05:10Z","expirationTime":"2024-05-13T15:06:00Z","slaMinutes":480},"supportEngineer":{},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
+        support","advancedDiagnosticConsent":"No","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkZyZWUsRnJlZUlkOjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwOSw=","fileWorkspaceName":"2405100010003369","supportTicketId":"2405100010003369","title":"test
+        ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2024-05-10T19:05:06Z","createdDate":"2024-05-10T19:05:10Z","modifiedDate":"2024-05-10T19:05:51Z"}},{"id":"/providers/Microsoft.Support/supportTickets/testgrace_2024_04_23_2","name":"testgrace_2024_04_23_2","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket - please ignore and close","problemClassificationId":"/providers/Microsoft.Support/services/f3dc5421-79ef-1efa-41a5-42bf3cbb52c6/problemClassifications/fcbb0be8-bb43-03e8-9abe-63fdb8bb4462","problemClassificationDisplayName":"Account
+        Review","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"newNAme","lastName":"test","preferredContactMethod":"Phone","primaryEmailAddress":"test@test.com","phoneNumber":"123456","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"es-ES"},"supportEngineer":{"emailAddress":"grhuang@microsoft.com"},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
+        support","advancedDiagnosticConsent":"Yes","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkZyZWUsRnJlZUlkOjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwOSw=","fileWorkspaceName":"2404230040012866","supportTicketId":"2404230040012866","title":"test
+        ticket - please ignore and close","serviceId":"/providers/Microsoft.Support/services/f3dc5421-79ef-1efa-41a5-42bf3cbb52c6","serviceDisplayName":"Subscription
+        management","status":"Open","createdDate":"2024-04-23T20:20:28Z","modifiedDate":"2024-04-24T19:12:12Z"}},{"id":"/providers/Microsoft.Support/supportTickets/f3dc5421-965a777d-d191f729-3245-4520-9544-4d8f446b1082","name":"f3dc5421-965a777d-d191f729-3245-4520-9544-4d8f446b1082","type":"Microsoft.Support/supportTickets","properties":{"description":"Question:
+        Problem Start Date\nAnswer: Not sure, use current time\n\nQuestion: Subscription
+        ID\nAnswer: N/A\n\nQuestion: Choose the type of Payment Method\nAnswer: Other,
+        don''t know or not applicable\n\nQuestion: Error Message (if any)\nAnswer:
+        \n\nQuestion: Issue description\nAnswer: Hi,\nCan you please help disable
+        MFA for the account bhshah@TestTest06172019GBL.onmicrosoft.com? This is a
+        test account that is used by multiple people across a team and also automated
+        tests that works on the Azure support case submission experience. The MFA
+        requirement is causing many of our automated tests to fail.","problemClassificationId":"/providers/Microsoft.Support/services/516fe906-3a1a-2878-02fd-8dd37ea207de/problemClassifications/c526e8c2-4ce8-b375-7632-67265634d2da","problemClassificationDisplayName":"Multi-Factor
+        Authentication (MFA)","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Grace","lastName":"Huang","preferredContactMethod":"Email","primaryEmailAddress":"grhuang@microsoft.com","preferredTimeZone":"Eastern
+        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"problemScopingQuestions":"{\"articleId\":\"problemscopingquestion-paymentissues\",\"scopingDetails\":[{\"question\":\"Problem
+        Start Date\",\"controlId\":\"problem_start_time\",\"orderId\":1,\"inputType\":\"static\",\"answer\":{\"displayValue\":\"2024-04-23T18:53:00.719Z\",\"value\":\"2024-04-23T18:53:00.719Z\",\"type\":\"datetime\"}},{\"question\":\"Subscription
+        ID\",\"controlId\":\"subscription_details\",\"orderId\":2,\"inputType\":\"nonstatic\",\"answer\":{\"displayValue\":\"N/A\",\"value\":\"N/A\",\"type\":\"string\"}},{\"question\":\"Choose
+        the type of Payment Method\",\"controlId\":\"payment_method\",\"orderId\":3,\"inputType\":\"static\",\"answer\":{\"displayValue\":\"Other,
+        don''t know or not applicable\",\"value\":\"dont_know_answer\",\"type\":\"string\"}},{\"question\":\"Error
+        Message (if any)\",\"controlId\":\"error_details\",\"orderId\":5,\"inputType\":\"nonstatic\",\"answer\":{\"displayValue\":\"\",\"value\":\"\",\"type\":\"\"}},{\"question\":\"Issue
+        description\",\"controlId\":\"problem_description\",\"orderId\":6,\"inputType\":\"nonstatic\",\"answer\":{\"displayValue\":\"Hi,\\nCan
+        you please help disable MFA for the account bhshah@TestTest06172019GBL.onmicrosoft.com?
+        This is a test account that is used by multiple people across a team and also
+        automated tests that works on the Azure support case submission experience.
+        The MFA requirement is causing many of our automated tests to fail. \",\"value\":\"Hi,\\nCan
+        you please help disable MFA for the account bhshah@TestTest06172019GBL.onmicrosoft.com?
+        This is a test account that is used by multiple people across a team and also
+        automated tests that works on the Azure support case submission experience.
+        The MFA requirement is causing many of our automated tests to fail. \",\"type\":\"string\"}}]}","serviceLevelAgreement":{"startTime":"2024-04-23T18:57:05Z","expirationTime":"2024-04-24T14:58:00Z","slaMinutes":480},"supportEngineer":{"emailAddress":"v-habakare@microsoft.com"},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
+        support","advancedDiagnosticConsent":"Yes","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkZyZWUsRnJlZUlkOjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwOSw=","fileWorkspaceName":"2404230040011514","supportTicketId":"2404230040011514","title":"Disable
+        MFA for bhshah@TestTest06172019GBL.onmicrosoft.com account","serviceId":"/providers/Microsoft.Support/services/516fe906-3a1a-2878-02fd-8dd37ea207de","serviceDisplayName":"Microsoft
+        Entra Sign-in and Multifactor Authentication","status":"Open","problemStartTime":"2024-04-23T18:53:00Z","createdDate":"2024-04-23T18:57:05Z","modifiedDate":"2024-05-10T12:39:59Z"}},{"id":"/providers/Microsoft.Support/supportTickets/testgrace_2024_03_20_1","name":"testgrace_2024_03_20_1","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket - please ignore and close","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/3ec1a070-f242-9ecf-5a7c-e1a88ce029ef","problemClassificationDisplayName":"Add
+        or update VAT, tax id, PO number or profile information","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"test","lastName":"test","preferredContactMethod":"Email","primaryEmailAddress":"test@test.com","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-03-20T17:49:55Z","expirationTime":"2024-03-21T13:50:00Z","slaMinutes":480},"supportEngineer":{"emailAddress":"grhuang@microsoft.com"},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
+        support","advancedDiagnosticConsent":"No","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkZyZWUsRnJlZUlkOjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwOSw=","fileWorkspaceName":"2403200040010605","supportTicketId":"2403200040010605","title":"test
+        ticket - please ignore and close","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","createdDate":"2024-03-20T17:49:55Z","modifiedDate":"2024-04-16T15:44:04Z"}}],"nextLink":"https://management.azure.com:443/providers/Microsoft.Support/supportTickets?$filter=status+eq+%27Open%27&api-version=2024-04-01&$skipToken=%255B%257B%2522compositeToken%2522%253A%257B%2522token%2522%253Anull%252C%2522range%2522%253A%257B%2522min%2522%253A%252205C1E7FFFFFFFE%2522%252C%2522max%2522%253A%252205C1E9673399CA%2522%257D%257D%252C%2522orderByItems%2522%253A%255B%257B%2522item%2522%253A%25222024-04-10T16%253A35%253A49Z%2522%257D%255D%252C%2522rid%2522%253A%2522e6dtAI34RR9fu0IAAAAgDA%253D%253D%2522%252C%2522skipCount%2522%253A1%252C%2522filter%2522%253A%2522%2528%2520c.CreatedOn%2520%253C%253D%2520%255C%25222024-04-13T03%253A48%253A05Z%255C%2522%2520OR%2520NOT%2520IS_DEFINED%2528c.CreatedOn%2529%2520OR%2520IS_NULL%2528c.CreatedOn%2529%2520OR%2520IS_BOOLEAN%2528c.CreatedOn%2529%2520OR%2520IS_NUMBER%2528c.CreatedOn%2529%2520%2529%2522%257D%255D"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '9378'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:06:22 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 3624B402423D4FBEA4B2B3B28C51EC90 Ref B: CO6AA3150218025 Ref C: 2024-05-10T19:06:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"contactDetails": {"phoneNumber": "123-456-7890", "preferredContactMethod":
+      "phone"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription tickets update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '86'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --ticket-name --contact-method --contact-phone-number
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: PATCH
+    uri: https://management.azure.com/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Phone","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-05-10T19:05:10Z","expirationTime":"2024-05-13T15:06:00Z","slaMinutes":480},"supportEngineer":{},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
+        support","advancedDiagnosticConsent":"No","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkZyZWUsRnJlZUlkOjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwOSw=","fileWorkspaceName":"2405100010003369","supportTicketId":"2405100010003369","title":"test
+        ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2024-05-10T19:05:06Z","createdDate":"2024-05-10T19:05:10Z","modifiedDate":"2024-05-10T19:05:51Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1619'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:06:27 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 25A8C5F6C1AA4FF289150F4A1CD40488 Ref B: CO6AA3150219047 Ref C: 2024-05-10T19:06:24Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"contactDetails": {"preferredContactMethod": "email"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription tickets update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '55'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --ticket-name --contact-method
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: PATCH
+    uri: https://management.azure.com/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-05-10T19:05:10Z","expirationTime":"2024-05-13T15:06:00Z","slaMinutes":480},"supportEngineer":{},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
+        support","advancedDiagnosticConsent":"No","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkZyZWUsRnJlZUlkOjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwOSw=","fileWorkspaceName":"2405100010003369","supportTicketId":"2405100010003369","title":"test
+        ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2024-05-10T19:05:06Z","createdDate":"2024-05-10T19:05:10Z","modifiedDate":"2024-05-10T19:06:27Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1619'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:06:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 95287A8EA88F417AA058DC5126B344B2 Ref B: CO6AA3150220047 Ref C: 2024-05-10T19:06:28Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"advancedDiagnosticConsent": "Yes"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription tickets update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '36'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --ticket-name --advanced-diagnostic-consent
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: PATCH
+    uri: https://management.azure.com/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-05-10T19:05:10Z","expirationTime":"2024-05-13T15:06:00Z","slaMinutes":480},"supportEngineer":{},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
+        support","advancedDiagnosticConsent":"Yes","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkZyZWUsRnJlZUlkOjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwOSw=","fileWorkspaceName":"2405100010003369","supportTicketId":"2405100010003369","title":"test
+        ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Open","problemStartTime":"2024-05-10T19:05:06Z","createdDate":"2024-05-10T19:05:10Z","modifiedDate":"2024-05-10T19:06:32Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1620'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:06:34 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: FC9E4FD96AF34F79AB126DA06EF19768 Ref B: CO6AA3150217021 Ref C: 2024-05-10T19:06:32Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"status": "closed"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription tickets update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '20'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --ticket-name --status
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: PATCH
+    uri: https://management.azure.com/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-05-10T19:05:10Z","expirationTime":"2024-05-13T15:06:00Z","slaMinutes":480},"supportEngineer":{},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
+        support","advancedDiagnosticConsent":"Yes","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkZyZWUsRnJlZUlkOjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwOSw=","fileWorkspaceName":"2405100010003369","supportTicketId":"2405100010003369","title":"test
+        ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"closed","problemStartTime":"2024-05-10T19:05:06Z","createdDate":"2024-05-10T19:05:10Z","modifiedDate":"2024-05-10T19:06:38Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1622'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:06:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-tenant-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 7E566E3D7B4644BD8CF30846656468E9 Ref B: CO6AA3150219049 Ref C: 2024-05-10T19:06:36Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - support no-subscription tickets show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --ticket-name
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.9 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001?api-version=2024-04-01
+  response:
+    body:
+      string: '{"id":"/providers/Microsoft.Support/supportTickets/test_ticket_from_cli_000001","name":"test_ticket_from_cli_000001","type":"Microsoft.Support/supportTickets","properties":{"description":"test
+        ticket from python cli test. Do not assign and close after a day.","problemClassificationId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc/problemClassifications/44114011-6a66-e902-c00f-e419b6b4509f","problemClassificationDisplayName":"Cost
+        Management / I have access but cost is not loading for me","severity":"Minimal","require24X7Response":false,"enrollmentId":"","contactDetails":{"firstName":"Foo","lastName":"Bar","preferredContactMethod":"Email","primaryEmailAddress":"azengcase@microsoft.com","phoneNumber":"123-456-7890","preferredTimeZone":"Pacific
+        Standard Time","country":"USA","preferredSupportLanguage":"en-US"},"serviceLevelAgreement":{"startTime":"2024-05-10T19:05:10Z","expirationTime":"2024-05-13T15:06:00Z","slaMinutes":480},"supportEngineer":{},"supportPlanType":"Basic","supportPlanDisplayName":"Basic
+        support","advancedDiagnosticConsent":"Yes","isTemporaryTicket":"No","supportPlanId":"U291cmNlOkZyZWUsRnJlZUlkOjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwOSw=","fileWorkspaceName":"2405100010003369","supportTicketId":"2405100010003369","title":"test
+        ticket from python cli test. Do not assign and close after a day.","serviceId":"/providers/Microsoft.Support/services/517f2da6-78fd-0498-4e22-ad26996b1dfc","serviceDisplayName":"Billing","status":"Closed","problemStartTime":"2024-05-10T19:05:06Z","createdDate":"2024-05-10T19:05:10Z","modifiedDate":"2024-05-10T19:06:38Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1622'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 10 May 2024 19:06:40 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: BBBA50168F5143DC8F94F923DC57BF69 Ref B: CO6AA3150217049 Ref C: 2024-05-10T19:06:40Z'
+    status:
+      code: 200
+      message: OK
+version: 1

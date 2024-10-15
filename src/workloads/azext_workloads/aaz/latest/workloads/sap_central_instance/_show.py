@@ -19,13 +19,13 @@ class Show(AAZCommand):
     """Show the SAP Central Services Instance resource.
 
     :example: Get an overview of a Central service Instance using the Azure resource ID of the instance
-        az workloads sap-central-instance show --id <ResourceID>
+        az workloads sap-central-instance show --id <resource-id>
     """
 
     _aaz_info = {
-        "version": "2023-04-01",
+        "version": "2023-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/centralinstances/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/centralinstances/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -50,6 +50,9 @@ class Show(AAZCommand):
             help="Central Services Instance resource name string modeled as parameter for auto generation to work correctly.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^.*",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -59,6 +62,9 @@ class Show(AAZCommand):
             help="The name of the Virtual Instances for SAP solutions resource",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z][a-zA-Z0-9]{2}$",
+            ),
         )
         return cls._args_schema
 
@@ -131,7 +137,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -192,11 +198,15 @@ class Show(AAZCommand):
             properties.enqueue_server_properties = AAZObjectType(
                 serialized_name="enqueueServerProperties",
             )
-            properties.errors = AAZObjectType()
+            properties.errors = AAZObjectType(
+                flags={"read_only": True},
+            )
             properties.gateway_server_properties = AAZObjectType(
                 serialized_name="gatewayServerProperties",
             )
-            properties.health = AAZStrType()
+            properties.health = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.instance_no = AAZStrType(
                 serialized_name="instanceNo",
                 flags={"read_only": True},
@@ -213,6 +223,7 @@ class Show(AAZCommand):
             )
             properties.load_balancer_details = AAZObjectType(
                 serialized_name="loadBalancerDetails",
+                flags={"read_only": True},
             )
             properties.message_server_properties = AAZObjectType(
                 serialized_name="messageServerProperties",
@@ -221,7 +232,9 @@ class Show(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.status = AAZStrType()
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.subnet = AAZStrType(
                 flags={"read_only": True},
             )
@@ -235,7 +248,9 @@ class Show(AAZCommand):
                 serialized_name="ersVersion",
                 flags={"read_only": True},
             )
-            enqueue_replication_server_properties.health = AAZStrType()
+            enqueue_replication_server_properties.health = AAZStrType(
+                flags={"read_only": True},
+            )
             enqueue_replication_server_properties.hostname = AAZStrType(
                 flags={"read_only": True},
             )
@@ -257,7 +272,9 @@ class Show(AAZCommand):
             )
 
             enqueue_server_properties = cls._schema_on_200.properties.enqueue_server_properties
-            enqueue_server_properties.health = AAZStrType()
+            enqueue_server_properties.health = AAZStrType(
+                flags={"read_only": True},
+            )
             enqueue_server_properties.hostname = AAZStrType(
                 flags={"read_only": True},
             )
@@ -275,7 +292,9 @@ class Show(AAZCommand):
             _ShowHelper._build_schema_error_definition_read(errors.properties)
 
             gateway_server_properties = cls._schema_on_200.properties.gateway_server_properties
-            gateway_server_properties.health = AAZStrType()
+            gateway_server_properties.health = AAZStrType(
+                flags={"read_only": True},
+            )
             gateway_server_properties.port = AAZIntType(
                 nullable=True,
                 flags={"read_only": True},
@@ -287,7 +306,9 @@ class Show(AAZCommand):
             )
 
             message_server_properties = cls._schema_on_200.properties.message_server_properties
-            message_server_properties.health = AAZStrType()
+            message_server_properties.health = AAZStrType(
+                flags={"read_only": True},
+            )
             message_server_properties.hostname = AAZStrType(
                 flags={"read_only": True},
             )

@@ -15,7 +15,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain?api-version=2024-05-01-preview
   response:
     body:
       string: '{"error":{"code":"NotFound","message":"App was not found","target":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain","details":null}}'
@@ -61,7 +61,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest?api-version=2024-05-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"fe42b1dfecc34bb8b0c8a0c4974c4f40","networkProfile":{"outboundIPs":{"publicIPs":["20.207.109.29","20.219.43.135"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"cli-unittest.azuremicroservices.io"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"S0","tier":"Standard"},"location":"centralindia","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest","name":"cli-unittest","systemData":{"createdBy":"pensh@microsoft.com","createdByType":"User","createdAt":"2023-02-20T06:30:25.7818167Z","lastModifiedBy":"pensh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-20T06:42:36.4133829Z"}}'
@@ -116,13 +116,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain?api-version=2024-05-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Creating","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"centralindia","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain","name":"test-custom-domain","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:24:07.2072858Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:24:07.2072858Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-custom-domain/operationId/2ab05aba-b0e2-435d-8522-4843e4ede780?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-custom-domain/operationId/2ab05aba-b0e2-435d-8522-4843e4ede780?api-version=2024-05-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -134,7 +134,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationResults/2ab05aba-b0e2-435d-8522-4843e4ede780/Spring/test-custom-domain?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationResults/2ab05aba-b0e2-435d-8522-4843e4ede780/Spring/test-custom-domain?api-version=2024-05-01-preview
       pragma:
       - no-cache
       request-context:
@@ -166,7 +166,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-custom-domain/operationId/2ab05aba-b0e2-435d-8522-4843e4ede780?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-custom-domain/operationId/2ab05aba-b0e2-435d-8522-4843e4ede780?api-version=2024-05-01-preview
   response:
     body:
       string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-custom-domain/operationId/2ab05aba-b0e2-435d-8522-4843e4ede780","name":"2ab05aba-b0e2-435d-8522-4843e4ede780","status":"Running","startTime":"2023-03-20T08:24:07.7009085Z"}'
@@ -214,7 +214,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-custom-domain/operationId/2ab05aba-b0e2-435d-8522-4843e4ede780?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-custom-domain/operationId/2ab05aba-b0e2-435d-8522-4843e4ede780?api-version=2024-05-01-preview
   response:
     body:
       string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-custom-domain/operationId/2ab05aba-b0e2-435d-8522-4843e4ede780","name":"2ab05aba-b0e2-435d-8522-4843e4ede780","status":"Succeeded","startTime":"2023-03-20T08:24:07.7009085Z","endTime":"2023-03-20T08:24:14.35032Z"}'
@@ -262,7 +262,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain?api-version=2024-05-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"cli-unittest.azuremicroservices.io","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"centralindia","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain","name":"test-custom-domain","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:24:07.2072858Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:24:07.2072858Z"}}'
@@ -319,13 +319,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments/mock-deployment?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments/mock-deployment?api-version=2024-05-01-preview
   response:
     body:
       string: '{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90},"provisioningState":"Creating","status":"Running","active":true,"instances":null,"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_11"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments/default","name":"default","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:24:23.006099Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:24:23.006099Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/default/operationId/794e08fe-8198-4842-88dc-931013389c08?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/default/operationId/794e08fe-8198-4842-88dc-931013389c08?api-version=2024-05-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -337,7 +337,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationResults/794e08fe-8198-4842-88dc-931013389c08/Spring/default?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationResults/794e08fe-8198-4842-88dc-931013389c08/Spring/default?api-version=2024-05-01-preview
       pragma:
       - no-cache
       request-context:
@@ -369,7 +369,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/default/operationId/794e08fe-8198-4842-88dc-931013389c08?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/default/operationId/794e08fe-8198-4842-88dc-931013389c08?api-version=2024-05-01-preview
   response:
     body:
       string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/default/operationId/794e08fe-8198-4842-88dc-931013389c08","name":"794e08fe-8198-4842-88dc-931013389c08","status":"Running","startTime":"2023-03-20T08:24:23.8483747Z"}'
@@ -422,13 +422,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PATCH
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain?api-version=2024-05-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Updating","fqdn":"cli-unittest.azuremicroservices.io","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"centralindia","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain","name":"test-custom-domain","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:24:07.2072858Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:24:24.5464154Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-custom-domain/operationId/86ebf729-2508-49f5-8754-53fd50f319d7?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-custom-domain/operationId/86ebf729-2508-49f5-8754-53fd50f319d7?api-version=2024-05-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -440,7 +440,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationResults/86ebf729-2508-49f5-8754-53fd50f319d7/Spring/test-custom-domain?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationResults/86ebf729-2508-49f5-8754-53fd50f319d7/Spring/test-custom-domain?api-version=2024-05-01-preview
       pragma:
       - no-cache
       request-context:
@@ -472,7 +472,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-custom-domain/operationId/86ebf729-2508-49f5-8754-53fd50f319d7?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-custom-domain/operationId/86ebf729-2508-49f5-8754-53fd50f319d7?api-version=2024-05-01-preview
   response:
     body:
       string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-custom-domain/operationId/86ebf729-2508-49f5-8754-53fd50f319d7","name":"86ebf729-2508-49f5-8754-53fd50f319d7","status":"Running","startTime":"2023-03-20T08:24:25.0491855Z"}'
@@ -520,7 +520,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/default/operationId/794e08fe-8198-4842-88dc-931013389c08?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/default/operationId/794e08fe-8198-4842-88dc-931013389c08?api-version=2024-05-01-preview
   response:
     body:
       string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/default/operationId/794e08fe-8198-4842-88dc-931013389c08","name":"794e08fe-8198-4842-88dc-931013389c08","status":"Running","startTime":"2023-03-20T08:24:23.8483747Z"}'
@@ -568,7 +568,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-custom-domain/operationId/86ebf729-2508-49f5-8754-53fd50f319d7?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-custom-domain/operationId/86ebf729-2508-49f5-8754-53fd50f319d7?api-version=2024-05-01-preview
   response:
     body:
       string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/test-custom-domain/operationId/86ebf729-2508-49f5-8754-53fd50f319d7","name":"86ebf729-2508-49f5-8754-53fd50f319d7","status":"Succeeded","startTime":"2023-03-20T08:24:25.0491855Z","endTime":"2023-03-20T08:24:31.3373424Z"}'
@@ -616,7 +616,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain?api-version=2024-05-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"cli-unittest.azuremicroservices.io","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"centralindia","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain","name":"test-custom-domain","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:24:07.2072858Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:24:24.5464154Z"}}'
@@ -666,7 +666,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/default/operationId/794e08fe-8198-4842-88dc-931013389c08?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/default/operationId/794e08fe-8198-4842-88dc-931013389c08?api-version=2024-05-01-preview
   response:
     body:
       string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/default/operationId/794e08fe-8198-4842-88dc-931013389c08","name":"794e08fe-8198-4842-88dc-931013389c08","status":"Running","startTime":"2023-03-20T08:24:23.8483747Z"}'
@@ -714,7 +714,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/default/operationId/794e08fe-8198-4842-88dc-931013389c08?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/default/operationId/794e08fe-8198-4842-88dc-931013389c08?api-version=2024-05-01-preview
   response:
     body:
       string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/default/operationId/794e08fe-8198-4842-88dc-931013389c08","name":"794e08fe-8198-4842-88dc-931013389c08","status":"Succeeded","startTime":"2023-03-20T08:24:23.8483747Z","endTime":"2023-03-20T08:24:48.5767086Z"}'
@@ -762,7 +762,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments/mock-deployment?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments/mock-deployment?api-version=2024-05-01-preview
   response:
     body:
       string: '{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":300,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-custom-domain-default-18-774fff7d67-zjf2v","status":"Running","discoveryStatus":"UNREGISTERED","startTime":"2023-03-20T08:24:25Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_11"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments/default","name":"default","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:24:23.006099Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:24:23.006099Z"}}'
@@ -812,7 +812,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain?api-version=2024-05-01-preview
   response:
     body:
       string: '{"properties":{"addonConfigs":{"applicationConfigurationService":{},"serviceRegistry":{}},"public":false,"provisioningState":"Succeeded","fqdn":"cli-unittest.azuremicroservices.io","httpsOnly":false,"temporaryDisk":{"sizeInGB":5,"mountPath":"/tmp"},"persistentDisk":{"sizeInGB":0,"mountPath":"/persistent"},"enableEndToEndTLS":false,"ingressSettings":{"readTimeoutInSeconds":300,"sendTimeoutInSeconds":60,"sessionCookieMaxAge":0,"sessionAffinity":"None","backendProtocol":"Default"}},"type":"Microsoft.AppPlatform/Spring/apps","identity":null,"location":"centralindia","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain","name":"test-custom-domain","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:24:07.2072858Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:24:24.5464154Z"}}'
@@ -862,7 +862,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments?api-version=2024-05-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":300,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-custom-domain-default-18-774fff7d67-zjf2v","status":"Running","discoveryStatus":"UNREGISTERED","startTime":"2023-03-20T08:24:25Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_11"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments/default","name":"default","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:24:23.006099Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:24:23.006099Z"}}]}'
@@ -917,13 +917,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2024-05-01-preview
   response:
     body:
       string: '{"properties":{"vaultUri":"https://integration-test-prod.vault.azure.net/","keyVaultCertName":"cli-unittest","excludePrivateKey":false,"provisioningState":"Creating","type":"KeyVaultCertificate"},"type":"Microsoft.AppPlatform/Spring/certificates","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert","name":"test-cert","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:25:05.051986Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:25:05.051986Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/2f7647fe-0770-4aef-a357-2414b2d5c926?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/2f7647fe-0770-4aef-a357-2414b2d5c926?api-version=2024-05-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -935,7 +935,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationResults/2f7647fe-0770-4aef-a357-2414b2d5c926/Spring/cli-unittest?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationResults/2f7647fe-0770-4aef-a357-2414b2d5c926/Spring/cli-unittest?api-version=2024-05-01-preview
       pragma:
       - no-cache
       request-context:
@@ -967,7 +967,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/2f7647fe-0770-4aef-a357-2414b2d5c926?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/2f7647fe-0770-4aef-a357-2414b2d5c926?api-version=2024-05-01-preview
   response:
     body:
       string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/2f7647fe-0770-4aef-a357-2414b2d5c926","name":"2f7647fe-0770-4aef-a357-2414b2d5c926","status":"Running","startTime":"2023-03-20T08:25:06.2293404Z"}'
@@ -1015,7 +1015,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/2f7647fe-0770-4aef-a357-2414b2d5c926?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/2f7647fe-0770-4aef-a357-2414b2d5c926?api-version=2024-05-01-preview
   response:
     body:
       string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/2f7647fe-0770-4aef-a357-2414b2d5c926","name":"2f7647fe-0770-4aef-a357-2414b2d5c926","status":"Succeeded","startTime":"2023-03-20T08:25:06.2293404Z","endTime":"2023-03-20T08:25:14.6608195Z"}'
@@ -1063,7 +1063,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2024-05-01-preview
   response:
     body:
       string: '{"properties":{"vaultUri":"https://integration-test-prod.vault.azure.net","keyVaultCertName":"cli-unittest","certVersion":"9f2205d5d2ca43ea97c3516dec1e2e06","excludePrivateKey":false,"thumbprint":"8ee74495d2fe82c19ee118fa52bf7ab88c170972","issuer":"*.asc-test.net","expirationDate":"2023-10-01T04:48:33.000+00:00","activateDate":"2022-10-01T04:38:33.000+00:00","subjectName":"*.asc-test.net","dnsNames":["cli.asc-test.net"],"provisioningState":"Succeeded","type":"KeyVaultCertificate"},"type":"Microsoft.AppPlatform/Spring/certificates","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert","name":"test-cert","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:25:05.051986Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:25:05.051986Z"}}'
@@ -1111,7 +1111,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2024-05-01-preview
   response:
     body:
       string: '{"properties":{"vaultUri":"https://integration-test-prod.vault.azure.net","keyVaultCertName":"cli-unittest","certVersion":"9f2205d5d2ca43ea97c3516dec1e2e06","excludePrivateKey":false,"thumbprint":"8ee74495d2fe82c19ee118fa52bf7ab88c170972","issuer":"*.asc-test.net","expirationDate":"2023-10-01T04:48:33.000+00:00","activateDate":"2022-10-01T04:38:33.000+00:00","subjectName":"*.asc-test.net","dnsNames":["cli.asc-test.net"],"provisioningState":"Succeeded","type":"KeyVaultCertificate"},"type":"Microsoft.AppPlatform/Spring/certificates","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert","name":"test-cert","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:25:05.051986Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:25:05.051986Z"}}'
@@ -1159,7 +1159,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates?api-version=2024-05-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"thumbprint":"d4de20d05e66fc53fe1a50882c78db2852cae474","issuer":"Baltimore
@@ -1211,7 +1211,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments?api-version=2024-05-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":300,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-custom-domain-default-18-774fff7d67-zjf2v","status":"Running","discoveryStatus":"UNREGISTERED","startTime":"2023-03-20T08:24:25Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_11"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments/default","name":"default","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:24:23.006099Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:24:23.006099Z"}}]}'
@@ -1261,7 +1261,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest?api-version=2024-05-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Succeeded","zoneRedundant":false,"version":3,"serviceId":"fe42b1dfecc34bb8b0c8a0c4974c4f40","networkProfile":{"outboundIPs":{"publicIPs":["20.207.109.29","20.219.43.135"]},"outboundType":"loadBalancer"},"powerState":"Running","fqdn":"cli-unittest.azuremicroservices.io"},"type":"Microsoft.AppPlatform/Spring","sku":{"name":"S0","tier":"Standard"},"location":"centralindia","tags":null,"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest","name":"cli-unittest","systemData":{"createdBy":"pensh@microsoft.com","createdByType":"User","createdAt":"2023-02-20T06:30:25.7818167Z","lastModifiedBy":"pensh@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-02-20T06:42:36.4133829Z"}}'
@@ -1315,13 +1315,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net?api-version=2024-05-01-preview
   response:
     body:
       string: '{"properties":{"provisioningState":"Creating"},"type":"Microsoft.AppPlatform/Spring/apps/domains","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net","name":"clitest.asc-test.net","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:25:31.023564Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:25:31.023564Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/9cd5cd5b-861b-4dff-ac52-7317f2c8e8d9?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/9cd5cd5b-861b-4dff-ac52-7317f2c8e8d9?api-version=2024-05-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -1333,7 +1333,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationResults/9cd5cd5b-861b-4dff-ac52-7317f2c8e8d9/Spring/cli-unittest?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationResults/9cd5cd5b-861b-4dff-ac52-7317f2c8e8d9/Spring/cli-unittest?api-version=2024-05-01-preview
       pragma:
       - no-cache
       request-context:
@@ -1365,7 +1365,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/9cd5cd5b-861b-4dff-ac52-7317f2c8e8d9?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/9cd5cd5b-861b-4dff-ac52-7317f2c8e8d9?api-version=2024-05-01-preview
   response:
     body:
       string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/9cd5cd5b-861b-4dff-ac52-7317f2c8e8d9","name":"9cd5cd5b-861b-4dff-ac52-7317f2c8e8d9","status":"Running","startTime":"2023-03-20T08:25:31.5533347Z"}'
@@ -1413,7 +1413,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/9cd5cd5b-861b-4dff-ac52-7317f2c8e8d9?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/9cd5cd5b-861b-4dff-ac52-7317f2c8e8d9?api-version=2024-05-01-preview
   response:
     body:
       string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/9cd5cd5b-861b-4dff-ac52-7317f2c8e8d9","name":"9cd5cd5b-861b-4dff-ac52-7317f2c8e8d9","status":"Succeeded","startTime":"2023-03-20T08:25:31.5533347Z","endTime":"2023-03-20T08:25:37.8843954Z"}'
@@ -1461,7 +1461,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net?api-version=2024-05-01-preview
   response:
     body:
       string: '{"properties":{"appName":"test-custom-domain","provisioningState":"Succeeded"},"type":"Microsoft.AppPlatform/Spring/apps/domains","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net","name":"clitest.asc-test.net","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:25:31.023564Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:25:31.023564Z"}}'
@@ -1509,7 +1509,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments?api-version=2024-05-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":300,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-custom-domain-default-18-774fff7d67-zjf2v","status":"Running","discoveryStatus":"UNREGISTERED","startTime":"2023-03-20T08:24:25Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_11"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments/default","name":"default","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:24:23.006099Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:24:23.006099Z"}}]}'
@@ -1559,7 +1559,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net?api-version=2024-05-01-preview
   response:
     body:
       string: '{"properties":{"appName":"test-custom-domain","provisioningState":"Succeeded"},"type":"Microsoft.AppPlatform/Spring/apps/domains","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net","name":"clitest.asc-test.net","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:25:31.023564Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:25:31.023564Z"}}'
@@ -1607,7 +1607,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments?api-version=2024-05-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":300,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-custom-domain-default-18-774fff7d67-zjf2v","status":"Running","discoveryStatus":"UNREGISTERED","startTime":"2023-03-20T08:24:25Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_11"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments/default","name":"default","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:24:23.006099Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:24:23.006099Z"}}]}'
@@ -1657,7 +1657,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains?api-version=2024-05-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"appName":"test-custom-domain","provisioningState":"Succeeded"},"type":"Microsoft.AppPlatform/Spring/apps/domains","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net","name":"clitest.asc-test.net","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:25:31.023564Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:25:31.023564Z"}}]}'
@@ -1705,7 +1705,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments?api-version=2024-05-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":300,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-custom-domain-default-18-774fff7d67-zjf2v","status":"Running","discoveryStatus":"UNREGISTERED","startTime":"2023-03-20T08:24:25Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_11"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments/default","name":"default","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:24:23.006099Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:24:23.006099Z"}}]}'
@@ -1755,7 +1755,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2024-05-01-preview
   response:
     body:
       string: '{"properties":{"vaultUri":"https://integration-test-prod.vault.azure.net","keyVaultCertName":"cli-unittest","certVersion":"9f2205d5d2ca43ea97c3516dec1e2e06","excludePrivateKey":false,"thumbprint":"8ee74495d2fe82c19ee118fa52bf7ab88c170972","issuer":"*.asc-test.net","expirationDate":"2023-10-01T04:48:33.000+00:00","activateDate":"2022-10-01T04:38:33.000+00:00","subjectName":"*.asc-test.net","dnsNames":["cli.asc-test.net"],"provisioningState":"Succeeded","type":"KeyVaultCertificate"},"type":"Microsoft.AppPlatform/Spring/certificates","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert","name":"test-cert","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:25:05.051986Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:25:05.051986Z"}}'
@@ -1808,13 +1808,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net?api-version=2024-05-01-preview
   response:
     body:
       string: '{"properties":{"thumbprint":"8ee74495d2fe82c19ee118fa52bf7ab88c170972","certName":"test-cert","provisioningState":"Updating"},"type":"Microsoft.AppPlatform/Spring/apps/domains","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net","name":"clitest.asc-test.net","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:25:31.023564Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:25:59.625522Z"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/9b91fad6-7c3e-44bb-92a5-34c772f7476f?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/9b91fad6-7c3e-44bb-92a5-34c772f7476f?api-version=2024-05-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -1826,7 +1826,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationResults/9b91fad6-7c3e-44bb-92a5-34c772f7476f/Spring/cli-unittest?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationResults/9b91fad6-7c3e-44bb-92a5-34c772f7476f/Spring/cli-unittest?api-version=2024-05-01-preview
       pragma:
       - no-cache
       request-context:
@@ -1858,7 +1858,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/9b91fad6-7c3e-44bb-92a5-34c772f7476f?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/9b91fad6-7c3e-44bb-92a5-34c772f7476f?api-version=2024-05-01-preview
   response:
     body:
       string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/9b91fad6-7c3e-44bb-92a5-34c772f7476f","name":"9b91fad6-7c3e-44bb-92a5-34c772f7476f","status":"Running","startTime":"2023-03-20T08:26:00.1321672Z"}'
@@ -1906,7 +1906,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/9b91fad6-7c3e-44bb-92a5-34c772f7476f?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/9b91fad6-7c3e-44bb-92a5-34c772f7476f?api-version=2024-05-01-preview
   response:
     body:
       string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/9b91fad6-7c3e-44bb-92a5-34c772f7476f","name":"9b91fad6-7c3e-44bb-92a5-34c772f7476f","status":"Succeeded","startTime":"2023-03-20T08:26:00.1321672Z","endTime":"2023-03-20T08:26:07.9587157Z"}'
@@ -1954,7 +1954,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net?api-version=2024-05-01-preview
   response:
     body:
       string: '{"properties":{"thumbprint":"8ee74495d2fe82c19ee118fa52bf7ab88c170972","appName":"test-custom-domain","certName":"test-cert","provisioningState":"Succeeded"},"type":"Microsoft.AppPlatform/Spring/apps/domains","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net","name":"clitest.asc-test.net","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:25:31.023564Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:25:59.625522Z"}}'
@@ -2002,7 +2002,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments?api-version=2024-05-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":300,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-custom-domain-default-18-774fff7d67-zjf2v","status":"Running","discoveryStatus":"UNREGISTERED","startTime":"2023-03-20T08:24:25Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_11"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments/default","name":"default","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:24:23.006099Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:24:23.006099Z"}}]}'
@@ -2052,7 +2052,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net?api-version=2024-05-01-preview
   response:
     body:
       string: '{"properties":{"thumbprint":"8ee74495d2fe82c19ee118fa52bf7ab88c170972","appName":"test-custom-domain","certName":"test-cert","provisioningState":"Succeeded"},"type":"Microsoft.AppPlatform/Spring/apps/domains","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net","name":"clitest.asc-test.net","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:25:31.023564Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:25:59.625522Z"}}'
@@ -2102,13 +2102,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net?api-version=2024-05-01-preview
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/b2293f0e-f352-446a-a37e-a359a92368df?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/b2293f0e-f352-446a-a37e-a359a92368df?api-version=2024-05-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -2118,7 +2118,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationResults/b2293f0e-f352-446a-a37e-a359a92368df/Spring/cli-unittest?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationResults/b2293f0e-f352-446a-a37e-a359a92368df/Spring/cli-unittest?api-version=2024-05-01-preview
       pragma:
       - no-cache
       request-context:
@@ -2150,7 +2150,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/b2293f0e-f352-446a-a37e-a359a92368df?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/b2293f0e-f352-446a-a37e-a359a92368df?api-version=2024-05-01-preview
   response:
     body:
       string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/b2293f0e-f352-446a-a37e-a359a92368df","name":"b2293f0e-f352-446a-a37e-a359a92368df","status":"Running","startTime":"2023-03-20T08:26:19.1851634Z"}'
@@ -2198,7 +2198,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/b2293f0e-f352-446a-a37e-a359a92368df?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/b2293f0e-f352-446a-a37e-a359a92368df?api-version=2024-05-01-preview
   response:
     body:
       string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/b2293f0e-f352-446a-a37e-a359a92368df","name":"b2293f0e-f352-446a-a37e-a359a92368df","status":"Succeeded","startTime":"2023-03-20T08:26:19.1851634Z","endTime":"2023-03-20T08:26:25.4803953Z"}'
@@ -2246,7 +2246,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments?api-version=2024-05-01-preview
   response:
     body:
       string: '{"value":[{"properties":{"deploymentSettings":{"resourceRequests":{"cpu":"1","memory":"1Gi"},"environmentVariables":null,"terminationGracePeriodSeconds":90,"livenessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":300,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}},"readinessProbe":{"disableProbe":false,"failureThreshold":3,"initialDelaySeconds":0,"periodSeconds":5,"successThreshold":1,"timeoutSeconds":3,"probeAction":{"type":"TCPSocketAction"}}},"provisioningState":"Succeeded","status":"Running","active":true,"instances":[{"name":"test-custom-domain-default-18-774fff7d67-zjf2v","status":"Running","discoveryStatus":"UNREGISTERED","startTime":"2023-03-20T08:24:25Z"}],"source":{"type":"Jar","relativePath":"<default>","runtimeVersion":"Java_11"}},"type":"Microsoft.AppPlatform/Spring/apps/deployments","sku":{"name":"S0","tier":"Standard","capacity":1},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/deployments/default","name":"default","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:24:23.006099Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:24:23.006099Z"}}]}'
@@ -2296,7 +2296,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/apps/test-custom-domain/domains/clitest.asc-test.net?api-version=2024-05-01-preview
   response:
     body:
       string: '{"error":{"code":"NotFound","message":"CustomDomain ''clitest.asc-test.net''
@@ -2341,7 +2341,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2024-05-01-preview
   response:
     body:
       string: '{"properties":{"vaultUri":"https://integration-test-prod.vault.azure.net","keyVaultCertName":"cli-unittest","certVersion":"9f2205d5d2ca43ea97c3516dec1e2e06","excludePrivateKey":false,"thumbprint":"8ee74495d2fe82c19ee118fa52bf7ab88c170972","issuer":"*.asc-test.net","expirationDate":"2023-10-01T04:48:33.000+00:00","activateDate":"2022-10-01T04:38:33.000+00:00","subjectName":"*.asc-test.net","dnsNames":["cli.asc-test.net"],"provisioningState":"Succeeded","type":"KeyVaultCertificate"},"type":"Microsoft.AppPlatform/Spring/certificates","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert","name":"test-cert","systemData":{"createdBy":"shiqiu@microsoft.com","createdByType":"User","createdAt":"2023-03-20T08:25:05.051986Z","lastModifiedBy":"shiqiu@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-03-20T08:25:05.051986Z"}}'
@@ -2391,13 +2391,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2024-05-01-preview
   response:
     body:
       string: ''
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/2c123844-de87-4635-a8fa-630048d53965?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/2c123844-de87-4635-a8fa-630048d53965?api-version=2024-05-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -2407,7 +2407,7 @@ interactions:
       expires:
       - '-1'
       location:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationResults/2c123844-de87-4635-a8fa-630048d53965/Spring/cli-unittest?api-version=2024-01-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationResults/2c123844-de87-4635-a8fa-630048d53965/Spring/cli-unittest?api-version=2024-05-01-preview
       pragma:
       - no-cache
       request-context:
@@ -2439,7 +2439,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/2c123844-de87-4635-a8fa-630048d53965?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/2c123844-de87-4635-a8fa-630048d53965?api-version=2024-05-01-preview
   response:
     body:
       string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/2c123844-de87-4635-a8fa-630048d53965","name":"2c123844-de87-4635-a8fa-630048d53965","status":"Running","startTime":"2023-03-20T08:26:37.1296635Z"}'
@@ -2487,7 +2487,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/2c123844-de87-4635-a8fa-630048d53965?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/2c123844-de87-4635-a8fa-630048d53965?api-version=2024-05-01-preview
   response:
     body:
       string: '{"id":"subscriptions/d51e3ffe-6b84-49cd-b426-0dc4ec660356/resourceGroups/cli/providers/Microsoft.AppPlatform/locations/centralindia/operationStatus/cli-unittest/operationId/2c123844-de87-4635-a8fa-630048d53965","name":"2c123844-de87-4635-a8fa-630048d53965","status":"Succeeded","startTime":"2023-03-20T08:26:37.1296635Z","endTime":"2023-03-20T08:26:43.348362Z"}'
@@ -2535,7 +2535,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.45.0 azsdk-python-mgmt-appplatform/6.1.0 Python/3.9.13 (Windows-10-10.0.19045-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2024-01-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli/providers/Microsoft.AppPlatform/Spring/cli-unittest/certificates/test-cert?api-version=2024-05-01-preview
   response:
     body:
       string: '{"error":{"code":"NotFound","message":"Certificate ''test-cert'' not

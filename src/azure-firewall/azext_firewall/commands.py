@@ -90,15 +90,16 @@ def load_command_table(self, _):
 
     # region AzureFirewallPolicies
     with self.command_group('network firewall policy'):
-        from .custom import AzureFirewallPoliciesCreate, AzureFirewallPoliciesUpdate
+        from .custom import AzureFirewallPoliciesCreate, AzureFirewallPoliciesUpdate, AzureFirewallPoliciesDeploy
         self.command_table['network firewall policy create'] = AzureFirewallPoliciesCreate(loader=self)
         self.command_table['network firewall policy update'] = AzureFirewallPoliciesUpdate(loader=self)
+        self.command_table['network firewall policy deploy'] = AzureFirewallPoliciesDeploy(loader=self)
 
     with self.command_group('network firewall policy intrusion-detection'):
-        from .custom import IntrusionDetectionAdd, IntrusionDetectionRemove, IntrusionDetectionList
-        self.command_table['network firewall policy intrusion-detection add'] = IntrusionDetectionAdd(loader=self)
-        self.command_table['network firewall policy intrusion-detection remove'] = IntrusionDetectionRemove(loader=self)
-        self.command_table['network firewall policy intrusion-detection list'] = IntrusionDetectionList(loader=self)
+        from .custom import AzureFirewallPolicyIntrusionDetectionAdd, AzureFirewallPolicyIntrusionDetectionRemove, AzureFirewallPolicyIntrusionDetectionList
+        self.command_table['network firewall policy intrusion-detection add'] = AzureFirewallPolicyIntrusionDetectionAdd(loader=self)
+        self.command_table['network firewall policy intrusion-detection remove'] = AzureFirewallPolicyIntrusionDetectionRemove(loader=self)
+        self.command_table['network firewall policy intrusion-detection list'] = AzureFirewallPolicyIntrusionDetectionList(loader=self)
 
     with self.command_group('network firewall policy rule-collection-group'):
         from .custom import RuleCollectionGroupCreate, RuleCollectionGroupUpdate
@@ -106,15 +107,43 @@ def load_command_table(self, _):
         self.command_table['network firewall policy rule-collection-group update'] = RuleCollectionGroupUpdate(loader=self)
 
     with self.command_group('network firewall policy rule-collection-group collection'):
-        from .custom import NatCollectionAdd, FilterCollectionAdd, CollectionRemove
-        self.command_table['network firewall policy rule-collection-group collection add-nat-collection'] = NatCollectionAdd(loader=self)
-        self.command_table['network firewall policy rule-collection-group collection add-filter-collection'] = FilterCollectionAdd(loader=self)
-        self.command_table['network firewall policy rule-collection-group collection remove'] = CollectionRemove(loader=self)
+        from .custom import RuleCollectionGroupNatCollectionAdd, RuleCollectionGroupFilterCollectionAdd, RuleCollectionGroupCollectionRemove
+        self.command_table['network firewall policy rule-collection-group collection add-nat-collection'] = RuleCollectionGroupNatCollectionAdd(loader=self)
+        self.command_table['network firewall policy rule-collection-group collection add-filter-collection'] = RuleCollectionGroupFilterCollectionAdd(loader=self)
+        self.command_table['network firewall policy rule-collection-group collection remove'] = RuleCollectionGroupCollectionRemove(loader=self)
 
     with self.command_group('network firewall policy rule-collection-group collection rule'):
-        from .custom import FilterRuleAdd, FilterRuleUpdate, FilterRuleRemove
-        self.command_table['network firewall policy rule-collection-group collection rule add'] = FilterRuleAdd(loader=self)
-        self.command_table['network firewall policy rule-collection-group collection rule update'] = FilterRuleUpdate(loader=self)
-        self.command_table['network firewall policy rule-collection-group collection rule remove'] = FilterRuleRemove(loader=self)
+        from .custom import RuleCollectionGroupFilterRuleAdd, RuleCollectionGroupFilterRuleUpdate, RuleCollectionGroupFilterRuleRemove
+        self.command_table['network firewall policy rule-collection-group collection rule add'] = RuleCollectionGroupFilterRuleAdd(loader=self)
+        self.command_table['network firewall policy rule-collection-group collection rule update'] = RuleCollectionGroupFilterRuleUpdate(loader=self)
+        self.command_table['network firewall policy rule-collection-group collection rule remove'] = RuleCollectionGroupFilterRuleRemove(loader=self)
+
+    with self.command_group('network firewall policy draft'):
+        from .custom import AzureFirewallPolicyDraftsCreate, AzureFirewallPolicyDraftsUpdate
+        self.command_table['network firewall policy draft create'] = AzureFirewallPolicyDraftsCreate(loader=self)
+        self.command_table['network firewall policy draft update'] = AzureFirewallPolicyDraftsUpdate(loader=self)
+
+    with self.command_group('network firewall policy draft intrusion-detection'):
+        from .custom import AzureFirewallPolicyDraftIntrusionDetectionAdd, AzureFirewallPolicyDraftIntrusionDetectionRemove, AzureFirewallPolicyDraftIntrusionDetectionList
+        self.command_table['network firewall policy draft intrusion-detection add'] = AzureFirewallPolicyDraftIntrusionDetectionAdd(loader=self)
+        self.command_table['network firewall policy draft intrusion-detection remove'] = AzureFirewallPolicyDraftIntrusionDetectionRemove(loader=self)
+        self.command_table['network firewall policy draft intrusion-detection list'] = AzureFirewallPolicyDraftIntrusionDetectionList(loader=self)
+
+    with self.command_group('network firewall policy rule-collection-group draft'):
+        from .custom import RuleCollectionGroupDraftCreate, RuleCollectionGroupDraftUpdate
+        self.command_table['network firewall policy rule-collection-group draft create'] = RuleCollectionGroupDraftCreate(loader=self)
+        self.command_table['network firewall policy rule-collection-group draft update'] = RuleCollectionGroupDraftUpdate(loader=self)
+
+    with self.command_group('network firewall policy rule-collection-group draft collection'):
+        from .custom import RuleCollectionGroupDraftNatCollectionAdd, RuleCollectionGroupDraftFilterCollectionAdd, RuleCollectionGroupDraftCollectionRemove
+        self.command_table['network firewall policy rule-collection-group draft collection add-nat-collection'] = RuleCollectionGroupDraftNatCollectionAdd(loader=self)
+        self.command_table['network firewall policy rule-collection-group draft collection add-filter-collection'] = RuleCollectionGroupDraftFilterCollectionAdd(loader=self)
+        self.command_table['network firewall policy rule-collection-group draft collection remove'] = RuleCollectionGroupDraftCollectionRemove(loader=self)
+
+    with self.command_group('network firewall policy rule-collection-group draft collection rule'):
+        from .custom import RuleCollectionGroupDraftFilterRuleAdd, RuleCollectionGroupDraftFilterRuleUpdate, RuleCollectionGroupDraftFilterRuleRemove
+        self.command_table['network firewall policy rule-collection-group draft collection rule add'] = RuleCollectionGroupDraftFilterRuleAdd(loader=self)
+        self.command_table['network firewall policy rule-collection-group draft collection rule update'] = RuleCollectionGroupDraftFilterRuleUpdate(loader=self)
+        self.command_table['network firewall policy rule-collection-group draft collection rule remove'] = RuleCollectionGroupDraftFilterRuleRemove(loader=self)
 
     # endregion

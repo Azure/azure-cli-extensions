@@ -2,36 +2,25 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
-from ...application_configuration_service import (application_configuration_service_create,
-                                                  application_configuration_service_update)
-
+import json
 import unittest
 from argparse import Namespace
+
 from azure.cli.core.azclierror import InvalidArgumentValueError, ArgumentUsageError
+
+from .common.test_utils import get_test_cmd
 from ..._validators_enterprise import validate_refresh_interval
+from ...application_configuration_service import (application_configuration_service_create, _split_config_lines)
+
 try:
     import unittest.mock as mock
 except ImportError:
     from unittest import mock
 
-from azure.cli.core.mock import DummyCli
-from azure.cli.core import AzCommandsLoader
-from azure.cli.core.commands import AzCliCommand
-
 from knack.log import get_logger
 
 logger = get_logger(__name__)
 free_mock_client = mock.MagicMock()
-
-
-def _get_test_cmd():
-    cli_ctx = DummyCli()
-    cli_ctx.data['subscription_id'] = '00000000-0000-0000-0000-000000000000'
-    loader = AzCommandsLoader(cli_ctx, resource_type='Microsoft.AppPlatform')
-    cmd = AzCliCommand(loader, 'test', None)
-    cmd.command_kwargs = {'resource_type': 'Microsoft.AppPlatform'}
-    cmd.cli_ctx = cli_ctx
-    return cmd
 
 
 def _cf_resource_group(cli_ctx, subscription_id=None):
@@ -59,7 +48,7 @@ class BasicTest(unittest.TestCase):
     @mock.patch('azext_spring._utils.cf_resource_groups', _cf_resource_group)
     def _execute(self, resource_group, generation, refresh_interval, **kwargs):
         client = kwargs.pop('client', None) or _get_basic_mock_client()
-        application_configuration_service_create(_get_test_cmd(), client, 'myasa',
+        application_configuration_service_create(get_test_cmd(), client, 'myasa',
                                                  resource_group, generation, refresh_interval)
         call_args = client.configuration_services.begin_create_or_update.call_args_list
         self.assertEqual(1, len(call_args))
@@ -88,3 +77,81 @@ class TestApplicationConfigurationServiceValidator(unittest.TestCase):
         with self.assertRaises(ArgumentUsageError) as context:
             validate_refresh_interval(ns)
         self.assertEqual("--refresh-interval must be greater than or equal to 0.", str(context.exception))
+
+
+class TestAcsShowConfigurationFiles(unittest.TestCase):
+    def test_show_configuration_files_for_acs_gen_1(self):
+        response_str = r"""
+        {
+            "configurationFiles": {
+                "application.properties": "properties-name: sample-test\nspring.config.activate.on-profile: default"
+            }
+        }
+        """
+        result = _split_config_lines(json.loads(response_str))
+        expected_file_content = r"properties-name: sample-test\nspring.config.activate.on-profile: default"
+        file_content_arr = result.get("configurationFiles").get("application.properties")
+        self.assertTrue(isinstance(file_content_arr, list))
+        self.assertEquals(len(file_content_arr), 2)
+        self.assertTrue(r"properties-name: sample-test" in file_content_arr)
+        self.assertTrue(r"spring.config.activate.on-profile: default" in file_content_arr)
+
+    def test_show_configuration_files_for_acs_gen_2(self):
+        response_str = r"""
+        {
+            "configurationFiles": {
+                "application.properties": "properties-name: sample-test\nspring.config.activate.on-profile: default"
+            }
+        }
+        """
+        result = _split_config_lines(json.loads(response_str))
+        expected_file_content = r"properties-name: sample-test\nspring.config.activate.on-profile: default"
+        file_content_arr = result.get("configurationFiles").get("application.properties")
+        self.assertTrue(isinstance(file_content_arr, list))
+        self.assertEquals(len(file_content_arr), 2)
+        self.assertTrue(r"properties-name: sample-test" in file_content_arr)
+        self.assertTrue(r"spring.config.activate.on-profile: default" in file_content_arr)
+        self.assertIsNone(result.get("metadata"))
+
+    def test_show_configuration_files_for_acs_gen_2_with_git_revision(self):
+        response_str = r'''
+        {
+            "configurationFiles": {
+                "application.properties": "properties-name: sample-test\nspring.config.activate.on-profile: default"
+            },
+            "metadata": {
+                "gitRevisions": "[{\"url\": \"https://sample.url\", \"revision\": \"main@sha1:sample-commit-id\"}]"
+            }
+        }
+        '''
+
+        result = _split_config_lines(json.loads(response_str))
+        expected_file_content = r"properties-name: sample-test\nspring.config.activate.on-profile: default"
+        file_content_arr = result.get("configurationFiles").get("application.properties")
+        self.assertTrue(isinstance(file_content_arr, list))
+        self.assertEquals(len(file_content_arr), 2)
+        self.assertTrue(r"properties-name: sample-test" in file_content_arr)
+        self.assertTrue(r"spring.config.activate.on-profile: default" in file_content_arr)
+        self.assertIsNotNone(result.get("metadata"))
+        metadata = result.get("metadata")
+        expected_revisions = "[{\"url\": \"https://sample.url\", \"revision\": \"main@sha1:sample-commit-id\"}]"
+        self.assertEquals(metadata.get("gitRevisions"), expected_revisions)
+
+    def test_show_configuration_files_for_acs_gen_2_with_null_metadata(self):
+        response_str = r'''
+        {
+            "configurationFiles": {
+                "application.properties": "properties-name: sample-test\nspring.config.activate.on-profile: default"
+            },
+            "metadata": null
+        }
+        '''
+
+        result = _split_config_lines(json.loads(response_str))
+        expected_file_content = r"properties-name: sample-test\nspring.config.activate.on-profile: default"
+        file_content_arr = result.get("configurationFiles").get("application.properties")
+        self.assertTrue(isinstance(file_content_arr, list))
+        self.assertEquals(len(file_content_arr), 2)
+        self.assertTrue(r"properties-name: sample-test" in file_content_arr)
+        self.assertTrue(r"spring.config.activate.on-profile: default" in file_content_arr)
+        self.assertIsNone(result.get("metadata"))

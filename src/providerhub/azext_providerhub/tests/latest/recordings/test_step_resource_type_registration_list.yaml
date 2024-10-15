@@ -1,0 +1,57 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub resource-type-registration list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --provider-namespace
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourcetypeRegistrations?api-version=2024-04-01-preview
+  response:
+    body:
+      string: '{"value":[{"properties":{"name":"testBridge","routingType":"Default","regionality":"Regional","endpoints":[{"extensions":[{"endpointUri":"https://prds-westcentralus.sparta.azure.com:17665/","extensionCategories":["ResourceCreationValidate","ResourceCreationBegin","ResourceCreationCompleted"]}],"apiVersions":["2021-10-01-privatepreview"],"locations":["West
+        Central US"]}],"enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"templateDeploymentOptions":{"preflightSupported":true,"preflightOptions":["DefaultValidationOnly"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourceTypeRegistrations/testBridge","type":"Microsoft.ProviderHub/providerRegistrations/resourceTypeRegistrations","name":"testBridge","systemData":{"createdBy":"vpourhashem@microsoft.com","createdByType":"User","createdAt":"2022-11-18T01:10:20.7589531Z","lastModifiedBy":"vpourhashem@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-05-10T04:20:50.4709348Z"}},{"properties":{"name":"Ingredients","routingType":"Default","regionality":"Regional","endpoints":[{"kind":"Managed","apiVersions":["2022-09-23-preview"],"locations":["West
+        US","East US"]},{"kind":"Managed","apiVersions":["2021-10-01-privatepreview","2022-09-23-preview"],"locations":["West
+        Central US"]}],"enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"templateDeploymentOptions":{"preflightSupported":true,"preflightOptions":["DefaultValidationOnly"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourceTypeRegistrations/Ingredients","type":"Microsoft.ProviderHub/providerRegistrations/resourceTypeRegistrations","name":"Ingredients","kind":"Managed","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2023-04-03T23:14:40.6414603Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-12-08T21:28:18.5478565Z"}},{"properties":{"name":"employees","routingType":"Default","regionality":"Regional","endpoints":[{"kind":"Managed","apiVersions":["2021-09-01"],"locations":["West
+        US"],"timeout":"PT20S","endpointType":"NotSpecified"}],"defaultApiVersion":"2021-09-01","enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"disallowedActionVerbs":["write"],"templateDeploymentOptions":{"preflightSupported":true,"preflightOptions":["DefaultValidationOnly"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourceTypeRegistrations/employees","type":"Microsoft.ProviderHub/providerRegistrations/resourceTypeRegistrations","name":"employees","kind":"Managed","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2023-09-22T16:56:20.5757206Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-03T20:35:35.5582495Z"}},{"properties":{"name":"tables","routingType":"Default","regionality":"Regional","endpoints":[{"kind":"Managed","apiVersions":["2021-09-01"],"locations":["West
+        US"],"timeout":"PT20S","endpointType":"NotSpecified"}],"defaultApiVersion":"2021-09-01","enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"disallowedActionVerbs":["write"],"templateDeploymentOptions":{"preflightSupported":true,"preflightOptions":["DefaultValidationOnly"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourceTypeRegistrations/tables","type":"Microsoft.ProviderHub/providerRegistrations/resourceTypeRegistrations","name":"tables","kind":"Managed","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2023-10-18T20:43:06.2873065Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-03T20:35:53.2739402Z"}},{"properties":{"name":"Chairs","routingType":"Default","regionality":"Regional","endpoints":[{"kind":"Managed","apiVersions":["2021-09-01"],"locations":["West
+        US"],"timeout":"PT20S","endpointType":"NotSpecified"}],"defaultApiVersion":"2021-09-01","enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"disallowedActionVerbs":["write"],"templateDeploymentOptions":{"preflightSupported":true,"preflightOptions":["DefaultValidationOnly"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourceTypeRegistrations/Chairs","type":"Microsoft.ProviderHub/providerRegistrations/resourceTypeRegistrations","name":"Chairs","kind":"Managed","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2023-11-09T00:28:11.900944Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-03T20:36:01.4172875Z"}},{"properties":{"name":"Ingredients2","routingType":"Default","regionality":"Regional","endpoints":[{"kind":"Managed","apiVersions":["2022-09-23-preview"],"locations":["West
+        US","East US"]}],"enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"templateDeploymentOptions":{"preflightSupported":true,"preflightOptions":["DefaultValidationOnly"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourceTypeRegistrations/Ingredients2","type":"Microsoft.ProviderHub/providerRegistrations/resourceTypeRegistrations","name":"Ingredients2","kind":"Managed","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2023-11-30T17:05:08.0267484Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-11-30T17:05:08.0267484Z"}},{"properties":{"name":"testCLI","routingType":"Default","regionality":"Regional","endpoints":[{"kind":"Managed","apiVersions":["2021-09-01"],"locations":["West
+        US"],"timeout":"PT20S","endpointType":"NotSpecified"}],"defaultApiVersion":"2021-09-01","enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"disallowedActionVerbs":["write"],"templateDeploymentOptions":{"preflightSupported":true,"preflightOptions":["DefaultValidationOnly"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourceTypeRegistrations/testCLI","type":"Microsoft.ProviderHub/providerRegistrations/resourceTypeRegistrations","name":"testCLI","kind":"Managed","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-05-31T03:21:44.8907799Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-03T20:36:13.2183546Z"}},{"properties":{"name":"extensionresourcetype","routingType":"Default","regionality":"Regional","endpoints":[{"kind":"Managed","apiVersions":["2021-09-01"],"locations":["West
+        US"],"timeout":"PT20S","endpointType":"NotSpecified"}],"defaultApiVersion":"2021-09-01","enableAsyncOperation":false,"provisioningState":"Succeeded","enableThirdPartyS2S":false,"disallowedActionVerbs":["write"],"templateDeploymentOptions":{"preflightSupported":true,"preflightOptions":["DefaultValidationOnly"]}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/resourceTypeRegistrations/extensionresourcetype","type":"Microsoft.ProviderHub/providerRegistrations/resourceTypeRegistrations","name":"extensionresourcetype","kind":"Managed","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-05-31T03:23:33.5645757Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-03T20:37:10.3853065Z"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '7999'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jun 2024 20:54:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/b9f287d3-602c-46b2-924c-733ee5f2f761
+      x-msedge-ref:
+      - 'Ref A: D00C88F400EE4BC396EAB83C83E1EE48 Ref B: CH1AA2020616023 Ref C: 2024-06-04T20:54:38Z'
+    status:
+      code: 200
+      message: OK
+version: 1

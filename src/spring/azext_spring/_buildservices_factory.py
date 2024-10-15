@@ -10,10 +10,10 @@ from time import sleep
 from requests.auth import HTTPBasicAuth
 from knack.log import get_logger
 from azure.cli.core.azclierror import InvalidArgumentValueError, AzureInternalError, DeploymentError
-from msrestazure.tools import parse_resource_id
+from azure.mgmt.core.tools import parse_resource_id
 from azure.cli.core.commands.client_factory import get_subscription_id
-from msrestazure.azure_exceptions import CloudError
-from .vendored_sdks.appplatform.v2024_01_01_preview import models
+from azure.core.exceptions import HttpResponseError
+from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from ._deployment_uploadable_factory import uploader_selector
 from ._log_stream import LogStream
 
@@ -41,6 +41,8 @@ class BuildService:
         uploader_selector(cli_ctx=self.cmd.cli_ctx, upload_url=upload_info.upload_url, **kwargs).upload_and_build(**kwargs)
         if 'app' in kwargs:
             build_name = kwargs['app']
+        elif 'job' in kwargs:
+            build_name = kwargs['job']
         else:
             build_name = kwargs['build_name']
         logger.warning("[3/{}] Creating or Updating build '{}'.".format(total_steps, build_name))
@@ -55,12 +57,13 @@ class BuildService:
             if not response.upload_url:
                 raise AzureInternalError("Failed to get a SAS URL to upload context.")
             return response
-        except CloudError as e:
+        except HttpResponseError as e:
             raise AzureInternalError("Failed to get a SAS URL to upload context. Error: {}".format(e.message))
         except AttributeError as e:
             raise AzureInternalError("Failed to get a SAS URL to upload context. Error: {}".format(e))
 
-    def _queue_build(self, relative_path=None, builder=None, build_env=None, build_cpu=None, build_memory=None, app=None, deployment=None, build_name=None,
+    def _queue_build(self, relative_path=None, builder=None, build_env=None, build_cpu=None,
+                     build_memory=None, app=None, deployment=None, job=None, build_name=None,
                      apms=None, certificates=None, build_certificates=None, **_):
         subscription = get_subscription_id(self.cmd.cli_ctx)
         service_resource_id = '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.AppPlatform/Spring/{}'.format(subscription, self.resource_group, self.service)
@@ -77,14 +80,19 @@ class BuildService:
             resource_requests=build_resource_requests)
         build = models.Build(properties=properties)
         if build_name is None:
-            build_name = app + '-' + deployment
+            if job is not None:
+                build_name = job
+            elif app is not None and deployment is not None:
+                build_name = app + '-' + deployment
+            else:
+                raise InvalidArgumentValueError("Failed to get build name.")
         try:
             return self.client.build_service.create_or_update_build(self.resource_group,
                                                                     self.service,
                                                                     self.name,
                                                                     build_name,
                                                                     build).properties.triggered_build_result.id
-        except (AttributeError, CloudError) as e:
+        except (AttributeError, HttpResponseError) as e:
             raise DeploymentError("Failed to create or update a build. Error: {}".format(e.message))
 
     def _wait_build_finished(self, build_result_id):

@@ -68,10 +68,13 @@ from ...operations._operations import (
     build_dev_boxes_skip_action_request,
     build_dev_boxes_start_dev_box_request,
     build_dev_boxes_stop_dev_box_request,
+    build_dev_center_get_project_abilities_request,
     build_dev_center_get_project_request,
     build_dev_center_list_projects_request,
     build_environments_delay_action_request,
     build_environments_get_action_request,
+    build_environments_get_environment_type_abilities_request,
+    build_environments_get_environment_type_request,
     build_environments_get_logs_by_operation_request,
     build_environments_get_operation_request,
     build_environments_get_outputs_request,
@@ -254,6 +257,82 @@ class DevCenterOperations:
 
         request = build_dev_center_get_project_request(
             project_name=project_name,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        path_format_arguments = {
+            "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
+        }
+        request.url = self._client.format_url(request.url, **path_format_arguments)
+
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            if _stream:
+                await response.read()  # Load the body in memory and close the socket
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response)
+
+        if response.content:
+            deserialized = response.json()
+        else:
+            deserialized = None
+
+        if cls:
+            return cls(pipeline_response, cast(JSON, deserialized), {})
+
+        return cast(JSON, deserialized)
+
+    @distributed_trace_async
+    async def get_project_abilities(self, project_name: str, user_id: str = "me", **kwargs: Any) -> JSON:
+        """Gets the signed-in user's permitted abilities in a project.
+
+        :param project_name: The DevCenter Project upon which to execute operations. Required.
+        :type project_name: str
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
+         authentication context. Default value is "me".
+        :type user_id: str
+        :return: JSON object
+        :rtype: JSON
+        :raises ~azure.core.exceptions.HttpResponseError:
+
+        Example:
+            .. code-block:: python
+
+                # response body for status code(s): 200
+                response == {
+                    "abilitiesAsAdmin": [
+                        "str"  # The abilities the user has to perform actions on the project
+                          as an admin. Required.
+                    ],
+                    "abilitiesAsDeveloper": [
+                        "str"  # The abilities the user has to perform actions on the project
+                          as a developer. Required.
+                    ]
+                }
+        """
+        error_map = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[JSON] = kwargs.pop("cls", None)
+
+        request = build_dev_center_get_project_abilities_request(
+            project_name=project_name,
+            user_id=user_id,
             api_version=self._config.api_version,
             headers=_headers,
             params=_params,
@@ -2984,11 +3063,16 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                             "parameters": {
                                 "str": "str"  # Optional. Parameters for the task.
                             },
+                            "runAs": "str",  # Optional. What account to run the task as.
+                              Known values are: "System" and "User".
                             "startTime": "2020-02-20 00:00:00",  # Optional. Start time
                               of the task.
-                            "status": "str"  # Optional. Status of the task. Known values
-                              are: "NotStarted", "Running", "Succeeded", "FailedValidation", "Skipped",
-                              "TimedOut", and "Failed".
+                            "status": "str",  # Optional. Status of the task. Known
+                              values are: "NotStarted", "Running", "Succeeded", "FailedValidation",
+                              "Skipped", "TimedOut", "Failed", "WaitingForUserInputUac", and
+                              "WaitingForUserSession".
+                            "timeout": 0  # Optional. Timeout, in seconds. Overrides any
+                              timeout provided on the task definition.
                         }
                     ],
                     "uri": "str"  # Optional. The unique URI of the customization group.
@@ -3118,11 +3202,16 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                             "parameters": {
                                 "str": "str"  # Optional. Parameters for the task.
                             },
+                            "runAs": "str",  # Optional. What account to run the task as.
+                              Known values are: "System" and "User".
                             "startTime": "2020-02-20 00:00:00",  # Optional. Start time
                               of the task.
-                            "status": "str"  # Optional. Status of the task. Known values
-                              are: "NotStarted", "Running", "Succeeded", "FailedValidation", "Skipped",
-                              "TimedOut", and "Failed".
+                            "status": "str",  # Optional. Status of the task. Known
+                              values are: "NotStarted", "Running", "Succeeded", "FailedValidation",
+                              "Skipped", "TimedOut", "Failed", "WaitingForUserInputUac", and
+                              "WaitingForUserSession".
+                            "timeout": 0  # Optional. Timeout, in seconds. Overrides any
+                              timeout provided on the task definition.
                         }
                     ],
                     "uri": "str"  # Optional. The unique URI of the customization group.
@@ -3235,11 +3324,16 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                             "parameters": {
                                 "str": "str"  # Optional. Parameters for the task.
                             },
+                            "runAs": "str",  # Optional. What account to run the task as.
+                              Known values are: "System" and "User".
                             "startTime": "2020-02-20 00:00:00",  # Optional. Start time
                               of the task.
-                            "status": "str"  # Optional. Status of the task. Known values
-                              are: "NotStarted", "Running", "Succeeded", "FailedValidation", "Skipped",
-                              "TimedOut", and "Failed".
+                            "status": "str",  # Optional. Status of the task. Known
+                              values are: "NotStarted", "Running", "Succeeded", "FailedValidation",
+                              "Skipped", "TimedOut", "Failed", "WaitingForUserInputUac", and
+                              "WaitingForUserSession".
+                            "timeout": 0  # Optional. Timeout, in seconds. Overrides any
+                              timeout provided on the task definition.
                         }
                     ],
                     "uri": "str"  # Optional. The unique URI of the customization group.
@@ -3267,11 +3361,16 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                             "parameters": {
                                 "str": "str"  # Optional. Parameters for the task.
                             },
+                            "runAs": "str",  # Optional. What account to run the task as.
+                              Known values are: "System" and "User".
                             "startTime": "2020-02-20 00:00:00",  # Optional. Start time
                               of the task.
-                            "status": "str"  # Optional. Status of the task. Known values
-                              are: "NotStarted", "Running", "Succeeded", "FailedValidation", "Skipped",
-                              "TimedOut", and "Failed".
+                            "status": "str",  # Optional. Status of the task. Known
+                              values are: "NotStarted", "Running", "Succeeded", "FailedValidation",
+                              "Skipped", "TimedOut", "Failed", "WaitingForUserInputUac", and
+                              "WaitingForUserSession".
+                            "timeout": 0  # Optional. Timeout, in seconds. Overrides any
+                              timeout provided on the task definition.
                         }
                     ],
                     "uri": "str"  # Optional. The unique URI of the customization group.
@@ -3335,11 +3434,16 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                             "parameters": {
                                 "str": "str"  # Optional. Parameters for the task.
                             },
+                            "runAs": "str",  # Optional. What account to run the task as.
+                              Known values are: "System" and "User".
                             "startTime": "2020-02-20 00:00:00",  # Optional. Start time
                               of the task.
-                            "status": "str"  # Optional. Status of the task. Known values
-                              are: "NotStarted", "Running", "Succeeded", "FailedValidation", "Skipped",
-                              "TimedOut", and "Failed".
+                            "status": "str",  # Optional. Status of the task. Known
+                              values are: "NotStarted", "Running", "Succeeded", "FailedValidation",
+                              "Skipped", "TimedOut", "Failed", "WaitingForUserInputUac", and
+                              "WaitingForUserSession".
+                            "timeout": 0  # Optional. Timeout, in seconds. Overrides any
+                              timeout provided on the task definition.
                         }
                     ],
                     "uri": "str"  # Optional. The unique URI of the customization group.
@@ -3401,11 +3505,16 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                             "parameters": {
                                 "str": "str"  # Optional. Parameters for the task.
                             },
+                            "runAs": "str",  # Optional. What account to run the task as.
+                              Known values are: "System" and "User".
                             "startTime": "2020-02-20 00:00:00",  # Optional. Start time
                               of the task.
-                            "status": "str"  # Optional. Status of the task. Known values
-                              are: "NotStarted", "Running", "Succeeded", "FailedValidation", "Skipped",
-                              "TimedOut", and "Failed".
+                            "status": "str",  # Optional. Status of the task. Known
+                              values are: "NotStarted", "Running", "Succeeded", "FailedValidation",
+                              "Skipped", "TimedOut", "Failed", "WaitingForUserInputUac", and
+                              "WaitingForUserSession".
+                            "timeout": 0  # Optional. Timeout, in seconds. Overrides any
+                              timeout provided on the task definition.
                         }
                     ],
                     "uri": "str"  # Optional. The unique URI of the customization group.
@@ -3433,11 +3542,16 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
                             "parameters": {
                                 "str": "str"  # Optional. Parameters for the task.
                             },
+                            "runAs": "str",  # Optional. What account to run the task as.
+                              Known values are: "System" and "User".
                             "startTime": "2020-02-20 00:00:00",  # Optional. Start time
                               of the task.
-                            "status": "str"  # Optional. Status of the task. Known values
-                              are: "NotStarted", "Running", "Succeeded", "FailedValidation", "Skipped",
-                              "TimedOut", and "Failed".
+                            "status": "str",  # Optional. Status of the task. Known
+                              values are: "NotStarted", "Running", "Succeeded", "FailedValidation",
+                              "Skipped", "TimedOut", "Failed", "WaitingForUserInputUac", and
+                              "WaitingForUserSession".
+                            "timeout": 0  # Optional. Timeout, in seconds. Overrides any
+                              timeout provided on the task definition.
                         }
                     ],
                     "uri": "str"  # Optional. The unique URI of the customization group.
@@ -3602,6 +3716,8 @@ class DevBoxesOperations:  # pylint: disable=too-many-public-methods
 
                 # response body for status code(s): 200
                 response == {
+                    "cloudPcConnectionUrl": "str",  # Optional. Link to open a remote desktop
+                      session via a dev box's underlying Cloud PC. (This will default to Windows App).
                     "rdpConnectionUrl": "str",  # Optional. Link to open a Remote Desktop
                       session.
                     "webUrl": "str"  # Optional. URL to open a browser based RDP session.
@@ -4891,13 +5007,16 @@ class ProjectsOperations:
             map_error(status_code=response.status_code, response=response, error_map=error_map)
             raise HttpResponseError(response=response)
 
+        response_headers = {}
+        response_headers["Operation-Location"] = self._deserialize("str", response.headers.get("Operation-Location"))
+
         if response.content:
             deserialized = response.json()
         else:
             deserialized = None
 
         if cls:
-            return cls(pipeline_response, cast(JSON, deserialized), {})
+            return cls(pipeline_response, cast(JSON, deserialized), response_headers)
 
         return cast(JSON, deserialized)
 
@@ -4943,11 +5062,16 @@ class ProjectsOperations:
                             "parameters": {
                                 "str": "str"  # Optional. Parameters for the task.
                             },
+                            "runAs": "str",  # Optional. What account to run the task as.
+                              Known values are: "System" and "User".
                             "startTime": "2020-02-20 00:00:00",  # Optional. Start time
                               of the task.
-                            "status": "str"  # Optional. Status of the task. Known values
-                              are: "NotStarted", "Running", "Succeeded", "FailedValidation", "Skipped",
-                              "TimedOut", and "Failed".
+                            "status": "str",  # Optional. Status of the task. Known
+                              values are: "NotStarted", "Running", "Succeeded", "FailedValidation",
+                              "Skipped", "TimedOut", "Failed", "WaitingForUserInputUac", and
+                              "WaitingForUserSession".
+                            "timeout": 0  # Optional. Timeout, in seconds. Overrides any
+                              timeout provided on the task definition.
                         }
                     ]
                 }
@@ -4996,11 +5120,16 @@ class ProjectsOperations:
                                         "str": "str"  # Optional. Parameters
                                           for the task.
                                     },
+                                    "runAs": "str",  # Optional. What account to
+                                      run the task as. Known values are: "System" and "User".
                                     "startTime": "2020-02-20 00:00:00",  #
                                       Optional. Start time of the task.
-                                    "status": "str"  # Optional. Status of the
+                                    "status": "str",  # Optional. Status of the
                                       task. Known values are: "NotStarted", "Running", "Succeeded",
-                                      "FailedValidation", "Skipped", "TimedOut", and "Failed".
+                                      "FailedValidation", "Skipped", "TimedOut", "Failed",
+                                      "WaitingForUserInputUac", and "WaitingForUserSession".
+                                    "timeout": 0  # Optional. Timeout, in
+                                      seconds. Overrides any timeout provided on the task definition.
                                 }
                             }
                         ]
@@ -5081,11 +5210,16 @@ class ProjectsOperations:
                                         "str": "str"  # Optional. Parameters
                                           for the task.
                                     },
+                                    "runAs": "str",  # Optional. What account to
+                                      run the task as. Known values are: "System" and "User".
                                     "startTime": "2020-02-20 00:00:00",  #
                                       Optional. Start time of the task.
-                                    "status": "str"  # Optional. Status of the
+                                    "status": "str",  # Optional. Status of the
                                       task. Known values are: "NotStarted", "Running", "Succeeded",
-                                      "FailedValidation", "Skipped", "TimedOut", and "Failed".
+                                      "FailedValidation", "Skipped", "TimedOut", "Failed",
+                                      "WaitingForUserInputUac", and "WaitingForUserSession".
+                                    "timeout": 0  # Optional. Timeout, in
+                                      seconds. Overrides any timeout provided on the task definition.
                                 }
                             }
                         ]
@@ -5137,11 +5271,16 @@ class ProjectsOperations:
                             "parameters": {
                                 "str": "str"  # Optional. Parameters for the task.
                             },
+                            "runAs": "str",  # Optional. What account to run the task as.
+                              Known values are: "System" and "User".
                             "startTime": "2020-02-20 00:00:00",  # Optional. Start time
                               of the task.
-                            "status": "str"  # Optional. Status of the task. Known values
-                              are: "NotStarted", "Running", "Succeeded", "FailedValidation", "Skipped",
-                              "TimedOut", and "Failed".
+                            "status": "str",  # Optional. Status of the task. Known
+                              values are: "NotStarted", "Running", "Succeeded", "FailedValidation",
+                              "Skipped", "TimedOut", "Failed", "WaitingForUserInputUac", and
+                              "WaitingForUserSession".
+                            "timeout": 0  # Optional. Timeout, in seconds. Overrides any
+                              timeout provided on the task definition.
                         }
                     ]
                 }
@@ -5190,11 +5329,16 @@ class ProjectsOperations:
                                         "str": "str"  # Optional. Parameters
                                           for the task.
                                     },
+                                    "runAs": "str",  # Optional. What account to
+                                      run the task as. Known values are: "System" and "User".
                                     "startTime": "2020-02-20 00:00:00",  #
                                       Optional. Start time of the task.
-                                    "status": "str"  # Optional. Status of the
+                                    "status": "str",  # Optional. Status of the
                                       task. Known values are: "NotStarted", "Running", "Succeeded",
-                                      "FailedValidation", "Skipped", "TimedOut", and "Failed".
+                                      "FailedValidation", "Skipped", "TimedOut", "Failed",
+                                      "WaitingForUserInputUac", and "WaitingForUserSession".
+                                    "timeout": 0  # Optional. Timeout, in
+                                      seconds. Overrides any timeout provided on the task definition.
                                 }
                             }
                         ]
@@ -5224,13 +5368,18 @@ class ProjectsOperations:
         kwargs.pop("error_map", None)
 
         def get_long_running_output(pipeline_response):
+            response_headers = {}
             response = pipeline_response.http_response
+            response_headers["Operation-Location"] = self._deserialize(
+                "str", response.headers.get("Operation-Location")
+            )
+
             if response.content:
                 deserialized = response.json()
             else:
                 deserialized = None
             if cls:
-                return cls(pipeline_response, deserialized, {})  # type: ignore
+                return cls(pipeline_response, deserialized, response_headers)  # type: ignore
             return deserialized
 
         path_format_arguments = {
@@ -7167,6 +7316,7 @@ class EnvironmentsOperations:
             environment_name=environment_name,
             user_id=user_id,
             content_type=content_type,
+            api_version=self._config.api_version,
             json=_json,
             content=_content,
             headers=_headers,
@@ -7985,6 +8135,178 @@ class EnvironmentsOperations:
             action_name=action_name,
             user_id=user_id,
             until=until,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        path_format_arguments = {
+            "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
+        }
+        request.url = self._client.format_url(request.url, **path_format_arguments)
+
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            if _stream:
+                await response.read()  # Load the body in memory and close the socket
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response)
+
+        if response.content:
+            deserialized = response.json()
+        else:
+            deserialized = None
+
+        if cls:
+            return cls(pipeline_response, cast(JSON, deserialized), {})
+
+        return cast(JSON, deserialized)
+
+    @distributed_trace_async
+    async def get_environment_type(
+        self, project_name: str, environment_type_name: str, *, top: Optional[int] = None, **kwargs: Any
+    ) -> JSON:
+        """Get an environment type configured for a project.
+
+        :param project_name: The DevCenter Project upon which to execute operations. Required.
+        :type project_name: str
+        :param environment_type_name: The name of the environment type. Required.
+        :type environment_type_name: str
+        :keyword top: The maximum number of resources to return from the operation. Example: 'top=10'.
+         Default value is None.
+        :paramtype top: int
+        :return: JSON object
+        :rtype: JSON
+        :raises ~azure.core.exceptions.HttpResponseError:
+
+        Example:
+            .. code-block:: python
+
+                # response body for status code(s): 200
+                response == {
+                    "deploymentTargetId": "str",  # The ID of a subscription or management group
+                      that the environment type will be mapped to. The environment's resources will be
+                      deployed into this subscription or management group. Required.
+                    "name": "str",  # Name of the environment type. Required.
+                    "status": "str",  # Indicates whether this environment type is enabled for
+                      use in this project. Required. Known values are: "Enabled" and "Disabled".
+                    "uri": "str",  # The unique URI of the environment type. Required.
+                    "displayName": "str"  # Optional. Display name of the environment type.
+                }
+        """
+        error_map = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[JSON] = kwargs.pop("cls", None)
+
+        request = build_environments_get_environment_type_request(
+            project_name=project_name,
+            environment_type_name=environment_type_name,
+            top=top,
+            api_version=self._config.api_version,
+            headers=_headers,
+            params=_params,
+        )
+        path_format_arguments = {
+            "endpoint": self._serialize.url("self._config.endpoint", self._config.endpoint, "str", skip_quote=True),
+        }
+        request.url = self._client.format_url(request.url, **path_format_arguments)
+
+        _stream = False
+        pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
+            request, stream=_stream, **kwargs
+        )
+
+        response = pipeline_response.http_response
+
+        if response.status_code not in [200]:
+            if _stream:
+                await response.read()  # Load the body in memory and close the socket
+            map_error(status_code=response.status_code, response=response, error_map=error_map)
+            raise HttpResponseError(response=response)
+
+        if response.content:
+            deserialized = response.json()
+        else:
+            deserialized = None
+
+        if cls:
+            return cls(pipeline_response, cast(JSON, deserialized), {})
+
+        return cast(JSON, deserialized)
+
+    @distributed_trace_async
+    async def get_environment_type_abilities(
+        self,
+        project_name: str,
+        environment_type_name: str,
+        user_id: str = "me",
+        *,
+        top: Optional[int] = None,
+        **kwargs: Any
+    ) -> JSON:
+        """Gets the signed-in user's permitted abilities in an environment type.
+
+        :param project_name: The DevCenter Project upon which to execute operations. Required.
+        :type project_name: str
+        :param environment_type_name: The name of the environment type. Required.
+        :type environment_type_name: str
+        :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
+         authentication context. Default value is "me".
+        :type user_id: str
+        :keyword top: The maximum number of resources to return from the operation. Example: 'top=10'.
+         Default value is None.
+        :paramtype top: int
+        :return: JSON object
+        :rtype: JSON
+        :raises ~azure.core.exceptions.HttpResponseError:
+
+        Example:
+            .. code-block:: python
+
+                # response body for status code(s): 200
+                response == {
+                    "abilitiesAsAdmin": [
+                        "str"  # The abilities the user has to perform actions on the
+                          environment type as an admin. Required.
+                    ],
+                    "abilitiesAsDeveloper": [
+                        "str"  # The abilities the user has to perform actions on the
+                          environment type as a developer. Required.
+                    ]
+                }
+        """
+        error_map = {
+            401: ClientAuthenticationError,
+            404: ResourceNotFoundError,
+            409: ResourceExistsError,
+            304: ResourceNotModifiedError,
+        }
+        error_map.update(kwargs.pop("error_map", {}) or {})
+
+        _headers = kwargs.pop("headers", {}) or {}
+        _params = kwargs.pop("params", {}) or {}
+
+        cls: ClsType[JSON] = kwargs.pop("cls", None)
+
+        request = build_environments_get_environment_type_abilities_request(
+            project_name=project_name,
+            environment_type_name=environment_type_name,
+            user_id=user_id,
+            top=top,
             api_version=self._config.api_version,
             headers=_headers,
             params=_params,

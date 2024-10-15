@@ -45,7 +45,7 @@ def step_update_s1(test, checks=None):
     if checks is None:
         checks = []
     test.cmd(
-        'az networkfabric externalnetwork update --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s2_peering_option} --option-a-properties {updatedOptionAProperties} --nni-id {nni_Id} ', checks=checks)
+        'az networkfabric externalnetwork update --resource-group {rg} --l3domain {l3domain} --resource-name {name} --peering-option {s2_peering_option} --option-a-properties {updatedOptionAProperties}', checks=checks)
 
 
 def step_list_resource_group(test, checks=None):
@@ -67,6 +67,8 @@ class GA_ExternalNetworkOptionAUpdateScenarioTest1(ScenarioTest):
             'l3domain': CONFIG.get('EXTERNAL_NETWORK', 'updatel3domain'),
             's2_peering_option': CONFIG.get('EXTERNAL_NETWORK', 's2_peering_option'),
             'updatedOptionAProperties': CONFIG.get('EXTERNAL_NETWORK', 'updated_option_a_properties'),
+            'importRoutePolicy': CONFIG.get('EXTERNAL_NETWORK', 'import_route_policy'),
+            'exportRoutePolicy': CONFIG.get('EXTERNAL_NETWORK', 'export_route_policy'),
             'nni_Id': CONFIG.get('EXTERNAL_NETWORK', 'nni_Id')
         })
 

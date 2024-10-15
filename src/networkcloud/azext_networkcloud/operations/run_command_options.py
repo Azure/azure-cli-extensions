@@ -8,17 +8,17 @@
 from abc import ABC
 from pathlib import Path
 
-from azure.cli.core.aaz import has_value
+from azure.cli.core.aaz import AAZStrArg, AAZStrArgFormat, has_value
 from azure.cli.core.azclierror import FileOperationError
 
 
 class RunCommandOptions(ABC):
-    """
-    This class adds a command hook to create a directory in the output directory
-    the user provides with the output argument.
-    """
+    """Helper class for all BMM commands that allow to download execution result to the disk"""
 
     def pre_operations(self):
+        """
+        Adds a command hook to create the output directory for downloading the output result.
+        """
         args = self.ctx.args
         output_directory = args.output
         if has_value(args.output):
@@ -27,3 +27,18 @@ class RunCommandOptions(ABC):
             except OSError as ex:
                 raise FileOperationError(ex) from ex
         return super().pre_operations()
+
+    def _add_output_directory_argument(self, arg_group, *args, **kwargs):
+        """
+        Adds new argument to collect the output directory for downloading the output result.
+        """
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.output = AAZStrArg(
+            options=["--output-directory"],
+            arg_group=arg_group,
+            help="The output directory where the script execution results will be"
+            + "downloaded to from storage blob. Accepts relative or qualified directory path.",
+            required=False,
+            fmt=AAZStrArgFormat(pattern=r"^(.+)([^\/]*)$"),
+        )
+        return args_schema

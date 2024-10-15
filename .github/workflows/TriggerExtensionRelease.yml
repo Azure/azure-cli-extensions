@@ -1,0 +1,38 @@
+name: Trigger ADO OneBranch Extension Release Pipeline
+
+# Run this workflow every time a commit gets pushed to main
+# This triggers the ADO OneBranch Extension Release Pipeline
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+    build:
+        name: Trigger Extension Release Pipeline
+        runs-on: ubuntu-latest
+        steps:
+        - name: Harden Runner
+          uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
+          with:
+            egress-policy: audit
+        - name: Azure login
+          uses: azure/login@v2
+          with:
+            client-id: ${{ secrets.ADO_SP_ClientID }}
+            tenant-id: ${{ secrets.ADO_SP_TenantID }}
+            allow-no-subscriptions: true
+        - name: Azure CLI
+          uses: azure/cli@v2
+          env:
+            ado-org: ${{secrets.ADO_ORGANIZATION}}
+            ado-project: ${{secrets.ADO_PROJECT}}
+            ado-pipeline-id: ${{secrets.ADO_PIPELINE_ID}}
+            commit-id: ${{ github.sha }}
+          with:
+            inlineScript: |
+              az pipelines build queue --definition-id ${{ env.ado-pipeline-id }} --organization ${{ env.ado-org }}  --project ${{ env.ado-project }} --variables commit_id=${{ env.commit-id }}

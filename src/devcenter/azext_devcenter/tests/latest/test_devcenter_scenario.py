@@ -35,6 +35,7 @@ from .helper import (
     get_endpoint,
     login_account,
     get_aad_id,
+    create_project_with_identity
 )
 
 
@@ -638,8 +639,24 @@ class DevcenterScenarioTest(ScenarioTest):
     )
     def test_gallery_scenario(self):
         create_dev_center_with_identity(self)
-        create_sig(self)
+        self.kwargs.update(
+            {
+                "sigName": self.create_random_name(prefix="cli", length=24),
+                "imageDefName": self.create_random_name(prefix="cli", length=12),
+                "computeVmName": self.create_random_name(prefix="cli", length=12),
+                "computeVmPassword": "Cli!123123fakepassword",
+                "computeUserName": self.create_random_name(prefix="cli", length=12),
+                "publisher": "MicrosoftWindowsDesktop",
+                "offer": "Windows-10",
+                "sku": "win10-21h2-entn-g2",
+                "imageVersion": "1.0.0",
+                "nsgName": self.create_random_name(prefix="cli", length=12),
+                "sigId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest000001/providers/Microsoft.Compute/galleries/cli000004",
+            }
+        )
+
         if self.is_live:
+            create_sig(self)
             create_sig_role_assignments(self)
 
         self.kwargs.update(
@@ -1257,6 +1274,155 @@ class DevcenterScenarioTest(ScenarioTest):
                 self.check("errors", []),
             ],
         )
+    
+    @ResourceGroupPreparer(
+        name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"
+    )
+    def test_project_catalog_scenario(self):
+        self.kwargs.update(
+            {
+                "catalogName": self.create_random_name(prefix="c2", length=12),
+                "branch": "main",
+                "path": "/Environments",
+                "secretIdentifier": "https://dummy.fake.net/secrets/dummy/0000000000000000000000000000000",
+                "secretIdentifier2": "https://dummy.fake.net/secrets/dummy/0000000000000000000000000000000",
+                "uri": "https://domain.com/dummy/dummy.git",
+            }
+        )
+
+        create_project_with_identity(self)
+        create_kv_policy(self)
+
+        self.cmd(
+            "az devcenter admin project-catalog list "
+            '--resource-group "{rg}" '
+            '--project "{projectName}" ',
+            checks=[
+                self.check("length(@)", 0),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter admin project-catalog create "
+            '--project "{projectName}" '
+            '--name "{catalogName}" '
+            '--git-hub path="{path}" branch="{branch}" '
+            'secret-identifier="{secretIdentifier}" uri="{uri}" '
+            '--resource-group "{rg}" ',
+            checks=[
+                self.check("name", "{catalogName}"),
+                self.check("resourceGroup", "{rg}"),
+                self.check("gitHub.branch", "{branch}"),
+                self.check("gitHub.path", "{path}"),
+                self.check("gitHub.secretIdentifier", "{secretIdentifier}"),
+                self.check("gitHub.uri", "{uri}"),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter admin project-catalog list "
+            '--resource-group "{rg}" '
+            '--project "{projectName}" ',
+            checks=[
+                self.check("length(@)", 1),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter admin project-catalog sync "
+            '--project "{projectName}" '
+            '--name "{catalogName}" '
+            '--resource-group "{rg}" '
+        )
+
+        self.cmd(
+            "az devcenter admin project-catalog show "
+            '--project "{projectName}" '
+            '--name "{catalogName}" '
+            '--resource-group "{rg}" ',
+            checks=[
+                self.check("name", "{catalogName}"),
+                self.check("resourceGroup", "{rg}"),
+                self.check("gitHub.branch", "{branch}"),
+                self.check("gitHub.path", "{path}"),
+                self.check("gitHub.secretIdentifier", "{secretIdentifier}"),
+                self.check("gitHub.uri", "{uri}"),
+                self.check("syncState", "Succeeded"),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter admin project-catalog update "
+            '--project "{projectName}" '
+            '--name "{catalogName}" '
+            '--git-hub path="/tools" branch="main" '
+            'secret-identifier="{secretIdentifier2}" '
+            '--resource-group "{rg}"',
+            checks=[
+                self.check("name", "{catalogName}"),
+                self.check("resourceGroup", "{rg}"),
+                self.check("gitHub.branch", "main"),
+                self.check("gitHub.path", "/tools"),
+                self.check("gitHub.secretIdentifier", "{secretIdentifier2}"),
+                self.check("gitHub.uri", "{uri}"),
+            ],
+        )
+
+        self.kwargs.update(
+            {
+                "sandboxName": "Sandbox"
+            }
+        )
+
+        self.cmd(
+            "az devcenter admin project-environment-definition list "
+            '--project "{projectName}" '
+            '--resource-group "{rg}" '
+            '--catalog-name  "{catalogName}" ',
+            checks=[
+                self.check("length(@)", 4),
+                self.check("[0].resourceGroup", "{rg}"),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter admin project-environment-definition show "
+            '--project "{projectName}" '
+            '--resource-group "{rg}" '
+            '--catalog-name  "{catalogName}" '
+            '--name "{sandboxName}"',
+            checks=[
+                self.check("name", "{sandboxName}"),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter admin project-environment-definition get-error-detail "
+            '--project "{projectName}" '
+            '--resource-group "{rg}" '
+            '--catalog-name  "{catalogName}" '
+            '--name "{sandboxName}"',
+            checks=[
+                self.check("errors", []),
+            ],
+        )
+
+        self.cmd(
+            "az devcenter admin project-catalog delete --yes "
+            '--project "{projectName}" '
+            '--name "{catalogName}" '
+            '--resource-group "{rg}"'
+        )
+
+        self.cmd(
+            "az devcenter admin project-catalog list "
+            '--resource-group "{rg}" '
+            '--project "{projectName}" ',
+            checks=[
+                self.check("length(@)", 0),
+            ],
+        )
+
 
     @ResourceGroupPreparer(
         name_prefix="clitestdevcenter_rg1"[:7], key="rg", parameter_name="rg"

@@ -22,11 +22,13 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-07-01",
+        "version": "2024-01-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/newrelic.observability/plans", "2022-07-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/newrelic.observability/plans", "2024-01-01"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -117,7 +119,7 @@ class List(AAZCommand):
                     "organizationId", self.ctx.args.organization_id,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-07-01",
+                    "api-version", "2024-01-01",
                     required=True,
                 ),
             }

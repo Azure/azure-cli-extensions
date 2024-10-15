@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/schedules/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools/{}/schedules/{}", "2024-05-01-preview"],
         ]
     }
 
@@ -90,11 +90,21 @@ class Create(AAZCommand):
             default="Daily",
             enum={"Daily": "Daily"},
         )
+        _args_schema.location = AAZStrArg(
+            options=["--location"],
+            arg_group="Properties",
+            help="The geo-location where the resource lives",
+        )
         _args_schema.state = AAZStrArg(
             options=["--state"],
             arg_group="Properties",
             help="Indicates whether or not this scheduled task is enabled.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Properties",
+            help="Resource tags.",
         )
         _args_schema.time = AAZStrArg(
             options=["--time"],
@@ -113,6 +123,9 @@ class Create(AAZCommand):
             default="StopDevBox",
             enum={"StopDevBox": "StopDevBox"},
         )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg()
         return cls._args_schema
 
     def _execute_operations(self):
@@ -172,7 +185,7 @@ class Create(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -204,7 +217,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -234,10 +247,16 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("frequency", AAZStrType, ".frequency", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("location", AAZStrType, ".location")
                 properties.set_prop("state", AAZStrType, ".state")
+                properties.set_prop("tags", AAZDictType, ".tags")
                 properties.set_prop("time", AAZStrType, ".time", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("timeZone", AAZStrType, ".time_zone", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+
+            tags = _builder.get(".properties.tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
 
             return self.serialize_content(_content_value)
 
@@ -278,11 +297,13 @@ class Create(AAZCommand):
             properties.frequency = AAZStrType(
                 flags={"required": True},
             )
+            properties.location = AAZStrType()
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
             properties.state = AAZStrType()
+            properties.tags = AAZDictType()
             properties.time = AAZStrType(
                 flags={"required": True},
             )
@@ -293,6 +314,9 @@ class Create(AAZCommand):
             properties.type = AAZStrType(
                 flags={"required": True},
             )
+
+            tags = cls._schema_on_200_201.properties.tags
+            tags.Element = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

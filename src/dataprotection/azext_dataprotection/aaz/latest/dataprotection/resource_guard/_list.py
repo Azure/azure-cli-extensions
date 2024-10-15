@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection resource-guard list",
-    is_experimental=True,
 )
 class List(AAZCommand):
     """Gets list of ResourceGuards in a subscription or in a resource group.
@@ -26,10 +25,10 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-05-01",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.dataprotection/resourceguards", "2023-05-01"],
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/resourceguards", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.dataprotection/resourceguards", "2024-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/resourceguards", "2024-04-01"],
         ]
     }
 
@@ -120,7 +119,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -283,7 +282,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }

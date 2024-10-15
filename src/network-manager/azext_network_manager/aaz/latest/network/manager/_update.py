@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-01-01",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}", "2023-09-01"],
         ]
     }
 
@@ -215,7 +215,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -298,7 +298,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -452,6 +452,10 @@ class _UpdateHelper:
         )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.resource_guid = AAZStrType(
+            serialized_name="resourceGuid",
             flags={"read_only": True},
         )
 

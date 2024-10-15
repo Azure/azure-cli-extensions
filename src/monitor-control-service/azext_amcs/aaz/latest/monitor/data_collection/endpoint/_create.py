@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-06-01",
+        "version": "2023-03-11",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.insights/datacollectionendpoints/{}", "2022-06-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.insights/datacollectionendpoints/{}", "2023-03-11"],
         ]
     }
 
@@ -60,6 +60,7 @@ class Create(AAZCommand):
             options=["--kind"],
             help="The kind of the resource.",
             enum={"Linux": "Linux", "Windows": "Windows"},
+            enum_support_extension=True,
         )
         _args_schema.location = AAZResourceLocationArg(
             help="The geo-location where the resource lives.",
@@ -82,6 +83,7 @@ class Create(AAZCommand):
             help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
             required=True,
             enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
+            enum_support_extension=True,
         )
         identity.user_assigned_identities = AAZDictArg(
             options=["user-assigned-identities"],
@@ -105,6 +107,7 @@ class Create(AAZCommand):
             arg_group="Network Acls",
             help="The configuration to set whether network access from public internet to the endpoints are allowed.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled", "SecuredByPerimeter": "SecuredByPerimeter"},
+            enum_support_extension=True,
         )
 
         # define Arg Group "Properties"
@@ -175,7 +178,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-06-01",
+                    "api-version", "2023-03-11",
                     required=True,
                 ),
             }
@@ -366,6 +369,10 @@ class Create(AAZCommand):
             metadata = cls._schema_on_200_201.properties.metadata
             metadata.provisioned_by = AAZStrType(
                 serialized_name="provisionedBy",
+                flags={"read_only": True},
+            )
+            metadata.provisioned_by_immutable_id = AAZStrType(
+                serialized_name="provisionedByImmutableId",
                 flags={"read_only": True},
             )
             metadata.provisioned_by_resource_id = AAZStrType(

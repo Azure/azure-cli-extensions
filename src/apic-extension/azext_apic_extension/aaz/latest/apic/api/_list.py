@@ -18,7 +18,10 @@ class List(AAZCommand):
     """List a collection of APIs.
 
     :example: List APIs
-        az apic api list -g contoso-resources -s contoso
+        az apic api list -g contoso-resources -n contoso
+
+    :example: List APIs with filter
+        az apic api list -g contoso-resources -n contoso --filter "kind eq 'rest'"
     """
 
     _aaz_info = {
@@ -49,10 +52,11 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-n", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -63,6 +67,7 @@ class List(AAZCommand):
             required=True,
             default="default",
             fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]{3,90}$",
                 max_length=90,
                 min_length=1,
             ),
@@ -184,7 +189,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200.value = AAZListType(
-                flags={"read_only": True},
+                flags={"required": True, "read_only": True},
             )
 
             value = cls._schema_on_200.value
@@ -198,7 +203,7 @@ class List(AAZCommand):
                 flags={"read_only": True},
             )
             _element.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
             _element.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -210,7 +215,7 @@ class List(AAZCommand):
 
             properties = cls._schema_on_200.value.Element.properties
             properties.contacts = AAZListType()
-            properties.custom_properties = AAZObjectType(
+            properties.custom_properties = AAZFreeFormDictType(
                 serialized_name="customProperties",
             )
             properties.description = AAZStrType()
@@ -223,6 +228,7 @@ class List(AAZCommand):
             properties.license = AAZObjectType()
             properties.lifecycle_stage = AAZStrType(
                 serialized_name="lifecycleStage",
+                flags={"read_only": True},
             )
             properties.summary = AAZStrType()
             properties.terms_of_service = AAZObjectType(

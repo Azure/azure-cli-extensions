@@ -19,13 +19,13 @@ class Create(AAZCommand):
     """Create a solution for the specific Azure resource or subscription using the triggering criteria from discovery solutions.
 
     :example: Create Solution at Resource Level
-        az self-help solution create --solution-name solution-name --trigger-criteria [{name:solutionid,value:Demo2InsightV2}] --parameters {} --scope 'subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
+        az self-help solution create --solution-name solution-name --trigger-criteria [{name:solutionid,value:apollo-cognitve-search-custom-skill}] --parameters {} --scope 'subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
     """
 
     _aaz_info = {
-        "version": "2023-09-01-preview",
+        "version": "2024-03-01-preview",
         "resources": [
-            ["mgmt-plane", "/{scope}/providers/microsoft.help/solutions/{}", "2023-09-01-preview"],
+            ["mgmt-plane", "/{scope}/providers/microsoft.help/solutions/{}", "2024-03-01-preview"],
         ]
     }
 
@@ -489,7 +489,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01-preview",
+                    "api-version", "2024-03-01-preview",
                     required=True,
                 ),
             }

@@ -22,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/devcenters/{}/catalogs/{}", "2024-05-01-preview"],
         ]
     }
 
@@ -96,6 +96,17 @@ class Update(AAZCommand):
             help="Indicates the type of sync that is configured for the catalog.",
             nullable=True,
             enum={"Manual": "Manual", "Scheduled": "Scheduled"},
+        )
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Properties",
+            help="Resource tags.",
+            nullable=True,
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg(
+            nullable=True,
         )
         return cls._args_schema
 
@@ -195,7 +206,7 @@ class Update(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -223,7 +234,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -268,16 +279,16 @@ class Update(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_201,
+                    self.on_200_201,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [201]:
+            if session.http_response.status_code in [200, 201]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_201,
+                    self.on_200_201,
                     self.on_error,
                     lro_options={"final-state-via": "azure-async-operation"},
                     path_format_arguments=self.url_parameters,
@@ -298,7 +309,7 @@ class Update(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -326,7 +337,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -353,25 +364,25 @@ class Update(AAZCommand):
 
             return self.serialize_content(_content_value)
 
-        def on_201(self, session):
+        def on_200_201(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_201
+                schema_builder=self._build_schema_on_200_201
             )
 
-        _schema_on_201 = None
+        _schema_on_200_201 = None
 
         @classmethod
-        def _build_schema_on_201(cls):
-            if cls._schema_on_201 is not None:
-                return cls._schema_on_201
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
 
-            cls._schema_on_201 = AAZObjectType()
-            _UpdateHelper._build_schema_catalog_read(cls._schema_on_201)
+            cls._schema_on_200_201 = AAZObjectType()
+            _UpdateHelper._build_schema_catalog_read(cls._schema_on_200_201)
 
-            return cls._schema_on_201
+            return cls._schema_on_200_201
 
     class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
 
@@ -391,6 +402,11 @@ class Update(AAZCommand):
                 _UpdateHelper._build_schema_git_catalog_update(properties.set_prop("adoGit", AAZObjectType, ".ado_git"))
                 _UpdateHelper._build_schema_git_catalog_update(properties.set_prop("gitHub", AAZObjectType, ".git_hub"))
                 properties.set_prop("syncType", AAZStrType, ".sync_type")
+                properties.set_prop("tags", AAZDictType, ".tags")
+
+            tags = _builder.get(".properties.tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
 
             return _instance_value
 
@@ -482,6 +498,7 @@ class _UpdateHelper:
         properties.sync_type = AAZStrType(
             serialized_name="syncType",
         )
+        properties.tags = AAZDictType()
 
         last_sync_stats = _schema_catalog_read.properties.last_sync_stats
         last_sync_stats.added = AAZIntType(
@@ -489,6 +506,9 @@ class _UpdateHelper:
         )
         last_sync_stats.removed = AAZIntType(
             flags={"read_only": True},
+        )
+        last_sync_stats.synced_catalog_item_types = AAZListType(
+            serialized_name="syncedCatalogItemTypes",
         )
         last_sync_stats.synchronization_errors = AAZIntType(
             serialized_name="synchronizationErrors",
@@ -504,6 +524,12 @@ class _UpdateHelper:
             serialized_name="validationErrors",
             flags={"read_only": True},
         )
+
+        synced_catalog_item_types = _schema_catalog_read.properties.last_sync_stats.synced_catalog_item_types
+        synced_catalog_item_types.Element = AAZStrType()
+
+        tags = _schema_catalog_read.properties.tags
+        tags.Element = AAZStrType()
 
         system_data = _schema_catalog_read.system_data
         system_data.created_at = AAZStrType(
