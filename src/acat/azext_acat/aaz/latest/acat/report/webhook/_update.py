@@ -16,6 +16,12 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update an exiting AppComplianceAutomation webhook.
+
+    :example: update webhook
+        az acat report webhook update     --report-name yourReportName  --webhook-name yourHookName  --enable-ssl "false"  --payload-url "https://xxx"  --secret null
+
+    :example: update acat webhook
+        az acat report webhook update   --report-name yourReportName  --webhook-name yourHookName  --events ["assessment_failure"]
     """
 
     _aaz_info = {
