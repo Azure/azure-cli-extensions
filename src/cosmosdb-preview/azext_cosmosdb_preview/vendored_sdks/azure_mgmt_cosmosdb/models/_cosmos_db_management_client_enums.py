@@ -10,6 +10,15 @@ from enum import Enum
 from azure.core import CaseInsensitiveEnumMeta
 
 
+class AccessRuleDirection(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Direction of Access Rule."""
+
+    INBOUND = "Inbound"
+    """Applies to inbound network traffic to the secured resources."""
+    OUTBOUND = "Outbound"
+    """Applies to outbound network traffic from the secured resources"""
+
+
 class AnalyticalStorageSchemaType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Describes the types of schema for analytical storage."""
 
@@ -37,6 +46,21 @@ class AuthenticationMethod(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     NONE = "None"
     CASSANDRA = "Cassandra"
     LDAP = "Ldap"
+
+
+class AutoReplicate(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The form of AutoReplicate that is being used by this cluster."""
+
+    NONE = "None"
+    SYSTEM_KEYSPACES = "SystemKeyspaces"
+    ALL_KEYSPACES = "AllKeyspaces"
+
+
+class AzureConnectionType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """How to connect to the azure services needed for running the cluster."""
+
+    NONE = "None"
+    VPN = "VPN"
 
 
 class BackupPolicyMigrationStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -72,11 +96,22 @@ class BackupStorageRedundancy(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     ZONE = "Zone"
 
 
-class CheckNameAvailabilityReason(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The reason why the given name is not available."""
+class CapacityMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Indicates the capacity mode of the account."""
+
+    NONE = "None"
+    PROVISIONED = "Provisioned"
+    SERVERLESS = "Serverless"
+
+
+class CapacityModeTransitionStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The transition status of capacity mode."""
 
     INVALID = "Invalid"
-    ALREADY_EXISTS = "AlreadyExists"
+    INITIALIZED = "Initialized"
+    IN_PROGRESS = "InProgress"
+    COMPLETED = "Completed"
+    FAILED = "Failed"
 
 
 class ClusterType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -84,6 +119,17 @@ class ClusterType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
     PRODUCTION = "Production"
     NON_PRODUCTION = "NonProduction"
+
+
+class CommandStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Status of the command."""
+
+    DONE = "Done"
+    RUNNING = "Running"
+    ENQUEUE = "Enqueue"
+    PROCESSING = "Processing"
+    FINISHED = "Finished"
+    FAILED = "Failed"
 
 
 class CompositePathSortOrder(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -138,27 +184,6 @@ class CreateMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
     DEFAULT = "Default"
     RESTORE = "Restore"
-    POINT_IN_TIME_RESTORE = "PointInTimeRestore"
-
-
-class CustomerManagedKeyStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Indicates the status of the Customer Managed Key feature on the account. In case there are
-    errors, the property provides troubleshooting guidance.
-    """
-
-    ACCESS_TO_YOUR_ACCOUNT_IS_CURRENTLY_REVOKED_BECAUSE_THE_AZURE_COSMOS_DB_SERVICE_IS_UNABLE_TO_OBTAIN_THE_AAD_AUTHENTICATION_TOKEN_FOR_THE_ACCOUNT_S_DEFAULT_IDENTITY_FOR_MORE_DETAILS_ABOUT_THIS_ERROR_AND_HOW_TO_RESTORE_ACCESS_TO_YOUR_ACCOUNT_PLEASE_VISIT_HTTPS_LEARN_MICROSOFT_COM_EN_US_AZURE_COSMOS_DB_CMK_TROUBLESHOOTING_GUIDE_AZURE_ACTIVE_DIRECTORY_TOKEN_ACQUISITION_ERROR4000_ = "Access to your account is currently revoked because the Azure Cosmos DB service is unable to obtain the AAD authentication token for the account's default identity; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-active-directory-token-acquisition-error (4000)."
-    ACCESS_TO_YOUR_ACCOUNT_IS_CURRENTLY_REVOKED_BECAUSE_THE_AZURE_COSMOS_DB_ACCOUNT_S_KEY_VAULT_KEY_URI_DOES_NOT_FOLLOW_THE_EXPECTED_FORMAT_FOR_MORE_DETAILS_ABOUT_THIS_ERROR_AND_HOW_TO_RESTORE_ACCESS_TO_YOUR_ACCOUNT_PLEASE_VISIT_HTTPS_LEARN_MICROSOFT_COM_EN_US_AZURE_COSMOS_DB_CMK_TROUBLESHOOTING_GUIDE_IMPROPER_SYNTAX_DETECTED_ON_THE_KEY_VAULT_URI_PROPERTY4006_ = "Access to your account is currently revoked because the Azure Cosmos DB account's key vault key URI does not follow the expected format; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#improper-syntax-detected-on-the-key-vault-uri-property (4006)."
-    ACCESS_TO_YOUR_ACCOUNT_IS_CURRENTLY_REVOKED_BECAUSE_THE_CURRENT_DEFAULT_IDENTITY_NO_LONGER_HAS_PERMISSION_TO_THE_ASSOCIATED_KEY_VAULT_KEY_FOR_MORE_DETAILS_ABOUT_THIS_ERROR_AND_HOW_TO_RESTORE_ACCESS_TO_YOUR_ACCOUNT_PLEASE_VISIT_HTTPS_LEARN_MICROSOFT_COM_EN_US_AZURE_COSMOS_DB_CMK_TROUBLESHOOTING_GUIDE_DEFAULT_IDENTITY_IS_UNAUTHORIZED_TO_ACCESS_THE_AZURE_KEY_VAULT_KEY4002_ = "Access to your account is currently revoked because the current default identity no longer has permission to the associated Key Vault key; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#default-identity-is-unauthorized-to-access-the-azure-key-vault-key (4002)."
-    ACCESS_TO_YOUR_ACCOUNT_IS_CURRENTLY_REVOKED_BECAUSE_THE_AZURE_KEY_VAULT_DNS_NAME_SPECIFIED_BY_THE_ACCOUNT_S_KEYVAULTKEYURI_PROPERTY_COULD_NOT_BE_RESOLVED_FOR_MORE_DETAILS_ABOUT_THIS_ERROR_AND_HOW_TO_RESTORE_ACCESS_TO_YOUR_ACCOUNT_PLEASE_VISIT_HTTPS_LEARN_MICROSOFT_COM_EN_US_AZURE_COSMOS_DB_CMK_TROUBLESHOOTING_GUIDE_UNABLE_TO_RESOLVE_THE_KEY_VAULTS_DNS4009_ = "Access to your account is currently revoked because the Azure Key Vault DNS name specified by the account's keyvaultkeyuri property could not be resolved; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#unable-to-resolve-the-key-vaults-dns (4009)."
-    ACCESS_TO_YOUR_ACCOUNT_IS_CURRENTLY_REVOKED_BECAUSE_THE_CORRESPONDENT_KEY_IS_NOT_FOUND_ON_THE_SPECIFIED_KEY_VAULT_FOR_MORE_DETAILS_ABOUT_THIS_ERROR_AND_HOW_TO_RESTORE_ACCESS_TO_YOUR_ACCOUNT_PLEASE_VISIT_HTTPS_LEARN_MICROSOFT_COM_EN_US_AZURE_COSMOS_DB_CMK_TROUBLESHOOTING_GUIDE_AZURE_KEY_VAULT_RESOURCE_NOT_FOUND4003_ = "Access to your account is currently revoked because the correspondent key is not found on the specified Key Vault; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-key-vault-resource-not-found (4003)."
-    ACCESS_TO_YOUR_ACCOUNT_IS_CURRENTLY_REVOKED_BECAUSE_THE_AZURE_COSMOS_DB_SERVICE_IS_UNABLE_TO_WRAP_OR_UNWRAP_THE_KEY_FOR_MORE_DETAILS_ABOUT_THIS_ERROR_AND_HOW_TO_RESTORE_ACCESS_TO_YOUR_ACCOUNT_PLEASE_VISIT_HTTPS_LEARN_MICROSOFT_COM_EN_US_AZURE_COSMOS_DB_CMK_TROUBLESHOOTING_GUIDE_INTERNAL_UNWRAPPING_PROCEDURE_ERROR4005_ = "Access to your account is currently revoked because the Azure Cosmos DB service is unable to wrap or unwrap the key; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#internal-unwrapping-procedure-error (4005)."
-    ACCESS_TO_YOUR_ACCOUNT_IS_CURRENTLY_REVOKED_BECAUSE_THE_AZURE_COSMOS_DB_ACCOUNT_HAS_AN_UNDEFINED_DEFAULT_IDENTITY_FOR_MORE_DETAILS_ABOUT_THIS_ERROR_AND_HOW_TO_RESTORE_ACCESS_TO_YOUR_ACCOUNT_PLEASE_VISIT_HTTPS_LEARN_MICROSOFT_COM_EN_US_AZURE_COSMOS_DB_CMK_TROUBLESHOOTING_GUIDE_INVALID_AZURE_COSMOS_DB_DEFAULT_IDENTITY4015_ = "Access to your account is currently revoked because the Azure Cosmos DB account has an undefined default identity; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#invalid-azure-cosmos-db-default-identity (4015)."
-    ACCESS_TO_YOUR_ACCOUNT_IS_CURRENTLY_REVOKED_BECAUSE_THE_ACCESS_RULES_ARE_BLOCKING_OUTBOUND_REQUESTS_TO_THE_AZURE_KEY_VAULT_SERVICE_FOR_MORE_DETAILS_ABOUT_THIS_ERROR_AND_HOW_TO_RESTORE_ACCESS_TO_YOUR_ACCOUNT_PLEASE_VISIT_HTTPS_LEARN_MICROSOFT_COM_EN_US_AZURE_COSMOS_DB_CMK_TROUBLESHOOTING_GUIDE4016_ = "Access to your account is currently revoked because the access rules are blocking outbound requests to the Azure Key Vault service; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide (4016)."
-    ACCESS_TO_YOUR_ACCOUNT_IS_CURRENTLY_REVOKED_BECAUSE_THE_CORRESPONDENT_AZURE_KEY_VAULT_WAS_NOT_FOUND_FOR_MORE_DETAILS_ABOUT_THIS_ERROR_AND_HOW_TO_RESTORE_ACCESS_TO_YOUR_ACCOUNT_PLEASE_VISIT_HTTPS_LEARN_MICROSOFT_COM_EN_US_AZURE_COSMOS_DB_CMK_TROUBLESHOOTING_GUIDE_AZURE_KEY_VAULT_RESOURCE_NOT_FOUND4017_ = "Access to your account is currently revoked because the correspondent Azure Key Vault was not found; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide#azure-key-vault-resource-not-found (4017)."
-    ACCESS_TO_YOUR_ACCOUNT_IS_CURRENTLY_REVOKED_FOR_MORE_DETAILS_ABOUT_THIS_ERROR_AND_HOW_TO_RESTORE_ACCESS_TO_YOUR_ACCOUNT_PLEASE_VISIT_HTTPS_LEARN_MICROSOFT_COM_EN_US_AZURE_COSMOS_DB_CMK_TROUBLESHOOTING_GUIDE = "Access to your account is currently revoked; for more details about this error and how to restore access to your account please visit https://learn.microsoft.com/en-us/azure/cosmos-db/cmk-troubleshooting-guide"
-    ACCESS_TO_THE_CONFIGURED_CUSTOMER_MANAGED_KEY_CONFIRMED_ = (
-        "Access to the configured customer managed key confirmed."
-    )
 
 
 class DatabaseAccountKind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -178,6 +203,13 @@ class DataTransferComponent(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     AZURE_BLOB_STORAGE = "AzureBlobStorage"
 
 
+class DataTransferJobMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Mode of job execution."""
+
+    OFFLINE = "Offline"
+    ONLINE = "Online"
+
+
 class DataType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """The datatype for which the indexing behavior is applied to."""
 
@@ -187,6 +219,13 @@ class DataType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     POLYGON = "Polygon"
     LINE_STRING = "LineString"
     MULTI_POLYGON = "MultiPolygon"
+
+
+class DedicatedGatewayType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """DedicatedGatewayType for the service."""
+
+    INTEGRATED_CACHE = "IntegratedCache"
+    DISTRIBUTED_QUERY = "DistributedQuery"
 
 
 class DefaultConsistencyLevel(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -228,6 +267,22 @@ class IndexKind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     HASH = "Hash"
     RANGE = "Range"
     SPATIAL = "Spatial"
+
+
+class IssueType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Type of issue."""
+
+    UNKNOWN = "Unknown"
+    """Unknown issue type"""
+    CONFIGURATION_PROPAGATION_FAILURE = "ConfigurationPropagationFailure"
+    """An error occurred while applying the network security perimeter (NSP) configuration."""
+    MISSING_PERIMETER_CONFIGURATION = "MissingPerimeterConfiguration"
+    """A network connectivity issue is happening on the resource which could be addressed either by
+    adding new resources to the network security perimeter (NSP) or by modifying access rules."""
+    MISSING_IDENTITY_CONFIGURATION = "MissingIdentityConfiguration"
+    """An managed identity hasn't been associated with the resource. The resource will still be able
+    to validate inbound traffic from the network security perimeter (NSP) or matching inbound
+    access rules, but it won't be able to perform outbound access as a member of the NSP."""
 
 
 class KeyKind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -276,18 +331,6 @@ class MinimalTlsVersion(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     TLS12 = "Tls12"
 
 
-class MongoClusterStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The status of the resource at the time the operation was called."""
-
-    READY = "Ready"
-    PROVISIONING = "Provisioning"
-    UPDATING = "Updating"
-    STARTING = "Starting"
-    STOPPING = "Stopping"
-    STOPPED = "Stopped"
-    DROPPING = "Dropping"
-
-
 class MongoRoleDefinitionType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Indicates whether the Role Definition was built-in or user created."""
 
@@ -302,10 +345,18 @@ class NetworkAclBypass(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     AZURE_SERVICES = "AzureServices"
 
 
-class NodeKind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The kind of a node in the mongo cluster."""
+class NetworkSecurityPerimeterConfigurationProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Provisioning state of a network security perimeter configuration that is being created or
+    updated.
+    """
 
-    SHARD = "Shard"
+    SUCCEEDED = "Succeeded"
+    CREATING = "Creating"
+    UPDATING = "Updating"
+    DELETING = "Deleting"
+    ACCEPTED = "Accepted"
+    FAILED = "Failed"
+    CANCELED = "Canceled"
 
 
 class NodeState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -362,23 +413,23 @@ class PrimaryAggregationType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     LAST = "Last"
 
 
-class ProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """The provisioning state of the resource."""
-
-    SUCCEEDED = "Succeeded"
-    FAILED = "Failed"
-    CANCELED = "Canceled"
-    IN_PROGRESS = "InProgress"
-    UPDATING = "Updating"
-    DROPPING = "Dropping"
-
-
 class PublicNetworkAccess(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Whether requests from Public Network are allowed."""
 
     ENABLED = "Enabled"
     DISABLED = "Disabled"
     SECURED_BY_PERIMETER = "SecuredByPerimeter"
+
+
+class ResourceAssociationAccessMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Access mode of the resource association."""
+
+    ENFORCED = "Enforced"
+    """Enforced access mode - traffic to the resource that failed access checks is blocked"""
+    LEARNING = "Learning"
+    """Learning access mode - traffic to the resource is enabled for analysis but not blocked"""
+    AUDIT = "Audit"
+    """Audit access mode - traffic to the resource that fails access checks is logged but not blocked"""
 
 
 class ResourceIdentityType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -406,6 +457,14 @@ class RoleDefinitionType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     CUSTOM_ROLE = "CustomRole"
 
 
+class ScheduledEventStrategy(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """How the nodes in the cluster react to scheduled events."""
+
+    IGNORE = "Ignore"
+    STOP_ANY = "StopAny"
+    STOP_BY_RACK = "StopByRack"
+
+
 class ServerVersion(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Describes the ServerVersion of an a MongoDB account."""
 
@@ -413,6 +472,8 @@ class ServerVersion(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     THREE6 = "3.6"
     FOUR0 = "4.0"
     FOUR2 = "4.2"
+    FIVE0 = "5.0"
+    SIX0 = "6.0"
 
 
 class ServiceSize(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -443,6 +504,13 @@ class ServiceType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     MATERIALIZED_VIEWS_BUILDER = "MaterializedViewsBuilder"
 
 
+class Severity(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Severity of the issue."""
+
+    WARNING = "Warning"
+    ERROR = "Error"
+
+
 class SpatialType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Indicates the spatial type of index."""
 
@@ -460,6 +528,10 @@ class Status(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     INTERNALLY_READY = "InternallyReady"
     ONLINE = "Online"
     DELETING = "Deleting"
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    CANCELED = "Canceled"
+    UPDATING = "Updating"
 
 
 class ThroughputPolicyType(str, Enum, metaclass=CaseInsensitiveEnumMeta):

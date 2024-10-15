@@ -1,4 +1,4 @@
-# pylint: disable=too-many-lines
+# pylint: disable=too-many-lines,too-many-statements
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -68,7 +68,6 @@ class ConfigServersOperations:
         :type resource_group_name: str
         :param service_name: The name of the Service resource. Required.
         :type service_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
         :return: ConfigServerResource or the result of cls(response)
         :rtype: ~azure.mgmt.appplatform.v2023_12_01.models.ConfigServerResource
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -87,21 +86,20 @@ class ConfigServersOperations:
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2023-12-01"))
         cls: ClsType[_models.ConfigServerResource] = kwargs.pop("cls", None)
 
-        request = build_get_request(
+        _request = build_get_request(
             resource_group_name=resource_group_name,
             service_name=service_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
-            template_url=self.get.metadata["url"],
             headers=_headers,
             params=_params,
         )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
+        _request = _convert_request(_request)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -113,19 +111,15 @@ class ConfigServersOperations:
         deserialized = self._deserialize("ConfigServerResource", pipeline_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
-
-    get.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/configServers/default"
-    }
+        return deserialized  # type: ignore
 
     async def _update_put_initial(
         self,
         resource_group_name: str,
         service_name: str,
-        config_server_resource: Union[_models.ConfigServerResource, IO],
+        config_server_resource: Union[_models.ConfigServerResource, IO[bytes]],
         **kwargs: Any
     ) -> _models.ConfigServerResource:
         error_map = {
@@ -151,7 +145,7 @@ class ConfigServersOperations:
         else:
             _json = self._serialize.body(config_server_resource, "ConfigServerResource")
 
-        request = build_update_put_request(
+        _request = build_update_put_request(
             resource_group_name=resource_group_name,
             service_name=service_name,
             subscription_id=self._config.subscription_id,
@@ -159,16 +153,15 @@ class ConfigServersOperations:
             content_type=content_type,
             json=_json,
             content=_content,
-            template_url=self._update_put_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
+        _request = _convert_request(_request)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -187,10 +180,6 @@ class ConfigServersOperations:
             return cls(pipeline_response, deserialized, {})  # type: ignore
 
         return deserialized  # type: ignore
-
-    _update_put_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/configServers/default"
-    }
 
     @overload
     async def begin_update_put(
@@ -214,14 +203,6 @@ class ConfigServersOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ConfigServerResource or the result
          of cls(response)
         :rtype:
@@ -234,7 +215,7 @@ class ConfigServersOperations:
         self,
         resource_group_name: str,
         service_name: str,
-        config_server_resource: IO,
+        config_server_resource: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -247,18 +228,10 @@ class ConfigServersOperations:
         :param service_name: The name of the Service resource. Required.
         :type service_name: str
         :param config_server_resource: Parameters for the update operation. Required.
-        :type config_server_resource: IO
+        :type config_server_resource: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ConfigServerResource or the result
          of cls(response)
         :rtype:
@@ -271,7 +244,7 @@ class ConfigServersOperations:
         self,
         resource_group_name: str,
         service_name: str,
-        config_server_resource: Union[_models.ConfigServerResource, IO],
+        config_server_resource: Union[_models.ConfigServerResource, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.ConfigServerResource]:
         """Update the config server.
@@ -282,20 +255,9 @@ class ConfigServersOperations:
         :param service_name: The name of the Service resource. Required.
         :type service_name: str
         :param config_server_resource: Parameters for the update operation. Is either a
-         ConfigServerResource type or a IO type. Required.
+         ConfigServerResource type or a IO[bytes] type. Required.
         :type config_server_resource: ~azure.mgmt.appplatform.v2023_12_01.models.ConfigServerResource
-         or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         or IO[bytes]
         :return: An instance of AsyncLROPoller that returns either ConfigServerResource or the result
          of cls(response)
         :rtype:
@@ -328,7 +290,7 @@ class ConfigServersOperations:
         def get_long_running_output(pipeline_response):
             deserialized = self._deserialize("ConfigServerResource", pipeline_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -338,23 +300,21 @@ class ConfigServersOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.ConfigServerResource].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
-    begin_update_put.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/configServers/default"
-    }
+        return AsyncLROPoller[_models.ConfigServerResource](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
     async def _update_patch_initial(
         self,
         resource_group_name: str,
         service_name: str,
-        config_server_resource: Union[_models.ConfigServerResource, IO],
+        config_server_resource: Union[_models.ConfigServerResource, IO[bytes]],
         **kwargs: Any
     ) -> _models.ConfigServerResource:
         error_map = {
@@ -380,7 +340,7 @@ class ConfigServersOperations:
         else:
             _json = self._serialize.body(config_server_resource, "ConfigServerResource")
 
-        request = build_update_patch_request(
+        _request = build_update_patch_request(
             resource_group_name=resource_group_name,
             service_name=service_name,
             subscription_id=self._config.subscription_id,
@@ -388,16 +348,15 @@ class ConfigServersOperations:
             content_type=content_type,
             json=_json,
             content=_content,
-            template_url=self._update_patch_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
+        _request = _convert_request(_request)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -416,10 +375,6 @@ class ConfigServersOperations:
             return cls(pipeline_response, deserialized, {})  # type: ignore
 
         return deserialized  # type: ignore
-
-    _update_patch_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/configServers/default"
-    }
 
     @overload
     async def begin_update_patch(
@@ -443,14 +398,6 @@ class ConfigServersOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ConfigServerResource or the result
          of cls(response)
         :rtype:
@@ -463,7 +410,7 @@ class ConfigServersOperations:
         self,
         resource_group_name: str,
         service_name: str,
-        config_server_resource: IO,
+        config_server_resource: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -476,18 +423,10 @@ class ConfigServersOperations:
         :param service_name: The name of the Service resource. Required.
         :type service_name: str
         :param config_server_resource: Parameters for the update operation. Required.
-        :type config_server_resource: IO
+        :type config_server_resource: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ConfigServerResource or the result
          of cls(response)
         :rtype:
@@ -500,7 +439,7 @@ class ConfigServersOperations:
         self,
         resource_group_name: str,
         service_name: str,
-        config_server_resource: Union[_models.ConfigServerResource, IO],
+        config_server_resource: Union[_models.ConfigServerResource, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.ConfigServerResource]:
         """Update the config server.
@@ -511,20 +450,9 @@ class ConfigServersOperations:
         :param service_name: The name of the Service resource. Required.
         :type service_name: str
         :param config_server_resource: Parameters for the update operation. Is either a
-         ConfigServerResource type or a IO type. Required.
+         ConfigServerResource type or a IO[bytes] type. Required.
         :type config_server_resource: ~azure.mgmt.appplatform.v2023_12_01.models.ConfigServerResource
-         or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         or IO[bytes]
         :return: An instance of AsyncLROPoller that returns either ConfigServerResource or the result
          of cls(response)
         :rtype:
@@ -557,7 +485,7 @@ class ConfigServersOperations:
         def get_long_running_output(pipeline_response):
             deserialized = self._deserialize("ConfigServerResource", pipeline_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -567,23 +495,21 @@ class ConfigServersOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.ConfigServerResource].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
-    begin_update_patch.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/configServers/default"
-    }
+        return AsyncLROPoller[_models.ConfigServerResource](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
     async def _validate_initial(
         self,
         resource_group_name: str,
         service_name: str,
-        config_server_settings: Union[_models.ConfigServerSettings, IO],
+        config_server_settings: Union[_models.ConfigServerSettings, IO[bytes]],
         **kwargs: Any
     ) -> _models.ConfigServerSettingsValidateResult:
         error_map = {
@@ -609,7 +535,7 @@ class ConfigServersOperations:
         else:
             _json = self._serialize.body(config_server_settings, "ConfigServerSettings")
 
-        request = build_validate_request(
+        _request = build_validate_request(
             resource_group_name=resource_group_name,
             service_name=service_name,
             subscription_id=self._config.subscription_id,
@@ -617,16 +543,15 @@ class ConfigServersOperations:
             content_type=content_type,
             json=_json,
             content=_content,
-            template_url=self._validate_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
+        _request = _convert_request(_request)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = await self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -645,10 +570,6 @@ class ConfigServersOperations:
             return cls(pipeline_response, deserialized, {})  # type: ignore
 
         return deserialized  # type: ignore
-
-    _validate_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/configServers/validate"
-    }
 
     @overload
     async def begin_validate(
@@ -672,14 +593,6 @@ class ConfigServersOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ConfigServerSettingsValidateResult
          or the result of cls(response)
         :rtype:
@@ -692,7 +605,7 @@ class ConfigServersOperations:
         self,
         resource_group_name: str,
         service_name: str,
-        config_server_settings: IO,
+        config_server_settings: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -705,18 +618,10 @@ class ConfigServersOperations:
         :param service_name: The name of the Service resource. Required.
         :type service_name: str
         :param config_server_settings: Config server settings to be validated. Required.
-        :type config_server_settings: IO
+        :type config_server_settings: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of AsyncLROPoller that returns either ConfigServerSettingsValidateResult
          or the result of cls(response)
         :rtype:
@@ -729,7 +634,7 @@ class ConfigServersOperations:
         self,
         resource_group_name: str,
         service_name: str,
-        config_server_settings: Union[_models.ConfigServerSettings, IO],
+        config_server_settings: Union[_models.ConfigServerSettings, IO[bytes]],
         **kwargs: Any
     ) -> AsyncLROPoller[_models.ConfigServerSettingsValidateResult]:
         """Check if the config server settings are valid.
@@ -740,20 +645,9 @@ class ConfigServersOperations:
         :param service_name: The name of the Service resource. Required.
         :type service_name: str
         :param config_server_settings: Config server settings to be validated. Is either a
-         ConfigServerSettings type or a IO type. Required.
+         ConfigServerSettings type or a IO[bytes] type. Required.
         :type config_server_settings: ~azure.mgmt.appplatform.v2023_12_01.models.ConfigServerSettings
-         or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be AsyncARMPolling. Pass in False for
-         this operation to not poll, or pass in your own initialized polling object for a personal
-         polling strategy.
-        :paramtype polling: bool or ~azure.core.polling.AsyncPollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         or IO[bytes]
         :return: An instance of AsyncLROPoller that returns either ConfigServerSettingsValidateResult
          or the result of cls(response)
         :rtype:
@@ -786,7 +680,7 @@ class ConfigServersOperations:
         def get_long_running_output(pipeline_response):
             deserialized = self._deserialize("ConfigServerSettingsValidateResult", pipeline_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -798,14 +692,12 @@ class ConfigServersOperations:
         else:
             polling_method = polling
         if cont_token:
-            return AsyncLROPoller.from_continuation_token(
+            return AsyncLROPoller[_models.ConfigServerSettingsValidateResult].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return AsyncLROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
-    begin_validate.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/configServers/validate"
-    }
+        return AsyncLROPoller[_models.ConfigServerSettingsValidateResult](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )

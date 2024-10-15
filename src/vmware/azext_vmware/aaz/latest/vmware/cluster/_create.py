@@ -21,9 +21,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}", "2023-09-01"],
         ]
     }
 
@@ -54,8 +54,11 @@ class Create(AAZCommand):
         )
         _args_schema.private_cloud = AAZStrArg(
             options=["-c", "--private-cloud"],
-            help="The name of the private cloud.",
+            help="Name of the private cloud",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[-\w\._]+$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -74,6 +77,11 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The hosts",
         )
+        _args_schema.vsan_datastore_name = AAZStrArg(
+            options=["--vsan-datastore-name"],
+            arg_group="Properties",
+            help="Name of the vsan datastore associated with the cluster",
+        )
 
         hosts = cls._args_schema.hosts
         hosts.Element = AAZStrArg()
@@ -84,7 +92,7 @@ class Create(AAZCommand):
         _args_schema.sku = AAZStrArg(
             options=["--sku"],
             arg_group="Sku",
-            help="The name of the SKU.",
+            help="The name of the SKU. E.g. P3. It is typically a letter+number code",
             required=True,
         )
         return cls._args_schema
@@ -174,7 +182,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -206,6 +214,7 @@ class Create(AAZCommand):
             if properties is not None:
                 properties.set_prop("clusterSize", AAZIntType, ".cluster_size")
                 properties.set_prop("hosts", AAZListType, ".hosts")
+                properties.set_prop("vsanDatastoreName", AAZStrType, ".vsan_datastore_name")
 
             hosts = _builder.get(".properties.hosts")
             if hosts is not None:
@@ -247,6 +256,10 @@ class Create(AAZCommand):
             _schema_on_200_201.sku = AAZObjectType(
                 flags={"required": True},
             )
+            _schema_on_200_201.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -264,13 +277,40 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.vsan_datastore_name = AAZStrType(
+                serialized_name="vsanDatastoreName",
+            )
 
             hosts = cls._schema_on_200_201.properties.hosts
             hosts.Element = AAZStrType()
 
             sku = cls._schema_on_200_201.sku
+            sku.capacity = AAZIntType()
+            sku.family = AAZStrType()
             sku.name = AAZStrType(
                 flags={"required": True},
+            )
+            sku.size = AAZStrType()
+            sku.tier = AAZStrType()
+
+            system_data = cls._schema_on_200_201.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
             )
 
             return cls._schema_on_200_201

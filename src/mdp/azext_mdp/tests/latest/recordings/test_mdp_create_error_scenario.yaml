@@ -1,0 +1,59 @@
+interactions:
+- request:
+    body: '{"location": "eastus2"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - mdp pool create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '23'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name --location --resource-group
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest_mdp000001/providers/Microsoft.DevOpsInfrastructure/pools/cli000002?api-version=2024-04-04-preview
+  response:
+    body:
+      string: '{"error":{"code":"ResourceCreationValidateFailed","message":"The resource
+        validation failed."}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '95'
+      content-type:
+      - application/json
+      date:
+      - Mon, 01 Jul 2024 06:15:35 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 2a2ad1c2-c681-4234-b354-90c901a9e1b2
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-failure-cause:
+      - service
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: 8D8A500629544401AA9F0F874F69103A Ref B: SEL221051504047 Ref C: 2024-07-01T06:15:30Z'
+    status:
+      code: 400
+      message: Bad Request
+version: 1

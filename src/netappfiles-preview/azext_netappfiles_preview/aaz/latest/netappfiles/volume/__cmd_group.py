@@ -18,7 +18,7 @@ from azure.cli.core.aaz import *
 class __CMDGroup(AAZCommandGroup):
     """Manage Azure NetApp Files (ANF) Volume Resources.
 
-    Create update delete operations for Azure NetApp Files Volumes
+    Generated Create update delete operations for Azure NetApp Files (ANF) Volumes
     """
     pass
 

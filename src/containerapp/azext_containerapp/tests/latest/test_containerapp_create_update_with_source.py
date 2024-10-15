@@ -8,7 +8,7 @@ import unittest
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
-from azext_containerapp.tests.latest.utils import create_and_verify_containerapp_create_and_update, verify_containerapp_create_exception
+from azext_containerapp.tests.latest.utils import create_and_verify_containerapp_create_and_update, verify_containerapp_create_exception, create_and_verify_containerapp_create_and_update_env_vars
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -89,3 +89,13 @@ class ContainerAppCreateTest(ScenarioTest):
         registry_pass = "test"
         err = ("Usage error: --registry-server: expected an ACR registry (*.azurecr.io) for --repo")
         verify_containerapp_create_exception(self, resource_group, err=err, repo=repo, registry_server=registry_server, registry_user=registry_user, registry_pass=registry_pass)
+
+    # We have to use @live_only() here as cloud builder and build resource name is generated randomly
+    # and no matched request could be found for all builder/build ARM requests
+    @live_only()
+    @ResourceGroupPreparer()
+    def test_containerapp_create_and_update_with_env_vars_e2e(self, resource_group):
+        containerapp_name = self.create_random_name(prefix='aca', length=24)
+        source_path = os.path.join(TEST_DIR, os.path.join("data", "source_built_using_source_to_cloud_dotnet"))
+        create_and_verify_containerapp_create_and_update_env_vars(self, resource_group=resource_group, name=containerapp_name, source_path=source_path)
+

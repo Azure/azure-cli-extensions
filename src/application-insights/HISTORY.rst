@@ -3,6 +3,14 @@
 Release History
 ===============
 
+1.2.2
+++++++++++++++++++
+remove ADAL dependencies
+
+1.2.1
+++++++++++++++++++
+* `az monitor app-insights component connect-webapp/connect-function`: Add `connection_string` auto setting for webapp/function.
+
 1.2.0
 ++++++++++++++++++
 * `az monitor app-insights`: Add new command group `workbook` to support managing workbook.

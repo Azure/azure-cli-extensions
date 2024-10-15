@@ -1,0 +1,19 @@
+{
+  "publisher_name": "automated-cli-test-nginx-publisher",
+  "publisher_resource_group_name": "{{publisher_resource_group_name}}",
+  "acr_artifact_store_name": "nginx-nsd-acr",
+  "location": "uksouth",
+  "network_functions": [
+    {
+      "publisher": "automated-cli-test-nginx-publisher",
+      "publisher_resource_group": "{{publisher_resource_group_name}}",
+      "name": "nginx-nfdg",
+      "version": "1.0.0",
+      "publisher_offering_location": "uksouth",
+      "type": "cnf"
+    }
+  ],
+  "nsd_name": "nginx-nsdg",
+  "nsd_version": "1.0.0",
+  "nsdv_description": "Deploys a basic NGINX CNF"
+}

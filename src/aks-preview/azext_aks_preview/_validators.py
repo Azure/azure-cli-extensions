@@ -20,6 +20,7 @@ from azure.cli.core.azclierror import (
 )
 from azure.cli.core.commands.validators import validate_tag
 from azure.cli.core.util import CLIError
+from azure.mgmt.core.tools import is_valid_resource_id
 from azext_aks_preview._consts import (
     ADDONS,
     CONST_LOAD_BALANCER_BACKEND_POOL_TYPE_NODE_IP,
@@ -32,6 +33,7 @@ from azext_aks_preview._consts import (
     CONST_OS_SKU_MARINER,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_DYNAMIC_INDIVIDUAL,
     CONST_NETWORK_POD_IP_ALLOCATION_MODE_STATIC_BLOCK,
+    CONST_NODEPOOL_MODE_GATEWAY,
 )
 from azext_aks_preview._helpers import _fuzzy_match
 from knack.log import get_logger
@@ -160,10 +162,7 @@ def validate_ip_ranges(namespace):
                 raise CLIError(
                     "--api-server-authorized-ip-ranges cannot be IPv6 addresses")
         except ValueError:
-            # pylint: disable=raise-missing-from
-            raise CLIError(
-                "--api-server-authorized-ip-ranges should be a list of IPv4 addresses or CIDRs"
-            )
+            pass
 
 
 def _validate_nodepool_name(nodepool_name):
@@ -325,7 +324,6 @@ def validate_apiserver_subnet_id(namespace):
 def _validate_subnet_id(subnet_id, name):
     if subnet_id is None or subnet_id == '':
         return
-    from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(subnet_id):
         raise CLIError(name + " is not a valid Azure resource ID.")
 
@@ -359,30 +357,6 @@ def validate_node_public_ip_tags(ns):
         for item in ns.node_public_ip_tags:
             tags_dict.update(validate_tag(item))
         ns.node_public_ip_tags = tags_dict
-
-
-def validate_egress_gtw_nodeselector(namespace):
-    """Validates that provided node selector is a valid format"""
-
-    if not hasattr(namespace, 'egx_gtw_nodeselector'):
-        return
-
-    labels = namespace.egx_gtw_nodeselector
-
-    if labels is None:
-        # no specify any labels
-        namespace.egx_gtw_nodeselector = {}
-        return
-
-    if isinstance(labels, list):
-        labels_dict = {}
-        for item in labels:
-            labels_dict.update(validate_label(item))
-        after_validation_labels = labels_dict
-    else:
-        after_validation_labels = validate_label(labels)
-
-    namespace.egx_gtw_nodeselector = after_validation_labels
 
 
 def validate_nodepool_labels(namespace):
@@ -494,7 +468,6 @@ def validate_assign_identity(namespace):
     if namespace.assign_identity is not None:
         if namespace.assign_identity == '':
             return
-        from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.assign_identity):
             raise CLIError(
                 "--assign-identity is not a valid Azure resource ID.")
@@ -587,7 +560,6 @@ def validate_assign_kubelet_identity(namespace):
     if namespace.assign_kubelet_identity is not None:
         if namespace.assign_kubelet_identity == '':
             return
-        from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.assign_kubelet_identity):
             raise CLIError(
                 "--assign-kubelet-identity is not a valid Azure resource ID.")
@@ -604,14 +576,12 @@ def validate_snapshot_name(namespace):
 
 
 def validate_nodepool_id(namespace):
-    from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(namespace.nodepool_id):
         raise InvalidArgumentValueError(
             "--nodepool-id is not a valid Azure resource ID.")
 
 
 def validate_cluster_id(namespace):
-    from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(namespace.cluster_id):
         raise InvalidArgumentValueError(
             "--cluster-id is not a valid Azure resource ID.")
@@ -619,7 +589,6 @@ def validate_cluster_id(namespace):
 
 def validate_snapshot_id(namespace):
     if namespace.snapshot_id:
-        from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.snapshot_id):
             raise InvalidArgumentValueError(
                 "--snapshot-id is not a valid Azure resource ID.")
@@ -627,7 +596,6 @@ def validate_snapshot_id(namespace):
 
 def validate_cluster_snapshot_id(namespace):
     if namespace.cluster_snapshot_id:
-        from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.cluster_snapshot_id):
             raise InvalidArgumentValueError(
                 "--cluster-snapshot-id is not a valid Azure resource ID.")
@@ -635,7 +603,6 @@ def validate_cluster_snapshot_id(namespace):
 
 def validate_host_group_id(namespace):
     if namespace.host_group_id:
-        from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.host_group_id):
             raise InvalidArgumentValueError(
                 "--host-group-id is not a valid Azure resource ID.")
@@ -643,7 +610,6 @@ def validate_host_group_id(namespace):
 
 def validate_crg_id(namespace):
     if namespace.crg_id:
-        from msrestazure.tools import is_valid_resource_id
         if not is_valid_resource_id(namespace.crg_id):
             raise InvalidArgumentValueError(
                 "--crg-id is not a valid Azure resource ID.")
@@ -670,9 +636,16 @@ def validate_azure_keyvault_kms_key_vault_resource_id(namespace):
     key_vault_resource_id = namespace.azure_keyvault_kms_key_vault_resource_id
     if key_vault_resource_id is None or key_vault_resource_id == '':
         return
-    from msrestazure.tools import is_valid_resource_id
     if not is_valid_resource_id(key_vault_resource_id):
         raise InvalidArgumentValueError("--azure-keyvault-kms-key-vault-resource-id is not a valid Azure resource ID.")
+
+
+def validate_bootstrap_container_registry_resource_id(namespace):
+    container_registry_resource_id = namespace.bootstrap_container_registry_resource_id
+    if container_registry_resource_id is None or container_registry_resource_id == '':
+        return
+    if not is_valid_resource_id(container_registry_resource_id):
+        raise InvalidArgumentValueError("--bootstrap-container-registry-resource-id is not a valid Azure resource ID.")
 
 
 def validate_enable_custom_ca_trust(namespace):
@@ -790,7 +763,6 @@ def validate_application_security_groups(namespace):
     if not asg_ids:
         return
 
-    from msrestazure.tools import is_valid_resource_id
     for asg in asg_ids.split(","):
         if not is_valid_resource_id(asg):
             raise InvalidArgumentValueError(asg + " is not a valid Azure resource ID.")
@@ -858,3 +830,23 @@ def validate_artifact_streaming(namespace):
     if namespace.enable_artifact_streaming:
         if hasattr(namespace, 'os_type') and str(namespace.os_type).lower() == "windows":
             raise ArgumentUsageError('--enable-artifact-streaming can only be set for Linux nodepools')
+
+
+def validate_custom_endpoints(namespace):
+    """Validates that custom endpoints do not contain protocol."""
+    if not namespace.custom_endpoints:
+        return
+
+    if isinstance(namespace.custom_endpoints, list):
+        for endpoint in namespace.custom_endpoints:
+            if "://" in endpoint:
+                raise InvalidArgumentValueError(f"Custom endpoint {endpoint} should not contain protocol.")
+
+
+def validate_gateway_prefix_size(namespace):
+    """Validates the gateway prefix size."""
+    if namespace.gateway_prefix_size is not None:
+        if not hasattr(namespace, 'mode') or namespace.mode != CONST_NODEPOOL_MODE_GATEWAY:
+            raise ArgumentUsageError("--gateway-prefix-size can only be set for Gateway-mode nodepools")
+        if namespace.gateway_prefix_size < 28 or namespace.gateway_prefix_size > 31:
+            raise CLIError("--gateway-prefix-size must be in the range [28, 31]")

@@ -41,6 +41,12 @@ def load_arguments(self, _):
             help="ARM template parameters",
         )
         c.argument(
+            "virtual_node_yaml_path",
+            options_list=("--virtual-node-yaml"),
+            required=False,
+            help="Virtual node YAML file",
+        )
+        c.argument(
             "image_name",
             options_list=("--image",),
             required=False,
@@ -121,12 +127,18 @@ def load_arguments(self, _):
             required=False,
             help="Print the generated policy in the terminal",
         )
+        c.argument(
+            "faster_hashing",
+            options_list=("--faster-hashing"),
+            required=False,
+            help="Use buffered image reader for dmverity hashing. This will speed up the hashing process but use much more memory.",
+        )
 
     with self.argument_context("confcom katapolicygen") as c:
         c.argument(
             "yaml_path",
             options_list=("--yaml", "-y"),
-            required=True,
+            required=False,
             help="Input YAML config file",
         )
         c.argument(
@@ -158,4 +170,28 @@ def load_arguments(self, _):
             options_list=("--settings-file-name", "-j"),
             required=False,
             help="Path for custom settings file",
+        )
+        c.argument(
+            "rules_file_name",
+            options_list=("--rules-file-name", "-p"),
+            required=False,
+            help="Path for custom rules file",
+        )
+        c.argument(
+            "print_version",
+            options_list=("--print-version", "-v"),
+            required=False,
+            help="Print the version of the genpolicy tool",
+        )
+        c.argument(
+            "containerd_pull",
+            options_list=("--containerd-pull", "-d"),
+            required=False,
+            help="Use containerd to pull the image",
+        )
+        c.argument(
+            "containerd_socket_path",
+            options_list=("--containerd-socket-path"),
+            required=False,
+            help="Path to containerd socket if not using the default",
         )

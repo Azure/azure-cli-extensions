@@ -18,14 +18,14 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Get a cluster pool.
 
-    :example: Gets a cluster pool.
-        az hdinsight-on-aks clusterpool show -g RG -n testpool
+    :example: Get the clusterpool.
+        az hdinsight-on-aks clusterpool show -g {RG} -n {poolName}
     """
 
     _aaz_info = {
-        "version": "2023-06-01-preview",
+        "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}", "2023-06-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}", "2024-05-01-preview"],
         ]
     }
 
@@ -121,7 +121,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-06-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -245,6 +245,9 @@ class Show(AAZCommand):
             )
 
             compute_profile = cls._schema_on_200.properties.compute_profile
+            compute_profile.availability_zones = AAZListType(
+                serialized_name="availabilityZones",
+            )
             compute_profile.count = AAZIntType(
                 flags={"read_only": True},
             )
@@ -252,6 +255,9 @@ class Show(AAZCommand):
                 serialized_name="vmSize",
                 flags={"required": True},
             )
+
+            availability_zones = cls._schema_on_200.properties.compute_profile.availability_zones
+            availability_zones.Element = AAZStrType()
 
             log_analytics_profile = cls._schema_on_200.properties.log_analytics_profile
             log_analytics_profile.enabled = AAZBoolType(
@@ -262,10 +268,22 @@ class Show(AAZCommand):
             )
 
             network_profile = cls._schema_on_200.properties.network_profile
+            network_profile.api_server_authorized_ip_ranges = AAZListType(
+                serialized_name="apiServerAuthorizedIpRanges",
+            )
+            network_profile.enable_private_api_server = AAZBoolType(
+                serialized_name="enablePrivateApiServer",
+            )
+            network_profile.outbound_type = AAZStrType(
+                serialized_name="outboundType",
+            )
             network_profile.subnet_id = AAZStrType(
                 serialized_name="subnetId",
                 flags={"required": True},
             )
+
+            api_server_authorized_ip_ranges = cls._schema_on_200.properties.network_profile.api_server_authorized_ip_ranges
+            api_server_authorized_ip_ranges.Element = AAZStrType()
 
             system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(

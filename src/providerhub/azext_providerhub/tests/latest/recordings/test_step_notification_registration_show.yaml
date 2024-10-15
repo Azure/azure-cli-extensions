@@ -1,0 +1,48 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub notification-registration show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name --provider-namespace
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/notificationRegistrations/testNotificationRegistration?api-version=2024-04-01-preview
+  response:
+    body:
+      string: '{"properties":{"notificationMode":"EventHub","messageScope":"RegisteredSubscriptions","includedEvents":["*/write","Microsoft.Contoso/employees/delete"],"notificationEndpoints":[{"notificationDestination":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/mgmtexp-eastus/providers/Microsoft.EventHub/namespaces/unitedstates-mgmtexpint/eventhubs/armlinkednotifications","locations":["EastUS"]}]},"name":"testNotificationRegistration","systemData":{"createdBy":"gaurimadhok@microsoft.com","createdByType":"User","createdAt":"2024-06-05T18:47:55.6681371Z","lastModifiedBy":"gaurimadhok@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-06-05T18:47:55.6681371Z"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '691'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 05 Jun 2024 18:49:36 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/8e14bec6-4de3-4129-9510-4d02c1ae9b59
+      x-msedge-ref:
+      - 'Ref A: 9E57FE69E4C7455281F5922A56D3FB20 Ref B: DM2AA1091213029 Ref C: 2024-06-05T18:49:33Z'
+    status:
+      code: 200
+      message: OK
+version: 1

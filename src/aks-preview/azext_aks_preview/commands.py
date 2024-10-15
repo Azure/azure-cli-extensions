@@ -14,6 +14,7 @@ from azext_aks_preview._client_factory import (
     cf_trustedaccess_role,
     cf_trustedaccess_role_binding,
     cf_machines,
+    cf_operations,
 )
 from azext_aks_preview._format import (
     aks_addon_list_available_table_format,
@@ -23,6 +24,7 @@ from azext_aks_preview._format import (
     aks_agentpool_show_table_format,
     aks_machine_list_table_format,
     aks_machine_show_table_format,
+    aks_operation_show_table_format,
     aks_list_nodepool_snapshot_table_format,
     aks_list_snapshot_table_format,
     aks_list_table_format,
@@ -99,6 +101,12 @@ def load_command_table(self, _):
         client_factory=cf_managed_clusters,
     )
 
+    operations_sdk = CliCommandType(
+        operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
+        "operations._operationstatusresult_operations#OperationStatusResultOperations.{}",
+        client_factory=cf_operations,
+    )
+
     maintenance_configuration_sdk = CliCommandType(
         operations_tmpl="azext_aks_preview.vendored_sdks.azure_mgmt_preview_aks."
         "operations._maintenance_configurations_operations#MaintenanceConfigurationsOperations.{}",
@@ -172,7 +180,6 @@ def load_command_table(self, _):
         # aks-preview only
         g.custom_command("kollect", "aks_kollect")
         g.custom_command("kanalyze", "aks_kanalyze")
-        g.custom_command("get-os-options", "aks_get_os_options")
         g.custom_command(
             "operation-abort", "aks_operation_abort", supports_no_wait=True
         )
@@ -237,6 +244,14 @@ def load_command_table(self, _):
             "delete-machines", "aks_agentpool_delete_machines", supports_no_wait=True
         )
 
+    # AKS nodepool manual-scale command
+    with self.command_group(
+        "aks nodepool manual-scale", managed_clusters_sdk, client_factory=cf_agent_pools
+    ) as g:
+        g.custom_command("add", "aks_agentpool_manual_scale_add", supports_no_wait=True)
+        g.custom_command("update", "aks_agentpool_manual_scale_update", supports_no_wait=True)
+        g.custom_command("delete", "aks_agentpool_manual_scale_delete", supports_no_wait=True)
+
     with self.command_group(
         "aks machine", machines_sdk, client_factory=cf_machines
     ) as g:
@@ -245,6 +260,16 @@ def load_command_table(self, _):
         )
         g.custom_show_command(
             "show", "aks_machine_show", table_transformer=aks_machine_show_table_format
+        )
+
+    with self.command_group(
+        "aks operation", operations_sdk, client_factory=cf_operations
+    ) as g:
+        g.custom_show_command(
+            "show", "aks_operation_show", table_transformer=aks_operation_show_table_format
+        )
+        g.custom_command(
+            "show-latest", "aks_operation_show_latest", table_transformer=aks_operation_show_table_format
         )
 
     # AKS draft commands
@@ -371,19 +396,8 @@ def load_command_table(self, _):
             supports_no_wait=True,
         )
         g.custom_command(
-            "enable-egress-gateway",
-            "aks_mesh_enable_egress_gateway",
-            supports_no_wait=True,
-        )
-        g.custom_command(
             "disable-ingress-gateway",
             "aks_mesh_disable_ingress_gateway",
-            supports_no_wait=True,
-            confirmation=True,
-        )
-        g.custom_command(
-            "disable-egress-gateway",
-            "aks_mesh_disable_egress_gateway",
             supports_no_wait=True,
             confirmation=True,
         )
@@ -422,3 +436,9 @@ def load_command_table(self, _):
         g.custom_command("delete", "aks_approuting_zone_delete", confirmation=True)
         g.custom_command("update", "aks_approuting_zone_update")
         g.custom_command("list", "aks_approuting_zone_list")
+
+    # AKS check-network command
+    with self.command_group(
+        "aks check-network", managed_clusters_sdk, client_factory=cf_managed_clusters
+    ) as g:
+        g.custom_command("outbound", "aks_check_network_outbound")

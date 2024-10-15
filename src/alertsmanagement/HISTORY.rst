@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b1
++++++++
+* Remove ADAL dependencies
+
 0.2.3
 ++++++
 * az alerts-management prometheus-rule-group: support prometheus rule group

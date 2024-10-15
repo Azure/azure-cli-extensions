@@ -18,10 +18,6 @@ def is_linux():
     return sys.platform in ("linux", "linux2")
 
 
-if is_linux():
-    import grp  # pylint: disable=import-error
-
-
 def is_admin() -> bool:
     admin = False
     try:
@@ -53,6 +49,7 @@ def docker_permissions() -> str:
     if is_linux() and not is_admin():
         client = None
         try:
+            import grp  # pylint: disable=import-error
             docker_group = grp.getgrnam("docker")
             client = docker.from_env()
             # need any command that will show the docker daemon is

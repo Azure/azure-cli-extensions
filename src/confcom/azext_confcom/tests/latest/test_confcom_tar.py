@@ -23,7 +23,7 @@ from azext_confcom.template_util import DockerClient
 def create_tar_file(image_path: str) -> None:
     if not os.path.isfile(image_path):
         with DockerClient() as client:
-            image = client.images.get("nginx:1.22")
+            image = client.images.get("mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64")
             f = open(image_path, "wb")
             for chunk in image.save(named=True):
                 f.write(chunk)
@@ -61,7 +61,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"nginx:1.22"
+                "defaultValue":"mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64"
             },
             "containername": {
                 "type": "string",
@@ -177,8 +177,8 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
         )[0]
 
         try:
-            filename = os.path.join(self.path, "./nginx.tar")
-            tar_mapping_file = {"nginx:1.22": filename}
+            filename = os.path.join(self.path, "./mariner.tar")
+            tar_mapping_file = {"mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64": filename}
             create_tar_file(filename)
             clean_room_image.populate_policy_content_for_all_images(
                 tar_mapping=tar_mapping_file
@@ -226,7 +226,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"nginx:1.22"
+                "defaultValue":"mcr.microsoft.com/aks/e2e/library-busybox:master.220314.1-linux-amd64"
             },
             "containername": {
                 "type": "string",
@@ -240,7 +240,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"python:3.6.14-slim-buster"
+                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
             },
             "containername2": {
                 "type": "string",
@@ -382,7 +382,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
             custom_arm_json_default_value, ""
         )[0]
 
-        filename = os.path.join(self.path, "./nginx2.tar")
+        filename = os.path.join(self.path, "./mariner2.tar")
         create_tar_file(filename)
         clean_room_image.populate_policy_content_for_all_images(
             tar_mapping=filename
@@ -427,7 +427,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"alpine:3.16"
+                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
             },
             "containername": {
                 "type": "string",
@@ -536,7 +536,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
             custom_arm_json_default_value, ""
         )[0]
 
-        filename = os.path.join(self.path, "./nginx3.tar")
+        filename = os.path.join(self.path, "./mariner3.tar")
 
         try:
             create_tar_file(filename)
@@ -569,7 +569,7 @@ class PolicyGeneratingArmParametersCleanRoomTarFile(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"alpine:3.16"
+                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
             },
             "containername": {
                 "type": "string",

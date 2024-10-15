@@ -19,13 +19,13 @@ class End(AAZCommand):
     """Ends the troubleshooter action
 
     :example: End Troubleshooter at Resource Level
-        az self-help troubleshooter end --troubleshooter-name 12345678-BBBb-cCCCC-0000-123456789012 --scope 'subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
+        az self-help troubleshooter end --troubleshooter-name 12345678-BBBb-cCCCC-0000-123456789123 --scope 'subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myresourceGroup/providers/Microsoft.KeyVault/vaults/test-keyvault-non-read'
     """
 
     _aaz_info = {
-        "version": "2023-09-01-preview",
+        "version": "2024-03-01-preview",
         "resources": [
-            ["mgmt-plane", "/{scope}/providers/microsoft.help/troubleshooters/{}/end", "2023-09-01-preview"],
+            ["mgmt-plane", "/{scope}/providers/microsoft.help/troubleshooters/{}/end", "2024-03-01-preview"],
         ]
     }
 
@@ -120,7 +120,7 @@ class End(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01-preview",
+                    "api-version", "2024-03-01-preview",
                     required=True,
                 ),
             }

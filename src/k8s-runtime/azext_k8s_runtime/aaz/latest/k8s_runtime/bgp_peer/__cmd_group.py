@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "k8s-runtime bgp-peer",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage BGP peers of Arc Kubernetes clusters

@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create an admin rule.
 
     :example: Create security admin rules
-        az network manager security-admin-config rule-collection rule create --configuration-name "myTestSecurityConfig" --network-manager-name "testNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleAdminRule" --kind "Custom" --protocol "Tcp" --access "Allow" --priority 32 --direction "Inbound" --destinations address-prefix="*" address-prefix-type="IPPrefix"  --dest-port-ranges 22
+        az network manager security-admin-config rule-collection rule create --configuration-name "myTestSecurityConfig" --network-manager-name "TestNetworkManager" --resource-group "rg1" --rule-collection-name "myTestCollection" --rule-name "SampleAdminRule" --kind "Custom" --protocol "Tcp" --access "Allow" --priority 32 --direction "Inbound" --destinations address-prefix="*" address-prefix-type="IPPrefix"  --dest-port-ranges 22
     """
 
     _aaz_info = {
-        "version": "2022-01-01",
+        "version": "2024-01-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations/{}/rulecollections/{}/rules/{}", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations/{}/rulecollections/{}/rules/{}", "2024-01-01-preview"],
         ]
     }
 
@@ -53,6 +53,9 @@ class Create(AAZCommand):
             options=["-n", "--name", "--network-manager-name"],
             help="The name of the network manager.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -84,6 +87,7 @@ class Create(AAZCommand):
         custom.access = AAZStrArg(
             options=["access"],
             help="Indicates the access allowed for this particular rule",
+            required=True,
             enum={"Allow": "Allow", "AlwaysAllow": "AlwaysAllow", "Deny": "Deny"},
         )
         custom.description = AAZStrArg(
@@ -101,11 +105,13 @@ class Create(AAZCommand):
         custom.direction = AAZStrArg(
             options=["direction"],
             help="Indicates if the traffic matched against the rule in inbound or outbound.",
+            required=True,
             enum={"Inbound": "Inbound", "Outbound": "Outbound"},
         )
         custom.priority = AAZIntArg(
             options=["priority"],
             help="The priority of the rule. The value can be between 1 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule.",
+            required=True,
             fmt=AAZIntArgFormat(
                 maximum=4096,
                 minimum=1,
@@ -114,6 +120,7 @@ class Create(AAZCommand):
         custom.protocol = AAZStrArg(
             options=["protocol"],
             help="Network protocol this rule applies to.",
+            required=True,
             enum={"Ah": "Ah", "Any": "Any", "Esp": "Esp", "Icmp": "Icmp", "Tcp": "Tcp", "Udp": "Udp"},
         )
         custom.source_port_ranges = AAZListArg(
@@ -165,7 +172,7 @@ class Create(AAZCommand):
         address_prefix_item_create.address_prefix_type = AAZStrArg(
             options=["address-prefix-type"],
             help="Address prefix type.",
-            enum={"IPPrefix": "IPPrefix", "ServiceTag": "ServiceTag"},
+            enum={"IPPrefix": "IPPrefix", "NetworkGroup": "NetworkGroup", "ServiceTag": "ServiceTag"},
         )
 
         _schema.address_prefix = cls._args_address_prefix_item_create.address_prefix
@@ -212,7 +219,7 @@ class Create(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -248,7 +255,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2024-01-01-preview",
                     required=True,
                 ),
             }
@@ -280,7 +287,7 @@ class Create(AAZCommand):
 
             disc_custom = _builder.get("{kind:Custom}")
             if disc_custom is not None:
-                disc_custom.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
+                disc_custom.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
 
             properties = _builder.get("{kind:Custom}.properties")
             if properties is not None:
@@ -338,9 +345,6 @@ class Create(AAZCommand):
             cls._schema_on_200_201 = AAZObjectType()
 
             _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.etag = AAZStrType(
-                flags={"read_only": True},
-            )
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -380,7 +384,7 @@ class Create(AAZCommand):
 
             disc_custom = cls._schema_on_200_201.discriminate_by("kind", "Custom")
             disc_custom.properties = AAZObjectType(
-                flags={"client_flatten": True},
+                flags={"required": True, "client_flatten": True},
             )
 
             properties = cls._schema_on_200_201.discriminate_by("kind", "Custom").properties
@@ -403,6 +407,10 @@ class Create(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.resource_guid = AAZStrType(
+                serialized_name="resourceGuid",
                 flags={"read_only": True},
             )
             properties.source_port_ranges = AAZListType(
@@ -430,7 +438,9 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.discriminate_by("kind", "Default").properties
-            properties.access = AAZStrType()
+            properties.access = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.description = AAZStrType(
                 flags={"read_only": True},
             )
@@ -441,14 +451,22 @@ class Create(AAZCommand):
             properties.destinations = AAZListType(
                 flags={"read_only": True},
             )
-            properties.direction = AAZStrType()
+            properties.direction = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.flag = AAZStrType()
             properties.priority = AAZIntType(
                 flags={"read_only": True},
             )
-            properties.protocol = AAZStrType()
+            properties.protocol = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.resource_guid = AAZStrType(
+                serialized_name="resourceGuid",
                 flags={"read_only": True},
             )
             properties.source_port_ranges = AAZListType(

@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "dataprotection backup-instance create",
-    is_experimental=True,
 )
 class Create(AAZCommand):
     """Configure backup for a resource in a backup vault
@@ -23,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-05-01",
+        "version": "2024-04-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}", "2023-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.dataprotection/backupvaults/{}/backupinstances/{}", "2024-04-01"],
         ]
     }
 
@@ -170,7 +169,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-05-01",
+                    "api-version", "2024-04-01",
                     required=True,
                 ),
             }
@@ -272,6 +271,9 @@ class Create(AAZCommand):
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
+            )
+            properties.resource_guard_operation_requests = AAZListType(
+                serialized_name="resourceGuardOperationRequests",
             )
             properties.validation_type = AAZStrType(
                 serialized_name="validationType",
@@ -473,6 +475,9 @@ class Create(AAZCommand):
             )
             _CreateHelper._build_schema_user_facing_error_read(protection_status.error_details)
             protection_status.status = AAZStrType()
+
+            resource_guard_operation_requests = cls._schema_on_200_201.properties.resource_guard_operation_requests
+            resource_guard_operation_requests.Element = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

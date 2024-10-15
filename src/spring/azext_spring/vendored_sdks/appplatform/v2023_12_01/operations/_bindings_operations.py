@@ -1,4 +1,4 @@
-# pylint: disable=too-many-lines
+# pylint: disable=too-many-lines,too-many-statements
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -244,7 +244,6 @@ class BindingsOperations:
         :type app_name: str
         :param binding_name: The name of the Binding resource. Required.
         :type binding_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
         :return: BindingResource or the result of cls(response)
         :rtype: ~azure.mgmt.appplatform.v2023_12_01.models.BindingResource
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -263,23 +262,22 @@ class BindingsOperations:
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2023-12-01"))
         cls: ClsType[_models.BindingResource] = kwargs.pop("cls", None)
 
-        request = build_get_request(
+        _request = build_get_request(
             resource_group_name=resource_group_name,
             service_name=service_name,
             app_name=app_name,
             binding_name=binding_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
-            template_url=self.get.metadata["url"],
             headers=_headers,
             params=_params,
         )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
+        _request = _convert_request(_request)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -291,13 +289,9 @@ class BindingsOperations:
         deserialized = self._deserialize("BindingResource", pipeline_response)
 
         if cls:
-            return cls(pipeline_response, deserialized, {})
+            return cls(pipeline_response, deserialized, {})  # type: ignore
 
-        return deserialized
-
-    get.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/bindings/{bindingName}"
-    }
+        return deserialized  # type: ignore
 
     def _create_or_update_initial(
         self,
@@ -305,7 +299,7 @@ class BindingsOperations:
         service_name: str,
         app_name: str,
         binding_name: str,
-        binding_resource: Union[_models.BindingResource, IO],
+        binding_resource: Union[_models.BindingResource, IO[bytes]],
         **kwargs: Any
     ) -> _models.BindingResource:
         error_map = {
@@ -331,7 +325,7 @@ class BindingsOperations:
         else:
             _json = self._serialize.body(binding_resource, "BindingResource")
 
-        request = build_create_or_update_request(
+        _request = build_create_or_update_request(
             resource_group_name=resource_group_name,
             service_name=service_name,
             app_name=app_name,
@@ -341,16 +335,15 @@ class BindingsOperations:
             content_type=content_type,
             json=_json,
             content=_content,
-            template_url=self._create_or_update_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
+        _request = _convert_request(_request)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -372,10 +365,6 @@ class BindingsOperations:
             return cls(pipeline_response, deserialized, {})  # type: ignore
 
         return deserialized  # type: ignore
-
-    _create_or_update_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/bindings/{bindingName}"
-    }
 
     @overload
     def begin_create_or_update(
@@ -405,14 +394,6 @@ class BindingsOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
-         operation to not poll, or pass in your own initialized polling object for a personal polling
-         strategy.
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of LROPoller that returns either BindingResource or the result of
          cls(response)
         :rtype:
@@ -427,7 +408,7 @@ class BindingsOperations:
         service_name: str,
         app_name: str,
         binding_name: str,
-        binding_resource: IO,
+        binding_resource: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -444,18 +425,10 @@ class BindingsOperations:
         :param binding_name: The name of the Binding resource. Required.
         :type binding_name: str
         :param binding_resource: Parameters for the create or update operation. Required.
-        :type binding_resource: IO
+        :type binding_resource: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
-         operation to not poll, or pass in your own initialized polling object for a personal polling
-         strategy.
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of LROPoller that returns either BindingResource or the result of
          cls(response)
         :rtype:
@@ -470,7 +443,7 @@ class BindingsOperations:
         service_name: str,
         app_name: str,
         binding_name: str,
-        binding_resource: Union[_models.BindingResource, IO],
+        binding_resource: Union[_models.BindingResource, IO[bytes]],
         **kwargs: Any
     ) -> LROPoller[_models.BindingResource]:
         """Create a new Binding or update an exiting Binding.
@@ -485,19 +458,8 @@ class BindingsOperations:
         :param binding_name: The name of the Binding resource. Required.
         :type binding_name: str
         :param binding_resource: Parameters for the create or update operation. Is either a
-         BindingResource type or a IO type. Required.
-        :type binding_resource: ~azure.mgmt.appplatform.v2023_12_01.models.BindingResource or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
-         operation to not poll, or pass in your own initialized polling object for a personal polling
-         strategy.
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         BindingResource type or a IO[bytes] type. Required.
+        :type binding_resource: ~azure.mgmt.appplatform.v2023_12_01.models.BindingResource or IO[bytes]
         :return: An instance of LROPoller that returns either BindingResource or the result of
          cls(response)
         :rtype:
@@ -532,7 +494,7 @@ class BindingsOperations:
         def get_long_running_output(pipeline_response):
             deserialized = self._deserialize("BindingResource", pipeline_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -542,17 +504,15 @@ class BindingsOperations:
         else:
             polling_method = polling
         if cont_token:
-            return LROPoller.from_continuation_token(
+            return LROPoller[_models.BindingResource].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
-    begin_create_or_update.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/bindings/{bindingName}"
-    }
+        return LROPoller[_models.BindingResource](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
     def _delete_initial(  # pylint: disable=inconsistent-return-statements
         self, resource_group_name: str, service_name: str, app_name: str, binding_name: str, **kwargs: Any
@@ -571,23 +531,22 @@ class BindingsOperations:
         api_version: str = kwargs.pop("api_version", _params.pop("api-version", self._api_version or "2023-12-01"))
         cls: ClsType[None] = kwargs.pop("cls", None)
 
-        request = build_delete_request(
+        _request = build_delete_request(
             resource_group_name=resource_group_name,
             service_name=service_name,
             app_name=app_name,
             binding_name=binding_name,
             subscription_id=self._config.subscription_id,
             api_version=api_version,
-            template_url=self._delete_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
+        _request = _convert_request(_request)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -597,11 +556,7 @@ class BindingsOperations:
             raise HttpResponseError(response=response, error_format=ARMErrorFormat)
 
         if cls:
-            return cls(pipeline_response, None, {})
-
-    _delete_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/bindings/{bindingName}"
-    }
+            return cls(pipeline_response, None, {})  # type: ignore
 
     @distributed_trace
     def begin_delete(
@@ -618,14 +573,6 @@ class BindingsOperations:
         :type app_name: str
         :param binding_name: The name of the Binding resource. Required.
         :type binding_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
-         operation to not poll, or pass in your own initialized polling object for a personal polling
-         strategy.
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of LROPoller that returns either None or the result of cls(response)
         :rtype: ~azure.core.polling.LROPoller[None]
         :raises ~azure.core.exceptions.HttpResponseError:
@@ -654,7 +601,7 @@ class BindingsOperations:
 
         def get_long_running_output(pipeline_response):  # pylint: disable=inconsistent-return-statements
             if cls:
-                return cls(pipeline_response, None, {})
+                return cls(pipeline_response, None, {})  # type: ignore
 
         if polling is True:
             polling_method: PollingMethod = cast(PollingMethod, ARMPolling(lro_delay, **kwargs))
@@ -663,17 +610,13 @@ class BindingsOperations:
         else:
             polling_method = polling
         if cont_token:
-            return LROPoller.from_continuation_token(
+            return LROPoller[None].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
-    begin_delete.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/bindings/{bindingName}"
-    }
+        return LROPoller[None](self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     def _update_initial(
         self,
@@ -681,7 +624,7 @@ class BindingsOperations:
         service_name: str,
         app_name: str,
         binding_name: str,
-        binding_resource: Union[_models.BindingResource, IO],
+        binding_resource: Union[_models.BindingResource, IO[bytes]],
         **kwargs: Any
     ) -> _models.BindingResource:
         error_map = {
@@ -707,7 +650,7 @@ class BindingsOperations:
         else:
             _json = self._serialize.body(binding_resource, "BindingResource")
 
-        request = build_update_request(
+        _request = build_update_request(
             resource_group_name=resource_group_name,
             service_name=service_name,
             app_name=app_name,
@@ -717,16 +660,15 @@ class BindingsOperations:
             content_type=content_type,
             json=_json,
             content=_content,
-            template_url=self._update_initial.metadata["url"],
             headers=_headers,
             params=_params,
         )
-        request = _convert_request(request)
-        request.url = self._client.format_url(request.url)
+        _request = _convert_request(_request)
+        _request.url = self._client.format_url(_request.url)
 
         _stream = False
         pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-            request, stream=_stream, **kwargs
+            _request, stream=_stream, **kwargs
         )
 
         response = pipeline_response.http_response
@@ -745,10 +687,6 @@ class BindingsOperations:
             return cls(pipeline_response, deserialized, {})  # type: ignore
 
         return deserialized  # type: ignore
-
-    _update_initial.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/bindings/{bindingName}"
-    }
 
     @overload
     def begin_update(
@@ -778,14 +716,6 @@ class BindingsOperations:
         :keyword content_type: Body Parameter content-type. Content type parameter for JSON body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
-         operation to not poll, or pass in your own initialized polling object for a personal polling
-         strategy.
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of LROPoller that returns either BindingResource or the result of
          cls(response)
         :rtype:
@@ -800,7 +730,7 @@ class BindingsOperations:
         service_name: str,
         app_name: str,
         binding_name: str,
-        binding_resource: IO,
+        binding_resource: IO[bytes],
         *,
         content_type: str = "application/json",
         **kwargs: Any
@@ -817,18 +747,10 @@ class BindingsOperations:
         :param binding_name: The name of the Binding resource. Required.
         :type binding_name: str
         :param binding_resource: Parameters for the update operation. Required.
-        :type binding_resource: IO
+        :type binding_resource: IO[bytes]
         :keyword content_type: Body Parameter content-type. Content type parameter for binary body.
          Default value is "application/json".
         :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
-         operation to not poll, or pass in your own initialized polling object for a personal polling
-         strategy.
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
         :return: An instance of LROPoller that returns either BindingResource or the result of
          cls(response)
         :rtype:
@@ -843,7 +765,7 @@ class BindingsOperations:
         service_name: str,
         app_name: str,
         binding_name: str,
-        binding_resource: Union[_models.BindingResource, IO],
+        binding_resource: Union[_models.BindingResource, IO[bytes]],
         **kwargs: Any
     ) -> LROPoller[_models.BindingResource]:
         """Operation to update an exiting Binding.
@@ -858,19 +780,8 @@ class BindingsOperations:
         :param binding_name: The name of the Binding resource. Required.
         :type binding_name: str
         :param binding_resource: Parameters for the update operation. Is either a BindingResource type
-         or a IO type. Required.
-        :type binding_resource: ~azure.mgmt.appplatform.v2023_12_01.models.BindingResource or IO
-        :keyword content_type: Body Parameter content-type. Known values are: 'application/json'.
-         Default value is None.
-        :paramtype content_type: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
-        :keyword str continuation_token: A continuation token to restart a poller from a saved state.
-        :keyword polling: By default, your polling method will be ARMPolling. Pass in False for this
-         operation to not poll, or pass in your own initialized polling object for a personal polling
-         strategy.
-        :paramtype polling: bool or ~azure.core.polling.PollingMethod
-        :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
-         Retry-After header is present.
+         or a IO[bytes] type. Required.
+        :type binding_resource: ~azure.mgmt.appplatform.v2023_12_01.models.BindingResource or IO[bytes]
         :return: An instance of LROPoller that returns either BindingResource or the result of
          cls(response)
         :rtype:
@@ -905,7 +816,7 @@ class BindingsOperations:
         def get_long_running_output(pipeline_response):
             deserialized = self._deserialize("BindingResource", pipeline_response)
             if cls:
-                return cls(pipeline_response, deserialized, {})
+                return cls(pipeline_response, deserialized, {})  # type: ignore
             return deserialized
 
         if polling is True:
@@ -915,17 +826,15 @@ class BindingsOperations:
         else:
             polling_method = polling
         if cont_token:
-            return LROPoller.from_continuation_token(
+            return LROPoller[_models.BindingResource].from_continuation_token(
                 polling_method=polling_method,
                 continuation_token=cont_token,
                 client=self._client,
                 deserialization_callback=get_long_running_output,
             )
-        return LROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
-
-    begin_update.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/bindings/{bindingName}"
-    }
+        return LROPoller[_models.BindingResource](
+            self._client, raw_result, get_long_running_output, polling_method  # type: ignore
+        )
 
     @distributed_trace
     def list(
@@ -940,7 +849,6 @@ class BindingsOperations:
         :type service_name: str
         :param app_name: The name of the App resource. Required.
         :type app_name: str
-        :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either BindingResource or the result of cls(response)
         :rtype:
          ~azure.core.paging.ItemPaged[~azure.mgmt.appplatform.v2023_12_01.models.BindingResource]
@@ -963,18 +871,17 @@ class BindingsOperations:
         def prepare_request(next_link=None):
             if not next_link:
 
-                request = build_list_request(
+                _request = build_list_request(
                     resource_group_name=resource_group_name,
                     service_name=service_name,
                     app_name=app_name,
                     subscription_id=self._config.subscription_id,
                     api_version=api_version,
-                    template_url=self.list.metadata["url"],
                     headers=_headers,
                     params=_params,
                 )
-                request = _convert_request(request)
-                request.url = self._client.format_url(request.url)
+                _request = _convert_request(_request)
+                _request.url = self._client.format_url(_request.url)
 
             else:
                 # make call to next link with the client's api-version
@@ -985,14 +892,14 @@ class BindingsOperations:
                         for key, value in urllib.parse.parse_qs(_parsed_next_link.query).items()
                     }
                 )
-                _next_request_params["api-version"] = self._config.api_version
-                request = HttpRequest(
+                _next_request_params["api-version"] = self._api_version
+                _request = HttpRequest(
                     "GET", urllib.parse.urljoin(next_link, _parsed_next_link.path), params=_next_request_params
                 )
-                request = _convert_request(request)
-                request.url = self._client.format_url(request.url)
-                request.method = "GET"
-            return request
+                _request = _convert_request(_request)
+                _request.url = self._client.format_url(_request.url)
+                _request.method = "GET"
+            return _request
 
         def extract_data(pipeline_response):
             deserialized = self._deserialize("BindingResourceCollection", pipeline_response)
@@ -1002,11 +909,11 @@ class BindingsOperations:
             return deserialized.next_link or None, iter(list_of_elem)
 
         def get_next(next_link=None):
-            request = prepare_request(next_link)
+            _request = prepare_request(next_link)
 
             _stream = False
             pipeline_response: PipelineResponse = self._client._pipeline.run(  # pylint: disable=protected-access
-                request, stream=_stream, **kwargs
+                _request, stream=_stream, **kwargs
             )
             response = pipeline_response.http_response
 
@@ -1017,7 +924,3 @@ class BindingsOperations:
             return pipeline_response
 
         return ItemPaged(get_next, extract_data)
-
-    list.metadata = {
-        "url": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AppPlatform/Spring/{serviceName}/apps/{appName}/bindings"
-    }

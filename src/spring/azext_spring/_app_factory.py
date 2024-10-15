@@ -5,7 +5,7 @@
 
 # pylint: disable=wrong-import-order
 from azure.cli.core.azclierror import FileOperationError, InvalidArgumentValueError
-from .vendored_sdks.appplatform.v2024_01_01_preview import models
+from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from azure.cli.core.util import get_file_json
 
 
@@ -24,8 +24,15 @@ class DefaultApp:
         kwargs['vnet_addons'] = self._load_vnet_addons(**kwargs)
         kwargs['ingress_settings'] = self._load_ingress_settings(**kwargs)
         kwargs['secrets'] = self._load_secrets_config(**kwargs)
+        kwargs['test_endpoint_auth_state'] = self._get_test_endpoint_auth_state(**kwargs)
         kwargs['addon_configs'] = self._load_addon_configs(**kwargs)
         return models.AppResourceProperties(**kwargs)
+
+    def _get_test_endpoint_auth_state(self, disable_test_endpoint_auth=None, **_):
+        if disable_test_endpoint_auth is None:
+            return None
+
+        return models.TestEndpointAuthState.DISABLED if disable_test_endpoint_auth else models.TestEndpointAuthState.ENABLED
 
     def _format_identity(self, system_assigned=None, user_assigned=None, **_):
         target_identity_type = self._get_identity_assign_type(system_assigned, user_assigned)
@@ -176,8 +183,8 @@ class DefaultApp:
 
         return secret_var_def
 
-    def _load_addon_configs(self, bind_service_registry=None, bind_application_configuration_service=None, **_):
-        if not bind_service_registry and not bind_application_configuration_service:
+    def _load_addon_configs(self, bind_service_registry=None, bind_application_configuration_service=None, bind_config_server=None, **_):
+        if not any([bind_service_registry, bind_application_configuration_service, bind_config_server]):
             return None
 
         addon_configs = {}
@@ -186,6 +193,8 @@ class DefaultApp:
             addon_configs['serviceRegistry'] = {'resourceId': bind_service_registry}
         if bind_application_configuration_service:
             addon_configs['applicationConfigurationService'] = {'resourceId': bind_application_configuration_service}
+        if bind_config_server:
+            addon_configs['configServer'] = {'resourceId': bind_config_server}
         return addon_configs
 
 

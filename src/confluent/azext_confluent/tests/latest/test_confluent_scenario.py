@@ -34,17 +34,15 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 def step_offer_detail_show(test, rg, checks=None):
     if checks is None:
         checks = []
-    result = test.cmd('az confluent offer-detail show '
-             '--publisher-id confluentinc '
-             '--offer-id confluent-cloud-azure-stag',
-             checks=checks).get_output_in_json()
-
+    result = test.cmd('az confluent offer-detail '
+                      'show --publisher-id confluentinc --offer-id confluent-cloud-azure-stag',
+                      checks=checks).get_output_in_json()
     # check
     for plan in result:
         assert plan.get('offerId', None) is not None
         assert plan.get('publisherId', None) is not None
         for term_unit in plan['termUnits']:
-            if term_unit.get('termUnits', None): 
+            if term_unit.get('termUnits', None):
                 assert term_unit['termUnits'] in ['P1M', 'P1Y']
             assert term_unit.get('price', None) is not None
             assert term_unit['price'].get('isPIRequired', None) is None

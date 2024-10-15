@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 import os
-import re
 import json
 
 from knack.util import CLIError
@@ -60,24 +59,15 @@ def create_fleet(cmd,
             "AgentProfile",
             resource_type=CUSTOM_MGMT_FLEET,
             operation_group="fleets",
-            vm_size=vm_size
         )
-        if dns_name_prefix is None:
-            subscription_id = get_subscription_id(cmd.cli_ctx)
-            # Use subscription id to provide uniqueness and prevent DNS name clashes
-            name_part = re.sub('[^A-Za-z0-9-]', '', name)[0:10]
-            if not name_part[0].isalpha():
-                name_part = (str('a') + name_part)[0:10]
-            resource_group_part = re.sub('[^A-Za-z0-9-]', '', resource_group_name)[0:16]
-            dns_name_prefix = f'{name_part}-{resource_group_part}-{subscription_id[0:6]}'
-
         api_server_access_profile = api_server_access_profile_model(
             enable_private_cluster=enable_private_cluster,
             enable_vnet_integration=enable_vnet_integration,
             subnet_id=apiserver_subnet_id
         )
         agent_profile = agent_profile_model(
-            subnet_id=agent_subnet_id
+            subnet_id=agent_subnet_id,
+            vm_size=vm_size
         )
         fleet_hub_profile = fleet_hub_profile_model(
             dns_prefix=dns_name_prefix,
@@ -428,6 +418,38 @@ def stop_update_run(cmd,  # pylint: disable=unused-argument
     return sdk_no_wait(no_wait, client.begin_stop, resource_group_name, fleet_name, name)
 
 
+def skip_update_run(cmd,  # pylint: disable=unused-argument
+                    client,
+                    resource_group_name,
+                    fleet_name,
+                    name,
+                    targets=None,
+                    no_wait=False):
+
+    update_run_skip_properties_model = cmd.get_models(
+        "SkipProperties",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="update_runs"
+    )
+
+    update_run_skip_target_model = cmd.get_models(
+        "SkipTarget",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="update_runs"
+    )
+
+    skipTargets = []
+    for target in targets:
+        key, value = target.split(':')
+        skipTargets.append(update_run_skip_target_model(
+            type=key,
+            name=value
+        ))
+
+    skip_properties = update_run_skip_properties_model(targets=skipTargets)
+    return sdk_no_wait(no_wait, client.begin_skip, resource_group_name, fleet_name, name, skip_properties)
+
+
 def get_update_run_strategy(cmd, operation_group, stages):
     if stages is None:
         return None
@@ -506,4 +528,78 @@ def delete_fleet_update_strategy(cmd,  # pylint: disable=unused-argument
                                  fleet_name,
                                  name,
                                  no_wait=False):
+    return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, fleet_name, name)
+
+
+def create_auto_upgrade_profile(cmd,  # pylint: disable=unused-argument
+                                client,
+                                resource_group_name,
+                                fleet_name,
+                                name,
+                                channel,
+                                update_strategy_id=None,
+                                node_image_selection=None,
+                                disabled=False,
+                                no_wait=False):
+
+    if channel == "NodeImage" and node_image_selection is not None:
+        raise CLIError("node_image_selection must NOT be populated when channel type `NodeImage` is selected")
+
+    upgrade_channel_model = cmd.get_models(
+        "UpgradeChannel",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="auto_upgrade_profiles",
+    )
+    upgrade_channel = upgrade_channel_model(channel)
+
+    auto_upgrade_node_image_selection = None
+    if node_image_selection:
+        auto_upgrade_node_image_selection_model = cmd.get_models(
+            "AutoUpgradeNodeImageSelection",
+            resource_type=CUSTOM_MGMT_FLEET,
+            operation_group="auto_upgrade_profiles",
+        )
+        auto_upgrade_node_image_selection = auto_upgrade_node_image_selection_model(type=node_image_selection)
+
+    auto_upgrade_profile_model = cmd.get_models(
+        "AutoUpgradeProfile",
+        resource_type=CUSTOM_MGMT_FLEET,
+        operation_group="auto_upgrade_profiles",
+    )
+    auto_upgrade_profile = auto_upgrade_profile_model(
+        update_strategy_id=update_strategy_id,
+        channel=upgrade_channel,
+        node_image_selection=auto_upgrade_node_image_selection,
+        disabled=disabled
+    )
+
+    return sdk_no_wait(no_wait,
+                       client.begin_create_or_update,
+                       resource_group_name,
+                       fleet_name,
+                       name,
+                       auto_upgrade_profile)
+
+
+def show_auto_upgrade_profile(cmd,  # pylint: disable=unused-argument
+                              client,
+                              resource_group_name,
+                              fleet_name,
+                              name):
+    return client.get(resource_group_name, fleet_name, name)
+
+
+def list_auto_upgrade_profiles(cmd,  # pylint: disable=unused-argument
+                               client,
+                               resource_group_name,
+                               fleet_name):
+    return client.list_by_fleet(resource_group_name, fleet_name)
+
+
+def delete_auto_upgrade_profile(cmd,  # pylint: disable=unused-argument
+                                client,
+                                resource_group_name,
+                                fleet_name,
+                                name,
+                                no_wait=False):
     return sdk_no_wait(no_wait, client.begin_delete, resource_group_name, fleet_name, name)

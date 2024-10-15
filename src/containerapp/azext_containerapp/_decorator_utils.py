@@ -7,6 +7,7 @@ import sys
 
 from azure.cli.core.azclierror import (ValidationError)
 
+from ._constants import RUNTIME_JAVA
 from ._utils import safe_get
 
 
@@ -42,7 +43,7 @@ def create_deserializer(models):
 
 
 def process_loaded_yaml(yaml_containerapp):
-    if type(yaml_containerapp) != dict:  # pylint: disable=unidiomatic-typecheck
+    if not isinstance(yaml_containerapp, dict):  # pylint: disable=unidiomatic-typecheck
         raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
     if not yaml_containerapp.get('properties'):
         yaml_containerapp['properties'] = {}
@@ -82,7 +83,7 @@ def process_loaded_yaml(yaml_containerapp):
 
 def process_containerapp_resiliency_yaml(containerapp_resiliency):
 
-    if type(containerapp_resiliency) != dict:  # pylint: disable=unidiomatic-typecheck
+    if not isinstance(containerapp_resiliency, dict):  # pylint: disable=unidiomatic-typecheck
         raise ValidationError('Invalid YAML provided. Please provide a valid container app resiliency YAML spec.')
     if 'additionalProperties' in containerapp_resiliency and not containerapp_resiliency['additionalProperties']:
         raise ValidationError('Invalid YAML provided. Please provide a valid containerapp resiliency YAML spec.')
@@ -107,7 +108,7 @@ def process_containerapp_resiliency_yaml(containerapp_resiliency):
 
 def process_dapr_component_resiliency_yaml(dapr_component_resiliency):
 
-    if type(dapr_component_resiliency) != dict:  # pylint: disable=unidiomatic-typecheck
+    if not isinstance(dapr_component_resiliency, dict):  # pylint: disable=unidiomatic-typecheck
         raise ValidationError('Invalid YAML provided. Please provide a valid dapr component resiliency YAML spec.')
     if 'additionalProperties' in dapr_component_resiliency and not dapr_component_resiliency['additionalProperties']:
         raise ValidationError('Invalid YAML provided. Please provide a valid dapr component resiliency YAML spec.')
@@ -123,3 +124,13 @@ def process_dapr_component_resiliency_yaml(dapr_component_resiliency):
             del dapr_component_resiliency[nested_property]
 
     return dapr_component_resiliency
+
+
+def infer_runtime_option(runtime, enable_java_metrics, enable_java_agent):
+    if runtime:
+        return runtime
+    if enable_java_metrics is not None:
+        return RUNTIME_JAVA
+    if enable_java_agent is not None:
+        return RUNTIME_JAVA
+    return None

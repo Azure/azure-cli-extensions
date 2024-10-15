@@ -414,7 +414,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_ip.assert_called_once_with(cmd, "rg", "vm", False)
         mock_op.assert_not_called()
 
-    @mock.patch('azext_ssh.connectivity_utils.get_client_side_proxy')
+    @mock.patch('azext_ssh.connectivity_utils.install_client_side_proxy')
     @mock.patch('azext_ssh.connectivity_utils.get_relay_information')
     @mock.patch('azext_ssh.ssh_utils.start_ssh_connection')
     @mock.patch('azext_ssh.custom._check_or_create_public_private_files')
@@ -438,7 +438,7 @@ class SshCustomCommandTest(unittest.TestCase):
         mock_get_cert.assert_not_called()
         mock_check_keys.assert_not_called()
 
-    @mock.patch('azext_ssh.connectivity_utils.get_client_side_proxy')
+    @mock.patch('azext_ssh.connectivity_utils.install_client_side_proxy')
     @mock.patch('azext_ssh.custom.connectivity_utils.get_relay_information')
     @mock.patch('azext_ssh.ssh_utils.get_ssh_cert_principals')
     @mock.patch('os.path.join')

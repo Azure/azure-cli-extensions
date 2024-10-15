@@ -18,13 +18,13 @@ class Update(AAZCommand):
     """Update an NGINX deployment
 
     :example: Update tags and enable diagnostics support for a deployment
-        az nginx deployment update --name myDeployment --resource-group myResourceGroup --location eastus2 --tags tag1="value1" tag2="value2" --enable-diagnostics
+        az nginx deployment update --name myDeployment --resource-group myResourceGroup --location eastus2 --tags tag1="value1" tag2="value2" --enable-diagnostics --nginx-app-protect web-application-firewall-settings="{"activation-state":"Enabled"}"
     """
 
     _aaz_info = {
-        "version": "2023-09-01",
+        "version": "2024-06-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}", "2023-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/nginx.nginxplus/nginxdeployments/{}", "2024-06-01-preview"],
         ]
     }
 
@@ -120,6 +120,12 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
+        _args_schema.auto_upgrade_profile = AAZObjectArg(
+            options=["--auto-upgrade-profile"],
+            arg_group="Properties",
+            help="Autoupgrade settings of a deployment.",
+            nullable=True,
+        )
         _args_schema.enable_diagnostics = AAZBoolArg(
             options=["--enable-diagnostics"],
             arg_group="Properties",
@@ -138,6 +144,12 @@ class Update(AAZCommand):
             help={"short-summary": "IP address and VNet + subnet information", "long-summary": "Usage: --network-profile front-end-ip-configuration=\"<private or public IP address information>\" network-interface-configuration=\"<subnet information>\"\nfront-end-ip-configuration: IP information, public or private IP addresses.\nnetwork-interface-configuration: A subnet within your virtual network. This subnet should be delegated to NGINX.NGINXPLUS/nginxDeployments"},
             nullable=True,
         )
+        _args_schema.nginx_app_protect = AAZObjectArg(
+            options=["--nginx-app-protect"],
+            arg_group="Properties",
+            help="Settings for NGINX App Protect (NAP)",
+            nullable=True,
+        )
         _args_schema.scaling_properties = AAZObjectArg(
             options=["--scaling-properties"],
             arg_group="Properties",
@@ -149,6 +161,12 @@ class Update(AAZCommand):
             arg_group="Properties",
             help={"short-summary": "Optional: Preferred communication email", "long-summary": "Usage --user-profile preferred-email=xyz@abc.com"},
             nullable=True,
+        )
+
+        auto_upgrade_profile = cls._args_schema.auto_upgrade_profile
+        auto_upgrade_profile.upgrade_channel = AAZStrArg(
+            options=["upgrade-channel"],
+            help="Channel used for autoupgrade.",
         )
 
         logging = cls._args_schema.logging
@@ -224,10 +242,57 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        nginx_app_protect = cls._args_schema.nginx_app_protect
+        nginx_app_protect.web_application_firewall_settings = AAZObjectArg(
+            options=["web-application-firewall-settings"],
+            help="Settings for the NGINX App Protect Web Application Firewall (WAF)",
+        )
+
+        web_application_firewall_settings = cls._args_schema.nginx_app_protect.web_application_firewall_settings
+        web_application_firewall_settings.activation_state = AAZStrArg(
+            options=["activation-state"],
+            help="The activation state of the WAF. Use 'Enabled' to enable the WAF and 'Disabled' to disable it.",
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+
         scaling_properties = cls._args_schema.scaling_properties
+        scaling_properties.profiles = AAZListArg(
+            options=["profiles"],
+        )
         scaling_properties.capacity = AAZIntArg(
             options=["capacity"],
             nullable=True,
+        )
+
+        profiles = cls._args_schema.scaling_properties.profiles
+        profiles.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.scaling_properties.profiles.Element
+        _element.capacity = AAZObjectArg(
+            options=["capacity"],
+            help="The capacity parameters of the profile.",
+        )
+        _element.name = AAZStrArg(
+            options=["name"],
+        )
+
+        capacity = cls._args_schema.scaling_properties.profiles.Element.capacity
+        capacity.max = AAZIntArg(
+            options=["max"],
+            help="The maximum number of NCUs the deployment can be autoscaled to.",
+            fmt=AAZIntArgFormat(
+                minimum=0,
+            ),
+        )
+        capacity.min = AAZIntArg(
+            options=["min"],
+            help="The minimum number of NCUs the deployment can be autoscaled to.",
+            fmt=AAZIntArgFormat(
+                minimum=0,
+            ),
         )
 
         user_profile = cls._args_schema.user_profile
@@ -236,7 +301,7 @@ class Update(AAZCommand):
             help="The preferred support contact email address of the user used for sending alerts and notification. Can be an empty string or a valid email address.",
             nullable=True,
             fmt=AAZStrArgFormat(
-                pattern="^$|^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}$",
+                pattern="^$|^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}$",
             ),
         )
         return cls._args_schema
@@ -319,7 +384,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-06-01-preview",
                     required=True,
                 ),
             }
@@ -418,7 +483,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-09-01",
+                    "api-version", "2024-06-01-preview",
                     required=True,
                 ),
             }
@@ -493,11 +558,17 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("autoUpgradeProfile", AAZObjectType, ".auto_upgrade_profile")
                 properties.set_prop("enableDiagnosticsSupport", AAZBoolType, ".enable_diagnostics")
                 properties.set_prop("logging", AAZObjectType, ".logging")
                 properties.set_prop("networkProfile", AAZObjectType, ".network_profile")
+                properties.set_prop("nginxAppProtect", AAZObjectType, ".nginx_app_protect")
                 properties.set_prop("scalingProperties", AAZObjectType, ".scaling_properties")
                 properties.set_prop("userProfile", AAZObjectType, ".user_profile")
+
+            auto_upgrade_profile = _builder.get(".properties.autoUpgradeProfile")
+            if auto_upgrade_profile is not None:
+                auto_upgrade_profile.set_prop("upgradeChannel", AAZStrType, ".upgrade_channel", typ_kwargs={"flags": {"required": True}})
 
             logging = _builder.get(".properties.logging")
             if logging is not None:
@@ -540,9 +611,36 @@ class Update(AAZCommand):
             if network_interface_configuration is not None:
                 network_interface_configuration.set_prop("subnetId", AAZStrType, ".subnet_id")
 
+            nginx_app_protect = _builder.get(".properties.nginxAppProtect")
+            if nginx_app_protect is not None:
+                nginx_app_protect.set_prop("webApplicationFirewallSettings", AAZObjectType, ".web_application_firewall_settings", typ_kwargs={"flags": {"required": True}})
+
+            web_application_firewall_settings = _builder.get(".properties.nginxAppProtect.webApplicationFirewallSettings")
+            if web_application_firewall_settings is not None:
+                web_application_firewall_settings.set_prop("activationState", AAZStrType, ".activation_state")
+
             scaling_properties = _builder.get(".properties.scalingProperties")
             if scaling_properties is not None:
+                scaling_properties.set_prop("autoScaleSettings", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
                 scaling_properties.set_prop("capacity", AAZIntType, ".capacity")
+
+            auto_scale_settings = _builder.get(".properties.scalingProperties.autoScaleSettings")
+            if auto_scale_settings is not None:
+                auto_scale_settings.set_prop("profiles", AAZListType, ".profiles", typ_kwargs={"flags": {"required": True}})
+
+            profiles = _builder.get(".properties.scalingProperties.autoScaleSettings.profiles")
+            if profiles is not None:
+                profiles.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.scalingProperties.autoScaleSettings.profiles[]")
+            if _elements is not None:
+                _elements.set_prop("capacity", AAZObjectType, ".capacity", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+
+            capacity = _builder.get(".properties.scalingProperties.autoScaleSettings.profiles[].capacity")
+            if capacity is not None:
+                capacity.set_prop("max", AAZIntType, ".max", typ_kwargs={"flags": {"required": True}})
+                capacity.set_prop("min", AAZIntType, ".min", typ_kwargs={"flags": {"required": True}})
 
             user_profile = _builder.get(".properties.userProfile")
             if user_profile is not None:
@@ -636,6 +734,9 @@ class _UpdateHelper:
         )
 
         properties = _schema_nginx_deployment_read.properties
+        properties.auto_upgrade_profile = AAZObjectType(
+            serialized_name="autoUpgradeProfile",
+        )
         properties.enable_diagnostics_support = AAZBoolType(
             serialized_name="enableDiagnosticsSupport",
         )
@@ -650,6 +751,9 @@ class _UpdateHelper:
         properties.network_profile = AAZObjectType(
             serialized_name="networkProfile",
         )
+        properties.nginx_app_protect = AAZObjectType(
+            serialized_name="nginxAppProtect",
+        )
         properties.nginx_version = AAZStrType(
             serialized_name="nginxVersion",
             flags={"read_only": True},
@@ -663,6 +767,12 @@ class _UpdateHelper:
         )
         properties.user_profile = AAZObjectType(
             serialized_name="userProfile",
+        )
+
+        auto_upgrade_profile = _schema_nginx_deployment_read.properties.auto_upgrade_profile
+        auto_upgrade_profile.upgrade_channel = AAZStrType(
+            serialized_name="upgradeChannel",
+            flags={"required": True},
         )
 
         logging = _schema_nginx_deployment_read.properties.logging
@@ -719,8 +829,82 @@ class _UpdateHelper:
             serialized_name="subnetId",
         )
 
+        nginx_app_protect = _schema_nginx_deployment_read.properties.nginx_app_protect
+        nginx_app_protect.web_application_firewall_settings = AAZObjectType(
+            serialized_name="webApplicationFirewallSettings",
+            flags={"required": True},
+        )
+        nginx_app_protect.web_application_firewall_status = AAZObjectType(
+            serialized_name="webApplicationFirewallStatus",
+            flags={"read_only": True},
+        )
+
+        web_application_firewall_settings = _schema_nginx_deployment_read.properties.nginx_app_protect.web_application_firewall_settings
+        web_application_firewall_settings.activation_state = AAZStrType(
+            serialized_name="activationState",
+        )
+
+        web_application_firewall_status = _schema_nginx_deployment_read.properties.nginx_app_protect.web_application_firewall_status
+        web_application_firewall_status.attack_signatures_package = AAZObjectType(
+            serialized_name="attackSignaturesPackage",
+            flags={"read_only": True},
+        )
+        cls._build_schema_web_application_firewall_package_read(web_application_firewall_status.attack_signatures_package)
+        web_application_firewall_status.bot_signatures_package = AAZObjectType(
+            serialized_name="botSignaturesPackage",
+            flags={"read_only": True},
+        )
+        cls._build_schema_web_application_firewall_package_read(web_application_firewall_status.bot_signatures_package)
+        web_application_firewall_status.component_versions = AAZObjectType(
+            serialized_name="componentVersions",
+            flags={"read_only": True},
+        )
+        web_application_firewall_status.threat_campaigns_package = AAZObjectType(
+            serialized_name="threatCampaignsPackage",
+            flags={"read_only": True},
+        )
+        cls._build_schema_web_application_firewall_package_read(web_application_firewall_status.threat_campaigns_package)
+
+        component_versions = _schema_nginx_deployment_read.properties.nginx_app_protect.web_application_firewall_status.component_versions
+        component_versions.waf_engine_version = AAZStrType(
+            serialized_name="wafEngineVersion",
+            flags={"required": True},
+        )
+        component_versions.waf_nginx_version = AAZStrType(
+            serialized_name="wafNginxVersion",
+            flags={"required": True},
+        )
+
         scaling_properties = _schema_nginx_deployment_read.properties.scaling_properties
+        scaling_properties.auto_scale_settings = AAZObjectType(
+            serialized_name="autoScaleSettings",
+            flags={"client_flatten": True},
+        )
         scaling_properties.capacity = AAZIntType()
+
+        auto_scale_settings = _schema_nginx_deployment_read.properties.scaling_properties.auto_scale_settings
+        auto_scale_settings.profiles = AAZListType(
+            flags={"required": True},
+        )
+
+        profiles = _schema_nginx_deployment_read.properties.scaling_properties.auto_scale_settings.profiles
+        profiles.Element = AAZObjectType()
+
+        _element = _schema_nginx_deployment_read.properties.scaling_properties.auto_scale_settings.profiles.Element
+        _element.capacity = AAZObjectType(
+            flags={"required": True},
+        )
+        _element.name = AAZStrType(
+            flags={"required": True},
+        )
+
+        capacity = _schema_nginx_deployment_read.properties.scaling_properties.auto_scale_settings.profiles.Element.capacity
+        capacity.max = AAZIntType(
+            flags={"required": True},
+        )
+        capacity.min = AAZIntType(
+            flags={"required": True},
+        )
 
         user_profile = _schema_nginx_deployment_read.properties.user_profile
         user_profile.preferred_email = AAZStrType(
@@ -764,6 +948,31 @@ class _UpdateHelper:
         _schema.system_data = cls._schema_nginx_deployment_read.system_data
         _schema.tags = cls._schema_nginx_deployment_read.tags
         _schema.type = cls._schema_nginx_deployment_read.type
+
+    _schema_web_application_firewall_package_read = None
+
+    @classmethod
+    def _build_schema_web_application_firewall_package_read(cls, _schema):
+        if cls._schema_web_application_firewall_package_read is not None:
+            _schema.revision_datetime = cls._schema_web_application_firewall_package_read.revision_datetime
+            _schema.version = cls._schema_web_application_firewall_package_read.version
+            return
+
+        cls._schema_web_application_firewall_package_read = _schema_web_application_firewall_package_read = AAZObjectType(
+            flags={"read_only": True}
+        )
+
+        web_application_firewall_package_read = _schema_web_application_firewall_package_read
+        web_application_firewall_package_read.revision_datetime = AAZStrType(
+            serialized_name="revisionDatetime",
+            flags={"required": True},
+        )
+        web_application_firewall_package_read.version = AAZStrType(
+            flags={"required": True},
+        )
+
+        _schema.revision_datetime = cls._schema_web_application_firewall_package_read.revision_datetime
+        _schema.version = cls._schema_web_application_firewall_package_read.version
 
 
 __all__ = ["Update"]

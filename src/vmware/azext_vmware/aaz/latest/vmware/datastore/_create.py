@@ -16,9 +16,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-03-01",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}/datastores/{}", "2023-03-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.avs/privateclouds/{}/clusters/{}/datastores/{}", "2023-09-01"],
         ]
     }
 
@@ -88,11 +88,20 @@ class Create(AAZCommand):
             help="Azure resource ID of the iSCSI target",
         )
 
+        # define Arg Group "ElasticSanVolume"
+
+        _args_schema = cls._args_schema
+        _args_schema.elastic_san_volume = AAZResourceIdArg(
+            options=["--elastic-san-volume"],
+            arg_group="ElasticSanVolume",
+            help="Azure resource ID of the Elastic SAN Volume",
+        )
+
         # define Arg Group "NetAppVolume"
 
         _args_schema = cls._args_schema
-        _args_schema.net_app_volumn = AAZStrArg(
-            options=["--volume-id", "--net-app-volumn"],
+        _args_schema.net_app_volume = AAZStrArg(
+            options=["--volume-id", "--net-app-volume"],
             arg_group="NetAppVolume",
             help="Azure resource ID of the NetApp volume",
         )
@@ -187,7 +196,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-03-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }
@@ -217,6 +226,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("diskPoolVolume", AAZObjectType)
+                properties.set_prop("elasticSanVolume", AAZObjectType)
                 properties.set_prop("netAppVolume", AAZObjectType)
 
             disk_pool_volume = _builder.get(".properties.diskPoolVolume")
@@ -225,9 +235,13 @@ class Create(AAZCommand):
                 disk_pool_volume.set_prop("mountOption", AAZStrType, ".mount_option")
                 disk_pool_volume.set_prop("targetId", AAZStrType, ".target_id", typ_kwargs={"flags": {"required": True}})
 
+            elastic_san_volume = _builder.get(".properties.elasticSanVolume")
+            if elastic_san_volume is not None:
+                elastic_san_volume.set_prop("targetId", AAZStrType, ".elastic_san_volume", typ_kwargs={"flags": {"required": True}})
+
             net_app_volume = _builder.get(".properties.netAppVolume")
             if net_app_volume is not None:
-                net_app_volume.set_prop("id", AAZStrType, ".net_app_volumn", typ_kwargs={"flags": {"required": True}})
+                net_app_volume.set_prop("id", AAZStrType, ".net_app_volume", typ_kwargs={"flags": {"required": True}})
 
             return self.serialize_content(_content_value)
 
@@ -258,6 +272,10 @@ class Create(AAZCommand):
             _schema_on_200_201.properties = AAZObjectType(
                 flags={"client_flatten": True},
             )
+            _schema_on_200_201.system_data = AAZObjectType(
+                serialized_name="systemData",
+                flags={"read_only": True},
+            )
             _schema_on_200_201.type = AAZStrType(
                 flags={"read_only": True},
             )
@@ -266,6 +284,9 @@ class Create(AAZCommand):
             properties.disk_pool_volume = AAZObjectType(
                 serialized_name="diskPoolVolume",
             )
+            properties.elastic_san_volume = AAZObjectType(
+                serialized_name="elasticSanVolume",
+            )
             properties.net_app_volume = AAZObjectType(
                 serialized_name="netAppVolume",
             )
@@ -273,9 +294,7 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.status = AAZStrType(
-                flags={"read_only": True},
-            )
+            properties.status = AAZStrType()
 
             disk_pool_volume = cls._schema_on_200_201.properties.disk_pool_volume
             disk_pool_volume.lun_name = AAZStrType(
@@ -293,9 +312,35 @@ class Create(AAZCommand):
                 flags={"required": True},
             )
 
+            elastic_san_volume = cls._schema_on_200_201.properties.elastic_san_volume
+            elastic_san_volume.target_id = AAZStrType(
+                serialized_name="targetId",
+                flags={"required": True},
+            )
+
             net_app_volume = cls._schema_on_200_201.properties.net_app_volume
             net_app_volume.id = AAZStrType(
                 flags={"required": True},
+            )
+
+            system_data = cls._schema_on_200_201.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
             )
 
             return cls._schema_on_200_201

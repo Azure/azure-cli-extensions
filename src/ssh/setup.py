@@ -7,7 +7,7 @@
 
 from setuptools import setup, find_packages
 
-VERSION = "2.0.3"
+VERSION = "2.0.5"
 
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
@@ -22,7 +22,8 @@ CLASSIFIERS = [
 ]
 
 DEPENDENCIES = [
-    'oschmod==0.3.12'
+    'oschmod==0.3.12',
+    'oras==0.1.30'
 ]
 
 setup(

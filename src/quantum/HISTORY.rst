@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.0.0b3
+++++++
+* [2024-04-11] Version intended to work with QDK version 0.29.0
+* Change role assignment for new Workspaces to linked Storage Accounts from Contributor to Storage Account Contributor.
+
 1.0.0b2
 ++++++
 * [2024-02-14] Version intended to work with QDK version 0.29.0

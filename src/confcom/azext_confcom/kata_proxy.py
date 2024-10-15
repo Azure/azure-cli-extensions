@@ -41,7 +41,7 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
         needed_assets = ["genpolicy", "genpolicy.exe"]
         # search for genpolicy in the assets from kata-container releases
         for release in r.json():
-            if release.get("tag_name").startswith("genpolicy"):
+            if "genpolicy" in release.get("tag_name"):
                 # these should be newest to oldest
                 for asset in release["assets"]:
                     # download the file if it contains genpolicy
@@ -103,16 +103,25 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
             os.chmod(self.policy_bin, st.st_mode | stat.S_IXUSR)
 
     def kata_genpolicy(
-        self, yaml_path,
+        self,
+        yaml_path,
         config_map_file=None,
         outraw=False,
         print_policy=False,
         use_cached_files=False,
         settings_file_name=None,
+        rules_file_name=None,
+        print_version=False,
+        containerd_pull=False,
+        containerd_socket_path=None
     ) -> List[str]:
         policy_bin_str = str(self.policy_bin)
         # get path to data and rules folder
-        arg_list = [policy_bin_str, "-y", yaml_path, "-i", DATA_FOLDER]
+        arg_list = [policy_bin_str]
+
+        if yaml_path:
+            arg_list.append("-y")
+            arg_list.append(yaml_path)
 
         if config_map_file is not None:
             arg_list.append("-c")
@@ -127,16 +136,31 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
         if use_cached_files:
             arg_list.append("-u")
 
+        arg_list.append("-j")
         if settings_file_name:
-            arg_list.append("-j")
-            # only take the last part of the path for the settings file
-            settings_file_name = os.path.basename(settings_file_name)
             arg_list.append(settings_file_name)
+        else:
+            arg_list.append(os.path.join(DATA_FOLDER, "genpolicy-settings.json"))
+
+        arg_list.append("-p")
+        if rules_file_name:
+            arg_list.append(rules_file_name)
+        else:
+            arg_list.append(os.path.join(DATA_FOLDER, "rules.rego"))
+
+        if print_version:
+            arg_list.append("-v")
+
+        if containerd_pull:
+            item_to_append = "-d"
+            # -d by itself will use default path: /var/run/containerd/containerd.sock
+            # -d=my/path/my_containerd.sock will use the specified path
+            if containerd_socket_path:
+                item_to_append += f"={containerd_socket_path}"
+            arg_list.append(item_to_append)
 
         item = subprocess.run(
             arg_list,
-            # stdout=sys.stdout,
-            # stderr=sys.stderr,
             check=False,
         )
 

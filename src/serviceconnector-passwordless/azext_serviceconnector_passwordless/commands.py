@@ -8,6 +8,7 @@ from azure.cli.core.commands import CliCommandType
 
 from azure.cli.command_modules.serviceconnector._resource_config import (
     SOURCE_RESOURCES,
+    TARGET_RESOURCES_DEPRECATED
 )
 from azure.cli.command_modules.serviceconnector._transformers import (
     transform_linker_properties,
@@ -32,8 +33,12 @@ def load_command_table(self, _):
     for target in PASSWORDLESS_TARGET_RESOURCES:
         with self.command_group('connection create',
                                 local_connection_type, client_factory=cf_connector) as ig:
-            ig.custom_command(target.value, 'local_connection_create_ext',
-                              supports_no_wait=True)
+            if target in TARGET_RESOURCES_DEPRECATED:
+                ig.custom_command(target.value, 'local_connection_create_ext', deprecate_info=self.deprecate(hide=False),
+                                  supports_no_wait=True, transform=transform_linker_properties)
+            else:
+                ig.custom_command(target.value, 'local_connection_create_ext',
+                                  supports_no_wait=True, transform=transform_linker_properties)
 
     for source in SOURCE_RESOURCES:
         # if source resource is released as an extension, load our command groups
@@ -42,5 +47,9 @@ def load_command_table(self, _):
             for target in PASSWORDLESS_TARGET_RESOURCES:
                 with self.command_group(f'{source.value} connection create',
                                         connection_type, client_factory=cf_linker) as ig:
-                    ig.custom_command(target.value, 'connection_create_ext',
-                                      supports_no_wait=True, transform=transform_linker_properties)
+                    if target in TARGET_RESOURCES_DEPRECATED:
+                        ig.custom_command(target.value, 'connection_create_ext', deprecate_info=self.deprecate(hide=False),
+                                          supports_no_wait=True, transform=transform_linker_properties)
+                    else:
+                        ig.custom_command(target.value, 'connection_create_ext',
+                                          supports_no_wait=True, transform=transform_linker_properties)

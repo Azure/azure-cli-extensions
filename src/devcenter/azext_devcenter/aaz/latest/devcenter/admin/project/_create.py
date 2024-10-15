@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}", "2024-05-01-preview"],
         ]
     }
 
@@ -78,6 +78,40 @@ class Create(AAZCommand):
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
+
+        # define Arg Group "CatalogSettings"
+
+        _args_schema = cls._args_schema
+        _args_schema.catalog_item_sync_types = AAZListArg(
+            options=["--catalog-item-sync-types", "-c"],
+            arg_group="CatalogSettings",
+            help="Indicates catalog item types that can be synced.",
+        )
+
+        catalog_item_sync_types = cls._args_schema.catalog_item_sync_types
+        catalog_item_sync_types.Element = AAZStrArg(
+            enum={"EnvironmentDefinition": "EnvironmentDefinition"},
+        )
+
+        # define Arg Group "Identity"
+
+        _args_schema = cls._args_schema
+        _args_schema.identity_type = AAZStrArg(
+            options=["--identity-type"],
+            arg_group="Identity",
+            help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
+            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned, UserAssigned": "SystemAssigned, UserAssigned", "UserAssigned": "UserAssigned"},
+        )
+        _args_schema.user_assigned_identities = AAZDictArg(
+            options=["--user-assigned-identities", "-u"],
+            arg_group="Identity",
+            help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
+        )
+
+        user_assigned_identities = cls._args_schema.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectArg(
+            blank={},
+        )
 
         # define Arg Group "Properties"
 
@@ -164,7 +198,7 @@ class Create(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -188,7 +222,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -213,16 +247,35 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("identity", AAZObjectType)
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("type", AAZStrType, ".identity_type", typ_kwargs={"flags": {"required": True}})
+                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+
+            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
+            if user_assigned_identities is not None:
+                user_assigned_identities.set_elements(AAZObjectType, ".")
+
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("catalogSettings", AAZObjectType)
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("devCenterId", AAZStrType, ".dev_center_id")
                 properties.set_prop("displayName", AAZStrType, ".display_name")
                 properties.set_prop("maxDevBoxesPerUser", AAZIntType, ".max_dev_boxes_per_user")
+
+            catalog_settings = _builder.get(".properties.catalogSettings")
+            if catalog_settings is not None:
+                catalog_settings.set_prop("catalogItemSyncTypes", AAZListType, ".catalog_item_sync_types")
+
+            catalog_item_sync_types = _builder.get(".properties.catalogSettings.catalogItemSyncTypes")
+            if catalog_item_sync_types is not None:
+                catalog_item_sync_types.set_elements(AAZStrType, ".")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -251,6 +304,7 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
+            _schema_on_200_201.identity = AAZObjectType()
             _schema_on_200_201.location = AAZStrType(
                 flags={"required": True},
             )
@@ -269,7 +323,39 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
+            identity = cls._schema_on_200_201.identity
+            identity.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+            identity.tenant_id = AAZStrType(
+                serialized_name="tenantId",
+                flags={"read_only": True},
+            )
+            identity.type = AAZStrType(
+                flags={"required": True},
+            )
+            identity.user_assigned_identities = AAZDictType(
+                serialized_name="userAssignedIdentities",
+            )
+
+            user_assigned_identities = cls._schema_on_200_201.identity.user_assigned_identities
+            user_assigned_identities.Element = AAZObjectType()
+
+            _element = cls._schema_on_200_201.identity.user_assigned_identities.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"read_only": True},
+            )
+            _element.principal_id = AAZStrType(
+                serialized_name="principalId",
+                flags={"read_only": True},
+            )
+
             properties = cls._schema_on_200_201.properties
+            properties.catalog_settings = AAZObjectType(
+                serialized_name="catalogSettings",
+            )
             properties.description = AAZStrType()
             properties.dev_center_id = AAZStrType(
                 serialized_name="devCenterId",
@@ -288,6 +374,14 @@ class Create(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+
+            catalog_settings = cls._schema_on_200_201.properties.catalog_settings
+            catalog_settings.catalog_item_sync_types = AAZListType(
+                serialized_name="catalogItemSyncTypes",
+            )
+
+            catalog_item_sync_types = cls._schema_on_200_201.properties.catalog_settings.catalog_item_sync_types
+            catalog_item_sync_types.Element = AAZStrType()
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(

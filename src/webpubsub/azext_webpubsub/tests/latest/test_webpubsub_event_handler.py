@@ -67,6 +67,7 @@ class WebpubsubEventHandlerTest(ScenarioTest):
         self.cmd('webpubsub hub create -g {rg} -n {name} --hub-name {hub} --event-handler url-template={urlTemplate1} user-event-pattern={userEventPattern1} system-event=connect', checks=[
             self.check('name', '{hub}'),
             self.check('properties.anonymousConnectPolicy', 'deny'),
+            self.check('properties.webSocketKeepAliveIntervalInSeconds', 20),
             self.check('properties.eventHandlers[0].urlTemplate', '{urlTemplate1}'),
             self.check('properties.eventHandlers[0].userEventPattern', '{userEventPattern1}'),
             self.check('properties.eventHandlers[0].systemEvents[0]', 'connect'),
@@ -76,6 +77,7 @@ class WebpubsubEventHandlerTest(ScenarioTest):
         self.cmd('webpubsub hub show -g {rg} -n {name} --hub-name {hub}', checks=[
             self.check('name', '{hub}'),
             self.check('properties.anonymousConnectPolicy', 'deny'),
+            self.check('properties.webSocketKeepAliveIntervalInSeconds', 20),
             self.check('properties.eventHandlers[0].urlTemplate', '{urlTemplate1}'),
             self.check('properties.eventHandlers[0].userEventPattern', '{userEventPattern1}'),
             self.check('properties.eventHandlers[0].systemEvents[0]', 'connect'),
@@ -85,15 +87,17 @@ class WebpubsubEventHandlerTest(ScenarioTest):
         self.cmd('webpubsub hub list -g {rg} -n {name}', checks=[
             self.check('[0].name', '{hub}'),
             self.check('[0].properties.anonymousConnectPolicy', 'deny'),
+            self.check('[0].properties.webSocketKeepAliveIntervalInSeconds', 20),
             self.check('[0].properties.eventHandlers[0].urlTemplate', '{urlTemplate1}'),
             self.check('[0].properties.eventHandlers[0].userEventPattern', '{userEventPattern1}'),
             self.check('[0].properties.eventHandlers[0].systemEvents[0]', 'connect'),
         ])
 
         # Test hub update
-        self.cmd('webpubsub hub update -g {rg} -n {name} --hub-name {hub} --allow-anonymous --event-handler url-template={urlTemplate2} user-event-pattern={userEventPattern2} system-event=disconnect system-event=connected auth-type="ManagedIdentity" auth-resource={authResource}', checks=[
+        self.cmd('webpubsub hub update -g {rg} -n {name} --hub-name {hub} --allow-anonymous --websocket-keepalive 30 --event-handler url-template={urlTemplate2} user-event-pattern={userEventPattern2} system-event=disconnect system-event=connected auth-type="ManagedIdentity" auth-resource={authResource}', checks=[
             self.check('name', '{hub}'),
             self.check('properties.anonymousConnectPolicy', 'allow'),
+            self.check('properties.webSocketKeepAliveIntervalInSeconds', 30),
             self.check('properties.eventHandlers[0].urlTemplate', '{urlTemplate2}'),
             self.check('properties.eventHandlers[0].userEventPattern', '{userEventPattern2}'),
             self.check('properties.eventHandlers[0].systemEvents[0]', 'disconnect'),

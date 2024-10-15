@@ -16,16 +16,11 @@ class SelfHelpScenario(ScenarioTest):
     def test_help_discoverysolutions(self, resource_group, key_vault):
 
         self.kwargs.update({
-            'scope': resource_id(resource_group=resource_group,
-                                 subscription=self.get_subscription_id(),
-                                 name=key_vault,
-                                 namespace='Microsoft.KeyVault',
-                                 type='vaults'),
-            'filter': "\"ProblemClassificationId eq '00000000-0000-0000-0000-000000000000'\""
+            'filter': "\"ProblemClassificationId eq '00000000-0000-0000-0000-000000000000'\"",
         })
 
         list_solution_discovery_result = self.cmd(
-            'self-help discovery-solution list --scope {scope} --filter {filter}', checks=[
+            'self-help discovery-solution list --filter {filter}', checks=[
                 self.check(
                     '[0].type', 'Microsoft.Help/discoverySolutions', case_sensitive=False)
             ]).get_output_in_json()
@@ -34,6 +29,24 @@ class SelfHelpScenario(ScenarioTest):
         self.assertTrue("type" in list_solution_discovery_result[0])
         self.assertTrue("name" in list_solution_discovery_result[0])
         self.assertTrue("id" in list_solution_discovery_result[0])
+
+        self.kwargs.update({
+            'subscription-id': self.get_subscription_id(),
+            'service-id': "\"6f16735c-b0ae-b275-ad3a-03479cfa1396\"",
+            'issue-summary': "\"I am not able to make rdp connection to the virtual machine\""
+        })
+
+        list_solution_discovery_result_nlp = self.cmd(
+            'self-help discovery-solution list-nlp --issue-summary {issue-summary} --service-id {service-id}', checks=[
+                self.check(
+                    '[0].type', 'Microsoft.Help/discoverSolutions', case_sensitive=False)
+            ]).get_output_in_json()
+
+        list_solution_discovery_result_nlp_subscription = self.cmd(
+            'self-help discovery-solution list-nlp-subscription --issue-summary {issue-summary} --service-id {service-id} --subscription-id {subscription-id}', checks=[
+                self.check(
+                    '[0].type', 'Microsoft.Help/discoverSolutions', case_sensitive=False)
+            ]).get_output_in_json()
 
     @ResourceGroupPreparer()
     @KeyVaultPreparer()
@@ -120,11 +133,14 @@ class SelfHelpScenario(ScenarioTest):
                                  namespace='Microsoft.KeyVault',
                                  type='vaults'),
             'solution-name': solution_name,
-            'trigger-criteria': "[{name:solutionid,value:Demo2InsightV2}]",
+            'trigger-criteria': "[{name:solutionid,value:apollo-cognitve-search-custom-skill}]",
             'update-trigger-criteria': "[{name:ReplacementKey,value:<!--56ee7509-92e1-4b9e-97c2-dda53065294c-->}]",
-            'parameters': '{}',
+            'parameters': '{SearchText:CanNotRDP,SymptomId:KeyVaultVaultNotFoundInsight}',
             'update-parameters': '{SearchText:CanNotRDP,SymptomId:KeyVaultVaultNotFoundInsight}'
         })
+
+        warmup_solution_result = self.cmd(
+            "self-help solution warmup --solution-name {solution-name} --parameters {parameters} --scope {scope}", checks=[])
 
         create_solution_result = self.cmd(
             "self-help solution create --solution-name {solution-name}  --trigger-criteria {trigger-criteria} --parameters {parameters} --scope {scope}", checks=[
@@ -155,6 +171,59 @@ class SelfHelpScenario(ScenarioTest):
         self.assertTrue(update_solution_result["id"] is not None)
         self.assertTrue(update_solution_result["name"] is not None)
 
+    @ResourceGroupPreparer()
+    @KeyVaultPreparer()
+    def test_help_simplified_solutions(self, resource_group, key_vault):
+        # Create simplesolution for keyVault resource.
+        solution_name = self.create_random_name(prefix='cli_test', length=15)
+        self.kwargs.update({
+            'scope': resource_id(resource_group=resource_group,
+                                 subscription=self.get_subscription_id(),
+                                 name=key_vault,
+                                 namespace='Microsoft.KeyVault',
+                                 type='vaults'),
+            'solution-name': solution_name,
+            'solution-id': "apollo-cognitve-search-custom-skill",
+            'parameters': '{}',
+        })
+
+        create_solution_result = self.cmd(
+            "self-help simplified-solution create --solution-name {solution-name} --solution-id {solution-id} --parameters {parameters} --scope {scope}", checks=[
+                self.check('name', '{solution-name}'),
+                self.check('type', 'Microsoft.Help/simplifiedSolutions')])
+        create_solution_result = create_solution_result.get_output_in_json()
+        self.assertTrue(create_solution_result is not None)
+        self.assertTrue(create_solution_result["id"] is not None)
+        self.assertTrue(create_solution_result["name"] is not None)
+
+        # Get solution for keyVault resource.
+        get_solution_result = self.cmd(
+            "self-help simplified-solution show --solution-name {solution-name} --scope {scope}", checks=[
+                self.check('name', '{solution-name}'),
+                self.check('type', 'Microsoft.Help/simplifiedSolutions')])
+        get_solution_result = get_solution_result.get_output_in_json()
+        self.assertTrue(get_solution_result is not None)
+        self.assertTrue(get_solution_result["id"] is not None)
+        self.assertTrue(get_solution_result["name"] is not None)
+
+    @ResourceGroupPreparer()
+    @KeyVaultPreparer()
+    def test_help_self_help(self, resource_group, key_vault):
+        # Create simplesolution for keyVault resource.
+        solution_name = self.create_random_name(prefix='cli_test', length=15)
+        self.kwargs.update({
+            'solution-id': "apollo-48996ff7-002f-47c1-85b2-df138843d5d5",
+        })
+
+        # Get solution for keyVault resource.
+        get_solution_result = self.cmd(
+            "self-help solution-self-help show --solution-id {solution-id}", checks=[
+                self.check('name', '{solution-id}'),
+                self.check('type', 'Microsoft.Help/selfHelp')])
+        get_solution_result = get_solution_result.get_output_in_json()
+        self.assertTrue(get_solution_result is not None)
+        self.assertTrue(get_solution_result["id"] is not None)
+        self.assertTrue(get_solution_result["name"] is not None)
 
     @ResourceGroupPreparer()
     @KeyVaultPreparer()
@@ -168,7 +237,7 @@ class SelfHelpScenario(ScenarioTest):
                                  type='vaults')
         self.kwargs.update({
             'scope': resourceId,
-            'troubleshooter-name': 'f81d4fae-7dec-11d0-a765-00a0c91e6bf5',
+            'troubleshooter-name': '1b98e3d0-5b5e-4b8f-b1ea-de6142f99999',
             'solution-id': 'e104dbdf-9e14-4c9f-bc78-21ac90382231',
             'parameters': '{ResourceUri:' + resourceId + '}',
             'responses': '[]'
@@ -177,7 +246,7 @@ class SelfHelpScenario(ScenarioTest):
         create_troubleshooter_result = self.cmd(
             "self-help troubleshooter create --troubleshooter-name {troubleshooter-name}  --solution-id {solution-id} --parameters {parameters} --scope {scope}", checks=[
                 self.check('name', '{troubleshooter-name}'),
-                self.check('type', 'troubleshooters')])
+                self.check('type', 'Microsoft.Help/troubleshooters')])
         create_troubleshooter_result = create_troubleshooter_result.get_output_in_json()
         self.assertTrue(create_troubleshooter_result is not None)
         self.assertTrue(create_troubleshooter_result["id"] is not None)
@@ -189,7 +258,7 @@ class SelfHelpScenario(ScenarioTest):
         get_troubleshooter_result = self.cmd(
             "self-help troubleshooter show --troubleshooter-name {troubleshooter-name} --scope {scope}", checks=[
                 self.check('name', '{troubleshooter-name}'),
-                self.check('type', 'troubleshooters')])
+                self.check('type', 'Microsoft.Help/troubleshooters')])
         get_troubleshooter_result = get_troubleshooter_result.get_output_in_json()
         self.assertTrue(get_troubleshooter_result is not None)
         self.assertTrue(get_troubleshooter_result["id"] is not None)

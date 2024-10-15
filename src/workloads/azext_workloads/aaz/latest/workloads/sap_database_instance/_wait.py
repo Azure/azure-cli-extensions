@@ -20,7 +20,7 @@ class Wait(AAZWaitCommand):
 
     _aaz_info = {
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/databaseinstances/{}", "2023-04-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.workloads/sapvirtualinstances/{}/databaseinstances/{}", "2023-10-01-preview"],
         ]
     }
 
@@ -45,6 +45,9 @@ class Wait(AAZWaitCommand):
             help="Database resource name string modeled as parameter for auto generation to work correctly.",
             required=True,
             id_part="child_name_1",
+            fmt=AAZStrArgFormat(
+                pattern="^.*",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -54,6 +57,9 @@ class Wait(AAZWaitCommand):
             help="The name of the Virtual Instances for SAP solutions resource",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z][a-zA-Z0-9]{2}$",
+            ),
         )
         return cls._args_schema
 
@@ -126,7 +132,7 @@ class Wait(AAZWaitCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-04-01",
+                    "api-version", "2023-10-01-preview",
                     required=True,
                 ),
             }
@@ -189,19 +195,24 @@ class Wait(AAZWaitCommand):
                 serialized_name="databaseType",
                 flags={"read_only": True},
             )
-            properties.errors = AAZObjectType()
+            properties.errors = AAZObjectType(
+                flags={"read_only": True},
+            )
             properties.ip_address = AAZStrType(
                 serialized_name="ipAddress",
                 flags={"read_only": True},
             )
             properties.load_balancer_details = AAZObjectType(
                 serialized_name="loadBalancerDetails",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.status = AAZStrType()
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.subnet = AAZStrType(
                 flags={"read_only": True},
             )
@@ -223,7 +234,9 @@ class Wait(AAZWaitCommand):
             vm_details.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.vm_details.Element
-            _element.status = AAZStrType()
+            _element.status = AAZStrType(
+                flags={"read_only": True},
+            )
             _element.storage_details = AAZListType(
                 serialized_name="storageDetails",
                 flags={"read_only": True},

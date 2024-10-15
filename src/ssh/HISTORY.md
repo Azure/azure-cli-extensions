@@ -1,5 +1,13 @@
 Release History
 ===============
+2.0.5
+-----
+* Remove ctypes dependency from RDP feature
+
+2.0.4
+-----
+* Install Arc SSH Proxy from MAR
+
 2.0.3
 -----
 * [Bug Fix] Ensure that certificate validity value is always an integer when retrieving relay information for connecting to Arc Machines.

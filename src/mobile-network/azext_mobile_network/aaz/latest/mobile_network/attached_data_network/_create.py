@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create an attached data network.
 
     :example: Create attached-data-network
-        az mobile-network attached-data-network create -n data-network-name -g rg --pccp-name pccp-name --pcdp-name pcdp-name --dns-addresses "[1.1.1.1]" --data-interface " {name:N2,ipv4Address:10.28.128.2,ipv4Subnet:10.28.128.0/24,ipv4Gateway:10.28.128.1}"
+        az mobile-network attached-data-network create -n data-network-name -g rg --pccp-name pccp-name --pcdp-name pcdp-name --dns-addresses "[1.1.1.1]" --data-interface " {name:N2,ipv4Address:10.28.128.2,ipv4Subnet:10.28.128.0/24,ipv4Gateway:10.28.128.1}" --address-pool "[2.2.0.0/16]"
     """
 
     _aaz_info = {
-        "version": "2022-11-01",
+        "version": "2023-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/packetcorecontrolplanes/{}/packetcoredataplanes/{}/attacheddatanetworks/{}", "2022-11-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.mobilenetwork/packetcorecontrolplanes/{}/packetcoredataplanes/{}/attacheddatanetworks/{}", "2023-09-01"],
         ]
     }
 
@@ -367,7 +367,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-11-01",
+                    "api-version", "2023-09-01",
                     required=True,
                 ),
             }

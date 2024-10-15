@@ -88,7 +88,11 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
             os.chmod(self.policy_bin, st.st_mode | stat.S_IXUSR)
 
     def get_policy_image_layers(
-        self, image: str, tag: str, tar_location: str = ""
+        self,
+        image: str,
+        tag: str,
+        tar_location: str = "",
+        faster_hashing=False
     ) -> List[str]:
         image_name = f"{image}:{tag}"
         # populate layer info
@@ -106,6 +110,9 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
             arg_list += ["--tarball", tar_location]
         else:
             arg_list += ["-d"]
+
+        if not tar_location and faster_hashing:
+            arg_list += ["-b"]
 
         # add the image to the end of the parameter list
         arg_list += ["roothash", "-i", f"{image_name}"]
