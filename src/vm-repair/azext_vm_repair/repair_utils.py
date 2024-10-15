@@ -510,11 +510,11 @@ def _fetch_compatible_windows_os_urn_v2(source_vm):
         logger.info('Fetching compatible Windows OS images from gallery...')
         urns = loads(_call_az_command(fetch_urn_command))
 
-    # if not urns or len(urns) == 0:
+    if not urns or len(urns) == 0:
         # If source SKU not available then defaulting 2022 datacenter image.
-    fetch_urn_command = 'az vm image list -s "2022-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2022-datacenter\'].urn | reverse(sort(@))" -o json'.format(loc=location)
-    logger.info('Fetching compatible Windows OS images from gallery for 2022 Datacenter...')
-    urns = loads(_call_az_command(fetch_urn_command))
+        fetch_urn_command = 'az vm image list -s "2022-Datacenter" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2022-datacenter\'].urn | reverse(sort(@))" -o json'.format(loc=location)
+        logger.info('Fetching compatible Windows OS images from gallery for 2022 Datacenter...')
+        urns = loads(_call_az_command(fetch_urn_command))
 
     # No OS images available for Windows2016
     if not urns:
