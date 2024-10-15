@@ -286,7 +286,8 @@ def _load_email_arguments(self):
                    ' docx, gif, jpeg, mp3, one, pdf, png, ppsm, ppsx, ppt, pptm, pptx,'
                    ' pub, rpmsg, rtf, tif, txt, vsd, wav, wma, xls, xlsb, xlsm, and xlsx')
         c.argument('inline_attachments', options_list=['--inline-attachments'], nargs='+',
-                   help='List of inline attachments. Optional.')
+                   help='List of inline attachments. Optional. Format: FileLocation/ContentId'
+                   ' example: "ImageName.png/image"')
         c.argument('waitUntil', options_list=['--wait-until'],
                    arg_type=get_enum_type(['started', 'completed', '1', '0']),
                    help='Indicates whether to wait until the server operation is started or completed. '
