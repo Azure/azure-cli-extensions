@@ -13,11 +13,15 @@ from .vendored_sdks.azure_mgmt_webpubsub.operations import (
 )
 
 
-def custom_certificate_list(client: WebPubSubCustomCertificatesOperations, webpubsub_name, resource_group_name):
+def custom_certificate_list(client: WebPubSubCustomCertificatesOperations, resource_group_name, webpubsub_name):
     return client.list(resource_group_name, webpubsub_name)
 
 
-def custom_certificate_show(client: WebPubSubCustomCertificatesOperations, webpubsub_name, resource_group_name, certificate_name):
+def custom_certificate_show(client: WebPubSubCustomCertificatesOperations, resource_group_name, webpubsub_name, certificate_name):
+    return client.get(resource_group_name, webpubsub_name, certificate_name)
+
+
+def custom_certificate_get(client: WebPubSubCustomCertificatesOperations, resource_group_name, webpubsub_name, certificate_name):
     return client.get(resource_group_name, webpubsub_name, certificate_name)
 
 
@@ -30,11 +34,3 @@ def custom_certificate_create(client: WebPubSubCustomCertificatesOperations, res
 
 def custom_certificate_delete(client: WebPubSubCustomCertificatesOperations, resource_group_name, webpubsub_name, certificate_name):
     return client.delete(resource_group_name, webpubsub_name, certificate_name)
-
-
-def custom_certificate_set(client: WebPubSubCustomCertificatesOperations, resource_group_name, webpubsub_name, certificate_name, parameters):
-    return client.begin_create_or_update(resource_group_name, webpubsub_name, certificate_name, parameters)
-
-
-def custom_certificate_get(client: WebPubSubCustomCertificatesOperations, resource_group_name, webpubsub_name, certificate_name):
-    return client.get(resource_group_name, webpubsub_name, certificate_name)

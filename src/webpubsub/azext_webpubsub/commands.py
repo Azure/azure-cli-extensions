@@ -7,7 +7,7 @@
 from azure.cli.core.commands import CliCommandType
 from azure.cli.core.util import empty_on_404
 from ._client_factory import (cf_webpubsub, cf_webpubsubhub, cf_webpubsubhub_usage,
-                              cf_webpubsub_replicas, cf_webpubsub_custom_certificates)
+                              cf_webpubsub_replicas, cf_webpubsub_custom_certificates, cf_webpubsub_custom_domains)
 from ._exception_handler import exception_handler
 
 
@@ -56,6 +56,11 @@ def load_command_table(self, _):
     webpubsub_custom_certificate_utils = CliCommandType(
         operations_tmpl='azext_webpubsub.customcertificate#{}',
         client_factory=cf_webpubsub_custom_certificates
+    )
+
+    webpubsub_custom_domain_utils = CliCommandType(
+        operations_tmpl='azext_webpubsub.customdomain#{}',
+        client_factory=cf_webpubsub_custom_domains
     )
 
     webpubsub_msi_utils = CliCommandType(
@@ -138,6 +143,12 @@ def load_command_table(self, _):
         g.command('create', 'custom_certificate_create')
         g.command('delete', 'custom_certificate_delete')
         g.command('list', 'custom_certificate_list')
+
+    with self.command_group('webpubsub custom-domain', webpubsub_custom_domain_utils) as g:
+        g.command('create', 'custom_domain_create')
+        g.command('delete', 'custom_domain_delete')
+        g.command('list', 'custom_domain_list')
+        g.show_command('show', 'custom_domain_show', exception_handler=empty_on_404)
 
     with self.command_group('webpubsub identity', webpubsub_msi_utils) as g:
         g.command('assign', 'webpubsub_msi_assign')

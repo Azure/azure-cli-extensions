@@ -6,7 +6,8 @@
 from azext_webpubsub.vendored_sdks.azure_mgmt_webpubsub.models._models_py3 import WebPubSubSocketIOSettings
 from .vendored_sdks.azure_mgmt_webpubsub.models import (
     ResourceSku,
-    WebPubSubResource
+    WebPubSubResource,
+    WebPubSubTlsSettings
 )
 
 from .vendored_sdks.azure_mgmt_webpubsub.operations import (
@@ -70,7 +71,8 @@ def webpubsub_set(client, webpubsub_name, resource_group_name, parameters):
     return client.begin_update(resource_group_name, webpubsub_name, parameters)
 
 
-def update_webpubsub(instance, tags=None, sku=None, unit_count=None, service_mode=None):
+def update_webpubsub(instance: WebPubSubResource, tags=None, sku=None, unit_count=None, service_mode=None,
+                     client_cert_enabled=None, disable_local_auth=None):
     if service_mode is not None and instance.kind is not None and instance.kind.casefold() == "socketio".casefold():
         instance.socket_io = WebPubSubSocketIOSettings(service_mode=service_mode)
     sku = sku if sku else instance.sku.name
@@ -79,6 +81,12 @@ def update_webpubsub(instance, tags=None, sku=None, unit_count=None, service_mod
 
     if tags is not None:
         instance.tags = tags
+
+    if client_cert_enabled is not None:
+        instance.tls = WebPubSubTlsSettings(client_cert_enabled=client_cert_enabled)
+
+    if disable_local_auth is not None:
+        instance.disable_local_auth = disable_local_auth
 
     return instance
 

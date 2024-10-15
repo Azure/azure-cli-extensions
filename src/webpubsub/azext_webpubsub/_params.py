@@ -28,7 +28,9 @@ def load_arguments(self, _):
                                           help='Name of the Webpubsub.', id_part='name')
     webpubsubhub_name_type = CLIArgumentType(help='Name of the hub.', id_part='child_name_1')
     webpubsub_custom_certificate_name_type = CLIArgumentType(
-        help='Name of the custom certificate.', id_part='child_name_2')
+        help='Name of the custom certificate.', id_part='child_name_1')
+    webpubsub_custom_domain_name_type = CLIArgumentType(
+        help='Name of the custom domain.', id_part='child_name_2')
     webpubsub_replica_name_type = CLIArgumentType(help='Name of the replica.', id_part='child_name_1')
 
     with self.argument_context('webpubsub') as c:
@@ -46,6 +48,10 @@ def load_arguments(self, _):
         c.argument('sku', help='The sku name of the webpubsub service. Allowed values: Free_F1, Standard_S1, Premium_P1')
         c.argument('unit_count', help='The number of webpubsub service unit count', type=int)
         c.argument('service_mode', help='The mode used in kind: SocketIO. Allowed values: Default, Serverless')
+        c.argument('client_cert_enabled',
+                   help='Enable or disable client certificate authentication for a WebPubSub Service, Allowed values: true, false, null')
+        c.argument('disable_local_auth',
+                   help='Enable or disable local auth for a WebPubSub Service, Allowed values: true, false, null')
 
     with self.argument_context('webpubsub key regenerate') as c:
         c.argument('key_type', arg_type=get_enum_type(WEBPUBSUB_KEY_TYPE), help='The name of access key to regenerate')
@@ -150,7 +156,7 @@ def load_arguments(self, _):
                   'webpubsub custom-certificate delete',
                   'webpubsub custom-certificate list']:
         with self.argument_context(scope) as c:
-            c.argument('webpubsub_name', webpubsub_name_type, options_list=['--name', '-n'], id_part=None)
+            c.argument('webpubsub_name', webpubsub_name_type, id_part=None)
             c.argument('certificate_name', webpubsub_custom_certificate_name_type)
 
     for scope in ['webpubsub custom-certificate create']:
@@ -159,6 +165,20 @@ def load_arguments(self, _):
             c.argument('key_vault_secret_name', help="Key vault secret name where certificate is stored.")
             c.argument('key_vault_secret_version',
                        help="Key vault secret version where certificate is stored. If empty, will use latest version.")
+
+    # Custom Domain
+    for scope in ['webpubsub custom-domain create',
+                  'webpubsub custom-domain show',
+                  'webpubsub custom-domain delete',
+                  'webpubsub custom-domain list']:
+        with self.argument_context(scope) as c:
+            c.argument('webpubsub_name', webpubsub_name_type, id_part=None)
+            c.argument('name', webpubsub_custom_domain_name_type)
+
+    for scope in ['webpubsub custom-domain create']:
+        with self.argument_context(scope) as c:
+            c.argument('domain_name', help="Custom domain name. For example, `contoso.com`.")
+            c.argument('certificate_resource_id', help="Resource ID of the certificate.")
 
     # Managed Identity
     with self.argument_context('webpubsub identity assign') as c:

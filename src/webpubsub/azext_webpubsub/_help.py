@@ -72,9 +72,14 @@ helps['webpubsub custom-certificate'] = """
     short-summary: Manage WebPubSub custom certificates.
 """
 
+helps['webpubsub custom-domain'] = """
+    type: group
+    short-summary: Manage custom domain settings.
+"""
+
 helps['webpubsub identity'] = """
-type: group
-short-summary: Manage managed identity settings.
+    type: group
+    short-summary: Manage managed identity settings.
 """
 
 helps['webpubsub create'] = """
@@ -117,6 +122,12 @@ helps['webpubsub update'] = """
       - name: Update a Web PubSub for Socket.IO to Serverless mode.
         text: >
           az webpubsub update -n MyWebPubSub -g MyResourceGroup --service-mode Serverless
+      - name: Enable or disable client certificate authentication for a WebPubSub Service
+        text: >
+          az webpubsub update -n MyWebPubSub -g MyResourceGroup --client-cert-enabled true
+      - name: Enable or disable local auth for a WebPubSub Service
+        text: >
+          az webpubsub update -n MyWebPubSub -g MyResourceGroup --disable-local-auth true
 """
 
 helps['webpubsub start'] = """
@@ -391,7 +402,7 @@ short-summary: List custom certificates of WebPubSub Service.
 examples:
   - name: List custom certificates
     text: >
-        az webpubsub custom-certificate list --name MyWebPubSub -g MyResourceGroup
+        az webpubsub custom-certificate list --webpubsub-name MyWebPubSub -g MyResourceGroup
 """
 
 helps['webpubsub custom-certificate show'] = """
@@ -400,7 +411,7 @@ short-summary: Show the detail of a custom certificate of WebPubSub Service.
 examples:
   - name: Show custom certificate
     text: >
-        az webpubsub custom-certificate show --name MyWebPubSub -g MyResourceGroup --certificate-name MyCertificate
+        az webpubsub custom-certificate show --webpubsub-name MyWebPubSub -g MyResourceGroup --certificate-name MyCertificate
 """
 
 helps['webpubsub custom-certificate create'] = """
@@ -409,7 +420,7 @@ short-summary: Create a custom certificate of WebPubSub Service.
 examples:
   - name: Create a custom certificate
     text: >
-        az webpubsub custom-certificate create --name MyWebPubSub -g MyResourceGroup --certificate-name MyCertificate --key-vault-base-uri https://myvault.vault.azure.net/ --key-vault-secret-name MySecret --key-vault-secret-version 8d35338681be4cf09b97e899cb7179b8
+        az webpubsub custom-certificate create --webpubsub-name MyWebPubSub -g MyResourceGroup --certificate-name MyCertificate --key-vault-base-uri https://myvault.vault.azure.net/ --key-vault-secret-name MySecret --key-vault-secret-version 8d35338681be4cf09b97e899cb7179b8
 """
 
 helps['webpubsub custom-certificate delete'] = """
@@ -418,7 +429,43 @@ short-summary: Delete a custom certificate of WebPubSub Service.
 examples:
   - name: Delete a custom certificate
     text: >
-        az webpubsub custom-certificate delete --name MyWebPubSub -g MyResourceGroup --certificate-name MyCertificate
+        az webpubsub custom-certificate delete --webpubsub-name MyWebPubSub -g MyResourceGroup --certificate-name MyCertificate
+"""
+
+helps['webpubsub custom-domain create'] = """
+type: command
+short-summary: Create a custom domain of WebPubSub Service.
+examples:
+  - name: Create a custom domain
+    text: >
+        az webpubsub custom-domain create --webpubsub-name MyWebPubSub -g MyResourceGroup --name MyDomain --domain-name MyDomain.com --certificate-resource-id /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/MyResourceGroup/providers/Microsoft.Web/certificates/MyCertificate
+"""
+
+helps['webpubsub custom-domain delete'] = """
+type: command
+short-summary: Delete a custom domain of WebPubSub Service.
+examples:
+  - name: Delete a custom domain
+    text: >
+        az webpubsub custom-domain delete --webpubsub-name MyWebPubSub -g MyResourceGroup --name MyDomain
+"""
+
+helps['webpubsub custom-domain list'] = """
+type: command
+short-summary: List custom domains of WebPubSub Service.
+examples:
+  - name: List custom domains
+    text: >
+        az webpubsub custom-domain list --webpubsub-name MyWebPubSub -g MyResourceGroup
+"""
+
+helps['webpubsub custom-domain show'] = """
+type: command
+short-summary: Show the detail of a custom domain of WebPubSub Service.
+examples:
+  - name: Show custom domain
+    text: >
+        az webpubsub custom-domain show --webpubsub-name MyWebPubSub -g MyResourceGroup --name MyDomain
 """
 
 helps['webpubsub identity assign'] = """
