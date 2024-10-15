@@ -10,8 +10,7 @@ from azext_db_up._transformers import table_transform_connection_string
 
 
 def _deprecation_message(self):  # pylint: disable=unused-argument
-    msg = ("'db-up' extension will be retired on November 20, 2024, "
-           "please consider using the create command associated with the respective database")
+    msg = "'db-up' extension has been deprecated. All commands included will be removed in near future."
     return msg
 
 
