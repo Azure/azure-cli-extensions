@@ -1,0 +1,11 @@
+---
+webpubsub custom-certificate create:
+    parameters:
+        key_vault_secret_version:
+            rule_exclusions:
+            - option_length_too_long
+webpubsub custom-certificate update:
+    parameters:
+        key_vault_secret_version:
+            rule_exclusions:
+            - option_length_too_long

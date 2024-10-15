@@ -11,6 +11,7 @@ from .recording_processors import KeyReplacer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
+
 class WebpubsubCustomCertificateScenarioTest(ScenarioTest):
 
     def __init__(self, method_name):
@@ -20,53 +21,71 @@ class WebpubsubCustomCertificateScenarioTest(ScenarioTest):
 
     @ResourceGroupPreparer(random_name_length=20)
     def test_webpubsub_custom_certificate(self, resource_group):
+        webpubsub_name = self.create_random_name('webpubsub', 16)
+        sku = 'Premium_P1'
+        unit_count = 1
+        location = 'eastus'
+
         self.kwargs.update({
-            'name': self.create_random_name('webpubsub', 16),
-            'sku': 'Premium_P1',
-            'location': 'eastus',
-            'certificate_name': 'testCertificate',
-            'key_vault_base_uri': 'https://myvault.vault.azure.net/',
-            'key_vault_secret_name': 'mySecret',
-            'key_vault_secret_version': '8d35338681be4cf09b97e899cb7179b8'
+            'webpubsub_name': webpubsub_name,
+            'sku': sku,
+            'location': location,
+            'unit_count': unit_count,
+            'kv_base_uri': 'https://azureclitestkv.vault.azure.net/',
+            'kv_s_name': 'azureclitestkv3',
+            'identity': '/subscriptions/9caf2a1e-9c49-49b6-89a2-56bdec7e3f97/resourcegroups/azureclitest/providers/Microsoft.ManagedIdentity/userAssignedIdentities/azureclitestmsi',
+            'custom_cert_name': 'test-cert',
+            'kv_s_name_new': 'azureclitestkv4',
         })
 
         # Create WebPubSub service
-        self.cmd('webpubsub create -g {rg} -n {name} --sku {sku} -l {location}', checks=[
-            self.check('name', '{name}'),
+        self.cmd('webpubsub create -g {rg} -n {webpubsub_name} --sku {sku} -l {location}', checks=[
+            self.check('name', '{webpubsub_name}'),
             self.check('location', '{location}'),
-            self.check('sku.name', '{sku}'),
-            self.check('provisioningState', 'Succeeded')
+            self.check('provisioningState', 'Succeeded'),
+            self.check('sku.name', '{sku}')
+        ])
+
+        # Assign identity
+        self.cmd('webpubsub identity assign -g {rg} -n {webpubsub_name} --identity {identity}', checks=[
+            self.check('identity.type', 'UserAssigned'),
+            self.check('identity.principalId', None),
+            self.check('identity.tenantId', None),
         ])
 
         # Create custom certificate
-        self.cmd('webpubsub custom-certificate create -g {rg} -n {name} --certificate-name {certificate_name} '
-                 '--key-vault-base-uri {key_vault_base_uri} '
-                 '--key-vault-secret-name {key_vault_secret_name} '
-                 '--key-vault-secret-version {key_vault_secret_version}', checks=[
-            self.check('name', '{certificate_name}'),
-            self.check('keyVaultBaseUri', '{key_vault_base_uri}'),
-            self.check('keyVaultSecretName', '{key_vault_secret_name}'),
-            self.check('keyVaultSecretVersion', '{key_vault_secret_version}')
+        self.cmd('webpubsub custom-certificate create -g {rg} -n {webpubsub_name} --certificate-name {custom_cert_name} --key-vault-base-uri {kv_base_uri} --key-vault-secret-name {kv_s_name}', checks=[
+            self.check('provisioningState', 'Succeeded')
         ])
 
+        cert = self.cmd(
+            'webpubsub custom-certificate show -g {rg} -n {webpubsub_name} --certificate-name {custom_cert_name}', checks=[
+                self.check('name', '{custom_cert_name}'),
+                self.check('keyVaultBaseUri', '{kv_base_uri}'),
+                self.check('keyVaultSecretName', '{kv_s_name}'),
+                self.check('provisioningState', 'Succeeded')
+            ]).get_output_in_json()
+
+        self.kwargs.update({'cert_resource_id': cert['id']})
+
         # List custom certificates
-        self.cmd('webpubsub custom-certificate list -g {rg} -n {name}', checks=[
+        self.cmd('webpubsub custom-certificate list -g {rg} -n {webpubsub_name}', checks=[
             self.check('length(@)', 1),
-            self.check('[0].name', '{certificate_name}')
+            self.check('[0].name', '{custom_cert_name}')
         ])
 
         # Show custom certificate
-        self.cmd('webpubsub custom-certificate show -g {rg} -n {name} --certificate-name {certificate_name}', checks=[
-            self.check('name', '{certificate_name}'),
-            self.check('keyVaultBaseUri', '{key_vault_base_uri}'),
-            self.check('keyVaultSecretName', '{key_vault_secret_name}'),
-            self.check('keyVaultSecretVersion', '{key_vault_secret_version}')
+        self.cmd('webpubsub custom-certificate show -g {rg} -n {webpubsub_name} --certificate-name {custom_cert_name}', checks=[
+            self.check('name', '{custom_cert_name}'),
+            self.check('keyVaultBaseUri', '{kv_base_uri}'),
+            self.check('keyVaultSecretName', '{kv_s_name}'),
         ])
 
         # Delete custom certificate
-        self.cmd('webpubsub custom-certificate delete -g {rg} -n {name} --certificate-name {certificate_name}')
+        self.cmd(
+            'webpubsub custom-certificate delete -g {rg} -n {webpubsub_name} --certificate-name {custom_cert_name}')
 
         # Verify deletion
-        self.cmd('webpubsub custom-certificate list -g {rg} -n {name}', checks=[
+        self.cmd('webpubsub custom-certificate list -g {rg} -n {webpubsub_name}', checks=[
             self.check('length(@)', 0)
         ])

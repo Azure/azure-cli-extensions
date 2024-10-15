@@ -54,8 +54,13 @@ def load_command_table(self, _):
     )
 
     webpubsub_custom_certificate_utils = CliCommandType(
-        operations_tmpl='azext_webpubsub.custom-certificate#{}',
+        operations_tmpl='azext_webpubsub.customcertificate#{}',
         client_factory=cf_webpubsub_custom_certificates
+    )
+
+    webpubsub_msi_utils = CliCommandType(
+        operations_tmpl='azext_webpubsub.msi#{}',
+        client_factory=cf_webpubsub
     )
 
     with self.command_group('webpubsub', webpubsub_general_utils) as g:
@@ -129,7 +134,12 @@ def load_command_table(self, _):
         g.show_command('delete', 'webpubsub_replica_delete')
 
     with self.command_group('webpubsub custom-certificate', webpubsub_custom_certificate_utils) as g:
-        g.command('list', 'list_custom_certificate')
-        g.show_command('show', 'show_custom_certificate')
-        g.command('create', 'create_custom_certificate')
-        g.command('delete', 'delete_custom_certificate')
+        g.show_command('show', 'custom_certificate_show', exception_handler=empty_on_404)
+        g.command('create', 'custom_certificate_create')
+        g.command('delete', 'custom_certificate_delete')
+        g.command('list', 'custom_certificate_list')
+
+    with self.command_group('webpubsub identity', webpubsub_msi_utils) as g:
+        g.command('assign', 'webpubsub_msi_assign')
+        g.command('remove', 'webpubsub_msi_remove')
+        g.show_command('show', 'webpubsub_msi_show')

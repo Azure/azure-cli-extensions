@@ -24,9 +24,11 @@ PERMISSION_TYPE = ['joinLeaveGroup', 'sendToGroup']
 def load_arguments(self, _):
     from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
-    webpubsub_name_type = CLIArgumentType(options_list='--webpubsub-name-name',
+    webpubsub_name_type = CLIArgumentType(options_list='--webpubsub-name',
                                           help='Name of the Webpubsub.', id_part='name')
     webpubsubhub_name_type = CLIArgumentType(help='Name of the hub.', id_part='child_name_1')
+    webpubsub_custom_certificate_name_type = CLIArgumentType(
+        help='Name of the custom certificate.', id_part='child_name_2')
     webpubsub_replica_name_type = CLIArgumentType(help='Name of the replica.', id_part='child_name_1')
 
     with self.argument_context('webpubsub') as c:
@@ -143,12 +145,22 @@ def load_arguments(self, _):
             c.argument('webpubsub_name', webpubsub_name_type, options_list=['--name', '-n'])
 
     # Custom Certificate
-    for scope in ['webpubsub custom-certificate show', 'webpubsub custom-certificate delete']:
+    for scope in ['webpubsub custom-certificate create',
+                  'webpubsub custom-certificate show',
+                  'webpubsub custom-certificate delete',
+                  'webpubsub custom-certificate list']:
         with self.argument_context(scope) as c:
-            c.argument('certificate_name', help='The name of the certificate.',
-                       options_list=['--certificate-name', '-c'])
+            c.argument('webpubsub_name', webpubsub_name_type, options_list=['--name', '-n'], id_part=None)
+            c.argument('certificate_name', webpubsub_custom_certificate_name_type)
 
-    with self.argument_context('webpubsub custom-certificate create') as c:
-        c.argument('certificate_name', help='The name of the certificate.', options_list=['--certificate-name', '-c'])
-        c.argument('key_vault_base_uri', help='The base URI of the Key Vault that stores the certificate.')
-        c.argument('key_vault_secret_name', help='The name of the secret in the Key Vault that stores the certificate.')
+    for scope in ['webpubsub custom-certificate create']:
+        with self.argument_context(scope) as c:
+            c.argument('key_vault_base_uri', help="Key vault base URI. For example, `https://contoso.vault.azure.net`.")
+            c.argument('key_vault_secret_name', help="Key vault secret name where certificate is stored.")
+            c.argument('key_vault_secret_version',
+                       help="Key vault secret version where certificate is stored. If empty, will use latest version.")
+
+    # Managed Identity
+    with self.argument_context('webpubsub identity assign') as c:
+        c.argument(
+            'identity', help="Assigns managed identities to the service. Use '[system]' to refer to the system-assigned identity or a resource ID to refer to a user-assigned identity. You can only assign either one of them.")

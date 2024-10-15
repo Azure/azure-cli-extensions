@@ -72,9 +72,9 @@ helps['webpubsub custom-certificate'] = """
     short-summary: Manage WebPubSub custom certificates.
 """
 
-helps['webpubsub custom-domain'] = """
-    type: group
-    short-summary: Manage WebPubSub custom domains.
+helps['webpubsub identity'] = """
+type: group
+short-summary: Manage managed identity settings.
 """
 
 helps['webpubsub create'] = """
@@ -396,7 +396,7 @@ examples:
 
 helps['webpubsub custom-certificate show'] = """
 type: command
-short-summary: Show a custom certificate of WebPubSub Service.
+short-summary: Show the detail of a custom certificate of WebPubSub Service.
 examples:
   - name: Show custom certificate
     text: >
@@ -405,7 +405,7 @@ examples:
 
 helps['webpubsub custom-certificate create'] = """
 type: command
-short-summary: Create a custom certificate for WebPubSub Service.
+short-summary: Create a custom certificate of WebPubSub Service.
 examples:
   - name: Create a custom certificate
     text: >
@@ -414,9 +414,31 @@ examples:
 
 helps['webpubsub custom-certificate delete'] = """
 type: command
-short-summary: Delete a custom certificate for WebPubSub Service.
+short-summary: Delete a custom certificate of WebPubSub Service.
 examples:
   - name: Delete a custom certificate
     text: >
         az webpubsub custom-certificate delete --name MyWebPubSub -g MyResourceGroup --certificate-name MyCertificate
+"""
+
+helps['webpubsub identity assign'] = """
+type: command
+short-summary: Assign managed identity for WebPubSub Service.
+examples:
+  - name: Assign system assigned identity.
+    text: >
+        az webpubsub identity assign --identity [system] -n MyWebPubSub -g MyResourceGroup
+  - name: Assign user assigned identity.
+    text: >
+        az webpubsub identity assign --identity MyManagedIdentityId -n MyWebPubSub -g MyResourceGroup
+"""
+
+helps['webpubsub identity remove'] = """
+type: command
+short-summary: Remove managed identity for WebPubSub Service.
+"""
+
+helps['webpubsub identity show'] = """
+type: command
+short-summary: Show managed identity for WebPubSub Service.
 """
