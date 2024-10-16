@@ -22,6 +22,7 @@ from ._models_py3 import AmazonRdsForOraclePartitionSettings
 from ._models_py3 import AmazonRdsForOracleSource
 from ._models_py3 import AmazonRdsForOracleTableDataset
 from ._models_py3 import AmazonRdsForSqlServerLinkedService
+from ._models_py3 import AmazonRdsForSqlServerLinkedServiceTypeProperties
 from ._models_py3 import AmazonRdsForSqlServerSource
 from ._models_py3 import AmazonRdsForSqlServerTableDataset
 from ._models_py3 import AmazonRedshiftLinkedService
@@ -107,19 +108,24 @@ from ._models_py3 import AzureSearchIndexDataset
 from ._models_py3 import AzureSearchIndexSink
 from ._models_py3 import AzureSearchLinkedService
 from ._models_py3 import AzureSqlDWLinkedService
+from ._models_py3 import AzureSqlDWLinkedServiceTypeProperties
 from ._models_py3 import AzureSqlDWTableDataset
 from ._models_py3 import AzureSqlDatabaseLinkedService
+from ._models_py3 import AzureSqlDatabaseLinkedServiceTypeProperties
 from ._models_py3 import AzureSqlMILinkedService
+from ._models_py3 import AzureSqlMILinkedServiceTypeProperties
 from ._models_py3 import AzureSqlMITableDataset
 from ._models_py3 import AzureSqlSink
 from ._models_py3 import AzureSqlSource
 from ._models_py3 import AzureSqlTableDataset
 from ._models_py3 import AzureStorageLinkedService
+from ._models_py3 import AzureStorageLinkedServiceTypeProperties
 from ._models_py3 import AzureSynapseArtifactsLinkedService
 from ._models_py3 import AzureTableDataset
 from ._models_py3 import AzureTableSink
 from ._models_py3 import AzureTableSource
 from ._models_py3 import AzureTableStorageLinkedService
+from ._models_py3 import AzureTableStorageLinkedServiceTypeProperties
 from ._models_py3 import BigDataPoolParametrizationReference
 from ._models_py3 import BinaryDataset
 from ._models_py3 import BinaryReadSettings
@@ -149,6 +155,7 @@ from ._models_py3 import ConcurLinkedService
 from ._models_py3 import ConcurObjectDataset
 from ._models_py3 import ConcurSource
 from ._models_py3 import ConnectionStateProperties
+from ._models_py3 import ContinuationSettingsReference
 from ._models_py3 import ControlActivity
 from ._models_py3 import CopyActivity
 from ._models_py3 import CopyActivityLogSettings
@@ -268,6 +275,7 @@ from ._models_py3 import ExposureControlBatchResponse
 from ._models_py3 import ExposureControlRequest
 from ._models_py3 import ExposureControlResponse
 from ._models_py3 import Expression
+from ._models_py3 import ExpressionV2
 from ._models_py3 import Factory
 from ._models_py3 import FactoryGitHubConfiguration
 from ._models_py3 import FactoryIdentity
@@ -307,6 +315,9 @@ from ._models_py3 import GoogleAdWordsSource
 from ._models_py3 import GoogleBigQueryLinkedService
 from ._models_py3 import GoogleBigQueryObjectDataset
 from ._models_py3 import GoogleBigQuerySource
+from ._models_py3 import GoogleBigQueryV2LinkedService
+from ._models_py3 import GoogleBigQueryV2ObjectDataset
+from ._models_py3 import GoogleBigQueryV2Source
 from ._models_py3 import GoogleCloudStorageLinkedService
 from ._models_py3 import GoogleCloudStorageLocation
 from ._models_py3 import GoogleCloudStorageReadSettings
@@ -409,7 +420,6 @@ from ._models_py3 import MagentoLinkedService
 from ._models_py3 import MagentoObjectDataset
 from ._models_py3 import MagentoSource
 from ._models_py3 import ManagedIdentityCredential
-from ._models_py3 import ManagedIdentityCredentialResource
 from ._models_py3 import ManagedIntegrationRuntime
 from ._models_py3 import ManagedIntegrationRuntimeError
 from ._models_py3 import ManagedIntegrationRuntimeNode
@@ -530,6 +540,9 @@ from ._models_py3 import PolybaseSettings
 from ._models_py3 import PostgreSqlLinkedService
 from ._models_py3 import PostgreSqlSource
 from ._models_py3 import PostgreSqlTableDataset
+from ._models_py3 import PostgreSqlV2LinkedService
+from ._models_py3 import PostgreSqlV2Source
+from ._models_py3 import PostgreSqlV2TableDataset
 from ._models_py3 import PowerQuerySink
 from ._models_py3 import PowerQuerySinkMapping
 from ._models_py3 import PowerQuerySource
@@ -587,8 +600,16 @@ from ._models_py3 import SalesforceServiceCloudLinkedService
 from ._models_py3 import SalesforceServiceCloudObjectDataset
 from ._models_py3 import SalesforceServiceCloudSink
 from ._models_py3 import SalesforceServiceCloudSource
+from ._models_py3 import SalesforceServiceCloudV2LinkedService
+from ._models_py3 import SalesforceServiceCloudV2ObjectDataset
+from ._models_py3 import SalesforceServiceCloudV2Sink
+from ._models_py3 import SalesforceServiceCloudV2Source
 from ._models_py3 import SalesforceSink
 from ._models_py3 import SalesforceSource
+from ._models_py3 import SalesforceV2LinkedService
+from ._models_py3 import SalesforceV2ObjectDataset
+from ._models_py3 import SalesforceV2Sink
+from ._models_py3 import SalesforceV2Source
 from ._models_py3 import SapBWLinkedService
 from ._models_py3 import SapBwCubeDataset
 from ._models_py3 import SapBwSource
@@ -630,6 +651,9 @@ from ._models_py3 import SelfHostedIntegrationRuntimeStatus
 from ._models_py3 import ServiceNowLinkedService
 from ._models_py3 import ServiceNowObjectDataset
 from ._models_py3 import ServiceNowSource
+from ._models_py3 import ServiceNowV2LinkedService
+from ._models_py3 import ServiceNowV2ObjectDataset
+from ._models_py3 import ServiceNowV2Source
 from ._models_py3 import ServicePrincipalCredential
 from ._models_py3 import SetVariableActivity
 from ._models_py3 import SftpLocation
@@ -650,6 +674,10 @@ from ._models_py3 import SnowflakeImportCopyCommand
 from ._models_py3 import SnowflakeLinkedService
 from ._models_py3 import SnowflakeSink
 from ._models_py3 import SnowflakeSource
+from ._models_py3 import SnowflakeV2Dataset
+from ._models_py3 import SnowflakeV2LinkedService
+from ._models_py3 import SnowflakeV2Sink
+from ._models_py3 import SnowflakeV2Source
 from ._models_py3 import SparkConfigurationParametrizationReference
 from ._models_py3 import SparkLinkedService
 from ._models_py3 import SparkObjectDataset
@@ -661,7 +689,9 @@ from ._models_py3 import SqlDWUpsertSettings
 from ._models_py3 import SqlMISink
 from ._models_py3 import SqlMISource
 from ._models_py3 import SqlPartitionSettings
+from ._models_py3 import SqlServerBaseLinkedServiceTypeProperties
 from ._models_py3 import SqlServerLinkedService
+from ._models_py3 import SqlServerLinkedServiceTypeProperties
 from ._models_py3 import SqlServerSink
 from ._models_py3 import SqlServerSource
 from ._models_py3 import SqlServerStoredProcedureActivity
@@ -734,6 +764,10 @@ from ._models_py3 import VerticaLinkedService
 from ._models_py3 import VerticaSource
 from ._models_py3 import VerticaTableDataset
 from ._models_py3 import WaitActivity
+from ._models_py3 import WarehouseLinkedService
+from ._models_py3 import WarehouseSink
+from ._models_py3 import WarehouseSource
+from ._models_py3 import WarehouseTableDataset
 from ._models_py3 import WebActivity
 from ._models_py3 import WebActivityAuthentication
 from ._models_py3 import WebAnonymousAuthentication
@@ -760,9 +794,13 @@ from ._models_py3 import ZohoSource
 from ._data_factory_management_client_enums import ActivityOnInactiveMarkAs
 from ._data_factory_management_client_enums import ActivityState
 from ._data_factory_management_client_enums import AmazonRdsForOraclePartitionOption
+from ._data_factory_management_client_enums import AmazonRdsForSqlAuthenticationType
 from ._data_factory_management_client_enums import AvroCompressionCodec
 from ._data_factory_management_client_enums import AzureFunctionActivityMethod
 from ._data_factory_management_client_enums import AzureSearchIndexWriteBehaviorType
+from ._data_factory_management_client_enums import AzureSqlDWAuthenticationType
+from ._data_factory_management_client_enums import AzureSqlDatabaseAuthenticationType
+from ._data_factory_management_client_enums import AzureSqlMIAuthenticationType
 from ._data_factory_management_client_enums import AzureStorageAuthenticationType
 from ._data_factory_management_client_enums import BigDataPoolReferenceType
 from ._data_factory_management_client_enums import BlobEventTypes
@@ -787,12 +825,14 @@ from ._data_factory_management_client_enums import DynamicsDeploymentType
 from ._data_factory_management_client_enums import DynamicsSinkWriteBehavior
 from ._data_factory_management_client_enums import EventSubscriptionStatus
 from ._data_factory_management_client_enums import ExpressionType
+from ._data_factory_management_client_enums import ExpressionV2Type
 from ._data_factory_management_client_enums import FactoryIdentityType
 from ._data_factory_management_client_enums import FrequencyType
 from ._data_factory_management_client_enums import FtpAuthenticationType
 from ._data_factory_management_client_enums import GlobalParameterType
 from ._data_factory_management_client_enums import GoogleAdWordsAuthenticationType
 from ._data_factory_management_client_enums import GoogleBigQueryAuthenticationType
+from ._data_factory_management_client_enums import GoogleBigQueryV2AuthenticationType
 from ._data_factory_management_client_enums import HBaseAuthenticationType
 from ._data_factory_management_client_enums import HDInsightActivityDebugInfoOption
 from ._data_factory_management_client_enums import HdiNodeTypes
@@ -839,6 +879,7 @@ from ._data_factory_management_client_enums import RunQueryOrder
 from ._data_factory_management_client_enums import RunQueryOrderByField
 from ._data_factory_management_client_enums import SalesforceSinkWriteBehavior
 from ._data_factory_management_client_enums import SalesforceSourceReadBehavior
+from ._data_factory_management_client_enums import SalesforceV2SinkWriteBehavior
 from ._data_factory_management_client_enums import SapCloudForCustomerSinkWriteBehavior
 from ._data_factory_management_client_enums import SapHanaAuthenticationType
 from ._data_factory_management_client_enums import SapHanaPartitionOption
@@ -849,8 +890,10 @@ from ._data_factory_management_client_enums import ScriptActivityParameterType
 from ._data_factory_management_client_enums import ScriptType
 from ._data_factory_management_client_enums import SelfHostedIntegrationRuntimeNodeStatus
 from ._data_factory_management_client_enums import ServiceNowAuthenticationType
+from ._data_factory_management_client_enums import ServiceNowV2AuthenticationType
 from ._data_factory_management_client_enums import ServicePrincipalCredentialType
 from ._data_factory_management_client_enums import SftpAuthenticationType
+from ._data_factory_management_client_enums import SnowflakeAuthenticationType
 from ._data_factory_management_client_enums import SparkAuthenticationType
 from ._data_factory_management_client_enums import SparkConfigurationReferenceType
 from ._data_factory_management_client_enums import SparkJobReferenceType
@@ -859,6 +902,7 @@ from ._data_factory_management_client_enums import SparkThriftTransportProtocol
 from ._data_factory_management_client_enums import SqlAlwaysEncryptedAkvAuthType
 from ._data_factory_management_client_enums import SqlDWWriteBehaviorEnum
 from ._data_factory_management_client_enums import SqlPartitionOption
+from ._data_factory_management_client_enums import SqlServerAuthenticationType
 from ._data_factory_management_client_enums import SqlWriteBehaviorEnum
 from ._data_factory_management_client_enums import SsisLogLocationType
 from ._data_factory_management_client_enums import SsisObjectMetadataType
@@ -899,6 +943,7 @@ __all__ = [
     "AmazonRdsForOracleSource",
     "AmazonRdsForOracleTableDataset",
     "AmazonRdsForSqlServerLinkedService",
+    "AmazonRdsForSqlServerLinkedServiceTypeProperties",
     "AmazonRdsForSqlServerSource",
     "AmazonRdsForSqlServerTableDataset",
     "AmazonRedshiftLinkedService",
@@ -984,19 +1029,24 @@ __all__ = [
     "AzureSearchIndexSink",
     "AzureSearchLinkedService",
     "AzureSqlDWLinkedService",
+    "AzureSqlDWLinkedServiceTypeProperties",
     "AzureSqlDWTableDataset",
     "AzureSqlDatabaseLinkedService",
+    "AzureSqlDatabaseLinkedServiceTypeProperties",
     "AzureSqlMILinkedService",
+    "AzureSqlMILinkedServiceTypeProperties",
     "AzureSqlMITableDataset",
     "AzureSqlSink",
     "AzureSqlSource",
     "AzureSqlTableDataset",
     "AzureStorageLinkedService",
+    "AzureStorageLinkedServiceTypeProperties",
     "AzureSynapseArtifactsLinkedService",
     "AzureTableDataset",
     "AzureTableSink",
     "AzureTableSource",
     "AzureTableStorageLinkedService",
+    "AzureTableStorageLinkedServiceTypeProperties",
     "BigDataPoolParametrizationReference",
     "BinaryDataset",
     "BinaryReadSettings",
@@ -1026,6 +1076,7 @@ __all__ = [
     "ConcurObjectDataset",
     "ConcurSource",
     "ConnectionStateProperties",
+    "ContinuationSettingsReference",
     "ControlActivity",
     "CopyActivity",
     "CopyActivityLogSettings",
@@ -1145,6 +1196,7 @@ __all__ = [
     "ExposureControlRequest",
     "ExposureControlResponse",
     "Expression",
+    "ExpressionV2",
     "Factory",
     "FactoryGitHubConfiguration",
     "FactoryIdentity",
@@ -1184,6 +1236,9 @@ __all__ = [
     "GoogleBigQueryLinkedService",
     "GoogleBigQueryObjectDataset",
     "GoogleBigQuerySource",
+    "GoogleBigQueryV2LinkedService",
+    "GoogleBigQueryV2ObjectDataset",
+    "GoogleBigQueryV2Source",
     "GoogleCloudStorageLinkedService",
     "GoogleCloudStorageLocation",
     "GoogleCloudStorageReadSettings",
@@ -1286,7 +1341,6 @@ __all__ = [
     "MagentoObjectDataset",
     "MagentoSource",
     "ManagedIdentityCredential",
-    "ManagedIdentityCredentialResource",
     "ManagedIntegrationRuntime",
     "ManagedIntegrationRuntimeError",
     "ManagedIntegrationRuntimeNode",
@@ -1407,6 +1461,9 @@ __all__ = [
     "PostgreSqlLinkedService",
     "PostgreSqlSource",
     "PostgreSqlTableDataset",
+    "PostgreSqlV2LinkedService",
+    "PostgreSqlV2Source",
+    "PostgreSqlV2TableDataset",
     "PowerQuerySink",
     "PowerQuerySinkMapping",
     "PowerQuerySource",
@@ -1464,8 +1521,16 @@ __all__ = [
     "SalesforceServiceCloudObjectDataset",
     "SalesforceServiceCloudSink",
     "SalesforceServiceCloudSource",
+    "SalesforceServiceCloudV2LinkedService",
+    "SalesforceServiceCloudV2ObjectDataset",
+    "SalesforceServiceCloudV2Sink",
+    "SalesforceServiceCloudV2Source",
     "SalesforceSink",
     "SalesforceSource",
+    "SalesforceV2LinkedService",
+    "SalesforceV2ObjectDataset",
+    "SalesforceV2Sink",
+    "SalesforceV2Source",
     "SapBWLinkedService",
     "SapBwCubeDataset",
     "SapBwSource",
@@ -1507,6 +1572,9 @@ __all__ = [
     "ServiceNowLinkedService",
     "ServiceNowObjectDataset",
     "ServiceNowSource",
+    "ServiceNowV2LinkedService",
+    "ServiceNowV2ObjectDataset",
+    "ServiceNowV2Source",
     "ServicePrincipalCredential",
     "SetVariableActivity",
     "SftpLocation",
@@ -1527,6 +1595,10 @@ __all__ = [
     "SnowflakeLinkedService",
     "SnowflakeSink",
     "SnowflakeSource",
+    "SnowflakeV2Dataset",
+    "SnowflakeV2LinkedService",
+    "SnowflakeV2Sink",
+    "SnowflakeV2Source",
     "SparkConfigurationParametrizationReference",
     "SparkLinkedService",
     "SparkObjectDataset",
@@ -1538,7 +1610,9 @@ __all__ = [
     "SqlMISink",
     "SqlMISource",
     "SqlPartitionSettings",
+    "SqlServerBaseLinkedServiceTypeProperties",
     "SqlServerLinkedService",
+    "SqlServerLinkedServiceTypeProperties",
     "SqlServerSink",
     "SqlServerSource",
     "SqlServerStoredProcedureActivity",
@@ -1611,6 +1685,10 @@ __all__ = [
     "VerticaSource",
     "VerticaTableDataset",
     "WaitActivity",
+    "WarehouseLinkedService",
+    "WarehouseSink",
+    "WarehouseSource",
+    "WarehouseTableDataset",
     "WebActivity",
     "WebActivityAuthentication",
     "WebAnonymousAuthentication",
@@ -1636,9 +1714,13 @@ __all__ = [
     "ActivityOnInactiveMarkAs",
     "ActivityState",
     "AmazonRdsForOraclePartitionOption",
+    "AmazonRdsForSqlAuthenticationType",
     "AvroCompressionCodec",
     "AzureFunctionActivityMethod",
     "AzureSearchIndexWriteBehaviorType",
+    "AzureSqlDWAuthenticationType",
+    "AzureSqlDatabaseAuthenticationType",
+    "AzureSqlMIAuthenticationType",
     "AzureStorageAuthenticationType",
     "BigDataPoolReferenceType",
     "BlobEventTypes",
@@ -1663,12 +1745,14 @@ __all__ = [
     "DynamicsSinkWriteBehavior",
     "EventSubscriptionStatus",
     "ExpressionType",
+    "ExpressionV2Type",
     "FactoryIdentityType",
     "FrequencyType",
     "FtpAuthenticationType",
     "GlobalParameterType",
     "GoogleAdWordsAuthenticationType",
     "GoogleBigQueryAuthenticationType",
+    "GoogleBigQueryV2AuthenticationType",
     "HBaseAuthenticationType",
     "HDInsightActivityDebugInfoOption",
     "HdiNodeTypes",
@@ -1715,6 +1799,7 @@ __all__ = [
     "RunQueryOrderByField",
     "SalesforceSinkWriteBehavior",
     "SalesforceSourceReadBehavior",
+    "SalesforceV2SinkWriteBehavior",
     "SapCloudForCustomerSinkWriteBehavior",
     "SapHanaAuthenticationType",
     "SapHanaPartitionOption",
@@ -1725,8 +1810,10 @@ __all__ = [
     "ScriptType",
     "SelfHostedIntegrationRuntimeNodeStatus",
     "ServiceNowAuthenticationType",
+    "ServiceNowV2AuthenticationType",
     "ServicePrincipalCredentialType",
     "SftpAuthenticationType",
+    "SnowflakeAuthenticationType",
     "SparkAuthenticationType",
     "SparkConfigurationReferenceType",
     "SparkJobReferenceType",
@@ -1735,6 +1822,7 @@ __all__ = [
     "SqlAlwaysEncryptedAkvAuthType",
     "SqlDWWriteBehaviorEnum",
     "SqlPartitionOption",
+    "SqlServerAuthenticationType",
     "SqlWriteBehaviorEnum",
     "SsisLogLocationType",
     "SsisObjectMetadataType",

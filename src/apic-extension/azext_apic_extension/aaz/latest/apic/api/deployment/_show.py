@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get details of the API deployment.
 
     :example: Show API deployment details
-        az apic api deployment show -g api-center-test -s contoso --deployment-id production --api-id echo-api
+        az apic api deployment show -g api-center-test -n contoso --deployment-id production --api-id echo-api
     """
 
     _aaz_info = {
@@ -70,8 +70,8 @@ class Show(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-n", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

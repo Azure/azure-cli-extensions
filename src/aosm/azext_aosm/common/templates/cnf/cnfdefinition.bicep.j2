@@ -1,0 +1,83 @@
+// Copyright (c) Microsoft Corporation.
+
+// This file creates an NF definition for a CNF
+param location string
+@description('Name of an existing publisher, expected to be in the resource group where you deploy the template')
+param publisherName string
+@description('Name of an existing ACR-backed Artifact Store, deployed under the publisher.')
+param acrArtifactStoreName string
+@description('Name of an existing Network Function Definition Group')
+param nfDefinitionGroup string
+@description('The version of the NFDV you want to deploy, in format A.B.C')
+param nfDefinitionVersion string
+
+// The publisher resource is the top level AOSM resource under which all other designer resources
+// are created.
+// If using publish command, this is created from deploying the cnfbase.bicep
+resource publisher 'Microsoft.HybridNetwork/publishers@2023-09-01' existing =  {
+  name: publisherName
+}
+
+// The artifact store is the resource in which all the artifacts required to deploy the NF are stored.
+// If using publish command, this is created from deploying the cnfbase.bicep
+resource acrArtifactStore 'Microsoft.HybridNetwork/publishers/artifactStores@2023-09-01' existing = {
+  parent: publisher
+  name: acrArtifactStoreName
+}
+
+// The NFD Group is the parent resource under which all NFD versions will be created.
+// If using publish command, this is created from deploying the cnfbase.bicep
+resource nfdg 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups@2023-09-01' existing = {
+  parent: publisher
+  name: nfDefinitionGroup
+}
+
+// This will deploy an NFDV in 'Preview' state. It should be changed to 'Active' once it is finalised.
+resource nfdv 'Microsoft.Hybridnetwork/publishers/networkfunctiondefinitiongroups/networkfunctiondefinitionversions@2023-09-01' = {
+  parent: nfdg
+  name: nfDefinitionVersion
+  location: location
+  properties: {
+    {#- Note that all paths in bicep must be specified using the forward slash #}
+    {#-  (/) character even if running on Windows. #}
+    {#- See https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/modules#local-file #}
+    deployParameters: string(loadJsonContent('{{deploy_parameters_file}}'))
+    networkFunctionType: 'ContainerizedNetworkFunction'
+    networkFunctionTemplate: {
+      nfviType: 'AzureArcKubernetes'
+      networkFunctionApplications: [
+      {%- for configuration in acr_nf_applications %}
+        {
+          artifactType: 'HelmPackage'
+          name: '{{ configuration.name }}'
+          dependsOnProfile: {
+            installDependsOn: {{ configuration.depends_on_profile.install_depends_on }}
+            uninstallDependsOn: {{ configuration.depends_on_profile.uninstall_depends_on }}
+            updateDependsOn: {{ configuration.depends_on_profile.update_depends_on }}
+          }
+          artifactProfile: {
+            artifactStore: {
+              id: acrArtifactStore.id
+            }
+            helmArtifactProfile: {
+              helmPackageName: '{{ configuration.artifact_profile.helm_artifact_profile.helm_package_name }}'
+              helmPackageVersionRange: '{{ configuration.artifact_profile.helm_artifact_profile.helm_package_version_range }}'
+              registryValuesPaths: {{ configuration.artifact_profile.helm_artifact_profile.registry_values_paths }}
+              imagePullSecretsValuesPaths: {{ configuration.artifact_profile.helm_artifact_profile.image_pull_secrets_values_paths }}
+            }
+          }
+          deployParametersMappingRuleProfile: {
+            applicationEnablement: 'Enabled'
+            helmMappingRuleProfile: {
+              releaseNamespace: '{{ configuration.deploy_parameters_mapping_rule_profile.helm_mapping_rule_profile.release_namespace }}'
+              releaseName: '{{ configuration.deploy_parameters_mapping_rule_profile.helm_mapping_rule_profile.release_name }}'
+              helmPackageVersion: '{{ configuration.deploy_parameters_mapping_rule_profile.helm_mapping_rule_profile.helm_package_version }}'
+              values: string(loadJsonContent('{{configuration.name}}-mappings.json'))
+            }
+          }
+        }
+      {%- endfor %}
+      ]
+    }
+  }
+}

@@ -62,7 +62,7 @@ connectedmachine_private_link_scope = CliCommandType(
 )
 
 
-def load_command_table(self, _):
+def load_command_table(self, _):  # pylint: disable=unused-argument
     pass
 
 

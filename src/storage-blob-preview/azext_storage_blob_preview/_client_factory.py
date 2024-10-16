@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=unused-import
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, prepare_client_kwargs_track2
 from azure.cli.core.profiles import ResourceType, get_sdk

@@ -184,6 +184,15 @@ class Create(AAZCommand):
             is_preview=True,
             enum={"Alert": "Alert", "Deny": "Deny", "Off": "Off"},
         )
+        
+        _args_schema.idps_profile = AAZStrArg(
+            options=["--idps-profile"],
+            arg_group="Intrusion Detection",
+            help="IDPS mode.",
+            is_preview=True,
+            nullable=True,
+            enum={"Basic": "Basic", "Standard": "Standard", "Advanced": "Advanced"},
+        )
 
         # define Arg Group "Parameters"
 
@@ -420,6 +429,7 @@ class Create(AAZCommand):
             intrusion_detection = _builder.get(".properties.intrusionDetection")
             if intrusion_detection is not None:
                 intrusion_detection.set_prop("mode", AAZStrType, ".idps_mode")
+                intrusion_detection.set_prop("profile", AAZStrType, ".idps_profile")
 
             sku = _builder.get(".properties.sku")
             if sku is not None:
@@ -645,6 +655,7 @@ class Create(AAZCommand):
             intrusion_detection = cls._schema_on_200_201.properties.intrusion_detection
             intrusion_detection.configuration = AAZObjectType()
             intrusion_detection.mode = AAZStrType()
+            intrusion_detection.profile = AAZStrType()
 
             configuration = cls._schema_on_200_201.properties.intrusion_detection.configuration
             configuration.bypass_traffic_settings = AAZListType(

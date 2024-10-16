@@ -23,6 +23,7 @@ from ._utils import (ApiType, _get_rg_location, _get_file_type, _get_sku_name, _
 from ._util_enterprise import is_enterprise_tier
 from .vendored_sdks.appplatform.v2024_05_01_preview import models
 from ._constant import (MARKETPLACE_OFFER_ID, MARKETPLACE_PLAN_ID, MARKETPLACE_PUBLISHER_ID)
+from ._app_validator import validate_path_exist
 
 logger = get_logger(__name__)
 
@@ -355,7 +356,9 @@ def _validate_subnet(namespace, subnet):
         return
     if subnet.get("ipConfigurations", None):
         raise InvalidArgumentValueError('--{} should not have connected device.'.format(name))
-    address = ip_network(subnet["addressPrefix"], strict=False)
+
+    addressPrefix = subnet.get("addressPrefix") or subnet["addressPrefixes"][0]
+    address = ip_network(addressPrefix, strict=False)
     if address.prefixlen > limit:
         raise InvalidArgumentValueError('--{0} should contain at least /{1} address, got /{2}'.format(name, limit, address.prefixlen))
 
@@ -576,6 +579,7 @@ def validate_jar(namespace):
     if values is None:
         # ignore jar_file check
         return
+    validate_path_exist(namespace.source_path, namespace.artifact_path)
 
     tips = ", if you choose to ignore these errors, turn validation off with --disable-validation"
     if not values["has_jar"] and not values["has_class"]:

@@ -32,7 +32,7 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_
 from azure.cli.core.util import sdk_no_wait
 from azure.mgmt.applicationinsights import ApplicationInsightsManagementClient
 from azure.cli.core.commands import cached_put
-from msrestazure.tools import resource_id
+from azure.mgmt.core.tools import resource_id
 from ._resource_quantity import validate_cpu, validate_memory
 from six.moves.urllib import parse
 from threading import Thread
@@ -746,23 +746,23 @@ def eureka_disable(cmd, client, resource_group, name):
 
 
 def config_enable(cmd, client, resource_group, service):
-    config_server_resource = client.get(resource_group, service)
+    config_server_resource = client.config_servers.get(resource_group, service)
     if not config_server_resource.properties.enabled_state:
         raise CLIError("Only supported Standard consumption Tier.")
 
     config_server_properties = models.ConfigServerProperties(enabled_state="Enabled")
     config_server_resource = models.ConfigServerResource(properties=config_server_properties)
-    return cached_put(cmd, client.begin_update_patch, config_server_resource, resource_group, service).result()
+    return cached_put(cmd, client.config_servers.begin_update_patch, config_server_resource, resource_group, service).result()
 
 
 def config_disable(cmd, client, resource_group, service):
-    config_server_resource = client.get(resource_group, service)
+    config_server_resource = client.config_servers.get(resource_group, service)
     if not config_server_resource.properties.enabled_state:
         raise CLIError("Only supported Standard consumption Tier.")
 
     config_server_properties = models.ConfigServerProperties(enabled_state="Disabled")
     config_server_resource = models.ConfigServerResource(properties=config_server_properties)
-    return cached_put(cmd, client.begin_update_patch, config_server_resource, resource_group, service).result()
+    return cached_put(cmd, client.config_servers.begin_update_patch, config_server_resource, resource_group, service).result()
 
 
 def config_set(cmd, client, resource_group, service, config_file, no_wait=False):

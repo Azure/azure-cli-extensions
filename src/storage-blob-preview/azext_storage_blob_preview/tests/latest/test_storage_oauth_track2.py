@@ -37,7 +37,7 @@ class StorageOauthTests(StorageScenarioMixin, ScenarioTest):
         })
 
         # ----user delegation key----
-        with self.assertRaisesRegexp(CLIError, "incorrect usage: specify --as-user when --auth-mode login"):
+        with self.assertRaisesRegex(CLIError, "incorrect usage: specify --as-user when --auth-mode login"):
             self.oauth_cmd('storage blob generate-sas --account-name {account} -n {blob} -c {container} '
                            '--expiry {expiry} --permissions r --https-only ')
 

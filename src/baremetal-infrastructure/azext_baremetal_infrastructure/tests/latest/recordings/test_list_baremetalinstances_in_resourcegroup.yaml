@@ -1,0 +1,63 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - baremetalinstance list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --resource-group
+      User-Agent:
+      - AZURECLI/2.61.0 azsdk-python-core/1.30.1 Python/3.10.11 (macOS-14.6.1-arm64-arm-64bit)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DSM05A-T210/providers/Microsoft.BareMetalInfrastructure/bareMetalInstances?api-version=2024-08-01-preview
+  response:
+    body:
+      string: "{\n \"value\": [\n  {\n   \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/DSM05A-T210/providers/Microsoft.BareMetalInfrastructure/bareMetalInstances/epicdsmpoc01\"\
+        ,\n   \"location\": \"centraluseuap\",\n   \"name\": \"epicdsmpoc01\",\n \
+        \  \"tags\": {},\n   \"type\": \"Microsoft.BareMetalInfrastructure/bareMetalInstances\"\
+        ,\n   \"systemData\": {\n    \"lastModifiedBy\": \"aditioak@microsoft.com\"\
+        ,\n    \"lastModifiedByType\": \"User\",\n    \"lastModifiedAt\": \"2024-04-01T10:44:22.9419344Z\"\
+        \n   },\n   \"properties\": {\n    \"azureBareMetalInstanceId\": \"b4791126-6c7f-46c5-83e3-b8531db5b3da\"\
+        ,\n    \"powerState\": \"started\",\n    \"proximityPlacementGroup\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/DSM05A-T210/providers/Microsoft.Compute/proximityPlacementGroups/epicdsmpoc01-ppg\"\
+        ,\n    \"hwRevision\": \"Rev 4.2\",\n    \"hardwareProfile\": {\n     \"hardwareType\"\
+        : \"SDFLEX\",\n     \"azureBareMetalInstanceSize\": \"S448SE\"\n    },\n \
+        \   \"networkProfile\": {\n     \"networkInterfaces\": [\n      {\n      \
+        \ \"ipAddress\": \"10.100.0.41\"\n      }\n     ],\n     \"circuitId\": \"\
+        /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/T210_DSM05-Circuits/providers/Microsoft.Network/expressRouteCircuits/T210_DSM05-10Gb\"\
+        \n    },\n    \"storageProfile\": {\n     \"nfsIpAddress\": \"10.20.211.41\"\
+        ,\n     \"osDisks\": [\n      {\n       \"name\": \"t210_rhel_boot_epic_epicdsmpoc01_lun\"\
+        ,\n       \"diskSizeGB\": 50\n      }\n     ]\n    },\n    \"osProfile\":\
+        \ {\n     \"computerName\": \"epicdsmpoc01\",\n     \"osType\": \"ESXi 7.0\"\
+        ,\n     \"version\": \"RHEL 8.4\"\n    },\n    \"provisioningState\": \"Succeeded\"\
+        \n   }\n  }\n ]\n}"
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1569'
+      content-type:
+      - application/json
+      date:
+      - Fri, 06 Sep 2024 05:31:38 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: E593314000E447D9AD44F202A54AAA1B Ref B: CO6AA3150219011 Ref C: 2024-09-06T05:31:38Z'
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -1,0 +1,19 @@
+{
+    "pipelines": [
+        {
+            "name": "MyPipeline2",
+            "type": "Logs",
+            "receivers": [
+                "otlp1",
+                "myudpreceiveralittlelong26283032",
+                "mysyslog1"
+            ],
+            "processors": [
+                "batchproc1"
+            ],
+            "exporters": [
+                "gigla1"
+            ]
+        }
+    ]
+}

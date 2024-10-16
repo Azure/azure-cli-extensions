@@ -17,8 +17,8 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a new SenderUsername resource under the parent Domains resource or update an existing SenderUsername resource.
 
-    :example: Create a sender username
-        az communication email domain sender-username create --domain-name DomainName --email-service-name ResourceName -g ResourceGroup --sender-username SenderUsername --username Username --display-name DisplayName
+    :example: Create a sender username (--sender-username and --username values should be the same)
+        az communication email domain sender-username create --domain-name DomainName --email-service-name ResourceName -g ResourceGroup --sender-username Username --username Username --display-name DisplayName
     """
 
     _aaz_info = {

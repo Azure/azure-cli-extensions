@@ -234,56 +234,102 @@ class WorkloadsScenario(ScenarioTest):
 
     def test_workloads_svi_update_tags(self):
         self.kwargs.update({
-            'name': 'C36',
+            'name': 'AM1',
             'appservername': 'app0',
             'csservername': 'cs0',
             'dbservername': 'db0'
         })
-        self.cmd('workloads sap-virtual-instance update -g CLI-TESTING -n {name} --tags tag=test tag2=test2', checks=[
+        self.cmd('workloads sap-virtual-instance update -g PS_CLI_TF_RG -n {name} --tags tag=test tag2=test2', checks=[
             self.check('name', '{name}'),
-            self.check('resourceGroup', 'CLI-TESTING'),
+            self.check('resourceGroup', 'PS_CLI_TF_RG'),
             self.check('provisioningState', 'Succeeded'),
             self.check('tags.tag', 'test'),
             self.check('tags.tag2', 'test2')
         ])
 
-        self.cmd('workloads sap-central-instance update --sap-virtual-instance-name {name} -g CLI-TESTING -n {csservername} --tags tag=test3 tag2=test4', checks=[
+        self.cmd('workloads sap-central-instance update --sap-virtual-instance-name {name} -g PS_CLI_TF_RG -n {csservername} --tags tag=test3 tag2=test4', checks=[
             self.check('name', '{csservername}'),
-            self.check('resourceGroup', 'CLI-TESTING'),
+            self.check('resourceGroup', 'PS_CLI_TF_RG'),
             self.check('provisioningState', 'Succeeded'),
             self.check('tags.tag', 'test3'),
             self.check('tags.tag2', 'test4')
         ])
 
-        self.cmd('workloads sap-application-server-instance update --sap-virtual-instance-name {name} -g CLI-TESTING -n {appservername} --tags tag=test5 tag2=test6', checks=[
+        self.cmd('workloads sap-application-server-instance update --sap-virtual-instance-name {name} -g PS_CLI_TF_RG -n {appservername} --tags tag=test5 tag2=test6', checks=[
             self.check('name', '{appservername}'),
-            self.check('resourceGroup', 'CLI-TESTING'),
+            self.check('resourceGroup', 'PS_CLI_TF_RG'),
             self.check('provisioningState', 'Succeeded'),
             self.check('tags.tag', 'test5'),
             self.check('tags.tag2', 'test6')
         ])
 
-        self.cmd('workloads sap-database-instance update --sap-virtual-instance-name {name} -g CLI-TESTING -n {dbservername} --tags tag=test7 tag2=test8', checks=[
+        self.cmd('workloads sap-database-instance update --sap-virtual-instance-name {name} -g PS_CLI_TF_RG -n {dbservername} --tags tag=test7 tag2=test8', checks=[
             self.check('name', '{dbservername}'),
-            self.check('resourceGroup', 'CLI-TESTING'),
+            self.check('resourceGroup', 'PS_CLI_TF_RG'),
             self.check('provisioningState', 'Succeeded'),
             self.check('tags.tag', 'test7'),
             self.check('tags.tag2', 'test8')
         ])
 
+    def test_workloads_svi_update_trustedaccess(self):
+        self.kwargs.update({
+            'name': 'AM1',
+            'appservername': 'app0',
+            'csservername': 'cs0',
+            'dbservername': 'db0'
+        })
+        self.cmd('workloads sap-virtual-instance update -g PS_CLI_TF_RG -n {name} --managed-resources-network-access-type public')
+        self.cmd('workloads sap-virtual-instance show -g PS_CLI_TF_RG -n {name}', checks=[
+            self.check('name', '{name}'),
+            self.check('resourceGroup', 'PS_CLI_TF_RG'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('managedResourcesNetworkAccessType', 'Public')
+        ])
+
+        self.cmd('workloads sap-virtual-instance update -g PS_CLI_TF_RG -n {name} --managed-resources-network-access-type private')
+        self.cmd('workloads sap-virtual-instance show -g PS_CLI_TF_RG -n {name}', checks=[
+            self.check('name', '{name}'),
+            self.check('resourceGroup', 'PS_CLI_TF_RG'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('managedResourcesNetworkAccessType', 'Private')
+        ])
+
     @unittest.skip('recording file not getting generted properly throwing Subscription not found')
     def test_workloads_svi_discover(self):
         self.kwargs.update({
-            'name': 'C36',
+            'name': 'C13',
             'msi': os.path.join(TEST_DIR, 'MSI.json'),
-            'centralservervmid': '/subscriptions/49d64d54-e966-4c46-a868-1999802b762c/resourceGroups/CLI-TESTING/providers/Microsoft.Compute/virtualMachines/c36ascsvm'
+            'centralservervmid': '/subscriptions/49d64d54-e966-4c46-a868-1999802b762c/resourcegroups/ps_cli_tf_rg/providers/microsoft.compute/virtualmachines/c13ascsvm'
         })
 
-        self.cmd('workloads sap-virtual-instance create -g CLI-TESTING -n {name} --location eastus2euap --environment NonProd --sap-product S4HANA --central-server-vm {centralservervmid} --identity "{msi}"', checks=[
+        self.cmd('workloads sap-virtual-instance create -g PS_CLI_TF_RG -n {name} --location eastus --environment NonProd --sap-product S4HANA --central-server-vm {centralservervmid} --identity "{msi}"', checks=[
             self.check('name', '{name}'),
-            self.check('resourceGroup', 'CLI-TESTING'),
+            self.check('resourceGroup', 'PS_CLI_TF_RG'),
             self.check('sapProduct', 'S4HANA'),
             self.check('environment', 'NonProd'),
+            self.check('provisioningState', 'Succeeded'),
+            self.check('configuration.configurationType', 'Discovery')
+        ])
+    
+    @unittest.skip('recording file not getting generted properly throwing Subscription not found')
+    def test_workloads_svi_discover_custom(self):
+        self.kwargs.update({
+            'name': 'C13',
+            'msi': os.path.join(TEST_DIR, 'MSI.json'),
+            'centralservervmid': '/subscriptions/49d64d54-e966-4c46-a868-1999802b762c/resourcegroups/ps_cli_tf_rg/providers/microsoft.compute/virtualmachines/c13ascsvm',
+            'managedrgname': self.create_random_name(prefix='managedrg', length=15),
+            'managedrgsaname': self.create_random_name(prefix='managedrgsa', length=24),
+            'networkaccesstype': 'Private'
+        })
+
+        self.cmd('workloads sap-virtual-instance create -g PS_CLI_TF_RG -n {name} --location eastus --environment NonProd --sap-product S4HANA --central-server-vm {centralservervmid} --identity "{msi}" --managed-rg-name {managedrgname} --managed-rg-sa-name {managedrgsaname} --managed-resources-network-access-type {networkaccesstype}', checks=[
+            self.check('name', '{name}'),
+            self.check('resourceGroup', 'PS_CLI_TF_RG'),
+            self.check('sapProduct', 'S4HANA'),
+            self.check('environment', 'NonProd'),
+            self.check('managedResourceGroupConfiguration.name', '{managedrgname}'),
+            self.check('configuration.managedRgStorageAccountName', '{managedrgsaname}'),
+            self.check('managedResourcesNetworkAccessType', '{networkaccesstype}'),
             self.check('provisioningState', 'Succeeded'),
             self.check('configuration.configurationType', 'Discovery')
         ])

@@ -2,6 +2,20 @@
 
 Release History
 ===============
+1.2.0
+++++++
+* Update api-version to `2023-03-11` for sub cmds of `az monitor data-collection rule`
+
+1.1.0
+++++++
+* Update api-version to `2023-03-11`
+* Change default arg type of empty object to be `AAZFreeFormDictArg` to fix deserialization issue
+* Add `enum_support_extension` for Enum arg type
+
+1.0.2
+++++++
+* `az monitor data-collection rule/endpoint`: Removed the enum limitation for the `--kind` parameter.
+
 1.0.1
 ++++++
 * Normalization module name in setup

@@ -112,7 +112,7 @@ class Create(AAZCommand):
         _args_schema.log_scrubbing = AAZObjectArg(
             options=["--log-scrubbing"],
             arg_group="PolicySettings",
-            help="Defines rules that scrub sensitive fields in the Web Application Firewall logs.",
+            help="Defines rules that scrub sensitive fields in the Web Application Firewall logs. Example: --log-scrubbing \"{scrubbing-rules:[{match-variable:QueryStringArgNames,selector-match-operator:EqualsAny}],state:Enabled}, --log-scrubbing scrubbing-rules=[] state=Disabled, --log-scrubbing null",
         )
         _args_schema.mode = AAZStrArg(
             options=["--mode"],
@@ -395,6 +395,7 @@ class Create(AAZCommand):
             options=["--sku"],
             arg_group="Sku",
             help="Name of the pricing tier.",
+            default="Premium_AzureFrontDoor",
             enum={"Classic_AzureFrontDoor": "Classic_AzureFrontDoor", "Premium_AzureFrontDoor": "Premium_AzureFrontDoor", "Standard_AzureFrontDoor": "Standard_AzureFrontDoor"},
         )
         return cls._args_schema

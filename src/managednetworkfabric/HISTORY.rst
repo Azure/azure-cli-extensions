@@ -2,6 +2,14 @@
 
 Release History
 ===============
+6.4.0
+++++++
+* Updating release version to be in sync with 6.4 RP release
+
+6.2.0
+++++++
+* Updating release version
+
 6.1.0
 ++++++
 * Added device update-admin-state support

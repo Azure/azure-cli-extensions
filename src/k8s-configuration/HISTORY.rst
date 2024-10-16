@@ -3,6 +3,10 @@
 Release History
 ===============
 
+2.0.0
+++++++++++++++++++
+* Remove the deprecated flux v1 `create` cmd
+
 1.7.0
 ++++++++++++++++++
 * Add support for Azure Blob Storage

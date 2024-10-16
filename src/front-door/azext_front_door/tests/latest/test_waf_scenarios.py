@@ -12,7 +12,7 @@ from azure.core.exceptions import (HttpResponseError)
 
 class WafTests(WafScenarioMixin, ScenarioTest):
     @live_only()  # --defer seems not work with VCR.py well
-    @ResourceGroupPreparer(location='westus')
+    @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_waf_log_scrubbing(self, resource_group):
         blockpolicy = self.create_random_name(prefix='cli', length=24)
         cmd = 'az network front-door waf-policy create -g {resource_group} -n {blockpolicy} --mode prevention --sku Standard_AzureFrontDoor'.format(**locals())
@@ -29,7 +29,7 @@ class WafTests(WafScenarioMixin, ScenarioTest):
         self.assertEqual(result['policySettings']['logScrubbing']['state'], "Enabled")
 
     @live_only()  # --defer seems not work with VCR.py well
-    @ResourceGroupPreparer(location='westus')
+    @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_waf_policy_basic(self, resource_group):
         # multi-line comment below
         """
@@ -208,7 +208,7 @@ az network front-door waf-policy delete -g {resource_group} -n {policyName}
         self.assertEqual(len(result), 5)
         self.assertEqual(len([policy for policy in result if policy['name'] == blockpolicy]), 0)
 
-    @ResourceGroupPreparer(location='westus')
+    @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_waf_policy_custom_rule_matching(self, resource_group):
         # multi-line comment below
         """
@@ -272,7 +272,7 @@ az network front-door update --name {frontdoorName}--resource-group {resource_gr
             r = requests.post('http://{hostName}/'.format(**locals()), data="'key':'value'")
             self.assertEqual(r.status_code, 200)
 
-    @ResourceGroupPreparer(location='westus')
+    @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_waf_policy_managed_rules(self, resource_group):
         # multi-line comment below
         """
@@ -344,7 +344,7 @@ az network front-door waf-policy managed-rule-definition list
         rule = [rule for rule in sqlGroup['rules'] if rule['ruleId'] == ruleid][0]
         self.assertEqual(rule['ruleId'], ruleid)
 
-    @ResourceGroupPreparer(location='westus')
+    @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     @live_only()  # --defer seems not work with VCR.py well
     def test_waf_policy_custom_rules(self, resource_group):
         # multi-line comment below
@@ -488,7 +488,7 @@ az network front-door waf-policy rule match-condition list -g {resource_group} -
         result = self.cmd(cmd).get_output_in_json()
         self.assertEqual(len(result), 2)
 
-    @ResourceGroupPreparer(location='westus')
+    @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_waf_exclusions(self, resource_group):
         # multi-line comment below
         """

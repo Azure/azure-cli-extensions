@@ -446,3 +446,7 @@ def string_equals_ignore_case(left: str, right: str):
         return False
 
     return left.casefold() == right.casefold()
+
+
+def get_service_instance_resource_id(sub_id: str, group: str, service: str):
+    return f"/subscriptions/{sub_id}/resourceGroups/{group}/providers/Microsoft.AppPlatform/Spring/{service}"

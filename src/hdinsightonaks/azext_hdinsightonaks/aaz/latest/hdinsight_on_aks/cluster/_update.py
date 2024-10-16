@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-11-01-preview",
+        "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}", "2023-11-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters/{}", "2024-05-01-preview"],
         ]
     }
 
@@ -630,10 +630,21 @@ class Update(AAZCommand):
         # define Arg Group "ComputeProfile"
 
         _args_schema = cls._args_schema
+        _args_schema.availability_zones = AAZListArg(
+            options=["--availability-zones"],
+            arg_group="ComputeProfile",
+            help="The list of Availability zones to use for AKS VMSS nodes.",
+            nullable=True,
+        )
         _args_schema.nodes = AAZListArg(
             options=["--nodes"],
             arg_group="ComputeProfile",
             help="The nodes definitions.",
+        )
+
+        availability_zones = cls._args_schema.availability_zones
+        availability_zones.Element = AAZStrArg(
+            nullable=True,
         )
 
         nodes = cls._args_schema.nodes
@@ -646,7 +657,7 @@ class Update(AAZCommand):
             options=["count"],
             help="The number of virtual machines.",
             fmt=AAZIntArgFormat(
-                minimum=1,
+                minimum=0,
             ),
         )
         _element.type = AAZStrArg(
@@ -835,6 +846,45 @@ class Update(AAZCommand):
             nullable=True,
         )
 
+        # define Arg Group "ManagedIdentityProfile"
+
+        _args_schema = cls._args_schema
+        _args_schema.identity_list = AAZListArg(
+            options=["--identity-list"],
+            arg_group="ManagedIdentityProfile",
+            help="The list of managed identity.",
+        )
+
+        identity_list = cls._args_schema.identity_list
+        identity_list.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.identity_list.Element
+        _element.client_id = AAZStrArg(
+            options=["client-id"],
+            help="ClientId of the managed identity.",
+            fmt=AAZStrArgFormat(
+                pattern="^[{(]?[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}[)}]?$",
+            ),
+        )
+        _element.object_id = AAZStrArg(
+            options=["object-id"],
+            help="ObjectId of the managed identity.",
+            fmt=AAZStrArgFormat(
+                pattern="^[{(]?[0-9A-Fa-f]{8}[-]?(?:[0-9A-Fa-f]{4}[-]?){3}[0-9A-Fa-f]{12}[)}]?$",
+            ),
+        )
+        _element.resource_id = AAZResourceIdArg(
+            options=["resource-id"],
+            help="ResourceId of the managed identity.",
+        )
+        _element.type = AAZStrArg(
+            options=["type"],
+            help="The type of managed identity.",
+            enum={"cluster": "cluster", "internal": "internal", "user": "user"},
+        )
+
         # define Arg Group "PrometheusProfile"
 
         _args_schema = cls._args_schema
@@ -930,6 +980,19 @@ class Update(AAZCommand):
             arg_group="SparkProfile",
             help="The thrift url.",
             nullable=True,
+        )
+
+        # define Arg Group "SshProfile"
+
+        _args_schema = cls._args_schema
+        _args_schema.vm_size = AAZStrArg(
+            options=["--vm-size"],
+            arg_group="SshProfile",
+            help="The virtual machine SKU.",
+            nullable=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_\-]{0,256}$",
+            ),
         )
 
         # define Arg Group "TrinoClusterWorker"
@@ -1172,7 +1235,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -1275,7 +1338,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -1351,6 +1414,7 @@ class Update(AAZCommand):
                 cluster_profile.set_prop("kafkaProfile", AAZObjectType, ".kafka_profile")
                 cluster_profile.set_prop("llapProfile", AAZFreeFormDictType, ".llap_profile")
                 cluster_profile.set_prop("logAnalyticsProfile", AAZObjectType)
+                cluster_profile.set_prop("managedIdentityProfile", AAZObjectType)
                 cluster_profile.set_prop("ossVersion", AAZStrType, ".oss_version", typ_kwargs={"flags": {"required": True}})
                 cluster_profile.set_prop("prometheusProfile", AAZObjectType)
                 cluster_profile.set_prop("rangerPluginProfile", AAZObjectType, ".ranger_plugin_profile")
@@ -1513,6 +1577,21 @@ class Update(AAZCommand):
                 application_logs.set_prop("stdErrorEnabled", AAZBoolType, ".application_log_std_error_enabled")
                 application_logs.set_prop("stdOutEnabled", AAZBoolType, ".application_log_std_out_enabled")
 
+            managed_identity_profile = _builder.get(".properties.clusterProfile.managedIdentityProfile")
+            if managed_identity_profile is not None:
+                managed_identity_profile.set_prop("identityList", AAZListType, ".identity_list", typ_kwargs={"flags": {"required": True}})
+
+            identity_list = _builder.get(".properties.clusterProfile.managedIdentityProfile.identityList")
+            if identity_list is not None:
+                identity_list.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.clusterProfile.managedIdentityProfile.identityList[]")
+            if _elements is not None:
+                _elements.set_prop("clientId", AAZStrType, ".client_id", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("objectId", AAZStrType, ".object_id", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("resourceId", AAZStrType, ".resource_id", typ_kwargs={"flags": {"required": True}})
+                _elements.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+
             prometheus_profile = _builder.get(".properties.clusterProfile.prometheusProfile")
             if prometheus_profile is not None:
                 prometheus_profile.set_prop("enabled", AAZBoolType, ".enable_prometheu", typ_kwargs={"flags": {"required": True}})
@@ -1662,6 +1741,7 @@ class Update(AAZCommand):
             ssh_profile = _builder.get(".properties.clusterProfile.sshProfile")
             if ssh_profile is not None:
                 ssh_profile.set_prop("count", AAZIntType, ".ssh_profile_count", typ_kwargs={"flags": {"required": True}})
+                ssh_profile.set_prop("vmSize", AAZStrType, ".vm_size")
 
             stub_profile = _builder.get(".properties.clusterProfile.stubProfile")
             if stub_profile is not None:
@@ -1740,7 +1820,12 @@ class Update(AAZCommand):
 
             compute_profile = _builder.get(".properties.computeProfile")
             if compute_profile is not None:
+                compute_profile.set_prop("availabilityZones", AAZListType, ".availability_zones")
                 compute_profile.set_prop("nodes", AAZListType, ".nodes", typ_kwargs={"flags": {"required": True}})
+
+            availability_zones = _builder.get(".properties.computeProfile.availabilityZones")
+            if availability_zones is not None:
+                availability_zones.set_elements(AAZStrType, ".")
 
             nodes = _builder.get(".properties.computeProfile.nodes")
             if nodes is not None:
@@ -1861,7 +1946,6 @@ class _UpdateHelper:
         cluster_profile.identity_profile = AAZObjectType(
             serialized_name="identityProfile",
         )
-        cls._build_schema_identity_profile_read(cluster_profile.identity_profile)
         cluster_profile.kafka_profile = AAZObjectType(
             serialized_name="kafkaProfile",
         )
@@ -1870,6 +1954,9 @@ class _UpdateHelper:
         )
         cluster_profile.log_analytics_profile = AAZObjectType(
             serialized_name="logAnalyticsProfile",
+        )
+        cluster_profile.managed_identity_profile = AAZObjectType(
+            serialized_name="managedIdentityProfile",
         )
         cluster_profile.oss_version = AAZStrType(
             serialized_name="ossVersion",
@@ -2142,11 +2229,21 @@ class _UpdateHelper:
             flags={"secret": True},
         )
 
-        kafka_profile = _schema_cluster_read.properties.cluster_profile.kafka_profile
-        kafka_profile.cluster_identity = AAZObjectType(
-            serialized_name="clusterIdentity",
+        identity_profile = _schema_cluster_read.properties.cluster_profile.identity_profile
+        identity_profile.msi_client_id = AAZStrType(
+            serialized_name="msiClientId",
+            flags={"required": True},
         )
-        cls._build_schema_identity_profile_read(kafka_profile.cluster_identity)
+        identity_profile.msi_object_id = AAZStrType(
+            serialized_name="msiObjectId",
+            flags={"required": True},
+        )
+        identity_profile.msi_resource_id = AAZStrType(
+            serialized_name="msiResourceId",
+            flags={"required": True},
+        )
+
+        kafka_profile = _schema_cluster_read.properties.cluster_profile.kafka_profile
         kafka_profile.connectivity_endpoints = AAZObjectType(
             serialized_name="connectivityEndpoints",
         )
@@ -2202,6 +2299,32 @@ class _UpdateHelper:
         )
         application_logs.std_out_enabled = AAZBoolType(
             serialized_name="stdOutEnabled",
+        )
+
+        managed_identity_profile = _schema_cluster_read.properties.cluster_profile.managed_identity_profile
+        managed_identity_profile.identity_list = AAZListType(
+            serialized_name="identityList",
+            flags={"required": True},
+        )
+
+        identity_list = _schema_cluster_read.properties.cluster_profile.managed_identity_profile.identity_list
+        identity_list.Element = AAZObjectType()
+
+        _element = _schema_cluster_read.properties.cluster_profile.managed_identity_profile.identity_list.Element
+        _element.client_id = AAZStrType(
+            serialized_name="clientId",
+            flags={"required": True},
+        )
+        _element.object_id = AAZStrType(
+            serialized_name="objectId",
+            flags={"required": True},
+        )
+        _element.resource_id = AAZStrType(
+            serialized_name="resourceId",
+            flags={"required": True},
+        )
+        _element.type = AAZStrType(
+            flags={"required": True},
         )
 
         prometheus_profile = _schema_cluster_read.properties.cluster_profile.prometheus_profile
@@ -2415,6 +2538,9 @@ class _UpdateHelper:
             serialized_name="podPrefix",
             flags={"read_only": True},
         )
+        ssh_profile.vm_size = AAZStrType(
+            serialized_name="vmSize",
+        )
 
         trino_profile = _schema_cluster_read.properties.cluster_profile.trino_profile
         trino_profile.catalog_options = AAZObjectType(
@@ -2500,9 +2626,15 @@ class _UpdateHelper:
         cls._build_schema_trino_debug_config_read(worker.debug)
 
         compute_profile = _schema_cluster_read.properties.compute_profile
+        compute_profile.availability_zones = AAZListType(
+            serialized_name="availabilityZones",
+        )
         compute_profile.nodes = AAZListType(
             flags={"required": True},
         )
+
+        availability_zones = _schema_cluster_read.properties.compute_profile.availability_zones
+        availability_zones.Element = AAZStrType()
 
         nodes = _schema_cluster_read.properties.compute_profile.nodes
         nodes.Element = AAZObjectType()
@@ -2571,36 +2703,6 @@ class _UpdateHelper:
 
         _schema.cpu = cls._schema_compute_resource_definition_read.cpu
         _schema.memory = cls._schema_compute_resource_definition_read.memory
-
-    _schema_identity_profile_read = None
-
-    @classmethod
-    def _build_schema_identity_profile_read(cls, _schema):
-        if cls._schema_identity_profile_read is not None:
-            _schema.msi_client_id = cls._schema_identity_profile_read.msi_client_id
-            _schema.msi_object_id = cls._schema_identity_profile_read.msi_object_id
-            _schema.msi_resource_id = cls._schema_identity_profile_read.msi_resource_id
-            return
-
-        cls._schema_identity_profile_read = _schema_identity_profile_read = AAZObjectType()
-
-        identity_profile_read = _schema_identity_profile_read
-        identity_profile_read.msi_client_id = AAZStrType(
-            serialized_name="msiClientId",
-            flags={"required": True},
-        )
-        identity_profile_read.msi_object_id = AAZStrType(
-            serialized_name="msiObjectId",
-            flags={"required": True},
-        )
-        identity_profile_read.msi_resource_id = AAZStrType(
-            serialized_name="msiResourceId",
-            flags={"required": True},
-        )
-
-        _schema.msi_client_id = cls._schema_identity_profile_read.msi_client_id
-        _schema.msi_object_id = cls._schema_identity_profile_read.msi_object_id
-        _schema.msi_resource_id = cls._schema_identity_profile_read.msi_resource_id
 
     _schema_trino_debug_config_read = None
 

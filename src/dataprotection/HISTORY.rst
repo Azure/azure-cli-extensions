@@ -2,6 +2,26 @@
 
 Release History
 ===============
+1.5.3
++++++
+* `az dataprotection backup-instance initialize-for-data-recovery`: Fixed a bug when trying to initialize AKS restore.
+
+1.5.2
++++++
+* Added support for multi-user authentication for dataprotection policy updates
+* `az dataprotection backup-instance update-policy`: New parameters - `--operation-requests` and `--tenant-id` for allowing operations on MUA-protected resources.
+
+1.5.1
++++++
+* Added support for multi-user authentication for CMK encryption changes
+
+1.5.0
++++++
+* Support for vaulted backup for AKS
+* `az dataprotection backup-policy get-default-policy-template`: For AzureKubernetesService, default policy now adds vaulted backup rules.
+* `az dataprotection backup-vault initialize-restoreconfig:` Three new parameters - `--staging-resource-group-id`, `--staging-storage-account-id`, `--resource-modifier-reference`.
+
+
 1.4.0
 +++++
 * Added support for cmk encryption on backup vault

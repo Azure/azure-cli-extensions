@@ -23,9 +23,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-12-13-preview",
+        "version": "2024-04-04-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devopsinfrastructure/pools/{}", "2023-12-13-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devopsinfrastructure/pools/{}", "2024-04-04-preview"],
         ]
     }
 
@@ -61,6 +61,336 @@ class Update(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "Properties"
+
+        _args_schema = cls._args_schema
+        _args_schema.agent_profile = AAZObjectArg(
+            options=["--agent-profile"],
+            arg_group="Properties",
+            help="Defines how the machine will be handled once it executed a job.",
+        )
+        _args_schema.devcenter_project_resource_id = AAZStrArg(
+            options=["--devcenter-project-id", "--devcenter-project-resource-id"],
+            arg_group="Properties",
+            help="The resource id of the DevCenter Project the pool belongs to.",
+        )
+        _args_schema.fabric_profile = AAZObjectArg(
+            options=["--fabric-profile"],
+            arg_group="Properties",
+            help="Defines the type of fabric the agent will run on.",
+        )
+        _args_schema.maximum_concurrency = AAZIntArg(
+            options=["--maximum-concurrency"],
+            arg_group="Properties",
+            help="Defines how many resources can there be created at any given time.",
+            fmt=AAZIntArgFormat(
+                maximum=10000,
+                minimum=1,
+            ),
+        )
+        _args_schema.organization_profile = AAZObjectArg(
+            options=["--organization-profile"],
+            arg_group="Properties",
+            help="Defines the organization in which the pool will be used.",
+        )
+
+        agent_profile = cls._args_schema.agent_profile
+        agent_profile.stateful = AAZObjectArg(
+            options=["stateful"],
+        )
+        agent_profile.stateless = AAZObjectArg(
+            options=["stateless"],
+            blank={},
+        )
+        agent_profile.resource_predictions = AAZObjectArg(
+            options=["resource-predictions"],
+            help="Defines pool buffer/stand-by agents.",
+            nullable=True,
+            blank={},
+        )
+        agent_profile.resource_predictions_profile = AAZObjectArg(
+            options=["resource-predictions-profile"],
+            help="Defines how the pool buffer/stand-by agents is provided.",
+            nullable=True,
+        )
+
+        stateful = cls._args_schema.agent_profile.stateful
+        stateful.grace_period_time_span = AAZStrArg(
+            options=["grace-period-time-span"],
+            help="How long should the machine be kept around after it ran a workload when there are no stand-by agents. The maximum is one week.",
+            nullable=True,
+        )
+        stateful.max_agent_lifetime = AAZStrArg(
+            options=["max-agent-lifetime"],
+            help="How long should stateful machines be kept around. The maximum is one week.",
+            nullable=True,
+        )
+
+        resource_predictions_profile = cls._args_schema.agent_profile.resource_predictions_profile
+        resource_predictions_profile.automatic = AAZObjectArg(
+            options=["automatic"],
+        )
+        resource_predictions_profile.manual = AAZObjectArg(
+            options=["manual"],
+            blank={},
+        )
+
+        automatic = cls._args_schema.agent_profile.resource_predictions_profile.automatic
+        automatic.prediction_preference = AAZStrArg(
+            options=["prediction-preference"],
+            help="Determines the balance between cost and performance.",
+            nullable=True,
+            enum={"Balanced": "Balanced", "BestPerformance": "BestPerformance", "MoreCostEffective": "MoreCostEffective", "MorePerformance": "MorePerformance", "MostCostEffective": "MostCostEffective"},
+        )
+
+        fabric_profile = cls._args_schema.fabric_profile
+        fabric_profile.vmss = AAZObjectArg(
+            options=["vmss"],
+        )
+
+        vmss = cls._args_schema.fabric_profile.vmss
+        vmss.images = AAZListArg(
+            options=["images"],
+            help="The VM images of the machines in the pool.",
+        )
+        vmss.network_profile = AAZObjectArg(
+            options=["network-profile"],
+            help="The network profile of the machines in the pool.",
+            nullable=True,
+        )
+        vmss.os_profile = AAZObjectArg(
+            options=["os-profile"],
+            help="The OS profile of the machines in the pool.",
+            nullable=True,
+        )
+        vmss.sku = AAZObjectArg(
+            options=["sku"],
+            help="The Azure SKU of the machines in the pool.",
+        )
+        vmss.storage_profile = AAZObjectArg(
+            options=["storage-profile"],
+            help="The storage profile of the machines in the pool.",
+            nullable=True,
+        )
+
+        images = cls._args_schema.fabric_profile.vmss.images
+        images.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.fabric_profile.vmss.images.Element
+        _element.aliases = AAZListArg(
+            options=["aliases"],
+            help="List of aliases to reference the image by.",
+            nullable=True,
+        )
+        _element.buffer = AAZStrArg(
+            options=["buffer"],
+            help="The percentage of the buffer to be allocated to this image.",
+            nullable=True,
+        )
+        _element.resource_id = AAZStrArg(
+            options=["resource-id"],
+            help="The resource id of the image.",
+            nullable=True,
+        )
+        _element.well_known_image_name = AAZStrArg(
+            options=["well-known-image-name"],
+            help="The image to use from a well-known set of images made available to customers.",
+            nullable=True,
+        )
+
+        aliases = cls._args_schema.fabric_profile.vmss.images.Element.aliases
+        aliases.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        network_profile = cls._args_schema.fabric_profile.vmss.network_profile
+        network_profile.subnet_id = AAZStrArg(
+            options=["subnet-id"],
+            help="The subnet id on which to put all machines created in the pool.",
+        )
+
+        os_profile = cls._args_schema.fabric_profile.vmss.os_profile
+        os_profile.logon_type = AAZStrArg(
+            options=["logon-type"],
+            help="Determines how the service should be run. By default, this will be set to Service.",
+            nullable=True,
+            enum={"Interactive": "Interactive", "Service": "Service"},
+        )
+        os_profile.secrets_management_settings = AAZObjectArg(
+            options=["secrets-management-settings"],
+            help="The secret management settings of the machines in the pool.",
+            nullable=True,
+        )
+
+        secrets_management_settings = cls._args_schema.fabric_profile.vmss.os_profile.secrets_management_settings
+        secrets_management_settings.certificate_store_location = AAZStrArg(
+            options=["certificate-store-location"],
+            help="Where to store certificates on the machine.",
+            nullable=True,
+        )
+        secrets_management_settings.key_exportable = AAZBoolArg(
+            options=["key-exportable"],
+            help="Defines if the key of the certificates should be exportable.",
+        )
+        secrets_management_settings.observed_certificates = AAZListArg(
+            options=["observed-certificates"],
+            help="The list of certificates to install on all machines in the pool.",
+        )
+
+        observed_certificates = cls._args_schema.fabric_profile.vmss.os_profile.secrets_management_settings.observed_certificates
+        observed_certificates.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        sku = cls._args_schema.fabric_profile.vmss.sku
+        sku.name = AAZStrArg(
+            options=["name"],
+            help="The Azure SKU name of the machines in the pool.",
+        )
+
+        storage_profile = cls._args_schema.fabric_profile.vmss.storage_profile
+        storage_profile.data_disks = AAZListArg(
+            options=["data-disks"],
+            help="A list of empty data disks to attach.",
+            nullable=True,
+        )
+        storage_profile.os_disk_storage_account_type = AAZStrArg(
+            options=["os-disk-storage-account-type"],
+            help="The Azure SKU name of the machines in the pool.",
+            nullable=True,
+            enum={"Premium": "Premium", "Standard": "Standard", "StandardSSD": "StandardSSD"},
+        )
+
+        data_disks = cls._args_schema.fabric_profile.vmss.storage_profile.data_disks
+        data_disks.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.fabric_profile.vmss.storage_profile.data_disks.Element
+        _element.caching = AAZStrArg(
+            options=["caching"],
+            help="The type of caching to be enabled for the data disks. The default value for caching is readwrite. For information about the caching options see: https://blogs.msdn.microsoft.com/windowsazurestorage/2012/06/27/exploring-windows-azure-drives-disks-and-images/.",
+            nullable=True,
+            enum={"None": "None", "ReadOnly": "ReadOnly", "ReadWrite": "ReadWrite"},
+        )
+        _element.disk_size_gi_b = AAZIntArg(
+            options=["disk-size-gi-b"],
+            help="The initial disk size in gigabytes.",
+            nullable=True,
+        )
+        _element.drive_letter = AAZStrArg(
+            options=["drive-letter"],
+            help="The drive letter for the empty data disk. If not specified, it will be the first available letter.",
+            nullable=True,
+        )
+        _element.storage_account_type = AAZStrArg(
+            options=["storage-account-type"],
+            help="The storage Account type to be used for the data disk. If omitted, the default is \"standard_lrs\".",
+            nullable=True,
+            enum={"Premium_LRS": "Premium_LRS", "Premium_ZRS": "Premium_ZRS", "StandardSSD_LRS": "StandardSSD_LRS", "StandardSSD_ZRS": "StandardSSD_ZRS", "Standard_LRS": "Standard_LRS"},
+        )
+
+        organization_profile = cls._args_schema.organization_profile
+        organization_profile.azure_dev_ops = AAZObjectArg(
+            options=["azure-dev-ops"],
+        )
+        organization_profile.git_hub = AAZObjectArg(
+            options=["git-hub"],
+        )
+
+        azure_dev_ops = cls._args_schema.organization_profile.azure_dev_ops
+        azure_dev_ops.organizations = AAZListArg(
+            options=["organizations"],
+            help="The list of Azure DevOps organizations the pool should be present in.",
+        )
+        azure_dev_ops.permission_profile = AAZObjectArg(
+            options=["permission-profile"],
+            help="The type of permission which determines which accounts are admins on the Azure DevOps pool.",
+            nullable=True,
+        )
+
+        organizations = cls._args_schema.organization_profile.azure_dev_ops.organizations
+        organizations.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.organization_profile.azure_dev_ops.organizations.Element
+        _element.parallelism = AAZIntArg(
+            options=["parallelism"],
+            help="How many machines can be created at maximum in this organization out of the maximumConcurrency of the pool.",
+            nullable=True,
+        )
+        _element.projects = AAZListArg(
+            options=["projects"],
+            help="Optional list of projects in which the pool should be created.",
+            nullable=True,
+        )
+        _element.url = AAZStrArg(
+            options=["url"],
+            help="The Azure DevOps organization URL in which the pool should be created.",
+        )
+
+        projects = cls._args_schema.organization_profile.azure_dev_ops.organizations.Element.projects
+        projects.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        permission_profile = cls._args_schema.organization_profile.azure_dev_ops.permission_profile
+        permission_profile.groups = AAZListArg(
+            options=["groups"],
+            help="Group email addresses",
+            nullable=True,
+        )
+        permission_profile.kind = AAZStrArg(
+            options=["kind"],
+            help="Determines who has admin permissions to the Azure DevOps pool.",
+            enum={"CreatorOnly": "CreatorOnly", "Inherit": "Inherit", "SpecificAccounts": "SpecificAccounts"},
+        )
+        permission_profile.users = AAZListArg(
+            options=["users"],
+            help="User email addresses",
+            nullable=True,
+        )
+
+        groups = cls._args_schema.organization_profile.azure_dev_ops.permission_profile.groups
+        groups.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        users = cls._args_schema.organization_profile.azure_dev_ops.permission_profile.users
+        users.Element = AAZStrArg(
+            nullable=True,
+        )
+
+        git_hub = cls._args_schema.organization_profile.git_hub
+        git_hub.organizations = AAZListArg(
+            options=["organizations"],
+            help="The list of GitHub organizations/repositories the pool should be present in.",
+        )
+
+        organizations = cls._args_schema.organization_profile.git_hub.organizations
+        organizations.Element = AAZObjectArg(
+            nullable=True,
+        )
+
+        _element = cls._args_schema.organization_profile.git_hub.organizations.Element
+        _element.repositories = AAZListArg(
+            options=["repositories"],
+            help="Optional list of repositories in which the pool should be created.",
+            nullable=True,
+        )
+        _element.url = AAZStrArg(
+            options=["url"],
+            help="The GitHub organization URL in which the pool should be created.",
+        )
+
+        repositories = cls._args_schema.organization_profile.git_hub.organizations.Element.repositories
+        repositories.Element = AAZStrArg(
+            nullable=True,
+        )
+
         # define Arg Group "Resource"
 
         _args_schema = cls._args_schema
@@ -81,7 +411,7 @@ class Update(AAZCommand):
         identity.type = AAZStrArg(
             options=["type"],
             help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
-            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned, UserAssigned": "SystemAssigned, UserAssigned", "UserAssigned": "UserAssigned"},
+            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
         )
         identity.user_assigned_identities = AAZDictArg(
             options=["user-assigned-identities"],
@@ -179,7 +509,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-12-13-preview",
+                    "api-version", "2024-04-04-preview",
                     required=True,
                 ),
             }
@@ -278,7 +608,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-12-13-preview",
+                    "api-version", "2024-04-04-preview",
                     required=True,
                 ),
             }
@@ -337,6 +667,7 @@ class Update(AAZCommand):
                 typ=AAZObjectType
             )
             _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             identity = _builder.get(".identity")
@@ -346,7 +677,164 @@ class Update(AAZCommand):
 
             user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
             if user_assigned_identities is not None:
-                user_assigned_identities.set_elements(AAZObjectType, ".")
+                user_assigned_identities.set_elements(AAZObjectType, ".", typ_kwargs={"nullable": True})
+
+            properties = _builder.get(".properties")
+            if properties is not None:
+                properties.set_prop("agentProfile", AAZObjectType, ".agent_profile", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("devCenterProjectResourceId", AAZStrType, ".devcenter_project_resource_id", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("fabricProfile", AAZObjectType, ".fabric_profile", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("maximumConcurrency", AAZIntType, ".maximum_concurrency", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("organizationProfile", AAZObjectType, ".organization_profile", typ_kwargs={"flags": {"required": True}})
+
+            agent_profile = _builder.get(".properties.agentProfile")
+            if agent_profile is not None:
+                agent_profile.set_const("kind", "Stateful", AAZStrType, ".stateful", typ_kwargs={"flags": {"required": True}})
+                agent_profile.set_const("kind", "Stateless", AAZStrType, ".stateless", typ_kwargs={"flags": {"required": True}})
+                agent_profile.set_prop("resourcePredictions", AAZObjectType, ".resource_predictions")
+                agent_profile.set_prop("resourcePredictionsProfile", AAZObjectType, ".resource_predictions_profile")
+                agent_profile.discriminate_by("kind", "Stateful")
+                agent_profile.discriminate_by("kind", "Stateless")
+
+            resource_predictions_profile = _builder.get(".properties.agentProfile.resourcePredictionsProfile")
+            if resource_predictions_profile is not None:
+                resource_predictions_profile.set_const("kind", "Automatic", AAZStrType, ".automatic", typ_kwargs={"flags": {"required": True}})
+                resource_predictions_profile.set_const("kind", "Manual", AAZStrType, ".manual", typ_kwargs={"flags": {"required": True}})
+                resource_predictions_profile.discriminate_by("kind", "Automatic")
+                resource_predictions_profile.discriminate_by("kind", "Manual")
+
+            disc_automatic = _builder.get(".properties.agentProfile.resourcePredictionsProfile{kind:Automatic}")
+            if disc_automatic is not None:
+                disc_automatic.set_prop("predictionPreference", AAZStrType, ".automatic.prediction_preference")
+
+            disc_stateful = _builder.get(".properties.agentProfile{kind:Stateful}")
+            if disc_stateful is not None:
+                disc_stateful.set_prop("gracePeriodTimeSpan", AAZStrType, ".stateful.grace_period_time_span")
+                disc_stateful.set_prop("maxAgentLifetime", AAZStrType, ".stateful.max_agent_lifetime")
+
+            fabric_profile = _builder.get(".properties.fabricProfile")
+            if fabric_profile is not None:
+                fabric_profile.set_const("kind", "Vmss", AAZStrType, ".vmss", typ_kwargs={"flags": {"required": True}})
+                fabric_profile.discriminate_by("kind", "Vmss")
+
+            disc_vmss = _builder.get(".properties.fabricProfile{kind:Vmss}")
+            if disc_vmss is not None:
+                disc_vmss.set_prop("images", AAZListType, ".vmss.images", typ_kwargs={"flags": {"required": True}})
+                disc_vmss.set_prop("networkProfile", AAZObjectType, ".vmss.network_profile")
+                disc_vmss.set_prop("osProfile", AAZObjectType, ".vmss.os_profile")
+                disc_vmss.set_prop("sku", AAZObjectType, ".vmss.sku", typ_kwargs={"flags": {"required": True}})
+                disc_vmss.set_prop("storageProfile", AAZObjectType, ".vmss.storage_profile")
+
+            images = _builder.get(".properties.fabricProfile{kind:Vmss}.images")
+            if images is not None:
+                images.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.fabricProfile{kind:Vmss}.images[]")
+            if _elements is not None:
+                _elements.set_prop("aliases", AAZListType, ".aliases")
+                _elements.set_prop("buffer", AAZStrType, ".buffer")
+                _elements.set_prop("resourceId", AAZStrType, ".resource_id")
+                _elements.set_prop("wellKnownImageName", AAZStrType, ".well_known_image_name")
+
+            aliases = _builder.get(".properties.fabricProfile{kind:Vmss}.images[].aliases")
+            if aliases is not None:
+                aliases.set_elements(AAZStrType, ".")
+
+            network_profile = _builder.get(".properties.fabricProfile{kind:Vmss}.networkProfile")
+            if network_profile is not None:
+                network_profile.set_prop("subnetId", AAZStrType, ".subnet_id", typ_kwargs={"flags": {"required": True}})
+
+            os_profile = _builder.get(".properties.fabricProfile{kind:Vmss}.osProfile")
+            if os_profile is not None:
+                os_profile.set_prop("logonType", AAZStrType, ".logon_type")
+                os_profile.set_prop("secretsManagementSettings", AAZObjectType, ".secrets_management_settings")
+
+            secrets_management_settings = _builder.get(".properties.fabricProfile{kind:Vmss}.osProfile.secretsManagementSettings")
+            if secrets_management_settings is not None:
+                secrets_management_settings.set_prop("certificateStoreLocation", AAZStrType, ".certificate_store_location")
+                secrets_management_settings.set_prop("keyExportable", AAZBoolType, ".key_exportable", typ_kwargs={"flags": {"required": True}})
+                secrets_management_settings.set_prop("observedCertificates", AAZListType, ".observed_certificates", typ_kwargs={"flags": {"required": True}})
+
+            observed_certificates = _builder.get(".properties.fabricProfile{kind:Vmss}.osProfile.secretsManagementSettings.observedCertificates")
+            if observed_certificates is not None:
+                observed_certificates.set_elements(AAZStrType, ".")
+
+            sku = _builder.get(".properties.fabricProfile{kind:Vmss}.sku")
+            if sku is not None:
+                sku.set_prop("name", AAZStrType, ".name", typ_kwargs={"flags": {"required": True}})
+
+            storage_profile = _builder.get(".properties.fabricProfile{kind:Vmss}.storageProfile")
+            if storage_profile is not None:
+                storage_profile.set_prop("dataDisks", AAZListType, ".data_disks")
+                storage_profile.set_prop("osDiskStorageAccountType", AAZStrType, ".os_disk_storage_account_type")
+
+            data_disks = _builder.get(".properties.fabricProfile{kind:Vmss}.storageProfile.dataDisks")
+            if data_disks is not None:
+                data_disks.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.fabricProfile{kind:Vmss}.storageProfile.dataDisks[]")
+            if _elements is not None:
+                _elements.set_prop("caching", AAZStrType, ".caching")
+                _elements.set_prop("diskSizeGiB", AAZIntType, ".disk_size_gi_b")
+                _elements.set_prop("driveLetter", AAZStrType, ".drive_letter")
+                _elements.set_prop("storageAccountType", AAZStrType, ".storage_account_type")
+
+            organization_profile = _builder.get(".properties.organizationProfile")
+            if organization_profile is not None:
+                organization_profile.set_const("kind", "AzureDevOps", AAZStrType, ".azure_dev_ops", typ_kwargs={"flags": {"required": True}})
+                organization_profile.set_const("kind", "GitHub", AAZStrType, ".git_hub", typ_kwargs={"flags": {"required": True}})
+                organization_profile.discriminate_by("kind", "AzureDevOps")
+                organization_profile.discriminate_by("kind", "GitHub")
+
+            disc_azure_dev_ops = _builder.get(".properties.organizationProfile{kind:AzureDevOps}")
+            if disc_azure_dev_ops is not None:
+                disc_azure_dev_ops.set_prop("organizations", AAZListType, ".azure_dev_ops.organizations", typ_kwargs={"flags": {"required": True}})
+                disc_azure_dev_ops.set_prop("permissionProfile", AAZObjectType, ".azure_dev_ops.permission_profile")
+
+            organizations = _builder.get(".properties.organizationProfile{kind:AzureDevOps}.organizations")
+            if organizations is not None:
+                organizations.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.organizationProfile{kind:AzureDevOps}.organizations[]")
+            if _elements is not None:
+                _elements.set_prop("parallelism", AAZIntType, ".parallelism")
+                _elements.set_prop("projects", AAZListType, ".projects")
+                _elements.set_prop("url", AAZStrType, ".url", typ_kwargs={"flags": {"required": True}})
+
+            projects = _builder.get(".properties.organizationProfile{kind:AzureDevOps}.organizations[].projects")
+            if projects is not None:
+                projects.set_elements(AAZStrType, ".")
+
+            permission_profile = _builder.get(".properties.organizationProfile{kind:AzureDevOps}.permissionProfile")
+            if permission_profile is not None:
+                permission_profile.set_prop("groups", AAZListType, ".groups")
+                permission_profile.set_prop("kind", AAZStrType, ".kind", typ_kwargs={"flags": {"required": True}})
+                permission_profile.set_prop("users", AAZListType, ".users")
+
+            groups = _builder.get(".properties.organizationProfile{kind:AzureDevOps}.permissionProfile.groups")
+            if groups is not None:
+                groups.set_elements(AAZStrType, ".")
+
+            users = _builder.get(".properties.organizationProfile{kind:AzureDevOps}.permissionProfile.users")
+            if users is not None:
+                users.set_elements(AAZStrType, ".")
+
+            disc_git_hub = _builder.get(".properties.organizationProfile{kind:GitHub}")
+            if disc_git_hub is not None:
+                disc_git_hub.set_prop("organizations", AAZListType, ".git_hub.organizations", typ_kwargs={"flags": {"required": True}})
+
+            organizations = _builder.get(".properties.organizationProfile{kind:GitHub}.organizations")
+            if organizations is not None:
+                organizations.set_elements(AAZObjectType, ".")
+
+            _elements = _builder.get(".properties.organizationProfile{kind:GitHub}.organizations[]")
+            if _elements is not None:
+                _elements.set_prop("repositories", AAZListType, ".repositories")
+                _elements.set_prop("url", AAZStrType, ".url", typ_kwargs={"flags": {"required": True}})
+
+            repositories = _builder.get(".properties.organizationProfile{kind:GitHub}.organizations[].repositories")
+            if repositories is not None:
+                repositories.set_elements(AAZStrType, ".")
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -423,7 +911,9 @@ class _UpdateHelper:
         )
 
         user_assigned_identities = _schema_pool_read.identity.user_assigned_identities
-        user_assigned_identities.Element = AAZObjectType()
+        user_assigned_identities.Element = AAZObjectType(
+            nullable=True,
+        )
 
         _element = _schema_pool_read.identity.user_assigned_identities.Element
         _element.client_id = AAZStrType(
@@ -467,11 +957,26 @@ class _UpdateHelper:
         agent_profile.resource_predictions = AAZObjectType(
             serialized_name="resourcePredictions",
         )
+        agent_profile.resource_predictions_profile = AAZObjectType(
+            serialized_name="resourcePredictionsProfile",
+        )
+
+        resource_predictions_profile = _schema_pool_read.properties.agent_profile.resource_predictions_profile
+        resource_predictions_profile.kind = AAZStrType(
+            flags={"required": True},
+        )
+
+        disc_automatic = _schema_pool_read.properties.agent_profile.resource_predictions_profile.discriminate_by("kind", "Automatic")
+        disc_automatic.prediction_preference = AAZStrType(
+            serialized_name="predictionPreference",
+        )
 
         disc_stateful = _schema_pool_read.properties.agent_profile.discriminate_by("kind", "Stateful")
+        disc_stateful.grace_period_time_span = AAZStrType(
+            serialized_name="gracePeriodTimeSpan",
+        )
         disc_stateful.max_agent_lifetime = AAZStrType(
             serialized_name="maxAgentLifetime",
-            flags={"required": True},
         )
 
         fabric_profile = _schema_pool_read.properties.fabric_profile
@@ -504,7 +1009,9 @@ class _UpdateHelper:
         _element.buffer = AAZStrType()
         _element.resource_id = AAZStrType(
             serialized_name="resourceId",
-            flags={"required": True},
+        )
+        _element.well_known_image_name = AAZStrType(
+            serialized_name="wellKnownImageName",
         )
 
         aliases = _schema_pool_read.properties.fabric_profile.discriminate_by("kind", "Vmss").images.Element.aliases
@@ -546,8 +1053,26 @@ class _UpdateHelper:
         )
 
         storage_profile = _schema_pool_read.properties.fabric_profile.discriminate_by("kind", "Vmss").storage_profile
+        storage_profile.data_disks = AAZListType(
+            serialized_name="dataDisks",
+        )
         storage_profile.os_disk_storage_account_type = AAZStrType(
             serialized_name="osDiskStorageAccountType",
+        )
+
+        data_disks = _schema_pool_read.properties.fabric_profile.discriminate_by("kind", "Vmss").storage_profile.data_disks
+        data_disks.Element = AAZObjectType()
+
+        _element = _schema_pool_read.properties.fabric_profile.discriminate_by("kind", "Vmss").storage_profile.data_disks.Element
+        _element.caching = AAZStrType()
+        _element.disk_size_gi_b = AAZIntType(
+            serialized_name="diskSizeGiB",
+        )
+        _element.drive_letter = AAZStrType(
+            serialized_name="driveLetter",
+        )
+        _element.storage_account_type = AAZStrType(
+            serialized_name="storageAccountType",
         )
 
         organization_profile = _schema_pool_read.properties.organization_profile

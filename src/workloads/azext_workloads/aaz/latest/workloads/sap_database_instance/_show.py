@@ -203,19 +203,24 @@ class Show(AAZCommand):
                 serialized_name="databaseType",
                 flags={"read_only": True},
             )
-            properties.errors = AAZObjectType()
+            properties.errors = AAZObjectType(
+                flags={"read_only": True},
+            )
             properties.ip_address = AAZStrType(
                 serialized_name="ipAddress",
                 flags={"read_only": True},
             )
             properties.load_balancer_details = AAZObjectType(
                 serialized_name="loadBalancerDetails",
+                flags={"read_only": True},
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.status = AAZStrType()
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.subnet = AAZStrType(
                 flags={"read_only": True},
             )
@@ -237,7 +242,9 @@ class Show(AAZCommand):
             vm_details.Element = AAZObjectType()
 
             _element = cls._schema_on_200.properties.vm_details.Element
-            _element.status = AAZStrType()
+            _element.status = AAZStrType(
+                flags={"read_only": True},
+            )
             _element.storage_details = AAZListType(
                 serialized_name="storageDetails",
                 flags={"read_only": True},

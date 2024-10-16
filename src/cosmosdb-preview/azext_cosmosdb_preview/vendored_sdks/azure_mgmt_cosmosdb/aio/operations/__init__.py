@@ -6,6 +6,7 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
+from ._network_security_perimeter_configurations_operations import NetworkSecurityPerimeterConfigurationsOperations
 from ._database_accounts_operations import DatabaseAccountsOperations
 from ._operations import Operations
 from ._database_operations import DatabaseOperations
@@ -29,7 +30,6 @@ from ._locations_operations import LocationsOperations
 from ._data_transfer_jobs_operations import DataTransferJobsOperations
 from ._cassandra_clusters_operations import CassandraClustersOperations
 from ._cassandra_data_centers_operations import CassandraDataCentersOperations
-from ._mongo_clusters_operations import MongoClustersOperations
 from ._notebook_workspaces_operations import NotebookWorkspacesOperations
 from ._private_endpoint_connections_operations import PrivateEndpointConnectionsOperations
 from ._private_link_resources_operations import PrivateLinkResourcesOperations
@@ -56,6 +56,7 @@ from ._patch import *  # pylint: disable=unused-wildcard-import
 from ._patch import patch_sdk as _patch_sdk
 
 __all__ = [
+    "NetworkSecurityPerimeterConfigurationsOperations",
     "DatabaseAccountsOperations",
     "Operations",
     "DatabaseOperations",
@@ -79,7 +80,6 @@ __all__ = [
     "DataTransferJobsOperations",
     "CassandraClustersOperations",
     "CassandraDataCentersOperations",
-    "MongoClustersOperations",
     "NotebookWorkspacesOperations",
     "PrivateEndpointConnectionsOperations",
     "PrivateLinkResourcesOperations",

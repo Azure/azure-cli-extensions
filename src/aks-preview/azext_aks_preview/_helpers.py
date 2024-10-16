@@ -7,6 +7,7 @@ import os
 import platform
 import re
 import stat
+import sys
 import tempfile
 from typing import TypeVar
 
@@ -330,3 +331,18 @@ def process_message_for_run_command(message):
 
     for line in result[2:len(result) - 2]:
         print(line)
+
+
+def check_is_azure_cli_core_editable_installed():
+    try:
+        editable = os.getenv("AZURE_CLI_CORE_EDITABLE", "false").lower() == "true"
+        if editable:
+            return True
+        for path_item in sys.path:
+            egg_link = os.path.join(path_item, 'azure-cli-core.egg-link')
+            if os.path.isfile(egg_link):
+                os.environ["AZURE_CLI_CORE_EDITABLE"] = "true"
+                return True
+    except Exception as ex:  # pylint: disable=broad-except
+        logger.debug("failed to check if azure-cli-core is installed as editable: %s", ex)
+    return False

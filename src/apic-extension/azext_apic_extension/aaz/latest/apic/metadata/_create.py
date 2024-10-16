@@ -18,10 +18,10 @@ class Create(AAZCommand):
     """Create a new metadata schema or update an existing metadata schema.
 
     :example: Create metadata example 1
-        az apic metadata create --resource-group api-center-test --service-name contoso --name "test1" --schema '{\"type\":\"string\", \"title\":\"First name\", \"pattern\": \"^[a-zA-Z0-9]+$\"}' --assignments '[{entity:api,required:true,deprecated:false}]'
+        az apic metadata create --resource-group api-center-test --service-name contoso --metadata-name "test1" --schema '{\"type\":\"string\", \"title\":\"First name\", \"pattern\": \"^[a-zA-Z0-9]+$\"}' --assignments '[{entity:api,required:true,deprecated:false}]'
 
     :example: Create metadata example 2
-        az apic metadata create --resource-group api-center-test --service-name contoso  --name testregion --schema '{\"type\":\"string\",\"title\":\"testregion\",\"oneOf\":[{\"const\":\"Region1\",\"description\":\"\"},{\"const\":\"Region2\",\"description\":\"\"},{\"const\":\"Region3\",\"description\":\"\"}]}' --assignments '[{entity:api,required:true,deprecated:false},{entity:environment,required:true,deprecated:false}]'
+        az apic metadata create --resource-group api-center-test --service-name contoso  --metadata-name testregion --schema '{\"type\":\"string\",\"title\":\"testregion\",\"oneOf\":[{\"const\":\"Region1\",\"description\":\"\"},{\"const\":\"Region2\",\"description\":\"\"},{\"const\":\"Region3\",\"description\":\"\"}]}' --assignments '[{entity:api,required:true,deprecated:false},{entity:environment,required:true,deprecated:false}]'
     """
 
     _aaz_info = {
@@ -47,8 +47,8 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.metadata_schema_name = AAZStrArg(
-            options=["--name", "--metadata-schema", "--metadata-schema-name"],
+        _args_schema.metadata_name = AAZStrArg(
+            options=["--metadata-name"],
             help="The name of the metadata schema.",
             required=True,
             fmt=AAZStrArgFormat(
@@ -61,8 +61,8 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-n", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,90}$",
@@ -152,7 +152,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "metadataSchemaName", self.ctx.args.metadata_schema_name,
+                    "metadataSchemaName", self.ctx.args.metadata_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
