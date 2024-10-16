@@ -498,9 +498,17 @@ examples:
 helps['webpubsub identity remove'] = """
 type: command
 short-summary: Remove managed identity for WebPubSub Service.
+examples:
+  - name: Remove managed identity.
+    text: >
+        az webpubsub identity remove -n MyWebPubSub -g MyResourceGroup
 """
 
 helps['webpubsub identity show'] = """
 type: command
 short-summary: Show managed identity for WebPubSub Service.
+examples:
+  - name: Show managed identity.
+    text: >
+        az webpubsub identity show -n MyWebPubSub -g MyResourceGroup
 """
