@@ -54,12 +54,11 @@ from .exceptions import AzCommandError, RunScriptNotFoundForIdError, SupportingR
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False, encrypt_recovery_key=""):
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False, encrypt_recovery_key="", disable_trusted_launch=False):
     # Breaking change warning
     logger.warning('After the November 2024 release, if the image of the source Windows VM is not found, the \'az vm repair create\' command will default to use a 2022-Datacenter image for the repair VM.')
-    
     # log all the parameters not logging the bitlocker key
-    logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s', vm_name, resource_group_name, repair_password, repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes)
+    logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s, disable_trusted_launch: %s', vm_name, resource_group_name, repair_password, repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes, disable_trusted_launch)
 
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
@@ -118,17 +117,25 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             zone = source_vm.zones[0]
             create_repair_vm_command += ' --zone {zone}'.format(zone=zone)
 
-        if encrypt_recovery_key:
-            # For confidential VM and Trusted VM security tags some of the SKU expects the right security type, secure_boot_enabled and vtpm_enabled
-            logger.debug('Fetching VM security profile...')
-            vm_security_params = _fetch_vm_security_profile_parameters(source_vm)
-            if vm_security_params:
-                create_repair_vm_command += vm_security_params
-
-            logger.debug('Fetching OS Disk security profile...')
-            osdisk_security_params = _fetch_osdisk_security_profile_parameters(source_vm)
-            if osdisk_security_params:
-                create_repair_vm_command += osdisk_security_params
+        if disable_trusted_launch:  
+            logger.debug('Set security-type to Standard...')  
+            create_repair_vm_command += ' --security-type Standard'  
+        else:  
+            # For confidential VM and Trusted VM security tags some of the SKU expects the right security type, secure_boot_enabled and vtpm_enabled 
+            
+            # Note: I don't think TL VMs have an envrypted disk, so I don't think they need the encrypt_recovery_key parameter. Needs to be investigated and reworked.
+            # TL VMs still have a security profile to copy over though.  
+            if encrypt_recovery_key:  
+                logger.debug('Fetching VM security profile...')  
+                vm_security_params = _fetch_vm_security_profile_parameters(source_vm)  
+                if vm_security_params:  
+                    create_repair_vm_command += vm_security_params  
+        # For confidential VM and Trusted Launch VM security tags on disks, the disk security profile needs to be brought over as well.  
+        if encrypt_recovery_key:  
+            logger.debug('Fetching OS Disk security profile...')  
+            osdisk_security_params = _fetch_osdisk_security_profile_parameters(source_vm)  
+            if osdisk_security_params:  
+                create_repair_vm_command += osdisk_security_params  
 
         # Create new resource group
         existing_rg = _check_existing_rg(repair_group_name)

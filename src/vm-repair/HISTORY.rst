@@ -7,7 +7,8 @@ Migrated VM Repair off of the `msrestazure` API to `azure.core` and `azure.mgmt`
 
 1.1.0
 ++++++
-Added script for GT fixit button
+Added script for GT fixit button.
+Added support for `--disable-trusted-launch` flag parameter to set security type to `Standard` on the repair VM no matter what the source VM has.
 
 1.0.10
 ++++++

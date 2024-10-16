@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete an AppComplianceAutomation webhook.
+
+    :example: Webhook_Delete
+        az acat report webhook delete --report-name testReportName --webhook-name testWebhookName
     """
 
     _aaz_info = {
