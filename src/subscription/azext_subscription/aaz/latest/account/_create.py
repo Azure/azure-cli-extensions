@@ -59,7 +59,7 @@ class Create(AAZCommand):
         _args_schema.offer_type = AAZStrArg(
             options=["--offer-type"],
             help="The offer type of the subscription. For example, MS-AZR-0017P(EnterpriseAgreement) and MS-AZR-0148P(EnterpriseAgreement devTest) are available. Allowed values: MS-AZR-0017P, MS-AZR-0148P, MS-AZR-USGOV-0015P, MS-AZR-USGOV-0017P, MS-AZR-USGOV-0148P.",
-            enum={"MS-AZR-0017P": "MS-AZR-0017P", "MS-AZR-0148P": "MS-AZR-0148P"},
+            enum={"MS-AZR-0017P": "MS-AZR-0017P", "MS-AZR-0148P": "MS-AZR-0148P", "MS-AZR-USGOV-0015P": "MS-AZR-USGOV-0015P", "MS-AZR-USGOV-0017P": "MS-AZR-USGOV-0017P", "MS-AZR-USGOV-0148P": "MS-AZR-USGOV-0148P"},
         )
         _args_schema.owners = AAZListArg(
             options=["--owners"],

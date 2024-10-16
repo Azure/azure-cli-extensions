@@ -88,11 +88,6 @@ class AccountCreate(Create):
             options=["--owner-upn"],
             help="The user principal name(s) of owner(s) who should be granted access to the new subscription."
         )
-        args_schema.offer_type.enum = AAZArgEnum({'MS-AZR-0017P': 'MS-AZR-0017P',
-                                        'MS-AZR-0148P': 'MS-AZR-0148P',
-                                        'MS-AZR-USGOV-0015P': 'MS-AZR-USGOV-0015P',
-                                        'MS-AZR-USGOV-0017P': 'MS-AZR-USGOV-0017P',
-                                        'MS-AZR-USGOV-0148P': 'MS-AZR-USGOV-0148P'})
         args_schema.offer_type._required = True
         args_schema.additional_parameters._registered = False
         args_schema.owners._registered = False
