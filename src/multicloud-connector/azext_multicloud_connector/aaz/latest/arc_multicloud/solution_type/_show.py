@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get a SolutionTypeResource
 
     :example: SolutionTypes_Get
-        az arc-multicloud solution-type show --resource-group rgpublicCloud --name lulzqllpu
+        az arc-multicloud solution-type show --resource-group rgpublicCloud --name "Microsoft.AssetManagement"
     """
 
     _aaz_info = {

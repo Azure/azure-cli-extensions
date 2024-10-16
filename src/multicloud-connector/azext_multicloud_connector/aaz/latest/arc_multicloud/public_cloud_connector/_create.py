@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a PublicCloudConnector
 
     :example: PublicCloudConnectors_CreateOrUpdate
-        az arc-multicloud public-cloud-connector create --resource-group rgpublicCloud --name advjwoakdusalamomg --aws-cloud-profile "{account-id:snbnuxckevyqpm,excluded-accounts:[rwgqpukglvbqmogqcliqolucp],is-organizational-account:True}" --host-type AWS --tags "{}" --location jpiglusfxynfcewcjwvvnn
+        az arc-multicloud public-cloud-connector create --resource-group rgpublicCloud --name myConnector--aws-cloud-profile "{account-id:123456789123,excluded-accounts:[123456789124,123456789125],is-organizational-account:True}" --host-type AWS --tags "{a:b}" --location eastus
     """
 
     _aaz_info = {
@@ -289,14 +289,25 @@ class Create(AAZCommand):
                 serialized_name="connectorPrimaryIdentifier",
                 flags={"read_only": True},
             )
+            properties.host_type = AAZStrType(
+                serialized_name="hostType",
+                flags={"required": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
 
             aws_cloud_profile = cls._schema_on_200_201.properties.aws_cloud_profile
+            aws_cloud_profile.account_id = AAZStrType(
+                serialized_name="accountId",
+                flags={"required": True},
+            )
             aws_cloud_profile.excluded_accounts = AAZListType(
                 serialized_name="excludedAccounts",
+            )
+            aws_cloud_profile.is_organizational_account = AAZBoolType(
+                serialized_name="isOrganizationalAccount",
             )
 
             excluded_accounts = cls._schema_on_200_201.properties.aws_cloud_profile.excluded_accounts

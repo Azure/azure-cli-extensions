@@ -19,7 +19,7 @@ class Delete(AAZCommand):
     """Delete a SolutionConfiguration
 
     :example: SolutionConfigurations_Delete
-        az arc-multicloud solution-configuration delete --connector-id ymuj --name stu
+        az arc-multicloud solution-configuration delete --connector-id  /subscriptions/{}/resourceGroups/{}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{} --name mySolutionConfig
     """
 
     _aaz_info = {
