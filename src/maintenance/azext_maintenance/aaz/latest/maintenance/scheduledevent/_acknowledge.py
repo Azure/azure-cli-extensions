@@ -16,16 +16,19 @@ from azure.cli.core.aaz import *
     is_preview=True,
 )
 class Acknowledge(AAZCommand):
-    """Post Scheduled Event Acknowledgement
+    """Acknowledge Scheduled Event
 
-    :example: Acknowledge scheduled event of a VM
-        az --resource-group {resourceGroup} --resource-name {VMname} --scheduled-event-id {GuidEventId} --subscription {subscriptionId}
+    :example: Acknowledge scheduled event of a VirtualMachine
+        az maintenance scheduledevent acknowledge --resource-group {resourceGroupName} --resource-type "virtualMachines" --resource-name {VMname} --scheduled-event-id {scheduledEventId} --subscription {subscriptionId}
+        az maintenance scheduledevent acknowledge --ids /subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.compute/virtualMachines/{resourceName}/providers/microsoft.maintenance/scheduledevents/{scheduledEventId}
 
-    :example: Acknowledge scheduled event of a VMSS
-        az --resource-group {resourceGroup} --resource-name {VMSSname} --scheduled-event-id {GuidEventId} --subscription {subscriptionId}
+    :example: Acknowledge scheduled event of a VirtualMachineScaleSets
+        az maintenance scheduledevent acknowledge --resource-group {resourceGroup} --resource-type "virtualMachineScaleSets" --resource-name {VMSSname} --scheduled-event-id {scheduledEventId} --subscription {subscriptionId}
+        az maintenance scheduledevent acknowledge --ids /subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.compute/virtualMachineScaleSets/{resourceName}/providers/microsoft.maintenance/scheduledevents/{scheduledEventId}
 
     :example: Acknowledge scheduled event of a AvailabilitySet
-        az --resource-group {resourceGroup} --resource-name {AVSetname} --scheduled-event-id {GuidEventId} --subscription {subscriptionId}
+        az maintenance scheduledevent acknowledge--resource-group {resourceGroupName} --resource-type "availabilitySets"--resource-name {AVSetname} --scheduled-event-id {scheduledEventId} --subscription {subscriptionId}
+        az maintenance scheduledevent acknowledge --ids /subscriptions/{subscriptionId}/resourcegroups/{resourceGroupName}/providers/microsoft.compute/AvalabilitySets/{resourceName}/providers/microsoft.maintenance/scheduledevents/{scheduledEventId}
     """
 
     _aaz_info = {
