@@ -169,8 +169,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             logger.debug('Set security-type to Standard...')  
             create_repair_vm_command += ' --security-type Standard'  
         else:
-        # If a Bitlocker recovery key is provided, this indicates the source VM is encrypted.  
-        # In this case, the VM and OS disk security profiles need to be fetched and added to the repair VM creation command.  
+            # If a Bitlocker recovery key is provided, this indicates the source VM is encrypted.  
+            # In this case, the VM and OS disk security profiles need to be fetched and added to the repair VM creation command.  
             if encrypt_recovery_key: 
                 # TODO: this was assumed to also need for Trusted Launch VMs, but I don't think this is the case. 
                 
