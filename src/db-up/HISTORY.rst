@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.0b4
++++++++
+* Update deprecation doc
+
 1.0.0b3
 +++++++
 * Deprecate this extension

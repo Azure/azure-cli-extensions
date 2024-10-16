@@ -34,9 +34,9 @@ class ESULicenseScenarioTest(ScenarioTest):
     def test_esu_license(self):
         self.kwargs.update({
             'customScriptName': 'custom-test',
-            'machine': 'testmachine2',
-            'rg': 'ytongtest3',
-            'location': 'eastus2',
+            'machine': 'testmachine',
+            'rg': 'ytongtest',
+            'location': 'centraluseuap',
             'subscription': '00000000-0000-0000-0000-000000000000',
             'licenseName': 'myESULicense',
         })
@@ -56,7 +56,7 @@ class ESULicenseScenarioTest(ScenarioTest):
         ])
 
         self.cmd('az connectedmachine license list --subscription {subscription}', checks=[
-            self.check('length(@)', 7)
+            self.check('length(@)', 8)
         ])
 
         self.cmd('az connectedmachine license show --resource-group {rg} --name {licenseName} --subscription {subscription}', checks=[

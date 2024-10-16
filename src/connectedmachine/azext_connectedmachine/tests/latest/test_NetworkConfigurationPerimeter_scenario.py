@@ -56,9 +56,9 @@ class NetworkConfigurationPerimeterScenarioTest(ScenarioTest):
                 '--perimeter-name "{perimeterName}"',
                 checks=[])  
 
-        # self.cmd('az connectedmachine private-link-scope network-security-perimeter-configuration reconcile '
-        #         '--resource-group "{rg}" '
-        #         '--scope-name "{scope}" '
-        #         '--subscription "{subscription}" '
-        #         '--perimeter-name "{perimeterName}"',
-        #         checks=[])  
+        self.cmd('az connectedmachine private-link-scope network-security-perimeter-configuration reconcile '
+                '--resource-group "{rg}" '
+                '--scope-name "{scope}" '
+                '--subscription "{subscription}" '
+                '--perimeter-name "{perimeterName}"',
+                checks=[])  
