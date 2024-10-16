@@ -70,13 +70,13 @@ def get_sku_name(tier):  # pylint: disable=too-many-return-statements
 
 
 def validate_subnet_id(cli_ctx, subnet, vnet_name, resource_group_name):
-    from msrestazure.tools import is_valid_resource_id
+    from azure.mgmt.core.tools import is_valid_resource_id
     subnet_is_id = is_valid_resource_id(subnet)
 
     if subnet_is_id and not vnet_name:
         return subnet
     if subnet and not subnet_is_id and vnet_name:
-        from msrestazure.tools import resource_id
+        from azure.mgmt.core.tools import resource_id
         from azure.cli.core.commands.client_factory import get_subscription_id
         return resource_id(
             subscription=get_subscription_id(cli_ctx),
@@ -90,13 +90,13 @@ def validate_subnet_id(cli_ctx, subnet, vnet_name, resource_group_name):
 
 
 def validate_aks_id(cli_ctx, aks, resource_group_name):
-    from msrestazure.tools import is_valid_resource_id
+    from azure.mgmt.core.tools import is_valid_resource_id
     aks_is_id = is_valid_resource_id(aks)
 
     if aks_is_id:
         return aks
     if aks and not aks_is_id:
-        from msrestazure.tools import resource_id
+        from azure.mgmt.core.tools import resource_id
         from azure.cli.core.commands.client_factory import get_subscription_id
         return resource_id(
             subscription=get_subscription_id(cli_ctx),
