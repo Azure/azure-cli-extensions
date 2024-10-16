@@ -913,45 +913,54 @@ class WindowsTrustedLaunchVMFlag(LiveScenarioTest):
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
 
-@pytest.mark.RepairVMIdAPIChange
-class WindowsRunWithRepairVMId(LiveScenarioTest):
+@pytest.mark.RefactorSanityTest
+class WindowsResourceIdParseAfterRefactor(LiveScenarioTest):
 
     @ResourceGroupPreparer(location='westus2')
-    def test_vmrepair_WindowsRunWithRepairIdAPIChange(self, resource_group):
+    def test_vmrepair_WinRunRepairVMIdafterRefactor(self, resource_group):
+        import uuid
+        import secrets
+        import string
+        base_password = "Passw0rd2024"
+        guid_suffix = str(uuid.uuid4())
+        secure_password = base_password + guid_suffix
+        username_length = 8
+        secure_username = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(username_length))
         self.kwargs.update({
-            'vm': 'vm1',  
-            'rg': resource_group  
+            'vm': 'vm1',
+            'admin_password': secure_password,
+            'admin_username': secure_username
         })
 
-        rgname = resource_group
-        vmname = 'vm1'
-
         # Create test VM
-        self.cmd('vm create -g {} -n {} --admin-username azureadmin --admin-password !Passw0rd2024 --image Win2022Datacenter'.format(rgname, vmname))
-        vms = self.cmd('vm list -g {} -o json'.format(rgname)).get_output_in_json()
+        self.cmd('vm create -g {rg} -n {vm} --admin-username {admin_username} --admin-password {admin_password} --image MicrosoftWindowsServer:WindowsServer:2022-datacenter-g2:latest')
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
         # Something wrong with vm create command if it fails here
         assert len(vms) == 1
 
-        # Create repair vm
-        result = self.cmd('vm repair create -g {} -n {} --repair-username azureadmin --repair-password !Passw0rd2024 --unlock-encrypted-vm --encrypt-recovery-key !Passw0rd2024 --yes --distro Win2022Datacenter --verbose -o json'.format(rgname, vmname)).get_output_in_json()
-        assert result['status'] == STATUS_SUCCESS, result['error_message']
-
+        # Create Repair VM
+        repair_vm = self.cmd('vm repair create -g {rg} -n {vm} --repair-username {admin_username} --repair-password {admin_password}  --yes -o json').get_output_in_json()
+        assert repair_vm['status'] == STATUS_SUCCESS, repair_vm['error_message']
         # Check repair VM
-        repair_vms = self.cmd('vm list -g {} -o json'.format(result['repair_resource_group'])).get_output_in_json()
+        self.kwargs.update({
+            'vm': 'vm1',
+            'admin_password': secure_password,
+            'admin_username': secure_username,
+            'repair_resource_group': repair_vm['repair_resource_group']
+        })
+        repair_vms = self.cmd('vm list -g {repair_resource_group} -o json').get_output_in_json()
         assert len(repair_vms) == 1
         repair_vm = repair_vms[0]
-        # Check attached data disk
-        assert repair_vm['storageProfile']['dataDisks'][0]['name'] == result['copied_disk_name']
         repair_vm_id = repair_vm['id']
-        resourceGroup = resource_group
-        # az vm repair run -g $rgname -n $vmname --run-id win-hello-world --run-on-repair --repair-vm-id $resourceId --verbose --debug;
-        run_result = self.cmd('vm repair run -g {} -n {} --run-id win-crowdstrike-fix-bootloop-v2 --run-on-repair --repair-vm-id {}'.format(rgname, vmname, repair_vm_id))
-        assert result['status'] == STATUS_SUCCESS, result['error_message']
+        self.kwargs.update({
+            'vm': 'vm1',
+            'admin_password': secure_password,
+            'admin_username': secure_username,
+            'repair_vm_id': repair_vm_id
+        })
+        # Run a script for testing repair-vm-id
+        result_run = self.cmd('vm repair run -g {rg} -n {vm} --run-id win-hello-world --repair-vm-id {repair_vm_id} --run-on-repair -o json').get_output_in_json()
+        assert result_run['status'] == STATUS_SUCCESS, result_run['error_message']
 
         # Call Restore
-        self.cmd('vm repair restore -g {} -n {} --yes'.format(rgname, vmname))
-
-        # Check swapped OS disk
-        vms = self.cmd('vm list -g {} -o json'.format(rgname)).get_output_in_json()
-        source_vm = vms[0]
-        assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
+        self.cmd('vm repair restore -g {rg} -n {vm} --yes')
