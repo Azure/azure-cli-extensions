@@ -1,8 +1,8 @@
-from .orchestrator import Orchestrator
+from im.orchestrator import Orchestrator
 
 
 def main():
-    Orchestrator().run()
+    Orchestrator().run("dns")
 
 
 if __name__ == "__main__":
