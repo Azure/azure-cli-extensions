@@ -74,7 +74,7 @@ def _object_id_args_helper(cli_ctx, object_id=None, spn=None, upn=None):
 class AccountCreate(Create):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg, AAZArgEnum
+        from azure.cli.core.aaz import AAZStrArg
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.owner_object_id = AAZStrArg(
             options=["--owner-object-id"],
