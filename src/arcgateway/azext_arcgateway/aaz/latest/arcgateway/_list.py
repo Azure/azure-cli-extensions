@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "arcgateway list",
 )
 class List(AAZCommand):
-    """List operation to get all gateways of a non-Azure machine
+    """List all Arc gateway resources associated with a specific subscription.
 
     :example: Sample command or gateway list
         az arcgateway list --subscription mySubscription

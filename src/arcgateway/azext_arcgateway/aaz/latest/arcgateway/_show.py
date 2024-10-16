@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "arcgateway show",
 )
 class Show(AAZCommand):
-    """Get information about the view of a gateway.
+    """Show the details of a specific Arc gateway resource.
 
     :example: Sample command for gateway show
         az arcgateway show --name myArcgateway --resource-group myResourceGroup --subscription mySubscription

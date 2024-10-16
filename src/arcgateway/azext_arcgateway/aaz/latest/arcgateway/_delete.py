@@ -16,7 +16,7 @@ from azure.cli.core.aaz import *
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete operation to delete a gateway.
+    """Delete an Arc gateway resource.
 
     :example: Sample command or gateway delete
         az arcgateway delete --name MyArcgateway --resource-group myResourceGroup --subscription mySubscription

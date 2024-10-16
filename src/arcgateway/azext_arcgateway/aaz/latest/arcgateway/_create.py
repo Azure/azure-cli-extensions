@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "arcgateway create",
 )
 class Create(AAZCommand):
-    """Create operation to create a gateway.
+    """Create an Arc gateway resource.
 
     :example: Sample command for gateway create
         az arcgateway create --name MyArcgateway --resource-group myResourceGroup --location eastus2euap --subscription mySubscription --allowed-features *
@@ -83,7 +83,7 @@ class Create(AAZCommand):
         _args_schema.allowed_features = AAZListArg(
             options=["--allowed-features"],
             arg_group="Properties",
-            help="Specifies the list of features that are enabled for this Gateway.",
+            help="Required. Specifies the list of features that are enabled for this Gateway.",
         )
         _args_schema.gateway_type = AAZStrArg(
             options=["--gateway-type"],

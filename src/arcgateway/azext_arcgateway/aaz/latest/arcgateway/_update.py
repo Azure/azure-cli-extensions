@@ -15,7 +15,7 @@ from azure.cli.core.aaz import *
     "arcgateway update",
 )
 class Update(AAZCommand):
-    """Update operation to update a gateway.
+    """Update the details (resource group or subscription) of an Arc gateway resource.
 
     :example: Sample command for gateway update
         az arcgateway update --name MyArcgateway --resource-group myResourceGroup --subscription mySubscription
