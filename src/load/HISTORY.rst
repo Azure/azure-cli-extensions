@@ -5,7 +5,7 @@ Release History
 1.1.1
 ++++++
 * Fix empty response object on CLI when using 'az load test file upload'
-* Add termination status 'NOT_VALIDATED' for LRO Poller
+* Add 'NOT_VALIDATED' as a terminal status for File Validation
 
 1.1.0
 ++++++
