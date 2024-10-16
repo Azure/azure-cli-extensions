@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create operation to create a gateway.
 
     :example: Sample command for gateway create
-        az arcgateway create --name MyArcgateway --resource-group myResourceGroup --location eastus2euap --subscription mySubscription
+        az arcgateway create --name MyArcgateway --resource-group myResourceGroup --location eastus2euap --subscription mySubscription --allowed-features *
     """
 
     _aaz_info = {

@@ -21,37 +21,36 @@ class ArcGatewayScenario(ScenarioTest):
         self.kwargs.update({
             'machine': 'testmachine',
             'rg': 'manojamp',
-            'location': 'eastus2euap',
-            'subscription': '00000000-0000-0000-0000-000000000000',
+            'location': 'eastus',
+            'subscription': 'b24cc8ee-df4f-48ac-94cf-46edf36b0fae',
             'gatewayName': 'myGateway',
             'newResourceGroup': 'ytongtest',
         })
 
-
-        # gateway
         self.cmd('az arcgateway create '
                 '--resource-group "{newResourceGroup}" '
                 '--subscription "{subscription}" '
                 '--location {location} '            
-                '--name {gatewayName}',
+                '--name {gatewayName} '
+                '--allowed-features *',
                  checks=[]) 
 
-        self.cmd('az arcgateway create '
+        self.cmd('az arcgateway list '
+                '--subscription "{subscription}"',
+                 checks=[]) 
+
+        self.cmd('az arcgateway show '
                 '--resource-group "{newResourceGroup}" '
-                '--subscription "{subscription}" '
-                '--location {location} '            
+                '--subscription "{subscription}" '         
                 '--name {gatewayName}',
                  checks=[]) 
 
-        self.cmd('az arcgateway create '
+        self.cmd('az arcgateway update '
                 '--resource-group "{newResourceGroup}" '
-                '--subscription "{subscription}" '
-                '--location {location} '            
+                '--subscription "{subscription}" '         
                 '--name {gatewayName}',
                  checks=[]) 
 
-
-        # settings
         self.cmd('az arcgateway settings update '
                 '--resource-group "{newResourceGroup}" '
                 '--subscription "{subscription}" '
@@ -59,6 +58,12 @@ class ArcGatewayScenario(ScenarioTest):
                 '--base-resource-type "machines" '
                 '--base-resource-name "testmachine" '
                 '--settings-resource-name "default" '
-                '--gateway-resource-id "/subscriptions/{subscription}/resourceGroups/manojamp/providers/Microsoft.HybridCompute/gateways/amkgw1" '              
+                '--gateway-resource-id "/subscriptions/{subscription}/resourceGroups/{newResourceGroup}/providers/Microsoft.HybridCompute/gateways/{gatewayName}" '              
                 '--name "default"',
                 checks=[]) 
+
+        self.cmd('az arcgateway delete -y '
+                '--resource-group "{newResourceGroup}" '
+                '--subscription "{subscription}" '         
+                '--name {gatewayName}',
+                 checks=[]) 

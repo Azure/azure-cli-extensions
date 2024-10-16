@@ -11,7 +11,7 @@ az extension add --name arcgateway
 #### arcgateway ####
 ##### Create #####
 ```
-az arcgateway create --name MyArcgateway --resource-group myResourceGroup --location eastus2euap --subscription mySubscription
+az arcgateway create --name MyArcgateway --resource-group myResourceGroup --location eastus2euap --subscription mySubscription --allowed-features *
 ```
 ##### List #####
 ```
@@ -21,13 +21,13 @@ az arcgateway list --subscription mySubscription
 ```
 az arcgateway show --name myArcgateway --resource-group myResourceGroup --subscription mySubscription
 ```
-##### Delete #####
-```
-az arcgateway delete --name MyArcgateway --resource-group myResourceGroup --subscription mySubscription
-```
 ##### Update #####
 ```
 az arcgateway update --name MyArcgateway --resource-group myResourceGroup --subscription mySubscription
+```
+##### Delete #####
+```
+az arcgateway delete --name MyArcgateway --resource-group myResourceGroup --subscription mySubscription
 ```
 #### arcgateway settings ####
 ##### Update #####
