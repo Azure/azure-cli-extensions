@@ -15,7 +15,9 @@ from azure.cli.core.aaz import *
     "arc-multicloud public-cloud-connector",
 )
 class __CMDGroup(AAZCommandGroup):
-    """commands for multicloudConnector
+    """Commands for multicloudConnector
+
+    For additional details, please visit the https://learn.microsoft.com/en-us/cli/azure/arc-multicloud?view=azure-cli-latest
     """
     pass
 
