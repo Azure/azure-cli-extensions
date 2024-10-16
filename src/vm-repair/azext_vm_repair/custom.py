@@ -54,7 +54,7 @@ from .exceptions import AzCommandError, RunScriptNotFoundForIdError, SupportingR
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False, encrypt_recovery_key=""):  
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False, encrypt_recovery_key="", disable_trusted_launch=False):  
     """  
     This function creates a repair VM.  
       
@@ -83,8 +83,8 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
     masked_repair_password = '****' if repair_password else None
     masked_repair_username = '****' if repair_username else None
     masked_repair_encrypt_recovery_key = '****' if encrypt_recovery_key else None
-    logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s, encrypt_recovery_key: %s', 
-                 vm_name, resource_group_name, masked_repair_password, masked_repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes, masked_repair_encrypt_recovery_key)  
+    logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s, encrypt_recovery_key: %s, disable_trusted_launch: %s', 
+                 vm_name, resource_group_name, masked_repair_password, masked_repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes, masked_repair_encrypt_recovery_key, disable_trusted_launch)  
   
     # Initializing a command helper object.  
     command = command_helper(logger, cmd, 'vm repair create')  
@@ -164,17 +164,27 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
         if source_vm.zones:  
             zone = source_vm.zones[0]  
             create_repair_vm_command += ' --zone {zone}'.format(zone=zone)  
-  
+
+        if disable_trusted_launch:  
+            logger.debug('Set security-type to Standard...')  
+            create_repair_vm_command += ' --security-type Standard'  
+        else:
         # If a Bitlocker recovery key is provided, this indicates the source VM is encrypted.  
         # In this case, the VM and OS disk security profiles need to be fetched and added to the repair VM creation command.  
+            if encrypt_recovery_key: 
+                # TODO: this was assumed to also need for Trusted Launch VMs, but I don't think this is the case. 
+                
+                # For confidential VM, some SKUs expect specific security types, secure_boot_enabled and vtpm_enabled.  
+                # Fetching the VM security profile and adding it to the command if it exists.  
+                logger.debug('Fetching VM security profile...')  
+                vm_security_params = _fetch_vm_security_profile_parameters(source_vm)  
+                if vm_security_params:  
+                    create_repair_vm_command += vm_security_params  
+        
         if encrypt_recovery_key:  
-            # For confidential VM and Trusted VM, some SKUs expect specific security types, secure_boot_enabled and vtpm_enabled.  
-            # Fetching the VM security profile and adding it to the command if it exists.  
-            logger.debug('Fetching VM security profile...')  
-            vm_security_params = _fetch_vm_security_profile_parameters(source_vm)  
-            if vm_security_params:  
-                create_repair_vm_command += vm_security_params  
-  
+            # TODO: this was assumed to also need for Trusted Launch VMs, but I don't think this is the case. 
+            
+            # For confidential VM and Trusted Launch VM security tags on disks, the disk security profile needs to be brought over as well. 
             # Fetching the OS Disk security profile and adding it to the command if it exists.  
             logger.debug('Fetching OS Disk security profile...')  
             osdisk_security_params = _fetch_osdisk_security_profile_parameters(source_vm)  
