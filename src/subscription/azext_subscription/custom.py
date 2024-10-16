@@ -74,7 +74,7 @@ def _object_id_args_helper(cli_ctx, object_id=None, spn=None, upn=None):
 class AccountCreate(Create):
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZStrArg
+        from azure.cli.core.aaz import AAZStrArg, AAZArgEnum
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.owner_object_id = AAZStrArg(
             options=["--owner-object-id"],
@@ -88,6 +88,11 @@ class AccountCreate(Create):
             options=["--owner-upn"],
             help="The user principal name(s) of owner(s) who should be granted access to the new subscription."
         )
+        args_schema.offer_type.enum = AAZArgEnum({'MS-AZR-0017P': 'MS-AZR-0017P',
+                                        'MS-AZR-0148P': 'MS-AZR-0148P',
+                                        'MS-AZR-USGOV-0015P': 'MS-AZR-USGOV-0015P',
+                                        'MS-AZR-USGOV-0017P': 'MS-AZR-USGOV-0017P',
+                                        'MS-AZR-USGOV-0148P': 'MS-AZR-USGOV-0148P'})
         args_schema.offer_type._required = True
         args_schema.additional_parameters._registered = False
         args_schema.owners._registered = False
