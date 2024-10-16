@@ -17,7 +17,7 @@ logger = get_logger(__name__)
 
 
 def _get_object_id_by_spn(graph_client, spn):
-    accounts = list(graph_client.service_principals.list(
+    accounts = list(graph_client.service_principal_list(
         filter="servicePrincipalNames/any(c:c eq '{}')".format(spn)))
     if not accounts:
         logger.warning("Unable to find user with spn '%s'", spn)
@@ -30,7 +30,7 @@ def _get_object_id_by_spn(graph_client, spn):
 
 
 def _get_object_id_by_upn(graph_client, upn):
-    accounts = list(graph_client.users.list(filter="userPrincipalName eq '{}'".format(upn)))
+    accounts = list(graph_client.user_list(filter="userPrincipalName eq '{}'".format(upn)))
     if not accounts:
         logger.warning("Unable to find user with upn '%s'", upn)
         return None
@@ -64,14 +64,12 @@ def _get_object_id(graph_client, subscription=None, spn=None, upn=None):
 def _object_id_args_helper(cli_ctx, object_id=None, spn=None, upn=None):
     if not object_id:
         from azure.cli.core._profile import Profile
-        from azure.graphrbac.graph_rbac_management_client import GraphRbacManagementClient
+        from azure.cli.command_modules.role import graph_client_factory
 
         profile = Profile(cli_ctx=cli_ctx)
         cred, _, tenant_id = profile.get_login_credentials(
             resource=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
-        graph_client = GraphRbacManagementClient(cred,
-                                                 tenant_id,
-                                                 base_url=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
+        graph_client = graph_client_factory(cli_ctx)
         object_id = _get_object_id(graph_client, spn=spn, upn=upn)
         if not object_id:
             raise HttpResponseError('Unable to get object id from principal name.')
