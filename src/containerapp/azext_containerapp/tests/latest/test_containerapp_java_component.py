@@ -6,6 +6,7 @@
 from azure.cli.command_modules.containerapp._utils import format_location
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
+from azure.cli.core.azclierror import CLIInternalError
 
 from .common import TEST_LOCATION, STAGE_LOCATION
 from .utils import create_containerapp_env
@@ -150,6 +151,17 @@ class ContainerappJavaComponentTests(ScenarioTest):
                 JMESPathCheck('properties.provisioningState', "Succeeded"),
                 JMESPathCheck('length(properties.template.serviceBinds)', 2)
         ])
+
+        # (JavaComponentInUse) Cannot remove Java Component: myconfig because it is being binded by container apps, please unbind the Java Component first.
+        with self.assertRaisesRegex(CLIInternalError,
+                                    "please unbind the Java Component first"):
+            self.cmd('containerapp env java-component config-server-for-spring delete -g {} -n {} --environment {} --yes'.format(resource_group, config_name, env_name))
+
+        # Unbind all java component from container apps
+        self.cmd('containerapp update -n {} -g {} --unbind {} {}'.format(ca_name, resource_group, config_name, eureka_name), expect_failure=False, checks=[
+                JMESPathCheck('properties.provisioningState', "Succeeded"),
+                JMESPathCheck('properties.template.serviceBinds', None),
+            ])
 
         # Delete Java Components
         self.cmd('containerapp env java-component config-server-for-spring delete -g {} -n {} --environment {} --yes'.format(resource_group, config_name, env_name), expect_failure=False)
