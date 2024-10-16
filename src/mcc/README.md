@@ -1,5 +1,23 @@
-# Azure CLI Mcc Extension #
-This is an extension to Azure CLI to manage Mcc resources.
+# Azure CLI MCC Extension #
+The Azure CLI extension for managing [MCC for Enterprise and Education](https://aka.ms/MCC-Ent-ProgramInformation) resources. 
 
-## How to use ##
-Please add commands usage here.
+## Install ##
+You can install the extension by running:
+``` sh
+az extension add --name mcc
+```
+
+## Usage ##
+See the [extension reference documentation](https://aka.ms/MCCEnt-CLI)
+
+``` sh
+az mcc --help
+```
+
+## Uninstall ##
+You can see if the extension is installed by running `az --version` or `az extension list`. You can remove the extension by running:
+``` sh
+az extension remove --name mcc
+```
+
+
