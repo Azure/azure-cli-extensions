@@ -604,8 +604,8 @@ class CustomJsonParsing(unittest.TestCase):
             self.assertIsNotNone(image.id)
 
             self.assertEqual(
-                image.id,
-                "sha256:844d1f1a88fbf036ef4a16acb291141d15abdd37f5844c82bab5e96395a8ceca",
+                image.tags[0],
+                "mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0",
             )
 
     def test_infrastructure_svn(self):

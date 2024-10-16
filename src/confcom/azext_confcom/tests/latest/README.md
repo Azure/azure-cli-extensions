@@ -57,6 +57,7 @@ test_arm_template_security_context_user_group | N/A | See if user is set correct
 test_arm_template_security_context_uid_group | N/A | See if user is set correctly by getting the user field from the Docker image in the format uid:group
 test_arm_template_security_context_uid | N/A | See if user is set correctly by getting the user field from the Docker image in the format uid
 test_arm_template_security_context_user_dockerfile | N/A | See if user is set correctly by getting the user field from the Docker image in the format user
+test_zero_sidecar | mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot | Make sure the infrastructure fragment is taken out when the appropriate tag is present in an ARM template
 
 ## policy.json [test file](test_confcom_scenario.py)
 
