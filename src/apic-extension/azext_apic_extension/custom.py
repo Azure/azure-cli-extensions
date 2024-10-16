@@ -23,6 +23,8 @@ from .command_patches import ImportAPIDefinitionExtension
 from .command_patches import ExportAPIDefinitionExtension
 from .command_patches import ExportMetadataExtension
 
+from azure.cli.core.azclierror import InvalidArgumentValueError
+
 logger = get_logger(__name__)
 
 
@@ -162,26 +164,53 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_i
     # Load the JSON file
     if api_location:
 
-        # TODO Future Confirm its a file and not link
-        with open(str(api_location), 'rb') as f:
-            rawdata = f.read()
-            result = chardet.detect(rawdata)
-            encoding = result['encoding']
-
-        # TODO - read other file types later
         value = None
-        if str(api_location).endswith('.yaml') or str(api_location).endswith('.yml'):
-            with open(str(api_location), 'r', encoding=encoding) as f:
-                content = f.read()
-                data = yaml.safe_load(content)
-                if data:
-                    value = content
-        if (str(api_location).endswith('.json')):
-            with open(str(api_location), 'r', encoding=encoding) as f:
-                content = f.read()
-                data = json.loads(content)
-                if data:
-                    value = content
+        custom_format = 'inline'
+        # Read the spec content from URL
+        if str(api_location).startswith('https://') or str(api_location).startswith('http://'):
+            try:
+                # Fetch the content from the URL
+                response = requests.get(api_location)
+                # Raise an error for bad status codes
+                response.raise_for_status()
+                # Try to parse the content as JSON
+                try:
+                    data = json.loads(response.content)
+                except json.JSONDecodeError:
+                    try:
+                        # If JSON parsing fails, try to parse as YAML
+                        data = yaml.safe_load(response.content)
+                    except yaml.YAMLError as e:
+                        data = None
+                        value = None
+                        raise InvalidArgumentValueError(error_msg=f"Error parsing data from {api_location}: {e}")
+                        # sys.exit(-1)
+                # If we could parse the content(json or yaml), set format to link
+                value = str(api_location) if data else None
+                custom_format = 'link' if data else 'inline'
+            except requests.exceptions.RequestException as e:
+                data = None
+                value = None
+                raise InvalidArgumentValueError(error_msg=f"Error fetching data from invalid url {api_location}: {e}")
+                # sys.exit(-1)
+        else:
+            # Confirm its a file and not link
+            with open(str(api_location), 'rb') as f:
+                rawdata = f.read()
+                result = chardet.detect(rawdata)
+                encoding = result['encoding']
+
+            # TODO - read other file types later
+            if str(api_location).endswith('.yaml') or str(api_location).endswith('.yml'):
+                with open(str(api_location), 'r', encoding=encoding) as f:
+                    content = f.read()
+                    data = yaml.safe_load(content)
+                    value = content if data else None
+            if (str(api_location).endswith('.json')):
+                with open(str(api_location), 'r', encoding=encoding) as f:
+                    content = f.read()
+                    data = json.loads(content)
+                    value = content if data else None
 
         # If we could not read the file, return error
         if value is None:
@@ -315,7 +344,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_i
                 'api_id': extracted_api_name,
                 'version_id': extracted_api_version,
                 'definition_id': extracted_definition_name,
-                'format': 'inline',
+                'format': custom_format,
                 'specification': specification_details,  # TODO write the correct spec object
                 'value': value
             }
