@@ -8,23 +8,16 @@ import sys
 
 from pkg_resources import parse_version
 from knack.log import get_logger
-from azext_confcom.config import (
-    DEFAULT_REGO_FRAGMENTS,
-    VIRTUAL_NODE_YAML_METADATA,
-    VIRTUAL_NODE_YAML_ANNOTATIONS,
-    VIRTUAL_NODE_YAML_POLICY,
-)
+from azext_confcom.config import DEFAULT_REGO_FRAGMENTS
 from azext_confcom import os_util
 from azext_confcom.template_util import (
     pretty_print_func,
     print_func,
     str_to_sha256,
     inject_policy_into_template,
+    inject_policy_into_yaml,
     print_existing_policy_from_arm_template,
-    print_existing_policy_from_yaml,
-    deep_dict_update,
-    filter_non_pod_resources,
-    convert_to_pod_spec_helper,
+    print_existing_policy_from_yaml
 )
 from azext_confcom.init_checks import run_initial_docker_checks
 from azext_confcom import security_policy
@@ -125,8 +118,6 @@ def acipolicygen_confcom(
             approve_wildcards=approve_wildcards,
             diff_mode=diff
         )
-        virtual_node_yaml = list(os_util.load_multiple_yaml_from_file(virtual_node_yaml_path))
-        filtered_yaml = filter_non_pod_resources(virtual_node_yaml)
 
     exit_code = 0
 
@@ -144,28 +135,12 @@ def acipolicygen_confcom(
         if validate_sidecar:
             exit_code = validate_sidecar_in_policy(policy, output_type == security_policy.OutputType.PRETTY_PRINT)
         elif virtual_node_yaml_path and not (print_policy_to_terminal or outraw or outraw_pretty_print or diff):
-            current_yaml = filtered_yaml[count]
-            # find where this policy needs to go in the original file
-            count_in_file = virtual_node_yaml.index(current_yaml)
-            # use the reference this helper function returns to place the policy in the correct spot
-            pod_item = convert_to_pod_spec_helper(current_yaml)
-            # Metadata to be added to virtual node YAML
-            needed_metadata = {
-                VIRTUAL_NODE_YAML_METADATA: {
-                    VIRTUAL_NODE_YAML_ANNOTATIONS: {
-                        VIRTUAL_NODE_YAML_POLICY: policy.get_serialized_output(omit_id=omit_id),
-                    }
-                }
-            }
-
-            # Update virtual node YAML with metadata
-            deep_dict_update(needed_metadata, pod_item)
-            # replace contents in the original file
-            virtual_node_yaml[count_in_file] = current_yaml
-
-            os_util.write_multiple_yaml_to_file(virtual_node_yaml_path, virtual_node_yaml)
-            print(str_to_sha256(policy.get_serialized_output(OutputType.RAW, omit_id=omit_id)))
-            logger.info("CCE Policy successfully injected into YAML file")
+            result = inject_policy_into_yaml(
+                virtual_node_yaml_path, policy.get_serialized_output(omit_id=omit_id), count
+            )
+            if result:
+                print(str_to_sha256(policy.get_serialized_output(OutputType.RAW, omit_id=omit_id)))
+                logger.info("CCE Policy successfully injected into YAML file")
         elif diff:
             exit_code = get_diff_outputs(policy, output_type == security_policy.OutputType.PRETTY_PRINT)
         elif arm_template and not (print_policy_to_terminal or outraw or outraw_pretty_print):

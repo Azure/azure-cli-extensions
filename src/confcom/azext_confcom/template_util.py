@@ -1063,6 +1063,55 @@ def inject_policy_into_template(
     return False
 
 
+def inject_policy_into_yaml(
+    yaml_file_path: str, policy: str, count: int
+) -> bool:
+    virtual_node_yaml = list(os_util.load_multiple_yaml_from_file(yaml_file_path))
+    filtered_yaml = filter_non_pod_resources(virtual_node_yaml)
+    current_yaml = filtered_yaml[count]
+    pod_item = convert_to_pod_spec_helper(current_yaml)
+
+    # extract existing policy (if any)
+    try:
+        existing_policy = pod_item[config.VIRTUAL_NODE_YAML_METADATA][
+            config.VIRTUAL_NODE_YAML_ANNOTATIONS][config.VIRTUAL_NODE_YAML_POLICY]
+    except KeyError:
+        existing_policy = None
+
+    # check if the existing policy should be overwritten
+    if existing_policy:
+        workload_name = pod_item.get("metadata", {}).get("name", f"Workload {count}")
+        user_input = input(
+            f"Do you want to overwrite the Base64 Policy currently in workload '{workload_name}'? (y/n) "
+        )
+        # if user declines, exit
+        if user_input.lower() != "y":
+            return False
+
+    # prepare new metadata with updated policy
+    needed_metadata = {
+        config.VIRTUAL_NODE_YAML_METADATA: {
+            config.VIRTUAL_NODE_YAML_ANNOTATIONS: {
+                config.VIRTUAL_NODE_YAML_POLICY: policy
+            }
+        }
+    }
+
+    # update workload metadata with new policy
+    deep_dict_update(needed_metadata, pod_item)
+
+    # find index of current YAML in the original YAML file
+    count_in_file = virtual_node_yaml.index(current_yaml)
+
+    # replace current YAML with updated yaml in the original list
+    virtual_node_yaml[count_in_file] = current_yaml
+
+    # write updated yaml back to file
+    os_util.write_multiple_yaml_to_file(yaml_file_path, virtual_node_yaml)
+
+    return True
+
+
 def get_container_group_name(
     input_arm_json: dict, input_parameter_json: dict, count: int
 ) -> bool:

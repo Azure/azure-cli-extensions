@@ -1359,7 +1359,7 @@ class PolicyGeneratingArmParametersCleanRoom(unittest.TestCase):
     }
     """
         with DockerClient() as client:
-            original_image = "mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
+            original_image = "mcr.microsoft.com/cbl-mariner/base/nginx:1-cm2.0"
             try:
                 client.images.remove(original_image)
             except:
