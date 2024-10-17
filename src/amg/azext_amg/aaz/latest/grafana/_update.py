@@ -107,8 +107,7 @@ class Update(AAZCommand):
         _args_schema.smtp_enabled = AAZBoolArg(
             options=["--smtp", "--smtp-enabled"],
             arg_group="Smtp",
-            help="Enable this to allow Grafana to send email. Default is false",
-            default=False,
+            help="Enable this to allow Grafana to send email.",
         )
         _args_schema.from_address = AAZStrArg(
             options=["--from-address"],

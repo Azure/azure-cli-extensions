@@ -15,19 +15,21 @@ from azure.cli.core.aaz import *
     "large-instance update",
 )
 class Update(AAZCommand):
-    """Update the Tags field of an Azure Large Instance for the specified
-subscription, resource group, and instance name.
+    """Update an Azure Large Instance for the specified subscription,
+resource group, and instance name.
 
-    :example: To add an Azure Large Instance tag
-        az large-instance update --instance-name=$INSTANCE_NAME --resource-group=$RESOURCE_GROUP --tags newKey=value
+    :example: To replace tags
+        az large-instance update -g myResourceGroup -n myAzureLargeStorageInstance --tags "{key:value}"
     """
 
     _aaz_info = {
-        "version": "2024-04-10",
+        "version": "2024-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstances/{}", "2024-04-10"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.azurelargeinstance/azurelargeinstances/{}", "2024-08-01-preview"],
         ]
     }
+
+    AZ_SUPPORT_GENERIC_UPDATE = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -58,22 +60,32 @@ subscription, resource group, and instance name.
             required=True,
         )
 
-        # define Arg Group "TagsParameter"
+        # define Arg Group "Properties"
+
+        # define Arg Group "Resource"
 
         _args_schema = cls._args_schema
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
-            arg_group="TagsParameter",
+            arg_group="Resource",
             help="Resource tags.",
+            nullable=True,
         )
 
         tags = cls._args_schema.tags
-        tags.Element = AAZStrArg()
+        tags.Element = AAZStrArg(
+            nullable=True,
+        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.AzureLargeInstanceUpdate(ctx=self.ctx)()
+        self.AzureLargeInstanceGet(ctx=self.ctx)()
+        self.pre_instance_update(self.ctx.vars.instance)
+        self.InstanceUpdateByJson(ctx=self.ctx)()
+        self.InstanceUpdateByGeneric(ctx=self.ctx)()
+        self.post_instance_update(self.ctx.vars.instance)
+        self.AzureLargeInstanceCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -84,11 +96,19 @@ subscription, resource group, and instance name.
     def post_operations(self):
         pass
 
+    @register_callback
+    def pre_instance_update(self, instance):
+        pass
+
+    @register_callback
+    def post_instance_update(self, instance):
+        pass
+
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class AzureLargeInstanceUpdate(AAZHttpOperation):
+    class AzureLargeInstanceGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -108,7 +128,7 @@ subscription, resource group, and instance name.
 
         @property
         def method(self):
-            return "PATCH"
+            return "GET"
 
         @property
         def error_format(self):
@@ -136,7 +156,90 @@ subscription, resource group, and instance name.
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-10",
+                    "api-version", "2024-08-01-preview",
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def header_parameters(self):
+            parameters = {
+                **self.serialize_header_param(
+                    "Accept", "application/json",
+                ),
+            }
+            return parameters
+
+        def on_200(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200
+            )
+
+        _schema_on_200 = None
+
+        @classmethod
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
+
+            cls._schema_on_200 = AAZObjectType()
+            _UpdateHelper._build_schema_azure_large_instance_read(cls._schema_on_200)
+
+            return cls._schema_on_200
+
+    class AzureLargeInstanceCreate(AAZHttpOperation):
+        CLIENT_TYPE = "MgmtClient"
+
+        def __call__(self, *args, **kwargs):
+            request = self.make_request()
+            session = self.client.send_request(request=request, stream=False, **kwargs)
+            if session.http_response.status_code in [200, 201]:
+                return self.on_200_201(session)
+
+            return self.on_error(session.http_response)
+
+        @property
+        def url(self):
+            return self.client.format_url(
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.AzureLargeInstance/azureLargeInstances/{azureLargeInstanceName}",
+                **self.url_parameters
+            )
+
+        @property
+        def method(self):
+            return "PUT"
+
+        @property
+        def error_format(self):
+            return "MgmtErrorFormat"
+
+        @property
+        def url_parameters(self):
+            parameters = {
+                **self.serialize_url_param(
+                    "azureLargeInstanceName", self.ctx.args.instance_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "resourceGroupName", self.ctx.args.resource_group,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "subscriptionId", self.ctx.subscription_id,
+                    required=True,
+                ),
+            }
+            return parameters
+
+        @property
+        def query_parameters(self):
+            parameters = {
+                **self.serialize_query_param(
+                    "api-version", "2024-08-01-preview",
                     required=True,
                 ),
             }
@@ -158,181 +261,217 @@ subscription, resource group, and instance name.
         def content(self):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
-                typ=AAZObjectType,
-                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+                value=self.ctx.vars.instance,
             )
+
+            return self.serialize_content(_content_value)
+
+        def on_200_201(self, session):
+            data = self.deserialize_http_content(session)
+            self.ctx.set_var(
+                "instance",
+                data,
+                schema_builder=self._build_schema_on_200_201
+            )
+
+        _schema_on_200_201 = None
+
+        @classmethod
+        def _build_schema_on_200_201(cls):
+            if cls._schema_on_200_201 is not None:
+                return cls._schema_on_200_201
+
+            cls._schema_on_200_201 = AAZObjectType()
+            _UpdateHelper._build_schema_azure_large_instance_read(cls._schema_on_200_201)
+
+            return cls._schema_on_200_201
+
+    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
+
+        def __call__(self, *args, **kwargs):
+            self._update_instance(self.ctx.vars.instance)
+
+        def _update_instance(self, instance):
+            _instance_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                value=instance,
+                typ=AAZObjectType
+            )
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
 
             tags = _builder.get(".tags")
             if tags is not None:
                 tags.set_elements(AAZStrType, ".")
 
-            return self.serialize_content(_content_value)
+            return _instance_value
 
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
+    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
 
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
-                flags={"read_only": True},
+        def __call__(self, *args, **kwargs):
+            self._update_instance_by_generic(
+                self.ctx.vars.instance,
+                self.ctx.generic_update_args
             )
-            _schema_on_200.location = AAZStrType(
-                flags={"required": True},
-            )
-            _schema_on_200.name = AAZStrType(
-                flags={"read_only": True},
-            )
-            _schema_on_200.properties = AAZObjectType(
-                flags={"client_flatten": True},
-            )
-            _schema_on_200.system_data = AAZObjectType(
-                serialized_name="systemData",
-                flags={"read_only": True},
-            )
-            _schema_on_200.tags = AAZDictType()
-            _schema_on_200.type = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            properties = cls._schema_on_200.properties
-            properties.azure_large_instance_id = AAZStrType(
-                serialized_name="azureLargeInstanceId",
-                flags={"read_only": True},
-            )
-            properties.hardware_profile = AAZObjectType(
-                serialized_name="hardwareProfile",
-            )
-            properties.hw_revision = AAZStrType(
-                serialized_name="hwRevision",
-                flags={"read_only": True},
-            )
-            properties.network_profile = AAZObjectType(
-                serialized_name="networkProfile",
-            )
-            properties.os_profile = AAZObjectType(
-                serialized_name="osProfile",
-            )
-            properties.power_state = AAZStrType(
-                serialized_name="powerState",
-                flags={"read_only": True},
-            )
-            properties.provisioning_state = AAZStrType(
-                serialized_name="provisioningState",
-                flags={"read_only": True},
-            )
-            properties.proximity_placement_group = AAZStrType(
-                serialized_name="proximityPlacementGroup",
-                flags={"read_only": True},
-            )
-            properties.storage_profile = AAZObjectType(
-                serialized_name="storageProfile",
-            )
-
-            hardware_profile = cls._schema_on_200.properties.hardware_profile
-            hardware_profile.azure_large_instance_size = AAZStrType(
-                serialized_name="azureLargeInstanceSize",
-                flags={"read_only": True},
-            )
-            hardware_profile.hardware_type = AAZStrType(
-                serialized_name="hardwareType",
-                flags={"read_only": True},
-            )
-
-            network_profile = cls._schema_on_200.properties.network_profile
-            network_profile.circuit_id = AAZStrType(
-                serialized_name="circuitId",
-                flags={"read_only": True},
-            )
-            network_profile.network_interfaces = AAZListType(
-                serialized_name="networkInterfaces",
-            )
-
-            network_interfaces = cls._schema_on_200.properties.network_profile.network_interfaces
-            network_interfaces.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.network_profile.network_interfaces.Element
-            _element.ip_address = AAZStrType(
-                serialized_name="ipAddress",
-            )
-
-            os_profile = cls._schema_on_200.properties.os_profile
-            os_profile.computer_name = AAZStrType(
-                serialized_name="computerName",
-            )
-            os_profile.os_type = AAZStrType(
-                serialized_name="osType",
-                flags={"read_only": True},
-            )
-            os_profile.ssh_public_key = AAZStrType(
-                serialized_name="sshPublicKey",
-            )
-            os_profile.version = AAZStrType(
-                flags={"read_only": True},
-            )
-
-            storage_profile = cls._schema_on_200.properties.storage_profile
-            storage_profile.nfs_ip_address = AAZStrType(
-                serialized_name="nfsIpAddress",
-                flags={"read_only": True},
-            )
-            storage_profile.os_disks = AAZListType(
-                serialized_name="osDisks",
-            )
-
-            os_disks = cls._schema_on_200.properties.storage_profile.os_disks
-            os_disks.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.properties.storage_profile.os_disks.Element
-            _element.disk_size_gb = AAZIntType(
-                serialized_name="diskSizeGB",
-            )
-            _element.lun = AAZIntType(
-                flags={"read_only": True},
-            )
-            _element.name = AAZStrType()
-
-            system_data = cls._schema_on_200.system_data
-            system_data.created_at = AAZStrType(
-                serialized_name="createdAt",
-            )
-            system_data.created_by = AAZStrType(
-                serialized_name="createdBy",
-            )
-            system_data.created_by_type = AAZStrType(
-                serialized_name="createdByType",
-            )
-            system_data.last_modified_at = AAZStrType(
-                serialized_name="lastModifiedAt",
-            )
-            system_data.last_modified_by = AAZStrType(
-                serialized_name="lastModifiedBy",
-            )
-            system_data.last_modified_by_type = AAZStrType(
-                serialized_name="lastModifiedByType",
-            )
-
-            tags = cls._schema_on_200.tags
-            tags.Element = AAZStrType()
-
-            return cls._schema_on_200
 
 
 class _UpdateHelper:
     """Helper class for Update"""
+
+    _schema_azure_large_instance_read = None
+
+    @classmethod
+    def _build_schema_azure_large_instance_read(cls, _schema):
+        if cls._schema_azure_large_instance_read is not None:
+            _schema.id = cls._schema_azure_large_instance_read.id
+            _schema.location = cls._schema_azure_large_instance_read.location
+            _schema.name = cls._schema_azure_large_instance_read.name
+            _schema.properties = cls._schema_azure_large_instance_read.properties
+            _schema.system_data = cls._schema_azure_large_instance_read.system_data
+            _schema.tags = cls._schema_azure_large_instance_read.tags
+            _schema.type = cls._schema_azure_large_instance_read.type
+            return
+
+        cls._schema_azure_large_instance_read = _schema_azure_large_instance_read = AAZObjectType()
+
+        azure_large_instance_read = _schema_azure_large_instance_read
+        azure_large_instance_read.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        azure_large_instance_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        azure_large_instance_read.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        azure_large_instance_read.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        azure_large_instance_read.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        azure_large_instance_read.tags = AAZDictType()
+        azure_large_instance_read.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_azure_large_instance_read.properties
+        properties.azure_large_instance_id = AAZStrType(
+            serialized_name="azureLargeInstanceId",
+        )
+        properties.hardware_profile = AAZObjectType(
+            serialized_name="hardwareProfile",
+        )
+        properties.hw_revision = AAZStrType(
+            serialized_name="hwRevision",
+        )
+        properties.network_profile = AAZObjectType(
+            serialized_name="networkProfile",
+        )
+        properties.os_profile = AAZObjectType(
+            serialized_name="osProfile",
+        )
+        properties.power_state = AAZStrType(
+            serialized_name="powerState",
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.proximity_placement_group = AAZStrType(
+            serialized_name="proximityPlacementGroup",
+        )
+        properties.storage_profile = AAZObjectType(
+            serialized_name="storageProfile",
+        )
+
+        hardware_profile = _schema_azure_large_instance_read.properties.hardware_profile
+        hardware_profile.azure_large_instance_size = AAZStrType(
+            serialized_name="azureLargeInstanceSize",
+        )
+        hardware_profile.hardware_type = AAZStrType(
+            serialized_name="hardwareType",
+        )
+
+        network_profile = _schema_azure_large_instance_read.properties.network_profile
+        network_profile.circuit_id = AAZStrType(
+            serialized_name="circuitId",
+        )
+        network_profile.network_interfaces = AAZListType(
+            serialized_name="networkInterfaces",
+        )
+
+        network_interfaces = _schema_azure_large_instance_read.properties.network_profile.network_interfaces
+        network_interfaces.Element = AAZObjectType()
+
+        _element = _schema_azure_large_instance_read.properties.network_profile.network_interfaces.Element
+        _element.ip_address = AAZStrType(
+            serialized_name="ipAddress",
+        )
+
+        os_profile = _schema_azure_large_instance_read.properties.os_profile
+        os_profile.computer_name = AAZStrType(
+            serialized_name="computerName",
+        )
+        os_profile.os_type = AAZStrType(
+            serialized_name="osType",
+        )
+        os_profile.ssh_public_key = AAZStrType(
+            serialized_name="sshPublicKey",
+        )
+        os_profile.version = AAZStrType()
+
+        storage_profile = _schema_azure_large_instance_read.properties.storage_profile
+        storage_profile.nfs_ip_address = AAZStrType(
+            serialized_name="nfsIpAddress",
+        )
+        storage_profile.os_disks = AAZListType(
+            serialized_name="osDisks",
+        )
+
+        os_disks = _schema_azure_large_instance_read.properties.storage_profile.os_disks
+        os_disks.Element = AAZObjectType()
+
+        _element = _schema_azure_large_instance_read.properties.storage_profile.os_disks.Element
+        _element.disk_size_gb = AAZIntType(
+            serialized_name="diskSizeGB",
+        )
+        _element.lun = AAZIntType(
+            flags={"read_only": True},
+        )
+        _element.name = AAZStrType()
+
+        system_data = _schema_azure_large_instance_read.system_data
+        system_data.created_at = AAZStrType(
+            serialized_name="createdAt",
+        )
+        system_data.created_by = AAZStrType(
+            serialized_name="createdBy",
+        )
+        system_data.created_by_type = AAZStrType(
+            serialized_name="createdByType",
+        )
+        system_data.last_modified_at = AAZStrType(
+            serialized_name="lastModifiedAt",
+        )
+        system_data.last_modified_by = AAZStrType(
+            serialized_name="lastModifiedBy",
+        )
+        system_data.last_modified_by_type = AAZStrType(
+            serialized_name="lastModifiedByType",
+        )
+
+        tags = _schema_azure_large_instance_read.tags
+        tags.Element = AAZStrType()
+
+        _schema.id = cls._schema_azure_large_instance_read.id
+        _schema.location = cls._schema_azure_large_instance_read.location
+        _schema.name = cls._schema_azure_large_instance_read.name
+        _schema.properties = cls._schema_azure_large_instance_read.properties
+        _schema.system_data = cls._schema_azure_large_instance_read.system_data
+        _schema.tags = cls._schema_azure_large_instance_read.tags
+        _schema.type = cls._schema_azure_large_instance_read.type
 
 
 __all__ = ["Update"]

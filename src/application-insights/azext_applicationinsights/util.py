@@ -5,7 +5,7 @@
 
 from datetime import datetime
 import dateutil.parser  # pylint: disable=import-error
-from msrestazure.tools import is_valid_resource_id, parse_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from azext_applicationinsights._client_factory import applicationinsights_mgmt_plane_client
 
 

@@ -1,6 +1,20 @@
 
 Release History
 ===============
+1.1.0
+++++++
+Added script for GT fixit button.
+Added support for `--disable-trusted-launch` flag parameter to set security type to `Standard` on the repair VM no matter what the source VM has.
+
+1.0.10
+++++++
+Added breaking change warning for the default image for Windows source VMs if the source VM image is not found in `az vm repair create`. It will change from a 2016 image to 2022 in November 2024.
+
+1.0.9
+++++++
+Fixed and updated several vm-repair tests for better coverage. 
+Removed and updated broken image aliases pointing at images that no longer existed. 
+Add `--encrypt-recovery-key` string parameter to `vm repair create` to use recovery key provided by the user to unlock the disk for a confidential VM. 
 
 1.0.8
 ++++++
@@ -13,7 +27,6 @@ az command adjustment
 1.0.6
 ++++++
 Add CLI update wait for ASG to wait for the operation done as the async 2rd operation will cancel the 1st call.
-
 
 1.0.5
 ++++++

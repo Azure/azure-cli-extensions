@@ -71,6 +71,8 @@ jobs:
           git checkout "$diff_branch"
           git log --oneline | head -n 10
           git --no-pager diff --name-only --diff-filter=ACMRT "$base_branch_pre"/"$base_branch"..."$diff_branch"
+          set +e
+          # by default set -e is enabled to run commands, intermediate command failure may cause the whole step to fail. disable it here.
           git --no-pager diff --name-only --diff-filter=ACMRT "$base_branch_pre"/"$base_branch"..."$diff_branch" | grep -v "/tests/" > changed_files
           cat changed_files
           cat changed_files | grep src/ | awk -F"src/" '{print $2}'| grep / | awk -F"/" '{print $1}' | sort | uniq

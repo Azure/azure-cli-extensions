@@ -15,7 +15,7 @@ from azure.cli.command_modules.containerapp._utils import (_ensure_location_allo
 from azure.cli.core.commands.client_factory import get_subscription_id
 from ._clients import SessionPoolPreviewClient
 
-from ._models import SessionCodeInterpreterPythonExecution as SessionCodeInterpreterPythonExecutionPreviewModel
+from ._models import SessionCodeInterpreterExecution as SessionCodeInterpreterExecutionPreviewModel
 from ._client_factory import handle_raw_exception
 
 logger = get_logger(__name__)
@@ -24,7 +24,7 @@ logger = get_logger(__name__)
 class SessionCodeInterpreterPreviewDecorator(BaseResource):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
-        self.session_code_interpreter_def = SessionCodeInterpreterPythonExecutionPreviewModel
+        self.session_code_interpreter_def = SessionCodeInterpreterExecutionPreviewModel
         self.session_pool_client = SessionPoolPreviewClient
 
     def get_argument_name(self):

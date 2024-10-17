@@ -213,7 +213,7 @@ def _migrate_library_panels_and_dashboards(all_source_dashboards, all_library_pa
 
     # we don't backup provisioned dashboards, so we don't need to restore them
     for dashboard in all_source_dashboards:
-        exists_before = check_dashboard_exists(restore_url, dashboard, restore_headers)
+        exists_before = check_dashboard_exists(restore_url, dashboard["dashboard"]["uid"], restore_headers)
         dashboard_title = dashboard['dashboard'].get('title', '')
 
         # Skipping making/updating dashboard if the library panel it relies on is not being updated.

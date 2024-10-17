@@ -27,6 +27,7 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 PREVIEW_API_VERSION = "2024-02-02-preview"
+AUG_PREVIEW_API_VERSION = "2024-08-02-preview"
 POLLING_TIMEOUT = 1500  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
@@ -886,7 +887,7 @@ class BuildClient():
 
 
 class JavaComponentPreviewClient():
-    api_version = PREVIEW_API_VERSION
+    api_version = AUG_PREVIEW_API_VERSION
 
     @classmethod
     def create(cls, cmd, resource_group_name, environment_name, name, java_component_envelope, no_wait=False):
