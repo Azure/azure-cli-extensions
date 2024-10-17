@@ -2,9 +2,9 @@
 
 Release History
 ===============
-0.1.4
+1.0.0
 ++++++++++++++++++
-* Removing msrestazure dependency and using azure.mgmt.core.
+* Removing msrestazure dependency and using azure.mgmt.core
 
 0.1.3
 ++++++++++++++++++
