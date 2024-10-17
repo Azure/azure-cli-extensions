@@ -20,7 +20,7 @@ from azure.cli.core.azclierror import (FileOperationError, AzureInternalError,
 
 from .._storage import create_container, upload_blob
 
-from .._client_factory import cf_jobs, _get_data_credentials
+from .._client_factory import cf_jobs
 from .workspace import WorkspaceInfo
 from .target import TargetInfo, get_provider
 
@@ -45,12 +45,6 @@ knack_logger = knack.log.get_logger(__name__)
 _targets_with_allowed_failure_output = {"microsoft.dft"}
 
 
-def _show_warning(msg):
-    import colorama
-    colorama.init()
-    print(f"\033[1m{colorama.Fore.YELLOW}{msg}{colorama.Style.RESET_ALL}")
-
-
 def list(cmd, resource_group_name, workspace_name, location):
     """
     Get the list of jobs in a Quantum Workspace.
@@ -67,134 +61,6 @@ def get(cmd, job_id, resource_group_name=None, workspace_name=None, location=Non
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
     return client.get(job_id)
-
-
-def _check_dotnet_available():
-    """
-    Will fail if dotnet cannot be executed on the system.
-    """
-    args = ["dotnet", "--version"]
-
-    try:
-        import subprocess
-        result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
-    except FileNotFoundError as e:
-        raise FileOperationError("Could not find 'dotnet' on the system.") from e
-
-    if result.returncode != 0:
-        raise FileOperationError(f"Failed to run 'dotnet'. (Error {result.returncode})")
-
-
-def build(cmd, target_id=None, project=None, target_capability=None):
-    """
-    Compile a Q# program to run on Azure Quantum.
-    """
-    target = TargetInfo(cmd, target_id)
-
-    # Validate that dotnet is available
-    _check_dotnet_available()
-
-    args = ["dotnet", "build"]
-
-    if project:
-        args.append(project)
-
-    args.append(f"-property:ExecutionTarget={target.target_id}")
-
-    if target_capability:
-        args.append(f"-property:TargetCapability={target_capability}")
-
-    logger.debug("Building project with arguments:")
-    logger.debug(args)
-
-    knack_logger.warning('Building project...')
-
-    import subprocess
-    result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
-
-    if result.returncode == 0:
-        return {'result': 'ok'}
-
-    # If we got here, we might have encountered an error during compilation, so propagate standard output to the user.
-    logger.error("Compilation stage failed with error code %s", result.returncode)
-    print(result.stdout.decode('ascii'))
-    raise AzureInternalError("Failed to compile program.")
-
-
-def _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params):
-    """ Generates the list of arguments for calling submit on a Q# project """
-
-    args = ["dotnet", "run", "--no-build"]
-
-    if project:
-        args.append("--project")
-        args.append(project)
-
-    args.append("--")
-    args.append("submit")
-
-    args.append("--subscription")
-    args.append(ws.subscription)
-
-    args.append("--resource-group")
-    args.append(ws.resource_group)
-
-    args.append("--workspace")
-    args.append(ws.name)
-
-    args.append("--target")
-    args.append(target.target_id)
-
-    args.append("--output")
-    args.append("Id")
-
-    if job_name:
-        args.append("--job-name")
-        args.append(job_name)
-
-    if shots:
-        args.append("--shots")
-        args.append(shots)
-
-    if storage:
-        args.append("--storage")
-        args.append(storage)
-
-    args.append("--aad-token")
-    args.append(token)
-
-    args.append("--location")
-    args.append(ws.location)
-
-    args.append("--user-agent")
-    args.append("CLI")
-
-    if job_params:
-        args.append("--job-params")
-        for k, v in job_params.items():
-            if isinstance(v, str):
-                # If value is string type already, do not use json.dumps(), since it will add extra escapes to the string
-                args.append(f"{k}={v}")
-            else:
-                args.append(f"{k}={json.dumps(v)}")
-
-    args.extend(program_args)
-
-    logger.debug("Running project with arguments:")
-    logger.debug(args)
-
-    return args
-
-
-def _set_cli_version():
-    # This is a temporary approach for runtime compatibility between a runtime version
-    # before support for the --user-agent parameter is added. We'll rely on the environment
-    # variable before the stand alone executable submits to the service.
-    try:
-        from .._client_factory import get_appid
-        os.environ["USER_AGENT"] = get_appid()
-    except:
-        logger.warning("User Agent environment variable could not be set.")
 
 
 def _has_completed(job):
@@ -216,30 +82,12 @@ def _convert_numeric_params(job_params):
                     pass
 
 
-def submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-           project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None,
-           job_input_file=None, job_input_format=None, job_output_format=None, entry_point=None):
-    """
-    Submit a quantum program to run on Azure Quantum.
-    """
-    if job_input_file is None:
-        return _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-                              project, job_name, shots, storage, no_build, job_params, target_capability)
-
-    return _submit_directly_to_service(cmd, resource_group_name, workspace_name, location, target_id,
-                                       job_name, shots, storage, job_params, target_capability,
-                                       job_input_file, job_input_format, job_output_format, entry_point)
-
-
-def _submit_directly_to_service(cmd, resource_group_name, workspace_name, location, target_id,
-                                job_name, shots, storage, job_params, target_capability,
-                                job_input_file, job_input_format, job_output_format, entry_point):
+def submit(cmd, resource_group_name, workspace_name, location, target_id, job_input_file, job_input_format,
+           job_name=None, shots=None, storage=None, job_params=None, target_capability=None,
+           job_output_format=None, entry_point=None):
     """
     Submit QIR bitcode, QIO problem JSON, or a pass-through job to run on Azure Quantum.
     """
-    if job_input_format is None:
-        raise RequiredArgumentMissingError(ERROR_MSG_MISSING_INPUT_FORMAT, JOB_SUBMIT_DOC_LINK_MSG)
-
     # Get workspace, target, and provider information
     ws_info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     if ws_info is None:
@@ -465,46 +313,6 @@ def _submit_directly_to_service(cmd, resource_group_name, workspace_name, locati
     return client.create(job_id, job_details)
 
 
-def _submit_qsharp(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-                   project, job_name, shots, storage, no_build, job_params, target_capability):
-    """
-    Submit a Q# project to run on Azure Quantum.
-    """
-    _show_warning('The direct submission of Q# project folders will soon be fully deprecated. Instead, you can submit QIR bitcode or human-readable LLVM code. Modern QDK can be used to generate human-readable LLVM code from Q#.')
-    # We first build and then call run.
-    # Can't call run directly because it fails to understand the
-    # `ExecutionTarget` property when passed in the command line
-    if not no_build:
-        build(cmd, target_id=target_id, project=project, target_capability=target_capability)
-        logger.info("Project built successfully.")
-    else:
-        _check_dotnet_available()
-
-    ws = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
-    target = TargetInfo(cmd, target_id)
-    token = _get_data_credentials(cmd.cli_ctx, ws.subscription).get_token().token
-
-    args = _generate_submit_args(program_args, ws, target, token, project, job_name, shots, storage, job_params)
-    _set_cli_version()
-
-    knack_logger.warning('Submitting job...')
-
-    import subprocess
-    result = subprocess.run(args, stdout=subprocess.PIPE, check=False)
-
-    if result.returncode == 0:
-        std_output = result.stdout.decode('ascii').strip()
-        # Retrieve the job-id as the last line from standard output.
-        job_id = std_output.split()[-1]
-        # Query for the job and return status to caller.
-        return get(cmd, job_id, resource_group_name, workspace_name, location)
-
-    # The program compiled successfully, but executing the stand-alone .exe failed to run.
-    logger.error("Submission of job failed with error code %s", result.returncode)
-    print(result.stdout.decode('ascii'))
-    raise AzureInternalError("Failed to submit job.")
-
-
 def _parse_blob_url(url):
     from urllib.parse import urlparse
     o = urlparse(url)
@@ -603,15 +411,15 @@ def job_show(cmd, job_id, resource_group_name, workspace_name, location):
     return job
 
 
-def run(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-        project=None, job_name=None, shots=None, storage=None, no_build=False, job_params=None, target_capability=None,
-        job_input_file=None, job_input_format=None, job_output_format=None, entry_point=None):
+def run(cmd, resource_group_name, workspace_name, location, target_id, job_input_file, job_input_format,
+        job_name=None, shots=None, storage=None, job_params=None, target_capability=None,
+        job_output_format=None, entry_point=None):
     """
     Submit a job to run on Azure Quantum, and wait for the result.
     """
-    job = submit(cmd, program_args, resource_group_name, workspace_name, location, target_id,
-                 project, job_name, shots, storage, no_build, job_params, target_capability,
-                 job_input_file, job_input_format, job_output_format, entry_point)
+    job = submit(cmd, resource_group_name, workspace_name, location, target_id, job_input_file, job_input_format,
+                 job_name, shots, storage, job_params, target_capability,
+                 job_output_format, entry_point)
     logger.warning("Job id: %s", job.id)
     logger.debug(job)
 
