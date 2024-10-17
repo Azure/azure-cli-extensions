@@ -347,12 +347,24 @@ def prepare_attachments(attachments, attachment_types, inline_attachments):
     from knack.util import CLIError
 
     attachments_list = []
+
+    if inline_attachments is None:
+        inline_attachments = []
+
+    if attachments is None:
+        attachments = []
+
+    if attachment_types is None:
+        attachment_types = []
+
     if attachments is None and attachment_types is None:
         attachments_list = None
-    elif attachments is None or attachment_types is None:
-        raise CLIError('Number of attachments and attachment-types should match.')
-    elif (len(attachments) + len(inline_attachments)) != len(attachment_types):
-        raise CLIError('Number of attachments and inline attachments should match with attachment types.')
+    elif len(attachments) + len(inline_attachments) != len(attachment_types):
+        raise CLIError(
+            f'Mismatch: {len(attachments)} standard attachments + '
+            f'{len(inline_attachments)} inline attachments '
+            f'does not equal {len(attachment_types)} attachment types.'
+        )
     else:
         content_id = None
         # Process standard attachments
