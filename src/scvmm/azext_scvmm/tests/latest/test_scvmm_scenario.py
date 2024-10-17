@@ -7,7 +7,6 @@
 
 import os
 from azure.cli.testsdk import ScenarioTest
-import datetime
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -15,16 +14,16 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class ScVmmScenarioTest(ScenarioTest):
     def test_scvmm(self):
         vmm_user = self.cmd(
-            'az keyvault secret show --name SyntheticsVMMServerUsername --vault-name arcscvmmsynthetics --query value -o tsv',
+            'az keyvault secret show --name SyntheticsVMMServerUsername --vault-name arcscvmmsynthetics --query value -o json',
         ).output.strip()
         vmm_pass = self.cmd(
-            'az keyvault secret show --name SyntheticsVMMServerPassword --vault-name arcscvmmsynthetics --query value -o tsv',
+            'az keyvault secret show --name SyntheticsVMMServerPassword --vault-name arcscvmmsynthetics --query value -o json',
         ).output.strip()
         guest_user = self.cmd(
-            'az keyvault secret show --name SyntheticsTemplateVMUsernameAdmin --vault-name arcscvmmsynthetics --query value -o tsv',
+            'az keyvault secret show --name SyntheticsTemplateVMUsernameAdmin --vault-name arcscvmmsynthetics --query value -o json',
         ).output.strip()
         guest_pass = self.cmd(
-            'az keyvault secret show --name SyntheticsTemplateVMPassword --vault-name arcscvmmsynthetics --query value -o tsv',
+            'az keyvault secret show --name SyntheticsTemplateVMPassword --vault-name arcscvmmsynthetics --query value -o json',
         ).output.strip()
         
         self.kwargs.update(
@@ -102,6 +101,7 @@ class ScVmmScenarioTest(ScenarioTest):
                 self.check('properties.uuid', '{ivmt_uuid}'),
             ],
         )
+        
         self.cmd(
             "az scvmm vmmserver inventory-item show -g {resource_group} -v {vmmserver_name}"
             " -i {ivnet_uuid}",
