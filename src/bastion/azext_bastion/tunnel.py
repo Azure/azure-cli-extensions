@@ -106,9 +106,8 @@ class TunnelServer:
 
         if response.status_code not in [200]:
             if response_json is not None and response_json["message"] is not None:
-                raise HttpResponseError(response = response, message=response_json["message"])
-            else:
-                raise HttpResponseError(response = response)
+                raise HttpResponseError(response=response, message=response_json["message"])
+            raise HttpResponseError(response=response)
 
         self.last_token = response_json["authToken"]
         self.node_id = response_json["nodeId"]
@@ -223,7 +222,7 @@ class TunnelServer:
             if response.status_code == 404:
                 logger.info('Session already deleted')
             elif response.status_code not in [200, 204]:
-                raise HttpResponseError(response = response)
+                raise HttpResponseError(response=response)
 
             self.last_token = None
             self.node_id = None
