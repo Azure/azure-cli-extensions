@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.11.1
+++++++
+* Fix bug in Email services - send email with attachments.
+
 1.11.0
 ++++++
 * Update to email SDK version to 1.0.1b1.
