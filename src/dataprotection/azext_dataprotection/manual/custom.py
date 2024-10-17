@@ -26,7 +26,7 @@ from azure.cli.core.commands.client_factory import get_mgmt_service_client
 from azure.cli.command_modules.role.custom import list_role_assignments, create_role_assignment
 from knack.log import get_logger
 from knack.prompting import prompt_y_n
-from msrestazure.tools import is_valid_resource_id, parse_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from azext_dataprotection.vendored_sdks.resourcegraph.models import \
     QueryRequest, QueryRequestOptions
 from azext_dataprotection.manual import backupcenter_helper, helpers as helper
