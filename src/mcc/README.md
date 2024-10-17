@@ -8,7 +8,7 @@ az extension add --name mcc
 ```
 
 ## Usage ##
-See the [extension reference documentation](https://aka.ms/MCCEnt-CLI)
+See the documentation for [managing cache nodes using CLI](aka.ms/MCCEnt-CLI)
 
 ``` sh
 az mcc --help
