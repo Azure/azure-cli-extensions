@@ -71,7 +71,7 @@ class AmgScenarioTest(ScenarioTest):
 
 
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
-    def test_api_key_e2e(self, resource_group):
+    def test_amg_api_key_e2e(self, resource_group):
 
         self.kwargs.update({
             'name': self.create_random_name(prefix='clitestamgapikey', length=23),
@@ -103,7 +103,7 @@ class AmgScenarioTest(ScenarioTest):
 
 
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
-    def test_service_account_e2e(self, resource_group):
+    def test_amg_service_account_e2e(self, resource_group):
 
         self.kwargs.update({
             'name': self.create_random_name(prefix='clitestamgsvcacct', length=23),
@@ -451,6 +451,7 @@ class AmgScenarioTest(ScenarioTest):
             self.assertTrue(final_count, 0)
 
 
+    @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
     def test_amg_private_endpoint(self, resource_group):
 
