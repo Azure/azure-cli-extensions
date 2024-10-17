@@ -11,11 +11,11 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g
+      - -n -g -l
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-web/7.0.0 Python/3.8.13 (macOS-12.6.1-x86_64-i386-64bit)
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002?api-version=2022-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002?api-version=2023-01-01
   response:
     body:
       string: '{"error":{"code":"ResourceNotFound","message":"The Resource ''Microsoft.Web/staticSites/cli_test000002''
@@ -29,22 +29,26 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Thu, 15 Dec 2022 21:18:01 GMT
+      - Thu, 03 Oct 2024 22:31:02 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-failure-cause:
       - gateway
+      x-msedge-ref:
+      - 'Ref A: 44BA8161EA6C44E289EBC8837C710E3C Ref B: CO6AA3150219039 Ref C: 2024-10-03T22:31:03Z'
     status:
       code: 404
       message: Not Found
 - request:
-    body: '{"location": "centralus", "sku": {"name": "Free", "tier": "Free"}, "properties":
+    body: '{"location": "eastus2", "sku": {"name": "Free", "tier": "Free"}, "properties":
       {"buildProperties": {"appLocation": "/"}}}'
     headers:
       Accept:
@@ -56,46 +60,44 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '123'
+      - '121'
       Content-Type:
       - application/json
       ParameterSetName:
-      - -n -g
+      - -n -g -l
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-web/7.0.0 Python/3.8.13 (macOS-12.6.1-x86_64-i386-64bit)
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002?api-version=2022-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002?api-version=2023-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002","name":"cli_test000002","type":"Microsoft.Web/staticSites","location":"Central
-        US","properties":{"defaultHostname":"black-tree-044fef110.2.azurestaticapps.net","repositoryUrl":null,"branch":null,"customDomains":[],"stableInboundIP":null,"privateEndpointConnections":[],"stagingEnvironmentPolicy":"Enabled","allowConfigFileUpdates":true,"contentDistributionEndpoint":"https://content-dm1.infrastructure.2.azurestaticapps.net","keyVaultReferenceIdentity":"SystemAssigned","userProvidedFunctionApps":null,"linkedBackends":[],"provider":"None","enterpriseGradeCdnStatus":"Disabled","publicNetworkAccess":null,"databaseConnections":[]},"sku":{"name":"Free","tier":"Free"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002","name":"cli_test000002","type":"Microsoft.Web/staticSites","location":"East
+        US 2","properties":{"defaultHostname":"gray-island-0555cb10f.5.azurestaticapps.net","repositoryUrl":null,"branch":null,"customDomains":[],"stableInboundIP":"20.75.112.13","privateEndpointConnections":[],"stagingEnvironmentPolicy":"Enabled","allowConfigFileUpdates":true,"contentDistributionEndpoint":"https://content-eus2.infrastructure.5.azurestaticapps.net","keyVaultReferenceIdentity":"SystemAssigned","userProvidedFunctionApps":null,"linkedBackends":[],"provider":"None","enterpriseGradeCdnStatus":"Disabled","publicNetworkAccess":null,"databaseConnections":[],"trafficSplitting":{"environmentDistribution":{"default":100}},"areStaticSitesDistributedBackendsEnabled":false,"targetResourceGroupResourceId":null,"trialExpirationTimeUtc":null,"prettyNameStatus":null,"prettyName":null,"prettyNameHostname":null,"backendRegion":{"regionName":null,"status":null},"stagingEnvironmentRegion":null,"deploymentAuthPolicy":"DeploymentToken","federatedIdentityTenantId":null,"federatedIdentityClientId":null,"federatedIdentitySubscriptionId":null},"sku":{"name":"Free","tier":"Free"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '808'
+      - '1294'
       content-type:
       - application/json
       date:
-      - Thu, 15 Dec 2022 21:18:03 GMT
+      - Thu, 03 Oct 2024 22:31:05 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-aspnet-version:
       - 4.0.30319
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: F3CC4F83DC2E4B6DBDC5BE10114E10C1 Ref B: CO6AA3150220045 Ref C: 2024-10-03T22:31:03Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -113,40 +115,38 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -n -g
+      - -n -g -l
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-web/7.0.0 Python/3.8.13 (macOS-12.6.1-x86_64-i386-64bit)
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002?api-version=2022-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002?api-version=2023-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002","name":"cli_test000002","type":"Microsoft.Web/staticSites","location":"Central
-        US","properties":{"defaultHostname":"black-tree-044fef110.2.azurestaticapps.net","repositoryUrl":null,"branch":null,"customDomains":[],"stableInboundIP":null,"privateEndpointConnections":[],"stagingEnvironmentPolicy":"Enabled","allowConfigFileUpdates":true,"contentDistributionEndpoint":"https://content-dm1.infrastructure.2.azurestaticapps.net","keyVaultReferenceIdentity":"SystemAssigned","userProvidedFunctionApps":null,"linkedBackends":[],"provider":"None","enterpriseGradeCdnStatus":"Disabled","publicNetworkAccess":null,"databaseConnections":[]},"sku":{"name":"Free","tier":"Free"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002","name":"cli_test000002","type":"Microsoft.Web/staticSites","location":"East
+        US 2","properties":{"defaultHostname":"gray-island-0555cb10f.5.azurestaticapps.net","repositoryUrl":null,"branch":null,"customDomains":[],"stableInboundIP":"20.75.112.13","privateEndpointConnections":[],"stagingEnvironmentPolicy":"Enabled","allowConfigFileUpdates":true,"contentDistributionEndpoint":"https://content-eus2.infrastructure.5.azurestaticapps.net","keyVaultReferenceIdentity":"SystemAssigned","userProvidedFunctionApps":null,"linkedBackends":[],"provider":"None","enterpriseGradeCdnStatus":"Disabled","publicNetworkAccess":null,"databaseConnections":[],"trafficSplitting":{"environmentDistribution":{"default":100}},"areStaticSitesDistributedBackendsEnabled":false,"targetResourceGroupResourceId":null,"trialExpirationTimeUtc":null,"prettyNameStatus":null,"prettyName":null,"prettyNameHostname":null,"backendRegion":{"regionName":null,"status":null},"stagingEnvironmentRegion":null,"deploymentAuthPolicy":"DeploymentToken","federatedIdentityTenantId":null,"federatedIdentityClientId":null,"federatedIdentitySubscriptionId":null},"sku":{"name":"Free","tier":"Free"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '808'
+      - '1294'
       content-type:
       - application/json
       date:
-      - Thu, 15 Dec 2022 21:18:04 GMT
+      - Thu, 03 Oct 2024 22:31:05 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-aspnet-version:
       - 4.0.30319
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 8CD2F35B7CED439D914600F591234720 Ref B: CO6AA3150220053 Ref C: 2024-10-03T22:31:05Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -164,38 +164,36 @@ interactions:
       Connection:
       - keep-alive
       User-Agent:
-      - AZURECLI/2.43.0 azsdk-python-azure-mgmt-web/7.0.0 Python/3.8.13 (macOS-12.6.1-x86_64-i386-64bit)
+      - AZURECLI/2.65.0 azsdk-python-core/1.28.0 Python/3.9.13 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002?api-version=2022-03-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002?api-version=2023-01-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002","name":"cli_test000002","type":"Microsoft.Web/staticSites","location":"Central
-        US","properties":{"defaultHostname":"black-tree-044fef110.2.azurestaticapps.net","repositoryUrl":null,"branch":null,"customDomains":[],"stableInboundIP":null,"privateEndpointConnections":[],"stagingEnvironmentPolicy":"Enabled","allowConfigFileUpdates":true,"contentDistributionEndpoint":"https://content-dm1.infrastructure.2.azurestaticapps.net","keyVaultReferenceIdentity":"SystemAssigned","userProvidedFunctionApps":null,"linkedBackends":[],"provider":"None","enterpriseGradeCdnStatus":"Disabled","publicNetworkAccess":null,"databaseConnections":[]},"sku":{"name":"Free","tier":"Free"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002","name":"cli_test000002","type":"Microsoft.Web/staticSites","location":"East
+        US 2","properties":{"defaultHostname":"gray-island-0555cb10f.5.azurestaticapps.net","repositoryUrl":null,"branch":null,"customDomains":[],"stableInboundIP":"20.75.112.13","privateEndpointConnections":[],"stagingEnvironmentPolicy":"Enabled","allowConfigFileUpdates":true,"contentDistributionEndpoint":"https://content-eus2.infrastructure.5.azurestaticapps.net","keyVaultReferenceIdentity":"SystemAssigned","userProvidedFunctionApps":null,"linkedBackends":[],"provider":"None","enterpriseGradeCdnStatus":"Disabled","publicNetworkAccess":null,"databaseConnections":[],"trafficSplitting":{"environmentDistribution":{"default":100}},"areStaticSitesDistributedBackendsEnabled":false,"targetResourceGroupResourceId":null,"trialExpirationTimeUtc":null,"prettyNameStatus":null,"prettyName":null,"prettyNameHostname":null,"backendRegion":{"regionName":null,"status":null},"stagingEnvironmentRegion":null,"deploymentAuthPolicy":"DeploymentToken","federatedIdentityTenantId":null,"federatedIdentityClientId":null,"federatedIdentitySubscriptionId":null},"sku":{"name":"Free","tier":"Free"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '808'
+      - '1294'
       content-type:
       - application/json
       date:
-      - Thu, 15 Dec 2022 21:18:04 GMT
+      - Thu, 03 Oct 2024 22:31:06 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-aspnet-version:
       - 4.0.30319
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: FB04D589B2574739897F15909326609C Ref B: CO6AA3150219023 Ref C: 2024-10-03T22:31:06Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -203,8 +201,8 @@ interactions:
       message: OK
 - request:
     body: '{"properties": {"resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.DBforMySQL/flexibleServers/cli-test000003",
-      "connectionIdentity": null, "region": "East US", "connectionString": "Server=\"cli-test000003.mysql.database.azure.com\";UserID
-      = \"aturing\";Password=\"thisisapassword123!\";Database=\"tables\";SslMode=MySqlSslMode.Required;SslCa=\"{path_to_CA_cert}\""}}'
+      "connectionIdentity": null, "region": "East US", "connectionString": "Server=cli-test000003.mysql.database.azure.com;UserID
+      = aturing;Password=thisisapassword123!\";Database=tables;"}}'
     headers:
       Accept:
       - '*/*'
@@ -215,45 +213,43 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '432'
+      - '361'
       Content-Type:
       - application/json
       User-Agent:
-      - python/3.8.13 (macOS-12.6.1-x86_64-i386-64bit) AZURECLI/2.43.0
+      - python/3.9.13 (Windows-10-10.0.22621-SP0) AZURECLI/2.65.0
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticsites/cli_test000002/builds/default/databaseConnections/default?api-version=2022-03-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002/builds/default/databaseConnections/default","name":"default","type":"Microsoft.Web/staticSites/builds/databaseConnections","location":"Central
-        US","properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.DBforMySQL/flexibleServers/cli-test000003","region":"East
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.Web/staticSites/cli_test000002/builds/default/databaseConnections/default","name":"default","type":"Microsoft.Web/staticSites/builds/databaseConnections","location":"East
+        US 2","properties":{"resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test000001/providers/Microsoft.DBforMySQL/flexibleServers/cli-test000003","region":"East
         US"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '480'
+      - '479'
       content-type:
       - application/json
       date:
-      - Thu, 15 Dec 2022 21:18:06 GMT
+      - Thu, 03 Oct 2024 22:31:07 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-IIS/10.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
       x-aspnet-version:
       - 4.0.30319
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-writes:
       - '1199'
+      x-msedge-ref:
+      - 'Ref A: 5ACB31C343B34029956BD978DE1454F4 Ref B: CO6AA3150218023 Ref C: 2024-10-03T22:31:06Z'
       x-powered-by:
       - ASP.NET
     status:

@@ -11,7 +11,7 @@ from ._utils import get_database_type, Sku, ConnectionType
 from azure.cli.core.azclierror import MutuallyExclusiveArgumentError, InvalidArgumentValueError
 from azure.cli.command_modules.appservice.static_sites import show_staticsite
 
-from msrestazure.tools import is_valid_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id
 
 
 def create_dbconnection(cmd, resource_group_name, name, db_resource_id, db_name=None, environment=None,
