@@ -38,7 +38,7 @@ for ext in $output; do
     fi
 done
 
-pip install azure-cli-core azure-cli requests
+pip install azure-cli-core==2.64.0 azure-cli==2.64.0 requests
 # azure-storage-blob==1.5.0
 # arcdata: ModuleNotFoundError: No module named 'regex._regex'
 pip install regex
