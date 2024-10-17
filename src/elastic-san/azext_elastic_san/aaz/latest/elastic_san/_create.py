@@ -63,18 +63,18 @@ class Create(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.auto_scale_policy_enforcement = AAZStrArg(
-            options=["--auto-scale-policy-enforcement"],
+            options=["--auto-scale-policy", "--auto-scale-policy-enforcement"],
             arg_group="AutoScaleProperties",
             help="Enable or Disable scale up setting on Elastic San Appliance.",
             enum={"Disabled": "Disabled", "Enabled": "Enabled", "None": "None"},
         )
         _args_schema.capacity_unit_scale_up_limit_tib = AAZIntArg(
-            options=["--capacity-unit-scale-up-limit-tib"],
+            options=["--capacity-unit-scale-up", "--capacity-unit-scale-up-limit-tib"],
             arg_group="AutoScaleProperties",
             help="Maximum scale up size on Elastic San appliance in TiB.",
         )
         _args_schema.increase_capacity_unit_by_tib = AAZIntArg(
-            options=["--increase-capacity-unit-by-tib"],
+            options=["--increase-capacity-unit", "--increase-capacity-unit-by-tib"],
             arg_group="AutoScaleProperties",
             help="Unit to increase Capacity Unit on Elastic San appliance in TiB.",
         )
