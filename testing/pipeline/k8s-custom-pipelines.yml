@@ -22,12 +22,16 @@ stages:
   jobs:
   - template: ./templates/run-test.yml
     parameters:
-      jobName: SourceControlConfiguration
-      path: ./test/configurations/Configuration.*.Tests.ps1
+      jobName: GitBucket_FluxConfigurationTests
+      path: ./test/configurations/Flux.*.Tests.ps1
   - template: ./templates/run-test.yml
     parameters:
-      jobName: FluxConfiguration
-      path: ./test/configurations/Flux.*.Tests.ps1
+      jobName: AzureBlob_FluxConfigurationTests
+      path: ./test/configurations/FluxAzureBlob.*.Tests.ps1
+  - template: ./templates/run-test.yml
+    parameters:
+      jobName: Kustomization_FluxConfigurationTests
+      path: ./test/configurations/FluxKustomization.*.Tests.ps1
   - job: BuildPublishExtension
     pool:
       vmImage: 'ubuntu-20.04'
@@ -98,20 +102,6 @@ stages:
         az --version
 
         azdev verify license
-
-  - job: StaticAnalysis
-    displayName: "Static Analysis"
-    pool:
-      vmImage: 'ubuntu-20.04'
-    steps:
-      - task: UsePythonVersion@0
-        displayName: 'Use Python 3.6'
-        inputs:
-          versionSpec: 3.6
-      - bash: pip install wheel==0.30.0 pylint==1.9.5 flake8==3.5.0 requests
-        displayName: 'Install wheel, pylint, flake8, requests'
-      - bash: python scripts/ci/source_code_static_analysis.py
-        displayName: "Static Analysis"
 
   - job: IndexVerify
     displayName: "Verify Extensions Index"

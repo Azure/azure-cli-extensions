@@ -3,6 +3,10 @@ Describe 'Flux Configuration (SSH Configs) Testing' {
         . $PSScriptRoot/Constants.ps1
         . $PSScriptRoot/Helper.ps1
 
+        if (-not (Test-Path -Path $TMP_DIRECTORY)) {
+            New-Item -ItemType Directory -Path $TMP_DIRECTORY
+        }
+
         $RSA_KEYPATH = "$TMP_DIRECTORY\rsa.private"
         $ECDSA_KEYPATH = "$TMP_DIRECTORY\ecdsa.private"
         $ED25519_KEYPATH = "$TMP_DIRECTORY\ed25519.private"
@@ -10,7 +14,11 @@ Describe 'Flux Configuration (SSH Configs) Testing' {
         $KEY_ARR = [System.Tuple]::Create("rsa", $RSA_KEYPATH), [System.Tuple]::Create("ecdsa", $ECDSA_KEYPATH), [System.Tuple]::Create("ed25519", $ED25519_KEYPATH)
         foreach ($keyTuple in $KEY_ARR) {
             # Automattically say yes to overwrite with ssh-keygen
-            Write-Output "y" | ssh-keygen -t $keyTuple.Item1 -f $keyTuple.Item2 -P """"
+            if ($keyTuple.Item1 -eq "ecdsa") {
+                Write-Output "y" | ssh-keygen -t $keyTuple.Item1 -b 256 -m PEM -f $keyTuple.Item2 -P ""
+            } else {
+                Write-Output "y" | ssh-keygen -t $keyTuple.Item1 -b 4096 -m PEM -f $keyTuple.Item2 -P ""
+            }
         }
 
         $SSH_GIT_URL = "ssh://github.com/anubhav929/flux-get-started.git"
@@ -26,7 +34,8 @@ Describe 'Flux Configuration (SSH Configs) Testing' {
     It 'Creates a configuration with each type of ssh private key' {
         foreach($configData in $CONFIG_ARR) {
             Write-Host "Creating a configuration of type $($configData.Item1)"
-            az k8s-configuration flux create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" -u $SSH_GIT_URL -n $configData.Item1 --scope cluster --namespace $configData.Item1 --ssh-private-key-file $configData.Item2 --branch main --no-wait
+            Get-ChildItem -Path $TMP_DIRECTORY -File
+            $output = az k8s-configuration flux create -c $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --cluster-type "connectedClusters" -u $SSH_GIT_URL -n $configData.Item1 --scope cluster --namespace $configData.Item1 --ssh-private-key-file $configData.Item2 --branch main --no-wait
             $? | Should -BeTrue
         }
     
