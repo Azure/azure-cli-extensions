@@ -56,7 +56,7 @@ class WebpubsubScenarioTest(ScenarioTest):
         ])
 
           # test create replica
-        self.cmd('az webpubsub replica create -n {name} --replica-name {replica_name} -g {rg} --sku {sku} --unit-count {unit_count} -l {replica_location} --tags {tags}', checks=[
+        self.cmd('webpubsub replica create -n {name} --replica-name {replica_name} -g {rg} --sku {sku} --unit-count {unit_count} -l {replica_location} --tags {tags}', checks=[
             self.check('name', '{replica_name}'),
             self.check('location', '{replica_location}'),
             self.check('provisioningState', 'Succeeded'),
@@ -65,7 +65,7 @@ class WebpubsubScenarioTest(ScenarioTest):
         ])
 
        # test show replica
-        self.cmd('az webpubsub replica show -n {name} --replica-name {replica_name} -g {rg}', checks=[
+        self.cmd('webpubsub replica show -n {name} --replica-name {replica_name} -g {rg}', checks=[
             self.check('name', '{replica_name}'),
             self.check('location', '{replica_location}'),
             self.check('provisioningState', 'Succeeded'),
@@ -74,7 +74,7 @@ class WebpubsubScenarioTest(ScenarioTest):
         ])
 
         # test list replica
-        self.cmd('az webpubsub replica list -n {name} -g {rg}', checks=[
+        self.cmd('webpubsub replica list -n {name} -g {rg}', checks=[
             self.check('[0].name', '{replica_name}'),
             self.check('[0].location', '{replica_location}'),
             self.check('[0].provisioningState', 'Succeeded'),
@@ -83,4 +83,4 @@ class WebpubsubScenarioTest(ScenarioTest):
         ])
 
         # test remove replica
-        self.cmd('az webpubsub replica delete -n {name} --replica-name {replica_name} -g {rg}')
+        self.cmd('webpubsub replica delete -n {name} --replica-name {replica_name} -g {rg}')
