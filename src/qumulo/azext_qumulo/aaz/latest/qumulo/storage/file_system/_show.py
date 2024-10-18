@@ -207,7 +207,7 @@ class Show(AAZCommand):
             properties = cls._schema_on_200.properties
             properties.admin_password = AAZStrType(
                 serialized_name="adminPassword",
-                flags={"required": True, "secret": True},
+                flags={"secret": True},
             )
             properties.availability_zone = AAZStrType(
                 serialized_name="availabilityZone",
@@ -267,7 +267,7 @@ class Show(AAZCommand):
 
             user_details = cls._schema_on_200.properties.user_details
             user_details.email = AAZStrType(
-                flags={"required": True, "secret": True},
+                flags={"secret": True},
             )
 
             system_data = cls._schema_on_200.system_data

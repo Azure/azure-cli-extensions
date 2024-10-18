@@ -12,13 +12,13 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "qumulo storage file-system create",
+    "qumulo storage file-system update",
 )
-class Create(AAZCommand):
-    """Create file system resource
+class Update(AAZCommand):
+    """Update file system resource
 
-    :example: Create file system
-        az qumulo storage file-system create -n sys_name -g rg --admin-password testadmin --delegated-subnet-id subnet-id --initial-capacity 50 --marketplace-details "{offerId:qumulo-saas-mpp,planId:qumulo-on-azure-v1%%gmz7xq9ge3py%%P1M,publisherId:qumulo1584033880660}" --storage-sku Standard --user-details "{email:test@test.com}" --availability-zone 1
+    :example: Update file system tags
+        az qumulo storage file-system update -g rg -n sys_name --tags "{tag:test}"
     """
 
     _aaz_info = {
@@ -28,11 +28,10 @@ class Create(AAZCommand):
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -49,6 +48,7 @@ class Create(AAZCommand):
             options=["-n", "--name", "--file-system-name"],
             help="Name of the File System resource",
             required=True,
+            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -57,104 +57,9 @@ class Create(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.admin_password = AAZStrArg(
-            options=["--admin-password"],
-            arg_group="Properties",
-            help="Initial administrator password of the resource",
-            required=True,
-        )
-        _args_schema.availability_zone = AAZStrArg(
-            options=["--availability-zone"],
-            arg_group="Properties",
-            help="Availability zone",
-        )
-        _args_schema.cluster_login_url = AAZStrArg(
-            options=["--cluster-login-url"],
-            arg_group="Properties",
-            help="File system Id of the resource",
-        )
-        _args_schema.delegated_subnet_id = AAZStrArg(
-            options=["--delegated-subnet-id"],
-            arg_group="Properties",
-            help="Delegated subnet id for Vnet injection",
-            required=True,
-        )
-        _args_schema.initial_capacity = AAZIntArg(
-            options=["--initial-capacity"],
-            arg_group="Properties",
-            help="Storage capacity in TB",
-            required=True,
-        )
-        _args_schema.marketplace_details = AAZObjectArg(
-            options=["--marketplace-details"],
-            arg_group="Properties",
-            help="Marketplace details",
-            required=True,
-        )
-        _args_schema.private_ips = AAZListArg(
-            options=["--private-ips"],
-            arg_group="Properties",
-            help="Private IPs of the resource",
-        )
-        _args_schema.storage_sku = AAZStrArg(
-            options=["--storage-sku"],
-            arg_group="Properties",
-            help="Storage Sku",
-            required=True,
-            enum={"Performance": "Performance", "Standard": "Standard"},
-        )
-        _args_schema.user_details = AAZObjectArg(
-            options=["--user-details"],
-            arg_group="Properties",
-            help="User Details",
-            required=True,
-        )
-
-        marketplace_details = cls._args_schema.marketplace_details
-        marketplace_details.marketplace_subscription_id = AAZStrArg(
-            options=["marketplace-subscription-id"],
-            help="Marketplace Subscription Id",
-        )
-        marketplace_details.offer_id = AAZStrArg(
-            options=["offer-id"],
-            help="Offer Id",
-            required=True,
-        )
-        marketplace_details.plan_id = AAZStrArg(
-            options=["plan-id"],
-            help="Plan Id",
-            required=True,
-        )
-        marketplace_details.publisher_id = AAZStrArg(
-            options=["publisher-id"],
-            help="Publisher Id",
-            required=True,
-        )
-
-        private_ips = cls._args_schema.private_ips
-        private_ips.Element = AAZStrArg()
-
-        user_details = cls._args_schema.user_details
-        user_details.email = AAZStrArg(
-            options=["email"],
-            help="User Email",
-            required=True,
-        )
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.location = AAZResourceLocationArg(
-            arg_group="Resource",
-            help="The geo-location where the resource lives",
-            required=True,
-            fmt=AAZResourceLocationArgFormat(
-                resource_group_arg="resource_group",
-            ),
-        )
         _args_schema.tags = AAZDictArg(
             options=["--tags"],
-            arg_group="Resource",
+            arg_group="Properties",
             help="Resource tags.",
         )
 
@@ -164,7 +69,7 @@ class Create(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.FileSystemsCreateOrUpdate(ctx=self.ctx)()
+        self.FileSystemsUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -179,30 +84,14 @@ class Create(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class FileSystemsCreateOrUpdate(AAZHttpOperation):
+    class FileSystemsUpdate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
+            if session.http_response.status_code in [200]:
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
@@ -215,7 +104,7 @@ class Create(AAZCommand):
 
         @property
         def method(self):
-            return "PUT"
+            return "PATCH"
 
         @property
         def error_format(self):
@@ -268,36 +157,8 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
-            _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("adminPassword", AAZStrType, ".admin_password", typ_kwargs={"flags": {"secret": True}})
-                properties.set_prop("availabilityZone", AAZStrType, ".availability_zone")
-                properties.set_prop("clusterLoginUrl", AAZStrType, ".cluster_login_url")
-                properties.set_prop("delegatedSubnetId", AAZStrType, ".delegated_subnet_id", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("initialCapacity", AAZIntType, ".initial_capacity", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("marketplaceDetails", AAZObjectType, ".marketplace_details", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("privateIPs", AAZListType, ".private_ips")
-                properties.set_prop("storageSku", AAZStrType, ".storage_sku", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("userDetails", AAZObjectType, ".user_details", typ_kwargs={"flags": {"required": True}})
-
-            marketplace_details = _builder.get(".properties.marketplaceDetails")
-            if marketplace_details is not None:
-                marketplace_details.set_prop("marketplaceSubscriptionId", AAZStrType, ".marketplace_subscription_id")
-                marketplace_details.set_prop("offerId", AAZStrType, ".offer_id", typ_kwargs={"flags": {"required": True}})
-                marketplace_details.set_prop("planId", AAZStrType, ".plan_id", typ_kwargs={"flags": {"required": True}})
-                marketplace_details.set_prop("publisherId", AAZStrType, ".publisher_id", typ_kwargs={"flags": {"required": True}})
-
-            private_i_ps = _builder.get(".properties.privateIPs")
-            if private_i_ps is not None:
-                private_i_ps.set_elements(AAZStrType, ".")
-
-            user_details = _builder.get(".properties.userDetails")
-            if user_details is not None:
-                user_details.set_prop("email", AAZStrType, ".email", typ_kwargs={"flags": {"secret": True}})
 
             tags = _builder.get(".tags")
             if tags is not None:
@@ -305,47 +166,47 @@ class Create(AAZCommand):
 
             return self.serialize_content(_content_value)
 
-        def on_200_201(self, session):
+        def on_200(self, session):
             data = self.deserialize_http_content(session)
             self.ctx.set_var(
                 "instance",
                 data,
-                schema_builder=self._build_schema_on_200_201
+                schema_builder=self._build_schema_on_200
             )
 
-        _schema_on_200_201 = None
+        _schema_on_200 = None
 
         @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
+        def _build_schema_on_200(cls):
+            if cls._schema_on_200 is not None:
+                return cls._schema_on_200
 
-            cls._schema_on_200_201 = AAZObjectType()
+            cls._schema_on_200 = AAZObjectType()
 
-            _schema_on_200_201 = cls._schema_on_200_201
-            _schema_on_200_201.id = AAZStrType(
+            _schema_on_200 = cls._schema_on_200
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.identity = AAZObjectType()
-            _schema_on_200_201.location = AAZStrType(
+            _schema_on_200.identity = AAZObjectType()
+            _schema_on_200.location = AAZStrType(
                 flags={"required": True},
             )
-            _schema_on_200_201.name = AAZStrType(
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.properties = AAZObjectType(
+            _schema_on_200.properties = AAZObjectType(
                 flags={"required": True, "client_flatten": True},
             )
-            _schema_on_200_201.system_data = AAZObjectType(
+            _schema_on_200.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200_201.tags = AAZDictType()
-            _schema_on_200_201.type = AAZStrType(
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            identity = cls._schema_on_200_201.identity
+            identity = cls._schema_on_200.identity
             identity.principal_id = AAZStrType(
                 serialized_name="principalId",
                 flags={"read_only": True},
@@ -361,10 +222,10 @@ class Create(AAZCommand):
                 serialized_name="userAssignedIdentities",
             )
 
-            user_assigned_identities = cls._schema_on_200_201.identity.user_assigned_identities
+            user_assigned_identities = cls._schema_on_200.identity.user_assigned_identities
             user_assigned_identities.Element = AAZObjectType()
 
-            _element = cls._schema_on_200_201.identity.user_assigned_identities.Element
+            _element = cls._schema_on_200.identity.user_assigned_identities.Element
             _element.client_id = AAZStrType(
                 serialized_name="clientId",
                 flags={"read_only": True},
@@ -374,7 +235,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200_201.properties
+            properties = cls._schema_on_200.properties
             properties.admin_password = AAZStrType(
                 serialized_name="adminPassword",
                 flags={"secret": True},
@@ -412,7 +273,7 @@ class Create(AAZCommand):
                 flags={"required": True},
             )
 
-            marketplace_details = cls._schema_on_200_201.properties.marketplace_details
+            marketplace_details = cls._schema_on_200.properties.marketplace_details
             marketplace_details.marketplace_subscription_id = AAZStrType(
                 serialized_name="marketplaceSubscriptionId",
             )
@@ -432,15 +293,15 @@ class Create(AAZCommand):
                 flags={"required": True},
             )
 
-            private_i_ps = cls._schema_on_200_201.properties.private_i_ps
+            private_i_ps = cls._schema_on_200.properties.private_i_ps
             private_i_ps.Element = AAZStrType()
 
-            user_details = cls._schema_on_200_201.properties.user_details
+            user_details = cls._schema_on_200.properties.user_details
             user_details.email = AAZStrType(
                 flags={"secret": True},
             )
 
-            system_data = cls._schema_on_200_201.system_data
+            system_data = cls._schema_on_200.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -460,14 +321,14 @@ class Create(AAZCommand):
                 serialized_name="lastModifiedByType",
             )
 
-            tags = cls._schema_on_200_201.tags
+            tags = cls._schema_on_200.tags
             tags.Element = AAZStrType()
 
-            return cls._schema_on_200_201
+            return cls._schema_on_200
 
 
-class _CreateHelper:
-    """Helper class for Create"""
+class _UpdateHelper:
+    """Helper class for Update"""
 
 
-__all__ = ["Create"]
+__all__ = ["Update"]
