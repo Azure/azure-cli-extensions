@@ -431,10 +431,8 @@ def validate_repair_and_restore(cmd, namespace):
     validate_vm_username(namespace.repair_username, is_linux)
     validate_vm_password(namespace.repair_password, is_linux)
     
-    logger.debug("About to set associate_public_ip to false in validators!!!!!!!!!!")
     # Prompt input for public ip usage
     namespace.associate_public_ip = False
-    logger.debug("Set associate_public_ip to false in validators!!!!!!!!!!!")
     # Validate repair run command
     source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
     is_linux = _is_linux_os(source_vm)

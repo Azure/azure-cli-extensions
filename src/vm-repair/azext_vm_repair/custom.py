@@ -99,11 +99,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             os_type = 'Windows'
 
         # Set public IP address for repair VM
-        logger.info('Setting up public IP address for repair VM...')
-        logger.debug('Public IP address option before setting: %s', associate_public_ip)
         public_ip_name = _make_public_ip_name(repair_vm_name, associate_public_ip, yes)
-        logger.info('Setting up public IP address for repair VM...')
-        logger.debug('Public IP address option after setting: %s', public_ip_name)
         
         # Set up base create vm command
         if is_linux:
@@ -351,10 +347,11 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
         source_vm = get_vm(cmd, resource_group_name, vm_name)
         is_managed = _uses_managed_disk(source_vm)
         logger.info('Repair VM ID: %s', repair_vm_id)
-        repair_vm_id = parse_resource_id(repair_vm_id)
-        repair_vm_name = repair_vm_id['name']
-        repair_resource_group = repair_vm_id['resource_group']
-        source_disk = None
+        if repair_vm_id:
+            logger.info('Repair VM ID: %s', repair_vm_id)
+            repair_vm_id = parse_resource_id(repair_vm_id)
+            repair_vm_name = repair_vm_id['name']
+            repair_resource_group = repair_vm_id['resource_group']
 
         # MANAGED DISK
         if is_managed:
