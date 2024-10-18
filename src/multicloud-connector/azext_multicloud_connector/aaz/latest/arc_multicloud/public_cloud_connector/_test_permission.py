@@ -17,8 +17,10 @@ from azure.cli.core.aaz import *
 class TestPermission(AAZCommand):
     """A long-running resource action.
 
+    For additional details, please visit the https://learn.microsoft.com/en-us/cli/azure/arc-multicloud?view=azure-cli-latest
+
     :example: PublicCloudConnectors_TestPermissions
-        az arc-multicloud public-cloud-connector test-permission --resource-group rgpublicCloud --name myConnector
+        az arc-multicloud public-cloud-connector test-permission --resource-group multiCloudRG --name awsConnector
     """
 
     _aaz_info = {

@@ -17,6 +17,8 @@ from azure.cli.core.aaz import *
 class GenerateAwsTemplate(AAZCommand):
     """Retrieve AWS Cloud Formation template
 
+    For additional details, please visit the https://learn.microsoft.com/en-us/cli/azure/arc-multicloud?view=azure-cli-latest
+
     :example: GenerateAwsTemplate_Post
         az arc-multicloud generate-aws-template --connector-id /subscriptions/{}/resourceGroups/{}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{} --output-directory example_folder/templates
     """

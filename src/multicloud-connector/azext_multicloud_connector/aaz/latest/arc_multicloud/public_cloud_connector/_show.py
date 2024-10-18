@@ -17,8 +17,10 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Get a PublicCloudConnector
 
+    For additional details, please visit the https://learn.microsoft.com/en-us/cli/azure/arc-multicloud?view=azure-cli-latest
+
     :example: publicCloudConnectors_Get
-        az arc-multicloud public-cloud-connector show --resource-group rgpublicCloud --name myConnector
+        az arc-multicloud public-cloud-connector show --resource-group multiCloudRG --name awsConnector
     """
 
     _aaz_info = {

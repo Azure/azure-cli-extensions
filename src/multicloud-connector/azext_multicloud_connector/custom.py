@@ -41,6 +41,7 @@ from ._utils import register_providers_if_needed
 logger = get_logger(__name__)
 
 
+# Wrapper - Customization for GenerateAwsTemplate, add new argument and write the output to json file on disk
 def customized_generate_aws_template(cmd, connector_id, output_directory=None):
     class OutputAwsTemplateToFile(_GenAwsTemplate):
         @classmethod
@@ -115,7 +116,7 @@ def customized_generate_aws_template(cmd, connector_id, output_directory=None):
     })
 
 
-# Register required RPs before execute each command
+# Inheritance - Register required RPs before execute each command
 class CustomizedPublicCloudConnectorCreate(_PublicCloudConnectorCreate):
     def pre_operations(self):
         register_providers_if_needed(cmd=self.ctx)

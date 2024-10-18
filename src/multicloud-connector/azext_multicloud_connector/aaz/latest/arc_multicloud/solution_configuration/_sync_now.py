@@ -17,6 +17,8 @@ from azure.cli.core.aaz import *
 class SyncNow(AAZCommand):
     """Trigger immediate sync with source cloud
 
+    For additional details, please visit the https://learn.microsoft.com/en-us/cli/azure/arc-multicloud?view=azure-cli-latest
+
     :example: SolutionConfigurations_SyncNow
         az arc-multicloud solution-configuration sync-now --connector-id /subscriptions/{}/resourceGroups/{}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{} --name mySolutionConfig
     """

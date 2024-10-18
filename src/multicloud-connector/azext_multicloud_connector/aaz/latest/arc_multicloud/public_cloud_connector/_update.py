@@ -17,8 +17,10 @@ from azure.cli.core.aaz import *
 class Update(AAZCommand):
     """Update a PublicCloudConnector
 
+    For additional details, please visit the https://learn.microsoft.com/en-us/cli/azure/arc-multicloud?view=azure-cli-latest
+
     :example: publicCloudConnectors_Update
-        az arc-multicloud public-cloud-connector update --resource-group rgpublicCloud --name myConnector --aws-cloud-profile "{excluded-accounts:[123456789123,123456789124]}" --tags "{}"
+        az arc-multicloud public-cloud-connector update --resource-group multiCloudRG --name awsConnector --aws-cloud-profile "{excluded-accounts:[123456789123,123456789124]}" --tags "{}"
     """
 
     _aaz_info = {

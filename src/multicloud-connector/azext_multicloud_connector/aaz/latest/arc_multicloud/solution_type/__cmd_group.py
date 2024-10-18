@@ -15,7 +15,9 @@ from azure.cli.core.aaz import *
     "arc-multicloud solution-type",
 )
 class __CMDGroup(AAZCommandGroup):
-    """commands for solution-type
+    """Commands for solution-type
+
+    For additional details, please visit the https://learn.microsoft.com/en-us/cli/azure/arc-multicloud?view=azure-cli-latest
     """
     pass
 

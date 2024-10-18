@@ -17,8 +17,13 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a PublicCloudConnector
 
+    For additional details, please visit the https://learn.microsoft.com/en-us/cli/azure/arc-multicloud?view=azure-cli-latest
+
     :example: PublicCloudConnectors_CreateOrUpdate
-        az arc-multicloud public-cloud-connector create --resource-group rgpublicCloud --name myConnector--aws-cloud-profile "{account-id:123456789123,excluded-accounts:[123456789124,123456789125],is-organizational-account:True}" --host-type AWS --tags "{a:b}" --location eastus
+        az arc-multicloud public-cloud-connector create --resource-group multiCloudRG --name awsConnector --aws-cloud-profile "{account-id:123456789123,excluded-accounts:[123456789124,123456789125],is-organizational-account:True}" --host-type AWS --tags "{a:b}" --location eastus
+
+    :example: PublicCloudConnectors_CreateOrUpdate
+        az arc-multicloud public-cloud-connector create --resource-group multiCloudRG --name awsConnector --aws-cloud-profile account-id=123456789123 is-organizational-account=false --host-type AWS --tags a=b --location eastus
     """
 
     _aaz_info = {
