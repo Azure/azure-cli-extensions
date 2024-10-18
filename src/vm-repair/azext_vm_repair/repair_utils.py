@@ -800,8 +800,8 @@ def _fetch_osdisk_security_profile_parameters(source_vm):
     return create_repair_vm_command
 
 
-def _make_public_ip_name(repair_vm_name, associate_public_ip, yes_pub_ip):
+def _make_public_ip_name(repair_vm_name, associate_public_ip):
     public_ip_name = '""'
-    if associate_public_ip or yes_pub_ip:
+    if associate_public_ip:
         public_ip_name = repair_vm_name + "PublicIP"
     return public_ip_name
