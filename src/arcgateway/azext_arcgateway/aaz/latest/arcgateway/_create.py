@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create an Arc gateway resource.
 
     :example: Sample command for gateway create
-        az arcgateway create --name MyArcgateway --resource-group myResourceGroup --location eastus2euap --subscription mySubscription --allowed-features *
+        az arcgateway create --name MyArcgateway --resource-group myResourceGroup --location eastus2euap --subscription mySubscription
     """
 
     _aaz_info = {
