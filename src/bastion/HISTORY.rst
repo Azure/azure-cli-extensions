@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.3.1
+++++++
+* Remove dependency on msazurerest.
+
 1.3.0
 ++++++
 * Bug fixes for connect rdp/ssh/tunnel.
