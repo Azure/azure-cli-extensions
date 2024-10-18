@@ -84,6 +84,7 @@ class Create(AAZCommand):
             options=["--allowed-features"],
             arg_group="Properties",
             help="Specifies the list of features that are enabled for this Gateway.",
+            default=["*"],
         )
         _args_schema.gateway_type = AAZStrArg(
             options=["--gateway-type"],
