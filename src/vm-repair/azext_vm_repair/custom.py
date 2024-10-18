@@ -48,17 +48,18 @@ from .repair_utils import (
     _select_distro_linux_Arm64,
     _fetch_vm_security_profile_parameters,
     _fetch_osdisk_security_profile_parameters,
-    _fetch_compatible_windows_os_urn_v2
+    _fetch_compatible_windows_os_urn_v2,
+    _make_public_ip_name
 )
 from .exceptions import AzCommandError, RunScriptNotFoundForIdError, SupportingResourceNotFoundError, CommandCanceledByUserError
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False, encrypt_recovery_key="", disable_trusted_launch=False, no=False):
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False, encrypt_recovery_key="", disable_trusted_launch=False):
     # Breaking change warning
     logger.warning('After the November 2024 release, if the image of the source Windows VM is not found, the \'az vm repair create\' command will default to use a 2022-Datacenter image for the repair VM.')
     # log all the parameters not logging the bitlocker key
-    logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s, disable_trusted_launch: %s, no: %s', vm_name, resource_group_name, repair_password, repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes, disable_trusted_launch, no)
+    logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s, disable_trusted_launch: %s', vm_name, resource_group_name, repair_password, repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes, disable_trusted_launch)
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
     # Main command calling block
@@ -97,10 +98,13 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                 os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
             os_type = 'Windows'
 
-        public_ip_name = '""'
-        if associate_public_ip or yes and (not no):
-            public_ip_name = ('repair-' + vm_name + '_PublicIP')
-            
+        # Set public IP address for repair VM
+        logger.info('Setting up public IP address for repair VM...')
+        logger.debug('Public IP address option before setting: %s', associate_public_ip)
+        public_ip_name = _make_public_ip_name(repair_vm_name, associate_public_ip, yes)
+        logger.info('Setting up public IP address for repair VM...')
+        logger.debug('Public IP address option after setting: %s', public_ip_name)
+        
         # Set up base create vm command
         if is_linux:
             create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password} --public-ip-address {option} --custom-data {cloud_init_script}' \
