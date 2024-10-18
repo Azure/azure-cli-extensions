@@ -2,6 +2,11 @@
 
 Release History
 ===============
+1.1.1
+++++++
+* Fix empty response object on CLI when using 'az load test file upload'
+* Add 'NOT_VALIDATED' as a terminal status for File Validation
+
 1.1.0
 ++++++
 * Add support for ZIP artifacts upload to a test. Artifacts can be uploaded through YAML config when using --load-test-config-file and through cmd `az load test file upload`, the associate --file-type is `ZIPPED_ARTIFACTS`
