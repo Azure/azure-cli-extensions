@@ -1,7 +1,7 @@
 
 Release History
 ===============
-1.2.0
+1.1.1
 ++++++
 Migrated VM Repair off of the `msrestazure` API to `azure.core` and `azure.mgmt` APIs.
 
