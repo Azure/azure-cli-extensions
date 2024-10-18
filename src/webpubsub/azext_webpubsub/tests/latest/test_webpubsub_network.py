@@ -57,9 +57,9 @@ class WebpubsubNetworkTest(ScenarioTest):
 
         # Test add IP rule
         self.cmd('webpubsub network-rule ip-rule add -g {rg} -n {name} --ip-rule value="10.0.0.0/24" action="Allow" --ip-rule value="192.168.0.0/24" action="Deny"', checks=[
-            self.check('networkAcLs.ipRules[0].value', '0.0.0.0/0'), # default allow
+            self.check('networkAcLs.ipRules[0].value', '0.0.0.0/0'),  # default allow
             self.check('networkAcLs.ipRules[0].action', 'Allow'),
-            self.check('networkAcLs.ipRules[1].value', '::/0'), # default allow
+            self.check('networkAcLs.ipRules[1].value', '::/0'),  # default allow
             self.check('networkAcLs.ipRules[1].action', 'Allow'),
             self.check('networkAcLs.ipRules[2].value', '10.0.0.0/24'),
             self.check('networkAcLs.ipRules[2].action', 'Allow'),
@@ -73,9 +73,9 @@ class WebpubsubNetworkTest(ScenarioTest):
             self.check('publicNetwork.allow[1]', 'ClientConnection'),
             self.check('publicNetwork.deny[0]', 'RESTAPI'),
             self.check('publicNetwork.deny[1]', 'Trace'),
-            self.check('ipRules[0].value', '0.0.0.0/0'), # default allow
+            self.check('ipRules[0].value', '0.0.0.0/0'),  # default allow
             self.check('ipRules[0].action', 'Allow'),
-            self.check('ipRules[1].value', '::/0'), # default allow
+            self.check('ipRules[1].value', '::/0'),  # default allow
             self.check('ipRules[1].action', 'Allow'),
             self.check('ipRules[2].value', '10.0.0.0/24'),
             self.check('ipRules[2].action', 'Allow'),
@@ -85,8 +85,8 @@ class WebpubsubNetworkTest(ScenarioTest):
 
         # Test remove IP rule
         self.cmd('webpubsub network-rule ip-rule remove -g {rg} -n {name} --ip-rule value="10.0.0.0/24" action="Allow" --ip-rule value="192.168.0.0/24" action="Deny"', checks=[
-            self.check('networkAcLs.ipRules[0].value', '0.0.0.0/0'), # default allow
+            self.check('networkAcLs.ipRules[0].value', '0.0.0.0/0'),  # default allow
             self.check('networkAcLs.ipRules[0].action', 'Allow'),
-            self.check('networkAcLs.ipRules[1].value', '::/0'), # default allow
+            self.check('networkAcLs.ipRules[1].value', '::/0'),  # default allow
             self.check('networkAcLs.ipRules[1].action', 'Allow'),
         ])
