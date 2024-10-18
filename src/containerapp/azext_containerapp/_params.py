@@ -389,6 +389,22 @@ def load_arguments(self, _):
     with self.argument_context('containerapp job registry') as c:
         c.argument('identity', help="The managed identity with which to authenticate to the Azure Container Registry (instead of username/password). Use 'system' for a system-defined identity, Use 'system-environment' for an environment level system-defined identity or a resource id for a user-defined environment/containerapp level identity. The managed identity should have been assigned acrpull permissions on the ACR before deployment (use 'az role assignment create --role acrpull ...').")
 
+    with self.argument_context('containerapp job logs show') as c:
+        c.argument('follow', help="Print logs in real time if present.", arg_type=get_three_state_flag())
+        c.argument('tail', help="The number of past logs to print (0-300)", type=int, default=20)
+        c.argument('container', help="The name of the container")
+        c.argument('output_format', options_list=["--format"], help="Log output format", arg_type=get_enum_type(["json", "text"]), default="json")
+        c.argument('replica', help="The name of the replica. List replicas with 'az containerapp job replica list'. A replica may not exist if the job pod has been cleaned up.")
+        c.argument('execution', help="The name of the container app execution. Defaults to the latest execution.")
+        c.argument('name', name_type, id_part=None, help="The name of the Containerapp job.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+
+    with self.argument_context('containerapp job replica') as c:
+        c.argument('replica', help="The name of the replica. ")
+        c.argument('execution', help="The name of the container app execution. Defaults to the latest execution.")
+        c.argument('name', name_type, id_part=None, help="The name of the Containerapp.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+
     with self.argument_context('containerapp env dotnet-component') as c:
         c.argument('dotnet_component_name', options_list=['--name', '-n'], help="The DotNet component name.")
         c.argument('environment_name', options_list=['--environment'], help="The environment name.")
@@ -445,3 +461,12 @@ def load_arguments(self, _):
         c.argument('logger_name', help="The logger name.")
         c.argument('logger_level', arg_type=get_enum_type(["off", "error", "info", "debug", "trace", "warn"]), help="Set the log level for the specific logger name.")
         c.argument('all', help="The flag to indicate all logger settings.", action="store_true")
+
+    with self.argument_context('containerapp diagnose dns resolve') as c:
+        c.argument('name', options_list=['--name', '-n'], help="The managed environment name.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+        c.argument('domain', help="The domain to check DNS resolution for. Defaults to azure.com")
+
+    with self.argument_context('containerapp diagnose healthcheck show') as c:
+        c.argument('name', options_list=['--name', '-n'], help="The managed environment name.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
