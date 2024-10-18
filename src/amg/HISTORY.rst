@@ -110,4 +110,3 @@ Release History
 2.5.0
 ++++++
 * `az grafana integrations monitor`: support Azure Monitor workspace integration
-* `az grafana create`: Migrate to Graph API SDK for fetching user principal id

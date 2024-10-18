@@ -81,7 +81,7 @@ class GrafanaCreate(_GrafanaCreate):
 
             principal_ids = args.principal_ids
             if not principal_ids:
-                user_principal_id = _get_login_account_principal_id()
+                user_principal_id = _get_login_account_principal_id(cli_ctx)
                 principal_ids = [user_principal_id]
             grafana_admin_role_id = resolve_role_id(cli_ctx, "Grafana Admin", subscription_scope)
 
@@ -140,29 +140,27 @@ def _gen_guid():
     return uuid.uuid4()
 
 
-def _get_login_account_principal_id():
-    # https://github.com/microsoftgraph/msgraph-sdk-python
-    import asyncio
-    from azure.identity import AzureCliCredential
-    from msgraph import GraphServiceClient
-    from kiota_abstractions.api_error import APIError
+def _get_login_account_principal_id(cli_ctx):
+    from azure.cli.core._profile import Profile, _USER_ENTITY, _USER_TYPE, _SERVICE_PRINCIPAL, _USER_NAME
+    from azure.cli.command_modules.role import graph_client_factory
 
-    credentials = AzureCliCredential()
-    scopes = ['https://graph.microsoft.com/.default']
-    graph_client = GraphServiceClient(credentials=credentials, scopes=scopes)
+    profile = Profile(cli_ctx=cli_ctx)
+    active_account = profile.get_subscription()
+    assignee = active_account[_USER_ENTITY][_USER_NAME]
 
+    graph_client = graph_client_factory(cli_ctx)
     try:
-        async def me():
-            return await graph_client.me.get()
-        # https://github.com/encode/httpx/issues/914
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-        result = asyncio.run(me())
-    except APIError as ex:
-        logger.warning("Graph query error %s", ex)
+        if active_account[_USER_ENTITY][_USER_TYPE] == _SERVICE_PRINCIPAL:
+            result = list(graph_client.service_principal_list(
+                filter=f"servicePrincipalNames/any(c:c eq '{assignee}')"))
+        else:
+            result = [graph_client.signed_in_user_get()]
+    except Exception as error:
+        raise CLIInternalError(f"Failed to get the current logged-in account. {error}")
     if not result:
-        raise CLIInternalError("Failed to retrieve principal id for the current user, which is needed to create a "
-                               "role assignment. Consider using '--principal-ids' to bypass the lookup")
-    return result.id
+        raise CLIInternalError((f"Failed to retrieve principal id for '{assignee}', which is needed to create a "
+                                f"role assignment. Consider using '--principal-ids' to bypass the lookup"))
+    return result[0]['id']
 
 
 def _create_role_assignment(cli_ctx, principal_id, principal_types, role_definition_id, scope):
