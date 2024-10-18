@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor get-vm-host-payload",
+    "dynatrace monitor get-metric-status",
 )
-class GetVmHostPayload(AAZCommand):
-    """Return the payload that need to be passed in the request body for installing Dynatrace agent on a VM
+class GetMetricStatus(AAZCommand):
+    """Get metric status
 
-    :example: Get-vm-host-payload
-        az dynatrace monitor get-vm-host-payload -g rg --monitor-name monitor
+    :example: Monitors_GetMetricStatus_MaximumSet_Gen
+        az dynatrace monitor get-metric-status --resource-group rgDynatrace --monitor-name fhcjxnxumkdlgpwanewtkdnyuz
     """
 
     _aaz_info = {
-        "version": "2021-09-01",
+        "version": "2023-04-27",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/getvmhostpayload", "2021-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/getmetricstatus", "2023-04-27"],
         ]
     }
 
@@ -46,8 +46,9 @@ class GetVmHostPayload(AAZCommand):
         _args_schema = cls._args_schema
         _args_schema.monitor_name = AAZStrArg(
             options=["--monitor-name"],
-            help="Monitor resource name",
+            help="Name of the Monitor resource",
             required=True,
+            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -56,7 +57,7 @@ class GetVmHostPayload(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MonitorsGetVMHostPayload(ctx=self.ctx)()
+        self.MonitorsGetMetricStatus(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -71,7 +72,7 @@ class GetVmHostPayload(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class MonitorsGetVMHostPayload(AAZHttpOperation):
+    class MonitorsGetMetricStatus(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -85,7 +86,7 @@ class GetVmHostPayload(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Dynatrace.Observability/monitors/{monitorName}/getVMHostPayload",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Dynatrace.Observability/monitors/{monitorName}/getMetricStatus",
                 **self.url_parameters
             )
 
@@ -119,7 +120,7 @@ class GetVmHostPayload(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-09-01",
+                    "api-version", "2023-04-27",
                     required=True,
                 ),
             }
@@ -152,18 +153,18 @@ class GetVmHostPayload(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.environment_id = AAZStrType(
-                serialized_name="environmentId",
+            _schema_on_200.azure_resource_ids = AAZListType(
+                serialized_name="azureResourceIds",
             )
-            _schema_on_200.ingestion_key = AAZStrType(
-                serialized_name="ingestionKey",
-            )
+
+            azure_resource_ids = cls._schema_on_200.azure_resource_ids
+            azure_resource_ids.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _GetVmHostPayloadHelper:
-    """Helper class for GetVmHostPayload"""
+class _GetMetricStatusHelper:
+    """Helper class for GetMetricStatus"""
 
 
-__all__ = ["GetVmHostPayload"]
+__all__ = ["GetMetricStatus"]
