@@ -386,7 +386,7 @@ def upload_test_file(
     )
     logger.debug("Upload test file response: %s", response)
     logger.info("Upload test file completed")
-    return response
+    return response.as_dict()
 
 
 def list_test_file(

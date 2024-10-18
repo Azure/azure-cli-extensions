@@ -886,15 +886,15 @@ class LoadTestScenario(ScenarioTest):
             "file_type": LoadTestConstants.ZIP_ARTIFACT_TYPE,
             "file_path": LoadTestConstants.ZIP_ARTIFACT_FILE
         })
-        self.cmd(
+        response = self.cmd(
             "az load test file upload "
             "--test-id {test_id} "
             "--load-test-resource {load_test_resource} "
             "--resource-group {resource_group} "
             "--file-type {file_type} "
             '--path "{file_path}" '
-        )
-        time.sleep(10)
+        ).get_output_in_json()
+        assert self.kwargs["file_name"] == response["fileName"]
         files = self.cmd(
             "az load test file list "
             "--test-id {test_id} "
