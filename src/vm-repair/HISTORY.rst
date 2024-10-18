@@ -5,6 +5,7 @@ Release History
 ++++++
 Added script for GT fixit button.
 Added support for `--disable-trusted-launch` flag parameter to set security type to `Standard` on the repair VM no matter what the source VM has.
+Fixed 2 Unbound variable bugs.  
 
 1.0.10
 ++++++
