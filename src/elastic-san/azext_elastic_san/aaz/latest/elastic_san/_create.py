@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create an Elastic SAN.
 
     :example: Create an Elastic SAN.
-        az elastic-san create -n "san_name" -g "rg" --tags '{key1810:aaaa}' -l southcentralusstg --base-size-tib 23 --extended-capacity-size-tib 14 --sku '{name:Premium_LRS,tier:Premium}' --public-network-access Enabled
+        az elastic-san create -n "san_name" -g "rg" --tags '{key1810:aaaa}' -l southcentralusstg --base-size-tib 23 --extended-capacity-size-tib 14 --sku '{name:Premium_LRS,tier:Premium}' --public-network-access Enabled --auto-scale-policy-enforcement Enabled --capacity-unit-scale-up-limit-tib 17 --increase-capacity-unit-by-tib 4 --unused-size-tib 24
     """
 
     _aaz_info = {
@@ -66,22 +66,26 @@ class Create(AAZCommand):
             options=["--auto-scale-policy", "--auto-scale-policy-enforcement"],
             arg_group="AutoScaleProperties",
             help="Enable or Disable scale up setting on Elastic San Appliance.",
+            is_preview=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled", "None": "None"},
         )
         _args_schema.capacity_unit_scale_up_limit_tib = AAZIntArg(
             options=["--capacity-unit-scale-up", "--capacity-unit-scale-up-limit-tib"],
             arg_group="AutoScaleProperties",
             help="Maximum scale up size on Elastic San appliance in TiB.",
+            is_preview=True,
         )
         _args_schema.increase_capacity_unit_by_tib = AAZIntArg(
             options=["--increase-capacity-unit", "--increase-capacity-unit-by-tib"],
             arg_group="AutoScaleProperties",
             help="Unit to increase Capacity Unit on Elastic San appliance in TiB.",
+            is_preview=True,
         )
         _args_schema.unused_size_tib = AAZIntArg(
             options=["--unused-size-tib"],
             arg_group="AutoScaleProperties",
             help="Unused size on Elastic San appliance in TiB.",
+            is_preview=True,
         )
 
         # define Arg Group "Parameters"

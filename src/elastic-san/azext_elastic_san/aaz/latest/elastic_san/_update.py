@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update an Elastic SAN.
 
     :example: Update an Elastic SAN.
-        az elastic-san update -n "san_name" -g "rg" --tags '{key1710:bbbb}' --base-size-tib 25 --extended-capacity-size-tib 15
+        az elastic-san update -n "san_name" -g "rg" --tags '{key1710:bbbb}' --base-size-tib 25 --extended-capacity-size-tib 15 --auto-scale-policy-enforcement Disabled --capacity-unit-scale-up-limit-tib 18 --increase-capacity-unit-by-tib 5 --unused-size-tib 25
     """
 
     _aaz_info = {
@@ -69,6 +69,7 @@ class Update(AAZCommand):
             options=["--auto-scale-policy", "--auto-scale-policy-enforcement"],
             arg_group="AutoScaleProperties",
             help="Enable or Disable scale up setting on Elastic San Appliance.",
+            is_preview=True,
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled", "None": "None"},
         )
@@ -76,18 +77,21 @@ class Update(AAZCommand):
             options=["--capacity-unit-scale-up", "--capacity-unit-scale-up-limit-tib"],
             arg_group="AutoScaleProperties",
             help="Maximum scale up size on Elastic San appliance in TiB.",
+            is_preview=True,
             nullable=True,
         )
         _args_schema.increase_capacity_unit_by_tib = AAZIntArg(
             options=["--increase-capacity-unit", "--increase-capacity-unit-by-tib"],
             arg_group="AutoScaleProperties",
             help="Unit to increase Capacity Unit on Elastic San appliance in TiB.",
+            is_preview=True,
             nullable=True,
         )
         _args_schema.unused_size_tib = AAZIntArg(
             options=["--unused-size-tib"],
             arg_group="AutoScaleProperties",
             help="Unused size on Elastic San appliance in TiB.",
+            is_preview=True,
             nullable=True,
         )
 
