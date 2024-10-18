@@ -10,8 +10,6 @@ from azure.cli.core.commands.validators import get_default_location_from_resourc
 from azure.mgmt.resource.resources.models import ResourceGroup
 from knack.log import get_logger
 from knack.util import CLIError
-from msrestazure.azure_exceptions import CloudError
-from msrest.exceptions import ValidationError
 from azext_db_up._client_factory import resource_client_factory
 from azext_db_up.random_name.generate import generate_username
 from azext_db_up.util import create_random_resource_name, get_config_value, set_config_value, remove_config_value
@@ -30,7 +28,7 @@ def db_down_namespace_processor(db_type):
     return lambda cmd, namespace: _process_db_down_namespace(namespace, db_type=db_type)
 
 
-# pylint: disable=bare-except
+# pylint: disable=bare-except, broad-exception-caught
 def _process_db_up_namespace(cmd, namespace, db_type=None):
     # populate from cache if existing when no resource group name provided
     resource_client = resource_client_factory(cmd.cli_ctx)
@@ -85,6 +83,7 @@ def _process_db_up_namespace(cmd, namespace, db_type=None):
     _set_value(db_type, namespace, 'database_name', 'database', default=DEFAULT_DATABASE_NAME)
 
 
+# pylint: disable=duplicate-string-formatting-argument
 def _process_db_down_namespace(namespace, db_type=None):
     # populate from cache if existing
     if namespace.resource_group_name is None:

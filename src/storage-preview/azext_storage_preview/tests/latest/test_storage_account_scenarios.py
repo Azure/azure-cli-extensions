@@ -327,22 +327,36 @@ class StorageAccountTests(StorageScenarioMixin, ScenarioTest):
 class StorageAccountLocalUserTests(StorageScenarioMixin, ScenarioTest):
     @AllowLargeResponse()
     @ResourceGroupPreparer(name_prefix='cli_storage_account_local_user')
-    @StorageAccountPreparer(name_prefix='storagelocaluser', kind='StorageV2', location='eastus2euap')
-    def test_storage_account_local_user(self, resource_group, storage_account):
-        username = self.create_random_name(prefix='cli', length=24)
+    def test_storage_account_local_user(self, resource_group):
+        username = 'nfsv3_100'
+        username2 = self.create_random_name(prefix='notcli', length=24)
         self.kwargs.update({
-            'sa': storage_account,
+            'sa': self.create_random_name(prefix='storagelocaluser', length=24),
+            'loc': 'eastus2euap',
             'rg': resource_group,
             'cmd': 'storage account local-user',
             'username': username,
-            'username2': self.create_random_name(prefix='notcli', length=24)
+            'username2': username2
         })
+        self.cmd('storage account create -n {sa} -g {rg} -l {loc} --sku Standard_LRS --hns true --enable-nfs-v3 true '
+                 '--default-action Deny --enable-extended-groups true --enable-local-user true '
+                 '--enable-sftp true').assert_with_checks(
+            JMESPathCheck('enableNfsV3', True),
+            JMESPathCheck('enableExtendedGroups', True)
+        )
+        self.cmd('storage account update -n {sa} -g {rg} --enable-extended-groups false').assert_with_checks(
+            JMESPathCheck('enableExtendedGroups', False)
+        )
+        self.cmd('storage account update -n {sa} -g {rg} --enable-extended-groups true').assert_with_checks(
+            JMESPathCheck('enableNfsV3', True),
+            JMESPathCheck('enableExtendedGroups', True)
+        )
 
         self.cmd('{cmd} create --account-name {sa} -g {rg} -n {username} --home-directory home '
                  '--permission-scope permissions=r service=blob resource-name=container1 '
                  '--permission-scope permissions=rw service=file resource-name=share2 '
-                 '--has-ssh-key false --has-shared-key false --group-id 1 '
-                 '--allow-acl-authorization true').assert_with_checks(
+                 '--has-ssh-key false --has-shared-key false --group-id 1 --allow-acl-authorization true '
+                 '--extended-groups 3 4 --is-nfsv3-enabled true').assert_with_checks(
             JMESPathCheck('hasSharedKey', False),
             JMESPathCheck('hasSshKey', False),
             JMESPathCheck('hasSshPassword', None),
@@ -353,22 +367,25 @@ class StorageAccountLocalUserTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('permissionScopes[0].service', 'blob'),
             JMESPathCheck('permissionScopes[0].resourceName', 'container1'),
             JMESPathCheck('groupId', 1),
-            JMESPathCheck('allowAclAuthorization', True)
+            JMESPathCheck('allowAclAuthorization', True),
+            JMESPathCheck('extendedGroups', [3, 4]),
+            JMESPathCheck('isNfSv3Enabled', True)
         )
 
         self.cmd('{cmd} update --account-name {sa} -g {rg} -n {username} --home-directory home2 '
                  '--permission-scope permissions=rw service=file resource-name=share2 --group-id 2 '
-                 '--allow-acl-authorization false').assert_with_checks(
+                 '--allow-acl-authorization false --extended-groups 5 6').assert_with_checks(
             JMESPathCheck('homeDirectory', 'home2'),
             JMESPathCheck('length(permissionScopes)', 1),
             JMESPathCheck('permissionScopes[0].permissions', 'rw'),
             JMESPathCheck('permissionScopes[0].service', 'file'),
             JMESPathCheck('permissionScopes[0].resourceName', 'share2'),
             JMESPathCheck('groupId', 2),
-            JMESPathCheck('allowAclAuthorization', False)
+            JMESPathCheck('allowAclAuthorization', False),
+            JMESPathCheck('extendedGroups', [5, 6])
         )
 
-        self.cmd('{cmd} list --account-name {sa} -g {rg}').assert_with_checks(
+        self.cmd('{cmd} list --account-name {sa} -g {rg} --include nfsv3').assert_with_checks(
             JMESPathCheck('[0].hasSshKey', False),
             JMESPathCheck('[0].hasSshPassword', False),
             JMESPathCheck('[0].homeDirectory', 'home2'),
@@ -380,12 +397,16 @@ class StorageAccountLocalUserTests(StorageScenarioMixin, ScenarioTest):
                  '--permission-scope permissions=r service=blob resource-name=container1 '
                  '--permission-scope permissions=rw service=file resource-name=share2 '
                  '--has-ssh-key false --has-shared-key false --group-id 2 '
-                 '--allow-acl-authorization true')
+                 '--allow-acl-authorization true').assert_with_checks(
+            JMESPathCheck('homeDirectory', 'home'),
+            JMESPathCheck('groupId', 2),
+            JMESPathCheck('name', username2)
+        )
 
         self.cmd('{cmd} list --account-name {sa} -g {rg}').assert_with_checks(
-            JMESPathCheck('length(@)', 2)
+            JMESPathCheck('length(@)', 1)
         )
-        self.cmd('{cmd} list --account-name {sa} -g {rg} --filter "startswith(name, cli)"').assert_with_checks(
+        self.cmd('{cmd} list --account-name {sa} -g {rg} --filter "startswith(name, nfsv3)" --include nfsv3').assert_with_checks(
             JMESPathCheck('length(@)', 1)
         )
 
@@ -407,7 +428,7 @@ class StorageAccountLocalUserTests(StorageScenarioMixin, ScenarioTest):
             JMESPathCheck('sshAuthorizedKeys', None)
         )
 
-        self.cmd('{cmd} regenerate-password --account-name {sa} -g {rg} -n {username}').assert_with_checks(
+        self.cmd('{cmd} regenerate-password --account-name {sa} -g {rg} -n {username2}').assert_with_checks(
             JMESPathCheck('sshAuthorizedKeys', None),
             JMESPathCheckExists('sshPassword')
         )

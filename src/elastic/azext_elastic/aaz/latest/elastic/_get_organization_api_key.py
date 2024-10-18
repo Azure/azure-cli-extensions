@@ -22,9 +22,9 @@ class GetOrganizationApiKey(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elastic/getorganizationapikey", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.elastic/getorganizationapikey", "2024-06-15-preview"],
         ]
     }
 
@@ -110,7 +110,7 @@ class GetOrganizationApiKey(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }

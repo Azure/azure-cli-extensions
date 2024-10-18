@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create an Azure Bare Metal Instance for the specified subscription, resource group, and instance name.
 
     :example: Create a compute resource
-        az baremetalinstance create -g myResourceGroup -name myBMIInstance --location westus --bmi-id 23415635-4d7e-41dc-9598-8194f22c24e1 --hw-revision Rev 3 --hardware-profile "{hardware-type:Cisco_UCS,azure-bare-metal-instance-size:S72}"
+        az baremetalinstance create --resource-group myResourceGroup --instance-name myBMIInstance --location westus --sku S72
     """
 
     _aaz_info = {
@@ -56,6 +56,22 @@ class Create(AAZCommand):
             required=True,
         )
 
+        # define Arg Group "HardwareProfile"
+
+        _args_schema = cls._args_schema
+        _args_schema.azure_bare_metal_instance_size = AAZStrArg(
+            options=["--sku", "--azure-bare-metal-instance-size"],
+            arg_group="HardwareProfile",
+            help="Specifies the Azure Bare Metal Instance SKU.",
+            enum={"S112": "S112", "S144": "S144", "S144m": "S144m", "S192": "S192", "S192m": "S192m", "S192xm": "S192xm", "S224": "S224", "S224m": "S224m", "S224om": "S224om", "S224oo": "S224oo", "S224oom": "S224oom", "S224ooo": "S224ooo", "S384": "S384", "S384m": "S384m", "S384xm": "S384xm", "S384xxm": "S384xxm", "S448": "S448", "S448m": "S448m", "S448om": "S448om", "S448oo": "S448oo", "S448oom": "S448oom", "S448ooo": "S448ooo", "S448se": "S448se", "S576m": "S576m", "S576xm": "S576xm", "S672": "S672", "S672m": "S672m", "S672om": "S672om", "S672oo": "S672oo", "S672oom": "S672oom", "S672ooo": "S672ooo", "S72": "S72", "S72m": "S72m", "S768": "S768", "S768m": "S768m", "S768xm": "S768xm", "S896": "S896", "S896m": "S896m", "S896om": "S896om", "S896oo": "S896oo", "S896oom": "S896oom", "S896ooo": "S896ooo", "S96": "S96", "S960m": "S960m"},
+        )
+        _args_schema.hardware_type = AAZStrArg(
+            options=["--hardware-type"],
+            arg_group="HardwareProfile",
+            help="Name of the hardware type (vendor and/or their product name)",
+            enum={"Cisco_UCS": "Cisco_UCS", "HPE": "HPE", "SDFLEX": "SDFLEX"},
+        )
+
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
@@ -63,11 +79,6 @@ class Create(AAZCommand):
             options=["--bmi-id", "--instance-id"],
             arg_group="Properties",
             help="Specifies the Azure Bare Metal Instance unique ID.",
-        )
-        _args_schema.hardware_profile = AAZObjectArg(
-            options=["--hardware-profile"],
-            arg_group="Properties",
-            help="Specifies the hardware settings for the Azure Bare Metal Instance.",
         )
         _args_schema.hw_revision = AAZStrArg(
             options=["--hw-revision"],
@@ -84,11 +95,6 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Specifies the operating system settings for the Azure Bare Metal Instance.",
         )
-        _args_schema.partner_node_id = AAZStrArg(
-            options=["--partner-node-id"],
-            arg_group="Properties",
-            help="ARM ID of another AzureBareMetalInstance that will share a network with this AzureBareMetalInstance",
-        )
         _args_schema.power_state = AAZStrArg(
             options=["--power-state"],
             arg_group="Properties",
@@ -104,18 +110,6 @@ class Create(AAZCommand):
             options=["--storage-profile"],
             arg_group="Properties",
             help="Specifies the storage settings for the Azure Bare Metal Instance disks.",
-        )
-
-        hardware_profile = cls._args_schema.hardware_profile
-        hardware_profile.azure_bare_metal_instance_size = AAZStrArg(
-            options=["azure-bare-metal-instance-size"],
-            help="Specifies the Azure Bare Metal Instance SKU.",
-            enum={"S112": "S112", "S144": "S144", "S144m": "S144m", "S192": "S192", "S192m": "S192m", "S192xm": "S192xm", "S224": "S224", "S224m": "S224m", "S224om": "S224om", "S224oo": "S224oo", "S224oom": "S224oom", "S224ooo": "S224ooo", "S384": "S384", "S384m": "S384m", "S384xm": "S384xm", "S384xxm": "S384xxm", "S448": "S448", "S448m": "S448m", "S448om": "S448om", "S448oo": "S448oo", "S448oom": "S448oom", "S448ooo": "S448ooo", "S448se": "S448se", "S576m": "S576m", "S576xm": "S576xm", "S672": "S672", "S672m": "S672m", "S672om": "S672om", "S672oo": "S672oo", "S672oom": "S672oom", "S672ooo": "S672ooo", "S72": "S72", "S72m": "S72m", "S768": "S768", "S768m": "S768m", "S768xm": "S768xm", "S896": "S896", "S896m": "S896m", "S896om": "S896om", "S896oo": "S896oo", "S896oom": "S896oom", "S896ooo": "S896ooo", "S96": "S96", "S960m": "S960m"},
-        )
-        hardware_profile.hardware_type = AAZStrArg(
-            options=["hardware-type"],
-            help="Name of the hardware type (vendor and/or their product name)",
-            enum={"Cisco_UCS": "Cisco_UCS", "HPE": "HPE", "SDFLEX": "SDFLEX"},
         )
 
         network_profile = cls._args_schema.network_profile
@@ -296,11 +290,10 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("azureBareMetalInstanceId", AAZStrType, ".instance_id")
-                properties.set_prop("hardwareProfile", AAZObjectType, ".hardware_profile")
+                properties.set_prop("hardwareProfile", AAZObjectType)
                 properties.set_prop("hwRevision", AAZStrType, ".hw_revision")
                 properties.set_prop("networkProfile", AAZObjectType, ".network_profile")
                 properties.set_prop("osProfile", AAZObjectType, ".os_profile")
-                properties.set_prop("partnerNodeId", AAZStrType, ".partner_node_id")
                 properties.set_prop("powerState", AAZStrType, ".power_state")
                 properties.set_prop("proximityPlacementGroup", AAZStrType, ".proximity_placement_group")
                 properties.set_prop("storageProfile", AAZObjectType, ".storage_profile")

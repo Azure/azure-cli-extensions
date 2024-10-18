@@ -18,8 +18,8 @@ class Create(AAZCommand):
     """Create an Azure Large Storage Instance for the specified subscription,
 resource group, and instance name.
 
-    :example: AzureLargeStorageInstance_Create
-        az large-storage-instance create -g myResourceGroup -n myAzureLargeStorageInstance -l westus2 --tags "{key:value}" --instance-id 23415635-4d7e-41dc-9598-8194f22c24e9 --storage-properties "{offering-type:EPIC,storage-type:FC,generation:Gen4,hardware-type:NetApp,workload-type:ODB,storage-billing-properties:{billing-mode:PAYG,sku:}}"
+    :example: Create an Azure Large Storage Instance
+        az large-storage-instance create -g myResourceGroup -n myAzureLargeStorageInstance -l westus2 --sku S72
     """
 
     _aaz_info = {
@@ -65,48 +65,6 @@ resource group, and instance name.
             arg_group="Properties",
             help="Specifies the AzureLargeStorageInstance unique ID.",
         )
-        _args_schema.storage_properties = AAZObjectArg(
-            options=["--storage-properties"],
-            arg_group="Properties",
-            help="Specifies the storage properties for the AzureLargeStorage instance.",
-        )
-
-        storage_properties = cls._args_schema.storage_properties
-        storage_properties.generation = AAZStrArg(
-            options=["generation"],
-            help="the kind of storage instance",
-        )
-        storage_properties.hardware_type = AAZStrArg(
-            options=["hardware-type"],
-            help="the hardware type of the storage instance",
-            enum={"Cisco_UCS": "Cisco_UCS", "HPE": "HPE", "SDFLEX": "SDFLEX"},
-        )
-        storage_properties.offering_type = AAZStrArg(
-            options=["offering-type"],
-            help="the offering type for which the resource is getting provisioned",
-        )
-        storage_properties.storage_billing_properties = AAZObjectArg(
-            options=["storage-billing-properties"],
-            help="the billing related information for the resource",
-        )
-        storage_properties.storage_type = AAZStrArg(
-            options=["storage-type"],
-            help="the storage protocol for which the resource is getting provisioned",
-        )
-        storage_properties.workload_type = AAZStrArg(
-            options=["workload-type"],
-            help="the workload for which the resource is getting provisioned",
-        )
-
-        storage_billing_properties = cls._args_schema.storage_properties.storage_billing_properties
-        storage_billing_properties.billing_mode = AAZStrArg(
-            options=["billing-mode"],
-            help="the billing mode for the storage instance",
-        )
-        storage_billing_properties.sku = AAZStrArg(
-            options=["sku"],
-            help="the SKU type that is provisioned",
-        )
 
         # define Arg Group "Resource"
 
@@ -150,6 +108,46 @@ resource group, and instance name.
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
+
+        # define Arg Group "StorageProperties"
+
+        _args_schema = cls._args_schema
+        _args_schema.generation = AAZStrArg(
+            options=["--generation"],
+            arg_group="StorageProperties",
+            help="the kind of storage instance",
+        )
+        _args_schema.hardware_type = AAZStrArg(
+            options=["--hardware-type"],
+            arg_group="StorageProperties",
+            help="the hardware type of the storage instance",
+            enum={"Cisco_UCS": "Cisco_UCS", "HPE": "HPE", "SDFLEX": "SDFLEX"},
+        )
+        _args_schema.offering_type = AAZStrArg(
+            options=["--offering-type"],
+            arg_group="StorageProperties",
+            help="the offering type for which the resource is getting provisioned",
+        )
+        _args_schema.billing_mode = AAZStrArg(
+            options=["--billing-mode"],
+            arg_group="StorageProperties",
+            help="the billing mode for the storage instance",
+        )
+        _args_schema.azure_large_storage_instance_size = AAZStrArg(
+            options=["--sku", "--azure-large-storage-instance-size"],
+            arg_group="StorageProperties",
+            help="the SKU type that is provisioned",
+        )
+        _args_schema.storage_type = AAZStrArg(
+            options=["--storage-type"],
+            arg_group="StorageProperties",
+            help="the storage protocol for which the resource is getting provisioned",
+        )
+        _args_schema.workload_type = AAZStrArg(
+            options=["--workload-type"],
+            arg_group="StorageProperties",
+            help="the workload for which the resource is getting provisioned",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -259,21 +257,21 @@ resource group, and instance name.
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("azureLargeStorageInstanceUniqueIdentifier", AAZStrType, ".instance_id")
-                properties.set_prop("storageProperties", AAZObjectType, ".storage_properties")
+                properties.set_prop("storageProperties", AAZObjectType)
 
             storage_properties = _builder.get(".properties.storageProperties")
             if storage_properties is not None:
                 storage_properties.set_prop("generation", AAZStrType, ".generation")
                 storage_properties.set_prop("hardwareType", AAZStrType, ".hardware_type")
                 storage_properties.set_prop("offeringType", AAZStrType, ".offering_type")
-                storage_properties.set_prop("storageBillingProperties", AAZObjectType, ".storage_billing_properties")
+                storage_properties.set_prop("storageBillingProperties", AAZObjectType)
                 storage_properties.set_prop("storageType", AAZStrType, ".storage_type")
                 storage_properties.set_prop("workloadType", AAZStrType, ".workload_type")
 
             storage_billing_properties = _builder.get(".properties.storageProperties.storageBillingProperties")
             if storage_billing_properties is not None:
                 storage_billing_properties.set_prop("billingMode", AAZStrType, ".billing_mode")
-                storage_billing_properties.set_prop("sku", AAZStrType, ".sku")
+                storage_billing_properties.set_prop("sku", AAZStrType, ".azure_large_storage_instance_size")
 
             tags = _builder.get(".tags")
             if tags is not None:

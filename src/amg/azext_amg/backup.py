@@ -160,6 +160,7 @@ def _save_folders(grafana_url, backup_dir, timestamp, http_headers, **kwargs):
     log_file_path = folder_path + '/' + log_file
     with open(log_file_path, 'w+', encoding="utf8") as f:
         for folder_set in folders:
+            # TODO: back up folder permissions
             folder_settings, _ = folder_set
             folder_uri = "uid/" + folder_settings['uid']
 

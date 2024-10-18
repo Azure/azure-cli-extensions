@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create an Azure Bare Metal Storage Instance for the specified subscription, resource group, and instance name.
 
     :example: Create a storage resource
-        az baremetalstorageinstance create -g myResourceGroup -n myAzureBareMetalStorageInstance --location westus2 --tags "{key:value}" --bmsi-id 23415635-4d7e-41dc-9598-8194f22c24e9 --storage-properties "{offering-type:EPIC,storage-type:FC,generation:Gen4,hardware-type:NetApp,workload-type:ODB,storage-billing-properties:{billing-mode:PAYG,azure-bare-metal-storage-instance-size:}}"
+        az baremetalstorageinstance create -g myResourceGroup -n myAzureBareMetalStorageInstance --location westus2 --sku S72
     """
 
     _aaz_info = {
@@ -64,52 +64,6 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Specifies the AzureBareMetaStorageInstance unique ID.",
         )
-        _args_schema.storage_properties = AAZObjectArg(
-            options=["--storage-properties"],
-            arg_group="Properties",
-            help="Specifies the storage properties for the AzureBareMetalStorage instance.",
-        )
-
-        storage_properties = cls._args_schema.storage_properties
-        storage_properties.generation = AAZStrArg(
-            options=["generation"],
-            help="the kind of storage instance",
-        )
-        storage_properties.hardware_type = AAZStrArg(
-            options=["hardware-type"],
-            help="the hardware type of the storage instance",
-        )
-        storage_properties.offering_type = AAZStrArg(
-            options=["offering-type"],
-            help="the offering type for which the resource is getting provisioned",
-        )
-        storage_properties.provisioning_state = AAZStrArg(
-            options=["provisioning-state"],
-            help="State of provisioning of the AzureBareMetalStorageInstance",
-            enum={"Accepted": "Accepted", "Canceled": "Canceled", "Creating": "Creating", "Deleting": "Deleting", "Failed": "Failed", "Migrating": "Migrating", "Succeeded": "Succeeded", "Updating": "Updating"},
-        )
-        storage_properties.storage_billing_properties = AAZObjectArg(
-            options=["storage-billing-properties"],
-            help="the billing related information for the resource",
-        )
-        storage_properties.storage_type = AAZStrArg(
-            options=["storage-type"],
-            help="the storage protocol for which the resource is getting provisioned",
-        )
-        storage_properties.workload_type = AAZStrArg(
-            options=["workload-type"],
-            help="the workload for which the resource is getting provisioned",
-        )
-
-        storage_billing_properties = cls._args_schema.storage_properties.storage_billing_properties
-        storage_billing_properties.azure_bare_metal_storage_instance_size = AAZStrArg(
-            options=["azure-bare-metal-storage-instance-size"],
-            help="the SKU type that is provisioned",
-        )
-        storage_billing_properties.billing_mode = AAZStrArg(
-            options=["billing-mode"],
-            help="the billing mode for the storage instance",
-        )
 
         # define Arg Group "RequestBodyParameters"
 
@@ -142,6 +96,55 @@ class Create(AAZCommand):
 
         tags = cls._args_schema.tags
         tags.Element = AAZStrArg()
+
+        # define Arg Group "StorageBillingProperties"
+
+        _args_schema = cls._args_schema
+        _args_schema.azure_bare_metal_storage_instance_size = AAZStrArg(
+            options=["--sku", "--azure-bare-metal-storage-instance-size"],
+            arg_group="StorageBillingProperties",
+            help="the SKU type that is provisioned",
+        )
+        _args_schema.billing_mode = AAZStrArg(
+            options=["--billing-mode"],
+            arg_group="StorageBillingProperties",
+            help="the billing mode for the storage instance",
+        )
+
+        # define Arg Group "StorageProperties"
+
+        _args_schema = cls._args_schema
+        _args_schema.generation = AAZStrArg(
+            options=["--generation"],
+            arg_group="StorageProperties",
+            help="the kind of storage instance",
+        )
+        _args_schema.hardware_type = AAZStrArg(
+            options=["--hardware-type"],
+            arg_group="StorageProperties",
+            help="the hardware type of the storage instance",
+        )
+        _args_schema.offering_type = AAZStrArg(
+            options=["--offering-type"],
+            arg_group="StorageProperties",
+            help="the offering type for which the resource is getting provisioned",
+        )
+        _args_schema.provisioning_state = AAZStrArg(
+            options=["--provisioning-state"],
+            arg_group="StorageProperties",
+            help="State of provisioning of the AzureBareMetalStorageInstance",
+            enum={"Accepted": "Accepted", "Canceled": "Canceled", "Creating": "Creating", "Deleting": "Deleting", "Failed": "Failed", "Migrating": "Migrating", "Succeeded": "Succeeded", "Updating": "Updating"},
+        )
+        _args_schema.storage_type = AAZStrArg(
+            options=["--storage-type"],
+            arg_group="StorageProperties",
+            help="the storage protocol for which the resource is getting provisioned",
+        )
+        _args_schema.workload_type = AAZStrArg(
+            options=["--workload-type"],
+            arg_group="StorageProperties",
+            help="the workload for which the resource is getting provisioned",
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -246,7 +249,7 @@ class Create(AAZCommand):
             properties = _builder.get(".properties")
             if properties is not None:
                 properties.set_prop("azureBareMetalStorageInstanceUniqueIdentifier", AAZStrType, ".instance_id")
-                properties.set_prop("storageProperties", AAZObjectType, ".storage_properties")
+                properties.set_prop("storageProperties", AAZObjectType)
 
             storage_properties = _builder.get(".properties.storageProperties")
             if storage_properties is not None:
@@ -254,7 +257,7 @@ class Create(AAZCommand):
                 storage_properties.set_prop("hardwareType", AAZStrType, ".hardware_type")
                 storage_properties.set_prop("offeringType", AAZStrType, ".offering_type")
                 storage_properties.set_prop("provisioningState", AAZStrType, ".provisioning_state")
-                storage_properties.set_prop("storageBillingProperties", AAZObjectType, ".storage_billing_properties")
+                storage_properties.set_prop("storageBillingProperties", AAZObjectType)
                 storage_properties.set_prop("storageType", AAZStrType, ".storage_type")
                 storage_properties.set_prop("workloadType", AAZStrType, ".workload_type")
 

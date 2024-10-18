@@ -193,11 +193,15 @@ class Wait(AAZWaitCommand):
             properties.enqueue_server_properties = AAZObjectType(
                 serialized_name="enqueueServerProperties",
             )
-            properties.errors = AAZObjectType()
+            properties.errors = AAZObjectType(
+                flags={"read_only": True},
+            )
             properties.gateway_server_properties = AAZObjectType(
                 serialized_name="gatewayServerProperties",
             )
-            properties.health = AAZStrType()
+            properties.health = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.instance_no = AAZStrType(
                 serialized_name="instanceNo",
                 flags={"read_only": True},
@@ -214,6 +218,7 @@ class Wait(AAZWaitCommand):
             )
             properties.load_balancer_details = AAZObjectType(
                 serialized_name="loadBalancerDetails",
+                flags={"read_only": True},
             )
             properties.message_server_properties = AAZObjectType(
                 serialized_name="messageServerProperties",
@@ -222,7 +227,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            properties.status = AAZStrType()
+            properties.status = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.subnet = AAZStrType(
                 flags={"read_only": True},
             )
@@ -236,7 +243,9 @@ class Wait(AAZWaitCommand):
                 serialized_name="ersVersion",
                 flags={"read_only": True},
             )
-            enqueue_replication_server_properties.health = AAZStrType()
+            enqueue_replication_server_properties.health = AAZStrType(
+                flags={"read_only": True},
+            )
             enqueue_replication_server_properties.hostname = AAZStrType(
                 flags={"read_only": True},
             )
@@ -258,7 +267,9 @@ class Wait(AAZWaitCommand):
             )
 
             enqueue_server_properties = cls._schema_on_200.properties.enqueue_server_properties
-            enqueue_server_properties.health = AAZStrType()
+            enqueue_server_properties.health = AAZStrType(
+                flags={"read_only": True},
+            )
             enqueue_server_properties.hostname = AAZStrType(
                 flags={"read_only": True},
             )
@@ -276,7 +287,9 @@ class Wait(AAZWaitCommand):
             _WaitHelper._build_schema_error_definition_read(errors.properties)
 
             gateway_server_properties = cls._schema_on_200.properties.gateway_server_properties
-            gateway_server_properties.health = AAZStrType()
+            gateway_server_properties.health = AAZStrType(
+                flags={"read_only": True},
+            )
             gateway_server_properties.port = AAZIntType(
                 nullable=True,
                 flags={"read_only": True},
@@ -288,7 +301,9 @@ class Wait(AAZWaitCommand):
             )
 
             message_server_properties = cls._schema_on_200.properties.message_server_properties
-            message_server_properties.health = AAZStrType()
+            message_server_properties.health = AAZStrType(
+                flags={"read_only": True},
+            )
             message_server_properties.hostname = AAZStrType(
                 flags={"read_only": True},
             )

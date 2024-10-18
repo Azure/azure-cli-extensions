@@ -22,9 +22,9 @@ class Create(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-02-01-preview",
+        "version": "2024-06-15-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/tagrules/{}", "2023-02-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.elastic/monitors/{}/tagrules/{}", "2024-06-15-preview"],
         ]
     }
 
@@ -48,6 +48,9 @@ class Create(AAZCommand):
             options=["--monitor-name"],
             help="Monitor resource name",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -56,6 +59,9 @@ class Create(AAZCommand):
             options=["-n", "--name", "--rule-set-name"],
             help="Tag Rule Set resource name",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^.*$",
+            ),
         )
 
         # define Arg Group "Properties"
@@ -173,7 +179,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01-preview",
+                    "api-version", "2024-06-15-preview",
                     required=True,
                 ),
             }
@@ -262,6 +268,7 @@ class Create(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
 
             log_rules = cls._schema_on_200.properties.log_rules

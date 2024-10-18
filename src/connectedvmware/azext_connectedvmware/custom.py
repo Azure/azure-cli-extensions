@@ -6,6 +6,7 @@
 # pylint: disable= consider-using-dict-items, consider-using-f-string
 
 from collections import defaultdict
+import json
 from azure.cli.command_modules.acs._client_factory import get_resources_client
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import (
@@ -17,7 +18,7 @@ from azure.cli.core.azclierror import (
 )
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.core.exceptions import ResourceNotFoundError  # type: ignore
-from msrestazure.tools import is_valid_resource_id, parse_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from knack.prompting import prompt, prompt_y_n
 
 from .pwinput import pwinput
@@ -755,6 +756,11 @@ def list_vm_template(
 
 # region VirtualMachines
 
+# def get_inventory_id_from_name(
+#     cmd,
+#     client: VirtualMachineInstancesOperations,
+# )
+
 def get_hcrp_machine_id(
     cmd,
     resource_group_name,
@@ -961,6 +967,7 @@ def create_vm(
     host=None,
     datastore=None,
     inventory_item=None,
+    mo_name=None,
     admin_username=None,
     admin_password=None,
     num_CPUs=None,
@@ -986,6 +993,103 @@ def create_vm(
 
     inventory_item_id = None
     vcenter_id = None
+
+    # Both mo_name and inventory_item cannot be provided together.
+    if all([mo_name, inventory_item]):
+        raise MutuallyExclusiveArgumentError(
+            "both mo_name and inventory_item cannot be provided together."
+        )
+
+    if mo_name is not None:
+        # vcenter should be provided
+        if vcenter is None:
+            raise RequiredArgumentMissingError(
+                "Missing parameter, please provide vcenter name or id along with mo_name."
+            )
+        vcenter_id = get_resource_id(
+            cmd, resource_group_name, VMWARE_NAMESPACE, VCENTER_RESOURCE_TYPE, vcenter
+        )
+        assert vcenter_id is not None
+
+        # Use ARG to search for inventory item with mo_name
+        arg_client = cf_resource_graph(cmd.cli_ctx)
+
+        query = f"""
+ConnectedVMwareVsphereResources
+| where type =~ 'Microsoft.ConnectedVMwareVsphere/VCenters/InventoryItems'
+| where kind =~ 'VirtualMachine'
+| where id startswith '{vcenter_id}/InventoryItems'
+| extend p=parse_json(properties)
+| extend p=parse_json(properties)
+| extend moName = tolower(tostring(p['moName']))
+| extend moRefId = tolower(tostring(p['moRefId']))
+| where moName =~ '{mo_name}'
+| project id, moName, moRefId, props=p
+"""
+
+        query = " ".join(query.splitlines())
+        query_request = QueryRequest(
+            subscriptions=[get_subscription_id(cmd.cli_ctx)],
+            query=query,
+        )
+        query_response: QueryResponse = arg_client.resources(query_request)
+        vm_list = []
+        for vm in query_response.data:
+            vm_list.append(vm)
+        if len(vm_list) == 0:
+            raise ResourceNotFoundError(
+                f"Inventory item with mo_name '{mo_name}' not found in vCenter '{vcenter}'."
+            )
+        if len(vm_list) > 1:
+            # Ask user to select one of the inventory items.
+            # print the json of the inventory items and ask user to select one.
+            logger = get_logger(__name__)
+            for i, vm in enumerate(vm_list):
+                logger.warning(
+                    "[%s] %s \n%s",
+                    i + 1, vm["id"], json.dumps(vm["props"], indent=2)
+                )
+            logger.warning(
+                "Multiple inventory items found with mo_name '%s' in vCenter '%s'. "
+                "Please check the logs above for the properties of the inventory items.",
+                mo_name, vcenter
+            )
+            selected = prompt_y_n(
+                "Do you want to select one of the inventory items to proceed?"
+            )
+            if not selected:
+                raise InvalidArgumentValueError(
+                    "Please provide a unique mo_name or inventory_item id. "
+                    "Multiple inventory items found with the same mo_name, and no selection was made."
+                )
+            # print just the inventory item id in a list and ask user to select one.
+            for i, vm in enumerate(vm_list):
+                logger.warning(
+                    "[%s] %s",
+                    i + 1, vm["id"]
+                )
+            selected = prompt(
+                f"Select one of the inventory items by entering the index between 1 and {len(vm_list)}: "
+            )
+            try:
+                while True:
+                    selected = int(selected.strip())
+                    if 1 <= selected <= len(vm_list):
+                        logger.warning(
+                            "You selected: %s",
+                            vm_list[selected - 1]["id"]
+                        )
+                        break
+                    selected = prompt(
+                        f"Invalid index. Please enter a valid index between 1 and {len(vm_list)}: "
+                    )
+            except ValueError:
+                raise InvalidArgumentValueError(
+                    "Invalid input. Please provide a valid index."
+                )
+            inventory_item = vm_list[selected - 1]["id"]
+        else:
+            inventory_item = vm_list[0]["id"]
 
     if inventory_item is not None:
         inventory_item_id = get_resource_id(

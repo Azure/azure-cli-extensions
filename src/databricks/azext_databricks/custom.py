@@ -36,22 +36,22 @@ class DatabricksWorkspaceCreate(_DatabricksWorkspaceCreate):
         return args_schema
 
     def pre_operations(self):
-        from msrestazure.tools import is_valid_resource_id, resource_id
+        from azure.mgmt.core.tools import is_valid_resource_id, resource_id
         # """Parse managed resource_group which can be either resource group name or id, generate a randomized name if not provided"""
         args = self.ctx.args
         subscription_id = self.ctx.subscription_id
         workspace_name = args.name.to_serialized_data()
         if has_value(args.managed_resource_group):
             managed_resource_group = args.managed_resource_group.to_serialized_data()
+            if not is_valid_resource_id(managed_resource_group):
+                args.managed_resource_group = resource_id(
+                    subscription=subscription_id,
+                    resource_group=managed_resource_group)
 
         if not has_value(args.managed_resource_group):
             args.managed_resource_group = resource_id(
                 subscription=subscription_id,
                 resource_group='databricks-rg-' + workspace_name + '-' + id_generator())
-        elif not is_valid_resource_id(managed_resource_group):
-            args.managed_resource_group = resource_id(
-                subscription=subscription_id,
-                resource_group=managed_resource_group)
 
         if has_value(args.disk_key_name):
             args.disk_key_source = 'Microsoft.Keyvault'

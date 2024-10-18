@@ -17,7 +17,7 @@ except ImportError:
 # This version should match the latest entry in HISTORY.rst
 # Also, when updating this, please review the version used by the extension to
 # submit requests, which can be found at './azext_quantum/__init__.py'
-VERSION = '1.0.0b3'
+VERSION = '1.0.0b4'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -31,10 +31,6 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
     'License :: OSI Approved :: MIT License',
-]
-
-DEPENDENCIES = [
-    'azure-storage-blob~=12.14.1'
 ]
 
 with open('README.rst', 'r', encoding='utf-8') as f:
@@ -53,6 +49,5 @@ setup(
     license='MIT',
     classifiers=CLASSIFIERS,
     packages=find_packages(),
-    install_requires=DEPENDENCIES,
     package_data={'azext_quantum': ['azext_metadata.json', 'operations/templates/create-workspace-and-assign-role.json']},
 )

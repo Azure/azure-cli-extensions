@@ -57,6 +57,8 @@ def load_command_table(self, _):
         g.command('delete', 'webpubsub_delete')
         g.command('list', 'webpubsub_list')
         g.show_command('show', 'webpubsub_show', exception_handler=empty_on_404)
+        g.command('start', 'webpubsub_start', exception_handler=empty_on_404)
+        g.command('stop', 'webpubsub_stop', exception_handler=empty_on_404)
         g.command('restart', 'webpubsub_restart', exception_handler=empty_on_404)
         g.generic_update_command('update', getter_name='webpubsub_get',
                                  setter_name='webpubsub_set',
@@ -71,6 +73,10 @@ def load_command_table(self, _):
     with self.command_group('webpubsub network-rule', webpubsub_network_utils) as g:
         g.show_command('show', 'list_network_rules')
         g.command('update', 'update_network_rules')
+
+    with self.command_group('webpubsub network-rule ip-rule', webpubsub_network_utils) as g:
+        g.command('add', 'add_ip_rule')
+        g.command('remove', 'remove_ip_rule')
 
     with self.command_group('webpubsub hub', webpubsub_hub_utils) as g:
         g.command('delete', 'hub_delete')
@@ -110,4 +116,7 @@ def load_command_table(self, _):
         g.command('create', 'webpubsub_replica_create')
         g.command('list', 'webpubsub_replica_list')
         g.show_command('show', 'webpubsub_replica_show', exception_handler=empty_on_404)
+        g.command('start', 'webpubsub_replica_start', exception_handler=empty_on_404)
+        g.command('stop', 'webpubsub_replica_stop', exception_handler=empty_on_404)
+        g.command('restart', 'webpubsub_replica_restart', exception_handler=empty_on_404)
         g.show_command('delete', 'webpubsub_replica_delete')

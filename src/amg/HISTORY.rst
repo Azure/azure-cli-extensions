@@ -92,3 +92,17 @@ Release History
 2.2.0
 ++++++
 * `az grafana list-available-plugin`: list all available plugins available for installation
+
+2.3.0
+++++++
+* `az grafana private-endpoint-connection`: support private endpoint connection management
+* `az grafana mpe`: support managed private endpoint management
+
+2.3.1
+++++++
+* `az grafana migrate`: fix issue with remapping logic for Grafana datasources with short uids
+
+2.4.0
+++++++
+* `az grafana sync`: fix issues with syncing empty dashboards from Grafana 9 and syncing dashboards with collapsed rows
+* `az grafana backup`: support skipping Grafana folder permissions argument

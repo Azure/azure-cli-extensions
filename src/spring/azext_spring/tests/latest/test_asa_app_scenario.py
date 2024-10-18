@@ -219,7 +219,10 @@ class AppCRUD(ScenarioTest):
         ])
 
     @SpringResourceGroupPreparer(dev_setting_name=SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['resource_group_name'])
-    @SpringPreparer(**SpringTestEnvironmentEnum.ENTERPRISE_WITH_TANZU['spring'])
+    @SpringPreparer(dev_setting_name="AZURE_CLI_TEST_DEV_SPRING_NAME_TANZU",
+                    additional_params="--sku Enterprise --disable-app-insights --enable-application-configuration-service \
+                              --enable-service-registry --enable-gateway --enable-api-portal \
+                              --enable-application-live-view  --enable-application-accelerator --enable-config-server")
     @SpringAppNamePreparer()
     def test_app_create_binding_tanzu_components(self, resource_group, spring, app):
         self.kwargs.update({
