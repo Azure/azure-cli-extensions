@@ -2155,10 +2155,13 @@ def aks_enable_addons(
             if addon == CONST_MONITORING_ADDON_NAME:
                 is_monitoring_addon = True
                 break
+
+    monitoring_addon_enabled = is_monitoring_addon and CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
+        CONST_MONITORING_ADDON_NAME].enabled
+
+    logger.warning("monitoring addon: %s", monitoring_addon_enabled)
     if (
-        is_monitoring_addon and
-        CONST_MONITORING_ADDON_NAME in instance.addon_profiles and
-        instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
+       monitoring_addon_enabled
     ):
         if (
             CONST_MONITORING_USING_AAD_MSI_AUTH in
@@ -2211,8 +2214,6 @@ def aks_enable_addons(
                 aad_route=False,
             )
 
-    monitoring = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
-        CONST_MONITORING_ADDON_NAME].enabled
     ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
         CONST_INGRESS_APPGW_ADDON_NAME].enabled
 
@@ -2221,7 +2222,7 @@ def aks_enable_addons(
     if CONST_VIRTUAL_NODE_ADDON_NAME + os_type in instance.addon_profiles:
         enable_virtual_node = True
 
-    need_post_creation_role_assignment = monitoring or ingress_appgw_addon_enabled or enable_virtual_node
+    need_post_creation_role_assignment = monitoring_addon_enabled or ingress_appgw_addon_enabled or enable_virtual_node
     if need_post_creation_role_assignment:
         # adding a wait here since we rely on the result for role assignment
         result = LongRunningOperation(cmd.cli_ctx)(
