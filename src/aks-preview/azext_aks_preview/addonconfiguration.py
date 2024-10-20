@@ -108,8 +108,19 @@ def enable_addons(
         dns_zone_resource_ids=dns_zone_resource_ids
     )
 
-    if CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
-       CONST_MONITORING_ADDON_NAME].enabled:
+    is_monitoring_addon = False
+    addon_args = addons.split(',')
+    for addon_arg in addon_args:
+        if addon_arg in ADDONS:
+            addon = ADDONS[addon_arg]
+            if addon == CONST_MONITORING_ADDON_NAME:
+                is_monitoring_addon = True
+                break
+
+    monitoring_addon_enabled = is_monitoring_addon and CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
+        CONST_MONITORING_ADDON_NAME].enabled
+
+    if monitoring_addon_enabled:
         if CONST_MONITORING_USING_AAD_MSI_AUTH in instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config and \
                 str(instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config[
                     CONST_MONITORING_USING_AAD_MSI_AUTH]).lower() == 'true':
@@ -152,8 +163,6 @@ def enable_addons(
                 data_collection_settings=data_collection_settings
             )
 
-    monitoring_addon_enabled = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
-        CONST_MONITORING_ADDON_NAME].enabled
     ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
         CONST_INGRESS_APPGW_ADDON_NAME].enabled
 
