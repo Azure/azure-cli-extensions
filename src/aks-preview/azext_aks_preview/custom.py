@@ -128,7 +128,7 @@ from six.moves.urllib.error import URLError
 from six.moves.urllib.request import urlopen
 
 from azext_aks_preview._helpers import (
-    is_monitoring_addon_enabled,
+    check_is_monitoring_addon_enabled,
 )
 
 logger = get_logger(__name__)
@@ -2151,9 +2151,9 @@ def aks_enable_addons(
         dns_zone_resource_ids=dns_zone_resource_ids,
     )
 
-    monitoring_addon_enabled = is_monitoring_addon_enabled(addons, instance)
+    is_monitoring_addon_enabled = check_is_monitoring_addon_enabled(addons, instance)
     if (
-       monitoring_addon_enabled
+        is_monitoring_addon_enabled
     ):
         if (
             CONST_MONITORING_USING_AAD_MSI_AUTH in

@@ -15,7 +15,7 @@ from azure.cli.command_modules.acs.addonconfiguration import (
     ensure_default_log_analytics_workspace_for_monitoring
 )
 from azext_aks_preview._helpers import (
-    is_monitoring_addon_enabled,
+    check_is_monitoring_addon_enabled,
 )
 
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
@@ -112,7 +112,7 @@ def enable_addons(
         dns_zone_resource_ids=dns_zone_resource_ids
     )
 
-    monitoring_addon_enabled = is_monitoring_addon_enabled(addons, instance)
+    monitoring_addon_enabled = check_is_monitoring_addon_enabled(addons, instance)
 
     if monitoring_addon_enabled:
         if CONST_MONITORING_USING_AAD_MSI_AUTH in instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config and \

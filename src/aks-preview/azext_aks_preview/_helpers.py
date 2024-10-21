@@ -354,8 +354,9 @@ def check_is_azure_cli_core_editable_installed():
     return False
 
 
-def is_monitoring_addon_enabled(addons, instance):
-        is_monitoring_addon = False
+def check_is_monitoring_addon_enabled(addons, instance):
+    is_monitoring_addon_enabled = False
+    try:
         addon_args = addons.split(',')
         for addon_arg in addon_args:
             if addon_arg in ADDONS:
@@ -363,7 +364,9 @@ def is_monitoring_addon_enabled(addons, instance):
                 if addon == CONST_MONITORING_ADDON_NAME:
                     is_monitoring_addon = True
                     break
-
         addon_profiles = instance.addon_profiles or {}
-        return is_monitoring_addon and CONST_MONITORING_ADDON_NAME in addon_profiles and addon_profiles[
-            CONST_MONITORING_ADDON_NAME].enabled
+        is_monitoring_addon_enabled = is_monitoring_addon and CONST_MONITORING_ADDON_NAME in addon_profiles and addon_profiles[
+                CONST_MONITORING_ADDON_NAME].enabled
+    except Exception as ex:  # pylint: disable=broad-except
+        logger.debug("failed to check monitoring addon enabled: %s", ex)
+    return is_monitoring_addon_enabled
