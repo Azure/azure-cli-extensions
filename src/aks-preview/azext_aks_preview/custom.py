@@ -127,6 +127,10 @@ from knack.util import CLIError
 from six.moves.urllib.error import URLError
 from six.moves.urllib.request import urlopen
 
+from azext_aks_preview._helpers import (
+  is_monitoring_addon_enabled,
+)
+
 logger = get_logger(__name__)
 
 
@@ -2460,21 +2464,6 @@ def get_aks_custom_headers(aks_custom_headers=None):
                     raise CLIError('custom headers format is incorrect')
                 headers[parts[0]] = parts[1]
     return headers
-
-
-def is_monitoring_addon_enabled(addons, instance):
-        is_monitoring_addon = False
-        addon_args = addons.split(',')
-        for addon_arg in addon_args:
-            if addon_arg in ADDONS:
-                addon = ADDONS[addon_arg]
-                if addon == CONST_MONITORING_ADDON_NAME:
-                    is_monitoring_addon = True
-                    break
-
-        addon_profiles = instance.addon_profiles or {}
-        return is_monitoring_addon and CONST_MONITORING_ADDON_NAME in addon_profiles and addon_profiles[
-            CONST_MONITORING_ADDON_NAME].enabled
 
 
 def aks_draft_create(destination='.',

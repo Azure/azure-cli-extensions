@@ -14,6 +14,10 @@ from azure.cli.command_modules.acs.addonconfiguration import (
     sanitize_loganalytics_ws_resource_id,
     ensure_default_log_analytics_workspace_for_monitoring
 )
+from azext_aks_preview._helpers import (
+    is_monitoring_addon_enabled,
+)
+
 from azext_aks_preview._client_factory import CUSTOM_MGMT_AKS_PREVIEW
 from azext_aks_preview._roleassignments import add_role_assignment
 from azext_aks_preview._consts import (
@@ -494,18 +498,3 @@ def add_virtual_node_role_assignment(cmd, result, vnet_subnet_id):
     else:
         logger.warning('Could not find service principal or user assigned MSI for role'
                        'assignment')
-
-
-def is_monitoring_addon_enabled(addons, instance):
-        is_monitoring_addon = False
-        addon_args = addons.split(',')
-        for addon_arg in addon_args:
-            if addon_arg in ADDONS:
-                addon = ADDONS[addon_arg]
-                if addon == CONST_MONITORING_ADDON_NAME:
-                    is_monitoring_addon = True
-                    break
-
-        addon_profiles = instance.addon_profiles or {}
-        return is_monitoring_addon and CONST_MONITORING_ADDON_NAME in addon_profiles and addon_profiles[
-            CONST_MONITORING_ADDON_NAME].enabled
