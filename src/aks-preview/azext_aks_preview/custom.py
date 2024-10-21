@@ -64,6 +64,7 @@ from azext_aks_preview._helpers import (
     get_nodepool_snapshot_by_snapshot_id,
     print_or_merge_credentials,
     process_message_for_run_command,
+    check_is_monitoring_addon_enabled,
 )
 from azext_aks_preview._podidentity import (
     _ensure_managed_identity_operator_permission,
@@ -126,10 +127,6 @@ from knack.prompting import prompt_y_n
 from knack.util import CLIError
 from six.moves.urllib.error import URLError
 from six.moves.urllib.request import urlopen
-
-from azext_aks_preview._helpers import (
-    check_is_monitoring_addon_enabled,
-)
 
 logger = get_logger(__name__)
 
@@ -2214,7 +2211,11 @@ def aks_enable_addons(
     if CONST_VIRTUAL_NODE_ADDON_NAME + os_type in instance.addon_profiles:
         enable_virtual_node = True
 
-    need_post_creation_role_assignment = is_monitoring_addon_enabled or ingress_appgw_addon_enabled or enable_virtual_node
+    need_post_creation_role_assignment = (
+        is_monitoring_addon_enabled or
+        ingress_appgw_addon_enabled or
+        enable_virtual_node
+    )
     if need_post_creation_role_assignment:
         # adding a wait here since we rely on the result for role assignment
         result = LongRunningOperation(cmd.cli_ctx)(
