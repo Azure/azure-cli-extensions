@@ -496,7 +496,6 @@ def add_virtual_node_role_assignment(cmd, result, vnet_subnet_id):
                        'assignment')
 
 
-
 def is_monitoring_addon_enabled(addons, instance):
         is_monitoring_addon = False
         addon_args = addons.split(',')
