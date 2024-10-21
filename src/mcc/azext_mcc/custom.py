@@ -438,9 +438,10 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                             err_msg = "ValidationError: Switching cache node auto update ring from \"Slow\" to \"Fast\", --auto-update-day, --auto-update-week, and --auto-update-time must be Undefined"
                             raise ValidationError(err_msg)
 
+
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZIntArg
+        from azure.cli.core.aaz import AAZIntArg, AAZStrArg
 
         args_schema = super()._build_arguments_schema(*args, **kwargs)
 
