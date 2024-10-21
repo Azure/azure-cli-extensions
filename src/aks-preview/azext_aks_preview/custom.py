@@ -2147,19 +2147,7 @@ def aks_enable_addons(
         dns_zone_resource_ids=dns_zone_resource_ids,
     )
 
-    is_monitoring_addon = False
-    addon_args = addons.split(',')
-    for addon_arg in addon_args:
-        if addon_arg in ADDONS:
-            addon = ADDONS[addon_arg]
-            if addon == CONST_MONITORING_ADDON_NAME:
-                is_monitoring_addon = True
-                break
-
-    monitoring_addon_enabled = is_monitoring_addon and CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
-        CONST_MONITORING_ADDON_NAME].enabled
-
-    logger.warning("monitoring addon: %s", monitoring_addon_enabled)
+    monitoring_addon_enabled = is_monitoring_addon_enabled(addons, instance)
     if (
        monitoring_addon_enabled
     ):
@@ -2473,6 +2461,18 @@ def get_aks_custom_headers(aks_custom_headers=None):
                 headers[parts[0]] = parts[1]
     return headers
 
+def is_monitoring_addon_enabled(addons, instance):
+        is_monitoring_addon = False
+        addon_args = addons.split(',')
+        for addon_arg in addon_args:
+            if addon_arg in ADDONS:
+                addon = ADDONS[addon_arg]
+                if addon == CONST_MONITORING_ADDON_NAME:
+                    is_monitoring_addon = True
+                    break
+
+        return is_monitoring_addon and CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
+            CONST_MONITORING_ADDON_NAME].enabled
 
 def aks_draft_create(destination='.',
                      app=None,
