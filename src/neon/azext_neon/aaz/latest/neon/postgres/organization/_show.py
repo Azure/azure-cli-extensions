@@ -19,7 +19,7 @@ class Show(AAZCommand):
     """Get a Neon Resource
 
     :example: Organizations_Get
-        az neon postgres organization show --resource-group demoResourceGroup --organization-name DemoOrg
+        az neon postgres organization show --subscription <subscription-id> --resource-group <resource-group-name> --name <organization-name>
     """
 
     _aaz_info = {

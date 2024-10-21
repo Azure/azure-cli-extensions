@@ -19,7 +19,7 @@ class List(AAZCommand):
     """List Neon resources by subscription ID
 
     :example: Organizations_ListBySubscription
-        az neon postgres organization list
+        az neon postgres organization list --subscription <subscription-id> --resource-group <resource-group-name>
     """
 
     _aaz_info = {
