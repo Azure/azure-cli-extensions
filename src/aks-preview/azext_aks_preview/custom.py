@@ -2461,6 +2461,7 @@ def get_aks_custom_headers(aks_custom_headers=None):
                 headers[parts[0]] = parts[1]
     return headers
 
+
 def is_monitoring_addon_enabled(addons, instance):
         is_monitoring_addon = False
         addon_args = addons.split(',')
@@ -2471,8 +2472,10 @@ def is_monitoring_addon_enabled(addons, instance):
                     is_monitoring_addon = True
                     break
 
-        return is_monitoring_addon and CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
+        addon_profiles = instance.addon_profiles or {}
+        return is_monitoring_addon and CONST_MONITORING_ADDON_NAME in addon_profiles and addon_profiles[
             CONST_MONITORING_ADDON_NAME].enabled
+
 
 def aks_draft_create(destination='.',
                      app=None,
