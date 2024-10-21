@@ -1,6 +1,18 @@
 
 Release History
 ===============
+1.1.1
+++++++
+Migrated VM Repair off of the `msrestazure` API to `azure.core` and `azure.mgmt` APIs.
+
+1.1.0
+++++++
+Added script for GT fixit button.
+Added support for `--disable-trusted-launch` flag parameter to set security type to `Standard` on the repair VM no matter what the source VM has.
+
+1.0.10
+++++++
+Added breaking change warning for the default image for Windows source VMs if the source VM image is not found in `az vm repair create`. It will change from a 2016 image to 2022 in November 2024.
 
 1.0.9
 ++++++

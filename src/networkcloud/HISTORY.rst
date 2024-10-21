@@ -3,6 +3,15 @@
 Release History
 ===============
 
+
+2.0.0b5
+++++++++
+* This version updates the baremetalmachine resource commands (run-command, run-read-command, and run-data-extract) to utilize a customer-provided Storage Account for storing command execution results.
+
+2.0.0b4
+++++++++
+* This beta version supports NetworkCloud 2024-07-01 APIs.
+
 2.0.0b3
 ++++++++
 * This beta version supports NetworkCloud 2024-06-01-preview APIs.
@@ -18,7 +27,7 @@ Release History
   * KubernetesClusters commands are enhanced to support additional upgrade settings `drainTimeout` and `maxUnavailable` for initial agent pools.
   * KubernetesClusters agentpool commands are enhanced to support additional upgrade settings `drainTimeout` and `maxUnavailable`.
 * This version requires a minimum of 2.61 Azure core CLI.
-  
+
 2.0.0b2
 ++++++++
 * Examples updated to include new property user-principal-name for baremetalmachinekeyset and bmckeyset create and update commands.

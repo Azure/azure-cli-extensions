@@ -17,8 +17,13 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create a SolutionConfiguration
 
+    For additional details, please visit the https://learn.microsoft.com/en-us/cli/azure/arc-multicloud?view=azure-cli-latest
+
     :example: SolutionConfigurations_CreateOrUpdate
-        az arc-multicloud solution-configuration create --connector-id ymuj --name keebwujt --solution-type nmtqllkyohwtsthxaimsye --solution-settings "{}"
+        az arc-multicloud solution-configuration create --connector-id /subscriptions/{}/resourceGroups/{}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{} --name mySolutionConfig --solution-type "Microsoft.AssetManagement" --solution-settings periodicSync="true" cloudProviderServiceTypes="ec2,s3" awsGlobalReadOnly="true" cloudProviderRegions="us-east-1,us-east-2" periodicSyncTime="1"
+
+    :example: SolutionConfigurations_CreateOrUpdate
+        az arc-multicloud solution-configuration create --connector-id /subscriptions/{}/resourceGroups/{}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{} --name mySolutionConfig --solution-type "Microsoft.HybridCompute.Onboard" --solution-settings periodicSync="true" cloudProviderRegions="us-east-1,us-east-2" periodicSyncTime="1"
     """
 
     _aaz_info = {

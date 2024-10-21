@@ -133,6 +133,7 @@ class Create(AAZCommand):
             options=["--high-availability"],
             arg_group="Properties",
             help="Enabled by default. If highAvailability is disabled, the data set is not replicated. This affects the availability SLA, and increases the risk of data loss.",
+            is_preview=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.minimum_tls_version = AAZStrArg(
@@ -148,7 +149,7 @@ class Create(AAZCommand):
         _args_schema.capacity = AAZIntArg(
             options=["--capacity"],
             arg_group="Sku",
-            help="The size of the RedisEnterprise cluster. Defaults to 2 or 3 depending on SKU. Valid values are (2, 4, 6, ...) for Enterprise SKUs and (3, 9, 15, ...) for Flash SKUs.",
+            help="The size of the RedisEnterprise cluster. Defaults to 2 or 3 or not applicable depending on SKU. Valid values are (2, 4, 6, ...) for Enterprise_* SKUs and (3, 9, 15, ...) for EnterpriseFlash_* SKUs. For other SKUs capacity argument is not supported.",
         )
         _args_schema.sku = AAZStrArg(
             options=["--sku"],

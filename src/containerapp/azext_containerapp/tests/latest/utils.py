@@ -62,17 +62,21 @@ def create_containerapp_env(test_cls, env_name, resource_group, location=None, s
 def create_and_verify_containerapp_up(
             test_cls,
             resource_group,
-            env_name = None,
-            source_path = None,
-            artifact_path = None,
-            build_env_vars = None,
-            image = None,
-            location = None,
-            ingress = None,
-            target_port = None,
-            app_name = None,
-            requires_acr_prerequisite = False,
-            no_log_destination = False):
+            env_name=None,
+            source_path=None,
+            artifact_path=None,
+            build_env_vars=None,
+            image=None,
+            location=None,
+            ingress=None,
+            target_port=None,
+            app_name=None,
+            requires_acr_prerequisite=False,
+            no_log_destination=False,
+            registry_server=None,
+            registry_identity=None,
+            check_registry_identity=None
+            ):
         # Ensure that the Container App environment is created
         if env_name is None:
            env_name = test_cls.create_random_name(prefix='env', length=24)
@@ -99,6 +103,10 @@ def create_and_verify_containerapp_up(
             up_cmd += f" --ingress {ingress}"
         if target_port:
             up_cmd += f" --target-port {target_port}"
+        if registry_server:
+            up_cmd += f" --registry-server {registry_server}"
+        if registry_identity:
+            up_cmd += f" --registry-identity {registry_identity}"
 
         if requires_acr_prerequisite:
             # Create ACR
@@ -119,7 +127,8 @@ def create_and_verify_containerapp_up(
         url = url if url.startswith("http") else f"http://{url}"
         resp = requests.get(url)
         test_cls.assertTrue(resp.ok)
-
+        if check_registry_identity:
+            test_cls.assertTrue(app["properties"]["configuration"]["registries"][0]["identity"] == check_registry_identity)
         # Re-run the 'az containerapp up' command with the location parameter if provided
         if location:
             up_cmd += f" -l {location.upper()}"

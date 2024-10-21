@@ -17,8 +17,10 @@ from azure.cli.core.aaz import *
 class TestPermission(AAZCommand):
     """A long-running resource action.
 
+    For additional details, please visit the https://learn.microsoft.com/en-us/cli/azure/arc-multicloud?view=azure-cli-latest
+
     :example: PublicCloudConnectors_TestPermissions
-        az arc-multicloud public-cloud-connector test-permission --resource-group rgpublicCloud --name sjuahmnojgachluzcbhxhwkxwugbsi
+        az arc-multicloud public-cloud-connector test-permission --resource-group multiCloudRG --name awsConnector
     """
 
     _aaz_info = {
@@ -171,34 +173,121 @@ class TestPermission(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.solution_types = AAZListType(
-                serialized_name="solutionTypes",
-                flags={"required": True},
-            )
-
-            solution_types = cls._schema_on_200.solution_types
-            solution_types.Element = AAZObjectType()
-
-            _element = cls._schema_on_200.solution_types.Element
-            _element.solution_type = AAZStrType(
-                serialized_name="solutionType",
-                flags={"required": True},
-            )
-            _element.status = AAZStrType(
-                flags={"required": True},
-            )
-            _element.status_details = AAZStrType(
-                serialized_name="statusDetails",
-                flags={"required": True},
-            )
+            _TestPermissionHelper._build_schema_operation_status_result_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
 
 class _TestPermissionHelper:
     """Helper class for TestPermission"""
+
+    _schema_error_detail_read = None
+
+    @classmethod
+    def _build_schema_error_detail_read(cls, _schema):
+        if cls._schema_error_detail_read is not None:
+            _schema.additional_info = cls._schema_error_detail_read.additional_info
+            _schema.code = cls._schema_error_detail_read.code
+            _schema.details = cls._schema_error_detail_read.details
+            _schema.message = cls._schema_error_detail_read.message
+            _schema.target = cls._schema_error_detail_read.target
+            return
+
+        cls._schema_error_detail_read = _schema_error_detail_read = AAZObjectType()
+
+        error_detail_read = _schema_error_detail_read
+        error_detail_read.additional_info = AAZListType(
+            serialized_name="additionalInfo",
+            flags={"read_only": True},
+        )
+        error_detail_read.code = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.details = AAZListType(
+            flags={"read_only": True},
+        )
+        error_detail_read.message = AAZStrType(
+            flags={"read_only": True},
+        )
+        error_detail_read.target = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        additional_info = _schema_error_detail_read.additional_info
+        additional_info.Element = AAZObjectType()
+
+        _element = _schema_error_detail_read.additional_info.Element
+        _element.info = AAZObjectType(
+            flags={"read_only": True},
+        )
+        _element.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        details = _schema_error_detail_read.details
+        details.Element = AAZObjectType()
+        cls._build_schema_error_detail_read(details.Element)
+
+        _schema.additional_info = cls._schema_error_detail_read.additional_info
+        _schema.code = cls._schema_error_detail_read.code
+        _schema.details = cls._schema_error_detail_read.details
+        _schema.message = cls._schema_error_detail_read.message
+        _schema.target = cls._schema_error_detail_read.target
+
+    _schema_operation_status_result_read = None
+
+    @classmethod
+    def _build_schema_operation_status_result_read(cls, _schema):
+        if cls._schema_operation_status_result_read is not None:
+            _schema.end_time = cls._schema_operation_status_result_read.end_time
+            _schema.error = cls._schema_operation_status_result_read.error
+            _schema.id = cls._schema_operation_status_result_read.id
+            _schema.name = cls._schema_operation_status_result_read.name
+            _schema.operations = cls._schema_operation_status_result_read.operations
+            _schema.percent_complete = cls._schema_operation_status_result_read.percent_complete
+            _schema.resource_id = cls._schema_operation_status_result_read.resource_id
+            _schema.start_time = cls._schema_operation_status_result_read.start_time
+            _schema.status = cls._schema_operation_status_result_read.status
+            return
+
+        cls._schema_operation_status_result_read = _schema_operation_status_result_read = AAZObjectType()
+
+        operation_status_result_read = _schema_operation_status_result_read
+        operation_status_result_read.end_time = AAZStrType(
+            serialized_name="endTime",
+        )
+        operation_status_result_read.error = AAZObjectType()
+        cls._build_schema_error_detail_read(operation_status_result_read.error)
+        operation_status_result_read.id = AAZStrType()
+        operation_status_result_read.name = AAZStrType()
+        operation_status_result_read.operations = AAZListType()
+        operation_status_result_read.percent_complete = AAZFloatType(
+            serialized_name="percentComplete",
+        )
+        operation_status_result_read.resource_id = AAZStrType(
+            serialized_name="resourceId",
+            flags={"read_only": True},
+        )
+        operation_status_result_read.start_time = AAZStrType(
+            serialized_name="startTime",
+        )
+        operation_status_result_read.status = AAZStrType(
+            flags={"required": True},
+        )
+
+        operations = _schema_operation_status_result_read.operations
+        operations.Element = AAZObjectType()
+        cls._build_schema_operation_status_result_read(operations.Element)
+
+        _schema.end_time = cls._schema_operation_status_result_read.end_time
+        _schema.error = cls._schema_operation_status_result_read.error
+        _schema.id = cls._schema_operation_status_result_read.id
+        _schema.name = cls._schema_operation_status_result_read.name
+        _schema.operations = cls._schema_operation_status_result_read.operations
+        _schema.percent_complete = cls._schema_operation_status_result_read.percent_complete
+        _schema.resource_id = cls._schema_operation_status_result_read.resource_id
+        _schema.start_time = cls._schema_operation_status_result_read.start_time
+        _schema.status = cls._schema_operation_status_result_read.status
 
 
 __all__ = ["TestPermission"]

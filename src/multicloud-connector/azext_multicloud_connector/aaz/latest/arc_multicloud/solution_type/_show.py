@@ -17,8 +17,10 @@ from azure.cli.core.aaz import *
 class Show(AAZCommand):
     """Get a SolutionTypeResource
 
+    For additional details, please visit the https://learn.microsoft.com/en-us/cli/azure/arc-multicloud?view=azure-cli-latest
+
     :example: SolutionTypes_Get
-        az arc-multicloud solution-type show --resource-group rgpublicCloud --name lulzqllpu
+        az arc-multicloud solution-type show --resource-group multiCloudRG --name "Microsoft.AssetManagement"
     """
 
     _aaz_info = {

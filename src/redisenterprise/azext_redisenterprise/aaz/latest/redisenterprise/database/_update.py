@@ -74,6 +74,7 @@ class Update(AAZCommand):
             options=["--access-keys-auth", "--access-keys-authentication"],
             arg_group="Properties",
             help="Access database using keys - default is enabled. This property can be Enabled/Disabled to allow or deny access with the current access keys. Can be updated even after database is created.",
+            is_preview=True,
             nullable=True,
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )

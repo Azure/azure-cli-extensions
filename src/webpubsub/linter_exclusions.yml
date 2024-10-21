@@ -1,0 +1,29 @@
+---
+webpubsub custom-certificate create:
+    parameters:
+        key_vault_secret_version:
+            rule_exclusions:
+            - option_length_too_long
+webpubsub custom-certificate update:
+    parameters:
+        key_vault_secret_version:
+            rule_exclusions:
+            - option_length_too_long
+
+webpubsub custom-domain create:
+    parameters:
+        certificate_resource_id:
+            rule_exclusions:
+            - option_length_too_long
+
+webpubsub update:
+    parameters:
+        region_endpoint_enabled:
+            rule_exclusions:
+            - option_length_too_long
+
+webpubsub replica update:
+    parameters:
+        region_endpoint_enabled:
+            rule_exclusions:
+            - option_length_too_long
