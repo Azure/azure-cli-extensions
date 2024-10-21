@@ -12,19 +12,19 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor get-vm-host-payload",
+    "dynatrace get-marketplace-saas-resource-detail",
 )
-class GetVmHostPayload(AAZCommand):
-    """Return the payload that need to be passed in the request body for installing Dynatrace agent on a VM
+class GetMarketplaceSaasResourceDetail(AAZCommand):
+    """Get Marketplace SaaS resource details of a tenant under a specific subscription
 
-    :example: Get-vm-host-payload
-        az dynatrace monitor get-vm-host-payload -g rg --monitor-name monitor
+    :example: Monitors_GetMarketplaceSaaSResourceDetails_MaximumSet_Gen
+        az dynatrace get-marketplace-saas-resource-detail --tenant-id urnmattojzhktcfw
     """
 
     _aaz_info = {
-        "version": "2021-09-01",
+        "version": "2023-04-27",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/getvmhostpayload", "2021-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/providers/dynatrace.observability/getmarketplacesaasresourcedetails", "2023-04-27"],
         ]
     }
 
@@ -43,20 +43,20 @@ class GetVmHostPayload(AAZCommand):
 
         # define Arg Group ""
 
+        # define Arg Group "Request"
+
         _args_schema = cls._args_schema
-        _args_schema.monitor_name = AAZStrArg(
-            options=["--monitor-name"],
-            help="Monitor resource name",
-            required=True,
-        )
-        _args_schema.resource_group = AAZResourceGroupNameArg(
+        _args_schema.tenant_id = AAZStrArg(
+            options=["--tenant-id"],
+            arg_group="Request",
+            help="Tenant Id",
             required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.MonitorsGetVMHostPayload(ctx=self.ctx)()
+        self.MonitorsGetMarketplaceSaaSResourceDetails(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -71,7 +71,7 @@ class GetVmHostPayload(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class MonitorsGetVMHostPayload(AAZHttpOperation):
+    class MonitorsGetMarketplaceSaaSResourceDetails(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -85,7 +85,7 @@ class GetVmHostPayload(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Dynatrace.Observability/monitors/{monitorName}/getVMHostPayload",
+                "/subscriptions/{subscriptionId}/providers/Dynatrace.Observability/getMarketplaceSaaSResourceDetails",
                 **self.url_parameters
             )
 
@@ -101,14 +101,6 @@ class GetVmHostPayload(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "monitorName", self.ctx.args.monitor_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
                     "subscriptionId", self.ctx.subscription_id,
                     required=True,
                 ),
@@ -119,7 +111,7 @@ class GetVmHostPayload(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-09-01",
+                    "api-version", "2023-04-27",
                     required=True,
                 ),
             }
@@ -129,10 +121,24 @@ class GetVmHostPayload(AAZCommand):
         def header_parameters(self):
             parameters = {
                 **self.serialize_header_param(
+                    "Content-Type", "application/json",
+                ),
+                **self.serialize_header_param(
                     "Accept", "application/json",
                 ),
             }
             return parameters
+
+        @property
+        def content(self):
+            _content_value, _builder = self.new_content_builder(
+                self.ctx.args,
+                typ=AAZObjectType,
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
+            )
+            _builder.set_prop("tenantId", AAZStrType, ".tenant_id", typ_kwargs={"flags": {"required": True}})
+
+            return self.serialize_content(_content_value)
 
         def on_200(self, session):
             data = self.deserialize_http_content(session)
@@ -152,18 +158,21 @@ class GetVmHostPayload(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.environment_id = AAZStrType(
-                serialized_name="environmentId",
+            _schema_on_200.marketplace_saa_s_resource_id = AAZStrType(
+                serialized_name="marketplaceSaaSResourceId",
             )
-            _schema_on_200.ingestion_key = AAZStrType(
-                serialized_name="ingestionKey",
+            _schema_on_200.marketplace_subscription_status = AAZStrType(
+                serialized_name="marketplaceSubscriptionStatus",
+            )
+            _schema_on_200.plan_id = AAZStrType(
+                serialized_name="planId",
             )
 
             return cls._schema_on_200
 
 
-class _GetVmHostPayloadHelper:
-    """Helper class for GetVmHostPayload"""
+class _GetMarketplaceSaasResourceDetailHelper:
+    """Helper class for GetMarketplaceSaasResourceDetail"""
 
 
-__all__ = ["GetVmHostPayload"]
+__all__ = ["GetMarketplaceSaasResourceDetail"]
