@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Create a Neon Resource
 
     :example: Organizations_CreateOrUpdate
-        az neon postgres create --resource-group <resource-group-name> --organization-name <organization-name> --name <neon-resource-name> --location <location> --subscription <subscription-id> --marketplace-details "{subscription-id:<marketplace-subscription-id>,subscription-status:PendingFulfillmentStart,offer-details:{publisher-id:<publisher-id>,offer-id:<offer-id>,plan-id:<plan-id>,plan-name:'Neon Serverless Postgres - Free (Test_Liftr)',term-unit:P1M,term-id:<term-id>}}" --user-details "{first-name:<first-name>,last-name:<last-name>,email-address:<email>,upn:<upn>,phone-number:<phone-number>}" --company-details "{company-name:'<company-name>',country:<country>,business-phone:<business-phone>,office-address:'<office-address>',domain:<domain>,number-of-employees:<number-of-employees>}" --partner-organization-properties "{organization-id:<organization-id>,organization-name:'<partner-organization-name>',single-sign-on-properties:{single-sign-on-state:Enable,enterprise-app-id:<enterprise-app-id>,single-sign-on-url:'<sso-url>',aad-domains:['<aad-domain>']}}"
+        az neon postgres create --resource-group <resource-group-name> --name <neon-resource-name> --location <location> --subscription <subscription-id> --marketplace-details "{subscription-id:<marketplace-subscription-id>,subscription-status:PendingFulfillmentStart,offer-details:{publisher-id:<publisher-id>,offer-id:<offer-id>,plan-id:<plan-id>,plan-name:'Neon Serverless Postgres - Free (Test_Liftr)',term-unit:P1M,term-id:<term-id>}}" --user-details "{first-name:<first-name>,last-name:<last-name>,email-address:<email>,upn:<upn>,phone-number:<phone-number>}" --company-details "{company-name:'<company-name>',country:<country>,business-phone:<business-phone>,office-address:'<office-address>',domain:<domain>,number-of-employees:<number-of-employees>}" --partner-organization-properties "{organization-id:<organization-id>,org-name:'<partner-organization-name>',single-sign-on-properties:{single-sign-on-state:Enable,enterprise-app-id:<enterprise-app-id>,single-sign-on-url:'<sso-url>',aad-domains:['<aad-domain>']}}"
     """
 
     _aaz_info = {
@@ -46,8 +46,8 @@ class Create(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.organization_name = AAZStrArg(
-            options=["-n", "--name", "--organization-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="Name of the Neon resource",
             required=True,
             fmt=AAZStrArgFormat(
@@ -161,8 +161,8 @@ class Create(AAZCommand):
             options=["organization-id"],
             help="Organization Id in partner's system",
         )
-        partner_organization_properties.organization_name = AAZStrArg(
-            options=["organization-name"],
+        partner_organization_properties.org_name = AAZStrArg(
+            options=["org-name"],
             help="Organization name in partner's system",
             required=True,
             fmt=AAZStrArgFormat(
@@ -307,7 +307,7 @@ class Create(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "organizationName", self.ctx.args.organization_name,
+                    "organizationName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -388,7 +388,7 @@ class Create(AAZCommand):
             partner_organization_properties = _builder.get(".properties.partnerOrganizationProperties")
             if partner_organization_properties is not None:
                 partner_organization_properties.set_prop("organizationId", AAZStrType, ".organization_id")
-                partner_organization_properties.set_prop("organizationName", AAZStrType, ".organization_name", typ_kwargs={"flags": {"required": True}})
+                partner_organization_properties.set_prop("organizationName", AAZStrType, ".org_name", typ_kwargs={"flags": {"required": True}})
                 partner_organization_properties.set_prop("singleSignOnProperties", AAZObjectType, ".single_sign_on_properties")
 
             single_sign_on_properties = _builder.get(".properties.partnerOrganizationProperties.singleSignOnProperties")

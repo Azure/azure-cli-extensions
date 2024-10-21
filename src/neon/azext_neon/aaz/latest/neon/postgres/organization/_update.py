@@ -19,7 +19,7 @@ class Update(AAZCommand):
     """Update a Neon Resource
 
     :example: Organization_Update
-        az az neon postgres organization update --resource-group <resource-group-name> --organization-name <organization-name> --user-details "{first-name:<first-name>,last-name:<last-name>,email-address:<email-address>,upn:<upn>,phone-number:<phone-number>}" --company-details "{company-name:<company-name>,country:<country>,office-address:<office-address>,business-phone:<business-phone>,domain:<domain>,number-of-employees:<number-of-employees>}" --partner-organization-properties "{organization-id:<organization-id>,organization-name:<organization-name>,single-sign-on-properties:{single-sign-on-state:<single-sign-on-state>,enterprise-app-id:<enterprise-app-id>,single-sign-on-url:<single-sign-on-url>,aad-domains:[<aad-domain>]}}" --tags "{<key>:<value>}"
+        az az neon postgres organization update --resource-group <resource-group-name> --name <resource-name> --user-details "{first-name:<first-name>,last-name:<last-name>,email-address:<email-address>,upn:<upn>,phone-number:<phone-number>}" --company-details "{company-name:<company-name>,country:<country>,office-address:<office-address>,business-phone:<business-phone>,domain:<domain>,number-of-employees:<number-of-employees>}" --partner-organization-properties "{organization-id:<organization-id>,org-name:<organization-name>,single-sign-on-properties:{single-sign-on-state:<single-sign-on-state>,enterprise-app-id:<enterprise-app-id>,single-sign-on-url:<single-sign-on-url>,aad-domains:[<aad-domain>]}}" --tags "{<key>:<value>}"
     """
 
     _aaz_info = {
@@ -48,8 +48,8 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.organization_name = AAZStrArg(
-            options=["-n", "--name", "--organization-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="Name of the Neon resource",
             required=True,
             id_part="name",
@@ -122,8 +122,8 @@ class Update(AAZCommand):
             help="Organization Id in partner's system",
             nullable=True,
         )
-        partner_organization_properties.organization_name = AAZStrArg(
-            options=["organization-name"],
+        partner_organization_properties.org_name = AAZStrArg(
+            options=["org-name"],
             help="Organization name in partner's system",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9][a-zA-Z0-9_\\-.: ]*$",
@@ -271,7 +271,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "organizationName", self.ctx.args.organization_name,
+                    "organizationName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -370,7 +370,7 @@ class Update(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "organizationName", self.ctx.args.organization_name,
+                    "organizationName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -467,7 +467,7 @@ class Update(AAZCommand):
             partner_organization_properties = _builder.get(".properties.partnerOrganizationProperties")
             if partner_organization_properties is not None:
                 partner_organization_properties.set_prop("organizationId", AAZStrType, ".organization_id")
-                partner_organization_properties.set_prop("organizationName", AAZStrType, ".organization_name", typ_kwargs={"flags": {"required": True}})
+                partner_organization_properties.set_prop("organizationName", AAZStrType, ".org_name", typ_kwargs={"flags": {"required": True}})
                 partner_organization_properties.set_prop("singleSignOnProperties", AAZObjectType, ".single_sign_on_properties")
 
             single_sign_on_properties = _builder.get(".properties.partnerOrganizationProperties.singleSignOnProperties")

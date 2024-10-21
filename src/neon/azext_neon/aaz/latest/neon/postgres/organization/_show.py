@@ -19,7 +19,7 @@ class Show(AAZCommand):
     """Get a Neon Resource
 
     :example: Organizations_Get
-        az neon postgres organization show --subscription <subscription-id> --resource-group <resource-group-name> --name <organization-name>
+        az neon postgres organization show --subscription <subscription-id> --resource-group <resource-group-name> --name <resource-name>
     """
 
     _aaz_info = {
@@ -45,8 +45,8 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.organization_name = AAZStrArg(
-            options=["-n", "--name", "--organization-name"],
+        _args_schema.name = AAZStrArg(
+            options=["-n", "--name"],
             help="Name of the Neon resource",
             required=True,
             id_part="name",
@@ -109,7 +109,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "organizationName", self.ctx.args.organization_name,
+                    "organizationName", self.ctx.args.name,
                     required=True,
                 ),
                 **self.serialize_url_param(
