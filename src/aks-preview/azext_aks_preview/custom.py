@@ -128,7 +128,7 @@ from six.moves.urllib.error import URLError
 from six.moves.urllib.request import urlopen
 
 from azext_aks_preview._helpers import (
-  is_monitoring_addon_enabled,
+    is_monitoring_addon_enabled,
 )
 
 logger = get_logger(__name__)
