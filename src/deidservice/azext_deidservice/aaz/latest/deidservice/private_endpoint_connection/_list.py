@@ -12,24 +12,25 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "deid private-endpoint-connection show",
+    "deidservice private-endpoint-connection list",
     is_preview=True,
 )
-class Show(AAZCommand):
-    """Get a specific private connection
+class List(AAZCommand):
+    """List private endpoint connections on the given resource
     """
 
     _aaz_info = {
         "version": "2024-02-28-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.healthdataaiservices/deidservices/{}/privateendpointconnections/{}", "2024-02-28-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.healthdataaiservices/deidservices/{}/privateendpointconnections", "2024-02-28-preview"],
         ]
     }
 
+    AZ_SUPPORT_PAGINATION = True
+
     def _handler(self, command_args):
         super()._handler(command_args)
-        self._execute_operations()
-        return self._output()
+        return self.build_paging(self._execute_operations, self._output)
 
     _args_schema = None
 
@@ -46,16 +47,9 @@ class Show(AAZCommand):
             options=["--deid-service-name"],
             help="The name of the deid service",
             required=True,
-            id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
-        )
-        _args_schema.private_endpoint_connection_name = AAZStrArg(
-            options=["-n", "--name", "--private-endpoint-connection-name"],
-            help="The name of the private endpoint connection associated with the Azure resource.",
-            required=True,
-            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -64,7 +58,7 @@ class Show(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        self.PrivateEndpointConnectionsGet(ctx=self.ctx)()
+        self.PrivateEndpointConnectionsListByDeidService(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -76,10 +70,11 @@ class Show(AAZCommand):
         pass
 
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
+        result = self.deserialize_output(self.ctx.vars.instance.value, client_flatten=True)
+        next_link = self.deserialize_output(self.ctx.vars.instance.next_link)
+        return result, next_link
 
-    class PrivateEndpointConnectionsGet(AAZHttpOperation):
+    class PrivateEndpointConnectionsListByDeidService(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -93,7 +88,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthDataAIServices/deidServices/{deidServiceName}/privateEndpointConnections/{privateEndpointConnectionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthDataAIServices/deidServices/{deidServiceName}/privateEndpointConnections",
                 **self.url_parameters
             )
 
@@ -110,10 +105,6 @@ class Show(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "deidServiceName", self.ctx.args.deid_service_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "privateEndpointConnectionName", self.ctx.args.private_endpoint_connection_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -164,22 +155,33 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.id = AAZStrType(
+            _schema_on_200.next_link = AAZStrType(
+                serialized_name="nextLink",
+            )
+            _schema_on_200.value = AAZListType(
+                flags={"required": True},
+            )
+
+            value = cls._schema_on_200.value
+            value.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element
+            _element.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.name = AAZStrType(
+            _element.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.properties = AAZObjectType()
-            _schema_on_200.system_data = AAZObjectType(
+            _element.properties = AAZObjectType()
+            _element.system_data = AAZObjectType(
                 serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.type = AAZStrType(
+            _element.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            properties = cls._schema_on_200.properties
+            properties = cls._schema_on_200.value.Element.properties
             properties.group_ids = AAZListType(
                 serialized_name="groupIds",
                 flags={"read_only": True},
@@ -196,22 +198,22 @@ class Show(AAZCommand):
                 flags={"read_only": True},
             )
 
-            group_ids = cls._schema_on_200.properties.group_ids
+            group_ids = cls._schema_on_200.value.Element.properties.group_ids
             group_ids.Element = AAZStrType()
 
-            private_endpoint = cls._schema_on_200.properties.private_endpoint
+            private_endpoint = cls._schema_on_200.value.Element.properties.private_endpoint
             private_endpoint.id = AAZStrType(
                 flags={"read_only": True},
             )
 
-            private_link_service_connection_state = cls._schema_on_200.properties.private_link_service_connection_state
+            private_link_service_connection_state = cls._schema_on_200.value.Element.properties.private_link_service_connection_state
             private_link_service_connection_state.actions_required = AAZStrType(
                 serialized_name="actionsRequired",
             )
             private_link_service_connection_state.description = AAZStrType()
             private_link_service_connection_state.status = AAZStrType()
 
-            system_data = cls._schema_on_200.system_data
+            system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
                 serialized_name="createdAt",
             )
@@ -234,8 +236,8 @@ class Show(AAZCommand):
             return cls._schema_on_200
 
 
-class _ShowHelper:
-    """Helper class for Show"""
+class _ListHelper:
+    """Helper class for List"""
 
 
-__all__ = ["Show"]
+__all__ = ["List"]

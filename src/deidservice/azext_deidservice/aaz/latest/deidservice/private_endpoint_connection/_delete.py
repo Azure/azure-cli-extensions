@@ -12,12 +12,12 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "deid private-endpoint-connection delete",
+    "deidservice private-endpoint-connection delete",
     is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
-    """Delete the private endpoint connection
+    """Delete the private endpoint connection by name
     """
 
     _aaz_info = {

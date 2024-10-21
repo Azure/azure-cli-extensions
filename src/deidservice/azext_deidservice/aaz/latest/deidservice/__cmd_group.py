@@ -12,11 +12,11 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "deid private-endpoint-connection",
+    "deidservice",
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """private endpoint connection
+    """Health Data service for providing de-identification of health PHI data (Features: Surrogation, multi-modality)
     """
     pass
 

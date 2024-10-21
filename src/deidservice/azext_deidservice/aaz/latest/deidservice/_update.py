@@ -12,17 +12,17 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "deid private-endpoint-connection update",
+    "deidservice update",
     is_preview=True,
 )
 class Update(AAZCommand):
-    """Update a Private endpoint connection
+    """Update a DeidService by name
     """
 
     _aaz_info = {
         "version": "2024-02-28-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.healthdataaiservices/deidservices/{}/privateendpointconnections/{}", "2024-02-28-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.healthdataaiservices/deidservices/{}", "2024-02-28-preview"],
         ]
     }
 
@@ -46,19 +46,13 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.deid_service_name = AAZStrArg(
-            options=["--deid-service-name"],
+            options=["-n", "--name", "--deid-service-name"],
             help="The name of the deid service",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,24}$",
             ),
-        )
-        _args_schema.private_endpoint_connection_name = AAZStrArg(
-            options=["-n", "--name", "--private-endpoint-connection-name"],
-            help="The name of the private endpoint connection associated with the Azure resource.",
-            required=True,
-            id_part="child_name_1",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -67,39 +61,62 @@ class Update(AAZCommand):
         # define Arg Group "Properties"
 
         _args_schema = cls._args_schema
-        _args_schema.private_link_service_connection_state = AAZObjectArg(
-            options=["--private-link-service-connection-state"],
+        _args_schema.public_network_access = AAZStrArg(
+            options=["--public-network-access"],
             arg_group="Properties",
-            help="A collection of information about the state of the connection between service consumer and provider.",
+            help="Gets or sets allow or disallow public network access to resource",
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
 
-        private_link_service_connection_state = cls._args_schema.private_link_service_connection_state
-        private_link_service_connection_state.actions_required = AAZStrArg(
-            options=["actions-required"],
-            help="A message indicating if changes on the service provider require any updates on the consumer.",
+        # define Arg Group "Resource"
+
+        _args_schema = cls._args_schema
+        _args_schema.identity = AAZObjectArg(
+            options=["--identity"],
+            arg_group="Resource",
+            help="The managed service identities assigned to this resource.",
             nullable=True,
         )
-        private_link_service_connection_state.description = AAZStrArg(
-            options=["description"],
-            help="The reason for approval/rejection of the connection.",
+        _args_schema.tags = AAZDictArg(
+            options=["--tags"],
+            arg_group="Resource",
+            help="Resource tags.",
             nullable=True,
         )
-        private_link_service_connection_state.status = AAZStrArg(
-            options=["status"],
-            help="Indicates whether the connection has been Approved/Rejected/Removed by the owner of the service.",
+
+        identity = cls._args_schema.identity
+        identity.type = AAZStrArg(
+            options=["type"],
+            help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
+            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
+        )
+        identity.user_assigned_identities = AAZDictArg(
+            options=["user-assigned-identities"],
+            help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
             nullable=True,
-            enum={"Approved": "Approved", "Pending": "Pending", "Rejected": "Rejected"},
+        )
+
+        user_assigned_identities = cls._args_schema.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectArg(
+            nullable=True,
+            blank={},
+        )
+
+        tags = cls._args_schema.tags
+        tags.Element = AAZStrArg(
+            nullable=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.PrivateEndpointConnectionsGet(ctx=self.ctx)()
+        self.DeidServicesGet(ctx=self.ctx)()
         self.pre_instance_update(self.ctx.vars.instance)
         self.InstanceUpdateByJson(ctx=self.ctx)()
         self.InstanceUpdateByGeneric(ctx=self.ctx)()
         self.post_instance_update(self.ctx.vars.instance)
-        yield self.PrivateEndpointConnectionsCreate(ctx=self.ctx)()
+        yield self.DeidServicesCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -122,7 +139,7 @@ class Update(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class PrivateEndpointConnectionsGet(AAZHttpOperation):
+    class DeidServicesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -136,7 +153,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthDataAIServices/deidServices/{deidServiceName}/privateEndpointConnections/{privateEndpointConnectionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthDataAIServices/deidServices/{deidServiceName}",
                 **self.url_parameters
             )
 
@@ -153,10 +170,6 @@ class Update(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "deidServiceName", self.ctx.args.deid_service_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "privateEndpointConnectionName", self.ctx.args.private_endpoint_connection_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -205,11 +218,11 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_private_endpoint_connection_resource_read(cls._schema_on_200)
+            _UpdateHelper._build_schema_deid_service_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class PrivateEndpointConnectionsCreate(AAZHttpOperation):
+    class DeidServicesCreate(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -239,7 +252,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthDataAIServices/deidServices/{deidServiceName}/privateEndpointConnections/{privateEndpointConnectionName}",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthDataAIServices/deidServices/{deidServiceName}",
                 **self.url_parameters
             )
 
@@ -256,10 +269,6 @@ class Update(AAZCommand):
             parameters = {
                 **self.serialize_url_param(
                     "deidServiceName", self.ctx.args.deid_service_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "privateEndpointConnectionName", self.ctx.args.private_endpoint_connection_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -320,7 +329,7 @@ class Update(AAZCommand):
                 return cls._schema_on_200_201
 
             cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_private_endpoint_connection_resource_read(cls._schema_on_200_201)
+            _UpdateHelper._build_schema_deid_service_read(cls._schema_on_200_201)
 
             return cls._schema_on_200_201
 
@@ -335,17 +344,26 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
+            _builder.set_prop("identity", AAZObjectType, ".identity")
             _builder.set_prop("properties", AAZObjectType)
+            _builder.set_prop("tags", AAZDictType, ".tags")
+
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
+                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
+
+            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
+            if user_assigned_identities is not None:
+                user_assigned_identities.set_elements(AAZObjectType, ".", typ_kwargs={"nullable": True})
 
             properties = _builder.get(".properties")
             if properties is not None:
-                properties.set_prop("privateLinkServiceConnectionState", AAZObjectType, ".private_link_service_connection_state", typ_kwargs={"flags": {"required": True}})
+                properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access")
 
-            private_link_service_connection_state = _builder.get(".properties.privateLinkServiceConnectionState")
-            if private_link_service_connection_state is not None:
-                private_link_service_connection_state.set_prop("actionsRequired", AAZStrType, ".actions_required")
-                private_link_service_connection_state.set_prop("description", AAZStrType, ".description")
-                private_link_service_connection_state.set_prop("status", AAZStrType, ".status")
+            tags = _builder.get(".tags")
+            if tags is not None:
+                tags.set_elements(AAZStrType, ".")
 
             return _instance_value
 
@@ -361,37 +379,116 @@ class Update(AAZCommand):
 class _UpdateHelper:
     """Helper class for Update"""
 
-    _schema_private_endpoint_connection_resource_read = None
+    _schema_deid_service_read = None
 
     @classmethod
-    def _build_schema_private_endpoint_connection_resource_read(cls, _schema):
-        if cls._schema_private_endpoint_connection_resource_read is not None:
-            _schema.id = cls._schema_private_endpoint_connection_resource_read.id
-            _schema.name = cls._schema_private_endpoint_connection_resource_read.name
-            _schema.properties = cls._schema_private_endpoint_connection_resource_read.properties
-            _schema.system_data = cls._schema_private_endpoint_connection_resource_read.system_data
-            _schema.type = cls._schema_private_endpoint_connection_resource_read.type
+    def _build_schema_deid_service_read(cls, _schema):
+        if cls._schema_deid_service_read is not None:
+            _schema.id = cls._schema_deid_service_read.id
+            _schema.identity = cls._schema_deid_service_read.identity
+            _schema.location = cls._schema_deid_service_read.location
+            _schema.name = cls._schema_deid_service_read.name
+            _schema.properties = cls._schema_deid_service_read.properties
+            _schema.system_data = cls._schema_deid_service_read.system_data
+            _schema.tags = cls._schema_deid_service_read.tags
+            _schema.type = cls._schema_deid_service_read.type
             return
 
-        cls._schema_private_endpoint_connection_resource_read = _schema_private_endpoint_connection_resource_read = AAZObjectType()
+        cls._schema_deid_service_read = _schema_deid_service_read = AAZObjectType()
 
-        private_endpoint_connection_resource_read = _schema_private_endpoint_connection_resource_read
-        private_endpoint_connection_resource_read.id = AAZStrType(
+        deid_service_read = _schema_deid_service_read
+        deid_service_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        private_endpoint_connection_resource_read.name = AAZStrType(
+        deid_service_read.identity = AAZObjectType()
+        deid_service_read.location = AAZStrType(
+            flags={"required": True},
+        )
+        deid_service_read.name = AAZStrType(
             flags={"read_only": True},
         )
-        private_endpoint_connection_resource_read.properties = AAZObjectType()
-        private_endpoint_connection_resource_read.system_data = AAZObjectType(
+        deid_service_read.properties = AAZObjectType()
+        deid_service_read.system_data = AAZObjectType(
             serialized_name="systemData",
             flags={"read_only": True},
         )
-        private_endpoint_connection_resource_read.type = AAZStrType(
+        cls._build_schema_system_data_read(deid_service_read.system_data)
+        deid_service_read.tags = AAZDictType()
+        deid_service_read.type = AAZStrType(
             flags={"read_only": True},
         )
 
-        properties = _schema_private_endpoint_connection_resource_read.properties
+        identity = _schema_deid_service_read.identity
+        identity.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
+        identity.tenant_id = AAZStrType(
+            serialized_name="tenantId",
+            flags={"read_only": True},
+        )
+        identity.type = AAZStrType(
+            flags={"required": True},
+        )
+        identity.user_assigned_identities = AAZDictType(
+            serialized_name="userAssignedIdentities",
+        )
+
+        user_assigned_identities = _schema_deid_service_read.identity.user_assigned_identities
+        user_assigned_identities.Element = AAZObjectType(
+            nullable=True,
+        )
+
+        _element = _schema_deid_service_read.identity.user_assigned_identities.Element
+        _element.client_id = AAZStrType(
+            serialized_name="clientId",
+            flags={"read_only": True},
+        )
+        _element.principal_id = AAZStrType(
+            serialized_name="principalId",
+            flags={"read_only": True},
+        )
+
+        properties = _schema_deid_service_read.properties
+        properties.private_endpoint_connections = AAZListType(
+            serialized_name="privateEndpointConnections",
+            flags={"read_only": True},
+        )
+        properties.provisioning_state = AAZStrType(
+            serialized_name="provisioningState",
+            flags={"read_only": True},
+        )
+        properties.public_network_access = AAZStrType(
+            serialized_name="publicNetworkAccess",
+        )
+        properties.service_url = AAZStrType(
+            serialized_name="serviceUrl",
+            flags={"read_only": True},
+        )
+
+        private_endpoint_connections = _schema_deid_service_read.properties.private_endpoint_connections
+        private_endpoint_connections.Element = AAZObjectType()
+
+        _element = _schema_deid_service_read.properties.private_endpoint_connections.Element
+        _element.id = AAZStrType(
+            flags={"read_only": True},
+        )
+        _element.name = AAZStrType(
+            flags={"read_only": True},
+        )
+        _element.properties = AAZObjectType(
+            flags={"client_flatten": True},
+        )
+        _element.system_data = AAZObjectType(
+            serialized_name="systemData",
+            flags={"read_only": True},
+        )
+        cls._build_schema_system_data_read(_element.system_data)
+        _element.type = AAZStrType(
+            flags={"read_only": True},
+        )
+
+        properties = _schema_deid_service_read.properties.private_endpoint_connections.Element.properties
         properties.group_ids = AAZListType(
             serialized_name="groupIds",
             flags={"read_only": True},
@@ -408,46 +505,76 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
 
-        group_ids = _schema_private_endpoint_connection_resource_read.properties.group_ids
+        group_ids = _schema_deid_service_read.properties.private_endpoint_connections.Element.properties.group_ids
         group_ids.Element = AAZStrType()
 
-        private_endpoint = _schema_private_endpoint_connection_resource_read.properties.private_endpoint
+        private_endpoint = _schema_deid_service_read.properties.private_endpoint_connections.Element.properties.private_endpoint
         private_endpoint.id = AAZStrType(
             flags={"read_only": True},
         )
 
-        private_link_service_connection_state = _schema_private_endpoint_connection_resource_read.properties.private_link_service_connection_state
+        private_link_service_connection_state = _schema_deid_service_read.properties.private_endpoint_connections.Element.properties.private_link_service_connection_state
         private_link_service_connection_state.actions_required = AAZStrType(
             serialized_name="actionsRequired",
         )
         private_link_service_connection_state.description = AAZStrType()
         private_link_service_connection_state.status = AAZStrType()
 
-        system_data = _schema_private_endpoint_connection_resource_read.system_data
-        system_data.created_at = AAZStrType(
+        tags = _schema_deid_service_read.tags
+        tags.Element = AAZStrType()
+
+        _schema.id = cls._schema_deid_service_read.id
+        _schema.identity = cls._schema_deid_service_read.identity
+        _schema.location = cls._schema_deid_service_read.location
+        _schema.name = cls._schema_deid_service_read.name
+        _schema.properties = cls._schema_deid_service_read.properties
+        _schema.system_data = cls._schema_deid_service_read.system_data
+        _schema.tags = cls._schema_deid_service_read.tags
+        _schema.type = cls._schema_deid_service_read.type
+
+    _schema_system_data_read = None
+
+    @classmethod
+    def _build_schema_system_data_read(cls, _schema):
+        if cls._schema_system_data_read is not None:
+            _schema.created_at = cls._schema_system_data_read.created_at
+            _schema.created_by = cls._schema_system_data_read.created_by
+            _schema.created_by_type = cls._schema_system_data_read.created_by_type
+            _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
+            _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
+            _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
+            return
+
+        cls._schema_system_data_read = _schema_system_data_read = AAZObjectType(
+            flags={"read_only": True}
+        )
+
+        system_data_read = _schema_system_data_read
+        system_data_read.created_at = AAZStrType(
             serialized_name="createdAt",
         )
-        system_data.created_by = AAZStrType(
+        system_data_read.created_by = AAZStrType(
             serialized_name="createdBy",
         )
-        system_data.created_by_type = AAZStrType(
+        system_data_read.created_by_type = AAZStrType(
             serialized_name="createdByType",
         )
-        system_data.last_modified_at = AAZStrType(
+        system_data_read.last_modified_at = AAZStrType(
             serialized_name="lastModifiedAt",
         )
-        system_data.last_modified_by = AAZStrType(
+        system_data_read.last_modified_by = AAZStrType(
             serialized_name="lastModifiedBy",
         )
-        system_data.last_modified_by_type = AAZStrType(
+        system_data_read.last_modified_by_type = AAZStrType(
             serialized_name="lastModifiedByType",
         )
 
-        _schema.id = cls._schema_private_endpoint_connection_resource_read.id
-        _schema.name = cls._schema_private_endpoint_connection_resource_read.name
-        _schema.properties = cls._schema_private_endpoint_connection_resource_read.properties
-        _schema.system_data = cls._schema_private_endpoint_connection_resource_read.system_data
-        _schema.type = cls._schema_private_endpoint_connection_resource_read.type
+        _schema.created_at = cls._schema_system_data_read.created_at
+        _schema.created_by = cls._schema_system_data_read.created_by
+        _schema.created_by_type = cls._schema_system_data_read.created_by_type
+        _schema.last_modified_at = cls._schema_system_data_read.last_modified_at
+        _schema.last_modified_by = cls._schema_system_data_read.last_modified_by
+        _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
 
 
 __all__ = ["Update"]

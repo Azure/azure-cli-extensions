@@ -12,11 +12,11 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "deid private-endpoint-connection create",
+    "deidservice private-endpoint-connection create",
     is_preview=True,
 )
 class Create(AAZCommand):
-    """Create a Private endpoint connection
+    """Create a private endpoint connection
     """
 
     _aaz_info = {

@@ -34,16 +34,16 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='deid',
+    name='deidservice',
     version=VERSION,
-    description='Microsoft Azure Command-Line Tools Deid Extension.',
+    description='Microsoft Azure Command-Line Tools Deidservice Extension.',
     long_description=README + '\n\n' + HISTORY,
     license='MIT',
     author='Microsoft Corporation',
     author_email='azpycli@microsoft.com',
-    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/deid',
+    url='https://github.com/Azure/azure-cli-extensions/tree/main/src/deidservice',
     classifiers=CLASSIFIERS,
     packages=find_packages(exclude=["tests"]),
-    package_data={'azext_deid': ['azext_metadata.json']},
+    package_data={'azext_deidservice': ['azext_metadata.json']},
     install_requires=DEPENDENCIES
 )

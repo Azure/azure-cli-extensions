@@ -12,11 +12,11 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "deid private-link-resource",
+    "deidservice private-link-resource",
     is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
-    """private link to resource
+    """DeidService private link to resource
     """
     pass
 

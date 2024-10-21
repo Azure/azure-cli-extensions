@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "deid private-link-resource list",
+    "deidservice private-link-resource list",
     is_preview=True,
 )
 class List(AAZCommand):
