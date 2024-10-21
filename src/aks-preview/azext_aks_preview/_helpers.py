@@ -356,6 +356,7 @@ def check_is_azure_cli_core_editable_installed():
 
 def check_is_monitoring_addon_enabled(addons, instance):
     is_monitoring_addon_enabled = False
+    is_monitoring_addon = False
     try:
         addon_args = addons.split(',')
         for addon_arg in addon_args:
