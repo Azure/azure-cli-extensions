@@ -26,9 +26,9 @@ class SapSizingRecommendation(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.workloads/locations/{}/sapvirtualinstancemetadata/default/getsizingrecommendations", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.workloads/locations/{}/sapvirtualinstancemetadata/default/getsizingrecommendations", "2024-09-01"],
         ]
     }
 
@@ -53,65 +53,72 @@ class SapSizingRecommendation(AAZCommand):
             id_part="name",
         )
 
-        # define Arg Group "SAPSizingRecommendation"
+        # define Arg Group "Body"
 
         _args_schema = cls._args_schema
         _args_schema.app_location = AAZStrArg(
             options=["--app-location"],
-            arg_group="SAPSizingRecommendation",
+            arg_group="Body",
             help="The geo-location where the resource is to be created.",
+            required=True,
         )
         _args_schema.database_type = AAZStrArg(
             options=["--database-type"],
-            arg_group="SAPSizingRecommendation",
+            arg_group="Body",
             help="The database type.",
+            required=True,
             enum={"DB2": "DB2", "HANA": "HANA"},
         )
         _args_schema.db_memory = AAZIntArg(
             options=["--db-memory"],
-            arg_group="SAPSizingRecommendation",
+            arg_group="Body",
             help="The database memory configuration.",
+            required=True,
         )
         _args_schema.db_scale_method = AAZStrArg(
             options=["--db-scale-method"],
-            arg_group="SAPSizingRecommendation",
+            arg_group="Body",
             help="The DB scale method.",
             enum={"ScaleUp": "ScaleUp"},
         )
         _args_schema.deployment_type = AAZStrArg(
             options=["--deployment-type"],
-            arg_group="SAPSizingRecommendation",
+            arg_group="Body",
             help="The deployment type. Eg: SingleServer/ThreeTier",
+            required=True,
             enum={"SingleServer": "SingleServer", "ThreeTier": "ThreeTier"},
         )
         _args_schema.environment = AAZStrArg(
             options=["--environment"],
-            arg_group="SAPSizingRecommendation",
+            arg_group="Body",
             help="Defines the environment type - Production/Non Production.",
+            required=True,
             enum={"NonProd": "NonProd", "Prod": "Prod"},
         )
         _args_schema.high_availability_type = AAZStrArg(
             options=["--high-availability-type"],
-            arg_group="SAPSizingRecommendation",
+            arg_group="Body",
             help="The high availability type.",
             enum={"AvailabilitySet": "AvailabilitySet", "AvailabilityZone": "AvailabilityZone"},
         )
         _args_schema.sap_product = AAZStrArg(
             options=["--sap-product"],
-            arg_group="SAPSizingRecommendation",
+            arg_group="Body",
             help="Defines the SAP Product type.",
+            required=True,
             enum={"ECC": "ECC", "Other": "Other", "S4HANA": "S4HANA"},
         )
         _args_schema.saps = AAZIntArg(
             options=["--saps"],
-            arg_group="SAPSizingRecommendation",
+            arg_group="Body",
             help="The SAP Application Performance Standard measurement.",
+            required=True,
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SAPSizingRecommendations(ctx=self.ctx)()
+        self.SapVirtualInstancesInvokeSizingRecommendations(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -126,7 +133,7 @@ class SapSizingRecommendation(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SAPSizingRecommendations(AAZHttpOperation):
+    class SapVirtualInstancesInvokeSizingRecommendations(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -170,7 +177,7 @@ class SapSizingRecommendation(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -193,7 +200,7 @@ class SapSizingRecommendation(AAZCommand):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
                 typ=AAZObjectType,
-                typ_kwargs={"flags": {"client_flatten": True}}
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("appLocation", AAZStrType, ".app_location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("databaseType", AAZStrType, ".database_type", typ_kwargs={"flags": {"required": True}})

@@ -23,9 +23,9 @@ class SapSupportedSku(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-10-01-preview",
+        "version": "2024-09-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.workloads/locations/{}/sapvirtualinstancemetadata/default/getsapsupportedsku", "2023-10-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/providers/microsoft.workloads/locations/{}/sapvirtualinstancemetadata/default/getsapsupportedsku", "2024-09-01"],
         ]
     }
 
@@ -50,49 +50,54 @@ class SapSupportedSku(AAZCommand):
             id_part="name",
         )
 
-        # define Arg Group "SAPSupportedSku"
+        # define Arg Group "Body"
 
         _args_schema = cls._args_schema
         _args_schema.app_location = AAZStrArg(
             options=["--app-location"],
-            arg_group="SAPSupportedSku",
+            arg_group="Body",
             help="The geo-location where the resource is to be created.",
+            required=True,
         )
         _args_schema.database_type = AAZStrArg(
             options=["--database-type"],
-            arg_group="SAPSupportedSku",
+            arg_group="Body",
             help="The database type. Eg: HANA, DB2, etc",
+            required=True,
             enum={"DB2": "DB2", "HANA": "HANA"},
         )
         _args_schema.deployment_type = AAZStrArg(
             options=["--deployment-type"],
-            arg_group="SAPSupportedSku",
+            arg_group="Body",
             help="The deployment type. Eg: SingleServer/ThreeTier",
+            required=True,
             enum={"SingleServer": "SingleServer", "ThreeTier": "ThreeTier"},
         )
         _args_schema.environment = AAZStrArg(
             options=["--environment"],
-            arg_group="SAPSupportedSku",
+            arg_group="Body",
             help="Defines the environment type - Production/Non Production.",
+            required=True,
             enum={"NonProd": "NonProd", "Prod": "Prod"},
         )
         _args_schema.high_availability_type = AAZStrArg(
             options=["--high-availability-type"],
-            arg_group="SAPSupportedSku",
+            arg_group="Body",
             help="The high availability type.",
             enum={"AvailabilitySet": "AvailabilitySet", "AvailabilityZone": "AvailabilityZone"},
         )
         _args_schema.sap_product = AAZStrArg(
             options=["--sap-product"],
-            arg_group="SAPSupportedSku",
+            arg_group="Body",
             help="Defines the SAP Product type.",
+            required=True,
             enum={"ECC": "ECC", "Other": "Other", "S4HANA": "S4HANA"},
         )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
-        self.SAPSupportedSku(ctx=self.ctx)()
+        self.SapVirtualInstancesInvokeSapSupportedSku(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -107,7 +112,7 @@ class SapSupportedSku(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class SAPSupportedSku(AAZHttpOperation):
+    class SapVirtualInstancesInvokeSapSupportedSku(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -151,7 +156,7 @@ class SapSupportedSku(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-10-01-preview",
+                    "api-version", "2024-09-01",
                     required=True,
                 ),
             }
@@ -174,7 +179,7 @@ class SapSupportedSku(AAZCommand):
             _content_value, _builder = self.new_content_builder(
                 self.ctx.args,
                 typ=AAZObjectType,
-                typ_kwargs={"flags": {"client_flatten": True}}
+                typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
             _builder.set_prop("appLocation", AAZStrType, ".app_location", typ_kwargs={"flags": {"required": True}})
             _builder.set_prop("databaseType", AAZStrType, ".database_type", typ_kwargs={"flags": {"required": True}})
