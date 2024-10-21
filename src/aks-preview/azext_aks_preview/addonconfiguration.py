@@ -108,17 +108,7 @@ def enable_addons(
         dns_zone_resource_ids=dns_zone_resource_ids
     )
 
-    is_monitoring_addon = False
-    addon_args = addons.split(',')
-    for addon_arg in addon_args:
-        if addon_arg in ADDONS:
-            addon = ADDONS[addon_arg]
-            if addon == CONST_MONITORING_ADDON_NAME:
-                is_monitoring_addon = True
-                break
-
-    monitoring_addon_enabled = is_monitoring_addon and CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
-        CONST_MONITORING_ADDON_NAME].enabled
+    monitoring_addon_enabled = is_monitoring_addon_enabled(addons, instance)
 
     if monitoring_addon_enabled:
         if CONST_MONITORING_USING_AAD_MSI_AUTH in instance.addon_profiles[CONST_MONITORING_ADDON_NAME].config and \
@@ -504,3 +494,19 @@ def add_virtual_node_role_assignment(cmd, result, vnet_subnet_id):
     else:
         logger.warning('Could not find service principal or user assigned MSI for role'
                        'assignment')
+
+
+
+def is_monitoring_addon_enabled(addons, instance):
+        is_monitoring_addon = False
+        addon_args = addons.split(',')
+        for addon_arg in addon_args:
+            if addon_arg in ADDONS:
+                addon = ADDONS[addon_arg]
+                if addon == CONST_MONITORING_ADDON_NAME:
+                    is_monitoring_addon = True
+                    break
+
+        addon_profiles = instance.addon_profiles or {}
+        return is_monitoring_addon and CONST_MONITORING_ADDON_NAME in addon_profiles and addon_profiles[
+            CONST_MONITORING_ADDON_NAME].enabled
