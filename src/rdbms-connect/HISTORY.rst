@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.7
+++++++
++ Remove msrestazure dependency
+
 1.0.6
 ++++++
 + Add support for Python versions 3.9, 3.10 and 3.11 for dependency of psycopg2
