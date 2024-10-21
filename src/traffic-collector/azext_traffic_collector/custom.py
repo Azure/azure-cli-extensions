@@ -19,7 +19,7 @@ from azure.cli.core.azclierror import (
     InvalidArgumentValueError,
 )
 from azure.cli.core.aaz import has_value
-from msrestazure.tools import parse_resource_id
+from azure.mgmt.core.tools import parse_resource_id
 logger = get_logger(__name__)
 
 

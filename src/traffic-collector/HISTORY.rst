@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.0.0
+++++++++++++++++++
+* Removing msrestazure dependency and using azure.mgmt.core
+
 0.1.3
 ++++++++++++++++++
 * Add validation during create/update Collector Policy to ensure ExpressRoute circuit bandwidth is 1G or more
