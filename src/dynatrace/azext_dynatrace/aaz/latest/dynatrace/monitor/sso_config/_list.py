@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor sso-config list"
+    "dynatrace monitor sso-config list",
 )
 class List(AAZCommand):
     """List all dynatrace sso-config by monitor name
@@ -27,6 +27,8 @@ class List(AAZCommand):
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/singlesignonconfigurations", "2021-09-01"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -221,6 +223,10 @@ class List(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _ListHelper:
+    """Helper class for List"""
 
 
 __all__ = ["List"]

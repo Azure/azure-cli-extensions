@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor show"
+    "dynatrace monitor show",
 )
 class Show(AAZCommand):
     """Show a monitor resource
@@ -340,6 +340,10 @@ class Show(AAZCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _ShowHelper:
+    """Helper class for Show"""
 
 
 __all__ = ["Show"]

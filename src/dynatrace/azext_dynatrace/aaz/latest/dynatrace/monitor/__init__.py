@@ -11,6 +11,7 @@
 from .__cmd_group import *
 from ._create import *
 from ._delete import *
+from ._get_metric_status import *
 from ._get_sso_detail import *
 from ._get_vm_host_payload import *
 from ._list import *

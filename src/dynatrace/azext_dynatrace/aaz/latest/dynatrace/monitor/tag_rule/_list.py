@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor tag-rule list"
+    "dynatrace monitor tag-rule list",
 )
 class List(AAZCommand):
     """List all tag rule by monitor name
@@ -27,6 +27,8 @@ class List(AAZCommand):
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/tagrules", "2021-09-01"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -207,7 +209,7 @@ class List(AAZCommand):
 
             filtering_tags = cls._schema_on_200.value.Element.properties.log_rules.filtering_tags
             filtering_tags.Element = AAZObjectType()
-            _build_schema_filtering_tag_read(filtering_tags.Element)
+            _ListHelper._build_schema_filtering_tag_read(filtering_tags.Element)
 
             metric_rules = cls._schema_on_200.value.Element.properties.metric_rules
             metric_rules.filtering_tags = AAZListType(
@@ -216,7 +218,7 @@ class List(AAZCommand):
 
             filtering_tags = cls._schema_on_200.value.Element.properties.metric_rules.filtering_tags
             filtering_tags.Element = AAZObjectType()
-            _build_schema_filtering_tag_read(filtering_tags.Element)
+            _ListHelper._build_schema_filtering_tag_read(filtering_tags.Element)
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -241,27 +243,29 @@ class List(AAZCommand):
             return cls._schema_on_200
 
 
-_schema_filtering_tag_read = None
+class _ListHelper:
+    """Helper class for List"""
 
+    _schema_filtering_tag_read = None
 
-def _build_schema_filtering_tag_read(_schema):
-    global _schema_filtering_tag_read
-    if _schema_filtering_tag_read is not None:
-        _schema.action = _schema_filtering_tag_read.action
-        _schema.name = _schema_filtering_tag_read.name
-        _schema.value = _schema_filtering_tag_read.value
-        return
+    @classmethod
+    def _build_schema_filtering_tag_read(cls, _schema):
+        if cls._schema_filtering_tag_read is not None:
+            _schema.action = cls._schema_filtering_tag_read.action
+            _schema.name = cls._schema_filtering_tag_read.name
+            _schema.value = cls._schema_filtering_tag_read.value
+            return
 
-    _schema_filtering_tag_read = AAZObjectType()
+        cls._schema_filtering_tag_read = _schema_filtering_tag_read = AAZObjectType()
 
-    filtering_tag_read = _schema_filtering_tag_read
-    filtering_tag_read.action = AAZStrType()
-    filtering_tag_read.name = AAZStrType()
-    filtering_tag_read.value = AAZStrType()
+        filtering_tag_read = _schema_filtering_tag_read
+        filtering_tag_read.action = AAZStrType()
+        filtering_tag_read.name = AAZStrType()
+        filtering_tag_read.value = AAZStrType()
 
-    _schema.action = _schema_filtering_tag_read.action
-    _schema.name = _schema_filtering_tag_read.name
-    _schema.value = _schema_filtering_tag_read.value
+        _schema.action = cls._schema_filtering_tag_read.action
+        _schema.name = cls._schema_filtering_tag_read.name
+        _schema.value = cls._schema_filtering_tag_read.value
 
 
 __all__ = ["List"]

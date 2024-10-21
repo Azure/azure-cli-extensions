@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor tag-rule create"
+    "dynatrace monitor tag-rule create",
 )
 class Create(AAZCommand):
     """Create a tag rule
@@ -49,7 +49,6 @@ class Create(AAZCommand):
             options=["--monitor-name"],
             help="Monitor resource name",
             required=True,
-            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -58,7 +57,6 @@ class Create(AAZCommand):
             options=["-n", "--name", "--rule-set-name"],
             help="Monitor rule set name",
             required=True,
-            id_part="child_name_1",
         )
 
         # define Arg Group "Properties"
@@ -268,7 +266,7 @@ class Create(AAZCommand):
 
             filtering_tags = _builder.get(".properties.logRules.filteringTags")
             if filtering_tags is not None:
-                _build_schema_filtering_tag_create(filtering_tags.set_elements(AAZObjectType, "."))
+                _CreateHelper._build_schema_filtering_tag_create(filtering_tags.set_elements(AAZObjectType, "."))
 
             metric_rules = _builder.get(".properties.metricRules")
             if metric_rules is not None:
@@ -276,7 +274,7 @@ class Create(AAZCommand):
 
             filtering_tags = _builder.get(".properties.metricRules.filteringTags")
             if filtering_tags is not None:
-                _build_schema_filtering_tag_create(filtering_tags.set_elements(AAZObjectType, "."))
+                _CreateHelper._build_schema_filtering_tag_create(filtering_tags.set_elements(AAZObjectType, "."))
 
             return self.serialize_content(_content_value)
 
@@ -342,7 +340,7 @@ class Create(AAZCommand):
 
             filtering_tags = cls._schema_on_200_201.properties.log_rules.filtering_tags
             filtering_tags.Element = AAZObjectType()
-            _build_schema_filtering_tag_read(filtering_tags.Element)
+            _CreateHelper._build_schema_filtering_tag_read(filtering_tags.Element)
 
             metric_rules = cls._schema_on_200_201.properties.metric_rules
             metric_rules.filtering_tags = AAZListType(
@@ -351,7 +349,7 @@ class Create(AAZCommand):
 
             filtering_tags = cls._schema_on_200_201.properties.metric_rules.filtering_tags
             filtering_tags.Element = AAZObjectType()
-            _build_schema_filtering_tag_read(filtering_tags.Element)
+            _CreateHelper._build_schema_filtering_tag_read(filtering_tags.Element)
 
             system_data = cls._schema_on_200_201.system_data
             system_data.created_at = AAZStrType(
@@ -376,35 +374,37 @@ class Create(AAZCommand):
             return cls._schema_on_200_201
 
 
-def _build_schema_filtering_tag_create(_builder):
-    if _builder is None:
-        return
-    _builder.set_prop("action", AAZStrType, ".action")
-    _builder.set_prop("name", AAZStrType, ".name")
-    _builder.set_prop("value", AAZStrType, ".value")
+class _CreateHelper:
+    """Helper class for Create"""
 
+    @classmethod
+    def _build_schema_filtering_tag_create(cls, _builder):
+        if _builder is None:
+            return
+        _builder.set_prop("action", AAZStrType, ".action")
+        _builder.set_prop("name", AAZStrType, ".name")
+        _builder.set_prop("value", AAZStrType, ".value")
 
-_schema_filtering_tag_read = None
+    _schema_filtering_tag_read = None
 
+    @classmethod
+    def _build_schema_filtering_tag_read(cls, _schema):
+        if cls._schema_filtering_tag_read is not None:
+            _schema.action = cls._schema_filtering_tag_read.action
+            _schema.name = cls._schema_filtering_tag_read.name
+            _schema.value = cls._schema_filtering_tag_read.value
+            return
 
-def _build_schema_filtering_tag_read(_schema):
-    global _schema_filtering_tag_read
-    if _schema_filtering_tag_read is not None:
-        _schema.action = _schema_filtering_tag_read.action
-        _schema.name = _schema_filtering_tag_read.name
-        _schema.value = _schema_filtering_tag_read.value
-        return
+        cls._schema_filtering_tag_read = _schema_filtering_tag_read = AAZObjectType()
 
-    _schema_filtering_tag_read = AAZObjectType()
+        filtering_tag_read = _schema_filtering_tag_read
+        filtering_tag_read.action = AAZStrType()
+        filtering_tag_read.name = AAZStrType()
+        filtering_tag_read.value = AAZStrType()
 
-    filtering_tag_read = _schema_filtering_tag_read
-    filtering_tag_read.action = AAZStrType()
-    filtering_tag_read.name = AAZStrType()
-    filtering_tag_read.value = AAZStrType()
-
-    _schema.action = _schema_filtering_tag_read.action
-    _schema.name = _schema_filtering_tag_read.name
-    _schema.value = _schema_filtering_tag_read.value
+        _schema.action = cls._schema_filtering_tag_read.action
+        _schema.name = cls._schema_filtering_tag_read.name
+        _schema.value = cls._schema_filtering_tag_read.value
 
 
 __all__ = ["Create"]

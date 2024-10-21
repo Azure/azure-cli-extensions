@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor sso-config show"
+    "dynatrace monitor sso-config show",
 )
 class Show(AAZCommand):
     """Show a dynatrace sso-config
@@ -221,6 +221,10 @@ class Show(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _ShowHelper:
+    """Helper class for Show"""
 
 
 __all__ = ["Show"]

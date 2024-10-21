@@ -1,0 +1,62 @@
+interactions:
+- request:
+    body: '{"tenantId": "d99f94f0-719f-4528-a9b1-cba806ef4124"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace get-marketplace-saas-resource-detail
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '52'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --tenant-id
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Dynatrace.Observability/getMarketplaceSaaSResourceDetails?api-version=2023-04-27
+  response:
+    body:
+      string: '{"marketplaceSaaSResourceId": "e6b57923-8588-4e61-d5dd-5e13e9d6730f",
+        "planId": "azureportalintegration_privatepreview", "marketplaceSubscriptionStatus":
+        "Subscribed"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '167'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 18 Oct 2024 07:16:29 GMT
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - de9b3c02-a41f-4989-81a2-b6056dc2f969
+      pragma:
+      - no-cache
+      request-context:
+      - appId=cid-v1:fab059ea-d726-424a-9451-6beb3dc74944
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: B0052666162D48E382C302361E1606ED Ref B: MAA201060513029 Ref C: 2024-10-18T07:16:21Z'
+    status:
+      code: 200
+      message: OK
+version: 1
