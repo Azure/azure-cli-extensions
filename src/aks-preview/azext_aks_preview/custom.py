@@ -2214,7 +2214,7 @@ def aks_enable_addons(
     if CONST_VIRTUAL_NODE_ADDON_NAME + os_type in instance.addon_profiles:
         enable_virtual_node = True
 
-    need_post_creation_role_assignment = monitoring_addon_enabled or ingress_appgw_addon_enabled or enable_virtual_node
+    need_post_creation_role_assignment = is_monitoring_addon_enabled or ingress_appgw_addon_enabled or enable_virtual_node
     if need_post_creation_role_assignment:
         # adding a wait here since we rely on the result for role assignment
         result = LongRunningOperation(cmd.cli_ctx)(
