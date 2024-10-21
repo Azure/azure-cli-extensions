@@ -908,6 +908,10 @@ def load_policy_from_virtual_node_yaml_str(
         # extract existing policy and fragments for diff mode
         metadata = case_insensitive_dict_get(yaml, "metadata")
         annotations = case_insensitive_dict_get(metadata, config.VIRTUAL_NODE_YAML_ANNOTATIONS)
+        labels = case_insensitive_dict_get(metadata, config.VIRTUAL_NODE_YAML_LABELS) or []
+        use_workload_identity = (
+            config.VIRTUAL_NODE_YAML_LABEL_WORKLOAD_IDENTITY in labels
+            and labels.get(config.VIRTUAL_NODE_YAML_LABEL_WORKLOAD_IDENTITY) == "true")
         existing_policy = case_insensitive_dict_get(annotations, config.VIRTUAL_NODE_YAML_POLICY)
         try:
             if existing_policy:
@@ -951,6 +955,8 @@ def load_policy_from_virtual_node_yaml_str(
                 secrets_data,
                 approve_wildcards=approve_wildcards
             )
+            if use_workload_identity:
+                envs += config.VIRTUAL_NODE_ENV_RULES_WORKLOAD_IDENTITY
 
             # command
             command = case_insensitive_dict_get(container, "command") or []

@@ -116,6 +116,7 @@ test_invalid_many_input_types | Makes sure we're only getting input from one sou
 test_diff_wrong_input_type | Makes sure we're only doing the diff command if we're using a ARM Template as the input type
 test_parameters_without_template | Makes sure we error out if a parameter file is getting passed in without an ARM Template
 test_input_and_virtual_node | Error out if both input and virtual node are specified
+test_workload_identity | Make sure env vars are injected if workload identity is used
 
 ## Tar File [test file](test_confcom_tar.py)
 

@@ -101,6 +101,34 @@
             }
         ]
     },
+    "workload_identity_virtual_node": {
+        "environmentVariables": [
+            {
+                "name": "AZURE_CLIENT_ID",
+                "value": ".+",
+                "strategy": "re2",
+                "required": false
+            },
+            {
+                "name": "AZURE_TENANT_ID",
+                "value": ".+",
+                "strategy": "re2",
+                "required": false
+            },
+            {
+                "name": "AZURE_FEDERATED_TOKEN_FILE",
+                "value": ".+",
+                "strategy": "re2",
+                "required": false
+            },
+            {
+                "name": "AZURE_AUTHORITY_HOST",
+                "value": ".+",
+                "strategy": "re2",
+                "required": false
+            }
+        ]
+    },
     "managedIdentity": {
         "environmentVariables": [
             {

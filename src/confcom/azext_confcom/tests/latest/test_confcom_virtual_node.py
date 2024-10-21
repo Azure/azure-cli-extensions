@@ -218,6 +218,8 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: simple-container-pod
+  labels:
+    azure.workload.identity/use: "true"
 spec:
   initContainers:
     - name: init-container
@@ -314,3 +316,15 @@ spec:
         self.assertEqual(containers[0][config.POLICY_FIELD_CONTAINERS_NAME], "simple-container")
         # see if the main container is in the policy
         self.assertEqual(containers[1][config.POLICY_FIELD_CONTAINERS_NAME], "init-container")
+
+    def test_workload_identity(self):
+        virtual_node_policy = load_policy_from_virtual_node_yaml_str(self.custom_yaml_init_containers)[0]
+        virtual_node_policy.populate_policy_content_for_all_images()
+        container_start = "containers := "
+        containers = json.loads(extract_containers_from_text(virtual_node_policy.get_serialized_output(OutputType.PRETTY_PRINT), container_start))
+
+        # have to extract the name from the pattern
+        env_rule_names = [(env_rule['pattern']).split("=")[0] for env_rule in containers[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_ENVS]]
+
+        for var in config.VIRTUAL_NODE_ENV_RULES_WORKLOAD_IDENTITY:
+          self.assertTrue(var['name'] in env_rule_names)

@@ -87,6 +87,8 @@ ACI_FIELD_YAML_STARTUP_PROBE = "startupProbe"
 VIRTUAL_NODE_YAML_METADATA = "metadata"
 VIRTUAL_NODE_YAML_NAME = "name"
 VIRTUAL_NODE_YAML_ANNOTATIONS = "annotations"
+VIRTUAL_NODE_YAML_LABELS = "labels"
+VIRTUAL_NODE_YAML_LABEL_WORKLOAD_IDENTITY = "azure.workload.identity/use"
 VIRTUAL_NODE_YAML_POLICY = "microsoft.containerinstance.virtualnode.ccepolicy"
 VIRTUAL_NODE_YAML_LIFECYCLE = "lifecycle"
 VIRTUAL_NODE_YAML_LIFECYCLE_POST_START = "postStart"
@@ -173,6 +175,8 @@ FABRIC_ENV_RULES = _config["fabric"]["environmentVariables"]
 MANAGED_IDENTITY_ENV_RULES = _config["managedIdentity"]["environmentVariables"]
 # VN2 environment variables
 VIRTUAL_NODE_ENV_RULES = _config["default_envs_virtual_node"]["environmentVariables"]
+# VN2 environment variables for workload identities
+VIRTUAL_NODE_ENV_RULES_WORKLOAD_IDENTITY = _config["workload_identity_virtual_node"]["environmentVariables"]
 # Enable container restart environment variable for all containers
 ENABLE_RESTART_ENV_RULE = _config["enableRestart"]["environmentVariables"]
 # default mounts image for customer containers
