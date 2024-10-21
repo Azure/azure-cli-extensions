@@ -73,7 +73,7 @@ class Update(AAZCommand):
             help="Details of the company.",
         )
         _args_schema.partner_organization_properties = AAZObjectArg(
-            options=["--partner-organization-properties"],
+            options=["--partner-org-props", "--partner-organization-properties"],
             arg_group="Properties",
             help="Organization properties",
             nullable=True,

@@ -75,7 +75,7 @@ class Create(AAZCommand):
             help="Marketplace details of the resource.",
         )
         _args_schema.partner_organization_properties = AAZObjectArg(
-            options=["--partner-organization-properties"],
+            options=["--partner-org-props", "--partner-organization-properties"],
             arg_group="Properties",
             help="Organization properties",
         )
