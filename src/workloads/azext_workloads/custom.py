@@ -45,7 +45,8 @@ class SVICreate(_SVICreate):
 
     @classmethod
     def _build_args_virtual_machine_configuration_create(cls, _schema):
-        from azure.cli.core.aaz import AAZObjectArg, AAZStrArg, AAZResourceIdArg, AAZPasswordArg, AAZBoolArg, AAZListArg, AAZPromptPasswordInput
+        from azure.cli.core.aaz import AAZObjectArg, AAZStrArg, AAZResourceIdArg, \
+            AAZPasswordArg, AAZBoolArg, AAZListArg, AAZPromptPasswordInput
         if cls._args_virtual_machine_configuration_create is not None:
             _schema.image_reference = cls._args_virtual_machine_configuration_create.image_reference
             _schema.os_profile = cls._args_virtual_machine_configuration_create.os_profile
@@ -74,7 +75,9 @@ class SVICreate(_SVICreate):
         image_reference = cls._args_virtual_machine_configuration_create.image_reference
         image_reference.id = AAZResourceIdArg(
             options=["id"],
-            help="Specifies the ARM resource ID of the Azure Compute Gallery image version used for creating ACSS VMs. You will need to provide this input when you choose to deploy virtual machines in ACSS with OS image from the Azure Compute gallery.",
+            help="Specifies the ARM resource ID of the Azure Compute Gallery image version \
+                used for creating ACSS VMs. You will need to provide this input when you \
+                choose to deploy virtual machines in ACSS with OS image from the Azure Compute gallery.",
         )
         image_reference.offer = AAZStrArg(
             options=["offer"],
@@ -90,13 +93,30 @@ class SVICreate(_SVICreate):
         )
         image_reference.version = AAZStrArg(
             options=["version"],
-            help="Specifies the version of the platform image or marketplace image used to create the virtual machine. The allowed formats are Major.Minor.Build or 'latest'. Major, Minor, and Build are decimal numbers. Specify 'latest' to use the latest version of an image available at deploy time. Even if you use 'latest', the VM image will not automatically update after deploy time even if a new version becomes available.",
+            help="Specifies the version of the platform image or marketplace image used to \
+                create the virtual machine. The allowed formats are Major.Minor.Build or 'latest'. \
+                Major, Minor, and Build are decimal numbers. Specify 'latest' to use the latest \
+                version of an image available at deploy time. Even if you use 'latest', \
+                the VM image will not automatically update after deploy time even if a \
+                new version becomes available.",
         )
 
         os_profile = cls._args_virtual_machine_configuration_create.os_profile
         os_profile.admin_password = AAZPasswordArg(
             options=["admin-password"],
-            help="Specifies the password of the administrator account. <br><br> **Minimum-length (Windows):** 8 characters <br><br> **Minimum-length (Linux):** 6 characters <br><br> **Max-length (Windows):** 123 characters <br><br> **Max-length (Linux):** 72 characters <br><br> **Complexity requirements:** 3 out of 4 conditions below need to be fulfilled <br> Has lower characters <br>Has upper characters <br> Has a digit <br> Has a special character (Regex match [\W_]) <br><br> **Disallowed values:** \"abc@123\", \"P@$$w0rd\", \"P@ssw0rd\", \"P@ssword123\", \"Pa$$word\", \"pass@word1\", \"Password!\", \"Password1\", \"Password22\", \"iloveyou!\" <br><br> For resetting the password, see [How to reset the Remote Desktop service or its login password in a Windows VM](https://docs.microsoft.com/troubleshoot/azure/virtual-machines/reset-rdp) <br><br> For resetting root password, see [Manage users, SSH, and check or repair disks on Azure Linux VMs using the VMAccess Extension](https://docs.microsoft.com/troubleshoot/azure/virtual-machines/troubleshoot-ssh-connection)",
+            help="Specifies the password of the administrator account. \
+                <br><br> **Minimum-length (Windows):** 8 characters <br><br> **Minimum-length \
+                (Linux):** 6 characters <br><br> **Max-length (Windows):** 123 characters <br><br> \
+                **Max-length (Linux):** 72 characters <br><br> **Complexity requirements:** 3 out \
+                of 4 conditions below need to be fulfilled <br> Has lower characters <br>Has upper \
+                characters <br> Has a digit <br> Has a special character (Regex match [\\W_]) <br><br> \
+                **Disallowed values:** \"abc@123\", \"P@$$w0rd\", \"P@ssw0rd\", \"P@ssword123\", \"Pa$$word\", \
+                \"pass@word1\", \"Password!\", \"Password1\", \"Password22\", \"iloveyou!\" <br><br> \
+                For resetting the password, see [How to reset the Remote Desktop service or its login password \
+                in a Windows VM](https://docs.microsoft.com/troubleshoot/azure/virtual-machines/reset-rdp) \
+                <br><br> For resetting root password, see [Manage users, SSH, and \
+                check or repair disks on Azure Linux VMs using the VMAccess Extension]\
+                (https://docs.microsoft.com/troubleshoot/azure/virtual-machines/troubleshoot-ssh-connection)",
             blank=AAZPromptPasswordInput(
                 msg="Password:",
                 confirm=True,
@@ -104,7 +124,14 @@ class SVICreate(_SVICreate):
         )
         os_profile.admin_username = AAZStrArg(
             options=["admin-username"],
-            help="Specifies the name of the administrator account. <br><br> This property cannot be updated after the VM is created. <br><br> **Windows-only restriction:** Cannot end in \".\" <br><br> **Disallowed values:** \"administrator\", \"admin\", \"user\", \"user1\", \"test\", \"user2\", \"test1\", \"user3\", \"admin1\", \"1\", \"123\", \"a\", \"actuser\", \"adm\", \"admin2\", \"aspnet\", \"backup\", \"console\", \"david\", \"guest\", \"john\", \"owner\", \"root\", \"server\", \"sql\", \"support\", \"support_388945a0\", \"sys\", \"test2\", \"test3\", \"user4\", \"user5\". <br><br> **Minimum-length (Linux):** 1  character <br><br> **Max-length (Linux):** 64 characters <br><br> **Max-length (Windows):** 20 characters.",
+            help="Specifies the name of the administrator account. <br><br> This property cannot be updated \
+                after the VM is created. <br><br> **Windows-only restriction:** Cannot end in \".\" \
+                <br><br> **Disallowed values:** \"administrator\", \"admin\", \"user\", \"user1\", \"test\", \
+                \"user2\", \"test1\", \"user3\", \"admin1\", \"1\", \"123\", \"a\", \"actuser\", \"adm\", \
+                \"admin2\", \"aspnet\", \"backup\", \"console\", \"david\", \"guest\", \"john\", \"owner\", \"root\", \
+                \"server\", \"sql\", \"support\", \"support_388945a0\", \"sys\", \"test2\", \"test3\", \"user4\", \
+                \"user5\". <br><br> **Minimum-length (Linux):** 1  character <br><br> **Max-length (Linux):** \
+                64 characters <br><br> **Max-length (Windows):** 20 characters.",
         )
         os_profile.os_configuration = AAZObjectArg(
             options=["os-configuration"],
@@ -123,7 +150,8 @@ class SVICreate(_SVICreate):
         )
         linux.ssh = AAZObjectArg(
             options=["ssh"],
-            help="Specifies the ssh key configuration for a Linux OS. (This property is deprecated, please use 'sshKeyPair' instead)",
+            help="Specifies the ssh key configuration for a Linux OS. (This property is deprecated, \
+                please use 'sshKeyPair' instead)",
         )
         linux.ssh_key_pair = AAZObjectArg(
             options=["ssh-key-pair"],
@@ -139,10 +167,14 @@ class SVICreate(_SVICreate):
         public_keys = cls._args_virtual_machine_configuration_create.os_profile.os_configuration.linux.ssh.public_keys
         public_keys.Element = AAZObjectArg()
 
-        _element = cls._args_virtual_machine_configuration_create.os_profile.os_configuration.linux.ssh.public_keys.Element
+        _element = cls._args_virtual_machine_configuration_create.\
+            os_profile.os_configuration.linux.ssh.public_keys.Element
         _element.key_data = AAZStrArg(
             options=["key-data"],
-            help="SSH public key certificate used to authenticate with the VM through ssh. The key needs to be at least 2048-bit and in ssh-rsa format. <br><br> For creating ssh keys, see [Create SSH keys on Linux and Mac for Linux VMs in Azure](https://docs.microsoft.com/azure/virtual-machines/linux/create-ssh-keys-detailed).",
+            help="SSH public key certificate used to authenticate with the VM through ssh. \
+                The key needs to be at least 2048-bit and in ssh-rsa format. <br><br> For creating ssh keys, \
+                see [Create SSH keys on Linux and Mac for Linux VMs in Azure]\
+                (https://docs.microsoft.com/azure/virtual-machines/linux/create-ssh-keys-detailed).",
         )
 
         ssh_key_pair = cls._args_virtual_machine_configuration_create.os_profile.os_configuration.linux.ssh_key_pair
@@ -162,13 +194,14 @@ class SVICreate(_SVICreate):
         _schema.image_reference = cls._args_virtual_machine_configuration_create.image_reference
         _schema.os_profile = cls._args_virtual_machine_configuration_create.os_profile
         _schema.vm_size = cls._args_virtual_machine_configuration_create.vm_size
-    
+
     @classmethod
     def _build_args_high_availability_software_configuration_create(cls, _schema):
         from azure.cli.core.aaz import AAZObjectArg, AAZStrArg, AAZPasswordArg, AAZPromptPasswordInput
         if cls._args_high_availability_software_configuration_create is not None:
             _schema.fencing_client_id = cls._args_high_availability_software_configuration_create.fencing_client_id
-            _schema.fencing_client_password = cls._args_high_availability_software_configuration_create.fencing_client_password
+            _schema.fencing_client_password = cls._args_high_availability_software_configuration_create.\
+                fencing_client_password
             return
 
         cls._args_high_availability_software_configuration_create = AAZObjectArg()
@@ -181,7 +214,8 @@ class SVICreate(_SVICreate):
         )
         high_availability_software_configuration_create.fencing_client_password = AAZPasswordArg(
             options=["fencing-client-password"],
-            help="The fencing client id secret/password. The secret should never expire. This will be used pacemaker to start/stop the cluster VMs.",
+            help="The fencing client id secret/password. The secret should never expire. \
+                This will be used pacemaker to start/stop the cluster VMs.",
             required=True,
             blank=AAZPromptPasswordInput(
                 msg="Fencing client password:",
@@ -190,14 +224,16 @@ class SVICreate(_SVICreate):
         )
 
         _schema.fencing_client_id = cls._args_high_availability_software_configuration_create.fencing_client_id
-        _schema.fencing_client_password = cls._args_high_availability_software_configuration_create.fencing_client_password
+        _schema.fencing_client_password = cls._args_high_availability_software_configuration_create.\
+            fencing_client_password
 
     @classmethod
     def _build_args_software_configuration_create(cls, _schema):
-        from azure.cli.core.aaz import AAZObjectArg, AAZStrArg, AAZPasswordArg, AAZBoolArg, AAZPromptPasswordInput
+        from azure.cli.core.aaz import AAZObjectArg, AAZStrArg, AAZPasswordArg, AAZPromptPasswordInput
         if cls._args_software_configuration_create is not None:
             _schema.external = cls._args_software_configuration_create.external
-            _schema.sap_install_without_os_config = cls._args_software_configuration_create.sap_install_without_os_config
+            _schema.sap_install_without_os_config = cls._args_software_configuration_create.\
+                sap_install_without_os_config
             _schema.service_initiated = cls._args_software_configuration_create.service_initiated
             return
 
@@ -230,7 +266,9 @@ class SVICreate(_SVICreate):
             options=["high-availability-software-configuration"],
             help="Gets or sets the HA software configuration.",
         )
-        cls._build_args_high_availability_software_configuration_create(sap_install_without_os_config.high_availability_software_configuration)
+        cls._build_args_high_availability_software_configuration_create(
+            sap_install_without_os_config.high_availability_software_configuration
+        )
         sap_install_without_os_config.sap_bits_storage_account_id = AAZStrArg(
             options=["sap-bits-storage-account-id"],
             help="The SAP bits storage account id.",
@@ -252,7 +290,9 @@ class SVICreate(_SVICreate):
             options=["high-availability-software-configuration"],
             help="Gets or sets the HA software configuration.",
         )
-        cls._build_args_high_availability_software_configuration_create(service_initiated.high_availability_software_configuration)
+        cls._build_args_high_availability_software_configuration_create(
+            service_initiated.high_availability_software_configuration
+        )
         service_initiated.sap_bits_storage_account_id = AAZStrArg(
             options=["sap-bits-storage-account-id"],
             help="The SAP bits storage account id.",
