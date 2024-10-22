@@ -11,7 +11,7 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 9.0.0b7
 +++++++
-* Fix bug related to updating the monitoring addon DCR when the non monitoring addon enabled through az aks enable-addons.
+* Fix bug related to updating the monitoring addon DCR when the non monitoring addon enabled through `az aks enable-addons`.
 
 9.0.0b6
 +++++++
