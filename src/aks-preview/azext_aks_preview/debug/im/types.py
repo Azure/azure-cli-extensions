@@ -13,8 +13,6 @@ class Step:
         pass
 
     def get_next_steps(self) -> List[Step]:
-        if not self.next_steps:
-            self.run()
         return self.next_steps
 
 
@@ -34,6 +32,9 @@ class ActionStep(Step):
 class NoActionStep(Step):
     def __init__(self) -> None:
         super().__init__()
+
+    def run(self) -> Step:
+        print("NoActionStep")
 
     def get_next_steps(self) -> List[Step]:
         return []
