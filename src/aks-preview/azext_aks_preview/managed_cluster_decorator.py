@@ -3417,8 +3417,16 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY,
                 CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD,
             )
-            from azext_aks_preview.azurecontainerstorage._helpers import generate_vm_sku_cache_for_region
-            generate_vm_sku_cache_for_region(self.cmd.cli_ctx, self.context.get_location())
+
+            vm_cache_generated = self.context.get_intermediate(
+                "vm_cache_generated",
+                default_value=False,
+            )
+
+            if not vm_cache_generated:
+                from azext_aks_preview.azurecontainerstorage._helpers import generate_vm_sku_cache_for_region
+                generate_vm_sku_cache_for_region(self.cmd.cli_ctx, self.context.get_location())
+                self.context.set_intermediate("vm_cache_generated", True, overwrite_exists=True)
 
             default_ephemeral_disk_volume_type = CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY
             default_ephemeral_disk_nvme_perf_tier = CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
@@ -4243,8 +4251,15 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 mc.agent_pool_profiles,
             )
 
-            from azext_aks_preview.azurecontainerstorage._helpers import generate_vm_sku_cache_for_region
-            generate_vm_sku_cache_for_region(self.cmd.cli_ctx, self.context.get_location())
+            vm_cache_generated = self.context.get_intermediate(
+                "vm_cache_generated",
+                default_value=False,
+            )
+
+            if not vm_cache_generated:
+                from azext_aks_preview.azurecontainerstorage._helpers import generate_vm_sku_cache_for_region
+                generate_vm_sku_cache_for_region(self.cmd.cli_ctx, self.context.get_location())
+                self.context.set_intermediate("vm_cache_generated", True, overwrite_exists=True)
 
             if enable_azure_container_storage:
                 from azext_aks_preview.azurecontainerstorage._consts import (
