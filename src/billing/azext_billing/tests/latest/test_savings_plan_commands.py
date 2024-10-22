@@ -162,5 +162,6 @@ class AzureBillingSavingsPlanScenarioTest(ScenarioTest):
         self.kwargs.update({
             'arg': "[{applied-scope-type:Shared}]"
         })
-        validate = self.cmd('billing savings-plan validate-update-by-billing-account --billing-account-name {billing_account_name} '
+        response = self.cmd('billing savings-plan validate-update-by-billing-account --billing-account-name {billing_account_name} '
                                     ' --savings-plan-order-id {savings_plan_order} --savings-plan-id {savings_plan} --benefits {arg}').get_output_in_json()
+        self.assertEqual(True, response['benefits'][0]['valid'])
