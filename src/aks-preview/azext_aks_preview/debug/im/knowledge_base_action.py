@@ -6,7 +6,7 @@ class ActionStepA(ActionStep):
         super().__init__()
 
     def run(self) -> Step:
-        print("ActionStepA")
+        print(self)
 
 
 class ActionStepB(ActionStep):
@@ -14,7 +14,7 @@ class ActionStepB(ActionStep):
         super().__init__()
 
     def run(self) -> Step:
-        print("ActionStepB")
+        print(self)
 
 
 class ActionStepC(ActionStep):
@@ -22,4 +22,4 @@ class ActionStepC(ActionStep):
         super().__init__()
 
     def run(self) -> Step:
-        print("ActionStepC")
+        print(self)

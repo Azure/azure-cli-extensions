@@ -8,6 +8,7 @@ class DebugStepA(DebugStep):
         self.tags.append("dns")
 
     def run(self) -> Step:
+        print(self)
         data = self.shared_data_collector.get_core_dns_config_map_data()
         if data == "a":
             self.next_steps.append(ActionStepA())
@@ -23,6 +24,7 @@ class DebugStepB(DebugStep):
         self.tags.append("dns")
 
     def run(self) -> Step:
+        print(self)
         data = self.shared_data_collector.get_ig_dns_data()
         if data == "c":
             self.next_steps.append(ActionStepB())
@@ -38,4 +40,5 @@ class DebugStepC(DebugStep):
         self.tags.append("egress")
 
     def run(self) -> Step:
+        print(self)
         self.next_steps.append(NoActionStep())

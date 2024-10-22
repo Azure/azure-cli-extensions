@@ -13,7 +13,10 @@ class Orchestrator():
         self.steps = self.knowledge_base.get_debug_steps_by_scenario(scenario)
         current_steps = []
         next_steps = self.steps
+        round_cnt = 0
         while next_steps:
+            round_cnt += 1
+            print(f"Round {round_cnt}")
             current_steps = next_steps
             next_steps = []
             for step in current_steps:
