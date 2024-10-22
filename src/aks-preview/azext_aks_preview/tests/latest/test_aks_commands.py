@@ -4240,7 +4240,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--node-vm-size Standard_NC4as_T4_v3 --driver-type GRID "
             "-k {k8s_version} -o json"
         )
-               
+
         self.cmd(
             create_nodepool_cmd,
             checks=[self.check("provisioningState", "Succeeded"),
@@ -4252,7 +4252,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "aks nodepool update --resource-group {resource_group} --cluster-name {name} "
             "--name {nodepool_name} --tags team=industry -o json"
         )
-        
+
         self.cmd(
             update_cmd,
             checks=[self.check("provisioningState", "Succeeded"),
@@ -4271,7 +4271,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--node-vm-size Standard_NC4as_T4_v3 "
             "-k {k8s_version} -o json"
         )
-               
+
         self.cmd(
             create_nodepool_cmd,
             checks=[self.check("provisioningState", "Succeeded"),
@@ -5215,6 +5215,29 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="westus2"
     )
+    def test_aks_create_with_monitoring_aad_auth_msi_with_datacollectionsettings_and_otheraddon(
+        self,
+        resource_group,
+        resource_group_location,
+    ):
+        aks_name = self.create_random_name("cliakstest", 16)
+        self.create_new_cluster_with_monitoring_aad_auth(
+            resource_group,
+            resource_group_location,
+            aks_name,
+            user_assigned_identity=False,
+            syslog_enabled=False,
+            data_collection_settings=_get_test_data_file("datacollectionsettings.json"),
+            use_ampls=False,
+            highlogscale_mode_enabled=False,
+            enableOtherAddon=True
+        )
+
+    @live_only()
+    @AllowLargeResponse()
+    @AKSCustomResourceGroupPreparer(
+        random_name_length=17, name_prefix="clitest", location="westus2"
+    )
     def test_aks_create_with_monitoring_aad_auth_uai_with_syslog(
         self, resource_group, resource_group_location
     ):
@@ -5252,7 +5275,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
 
 
-    def create_new_cluster_with_monitoring_aad_auth(self, resource_group, resource_group_location, aks_name, user_assigned_identity=False, syslog_enabled=False, data_collection_settings=None, use_ampls=False, highlogscale_mode_enabled=False):
+    def create_new_cluster_with_monitoring_aad_auth(self, resource_group, resource_group_location, aks_name, user_assigned_identity=False, syslog_enabled=False, data_collection_settings=None, use_ampls=False, highlogscale_mode_enabled=False, enableOtherAddon=False):
         self.kwargs.update({
             'resource_group': resource_group,
             'name': aks_name,
@@ -5285,6 +5308,10 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         create_cmd += f'--enable-private-cluster ' if use_ampls else ''
         create_cmd += f'--ampls-resource-id {ampls_resource_id} ' if use_ampls else ''
         create_cmd += f'--enable-high-log-scale-mode ' if highlogscale_mode_enabled else ''
+
+        if enableOtherAddon:
+            # enable other addon such azure-policy to verify the monitoring addon and DCRs etc.. remainins intact.
+            self.cmd(f'aks enable-addons -a azure-policy -g={resource_group} -n={aks_name}')
 
         response = self.cmd(create_cmd, checks=[
             self.check('addonProfiles.omsagent.enabled', True),
@@ -14159,7 +14186,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 self.check("ingressProfile.webAppRouting.nginx.defaultIngressControllerType", "AnnotationControlled")
             ],
         )
-    
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17, name_prefix="clitest", location="centralus"
@@ -14311,7 +14338,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         delete_cmd = "aks delete --resource-group={resource_group} --name={aks_name} --yes --no-wait"
         self.cmd(delete_cmd, checks=[self.is_empty()])
 
-    
+
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
@@ -14328,7 +14355,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
 
         # create cluster without app routing
         aks_name = self.create_random_name("cliakstest", 16)
-        
+
         _, k8s_version = self._get_versions(resource_group_location)
 
         self.kwargs.update(
