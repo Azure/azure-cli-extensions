@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 import unittest
+from unittest.mock import patch
 from types import SimpleNamespace
 
 import azext_aks_preview._validators as validators
@@ -872,6 +873,26 @@ class TestValidateDisableAzureContainerStorage(unittest.TestCase):
 
 
 class TestValidateEnableAzureContainerStorage(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.mock_cache = {
+            ('standard_l8s_v3',): (8, True),
+            ('standard_d2s_v2',): (2, False),
+            ('standard_d2pds_v6',): (2, True),
+            ('standard_ds1_v2',): (1, False),
+            ('standard_d2s_v2',): (2, False),
+            ('standard_m8-2ms',): (2, False),
+            ('standard_b2s',): (2, False),
+        }
+
+        cls.patcher = patch('azext_aks_preview.azurecontainerstorage._helpers.vm_sku_details.cache', cls.mock_cache)
+        cls.patcher.start()
+
+    @classmethod
+    def tearDownClass(cls):
+        # Stop the patcher
+        cls.patcher.stop()
+
     def test_enable_with_invalid_storage_pool_name(self):
         storage_pool_name = "my_test_pool"
         err = (
@@ -959,10 +980,10 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
         nodepool_list = "pool1"
-        agentpools = [{"name": "pool1", "vm_size": "Standard_H100-D2s_v2", "count": 3, "zoned": False}]
+        agentpools = [{"name": "pool1", "vm_size": "Standard_D2pds_v6", "count": 3, "zoned": False}]
         err = (
             "Cannot operate Azure Container Storage on a node pool consisting of "
-            "nodes with cores less than 4. Node pool: pool1 with node size: Standard_H100-D2s_v2 "
+            "nodes with cores less than 4. Node pool: pool1 with node size: Standard_D2pds_v6 "
             "which is assigned for Azure Container Storage has nodes with 2 cores."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
@@ -976,11 +997,11 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
         nodepool_list = "pool1"
-        agentpools = [{"name": "pool1", "vm_size": "Standard_H100-D2s", "count": 3, "zoned": False}]
+        agentpools = [{"name": "pool1", "vm_size": "Standard_Ds1_v2", "count": 3, "zoned": False}]
         err = (
             "Cannot operate Azure Container Storage on a node pool consisting of "
-            "nodes with cores less than 4. Node pool: pool1 with node size: Standard_H100-D2s "
-            "which is assigned for Azure Container Storage has nodes with 2 cores."
+            "nodes with cores less than 4. Node pool: pool1 with node size: Standard_Ds1_v2 "
+            "which is assigned for Azure Container Storage has nodes with 1 cores."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
             acstor_validator.validate_enable_azure_container_storage_params(
@@ -993,10 +1014,10 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
         nodepool_list = "pool1"
-        agentpools = [{"name": "pool1", "vm_size": "Standard_H2", "count": 3, "zoned": False}]
+        agentpools = [{"name": "pool1", "vm_size": "Standard_M8-2ms", "count": 3, "zoned": False}]
         err = (
             "Cannot operate Azure Container Storage on a node pool consisting of "
-            "nodes with cores less than 4. Node pool: pool1 with node size: Standard_H2 "
+            "nodes with cores less than 4. Node pool: pool1 with node size: Standard_M8-2ms "
             "which is assigned for Azure Container Storage has nodes with 2 cores."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
@@ -1010,10 +1031,10 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         storage_pool_sku = acstor_consts.CONST_STORAGE_POOL_SKU_PREMIUM_LRS
         storage_pool_type = acstor_consts.CONST_STORAGE_POOL_TYPE_AZURE_DISK
         nodepool_list = "pool1"
-        agentpools = [{"name": "pool1", "vm_size": "Standard_D2s", "count": 3, "zoned": False}]
+        agentpools = [{"name": "pool1", "vm_size": "Standard_B2s", "count": 3, "zoned": False}]
         err = (
             "Cannot operate Azure Container Storage on a node pool consisting of "
-            "nodes with cores less than 4. Node pool: pool1 with node size: Standard_D2s "
+            "nodes with cores less than 4. Node pool: pool1 with node size: Standard_B2s "
             "which is assigned for Azure Container Storage has nodes with 2 cores."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
