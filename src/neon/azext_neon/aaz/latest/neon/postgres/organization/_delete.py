@@ -20,7 +20,7 @@ class Delete(AAZCommand):
     """Delete a Neon Resource
 
     :example: Organizations_Delete
-        az neon postgres organization delete --subscription <subscription-id> --resource-group <resource-group-name> --name <resource-name>
+        az neon postgres organization delete --subscription 12345678-1234-1234-1234-123456789abc --resource-group demoResourceGroup --name demoNeonResource
     """
 
     _aaz_info = {

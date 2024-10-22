@@ -19,7 +19,7 @@ class Update(AAZCommand):
     """Update a Neon Resource
 
     :example: Organization_Update
-        az az neon postgres organization update --resource-group <resource-group-name> --name <resource-name> --user-details "{first-name:<first-name>,last-name:<last-name>,email-address:<email-address>,upn:<upn>,phone-number:<phone-number>}" --company-details "{company-name:<company-name>,country:<country>,office-address:<office-address>,business-phone:<business-phone>,domain:<domain>,number-of-employees:<number-of-employees>}" --partner-organization-properties "{organization-id:<organization-id>,org-name:<organization-name>,single-sign-on-properties:{single-sign-on-state:<single-sign-on-state>,enterprise-app-id:<enterprise-app-id>,single-sign-on-url:<single-sign-on-url>,aad-domains:[<aad-domain>]}}" --tags "{<key>:<value>}"
+        az az neon postgres organization update --resource-group demoResourceGroup --name demoNeonResource --user-details "{first-name:John,last-name:Doe,email-address:johndoe@example.com,upn:johndoe,phone-number:+1234567890}" --company-details "{company-name:DemoCompany,country:USA,office-address:'123 Azure Ave, Redmond, WA',business-phone:+9876543210,domain:democompany.com,number-of-employees:1000}" --partner-organization-properties "{organization-id:org-5678,org-name:PartnerOrg,single-sign-on-properties:{single-sign-on-state:Enable,enterprise-app-id:app-9876,single-sign-on-url:'https://sso.partnerorg.com',aad-domains:['partnerorg.com']}}" --tags "{environment:production}"
     """
 
     _aaz_info = {
