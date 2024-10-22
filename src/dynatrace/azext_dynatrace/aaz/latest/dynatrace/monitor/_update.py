@@ -12,10 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor update"
+    "dynatrace monitor update",
 )
 class Update(AAZCommand):
-    """Update a monitor resource
+    """Update a MonitorResource
 
     :example: Update monitor
         az dynatrace monitor update -g {rg} -n {monitor} --tags {{env:dev}}
@@ -370,6 +370,10 @@ class Update(AAZCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _UpdateHelper:
+    """Helper class for Update"""
 
 
 __all__ = ["Update"]

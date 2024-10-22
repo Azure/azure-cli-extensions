@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor list-monitored-resource"
+    "dynatrace monitor list-monitored-resource",
 )
 class ListMonitoredResource(AAZCommand):
     """List the resources currently being monitored by the dynatrace monitor resource
@@ -27,6 +27,8 @@ class ListMonitoredResource(AAZCommand):
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/listmonitoredresources", "2021-09-01"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -176,6 +178,10 @@ class ListMonitoredResource(AAZCommand):
             )
 
             return cls._schema_on_200
+
+
+class _ListMonitoredResourceHelper:
+    """Helper class for ListMonitoredResource"""
 
 
 __all__ = ["ListMonitoredResource"]
