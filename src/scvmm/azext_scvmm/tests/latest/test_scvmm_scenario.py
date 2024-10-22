@@ -7,25 +7,31 @@
 
 import os
 from azure.cli.testsdk import ScenarioTest
-import datetime
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class ScVmmScenarioTest(ScenarioTest):
     def test_scvmm(self):
+        vmm_user = self.cmd(
+            'az keyvault secret show --name SyntheticsVMMServerUsername --vault-name arcscvmmsynthetics --query value -o json',
+        ).output.strip()
         vmm_pass = self.cmd(
-            'az keyvault secret show --name SyntheticsVMMServerPassword --vault-name arcscvmmsynthetics --query value -o tsv',
+            'az keyvault secret show --name SyntheticsVMMServerPassword --vault-name arcscvmmsynthetics --query value -o json',
+        ).output.strip()
+        guest_user = self.cmd(
+            'az keyvault secret show --name SyntheticsTemplateVMUsernameAdmin --vault-name arcscvmmsynthetics --query value -o json',
         ).output.strip()
         guest_pass = self.cmd(
-            'az keyvault secret show --name arcvmw-domain-password --vault-name arcprivatecloudtest-kv --query value -o tsv',
+            'az keyvault secret show --name SyntheticsTemplateVMPassword --vault-name arcscvmmsynthetics --query value -o json',
         ).output.strip()
+        
         self.kwargs.update(
             {
                 'resource_group': 'azcli-test-rg-vmm',
                 'fqdn': 'vmmnebdev0809.cdm.lab',
                 'port': '8100',
-                'vmmserver_username': 'cdmlab\\\\cdmlabuser',
+                'vmmserver_username': vmm_user,
                 'vmmserver_password': vmm_pass,
                 'location': 'eastus2euap',
                 'custom_location': 'azcli-test-cl-vmm',
@@ -46,7 +52,7 @@ class ScVmmScenarioTest(ScenarioTest):
                 'nic_name': 'nic_1',
                 'checkpoint_name': 'azcli-test-checkpoint',
                 'checkpoint_description': 'azcli-test-checkpoint',
-                'guest_username': 'Administrator',
+                'guest_username': guest_user,
                 'guest_password': guest_pass,         
                 'extension_name': 'RunCommand',
                 'extension_type': 'CustomScriptExtension',
@@ -95,6 +101,7 @@ class ScVmmScenarioTest(ScenarioTest):
                 self.check('properties.uuid', '{ivmt_uuid}'),
             ],
         )
+        
         self.cmd(
             "az scvmm vmmserver inventory-item show -g {resource_group} -v {vmmserver_name}"
             " -i {ivnet_uuid}",

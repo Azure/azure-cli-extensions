@@ -15,7 +15,10 @@ class ExpressRoutePortLOAContentReplacer(RecordingProcessor):
         import base64
 
         body = response['body']['string']
+        statusCode = response.get('status', {}).get('code')
 
+        if(statusCode == 200 and body == b''):
+            return response
         json_body = json.loads(body)
         if json_body and 'ingestionKey' in json_body.keys():
             json_body['ingestionKey'] = base64.b64encode('ingestionKey content replaced by ExpressRoutePortLOAContentReplacer'.encode('utf-8')).decode('utf-8')

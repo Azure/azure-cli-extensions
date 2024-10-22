@@ -162,4 +162,8 @@ class GetVmHostPayload(AAZCommand):
             return cls._schema_on_200
 
 
+class _GetVmHostPayloadHelper:
+    """Helper class for GetVmHostPayload"""
+
+
 __all__ = ["GetVmHostPayload"]
