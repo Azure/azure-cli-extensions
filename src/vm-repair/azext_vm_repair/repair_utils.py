@@ -477,7 +477,7 @@ def _unlock_mount_windows_encrypted_disk(repair_vm_name, repair_group_name, encr
 
 def _fetch_compatible_windows_os_urn(source_vm):
     location = source_vm.location
-    fetch_urn_command = 'az vm image list -s "2019-datacenter-gs" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2019-datacenter-gs\'].urn | reverse(sort(@))" -o json'.format(loc=location)
+    fetch_urn_command = 'az vm image list -s "2022-datacenter-smalldisk" -f WindowsServer -p MicrosoftWindowsServer -l {loc} --verbose --all --query "[?sku==\'2022-datacenter-smalldisk\'].urn | reverse(sort(@))" -o json'.format(loc=location)
     logger.info('Fetching compatible Windows OS images from gallery...')
     urns = loads(_call_az_command(fetch_urn_command))
 
