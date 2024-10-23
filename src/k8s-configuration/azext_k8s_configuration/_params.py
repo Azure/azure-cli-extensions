@@ -320,7 +320,6 @@ def load_arguments(self, _):
         )
         c.argument(
             "disable_health_check",
-            options_list=["--disable-health-check"],
             arg_type=get_three_state_flag(),
             help="Disable health checks for kustomizations applied to the cluster."
         )
