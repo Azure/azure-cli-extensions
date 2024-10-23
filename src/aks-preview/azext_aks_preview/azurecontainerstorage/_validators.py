@@ -533,7 +533,7 @@ def _validate_nodepools(  # pylint: disable=too-many-branches,too-many-locals
             if zoned_nodepool:
                 multi_zoned_cluster = True
         else:
-            agentpool_names_str = ",".join(agentpool_details.keys())
+            agentpool_names_str = ", ".join(agentpool_details.keys())
             nodepool_str = "Node pool"
             if len(agentpool_details.keys()):
                 nodepool_str = "Node pools"
@@ -541,7 +541,7 @@ def _validate_nodepools(  # pylint: disable=too-many-branches,too-many-locals
                 f'Node pool: {nodepool} not found. '
                 'Please provide a comma separated string of existing node pool names '
                 'in --azure-container-storage-nodepools.'
-                f'\n{nodepool_str} available in the cluster: {agentpool_names_str}.'
+                f'\n{nodepool_str} available in the cluster are: {agentpool_names_str}.'
                 '\nAborting installation of Azure Container Storage.'
             )
 
