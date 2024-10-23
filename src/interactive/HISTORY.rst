@@ -3,7 +3,7 @@
 Release History
 ===============
 
-0.5.4
+1.0.0b1
 +++++
 * Compliant with Python 3.12
 
