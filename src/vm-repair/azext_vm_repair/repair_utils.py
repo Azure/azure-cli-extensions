@@ -743,12 +743,6 @@ def _create_repair_vm(copy_disk_id, create_repair_vm_command, repair_password, r
     if not fix_uuid:
         create_repair_vm_command += ' --attach-data-disks {id}'.format(id=copy_disk_id)
     
-    logger.debug('Creating repair VM with command: {}'.format(create_repair_vm_command))
-    logger.debug('copy_disk_id: {}'.format(copy_disk_id))
-    logger.debug('repair_password: {}'.format(repair_password))
-    logger.debug('repair_username: {}'.format(repair_username))
-    logger.debug('fix_uuid: {}'.format(fix_uuid))
-    
     logger.info('Validating VM template before continuing...')
     _call_az_command(create_repair_vm_command + ' --validate', secure_params=[repair_password, repair_username])
     logger.info('Creating repair VM...')
