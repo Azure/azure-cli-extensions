@@ -29,6 +29,18 @@ def generate_nexus_identity_keys() -> None:
 
     # Generate SSH key
     if sys.platform.startswith("win"):
+
+        dir_path = os.path.expanduser("~\\.ssh")
+
+        # check if the ssh directory exists or not
+        if not os.path.exists(dir_path):
+            try:
+                # Create the directory
+                os.makedirs(dir_path)
+            except OSError as e:
+                logger.error("Error creating directory: %s", e)
+                raise CLIError(f"Error creating directory: {e}")
+
         # Generate ed25519-sk key
         subprocess.run(['ssh-keygen',
                         '-t',
@@ -38,14 +50,13 @@ def generate_nexus_identity_keys() -> None:
                         '-O',
                         'verify-required',
                         '-f',
-                        os.path.expanduser("~\\.ssh\\id_ecdsa_sk")],
+                        os.path.join(dir_path, "id_ed25519_sk")],
                        check=False)
 
-    # currently the cryptography library does not support the ed25519-sk key
-    # type, so we will read the public key from the file
+    # read the key from the file
         try:
             # Read public key
-            with open(os.path.expanduser("~/.ssh/id_ecdsa_sk.pub"), "r") as key_file:
+            with open(os.path.join(dir_path, "id_ed25519_sk.pub"), "r") as key_file:
                 public_key = key_file.read()
         except FileNotFoundError as e:
             raise CLIError(f"Error reading public key: {e}")

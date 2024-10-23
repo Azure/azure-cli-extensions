@@ -17,6 +17,8 @@ from azure.cli.core.aaz import *
 class List(AAZCommand):
     """List SolutionConfiguration resources by parent public cloud connector
 
+    For additional details, please visit the https://learn.microsoft.com/en-us/cli/azure/arc-multicloud?view=azure-cli-latest
+
     :example: SolutionConfigurations_List
         az arc-multicloud solution-configuration list --connector-id /subscriptions/{}/resourceGroups/{}/providers/Microsoft.HybridConnectivity/publicCloudConnectors/{}
     """

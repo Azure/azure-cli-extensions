@@ -81,6 +81,7 @@ class ValidationCheckPoller(LoadTestingPollingMethod):
         self._polling_interval = interval
         self._status = None
         self._termination_statuses = [
+            "NOT_VALIDATED",
             "VALIDATION_SUCCESS",
             "VALIDATION_FAILED",
             "VALIDATION_NOT_REQUIRED",

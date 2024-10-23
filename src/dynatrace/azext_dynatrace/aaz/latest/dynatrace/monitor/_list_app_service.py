@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor list-app-service"
+    "dynatrace monitor list-app-service",
 )
 class ListAppService(AAZCommand):
     """Get list of app services with dynatrace PaaS OneAgent enabled
@@ -27,6 +27,8 @@ class ListAppService(AAZCommand):
             ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/listappservices", "2021-09-01"],
         ]
     }
+
+    AZ_SUPPORT_PAGINATION = True
 
     def _handler(self, command_args):
         super()._handler(command_args)
@@ -188,6 +190,10 @@ class ListAppService(AAZCommand):
             _element.version = AAZStrType()
 
             return cls._schema_on_200
+
+
+class _ListAppServiceHelper:
+    """Helper class for ListAppService"""
 
 
 __all__ = ["ListAppService"]
