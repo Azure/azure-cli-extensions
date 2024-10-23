@@ -22,6 +22,7 @@ rp_name_hybrid_compute = "Microsoft.HybridCompute"
 required_rps = [rp_name_hybrid_connectivity, rp_name_aws_connector, rp_name_hybrid_compute]
 
 
+# We call this method before running each individual command. See usage in src/multicloud-connector/azext_multicloud_connector/custom.py
 def register_providers_if_needed(cmd):
     logger.debug("Start to check if required RPs are registered ...")
     for rp_name in required_rps:
