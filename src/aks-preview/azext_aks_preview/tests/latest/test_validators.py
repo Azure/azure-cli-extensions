@@ -880,13 +880,29 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
             ('standard_d2s_v2',): (2, False),
             ('standard_d2pds_v6',): (2, True),
             ('standard_ds1_v2',): (1, False),
-            ('standard_d2s_v2',): (2, False),
             ('standard_m8-2ms',): (2, False),
             ('standard_b2s',): (2, False),
         }
 
-        cls.patcher = patch('azext_aks_preview.azurecontainerstorage._helpers.vm_sku_details.cache', cls.mock_cache)
-        cls.patcher.start()
+        def side_effect_fn(sku_name, cpu_val=None, nvme=None):
+            if sku_name == "standard_l8s_v3":
+                return 8, True
+            elif sku_name == "standard_d2s_v2":
+                return 2, False
+            elif sku_name == "standard_d2pds_v6":
+                return 2, True
+            elif sku_name == "standard_ds1_v2":
+                return 1, False
+            elif sku_name == "standard_m8-2ms":
+                return 2, False
+            elif sku_name == "standard_b2s":
+                return 2, False
+
+            return None, None
+
+        cls.patcher = patch('azext_aks_preview.azurecontainerstorage._validators.vm_sku_details')
+        cls.mock_fn = cls.patcher.start()
+        cls.mock_fn.side_effect = side_effect_fn
 
     @classmethod
     def tearDownClass(cls):
@@ -1195,7 +1211,7 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         err = (
             "Node pool: pool1 not found. Please provide a comma separated "
             "string of existing node pool names in --azure-container-storage-nodepools."
-            "\nNode pool available in the cluster is: nodepool1."
+            "\nNode pool available in the cluster: nodepool1."
             "\nAborting installation of Azure Container Storage."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
@@ -1214,7 +1230,7 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         err = (
             "Node pool: pool1 not found. Please provide a comma separated "
             "string of existing node pool names in --azure-container-storage-nodepools."
-            "\nNode pools available in the cluster are: nodepool1, nodepool2."
+            "\nNode pools available in the cluster: nodepool1, nodepool2."
             "\nAborting installation of Azure Container Storage."
         )
         with self.assertRaises(InvalidArgumentValueError) as cm:
