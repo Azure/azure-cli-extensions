@@ -1341,7 +1341,8 @@ class TestValidateEnableAzureContainerStorage(unittest.TestCase):
         err = (
             "Cannot set --azure-container-storage-nodepools while using "
             "--enable-azure-container-storage to enable a type of storage pool "
-            "in a cluster where Azure Container Storage is already installed."
+            "in a cluster where Azure Container Storage is already installed. "
+            "Use 'az aks nodepool' to label the node pool instead."
         )
         with self.assertRaises(ArgumentUsageError) as cm:
             acstor_validator.validate_enable_azure_container_storage_params(

@@ -446,9 +446,10 @@ def _validate_nodepools(  # pylint: disable=too-many-branches,too-many-locals
     if is_extension_installed:
         if nodepool_list is not None:
             raise ArgumentUsageError(
-                'Cannot set --azure-container-storage-nodepools while using '
-                '--enable-azure-container-storage to enable a type of storage pool '
-                'in a cluster where Azure Container Storage is already installed.'
+                "Cannot set --azure-container-storage-nodepools while using "
+                "--enable-azure-container-storage to enable a type of storage pool "
+                "in a cluster where Azure Container Storage is already installed. "
+                "Use 'az aks nodepool' to label the node pool instead."
             )
 
         if agentpool_details is not None:
