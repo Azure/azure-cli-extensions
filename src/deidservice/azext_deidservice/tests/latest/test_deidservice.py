@@ -12,7 +12,9 @@ class DeidserviceScenario(ScenarioTest):
      
     @AllowLargeResponse()
     def test_list_deid_services(self):
-        services = self.cmd('az deidservice list').get_output_in_json()
+        # Limit the query to specific resource group in this case to avoid to much data
+        # Obfuscated the recording.
+        services = self.cmd(f'az deidservice list --resource-group rg-demo').get_output_in_json()
         
         # Check that the response is a list
         self.assertIsInstance(services, list)
