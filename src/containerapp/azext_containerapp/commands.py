@@ -262,3 +262,9 @@ def load_command_table(self, args):
         g.custom_command('set', 'create_or_update_java_logger', supports_no_wait=True)
         g.custom_command('delete', 'delete_java_logger', supports_no_wait=True)
         g.custom_show_command('show', 'show_java_logger')
+
+    with self.command_group('containerapp env maintenanceconfig') as g:
+        g.custom_command('add', 'add_maintenance_config', supports_no_wait=True)
+        g.custom_command('update', 'update_maintenance_config', supports_no_wait=True)
+        g.custom_command('delete', 'delete_maintenance_config', supports_no_wait=True)
+        g.custom_command('show', 'show_maintenance_config')

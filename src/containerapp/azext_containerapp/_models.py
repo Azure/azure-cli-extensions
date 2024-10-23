@@ -293,6 +293,23 @@ ContainerAppsJob = {
     "tags": None
 }
 
+MaintenanceConfiguration = {
+    "name": "default",
+    "properties": {
+        "scheduledEntries": [
+            {
+                "weekDay": None,
+                "startHourUtc": None,
+                "durationHours": None
+            }
+        ]
+    }
+}
+
+ScheduleEntries = {
+
+}
+
 SessionPool = {
     "location": None,
     "properties": {

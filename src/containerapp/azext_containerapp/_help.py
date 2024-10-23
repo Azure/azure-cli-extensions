@@ -2131,3 +2131,42 @@ helps['containerapp job registry set'] = """
           az containerapp job registry set -n my-containerapp-job -g MyResourceGroup \\
               --server MyContainerappJobRegistry.azurecr.io --identity system-environment
 """
+
+#Maintenance Config Commands
+helps['containerapp env maintenanceconfig add'] = """
+    type: command
+    short-summary: Add a Maintenance Configuration to a Container App Environment
+    examples:
+    - name: Configure an Env to use a maintenance config
+      text: |
+          az containerapp env maintenanceconfig add --env-name myEnv -g MyResourceGroup \\
+              --duration 10 --start-hour-utc 11 --weekday Sunday
+"""
+
+helps['containerapp env maintenanceconfig update'] = """
+    type: command
+    short-summary: Update a Maintenance Configuration in a Container App Environment
+    examples:
+    - name: Configure an Env to use a maintenance config
+      text: |
+          az containerapp env maintenanceconfig update --env-name myEnv -g MyResourceGroup \\
+              --duration 8 --start-hour-utc 12 --weekday Thursday
+"""
+
+helps['containerapp env maintenanceconfig show'] = """
+    type: command
+    short-summary: Show a Maintenance Configuration in a Container App Environment
+    examples:
+    - name: Show a maintenance config
+      text: |
+          az containerapp env maintenanceconfig show --env-name myEnv -g MyResourceGroup
+"""
+
+helps['containerapp env maintenanceconfig delete'] = """
+    type: command
+    short-summary: Delete a Maintenance Configuration in a Container App Environment
+    examples:
+    - name: Delete a Maintenance Config
+      text: |
+          az containerapp env maintenanceconfig add --env-name myEnv -g MyResourceGroup
+"""

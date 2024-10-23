@@ -370,6 +370,16 @@ def load_arguments(self, _):
         c.argument('max_replicas', type=int, help="Maximum number of replicas to run for the Java component.")
         c.argument('route_yaml', options_list=['--route-yaml', '--yaml'], help="Path to a .yaml file with the configuration of a Spring Cloud Gateway route. For an example, see https://aka.ms/gateway-for-spring-routes-yaml")
 
+    with self.argument_context('containerapp env maintenanceconfig add') as c:
+        c.argument('weekday', options_list=['--weekday', '-w'], help="The weekday to schedule the maintenance configuration.")
+        c.argument('start_hour_utc', options_list=['--start-hour-utc', '-s'], help="The hour to start the maintenance configuration.")
+        c.argument('duration', options_list=['--duration', '-d'], help="The duration in hours of the maintenance configuration.")
+
+    with self.argument_context('containerapp env maintenanceconfig update') as c:
+        c.argument('weekday', options_list=['--weekday', '-w'], help="The weekday to schedule the maintenance configuration.")
+        c.argument('start_hour_utc', options_list=['--start-hour-utc', '-s'], help="The hour to start the maintenance configuration.")
+        c.argument('duration', options_list=['--duration', '-d'], help="The duration in hours of the maintenance configuration.")
+
     with self.argument_context('containerapp job logs show') as c:
         c.argument('follow', help="Print logs in real time if present.", arg_type=get_three_state_flag())
         c.argument('tail', help="The number of past logs to print (0-300)", type=int, default=20)
