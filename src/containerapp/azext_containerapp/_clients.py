@@ -1384,11 +1384,12 @@ class DotNetComponentPreviewClient():
 
         return dotNet_component_list
 
+
 class MaintenanceConfigPreviewClient():
     api_version = "2024-10-02-preview"
     maintenance_config_name = MAINTENANCE_CONFIG_DEFAULT_NAME
 
-    @classmethod 
+    @classmethod
     def show(cls, cmd, resource_group_name, environment_name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
@@ -1404,7 +1405,7 @@ class MaintenanceConfigPreviewClient():
         r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
         return r.json()
-    
+
     @classmethod
     def add(cls, cmd, resource_group_name, environment_name, maintenance_config_envelope, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
@@ -1455,7 +1456,7 @@ class MaintenanceConfigPreviewClient():
                 return response
 
         return r.json()
-    
+
     @classmethod
     def delete(cls, cmd, resource_group_name, environment_name, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager

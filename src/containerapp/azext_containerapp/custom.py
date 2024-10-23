@@ -3261,6 +3261,7 @@ def set_registry_job(cmd, name, resource_group_name, server, username=None, pass
     r = containerapp_job_registry_set_decorator.set()
     return r
 
+
 # maintenance config
 def add_maintenance_config(cmd, resource_group_name, env_name, duration, start_hour_utc, weekday):
     raw_parameters = locals()
@@ -3274,6 +3275,7 @@ def add_maintenance_config(cmd, resource_group_name, env_name, duration, start_h
     r = maintenance_config_decorator.add()
     return r
 
+
 def update_maintenance_config(cmd, resource_group_name, env_name, duration, start_hour_utc, weekday):
     raw_parameters = locals()
     maintenance_config_decorator = MaintenanceConfigPreviewDecorator(
@@ -3286,6 +3288,7 @@ def update_maintenance_config(cmd, resource_group_name, env_name, duration, star
     r = maintenance_config_decorator.update()
     return r
 
+
 def delete_maintenance_config(cmd, resource_group_name, env_name):
     raw_parameters = locals()
     maintenance_config_decorator = MaintenanceConfigPreviewDecorator(
@@ -3296,6 +3299,7 @@ def delete_maintenance_config(cmd, resource_group_name, env_name):
     )
     r = maintenance_config_decorator.delete()
     return r
+
 
 def show_maintenance_config(cmd, resource_group_name, env_name):
     raw_parameters = locals()

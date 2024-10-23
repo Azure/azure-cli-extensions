@@ -2132,7 +2132,7 @@ helps['containerapp job registry set'] = """
               --server MyContainerappJobRegistry.azurecr.io --identity system-environment
 """
 
-#Maintenance Config Commands
+# Maintenance Config Commands
 helps['containerapp env maintenanceconfig add'] = """
     type: command
     short-summary: Add a Maintenance Configuration to a Container App Environment

@@ -8,6 +8,7 @@ upcoming
 * 'az containerapp containerapp create/up': `--registry-server` and `--source` use managed identity for image pull by default
 * 'az containerapp containerapp create': `--registry-server` use managed identity for image pull by default. `--no-wait` will not take effect with system registry identity.
 * 'az containerapp env java-component gateway-for-spring': Support create/update/show/delete Gateway for spring.
+* 'az containerapp env maintenanceconfig': Support Add, Update, Show, Delete
 
 1.0.0b3
 ++++++
