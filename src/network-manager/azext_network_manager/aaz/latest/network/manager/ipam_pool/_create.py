@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Create the Pool resource.
 
     :example: IpamPools_Create
-        az network manager ipam-pool create --name "myIpamPool" --network-manager-name "myAVNM" --resource-group "myAVNMResourceGroup" --address-prefixes "['10.0.0.0/16', '10.1.0.0/16']" --parent-pool-name "myParentIpamPool" --display-name "myIpamPoolDisplayName" --description "Description"
+        az network manager ipam-pool create --name "myIpamPool" --network-manager-name "myAVNM" --resource-group "myAVNMResourceGroup" --address-prefixes "['10.0.0.0/16', '10.1.0.0/16']" --parent-pool-name "myParentIpamPool" --display-name "myIpamPoolDisplayName" --description "New Description"
     """
 
     _aaz_info = {
