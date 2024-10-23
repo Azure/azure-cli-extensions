@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 import os
 import datetime
-import oschmod
 
 from azure.cli.core.style import Style, print_styled_text
 
@@ -12,6 +11,7 @@ from azure.cli.core import azclierror
 from knack import log
 from . import file_utils
 from . import connectivity_utils
+from . import _file_permission_utils
 
 logger = log.get_logger(__name__)
 
@@ -192,7 +192,9 @@ class ConfigSession():
         file_utils.delete_file(relay_info_path, f"{relay_info_path} already exists, and couldn't be overwritten.")
         file_utils.write_to_file(relay_info_path, 'w', connectivity_utils.format_relay_info_string(self.relay_info),
                                  f"Couldn't write relay information to file {relay_info_path}.", 'utf-8')
-        oschmod.set_mode(relay_info_path, 0o644)
+        #oschmod.set_mode(relay_info_path, 0o644)
+        _file_permission_utils.set_certificate_permissions(relay_info_path)
+
         # pylint: disable=broad-except
         try:
             # pylint: disable=unsubscriptable-object
