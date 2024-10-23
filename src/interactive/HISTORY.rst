@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.0.0b1
++++++
+* Compliant with Python 3.12
+
 0.5.3
 +++++
 * Optimize the visualization of help text when the window is reduced horizontally
