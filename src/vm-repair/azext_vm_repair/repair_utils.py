@@ -491,7 +491,7 @@ def _fetch_compatible_windows_os_urn(source_vm):
     os_image_ref = source_vm.storage_profile.image_reference
     if os_image_ref and isinstance(os_image_ref.version, str) and os_image_ref.version in urns[0]:
         if len(urns) < 2:
-            logger.debug('Avoiding Win2019 GS latest image due to expected disk collision. But no other image available.')
+            logger.debug('Avoiding Win2022-datacenter-smalldisk latest image due to expected disk collision. But no other image available.')
             raise WindowsOsNotAvailableError()
         logger.debug('Returning Urn 1 to avoid disk collision error: %s', urns[1])
         return urns[1]
