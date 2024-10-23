@@ -15,8 +15,6 @@ from .validators import (
     validate_configuration_name,
     validate_fluxconfig_name,
     validate_namespace,
-    validate_operator_instance_name,
-    validate_operator_namespace,
 )
 
 from .action import (
