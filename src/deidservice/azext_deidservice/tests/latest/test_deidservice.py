@@ -6,8 +6,31 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.testsdk import *
-
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 
 class DeidserviceScenario(ScenarioTest):
-    # TODO: add tests here
+     
+    @AllowLargeResponse()
+    def test_list_deid_services(self):
+        services = self.cmd('az deidservice list').get_output_in_json()
+        
+        # Check that the response is a list
+        self.assertIsInstance(services, list)
+        
+        # Iterate through each service and verify its structure
+        for service in services:
+            self.assertIn('id', service)
+            self.assertIn('name', service)
+            self.assertIn('location', service)
+            self.assertIn('properties', service)
+            self.assertIn('resourceGroup', service)
+            self.assertIn('type', service)
+            
+            # Check that certain properties have non-null values
+            self.assertIsNotNone(service['id'])
+            self.assertIsNotNone(service['name'])
+            self.assertIsNotNone(service['location'])
+            self.assertIsNotNone(service['properties'])
+            self.assertIsNotNone(service['resourceGroup'])
+            self.assertIsNotNone(service['type'])
     pass
