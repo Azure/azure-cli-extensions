@@ -306,10 +306,6 @@ MaintenanceConfiguration = {
     }
 }
 
-ScheduleEntries = {
-
-}
-
 SessionPool = {
     "location": None,
     "properties": {
