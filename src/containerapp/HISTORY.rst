@@ -4,6 +4,9 @@ Release History
 ===============
 upcoming
 ++++++
+
+1.0.0b4
+++++++
 * 'az containerapp up': Support `--registry-identity`, `--system-assigned`, `--user-assigned`
 * 'az containerapp containerapp create/up': `--registry-server` and `--source` use managed identity for image pull by default
 * 'az containerapp containerapp create': `--registry-server` use managed identity for image pull by default. `--no-wait` will not take effect with system registry identity.
