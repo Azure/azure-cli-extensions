@@ -6,12 +6,8 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=unused-import, line-too-long, unused-argument
 
-import json
 import os
-import unittest
 
-#from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-#from .recording_processors import KeyReplacer
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.testsdk import *
 
