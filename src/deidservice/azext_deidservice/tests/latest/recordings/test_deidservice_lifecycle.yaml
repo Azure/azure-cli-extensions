@@ -1,0 +1,1219 @@
+interactions:
+- request:
+    body: '{"location": "eastus"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '22'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name -g --location
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf?api-version=2024-02-28-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","name":"deidservice-wal33ouaycwf","type":"microsoft.healthdataaiservices/deidservices","location":"eastus","systemData":{"createdBy":"cribe@microsoft.com","createdByType":"User","createdAt":"2024-10-23T22:30:18.2213065Z","lastModifiedBy":"cribe@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-10-23T22:30:18.2213065Z"},"properties":{"provisioningState":"Accepted"}}'
+    headers:
+      api-supported-versions:
+      - 1.0, 2, 2024-02-28-preview, 2024-09-20
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/6cb63ffe-aea9-4760-839e-9478e891eafc*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653194189244367&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=D3fF8wh6UYjfGA5xZAnj0uxeGchRAJ6xd5tI3iGsktGZQ56WTQlDcLT0-f01-03VJKqIWpULIOvHV1aB2NsuGUEa04BUKZwm6obGowVkHjHmozDkT--SBwFYbQ9c7mBzWK-d4Xo69C84TTpTBa2hglS50Z1K5DWi4U0Jziwm55k1KXv0GffKUK167kgADAJ4pRvlLVJWqgg-2Od7dvauMApZh8682eqSpnYuZ1-B1XqkfSJiHyz7Lwrqq8KhWsxZGnxxBwFP6yrHKWtEHAppPGz0vEGNpAVdesXah6BHzHUWWp8AYGctDxxC3253nnZmdldeAwNeohuC_T9RQAGvmg&h=zc6pp3LvBXlGnT9lXdiWIaGj65fknjw1ezpJwtu0cXU
+      cache-control:
+      - no-cache
+      content-length:
+      - '561'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:30:18 GMT
+      etag:
+      - '"d30054bd-0000-0800-0000-671978fa0000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 4c26a91b-0ea0-4887-96b0-3ff0ce306b80
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 4B24A39F90734D60867A7CB6ED99039A Ref B: YTO221090813027 Ref C: 2024-10-23T22:30:17Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --location
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/6cb63ffe-aea9-4760-839e-9478e891eafc*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653194189244367&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=D3fF8wh6UYjfGA5xZAnj0uxeGchRAJ6xd5tI3iGsktGZQ56WTQlDcLT0-f01-03VJKqIWpULIOvHV1aB2NsuGUEa04BUKZwm6obGowVkHjHmozDkT--SBwFYbQ9c7mBzWK-d4Xo69C84TTpTBa2hglS50Z1K5DWi4U0Jziwm55k1KXv0GffKUK167kgADAJ4pRvlLVJWqgg-2Od7dvauMApZh8682eqSpnYuZ1-B1XqkfSJiHyz7Lwrqq8KhWsxZGnxxBwFP6yrHKWtEHAppPGz0vEGNpAVdesXah6BHzHUWWp8AYGctDxxC3253nnZmdldeAwNeohuC_T9RQAGvmg&h=zc6pp3LvBXlGnT9lXdiWIaGj65fknjw1ezpJwtu0cXU
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/6cb63ffe-aea9-4760-839e-9478e891eafc*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","name":"6cb63ffe-aea9-4760-839e-9478e891eafc*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","status":"Accepted","startTime":"2024-10-23T22:30:18.4535982Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '597'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:30:18 GMT
+      etag:
+      - '"5f022f0d-0000-0800-0000-671978fa0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16498'
+      x-msedge-ref:
+      - 'Ref A: E64A51515B0E4478B1D1F9EA10047C1E Ref B: YTO221090813027 Ref C: 2024-10-23T22:30:18Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --location
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/6cb63ffe-aea9-4760-839e-9478e891eafc*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653194189244367&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=D3fF8wh6UYjfGA5xZAnj0uxeGchRAJ6xd5tI3iGsktGZQ56WTQlDcLT0-f01-03VJKqIWpULIOvHV1aB2NsuGUEa04BUKZwm6obGowVkHjHmozDkT--SBwFYbQ9c7mBzWK-d4Xo69C84TTpTBa2hglS50Z1K5DWi4U0Jziwm55k1KXv0GffKUK167kgADAJ4pRvlLVJWqgg-2Od7dvauMApZh8682eqSpnYuZ1-B1XqkfSJiHyz7Lwrqq8KhWsxZGnxxBwFP6yrHKWtEHAppPGz0vEGNpAVdesXah6BHzHUWWp8AYGctDxxC3253nnZmdldeAwNeohuC_T9RQAGvmg&h=zc6pp3LvBXlGnT9lXdiWIaGj65fknjw1ezpJwtu0cXU
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/6cb63ffe-aea9-4760-839e-9478e891eafc*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","name":"6cb63ffe-aea9-4760-839e-9478e891eafc*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","status":"Accepted","startTime":"2024-10-23T22:30:18.4535982Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '597'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:30:48 GMT
+      etag:
+      - '"5f022f0d-0000-0800-0000-671978fa0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 06A34BD2A5EE41D1B444CA8E67BCE551 Ref B: YTO221090813027 Ref C: 2024-10-23T22:30:49Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --location
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/6cb63ffe-aea9-4760-839e-9478e891eafc*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653194189244367&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=D3fF8wh6UYjfGA5xZAnj0uxeGchRAJ6xd5tI3iGsktGZQ56WTQlDcLT0-f01-03VJKqIWpULIOvHV1aB2NsuGUEa04BUKZwm6obGowVkHjHmozDkT--SBwFYbQ9c7mBzWK-d4Xo69C84TTpTBa2hglS50Z1K5DWi4U0Jziwm55k1KXv0GffKUK167kgADAJ4pRvlLVJWqgg-2Od7dvauMApZh8682eqSpnYuZ1-B1XqkfSJiHyz7Lwrqq8KhWsxZGnxxBwFP6yrHKWtEHAppPGz0vEGNpAVdesXah6BHzHUWWp8AYGctDxxC3253nnZmdldeAwNeohuC_T9RQAGvmg&h=zc6pp3LvBXlGnT9lXdiWIaGj65fknjw1ezpJwtu0cXU
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/6cb63ffe-aea9-4760-839e-9478e891eafc*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","name":"6cb63ffe-aea9-4760-839e-9478e891eafc*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","status":"Accepted","startTime":"2024-10-23T22:30:18.4535982Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '597'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:31:18 GMT
+      etag:
+      - '"5f022f0d-0000-0800-0000-671978fa0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 2BDFA5D791EB437AB77E6CAF62B8500C Ref B: YTO221090813027 Ref C: 2024-10-23T22:31:19Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --location
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/6cb63ffe-aea9-4760-839e-9478e891eafc*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653194189244367&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=D3fF8wh6UYjfGA5xZAnj0uxeGchRAJ6xd5tI3iGsktGZQ56WTQlDcLT0-f01-03VJKqIWpULIOvHV1aB2NsuGUEa04BUKZwm6obGowVkHjHmozDkT--SBwFYbQ9c7mBzWK-d4Xo69C84TTpTBa2hglS50Z1K5DWi4U0Jziwm55k1KXv0GffKUK167kgADAJ4pRvlLVJWqgg-2Od7dvauMApZh8682eqSpnYuZ1-B1XqkfSJiHyz7Lwrqq8KhWsxZGnxxBwFP6yrHKWtEHAppPGz0vEGNpAVdesXah6BHzHUWWp8AYGctDxxC3253nnZmdldeAwNeohuC_T9RQAGvmg&h=zc6pp3LvBXlGnT9lXdiWIaGj65fknjw1ezpJwtu0cXU
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/6cb63ffe-aea9-4760-839e-9478e891eafc*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","name":"6cb63ffe-aea9-4760-839e-9478e891eafc*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","status":"Succeeded","startTime":"2024-10-23T22:30:18.4535982Z","endTime":"2024-10-23T22:30:25.7609659Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '657'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:31:48 GMT
+      etag:
+      - '"5f02fd14-0000-0800-0000-6719793c0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: EF0313AA7CA0437DB96F24AEC94D31B7 Ref B: YTO221090813027 Ref C: 2024-10-23T22:31:49Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --location
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf?api-version=2024-02-28-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","name":"deidservice-wal33ouaycwf","type":"microsoft.healthdataaiservices/deidservices","location":"eastus","tags":{},"systemData":{"createdBy":"cribe@microsoft.com","createdByType":"User","createdAt":"2024-10-23T22:30:18.2213065Z","lastModifiedBy":"cribe@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-10-23T22:30:18.2213065Z"},"properties":{"provisioningState":"Succeeded","serviceUrl":"https://bef3cqfzdrfkdfd8.api.eus001.deid.azure.com","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '670'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:31:49 GMT
+      etag:
+      - '"d3009bbd-0000-0800-0000-671979010000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: C3CA31B210574C96AE94E7AE583A5D54 Ref B: YTO221090813027 Ref C: 2024-10-23T22:31:49Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --tags
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf?api-version=2024-02-28-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","name":"deidservice-wal33ouaycwf","type":"microsoft.healthdataaiservices/deidservices","location":"eastus","tags":{},"systemData":{"createdBy":"cribe@microsoft.com","createdByType":"User","createdAt":"2024-10-23T22:30:18.2213065Z","lastModifiedBy":"cribe@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-10-23T22:30:18.2213065Z"},"properties":{"provisioningState":"Succeeded","serviceUrl":"https://bef3cqfzdrfkdfd8.api.eus001.deid.azure.com","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '670'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:31:49 GMT
+      etag:
+      - '"d3009bbd-0000-0800-0000-671979010000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 6651CD9E517A45F183AFC8698D77D899 Ref B: YTO221090812011 Ref C: 2024-10-23T22:31:49Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "eastus", "properties": {"publicNetworkAccess": "Enabled"},
+      "tags": {"tag": "test"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice update
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '97'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --name -g --tags
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf?api-version=2024-02-28-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","name":"deidservice-wal33ouaycwf","type":"microsoft.healthdataaiservices/deidservices","location":"eastus","tags":{"tag":"test"},"systemData":{"createdBy":"cribe@microsoft.com","createdByType":"User","createdAt":"2024-10-23T22:30:18.2213065Z","lastModifiedBy":"cribe@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-10-23T22:31:50.436068Z"},"properties":{"serviceUrl":"https://bef3cqfzdrfkdfd8.api.eus001.deid.azure.com","publicNetworkAccess":"Enabled","provisioningState":"Accepted"}}'
+    headers:
+      api-supported-versions:
+      - 1.0, 2, 2024-02-28-preview, 2024-09-20
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/dca6747f-e931-498b-bc70-c31cb0a3fcb0*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653195114673284&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=d4kne865DCFDb3f072ND144PuKr6K4bsxLetCeZ7Acu_YrRk2KA3Omq2PcdnKeQGmG3MqKlIFuU9xuEDhwOTclZyvFcYSp9xKKn1GsE6XgZ7Elw2BsWcxlSjCcVi7-mzDgQ7ke9mmtUXV5vDU1e1yRF5tW-M3RujnOi7uHlsQThzTBDfgq9MhzjOYZlLKKt0NepvkSlc3b4uhLsMl9DxqGpEG1ZIlzg3mNeP0HrpNRf2t8rDOxPZGLTwGUlUrvojBkPdMZftk-t_V6qJO0GwNX8iDdkoP6Duz_9CwussM6wxY9_so_YvW2j0-xe-urOlFVs9JrWaZrnaCXTPPUIliQ&h=xrfvEs6QhQhLwdi4t3bW5FsiN-8X_CjBRI3r89R1PlI
+      cache-control:
+      - no-cache
+      content-length:
+      - '680'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:31:51 GMT
+      etag:
+      - '"d30042c0-0000-0800-0000-671979570000"'
+      expires:
+      - '-1'
+      mise-correlation-id:
+      - 4375ee3c-3c90-4f65-a4df-95b525905f06
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 1E0EA1FC2A76421A993EC22D6E93C670 Ref B: YTO221090812011 Ref C: 2024-10-23T22:31:50Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --tags
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/dca6747f-e931-498b-bc70-c31cb0a3fcb0*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653195114673284&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=d4kne865DCFDb3f072ND144PuKr6K4bsxLetCeZ7Acu_YrRk2KA3Omq2PcdnKeQGmG3MqKlIFuU9xuEDhwOTclZyvFcYSp9xKKn1GsE6XgZ7Elw2BsWcxlSjCcVi7-mzDgQ7ke9mmtUXV5vDU1e1yRF5tW-M3RujnOi7uHlsQThzTBDfgq9MhzjOYZlLKKt0NepvkSlc3b4uhLsMl9DxqGpEG1ZIlzg3mNeP0HrpNRf2t8rDOxPZGLTwGUlUrvojBkPdMZftk-t_V6qJO0GwNX8iDdkoP6Duz_9CwussM6wxY9_so_YvW2j0-xe-urOlFVs9JrWaZrnaCXTPPUIliQ&h=xrfvEs6QhQhLwdi4t3bW5FsiN-8X_CjBRI3r89R1PlI
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/dca6747f-e931-498b-bc70-c31cb0a3fcb0*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","name":"dca6747f-e931-498b-bc70-c31cb0a3fcb0*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","status":"Accepted","startTime":"2024-10-23T22:31:50.6123836Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '597'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:31:51 GMT
+      etag:
+      - '"5f02fc17-0000-0800-0000-671979560000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 3E981EC388FE457ABB2B3BA38B2D6DA0 Ref B: YTO221090812011 Ref C: 2024-10-23T22:31:51Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --tags
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/dca6747f-e931-498b-bc70-c31cb0a3fcb0*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653195114673284&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=d4kne865DCFDb3f072ND144PuKr6K4bsxLetCeZ7Acu_YrRk2KA3Omq2PcdnKeQGmG3MqKlIFuU9xuEDhwOTclZyvFcYSp9xKKn1GsE6XgZ7Elw2BsWcxlSjCcVi7-mzDgQ7ke9mmtUXV5vDU1e1yRF5tW-M3RujnOi7uHlsQThzTBDfgq9MhzjOYZlLKKt0NepvkSlc3b4uhLsMl9DxqGpEG1ZIlzg3mNeP0HrpNRf2t8rDOxPZGLTwGUlUrvojBkPdMZftk-t_V6qJO0GwNX8iDdkoP6Duz_9CwussM6wxY9_so_YvW2j0-xe-urOlFVs9JrWaZrnaCXTPPUIliQ&h=xrfvEs6QhQhLwdi4t3bW5FsiN-8X_CjBRI3r89R1PlI
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/dca6747f-e931-498b-bc70-c31cb0a3fcb0*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","name":"dca6747f-e931-498b-bc70-c31cb0a3fcb0*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","status":"Accepted","startTime":"2024-10-23T22:31:50.6123836Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '597'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:32:21 GMT
+      etag:
+      - '"5f02fc17-0000-0800-0000-671979560000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 5D6518831EA54C75952A691A823EA62D Ref B: YTO221090812011 Ref C: 2024-10-23T22:32:21Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --tags
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/dca6747f-e931-498b-bc70-c31cb0a3fcb0*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653195114673284&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=d4kne865DCFDb3f072ND144PuKr6K4bsxLetCeZ7Acu_YrRk2KA3Omq2PcdnKeQGmG3MqKlIFuU9xuEDhwOTclZyvFcYSp9xKKn1GsE6XgZ7Elw2BsWcxlSjCcVi7-mzDgQ7ke9mmtUXV5vDU1e1yRF5tW-M3RujnOi7uHlsQThzTBDfgq9MhzjOYZlLKKt0NepvkSlc3b4uhLsMl9DxqGpEG1ZIlzg3mNeP0HrpNRf2t8rDOxPZGLTwGUlUrvojBkPdMZftk-t_V6qJO0GwNX8iDdkoP6Duz_9CwussM6wxY9_so_YvW2j0-xe-urOlFVs9JrWaZrnaCXTPPUIliQ&h=xrfvEs6QhQhLwdi4t3bW5FsiN-8X_CjBRI3r89R1PlI
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/dca6747f-e931-498b-bc70-c31cb0a3fcb0*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","name":"dca6747f-e931-498b-bc70-c31cb0a3fcb0*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","status":"Accepted","startTime":"2024-10-23T22:31:50.6123836Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '597'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:32:51 GMT
+      etag:
+      - '"5f02fc17-0000-0800-0000-671979560000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F22C09EBE3EC4BF58D04AEDF1B5602DE Ref B: YTO221090812011 Ref C: 2024-10-23T22:32:51Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --tags
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/dca6747f-e931-498b-bc70-c31cb0a3fcb0*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653195114673284&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=d4kne865DCFDb3f072ND144PuKr6K4bsxLetCeZ7Acu_YrRk2KA3Omq2PcdnKeQGmG3MqKlIFuU9xuEDhwOTclZyvFcYSp9xKKn1GsE6XgZ7Elw2BsWcxlSjCcVi7-mzDgQ7ke9mmtUXV5vDU1e1yRF5tW-M3RujnOi7uHlsQThzTBDfgq9MhzjOYZlLKKt0NepvkSlc3b4uhLsMl9DxqGpEG1ZIlzg3mNeP0HrpNRf2t8rDOxPZGLTwGUlUrvojBkPdMZftk-t_V6qJO0GwNX8iDdkoP6Duz_9CwussM6wxY9_so_YvW2j0-xe-urOlFVs9JrWaZrnaCXTPPUIliQ&h=xrfvEs6QhQhLwdi4t3bW5FsiN-8X_CjBRI3r89R1PlI
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/dca6747f-e931-498b-bc70-c31cb0a3fcb0*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","name":"dca6747f-e931-498b-bc70-c31cb0a3fcb0*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","status":"Succeeded","startTime":"2024-10-23T22:31:50.6123836Z","endTime":"2024-10-23T22:31:59.8793828Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '657'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:33:21 GMT
+      etag:
+      - '"5f02791e-0000-0800-0000-671979980000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 6F7BEF5506F34CF88C164C68A3298684 Ref B: YTO221090812011 Ref C: 2024-10-23T22:33:21Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice update
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g --tags
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf?api-version=2024-02-28-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","name":"deidservice-wal33ouaycwf","type":"microsoft.healthdataaiservices/deidservices","location":"eastus","tags":{"tag":"test"},"systemData":{"createdBy":"cribe@microsoft.com","createdByType":"User","createdAt":"2024-10-23T22:30:18.2213065Z","lastModifiedBy":"cribe@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-10-23T22:31:50.436068Z"},"properties":{"provisioningState":"Succeeded","serviceUrl":"https://bef3cqfzdrfkdfd8.api.eus001.deid.azure.com","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '681'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:33:21 GMT
+      etag:
+      - '"d30027c1-0000-0800-0000-6719795f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16498'
+      x-msedge-ref:
+      - 'Ref A: E8900908D9D84044813396A46C7A661F Ref B: YTO221090812011 Ref C: 2024-10-23T22:33:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf?api-version=2024-02-28-preview
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","name":"deidservice-wal33ouaycwf","type":"microsoft.healthdataaiservices/deidservices","location":"eastus","tags":{"tag":"test"},"systemData":{"createdBy":"cribe@microsoft.com","createdByType":"User","createdAt":"2024-10-23T22:30:18.2213065Z","lastModifiedBy":"cribe@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-10-23T22:31:50.436068Z"},"properties":{"provisioningState":"Succeeded","serviceUrl":"https://bef3cqfzdrfkdfd8.api.eus001.deid.azure.com","publicNetworkAccess":"Enabled"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '681'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:33:22 GMT
+      etag:
+      - '"d30027c1-0000-0800-0000-6719795f0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: EB031BC68D85402698C918D1D1DE2BA4 Ref B: YTO221090811045 Ref C: 2024-10-23T22:33:22Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices?api-version=2024-02-28-preview
+  response:
+    body:
+      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","name":"deidservice-wal33ouaycwf","type":"microsoft.healthdataaiservices/deidservices","location":"eastus","tags":{"tag":"test"},"systemData":{"createdBy":"cribe@microsoft.com","createdByType":"User","createdAt":"2024-10-23T22:30:18.2213065Z","lastModifiedBy":"cribe@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-10-23T22:31:50.436068Z"},"properties":{"provisioningState":"Succeeded","serviceUrl":"https://bef3cqfzdrfkdfd8.api.eus001.deid.azure.com","publicNetworkAccess":"Enabled"}}]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '693'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:33:23 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: F8F4D7D0EDA74E64A37A8DA2D64E8EA9 Ref B: YTO221090814025 Ref C: 2024-10-23T22:33:23Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice delete
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      ParameterSetName:
+      - --name -g -y
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf?api-version=2024-02-28-preview
+  response:
+    body:
+      string: 'null'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653196049697997&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=UzqhgGShhmndGSzRfc4vkubvPsRgQbU4YfEVK_qUUK3Uv8na-JuHdlr6Jwg2msw0uxvRQfOR8evlKh_Ck6Lj8QrpgZ1pn1T1UAXuB-NzdfhE18zmrISwdIlsZQI68cp8gFjw4rd-7H1aAk_o22d8oo56vhpJKa9CTCnYS5KtqRwIo7VCFFRs9TN6xSLeE4hLcGM2Bvu_hMOGk-i2q9Zcnigsziv_hxx0qgOEFg2El8YIyMhvaOI7m4xccQzw-rDJ3p8Sxp2RcoRT8h_klqghAJbPkXY26qpB9x_EIpEBvgeaY2kL56tl6w-tXkBGurM_uKw93rJf5kUnqmoh9Hs-5g&h=1iZ1amWgY2Jv-9Xjf4nlq9rFfS1h2lYfN1MvL5jcNxE
+      cache-control:
+      - no-cache
+      content-length:
+      - '4'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:33:24 GMT
+      etag:
+      - '"d30048c3-0000-0800-0000-671979b40000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653196049697997&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=UzqhgGShhmndGSzRfc4vkubvPsRgQbU4YfEVK_qUUK3Uv8na-JuHdlr6Jwg2msw0uxvRQfOR8evlKh_Ck6Lj8QrpgZ1pn1T1UAXuB-NzdfhE18zmrISwdIlsZQI68cp8gFjw4rd-7H1aAk_o22d8oo56vhpJKa9CTCnYS5KtqRwIo7VCFFRs9TN6xSLeE4hLcGM2Bvu_hMOGk-i2q9Zcnigsziv_hxx0qgOEFg2El8YIyMhvaOI7m4xccQzw-rDJ3p8Sxp2RcoRT8h_klqghAJbPkXY26qpB9x_EIpEBvgeaY2kL56tl6w-tXkBGurM_uKw93rJf5kUnqmoh9Hs-5g&h=1iZ1amWgY2Jv-9Xjf4nlq9rFfS1h2lYfN1MvL5jcNxE
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-providerhub-traffic:
+      - 'True'
+      x-ms-ratelimit-remaining-subscription-deletes:
+      - '799'
+      x-ms-ratelimit-remaining-subscription-global-deletes:
+      - '11999'
+      x-msedge-ref:
+      - 'Ref A: 15EF813B32C14384AC4D7353DFE3809C Ref B: YTO221090812025 Ref C: 2024-10-23T22:33:23Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g -y
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653196049697997&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=UzqhgGShhmndGSzRfc4vkubvPsRgQbU4YfEVK_qUUK3Uv8na-JuHdlr6Jwg2msw0uxvRQfOR8evlKh_Ck6Lj8QrpgZ1pn1T1UAXuB-NzdfhE18zmrISwdIlsZQI68cp8gFjw4rd-7H1aAk_o22d8oo56vhpJKa9CTCnYS5KtqRwIo7VCFFRs9TN6xSLeE4hLcGM2Bvu_hMOGk-i2q9Zcnigsziv_hxx0qgOEFg2El8YIyMhvaOI7m4xccQzw-rDJ3p8Sxp2RcoRT8h_klqghAJbPkXY26qpB9x_EIpEBvgeaY2kL56tl6w-tXkBGurM_uKw93rJf5kUnqmoh9Hs-5g&h=1iZ1amWgY2Jv-9Xjf4nlq9rFfS1h2lYfN1MvL5jcNxE
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","name":"e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","status":"Deleting","startTime":"2024-10-23T22:33:24.5373254Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/eastus/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653196052578163&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=tH-3qtk11N9hQ3ByV3G1LJtIe9ivr7iVsxnzdwjHHBka9g7plCezKcOwWU68Q9vjHtOHed6nzcDzp2gra1Cub26GFEDm8cNz1pmh8JKYm8h7M98lp5C5NxwdE6ohVuY27SLET7F_hfwjuKhpWLZ7EkEmnsZtyi3v_TN8aBf1AfjtoYUJ_vORgx94Is0aVPzRMDanhI2hr0WanSG1Wdc3ZBF8ldIO-HOiY5bK-eWgCYsdb8ExKgkuWEmrpKgY5ZwgnoY0f-vy0CcBJe4EX2r46ABTe3JFCzn6xEOSgxpFlwH748r7ehTEedPkMLkfpuBaHZGvkTHF0wfO3zx9rAwV1A&h=ONZGESWKfnVXU_ZTuHmSimefINtfBMKllMHtq4-wKQ8
+      cache-control:
+      - no-cache
+      content-length:
+      - '597'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:33:24 GMT
+      etag:
+      - '"5f024f21-0000-0800-0000-671979b40000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/eastus/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653196052578163&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=tH-3qtk11N9hQ3ByV3G1LJtIe9ivr7iVsxnzdwjHHBka9g7plCezKcOwWU68Q9vjHtOHed6nzcDzp2gra1Cub26GFEDm8cNz1pmh8JKYm8h7M98lp5C5NxwdE6ohVuY27SLET7F_hfwjuKhpWLZ7EkEmnsZtyi3v_TN8aBf1AfjtoYUJ_vORgx94Is0aVPzRMDanhI2hr0WanSG1Wdc3ZBF8ldIO-HOiY5bK-eWgCYsdb8ExKgkuWEmrpKgY5ZwgnoY0f-vy0CcBJe4EX2r46ABTe3JFCzn6xEOSgxpFlwH748r7ehTEedPkMLkfpuBaHZGvkTHF0wfO3zx9rAwV1A&h=ONZGESWKfnVXU_ZTuHmSimefINtfBMKllMHtq4-wKQ8
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 49D26BE5A1434EEF9221976744EBA4ED Ref B: YTO221090812025 Ref C: 2024-10-23T22:33:25Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g -y
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653196049697997&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=UzqhgGShhmndGSzRfc4vkubvPsRgQbU4YfEVK_qUUK3Uv8na-JuHdlr6Jwg2msw0uxvRQfOR8evlKh_Ck6Lj8QrpgZ1pn1T1UAXuB-NzdfhE18zmrISwdIlsZQI68cp8gFjw4rd-7H1aAk_o22d8oo56vhpJKa9CTCnYS5KtqRwIo7VCFFRs9TN6xSLeE4hLcGM2Bvu_hMOGk-i2q9Zcnigsziv_hxx0qgOEFg2El8YIyMhvaOI7m4xccQzw-rDJ3p8Sxp2RcoRT8h_klqghAJbPkXY26qpB9x_EIpEBvgeaY2kL56tl6w-tXkBGurM_uKw93rJf5kUnqmoh9Hs-5g&h=1iZ1amWgY2Jv-9Xjf4nlq9rFfS1h2lYfN1MvL5jcNxE
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","name":"e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","status":"Deleting","startTime":"2024-10-23T22:33:24.5373254Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/eastus/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653196353968950&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=MDriCicS57o3yg-aL6aIVeM50d1sgGiBm7pRNadHC63CwIpOmVo3_YsDNEoZbSwtx-QA-3f1EN_7djuvfvpZQGeUuGpds51ZWwbbykmlBkB6Lwr3HicbxSNsYmZZd1zOdeop53vyC3AEB5udLPODNAFK19g9SflMmOSVeiaVoHlYo97BZCzXF2X2QLkKK3maDgUkZTh-QgKgnh2hran6wXDStbYB5FVRERZI4YOobP0stzO3dGP3gl3y57qfzAc9rfkHejQ4ErLYQbSYR_XzCZQa400fS6DLqfNEji4cAq1xKs5B6kIB_cKlfG3eIaqWMeetC9KEdF7Ciee7DJ5liA&h=H-R9b-AjB7Ubt51i1b5ejuEEWUsLWqXhROuQBrW3VkE
+      cache-control:
+      - no-cache
+      content-length:
+      - '597'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:33:55 GMT
+      etag:
+      - '"5f024f21-0000-0800-0000-671979b40000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/eastus/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653196353968950&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=MDriCicS57o3yg-aL6aIVeM50d1sgGiBm7pRNadHC63CwIpOmVo3_YsDNEoZbSwtx-QA-3f1EN_7djuvfvpZQGeUuGpds51ZWwbbykmlBkB6Lwr3HicbxSNsYmZZd1zOdeop53vyC3AEB5udLPODNAFK19g9SflMmOSVeiaVoHlYo97BZCzXF2X2QLkKK3maDgUkZTh-QgKgnh2hran6wXDStbYB5FVRERZI4YOobP0stzO3dGP3gl3y57qfzAc9rfkHejQ4ErLYQbSYR_XzCZQa400fS6DLqfNEji4cAq1xKs5B6kIB_cKlfG3eIaqWMeetC9KEdF7Ciee7DJ5liA&h=H-R9b-AjB7Ubt51i1b5ejuEEWUsLWqXhROuQBrW3VkE
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 04F9B0A46F534FCBBB694576CFD836D1 Ref B: YTO221090812025 Ref C: 2024-10-23T22:33:55Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g -y
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653196049697997&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=UzqhgGShhmndGSzRfc4vkubvPsRgQbU4YfEVK_qUUK3Uv8na-JuHdlr6Jwg2msw0uxvRQfOR8evlKh_Ck6Lj8QrpgZ1pn1T1UAXuB-NzdfhE18zmrISwdIlsZQI68cp8gFjw4rd-7H1aAk_o22d8oo56vhpJKa9CTCnYS5KtqRwIo7VCFFRs9TN6xSLeE4hLcGM2Bvu_hMOGk-i2q9Zcnigsziv_hxx0qgOEFg2El8YIyMhvaOI7m4xccQzw-rDJ3p8Sxp2RcoRT8h_klqghAJbPkXY26qpB9x_EIpEBvgeaY2kL56tl6w-tXkBGurM_uKw93rJf5kUnqmoh9Hs-5g&h=1iZ1amWgY2Jv-9Xjf4nlq9rFfS1h2lYfN1MvL5jcNxE
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","name":"e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","status":"Deleting","startTime":"2024-10-23T22:33:24.5373254Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/eastus/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653196655130072&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=PRooXaXp1IUaBu-ugZN8eRRttLOViJwgjqgQDKqZ7IrITKQcdE_fgVl6l3FpNJqQL6Iyxex7AhgnOqn5WzM2WngTGxh374Dhn54jhqCnePNc40Y_7QA5JkupfxeKka0Q6ZaiMJAzs-ZejOANe2PWFIfG0TixqSJ5IQ61tBzz7sF4cxe1-bk994cTcJCJvCyuEUBsBeo1rBfFt659u8s4yqZNF2Zzv7KhMGYY-mjaloTdZq0qU6MiEZ-amtHv-YXUC59OsLScuZ9Cdo_lndEjoWwsQ3IljGFiqfO5VjyWB7QdhVd9oiM_gbJgqlPtYbQH2mfijcyCjsTK9NGQS6oX9A&h=xBTr6Ryr0vjwSno_OT74bxMwR4wY7f2qcGVThUYluCU
+      cache-control:
+      - no-cache
+      content-length:
+      - '597'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:34:25 GMT
+      etag:
+      - '"5f024f21-0000-0800-0000-671979b40000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/eastus/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653196655130072&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=PRooXaXp1IUaBu-ugZN8eRRttLOViJwgjqgQDKqZ7IrITKQcdE_fgVl6l3FpNJqQL6Iyxex7AhgnOqn5WzM2WngTGxh374Dhn54jhqCnePNc40Y_7QA5JkupfxeKka0Q6ZaiMJAzs-ZejOANe2PWFIfG0TixqSJ5IQ61tBzz7sF4cxe1-bk994cTcJCJvCyuEUBsBeo1rBfFt659u8s4yqZNF2Zzv7KhMGYY-mjaloTdZq0qU6MiEZ-amtHv-YXUC59OsLScuZ9Cdo_lndEjoWwsQ3IljGFiqfO5VjyWB7QdhVd9oiM_gbJgqlPtYbQH2mfijcyCjsTK9NGQS6oX9A&h=xBTr6Ryr0vjwSno_OT74bxMwR4wY7f2qcGVThUYluCU
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 5A831771797444B28C4AF79D09C6E267 Ref B: YTO221090812025 Ref C: 2024-10-23T22:34:25Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g -y
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653196049697997&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=UzqhgGShhmndGSzRfc4vkubvPsRgQbU4YfEVK_qUUK3Uv8na-JuHdlr6Jwg2msw0uxvRQfOR8evlKh_Ck6Lj8QrpgZ1pn1T1UAXuB-NzdfhE18zmrISwdIlsZQI68cp8gFjw4rd-7H1aAk_o22d8oo56vhpJKa9CTCnYS5KtqRwIo7VCFFRs9TN6xSLeE4hLcGM2Bvu_hMOGk-i2q9Zcnigsziv_hxx0qgOEFg2El8YIyMhvaOI7m4xccQzw-rDJ3p8Sxp2RcoRT8h_klqghAJbPkXY26qpB9x_EIpEBvgeaY2kL56tl6w-tXkBGurM_uKw93rJf5kUnqmoh9Hs-5g&h=1iZ1amWgY2Jv-9Xjf4nlq9rFfS1h2lYfN1MvL5jcNxE
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","name":"e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","status":"Deleting","startTime":"2024-10-23T22:33:24.5373254Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/eastus/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653196956222062&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=Pl3XspXjr_aUHD_ldbw5wto0nfGnHeBro7D6vzq9Xcx0ZwOhs8ejS7QYR9RPd_3qbOrH9IBBWe0POkvwbFRvBKfjUd4IHztmwIOPkoitK-zanvT5f2ePdDJiNM5vJFzeYoKuGw5bKUMVV8gp9eckwdYT5ckvtyrLcxMoZM75Yfw3efaxihMEGJKKyDoPf4-lm7WQ8YwhfaMfw6MUfosfz7d-goK_yPaMynXV18PGXKJNdWhmIcSDn4iXAhfRptUg2kjnQ_sqTMC66HgVu4EXacpMYcmBkYPpudfKakZyfaScZ2xYm6BuUQdgnU3tgi7D5U1ZUwL4-RVyh5KB4wrjAw&h=I9PiONVG4hCSydHS2mlcxLbLMrYeGdbOs1j3PLGD4IQ
+      cache-control:
+      - no-cache
+      content-length:
+      - '597'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:34:55 GMT
+      etag:
+      - '"5f024f21-0000-0800-0000-671979b40000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/eastus/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653196956378377&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=N87v9j6Mf6JpB0FW0N4Vlm6BxbkDx2BvQvODnvp7AELUbWQI4-HepFhWbLlfcypDmU9v3IVpBI6gjdFgin-OC-1hLMD0aP684Ry4c2BkO_jeKbIKRmfBQu3RUmFcaYxElxmcXUVcyby-TIU90R1pTq7bVmV32UDwuiwBOANVtCszLSlJ5R27GkxtOG8XMsvCq77QFDng54avYPE6N1gzWMlvtsUZKdz47Dm1Uj-ppZmW9pDgS9bn0DwBbT_LDrFQ1SkaltrwnR5CfChyciQ4PAv_4SmppfUtBAjy_MsDuDBnG_9Z2oIxsmZvsSWMj8FKqthXPct_-p10cTn8ndRwXA&h=6dJk2ZZBZVD7sz_v8X3jS2BJKqWqsa_te0BTeW2r9J4
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 04C6DC95AB714969BDB5F6823CBBB65F Ref B: YTO221090812025 Ref C: 2024-10-23T22:34:55Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g -y
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653196049697997&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=UzqhgGShhmndGSzRfc4vkubvPsRgQbU4YfEVK_qUUK3Uv8na-JuHdlr6Jwg2msw0uxvRQfOR8evlKh_Ck6Lj8QrpgZ1pn1T1UAXuB-NzdfhE18zmrISwdIlsZQI68cp8gFjw4rd-7H1aAk_o22d8oo56vhpJKa9CTCnYS5KtqRwIo7VCFFRs9TN6xSLeE4hLcGM2Bvu_hMOGk-i2q9Zcnigsziv_hxx0qgOEFg2El8YIyMhvaOI7m4xccQzw-rDJ3p8Sxp2RcoRT8h_klqghAJbPkXY26qpB9x_EIpEBvgeaY2kL56tl6w-tXkBGurM_uKw93rJf5kUnqmoh9Hs-5g&h=1iZ1amWgY2Jv-9Xjf4nlq9rFfS1h2lYfN1MvL5jcNxE
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","name":"e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","status":"Deleting","startTime":"2024-10-23T22:33:24.5373254Z"}'
+    headers:
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/eastus/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653197257385582&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=i1tOoB4zQ7-iERjJz-qAhAHtBqHDpqAyrssLm7LKzDuB24t0iq2MXaE3NVoFUl-NJFvWiGrrXYZOpt2t_5WWZXA_OA5dW7D6pdX2C2pODcS3z_SDGXK2-k9BXDxEyDc3ugUgRDwxEPj4pT8Ksot9eln9sF9Fq1_WaxSltHRcfeIEqGIwD93QBQCvd3QQUmgou-pQN6o3Mw9ZDPOFIj-fzOYfaMFVJQRqnNAQRsAj2MYzdGwG8P73UpCrFQnnwj6NszhwCGw4gQnKsDb232EVX8mGcWwC5VJTuApKhhXgXEtqFSFBd9bmh1Yk3UwlG22rmZm_s5RbU2WRNQC8DXY4Fw&h=jrojyXsR8a4urgYZteWpOyyyn7OqUUvSEn5WueHf7Qg
+      cache-control:
+      - no-cache
+      content-length:
+      - '597'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:35:25 GMT
+      etag:
+      - '"5f024f21-0000-0800-0000-671979b40000"'
+      expires:
+      - '-1'
+      location:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/eastus/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653197257385582&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=i1tOoB4zQ7-iERjJz-qAhAHtBqHDpqAyrssLm7LKzDuB24t0iq2MXaE3NVoFUl-NJFvWiGrrXYZOpt2t_5WWZXA_OA5dW7D6pdX2C2pODcS3z_SDGXK2-k9BXDxEyDc3ugUgRDwxEPj4pT8Ksot9eln9sF9Fq1_WaxSltHRcfeIEqGIwD93QBQCvd3QQUmgou-pQN6o3Mw9ZDPOFIj-fzOYfaMFVJQRqnNAQRsAj2MYzdGwG8P73UpCrFQnnwj6NszhwCGw4gQnKsDb232EVX8mGcWwC5VJTuApKhhXgXEtqFSFBd9bmh1Yk3UwlG22rmZm_s5RbU2WRNQC8DXY4Fw&h=jrojyXsR8a4urgYZteWpOyyyn7OqUUvSEn5WueHf7Qg
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 6429111956674F3F8139337A297B1B1F Ref B: YTO221090812025 Ref C: 2024-10-23T22:35:25Z'
+    status:
+      code: 202
+      message: Accepted
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g -y
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653196049697997&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=UzqhgGShhmndGSzRfc4vkubvPsRgQbU4YfEVK_qUUK3Uv8na-JuHdlr6Jwg2msw0uxvRQfOR8evlKh_Ck6Lj8QrpgZ1pn1T1UAXuB-NzdfhE18zmrISwdIlsZQI68cp8gFjw4rd-7H1aAk_o22d8oo56vhpJKa9CTCnYS5KtqRwIo7VCFFRs9TN6xSLeE4hLcGM2Bvu_hMOGk-i2q9Zcnigsziv_hxx0qgOEFg2El8YIyMhvaOI7m4xccQzw-rDJ3p8Sxp2RcoRT8h_klqghAJbPkXY26qpB9x_EIpEBvgeaY2kL56tl6w-tXkBGurM_uKw93rJf5kUnqmoh9Hs-5g&h=1iZ1amWgY2Jv-9Xjf4nlq9rFfS1h2lYfN1MvL5jcNxE
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","name":"e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","status":"Succeeded","startTime":"2024-10-23T22:33:24.5373254Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '616'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:35:55 GMT
+      etag:
+      - '"5f020530-0000-0800-0000-67197a320000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: B522475E33CB43A194EEC7246572A02A Ref B: YTO221090812025 Ref C: 2024-10-23T22:35:55Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice delete
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - --name -g -y
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF?api-version=2024-02-28-preview&t=638653196049697997&c=MIIHhzCCBm-gAwIBAgITHgVskStldyvFG2XEvAAABWyRKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDYwHhcNMjQwOTIyMTEyNTA2WhcNMjUwMzIxMTEyNTA2WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPHxmXqwKqjJaqmXNVD74K86YKbfScPlQpJU5RimIh5-BEkzwXhY7sJKR1SiCakB1CIKsAuvWUT99HiS_oXzcMckWBbvQ8XylWegUiWqKbHxNhaksGLrNU5R2ewGCOJoqrMQohHrdU-Si0Iu96BJoRYEHlDhXcRi1uK6gyWshlCBHkOyxxOWo433xAX8DsSG6CySJS9DL8ztn3u5mVtLJGDC2KiRyH7SnIGawTSfGFCkKVeAQ-Sdzwzw5CF-nNqIauqF-dLHKTUgm94auu5MXllhbfCD5_X2TkxG3va0Egr4FQ8XzZpePSWC5lgVVy0bUf-yDIcAwRD-NMJgltnm2j0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9CTDJQS0lJTlRDQTAyLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA2LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQkwyUEtJSU5UQ0EwMi5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNi5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0JMMlBLSUlOVENBMDIuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3J0MB0GA1UdDgQWBBRTreHhOeqSgKCGjhVwE5BFlGlU_jAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDYuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBTxRmjG8cPwKy19i2rhsvm-NfzRQTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAMAX_J2bPPbbJi51wBq4-SPmh8n3xypMHVqkP6PeehgRAyLDKPSng8j950I9EFv-gwLAVSWXaE_9mRKofQRKG5yKpuCJK9v0fBRnjMIE0wcRVDCmOELJlUvKFQeYpWWOMEg1rt464iBo1tWRXRmeT48zsP7xDbjDuY3vs62kdxeg-yf0zm2jJykbDo2hKC00MPOj0JLC7bTKd8Q7GpT7bXx0i_5-OEFB_3LBziMtHwBdSdskLXM_wei_NnYVmthddZGsxy9FzITTcEu_Uv8FaYx7u2rT48qkUAiRLJwt47YMJKMk2DfkhOrEWAvQdkr263a0WAp02UYfWzJ5zdEcFm8&s=UzqhgGShhmndGSzRfc4vkubvPsRgQbU4YfEVK_qUUK3Uv8na-JuHdlr6Jwg2msw0uxvRQfOR8evlKh_Ck6Lj8QrpgZ1pn1T1UAXuB-NzdfhE18zmrISwdIlsZQI68cp8gFjw4rd-7H1aAk_o22d8oo56vhpJKa9CTCnYS5KtqRwIo7VCFFRs9TN6xSLeE4hLcGM2Bvu_hMOGk-i2q9Zcnigsziv_hxx0qgOEFg2El8YIyMhvaOI7m4xccQzw-rDJ3p8Sxp2RcoRT8h_klqghAJbPkXY26qpB9x_EIpEBvgeaY2kL56tl6w-tXkBGurM_uKw93rJf5kUnqmoh9Hs-5g&h=1iZ1amWgY2Jv-9Xjf4nlq9rFfS1h2lYfN1MvL5jcNxE
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.HealthDataAIServices/locations/EASTUS/operationStatuses/e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","name":"e48610d3-bfe1-4086-8f8e-c9e5b7b037da*4865582B74A949EB5CD279A5BBE8C4E3B9BE3D5CFD533DA910F9814C011F5DEF","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices/deidservice-wal33ouaycwf","status":"Succeeded","startTime":"2024-10-23T22:33:24.5373254Z","properties":null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '616'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:35:55 GMT
+      etag:
+      - '"5f020530-0000-0800-0000-67197a320000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 0227CC479A1C4BA78E3ED1DA108CF240 Ref B: YTO221090812025 Ref C: 2024-10-23T22:35:55Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - deidservice list
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Linux-5.15.153.1-microsoft-standard-WSL2-x86_64-with-glibc2.35)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/test_deidservice_000001/providers/Microsoft.HealthDataAIServices/deidServices?api-version=2024-02-28-preview
+  response:
+    body:
+      string: '{"value":[]}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '12'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 23 Oct 2024 22:35:55 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 581ACAF0EA69477BA63A062A893551A9 Ref B: YTO221090812019 Ref C: 2024-10-23T22:35:56Z'
+    status:
+      code: 200
+      message: OK
+version: 1
