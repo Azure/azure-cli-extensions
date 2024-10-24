@@ -194,7 +194,6 @@ class MccEntNodeCreate(_MccEntNodeCreate):
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        args = self.ctx.args
 
         cleanOutput = {}
 
@@ -438,7 +437,6 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
                             err_msg = "ValidationError: Switching cache node auto update ring from \"Slow\" to \"Fast\", --auto-update-day, --auto-update-week, and --auto-update-time must be Undefined"
                             raise ValidationError(err_msg)
 
-
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
         from azure.cli.core.aaz import AAZIntArg
@@ -494,8 +492,7 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
 
     def _output(self, *args, **kwargs):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        args = self.ctx.args
-
+        
         cleanOutput = {}
 
         try:
@@ -750,7 +747,7 @@ class MccEntNodeShow(_MccEntNodeShow):
             driveArray = result["properties"]["additionalCacheNodeProperties"]["driveConfiguration"]
             cleanDriveArray = []
             for drive in driveArray:
-                cleanDrive = { "physicalPath": drive["physicalPath"], "sizeInGb": drive["sizeInGb"] }
+                cleanDrive = {"physicalPath": drive["physicalPath"], "sizeInGb": drive["sizeInGb"]}
                 cleanDriveArray.append(cleanDrive)
             cleanOutput["driveConfiguration"] = cleanDriveArray
         except KeyError:
