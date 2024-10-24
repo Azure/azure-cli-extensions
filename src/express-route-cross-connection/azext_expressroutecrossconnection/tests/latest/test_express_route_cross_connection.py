@@ -9,5 +9,7 @@ from azure.cli.testsdk import *
 
 
 class ExpressRouteCrossConnectionScenario(ScenarioTest):
-    # TODO: add tests here
-    pass
+    @ResourceGroupPreparer(name_prefix='cli_test_cross_connection_')
+    def test_cross_connection(self):
+        self.cmd('network cross-connection list', checks=[self.is_empty()])
+        self.cmd('network cross-connection list -g {rg}', checks=[self.is_empty()])
