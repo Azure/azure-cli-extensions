@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mdp pool update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update a pool
@@ -23,9 +22,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-04-04-preview",
+        "version": "2024-10-19",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devopsinfrastructure/pools/{}", "2024-04-04-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devopsinfrastructure/pools/{}", "2024-10-19"],
         ]
     }
 
@@ -509,7 +508,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-04-preview",
+                    "api-version", "2024-10-19",
                     required=True,
                 ),
             }
@@ -608,7 +607,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-04-preview",
+                    "api-version", "2024-10-19",
                     required=True,
                 ),
             }
