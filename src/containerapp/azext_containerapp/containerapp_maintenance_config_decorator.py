@@ -5,6 +5,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, broad-except, logging-format-interpolation
 
+from azure.cli.core.azclierror import (ValidationError)
 from copy import deepcopy
 from knack.log import get_logger
 from typing import Any, Dict
@@ -13,7 +14,7 @@ from azure.cli.core.commands import AzCliCommand
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 
 from ._models import MaintenanceConfiguration as MaintenanceConfigurationModel
-from ._client_factory import handle_raw_exception
+from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 
 logger = get_logger(__name__)
 
@@ -109,4 +110,5 @@ class MaintenanceConfigPreviewDecorator(MaintenanceConfigDecorator):
                 resource_group_name=self.get_argument_resource_group_name(),
                 environment_name=self.get_argument_environment_name())
         except Exception as e:
-            handle_raw_exception(e)
+            handle_non_404_status_code_exception(e)
+            return ""
