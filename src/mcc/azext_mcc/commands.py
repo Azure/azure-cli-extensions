@@ -13,7 +13,7 @@
 
 # from azure.cli.core.commands import CliCommandType
 
-def load_command_table(self, _):  
+def load_command_table(self, _):
     with self.command_group('mcc ent resource'):
         from .custom import MccEntResourceCreate, MccEntResourceDelete, MccEntResourceList
         self.command_table['mcc ent resource create'] = MccEntResourceCreate(loader=self)
