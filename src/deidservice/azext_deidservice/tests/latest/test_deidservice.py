@@ -29,6 +29,11 @@ class DeidserviceScenario(ScenarioTest):
     
     @ResourceGroupPreparer(name_prefix='test_deidservice_', location='eastus')
     def test_deidservice_lifecycle(self, resource_group):
+
+        # Set a fixed seed for random data
+        # This ensures that the test will be deterministic and VCR will record and playback the same data
+        random.seed(42)
+        
         self.kwargs.update({
             'deidservice': create_valid_random_name('deidservice-', 24),
             'location': 'eastus',
