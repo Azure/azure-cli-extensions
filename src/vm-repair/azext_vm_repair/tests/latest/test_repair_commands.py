@@ -985,7 +985,7 @@ class WindowsNoPubIPByDefault(LiveScenarioTest):
         assert len(vms) == 1
 
         # Create Repair VM
-        repair_vm = self.cmd('vm repair create -g {rg} -n {vm} --repair-username {admin_username} --repair-password {admin_password} -o json').get_output_in_json()
+        repair_vm = self.cmd('vm repair create -g {rg} -n {vm} --repair-username {admin_username} --repair-password {admin_password} --yes -o json').get_output_in_json()
         assert repair_vm['status'] == STATUS_SUCCESS, repair_vm['error_message']
         # Check repair VM
         self.kwargs.update({
