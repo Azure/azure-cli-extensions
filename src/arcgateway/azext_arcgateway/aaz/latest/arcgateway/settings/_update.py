@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update the base Settings of the target resource.
 
     :example: Sample command for setting update
-        az arcgateway settings update --resource-group myResourceGroup --subscription mySubscription --base-provider Microsoft.HybridCompute --base-resource-type machines --base-resource-name workloadServer --settings-resource-name default --gateway-resource-id myResourceId
+        az az arcgateway settings update --resource-group myResourceGroup --subscription mySubscription --base-provider Microsoft.HybridCompute --base-resource-type machines --base-resource-name workloadServer --gateway-resource-id myResourceId
     """
 
     _aaz_info = {

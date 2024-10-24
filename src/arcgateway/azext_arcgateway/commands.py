@@ -12,4 +12,4 @@
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    pass
+    self.command_table["arcgateway settings update"] = Update(loader=self)
