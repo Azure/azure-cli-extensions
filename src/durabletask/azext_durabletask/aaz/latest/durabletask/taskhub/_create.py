@@ -19,7 +19,7 @@ class Create(AAZCommand):
     """Create a Task Hub
 
     :example: Create a taskhub in a namespace
-        az durabletask taskhub create -g resource-grou-name -s testnamespace -n taskhub-name
+        az durabletask taskhub create -g resource-group-name -s testnamespace -n taskhub-name
     """
 
     _aaz_info = {
@@ -216,6 +216,10 @@ class Create(AAZCommand):
             )
 
             properties = cls._schema_on_200_201.properties
+            properties.dashboard_url = AAZStrType(
+                serialized_name="dashboardUrl",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},

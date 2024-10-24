@@ -187,6 +187,10 @@ class List(AAZCommand):
             )
 
             properties = cls._schema_on_200.value.Element.properties
+            properties.dashboard_url = AAZStrType(
+                serialized_name="dashboardUrl",
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
                 flags={"read_only": True},
