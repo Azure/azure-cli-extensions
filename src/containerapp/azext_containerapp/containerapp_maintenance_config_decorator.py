@@ -5,7 +5,7 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, broad-except, logging-format-interpolation
 
-
+from copy import deepcopy
 from knack.log import get_logger
 from typing import Any, Dict
 
@@ -21,7 +21,8 @@ logger = get_logger(__name__)
 class MaintenanceConfigDecorator(BaseResource):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
-        self.maintenance_config_def = MaintenanceConfigurationModel
+        self.maintenance_config_def = deepcopy(MaintenanceConfigurationModel)
+        self.existing_maintenance_config_def = None
 
     def get_argument_environment_name(self):
         return self.get_param('env_name')
@@ -40,10 +41,34 @@ class MaintenanceConfigDecorator(BaseResource):
 
 
 class MaintenanceConfigPreviewDecorator(MaintenanceConfigDecorator):
-    def construct_payload(self):
-        self.maintenance_config_def["properties"]["scheduledEntries"][0]["startHourUtc"] = self.get_argument_start_hour_utc()
-        self.maintenance_config_def["properties"]["scheduledEntries"][0]["durationHours"] = self.get_argument_duration()
-        self.maintenance_config_def["properties"]["scheduledEntries"][0]["weekDay"] = self.get_argument_weekday()
+    def validate_arguments(self):
+        if self.get_argument_start_hour_utc() is not None:
+            if not (0 <= int(self.get_argument_start_hour_utc()) <= 23):
+                raise ValidationError("Start hour must be an integer from 0 to 23")
+
+        if self.get_argument_duration() is not None:
+            if not (8 <= int(self.get_argument_duration()) <= 24):
+                raise ValidationError("Duration must be an integer from 8 to 24")
+
+        if self.get_argument_weekday is not None:
+            if self.get_argument_weekday().lower() not in ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]:
+                raise ValidationError("Weekday must be a day of the week")
+
+    def construct_payload(self, forUpdate=False):
+        if forUpdate:
+            self.existing_maintenance_config_def = self.client.show(
+                cmd=self.cmd,
+                resource_group_name=self.get_argument_resource_group_name(),
+                environment_name=self.get_argument_environment_name())
+
+            self.maintenance_config_def = deepcopy(self.existing_maintenance_config_def)
+
+        if self.get_argument_start_hour_utc() is not None:
+            self.maintenance_config_def["properties"]["scheduledEntries"][0]["startHourUtc"] = self.get_argument_start_hour_utc()
+        if self.get_argument_duration() is not None:
+            self.maintenance_config_def["properties"]["scheduledEntries"][0]["durationHours"] = self.get_argument_duration()
+        if self.get_argument_weekday() is not None:
+            self.maintenance_config_def["properties"]["scheduledEntries"][0]["weekDay"] = self.get_argument_weekday()
 
     def add(self):
         try:

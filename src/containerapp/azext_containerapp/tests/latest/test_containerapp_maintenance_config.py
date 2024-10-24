@@ -39,10 +39,10 @@ class ContainerAppMaintenanceConfigTest(ScenarioTest):
         ])
 
         ## test for CRUD operations on Maintenance Config
-        self.cmd("az containerapp env maintenanceconfig add --resource-group {} --env-name {} -d {} -w {} -s {}".format(resource_group, env_name, duration, weekday, startHour))
+        self.cmd("az containerapp env maintenance-config add --resource-group {} --env-name {} -d {} -w {} -s {}".format(resource_group, env_name, duration, weekday, startHour))
 
         # verify the resource
-        self.cmd("az containerapp env maintenanceconfig show --resource-group {} --env-name {}".format(resource_group, env_name), checks=[
+        self.cmd("az containerapp env maintenance-config show --resource-group {} --env-name {}".format(resource_group, env_name), checks=[
             JMESPathCheck('properties.scheduledEntries[0].durationHours', duration),
             JMESPathCheck('properties.scheduledEntries[0].startHourUtc', startHour),
             JMESPathCheck('properties.scheduledEntries[0].weekDay', weekday),
@@ -50,16 +50,15 @@ class ContainerAppMaintenanceConfigTest(ScenarioTest):
 
         updatedDuration = 11
         updatedWeekday = "Tuesday"
-        updatedStartHour = 4
 
         # update the MaintenanceConfig
-        self.cmd("az containerapp env maintenanceconfig update --resource-group {} --env-name {} -d {} -w {} -s {}".format(resource_group, env_name, updatedDuration, updatedWeekday, updatedStartHour), checks=[
+        self.cmd("az containerapp env maintenance-config update --resource-group {} --env-name {} -d {} -w {}".format(resource_group, env_name, updatedDuration, updatedWeekday), checks=[
             JMESPathCheck('properties.scheduledEntries[0].durationHours', updatedDuration),
-            JMESPathCheck('properties.scheduledEntries[0].startHourUtc', updatedStartHour),
+            JMESPathCheck('properties.scheduledEntries[0].startHourUtc', startHour),
             JMESPathCheck('properties.scheduledEntries[0].weekDay', updatedWeekday),
         ])
 
         # delete the Container App Maintenance Config resource
-        self.cmd("az containerapp env maintenanceconfig delete --resource-group {} --env-name {}".format(resource_group, env_name))
+        self.cmd("az containerapp env maintenance-config delete --resource-group {} --env-name {}".format(resource_group, env_name))
 
         self.cmd('containerapp env delete -g {} -n {} -y --no-wait'.format(resource_group, env_name))

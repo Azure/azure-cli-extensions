@@ -83,7 +83,7 @@ from .java_component_decorator import JavaComponentDecorator
 from .containerapp_sessionpool_decorator import SessionPoolPreviewDecorator, SessionPoolCreateDecorator, SessionPoolUpdateDecorator
 from .containerapp_session_code_interpreter_decorator import SessionCodeInterpreterCommandsPreviewDecorator
 from .containerapp_job_registry_decorator import ContainerAppJobRegistryPreviewSetDecorator
-from .containerapp_maintenanceconfig_decorator import MaintenanceConfigPreviewDecorator
+from .containerapp_maintenance_config_decorator import MaintenanceConfigPreviewDecorator
 from .dotnet_component_decorator import DotNetComponentDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._clients import (
@@ -3272,11 +3272,12 @@ def add_maintenance_config(cmd, resource_group_name, env_name, duration, start_h
         models=CONTAINER_APPS_SDK_MODELS
     )
     maintenance_config_decorator.construct_payload()
+    maintenance_config_decorator.validate_arguments()
     r = maintenance_config_decorator.add()
     return r
 
 
-def update_maintenance_config(cmd, resource_group_name, env_name, duration, start_hour_utc, weekday):
+def update_maintenance_config(cmd, resource_group_name, env_name, duration=None, start_hour_utc=None, weekday=None):
     raw_parameters = locals()
     maintenance_config_decorator = MaintenanceConfigPreviewDecorator(
         cmd=cmd,
@@ -3284,7 +3285,9 @@ def update_maintenance_config(cmd, resource_group_name, env_name, duration, star
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    maintenance_config_decorator.construct_payload()
+    forUpdate = True
+    maintenance_config_decorator.construct_payload(forUpdate)
+    maintenance_config_decorator.validate_arguments()
     r = maintenance_config_decorator.update()
     return r
 
