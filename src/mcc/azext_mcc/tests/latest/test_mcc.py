@@ -15,6 +15,8 @@ import unittest
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer)
 from azure.cli.testsdk import *
 
+TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
+
 class MccScenario(ScenarioTest):
     @ResourceGroupPreparer(parameter_name='group_name', parameter_name_for_location='group_location')
     def test_mcc(self, group_name, group_location):
@@ -31,37 +33,42 @@ class MccScenario(ScenarioTest):
           'auto_update_day': '7',
           'auto_update_time': '05:35',
           'auto_update_week': '2',
-          'auto_update_ring': 'slow'
+          'auto_update_ring': 'Slow'
         })
-
-        # Make sure resource group is all good to go? - not sure if I should keep this
-        #self.cmd('az group show -n {rg}', checks=[
-        #    self.check('name', '{rg}'),
-        #    self.check('location', '{loc}'),
-        #    self.check('properties.provisioningState', 'Succeeded')
-        #])
 
         # Create an MCC resource
         self.cmd('az mcc ent resource create '
                  '-g {rg} '
                  '--mcc-resource-name {mcc_resource_name} '
-                 '-l {loc}')
+                 '-l {loc}',
+                 checks=[
+                     self.check('operationStatus', 'Succeeded'),
+                     self.check('mccResourceName', '{mcc_resource_name}'),
+                     self.check('location', '{loc}')
+                 ])
 
         # List MCC resources
-        self.cmd('az mcc ent resource list '
-                 '-g {rg}')
+        customer_list = self.cmd('az mcc ent resource list '
+                 '-g {rg}').get_output_in_json()
+        assert len(customer_list) > 0
 
         # Create MCC node
         self.cmd('az mcc ent node create '
                  '-g {rg} '
                  '--mcc-resource-name {mcc_resource_name} '
                  '--cache-node-name {cache_node_name} '
-                 '--host-os {host_os}')
+                 '--host-os {host_os}',
+                 checks=[
+                     self.check('cacheNodeName', '{cache_node_name}'),
+                     self.check('operationStatus', 'Succeeded'),
+                     self.check('hostOs', '{host_os}')
+                 ])
 
         # List MCC nodes
-        self.cmd('az mcc ent node list '
+        node_list = self.cmd('az mcc ent node list '
                  '-g {rg} '
-                 '--mcc-resource-name {mcc_resource_name}')
+                 '--mcc-resource-name {mcc_resource_name}').get_output_in_json()
+        assert len(node_list) > 0
 
         # Update MCC node
         self.cmd('az mcc ent node update '
@@ -75,7 +82,18 @@ class MccScenario(ScenarioTest):
                  '--auto-update-day {auto_update_day} '
                  '--auto-update-time {auto_update_time} '
                  '--auto-update-week {auto_update_week} '
-                 '--auto-update-ring {auto_update_ring}')
+                 '--auto-update-ring {auto_update_ring}',
+                 checks=[
+                     self.check('operationStatus', 'Succeeded'),
+                     self.check('autoUpdateDay', '{auto_update_day}'),
+                     self.check('autoUpdateRing', '{auto_update_ring}'),
+                     self.check('autoUpdateTime', '{auto_update_time}'),
+                     self.check('autoUpdateWeek', '{auto_update_week}'),
+                     self.check('driveConfiguration[0].physicalPath', '/var/mcc'),
+                     self.check('driveConfiguration[0].sizeInGb', '50'),
+                     self.check('proxyConfiguration.proxyHostName', 'abc.xyz'),
+                     self.check('proxyConfiguration.proxyPort', '{proxy_port}'),
+                 ])
 
         # Show MCC resource
         self.cmd('az mcc ent node show -g {rg} '
@@ -86,9 +104,11 @@ class MccScenario(ScenarioTest):
         self.cmd('az mcc ent node delete '
                  '-g {rg} '
                  '--mcc-resource-name {mcc_resource_name} '
-                 '--cache-node-name {cache_node_name}')
+                 '--cache-node-name {cache_node_name} '
+                 '-y')
 
         # Delete MCC resource
         self.cmd('az mcc ent resource delete '
                  '-g {rg} '
-                 '--mcc-resource-name {mcc_resource_name}')
+                 '--mcc-resource-name {mcc_resource_name} '
+                 '-y')
