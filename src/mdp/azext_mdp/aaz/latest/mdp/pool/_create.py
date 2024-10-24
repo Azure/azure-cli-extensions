@@ -13,25 +13,18 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mdp pool create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create a pool
 
     :example: Create
-        az mdp pool create --location "eastus" --name "cli-contoso-pool" --resource-group "rg1" 
-        --identity "type=userAssigned" "user-assigned-identities={'/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example/providers/Microsoft.ManagedIdentity/userAssignedIdentities/test-msi':{}}"
-        --maximum-concurrency 3 
-        --agent-profile "Stateless={}" 
-        --organization-profile "azure-dev-ops={organizations:[{url:'https://dev.azure.com/test-org',parallelism:2}],permissionProfile:{kind:'CreatorOnly'}}" 
-        --devcenter-project-resource-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example/providers/Microsoft.DevCenter/projects/contoso-proj"
-        --fabric-profile "vmss={sku:{name:Standard_D2ads_v5},storageProfile:{osDiskStorageAccountType:Standard},images:[{resourceId:'/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus2/Publishers/canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-focal/Skus/20_04-lts-gen2/versions/latest',buffer:*}],osProfile:{secretsManagementSettings:{observedCertificates:[],keyExportable:false},logonType:Service}}"
+        az mdp pool create --location "eastus" --name "cli-contoso-pool" --resource-group "rg1" --identity "type=userAssigned" "user-assigned-identities={'/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example/providers/Microsoft.ManagedIdentity/userAssignedIdentities/test-msi':{}}" --maximum-concurrency 3 --agent-profile "Stateless={}" --organization-profile "azure-dev-ops={organizations:[{url:'https://dev.azure.com/test-org',parallelism:2}],permissionProfile:{kind:'CreatorOnly'}}" --devcenter-project-resource-id "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/example/providers/Microsoft.DevCenter/projects/contoso-proj" --fabric-profile "vmss={sku:{name:Standard_D2ads_v5},storageProfile:{osDiskStorageAccountType:Standard},images:[{resourceId:'/Subscriptions/00000000-0000-0000-0000-000000000000/Providers/Microsoft.Compute/Locations/eastus2/Publishers/canonical/ArtifactTypes/VMImage/Offers/0001-com-ubuntu-server-focal/Skus/20_04-lts-gen2/versions/latest',buffer:*}],osProfile:{secretsManagementSettings:{observedCertificates:[],keyExportable:false},logonType:Service}}"
     """
 
     _aaz_info = {
-        "version": "2024-04-04-preview",
+        "version": "2024-10-19",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devopsinfrastructure/pools/{}", "2024-04-04-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devopsinfrastructure/pools/{}", "2024-10-19"],
         ]
     }
 
@@ -457,7 +450,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-04-04-preview",
+                    "api-version", "2024-10-19",
                     required=True,
                 ),
             }
