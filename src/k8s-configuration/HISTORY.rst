@@ -3,6 +3,11 @@
 Release History
 ===============
 
+2.1.0
+++++++++++++++++++
+* Introduce a new feature to disable health checks for kustomizations applied to the cluster.
+* Bump pycryptodome to 3.21.0
+
 2.0.0
 ++++++++++++++++++
 * Remove the deprecated flux v1 `create` cmd

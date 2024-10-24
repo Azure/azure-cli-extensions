@@ -15,8 +15,6 @@ from .validators import (
     validate_configuration_name,
     validate_fluxconfig_name,
     validate_namespace,
-    validate_operator_instance_name,
-    validate_operator_namespace,
 )
 
 from .action import (
@@ -175,7 +173,7 @@ def load_arguments(self, _):
             "kustomization",
             action=KustomizationAddAction,
             options_list=["--kustomization", "-k"],
-            help="Define kustomizations to sync sources with parameters ['name', 'path', 'depends_on', 'timeout', 'sync_interval', 'retry_interval', 'prune', 'force']",
+            help="Define kustomizations to sync sources with parameters ['name', 'path', 'depends_on', 'timeout', 'sync_interval', 'retry_interval', 'prune', 'force', 'disable_health_check']",
             nargs="+",
         )
         c.argument(
@@ -319,6 +317,11 @@ def load_arguments(self, _):
             "force",
             arg_type=get_three_state_flag(),
             help="Re-create resources that cannot be updated on the cluster (i.e. jobs)",
+        )
+        c.argument(
+            "disable_health_check",
+            arg_type=get_three_state_flag(),
+            help="Disable health checks for kustomizations applied to the cluster."
         )
 
     with self.argument_context("k8s-configuration flux kustomization delete") as c:
