@@ -9,17 +9,18 @@
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
 # pylint: disable=unused-variable
+# pylint: disable=unused-argument
 
 # from azure.cli.core.commands import CliCommandType
 
-def load_command_table(self, _):  # pylint: disable=unused-argument
-    with self.command_group('mcc ent resource') as g:
+def load_command_table(self, _):  
+    with self.command_group('mcc ent resource'):
         from .custom import MccEntResourceCreate, MccEntResourceDelete, MccEntResourceList
         self.command_table['mcc ent resource create'] = MccEntResourceCreate(loader=self)
         self.command_table['mcc ent resource delete'] = MccEntResourceDelete(loader=self)
         self.command_table['mcc ent resource list'] = MccEntResourceList(loader=self)
 
-    with self.command_group('mcc ent node') as g:
+    with self.command_group('mcc ent node'):
         from .custom import MccEntNodeCreate, MccEntNodeUpdate, MccEntNodeDelete, MccEntNodeList, MccEntNodeShow, MccEntNodeGetProvisioningDetails
         self.command_table['mcc ent node create'] = MccEntNodeCreate(loader=self)
         self.command_table['mcc ent node update'] = MccEntNodeUpdate(loader=self)
