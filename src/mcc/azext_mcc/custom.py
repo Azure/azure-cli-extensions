@@ -441,7 +441,7 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
 
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):
-        from azure.cli.core.aaz import AAZIntArg, AAZStrArg
+        from azure.cli.core.aaz import AAZIntArg
 
         args_schema = super()._build_arguments_schema(*args, **kwargs)
 
@@ -512,7 +512,7 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
             driveArray = result["properties"]["additionalCacheNodeProperties"]["driveConfiguration"]
             cleanDriveArray = []
             for drive in driveArray:
-                cleanDrive = { "physicalPath": drive["physicalPath"], "sizeInGb": drive["sizeInGb"] }
+                cleanDrive = {"physicalPath": drive["physicalPath"], "sizeInGb": drive["sizeInGb"]}
                 cleanDriveArray.append(cleanDrive)
             cleanOutput["driveConfiguration"] = cleanDriveArray
         except KeyError:
@@ -522,10 +522,10 @@ class MccEntNodeUpdate(_MccEntNodeUpdate):
             proxyUrl = result["properties"]["additionalCacheNodeProperties"]["proxyUrlConfiguration"]["proxyUrl"]
             proxyUrlParts = proxyUrl.split(":")
             if len(proxyUrlParts) == 2:
-                proxyConfiguration = { "proxyHostName": proxyUrlParts[0], "proxyPort": proxyUrlParts[1] }
+                proxyConfiguration = {"proxyHostName": proxyUrlParts[0], "proxyPort": proxyUrlParts[1]}
                 cleanOutput["proxyConfiguration"] = proxyConfiguration
             else:
-                proxyConfiguration = { "proxyHostName": result["properties"]["additionalCacheNodeProperties"]["proxyUrlConfiguration"]["proxyUrl"] }
+                proxyConfiguration = {"proxyHostName": result["properties"]["additionalCacheNodeProperties"]["proxyUrlConfiguration"]["proxyUrl"]}
                 cleanOutput["proxyConfiguration"] = proxyConfiguration
         except KeyError:
             pass
@@ -691,7 +691,7 @@ class MccEntNodeList(_MccEntNodeList):
                     driveArray = cacheNode["properties"]["additionalCacheNodeProperties"]["driveConfiguration"]
                     cleanDriveArray = []
                     for drive in driveArray:
-                        cleanDrive = { "physicalPath": drive["physicalPath"], "sizeInGb": drive["sizeInGb"] }
+                        cleanDrive = {"physicalPath": drive["physicalPath"], "sizeInGb": drive["sizeInGb"]}
                         cleanDriveArray.append(cleanDrive)
                     cleanCacheNode["driveConfiguration"] = cleanDriveArray
                 except KeyError:
@@ -701,10 +701,10 @@ class MccEntNodeList(_MccEntNodeList):
                     proxyUrl = cacheNode["properties"]["additionalCacheNodeProperties"]["proxyUrlConfiguration"]["proxyUrl"]
                     proxyUrlParts = proxyUrl.split(":")
                     if len(proxyUrlParts) == 2:
-                        proxyConfiguration = { "proxyHostName": proxyUrlParts[0], "proxyPort": proxyUrlParts[1] }
+                        proxyConfiguration = {"proxyHostName": proxyUrlParts[0], "proxyPort": proxyUrlParts[1]}
                         cleanCacheNode["proxyConfiguration"] = proxyConfiguration
                     else:
-                        proxyConfiguration = { "proxyHostName": cacheNode["properties"]["additionalCacheNodeProperties"]["proxyUrlConfiguration"]["proxyUrl"] }
+                        proxyConfiguration = {"proxyHostName": cacheNode["properties"]["additionalCacheNodeProperties"]["proxyUrlConfiguration"]["proxyUrl"]}
                         cleanCacheNode["proxyConfiguration"] = proxyConfiguration
                 except KeyError:
                     pass
@@ -760,10 +760,10 @@ class MccEntNodeShow(_MccEntNodeShow):
             proxyUrl = result["properties"]["additionalCacheNodeProperties"]["proxyUrlConfiguration"]["proxyUrl"]
             proxyUrlParts = proxyUrl.split(":")
             if len(proxyUrlParts) == 2:
-                proxyConfiguration = { "proxyHostName": proxyUrlParts[0], "proxyPort": proxyUrlParts[1] }
+                proxyConfiguration = {"proxyHostName": proxyUrlParts[0], "proxyPort": proxyUrlParts[1]}
                 cleanOutput["proxyConfiguration"] = proxyConfiguration
             else:
-                proxyConfiguration = { "proxyHostName": result["properties"]["additionalCacheNodeProperties"]["proxyUrlConfiguration"]["proxyUrl"] }
+                proxyConfiguration = {"proxyHostName": result["properties"]["additionalCacheNodeProperties"]["proxyUrlConfiguration"]["proxyUrl"]}
                 cleanOutput["proxyConfiguration"] = proxyConfiguration
         except KeyError:
             pass
@@ -853,7 +853,7 @@ class MccEntNodeGetProvisioningDetails(_MccEntNodeGetProvisioningDetails):
                 driveArray = ShowOutput["properties"]["additionalCacheNodeProperties"]["driveConfiguration"]
                 cleanDriveArray = []
                 for drive in driveArray:
-                    cleanDrive = { "physicalPath": drive["physicalPath"], "sizeInGb": drive["sizeInGb"] }
+                    cleanDrive = {"physicalPath": drive["physicalPath"], "sizeInGb": drive["sizeInGb"]}
                     cleanDriveArray.append(cleanDrive)
                 cleanOutput["driveConfiguration"] = cleanDriveArray
             except KeyError:
@@ -863,10 +863,10 @@ class MccEntNodeGetProvisioningDetails(_MccEntNodeGetProvisioningDetails):
                 proxyUrl = ShowOutput["properties"]["additionalCacheNodeProperties"]["proxyUrlConfiguration"]["proxyUrl"]
                 proxyUrlParts = proxyUrl.split(":")
                 if len(proxyUrlParts) == 2:
-                    proxyConfiguration = { "proxyHostName": proxyUrlParts[0], "proxyPort": proxyUrlParts[1] }
+                    proxyConfiguration = {"proxyHostName": proxyUrlParts[0], "proxyPort": proxyUrlParts[1]}
                     cleanOutput["proxyConfiguration"] = proxyConfiguration
                 else:
-                    proxyConfiguration = { "proxyHostName": ShowOutput["properties"]["additionalCacheNodeProperties"]["proxyUrlConfiguration"]["proxyUrl"] }
+                    proxyConfiguration = {"proxyHostName": ShowOutput["properties"]["additionalCacheNodeProperties"]["proxyUrlConfiguration"]["proxyUrl"]}
                     cleanOutput["proxyConfiguration"] = proxyConfiguration
             except KeyError:
                 pass
