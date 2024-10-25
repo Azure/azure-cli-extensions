@@ -382,7 +382,7 @@ def prepare_attachments(attachments, attachment_types, inline_attachments):
                 raise CLIError(
                     f'Incorrect format for inline attachment: {inline_attachment}. '
                     'Format should be: FileLocation/ContentId, example: "ImageName.png/image".'
-            )
+                )
             attachment_name, content_id = inline_attachment.split('/')
             inline_attachment_type = attachment_types[len(attachments) + (j)]
             attachment_content = __get_attachment_content(
