@@ -12,4 +12,6 @@ from azure.cli.core.commands import CliCommandType
 
 
 def load_command_table(self, _):  # pylint: disable=unused-argument
-    self.command_table["arcgateway settings update"] = Update(loader=self)
+    with self.command_group("arcgateway settings"):
+        from .custom import SettingsUpdate
+        self.command_table["arcgateway settings update"] = SettingsUpdate(loader=self)

@@ -12,15 +12,14 @@
 # pylint: disable=too-many-statements
 
 from azure.cli.core.aaz import register_command
-from .aaz.latest.arcgateway.settings import Update as _Update
+from .aaz.latest.arcgateway.settings import Update as _SettingsUpdate
 
-logger = get_logger(__name__)
-
-class Update(_Update):
+# hide settings_resource_name from user and always set it to be 'Default'
+class SettingsUpdate(_SettingsUpdate):
     """Update the base Settings of the target resource.
 
     :example: Sample command for setting update
-        az arcgateway settings update --resource-group myResourceGroup --subscription mySubscription --base-provider Microsoft.HybridCompute --base-resource-type machines --base-resource-name workloadServer --settings-resource-name default --gateway-resource-id myResourceId
+        az arcgateway settings update --resource-group myResourceGroup --subscription mySubscription --base-provider Microsoft.HybridCompute --base-resource-type machines --base-resource-name workloadServer --gateway-resource-id myResourceId
     """
     @classmethod
     def _build_arguments_schema(cls, *args, **kwargs):

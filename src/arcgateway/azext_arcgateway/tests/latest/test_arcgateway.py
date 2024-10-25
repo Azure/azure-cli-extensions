@@ -16,14 +16,13 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 class ArcGatewayScenario(ScenarioTest):
     @live_only()
     @ResourceGroupPreparer(name_prefix='cli_test_arcgateway')
-    def test_setting(self):
+    def test_arcgateway(self):
         rand_string = 'test'
         self.kwargs.update({
             'machine': 'testmachine',
-            'rg': 'manojamp',
             'location': 'eastus',
             'subscription': 'b24cc8ee-df4f-48ac-94cf-46edf36b0fae',
-            'gatewayName': 'myGateway',
+            'gatewayName': 'myArcgateway',
             'newResourceGroup': 'ytongtest',
         })
 
@@ -31,8 +30,7 @@ class ArcGatewayScenario(ScenarioTest):
                 '--resource-group "{newResourceGroup}" '
                 '--subscription "{subscription}" '
                 '--location {location} '            
-                '--name {gatewayName} '
-                '--allowed-features *',
+                '--name {gatewayName}',
                  checks=[]) 
 
         self.cmd('az arcgateway list '
@@ -45,21 +43,13 @@ class ArcGatewayScenario(ScenarioTest):
                 '--name {gatewayName}',
                  checks=[]) 
 
-        self.cmd('az arcgateway update '
-                '--resource-group "{newResourceGroup}" '
-                '--subscription "{subscription}" '         
-                '--name {gatewayName}',
-                 checks=[]) 
-
         self.cmd('az arcgateway settings update '
                 '--resource-group "{newResourceGroup}" '
                 '--subscription "{subscription}" '
                 '--base-provider "Microsoft.HybridCompute" '
                 '--base-resource-type "machines" '
                 '--base-resource-name "testmachine" '
-                '--settings-resource-name "default" '
-                '--gateway-resource-id "/subscriptions/{subscription}/resourceGroups/{newResourceGroup}/providers/Microsoft.HybridCompute/gateways/{gatewayName}" '              
-                '--name "default"',
+                '--gateway-resource-id "/subscriptions/{subscription}/resourceGroups/{newResourceGroup}/providers/Microsoft.HybridCompute/gateways/{gatewayName}"',
                 checks=[]) 
 
         self.cmd('az arcgateway delete -y '
