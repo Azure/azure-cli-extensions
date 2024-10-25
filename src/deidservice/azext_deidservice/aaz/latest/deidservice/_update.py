@@ -344,7 +344,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
-            _builder.set_prop("identity", AAZObjectType, ".identity")
+            _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
             _builder.set_prop("properties", AAZObjectType)
             _builder.set_prop("tags", AAZDictType, ".tags")
 
@@ -400,7 +400,7 @@ class _UpdateHelper:
         deid_service_read.id = AAZStrType(
             flags={"read_only": True},
         )
-        deid_service_read.identity = AAZObjectType()
+        deid_service_read.identity = AAZIdentityObjectType()
         deid_service_read.location = AAZStrType(
             flags={"required": True},
         )
