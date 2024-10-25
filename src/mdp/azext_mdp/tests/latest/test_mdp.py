@@ -16,7 +16,7 @@ class MdpScenario(ScenarioTest):
         self.kwargs.update(
             {
                 "subscriptionId": self.get_subscription_id(),
-                "location": "eastus2",
+                "location": "eastus",
             }
         )
 
