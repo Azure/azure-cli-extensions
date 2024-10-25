@@ -9,6 +9,9 @@ import pytest
 from azure.cli.testsdk import LiveScenarioTest, ResourceGroupPreparer
 import json
 import re
+import uuid
+import secrets
+import string
 
 STATUS_SUCCESS = 'SUCCESS'
 
@@ -955,3 +958,116 @@ class WindowsRunWithRepairVMId(LiveScenarioTest):
         vms = self.cmd('vm list -g {} -o json'.format(rgname)).get_output_in_json()
         source_vm = vms[0]
         assert source_vm['storageProfile']['osDisk']['name'] == result['copied_disk_name']
+        
+        
+        
+
+@pytest.mark.winNoPublicIPByDefault
+class WindowsNoPubIPByDefault(LiveScenarioTest):
+
+    @ResourceGroupPreparer(location='westus2')
+    def test_vmrepair_WindowsNoPublicIPByDefault(self, resource_group):
+        base_password = "Passw0rd2024"
+        guid_suffix = str(uuid.uuid4())
+        secure_password = base_password + guid_suffix
+        username_length = 8
+        secure_username = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(username_length))
+        self.kwargs.update({
+            'vm': 'vm1',
+            'admin_password': secure_password,
+            'admin_username': secure_username
+        })
+
+        # Create test VM without public IP
+        self.cmd('vm create -g {rg} -n {vm} --admin-username {admin_username} --admin-password {admin_password} --image MicrosoftWindowsServer:windowsserver:2022-datacenter:latest')
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
+        # Something wrong with vm create command if it fails here
+        assert len(vms) == 1
+
+        # Create Repair VM
+        repair_vm = self.cmd('vm repair create -g {rg} -n {vm} --repair-username {admin_username} --repair-password {admin_password} --yes -o json').get_output_in_json()
+        assert repair_vm['status'] == STATUS_SUCCESS, repair_vm['error_message']
+        # Check repair VM
+        self.kwargs.update({
+            'vm': 'vm1',
+            'admin_password': secure_password,
+            'admin_username': secure_username,
+            'repair_resource_group': repair_vm['repair_resource_group']
+        })
+        # need to verify there is no public ip on the vm
+        public_ip_list = self.cmd('network public-ip list -g {repair_resource_group} -o json').get_output_in_json()
+        assert len(public_ip_list) == 0
+        
+        repair_vms = self.cmd('vm list -g {repair_resource_group} -o json').get_output_in_json()
+        assert len(repair_vms) == 1
+        repair_vm = repair_vms[0]
+        repair_vm_id = repair_vm['id']
+        self.kwargs.update({
+            'vm': 'vm1',
+            'admin_password': secure_password,
+            'admin_username': secure_username,
+            'repair_vm_id': repair_vm_id
+        })
+        
+        # Run a script for testing repair-vm-id
+        result_run = self.cmd('vm repair run -g {rg} -n {vm} --run-id win-hello-world --repair-vm-id {repair_vm_id} --run-on-repair -o json').get_output_in_json()
+        assert result_run['status'] == STATUS_SUCCESS, result_run['error_message']
+        
+        # Call Restore
+        self.cmd('vm repair restore -g {rg} -n {vm} --yes')
+
+
+@pytest.mark.winPublicIPWithParameter
+class WindowsPublicIPWithParameter(LiveScenarioTest):
+
+    @ResourceGroupPreparer(location='westus2')
+    def test_vmrepair_WindowsPublicIPWithParameter(self, resource_group):
+
+        base_password = "Passw0rd2024"
+        guid_suffix = str(uuid.uuid4())
+        secure_password = base_password + guid_suffix
+        username_length = 8
+        secure_username = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(username_length))
+        self.kwargs.update({
+            'vm': 'vm1',
+            'admin_password': secure_password,
+            'admin_username': secure_username
+        })
+        
+        # Create test VM with public IP
+        self.cmd('vm create -g {rg} -n {vm} --admin-username {admin_username} --admin-password {admin_password} --image MicrosoftWindowsServer:windowsserver:2022-datacenter:latest')
+        vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
+        # Something wrong with vm create command if it fails here
+        assert len(vms) == 1
+
+        # Create Repair VM
+        repair_vm = self.cmd('vm repair create -g {rg} -n {vm} --repair-username {admin_username} --repair-password {admin_password} --debug --verbose --associate-public-ip --yes -o json').get_output_in_json()
+        assert repair_vm['status'] == STATUS_SUCCESS, repair_vm['error_message']
+        # Check repair VM
+        self.kwargs.update({
+            'vm': 'vm1',
+            'admin_password': secure_password,
+            'admin_username': secure_username,
+            'repair_resource_group': repair_vm['repair_resource_group']
+        })
+        # need to verify there is no public ip on the vm
+        public_ip_list = self.cmd('network public-ip list -g {repair_resource_group} --debug --verbose -o json').get_output_in_json()
+        assert len(public_ip_list) == 1
+        
+        repair_vms = self.cmd('vm list -g {repair_resource_group} -o json').get_output_in_json()
+        assert len(repair_vms) == 1
+        repair_vm = repair_vms[0]
+        repair_vm_id = repair_vm['id']
+        self.kwargs.update({
+            'vm': 'vm1',
+            'admin_password': secure_password,
+            'admin_username': secure_username,
+            'repair_vm_id': repair_vm_id
+        })
+        
+        # Run a script for testing repair-vm-id
+        result_run = self.cmd('vm repair run -g {rg} -n {vm} --run-id win-hello-world --repair-vm-id {repair_vm_id} --run-on-repair --debug --verbose -o json').get_output_in_json()
+        assert result_run['status'] == STATUS_SUCCESS, result_run['error_message']
+        
+        # Call Restore
+        self.cmd('vm repair restore -g {rg} -n {vm} --yes') 

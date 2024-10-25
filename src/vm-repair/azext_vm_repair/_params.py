@@ -31,11 +31,11 @@ def load_arguments(self, _):
         c.argument('unlock_encrypted_vm', help='Option to auto-unlock encrypted VMs using current subscription auth.')
         c.argument('encrypt_recovery_key', help='Option to auto-unlock encrypted VMs using provided recovery password.')
         c.argument('enable_nested', help='enable nested hyperv.')
-        c.argument('associate_public_ip', help='Option to create repair vm with public ip')
+        c.argument('associate_public_ip', help='Option to create a repair vm with a public ip. If this parameter is not used, a private ip will be made.')
         c.argument('distro', help='Option to create repair vm from a specific linux distro (rhel7|rhel8|sles12|sles15|ubuntu20|centos7|centos8|oracle7)')
-        c.argument('yes', help='Option to skip prompt for associating public ip and confirm yes to it in no Tty mode')
+        c.argument('yes', help='Option to skip prompt for associating public ip in no Tty mode')
         c.argument('disable_trusted_launch', help='Option to disable Trusted Launch security type on the repair vm by setting the security type to Standard.')
-
+        
     with self.argument_context('vm repair restore') as c:
         c.argument('repair_vm_id', help='Repair VM resource id.')
         c.argument('disk_name', help='Name of fixed data disk. Defaults to the first data disk in the repair VM.')
