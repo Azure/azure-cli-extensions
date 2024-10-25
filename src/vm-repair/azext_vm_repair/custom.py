@@ -97,7 +97,7 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
                 # Call the new URN matching logic. 
                 os_image_urn = _fetch_compatible_windows_os_urn_v2(source_vm)
             else:
-                # Use the old default to 2019 logic. 
+                # Use the old default to 2022 image logic. 
                 os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
 
         # Set up base create vm command
