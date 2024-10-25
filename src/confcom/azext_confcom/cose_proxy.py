@@ -47,35 +47,25 @@ class CoseSignToolProxy:  # pylint: disable=too-few-public-methods
             os.makedirs(bin_folder)
 
         # get the most recent release artifacts from github
-        r = requests.get("https://api.github.com/microsoft/cosesign1go/releases")
-        needed_assets = ["CoseSignTool-Windows-release.zip", "CoseSignTool-Linux-release.zip"]
-        windows_flag = False
-        linux_flag = False
+        r = requests.get("https://api.github.com/repos/microsoft/cosesign1go/releases")
+        r.raise_for_status()
+        needed_assets = ["sign1util", "sign1util.exe"]
+
+        # these should be newest to oldest
         for release in r.json():
-            # these should be newest to oldest
-            for asset in release["assets"]:
-                # download the file if it's what we want
-                if asset["name"] in needed_assets:
-                    if "Windows" in asset["name"]:
-                        windows_flag = True
-                    else:
-                        linux_flag = True
-
-                    last_dash = asset["name"].rfind("-")
-                    save_name = asset["name"][:last_dash]
-
-                    zip_url = asset["browser_download_url"]
-                    r = requests.get(zip_url)
-                    # save and unzip the file to the bin folder
+            # search for both windows and linux binaries
+            needed_asset_info = [asset for asset in release["assets"] if asset["name"] in needed_assets]
+            if len(needed_asset_info) == len(needed_assets):
+                for asset in needed_asset_info:
+                    # get the download url for the dmverity-vhd file
+                    exe_url = asset["browser_download_url"]
+                    # download the file
+                    r = requests.get(exe_url)
+                    r.raise_for_status()
+                    # save the file to the bin folder
                     with open(os.path.join(bin_folder, asset["name"]), "wb") as f:
                         f.write(r.content)
-                    with ZipFile(os.path.join(bin_folder, asset["name"]), "r") as zip_ref:
-                        zip_ref.extractall(os.path.join(bin_folder, save_name))
-                    # remove the zip file
-                    os.remove(os.path.join(bin_folder, asset["name"]))
-
-            # stop early so we don't have to iterate through all releases
-            if windows_flag and linux_flag:
+                # stop iterating through releases
                 break
 
     def __init__(self):

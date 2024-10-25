@@ -35,6 +35,7 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
 
         # get the most recent release artifacts from github
         r = requests.get("https://api.github.com/repos/microsoft/kata-containers/releases")
+        r.raise_for_status()
         bin_flag = False
         needed_assets = ["genpolicy", "genpolicy.exe"]
         # search for genpolicy in the assets from kata-container releases
@@ -54,6 +55,7 @@ class KataPolicyGenProxy:  # pylint: disable=too-few-public-methods
                         exe_url = asset["browser_download_url"]
                         # download the file
                         r = requests.get(exe_url)
+                        r.raise_for_status()
                         # save the file to the bin folder
                         with open(os.path.join(bin_folder, save_name), "wb") as f:
                             f.write(r.content)
