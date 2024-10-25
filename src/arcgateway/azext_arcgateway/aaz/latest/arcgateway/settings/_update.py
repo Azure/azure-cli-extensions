@@ -81,7 +81,6 @@ class Update(AAZCommand):
             help="The name of the settings resource.",
             required=True,
             id_part="child_name_1",
-            default="\"default\"",
             fmt=AAZStrArgFormat(
                 pattern="default",
             ),

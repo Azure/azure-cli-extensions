@@ -14,9 +14,8 @@
 from azure.cli.core.aaz import register_command
 from .aaz.latest.arcgateway.settings import Update as _Update
 
-@register_command(
-    "arcgateway settings update",
-)
+logger = get_logger(__name__)
+
 class Update(_Update):
     """Update the base Settings of the target resource.
 
