@@ -106,7 +106,7 @@ class TestManagedIdentity(unittest.TestCase):
 
         self.managed_identity.pre_operations_create(args)
 
-        self.assertEquals(
+        self.assertEqual(
             args.identity.type, "None"
         )  # Expecting None as identity type is passed
         self.assertIsNone(
