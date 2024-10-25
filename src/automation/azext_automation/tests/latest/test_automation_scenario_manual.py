@@ -363,13 +363,13 @@ class AutomationScenarioTest(ScenarioTest):
         ])
 
         config_content = self.cmd('automation configuration show-content -g {rg} --automation-account-name {account} -n {config}')
-        self.assertEquals(self.kwargs['source_content_retrieved'], config_content.output)
+        self.assertEqual(self.kwargs['source_content_retrieved'], config_content.output)
 
         self.cmd('automation configuration update -g {rg} --automation-account-name {account} -n {config} --location {location} '
                  '--source-type embeddedContent --source {source_content2}')
 
         config_content = self.cmd('automation configuration show-content -g {rg} --automation-account-name {account} -n {config}')
-        self.assertEquals(self.kwargs['source_content2_retrieved'], config_content.output)
+        self.assertEqual(self.kwargs['source_content2_retrieved'], config_content.output)
 
         self.cmd('automation configuration delete -g {rg} --automation-account-name {account} -n {config} -y')
         self.cmd('automation configuration list -g {rg} --automation-account-name {account}', checks=[

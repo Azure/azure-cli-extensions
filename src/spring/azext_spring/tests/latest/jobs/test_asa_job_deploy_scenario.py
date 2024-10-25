@@ -30,5 +30,5 @@ class JobDeploy(ScenarioTest):
         ])
 
         # deploy unexist file, the fail is expected
-        with self.assertRaisesRegexp(CLIError, "artifact path {} does not exist.".format(file_path)):
+        with self.assertRaisesRegex(CLIError, "artifact path {} does not exist.".format(file_path)):
             self.cmd('spring job deploy -n {job} -g {rg} -s {serviceName} --artifact-path {file}')

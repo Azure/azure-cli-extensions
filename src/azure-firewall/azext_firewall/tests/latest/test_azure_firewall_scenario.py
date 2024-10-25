@@ -274,7 +274,7 @@ class AzureFirewallScenario(ScenarioTest):
         # self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --count 1 --vhub {vhub}')
         # self.cmd('network firewall update -g {rg} -n {af} --vhub ""')
 
-        # with self.assertRaisesRegexp(CLIError, "allow active ftp is not allowed for azure firewall on virtual hub."):
+        # with self.assertRaisesRegex(CLIError, "allow active ftp is not allowed for azure firewall on virtual hub."):
         #     self.cmd('network firewall create -g {rg} -n {af} --sku AZFW_Hub --count 1 --vhub {vhub} --allow-active-ftp')
 
         self.cmd('network vwan create -n {vwan2} -g {rg} --type Standard')
