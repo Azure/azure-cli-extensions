@@ -23,9 +23,7 @@ CLASSIFIERS = [
     "License :: OSI Approved :: MIT License",
 ]
 
-DEPENDENCIES = [
-    'cachetools~=5.5.0'
-]
+DEPENDENCIES = []
 
 with open1("README.rst", "r", encoding="utf-8") as f:
     README = f.read()
