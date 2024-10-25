@@ -13,48 +13,32 @@ import random
 import string
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 
-def create_valid_random_name(prefix, length):
-    """Generate a random name that matches the required pattern."""
-    if len(prefix) > length:
-        raise ValueError('The length of the prefix must not be longer than random name length')
-    
-    padding_size = length - len(prefix)
-    if padding_size < 4:
-        raise ValueError('The randomized part of the name is shorter than 4, which may not be able to offer enough randomness')
-    
-    random_part = ''.join(random.choices(string.ascii_lowercase + string.digits, k=padding_size))
-    return prefix + random_part
-
 class DeidserviceScenario(ScenarioTest):
     
-    @ResourceGroupPreparer(name_prefix='test_deidservice_', location='eastus')
+    @ResourceGroupPreparer(name_prefix='test_deidservice_lifecycle_', location='eastus')
     def test_deidservice_lifecycle(self, resource_group):
-
-        # Set a fixed seed for random data
-        # This ensures that the test will be deterministic and VCR will record and playback the same data
-        random.seed(42)
         
         self.kwargs.update({
-            'deidservice': create_valid_random_name('deidservice-', 24),
+            'serviceName': self.create_random_name('azcli-ext-test-', 24), # Create a random name for the service, max length 24
             'location': 'eastus',
             'rg': resource_group
         })
         
         # Create deidservice
-        self.cmd('az deidservice create --name {deidservice} -g {rg} --location {location}', checks=[
-            self.check('name', '{deidservice}'),
+        self.cmd('az deidservice create --name {serviceName} -g {rg} --location {location}', checks=[
+            self.check('name', '{serviceName}'),
             self.check('location', '{location}')
         ])
         
         # Update deidservice
-        self.cmd('az deidservice update --name {deidservice} -g {rg} --tags tag=test', checks=[
-            self.check('name', '{deidservice}'),
+        self.cmd('az deidservice update --name {serviceName} -g {rg} --tags tag=test', checks=[
+            self.check('name', '{serviceName}'),
             self.check('tags.tag', 'test')
         ])
         
         # Show deidservice
-        self.cmd('az deidservice show --name {deidservice} -g {rg}', checks=[
-            self.check('name', '{deidservice}'),
+        self.cmd('az deidservice show --name {serviceName} -g {rg}', checks=[
+            self.check('name', '{serviceName}'),
             self.check('tags.tag', 'test'),
             self.check('location', '{location}'),
             self.check('resourceGroup', '{rg}'),
@@ -63,7 +47,7 @@ class DeidserviceScenario(ScenarioTest):
         
         # List deidservices
         self.cmd('az deidservice list -g {rg}', checks=[
-            self.check('[0].name', '{deidservice}'),
+            self.check('[0].name', '{serviceName}'),
             self.check('[0].tags.tag', 'test'),
             self.check('[0].location', '{location}'),
             self.check('[0].resourceGroup', '{rg}'),
@@ -71,7 +55,7 @@ class DeidserviceScenario(ScenarioTest):
         ])
         
         # Delete deidservice
-        self.cmd('az deidservice delete --name {deidservice} -g {rg} -y')
+        self.cmd('az deidservice delete --name {serviceName} -g {rg} -y')
         
         # Verify deletion by listing again
         services = self.cmd('az deidservice list -g {rg}').get_output_in_json()
