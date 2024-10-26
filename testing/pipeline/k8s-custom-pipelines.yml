@@ -2,13 +2,11 @@ trigger:
   batch: true
   branches:
     include:
-      - k8s-extension/public
-      - k8s-extension/private
+      - main
 pr:
   branches:
     include:
-      - k8s-extension/public
-      - k8s-extension/private
+      - main
 
 stages:
 - stage: BuildTestPublishExtension
@@ -18,8 +16,8 @@ stages:
     CLI_REPO_PATH: $(Agent.BuildDirectory)/s
     SUBSCRIPTION_ID: "15c06b1b-01d6-407b-bb21-740b8617dea3"
     RESOURCE_GROUP: "K8sPartnerExtensionTest"
-    BASE_CLUSTER_NAME: "k8s-extension-cluster"
-    IS_PRIVATE_BRANCH: $[or(eq(variables['Build.SourceBranch'], 'refs/heads/k8s-extension/private'), eq(variables['System.PullRequest.TargetBranch'], 'k8s-extension/private'))]
+    BASE_CLUSTER_NAME: "connectedk8s-cluster"
+    IS_PRIVATE_BRANCH: 'False'
   jobs:
   - template: ./templates/run-test.yml
     parameters:
