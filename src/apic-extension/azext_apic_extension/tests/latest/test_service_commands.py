@@ -9,7 +9,10 @@ import unittest
 
 from azure.cli.testsdk import ScenarioTest, ResourceGroupPreparer
 from .utils import ApicServicePreparer
-from .constants import TEST_REGION
+from .constants import TEST_REGION, USERASSIGNED_IDENTITY
+
+# if USERASSIGNED_IDENTITY is set, enable_system_assigned_identity is False, otherwise use system assigned identity
+enable_system_assigned_identity = False if USERASSIGNED_IDENTITY else True
 
 class ServiceCommandsTests(ScenarioTest):
 
@@ -111,7 +114,7 @@ class ServiceCommandsTests(ScenarioTest):
         self.cmd('az apic show -g {rg} -n {s}', expect_failure=True)
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
-    @ApicServicePreparer(enable_system_assigned_identity=True)
+    @ApicServicePreparer(enable_system_assigned_identity=enable_system_assigned_identity)
     def test_import_from_apim(self):
         self.kwargs.update({
           'apim_name': self.create_random_name(prefix='cli', length=24)
@@ -127,7 +130,7 @@ class ServiceCommandsTests(ScenarioTest):
 
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
-    @ApicServicePreparer(enable_system_assigned_identity=True)
+    @ApicServicePreparer(enable_system_assigned_identity=enable_system_assigned_identity)
     def test_import_from_apim_for_one_api(self):
         self.kwargs.update({
           'apim_name': self.create_random_name(prefix='cli', length=24)
@@ -146,7 +149,7 @@ class ServiceCommandsTests(ScenarioTest):
         ])
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
-    @ApicServicePreparer(enable_system_assigned_identity=True)
+    @ApicServicePreparer(enable_system_assigned_identity=enable_system_assigned_identity)
     def test_import_from_apim_for_multiple_apis(self):
         self.kwargs.update({
           'apim_name': self.create_random_name(prefix='cli', length=24)
@@ -195,7 +198,7 @@ class ServiceCommandsTests(ScenarioTest):
         self.cmd('az apic show -g {rg} -n {s}', expect_failure=True)
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
-    @ApicServicePreparer(enable_system_assigned_identity=True)
+    @ApicServicePreparer(enable_system_assigned_identity=enable_system_assigned_identity)
     def test_examples_import_all_apis_from_apim(self):
         self.kwargs.update({
           'apim_name': self.create_random_name(prefix='cli', length=24)
@@ -204,7 +207,7 @@ class ServiceCommandsTests(ScenarioTest):
         self.cmd('az apic import-from-apim -g {rg} --service-name {s} --apim-name {apim_name} --apim-apis *')
 
     @ResourceGroupPreparer(name_prefix="clirg", location=TEST_REGION, random_name_length=32)
-    @ApicServicePreparer(enable_system_assigned_identity=True)
+    @ApicServicePreparer(enable_system_assigned_identity=enable_system_assigned_identity)
     def test_examples_import_selected_apis_from_apim(self):
         self.kwargs.update({
           'apim_name': self.create_random_name(prefix='cli', length=24)
@@ -240,7 +243,7 @@ class ServiceCommandsTests(ScenarioTest):
             apic_service = self.cmd('az apic show -g {rg} -n {s}').get_output_in_json()
             self.kwargs.update({
                 'identity_id': apic_service['identity']['principalId']
-            })
+            }) if enable_system_assigned_identity else None
             # Create APIM service
             apim_service = self.cmd('az apim create -g {rg} --name {apim_name} --publisher-name test --publisher-email test@example.com --sku-name Consumption').get_output_in_json()
             # Add echo api
@@ -251,7 +254,13 @@ class ServiceCommandsTests(ScenarioTest):
             self.cmd('az apim api operation create -g {rg} --service-name {apim_name} --api-id foo --url-template "/foo" --method "GET" --display-name "GetOperation"')
             apim_id = apim_service['id']
             self.kwargs.update({
-                'apim_id': apim_id
+                'apim_id': apim_id,
+                'usi_id': USERASSIGNED_IDENTITY
             })
-            # Grant system assigned identity of API Center access to APIM
-            self.cmd('az role assignment create --role "API Management Service Reader Role" --assignee-object-id {identity_id} --assignee-principal-type ServicePrincipal --scope {apim_id}')
+
+            if enable_system_assigned_identity:
+                # Grant system assigned identity of API Center access to APIM
+                self.cmd('az role assignment create --role "API Management Service Reader Role" --assignee-object-id {identity_id} --assignee-principal-type ServicePrincipal --scope {apim_id}')
+            else:
+                # add user-assigned identity to api center service:
+                self.cmd('az apic update --name {s} -g {rg} --identity {{type:UserAssigned,user-assigned-identities:{usi_id}}}')
