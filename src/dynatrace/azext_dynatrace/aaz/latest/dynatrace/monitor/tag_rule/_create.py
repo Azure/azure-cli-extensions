@@ -18,13 +18,13 @@ class Create(AAZCommand):
     """Create a tag rule
 
     :example: Create tag-rule
-        az dynatrace monitor tag-rule create -g rg --monitor-name monitor -n default --log-rules "{send-aad-logs:enabled,send-subscription-logs:enabled,send-activity-logs:enabled,filtering-tags:[{name:env,value:prod,action:include},{name:env,value:dev,action:exclude}]}" --metric-rules "{filtering-tags:[{name:env,value:prod,action:include}]}"
+        az dynatrace monitor tag-rule create -g rg --monitor-name monitor -n default --log-rules "{send-aad-logs:enabled,send-subscription-logs:enabled,send-activity-logs:enabled,filtering-tags:[{name:env,value:prod,action:include},{name:env,value:dev,action:exclude}]}" --metric-rules "{sending-metrics:enabled,filtering-tags:[{name:env,value:prod,action:include}]}"
     """
 
     _aaz_info = {
-        "version": "2021-09-01",
+        "version": "2023-04-27",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/tagrules/{}", "2021-09-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/dynatrace.observability/monitors/{}/tagrules/{}", "2023-04-27"],
         ]
     }
 
@@ -102,6 +102,11 @@ class Create(AAZCommand):
         metric_rules.filtering_tags = AAZListArg(
             options=["filtering-tags"],
             help="List of filtering tags to be used for capturing metrics. If empty, all resources will be captured. If only Exclude action is specified, the rules will apply to the list of all available resources. If Include actions are specified, the rules will only include resources with the associated tags.",
+        )
+        metric_rules.sending_metrics = AAZStrArg(
+            options=["sending-metrics"],
+            help="Flag specifying if metrics from Azure resources should be sent for the Monitor resource.",
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
 
         filtering_tags = cls._args_schema.metric_rules.filtering_tags
@@ -225,7 +230,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2021-09-01",
+                    "api-version", "2023-04-27",
                     required=True,
                 ),
             }
@@ -271,6 +276,7 @@ class Create(AAZCommand):
             metric_rules = _builder.get(".properties.metricRules")
             if metric_rules is not None:
                 metric_rules.set_prop("filteringTags", AAZListType, ".filtering_tags")
+                metric_rules.set_prop("sendingMetrics", AAZStrType, ".sending_metrics")
 
             filtering_tags = _builder.get(".properties.metricRules.filteringTags")
             if filtering_tags is not None:
@@ -322,6 +328,7 @@ class Create(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
 
             log_rules = cls._schema_on_200_201.properties.log_rules
@@ -345,6 +352,9 @@ class Create(AAZCommand):
             metric_rules = cls._schema_on_200_201.properties.metric_rules
             metric_rules.filtering_tags = AAZListType(
                 serialized_name="filteringTags",
+            )
+            metric_rules.sending_metrics = AAZStrType(
+                serialized_name="sendingMetrics",
             )
 
             filtering_tags = cls._schema_on_200_201.properties.metric_rules.filtering_tags
