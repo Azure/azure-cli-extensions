@@ -13,14 +13,10 @@ class VirtualNetworkTapCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
-        from .profiles import CUSTOM_VNET_TAP
-        register_resource_type('latest', CUSTOM_VNET_TAP, '2018-08-01')
-
-        super(VirtualNetworkTapCommandsLoader, self).__init__(
-            cli_ctx=cli_ctx,
-            custom_command_type=CliCommandType(operations_tmpl='azext_vnettap.custom#{}'),
-            resource_type=CUSTOM_VNET_TAP
+        vtap_custom = CliCommandType(
+            operations_tmpl='azext_vnettap.custom#{}'
         )
+        super().__init__(cli_ctx=cli_ctx, custom_command_type=vtap_custom)
 
     def load_command_table(self, args):
         from .commands import load_command_table

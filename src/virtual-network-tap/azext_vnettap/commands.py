@@ -6,8 +6,6 @@
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
 
-from ._client_factory import cf_virtual_network_taps, cf_nic_tap_config
-
 
 # pylint: disable=too-many-locals, too-many-statements
 def load_command_table(self, _):
