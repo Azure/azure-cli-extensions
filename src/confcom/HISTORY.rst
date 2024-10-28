@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.0.1
+* getting rid of msrestazure dependency in _validators.py
+
 1.0.0
 ++++++
 * adding support for Virtual Node
