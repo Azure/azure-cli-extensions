@@ -206,7 +206,7 @@ class SerialconsoleAdminCommandsTest(LiveScenarioTest):
         connection_url = (f"{ARM_ENDPOINT}/subscriptions/{subscription_id}/resourcegroups/{resource_group_name}"
                           f"/providers/Microsoft.Compute/{vm_path}"
                           f"/providers/{RP_PROVIDER}/serialPorts/0"
-                          f"/connect?api-version=2018-05-01")
+                          f"/connect?api-version=2024-07-01")
 
         from azure.cli.core._profile import Profile
         token_info, _, _ = Profile().get_raw_token()
