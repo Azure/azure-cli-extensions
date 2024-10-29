@@ -103,7 +103,7 @@ class DynatraceScenario(ScenarioTest):
         })
 
         self.cmd('dynatrace monitor create -g {rg} -n {monitor} --user-info {{first-name:Alice,last-name:Bobab,email-address:agarwalshiv@microsoft.com,phone-number:1234567890,country:US}} --plan-data {{usage-type:COMMITTED,billing-cycle:MONTHLY,plan-details:azureportalintegration_privatepreview@TIDgmz7xq9ge3py,effective-date:2024-10-10}} --environment {{single-sign-on:{{aad-domains:[\'abc\']}}}} ')
-        self.cmd('dynatrace monitor tag-rule create -g {rg} --monitor-name {monitor} -n default --log-rules {{send-aad-logs:enabled,send-subscription-logs:enabled,send-activity-logs:enabled,filtering-tags:[{{name:env,value:prod,action:include}},{{name:env,value:dev,action:exclude}}]}} --metric-rules {{filtering-tags:[{{name:env,value:prod,action:include}}]}}', checks=[
+        self.cmd('dynatrace monitor tag-rule create -g {rg} --monitor-name {monitor} -n default --log-rules {{send-aad-logs:enabled,send-subscription-logs:enabled,send-activity-logs:enabled,filtering-tags:[{{name:env,value:prod,action:include}},{{name:env,value:dev,action:exclude}}]}} --metric-rules {{sending-metrics:enabled,filtering-tags:[{{name:env,value:prod,action:include}}]}}', checks=[
             self.check('name', 'default'),
             self.check('resourceGroup', '{rg}'),
             self.check('logRules.filteringTags[0].action', 'Include'),

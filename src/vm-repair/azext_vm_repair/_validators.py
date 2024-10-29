@@ -228,13 +228,15 @@ def _prompt_public_ip(namespace):
     from knack.prompting import prompt_y_n, NoTTYException
     try:
         if prompt_y_n('Does repair vm requires public ip?'):
-            namespace.associate_public_ip = namespace.repair_vm_name + "PublicIP"
+            namespace.associate_public_ip = _return_public_ip_name(namespace)
         else:
             namespace.associate_public_ip = '""'
 
     except NoTTYException:
         raise ValidationError('Please specify the associate-public-ip parameter in non-interactive mode.')
 
+def _return_public_ip_name(namespace):
+    return namespace.repair_vm_name + "PublicIP"
 
 def _classic_vm_exists(cmd, resource_group_name, vm_name):
     classic_vm_provider = 'Microsoft.ClassicCompute'
@@ -428,9 +430,9 @@ def validate_repair_and_restore(cmd, namespace):
 
     validate_vm_username(namespace.repair_username, is_linux)
     validate_vm_password(namespace.repair_password, is_linux)
+    
     # Prompt input for public ip usage
     namespace.associate_public_ip = False
-
     # Validate repair run command
     source_vm = _validate_and_get_vm(cmd, namespace.resource_group_name, namespace.vm_name)
     is_linux = _is_linux_os(source_vm)
