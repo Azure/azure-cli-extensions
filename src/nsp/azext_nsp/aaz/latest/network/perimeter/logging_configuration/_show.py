@@ -21,7 +21,7 @@ class Show(AAZCommand):
     _aaz_info = {
         "version": "2023-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/loggingconfigurations/instance", "2023-08-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/loggingconfigurations/{}", "2023-08-01-preview"],
         ]
     }
 
@@ -41,6 +41,13 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.logging_configuration_name = AAZStrArg(
+            options=["-n", "--name", "--logging-configuration-name"],
+            help="The name of the NSP logging configuration. Accepts 'instance' as name.",
+            required=True,
+            id_part="child_name_1",
+            default="instance",
+        )
         _args_schema.perimeter_name = AAZStrArg(
             options=["--perimeter-name"],
             help="The name of the network security perimeter.",
@@ -83,7 +90,7 @@ class Show(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}/loggingConfigurations/instance",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}/loggingConfigurations/{loggingConfigurationName}",
                 **self.url_parameters
             )
 
@@ -98,6 +105,10 @@ class Show(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "loggingConfigurationName", self.ctx.args.logging_configuration_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "networkSecurityPerimeterName", self.ctx.args.perimeter_name,
                     required=True,

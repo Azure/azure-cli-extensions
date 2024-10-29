@@ -24,7 +24,7 @@ class Update(AAZCommand):
     _aaz_info = {
         "version": "2023-08-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/loggingconfigurations/instance", "2023-08-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networksecurityperimeters/{}/loggingconfigurations/{}", "2023-08-01-preview"],
         ]
     }
 
@@ -46,6 +46,13 @@ class Update(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
+        _args_schema.logging_configuration_name = AAZStrArg(
+            options=["-n", "--name", "--logging-configuration-name"],
+            help="The name of the NSP logging configuration. Accepts 'instance' as name.",
+            required=True,
+            id_part="child_name_1",
+            default="instance",
+        )
         _args_schema.perimeter_name = AAZStrArg(
             options=["--perimeter-name"],
             help="The name of the network security perimeter.",
@@ -55,8 +62,6 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Parameters"
 
         # define Arg Group "Properties"
 
@@ -118,7 +123,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}/loggingConfigurations/instance",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}/loggingConfigurations/{loggingConfigurationName}",
                 **self.url_parameters
             )
 
@@ -133,6 +138,10 @@ class Update(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "loggingConfigurationName", self.ctx.args.logging_configuration_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "networkSecurityPerimeterName", self.ctx.args.perimeter_name,
                     required=True,
@@ -201,7 +210,7 @@ class Update(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}/loggingConfigurations/instance",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/networkSecurityPerimeters/{networkSecurityPerimeterName}/loggingConfigurations/{loggingConfigurationName}",
                 **self.url_parameters
             )
 
@@ -216,6 +225,10 @@ class Update(AAZCommand):
         @property
         def url_parameters(self):
             parameters = {
+                **self.serialize_url_param(
+                    "loggingConfigurationName", self.ctx.args.logging_configuration_name,
+                    required=True,
+                ),
                 **self.serialize_url_param(
                     "networkSecurityPerimeterName", self.ctx.args.perimeter_name,
                     required=True,
@@ -293,6 +306,7 @@ class Update(AAZCommand):
                 value=instance,
                 typ=AAZObjectType
             )
+            _builder.set_prop("name", AAZStrType, ".logging_configuration_name")
             _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
 
             properties = _builder.get(".properties")
