@@ -115,7 +115,7 @@ class TestValidateComponentLogs(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError) as context:
             validate_component_logs(get_test_cmd(), ns)
 
-        self.assertEquals("--all-instances cannot be set together with --instance/-i.", str(context.exception))
+        self.assertEqual("--all-instances cannot be set together with --instance/-i.", str(context.exception))
 
     @mock.patch('azext_spring.managed_components.validators_managed_component.is_enterprise_tier', autospec=True)
     def test_required_param_missing(self, is_enterprise_tier_mock):
@@ -132,7 +132,7 @@ class TestValidateComponentLogs(unittest.TestCase):
         with self.assertRaises(InvalidArgumentValueError) as context:
             validate_component_logs(get_test_cmd(), ns)
 
-        self.assertEquals("When --name/-n is not set, --instance/-i is required.", str(context.exception))
+        self.assertEqual("When --name/-n is not set, --instance/-i is required.", str(context.exception))
 
     @mock.patch('azext_spring.managed_components.validators_managed_component.is_enterprise_tier', autospec=True)
     def test_only_instance_name(self, is_enterprise_tier_mock):
@@ -152,7 +152,7 @@ class TestValidateComponentLogs(unittest.TestCase):
 
         with self.assertLogs('cli.azext_spring.managed_components.validators_managed_component', 'WARNING') as cm:
             validate_component_logs(get_test_cmd(), ns)
-        self.assertEquals(cm.output, ['WARNING:cli.azext_spring.managed_components.validators_managed_component:--instance/-i is specified without --name/-n, will try best effort get logs by instance.'])
+        self.assertEqual(cm.output, ['WARNING:cli.azext_spring.managed_components.validators_managed_component:--instance/-i is specified without --name/-n, will try best effort get logs by instance.'])
 
     @mock.patch('azext_spring.managed_components.validators_managed_component.is_enterprise_tier', autospec=True)
     def test_valid_component_name(self, is_enterprise_tier_mock):
@@ -199,7 +199,7 @@ class TestValidateComponentLogs(unittest.TestCase):
                     max_log_requests=5
                 )
                 validate_component_logs(get_test_cmd(), ns)
-                self.assertEquals(lines, ns.lines)
+                self.assertEqual(lines, ns.lines)
 
     @mock.patch('azext_spring.managed_components.validators_managed_component.is_enterprise_tier', autospec=True)
     def test_log_lines_too_small(self, is_enterprise_tier_mock):
@@ -218,7 +218,7 @@ class TestValidateComponentLogs(unittest.TestCase):
             )
             with self.assertRaises(InvalidArgumentValueError) as context:
                 validate_component_logs(get_test_cmd(), ns)
-            self.assertEquals('--lines must be in the range [1,10000]', str(context.exception))
+            self.assertEqual('--lines must be in the range [1,10000]', str(context.exception))
 
     @mock.patch('azext_spring.managed_components.validators_managed_component.is_enterprise_tier', autospec=True)
     def test_log_lines_too_big(self, is_enterprise_tier_mock):
@@ -240,8 +240,8 @@ class TestValidateComponentLogs(unittest.TestCase):
                 validate_component_logs(get_test_cmd(), ns)
             expect_error_msgs = ['ERROR:cli.azext_spring.log_stream.log_stream_validators:'
                                  '--lines can not be more than 10000, using 10000 instead']
-            self.assertEquals(expect_error_msgs, cm.output)
-            self.assertEquals(10000, ns.lines)
+            self.assertEqual(expect_error_msgs, cm.output)
+            self.assertEqual(10000, ns.lines)
 
     @mock.patch('azext_spring.managed_components.validators_managed_component.is_enterprise_tier', autospec=True)
     def test_valid_log_since(self, is_enterprise_tier_mock):
@@ -272,7 +272,7 @@ class TestValidateComponentLogs(unittest.TestCase):
                     since_in_seconds = since_in_seconds * 3600
                 elif last == 'm':
                     since_in_seconds = since_in_seconds * 60
-                self.assertEquals(since_in_seconds, ns.since)
+                self.assertEqual(since_in_seconds, ns.since)
 
     @mock.patch('azext_spring.managed_components.validators_managed_component.is_enterprise_tier', autospec=True)
     def test_invalid_log_since(self, is_enterprise_tier_mock):
@@ -294,7 +294,7 @@ class TestValidateComponentLogs(unittest.TestCase):
                 )
                 with self.assertRaises(InvalidArgumentValueError) as context:
                     validate_component_logs(get_test_cmd(), ns)
-                self.assertEquals("--since contains invalid characters", str(context.exception))
+                self.assertEqual("--since contains invalid characters", str(context.exception))
 
     @mock.patch('azext_spring.managed_components.validators_managed_component.is_enterprise_tier', autospec=True)
     def test_log_since_too_big(self, is_enterprise_tier_mock):
@@ -316,7 +316,7 @@ class TestValidateComponentLogs(unittest.TestCase):
                 )
                 with self.assertRaises(InvalidArgumentValueError) as context:
                     validate_component_logs(get_test_cmd(), ns)
-                self.assertEquals("--since can not be more than 1h", str(context.exception))
+                self.assertEqual("--since can not be more than 1h", str(context.exception))
 
     @mock.patch('azext_spring.managed_components.validators_managed_component.is_enterprise_tier', autospec=True)
     def test_valid_log_limit(self, is_enterprise_tier_mock):
@@ -338,7 +338,7 @@ class TestValidateComponentLogs(unittest.TestCase):
                     max_log_requests=5
                 )
                 validate_component_logs(get_test_cmd(), ns)
-                self.assertEquals(limit * 1024, ns.limit)
+                self.assertEqual(limit * 1024, ns.limit)
 
     @mock.patch('azext_spring.managed_components.validators_managed_component.is_enterprise_tier', autospec=True)
     def test_negative_log_limit(self, is_enterprise_tier_mock):
@@ -360,7 +360,7 @@ class TestValidateComponentLogs(unittest.TestCase):
                 )
                 with self.assertRaises(InvalidArgumentValueError) as context:
                     validate_component_logs(get_test_cmd(), ns)
-                self.assertEquals('--limit must be in the range [1,2048]', str(context.exception))
+                self.assertEqual('--limit must be in the range [1,2048]', str(context.exception))
 
     @mock.patch('azext_spring.managed_components.validators_managed_component.is_enterprise_tier', autospec=True)
     def test_log_limit_too_big(self, is_enterprise_tier_mock):
@@ -385,8 +385,8 @@ class TestValidateComponentLogs(unittest.TestCase):
                     validate_component_logs(get_test_cmd(), ns)
                 error_msgs = ['ERROR:cli.azext_spring.log_stream.log_stream_validators:'
                               '--limit can not be more than 2048, using 2048 instead']
-                self.assertEquals(error_msgs, cm.output)
-                self.assertEquals(2048 * 1024, ns.limit)
+                self.assertEqual(error_msgs, cm.output)
+                self.assertEqual(2048 * 1024, ns.limit)
 
     @mock.patch('azext_spring.managed_components.validators_managed_component.is_enterprise_tier', autospec=True)
     def test_tier(self, is_enterprise_tier_mock):
@@ -424,4 +424,4 @@ class TestValidateComponentLogs(unittest.TestCase):
 
         with self.assertRaises(NotSupportedPricingTierError) as context:
             validate_component_logs(get_test_cmd(), ns)
-        self.assertEquals("Only enterprise tier service instance is supported in this command.", str(context.exception))
+        self.assertEqual("Only enterprise tier service instance is supported in this command.", str(context.exception))

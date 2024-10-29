@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete an AppComplianceAutomation report.
+
+    :example: Report_Delete
+        az acat report delete --report-name testReportName
     """
 
     _aaz_info = {

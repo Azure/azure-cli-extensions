@@ -3,6 +3,14 @@
 Release History
 ===============
 
+1.7.0
++++++
+* Add `az webpubsub update --client-cert-enable/--disable-local-auth/--region-endpoint-enabled` support
+* Add `az webpubsub replica update -region-endpoint-enabled/--unit-count` support
+* Add `az webpubsub custom-certificate list/show/create/delete` support
+* Add `az webpubsub custom-domain list/show/create/delete` support
+* Add `az webpubsub identity assign/remove/show` support
+
 1.6.0
 +++++
 * Add `az webpubsub start/stop` support

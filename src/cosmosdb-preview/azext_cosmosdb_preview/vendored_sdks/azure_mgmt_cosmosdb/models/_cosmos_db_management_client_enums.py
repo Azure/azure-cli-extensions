@@ -199,6 +199,7 @@ class DataTransferComponent(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
     COSMOS_DB_CASSANDRA = "CosmosDBCassandra"
     COSMOS_DB_MONGO = "CosmosDBMongo"
+    COSMOS_DB_MONGO_V_CORE = "CosmosDBMongoVCore"
     COSMOS_DB_SQL = "CosmosDBSql"
     AZURE_BLOB_STORAGE = "AzureBlobStorage"
 
@@ -466,7 +467,7 @@ class ScheduledEventStrategy(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
 
 class ServerVersion(str, Enum, metaclass=CaseInsensitiveEnumMeta):
-    """Describes the ServerVersion of an a MongoDB account."""
+    """Describes the version of the MongoDB account."""
 
     THREE2 = "3.2"
     THREE6 = "3.6"
@@ -474,6 +475,7 @@ class ServerVersion(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     FOUR2 = "4.2"
     FIVE0 = "5.0"
     SIX0 = "6.0"
+    SEVEN0 = "7.0"
 
 
 class ServiceSize(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -532,6 +534,13 @@ class Status(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     FAILED = "Failed"
     CANCELED = "Canceled"
     UPDATING = "Updating"
+
+
+class SupportedActions(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Indicates whether what action to take for the Chaos Fault."""
+
+    ENABLE = "Enable"
+    DISABLE = "Disable"
 
 
 class ThroughputPolicyType(str, Enum, metaclass=CaseInsensitiveEnumMeta):

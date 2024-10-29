@@ -3,6 +3,10 @@
 Release History
 ===============
 
+1.1.2
+++++++
+* Security upgrades and fixes - Drop `msrestazure` dependency.
+
 1.1.1
 ++++++
 * [Hotfix] Fixed VMMServer connect command parameter error.

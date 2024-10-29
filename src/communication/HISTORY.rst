@@ -2,6 +2,14 @@
 
 Release History
 ===============
+1.11.2
+++++++
+* Adding an error message for incorrect formats of inline attachments in Email communication send mail.
+
+1.11.1
+++++++
+* Fix bug in Email services - send email with attachments.
+
 1.11.0
 ++++++
 * Update to email SDK version to 1.0.1b1.
