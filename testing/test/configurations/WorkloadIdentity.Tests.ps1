@@ -109,7 +109,7 @@ Describe 'Onboarding with Workload Identity Scenario' {
     }
 }
 
-Describe 'Update with Workload Identity Scenario' {
+Describe 'Updateing with Workload Identity Scenario' {
     BeforeAll {
         . $PSScriptRoot/../helper/Constants.ps1
     }
@@ -124,7 +124,6 @@ Describe 'Update with Workload Identity Scenario' {
         do 
         {
             $output = az connectedk8s show -n $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup
-            $jsonOutput = [System.Text.Json.JsonDocument]::Parse($output)
             $provisioningState = ($output | ConvertFrom-Json).provisioningState
             Write-Host "Provisioning State: $provisioningState"
             if ($provisioningState -eq $SUCCEEDED) {
@@ -137,7 +136,7 @@ Describe 'Update with Workload Identity Scenario' {
     }
 
     It 'Update the cluster with oidc and workload identity enabled' {
-        az connectedk8s update -n $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup -l $ARC_LOCATION --enable-oidc-issuer --enable-workload-identity --no-wait
+        az connectedk8s update -n $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup --enable-oidc-issuer --enable-workload-identity
         $? | Should -BeTrue
         Start-Sleep -Seconds 10
 
