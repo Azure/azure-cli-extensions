@@ -106,3 +106,7 @@ Release History
 ++++++
 * `az grafana sync`: fix issues with syncing empty dashboards from Grafana 9 and syncing dashboards with collapsed rows
 * `az grafana backup`: support skipping Grafana folder permissions argument
+
+2.5.0
+++++++
+* `az grafana integrations monitor`: support Azure Monitor workspace integration

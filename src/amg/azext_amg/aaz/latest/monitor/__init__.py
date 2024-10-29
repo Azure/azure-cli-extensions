@@ -8,16 +8,4 @@
 # pylint: skip-file
 # flake8: noqa
 
-from azure.cli.core.aaz import *
-
-
-@register_command_group(
-    "grafana mpe",
-)
-class __CMDGroup(AAZCommandGroup):
-    """Commands to manage managed private endpoints.
-    """
-    pass
-
-
-__all__ = ["__CMDGroup"]
+from .__cmd_group import *

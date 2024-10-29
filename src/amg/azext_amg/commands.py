@@ -70,3 +70,8 @@ def load_command_table(self, _):
         g.custom_command('create', 'create_service_account_token')
         g.custom_command('list', 'list_service_account_tokens')
         g.custom_command('delete', 'delete_service_account_token')
+
+    with self.command_group('grafana integrations monitor') as g:
+        g.custom_command('add', 'link_monitor', is_preview=True)
+        g.custom_command('list', 'list_monitors', is_preview=True)
+        g.custom_command('delete', 'unlink_monitor', is_preview=True)

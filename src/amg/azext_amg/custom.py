@@ -81,7 +81,7 @@ class GrafanaCreate(_GrafanaCreate):
 
             principal_ids = args.principal_ids
             if not principal_ids:
-                user_principal_id, _ = _get_login_account_principal_id(cli_ctx)
+                user_principal_id = _get_login_account_principal_id(cli_ctx)
                 principal_ids = [user_principal_id]
             grafana_admin_role_id = resolve_role_id(cli_ctx, "Grafana Admin", subscription_scope)
 
@@ -141,31 +141,26 @@ def _gen_guid():
 
 
 def _get_login_account_principal_id(cli_ctx):
-    from azure.graphrbac.models import GraphErrorException
     from azure.cli.core._profile import Profile, _USER_ENTITY, _USER_TYPE, _SERVICE_PRINCIPAL, _USER_NAME
-    from azure.graphrbac import GraphRbacManagementClient
+    from azure.cli.command_modules.role import graph_client_factory
+
     profile = Profile(cli_ctx=cli_ctx)
-    cred, _, tenant_id = profile.get_login_credentials(
-        resource=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
-    client = GraphRbacManagementClient(cred, tenant_id,
-                                       base_url=cli_ctx.cloud.endpoints.active_directory_graph_resource_id)
     active_account = profile.get_subscription()
     assignee = active_account[_USER_ENTITY][_USER_NAME]
-    principal_type = "User"
+
+    graph_client = graph_client_factory(cli_ctx)
     try:
         if active_account[_USER_ENTITY][_USER_TYPE] == _SERVICE_PRINCIPAL:
-            result = list(client.service_principals.list(
+            result = list(graph_client.service_principal_list(
                 filter=f"servicePrincipalNames/any(c:c eq '{assignee}')"))
-            principal_type = "ServicePrincipal"
         else:
-            result = [client.signed_in_user.get()]
-    except GraphErrorException as ex:
-        logger.warning("Graph query error %s", ex)
+            result = [graph_client.signed_in_user_get()]
+    except Exception as error:
+        raise CLIInternalError(f"Failed to get the current logged-in account. {error}")
     if not result:
         raise CLIInternalError((f"Failed to retrieve principal id for '{assignee}', which is needed to create a "
                                 f"role assignment. Consider using '--principal-ids' to bypass the lookup"))
-
-    return result[0].object_id, principal_type
+    return result[0]['id']
 
 
 def _create_role_assignment(cli_ctx, principal_id, principal_types, role_definition_id, scope):
@@ -208,13 +203,22 @@ def _create_role_assignment(cli_ctx, principal_id, principal_types, role_definit
             raise
 
 
-def _delete_role_assignment(cli_ctx, principal_id):
+def _delete_role_assignment(cli_ctx, principal_id, role_definition_id=None, scope=None):
     assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
                                                  api_version=MGMT_SERVICE_CLIENT_API_VERSION).role_assignments
     f = f"principalId eq '{principal_id}'"
-    assignments = list(assignments_client.list_for_subscription(filter=f))
-    for a in assignments or []:
-        assignments_client.delete_by_id(a.id)
+
+    if role_definition_id and scope:
+        # delete specific role assignment
+        assignments = list(assignments_client.list_for_scope(scope, filter=f))
+        assignments_with_role = [a for a in assignments if a.role_definition_id.lower() == role_definition_id.lower()]
+        for a in assignments_with_role:
+            assignments_client.delete_by_id(a.id)
+    else:
+        # delete all role assignments for the principal
+        assignments = list(assignments_client.list_for_subscription(filter=f))
+        for a in assignments or []:
+            assignments_client.delete_by_id(a.id)
 
 
 def backup_grafana(cmd, grafana_name, components=None, directory=None, folders_to_include=None,
@@ -820,6 +824,25 @@ def query_data_source(cmd, grafana_name, data_source, time_from=None, time_to=No
     response = _send_request(cmd, resource_group_name, grafana_name, "post", "/api/ds/query", data,
                              api_key_or_token=api_key_or_token)
     return json.loads(response.content)
+
+
+def link_monitor(cmd, grafana_name, monitor_name, monitor_resource_group_name, resource_group_name=None,
+                 skip_role_assignments=False):
+    from .integrations import link_amw_to_amg
+    link_amw_to_amg(cmd, grafana_name, monitor_name, resource_group_name, monitor_resource_group_name,
+                    skip_role_assignments)
+
+
+def unlink_monitor(cmd, grafana_name, monitor_name, monitor_resource_group_name, resource_group_name=None,
+                   skip_role_assignments=False):
+    from .integrations import unlink_amw_from_amg
+    unlink_amw_from_amg(cmd, grafana_name, monitor_name, resource_group_name, monitor_resource_group_name,
+                        skip_role_assignments)
+
+
+def list_monitors(cmd, grafana_name, resource_group_name=None):
+    from .integrations import list_amw_linked_to_amg
+    return list_amw_linked_to_amg(cmd, grafana_name, resource_group_name)
 
 
 def _find_data_source(cmd, resource_group_name, grafana_name, data_source, api_key_or_token=None):
