@@ -106,10 +106,11 @@ Describe 'Onboarding with Workload Identity Scenario' {
         # Configuration should be removed from the resource model
         az connectedk8s show -n $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup
         $? | Should -BeFalse
+        Start-Sleep -Seconds 10
     }
 }
 
-Describe 'Updateing with Workload Identity Scenario' {
+Describe 'Updating with Workload Identity Scenario' {
     BeforeAll {
         . $PSScriptRoot/../helper/Constants.ps1
     }
@@ -182,10 +183,11 @@ Describe 'Updateing with Workload Identity Scenario' {
         # Configuration should be removed from the resource model
         az connectedk8s show -n $ENVCONFIG.arcClusterName -g $ENVCONFIG.resourceGroup
         $? | Should -BeFalse
+        Start-Sleep -Seconds 10
     }
 }
 
-Describe 'Create a with Workload Identity Scenario and Self Hosted Issuer' {
+Describe 'Creating with Workload Identity Scenario and Self Hosted Issuer' {
     BeforeAll {
         . $PSScriptRoot/../helper/Constants.ps1
 
