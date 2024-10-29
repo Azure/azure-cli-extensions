@@ -26,7 +26,7 @@ class CreateVnetTap(_CreateVnetTap):
         args_schema.nic_id._registered = False
 
         return args_schema
-    
+
     def pre_operations(self):
         args = self.ctx.args
 
@@ -63,10 +63,10 @@ class CreateVtapConfig(_CreateVtapConfig):
         args_schema.vtap_id._registered = False
 
         return args_schema
-    
+
     def pre_operations(self):
         args = self.ctx.args
-        template="/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Network/virtualNetworkTaps/{}"
+        template = "/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Network/virtualNetworkTaps/{}"
         if not parse_proxy_resource_id(args.vnet_tap.to_serialized_data()):
             args.vtap_id = template.format(self.ctx.subscription_id, args.resource_group, args.vnet_tap)
         else:
