@@ -6,7 +6,6 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from ._network_security_perimeter_configurations_operations import NetworkSecurityPerimeterConfigurationsOperations
 from ._database_accounts_operations import DatabaseAccountsOperations
 from ._operations import Operations
 from ._database_operations import DatabaseOperations
@@ -30,6 +29,7 @@ from ._locations_operations import LocationsOperations
 from ._data_transfer_jobs_operations import DataTransferJobsOperations
 from ._cassandra_clusters_operations import CassandraClustersOperations
 from ._cassandra_data_centers_operations import CassandraDataCentersOperations
+from ._network_security_perimeter_configurations_operations import NetworkSecurityPerimeterConfigurationsOperations
 from ._notebook_workspaces_operations import NotebookWorkspacesOperations
 from ._private_endpoint_connections_operations import PrivateEndpointConnectionsOperations
 from ._private_link_resources_operations import PrivateLinkResourcesOperations
@@ -50,13 +50,13 @@ from ._throughput_pools_operations import ThroughputPoolsOperations
 from ._throughput_pool_operations import ThroughputPoolOperations
 from ._throughput_pool_accounts_operations import ThroughputPoolAccountsOperations
 from ._throughput_pool_account_operations import ThroughputPoolAccountOperations
+from ._chaos_fault_operations import ChaosFaultOperations
 
 from ._patch import __all__ as _patch_all
 from ._patch import *  # pylint: disable=unused-wildcard-import
 from ._patch import patch_sdk as _patch_sdk
 
 __all__ = [
-    "NetworkSecurityPerimeterConfigurationsOperations",
     "DatabaseAccountsOperations",
     "Operations",
     "DatabaseOperations",
@@ -80,6 +80,7 @@ __all__ = [
     "DataTransferJobsOperations",
     "CassandraClustersOperations",
     "CassandraDataCentersOperations",
+    "NetworkSecurityPerimeterConfigurationsOperations",
     "NotebookWorkspacesOperations",
     "PrivateEndpointConnectionsOperations",
     "PrivateLinkResourcesOperations",
@@ -100,6 +101,7 @@ __all__ = [
     "ThroughputPoolOperations",
     "ThroughputPoolAccountsOperations",
     "ThroughputPoolAccountOperations",
+    "ChaosFaultOperations",
 ]
 __all__.extend([p for p in _patch_all if p not in __all__])
 _patch_sdk()

@@ -23,6 +23,7 @@ from azext_cosmosdb_preview.actions import (
     CreateTableRestoreResource,
     AddCassandraTableAction,
     AddMongoCollectionAction,
+    AddMongoVCoreCollectionAction,
     AddSqlContainerAction,
     CreateTargetPhysicalPartitionThroughputInfoAction,
     CreateSourcePhysicalPartitionThroughputInfoAction,
@@ -468,10 +469,11 @@ def load_arguments(self, _):
         c.argument('src_account', help='Name of the Azure Cosmos DB source database account.', completer=get_resource_name_completion_list('Microsoft.DocumentDb/databaseAccounts'), id_part='name')
         c.argument('dest_account', help='Name of the Azure Cosmos DB destination database account.', completer=get_resource_name_completion_list('Microsoft.DocumentDb/databaseAccounts'), id_part='name')
         c.argument('src_cassandra', nargs='+', arg_group='Azure Cosmos DB API for Apache Cassandra table copy', action=AddCassandraTableAction, help='Source Cassandra table details')
-        c.argument('src_mongo', nargs='+', arg_group='Azure Cosmos DB API for MongoDB collection copy', action=AddMongoCollectionAction, help='Source Mongo collection details')
+        c.argument('src_mongo', nargs='+', arg_group='Azure Cosmos DB API for MongoDB (RU) collection copy', action=AddMongoCollectionAction, help='Source Mongo collection details')
         c.argument('src_nosql', nargs='+', arg_group='Azure Cosmos DB API for NoSQL container copy', action=AddSqlContainerAction, help='Source NoSql container details')
         c.argument('dest_cassandra', nargs='+', arg_group='Azure Cosmos DB API for Apache Cassandra table copy', action=AddCassandraTableAction, help='Destination Cassandra table details')
-        c.argument('dest_mongo', nargs='+', arg_group='Azure Cosmos DB API for MongoDB collection copy', action=AddMongoCollectionAction, help='Destination Mongo collection details')
+        c.argument('dest_mongo', nargs='+', arg_group='Azure Cosmos DB API for MongoDB (RU) collection copy', action=AddMongoCollectionAction, help='Destination Mongo collection details')
+        c.argument('dest_mongo_vcore', nargs='+', arg_group='Azure Cosmos DB API for MongoDB (vCore) collection copy', action=AddMongoVCoreCollectionAction, help='Destination Mongo vCore collection details')
         c.argument('dest_nosql', nargs='+', arg_group='Azure Cosmos DB API for NoSQL container copy', action=AddSqlContainerAction, help='Destination NoSql container details')
         c.argument('host_copy_on_src', arg_type=get_three_state_flag(), help=argparse.SUPPRESS)
         c.argument('worker_count', type=int, help=argparse.SUPPRESS)
