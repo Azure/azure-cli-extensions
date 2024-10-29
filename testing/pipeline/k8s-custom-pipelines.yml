@@ -30,6 +30,10 @@ stages:
       path: ./test/configurations/AutoUpdate.Tests.ps1
   - template: ./templates/run-test.yml
     parameters:
+      jobName: ProxyTest
+      path: ./test/configurations/Proxy.Tests.ps1
+  - template: ./templates/run-test.yml
+    parameters:
       jobName: GatewayTest
       path: ./test/configurations/Gateway.Tests.ps1
   - job: BuildPublishExtension

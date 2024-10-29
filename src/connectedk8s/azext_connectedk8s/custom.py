@@ -2315,9 +2315,11 @@ def update_connected_cluster(
     for helm_parameter, helm_value in helm_content_values.items():
         if "redacted" in helm_value:
             _, feature, protectedSetting = helm_value.split(":")
-            helm_content_values[helm_parameter] = configuration_protected_settings[
-                feature
-            ][protectedSetting]
+            helm_content_values[helm_parameter] = configuration_protected_settings[feature][protectedSetting]
+    
+    # Disable proxy if disable_proxy flag is set
+    if disable_proxy:
+        helm_content_values["global.isProxyEnabled"] = "False"
 
     # Set agent version in registry path
     if connected_cluster.agent_version is not None:
@@ -2335,6 +2337,11 @@ def update_connected_cluster(
         registry_path, kube_config, kube_context, helm_client_location
     )
 
+    print(
+        "Step: {}: Starting to update Azure arc agents on the Kubernetes cluster.".format(
+            utils.get_utctimestring()
+        )
+    )
     # Perform helm upgrade
     utils.helm_update_agent(
         helm_client_location,

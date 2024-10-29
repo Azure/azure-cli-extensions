@@ -77,6 +77,12 @@ jobs:
       curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
     displayName: "Upgrade az to latest version"
 
+  - bash: |
+      curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+      chmod 700 get_helm.sh
+      ./get_helm.sh --version v3.6.3
+    displayName: "Install Helm"
+
   - task: AzureCLI@2
     displayName: Bootstrap
     inputs:
