@@ -12,26 +12,22 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "qumulo storage file-system update",
+    "qumulo storage file-system identity wait",
 )
-class Update(AAZCommand):
-    """Update a FileSystemResource
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2024-06-19",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/qumulo.storage/filesystems/{}", "2024-06-19"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/qumulo.storage/filesystems/{}", "2024-06-19", "identity"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
-    AZ_SUPPORT_GENERIC_UPDATE = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -56,116 +52,11 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Identity"
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.admin_password = AAZStrArg(
-            options=["--admin-password"],
-            arg_group="Properties",
-            help="Initial administrator password of the resource",
-        )
-        _args_schema.availability_zone = AAZStrArg(
-            options=["--availability-zone"],
-            arg_group="Properties",
-            help="Availability zone",
-            nullable=True,
-        )
-        _args_schema.cluster_login_url = AAZStrArg(
-            options=["--cluster-login-url"],
-            arg_group="Properties",
-            help="File system Id of the resource",
-            nullable=True,
-        )
-        _args_schema.delegated_subnet_id = AAZStrArg(
-            options=["--delegated-subnet-id"],
-            arg_group="Properties",
-            help="Delegated subnet id for Vnet injection",
-        )
-        _args_schema.marketplace_details = AAZObjectArg(
-            options=["--marketplace-details"],
-            arg_group="Properties",
-            help="Marketplace details",
-        )
-        _args_schema.private_i_ps = AAZListArg(
-            options=["--private-i-ps"],
-            arg_group="Properties",
-            help="Private IPs of the resource",
-            nullable=True,
-        )
-        _args_schema.storage_sku = AAZStrArg(
-            options=["--storage-sku"],
-            arg_group="Properties",
-            help="Storage Sku",
-        )
-        _args_schema.user_details = AAZObjectArg(
-            options=["--user-details"],
-            arg_group="Properties",
-            help="User Details",
-        )
-
-        marketplace_details = cls._args_schema.marketplace_details
-        marketplace_details.marketplace_subscription_id = AAZStrArg(
-            options=["marketplace-subscription-id"],
-            help="Marketplace Subscription Id",
-            nullable=True,
-        )
-        marketplace_details.offer_id = AAZStrArg(
-            options=["offer-id"],
-            help="Offer Id",
-        )
-        marketplace_details.plan_id = AAZStrArg(
-            options=["plan-id"],
-            help="Plan Id",
-        )
-        marketplace_details.publisher_id = AAZStrArg(
-            options=["publisher-id"],
-            help="Publisher Id",
-            nullable=True,
-        )
-        marketplace_details.term_unit = AAZStrArg(
-            options=["term-unit"],
-            help="Term Unit",
-            nullable=True,
-        )
-
-        private_i_ps = cls._args_schema.private_i_ps
-        private_i_ps.Element = AAZStrArg(
-            nullable=True,
-        )
-
-        user_details = cls._args_schema.user_details
-        user_details.email = AAZStrArg(
-            options=["email"],
-            help="User Email",
-        )
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-            nullable=True,
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
         self.FileSystemsGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
-        yield self.FileSystemsCreateOrUpdate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -176,16 +67,8 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
-    @register_callback
-    def pre_instance_update(self, instance):
-        pass
-
-    @register_callback
-    def post_instance_update(self, instance):
-        pass
-
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
     class FileSystemsGet(AAZHttpOperation):
@@ -267,180 +150,13 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_liftr_base._storage._file_system_resource_read(cls._schema_on_200)
+            _WaitHelper._build_schema_liftr_base._storage._file_system_resource_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class FileSystemsCreateOrUpdate(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
 
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Qumulo.Storage/fileSystems/{fileSystemName}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "PUT"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "fileSystemName", self.ctx.args.file_system_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2024-06-19",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=self.ctx.vars.instance,
-            )
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200_201
-            )
-
-        _schema_on_200_201 = None
-
-        @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
-
-            cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_liftr_base._storage._file_system_resource_read(cls._schema_on_200_201)
-
-            return cls._schema_on_200_201
-
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
-
-        def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
-            )
-            _builder.set_prop("identity", AAZIdentityObjectType)
-            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
-            _builder.set_prop("tags", AAZDictType, ".tags")
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("adminPassword", AAZStrType, ".admin_password", typ_kwargs={"flags": {"secret": True}})
-                properties.set_prop("availabilityZone", AAZStrType, ".availability_zone")
-                properties.set_prop("clusterLoginUrl", AAZStrType, ".cluster_login_url")
-                properties.set_prop("delegatedSubnetId", AAZStrType, ".delegated_subnet_id", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("marketplaceDetails", AAZObjectType, ".marketplace_details", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("privateIPs", AAZListType, ".private_i_ps")
-                properties.set_prop("storageSku", AAZStrType, ".storage_sku", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("userDetails", AAZObjectType, ".user_details", typ_kwargs={"flags": {"required": True}})
-
-            marketplace_details = _builder.get(".properties.marketplaceDetails")
-            if marketplace_details is not None:
-                marketplace_details.set_prop("marketplaceSubscriptionId", AAZStrType, ".marketplace_subscription_id")
-                marketplace_details.set_prop("offerId", AAZStrType, ".offer_id", typ_kwargs={"flags": {"required": True}})
-                marketplace_details.set_prop("planId", AAZStrType, ".plan_id", typ_kwargs={"flags": {"required": True}})
-                marketplace_details.set_prop("publisherId", AAZStrType, ".publisher_id")
-                marketplace_details.set_prop("termUnit", AAZStrType, ".term_unit")
-
-            private_i_ps = _builder.get(".properties.privateIPs")
-            if private_i_ps is not None:
-                private_i_ps.set_elements(AAZStrType, ".")
-
-            user_details = _builder.get(".properties.userDetails")
-            if user_details is not None:
-                user_details.set_prop("email", AAZStrType, ".email", typ_kwargs={"flags": {"secret": True}})
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
-
-            return _instance_value
-
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
-            )
-
-
-class _UpdateHelper:
-    """Helper class for Update"""
+class _WaitHelper:
+    """Helper class for Wait"""
 
     _schema_liftr_base._storage._file_system_resource_read = None
 
@@ -610,4 +326,4 @@ class _UpdateHelper:
         _schema.type = cls._schema_liftr_base._storage._file_system_resource_read.type
 
 
-__all__ = ["Update"]
+__all__ = ["Wait"]

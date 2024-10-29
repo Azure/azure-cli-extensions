@@ -15,16 +15,13 @@ from azure.cli.core.aaz import *
     "qumulo storage file-system create",
 )
 class Create(AAZCommand):
-    """Create file system resource
-
-    :example: Create file system
-        az qumulo storage file-system create -n sys_name -g rg --admin-password testadmin --delegated-subnet-id subnet-id --initial-capacity 50 --marketplace-details "{offerId:qumulo-saas-mpp,planId:qumulo-on-azure-v1%%gmz7xq9ge3py%%P1M,publisherId:qumulo1584033880660}" --storage-sku Standard --user-details "{email:test@test.com}" --availability-zone 1
+    """Create a FileSystemResource
     """
 
     _aaz_info = {
-        "version": "2022-10-12",
+        "version": "2024-06-19",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/qumulo.storage/filesystems/{}", "2022-10-12"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/qumulo.storage/filesystems/{}", "2024-06-19"],
         ]
     }
 
@@ -49,10 +46,32 @@ class Create(AAZCommand):
             options=["-n", "--name", "--file-system-name"],
             help="Name of the File System resource",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[a-zA-Z0-9_-]*$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
+
+        # define Arg Group "Identity"
+
+        _args_schema = cls._args_schema
+        _args_schema.mi_system_assigned = AAZStrArg(
+            options=["--system-assigned", "--mi-system-assigned"],
+            arg_group="Identity",
+            help="Set the system managed identity.",
+            blank="True",
+        )
+        _args_schema.mi_user_assigned = AAZListArg(
+            options=["--user-assigned", "--mi-user-assigned"],
+            arg_group="Identity",
+            help="Set the user managed identities.",
+            blank=[],
+        )
+
+        mi_user_assigned = cls._args_schema.mi_user_assigned
+        mi_user_assigned.Element = AAZStrArg()
 
         # define Arg Group "Properties"
 
@@ -61,7 +80,6 @@ class Create(AAZCommand):
             options=["--admin-password"],
             arg_group="Properties",
             help="Initial administrator password of the resource",
-            required=True,
         )
         _args_schema.availability_zone = AAZStrArg(
             options=["--availability-zone"],
@@ -77,22 +95,14 @@ class Create(AAZCommand):
             options=["--delegated-subnet-id"],
             arg_group="Properties",
             help="Delegated subnet id for Vnet injection",
-            required=True,
-        )
-        _args_schema.initial_capacity = AAZIntArg(
-            options=["--initial-capacity"],
-            arg_group="Properties",
-            help="Storage capacity in TB",
-            required=True,
         )
         _args_schema.marketplace_details = AAZObjectArg(
             options=["--marketplace-details"],
             arg_group="Properties",
             help="Marketplace details",
-            required=True,
         )
-        _args_schema.private_ips = AAZListArg(
-            options=["--private-ips"],
+        _args_schema.private_i_ps = AAZListArg(
+            options=["--private-i-ps"],
             arg_group="Properties",
             help="Private IPs of the resource",
         )
@@ -100,14 +110,11 @@ class Create(AAZCommand):
             options=["--storage-sku"],
             arg_group="Properties",
             help="Storage Sku",
-            required=True,
-            enum={"Performance": "Performance", "Standard": "Standard"},
         )
         _args_schema.user_details = AAZObjectArg(
             options=["--user-details"],
             arg_group="Properties",
             help="User Details",
-            required=True,
         )
 
         marketplace_details = cls._args_schema.marketplace_details
@@ -128,11 +135,14 @@ class Create(AAZCommand):
         marketplace_details.publisher_id = AAZStrArg(
             options=["publisher-id"],
             help="Publisher Id",
-            required=True,
+        )
+        marketplace_details.term_unit = AAZStrArg(
+            options=["term-unit"],
+            help="Term Unit",
         )
 
-        private_ips = cls._args_schema.private_ips
-        private_ips.Element = AAZStrArg()
+        private_i_ps = cls._args_schema.private_i_ps
+        private_i_ps.Element = AAZStrArg()
 
         user_details = cls._args_schema.user_details
         user_details.email = AAZStrArg(
@@ -243,7 +253,7 @@ class Create(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-10-12",
+                    "api-version", "2024-06-19",
                     required=True,
                 ),
             }
@@ -268,9 +278,19 @@ class Create(AAZCommand):
                 typ=AAZObjectType,
                 typ_kwargs={"flags": {"required": True, "client_flatten": True}}
             )
+            _builder.set_prop("identity", AAZIdentityObjectType)
             _builder.set_prop("location", AAZStrType, ".location", typ_kwargs={"flags": {"required": True}})
-            _builder.set_prop("properties", AAZObjectType, ".", typ_kwargs={"flags": {"required": True, "client_flatten": True}})
+            _builder.set_prop("properties", AAZObjectType, typ_kwargs={"flags": {"client_flatten": True}})
             _builder.set_prop("tags", AAZDictType, ".tags")
+
+            identity = _builder.get(".identity")
+            if identity is not None:
+                identity.set_prop("userAssigned", AAZListType, ".mi_user_assigned", typ_kwargs={"flags": {"action": "create"}})
+                identity.set_prop("systemAssigned", AAZStrType, ".mi_system_assigned", typ_kwargs={"flags": {"action": "create"}})
+
+            user_assigned = _builder.get(".identity.userAssigned")
+            if user_assigned is not None:
+                user_assigned.set_elements(AAZStrType, ".")
 
             properties = _builder.get(".properties")
             if properties is not None:
@@ -278,9 +298,8 @@ class Create(AAZCommand):
                 properties.set_prop("availabilityZone", AAZStrType, ".availability_zone")
                 properties.set_prop("clusterLoginUrl", AAZStrType, ".cluster_login_url")
                 properties.set_prop("delegatedSubnetId", AAZStrType, ".delegated_subnet_id", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("initialCapacity", AAZIntType, ".initial_capacity", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("marketplaceDetails", AAZObjectType, ".marketplace_details", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("privateIPs", AAZListType, ".private_ips")
+                properties.set_prop("privateIPs", AAZListType, ".private_i_ps")
                 properties.set_prop("storageSku", AAZStrType, ".storage_sku", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("userDetails", AAZObjectType, ".user_details", typ_kwargs={"flags": {"required": True}})
 
@@ -289,7 +308,8 @@ class Create(AAZCommand):
                 marketplace_details.set_prop("marketplaceSubscriptionId", AAZStrType, ".marketplace_subscription_id")
                 marketplace_details.set_prop("offerId", AAZStrType, ".offer_id", typ_kwargs={"flags": {"required": True}})
                 marketplace_details.set_prop("planId", AAZStrType, ".plan_id", typ_kwargs={"flags": {"required": True}})
-                marketplace_details.set_prop("publisherId", AAZStrType, ".publisher_id", typ_kwargs={"flags": {"required": True}})
+                marketplace_details.set_prop("publisherId", AAZStrType, ".publisher_id")
+                marketplace_details.set_prop("termUnit", AAZStrType, ".term_unit")
 
             private_i_ps = _builder.get(".properties.privateIPs")
             if private_i_ps is not None:
@@ -326,7 +346,7 @@ class Create(AAZCommand):
             _schema_on_200_201.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200_201.identity = AAZObjectType()
+            _schema_on_200_201.identity = AAZIdentityObjectType()
             _schema_on_200_201.location = AAZStrType(
                 flags={"required": True},
             )
@@ -334,7 +354,7 @@ class Create(AAZCommand):
                 flags={"read_only": True},
             )
             _schema_on_200_201.properties = AAZObjectType(
-                flags={"required": True, "client_flatten": True},
+                flags={"client_flatten": True},
             )
             _schema_on_200_201.system_data = AAZObjectType(
                 serialized_name="systemData",
@@ -389,10 +409,6 @@ class Create(AAZCommand):
                 serialized_name="delegatedSubnetId",
                 flags={"required": True},
             )
-            properties.initial_capacity = AAZIntType(
-                serialized_name="initialCapacity",
-                flags={"required": True},
-            )
             properties.marketplace_details = AAZObjectType(
                 serialized_name="marketplaceDetails",
                 flags={"required": True},
@@ -402,6 +418,7 @@ class Create(AAZCommand):
             )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
             )
             properties.storage_sku = AAZStrType(
                 serialized_name="storageSku",
@@ -418,6 +435,7 @@ class Create(AAZCommand):
             )
             marketplace_details.marketplace_subscription_status = AAZStrType(
                 serialized_name="marketplaceSubscriptionStatus",
+                flags={"read_only": True},
             )
             marketplace_details.offer_id = AAZStrType(
                 serialized_name="offerId",
@@ -429,7 +447,9 @@ class Create(AAZCommand):
             )
             marketplace_details.publisher_id = AAZStrType(
                 serialized_name="publisherId",
-                flags={"required": True},
+            )
+            marketplace_details.term_unit = AAZStrType(
+                serialized_name="termUnit",
             )
 
             private_i_ps = cls._schema_on_200_201.properties.private_i_ps

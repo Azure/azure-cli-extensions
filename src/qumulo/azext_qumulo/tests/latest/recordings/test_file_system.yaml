@@ -13,12 +13,12 @@ interactions:
       ParameterSetName:
       - -n -g --address-prefix
       User-Agent:
-      - AZURECLI/2.49.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_file_system","date":"2023-06-12T01:49:14Z","module":"qumulo"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_file_system","date":"2024-10-28T15:15:15Z","module":"qumulo"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -27,17 +27,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 01:49:20 GMT
+      - Mon, 28 Oct 2024 15:17:39 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: BEDA178D27B74561A2E70B9B157340EA Ref B: MAA201060513053 Ref C: 2024-10-28T15:17:39Z'
     status:
       code: 200
       message: OK
@@ -60,47 +64,43 @@ interactions:
       ParameterSetName:
       - -n -g --address-prefix
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002?api-version=2024-03-01
   response:
     body:
-      string: "{\r\n  \"name\": \"vnet000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002\"\
-        ,\r\n  \"etag\": \"W/\\\"ccf6c50d-4aef-4f96-9bfc-dfc07f9f7aa9\\\"\",\r\n \
-        \ \"type\": \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus\"\
-        ,\r\n  \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n \
-        \   \"resourceGuid\": \"92215da0-96c9-4625-ae8c-73f2bcf6dfed\",\r\n    \"\
-        addressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"20.0.0.0/24\"\
-        \r\n      ]\r\n    },\r\n    \"subnets\": [],\r\n    \"virtualNetworkPeerings\"\
-        : [],\r\n    \"enableDdosProtection\": false\r\n  }\r\n}"
+      string: '{"name":"vnet000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002","etag":"W/\"57b66684-6e32-4570-aee0-32db3e9255ea\"","type":"Microsoft.Network/virtualNetworks","location":"eastus","properties":{"provisioningState":"Updating","resourceGuid":"22b9f926-1bab-4b16-97b7-a5acf8718a8f","addressSpace":{"addressPrefixes":["20.0.0.0/24"]},"privateEndpointVNetPolicies":"Disabled","subnets":[],"virtualNetworkPeerings":[],"enableDdosProtection":false}}'
     headers:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/49f8bbed-9c47-4273-87d4-807e2919c4c1?api-version=2022-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/4a4dfc76-54af-4d32-8dd7-5744c024549b?api-version=2024-03-01&t=638657254640817871&c=MIIHhzCCBm-gAwIBAgITfAWKQyvXag-zjrQDfwAABYpDKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI0MDE0MzE0WhcNMjUwMzIzMDE0MzE0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANDwk3_kcyceqIl7dgtMLkPtJd0Dkb9mue4uwDFpqUeJaLV0ILbYclblqNCzMKtUostgBu5GVS8MBzN_L23IehFdX5s2G8MFBRyoCv31VkR6xTNcprlL3ApSlAkYLNKWQvNzETl23UISuvkG7qeDh6Bx2DFiOd37MurICLjYCCvXbYPN5hdGA_IniW-OEEwq2bSF3s80KjkyMJcA0SyUADASZFM9vhy05mEs6DRa8avMylzn8ybLp7xnm21jaUxNBKPMilAwIeUIvOpmwW_VU86n3T5Yj-2dJ2D2naHhWtci5pE7z8BGdasl5V1hoQdHsniY-G90XE0Qm6AYpDp7IU0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTnD50c9EnBJkrJcBrQ8YxbiYx5ADAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAUCr0q5wDvmcQmw5la8KMFO7bmmYkEp0jdFoaVgTEKWWk_VmL05UBKDAZNZ1Tect9BahkSSPDLo4PiHocbvdJN0bZ91V_GN9LHUKdy8-oXa6ai_B8HLcUhvpHXnmW8opONEs6mzT0wc1DFAglsuujyzZSFqif-9ARhhAlepT0oH4PAr96rZ0fPR6vkMTKAmprNFJQZbSgiz44FcxGBEctsuaEUxAp_AwQYTICmJQAQPbuoB3tZdUFJXogQBY47e7ZeTDWJ5GiWHKp2xbyASebOD4XFr6SpdmHmwddtWFB3zlcnLZnA32HeK6NpHRe6nMRkzBs1vxE6CdzR8HAcLEOE&s=VDaWkKIN2BFPF0-qbFeHhepo6e0e6sjX4EAs5tflwfPpn3nyQoWpEgD2ud7fB671IST0_KH7WPMwEFlQM1zffVaBx7kDQNodoCGOpiAYarcprLJuTqIaQjsLzW-JPFK_2XY0V_0Lvwm2s4K9OudFAPgHX7znI_FNn4HhchzL3PhQl_tMpbzSuuWs1_n4oGStWsykElldQd61x4sIYd4puEZnwOWR98GUsr7dea7bLOX8ayJwUyiloWIcQJTIRSLA9QRjsz5dfE6y75TQFc8feBOMr94eNYaCrfiQroR5Nqf4tYXYC70_qNTAUbvzSSPz02izgKoBZKO9yA7WQaqkwg&h=BxvmLfLbCbaDIw6Abw7o3BQ1JlN0CSP_fz6gPhPOzAk
       cache-control:
       - no-cache
       content-length:
-      - '614'
+      - '544'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 01:49:27 GMT
+      - Mon, 28 Oct 2024 15:17:43 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 2f62ab13-dbb4-434b-b4ba-77b282186de5
+      - 69467abb-028c-4617-a21b-066921c6b970
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: 4C0AE93DB0F4492CB4C6AA1717557B01 Ref B: MAA201060516033 Ref C: 2024-10-28T15:17:40Z'
     status:
       code: 201
       message: Created
@@ -118,38 +118,37 @@ interactions:
       ParameterSetName:
       - -n -g --address-prefix
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/49f8bbed-9c47-4273-87d4-807e2919c4c1?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/4a4dfc76-54af-4d32-8dd7-5744c024549b?api-version=2024-03-01&t=638657254640817871&c=MIIHhzCCBm-gAwIBAgITfAWKQyvXag-zjrQDfwAABYpDKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI0MDE0MzE0WhcNMjUwMzIzMDE0MzE0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANDwk3_kcyceqIl7dgtMLkPtJd0Dkb9mue4uwDFpqUeJaLV0ILbYclblqNCzMKtUostgBu5GVS8MBzN_L23IehFdX5s2G8MFBRyoCv31VkR6xTNcprlL3ApSlAkYLNKWQvNzETl23UISuvkG7qeDh6Bx2DFiOd37MurICLjYCCvXbYPN5hdGA_IniW-OEEwq2bSF3s80KjkyMJcA0SyUADASZFM9vhy05mEs6DRa8avMylzn8ybLp7xnm21jaUxNBKPMilAwIeUIvOpmwW_VU86n3T5Yj-2dJ2D2naHhWtci5pE7z8BGdasl5V1hoQdHsniY-G90XE0Qm6AYpDp7IU0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTnD50c9EnBJkrJcBrQ8YxbiYx5ADAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAUCr0q5wDvmcQmw5la8KMFO7bmmYkEp0jdFoaVgTEKWWk_VmL05UBKDAZNZ1Tect9BahkSSPDLo4PiHocbvdJN0bZ91V_GN9LHUKdy8-oXa6ai_B8HLcUhvpHXnmW8opONEs6mzT0wc1DFAglsuujyzZSFqif-9ARhhAlepT0oH4PAr96rZ0fPR6vkMTKAmprNFJQZbSgiz44FcxGBEctsuaEUxAp_AwQYTICmJQAQPbuoB3tZdUFJXogQBY47e7ZeTDWJ5GiWHKp2xbyASebOD4XFr6SpdmHmwddtWFB3zlcnLZnA32HeK6NpHRe6nMRkzBs1vxE6CdzR8HAcLEOE&s=VDaWkKIN2BFPF0-qbFeHhepo6e0e6sjX4EAs5tflwfPpn3nyQoWpEgD2ud7fB671IST0_KH7WPMwEFlQM1zffVaBx7kDQNodoCGOpiAYarcprLJuTqIaQjsLzW-JPFK_2XY0V_0Lvwm2s4K9OudFAPgHX7znI_FNn4HhchzL3PhQl_tMpbzSuuWs1_n4oGStWsykElldQd61x4sIYd4puEZnwOWR98GUsr7dea7bLOX8ayJwUyiloWIcQJTIRSLA9QRjsz5dfE6y75TQFc8feBOMr94eNYaCrfiQroR5Nqf4tYXYC70_qNTAUbvzSSPz02izgKoBZKO9yA7WQaqkwg&h=BxvmLfLbCbaDIw6Abw7o3BQ1JlN0CSP_fz6gPhPOzAk
   response:
     body:
-      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+      string: '{"status":"InProgress"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '29'
+      - '23'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 01:49:27 GMT
+      - Mon, 28 Oct 2024 15:17:43 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - bfe45058-f136-41bf-96f4-006d1d41ada5
+      - fdd30632-db12-401c-92d8-7c69ec2a3746
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 7EBA3439AEDD490AA3C19912EB2656B9 Ref B: MAA201060516033 Ref C: 2024-10-28T15:17:44Z'
     status:
       code: 200
       message: OK
@@ -167,53 +166,95 @@ interactions:
       ParameterSetName:
       - -n -g --address-prefix
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/4a4dfc76-54af-4d32-8dd7-5744c024549b?api-version=2024-03-01&t=638657254640817871&c=MIIHhzCCBm-gAwIBAgITfAWKQyvXag-zjrQDfwAABYpDKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI0MDE0MzE0WhcNMjUwMzIzMDE0MzE0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANDwk3_kcyceqIl7dgtMLkPtJd0Dkb9mue4uwDFpqUeJaLV0ILbYclblqNCzMKtUostgBu5GVS8MBzN_L23IehFdX5s2G8MFBRyoCv31VkR6xTNcprlL3ApSlAkYLNKWQvNzETl23UISuvkG7qeDh6Bx2DFiOd37MurICLjYCCvXbYPN5hdGA_IniW-OEEwq2bSF3s80KjkyMJcA0SyUADASZFM9vhy05mEs6DRa8avMylzn8ybLp7xnm21jaUxNBKPMilAwIeUIvOpmwW_VU86n3T5Yj-2dJ2D2naHhWtci5pE7z8BGdasl5V1hoQdHsniY-G90XE0Qm6AYpDp7IU0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTnD50c9EnBJkrJcBrQ8YxbiYx5ADAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAUCr0q5wDvmcQmw5la8KMFO7bmmYkEp0jdFoaVgTEKWWk_VmL05UBKDAZNZ1Tect9BahkSSPDLo4PiHocbvdJN0bZ91V_GN9LHUKdy8-oXa6ai_B8HLcUhvpHXnmW8opONEs6mzT0wc1DFAglsuujyzZSFqif-9ARhhAlepT0oH4PAr96rZ0fPR6vkMTKAmprNFJQZbSgiz44FcxGBEctsuaEUxAp_AwQYTICmJQAQPbuoB3tZdUFJXogQBY47e7ZeTDWJ5GiWHKp2xbyASebOD4XFr6SpdmHmwddtWFB3zlcnLZnA32HeK6NpHRe6nMRkzBs1vxE6CdzR8HAcLEOE&s=VDaWkKIN2BFPF0-qbFeHhepo6e0e6sjX4EAs5tflwfPpn3nyQoWpEgD2ud7fB671IST0_KH7WPMwEFlQM1zffVaBx7kDQNodoCGOpiAYarcprLJuTqIaQjsLzW-JPFK_2XY0V_0Lvwm2s4K9OudFAPgHX7znI_FNn4HhchzL3PhQl_tMpbzSuuWs1_n4oGStWsykElldQd61x4sIYd4puEZnwOWR98GUsr7dea7bLOX8ayJwUyiloWIcQJTIRSLA9QRjsz5dfE6y75TQFc8feBOMr94eNYaCrfiQroR5Nqf4tYXYC70_qNTAUbvzSSPz02izgKoBZKO9yA7WQaqkwg&h=BxvmLfLbCbaDIw6Abw7o3BQ1JlN0CSP_fz6gPhPOzAk
   response:
     body:
-      string: "{\r\n  \"name\": \"vnet000002\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002\"\
-        ,\r\n  \"etag\": \"W/\\\"97fdfc66-8cfe-4126-9829-0504fe321d61\\\"\",\r\n \
-        \ \"type\": \"Microsoft.Network/virtualNetworks\",\r\n  \"location\": \"eastus\"\
-        ,\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n\
-        \    \"resourceGuid\": \"92215da0-96c9-4625-ae8c-73f2bcf6dfed\",\r\n    \"\
-        addressSpace\": {\r\n      \"addressPrefixes\": [\r\n        \"20.0.0.0/24\"\
-        \r\n      ]\r\n    },\r\n    \"subnets\": [],\r\n    \"virtualNetworkPeerings\"\
-        : [],\r\n    \"enableDdosProtection\": false\r\n  }\r\n}"
+      string: '{"status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '615'
+      - '22'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 01:49:27 GMT
-      etag:
-      - W/"97fdfc66-8cfe-4126-9829-0504fe321d61"
+      - Mon, 28 Oct 2024 15:17:53 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 3b0c8348-90f6-443f-8e15-84fdaece23bf
+      - dcb84b06-008c-4f43-b690-5cc7d894a0b3
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 7C67EC32D7264AB9856AF48E152F5FBB Ref B: MAA201060516033 Ref C: 2024-10-28T15:17:54Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -n -g --address-prefix
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002?api-version=2024-03-01
+  response:
+    body:
+      string: '{"name":"vnet000002","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002","etag":"W/\"7acbec17-263a-4dd3-9240-5559bb524e53\"","type":"Microsoft.Network/virtualNetworks","location":"eastus","properties":{"provisioningState":"Succeeded","resourceGuid":"22b9f926-1bab-4b16-97b7-a5acf8718a8f","addressSpace":{"addressPrefixes":["20.0.0.0/24"]},"privateEndpointVNetPolicies":"Disabled","subnets":[],"virtualNetworkPeerings":[],"enableDdosProtection":false}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '545'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Mon, 28 Oct 2024 15:17:54 GMT
+      etag:
+      - W/"7acbec17-263a-4dd3-9240-5559bb524e53"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 6da2f0ed-18bf-4886-a3b4-3398bad5d57a
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 42A636818F4F4500B53C76C4DC3C040F Ref B: MAA201060516033 Ref C: 2024-10-28T15:17:54Z'
     status:
       code: 200
       message: OK
 - request:
     body: '{"name": "subnet000003", "properties": {"addressPrefix": "20.0.0.0/24",
-      "delegations": [{"name": "0", "properties": {"serviceName": "Qumulo.Storage/fileSystems"}}]}}'
+      "delegations": [{"name": "0", "properties": {"serviceName": "Qumulo.Storage/fileSystems"}}],
+      "privateEndpointNetworkPolicies": "Disabled", "privateLinkServiceNetworkPolicies":
+      "Enabled"}}'
     headers:
       Accept:
       - application/json
@@ -224,58 +265,49 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '165'
+      - '259'
       Content-Type:
       - application/json
       ParameterSetName:
       - -n -g --address-prefix --vnet-name --delegations
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003?api-version=2024-01-01
   response:
     body:
-      string: "{\r\n  \"name\": \"subnet000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003\"\
-        ,\r\n  \"etag\": \"W/\\\"d59e4588-be3d-41a9-9616-2f0bef8b7f58\\\"\",\r\n \
-        \ \"properties\": {\r\n    \"provisioningState\": \"Updating\",\r\n    \"\
-        addressPrefix\": \"20.0.0.0/24\",\r\n    \"delegations\": [\r\n      {\r\n\
-        \        \"name\": \"0\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003/delegations/0\"\
-        ,\r\n        \"etag\": \"W/\\\"d59e4588-be3d-41a9-9616-2f0bef8b7f58\\\"\"\
-        ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Succeeded\"\
-        ,\r\n          \"serviceName\": \"Qumulo.Storage/fileSystems\",\r\n      \
-        \    \"actions\": [\r\n            \"Microsoft.Network/virtualNetworks/subnets/join/action\"\
-        \r\n          ]\r\n        },\r\n        \"type\": \"Microsoft.Network/virtualNetworks/subnets/delegations\"\
-        \r\n      }\r\n    ],\r\n    \"privateEndpointNetworkPolicies\": \"Disabled\"\
-        ,\r\n    \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n  },\r\n  \"\
-        type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n}"
+      string: '{"name":"subnet000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003","etag":"W/\"71265cfd-d65b-4051-9a6e-7c67d82cf28d\"","properties":{"provisioningState":"Updating","addressPrefix":"20.0.0.0/24","delegations":[{"name":"0","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003/delegations/0","etag":"W/\"71265cfd-d65b-4051-9a6e-7c67d82cf28d\"","properties":{"provisioningState":"Succeeded","serviceName":"Qumulo.Storage/fileSystems","actions":["Microsoft.Network/virtualNetworks/subnets/join/action"]},"type":"Microsoft.Network/virtualNetworks/subnets/delegations"}],"privateEndpointNetworkPolicies":"Disabled","privateLinkServiceNetworkPolicies":"Enabled"},"type":"Microsoft.Network/virtualNetworks/subnets"}'
     headers:
       azure-asyncnotification:
       - Enabled
       azure-asyncoperation:
-      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/e8ded2b8-d878-4c6e-b335-fb251cd76bd7?api-version=2022-01-01
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/efe3e739-cd39-4c68-963e-3ebb2568cd8a?api-version=2024-01-01&t=638657254786032838&c=MIIHhzCCBm-gAwIBAgITfAWKQyvXag-zjrQDfwAABYpDKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI0MDE0MzE0WhcNMjUwMzIzMDE0MzE0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANDwk3_kcyceqIl7dgtMLkPtJd0Dkb9mue4uwDFpqUeJaLV0ILbYclblqNCzMKtUostgBu5GVS8MBzN_L23IehFdX5s2G8MFBRyoCv31VkR6xTNcprlL3ApSlAkYLNKWQvNzETl23UISuvkG7qeDh6Bx2DFiOd37MurICLjYCCvXbYPN5hdGA_IniW-OEEwq2bSF3s80KjkyMJcA0SyUADASZFM9vhy05mEs6DRa8avMylzn8ybLp7xnm21jaUxNBKPMilAwIeUIvOpmwW_VU86n3T5Yj-2dJ2D2naHhWtci5pE7z8BGdasl5V1hoQdHsniY-G90XE0Qm6AYpDp7IU0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTnD50c9EnBJkrJcBrQ8YxbiYx5ADAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAUCr0q5wDvmcQmw5la8KMFO7bmmYkEp0jdFoaVgTEKWWk_VmL05UBKDAZNZ1Tect9BahkSSPDLo4PiHocbvdJN0bZ91V_GN9LHUKdy8-oXa6ai_B8HLcUhvpHXnmW8opONEs6mzT0wc1DFAglsuujyzZSFqif-9ARhhAlepT0oH4PAr96rZ0fPR6vkMTKAmprNFJQZbSgiz44FcxGBEctsuaEUxAp_AwQYTICmJQAQPbuoB3tZdUFJXogQBY47e7ZeTDWJ5GiWHKp2xbyASebOD4XFr6SpdmHmwddtWFB3zlcnLZnA32HeK6NpHRe6nMRkzBs1vxE6CdzR8HAcLEOE&s=HjUSmH2_hVf3FIMMjWFgZf4aUQVlh8cFrww12yKWF2u-m4fnq9q1Frs28LXst0vHRX1ITgi7S7mL8IlyNRdWWen9pS5g2V2cfM4VOGHb1-h4noTehBrJeEqYvduNdEvPZeY5Rl42MFe_C_XmCz0IBzICwYF0kVRDMLcLGFyX9rb6VH5nV0LAQivWjIOvzQnD-9IswB1kVRe_N0m3KmPl2g0Q3-7HMXz5V52EYk19hOSRWJzePuuk8U6wnQI3NW6Jyd3ZtJZ3iuAqmmCyeuiIERtZ8q2W-UvVnn9mmxO90v1rZE-8EvaOA3T17bO-jPkpMPIdpz14v3Qtadd1T4Logw&h=uYmUkz6CS50Hk1osNbaY2b7kMyop0n8Ri81sEJ1EjA0
       cache-control:
       - no-cache
       content-length:
-      - '1160'
+      - '942'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 01:49:29 GMT
+      - Mon, 28 Oct 2024 15:17:57 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - fbe6faf0-f6a6-44b2-af64-ffcd5a490fbd
+      - 9e6c0bc7-8e58-4688-871d-a7ec6834b197
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '11999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '799'
+      x-msedge-ref:
+      - 'Ref A: F2A68C66A56C4CDD903CED1DF511B9D6 Ref B: MAA201060515025 Ref C: 2024-10-28T15:17:57Z'
     status:
       code: 201
       message: Created
@@ -293,38 +325,37 @@ interactions:
       ParameterSetName:
       - -n -g --address-prefix --vnet-name --delegations
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/e8ded2b8-d878-4c6e-b335-fb251cd76bd7?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/eastus/operations/efe3e739-cd39-4c68-963e-3ebb2568cd8a?api-version=2024-01-01&t=638657254786032838&c=MIIHhzCCBm-gAwIBAgITfAWKQyvXag-zjrQDfwAABYpDKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI0MDE0MzE0WhcNMjUwMzIzMDE0MzE0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANDwk3_kcyceqIl7dgtMLkPtJd0Dkb9mue4uwDFpqUeJaLV0ILbYclblqNCzMKtUostgBu5GVS8MBzN_L23IehFdX5s2G8MFBRyoCv31VkR6xTNcprlL3ApSlAkYLNKWQvNzETl23UISuvkG7qeDh6Bx2DFiOd37MurICLjYCCvXbYPN5hdGA_IniW-OEEwq2bSF3s80KjkyMJcA0SyUADASZFM9vhy05mEs6DRa8avMylzn8ybLp7xnm21jaUxNBKPMilAwIeUIvOpmwW_VU86n3T5Yj-2dJ2D2naHhWtci5pE7z8BGdasl5V1hoQdHsniY-G90XE0Qm6AYpDp7IU0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTnD50c9EnBJkrJcBrQ8YxbiYx5ADAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAUCr0q5wDvmcQmw5la8KMFO7bmmYkEp0jdFoaVgTEKWWk_VmL05UBKDAZNZ1Tect9BahkSSPDLo4PiHocbvdJN0bZ91V_GN9LHUKdy8-oXa6ai_B8HLcUhvpHXnmW8opONEs6mzT0wc1DFAglsuujyzZSFqif-9ARhhAlepT0oH4PAr96rZ0fPR6vkMTKAmprNFJQZbSgiz44FcxGBEctsuaEUxAp_AwQYTICmJQAQPbuoB3tZdUFJXogQBY47e7ZeTDWJ5GiWHKp2xbyASebOD4XFr6SpdmHmwddtWFB3zlcnLZnA32HeK6NpHRe6nMRkzBs1vxE6CdzR8HAcLEOE&s=HjUSmH2_hVf3FIMMjWFgZf4aUQVlh8cFrww12yKWF2u-m4fnq9q1Frs28LXst0vHRX1ITgi7S7mL8IlyNRdWWen9pS5g2V2cfM4VOGHb1-h4noTehBrJeEqYvduNdEvPZeY5Rl42MFe_C_XmCz0IBzICwYF0kVRDMLcLGFyX9rb6VH5nV0LAQivWjIOvzQnD-9IswB1kVRe_N0m3KmPl2g0Q3-7HMXz5V52EYk19hOSRWJzePuuk8U6wnQI3NW6Jyd3ZtJZ3iuAqmmCyeuiIERtZ8q2W-UvVnn9mmxO90v1rZE-8EvaOA3T17bO-jPkpMPIdpz14v3Qtadd1T4Logw&h=uYmUkz6CS50Hk1osNbaY2b7kMyop0n8Ri81sEJ1EjA0
   response:
     body:
-      string: "{\r\n  \"status\": \"Succeeded\"\r\n}"
+      string: '{"status":"Succeeded"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '29'
+      - '22'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 01:49:29 GMT
+      - Mon, 28 Oct 2024 15:17:58 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 0ab25e25-2c2b-4ea2-9548-c314b170dc73
+      - 9ac5af93-0c4f-446b-a1a8-0b2929a6acf6
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 7460FA385EC24657A8410ACA98F2E467 Ref B: MAA201060515025 Ref C: 2024-10-28T15:17:58Z'
     status:
       code: 200
       message: OK
@@ -342,52 +373,39 @@ interactions:
       ParameterSetName:
       - -n -g --address-prefix --vnet-name --delegations
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003?api-version=2022-01-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003?api-version=2024-01-01
   response:
     body:
-      string: "{\r\n  \"name\": \"subnet000003\",\r\n  \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003\"\
-        ,\r\n  \"etag\": \"W/\\\"c39e5a44-99ec-406e-b0a1-e69bd9fa645d\\\"\",\r\n \
-        \ \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"\
-        addressPrefix\": \"20.0.0.0/24\",\r\n    \"delegations\": [\r\n      {\r\n\
-        \        \"name\": \"0\",\r\n        \"id\": \"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003/delegations/0\"\
-        ,\r\n        \"etag\": \"W/\\\"c39e5a44-99ec-406e-b0a1-e69bd9fa645d\\\"\"\
-        ,\r\n        \"properties\": {\r\n          \"provisioningState\": \"Succeeded\"\
-        ,\r\n          \"serviceName\": \"Qumulo.Storage/fileSystems\",\r\n      \
-        \    \"actions\": [\r\n            \"Microsoft.Network/virtualNetworks/subnets/join/action\"\
-        \r\n          ]\r\n        },\r\n        \"type\": \"Microsoft.Network/virtualNetworks/subnets/delegations\"\
-        \r\n      }\r\n    ],\r\n    \"privateEndpointNetworkPolicies\": \"Disabled\"\
-        ,\r\n    \"privateLinkServiceNetworkPolicies\": \"Enabled\"\r\n  },\r\n  \"\
-        type\": \"Microsoft.Network/virtualNetworks/subnets\"\r\n}"
+      string: '{"name":"subnet000003","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003","etag":"W/\"f946063c-8ac7-4d4f-969e-a3dc82a29b50\"","properties":{"provisioningState":"Succeeded","addressPrefix":"20.0.0.0/24","delegations":[{"name":"0","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003/delegations/0","etag":"W/\"f946063c-8ac7-4d4f-969e-a3dc82a29b50\"","properties":{"provisioningState":"Succeeded","serviceName":"Qumulo.Storage/fileSystems","actions":["Microsoft.Network/virtualNetworks/subnets/join/action"]},"type":"Microsoft.Network/virtualNetworks/subnets/delegations"}],"privateEndpointNetworkPolicies":"Disabled","privateLinkServiceNetworkPolicies":"Enabled"},"type":"Microsoft.Network/virtualNetworks/subnets"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1161'
+      - '943'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 01:49:30 GMT
+      - Mon, 28 Oct 2024 15:17:58 GMT
       etag:
-      - W/"c39e5a44-99ec-406e-b0a1-e69bd9fa645d"
+      - W/"f946063c-8ac7-4d4f-969e-a3dc82a29b50"
       expires:
       - '-1'
       pragma:
       - no-cache
-      server:
-      - Microsoft-HTTPAPI/2.0
-      - Microsoft-HTTPAPI/2.0
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-arm-service-request-id:
-      - 87cca84d-6e90-4a53-b7d4-9803af6480fa
+      - 22959c81-1d40-4263-9a05-27a5fc706171
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: DC7CFCC2692741838D20D331FB560F46 Ref B: MAA201060515025 Ref C: 2024-10-28T15:17:58Z'
     status:
       code: 200
       message: OK
@@ -406,12 +424,12 @@ interactions:
       - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
         --storage-sku --user-details --availability-zone --tags
       User-Agent:
-      - AZURECLI/2.49.0 azsdk-python-azure-mgmt-resource/22.0.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001?api-version=2022-09-01
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_file_system","date":"2023-06-12T01:49:14Z","module":"qumulo"},"properties":{"provisioningState":"Succeeded"}}'
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001","name":"clitest.rg000001","type":"Microsoft.Resources/resourceGroups","location":"eastus","tags":{"product":"azurecli","cause":"automation","test":"test_file_system","date":"2024-10-28T15:15:15Z","module":"qumulo"},"properties":{"provisioningState":"Succeeded"}}'
     headers:
       cache-control:
       - no-cache
@@ -420,17 +438,21 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Mon, 12 Jun 2023 01:49:30 GMT
+      - Mon, 28 Oct 2024 15:18:06 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '16499'
+      x-msedge-ref:
+      - 'Ref A: 8F67DFA4DD894B15956CB7288B4768A1 Ref B: MAA201060514053 Ref C: 2024-10-28T15:18:06Z'
     status:
       code: 200
       message: OK
@@ -439,7 +461,7 @@ interactions:
       "1", "delegatedSubnetId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003",
       "initialCapacity": 50, "marketplaceDetails": {"offerId": "qumulo-saas-mpp",
       "planId": "qumulo-on-azure-v1%%gmz7xq9ge3py%%P1M", "publisherId": "qumulo1584033880660"},
-      "storageSku": "Standard", "userDetails": {"email": "v-jingszhang@microsoft.com"}},
+      "storageSku": "Standard", "userDetails": {"email": "taishiroy@microsoft.com"}},
       "tags": {"tag": "test"}}'
     headers:
       Accept:
@@ -451,1750 +473,60 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '552'
+      - '549'
       Content-Type:
       - application/json
       ParameterSetName:
       - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
         --storage-sku --user-details --availability-zone --tags
       User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004?api-version=2022-10-12
   response:
     body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","name":"sys000004","type":"qumulo.storage/filesystems","location":"eastus","tags":{"tag":"test"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-06-12T01:49:34.9655332Z","lastModifiedBy":"v-jingszhang@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-06-12T01:49:34.9655332Z"},"properties":{"marketplaceDetails":{"marketplaceSubscriptionId":null,"planId":"qumulo-on-azure-v1%%gmz7xq9ge3py%%P1M","offerId":"qumulo-saas-mpp","publisherId":"qumulo1584033880660","marketplaceSubscriptionStatus":"PendingFulfillmentStart"},"provisioningState":"Accepted","userDetails":{},"delegatedSubnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003","clusterLoginUrl":null,"privateIPs":null,"storageSku":"Standard","initialCapacity":50,"availabilityZone":"1"}}'
+      string: '{"error":{"code":"ResourceCreationValidateFailed","message":"MarketplaceValidation,
+        MarketplaceValidation, SaaS Purchase Payment Check Failed as validationResponse
+        was {\"isEligible\":false,\"errorMessage\":\"Plan ''qumulo-on-azure-v1'' is
+        defined as stop sell in offer ''qumulo-saas-mpp''. Purchase has failed because
+        we couldn''t find a valid payment method associated with your Azure subscription.
+        Please use a different Azure subscription or add\\\\\\\\update current payment
+        method for this subscription and retry.\"}, failed for resoruce id /subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004,
+        resource name sys000004 Filesystem validation failed. ResponseMessage: API
+        handler failed.. ResponseDetails: Error 1301: Invalid body: {''additionalProperties'':
+        {''storageSku'': [''Must be one of: Active, Cold, Hot.'']}}\n "}}'
     headers:
-      azure-asyncoperation:
-      - https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
       cache-control:
       - no-cache
       content-length:
-      - '1061'
+      - '895'
       content-type:
-      - application/json; charset=utf-8
+      - application/json
       date:
-      - Mon, 12 Jun 2023 01:49:38 GMT
-      etag:
-      - '"9e082347-0000-0100-0000-648679b10000"'
+      - Mon, 28 Oct 2024 15:18:15 GMT
       expires:
       - '-1'
-      location:
-      - https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
       mise-correlation-id:
-      - c8b53f7c-d2f8-4763-a213-6da841285c50
+      - 5a0041a4-0512-4c98-aa7e-e5bb81bea3fd
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-failure-cause:
+      - gateway
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '12000'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '800'
+      x-msedge-ref:
+      - 'Ref A: 707DAE77ECD84336B9D5FB975BC1F7EF Ref B: MAA201060516031 Ref C: 2024-10-28T15:18:07Z'
     status:
-      code: 201
-      message: Created
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
-        --storage-sku --user-details --availability-zone --tags
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Accepted","startTime":"2023-06-12T01:49:36.419453Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '490'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:49:38 GMT
-      etag:
-      - '"4b038e06-0000-0100-0000-648679b00000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
-        --storage-sku --user-details --availability-zone --tags
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Accepted","startTime":"2023-06-12T01:49:36.419453Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '490'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:50:09 GMT
-      etag:
-      - '"4b038e06-0000-0100-0000-648679b00000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
-        --storage-sku --user-details --availability-zone --tags
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Accepted","startTime":"2023-06-12T01:49:36.419453Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '490'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:50:40 GMT
-      etag:
-      - '"4b038e06-0000-0100-0000-648679b00000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
-        --storage-sku --user-details --availability-zone --tags
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Accepted","startTime":"2023-06-12T01:49:36.419453Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '490'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:51:09 GMT
-      etag:
-      - '"4b038e06-0000-0100-0000-648679b00000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
-        --storage-sku --user-details --availability-zone --tags
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Accepted","startTime":"2023-06-12T01:49:36.419453Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '490'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:51:40 GMT
-      etag:
-      - '"4b038e06-0000-0100-0000-648679b00000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
-        --storage-sku --user-details --availability-zone --tags
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Accepted","startTime":"2023-06-12T01:49:36.419453Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '490'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:52:10 GMT
-      etag:
-      - '"4b038e06-0000-0100-0000-648679b00000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
-        --storage-sku --user-details --availability-zone --tags
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Accepted","startTime":"2023-06-12T01:49:36.419453Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '490'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:52:40 GMT
-      etag:
-      - '"4b038e06-0000-0100-0000-648679b00000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
-        --storage-sku --user-details --availability-zone --tags
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Accepted","startTime":"2023-06-12T01:49:36.419453Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '490'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:53:11 GMT
-      etag:
-      - '"4b038e06-0000-0100-0000-648679b00000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
-        --storage-sku --user-details --availability-zone --tags
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Accepted","startTime":"2023-06-12T01:49:36.419453Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '490'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:53:41 GMT
-      etag:
-      - '"4b038e06-0000-0100-0000-648679b00000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
-        --storage-sku --user-details --availability-zone --tags
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Accepted","startTime":"2023-06-12T01:49:36.419453Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '490'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:54:12 GMT
-      etag:
-      - '"4b038e06-0000-0100-0000-648679b00000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
-        --storage-sku --user-details --availability-zone --tags
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Accepted","startTime":"2023-06-12T01:49:36.419453Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '490'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:54:43 GMT
-      etag:
-      - '"4b038e06-0000-0100-0000-648679b00000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
-        --storage-sku --user-details --availability-zone --tags
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Accepted","startTime":"2023-06-12T01:49:36.419453Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '490'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:55:14 GMT
-      etag:
-      - '"4b038e06-0000-0100-0000-648679b00000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
-        --storage-sku --user-details --availability-zone --tags
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Accepted","startTime":"2023-06-12T01:49:36.419453Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '490'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:55:44 GMT
-      etag:
-      - '"4b038e06-0000-0100-0000-648679b00000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
-        --storage-sku --user-details --availability-zone --tags
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Accepted","startTime":"2023-06-12T01:49:36.419453Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '490'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:56:14 GMT
-      etag:
-      - '"4b038e06-0000-0100-0000-648679b00000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
-        --storage-sku --user-details --availability-zone --tags
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Accepted","startTime":"2023-06-12T01:49:36.419453Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '490'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:56:44 GMT
-      etag:
-      - '"4b038e06-0000-0100-0000-648679b00000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
-        --storage-sku --user-details --availability-zone --tags
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Accepted","startTime":"2023-06-12T01:49:36.419453Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '490'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:57:15 GMT
-      etag:
-      - '"4b038e06-0000-0100-0000-648679b00000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
-        --storage-sku --user-details --availability-zone --tags
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Accepted","startTime":"2023-06-12T01:49:36.419453Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '490'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:57:45 GMT
-      etag:
-      - '"4b038e06-0000-0100-0000-648679b00000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
-        --storage-sku --user-details --availability-zone --tags
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Accepted","startTime":"2023-06-12T01:49:36.419453Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '490'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:58:17 GMT
-      etag:
-      - '"4b038e06-0000-0100-0000-648679b00000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
-        --storage-sku --user-details --availability-zone --tags
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"6f075536-f1a6-40ce-914d-595a52c87325*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Succeeded","startTime":"2023-06-12T01:49:36.419453Z","endTime":"2023-06-12T01:58:19.3440497Z","error":{},"properties":null}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '561'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:58:47 GMT
-      etag:
-      - '"4b03412f-0000-0100-0000-64867bbb0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system create
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g --admin-password --delegated-subnet-id --initial-capacity --marketplace-details
-        --storage-sku --user-details --availability-zone --tags
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","name":"sys000004","type":"qumulo.storage/filesystems","location":"eastus","tags":{"tag":"test"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-06-12T01:49:34.9655332Z","lastModifiedBy":"13c34964-a135-4390-aa53-32f3c7251982","lastModifiedByType":"Application","lastModifiedAt":"2023-06-12T01:58:19.4432533Z"},"properties":{"marketplaceDetails":{"marketplaceSubscriptionId":"bd9f2bfc-9911-4e39-dbbd-af6377ff06c6","planId":"qumulo-on-azure-v1%%gmz7xq9ge3py%%P1M","offerId":"qumulo-saas-mpp","publisherId":"qumulo1584033880660","marketplaceSubscriptionStatus":"Subscribed"},"provisioningState":"Succeeded","userDetails":{},"delegatedSubnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003","storageSku":"Standard","initialCapacity":50,"availabilityZone":"1","clusterLoginUrl":"https://20.0.0.4/login","privateIPs":["20.0.0.4","20.0.0.5","20.0.0.6","20.0.0.7"]}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1161'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:58:47 GMT
-      etag:
-      - '"9e08d9be-0000-0100-0000-64867bbb0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-providerhub-traffic:
-      - 'True'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system show
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","name":"sys000004","type":"qumulo.storage/filesystems","location":"eastus","tags":{"tag":"test"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-06-12T01:49:34.9655332Z","lastModifiedBy":"13c34964-a135-4390-aa53-32f3c7251982","lastModifiedByType":"Application","lastModifiedAt":"2023-06-12T01:58:19.4432533Z"},"properties":{"marketplaceDetails":{"marketplaceSubscriptionId":"bd9f2bfc-9911-4e39-dbbd-af6377ff06c6","planId":"qumulo-on-azure-v1%%gmz7xq9ge3py%%P1M","offerId":"qumulo-saas-mpp","publisherId":"qumulo1584033880660","marketplaceSubscriptionStatus":"Subscribed"},"provisioningState":"Succeeded","userDetails":{},"delegatedSubnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003","storageSku":"Standard","initialCapacity":50,"availabilityZone":"1","clusterLoginUrl":"https://20.0.0.4/login","privateIPs":["20.0.0.4","20.0.0.5","20.0.0.6","20.0.0.7"]}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1161'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:58:50 GMT
-      etag:
-      - '"9e08d9be-0000-0100-0000-64867bbb0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-providerhub-traffic:
-      - 'True'
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - application/json
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system list
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -g
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems?api-version=2022-10-12
-  response:
-    body:
-      string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","name":"sys000004","type":"qumulo.storage/filesystems","location":"eastus","tags":{"tag":"test"},"systemData":{"createdBy":"v-jingszhang@microsoft.com","createdByType":"User","createdAt":"2023-06-12T01:49:34.9655332Z","lastModifiedBy":"13c34964-a135-4390-aa53-32f3c7251982","lastModifiedByType":"Application","lastModifiedAt":"2023-06-12T01:58:19.4432533Z"},"properties":{"marketplaceDetails":{"marketplaceSubscriptionId":"bd9f2bfc-9911-4e39-dbbd-af6377ff06c6","planId":"qumulo-on-azure-v1%%gmz7xq9ge3py%%P1M","offerId":"qumulo-saas-mpp","publisherId":"qumulo1584033880660","marketplaceSubscriptionStatus":"Subscribed"},"provisioningState":"Succeeded","userDetails":{},"delegatedSubnetId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.Network/virtualNetworks/vnet000002/subnets/subnet000003","storageSku":"Standard","initialCapacity":50,"availabilityZone":"1","clusterLoginUrl":"https://20.0.0.4/login","privateIPs":["20.0.0.4","20.0.0.5","20.0.0.6","20.0.0.7"]}}]}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '1173'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:58:52 GMT
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-      x-ms-original-request-ids:
-      - 29a825e0-9059-4435-b0dc-1881183de790
-      - 7d2bd0a7-ccc7-4b2b-ba3a-43f7a2aec887
-      - 52ce5781-f75a-4125-95a8-679e86a90137
-      - f1ed010f-d270-44ab-aafc-17c4f176e62a
-      - ef9a2390-e641-4c3b-91ab-e5ffcb77352a
-      - a9f45072-414b-4945-a778-7d1a6483aa1c
-      - cf3083f1-a573-4e5f-b6a1-83f04f76a64e
-      - 3ee2c8c0-c701-443b-adcd-6fa3e984210d
-      - 0e859f77-eca7-4afb-be32-c06ebb5230e6
-      - 29fb28fc-480a-40a5-830e-0d1be23a85b9
-      - b4a5efc0-6da0-4f55-af3b-e818c2cf67c0
-      - 68c3d336-0c47-4707-b508-ec1b4e88e153
-      - 7badf041-f104-485a-b8b3-f3522f5afe81
-      - a1815b7e-1a92-4a2d-aa4e-7f56910cfb56
-      - 2f4c5462-c8fa-466b-9166-08b65e2922ca
-      - df2701f0-2c47-4c40-845e-2d469c8c0358
-      - ff4ffa12-131a-40bc-b22e-c57f91ba05d2
-      - ec22cabb-998d-4c83-a0dd-d3e118b110ed
-      - dca46f20-0de9-41b1-ac13-4e5ad2a08f29
-      - a51f72b1-1d05-4798-ae9f-f4bc38ad290c
-      - 0fab99a7-4b5d-4200-a8e7-628250d23af9
-      - 71498158-4ff0-4a37-97b5-5b59275f9cae
-    status:
-      code: 200
-      message: OK
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system delete
-      Connection:
-      - keep-alive
-      Content-Length:
-      - '0'
-      ParameterSetName:
-      - -n -g -y
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: DELETE
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004?api-version=2022-10-12
-  response:
-    body:
-      string: 'null'
-    headers:
-      azure-asyncoperation:
-      - https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-      cache-control:
-      - no-cache
-      content-length:
-      - '4'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:58:53 GMT
-      etag:
-      - '"9e08a4c8-0000-0100-0000-64867bde0000"'
-      expires:
-      - '-1'
-      location:
-      - https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-      mise-correlation-id:
-      - c33a162a-881c-429f-be49-549ee2173f39
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-      x-ms-providerhub-traffic:
-      - 'True'
-      x-ms-ratelimit-remaining-subscription-deletes:
-      - '14999'
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g -y
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Deleting","startTime":"2023-06-12T01:58:53.6400986Z"}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '491'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:58:54 GMT
-      etag:
-      - '"4b03dd32-0000-0100-0000-64867bdd0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g -y
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Deleting","startTime":"2023-06-12T01:58:53.6400986Z","error":{}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '502'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:59:24 GMT
-      etag:
-      - '"4b038333-0000-0100-0000-64867be60000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g -y
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Deleting","startTime":"2023-06-12T01:58:53.6400986Z","error":{}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '502'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 01:59:55 GMT
-      etag:
-      - '"4b038333-0000-0100-0000-64867be60000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g -y
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Deleting","startTime":"2023-06-12T01:58:53.6400986Z","error":{}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '502'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 02:00:25 GMT
-      etag:
-      - '"4b038333-0000-0100-0000-64867be60000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g -y
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Deleting","startTime":"2023-06-12T01:58:53.6400986Z","error":{}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '502'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 02:00:55 GMT
-      etag:
-      - '"4b038333-0000-0100-0000-64867be60000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g -y
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Deleting","startTime":"2023-06-12T01:58:53.6400986Z","error":{}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '502'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 02:01:26 GMT
-      etag:
-      - '"4b038333-0000-0100-0000-64867be60000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g -y
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Deleting","startTime":"2023-06-12T01:58:53.6400986Z","error":{}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '502'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 02:01:56 GMT
-      etag:
-      - '"4b038333-0000-0100-0000-64867be60000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g -y
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Deleting","startTime":"2023-06-12T01:58:53.6400986Z","error":{}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '502'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 02:02:27 GMT
-      etag:
-      - '"4b038333-0000-0100-0000-64867be60000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g -y
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Deleting","startTime":"2023-06-12T01:58:53.6400986Z","error":{}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '502'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 02:02:57 GMT
-      etag:
-      - '"4b038333-0000-0100-0000-64867be60000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g -y
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Deleting","startTime":"2023-06-12T01:58:53.6400986Z","error":{}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '502'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 02:03:26 GMT
-      etag:
-      - '"4b038333-0000-0100-0000-64867be60000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g -y
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Deleting","startTime":"2023-06-12T01:58:53.6400986Z","error":{}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '502'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 02:03:57 GMT
-      etag:
-      - '"4b038333-0000-0100-0000-64867be60000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g -y
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Deleting","startTime":"2023-06-12T01:58:53.6400986Z","error":{}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '502'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 02:04:27 GMT
-      etag:
-      - '"4b032a58-0000-0100-0000-64867d170000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g -y
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Deleting","startTime":"2023-06-12T01:58:53.6400986Z","error":{}}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '502'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 02:04:58 GMT
-      etag:
-      - '"4b032a58-0000-0100-0000-64867d170000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 202
-      message: Accepted
-- request:
-    body: null
-    headers:
-      Accept:
-      - '*/*'
-      Accept-Encoding:
-      - gzip, deflate
-      CommandName:
-      - qumulo storage file-system delete
-      Connection:
-      - keep-alive
-      ParameterSetName:
-      - -n -g -y
-      User-Agent:
-      - AZURECLI/2.49.0 (AAZ) azsdk-python-core/1.26.0 Python/3.10.9 (Windows-10-10.0.22621-SP0)
-    method: GET
-    uri: https://management.azure.com/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A?api-version=2022-10-12
-  response:
-    body:
-      string: '{"id":"/providers/Qumulo.Storage/locations/EASTUS/operationStatuses/b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","name":"b4e67c25-52b8-4494-b338-448897fca190*04812E588D7BF328D56C2B3A0213A65352D4E92458CE824A1F6B93AA42669A7A","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Qumulo.Storage/fileSystems/sys000004","status":"Succeeded","startTime":"2023-06-12T01:58:53.6400986Z","endTime":"2023-06-12T02:05:18.1549841Z","error":{},"properties":null}'
-    headers:
-      cache-control:
-      - no-cache
-      content-length:
-      - '562'
-      content-type:
-      - application/json; charset=utf-8
-      date:
-      - Mon, 12 Jun 2023 02:05:28 GMT
-      etag:
-      - '"4b030160-0000-0100-0000-64867d5e0000"'
-      expires:
-      - '-1'
-      pragma:
-      - no-cache
-      strict-transport-security:
-      - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
-      x-content-type-options:
-      - nosniff
-    status:
-      code: 200
-      message: OK
+      code: 400
+      message: Bad Request
 version: 1
