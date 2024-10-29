@@ -6,7 +6,7 @@ param (
     [switch] $OnlyPublicTests,
 
     [Parameter(Mandatory=$True)]
-    [ValidateSet('k8s-extension','k8s-configuration', 'k8s-extension-private')]
+    [ValidateSet('connectedk8s')]
     [string]$Type
 )
 
@@ -26,51 +26,13 @@ if (-not (Test-Path -Path $TestFileDirectory)) {
     New-Item -ItemType Directory -Path $TestFileDirectory
 }
 
-if ($Type -eq 'k8s-extension') {
-    $k8sExtensionVersion = $ENVCONFIG.extensionVersion.'k8s-extension'
-    $Env:K8sExtensionName = "k8s-extension"
-
+if ($Type -eq 'connectedk8s') {
+    $connectedk8sVersion = $ENVCONFIG.extensionVersion.'connectedk8s'
     if (!$SkipInstall) {
-        Write-Host "Removing the old k8s-extension extension..."
-        az extension remove -n k8s-extension
-        Write-Host "Installing k8s-extension version $k8sExtensionVersion..."
-        az extension add --source ./bin/k8s_extension-$k8sExtensionVersion-py3-none-any.whl
-        if (!$?) {
-            Write-Host "Unable to find k8s-extension version $k8sExtensionVersion, exiting..."
-            exit 1
-        }
-    }
-    if ($OnlyPublicTests) {
-        $testFilePath = "$PSScriptRoot/test/extensions/public"
-    } else {
-        $testFilePath = "$PSScriptRoot/test/extensions"
-    }
-} elseif ($Type -eq 'k8s-extension-private') {
-    $k8sExtensionPrivateVersion = $ENVCONFIG.extensionVersion.'k8s-extension-private'
-    $Env:K8sExtensionName = "k8s-extension-private"
-
-    if (!$SkipInstall) {
-        Write-Host "Removing the old k8s-extension-private extension..."
-        az extension remove -n k8s-extension-private
-        Write-Host "Installing k8s-extension-private version $k8sExtensionPrivateVersion..."
-        az extension add --source ./bin/k8s_extension_private-$k8sExtensionPrivateVersion-py3-none-any.whl
-        if (!$?) {
-            Write-Host "Unable to find k8s-extension-private version $k8sExtensionPrivateVersion, exiting..."
-            exit 1
-        }
-    }
-    if ($OnlyPublicTests) {
-        $testFilePath = "$PSScriptRoot/test/extensions/public"
-    } else {
-        $testFilePath = "$PSScriptRoot/test/extensions"
-    }
-} elseif ($Type -eq 'k8s-configuration') {
-    $k8sConfigurationVersion = $ENVCONFIG.extensionVersion.'k8s-configuration'
-    if (!$SkipInstall) {
-        Write-Host "Removing the old k8s-configuration extension..."
-        az extension remove -n k8s-configuration
-        Write-Host "Installing k8s-configuration version $k8sConfigurationVersion..."
-        az extension add --source ./bin/k8s_configuration-$k8sConfigurationVersion-py3-none-any.whl
+        Write-Host "Removing the old connectedk8s extension..."
+        az extension remove -n connectedk8s
+        Write-Host "Installing connectedk8s version $connectedk8sVersion..."
+        az extension add --source ./bin/connectedk8s-$connectedk8sVersion-py2.py3-none-any.whl
     }
     $testFilePaths = "$PSScriptRoot/test/configurations"
 }
