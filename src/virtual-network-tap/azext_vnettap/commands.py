@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from azure.cli.core.commands import CliCommandType
 
 
 # pylint: disable=too-many-locals, too-many-statements

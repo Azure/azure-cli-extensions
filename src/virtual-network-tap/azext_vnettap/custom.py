@@ -3,6 +3,8 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+# pylint: disable=protected-access
+
 from .aaz.latest.network.vnet.tap import Create as _CreateVnetTap
 from .aaz.latest.network.nic.vtap_config import Create as _CreateVtapConfig
 from azure.cli.core.util import parse_proxy_resource_id

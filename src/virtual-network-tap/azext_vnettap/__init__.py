@@ -4,7 +4,6 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azure.cli.core.profiles import register_resource_type
 
 import azext_vnettap._help  # pylint: disable=unused-import
 
