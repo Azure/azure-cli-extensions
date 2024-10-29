@@ -53,6 +53,8 @@ from ._models_py3 import CassandraViewGetResults
 from ._models_py3 import CassandraViewListResult
 from ._models_py3 import CassandraViewResource
 from ._models_py3 import Certificate
+from ._models_py3 import ChaosFaultListResponse
+from ._models_py3 import ChaosFaultResource
 from ._models_py3 import ClientEncryptionIncludedPath
 from ._models_py3 import ClientEncryptionKeyCreateUpdateParameters
 from ._models_py3 import ClientEncryptionKeyGetPropertiesResource
@@ -80,6 +82,7 @@ from ._models_py3 import ContinuousModeProperties
 from ._models_py3 import CorsPolicy
 from ._models_py3 import CosmosCassandraDataTransferDataSourceSink
 from ._models_py3 import CosmosMongoDataTransferDataSourceSink
+from ._models_py3 import CosmosMongoVCoreDataTransferDataSourceSink
 from ._models_py3 import CosmosSqlDataTransferDataSourceSink
 from ._models_py3 import CreateJobRequest
 from ._models_py3 import CreateUpdateOptions
@@ -403,6 +406,7 @@ from ._cosmos_db_management_client_enums import ServiceType
 from ._cosmos_db_management_client_enums import Severity
 from ._cosmos_db_management_client_enums import SpatialType
 from ._cosmos_db_management_client_enums import Status
+from ._cosmos_db_management_client_enums import SupportedActions
 from ._cosmos_db_management_client_enums import ThroughputPolicyType
 from ._cosmos_db_management_client_enums import TriggerOperation
 from ._cosmos_db_management_client_enums import TriggerType
@@ -460,6 +464,8 @@ __all__ = [
     "CassandraViewListResult",
     "CassandraViewResource",
     "Certificate",
+    "ChaosFaultListResponse",
+    "ChaosFaultResource",
     "ClientEncryptionIncludedPath",
     "ClientEncryptionKeyCreateUpdateParameters",
     "ClientEncryptionKeyGetPropertiesResource",
@@ -487,6 +493,7 @@ __all__ = [
     "CorsPolicy",
     "CosmosCassandraDataTransferDataSourceSink",
     "CosmosMongoDataTransferDataSourceSink",
+    "CosmosMongoVCoreDataTransferDataSourceSink",
     "CosmosSqlDataTransferDataSourceSink",
     "CreateJobRequest",
     "CreateUpdateOptions",
@@ -809,6 +816,7 @@ __all__ = [
     "Severity",
     "SpatialType",
     "Status",
+    "SupportedActions",
     "ThroughputPolicyType",
     "TriggerOperation",
     "TriggerType",
