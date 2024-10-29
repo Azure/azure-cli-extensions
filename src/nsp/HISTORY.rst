@@ -4,6 +4,11 @@ Release History
 ===============
 ===============
 
+##### 1.0.0b3
+++++++
+New commands added:
+* perimeter logging-configuration: create, delete, show, update
+
 ##### 1.0.0b2
 ++++++
 No new commands added. Flatten false the properties of the command output.
