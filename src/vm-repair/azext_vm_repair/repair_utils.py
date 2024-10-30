@@ -798,3 +798,10 @@ def _fetch_osdisk_security_profile_parameters(source_vm):
             create_repair_vm_command += ' --os-disk-secure-vm-disk-encryption-set {val}'.format(val=source_vm.storage_profile.os_disk.managed_disk.security_profile.disk_encryption_set.id)
 
     return create_repair_vm_command
+
+
+def _make_public_ip_name(repair_vm_name, associate_public_ip):
+    public_ip_name = '""'
+    if associate_public_ip:
+        public_ip_name = repair_vm_name + "PublicIP"
+    return public_ip_name

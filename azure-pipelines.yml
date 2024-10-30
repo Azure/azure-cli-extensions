@@ -54,9 +54,9 @@ jobs:
     name: 'pool-ubuntu-2004'
   steps:
   - task: UsePythonVersion@0
-    displayName: 'Use Python 3.11'
+    displayName: 'Use Python 3.12'
     inputs:
-      versionSpec: 3.11
+      versionSpec: 3.12
   - template: .azure-pipelines/templates/azdev_setup.yml
   - bash: |
       #!/usr/bin/env bash
@@ -70,13 +70,13 @@ jobs:
     name: 'pool-ubuntu-2004'
   steps:
   - task: UsePythonVersion@0
-    displayName: 'Use Python 3.11'
+    displayName: 'Use Python 3.12'
     inputs:
-      versionSpec: 3.11
+      versionSpec: 3.12
   - bash: |
       #!/usr/bin/env bash
       set -ev
-      pip install wheel==0.30.0 requests packaging
+      pip install wheel==0.30.0 requests packaging setuptools
       export CI="ADO"
       python ./scripts/ci/test_index.py -v
     displayName: "Verify Extensions Index"
@@ -94,7 +94,7 @@ jobs:
       Python310:
         python.version: '3.10'
       Python311:
-        python.version: '3.11'
+        python.version: '3.12'
   steps:
     - task: UsePythonVersion@0
       displayName: 'Use Python $(python.version)'
@@ -122,9 +122,9 @@ jobs:
     name: 'pool-ubuntu-2004'
   steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python 3.11'
+      displayName: 'Use Python 3.12'
       inputs:
-        versionSpec: 3.11
+        versionSpec: 3.12
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: |
         #!/usr/bin/env bash
@@ -146,9 +146,9 @@ jobs:
     name: 'pool-ubuntu-2004'
   steps:
     - task: UsePythonVersion@0
-      displayName: 'Use Python 3.11'
+      displayName: 'Use Python 3.12'
       inputs:
-        versionSpec: 3.11
+        versionSpec: 3.12
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: |
         #!/usr/bin/env bash
@@ -164,6 +164,35 @@ jobs:
         ADO_PULL_REQUEST_LATEST_COMMIT: HEAD
         ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
 
+- job: AzdevScanModifiedExtensions
+  displayName: "azdev scan on Modified Extensions"
+  condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+  pool:
+    name: 'pool-ubuntu-2004'
+  steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.11'
+      inputs:
+        versionSpec: 3.11
+    - template: .azure-pipelines/templates/azdev_setup.yml
+    - bash: |
+        #!/usr/bin/env bash
+        set -ev
+        source ./env/bin/activate
+        git fetch origin --depth=1 $(System.PullRequest.TargetBranch)
+        declare -A secret_files
+        for FILE in `git diff --name-only --diff-filter=AM origin/$(System.PullRequest.TargetBranch)` ; do
+          detected=$(azdev scan -f $FILE | python -c "import sys, json; print(json.load(sys.stdin)['secrets_detected'])")
+          if [ $detected == 'True' ]; then
+            echo "Secrets detected from "$FILE", Please remove or replace it. You can run 'azdev scan'/'azdev mask' locally to fix." 1>&2
+            secret_files+=$FILE
+          fi
+        done
+        if [ "${#secret_files[@]}" -gt 0 ]; then
+          exit 1
+        fi
+      displayName: "azdev scan on Modified Extensions"
+
 #- job: IndexRefDocVerify
 #  displayName: "Verify Ref Docs"
 #  continueOnError: true
@@ -171,9 +200,9 @@ jobs:
 #    name: 'pool-ubuntu-2004'
 #  steps:
 #  - task: UsePythonVersion@0
-#    displayName: 'Use Python 3.11'
+#    displayName: 'Use Python 3.12'
 #    inputs:
-#      versionSpec: 3.11
+#      versionSpec: 3.12
 #  - bash: pip install wheel==0.30.0
 #    displayName: 'Install wheel==0.30.0'
 #  - task: Bash@3

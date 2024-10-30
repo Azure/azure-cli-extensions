@@ -363,6 +363,10 @@ class _UpdateHelper:
         )
 
         properties = _schema_task_hub_read.properties
+        properties.dashboard_url = AAZStrType(
+            serialized_name="dashboardUrl",
+            flags={"read_only": True},
+        )
         properties.provisioning_state = AAZStrType(
             serialized_name="provisioningState",
             flags={"read_only": True},

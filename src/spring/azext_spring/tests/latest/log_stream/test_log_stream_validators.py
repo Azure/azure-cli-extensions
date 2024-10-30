@@ -27,7 +27,7 @@ class TestLogStreamValidator(unittest.TestCase):
                 lines=lines,
             )
             validate_log_lines(ns)
-            self.assertEquals(lines, ns.lines)
+            self.assertEqual(lines, ns.lines)
 
     def test_log_lines_too_small(self):
         ns = Namespace(
@@ -35,7 +35,7 @@ class TestLogStreamValidator(unittest.TestCase):
         )
         with self.assertRaises(InvalidArgumentValueError) as context:
             validate_log_lines(ns)
-        self.assertEquals('--lines must be in the range [1,10000]', str(context.exception))
+        self.assertEqual('--lines must be in the range [1,10000]', str(context.exception))
 
     def test_log_lines_too_big(self):
         ns = Namespace(
@@ -45,8 +45,8 @@ class TestLogStreamValidator(unittest.TestCase):
             validate_log_lines(ns)
         expect_error_msgs = ['ERROR:cli.azext_spring.log_stream.log_stream_validators:'
                              '--lines can not be more than 10000, using 10000 instead']
-        self.assertEquals(expect_error_msgs, cm.output)
-        self.assertEquals(10000, ns.lines)
+        self.assertEqual(expect_error_msgs, cm.output)
+        self.assertEqual(10000, ns.lines)
 
     def test_valid_log_since(self):
         valid_log_since = ['1h',
@@ -65,7 +65,7 @@ class TestLogStreamValidator(unittest.TestCase):
                 since_in_seconds = since_in_seconds * 3600
             elif last == 'm':
                 since_in_seconds = since_in_seconds * 60
-            self.assertEquals(since_in_seconds, ns.since)
+            self.assertEqual(since_in_seconds, ns.since)
 
     def test_invalid_log_since(self):
         invalid_log_since = ['asdf1h', '1masdf', 'asdfe2m', 'asd5m', '1efef0m', '11mm']
@@ -76,7 +76,7 @@ class TestLogStreamValidator(unittest.TestCase):
             )
             with self.assertRaises(InvalidArgumentValueError) as context:
                 validate_log_since(ns)
-            self.assertEquals("--since contains invalid characters", str(context.exception))
+            self.assertEqual("--since contains invalid characters", str(context.exception))
 
     def test_log_since_too_big(self):
         invalid_log_since = ['2h', '61m', '3601s', '9000s', '9000']
@@ -87,7 +87,7 @@ class TestLogStreamValidator(unittest.TestCase):
             )
             with self.assertRaises(InvalidArgumentValueError) as context:
                 validate_log_since(ns)
-            self.assertEquals("--since can not be more than 1h", str(context.exception))
+            self.assertEqual("--since can not be more than 1h", str(context.exception))
 
     def test_valid_log_limit(self):
         valid_log_limit = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]
@@ -97,7 +97,7 @@ class TestLogStreamValidator(unittest.TestCase):
                 limit=limit
             )
             validate_log_limit(ns)
-            self.assertEquals(limit * 1024, ns.limit)
+            self.assertEqual(limit * 1024, ns.limit)
 
     def test_negative_log_limit(self):
         invalid_log_limit = [-1, -2, -3, -4, -10, -100, -1000]
@@ -108,7 +108,7 @@ class TestLogStreamValidator(unittest.TestCase):
             )
             with self.assertRaises(InvalidArgumentValueError) as context:
                 validate_log_limit(ns)
-            self.assertEquals('--limit must be in the range [1,2048]', str(context.exception))
+            self.assertEqual('--limit must be in the range [1,2048]', str(context.exception))
 
     def test_log_limit_too_big(self):
         invalid_log_limit = [2049, 2050, 3000, 3001, 10000, 20000, 100000]
@@ -121,8 +121,8 @@ class TestLogStreamValidator(unittest.TestCase):
                 validate_log_limit(ns)
             error_msgs = ['ERROR:cli.azext_spring.log_stream.log_stream_validators:'
                           '--limit can not be more than 2048, using 2048 instead']
-            self.assertEquals(error_msgs, cm.output)
-            self.assertEquals(2048 * 1024, ns.limit)
+            self.assertEqual(error_msgs, cm.output)
+            self.assertEqual(2048 * 1024, ns.limit)
 
     def test_invalid_max_log_requests(self):
         invalid_max_log_requests_number = [-100, -10, -1, 0]
@@ -135,7 +135,7 @@ class TestLogStreamValidator(unittest.TestCase):
             with self.assertRaises(InvalidArgumentValueError) as context:
                 validate_max_log_requests(ns)
 
-            self.assertEquals("--max-log-requests should be larger than 0.", str(context.exception))
+            self.assertEqual("--max-log-requests should be larger than 0.", str(context.exception))
 
     def test_validate_thread_number(self):
         thread_num = 10
