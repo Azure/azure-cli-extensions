@@ -944,7 +944,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_3.get_enable_cilium_dataplane(), False)
 
-    def test_mc_get_enable_advanced_network_observability(self):
+    def test_mc_get_acns(self):
         # Default, not set.
         ctx_1 = AKSPreviewManagedClusterContext(
             self.cmd,
@@ -952,235 +952,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_1.get_enable_advanced_network_observability(), None)
-
-        # Flag set to True.
-        ctx_2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_advanced_network_observability": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertEqual(ctx_2.get_enable_advanced_network_observability(), True)
-
-        # Flag set to True.
-        ctx_3 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_advanced_network_observability": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        self.assertEqual(ctx_3.get_enable_advanced_network_observability(), True)
-
-        # Flag set to True and False.
-        ctx_4 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_advanced_network_observability": True,
-                    "disable_advanced_network_observability": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        # fail on get_enable_network_observability mutual exclusive error
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_4.get_enable_advanced_network_observability()
-
-        # Flag set to False.
-        ctx_5 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "disable_advanced_network_observability": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        self.assertEqual(ctx_5.get_enable_advanced_network_observability(), False)
-
-    def test_mc_get_advanced_networking_observability_tls_management(self):
-        # Default, not set.
-        ctx_1 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({}),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertEqual(ctx_1.get_advanced_networking_observability_tls_management(), None)
-
-        # Flag set to Managed.
-        ctx_2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_advanced_network_observability": True,
-                    "advanced_networking_observability_tls_management": "Managed",
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertEqual(ctx_2.get_advanced_networking_observability_tls_management(), "Managed")
-
-        # Flag set to None.
-        ctx_3 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_advanced_network_observability": True,
-                    "advanced_networking_observability_tls_management": "None",
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        self.assertEqual(ctx_3.get_advanced_networking_observability_tls_management(), "None")
-
-        # Flag set to Managed when Observability is disabled.
-        ctx_4 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "disable_advanced_network_observability": True,
-                    "advanced_networking_observability_tls_management": "Managed",
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        with self.assertRaises(ArgumentUsageError):
-            ctx_4.get_advanced_networking_observability_tls_management()
-
-        # Flag set to None when Observability is disabled.
-        ctx_4 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "disable_advanced_network_observability": True,
-                    "advanced_networking_observability_tls_management": "None",
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        with self.assertRaises(ArgumentUsageError):
-            ctx_4.get_advanced_networking_observability_tls_management()
-
-    def test_mc_get_enable_fqdn_policy(self):
-        # Default, not set.
-        ctx_1 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({}),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertEqual(ctx_1.get_enable_fqdn_policy(), None)
-
-        # Flag set to True.
-        ctx_2 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_fqdn_policy": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertEqual(ctx_2.get_enable_fqdn_policy(), True)
-
-        # Flag set to True.
-        ctx_3 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_fqdn_policy": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        self.assertEqual(ctx_3.get_enable_fqdn_policy(), True)
-
-        # Flag set to True and False.
-        ctx_4 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_fqdn_policy": True,
-                    "disable_fqdn_policy": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        # fail on get_enable_fqdn_policy mutual exclusive error
-        with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_4.get_enable_fqdn_policy()
-
-        # Flag set to False.
-        ctx_5 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "disable_fqdn_policy": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        self.assertEqual(ctx_5.get_enable_fqdn_policy(), False)
-
-        # Check behavior of advanced networking observability and security.
-        # Enable obs, enable fqdn.
-        ctx_6 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_advanced_network_observability": True,
-                    "enable_fqdn_policy": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertEqual(ctx_6.get_enable_fqdn_policy(), True)
-        self.assertEqual(ctx_6.get_enable_advanced_network_observability(), True)
-
-        ctx_7 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict(
-                {
-                    "enable_advanced_network_observability": True,
-                    "enable_fqdn_policy": True,
-                }
-            ),
-            self.models,
-            decorator_mode=DecoratorMode.UPDATE,
-        )
-        self.assertEqual(ctx_7.get_enable_fqdn_policy(), True)
-        self.assertEqual(ctx_7.get_enable_advanced_network_observability(), True)
-
-    def test_mc_get_enable_acns(self):
-        # Default, not set.
-        ctx_1 = AKSPreviewManagedClusterContext(
-            self.cmd,
-            AKSManagedClusterParamDict({}),
-            self.models,
-            decorator_mode=DecoratorMode.CREATE,
-        )
-        self.assertEqual(ctx_1.get_enable_acns(), None)
+        self.assertEqual(ctx_1.get_acns(), None)
 
         # Flag set to True.
         ctx_2 = AKSPreviewManagedClusterContext(
@@ -1193,7 +965,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.CREATE,
         )
-        self.assertEqual(ctx_2.get_enable_acns(), True)
+        self.assertEqual(ctx_2.get_acns(), True)
 
         # Flag set to True.
         ctx_3 = AKSPreviewManagedClusterContext(
@@ -1206,7 +978,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_3.get_enable_acns(), True)
+        self.assertEqual(ctx_3.get_acns(), True)
 
         # Flag set to True and False.
         ctx_4 = AKSPreviewManagedClusterContext(
@@ -1220,9 +992,9 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        # fail on get_enable_acns mutual exclusive error
+        # fail on get_acns mutual exclusive error
         with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_4.get_enable_acns()
+            ctx_4.get_acns()
 
         # Flag set to False.
         ctx_5 = AKSPreviewManagedClusterContext(
@@ -1235,7 +1007,7 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        self.assertEqual(ctx_5.get_enable_acns(), False)
+        self.assertEqual(ctx_5.get_acns(), False)
 
         # Illegal flags
         ctx_6 = AKSPreviewManagedClusterContext(
@@ -1243,16 +1015,16 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
             AKSManagedClusterParamDict(
                 {
                     "enable_acns": True,
-                    "disable_fqdn_policy": True,
-                    "enable_advanced_network_observability": True,
+                    "disable_acns_security": True,
+                    "disable_acns_observability": True,
                 }
             ),
             self.models,
             decorator_mode=DecoratorMode.UPDATE,
         )
-        # fail on get_enable_acns mutual exclusive error
+        # fail on get_acns mutual exclusive error
         with self.assertRaises(MutuallyExclusiveArgumentError):
-            ctx_6.get_enable_acns()
+            ctx_6.get_acns()
 
     def test_get_enable_managed_identity(self):
         # custom value

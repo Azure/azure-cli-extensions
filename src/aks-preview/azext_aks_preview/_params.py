@@ -127,8 +127,6 @@ from azext_aks_preview._consts import (
     CONST_APP_ROUTING_EXTERNAL_NGINX,
     CONST_APP_ROUTING_INTERNAL_NGINX,
     CONST_APP_ROUTING_NONE_NGINX,
-    CONST_TLS_MANAGEMENT_MANAGED,
-    CONST_TLS_MANAGEMENT_NONE,
     CONST_GPU_DRIVER_TYPE_CUDA,
     CONST_GPU_DRIVER_TYPE_GRID,
 )
@@ -415,11 +413,6 @@ app_routing_nginx_configs = [
     CONST_APP_ROUTING_EXTERNAL_NGINX,
     CONST_APP_ROUTING_INTERNAL_NGINX,
     CONST_APP_ROUTING_NONE_NGINX
-]
-
-tls_management_types = [
-    CONST_TLS_MANAGEMENT_MANAGED,
-    CONST_TLS_MANAGEMENT_NONE,
 ]
 
 gpu_driver_types = [
@@ -840,17 +833,29 @@ def load_arguments(self, _):
             "enable_advanced_network_observability",
             action="store_true",
             is_preview=True,
+            deprecate_info=c.deprecate(
+                target="--enable-advanced-network-observability",
+                redirect="--enable-acns",
+                hide=True,
+            ),
         )
         c.argument(
             "advanced_networking_observability_tls_management",
-            arg_type=get_enum_type(tls_management_types),
-            default=CONST_TLS_MANAGEMENT_MANAGED,
             is_preview=True,
+            deprecate_info=c.deprecate(
+                target="--advanced-networking-observability-tls-management",
+                hide=True,
+            ),
         )
         c.argument(
             "enable_fqdn_policy",
             action="store_true",
             is_preview=True,
+            deprecate_info=c.deprecate(
+                target="--enable-fqdn-policy",
+                redirect="--enable-acns",
+                hide=True,
+            ),
         )
         c.argument(
             "enable_acns",
@@ -1337,26 +1342,49 @@ def load_arguments(self, _):
             "enable_advanced_network_observability",
             action="store_true",
             is_preview=True,
+            deprecate_info=c.deprecate(
+                target="--enable-advanced-network-observability",
+                redirect="--enable-acns",
+                hide=True,
+            ),
         )
         c.argument(
             "disable_advanced_network_observability",
             action="store_true",
             is_preview=True,
+            deprecate_info=c.deprecate(
+                target="--disable-advanced-network-observability",
+                redirect="--disable-acns-observability",
+                hide=True,
+            ),
         )
         c.argument(
             "advanced_networking_observability_tls_management",
-            arg_type=get_enum_type(tls_management_types),
             is_preview=True,
+            deprecate_info=c.deprecate(
+                target="--advanced-networking-observability-tls-management",
+                hide=True,
+            ),
         )
         c.argument(
             "enable_fqdn_policy",
             action="store_true",
             is_preview=True,
+            deprecate_info=c.deprecate(
+                target="--enable-fqdn-policy",
+                redirect="--enable-acns",
+                hide=True,
+            ),
         )
         c.argument(
             "disable_fqdn_policy",
             action="store_true",
             is_preview=True,
+            deprecate_info=c.deprecate(
+                target="--disable-fqdn-policy",
+                redirect="--disable-acns-security",
+                hide=True,
+            ),
         )
         c.argument(
             "enable_acns",
