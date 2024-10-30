@@ -36,6 +36,10 @@ stages:
     parameters:
       jobName: GatewayTest
       path: ./test/configurations/Gateway.Tests.ps1
+  - template: ./templates/run-test.yml
+    parameters:
+      jobName: WorkloadIdentityTest
+      path: ./test/configurations/WorkloadIdentity.Tests.ps1
   - job: BuildPublishExtension
     pool:
       vmImage: 'ubuntu-20.04'
