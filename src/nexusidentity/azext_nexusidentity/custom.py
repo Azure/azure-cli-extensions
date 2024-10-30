@@ -100,7 +100,7 @@ def generate_nexus_identity_keys() -> None:
                     )
                     await graph_client.me.extensions.by_extension_id(extension_id).patch(request_body)
 
-                    print(f"Successfully updated extension with the public key generated to entra account {user.mail}")
+                    print(f"Successfully updated public key to Microsoft Entra Id account {user.mail}")
                 else:
                     request_body = OpenTypeExtension(
                         odata_type="microsoft.graph.openTypeExtension",
@@ -111,7 +111,7 @@ def generate_nexus_identity_keys() -> None:
                     )
                     await graph_client.me.extensions.post(request_body)
 
-                    print(f"Successfully uploaded the public key generated to entra account {user.mail}")
+                    print(f"Successfully uploaded public key to Microsoft Entra Id account {user.mail}")
             except ODataError as e:
                 logger.error("Error updating extension: %s", e)
                 raise CLIError(f"Error updating extension: {e}")
