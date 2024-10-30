@@ -220,6 +220,7 @@ def create_connectedk8s(
         https_proxy,
         no_proxy,
         proxy_cert,
+        False,
         container_log_path,
         configuration_settings,
         configuration_protected_settings,
@@ -2081,6 +2082,7 @@ def update_connected_cluster(
         https_proxy,
         no_proxy,
         proxy_cert,
+        disable_proxy,
         container_log_path,
         configuration_settings,
         configuration_protected_settings,
@@ -4794,6 +4796,7 @@ def add_config_protected_settings(
     https_proxy,
     no_proxy,
     proxy_cert,
+    disable_proxy,
     container_log_path,
     configuration_settings,
     configuration_protected_settings,
@@ -4810,7 +4813,12 @@ def add_config_protected_settings(
         configuration_settings.setdefault(
             "logging", {"container_log_path": container_log_path}
         )
-    if any([https_proxy, http_proxy, no_proxy, proxy_cert]):
+
+    if disable_proxy:
+        configuration_protected_settings["proxy"] = {}
+        configuration_settings["proxy"] = {}
+
+    elif any([https_proxy, http_proxy, no_proxy, proxy_cert]):
         configuration_protected_settings.setdefault("proxy", {})
         configuration_settings.setdefault("proxy", {})
         if https_proxy:
@@ -4823,9 +4831,8 @@ def add_config_protected_settings(
             configuration_protected_settings["proxy"]["proxy_cert"] = proxy_cert
 
     for feature, protected_settings in configuration_protected_settings.items():
-        for setting, _ in protected_settings.items():
-            if feature not in redacted_protected_values:
-                redacted_protected_values[feature] = {}
+        redacted_protected_values.setdefault(feature, {})
+        for setting in protected_settings:
             redacted_protected_values[feature][setting] = (
                 f"redacted:{feature}:{setting}"
             )
