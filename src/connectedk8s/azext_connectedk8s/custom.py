@@ -2321,7 +2321,7 @@ def update_connected_cluster(
         if "redacted" in helm_value:
             _, feature, protectedSetting = helm_value.split(":")
             helm_content_values[helm_parameter] = configuration_protected_settings[feature][protectedSetting]
-    
+
     # Disable proxy if disable_proxy flag is set
     if disable_proxy:
         helm_content_values["global.isProxyEnabled"] = "False"
