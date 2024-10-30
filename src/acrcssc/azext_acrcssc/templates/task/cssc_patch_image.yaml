@@ -2,7 +2,7 @@ version: v1.1.0
 alias:
   values:
     ScanReport : os-vulnerability-report_trivy_{{ regexReplaceAll "[^a-zA-Z0-9]" .Values.SOURCE_REPOSITORY "-" }}_{{.Values.SOURCE_IMAGE_TAG}}_$(date "+%Y-%m-%d").json
-    cssc : mcr.microsoft.com/acr/cssc:42e38da
+    cssc : mcr.microsoft.com/acr/cssc:6d6906b
 steps:
 
   # Step 1: Check if new patch tag is greate than 999 by extracting the digits after the last hyphen

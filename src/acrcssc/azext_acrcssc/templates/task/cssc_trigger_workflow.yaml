@@ -2,7 +2,7 @@ version: v1.1.0
 alias:
   values:
     ScanImageAndSchedulePatchTask: cssc-scan-image
-    cssc : mcr.microsoft.com/acr/cssc:42e38da
+    cssc : mcr.microsoft.com/acr/cssc:6d6906b
 steps:
   - cmd: bash -c 'echo "Inside cssc-trigger-workflow task, getting list of images to be patched based on --filter-policy for Registry {{.Run.Registry}}."'
   - cmd: cssc acr cssc patch --filter-policy csscpolicies/patchpolicy:v1 --dry-run > filterRepos.txt
