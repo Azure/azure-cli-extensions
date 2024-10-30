@@ -2321,7 +2321,7 @@ def update_connected_cluster(
         if "redacted" in helm_value:
             _, feature, protectedSetting = helm_value.split(":")
             helm_content_values[helm_parameter] = configuration_protected_settings[feature][protectedSetting]
-    
+
     # Disable proxy if disable_proxy flag is set
     if disable_proxy:
         helm_content_values["global.isProxyEnabled"] = "False"
@@ -4683,14 +4683,11 @@ def install_kubectl_client():
             "Downloading kubectl client for first time. This can take few minutes..."
         )
         logging.disable(logging.CRITICAL)
-        exit_code = get_default_cli().invoke(
+        get_default_cli().invoke(
             ["aks", "install-cli", "--install-location", kubectl_path]
         )
         logging.disable(logging.NOTSET)
         logger.warning("\n")
-        if exit_code != 0 or not os.path.isfile(kubectl_path):
-            logger.error("Failed to download and install kubectl.")
-            raise CLIInternalError("Failed to download and install kubectl.")
         # Return the path of the kubectl executable
         return kubectl_path
 
