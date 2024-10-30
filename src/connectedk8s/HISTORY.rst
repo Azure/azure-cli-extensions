@@ -5,7 +5,7 @@ Release History
 
 1.10.1
 ++++++
-* Fixed an issue where the proxy setting was not disabled when the 'disable_proxy' parameter was provided in the update command.
+* Fixed an issue where the proxy settings were not disabled when the 'disable_proxy' parameter was provided in the update command.
 
 1.10.0
 ++++++
