@@ -11,8 +11,8 @@ To release a new version, please select a new version number (usually plus 1 to 
 
 9.0.0b9
 +++++++
-* Depricate advanced container networking service enablement commands preview commands `--enable-advanced-network-observability`, `--disable-advanced-network-observability`, `--enable-fqdn-policy`, `--disable-fqdn-policy`, and `--advanced-networking-observability-tls-management`.
-* Add advanced container networking service enablement commands GA commands `--disable-acns-observability` and `--disable-acns-security` to `az aks create/update` command.
+* Add advanced container networking service (acns) enablement GA commands `--disable-acns-observability` and `--disable-acns-security` to `az aks create/update` command.
+* Depricate advanced container networking service (acns) enablement preview commands `--enable-advanced-network-observability`, `--disable-advanced-network-observability`, `--enable-fqdn-policy`, `--disable-fqdn-policy`, and `--advanced-networking-observability-tls-management` from `az aks create/update` command.
 
 9.0.0b8
 +++++++
