@@ -724,9 +724,19 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             )
         if enable_acns and disable_acns_observability and disable_acns_security:
             raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-acns and "
+                "Cannot specify --enable-acns with "
                 "--disable-acns-observability and "
                 "--disable-acns-security at the same time."
+            )
+        if enable_acns is None and disable_acns_observability is not None:
+            raise RequiredArgumentMissingError(
+                "Cannot specify --disable-acns-observability "
+                "without --enable-acns."
+            )
+        if enable_acns is None and disable_acns_security is not None:
+            raise RequiredArgumentMissingError(
+                "Cannot specify --disable-acns-security "
+                "without --enable-acns."
             )
         if enable_acns is False and disable_acns is False:
             return None

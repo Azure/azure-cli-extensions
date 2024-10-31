@@ -1009,14 +1009,13 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         )
         self.assertEqual(ctx_5.get_acns(), False)
 
-        # Illegal flags
+        # Illegal flags enable acns and disable acns
         ctx_6 = AKSPreviewManagedClusterContext(
             self.cmd,
             AKSManagedClusterParamDict(
                 {
                     "enable_acns": True,
-                    "disable_acns_security": True,
-                    "disable_acns_observability": True,
+                    "disable_acns": True,
                 }
             ),
             self.models,
@@ -1025,6 +1024,53 @@ class AKSPreviewManagedClusterContextTestCase(unittest.TestCase):
         # fail on get_acns mutual exclusive error
         with self.assertRaises(MutuallyExclusiveArgumentError):
             ctx_6.get_acns()
+
+        # Illegal flags enable acns, disable acns security, disable acns observability
+        ctx_7 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "enable_acns": True,
+                    "disable_acns_observability": True,
+                    "disable_acns_security": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on get_acns mutual exclusive error
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            ctx_7.get_acns()
+
+        # Illegal flags disable acns observability without specifying enable acns
+        ctx_8 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "disable_acns_observability": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on get_acns mutual exclusive error
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_8.get_acns()
+
+        # Illegal flags disable acns security without specifying enable acns
+        ctx_9 = AKSPreviewManagedClusterContext(
+            self.cmd,
+            AKSManagedClusterParamDict(
+                {
+                    "disable_acns_security": True,
+                }
+            ),
+            self.models,
+            decorator_mode=DecoratorMode.UPDATE,
+        )
+        # fail on get_acns mutual exclusive error
+        with self.assertRaises(RequiredArgumentMissingError):
+            ctx_9.get_acns()
 
     def test_get_enable_managed_identity(self):
         # custom value
