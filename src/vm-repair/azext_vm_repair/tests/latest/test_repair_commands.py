@@ -974,7 +974,9 @@ class WindowsDefaultGen1Image(LiveScenarioTest):
             'admin_password': secure_password,
             'admin_username': secure_username
         })
-
+        
+        # Use current default sku for Windows scenario. 
+        defaultSku = "2022-datacenter-smalldisk"
         # Create test VM
         self.cmd('vm create -g {rg} -n {vm} --admin-username {admin_username} --admin-password {admin_password} --image MicrosoftWindowsServer:windowsserver:2019-datacenter-gs:latest')
         vms = self.cmd('vm list -g {rg} -o json').get_output_in_json()
@@ -995,6 +997,10 @@ class WindowsDefaultGen1Image(LiveScenarioTest):
         assert len(repair_vms) == 1
         repair_vm = repair_vms[0]
         repair_vm_id = repair_vm['id']
+        # print the json of the repair_vm
+        image_info = repair_vm['storageProfile']['imageReference']  
+        assert image_info['sku'] == defaultSku
+        
         self.kwargs.update({
             'vm': 'vm1',
             'admin_password': secure_password,
