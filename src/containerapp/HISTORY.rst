@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp env maintenance-config': Support Add, Update, Show, Delete
 
 1.0.0b4
 ++++++
