@@ -711,7 +711,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
     def get_acns(self) -> Union[bool, None]:
         """Get the enablement of acns
-        
+
         :return: bool or None"""
         enable_acns = self.raw_param.get("enable_acns")
         disable_acns = self.raw_param.get("disable_acns")
@@ -722,12 +722,11 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             )
         if enable_acns is False and disable_acns is False:
             return None
-        else:
-            return enable_acns | (not disable_acns)
+        return enable_acns | (not disable_acns)
 
     def get_acns_observability(self) -> Union[bool, None]:
         """Get the enablement of acns observability
-        
+
         :return: bool or None"""
         enable_acns_observability = self.raw_param.get("enable_acns_observability")
         disable_acns_observability = self.raw_param.get("disable_acns_observability")
@@ -742,7 +741,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
 
     def get_acns_security(self) -> Union[bool, None]:
         """Get the enablement of acns security
-        
+
         :return: bool or None"""
         enable_acns_security = self.raw_param.get("enable_acns_security")
         disable_acns_security = self.raw_param.get("disable_acns_security")
@@ -2968,15 +2967,18 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         acns_observability_enabled = self.context.get_acns_observability()
         acns_security_enabled = self.context.get_acns_security()
         if acns_enabled is not None:
-            acns.enabled = acns_enabled
+            acns.observability = self.models.AdvancedNetworkingObservability(
+                enabled=acns_enabled
+            )
+            acns.security = self.models.AdvancedNetworkingSecurity(
+                fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
+                    enabled=acns_enabled
+                )
+            )
             if acns_observability_enabled is not None:
-                acns.observability = self.models.AdvancedNetworkingObservability(
-                    enabled = acns_observability_enabled,
-                )
+                acns.observability.enabled = acns_observability_enabled
             if acns_security_enabled is not None:
-                acns.security = self.models.AdvancedNetworkingSecurity(
-                    enabled = acns_security_enabled
-                )
+                acns.security.enabled = acns_observability_enabled
             network_profile.advanced_networking = acns
 
         return mc
@@ -4051,18 +4053,21 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         acns_observability_enabled = self.context.get_acns_observability()
         acns_security_enabled = self.context.get_acns_security()
         if acns_enabled is not None:
-            acns.enabled = acns_enabled
+            acns.observability = self.models.AdvancedNetworkingObservability(
+                enabled=acns_enabled
+            )
+            acns.security = self.models.AdvancedNetworkingSecurity(
+                fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
+                    enabled=acns_enabled
+                )
+            )
             if acns_observability_enabled is not None:
-                acns.observability = self.models.AdvancedNetworkingObservability(
-                    enabled = acns_observability_enabled,
-                )
+                acns.observability.enabled = acns_observability_enabled
             if acns_security_enabled is not None:
-                acns.security = self.models.AdvancedNetworkingSecurity(
-                    enabled = acns_security_enabled
-                )
+                acns.security.enabled = acns_observability_enabled
             mc.network_profile.advanced_networking = acns
         return mc
-    
+
     # pylint: disable=too-many-statements,too-many-locals,too-many-branches
     def update_azure_container_storage(self, mc: ManagedCluster) -> ManagedCluster:
         """Update azure container storage for the Managed Cluster object

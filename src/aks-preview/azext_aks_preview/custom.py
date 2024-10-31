@@ -499,7 +499,7 @@ def aks_create(
     enable_fqdn_policy=None,
     enable_acns=None,
     disable_acns_observability=None,
-    disable_acns_security=None,    
+    disable_acns_security=None,
     # nodepool
     crg_id=None,
     message_of_the_day=None,

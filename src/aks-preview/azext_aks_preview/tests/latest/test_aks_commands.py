@@ -13200,8 +13200,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.advancedNetworking.enabled", True),
-                self.check("networkProfile.advancedNetworking.security.enabled", True),
+                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
             ],
         )
@@ -13215,8 +13214,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             update_cmd_two,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.advancedNetworking.enabled", False),
-                self.check("networkProfile.advancedNetworking.security.enabled", False),
+                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", False),
                 self.check("networkProfile.advancedNetworking.observability.enabled", False),
             ],
         )
@@ -13261,8 +13259,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.advancedNetworking.enabled", True),
-                self.check("networkProfile.advancedNetworking.security.enabled", True),
+                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
             ],
         )
@@ -13308,8 +13305,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             create_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.advancedNetworking.enabled", True),
-                self.check("networkProfile.advancedNetworking.security.enabled", False),
+                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", False),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
             ],
         )
@@ -13324,8 +13320,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             update_cmd,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.advancedNetworking.enabled", True),
-                self.check("networkProfile.advancedNetworking.security.enabled", True),
+                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
             ],
         )
@@ -13340,8 +13335,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             update_cmd2,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.advancedNetworking.enabled", True),
-                self.check("networkProfile.advancedNetworking.security.enabled", False),
+                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", False),
                 self.check("networkProfile.advancedNetworking.observability.enabled", True),
             ],
         )
@@ -13356,8 +13350,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             update_cmd3,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.advancedNetworking.enabled", True),
-                self.check("networkProfile.advancedNetworking.security.enabled", True),
+                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", True),
                 self.check("networkProfile.advancedNetworking.observability.enabled", False),
             ],
         )
@@ -13372,8 +13365,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             update_cmd5,
             checks=[
                 self.check("provisioningState", "Succeeded"),
-                self.check("networkProfile.advancedNetworking.enabled", False),
-                self.check("networkProfile.advancedNetworking.security.enabled", False),
+                self.check("networkProfile.advancedNetworking.security.fqdnPolicy.enabled", False),
                 self.check("networkProfile.advancedNetworking.observability.enabled", False),
             ],
         )
