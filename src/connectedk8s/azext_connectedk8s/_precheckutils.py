@@ -405,9 +405,7 @@ def executing_cluster_diagnostic_checks_job(
     # To handle any exception that may occur during the execution
     except Exception as e:
         Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
-        raise CLIInternalError(
-            "Failed to execute Cluster Diagnostic Checks Job: {}".format(str(e))
-        )
+        raise CLIInternalError(f"Failed to execute Cluster Diagnostic Checks Job: {e}")
 
     return cluster_diagnostic_checks_container_log
 
@@ -463,20 +461,17 @@ def helm_install_release_cluster_diagnostic_checks(
     response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
     _, error_helm_install = response_helm_install.communicate()
     if response_helm_install.returncode != 0:
-        if "forbidden" in error_helm_install.decode(
-            "ascii"
-        ) or "timed out waiting for the condition" in error_helm_install.decode(
-            "ascii"
-        ):
+        error = error_helm_install.decode("ascii")
+        if "forbidden" in error or "timed out waiting for the condition" in error:
             telemetry.set_user_fault()
+
         telemetry.set_exception(
-            exception=error_helm_install.decode("ascii"),
+            exception=error,
             fault_type=consts.Cluster_Diagnostic_Checks_Helm_Install_Failed_Fault_Type,
             summary="Unable to install cluster diagnostic checks helm release",
         )
         raise CLIInternalError(
-            "Unable to install cluster diagnostic checks helm release: "
-            + error_helm_install.decode("ascii")
+            f"Unable to install cluster diagnostic checks helm release: {error}"
         )
 
 
