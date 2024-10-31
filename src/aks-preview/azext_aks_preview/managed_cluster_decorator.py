@@ -2981,7 +2981,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 acns.security.fqdn_policy.enabled = acns_security_enabled
             # Only Cilium dataplane supports ACNS security
             if network_profile.network_dataplane != CONST_NETWORK_DATAPLANE_CILIUM:
-               acns.security.fqdn_policy.enabled = False
+                acns.security.fqdn_policy.enabled = False
             network_profile.advanced_networking = acns
 
         return mc
@@ -4070,7 +4070,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 acns.security.fqdn_policy.enabled = acns_security_enabled
             # Only Cilium dataplane supports ACNS security
             if mc.network_profile.network_dataplane != CONST_NETWORK_DATAPLANE_CILIUM:
-               acns.security.fqdn_policy.enabled = False
+                acns.security.fqdn_policy.enabled = False
             mc.network_profile.advanced_networking = acns
         return mc
 
