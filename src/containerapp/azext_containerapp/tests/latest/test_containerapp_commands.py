@@ -1290,16 +1290,17 @@ class ContainerappServiceBindingTests(ScenarioTest):
         # `mysql flexible-server create`: type 'locations/checkNameAvailability' is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus"
+            location = "eastus2"
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         mysqlserver = "mysqlflexsb"
         postgresqlserver = "postgresqlflexsb"
+        postgresqldb = 'flexibleserverdb'
 
-        mysqlflex_json= self.cmd('mysql flexible-server create --resource-group {} --name {} --public-access {} -y'.format(resource_group, mysqlserver, "None")).output
-        postgresqlflex_json= self.cmd('postgres flexible-server create --resource-group {} --name {} --public-access {} -y'.format(resource_group, postgresqlserver, "None")).output
+        mysqlflex_json= self.cmd('mysql flexible-server create --resource-group {} --name {} --public-access {} -y'.format(resource_group, mysqlserver, "None"), expect_failure=False).output
+        postgresqlflex_json= self.cmd('postgres flexible-server create --resource-group {} --name {} --public-access {} -d {} -y'.format(resource_group, postgresqlserver, "None", postgresqldb), expect_failure=False).output
         mysqlflex_dict = json.loads(mysqlflex_json)
 
         mysqlusername = mysqlflex_dict['username']
@@ -1310,8 +1311,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
         postgresqlflex_dict = json.loads(postgresqlflex_json)
         postgresqlusername = postgresqlflex_dict['username']
         postgresqlpassword = postgresqlflex_dict['password']
-        postgresqldb = postgresqlflex_dict['databaseName']
-        create_containerapp_env(self, env_name, resource_group)
+        create_containerapp_env(self, env_name, resource_group, location=location)
 
         self.cmd('containerapp create -g {} -n {} --environment {} --bind {}:{},database={},username={},password={}'.format(
             resource_group, ca_name, env_name, mysqlserver, flex_binding, mysqldb , mysqlusername, mysqlpassword))
