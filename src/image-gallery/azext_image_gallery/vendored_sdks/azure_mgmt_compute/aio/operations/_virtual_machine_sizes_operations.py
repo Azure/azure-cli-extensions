@@ -51,7 +51,7 @@ class VirtualMachineSizesOperations:
         **kwargs: Any
     ) -> AsyncIterable["_models.VirtualMachineSizeListResult"]:
         """This API is deprecated. Use `Resources Skus
-        <https://docs.microsoft.com/rest/api/compute/resourceskus/list>`_.
+        <https://learn.microsoft.com/rest/api/compute/resourceskus/list>`_.
 
         :param location: The location upon which virtual-machine-sizes is queried.
         :type location: str

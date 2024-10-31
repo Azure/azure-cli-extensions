@@ -9,7 +9,7 @@ az extension add --name automation
 
 ### Included Features
 #### Automation Management:
-Manage Automation: [more info](https://docs.microsoft.com/en-us/azure/automation/)\
+Manage Automation: [more info](https://learn.microsoft.com/en-us/azure/automation/)\
 *Examples:*
 
 ##### Create an Automation Account

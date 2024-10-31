@@ -3447,7 +3447,7 @@ class BaseBlobService(StorageClient):
         Sends a batch of multiple blob delete requests.
 
         The blob delete method deletes the specified blob or snapshot. Note that deleting a blob also deletes all its
-        snapshots. For more information, see https://docs.microsoft.com/rest/api/storageservices/delete-blob
+        snapshots. For more information, see https://learn.microsoft.com/rest/api/storageservices/delete-blob
 
         :param list(BatchDeleteSubRequest) batch_delete_sub_requests:
             The blob delete requests to send as a batch.

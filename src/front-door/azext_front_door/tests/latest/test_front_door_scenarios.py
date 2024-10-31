@@ -28,7 +28,7 @@ class FrontDoorBasicScenarioTests(ScenarioTest):
 
         # Create CNAME record which point to front door CANME
         # Custom frontend endpoint must have a CNAME pointing to the default frontend host.
-        # More information can be found in https://docs.microsoft.com/en-us/azure/frontdoor/front-door-custom-domain#create-a-cname-dns-record
+        # More information can be found in https://learn.microsoft.com/en-us/azure/frontdoor/front-door-custom-domain#create-a-cname-dns-record
         self.cmd(f'network dns record-set cname set-record -g azfdtest.xyz -n {front_endpoint_name} -z clitest.azfdtest.xyz -c {output["frontendEndpoints"][0]["hostName"]}')
 
         check_custom_domain_check = [JMESPathCheck('customDomainValidated', True),

@@ -1042,7 +1042,7 @@ class Create(AAZCommand):
         )
         _element.metastore_warehouse_dir = AAZStrArg(
             options=["metastore-warehouse-dir"],
-            help="Metastore root directory URI, format: abfs[s]://<container>@<account_name>.dfs.core.windows.net/<path>. More details: https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction-abfs-uri",
+            help="Metastore root directory URI, format: abfs[s]://<container>@<account_name>.dfs.core.windows.net/<path>. More details: https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction-abfs-uri",
             required=True,
         )
 

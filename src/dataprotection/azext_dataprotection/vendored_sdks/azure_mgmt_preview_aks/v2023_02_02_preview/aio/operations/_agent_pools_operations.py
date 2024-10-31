@@ -838,7 +838,7 @@ class AgentPoolsOperations:
         """Gets a list of supported Kubernetes versions for the specified agent pool.
 
         See `supported Kubernetes versions
-        <https://docs.microsoft.com/azure/aks/supported-kubernetes-versions>`_ for more details about
+        <https://learn.microsoft.com/azure/aks/supported-kubernetes-versions>`_ for more details about
         the version lifecycle.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -970,7 +970,7 @@ class AgentPoolsOperations:
 
         Upgrading the node image version of an agent pool applies the newest OS and runtime updates to
         the nodes. AKS provides one new image per week with the latest updates. For more details on
-        node image versions, see: https://docs.microsoft.com/azure/aks/node-image-upgrade.
+        node image versions, see: https://learn.microsoft.com/azure/aks/node-image-upgrade.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.

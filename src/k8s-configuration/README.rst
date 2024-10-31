@@ -13,7 +13,7 @@ az extension add --name k8s-configuration
 ### Included Features
 
 #### Flux Configuration (Flux v2):
-Flux Configuration (Flux v1) Configuration: [more info](https://docs.microsoft.com/en-us/azure/kubernetessconfiguration/)\
+Flux Configuration (Flux v1) Configuration: [more info](https://learn.microsoft.com/en-us/azure/kubernetessconfiguration/)\
 *Examples:*
 
 ##### Create a Flux Configuration (Flux v2)
@@ -58,7 +58,7 @@ az k8s-configuration flux list \
 ```
 
 #### Source Control Configuration (Flux v1):
-Source Control Configuration (Flux v1) Configuration: [more info](https://docs.microsoft.com/en-us/azure/kubernetessconfiguration/)\
+Source Control Configuration (Flux v1) Configuration: [more info](https://learn.microsoft.com/en-us/azure/kubernetessconfiguration/)\
 *Examples:*
 
 ##### Get a Source Control Configuration (Flux v1)
