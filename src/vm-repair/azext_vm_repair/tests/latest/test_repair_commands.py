@@ -1113,7 +1113,7 @@ class WindowsDefaultGen1Image(LiveScenarioTest):
         assert len(repair_vms) == 1
         repair_vm = repair_vms[0]
         repair_vm_id = repair_vm['id']
-        # print the json of the repair_vm
+        # Verify the image sku is the default sku
         image_info = repair_vm['storageProfile']['imageReference']  
         assert image_info['sku'] == defaultSku
         
