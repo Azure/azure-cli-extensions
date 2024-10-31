@@ -48,10 +48,10 @@ class QuantumJobsScenarioTest(ScenarioTest):
         url = f"https://accountname.blob.core.windows.net/containername/rawOutputData?{sas}"
         args = _parse_blob_url(url)
 
-        self.assertEquals(args['account_name'], "accountname")
-        self.assertEquals(args['container'], "containername")
-        self.assertEquals(args['blob'], "rawOutputData")
-        self.assertEquals(args['sas_token'], sas)
+        self.assertEqual(args['account_name'], "accountname")
+        self.assertEqual(args['container'], "containername")
+        self.assertEqual(args['blob'], "rawOutputData")
+        self.assertEqual(args['sas_token'], sas)
 
     def test_transform_output(self):
         # Call with a good histogram
@@ -60,12 +60,12 @@ class QuantumJobsScenarioTest(ScenarioTest):
         table_row = table[0]
         hist_row = table_row['']
         second_char = hist_row[1]
-        self.assertEquals(second_char, "\u2588")    # Expecting a "Full Block" character here
+        self.assertEqual(second_char, "\u2588")    # Expecting a "Full Block" character here
 
         # Give it a malformed histogram
         test_job_results = '{"Histogram":["[0,0,0]",0.125,"[1,0,0]",0.125,"[0,1,0]",0.125,"[1,1,0]"]}'
         table = transform_output(json.loads(test_job_results))
-        self.assertEquals(table, json.loads(test_job_results))    # No transform should be done if input param is bad
+        self.assertEqual(table, json.loads(test_job_results))    # No transform should be done if input param is bad
 
         # Call with output from a failed job
         test_job_results = \
@@ -101,12 +101,12 @@ class QuantumJobsScenarioTest(ScenarioTest):
             }'
 
         table = transform_output(json.loads(test_job_results))
-        self.assertEquals(table['Status'], "Failed")
-        self.assertEquals(table['Error Code'], "InsufficientResources")
-        self.assertEquals(table['Error Message'], "Too many qubits requested")
-        self.assertEquals(table['Target'], "ionq.simulator")
-        self.assertEquals(table['Job ID'], "11111111-2222-3333-4444-555555555555")
-        self.assertEquals(table['Submission Time'], "2022-02-25T18:56:53.275035+00:00")
+        self.assertEqual(table['Status'], "Failed")
+        self.assertEqual(table['Error Code'], "InsufficientResources")
+        self.assertEqual(table['Error Message'], "Too many qubits requested")
+        self.assertEqual(table['Target'], "ionq.simulator")
+        self.assertEqual(table['Job ID'], "11111111-2222-3333-4444-555555555555")
+        self.assertEqual(table['Submission Time'], "2022-02-25T18:56:53.275035+00:00")
 
         # Call with missing "status", "code", "message", "target", "id", and "creationTime"
         test_job_results = \
@@ -137,21 +137,21 @@ class QuantumJobsScenarioTest(ScenarioTest):
 
         table = transform_output(json.loads(test_job_results))
         notFound = "Not found"
-        self.assertEquals(table['Status'], notFound)
-        self.assertEquals(table['Error Code'], notFound)
-        self.assertEquals(table['Error Message'], notFound)
-        self.assertEquals(table['Target'], notFound)
-        self.assertEquals(table['Job ID'], notFound)
-        self.assertEquals(table['Submission Time'], notFound)
+        self.assertEqual(table['Status'], notFound)
+        self.assertEqual(table['Error Code'], notFound)
+        self.assertEqual(table['Error Message'], notFound)
+        self.assertEqual(table['Target'], notFound)
+        self.assertEqual(table['Job ID'], notFound)
+        self.assertEqual(table['Submission Time'], notFound)
 
     def test_validate_max_poll_wait_secs(self):
         wait_secs = _validate_max_poll_wait_secs(1)
-        self.assertEquals(type(wait_secs), float)
-        self.assertEquals(wait_secs, 1.0)
+        self.assertEqual(type(wait_secs), float)
+        self.assertEqual(wait_secs, 1.0)
 
         wait_secs = _validate_max_poll_wait_secs("60")
-        self.assertEquals(type(wait_secs), float)
-        self.assertEquals(wait_secs, 60.0)
+        self.assertEqual(type(wait_secs), float)
+        self.assertEqual(wait_secs, 60.0)
 
         # Invalid values should raise errors
         try:

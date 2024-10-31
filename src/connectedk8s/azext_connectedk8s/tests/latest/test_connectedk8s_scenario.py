@@ -452,7 +452,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
         ] == bool(1)
 
         # scenario-2 : custom loc is enabled , check if disabling cluster connect results in an error
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
             CLIError,
             "Disabling 'cluster-connect' feature is not allowed when \
 'custom-locations' feature is enabled.",
@@ -678,7 +678,7 @@ class Connectedk8sScenarioTest(LiveScenarioTest):
             "-ojson",
         ]
 
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
             CLIError,
             "az connectedk8s upgrade to manually upgrade agents and extensions is \
 only supported when auto-upgrade is set to false",
