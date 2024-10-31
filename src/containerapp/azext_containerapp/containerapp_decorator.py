@@ -1042,10 +1042,12 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
         if self.get_argument_repo():
             _get_registry_details(self.cmd, app, self.get_argument_source())  # fetch ACR creds from arguments registry arguments, --repo will create Github Actions, which requires ACR registry's creds
 
-        # After get registry, backfill registry_server, registry_identity
-        self.set_argument_registry_server(app.registry_server)
-        self.set_up_system_assigned_identity_as_default_if_using_acr()
-        self.set_up_registry_identity()
+        # When the ACR not exists, it will not create acr, it will use local buildpacks or the Cloud Build
+        # So we should only backfill registry_server, registry_identity when the ACR existing
+        if app.should_create_acr is False:
+            self.set_argument_registry_server(app.registry_server)
+            self.set_up_system_assigned_identity_as_default_if_using_acr()
+            self.set_up_registry_identity()
         return app, env
 
     def post_process(self, r):
