@@ -46,6 +46,11 @@ def connect_single_volume(resource_group_name, elastic_san_name, volume_group_na
     # maintain persistent  connection
     command = f"sudo iscsiadm -m node --targetname {target_iqn} --portal {target_portal_hostname}:{target_portal_port} --op update -n node.session.nr_sessions -v {number_of_sessions}".split(' ')
     subprocess.run(command)
+
+    # automatic startup
+    command = "sudo iscsiadm -m node --targetname {} --portal {}:{} --op update -n node.startup -v automatic".format(
+        target_iqn, target_portal_hostname, target_portal_port).split(' ')
+    subprocess.run(command)
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
