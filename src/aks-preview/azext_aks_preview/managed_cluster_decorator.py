@@ -715,44 +715,44 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         :return: bool or None"""
         enable_acns = self.raw_param.get("enable_acns")
         disable_acns = self.raw_param.get("disable_acns")
+        disable_acns_observability = self.raw_param.get("disable_acns_observability")
+        disable_acns_security = self.raw_param.get("disable_acns_security")
         if enable_acns and disable_acns:
             raise MutuallyExclusiveArgumentError(
                 "Cannot specify --enable-acns and "
                 "--disable-acns at the same time."
             )
+        if enable_acns and disable_acns_observability and disable_acns_security:
+            raise MutuallyExclusiveArgumentError(
+                "Cannot specify --enable-acns and "
+                "--disable-acns-observability and "
+                "--disable-acns-security at the same time."
+            )
         if enable_acns is False and disable_acns is False:
             return None
-        return enable_acns | (not disable_acns)
+        if enable_acns is not None:
+            return enable_acns
+        if disable_acns is not None:
+            return not disable_acns
+        return None
 
     def get_acns_observability(self) -> Union[bool, None]:
         """Get the enablement of acns observability
 
         :return: bool or None"""
-        enable_acns_observability = self.raw_param.get("enable_acns_observability")
         disable_acns_observability = self.raw_param.get("disable_acns_observability")
-        if enable_acns_observability is None and disable_acns_observability is None:
-            return None
-        if enable_acns_observability and disable_acns_observability:
-            raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-acns-observability and "
-                "--disable-acns-observability at the same time."
-            )
-        return enable_acns_observability | (not disable_acns_observability)
+        if disable_acns_observability is not None:
+            return not disable_acns_observability
+        return None
 
     def get_acns_security(self) -> Union[bool, None]:
         """Get the enablement of acns security
 
         :return: bool or None"""
-        enable_acns_security = self.raw_param.get("enable_acns_security")
         disable_acns_security = self.raw_param.get("disable_acns_security")
-        if enable_acns_security is None and disable_acns_security is None:
-            return None
-        if enable_acns_security and disable_acns_security:
-            raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-acns-security and "
-                "--disable-acns-security at the same time."
-            )
-        return enable_acns_security | (not disable_acns_security)
+        if disable_acns_security is not None:
+            return not disable_acns_security
+        return None
 
     def get_load_balancer_managed_outbound_ip_count(self) -> Union[int, None]:
         """Obtain the value of load_balancer_managed_outbound_ip_count.
@@ -2978,7 +2978,10 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             if acns_observability_enabled is not None:
                 acns.observability.enabled = acns_observability_enabled
             if acns_security_enabled is not None:
-                acns.security.enabled = acns_observability_enabled
+                acns.security.fqdn_policy.enabled = acns_security_enabled
+            # Only Cilium dataplane supports ACNS security
+            if network_profile.network_dataplane != CONST_NETWORK_DATAPLANE_CILIUM:
+               acns.security.fqdn_policy.enabled = False
             network_profile.advanced_networking = acns
 
         return mc
@@ -4064,7 +4067,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             if acns_observability_enabled is not None:
                 acns.observability.enabled = acns_observability_enabled
             if acns_security_enabled is not None:
-                acns.security.enabled = acns_observability_enabled
+                acns.security.fqdn_policy.enabled = acns_security_enabled
+            # Only Cilium dataplane supports ACNS security
+            if mc.network_profile.network_dataplane != CONST_NETWORK_DATAPLANE_CILIUM:
+               acns.security.fqdn_policy.enabled = False
             mc.network_profile.advanced_networking = acns
         return mc
 
