@@ -307,9 +307,7 @@ def create_connectedk8s(
         helm_client_location = install_helm_client()
     except Exception as e:
         raise CLIInternalError(
-            "An exception has occured while trying to perform kubectl or helm install : {}".format(
-                str(e)
-            )
+            f"An exception has occured while trying to perform kubectl or helm install: {e}"
         )
     # Handling the user manual interrupt
     except KeyboardInterrupt:
@@ -716,7 +714,9 @@ def create_connectedk8s(
                     )
 
                     if registry_path == "":
-                        registry_path = utils.get_helm_registry(cmd, config_dp_endpoint, release_train)
+                        registry_path = utils.get_helm_registry(
+                            cmd, config_dp_endpoint, release_train
+                        )
 
                     # Get azure-arc agent version for telemetry
                     azure_arc_agent_version = registry_path.split(":")[1]
@@ -845,7 +845,7 @@ def create_connectedk8s(
             fault_type=consts.KeyPair_Generate_Fault_Type,
             summary="Failed to generate public-private key pair",
         )
-        raise CLIInternalError("Failed to generate public-private key pair. " + str(e))
+        raise CLIInternalError(f"Failed to generate public-private key pair: {e}")
     try:
         public_key = get_public_key(key_pair)
     except Exception as e:
@@ -854,7 +854,7 @@ def create_connectedk8s(
             fault_type=consts.PublicKey_Export_Fault_Type,
             summary="Failed to export public key",
         )
-        raise CLIInternalError("Failed to export public key." + str(e))
+        raise CLIInternalError(f"Failed to export public key: {e}")
     try:
         private_key_pem = get_private_key(key_pair)
     except Exception as e:
@@ -863,11 +863,14 @@ def create_connectedk8s(
             fault_type=consts.PrivateKey_Export_Fault_Type,
             summary="Failed to export private key",
         )
-        raise CLIInternalError("Failed to export private key." + str(e))
+        raise CLIInternalError(f"Failed to export private key: {e}")
 
     # Perform validation for self hosted issuer and set oidc issuer profile
     if enable_oidc_issuer:
-        if self_hosted_issuer == "" and kubernetes_distro in consts.Public_Cloud_Distribution_List:
+        if (
+            self_hosted_issuer == ""
+            and kubernetes_distro in consts.Public_Cloud_Distribution_List
+        ):
             raise ValidationError(
                 f"Self hosted issuer is required for {kubernetes_distro} cluster when OIDC issuer is being enabled."
             )
@@ -1278,9 +1281,8 @@ def install_helm_client():
                         summary="Unable to download helm client.",
                     )
                     raise CLIInternalError(
-                        "Failed to download helm client.",
-                        recommendation="Please check your internet connection."
-                        + str(e),
+                        f"Failed to download helm client: {e}",
+                        recommendation="Please check your internet connection.",
                     )
                 time.sleep(retry_delay)
 
@@ -2252,7 +2254,10 @@ def update_connected_cluster(
     # Perform validation for self hosted issuer and set oidc issuer profile
     oidc_profile = None
     if enable_oidc_issuer:
-        if self_hosted_issuer == "" and kubernetes_distro in consts.Public_Cloud_Distribution_List:
+        if (
+            self_hosted_issuer == ""
+            and kubernetes_distro in consts.Public_Cloud_Distribution_List
+        ):
             raise ValidationError(
                 f"Self hosted issuer is required for {kubernetes_distro} cluster when OIDC issuer is being enabled."
             )
@@ -2315,9 +2320,11 @@ def update_connected_cluster(
     for helm_parameter, helm_value in helm_content_values.items():
         if "redacted" in helm_value:
             _, feature, protectedSetting = helm_value.split(":")
-            helm_content_values[helm_parameter] = configuration_protected_settings[
-                feature
-            ][protectedSetting]
+            helm_content_values[helm_parameter] = configuration_protected_settings[feature][protectedSetting]
+
+    # Disable proxy if disable_proxy flag is set
+    if disable_proxy:
+        helm_content_values["global.isProxyEnabled"] = "False"
 
     # Set agent version in registry path
     if connected_cluster.agent_version is not None:
@@ -2335,6 +2342,11 @@ def update_connected_cluster(
         registry_path, kube_config, kube_context, helm_client_location
     )
 
+    print(
+        "Step: {}: Starting to update Azure arc agents on the Kubernetes cluster.".format(
+            utils.get_utctimestring()
+        )
+    )
     # Perform helm upgrade
     utils.helm_update_agent(
         helm_client_location,
@@ -2608,22 +2620,15 @@ def upgrade_agents(
     response_helm_values_get = Popen(cmd_helm_values, stdout=PIPE, stderr=PIPE)
     output_helm_values, error_helm_get_values = response_helm_values_get.communicate()
     if response_helm_values_get.returncode != 0:
-        if "forbidden" in error_helm_get_values.decode(
-            "ascii"
-        ) or "timed out waiting for the condition" in error_helm_get_values.decode(
-            "ascii"
-        ):
+        error = error_helm_get_values.decode("ascii")
+        if "forbidden" in error or "timed out waiting for the condition" in error:
             telemetry.set_user_fault()
         telemetry.set_exception(
-            exception=error_helm_get_values.decode("ascii"),
+            exception=error,
             fault_type=consts.Get_Helm_Values_Failed,
             summary="Error while doing helm get values azure-arc",
         )
-        raise CLIInternalError(
-            str.format(
-                consts.Upgrade_Agent_Failure, error_helm_get_values.decode("ascii")
-            )
-        )
+        raise CLIInternalError(str.format(consts.Upgrade_Agent_Failure, error))
 
     output_helm_values = output_helm_values.decode("ascii")
 
@@ -2636,7 +2641,7 @@ def upgrade_agents(
             summary="Problem loading the helm existing user supplied values",
         )
         raise CLIInternalError(
-            "Problem loading the helm existing user supplied values: " + str(e)
+            f"Problem loading the helm existing user supplied values: {e}"
         )
 
     # Change --timeout format for helm client to understand
@@ -2709,7 +2714,7 @@ def upgrade_agents(
             summary="Unable to install helm release",
         )
         raise CLIInternalError(
-            str.format(consts.Upgrade_Agent_Failure, error_helm_upgrade.decode("ascii"))
+            str.format(consts.Upgrade_Agent_Failure, helm_upgrade_error_message)
         )
 
     return str.format(consts.Upgrade_Agent_Success, connected_cluster.name)
@@ -2816,16 +2821,16 @@ def get_all_helm_values(
     response_helm_values_get = Popen(cmd_helm_values, stdout=PIPE, stderr=PIPE)
     output_helm_values, error_helm_get_values = response_helm_values_get.communicate()
     if response_helm_values_get.returncode != 0:
-        if "forbidden" in error_helm_get_values.decode("ascii"):
+        error = error_helm_get_values.decode("ascii")
+        if "forbidden" in error:
             telemetry.set_user_fault()
         telemetry.set_exception(
-            exception=error_helm_get_values.decode("ascii"),
+            exception=error,
             fault_type=consts.Get_Helm_Values_Failed,
             summary="Error while doing helm get values azure-arc",
         )
         raise CLIInternalError(
-            "Error while getting the helm values in the azure-arc namespace: "
-            + error_helm_get_values.decode("ascii")
+            f"Error while getting the helm values in the azure-arc namespace: {error}"
         )
 
     output_helm_values = output_helm_values.decode("ascii")
@@ -2839,7 +2844,7 @@ def get_all_helm_values(
             fault_type=consts.Helm_Existing_User_Supplied_Value_Get_Fault,
             summary="Problem loading the helm existing values",
         )
-        raise CLIInternalError("Problem loading the helm existing values: " + str(e))
+        raise CLIInternalError(f"Problem loading the helm existing values: {e}")
 
 
 def enable_features(
@@ -3080,9 +3085,7 @@ def enable_features(
             summary="Unable to install helm release",
         )
         raise CLIInternalError(
-            str.format(
-                consts.Error_enabling_Features, error_helm_upgrade.decode("ascii")
-            )
+            str.format(consts.Error_enabling_Features, helm_upgrade_error_message)
         )
 
     return str.format(
@@ -3324,9 +3327,7 @@ def get_chart_and_disable_features(
             summary="Unable to install helm release",
         )
         raise CLIInternalError(
-            str.format(
-                consts.Error_disabling_Features, error_helm_upgrade.decode("ascii")
-            )
+            str.format(consts.Error_disabling_Features, helm_upgrade_error_message)
         )
 
 
@@ -3436,7 +3437,7 @@ def merge_kubernetes_configurations(
             summary="Exception while loading kubernetes configuration",
         )
         raise CLIInternalError(
-            "Exception while loading kubernetes configuration." + str(ex)
+            f"Exception while loading kubernetes configuration: {ex}"
         )
 
     if context_name is not None:
@@ -3464,7 +3465,7 @@ def merge_kubernetes_configurations(
             ),
         )
         raise CLIInternalError(
-            "failed to load additional configuration from {}".format(addition_file)
+            f"Failed to load additional configuration from {addition_file}"
         )
 
     if existing is None:
@@ -3496,9 +3497,7 @@ def merge_kubernetes_configurations(
                 fault_type=consts.Failed_To_Merge_Kubeconfig_File,
                 summary="Exception while merging the kubeconfig file",
             )
-            raise CLIInternalError(
-                "Exception while merging the kubeconfig file." + str(e)
-            )
+            raise CLIInternalError(f"Exception while merging the kubeconfig file: {e}")
 
     current_context = addition.get("current-context", "UNKNOWN")
     msg = 'Merged "{}" as current context in {}'.format(current_context, existing_file)
@@ -3661,8 +3660,8 @@ def client_side_proxy_wrapper(
                 summary="Unable to download clientproxy executable.",
             )
             raise CLIInternalError(
-                "Failed to download executable with client.",
-                recommendation="Please check your internet connection." + str(e),
+                f"Failed to download executable with client: {e}",
+                recommendation="Please check your internet connection.",
             )
 
         responseContent = response.read()
@@ -3991,7 +3990,7 @@ def client_side_proxy(
             consts.Get_Credentials_Failed_Fault_Type,
             "Unable to list cluster user credentials",
         )
-        raise CLIInternalError("Failed to get credentials." + str(e))
+        raise CLIInternalError(f"Failed to get credentials: {e}")
 
     # Starting the client proxy process, if this is the first time that this function is invoked
     if flag == 0:
@@ -4008,7 +4007,7 @@ def client_side_proxy(
                 fault_type=consts.Run_Clientproxy_Fault_Type,
                 summary="Unable to run client proxy executable",
             )
-            raise CLIInternalError("Failed to start proxy process." + str(e))
+            raise CLIInternalError(f"Failed to start proxy process: {e}")
 
         if (
             not utils.is_cli_using_msal_auth()
@@ -4684,16 +4683,11 @@ def install_kubectl_client():
             "Downloading kubectl client for first time. This can take few minutes..."
         )
         logging.disable(logging.CRITICAL)
-        exit_code = get_default_cli().invoke(
+        get_default_cli().invoke(
             ["aks", "install-cli", "--install-location", kubectl_path]
         )
         logging.disable(logging.NOTSET)
         logger.warning("\n")
-        if exit_code != 0 or not os.path.isfile(kubectl_path):
-            logger.error(
-                "Failed to download and install kubectl."
-            )
-            raise CLIInternalError("Failed to download and install kubectl.")
         # Return the path of the kubectl executable
         return kubectl_path
 
@@ -4703,7 +4697,7 @@ def install_kubectl_client():
             fault_type=consts.Download_And_Install_Kubectl_Fault_Type,
             summary="Failed to download and install kubectl",
         )
-        raise CLIInternalError("Unable to install kubectl. Error: ", str(e))
+        raise CLIInternalError(f"Unable to install kubectl. Error: {e}")
 
 
 def crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context):
