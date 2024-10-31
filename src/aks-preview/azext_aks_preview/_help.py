@@ -233,12 +233,6 @@ helps['aks create'] = f"""
               Used together with the "azure" network plugin.
               Requires either --pod-subnet-id or --network-plugin-mode=overlay.
               This flag is deprecated in favor of --network-dataplane=cilium.
-        - name: --enable-advanced-network-observability
-          type: bool
-          short-summary: --enable-advanced-network-observability is deprecated. Please use '--enable-acns' instead.
-        - name: --enable-fqdn-policy
-          type: bool
-          short-summary: --enable-fqdn-policy is deprecated. Please use '--enable-acns' instead.
         - name: --enable-acns
           type: bool
           short-summary: Enable advanced network functionalities on a cluster. Enabling this will incur additional costs.
@@ -248,10 +242,7 @@ helps['aks create'] = f"""
         - name: --disable-acns-security
           type: bool
           short-summary: Used to disable advanced networking observability features on a clusters when enabling advanced networking features with "--enable-acns".
-        - name: --advanced-networking-observability-tls-management
-          type: string
-          short-summary: --advanced-networking-observability-tls-management is deprecated. All ACNS clusters with observability enabled default to managed TLS.
-        - name: --no-ssh-key -x
+       - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
           long-summary: To access nodes after creating a cluster with this option, use the Azure Portal.
@@ -1234,21 +1225,6 @@ helps['aks update'] = """
         - name: --nodepool-labels
           type: string
           short-summary: The node labels for all node pool. See https://aka.ms/node-labels for syntax of labels.
-        - name: --enable-advanced-network-observability
-          type: bool
-          short-summary: --enable-advanced-network-observability is deprecated. Please use '--enable-acns' instead.
-        - name: --disable-advanced-network-observability
-          type: bool
-          short-summary: --disable-advanced-network-observability is deprecated. Please use '--disable-acns-observability' instead.
-        - name: --advanced-networking-observability-tls-management
-          type: string
-          short-summary: --advanced-networking-observability-tls-management is deprecated. All ACNS clusters with observability enabled default to managed TLS.
-        - name: --enable-fqdn-policy
-          type: bool
-          short-summary: --enable-fqdn-policy is deprecated. Please use '--enable-acns' instead.
-        - name: --disable-fqdn-policy
-          type: bool
-          short-summary: --disable-fqdn-policy is deprecated. Please use '--disable-acns-security' instead.
         - name: --enable-acns
           type: bool
           short-summary: Enable advanced network functionalities on a cluster. Enabling this will incur additional costs.

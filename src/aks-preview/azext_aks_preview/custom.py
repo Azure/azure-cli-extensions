@@ -494,9 +494,6 @@ def aks_create(
     enable_cilium_dataplane=False,
     custom_ca_trust_certificates=None,
     # advanced networking
-    enable_advanced_network_observability=None,
-    advanced_networking_observability_tls_management=None,
-    enable_fqdn_policy=None,
     enable_acns=None,
     disable_acns_observability=None,
     disable_acns_security=None,
@@ -729,11 +726,6 @@ def aks_update(
     safeguards_version=None,
     safeguards_excluded_ns=None,
     # advanced networking
-    enable_advanced_network_observability=None,
-    disable_advanced_network_observability=None,
-    advanced_networking_observability_tls_management=None,
-    enable_fqdn_policy=None,
-    disable_fqdn_policy=None,
     enable_acns=None,
     disable_acns=None,
     disable_acns_observability=None,
