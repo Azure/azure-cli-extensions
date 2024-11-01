@@ -181,3 +181,64 @@ class ContainerappSessionPoolTests(ScenarioTest):
         sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
         self.assertTrue(len(sessionpool_list) == 0)
 
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer()
+    def test_containerapp_sessionpool_registry_identity(self, resource_group):
+        location = 'eastasia'
+        self.cmd('configure --defaults location={}'.format(location))
+
+        user_identity_name = self.create_random_name(prefix='sp-msi1', length=24)
+        identity_json = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
+        user_identity_id = identity_json["id"]
+        principal_id = identity_json["principalId"]
+        
+        env_name = self.create_random_name(prefix='aca-sp-env-registry', length=24)
+        create_containerapp_env(self, env_name, resource_group, location)
+
+        acr = self.create_random_name(prefix='acr', length=24)
+        image_source = "mcr.microsoft.com/k8se/quickstart:latest"
+        image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
+
+        acr_resource_id = self.cmd(f'acr create --sku basic -n {acr} -g {resource_group}').get_output_in_json()["id"]
+        self.cmd(f'acr import -n {acr} --source {image_source}')
+        roleAssignmentName = self.create_guid()
+        self.cmd(f'role assignment create --role acrpull --assignee {principal_id} --scope {acr_resource_id} --name {roleAssignmentName}')
+       
+        # wait for role assignment take effect
+        time.sleep(30)
+        
+        # Create CustomContainer SessionPool
+        sessionpool_name_custom = self.create_random_name(prefix='spcc', length=24)
+        ready_instances = 2
+        cpu = "0.5"
+        memory = "1Gi"
+        self.cmd(
+            f'containerapp sessionpool create -g {resource_group} -n {sessionpool_name_custom} --container-type CustomContainer --environment {env_name} --ready-sessions {ready_instances} --image {image_name} --cpu {cpu} --memory {memory} --target-port 80 --registry-server {acr}.azurecr.io --registry-identity-id {user_identity_id} --system-assigned',
+            checks=[
+                JMESPathCheck('name', sessionpool_name_custom),
+                JMESPathCheck('properties.containerType', "CustomContainer"),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].image', image_name),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].resources.cpu', cpu),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].resources.memory', memory),
+                JMESPathCheck('properties.customContainerTemplate.registryCredentials.server', f"{acr}.azurecr.io"),
+                JMESPathCheck('properties.customContainerTemplate.containers[0].resources.memory', memory),
+                JMESPathCheck('properties.customContainerTemplate.ingress.targetPort', 80),
+            ])
+
+        sessionpool = self.cmd('containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom)).get_output_in_json()
+        while sessionpool["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
+            time.sleep(5)
+            sessionpool = self.cmd('containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom)).get_output_in_json()
+
+        self.cmd('containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom),
+                 checks=[JMESPathCheck('properties.provisioningState', "Succeeded")])
+
+        # List Session Pools
+        sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
+        self.assertTrue(len(sessionpool_list) == 1)
+
+        self.cmd('containerapp sessionpool delete -g {} -n {} --yes'.format(resource_group, sessionpool_name_custom))
+
+        # List Session Pools
+        sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
+        self.assertTrue(len(sessionpool_list) == 0)
