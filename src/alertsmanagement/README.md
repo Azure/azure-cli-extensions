@@ -10,7 +10,7 @@ az extension add --name alertsmanagement
 ```
 
 ### Alert Processing Rule
-Alert processing rule documentation: https://docs.microsoft.com/en-us/azure/azure-monitor/platform/alerts-action-rules.
+Alert processing rule documentation: https://learn.microsoft.com/en-us/azure/azure-monitor/platform/alerts-action-rules.
 
 Create or update a rule that removes all action groups from alerts on a specific VM during a one-off maintenance window (1800-2000 at a specific date, Pacific Standard Time)
 ```

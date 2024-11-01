@@ -22,7 +22,7 @@ class BGPCommunity(Model):
     :type community_name: str
     :param community_value: The value of the bgp community. For more
      information:
-     https://docs.microsoft.com/azure/expressroute/expressroute-routing.
+     https://learn.microsoft.com/azure/expressroute/expressroute-routing.
     :type community_value: str
     :param community_prefixes: The prefixes that the bgp community contains.
     :type community_prefixes: list[str]

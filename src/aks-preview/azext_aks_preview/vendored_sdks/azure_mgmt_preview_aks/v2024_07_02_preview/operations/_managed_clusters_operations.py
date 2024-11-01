@@ -1574,9 +1574,9 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
         """Gets an access profile of a managed cluster.
 
         **WARNING**\\ : This API will be deprecated. Instead use `ListClusterUserCredentials
-        <https://docs.microsoft.com/rest/api/aks/managedclusters/listclusterusercredentials>`_ or
+        <https://learn.microsoft.com/rest/api/aks/managedclusters/listclusterusercredentials>`_ or
         `ListClusterAdminCredentials
-        <https://docs.microsoft.com/rest/api/aks/managedclusters/listclusteradmincredentials>`_ .
+        <https://learn.microsoft.com/rest/api/aks/managedclusters/listclusteradmincredentials>`_ .
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -3104,7 +3104,7 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
     ) -> LROPoller[None]:
         """Rotates the certificates of a managed cluster.
 
-        See `Certificate rotation <https://docs.microsoft.com/azure/aks/certificate-rotation>`_ for
+        See `Certificate rotation <https://learn.microsoft.com/azure/aks/certificate-rotation>`_ for
         more details about rotating managed cluster certificates.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -3344,7 +3344,7 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
         This can only be performed on Azure Virtual Machine Scale set backed clusters. Stopping a
         cluster stops the control plane and agent nodes entirely, while maintaining all object and
         cluster state. A cluster does not accrue charges while it is stopped. See `stopping a cluster
-        <https://docs.microsoft.com/azure/aks/start-stop-cluster>`_ for more details about stopping a
+        <https://learn.microsoft.com/azure/aks/start-stop-cluster>`_ for more details about stopping a
         cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -3461,7 +3461,7 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
     def begin_start(self, resource_group_name: str, resource_name: str, **kwargs: Any) -> LROPoller[None]:
         """Starts a previously stopped Managed Cluster.
 
-        See `starting a cluster <https://docs.microsoft.com/azure/aks/start-stop-cluster>`_ for more
+        See `starting a cluster <https://learn.microsoft.com/azure/aks/start-stop-cluster>`_ for more
         details about starting a cluster.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
@@ -3606,7 +3606,7 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
         AKS will create a pod to run the command. This is primarily useful for private clusters. For
         more information see `AKS Run Command
-        <https://docs.microsoft.com/azure/aks/private-clusters#aks-run-command-preview>`_.
+        <https://learn.microsoft.com/azure/aks/private-clusters#aks-run-command-preview>`_.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -3640,7 +3640,7 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
         AKS will create a pod to run the command. This is primarily useful for private clusters. For
         more information see `AKS Run Command
-        <https://docs.microsoft.com/azure/aks/private-clusters#aks-run-command-preview>`_.
+        <https://learn.microsoft.com/azure/aks/private-clusters#aks-run-command-preview>`_.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.
@@ -3671,7 +3671,7 @@ class ManagedClustersOperations:  # pylint: disable=too-many-public-methods
 
         AKS will create a pod to run the command. This is primarily useful for private clusters. For
         more information see `AKS Run Command
-        <https://docs.microsoft.com/azure/aks/private-clusters#aks-run-command-preview>`_.
+        <https://learn.microsoft.com/azure/aks/private-clusters#aks-run-command-preview>`_.
 
         :param resource_group_name: The name of the resource group. The name is case insensitive.
          Required.

@@ -1297,73 +1297,73 @@ class ApplicationGateway(Resource):  # pylint: disable=too-many-instance-attribu
      ~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayOperationalState
     :ivar gateway_ip_configurations: Subnets of the application gateway resource. For default
      limits, see `Application Gateway limits
-     <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+     <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
     :vartype gateway_ip_configurations:
      list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayIPConfiguration]
     :ivar authentication_certificates: Authentication certificates of the application gateway
      resource. For default limits, see `Application Gateway limits
-     <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+     <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
     :vartype authentication_certificates:
      list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayAuthenticationCertificate]
     :ivar trusted_root_certificates: Trusted Root certificates of the application gateway resource.
      For default limits, see `Application Gateway limits
-     <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+     <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
     :vartype trusted_root_certificates:
      list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayTrustedRootCertificate]
     :ivar trusted_client_certificates: Trusted client certificates of the application gateway
      resource. For default limits, see `Application Gateway limits
-     <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+     <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
     :vartype trusted_client_certificates:
      list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayTrustedClientCertificate]
     :ivar ssl_certificates: SSL certificates of the application gateway resource. For default
      limits, see `Application Gateway limits
-     <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+     <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
     :vartype ssl_certificates:
      list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewaySslCertificate]
     :ivar frontend_ip_configurations: Frontend IP addresses of the application gateway resource.
      For default limits, see `Application Gateway limits
-     <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+     <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
     :vartype frontend_ip_configurations:
      list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayFrontendIPConfiguration]
     :ivar frontend_ports: Frontend ports of the application gateway resource. For default limits,
      see `Application Gateway limits
-     <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+     <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
     :vartype frontend_ports:
      list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayFrontendPort]
     :ivar probes: Probes of the application gateway resource.
     :vartype probes: list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayProbe]
     :ivar backend_address_pools: Backend address pool of the application gateway resource. For
      default limits, see `Application Gateway limits
-     <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+     <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
     :vartype backend_address_pools:
      list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayBackendAddressPool]
     :ivar backend_http_settings_collection: Backend http settings of the application gateway
      resource. For default limits, see `Application Gateway limits
-     <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+     <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
     :vartype backend_http_settings_collection:
      list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayBackendHttpSettings]
     :ivar backend_settings_collection: Backend settings of the application gateway resource. For
      default limits, see `Application Gateway limits
-     <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+     <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
     :vartype backend_settings_collection:
      list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayBackendSettings]
     :ivar http_listeners: Http listeners of the application gateway resource. For default limits,
      see `Application Gateway limits
-     <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+     <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
     :vartype http_listeners:
      list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayHttpListener]
     :ivar listeners: Listeners of the application gateway resource. For default limits, see
      `Application Gateway limits
-     <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+     <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
     :vartype listeners: list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayListener]
     :ivar ssl_profiles: SSL profiles of the application gateway resource. For default limits, see
      `Application Gateway limits
-     <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+     <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
     :vartype ssl_profiles:
      list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewaySslProfile]
     :ivar url_path_maps: URL path map of the application gateway resource. For default limits, see
      `Application Gateway limits
-     <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+     <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
     :vartype url_path_maps:
      list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayUrlPathMap]
     :ivar request_routing_rules: Request routing rules of the application gateway resource.
@@ -1377,7 +1377,7 @@ class ApplicationGateway(Resource):  # pylint: disable=too-many-instance-attribu
      list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayRewriteRuleSet]
     :ivar redirect_configurations: Redirect configurations of the application gateway resource. For
      default limits, see `Application Gateway limits
-     <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+     <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
     :vartype redirect_configurations:
      list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayRedirectConfiguration]
     :ivar web_application_firewall_configuration: Web application firewall configuration.
@@ -1586,73 +1586,73 @@ class ApplicationGateway(Resource):  # pylint: disable=too-many-instance-attribu
         :paramtype ssl_policy: ~azure.mgmt.network.v2022_07_01.models.ApplicationGatewaySslPolicy
         :keyword gateway_ip_configurations: Subnets of the application gateway resource. For default
          limits, see `Application Gateway limits
-         <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+         <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
         :paramtype gateway_ip_configurations:
          list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayIPConfiguration]
         :keyword authentication_certificates: Authentication certificates of the application gateway
          resource. For default limits, see `Application Gateway limits
-         <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+         <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
         :paramtype authentication_certificates:
          list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayAuthenticationCertificate]
         :keyword trusted_root_certificates: Trusted Root certificates of the application gateway
          resource. For default limits, see `Application Gateway limits
-         <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+         <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
         :paramtype trusted_root_certificates:
          list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayTrustedRootCertificate]
         :keyword trusted_client_certificates: Trusted client certificates of the application gateway
          resource. For default limits, see `Application Gateway limits
-         <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+         <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
         :paramtype trusted_client_certificates:
          list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayTrustedClientCertificate]
         :keyword ssl_certificates: SSL certificates of the application gateway resource. For default
          limits, see `Application Gateway limits
-         <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+         <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
         :paramtype ssl_certificates:
          list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewaySslCertificate]
         :keyword frontend_ip_configurations: Frontend IP addresses of the application gateway resource.
          For default limits, see `Application Gateway limits
-         <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+         <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
         :paramtype frontend_ip_configurations:
          list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayFrontendIPConfiguration]
         :keyword frontend_ports: Frontend ports of the application gateway resource. For default
          limits, see `Application Gateway limits
-         <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+         <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
         :paramtype frontend_ports:
          list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayFrontendPort]
         :keyword probes: Probes of the application gateway resource.
         :paramtype probes: list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayProbe]
         :keyword backend_address_pools: Backend address pool of the application gateway resource. For
          default limits, see `Application Gateway limits
-         <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+         <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
         :paramtype backend_address_pools:
          list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayBackendAddressPool]
         :keyword backend_http_settings_collection: Backend http settings of the application gateway
          resource. For default limits, see `Application Gateway limits
-         <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+         <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
         :paramtype backend_http_settings_collection:
          list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayBackendHttpSettings]
         :keyword backend_settings_collection: Backend settings of the application gateway resource. For
          default limits, see `Application Gateway limits
-         <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+         <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
         :paramtype backend_settings_collection:
          list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayBackendSettings]
         :keyword http_listeners: Http listeners of the application gateway resource. For default
          limits, see `Application Gateway limits
-         <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+         <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
         :paramtype http_listeners:
          list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayHttpListener]
         :keyword listeners: Listeners of the application gateway resource. For default limits, see
          `Application Gateway limits
-         <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+         <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
         :paramtype listeners: list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayListener]
         :keyword ssl_profiles: SSL profiles of the application gateway resource. For default limits,
          see `Application Gateway limits
-         <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+         <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
         :paramtype ssl_profiles:
          list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewaySslProfile]
         :keyword url_path_maps: URL path map of the application gateway resource. For default limits,
          see `Application Gateway limits
-         <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+         <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
         :paramtype url_path_maps:
          list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayUrlPathMap]
         :keyword request_routing_rules: Request routing rules of the application gateway resource.
@@ -1666,7 +1666,7 @@ class ApplicationGateway(Resource):  # pylint: disable=too-many-instance-attribu
          list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayRewriteRuleSet]
         :keyword redirect_configurations: Redirect configurations of the application gateway resource.
          For default limits, see `Application Gateway limits
-         <https://docs.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
+         <https://learn.microsoft.com/azure/azure-subscription-service-limits#application-gateway-limits>`_.
         :paramtype redirect_configurations:
          list[~azure.mgmt.network.v2022_07_01.models.ApplicationGatewayRedirectConfiguration]
         :keyword web_application_firewall_configuration: Web application firewall configuration.
@@ -8524,7 +8524,7 @@ class BGPCommunity(_serialization.Model):
     :ivar community_name: The name of the bgp community. e.g. Skype.
     :vartype community_name: str
     :ivar community_value: The value of the bgp community. For more information:
-     https://docs.microsoft.com/en-us/azure/expressroute/expressroute-routing.
+     https://learn.microsoft.com/en-us/azure/expressroute/expressroute-routing.
     :vartype community_value: str
     :ivar community_prefixes: The prefixes that the bgp community contains.
     :vartype community_prefixes: list[str]
@@ -8561,7 +8561,7 @@ class BGPCommunity(_serialization.Model):
         :keyword community_name: The name of the bgp community. e.g. Skype.
         :paramtype community_name: str
         :keyword community_value: The value of the bgp community. For more information:
-         https://docs.microsoft.com/en-us/azure/expressroute/expressroute-routing.
+         https://learn.microsoft.com/en-us/azure/expressroute/expressroute-routing.
         :paramtype community_value: str
         :keyword community_prefixes: The prefixes that the bgp community contains.
         :paramtype community_prefixes: list[str]
@@ -34432,7 +34432,7 @@ class VirtualNetworkPeering(SubResource):  # pylint: disable=too-many-instance-a
     :ivar remote_virtual_network: The reference to the remote virtual network. The remote virtual
      network can be in the same or different region (preview). See here to register for the preview
      and learn more
-     (https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-create-peering).
+     (https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-create-peering).
     :vartype remote_virtual_network: ~azure.mgmt.network.v2022_07_01.models.SubResource
     :ivar remote_address_space: The reference to the address space peered with the remote virtual
      network.
@@ -34544,7 +34544,7 @@ class VirtualNetworkPeering(SubResource):  # pylint: disable=too-many-instance-a
         :keyword remote_virtual_network: The reference to the remote virtual network. The remote
          virtual network can be in the same or different region (preview). See here to register for the
          preview and learn more
-         (https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-create-peering).
+         (https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-create-peering).
         :paramtype remote_virtual_network: ~azure.mgmt.network.v2022_07_01.models.SubResource
         :keyword remote_address_space: The reference to the address space peered with the remote
          virtual network.

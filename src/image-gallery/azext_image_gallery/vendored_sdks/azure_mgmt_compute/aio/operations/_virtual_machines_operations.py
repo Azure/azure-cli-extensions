@@ -967,9 +967,9 @@ class VirtualMachinesOperations:  # pylint: disable=too-many-public-methods
         """Sets the OS state of the virtual machine to generalized. It is recommended to sysprep the
         virtual machine before performing this operation. :code:`<br>`For Windows, please refer to
         `Create a managed image of a generalized VM in Azure
-        <https://docs.microsoft.com/azure/virtual-machines/windows/capture-image-resource>`_.:code:`<br>`For
+        <https://learn.microsoft.com/azure/virtual-machines/windows/capture-image-resource>`_.:code:`<br>`For
         Linux, please refer to `How to create an image of a virtual machine or VHD
-        <https://docs.microsoft.com/azure/virtual-machines/linux/capture-image>`_.
+        <https://learn.microsoft.com/azure/virtual-machines/linux/capture-image>`_.
 
         :param resource_group_name: The name of the resource group.
         :type resource_group_name: str
