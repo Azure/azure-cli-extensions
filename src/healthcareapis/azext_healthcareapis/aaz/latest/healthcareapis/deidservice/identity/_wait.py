@@ -12,27 +12,22 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "deidservice update",
-    is_preview=True,
+    "healthcareapis deidservice identity wait",
 )
-class Update(AAZCommand):
-    """Update a DeidService by name
+class Wait(AAZWaitCommand):
+    """Place the CLI in a waiting state until a condition is met.
     """
 
     _aaz_info = {
-        "version": "2024-02-28-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.healthdataaiservices/deidservices/{}", "2024-02-28-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.healthdataaiservices/deidservices/{}", "2024-02-28-preview", "identity"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
-    AZ_SUPPORT_GENERIC_UPDATE = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -57,66 +52,11 @@ class Update(AAZCommand):
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-
-        # define Arg Group "Properties"
-
-        _args_schema = cls._args_schema
-        _args_schema.public_network_access = AAZStrArg(
-            options=["--public-network-access"],
-            arg_group="Properties",
-            help="Gets or sets allow or disallow public network access to resource",
-            nullable=True,
-            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
-        )
-
-        # define Arg Group "Resource"
-
-        _args_schema = cls._args_schema
-        _args_schema.identity = AAZObjectArg(
-            options=["--identity"],
-            arg_group="Resource",
-            help="The managed service identities assigned to this resource.",
-            nullable=True,
-        )
-        _args_schema.tags = AAZDictArg(
-            options=["--tags"],
-            arg_group="Resource",
-            help="Resource tags.",
-            nullable=True,
-        )
-
-        identity = cls._args_schema.identity
-        identity.type = AAZStrArg(
-            options=["type"],
-            help="Type of managed service identity (where both SystemAssigned and UserAssigned types are allowed).",
-            enum={"None": "None", "SystemAssigned": "SystemAssigned", "SystemAssigned,UserAssigned": "SystemAssigned,UserAssigned", "UserAssigned": "UserAssigned"},
-        )
-        identity.user_assigned_identities = AAZDictArg(
-            options=["user-assigned-identities"],
-            help="The set of user assigned identities associated with the resource. The userAssignedIdentities dictionary keys will be ARM resource ids in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}. The dictionary values can be empty objects ({}) in requests.",
-            nullable=True,
-        )
-
-        user_assigned_identities = cls._args_schema.identity.user_assigned_identities
-        user_assigned_identities.Element = AAZObjectArg(
-            nullable=True,
-            blank={},
-        )
-
-        tags = cls._args_schema.tags
-        tags.Element = AAZStrArg(
-            nullable=True,
-        )
         return cls._args_schema
 
     def _execute_operations(self):
         self.pre_operations()
         self.DeidServicesGet(ctx=self.ctx)()
-        self.pre_instance_update(self.ctx.vars.instance)
-        self.InstanceUpdateByJson(ctx=self.ctx)()
-        self.InstanceUpdateByGeneric(ctx=self.ctx)()
-        self.post_instance_update(self.ctx.vars.instance)
-        yield self.DeidServicesCreate(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -127,16 +67,8 @@ class Update(AAZCommand):
     def post_operations(self):
         pass
 
-    @register_callback
-    def pre_instance_update(self, instance):
-        pass
-
-    @register_callback
-    def post_instance_update(self, instance):
-        pass
-
     def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
+        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=False)
         return result
 
     class DeidServicesGet(AAZHttpOperation):
@@ -218,166 +150,13 @@ class Update(AAZCommand):
                 return cls._schema_on_200
 
             cls._schema_on_200 = AAZObjectType()
-            _UpdateHelper._build_schema_deid_service_read(cls._schema_on_200)
+            _WaitHelper._build_schema_deid_service_read(cls._schema_on_200)
 
             return cls._schema_on_200
 
-    class DeidServicesCreate(AAZHttpOperation):
-        CLIENT_TYPE = "MgmtClient"
 
-        def __call__(self, *args, **kwargs):
-            request = self.make_request()
-            session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-            if session.http_response.status_code in [200, 201]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200_201,
-                    self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
-                    path_format_arguments=self.url_parameters,
-                )
-
-            return self.on_error(session.http_response)
-
-        @property
-        def url(self):
-            return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HealthDataAIServices/deidServices/{deidServiceName}",
-                **self.url_parameters
-            )
-
-        @property
-        def method(self):
-            return "PUT"
-
-        @property
-        def error_format(self):
-            return "MgmtErrorFormat"
-
-        @property
-        def url_parameters(self):
-            parameters = {
-                **self.serialize_url_param(
-                    "deidServiceName", self.ctx.args.deid_service_name,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "resourceGroupName", self.ctx.args.resource_group,
-                    required=True,
-                ),
-                **self.serialize_url_param(
-                    "subscriptionId", self.ctx.subscription_id,
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def query_parameters(self):
-            parameters = {
-                **self.serialize_query_param(
-                    "api-version", "2024-02-28-preview",
-                    required=True,
-                ),
-            }
-            return parameters
-
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Content-Type", "application/json",
-                ),
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
-
-        @property
-        def content(self):
-            _content_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=self.ctx.vars.instance,
-            )
-
-            return self.serialize_content(_content_value)
-
-        def on_200_201(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200_201
-            )
-
-        _schema_on_200_201 = None
-
-        @classmethod
-        def _build_schema_on_200_201(cls):
-            if cls._schema_on_200_201 is not None:
-                return cls._schema_on_200_201
-
-            cls._schema_on_200_201 = AAZObjectType()
-            _UpdateHelper._build_schema_deid_service_read(cls._schema_on_200_201)
-
-            return cls._schema_on_200_201
-
-    class InstanceUpdateByJson(AAZJsonInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance(self.ctx.vars.instance)
-
-        def _update_instance(self, instance):
-            _instance_value, _builder = self.new_content_builder(
-                self.ctx.args,
-                value=instance,
-                typ=AAZObjectType
-            )
-            _builder.set_prop("identity", AAZIdentityObjectType, ".identity")
-            _builder.set_prop("properties", AAZObjectType)
-            _builder.set_prop("tags", AAZDictType, ".tags")
-
-            identity = _builder.get(".identity")
-            if identity is not None:
-                identity.set_prop("type", AAZStrType, ".type", typ_kwargs={"flags": {"required": True}})
-                identity.set_prop("userAssignedIdentities", AAZDictType, ".user_assigned_identities")
-
-            user_assigned_identities = _builder.get(".identity.userAssignedIdentities")
-            if user_assigned_identities is not None:
-                user_assigned_identities.set_elements(AAZObjectType, ".", typ_kwargs={"nullable": True})
-
-            properties = _builder.get(".properties")
-            if properties is not None:
-                properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access")
-
-            tags = _builder.get(".tags")
-            if tags is not None:
-                tags.set_elements(AAZStrType, ".")
-
-            return _instance_value
-
-    class InstanceUpdateByGeneric(AAZGenericInstanceUpdateOperation):
-
-        def __call__(self, *args, **kwargs):
-            self._update_instance_by_generic(
-                self.ctx.vars.instance,
-                self.ctx.generic_update_args
-            )
-
-
-class _UpdateHelper:
-    """Helper class for Update"""
+class _WaitHelper:
+    """Helper class for Wait"""
 
     _schema_deid_service_read = None
 
@@ -577,4 +356,4 @@ class _UpdateHelper:
         _schema.last_modified_by_type = cls._schema_system_data_read.last_modified_by_type
 
 
-__all__ = ["Update"]
+__all__ = ["Wait"]

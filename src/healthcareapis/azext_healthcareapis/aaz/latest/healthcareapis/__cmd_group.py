@@ -12,11 +12,10 @@ from azure.cli.core.aaz import *
 
 
 @register_command_group(
-    "deidservice",
-    is_preview=True,
+    "healthcareapis",
 )
 class __CMDGroup(AAZCommandGroup):
-    """Health Data service for providing de-identification of health PHI data (Features: Surrogation, multi-modality)
+    """healthcare-apis test
     """
     pass
 
