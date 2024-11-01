@@ -15489,7 +15489,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
             "--assign-identity {cluster_identity_id} "
             "--assign-kubelet-identity {kubelet_identity_id} "
             "--bootstrap-artifact-source Cache --bootstrap-container-registry-resource-id {acr_id} "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/BootstrapProfilePreview "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkIsolatedClusterPreview "
             "-o json"
         )
         self.cmd(create_cmd_1, checks=[
@@ -15514,7 +15514,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         update_cmd = (
             "aks update --resource-group {resource_group} --name {aks_name_2} "
             "--bootstrap-artifact-source Cache --bootstrap-container-registry-resource-id {acr_id} "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/BootstrapProfilePreview "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkIsolatedClusterPreview "
             "-o json"
         )
         self.cmd(update_cmd, checks=[
