@@ -2272,9 +2272,6 @@ class Configuration(_serialization.Model):  # pylint: disable=too-many-instance-
     :vartype identity_settings: list[~azure.mgmt.appcontainers.models.IdentitySettings]
     """
 
-    _validation = {
-        "revision_transition_threshold": {"maximum": 100, "minimum": 1},
-    }
 
     _attribute_map = {
         "secrets": {"key": "secrets", "type": "[Secret]"},
@@ -2285,7 +2282,6 @@ class Configuration(_serialization.Model):  # pylint: disable=too-many-instance-
         "dapr": {"key": "dapr", "type": "Dapr"},
         "runtime": {"key": "runtime", "type": "Runtime"},
         "max_inactive_revisions": {"key": "maxInactiveRevisions", "type": "int"},
-        "revision_transition_threshold": {"key": "revisionTransitionThreshold", "type": "int"},
         "service": {"key": "service", "type": "Service"},
         "identity_settings": {"key": "identitySettings", "type": "[IdentitySettings]"},
     }
@@ -2301,7 +2297,6 @@ class Configuration(_serialization.Model):  # pylint: disable=too-many-instance-
         dapr: Optional["_models.Dapr"] = None,
         runtime: Optional["_models.Runtime"] = None,
         max_inactive_revisions: Optional[int] = None,
-        revision_transition_threshold: Optional[int] = None,
         service: Optional["_models.Service"] = None,
         identity_settings: Optional[List["_models.IdentitySettings"]] = None,
         **kwargs: Any
@@ -2335,10 +2330,6 @@ class Configuration(_serialization.Model):  # pylint: disable=too-many-instance-
         :paramtype runtime: ~azure.mgmt.appcontainers.models.Runtime
         :keyword max_inactive_revisions: Optional. Max inactive revisions a Container App can have.
         :paramtype max_inactive_revisions: int
-        :keyword revision_transition_threshold: Optional. The percent of the total number of replicas
-         that must be brought up before revision transition occurs. Defaults to 100 when none is given.
-         Value must be greater than 0 and less than or equal to 100.
-        :paramtype revision_transition_threshold: int
         :keyword service: Container App to be a dev Container App Service.
         :paramtype service: ~azure.mgmt.appcontainers.models.Service
         :keyword identity_settings: Optional settings for Managed Identities that are assigned to the
@@ -2354,7 +2345,6 @@ class Configuration(_serialization.Model):  # pylint: disable=too-many-instance-
         self.dapr = dapr
         self.runtime = runtime
         self.max_inactive_revisions = max_inactive_revisions
-        self.revision_transition_threshold = revision_transition_threshold
         self.service = service
         self.identity_settings = identity_settings
 
@@ -3837,8 +3827,6 @@ class ContainerResources(_serialization.Model):
     :vartype memory: str
     :ivar ephemeral_storage: Ephemeral Storage, e.g. "1Gi".
     :vartype ephemeral_storage: str
-    :ivar gpu: Required GPU in cores for GPU based app, e.g. 1.0.
-    :vartype gpu: float
     """
 
     _validation = {
@@ -3849,11 +3837,10 @@ class ContainerResources(_serialization.Model):
         "cpu": {"key": "cpu", "type": "float"},
         "memory": {"key": "memory", "type": "str"},
         "ephemeral_storage": {"key": "ephemeralStorage", "type": "str"},
-        "gpu": {"key": "gpu", "type": "float"},
     }
 
     def __init__(
-        self, *, cpu: Optional[float] = None, memory: Optional[str] = None, gpu: Optional[float] = None, **kwargs: Any
+        self, *, cpu: Optional[float] = None, memory: Optional[str] = None, **kwargs: Any
     ) -> None:
         """
         :keyword cpu: Required CPU in cores, e.g. 0.5.
@@ -3867,7 +3854,6 @@ class ContainerResources(_serialization.Model):
         self.cpu = cpu
         self.memory = memory
         self.ephemeral_storage = None
-        self.gpu = gpu
 
 
 class CookieExpiration(_serialization.Model):
@@ -8295,9 +8281,6 @@ class ContainerAppsJob(TrackedResource):  # pylint: disable=too-many-instance-at
     :ivar provisioning_state: Provisioning state of the Container Apps Job. Known values are:
      "InProgress", "Succeeded", "Failed", "Canceled", and "Deleting".
     :vartype provisioning_state: str or ~azure.mgmt.appcontainers.models.JobProvisioningState
-    :ivar running_state: Current running state of the job. Known values are: "Ready",
-     "Progressing", and "Suspended".
-    :vartype running_state: str or ~azure.mgmt.appcontainers.models.JobRunningState
     :ivar environment_id: Resource ID of environment.
     :vartype environment_id: str
     :ivar workload_profile_name: Workload profile name to pin for container apps job execution.
@@ -8319,7 +8302,6 @@ class ContainerAppsJob(TrackedResource):  # pylint: disable=too-many-instance-at
         "system_data": {"readonly": True},
         "location": {"required": True},
         "provisioning_state": {"readonly": True},
-        "running_state": {"readonly": True},
         "outbound_ip_addresses": {"readonly": True},
         "event_stream_endpoint": {"readonly": True},
     }
@@ -8334,7 +8316,6 @@ class ContainerAppsJob(TrackedResource):  # pylint: disable=too-many-instance-at
         "extended_location": {"key": "extendedLocation", "type": "ExtendedLocation"},
         "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
-        "running_state": {"key": "properties.runningState", "type": "str"},
         "environment_id": {"key": "properties.environmentId", "type": "str"},
         "workload_profile_name": {"key": "properties.workloadProfileName", "type": "str"},
         "configuration": {"key": "properties.configuration", "type": "JobConfiguration"},
@@ -8379,7 +8360,6 @@ class ContainerAppsJob(TrackedResource):  # pylint: disable=too-many-instance-at
         self.extended_location = extended_location
         self.identity = identity
         self.provisioning_state = None
-        self.running_state = None
         self.environment_id = environment_id
         self.workload_profile_name = workload_profile_name
         self.configuration = configuration
@@ -8418,9 +8398,6 @@ class Job(TrackedResource):  # pylint: disable=too-many-instance-attributes
     :ivar provisioning_state: Provisioning state of the Container Apps Job. Known values are:
      "InProgress", "Succeeded", "Failed", "Canceled", and "Deleting".
     :vartype provisioning_state: str or ~azure.mgmt.appcontainers.models.JobProvisioningState
-    :ivar running_state: Current running state of the job. Known values are: "Ready",
-     "Progressing", and "Suspended".
-    :vartype running_state: str or ~azure.mgmt.appcontainers.models.JobRunningState
     :ivar environment_id: Resource ID of environment.
     :vartype environment_id: str
     :ivar workload_profile_name: Workload profile name to pin for container apps job execution.
@@ -8442,7 +8419,6 @@ class Job(TrackedResource):  # pylint: disable=too-many-instance-attributes
         "system_data": {"readonly": True},
         "location": {"required": True},
         "provisioning_state": {"readonly": True},
-        "running_state": {"readonly": True},
         "outbound_ip_addresses": {"readonly": True},
         "event_stream_endpoint": {"readonly": True},
     }
@@ -8457,7 +8433,6 @@ class Job(TrackedResource):  # pylint: disable=too-many-instance-attributes
         "extended_location": {"key": "extendedLocation", "type": "ExtendedLocation"},
         "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
-        "running_state": {"key": "properties.runningState", "type": "str"},
         "environment_id": {"key": "properties.environmentId", "type": "str"},
         "workload_profile_name": {"key": "properties.workloadProfileName", "type": "str"},
         "configuration": {"key": "properties.configuration", "type": "JobConfiguration"},
@@ -8502,7 +8477,6 @@ class Job(TrackedResource):  # pylint: disable=too-many-instance-attributes
         self.extended_location = extended_location
         self.identity = identity
         self.provisioning_state = None
-        self.running_state = None
         self.environment_id = environment_id
         self.workload_profile_name = workload_profile_name
         self.configuration = configuration

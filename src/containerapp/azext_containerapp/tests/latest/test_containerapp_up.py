@@ -143,7 +143,7 @@ class ContainerAppUpImageTest(ScenarioTest):
 
 class ContainerappUpRegistryIdentityWithSourceTests(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=False, **kwargs)
+        super().__init__(*arg, random_config_dir=True, **kwargs)
 
     @live_only()  # Pass lively, But failed in playback mode when execute queue_acr_build
     @AllowLargeResponse(8192)

@@ -25,7 +25,6 @@ from azure.cli.command_modules.containerapp._github_oauth import cache_github_to
 from azure.cli.command_modules.containerapp._utils import (store_as_secret_and_return_secret_ref, parse_env_var_flags,
                                                            _convert_object_from_snake_to_camel_case,
                                                            _object_to_dict, _remove_additional_attributes,
-                                                           _remove_readonly_attributes,
                                                            is_registry_msi_system, validate_container_app_name, AppType,
                                                            safe_set, parse_metadata_flags, parse_auth_flags,
                                                            ensure_workload_profile_supported, _generate_secret_volume_name,
@@ -67,7 +66,8 @@ from ._models import (
 from ._decorator_utils import (create_deserializer,
                                process_loaded_yaml,
                                load_yaml_file,
-                               infer_runtime_option)
+                               infer_runtime_option,
+                               _remove_readonly_attributes)
 from ._utils import parse_service_bindings, check_unique_bindings, is_registry_msi_system_environment, \
     env_has_managed_identity, create_acrpull_role_assignment_if_needed
 from ._validators import validate_create, validate_runtime

@@ -18,7 +18,7 @@ from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 class ContainerappComposePreviewCommandScenarioTest(ContainerappComposePreviewScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=False, **kwargs)
+        super().__init__(*arg, random_config_dir=True, **kwargs)
 
     @serial_test()
     @ResourceGroupPreparer(name_prefix='cli_test_containerapp_preview', location='eastus')

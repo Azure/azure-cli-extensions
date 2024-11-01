@@ -5,6 +5,7 @@
 # pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except
 import sys
 
+from azure.cli.command_modules.containerapp._utils import _to_camel_case
 from azure.cli.core.azclierror import (ValidationError)
 
 from ._constants import RUNTIME_JAVA
@@ -152,3 +153,15 @@ def infer_runtime_option(runtime, enable_java_metrics, enable_java_agent):
     if enable_java_agent is not None:
         return RUNTIME_JAVA
     return None
+
+
+def _remove_readonly_attributes(containerapp_def):
+    from ._sdk_models import ContainerApp
+
+    unneeded_properties = [_to_camel_case(key) for key, value in ContainerApp._validation.items() if value.get("readonly")]
+
+    for unneeded_property in unneeded_properties:
+        if unneeded_property in containerapp_def:
+            del containerapp_def[unneeded_property]
+        elif unneeded_property in containerapp_def['properties']:
+            del containerapp_def['properties'][unneeded_property]

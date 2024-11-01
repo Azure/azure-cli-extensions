@@ -13,7 +13,7 @@ from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 class ContainerAppAuthTest(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=False, **kwargs)
+        super().__init__(*arg, random_config_dir=True, **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
