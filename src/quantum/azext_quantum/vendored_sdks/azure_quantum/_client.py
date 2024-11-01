@@ -69,7 +69,7 @@ class AzureQuantumWorkspaceServices:  # pylint: disable=too-many-instance-attrib
         credential: "TokenCredential",
         **kwargs: Any
     ) -> None:
-        _endpoint = "https://{region}.{serviceBaseUrl}"
+        _endpoint = kwargs.pop("base_url", None)
         self._config = AzureQuantumWorkspaceServicesConfiguration(
             subscription_id=subscription_id,
             resource_group_name=resource_group_name,

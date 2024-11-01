@@ -51,7 +51,7 @@ def list(cmd, resource_group_name, workspace_name, location):
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    return client.list()
+    return client.list(location)
 
 
 def get(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
