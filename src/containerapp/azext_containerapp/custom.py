@@ -23,7 +23,7 @@ from azure.cli.core.azclierror import (
     ArgumentUsageError,
     MutuallyExclusiveArgumentError)
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.cli.command_modules.containerapp.custom import set_secrets, open_containerapp_in_browser, create_deserializer
+from azure.cli.command_modules.containerapp.custom import set_secrets, open_containerapp_in_browser
 from azure.cli.command_modules.containerapp.containerapp_job_decorator import ContainerAppJobDecorator
 from azure.cli.command_modules.containerapp.containerapp_decorator import BaseContainerAppDecorator
 from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvDecorator
@@ -51,7 +51,7 @@ from knack.prompting import prompt_y_n
 
 from msrest.exceptions import DeserializationError
 
-from ._decorator_utils import process_loaded_yaml_for_connected_env_dapr
+from ._decorator_utils import process_loaded_yaml_for_connected_env_dapr, create_deserializer
 from ._validators import validate_create
 from .containerapp_env_certificate_decorator import ContainerappPreviewEnvCertificateListDecorator, \
     ContainerappEnvCertificatePreviweUploadDecorator
@@ -1867,7 +1867,7 @@ def connected_env_create_or_update_dapr_component(cmd, resource_group_name, envi
 
     # Deserialize the yaml into a DaprComponent object. Need this since we're not using SDK
     try:
-        deserializer = create_deserializer()
+        deserializer = create_deserializer(CONTAINER_APPS_SDK_MODELS)
         daprcomponent_def = deserializer('ConnectedEnvironmentDaprComponent', yaml_dapr_component)
     except DeserializationError as ex:
         raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.') from ex
@@ -1878,15 +1878,13 @@ def connected_env_create_or_update_dapr_component(cmd, resource_group_name, envi
     _remove_additional_attributes(daprcomponent_def)
     _remove_dapr_readonly_attributes(daprcomponent_def)
 
-    if not daprcomponent_def["ignoreErrors"]:
-        daprcomponent_def["ignoreErrors"] = False
-
-    dapr_component_envelope = {"properties": daprcomponent_def}
+    if not safe_get(daprcomponent_def, "properties", "ignoreErrors"):
+        safe_set(daprcomponent_def, "properties", "ignoreErrors", value=False)
 
     try:
         r = ConnectedEnvDaprComponentClient.create_or_update(cmd, resource_group_name=resource_group_name,
                                                              environment_name=environment_name,
-                                                             dapr_component_envelope=dapr_component_envelope,
+                                                             dapr_component_envelope=daprcomponent_def,
                                                              name=dapr_component_name)
         return r
     except Exception as e:

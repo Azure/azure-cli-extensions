@@ -603,7 +603,7 @@ class ConnectedEnvDaprComponentClient():
     api_version = PREVIEW_API_VERSION
 
     @classmethod
-    def create_or_update(cls, cmd, resource_group_name, environment_name, name, dapr_component_envelope):
+    def create_or_update(cls, cmd, resource_group_name, environment_name, name, dapr_component_envelope, no_wait=False):
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
@@ -617,6 +617,13 @@ class ConnectedEnvDaprComponentClient():
             cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(dapr_component_envelope))
+
+        if no_wait:
+            return r.json()
+        elif r.status_code == 201:
+            operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
+            poll_status(cmd, operation_url)
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
         return r.json()
 

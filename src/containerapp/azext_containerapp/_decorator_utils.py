@@ -82,22 +82,14 @@ def process_loaded_yaml(yaml_containerapp):
 
 
 def process_loaded_yaml_for_connected_env_dapr(yaml_dapr_component):
+    from ._sdk_models import ConnectedEnvironmentDaprComponentProperties
+
     if not isinstance(yaml_dapr_component, dict):  # pylint: disable=unidiomatic-typecheck
         raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
     if not yaml_dapr_component.get('properties'):
         yaml_dapr_component['properties'] = {}
-
-    nested_properties = ["componentType",
-                         "version",
-                         "ignoreErrors",
-                         "initTimeout",
-                         "secrets",
-                         "secretStoreComponent",
-                         "metadata",
-                         "scopes",
-                         "serviceComponentBind",
-                         "provisioningState",
-                         "deploymentErrors"]
+    #  Get the value of all "key" in _attribute_map
+    nested_properties = [key["key"] for key in ConnectedEnvironmentDaprComponentProperties._attribute_map.values()]
     for nested_property in nested_properties:
         tmp = yaml_dapr_component.get(nested_property)
         if nested_property in yaml_dapr_component:

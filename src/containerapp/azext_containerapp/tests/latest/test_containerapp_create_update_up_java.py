@@ -9,11 +9,14 @@ import shutil
 import tarfile
 import tempfile
 
+from knack.testsdk import JMESPathCheck
+
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, live_only)
 
 from azext_containerapp.tests.latest.utils import create_and_verify_containerapp_create_and_update, \
-    create_and_verify_containerapp_up, verify_containerapp_create_exception
+    create_and_verify_containerapp_up, verify_containerapp_create_exception, prepare_containerapp_env_for_app_e2e_tests
 
+from .common import TEST_LOCATION, STAGE_LOCATION
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
@@ -102,3 +105,29 @@ class ContainerAppCreateTest(ScenarioTest):
                                                              target_port=target_port)
         finally:
             cleanup(source_path)
+
+    @live_only()
+    @ResourceGroupPreparer(location="eastus")
+    def test_containerapp_create_source_with_buildpack_java_without_acr(self, resource_group):
+        source_path = os.path.join(TEST_DIR, os.path.join("data", "create_source_with_buildpack_java_without_acr"))
+        download_java_source(source_path)
+        ingress = 'external'
+        target_port = '8080'
+        build_env_vars = 'BP_JVM_VERSION=21 BP_MAVEN_VERSION=4 "BP_MAVEN_BUILD_ARGUMENTS=-Dmaven.test.skip=true --no-transfer-progress package"'
+        try:
+            self.cmd(f'configure --defaults location={TEST_LOCATION}')
+
+            app_name = self.create_random_name(prefix='aca', length=24)
+
+            env = prepare_containerapp_env_for_app_e2e_tests(self)
+
+            app_json = self.cmd(
+                f'containerapp create -g {resource_group} -n {app_name} --environment {env} --ingress {ingress} --target-port {target_port} --source "{source_path}" --build-env-vars {build_env_vars}',
+                checks=[
+                    JMESPathCheck("properties.provisioningState", "Succeeded"),
+                    JMESPathCheck("properties.configuration.registries", None)
+                ]).get_output_in_json()
+            image_name = app_json["properties"]["template"]["containers"][0]["image"]
+            self.assertTrue(image_name.startswith(f'default/{app_name}'))
+        finally:
+            pass

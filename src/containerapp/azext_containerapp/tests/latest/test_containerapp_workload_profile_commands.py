@@ -17,7 +17,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ContainerAppWorkloadProfilesTest(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=False, **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus")
@@ -441,7 +441,7 @@ class ContainerAppWorkloadProfilesTest(ScenarioTest):
 
 class ContainerAppWorkloadProfilesGPUTest(ScenarioTest):
     def __init__(self, *arg, **kwargs):
-        super().__init__(*arg, random_config_dir=True, **kwargs)
+        super().__init__(*arg, random_config_dir=False, **kwargs)
 
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="northeurope")
