@@ -15514,7 +15514,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         update_cmd = (
             "aks update --resource-group {resource_group} --name {aks_name_2} "
             "--bootstrap-artifact-source Cache --bootstrap-container-registry-resource-id {acr_id} "
-            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkIsolatedClusterPreview"
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkIsolatedClusterPreview "
             "-o json"
         )
         self.cmd(update_cmd, checks=[
