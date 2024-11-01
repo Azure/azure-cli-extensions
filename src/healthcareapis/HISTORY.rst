@@ -3,6 +3,10 @@
 Release History
 ===============
 
+0.5.0
+++++++
+* Moved deidservice under healthcareapis
+
 0.4.0
 ++++++
 

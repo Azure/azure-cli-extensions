@@ -25,19 +25,19 @@ class DeidserviceScenario(ScenarioTest):
         })
         
         # Create deidservice
-        self.cmd('az deidservice create --name {serviceName} -g {rg} --location {location}', checks=[
+        self.cmd('az healthcareapis deidservice create --name {serviceName} -g {rg} --location {location}', checks=[
             self.check('name', '{serviceName}'),
             self.check('location', '{location}')
         ])
         
         # Update deidservice
-        self.cmd('az deidservice update --name {serviceName} -g {rg} --tags tag=test', checks=[
+        self.cmd('az healthcareapis deidservice update --name {serviceName} -g {rg} --tags tag=test', checks=[
             self.check('name', '{serviceName}'),
             self.check('tags.tag', 'test')
         ])
         
         # Show deidservice
-        self.cmd('az deidservice show --name {serviceName} -g {rg}', checks=[
+        self.cmd('az healthcareapis deidservice show --name {serviceName} -g {rg}', checks=[
             self.check('name', '{serviceName}'),
             self.check('tags.tag', 'test'),
             self.check('location', '{location}'),
@@ -46,7 +46,7 @@ class DeidserviceScenario(ScenarioTest):
         ])
         
         # List deidservices
-        self.cmd('az deidservice list -g {rg}', checks=[
+        self.cmd('az healthcareapis deidservice list -g {rg}', checks=[
             self.check('[0].name', '{serviceName}'),
             self.check('[0].tags.tag', 'test'),
             self.check('[0].location', '{location}'),
@@ -55,8 +55,8 @@ class DeidserviceScenario(ScenarioTest):
         ])
         
         # Delete deidservice
-        self.cmd('az deidservice delete --name {serviceName} -g {rg} -y')
+        self.cmd('az healthcareapis deidservice delete --name {serviceName} -g {rg} -y')
         
         # Verify deletion by listing again
-        services = self.cmd('az deidservice list -g {rg}').get_output_in_json()
+        services = self.cmd('az healthcareapis deidservice list -g {rg}').get_output_in_json()
         self.assertEqual(len(services), 0)
