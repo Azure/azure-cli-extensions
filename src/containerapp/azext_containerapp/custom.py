@@ -51,6 +51,7 @@ from knack.prompting import prompt_y_n
 
 from msrest.exceptions import DeserializationError
 
+from ._decorator_utils import process_loaded_yaml_for_connected_env_dapr
 from ._validators import validate_create
 from .containerapp_env_certificate_decorator import ContainerappPreviewEnvCertificateListDecorator, \
     ContainerappEnvCertificatePreviweUploadDecorator
@@ -1860,14 +1861,14 @@ def connected_env_remove_dapr_component(cmd, resource_group_name, dapr_component
 def connected_env_create_or_update_dapr_component(cmd, resource_group_name, environment_name, dapr_component_name, yaml):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
-    yaml_dapr_component = load_yaml_file(yaml)
+    yaml_dapr_component = process_loaded_yaml_for_connected_env_dapr(load_yaml_file(yaml))
     if not isinstance(yaml_dapr_component, dict):  # pylint: disable=unidiomatic-typecheck
         raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.')
 
     # Deserialize the yaml into a DaprComponent object. Need this since we're not using SDK
     try:
         deserializer = create_deserializer()
-        daprcomponent_def = deserializer('DaprComponent', yaml_dapr_component)
+        daprcomponent_def = deserializer('ConnectedEnvironmentDaprComponent', yaml_dapr_component)
     except DeserializationError as ex:
         raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.') from ex
 

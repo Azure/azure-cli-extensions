@@ -81,6 +81,32 @@ def process_loaded_yaml(yaml_containerapp):
     return yaml_containerapp
 
 
+def process_loaded_yaml_for_connected_env_dapr(yaml_dapr_component):
+    if not isinstance(yaml_dapr_component, dict):  # pylint: disable=unidiomatic-typecheck
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+    if not yaml_dapr_component.get('properties'):
+        yaml_dapr_component['properties'] = {}
+
+    nested_properties = ["componentType",
+                         "version",
+                         "ignoreErrors",
+                         "initTimeout",
+                         "secrets",
+                         "secretStoreComponent",
+                         "metadata",
+                         "scopes",
+                         "serviceComponentBind",
+                         "provisioningState",
+                         "deploymentErrors"]
+    for nested_property in nested_properties:
+        tmp = yaml_dapr_component.get(nested_property)
+        if nested_property in yaml_dapr_component:
+            yaml_dapr_component['properties'][nested_property] = tmp
+            del yaml_dapr_component[nested_property]
+
+    return yaml_dapr_component
+
+
 def process_containerapp_resiliency_yaml(containerapp_resiliency):
 
     if not isinstance(containerapp_resiliency, dict):  # pylint: disable=unidiomatic-typecheck
