@@ -5,6 +5,7 @@ Release History
 upcoming
 ++++++
 * 'az containerapp create': Fix Role assignment error when the default Azure Container Registry could not be found
+* 'az containerapp sessionpool create': Support managed identity when create session pool
 
 1.0.0b4
 ++++++
