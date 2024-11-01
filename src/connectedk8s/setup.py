@@ -7,8 +7,8 @@
 
 
 from codecs import open
-from setuptools import setup, find_packages
 
+from setuptools import find_packages, setup
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.

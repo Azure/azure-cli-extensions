@@ -6,7 +6,6 @@
 
 from knack.help_files import helps  # pylint: disable=unused-import
 
-
 helps["connectedk8s"] = """
     type: group
     short-summary: Commands to manage connected kubernetes clusters.

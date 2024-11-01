@@ -3,23 +3,29 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import os
 import json
-import requests
+import os
 import platform
-import stat
-import psutil
-from knack.util import CLIError
-import azext_connectedk8s._constants as consts
-import urllib.request
 import shutil
-import time
-from knack.log import get_logger
-from azure.cli.core import get_default_cli
+import stat
 import subprocess
+import time
+import urllib.request
 from subprocess import PIPE
-from azure.cli.testsdk import LiveScenarioTest, ResourceGroupPreparer, live_only  # pylint: disable=import-error
+
+import psutil
+import requests
+from azure.cli.core import get_default_cli
 from azure.cli.core.azclierror import RequiredArgumentMissingError, ValidationError
+from azure.cli.testsdk import (  # pylint: disable=import-error
+    LiveScenarioTest,
+    ResourceGroupPreparer,
+    live_only,
+)
+from knack.log import get_logger
+from knack.util import CLIError
+
+import azext_connectedk8s._constants as consts
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 logger = get_logger(__name__)

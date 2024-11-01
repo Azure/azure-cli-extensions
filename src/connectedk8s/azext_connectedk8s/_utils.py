@@ -3,39 +3,40 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import sys
+import json
 import os
 import shutil
-from packaging import version
 import subprocess
-from subprocess import Popen, PIPE
+import sys
 import time
-from requests.adapters import HTTPAdapter
-import json
-from knack.log import get_logger
-from knack.prompting import NoTTYException, prompt_y_n
+from subprocess import PIPE, Popen
+
+from azure.cli.core import get_default_cli, telemetry
+from azure.cli.core.azclierror import (
+    ArgumentUsageError,
+    AzureInternalError,
+    AzureResponseError,
+    ClientRequestError,
+    CLIInternalError,
+    ManualInterrupt,
+    ValidationError,
+)
 from azure.cli.core.commands.client_factory import get_subscription_id
 from azure.cli.core.util import send_raw_request
-from azure.cli.core import telemetry
-from azure.core.exceptions import ResourceNotFoundError, HttpResponseError
+from azure.core.exceptions import HttpResponseError, ResourceNotFoundError
+from knack.log import get_logger
+from knack.prompting import NoTTYException, prompt_y_n
+from kubernetes import client as kube_client
+from kubernetes.client.rest import ApiException
 from msrest.exceptions import AuthenticationError, HttpOperationError, TokenExpiredError
 from msrest.exceptions import ValidationError as MSRestValidationError
-from kubernetes.client.rest import ApiException
-from azext_connectedk8s._client_factory import (
-    resource_providers_client,
-    cf_resource_groups,
-)
+from packaging import version
+from requests.adapters import HTTPAdapter
+
 import azext_connectedk8s._constants as consts
-from kubernetes import client as kube_client
-from azure.cli.core import get_default_cli
-from azure.cli.core.azclierror import (
-    CLIInternalError,
-    ClientRequestError,
-    ArgumentUsageError,
-    ManualInterrupt,
-    AzureResponseError,
-    AzureInternalError,
-    ValidationError,
+from azext_connectedk8s._client_factory import (
+    cf_resource_groups,
+    resource_providers_client,
 )
 
 logger = get_logger(__name__)

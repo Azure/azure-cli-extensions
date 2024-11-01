@@ -5,14 +5,15 @@
 
 # pylint: disable=line-too-long
 from azure.cli.core.commands import CliCommandType
+
 from azext_connectedk8s._client_factory import (
-    cf_connectedk8s,
     cf_connected_cluster,
-    cf_connectedk8s_prev_2022_10_01,
     cf_connected_cluster_prev_2022_10_01,
+    cf_connectedk8s,
+    cf_connectedk8s_prev_2022_10_01,
 )
-from ._format import connectedk8s_show_table_format
-from ._format import connectedk8s_list_table_format
+
+from ._format import connectedk8s_list_table_format, connectedk8s_show_table_format
 
 
 def load_command_table(self, _):

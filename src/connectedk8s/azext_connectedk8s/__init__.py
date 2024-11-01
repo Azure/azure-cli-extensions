@@ -11,6 +11,7 @@ from azext_connectedk8s._help import helps
 class Connectedk8sCommandsLoader(AzCommandsLoader):
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
+
         from azext_connectedk8s._client_factory import cf_connectedk8s
 
         connectedk8s_custom = CliCommandType(

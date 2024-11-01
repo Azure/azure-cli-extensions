@@ -3,15 +3,17 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from kubernetes import client, config, watch, utils
-import os
-import yaml
-import json
 import datetime
-from subprocess import Popen, PIPE
+import json
+import os
 import shutil
-from knack.log import get_logger
+from subprocess import PIPE, Popen
+
+import yaml
 from azure.cli.core import telemetry
+from knack.log import get_logger
+from kubernetes import client, config, utils, watch
+
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as azext_utils
 from azext_connectedk8s._utils import get_utctimestring

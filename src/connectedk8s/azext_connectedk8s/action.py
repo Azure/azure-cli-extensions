@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import argparse
+
 from azure.cli.core.azclierror import ArgumentUsageError
 
 

@@ -4,7 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 from collections import OrderedDict
-from jmespath import compile as compile_jmes, Options  # pylint: disable=import-error
+
+from jmespath import Options
+from jmespath import compile as compile_jmes  # pylint: disable=import-error
 
 
 def connectedk8s_show_table_format(result):

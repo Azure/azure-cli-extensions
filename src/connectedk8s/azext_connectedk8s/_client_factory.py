@@ -3,15 +3,16 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core.commands.client_factory import get_mgmt_service_client
-from azure.cli.core.profiles import ResourceType
+import os
+from collections import namedtuple
+
+import requests
 from azure.cli.core import telemetry
 from azure.cli.core.azclierror import ValidationError
+from azure.cli.core.commands.client_factory import get_mgmt_service_client
+from azure.cli.core.profiles import ResourceType
 
-import os
-import requests
 import azext_connectedk8s._constants as consts
-from collections import namedtuple
 
 AccessToken = namedtuple("AccessToken", ["token", "expires_on"])
 

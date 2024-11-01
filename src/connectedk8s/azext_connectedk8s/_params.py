@@ -5,22 +5,24 @@
 # pylint: disable=line-too-long
 
 import os.path
+
 from argcomplete.completers import FilesCompleter
 from azure.cli.core.commands.parameters import (
-    get_location_type,
-    get_enum_type,
     file_type,
-    tags_type,
+    get_enum_type,
+    get_location_type,
     get_three_state_flag,
+    tags_type,
 )
 from azure.cli.core.commands.validators import get_default_location_from_resource_group
+from knack.arguments import CaseInsensitiveList, CLIArgumentType
+
 from azext_connectedk8s._constants import (
-    Distribution_Enum_Values,
-    Infrastructure_Enum_Values,
-    Feature_Values,
     AHB_Enum_Values,
+    Distribution_Enum_Values,
+    Feature_Values,
+    Infrastructure_Enum_Values,
 )
-from knack.arguments import CLIArgumentType, CaseInsensitiveList
 
 from ._validators import (
     override_client_request_id_header,
@@ -31,10 +33,9 @@ from ._validators import (
     validate_workload_identity_updates,
 )
 from .action import (
-    AddConfigurationSettings,
     AddConfigurationProtectedSettings,
+    AddConfigurationSettings,
 )
-
 
 features_types = CLIArgumentType(nargs="+", choices=CaseInsensitiveList(Feature_Values))
 

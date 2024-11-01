@@ -5,15 +5,17 @@
 
 import os
 import shutil
-from subprocess import Popen, PIPE
-from kubernetes import config, watch
-from knack.log import get_logger
+from subprocess import PIPE, Popen
+
 from azure.cli.core import telemetry
-import azext_connectedk8s._constants as consts
-import azext_connectedk8s._utils as azext_utils
 from azure.cli.core.azclierror import (
     CLIInternalError,
 )
+from knack.log import get_logger
+from kubernetes import config, watch
+
+import azext_connectedk8s._constants as consts
+import azext_connectedk8s._utils as azext_utils
 
 logger = get_logger(__name__)
 # pylint: disable=unused-argument, too-many-locals, too-many-branches, too-many-statements, line-too-long

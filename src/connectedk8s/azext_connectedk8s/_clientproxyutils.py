@@ -3,27 +3,30 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-import sys
-import os
-import platform
 import base64
 import json
+import os
+import platform
+import sys
+import time
+from base64 import b64decode, b64encode
+
 import requests
 import yaml
-import time
-import azext_connectedk8s._constants as consts
-from base64 import b64encode, b64decode
-from azure.cli.core._profile import Profile
 from azure.cli.core import telemetry
+from azure.cli.core._profile import Profile
 from azure.cli.core.azclierror import CLIInternalError
+from knack.log import get_logger
 from psutil import (
-    process_iter,
-    NoSuchProcess,
     AccessDenied,
+    NoSuchProcess,
     ZombieProcess,
     net_connections,
+    process_iter,
 )
-from knack.log import get_logger
+
+import azext_connectedk8s._constants as consts
+
 logger = get_logger(__name__)
 
 

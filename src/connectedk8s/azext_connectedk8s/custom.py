@@ -4,59 +4,64 @@
 # --------------------------------------------------------------------------------------------
 
 import errno
+import hashlib
+import json
 import logging
 import os
-import json
+import platform
+import re
+import shutil
+import stat
+import sys
 import tempfile
 import time
-from packaging import version
-from subprocess import Popen, PIPE, DEVNULL
-from base64 import b64encode, b64decode
-import stat
-import platform
-import yaml
 import urllib.request
-import shutil
-from azure.cli.core import get_default_cli
-from knack.log import get_logger
-from knack.prompting import prompt_y_n
-from knack.prompting import NoTTYException
+from base64 import b64decode, b64encode
+from glob import glob
+from subprocess import DEVNULL, PIPE, Popen
+
+import yaml
 from azure.cli.command_modules.role import graph_client_factory
-from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.cli.core.commands import LongRunningOperation
+from azure.cli.core import get_default_cli, telemetry
 from azure.cli.core._profile import Profile
-from azure.cli.core.util import sdk_no_wait
-from azure.cli.core import telemetry
 from azure.cli.core.azclierror import (
-    ManualInterrupt,
-    InvalidArgumentValueError,
-    UnclassifiedUserFault,
+    ArgumentUsageError,
+    ClientRequestError,
     CLIInternalError,
     FileOperationError,
-    ClientRequestError,
-    ValidationError,
-    ArgumentUsageError,
+    InvalidArgumentValueError,
+    ManualInterrupt,
     MutuallyExclusiveArgumentError,
     RequiredArgumentMissingError,
+    UnclassifiedUserFault,
+    ValidationError,
 )
+from azure.cli.core.commands import LongRunningOperation
+from azure.cli.core.commands.client_factory import get_subscription_id
+from azure.cli.core.util import sdk_no_wait
 from azure.core.exceptions import HttpResponseError
-from kubernetes import client as kube_client, config
 from Crypto.IO import PEM
 from Crypto.PublicKey import RSA
 from Crypto.Util import asn1
-from azext_connectedk8s._client_factory import cf_resource_groups
-from azext_connectedk8s._client_factory import resource_providers_client
+from knack.log import get_logger
+from knack.prompting import NoTTYException, prompt_y_n
+from kubernetes import client as kube_client
+from kubernetes import config
+from packaging import version
+
+import azext_connectedk8s._clientproxyutils as clientproxyutils
+import azext_connectedk8s._constants as consts
+import azext_connectedk8s._precheckutils as precheckutils
+import azext_connectedk8s._troubleshootutils as troubleshootutils
+import azext_connectedk8s._utils as utils
 from azext_connectedk8s._client_factory import (
     cf_connected_cluster_prev_2023_11_01,
     cf_connected_cluster_prev_2024_07_01,
+    cf_connectedmachine,
+    cf_resource_groups,
+    resource_providers_client,
 )
-from azext_connectedk8s._client_factory import cf_connectedmachine
-import azext_connectedk8s._constants as consts
-import azext_connectedk8s._utils as utils
-import azext_connectedk8s._clientproxyutils as clientproxyutils
-import azext_connectedk8s._troubleshootutils as troubleshootutils
-import azext_connectedk8s._precheckutils as precheckutils
-from glob import glob
+
 from .vendored_sdks.models import (
     ConnectedCluster,
     ConnectedClusterIdentity,
@@ -66,17 +71,16 @@ from .vendored_sdks.preview_2022_10_01.models import (
     ConnectedClusterPatch as ConnectedClusterPatchPreview,
 )
 from .vendored_sdks.preview_2024_07_01.models import (
-    ConnectedCluster as ConnectedCluster2024_07_01_Preview,
+    ArcAgentProfile,
+    ArcAgentryConfigurations,
+    Gateway,
     OidcIssuerProfile,
     SecurityProfile,
     SecurityProfileWorkloadIdentity,
-    ArcAgentryConfigurations,
-    Gateway,
-    ArcAgentProfile,
 )
-import sys
-import hashlib
-import re
+from .vendored_sdks.preview_2024_07_01.models import (
+    ConnectedCluster as ConnectedCluster2024_07_01_Preview,
+)
 
 logger = get_logger(__name__)
 # pylint:disable=unused-argument
