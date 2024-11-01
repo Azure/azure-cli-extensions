@@ -325,10 +325,9 @@ def save_cluster_diagnostic_checks_pod_description(
             )
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
-            logger.warning(
-                "An exception has occured while saving the cluster diagnostic checks pod description in "
-                "the local machine. Exception: {}".format(str(e))
-                + "\n"
+            logger.exception(
+                "An exception has occured while saving the cluster diagnostic checks "
+                "pod description in the local machine."
             )
             telemetry.set_exception(
                 exception=e,
@@ -338,10 +337,9 @@ def save_cluster_diagnostic_checks_pod_description(
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-        logger.warning(
-            "An exception has occured while saving the cluster diagnostic checks pod description in the "
-            "local machine. Exception: {}".format(str(e))
-            + "\n"
+        logger.exception(
+            "An exception has occured while saving the cluster diagnostic checks pod "
+            "description in the local machine."
         )
         telemetry.set_exception(
             exception=e,
@@ -403,10 +401,9 @@ def check_cluster_DNS(
             )
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
-            logger.warning(
-                "An exception has occured while performing the DNS check on the cluster. "
-                "Exception: {}".format(str(e))
-                + "\n"
+            logger.exception(
+                "An exception has occured while performing the DNS check on the "
+                "cluster."
             )
             telemetry.set_exception(
                 exception=e,
@@ -421,10 +418,8 @@ def check_cluster_DNS(
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-        logger.warning(
-            "An exception has occured while performing the DNS check on the cluster. "
-            "Exception: {}".format(str(e))
-            + "\n"
+        logger.exception(
+            "An exception has occured while performing the DNS check on the cluster."
         )
         telemetry.set_exception(
             exception=e,
@@ -484,11 +479,12 @@ def check_cluster_outbound_connectivity(
                         )
             else:
                 logger.warning(
-                    "The outbound network connectivity check has failed for the endpoint - "
-                    + Cluster_Connect_Precheck_Endpoint_Url
-                    + '\nThis will affect the "cluster-connect" feature. If you are planning to use '
-                    '"cluster-connect" functionality , please ensure outbound connectivity to the '
-                    "above endpoint.\n"
+                    "The outbound network connectivity check has failed for the "
+                    "endpoint - %s\n"
+                    'This will affect the "cluster-connect" feature. If you are planning to use '
+                    '"cluster-connect" functionality, please ensure outbound connectivity to the '
+                    "above endpoint.\n",
+                    Cluster_Connect_Precheck_Endpoint_Url
                 )
                 telemetry.set_user_fault()
                 telemetry.set_exception(
@@ -629,10 +625,9 @@ def check_cluster_outbound_connectivity(
             )
             shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
         else:
-            logger.warning(
-                "An exception has occured while performing the outbound connectivity check on the cluster. "
-                "Exception: {}".format(str(e))
-                + "\n"
+            logger.exception(
+                "An exception has occured while performing the outbound connectivity "
+                "check on the cluster."
             )
             telemetry.set_exception(
                 exception=e,
@@ -647,10 +642,9 @@ def check_cluster_outbound_connectivity(
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-        logger.warning(
-            "An exception has occured while performing the outbound connectivity check on the cluster. "
-            "Exception: {}".format(str(e))
-            + "\n"
+        logger.exception(
+            "An exception has occured while performing the outbound connectivity check "
+            "on the cluster."
         )
         telemetry.set_exception(
             exception=e,
@@ -703,10 +697,9 @@ def create_folder_diagnosticlogs(time_stamp, folder_name):
                 summary="No space left on device",
             )
             return "", False
-        logger.warning(
-            "An exception has occured while creating the diagnostic logs folder in your local machine. "
-            "Exception: {}".format(str(e))
-            + "\n"
+        logger.exception(
+            "An exception has occured while creating the diagnostic logs folder in "
+            "your local machine."
         )
         telemetry.set_exception(
             exception=e,
@@ -717,10 +710,9 @@ def create_folder_diagnosticlogs(time_stamp, folder_name):
 
     # To handle any exception that may occur during the execution
     except Exception as e:
-        logger.warning(
-            "An exception has occured while creating the diagnostic logs folder in your local machine. "
-            "Exception: {}".format(str(e))
-            + "\n"
+        logger.exception(
+            "An exception has occured while creating the diagnostic logs folder in "
+            "your local machine."
         )
         telemetry.set_exception(
             exception=e,
@@ -1025,7 +1017,7 @@ def kubernetes_exception_handler(
         elif status_code == 404:
             logger.warning(message_for_not_found)
         else:
-            logger.debug("Kubernetes Exception: " + str(ex))
+            logger.debug("Kubernetes Exception: ", exc_info=True)
         if raise_error:
             telemetry.set_exception(
                 exception=ex, fault_type=fault_type, summary=summary
@@ -1038,7 +1030,7 @@ def kubernetes_exception_handler(
             )
             raise ValidationError(error_message + "\nError: " + str(ex))
 
-        logger.debug("Kubernetes Exception: " + str(ex))
+        logger.debug("Kubernetes Exception", exc_info=True)
 
 
 def validate_infrastructure_type(infra):
@@ -1087,7 +1079,7 @@ def ensure_namespace_cleanup():
                 return
             time.sleep(5)
         except Exception as e:  # pylint: disable=broad-except
-            logger.warning("Error while retrieving namespace information: " + str(e))
+            logger.exception("Error while retrieving namespace information.")
             kubernetes_exception_handler(
                 e,
                 consts.Get_Kubernetes_Namespace_Fault_Type,

@@ -40,7 +40,7 @@ def check_if_port_is_open(port):
             summary="Failed to check if port is in use.",
         )
         if platform.system() != "Darwin":
-            logger.info("Failed to check if port is in use. " + str(e))
+            logger.exception("Failed to check if port is in use.")
         return False
     return False
 
