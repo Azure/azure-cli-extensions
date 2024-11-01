@@ -12,19 +12,21 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine private-link-scope network-security-perimeter-configuration reconcile",
+    "connectedmachine run-command delete",
+    is_preview=True,
+    confirmation="Are you sure you want to perform this operation?",
 )
-class Reconcile(AAZCommand):
-    """Force the network security perimeter configuration to refresh for a private link scope.
+class Delete(AAZCommand):
+    """Delete a run command.
 
-    :example: Sample command for NSP reconcile
-        az connectedmachine private-link-scope network-security-perimeter-configuration reconcile --resource-group myResourceGroup --scope-name myPrivateLinkScope --perimeter-name aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee.myAssociation
+    :example: Sample command for run-command delete
+        az connectedmachine run-command delete --resource-group myResourceGroup --machine-name myMachine --name myRunCommand
     """
 
     _aaz_info = {
         "version": "2024-07-31-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/privatelinkscopes/{}/networksecurityperimeterconfigurations/{}/reconcile", "2024-07-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/runcommands/{}", "2024-07-31-preview"],
         ]
     }
 
@@ -32,7 +34,7 @@ class Reconcile(AAZCommand):
 
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        return self.build_lro_poller(self._execute_operations, None)
 
     _args_schema = None
 
@@ -45,23 +47,23 @@ class Reconcile(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.perimeter_name = AAZStrArg(
-            options=["--perimeter-name"],
-            help="The name, in the format {perimeterGuid}.{associationName}, of the Network Security Perimeter resource.",
+        _args_schema.machine_name = AAZStrArg(
+            options=["--machine-name"],
+            help="The name of the hybrid machine.",
             required=True,
-            id_part="child_name_1",
+            id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[.]{1}.+$",
+                pattern="[a-zA-Z0-9-_\.]+",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
-        _args_schema.scope_name = AAZStrArg(
-            options=["--scope-name"],
-            help="The name of the Azure Arc PrivateLinkScope resource.",
+        _args_schema.run_command_name = AAZStrArg(
+            options=["-n", "--name", "--run-command-name"],
+            help="The name of the run command.",
             required=True,
-            id_part="name",
+            id_part="child_name_1",
             fmt=AAZStrArgFormat(
                 pattern="[a-zA-Z0-9-_\.]+",
             ),
@@ -70,7 +72,7 @@ class Reconcile(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.NetworkSecurityPerimeterConfigurationsReconcileForPrivateLinkScope(ctx=self.ctx)()
+        yield self.MachineRunCommandsDelete(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -81,11 +83,7 @@ class Reconcile(AAZCommand):
     def post_operations(self):
         pass
 
-    def _output(self, *args, **kwargs):
-        result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
-        return result
-
-    class NetworkSecurityPerimeterConfigurationsReconcileForPrivateLinkScope(AAZHttpOperation):
+    class MachineRunCommandsDelete(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
@@ -95,18 +93,27 @@ class Reconcile(AAZCommand):
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
+                    self.on_200_201,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
-            if session.http_response.status_code in [200]:
+            if session.http_response.status_code in [204]:
                 return self.client.build_lro_polling(
                     self.ctx.args.no_wait,
                     session,
-                    self.on_200,
+                    self.on_204,
                     self.on_error,
-                    lro_options={"final-state-via": "azure-async-operation"},
+                    lro_options={"final-state-via": "location"},
+                    path_format_arguments=self.url_parameters,
+                )
+            if session.http_response.status_code in [200, 201]:
+                return self.client.build_lro_polling(
+                    self.ctx.args.no_wait,
+                    session,
+                    self.on_200_201,
+                    self.on_error,
+                    lro_options={"final-state-via": "location"},
                     path_format_arguments=self.url_parameters,
                 )
 
@@ -115,13 +122,13 @@ class Reconcile(AAZCommand):
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/privateLinkScopes/{scopeName}/networkSecurityPerimeterConfigurations/{perimeterName}/reconcile",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/runCommands/{runCommandName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "DELETE"
 
         @property
         def error_format(self):
@@ -131,7 +138,7 @@ class Reconcile(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "perimeterName", self.ctx.args.perimeter_name,
+                    "machineName", self.ctx.args.machine_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -139,7 +146,7 @@ class Reconcile(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "scopeName", self.ctx.args.scope_name,
+                    "runCommandName", self.ctx.args.run_command_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -159,40 +166,15 @@ class Reconcile(AAZCommand):
             }
             return parameters
 
-        @property
-        def header_parameters(self):
-            parameters = {
-                **self.serialize_header_param(
-                    "Accept", "application/json",
-                ),
-            }
-            return parameters
+        def on_204(self, session):
+            pass
 
-        def on_200(self, session):
-            data = self.deserialize_http_content(session)
-            self.ctx.set_var(
-                "instance",
-                data,
-                schema_builder=self._build_schema_on_200
-            )
-
-        _schema_on_200 = None
-
-        @classmethod
-        def _build_schema_on_200(cls):
-            if cls._schema_on_200 is not None:
-                return cls._schema_on_200
-
-            cls._schema_on_200 = AAZObjectType()
-
-            _schema_on_200 = cls._schema_on_200
-            _schema_on_200.location = AAZStrType()
-
-            return cls._schema_on_200
+        def on_200_201(self, session):
+            pass
 
 
-class _ReconcileHelper:
-    """Helper class for Reconcile"""
+class _DeleteHelper:
+    """Helper class for Delete"""
 
 
-__all__ = ["Reconcile"]
+__all__ = ["Delete"]

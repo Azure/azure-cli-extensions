@@ -12,27 +12,23 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "connectedmachine assess-patches",
+    "connectedmachine license-profile show",
 )
-class AssessPatches(AAZCommand):
-    """Assess patches on an Azure Arc-Enabled Server.
-
-    :example: Sample command for assess-patches
-        az connectedmachine assess-patches --resource-group MyResourceGroup --name MyMachine
+class Show(AAZCommand):
+    """Get information about the view of a license profile.
     """
 
     _aaz_info = {
         "version": "2024-07-31-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/assesspatches", "2024-07-31-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hybridcompute/machines/{}/licenseprofiles/{}", "2024-07-31-preview"],
         ]
     }
 
-    AZ_SUPPORT_NO_WAIT = True
-
     def _handler(self, command_args):
         super()._handler(command_args)
-        return self.build_lro_poller(self._execute_operations, self._output)
+        self._execute_operations()
+        return self._output()
 
     _args_schema = None
 
@@ -45,11 +41,24 @@ class AssessPatches(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
+        _args_schema.license_profile_name = AAZStrArg(
+            options=["-n", "--name", "--license-profile-name"],
+            help="The name of the license profile.",
+            required=True,
+            id_part="child_name_1",
+            enum={"default": "default"},
+            fmt=AAZStrArgFormat(
+                pattern="[a-zA-Z0-9-_\.]+",
+            ),
+        )
+        _args_schema.machine_name = AAZStrArg(
+            options=["--machine-name"],
             help="The name of the hybrid machine.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="[a-zA-Z0-9-_\.]+",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -58,7 +67,7 @@ class AssessPatches(AAZCommand):
 
     def _execute_operations(self):
         self.pre_operations()
-        yield self.MachinesAssessPatches(ctx=self.ctx)()
+        self.LicenseProfilesGet(ctx=self.ctx)()
         self.post_operations()
 
     @register_callback
@@ -73,43 +82,27 @@ class AssessPatches(AAZCommand):
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
         return result
 
-    class MachinesAssessPatches(AAZHttpOperation):
+    class LicenseProfilesGet(AAZHttpOperation):
         CLIENT_TYPE = "MgmtClient"
 
         def __call__(self, *args, **kwargs):
             request = self.make_request()
             session = self.client.send_request(request=request, stream=False, **kwargs)
-            if session.http_response.status_code in [202]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
             if session.http_response.status_code in [200]:
-                return self.client.build_lro_polling(
-                    self.ctx.args.no_wait,
-                    session,
-                    self.on_200,
-                    self.on_error,
-                    lro_options={"final-state-via": "location"},
-                    path_format_arguments=self.url_parameters,
-                )
+                return self.on_200(session)
 
             return self.on_error(session.http_response)
 
         @property
         def url(self):
             return self.client.format_url(
-                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{name}/assessPatches",
+                "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.HybridCompute/machines/{machineName}/licenseProfiles/{licenseProfileName}",
                 **self.url_parameters
             )
 
         @property
         def method(self):
-            return "POST"
+            return "GET"
 
         @property
         def error_format(self):
@@ -119,7 +112,11 @@ class AssessPatches(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "name", self.ctx.args.name,
+                    "licenseProfileName", self.ctx.args.license_profile_name,
+                    required=True,
+                ),
+                **self.serialize_url_param(
+                    "machineName", self.ctx.args.machine_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -170,83 +167,172 @@ class AssessPatches(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.assessment_activity_id = AAZStrType(
-                serialized_name="assessmentActivityId",
+            _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
-            _schema_on_200.available_patch_count_by_classification = AAZObjectType(
-                serialized_name="availablePatchCountByClassification",
+            _schema_on_200.location = AAZStrType(
+                flags={"required": True},
             )
-            _schema_on_200.error_details = AAZObjectType(
-                serialized_name="errorDetails",
+            _schema_on_200.name = AAZStrType(
                 flags={"read_only": True},
             )
-            _AssessPatchesHelper._build_schema_error_detail_read(_schema_on_200.error_details)
-            _schema_on_200.last_modified_date_time = AAZStrType(
-                serialized_name="lastModifiedDateTime",
+            _schema_on_200.properties = AAZObjectType(
+                flags={"client_flatten": True},
+            )
+            _schema_on_200.system_data = AAZObjectType(
+                serialized_name="systemData",
                 flags={"read_only": True},
             )
-            _schema_on_200.os_type = AAZStrType(
-                serialized_name="osType",
-                flags={"read_only": True},
-            )
-            _schema_on_200.patch_service_used = AAZStrType(
-                serialized_name="patchServiceUsed",
-                flags={"read_only": True},
-            )
-            _schema_on_200.reboot_pending = AAZBoolType(
-                serialized_name="rebootPending",
-                flags={"read_only": True},
-            )
-            _schema_on_200.start_date_time = AAZStrType(
-                serialized_name="startDateTime",
-                flags={"read_only": True},
-            )
-            _schema_on_200.started_by = AAZStrType(
-                serialized_name="startedBy",
-                flags={"read_only": True},
-            )
-            _schema_on_200.status = AAZStrType(
+            _schema_on_200.tags = AAZDictType()
+            _schema_on_200.type = AAZStrType(
                 flags={"read_only": True},
             )
 
-            available_patch_count_by_classification = cls._schema_on_200.available_patch_count_by_classification
-            available_patch_count_by_classification.critical = AAZIntType(
+            properties = cls._schema_on_200.properties
+            properties.esu_profile = AAZObjectType(
+                serialized_name="esuProfile",
+                flags={"client_flatten": True},
+            )
+            properties.product_profile = AAZObjectType(
+                serialized_name="productProfile",
+                flags={"client_flatten": True},
+            )
+            properties.provisioning_state = AAZStrType(
+                serialized_name="provisioningState",
                 flags={"read_only": True},
             )
-            available_patch_count_by_classification.definition = AAZIntType(
+            properties.software_assurance = AAZObjectType(
+                serialized_name="softwareAssurance",
+                flags={"client_flatten": True},
+            )
+
+            esu_profile = cls._schema_on_200.properties.esu_profile
+            esu_profile.assigned_license = AAZStrType(
+                serialized_name="assignedLicense",
+            )
+            esu_profile.assigned_license_immutable_id = AAZStrType(
+                serialized_name="assignedLicenseImmutableId",
                 flags={"read_only": True},
             )
-            available_patch_count_by_classification.feature_pack = AAZIntType(
-                serialized_name="featurePack",
+            esu_profile.esu_eligibility = AAZStrType(
+                serialized_name="esuEligibility",
                 flags={"read_only": True},
             )
-            available_patch_count_by_classification.other = AAZIntType(
+            esu_profile.esu_key_state = AAZStrType(
+                serialized_name="esuKeyState",
                 flags={"read_only": True},
             )
-            available_patch_count_by_classification.security = AAZIntType(
+            esu_profile.esu_keys = AAZListType(
+                serialized_name="esuKeys",
                 flags={"read_only": True},
             )
-            available_patch_count_by_classification.service_pack = AAZIntType(
-                serialized_name="servicePack",
+            esu_profile.server_type = AAZStrType(
+                serialized_name="serverType",
                 flags={"read_only": True},
             )
-            available_patch_count_by_classification.tools = AAZIntType(
+
+            esu_keys = cls._schema_on_200.properties.esu_profile.esu_keys
+            esu_keys.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.esu_profile.esu_keys.Element
+            _element.license_status = AAZIntType(
+                serialized_name="licenseStatus",
+            )
+            _element.sku = AAZStrType()
+
+            product_profile = cls._schema_on_200.properties.product_profile
+            product_profile.billing_end_date = AAZStrType(
+                serialized_name="billingEndDate",
                 flags={"read_only": True},
             )
-            available_patch_count_by_classification.update_rollup = AAZIntType(
-                serialized_name="updateRollup",
+            product_profile.billing_start_date = AAZStrType(
+                serialized_name="billingStartDate",
                 flags={"read_only": True},
             )
-            available_patch_count_by_classification.updates = AAZIntType(
+            product_profile.disenrollment_date = AAZStrType(
+                serialized_name="disenrollmentDate",
                 flags={"read_only": True},
             )
+            product_profile.enrollment_date = AAZStrType(
+                serialized_name="enrollmentDate",
+                flags={"read_only": True},
+            )
+            product_profile.error = AAZObjectType(
+                flags={"read_only": True},
+            )
+            _ShowHelper._build_schema_error_detail_read(product_profile.error)
+            product_profile.product_features = AAZListType(
+                serialized_name="productFeatures",
+            )
+            product_profile.product_type = AAZStrType(
+                serialized_name="productType",
+            )
+            product_profile.subscription_status = AAZStrType(
+                serialized_name="subscriptionStatus",
+            )
+
+            product_features = cls._schema_on_200.properties.product_profile.product_features
+            product_features.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.properties.product_profile.product_features.Element
+            _element.billing_end_date = AAZStrType(
+                serialized_name="billingEndDate",
+                flags={"read_only": True},
+            )
+            _element.billing_start_date = AAZStrType(
+                serialized_name="billingStartDate",
+                flags={"read_only": True},
+            )
+            _element.disenrollment_date = AAZStrType(
+                serialized_name="disenrollmentDate",
+                flags={"read_only": True},
+            )
+            _element.enrollment_date = AAZStrType(
+                serialized_name="enrollmentDate",
+                flags={"read_only": True},
+            )
+            _element.error = AAZObjectType(
+                flags={"read_only": True},
+            )
+            _ShowHelper._build_schema_error_detail_read(_element.error)
+            _element.name = AAZStrType()
+            _element.subscription_status = AAZStrType(
+                serialized_name="subscriptionStatus",
+            )
+
+            software_assurance = cls._schema_on_200.properties.software_assurance
+            software_assurance.software_assurance_customer = AAZBoolType(
+                serialized_name="softwareAssuranceCustomer",
+            )
+
+            system_data = cls._schema_on_200.system_data
+            system_data.created_at = AAZStrType(
+                serialized_name="createdAt",
+            )
+            system_data.created_by = AAZStrType(
+                serialized_name="createdBy",
+            )
+            system_data.created_by_type = AAZStrType(
+                serialized_name="createdByType",
+            )
+            system_data.last_modified_at = AAZStrType(
+                serialized_name="lastModifiedAt",
+            )
+            system_data.last_modified_by = AAZStrType(
+                serialized_name="lastModifiedBy",
+            )
+            system_data.last_modified_by_type = AAZStrType(
+                serialized_name="lastModifiedByType",
+            )
+
+            tags = cls._schema_on_200.tags
+            tags.Element = AAZStrType()
 
             return cls._schema_on_200
 
 
-class _AssessPatchesHelper:
-    """Helper class for AssessPatches"""
+class _ShowHelper:
+    """Helper class for Show"""
 
     _schema_error_detail_read = None
 
@@ -306,4 +392,4 @@ class _AssessPatchesHelper:
         _schema.target = cls._schema_error_detail_read.target
 
 
-__all__ = ["AssessPatches"]
+__all__ = ["Show"]
