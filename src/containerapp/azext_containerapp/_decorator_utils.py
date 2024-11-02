@@ -5,6 +5,7 @@
 # pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except
 import sys
 
+from azure.cli.command_modules.containerapp._utils import _to_camel_case
 from azure.cli.core.azclierror import (ValidationError)
 
 from ._constants import RUNTIME_JAVA
@@ -81,6 +82,24 @@ def process_loaded_yaml(yaml_containerapp):
     return yaml_containerapp
 
 
+def process_loaded_yaml_for_connected_env_dapr(yaml_dapr_component):
+    from ._sdk_models import ConnectedEnvironmentDaprComponentProperties
+
+    if not isinstance(yaml_dapr_component, dict):  # pylint: disable=unidiomatic-typecheck
+        raise ValidationError('Invalid YAML provided. Please see https://aka.ms/azure-container-apps-yaml for a valid containerapps YAML spec.')
+    if not yaml_dapr_component.get('properties'):
+        yaml_dapr_component['properties'] = {}
+    #  Get the value of all "key" in _attribute_map
+    nested_properties = [key["key"] for key in ConnectedEnvironmentDaprComponentProperties._attribute_map.values()]
+    for nested_property in nested_properties:
+        tmp = yaml_dapr_component.get(nested_property)
+        if nested_property in yaml_dapr_component:
+            yaml_dapr_component['properties'][nested_property] = tmp
+            del yaml_dapr_component[nested_property]
+
+    return yaml_dapr_component
+
+
 def process_containerapp_resiliency_yaml(containerapp_resiliency):
 
     if not isinstance(containerapp_resiliency, dict):  # pylint: disable=unidiomatic-typecheck
@@ -134,3 +153,16 @@ def infer_runtime_option(runtime, enable_java_metrics, enable_java_agent):
     if enable_java_agent is not None:
         return RUNTIME_JAVA
     return None
+
+
+def _remove_readonly_attributes_with_class_name(definition, module_path, class_name):
+    from importlib import import_module
+    module = import_module(module_path)
+    class_def = getattr(module, class_name, None)
+    unneeded_properties = [_to_camel_case(key) for key, value in class_def._validation.items() if value.get("readonly")]
+
+    for unneeded_property in unneeded_properties:
+        if unneeded_property in definition:
+            del definition[unneeded_property]
+        elif unneeded_property in definition['properties']:
+            del definition['properties'][unneeded_property]

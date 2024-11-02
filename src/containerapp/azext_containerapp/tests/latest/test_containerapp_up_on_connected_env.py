@@ -19,7 +19,7 @@ from .custom_preparers import ConnectedClusterPreparer
 
 class ContainerAppUpConnectedEnvImageTest(ScenarioTest):
     def __init__(self, method_name, config_file=None, recording_name=None, recording_processors=None,
-                 replay_processors=None, recording_patches=None, replay_patches=None, random_config_dir=False):
+                 replay_processors=None, recording_patches=None, replay_patches=None, random_config_dir=True):
 
         super().__init__(method_name, config_file, recording_name, recording_processors, replay_processors,
                          recording_patches, replay_patches, random_config_dir)
