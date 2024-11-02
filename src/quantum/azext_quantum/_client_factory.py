@@ -63,9 +63,9 @@ def cf_offerings(cli_ctx, *_):
 # Data Plane clients
 
 def cf_quantum(cli_ctx, subscription_id=None, resource_group_name=None, workspace_name=None, location=None):
-    from .vendored_sdks.azure_quantum import QuantumClient
+    from .vendored_sdks.azure_quantum import AzureQuantumWorkspaceServices
     creds = _get_data_credentials(cli_ctx, subscription_id)
-    client = QuantumClient(creds, subscription_id, resource_group_name, workspace_name, base_url=base_url(location), user_agent=get_appid())
+    client = AzureQuantumWorkspaceServices(subscription_id, resource_group_name, workspace_name, creds, base_url=base_url(location), user_agent=get_appid())
     return client
 
 

@@ -1,3 +1,4 @@
+# pylint: disable=too-many-lines
 # coding=utf-8
 # --------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
@@ -6,656 +7,1130 @@
 # Changes may cause incorrect behavior and will be lost if the code is regenerated.
 # --------------------------------------------------------------------------
 
-from azure.core.exceptions import HttpResponseError
-import msrest.serialization
+import sys
+from typing import Any, List, Optional, TYPE_CHECKING, Union
+
+from .. import _serialization
+
+if sys.version_info >= (3, 9):
+    from collections.abc import MutableMapping
+else:
+    from typing import MutableMapping  # type: ignore
+
+if TYPE_CHECKING:
+    from .. import models as _models
+JSON = MutableMapping[str, Any]  # pylint: disable=unsubscriptable-object
 
 
-class BlobDetails(msrest.serialization.Model):
-    """Blob details.
+class AzureCoreFoundationsError(_serialization.Model):
+    """The error object.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
-    :ivar container_name: Required. The container name.
+    :ivar code: One of a server-defined set of error codes. Required.
+    :vartype code: str
+    :ivar message: A human-readable representation of the error. Required.
+    :vartype message: str
+    :ivar target: The target of the error.
+    :vartype target: str
+    :ivar details: An array of details about specific errors that led to this reported error.
+    :vartype details: list[~azure.quantum._client.models.AzureCoreFoundationsError]
+    :ivar innererror: An object containing more specific information than the current object about
+     the error.
+    :vartype innererror: ~azure.quantum._client.models.AzureCoreFoundationsInnerError
+    """
+
+    _validation = {
+        "code": {"required": True},
+        "message": {"required": True},
+    }
+
+    _attribute_map = {
+        "code": {"key": "code", "type": "str"},
+        "message": {"key": "message", "type": "str"},
+        "target": {"key": "target", "type": "str"},
+        "details": {"key": "details", "type": "[AzureCoreFoundationsError]"},
+        "innererror": {"key": "innererror", "type": "AzureCoreFoundationsInnerError"},
+    }
+
+    def __init__(
+        self,
+        *,
+        code: str,
+        message: str,
+        target: Optional[str] = None,
+        details: Optional[List["_models.AzureCoreFoundationsError"]] = None,
+        innererror: Optional["_models.AzureCoreFoundationsInnerError"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword code: One of a server-defined set of error codes. Required.
+        :paramtype code: str
+        :keyword message: A human-readable representation of the error. Required.
+        :paramtype message: str
+        :keyword target: The target of the error.
+        :paramtype target: str
+        :keyword details: An array of details about specific errors that led to this reported error.
+        :paramtype details: list[~azure.quantum._client.models.AzureCoreFoundationsError]
+        :keyword innererror: An object containing more specific information than the current object
+         about the error.
+        :paramtype innererror: ~azure.quantum._client.models.AzureCoreFoundationsInnerError
+        """
+        super().__init__(**kwargs)
+        self.code = code
+        self.message = message
+        self.target = target
+        self.details = details
+        self.innererror = innererror
+
+
+class AzureCoreFoundationsErrorResponse(_serialization.Model):
+    """A response containing error details.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar error: The error object. Required.
+    :vartype error: ~azure.quantum._client.models.AzureCoreFoundationsError
+    """
+
+    _validation = {
+        "error": {"required": True},
+    }
+
+    _attribute_map = {
+        "error": {"key": "error", "type": "AzureCoreFoundationsError"},
+    }
+
+    def __init__(self, *, error: "_models.AzureCoreFoundationsError", **kwargs: Any) -> None:
+        """
+        :keyword error: The error object. Required.
+        :paramtype error: ~azure.quantum._client.models.AzureCoreFoundationsError
+        """
+        super().__init__(**kwargs)
+        self.error = error
+
+
+class AzureCoreFoundationsInnerError(_serialization.Model):
+    """An object containing more specific information about the error. As per Microsoft One API
+    guidelines -
+    https://github.com/Microsoft/api-guidelines/blob/vNext/Guidelines.md#7102-error-condition-responses.
+
+    :ivar code: One of a server-defined set of error codes.
+    :vartype code: str
+    :ivar innererror: Inner error.
+    :vartype innererror: ~azure.quantum._client.models.AzureCoreFoundationsInnerError
+    """
+
+    _attribute_map = {
+        "code": {"key": "code", "type": "str"},
+        "innererror": {"key": "innererror", "type": "AzureCoreFoundationsInnerError"},
+    }
+
+    def __init__(
+        self,
+        *,
+        code: Optional[str] = None,
+        innererror: Optional["_models.AzureCoreFoundationsInnerError"] = None,
+        **kwargs: Any
+    ) -> None:
+        """
+        :keyword code: One of a server-defined set of error codes.
+        :paramtype code: str
+        :keyword innererror: Inner error.
+        :paramtype innererror: ~azure.quantum._client.models.AzureCoreFoundationsInnerError
+        """
+        super().__init__(**kwargs)
+        self.code = code
+        self.innererror = innererror
+
+
+class BlobDetails(_serialization.Model):
+    """The details (name and container) of the blob to store or download data.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar container_name: The container name. Required.
     :vartype container_name: str
     :ivar blob_name: The blob name.
     :vartype blob_name: str
     """
 
     _validation = {
-        'container_name': {'required': True},
+        "container_name": {"required": True},
     }
 
     _attribute_map = {
-        'container_name': {'key': 'containerName', 'type': 'str'},
-        'blob_name': {'key': 'blobName', 'type': 'str'},
+        "container_name": {"key": "containerName", "type": "str"},
+        "blob_name": {"key": "blobName", "type": "str"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
+    def __init__(self, *, container_name: str, blob_name: Optional[str] = None, **kwargs: Any) -> None:
         """
-        :keyword container_name: Required. The container name.
+        :keyword container_name: The container name. Required.
         :paramtype container_name: str
         :keyword blob_name: The blob name.
         :paramtype blob_name: str
         """
-        super(BlobDetails, self).__init__(**kwargs)
-        self.container_name = kwargs['container_name']
-        self.blob_name = kwargs.get('blob_name', None)
+        super().__init__(**kwargs)
+        self.container_name = container_name
+        self.blob_name = blob_name
 
 
-class CostEstimate(msrest.serialization.Model):
-    """The job cost billed by the provider. The final cost on your bill might be slightly different due to added taxes and currency conversion rates.
+class CostEstimate(_serialization.Model):
+    """The job cost billed by the provider. The final cost on your bill might be slightly different
+    due to added taxes and currency conversion rates.
 
-    :ivar currency_code: The currency code.
+    All required parameters must be populated in order to send to server.
+
+    :ivar currency_code: The currency code. Required.
     :vartype currency_code: str
     :ivar events: List of usage events.
     :vartype events: list[~azure.quantum._client.models.UsageEvent]
-    :ivar estimated_total: The estimated total.
+    :ivar estimated_total: The estimated total. Required.
     :vartype estimated_total: float
     """
 
+    _validation = {
+        "currency_code": {"required": True},
+        "estimated_total": {"required": True},
+    }
+
     _attribute_map = {
-        'currency_code': {'key': 'currencyCode', 'type': 'str'},
-        'events': {'key': 'events', 'type': '[UsageEvent]'},
-        'estimated_total': {'key': 'estimatedTotal', 'type': 'float'},
+        "currency_code": {"key": "currencyCode", "type": "str"},
+        "events": {"key": "events", "type": "[UsageEvent]"},
+        "estimated_total": {"key": "estimatedTotal", "type": "float"},
     }
 
     def __init__(
         self,
-        **kwargs
-    ):
+        *,
+        currency_code: str,
+        estimated_total: float,
+        events: Optional[List["_models.UsageEvent"]] = None,
+        **kwargs: Any
+    ) -> None:
         """
-        :keyword currency_code: The currency code.
+        :keyword currency_code: The currency code. Required.
         :paramtype currency_code: str
         :keyword events: List of usage events.
         :paramtype events: list[~azure.quantum._client.models.UsageEvent]
-        :keyword estimated_total: The estimated total.
+        :keyword estimated_total: The estimated total. Required.
         :paramtype estimated_total: float
         """
-        super(CostEstimate, self).__init__(**kwargs)
-        self.currency_code = kwargs.get('currency_code', None)
-        self.events = kwargs.get('events', None)
-        self.estimated_total = kwargs.get('estimated_total', None)
+        super().__init__(**kwargs)
+        self.currency_code = currency_code
+        self.events = events
+        self.estimated_total = estimated_total
 
 
-class ErrorData(msrest.serialization.Model):
-    """An error response from Azure.
+class ErrorsWorkspaceItemError(_serialization.Model):
+    """The error object.
 
-    :ivar code: An identifier for the error. Codes are invariant and are intended to be consumed
-     programmatically.
+    All required parameters must be populated in order to send to server.
+
+    :ivar code: One of a server-defined set of error codes. Required.
     :vartype code: str
-    :ivar message: A message describing the error, intended to be suitable for displaying in a user
-     interface.
+    :ivar message: A human-readable representation of the error. Required.
     :vartype message: str
-    """
-
-    _attribute_map = {
-        'code': {'key': 'code', 'type': 'str'},
-        'message': {'key': 'message', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        :keyword code: An identifier for the error. Codes are invariant and are intended to be consumed
-         programmatically.
-        :paramtype code: str
-        :keyword message: A message describing the error, intended to be suitable for displaying in a
-         user interface.
-        :paramtype message: str
-        """
-        super(ErrorData, self).__init__(**kwargs)
-        self.code = kwargs.get('code', None)
-        self.message = kwargs.get('message', None)
-
-
-class JobDetails(msrest.serialization.Model):
-    """Job details.
-
-    Variables are only populated by the server, and will be ignored when sending a request.
-
-    All required parameters must be populated in order to send to Azure.
-
-    :ivar id: The job id.
-    :vartype id: str
-    :ivar name: The job name. Is not required for the name to be unique and it's only used for
-     display purposes.
-    :vartype name: str
-    :ivar container_uri: Required. The blob container SAS uri, the container is used to host job
-     data.
-    :vartype container_uri: str
-    :ivar input_data_uri: The input blob SAS uri, if specified, it will override the default input
-     blob in the container.
-    :vartype input_data_uri: str
-    :ivar input_data_format: Required. The format of the input data.
-    :vartype input_data_format: str
-    :ivar input_params: The input parameters for the job. JSON object used by the target solver. It
-     is expected that the size of this object is small and only used to specify parameters for the
-     execution target, not the input data.
-    :vartype input_params: any
-    :ivar provider_id: Required. The unique identifier for the provider.
-    :vartype provider_id: str
-    :ivar target: Required. The target identifier to run the job.
+    :ivar target: The target of the error.
     :vartype target: str
-    :ivar metadata: The job metadata. Metadata provides client the ability to store client-specific
-     information.
-    :vartype metadata: dict[str, str]
-    :ivar output_data_uri: The output blob SAS uri. When a job finishes successfully, results will
-     be uploaded to this blob.
-    :vartype output_data_uri: str
-    :ivar output_data_format: The format of the output data.
-    :vartype output_data_format: str
-    :ivar status: The job status. Known values are: "Waiting", "Executing", "Succeeded", "Failed",
-     "Cancelled".
-    :vartype status: str or ~azure.quantum._client.models.JobStatus
-    :ivar creation_time: The creation time of the job.
-    :vartype creation_time: ~datetime.datetime
-    :ivar begin_execution_time: The time when the job began execution.
-    :vartype begin_execution_time: ~datetime.datetime
-    :ivar end_execution_time: The time when the job finished execution.
-    :vartype end_execution_time: ~datetime.datetime
-    :ivar cancellation_time: The time when a job was successfully cancelled.
-    :vartype cancellation_time: ~datetime.datetime
-    :ivar cost_estimate: The job cost billed by the provider. The final cost on your bill might be
-     slightly different due to added taxes and currency conversion rates.
-    :vartype cost_estimate: ~azure.quantum._client.models.CostEstimate
-    :ivar error_data: The error data for the job. This is expected only when Status 'Failed'.
-    :vartype error_data: ~azure.quantum._client.models.ErrorData
-    :ivar tags: A set of tags. List of user-supplied tags associated with the job.
-    :vartype tags: list[str]
+    :ivar details: An array of details about specific errors that led to this reported error.
+    :vartype details: list[~azure.quantum._client.models.AzureCoreFoundationsError]
+    :ivar innererror: An object containing more specific information than the current object about
+     the error.
+    :vartype innererror: ~azure.quantum._client.models.AzureCoreFoundationsInnerError
     """
 
     _validation = {
-        'container_uri': {'required': True},
-        'input_data_format': {'required': True},
-        'provider_id': {'required': True},
-        'target': {'required': True},
-        'status': {'readonly': True},
-        'creation_time': {'readonly': True},
-        'begin_execution_time': {'readonly': True},
-        'end_execution_time': {'readonly': True},
-        'cancellation_time': {'readonly': True},
-        'cost_estimate': {'readonly': True},
-        'error_data': {'readonly': True},
+        "code": {"required": True},
+        "message": {"required": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'name': {'key': 'name', 'type': 'str'},
-        'container_uri': {'key': 'containerUri', 'type': 'str'},
-        'input_data_uri': {'key': 'inputDataUri', 'type': 'str'},
-        'input_data_format': {'key': 'inputDataFormat', 'type': 'str'},
-        'input_params': {'key': 'inputParams', 'type': 'object'},
-        'provider_id': {'key': 'providerId', 'type': 'str'},
-        'target': {'key': 'target', 'type': 'str'},
-        'metadata': {'key': 'metadata', 'type': '{str}'},
-        'output_data_uri': {'key': 'outputDataUri', 'type': 'str'},
-        'output_data_format': {'key': 'outputDataFormat', 'type': 'str'},
-        'status': {'key': 'status', 'type': 'str'},
-        'creation_time': {'key': 'creationTime', 'type': 'iso-8601'},
-        'begin_execution_time': {'key': 'beginExecutionTime', 'type': 'iso-8601'},
-        'end_execution_time': {'key': 'endExecutionTime', 'type': 'iso-8601'},
-        'cancellation_time': {'key': 'cancellationTime', 'type': 'iso-8601'},
-        'cost_estimate': {'key': 'costEstimate', 'type': 'CostEstimate'},
-        'error_data': {'key': 'errorData', 'type': 'ErrorData'},
-        'tags': {'key': 'tags', 'type': '[str]'},
+        "code": {"key": "code", "type": "str"},
+        "message": {"key": "message", "type": "str"},
+        "target": {"key": "target", "type": "str"},
+        "details": {"key": "details", "type": "[AzureCoreFoundationsError]"},
+        "innererror": {"key": "innererror", "type": "AzureCoreFoundationsInnerError"},
     }
 
     def __init__(
         self,
-        **kwargs
-    ):
+        *,
+        code: str,
+        message: str,
+        target: Optional[str] = None,
+        details: Optional[List["_models.AzureCoreFoundationsError"]] = None,
+        innererror: Optional["_models.AzureCoreFoundationsInnerError"] = None,
+        **kwargs: Any
+    ) -> None:
         """
-        :keyword id: The job id.
-        :paramtype id: str
-        :keyword name: The job name. Is not required for the name to be unique and it's only used for
-         display purposes.
-        :paramtype name: str
-        :keyword container_uri: Required. The blob container SAS uri, the container is used to host job
-         data.
-        :paramtype container_uri: str
-        :keyword input_data_uri: The input blob SAS uri, if specified, it will override the default
-         input blob in the container.
-        :paramtype input_data_uri: str
-        :keyword input_data_format: Required. The format of the input data.
-        :paramtype input_data_format: str
-        :keyword input_params: The input parameters for the job. JSON object used by the target solver.
-         It is expected that the size of this object is small and only used to specify parameters for
-         the execution target, not the input data.
-        :paramtype input_params: any
-        :keyword provider_id: Required. The unique identifier for the provider.
-        :paramtype provider_id: str
-        :keyword target: Required. The target identifier to run the job.
+        :keyword code: One of a server-defined set of error codes. Required.
+        :paramtype code: str
+        :keyword message: A human-readable representation of the error. Required.
+        :paramtype message: str
+        :keyword target: The target of the error.
         :paramtype target: str
-        :keyword metadata: The job metadata. Metadata provides client the ability to store
-         client-specific information.
-        :paramtype metadata: dict[str, str]
-        :keyword output_data_uri: The output blob SAS uri. When a job finishes successfully, results
-         will be uploaded to this blob.
-        :paramtype output_data_uri: str
-        :keyword output_data_format: The format of the output data.
-        :paramtype output_data_format: str
-        :keyword tags: A set of tags. List of user-supplied tags associated with the job.
-        :paramtype tags: list[str]
+        :keyword details: An array of details about specific errors that led to this reported error.
+        :paramtype details: list[~azure.quantum._client.models.AzureCoreFoundationsError]
+        :keyword innererror: An object containing more specific information than the current object
+         about the error.
+        :paramtype innererror: ~azure.quantum._client.models.AzureCoreFoundationsInnerError
         """
-        super(JobDetails, self).__init__(**kwargs)
-        self.id = kwargs.get('id', None)
-        self.name = kwargs.get('name', None)
-        self.container_uri = kwargs['container_uri']
-        self.input_data_uri = kwargs.get('input_data_uri', None)
-        self.input_data_format = kwargs['input_data_format']
-        self.input_params = kwargs.get('input_params', None)
-        self.provider_id = kwargs['provider_id']
-        self.target = kwargs['target']
-        self.metadata = kwargs.get('metadata', None)
-        self.output_data_uri = kwargs.get('output_data_uri', None)
-        self.output_data_format = kwargs.get('output_data_format', None)
-        self.status = None
+        super().__init__(**kwargs)
+        self.code = code
+        self.message = message
+        self.target = target
+        self.details = details
+        self.innererror = innererror
+
+
+class ItemDetails(_serialization.Model):
+    """A workspace item.
+
+    You probably want to use the sub-classes and not this class directly. Known sub-classes are:
+    JobDetails, SessionDetails
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar id: Id of the item. Required.
+    :vartype id: str
+    :ivar name: The name of the item. It is not required for the name to be unique and it's only
+     used for display purposes. Required.
+    :vartype name: str
+    :ivar provider_id: The unique identifier for the provider. Required.
+    :vartype provider_id: str
+    :ivar target: The target identifier to run the job. Required.
+    :vartype target: str
+    :ivar item_type: Type of the Quantum Workspace item. Required. Known values are: "Job" and
+     "Session".
+    :vartype item_type: str or ~azure.quantum._client.models.ItemType
+    :ivar creation_time: The creation time of the item.
+    :vartype creation_time: ~datetime.datetime
+    :ivar begin_execution_time: The time when the item began execution.
+    :vartype begin_execution_time: ~datetime.datetime
+    :ivar end_execution_time: The time when the item finished execution.
+    :vartype end_execution_time: ~datetime.datetime
+    :ivar cost_estimate: Cost estimate.
+    :vartype cost_estimate: ~azure.quantum._client.models.CostEstimate
+    :ivar error_data: Error information.
+    :vartype error_data: ~azure.quantum._client.models.ErrorsWorkspaceItemError
+    """
+
+    _validation = {
+        "id": {
+            "required": True,
+            "readonly": True,
+            "max_length": 36,
+            "pattern": r"^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$",
+        },
+        "name": {"required": True},
+        "provider_id": {"required": True},
+        "target": {"required": True},
+        "item_type": {"required": True},
+        "creation_time": {"readonly": True},
+        "begin_execution_time": {"readonly": True},
+        "end_execution_time": {"readonly": True},
+        "cost_estimate": {"readonly": True},
+        "error_data": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "provider_id": {"key": "providerId", "type": "str"},
+        "target": {"key": "target", "type": "str"},
+        "item_type": {"key": "itemType", "type": "str"},
+        "creation_time": {"key": "creationTime", "type": "iso-8601"},
+        "begin_execution_time": {"key": "beginExecutionTime", "type": "iso-8601"},
+        "end_execution_time": {"key": "endExecutionTime", "type": "iso-8601"},
+        "cost_estimate": {"key": "costEstimate", "type": "CostEstimate"},
+        "error_data": {"key": "errorData", "type": "ErrorsWorkspaceItemError"},
+    }
+
+    _subtype_map = {"item_type": {"Job": "JobDetails", "Session": "SessionDetails"}}
+
+    def __init__(self, *, name: str, provider_id: str, target: str, **kwargs: Any) -> None:
+        """
+        :keyword name: The name of the item. It is not required for the name to be unique and it's only
+         used for display purposes. Required.
+        :paramtype name: str
+        :keyword provider_id: The unique identifier for the provider. Required.
+        :paramtype provider_id: str
+        :keyword target: The target identifier to run the job. Required.
+        :paramtype target: str
+        """
+        super().__init__(**kwargs)
+        self.id = None
+        self.name = name
+        self.provider_id = provider_id
+        self.target = target
+        self.item_type: Optional[str] = None
         self.creation_time = None
         self.begin_execution_time = None
         self.end_execution_time = None
-        self.cancellation_time = None
         self.cost_estimate = None
         self.error_data = None
-        self.tags = kwargs.get('tags', None)
 
 
-class JobDetailsList(msrest.serialization.Model):
-    """List of job details.
+class JobDetails(ItemDetails):
+    """A job to be run in the workspace.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar value:
-    :vartype value: list[~azure.quantum._client.models.JobDetails]
-    :ivar count: Total records count number.
-    :vartype count: long
-    :ivar next_link: Link to the next page of results.
-    :vartype next_link: str
+    All required parameters must be populated in order to send to server.
+
+    :ivar id: Id of the item. Required.
+    :vartype id: str
+    :ivar name: The name of the item. It is not required for the name to be unique and it's only
+     used for display purposes. Required.
+    :vartype name: str
+    :ivar provider_id: The unique identifier for the provider. Required.
+    :vartype provider_id: str
+    :ivar target: The target identifier to run the job. Required.
+    :vartype target: str
+    :ivar item_type: Type of the Quantum Workspace item. Required. Known values are: "Job" and
+     "Session".
+    :vartype item_type: str or ~azure.quantum._client.models.ItemType
+    :ivar creation_time: The creation time of the item.
+    :vartype creation_time: ~datetime.datetime
+    :ivar begin_execution_time: The time when the item began execution.
+    :vartype begin_execution_time: ~datetime.datetime
+    :ivar end_execution_time: The time when the item finished execution.
+    :vartype end_execution_time: ~datetime.datetime
+    :ivar cost_estimate: Cost estimate.
+    :vartype cost_estimate: ~azure.quantum._client.models.CostEstimate
+    :ivar error_data: Error information.
+    :vartype error_data: ~azure.quantum._client.models.ErrorsWorkspaceItemError
+    :ivar job_type: The type of job. Known values are: "Unknown", "QuantumComputing", and
+     "Optimization".
+    :vartype job_type: str or ~azure.quantum._client.models.JobType
+    :ivar session_id: The ID of the session that the job is part of.
+    :vartype session_id: str
+    :ivar container_uri: The blob container SAS uri, the container is used to host job data.
+     Required.
+    :vartype container_uri: str
+    :ivar input_data_uri: The input blob URI, if specified, it will override the default input blob
+     in the container.
+    :vartype input_data_uri: str
+    :ivar input_data_format: The format of the input data.
+    :vartype input_data_format: str
+    :ivar status: The status of the job. Known values are: "Waiting", "Executing", "Succeeded",
+     "Failed", and "Cancelled".
+    :vartype status: str or ~azure.quantum._client.models.JobStatus
+    :ivar metadata: The job metadata. Metadata provides client the ability to store client-specific
+     information.
+    :vartype metadata: JSON
+    :ivar cancellation_time: The time when a job was successfully cancelled.
+    :vartype cancellation_time: ~datetime.datetime
+    :ivar tags: List of user-supplied tags associated with the job.
+    :vartype tags: list[str]
+    :ivar quantum_computing_data: Quantum computing data.
+    :vartype quantum_computing_data: ~azure.quantum._client.models.QuantumComputingData
+    :ivar input_params: The input parameters for the job. JSON object used by the target solver. It
+     is expected that the size of this object is small and only used to specify parameters for the
+     execution target, not the input data.
+    :vartype input_params: JSON
+    :ivar output_data_uri: The output blob uri. When a job finishes successfully, results will be
+     uploaded to this blob.
+    :vartype output_data_uri: str
+    :ivar output_data_format: The format of the output data.
+    :vartype output_data_format: str
     """
 
     _validation = {
-        'value': {'readonly': True},
-        'next_link': {'readonly': True},
+        "id": {
+            "required": True,
+            "readonly": True,
+            "max_length": 36,
+            "pattern": r"^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$",
+        },
+        "name": {"required": True},
+        "provider_id": {"required": True},
+        "target": {"required": True},
+        "item_type": {"required": True},
+        "creation_time": {"readonly": True},
+        "begin_execution_time": {"readonly": True},
+        "end_execution_time": {"readonly": True},
+        "cost_estimate": {"readonly": True},
+        "error_data": {"readonly": True},
+        "container_uri": {"required": True},
+        "status": {"readonly": True},
+        "cancellation_time": {"readonly": True},
+        "quantum_computing_data": {"readonly": True},
     }
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[JobDetails]'},
-        'count': {'key': 'count', 'type': 'long'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "provider_id": {"key": "providerId", "type": "str"},
+        "target": {"key": "target", "type": "str"},
+        "item_type": {"key": "itemType", "type": "str"},
+        "creation_time": {"key": "creationTime", "type": "iso-8601"},
+        "begin_execution_time": {"key": "beginExecutionTime", "type": "iso-8601"},
+        "end_execution_time": {"key": "endExecutionTime", "type": "iso-8601"},
+        "cost_estimate": {"key": "costEstimate", "type": "CostEstimate"},
+        "error_data": {"key": "errorData", "type": "ErrorsWorkspaceItemError"},
+        "job_type": {"key": "jobType", "type": "str"},
+        "session_id": {"key": "sessionId", "type": "str"},
+        "container_uri": {"key": "containerUri", "type": "str"},
+        "input_data_uri": {"key": "inputDataUri", "type": "str"},
+        "input_data_format": {"key": "inputDataFormat", "type": "str"},
+        "status": {"key": "status", "type": "str"},
+        "metadata": {"key": "metadata", "type": "object"},
+        "cancellation_time": {"key": "cancellationTime", "type": "iso-8601"},
+        "tags": {"key": "tags", "type": "[str]"},
+        "quantum_computing_data": {"key": "quantumComputingData", "type": "QuantumComputingData"},
+        "input_params": {"key": "inputParams", "type": "object"},
+        "output_data_uri": {"key": "outputDataUri", "type": "str"},
+        "output_data_format": {"key": "outputDataFormat", "type": "str"},
     }
 
     def __init__(
         self,
-        **kwargs
-    ):
+        *,
+        name: str,
+        provider_id: str,
+        target: str,
+        container_uri: str,
+        job_type: Optional[Union[str, "_models.JobType"]] = None,
+        session_id: Optional[str] = None,
+        input_data_uri: Optional[str] = None,
+        input_data_format: Optional[str] = None,
+        metadata: Optional[JSON] = None,
+        tags: Optional[List[str]] = None,
+        input_params: Optional[JSON] = None,
+        output_data_uri: Optional[str] = None,
+        output_data_format: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
         """
-        :keyword count: Total records count number.
-        :paramtype count: long
+        :keyword name: The name of the item. It is not required for the name to be unique and it's only
+         used for display purposes. Required.
+        :paramtype name: str
+        :keyword provider_id: The unique identifier for the provider. Required.
+        :paramtype provider_id: str
+        :keyword target: The target identifier to run the job. Required.
+        :paramtype target: str
+        :keyword job_type: The type of job. Known values are: "Unknown", "QuantumComputing", and
+         "Optimization".
+        :paramtype job_type: str or ~azure.quantum._client.models.JobType
+        :keyword session_id: The ID of the session that the job is part of.
+        :paramtype session_id: str
+        :keyword container_uri: The blob container SAS uri, the container is used to host job data.
+         Required.
+        :paramtype container_uri: str
+        :keyword input_data_uri: The input blob URI, if specified, it will override the default input
+         blob in the container.
+        :paramtype input_data_uri: str
+        :keyword input_data_format: The format of the input data.
+        :paramtype input_data_format: str
+        :keyword metadata: The job metadata. Metadata provides client the ability to store
+         client-specific information.
+        :paramtype metadata: JSON
+        :keyword tags: List of user-supplied tags associated with the job.
+        :paramtype tags: list[str]
+        :keyword input_params: The input parameters for the job. JSON object used by the target solver.
+         It is expected that the size of this object is small and only used to specify parameters for
+         the execution target, not the input data.
+        :paramtype input_params: JSON
+        :keyword output_data_uri: The output blob uri. When a job finishes successfully, results will
+         be uploaded to this blob.
+        :paramtype output_data_uri: str
+        :keyword output_data_format: The format of the output data.
+        :paramtype output_data_format: str
         """
-        super(JobDetailsList, self).__init__(**kwargs)
-        self.value = None
-        self.count = kwargs.get('count', None)
-        self.next_link = None
+        super().__init__(name=name, provider_id=provider_id, target=target, **kwargs)
+        self.item_type: str = "Job"
+        self.job_type = job_type
+        self.session_id = session_id
+        self.container_uri = container_uri
+        self.input_data_uri = input_data_uri
+        self.input_data_format = input_data_format
+        self.status = None
+        self.metadata = metadata
+        self.cancellation_time = None
+        self.tags = tags
+        self.quantum_computing_data = None
+        self.input_params = input_params
+        self.output_data_uri = output_data_uri
+        self.output_data_format = output_data_format
 
 
-class JsonPatchDocument(msrest.serialization.Model):
-    """A JSONPatch document as defined by RFC 6902.
+class JsonPatchObject(_serialization.Model):
+    """A JSONPatch object as defined by RFC 6902.
 
-    All required parameters must be populated in order to send to Azure.
+    All required parameters must be populated in order to send to server.
 
-    :ivar op: Required. The operation to be performed. Known values are: "add", "remove",
-     "replace", "move", "copy", "test".
-    :vartype op: str or ~azure.quantum._client.models.JsonPatchOperation
-    :ivar path: Required. A JSON-Pointer.
+    :ivar operation: The operation to be performed. Required. Known values are: "add", "remove",
+     "replace", "move", "copy", and "test".
+    :vartype operation: str or ~azure.quantum._client.models.JsonPatchOperation
+    :ivar path: A JSON-Pointer. Required.
     :vartype path: str
     :ivar value: A value to be used in the operation on the path.
-    :vartype value: any
+    :vartype value: JSON
     :ivar from_property: Optional field used in copy and move operations.
     :vartype from_property: str
     """
 
     _validation = {
-        'op': {'required': True},
-        'path': {'required': True},
+        "operation": {"required": True},
+        "path": {"required": True},
     }
 
     _attribute_map = {
-        'op': {'key': 'op', 'type': 'str'},
-        'path': {'key': 'path', 'type': 'str'},
-        'value': {'key': 'value', 'type': 'object'},
-        'from_property': {'key': 'from', 'type': 'str'},
+        "operation": {"key": "op", "type": "str"},
+        "path": {"key": "path", "type": "str"},
+        "value": {"key": "value", "type": "object"},
+        "from_property": {"key": "from", "type": "str"},
     }
 
     def __init__(
         self,
-        **kwargs
-    ):
+        *,
+        operation: Union[str, "_models.JsonPatchOperation"],
+        path: str,
+        value: Optional[JSON] = None,
+        from_property: Optional[str] = None,
+        **kwargs: Any
+    ) -> None:
         """
-        :keyword op: Required. The operation to be performed. Known values are: "add", "remove",
-         "replace", "move", "copy", "test".
-        :paramtype op: str or ~azure.quantum._client.models.JsonPatchOperation
-        :keyword path: Required. A JSON-Pointer.
+        :keyword operation: The operation to be performed. Required. Known values are: "add", "remove",
+         "replace", "move", "copy", and "test".
+        :paramtype operation: str or ~azure.quantum._client.models.JsonPatchOperation
+        :keyword path: A JSON-Pointer. Required.
         :paramtype path: str
         :keyword value: A value to be used in the operation on the path.
-        :paramtype value: any
+        :paramtype value: JSON
         :keyword from_property: Optional field used in copy and move operations.
         :paramtype from_property: str
         """
-        super(JsonPatchDocument, self).__init__(**kwargs)
-        self.op = kwargs['op']
-        self.path = kwargs['path']
-        self.value = kwargs.get('value', None)
-        self.from_property = kwargs.get('from_property', None)
+        super().__init__(**kwargs)
+        self.operation = operation
+        self.path = path
+        self.value = value
+        self.from_property = from_property
 
 
-class ProviderStatus(msrest.serialization.Model):
-    """Providers status.
+class PagedItemDetails(_serialization.Model):
+    """Paged collection of ItemDetails items.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar value: The ItemDetails items on this page. Required.
+    :vartype value: list[~azure.quantum._client.models.ItemDetails]
+    :ivar next_link: The link to the next page of items.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"required": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[ItemDetails]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(self, *, value: List["_models.ItemDetails"], next_link: Optional[str] = None, **kwargs: Any) -> None:
+        """
+        :keyword value: The ItemDetails items on this page. Required.
+        :paramtype value: list[~azure.quantum._client.models.ItemDetails]
+        :keyword next_link: The link to the next page of items.
+        :paramtype next_link: str
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
+class PagedJobDetails(_serialization.Model):
+    """Paged collection of JobDetails items.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar value: The JobDetails items on this page. Required.
+    :vartype value: list[~azure.quantum._client.models.JobDetails]
+    :ivar next_link: The link to the next page of items.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"required": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[JobDetails]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(self, *, value: List["_models.JobDetails"], next_link: Optional[str] = None, **kwargs: Any) -> None:
+        """
+        :keyword value: The JobDetails items on this page. Required.
+        :paramtype value: list[~azure.quantum._client.models.JobDetails]
+        :keyword next_link: The link to the next page of items.
+        :paramtype next_link: str
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
+class PagedProviderStatus(_serialization.Model):
+    """Paged collection of ProviderStatus items.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar value: The ProviderStatus items on this page. Required.
+    :vartype value: list[~azure.quantum._client.models.ProviderStatus]
+    :ivar next_link: The link to the next page of items.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"required": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[ProviderStatus]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(
+        self, *, value: List["_models.ProviderStatus"], next_link: Optional[str] = None, **kwargs: Any
+    ) -> None:
+        """
+        :keyword value: The ProviderStatus items on this page. Required.
+        :paramtype value: list[~azure.quantum._client.models.ProviderStatus]
+        :keyword next_link: The link to the next page of items.
+        :paramtype next_link: str
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
+class PagedQuota(_serialization.Model):
+    """Paged collection of Quota items.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar value: The Quota items on this page. Required.
+    :vartype value: list[~azure.quantum._client.models.Quota]
+    :ivar next_link: The link to the next page of items.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"required": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[Quota]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(self, *, value: List["_models.Quota"], next_link: Optional[str] = None, **kwargs: Any) -> None:
+        """
+        :keyword value: The Quota items on this page. Required.
+        :paramtype value: list[~azure.quantum._client.models.Quota]
+        :keyword next_link: The link to the next page of items.
+        :paramtype next_link: str
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
+class PagedSessionDetails(_serialization.Model):
+    """Paged collection of SessionDetails items.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar value: The SessionDetails items on this page. Required.
+    :vartype value: list[~azure.quantum._client.models.SessionDetails]
+    :ivar next_link: The link to the next page of items.
+    :vartype next_link: str
+    """
+
+    _validation = {
+        "value": {"required": True},
+    }
+
+    _attribute_map = {
+        "value": {"key": "value", "type": "[SessionDetails]"},
+        "next_link": {"key": "nextLink", "type": "str"},
+    }
+
+    def __init__(
+        self, *, value: List["_models.SessionDetails"], next_link: Optional[str] = None, **kwargs: Any
+    ) -> None:
+        """
+        :keyword value: The SessionDetails items on this page. Required.
+        :paramtype value: list[~azure.quantum._client.models.SessionDetails]
+        :keyword next_link: The link to the next page of items.
+        :paramtype next_link: str
+        """
+        super().__init__(**kwargs)
+        self.value = value
+        self.next_link = next_link
+
+
+class ProviderStatus(_serialization.Model):
+    """Provider status.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Provider id.
+    All required parameters must be populated in order to send to server.
+
+    :ivar id: Provider id. Required.
     :vartype id: str
-    :ivar current_availability: Provider availability. Known values are: "Available", "Degraded",
-     "Unavailable".
+    :ivar current_availability: Current provider availability. Required. Known values are:
+     "Available", "Degraded", and "Unavailable".
     :vartype current_availability: str or ~azure.quantum._client.models.ProviderAvailability
-    :ivar targets:
+    :ivar targets: Current target statuses. Required.
     :vartype targets: list[~azure.quantum._client.models.TargetStatus]
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'current_availability': {'readonly': True},
-        'targets': {'readonly': True},
+        "id": {"required": True, "readonly": True},
+        "current_availability": {"required": True, "readonly": True},
+        "targets": {"required": True, "readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'current_availability': {'key': 'currentAvailability', 'type': 'str'},
-        'targets': {'key': 'targets', 'type': '[TargetStatus]'},
+        "id": {"key": "id", "type": "str"},
+        "current_availability": {"key": "currentAvailability", "type": "str"},
+        "targets": {"key": "targets", "type": "[TargetStatus]"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(ProviderStatus, self).__init__(**kwargs)
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
         self.id = None
         self.current_availability = None
         self.targets = None
 
 
-class ProviderStatusList(msrest.serialization.Model):
-    """Providers status.
+class QuantumComputingData(_serialization.Model):
+    """Quantum computing data.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar value:
-    :vartype value: list[~azure.quantum._client.models.ProviderStatus]
-    :ivar next_link: Link to the next page of results.
-    :vartype next_link: str
+    All required parameters must be populated in order to send to server.
+
+    :ivar count: The number of quantum computing items in the job. Required.
+    :vartype count: int
     """
 
     _validation = {
-        'value': {'readonly': True},
-        'next_link': {'readonly': True},
+        "count": {"required": True, "readonly": True},
     }
 
     _attribute_map = {
-        'value': {'key': 'value', 'type': '[ProviderStatus]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
+        "count": {"key": "count", "type": "int"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(ProviderStatusList, self).__init__(**kwargs)
-        self.value = None
-        self.next_link = None
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.count = None
 
 
-class Quota(msrest.serialization.Model):
+class Quota(_serialization.Model):
     """Quota information.
 
-    :ivar dimension: The name of the dimension associated with the quota.
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar dimension: The name of the dimension associated with the quota. Required.
     :vartype dimension: str
-    :ivar scope: The scope at which the quota is applied. Known values are: "Workspace",
-     "Subscription".
+    :ivar scope: The scope at which the quota is applied. Required. Known values are: "Workspace"
+     and "Subscription".
     :vartype scope: str or ~azure.quantum._client.models.DimensionScope
-    :ivar provider_id: The unique identifier for the provider.
+    :ivar provider_id: The unique identifier for the provider. Required.
     :vartype provider_id: str
     :ivar utilization: The amount of the usage that has been applied for the current period.
+     Required.
     :vartype utilization: float
     :ivar holds: The amount of the usage that has been reserved but not applied for the current
-     period.
+     period. Required.
     :vartype holds: float
-    :ivar limit: The maximum amount of usage allowed for the current period.
+    :ivar limit: The maximum amount of usage allowed for the current period. Required.
     :vartype limit: float
     :ivar period: The time period in which the quota's underlying meter is accumulated. Based on
-     calendar year. 'None' is used for concurrent quotas. Known values are: "None", "Monthly".
+     calendar year. 'None' is used for concurrent quotas. Required. Known values are: "None" and
+     "Monthly".
     :vartype period: str or ~azure.quantum._client.models.MeterPeriod
     """
 
-    _attribute_map = {
-        'dimension': {'key': 'dimension', 'type': 'str'},
-        'scope': {'key': 'scope', 'type': 'str'},
-        'provider_id': {'key': 'providerId', 'type': 'str'},
-        'utilization': {'key': 'utilization', 'type': 'float'},
-        'holds': {'key': 'holds', 'type': 'float'},
-        'limit': {'key': 'limit', 'type': 'float'},
-        'period': {'key': 'period', 'type': 'str'},
+    _validation = {
+        "dimension": {"required": True, "readonly": True},
+        "scope": {"required": True, "readonly": True},
+        "provider_id": {"required": True, "readonly": True},
+        "utilization": {"required": True, "readonly": True},
+        "holds": {"required": True, "readonly": True},
+        "limit": {"required": True, "readonly": True},
+        "period": {"required": True, "readonly": True},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        :keyword dimension: The name of the dimension associated with the quota.
-        :paramtype dimension: str
-        :keyword scope: The scope at which the quota is applied. Known values are: "Workspace",
-         "Subscription".
-        :paramtype scope: str or ~azure.quantum._client.models.DimensionScope
-        :keyword provider_id: The unique identifier for the provider.
-        :paramtype provider_id: str
-        :keyword utilization: The amount of the usage that has been applied for the current period.
-        :paramtype utilization: float
-        :keyword holds: The amount of the usage that has been reserved but not applied for the current
-         period.
-        :paramtype holds: float
-        :keyword limit: The maximum amount of usage allowed for the current period.
-        :paramtype limit: float
-        :keyword period: The time period in which the quota's underlying meter is accumulated. Based on
-         calendar year. 'None' is used for concurrent quotas. Known values are: "None", "Monthly".
-        :paramtype period: str or ~azure.quantum._client.models.MeterPeriod
-        """
-        super(Quota, self).__init__(**kwargs)
-        self.dimension = kwargs.get('dimension', None)
-        self.scope = kwargs.get('scope', None)
-        self.provider_id = kwargs.get('provider_id', None)
-        self.utilization = kwargs.get('utilization', None)
-        self.holds = kwargs.get('holds', None)
-        self.limit = kwargs.get('limit', None)
-        self.period = kwargs.get('period', None)
+    _attribute_map = {
+        "dimension": {"key": "dimension", "type": "str"},
+        "scope": {"key": "scope", "type": "str"},
+        "provider_id": {"key": "providerId", "type": "str"},
+        "utilization": {"key": "utilization", "type": "float"},
+        "holds": {"key": "holds", "type": "float"},
+        "limit": {"key": "limit", "type": "float"},
+        "period": {"key": "period", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.dimension = None
+        self.scope = None
+        self.provider_id = None
+        self.utilization = None
+        self.holds = None
+        self.limit = None
+        self.period = None
 
 
-class QuotaList(msrest.serialization.Model):
-    """List of quotas.
+class SasUriResponse(_serialization.Model):
+    """SAS URI operation response.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar value:
-    :vartype value: list[~azure.quantum._client.models.Quota]
-    :ivar next_link: Link to the next page of results.
-    :vartype next_link: str
-    """
-
-    _validation = {
-        'value': {'readonly': True},
-        'next_link': {'readonly': True},
-    }
-
-    _attribute_map = {
-        'value': {'key': 'value', 'type': '[Quota]'},
-        'next_link': {'key': 'nextLink', 'type': 'str'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(QuotaList, self).__init__(**kwargs)
-        self.value = None
-        self.next_link = None
-
-
-class RestError(msrest.serialization.Model):
-    """Error information returned by the API.
-
-    :ivar error: An error response from Azure.
-    :vartype error: ~azure.quantum._client.models.ErrorData
-    """
-
-    _attribute_map = {
-        'error': {'key': 'error', 'type': 'ErrorData'},
-    }
-
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        :keyword error: An error response from Azure.
-        :paramtype error: ~azure.quantum._client.models.ErrorData
-        """
-        super(RestError, self).__init__(**kwargs)
-        self.error = kwargs.get('error', None)
-
-
-class SasUriResponse(msrest.serialization.Model):
-    """Get SAS URL operation response.
+    All required parameters must be populated in order to send to server.
 
     :ivar sas_uri: A URL with a SAS token to upload a blob for execution in the given workspace.
+     Required.
     :vartype sas_uri: str
     """
 
+    _validation = {
+        "sas_uri": {"required": True, "readonly": True},
+    }
+
     _attribute_map = {
-        'sas_uri': {'key': 'sasUri', 'type': 'str'},
+        "sas_uri": {"key": "sasUri", "type": "str"},
+    }
+
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
+        self.sas_uri = None
+
+
+class SessionDetails(ItemDetails):
+    """Session, a logical grouping of jobs.
+
+    Variables are only populated by the server, and will be ignored when sending a request.
+
+    All required parameters must be populated in order to send to server.
+
+    :ivar id: Id of the item. Required.
+    :vartype id: str
+    :ivar name: The name of the item. It is not required for the name to be unique and it's only
+     used for display purposes. Required.
+    :vartype name: str
+    :ivar provider_id: The unique identifier for the provider. Required.
+    :vartype provider_id: str
+    :ivar target: The target identifier to run the job. Required.
+    :vartype target: str
+    :ivar item_type: Type of the Quantum Workspace item. Required. Known values are: "Job" and
+     "Session".
+    :vartype item_type: str or ~azure.quantum._client.models.ItemType
+    :ivar creation_time: The creation time of the item.
+    :vartype creation_time: ~datetime.datetime
+    :ivar begin_execution_time: The time when the item began execution.
+    :vartype begin_execution_time: ~datetime.datetime
+    :ivar end_execution_time: The time when the item finished execution.
+    :vartype end_execution_time: ~datetime.datetime
+    :ivar cost_estimate: Cost estimate.
+    :vartype cost_estimate: ~azure.quantum._client.models.CostEstimate
+    :ivar error_data: Error information.
+    :vartype error_data: ~azure.quantum._client.models.ErrorsWorkspaceItemError
+    :ivar job_failure_policy: Policy controlling the behavior of the Session when a job in the
+     session fails. Required. Known values are: "Abort" and "Continue".
+    :vartype job_failure_policy: str or ~azure.quantum._client.models.SessionJobFailurePolicy
+    :ivar status: The status of the session. Known values are: "Waiting", "Executing", "Succeeded",
+     "Failed", "Failure(s)", and "TimedOut".
+    :vartype status: str or ~azure.quantum._client.models.SessionStatus
+    """
+
+    _validation = {
+        "id": {
+            "required": True,
+            "readonly": True,
+            "max_length": 36,
+            "pattern": r"^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$",
+        },
+        "name": {"required": True},
+        "provider_id": {"required": True},
+        "target": {"required": True},
+        "item_type": {"required": True},
+        "creation_time": {"readonly": True},
+        "begin_execution_time": {"readonly": True},
+        "end_execution_time": {"readonly": True},
+        "cost_estimate": {"readonly": True},
+        "error_data": {"readonly": True},
+        "job_failure_policy": {"required": True},
+        "status": {"readonly": True},
+    }
+
+    _attribute_map = {
+        "id": {"key": "id", "type": "str"},
+        "name": {"key": "name", "type": "str"},
+        "provider_id": {"key": "providerId", "type": "str"},
+        "target": {"key": "target", "type": "str"},
+        "item_type": {"key": "itemType", "type": "str"},
+        "creation_time": {"key": "creationTime", "type": "iso-8601"},
+        "begin_execution_time": {"key": "beginExecutionTime", "type": "iso-8601"},
+        "end_execution_time": {"key": "endExecutionTime", "type": "iso-8601"},
+        "cost_estimate": {"key": "costEstimate", "type": "CostEstimate"},
+        "error_data": {"key": "errorData", "type": "ErrorsWorkspaceItemError"},
+        "job_failure_policy": {"key": "jobFailurePolicy", "type": "str"},
+        "status": {"key": "status", "type": "str"},
     }
 
     def __init__(
         self,
-        **kwargs
-    ):
+        *,
+        name: str,
+        provider_id: str,
+        target: str,
+        job_failure_policy: Union[str, "_models.SessionJobFailurePolicy"],
+        **kwargs: Any
+    ) -> None:
         """
-        :keyword sas_uri: A URL with a SAS token to upload a blob for execution in the given workspace.
-        :paramtype sas_uri: str
+        :keyword name: The name of the item. It is not required for the name to be unique and it's only
+         used for display purposes. Required.
+        :paramtype name: str
+        :keyword provider_id: The unique identifier for the provider. Required.
+        :paramtype provider_id: str
+        :keyword target: The target identifier to run the job. Required.
+        :paramtype target: str
+        :keyword job_failure_policy: Policy controlling the behavior of the Session when a job in the
+         session fails. Required. Known values are: "Abort" and "Continue".
+        :paramtype job_failure_policy: str or ~azure.quantum._client.models.SessionJobFailurePolicy
         """
-        super(SasUriResponse, self).__init__(**kwargs)
-        self.sas_uri = kwargs.get('sas_uri', None)
+        super().__init__(name=name, provider_id=provider_id, target=target, **kwargs)
+        self.item_type: str = "Session"
+        self.job_failure_policy = job_failure_policy
+        self.status = None
 
 
-class TargetStatus(msrest.serialization.Model):
+class TargetStatus(_serialization.Model):
     """Target status.
 
     Variables are only populated by the server, and will be ignored when sending a request.
 
-    :ivar id: Target id.
+    All required parameters must be populated in order to send to server.
+
+    :ivar id: Target id. Required.
     :vartype id: str
-    :ivar current_availability: Target availability. Known values are: "Available", "Degraded",
-     "Unavailable".
+    :ivar current_availability: Current target availability. Required. Known values are:
+     "Available", "Degraded", and "Unavailable".
     :vartype current_availability: str or ~azure.quantum._client.models.TargetAvailability
-    :ivar average_queue_time: Average queue time in seconds.
-    :vartype average_queue_time: long
+    :ivar average_queue_time: Average queue time in seconds. Required.
+    :vartype average_queue_time: int
     :ivar status_page: A page with detailed status of the provider.
     :vartype status_page: str
     """
 
     _validation = {
-        'id': {'readonly': True},
-        'current_availability': {'readonly': True},
-        'average_queue_time': {'readonly': True},
-        'status_page': {'readonly': True},
+        "id": {"required": True, "readonly": True},
+        "current_availability": {"required": True, "readonly": True},
+        "average_queue_time": {"required": True, "readonly": True},
+        "status_page": {"readonly": True},
     }
 
     _attribute_map = {
-        'id': {'key': 'id', 'type': 'str'},
-        'current_availability': {'key': 'currentAvailability', 'type': 'str'},
-        'average_queue_time': {'key': 'averageQueueTime', 'type': 'long'},
-        'status_page': {'key': 'statusPage', 'type': 'str'},
+        "id": {"key": "id", "type": "str"},
+        "current_availability": {"key": "currentAvailability", "type": "str"},
+        "average_queue_time": {"key": "averageQueueTime", "type": "int"},
+        "status_page": {"key": "statusPage", "type": "str"},
     }
 
-    def __init__(
-        self,
-        **kwargs
-    ):
-        """
-        """
-        super(TargetStatus, self).__init__(**kwargs)
+    def __init__(self, **kwargs: Any) -> None:
+        """ """
+        super().__init__(**kwargs)
         self.id = None
         self.current_availability = None
         self.average_queue_time = None
         self.status_page = None
 
 
-class UsageEvent(msrest.serialization.Model):
+class UsageEvent(_serialization.Model):
     """Usage event details.
 
-    :ivar dimension_id: The dimension id.
+    All required parameters must be populated in order to send to server.
+
+    :ivar dimension_id: The dimension id. Required.
     :vartype dimension_id: str
-    :ivar dimension_name: The dimension name.
+    :ivar dimension_name: The dimension name. Required.
     :vartype dimension_name: str
-    :ivar measure_unit: The unit of measure.
+    :ivar measure_unit: The unit of measure. Required.
     :vartype measure_unit: str
-    :ivar amount_billed: The amount billed.
+    :ivar amount_billed: The amount billed. Required.
     :vartype amount_billed: float
-    :ivar amount_consumed: The amount consumed.
+    :ivar amount_consumed: The amount consumed. Required.
     :vartype amount_consumed: float
-    :ivar unit_price: The unit price.
+    :ivar unit_price: The unit price. Required.
     :vartype unit_price: float
     """
 
+    _validation = {
+        "dimension_id": {"required": True},
+        "dimension_name": {"required": True},
+        "measure_unit": {"required": True},
+        "amount_billed": {"required": True},
+        "amount_consumed": {"required": True},
+        "unit_price": {"required": True},
+    }
+
     _attribute_map = {
-        'dimension_id': {'key': 'dimensionId', 'type': 'str'},
-        'dimension_name': {'key': 'dimensionName', 'type': 'str'},
-        'measure_unit': {'key': 'measureUnit', 'type': 'str'},
-        'amount_billed': {'key': 'amountBilled', 'type': 'float'},
-        'amount_consumed': {'key': 'amountConsumed', 'type': 'float'},
-        'unit_price': {'key': 'unitPrice', 'type': 'float'},
+        "dimension_id": {"key": "dimensionId", "type": "str"},
+        "dimension_name": {"key": "dimensionName", "type": "str"},
+        "measure_unit": {"key": "measureUnit", "type": "str"},
+        "amount_billed": {"key": "amountBilled", "type": "float"},
+        "amount_consumed": {"key": "amountConsumed", "type": "float"},
+        "unit_price": {"key": "unitPrice", "type": "float"},
     }
 
     def __init__(
         self,
-        **kwargs
-    ):
+        *,
+        dimension_id: str,
+        dimension_name: str,
+        measure_unit: str,
+        amount_billed: float,
+        amount_consumed: float,
+        unit_price: float,
+        **kwargs: Any
+    ) -> None:
         """
-        :keyword dimension_id: The dimension id.
+        :keyword dimension_id: The dimension id. Required.
         :paramtype dimension_id: str
-        :keyword dimension_name: The dimension name.
+        :keyword dimension_name: The dimension name. Required.
         :paramtype dimension_name: str
-        :keyword measure_unit: The unit of measure.
+        :keyword measure_unit: The unit of measure. Required.
         :paramtype measure_unit: str
-        :keyword amount_billed: The amount billed.
+        :keyword amount_billed: The amount billed. Required.
         :paramtype amount_billed: float
-        :keyword amount_consumed: The amount consumed.
+        :keyword amount_consumed: The amount consumed. Required.
         :paramtype amount_consumed: float
-        :keyword unit_price: The unit price.
+        :keyword unit_price: The unit price. Required.
         :paramtype unit_price: float
         """
-        super(UsageEvent, self).__init__(**kwargs)
-        self.dimension_id = kwargs.get('dimension_id', None)
-        self.dimension_name = kwargs.get('dimension_name', None)
-        self.measure_unit = kwargs.get('measure_unit', None)
-        self.amount_billed = kwargs.get('amount_billed', None)
-        self.amount_consumed = kwargs.get('amount_consumed', None)
-        self.unit_price = kwargs.get('unit_price', None)
+        super().__init__(**kwargs)
+        self.dimension_id = dimension_id
+        self.dimension_name = dimension_name
+        self.measure_unit = measure_unit
+        self.amount_billed = amount_billed
+        self.amount_consumed = amount_consumed
+        self.unit_price = unit_price
