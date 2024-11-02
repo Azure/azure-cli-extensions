@@ -45,7 +45,10 @@ knack_logger = knack.log.get_logger(__name__)
 _targets_with_allowed_failure_output = {"microsoft.dft"}
 
 
-def list(cmd, resource_group_name, workspace_name, location):
+# def list(cmd, resource_group_name, workspace_name, location):
+def list(cmd, resource_group_name, workspace_name, location, type=None, provider_id=None,
+         target_id=None, status=None, created_after=None, created_before=None, job_name=None,
+         skip=None, skip_token=None, jobs_per_page=None):
     """
     Get the list of jobs in a Quantum Workspace.
     """
