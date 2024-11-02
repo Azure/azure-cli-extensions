@@ -67,7 +67,7 @@ from ._decorator_utils import (create_deserializer,
                                process_loaded_yaml,
                                load_yaml_file,
                                infer_runtime_option,
-                               _remove_readonly_attributes)
+                               _remove_readonly_attributes_with_class_name)
 from ._utils import parse_service_bindings, check_unique_bindings, is_registry_msi_system_environment, \
     env_has_managed_identity, create_acrpull_role_assignment_if_needed
 from ._validators import validate_create, validate_runtime
@@ -523,7 +523,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
 
         # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
         _remove_additional_attributes(self.new_containerapp)
-        _remove_readonly_attributes(self.new_containerapp)
+        _remove_readonly_attributes_with_class_name(self.new_containerapp, self.models, 'ContainerApp')
 
         secret_values = self.list_secrets(show_values=True)
         _populate_secret_values(self.new_containerapp, secret_values)
@@ -1175,7 +1175,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
         # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
         _remove_additional_attributes(self.containerapp_def)
-        _remove_readonly_attributes(self.containerapp_def)
+        _remove_readonly_attributes_with_class_name(self.containerapp_def, self.models, 'ContainerApp')
 
         # Remove extra workloadProfileName introduced in deserialization
         if "workloadProfileName" in self.containerapp_def:

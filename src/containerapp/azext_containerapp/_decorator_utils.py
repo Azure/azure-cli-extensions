@@ -155,13 +155,14 @@ def infer_runtime_option(runtime, enable_java_metrics, enable_java_agent):
     return None
 
 
-def _remove_readonly_attributes(containerapp_def):
-    from ._sdk_models import ContainerApp
-
-    unneeded_properties = [_to_camel_case(key) for key, value in ContainerApp._validation.items() if value.get("readonly")]
+def _remove_readonly_attributes_with_class_name(definition, module_path, class_name):
+    from importlib import import_module
+    module = import_module(module_path)
+    class_def = getattr(module, class_name, None)
+    unneeded_properties = [_to_camel_case(key) for key, value in class_def._validation.items() if value.get("readonly")]
 
     for unneeded_property in unneeded_properties:
-        if unneeded_property in containerapp_def:
-            del containerapp_def[unneeded_property]
-        elif unneeded_property in containerapp_def['properties']:
-            del containerapp_def['properties'][unneeded_property]
+        if unneeded_property in definition:
+            del definition[unneeded_property]
+        elif unneeded_property in definition['properties']:
+            del definition['properties'][unneeded_property]
