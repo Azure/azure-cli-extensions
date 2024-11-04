@@ -26,9 +26,7 @@ class AddConfigurationSettings(argparse._AppendAction):
                 config_settings[feature][setting] = value
             except ValueError as ex:
                 raise ArgumentUsageError(
-                    "Usage error: {} configuration_setting_key=configuration_setting_value".format(
-                        option_string
-                    )
+                    f"Usage error: {option_string} configuration_setting_key=configuration_setting_value"
                 ) from ex
         setattr(namespace, self.dest, config_settings)
 
@@ -51,7 +49,7 @@ class AddConfigurationProtectedSettings(argparse._AppendAction):
                 prot_settings[feature][setting] = value
             except ValueError as ex:
                 raise ArgumentUsageError(
-                    "Usage error: {} configuration_protected_setting_key="
-                    "configuration_protected_setting_value".format(option_string)
+                    f"Usage error: {option_string} configuration_protected_setting_key="
+                    "configuration_protected_setting_value"
                 ) from ex
         setattr(namespace, self.dest, prot_settings)

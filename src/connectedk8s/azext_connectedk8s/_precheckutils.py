@@ -175,9 +175,7 @@ def executing_cluster_diagnostic_checks_job(
             response_kubectl_delete_helm = Popen(
                 cmd_helm_delete, stdout=PIPE, stderr=PIPE
             )
-            output_kubectl_delete_helm, error_kubectl_delete_helm = (
-                response_kubectl_delete_helm.communicate()
-            )
+            _, error_kubectl_delete_helm = response_kubectl_delete_helm.communicate()
             # If any error occured while execution of delete command
             if response_kubectl_delete_helm.returncode != 0:
                 # Converting the string of multiple errors to list
@@ -217,14 +215,10 @@ def executing_cluster_diagnostic_checks_job(
         )
 
         print(
-            "Step: {}: Chart path for Cluster Diagnostic Checks Job: {}".format(
-                azext_utils.get_utctimestring(), chart_path
-            )
+            f"Step: {azext_utils.get_utctimestring()}: Chart path for Cluster Diagnostic Checks Job: {chart_path}"
         )
         print(
-            "Step: {}: Creating Cluster Diagnostic Checks job".format(
-                azext_utils.get_utctimestring()
-            )
+            f"Step: {azext_utils.get_utctimestring()}: Creating Cluster Diagnostic Checks job"
         )
         helm_install_release_cluster_diagnostic_checks(
             chart_path,
@@ -356,11 +350,7 @@ def executing_cluster_diagnostic_checks_job(
                                 fault_type=consts.No_Storage_Space_Available_Fault_Type,
                                 summary="No space left on device",
                             )
-                            shutil.rmtree(
-                                filepath_with_timestamp,
-                                ignore_errors=False,
-                                onerror=None,
-                            )
+                            shutil.rmtree(filepath_with_timestamp, ignore_errors=False)
                         else:
                             logger.exception(
                                 "An exception has occured while saving the Cluster "
@@ -427,24 +417,22 @@ def helm_install_release_cluster_diagnostic_checks(
         "cluster-diagnostic-checks",
         chart_path,
         "--namespace",
-        "{}".format(consts.Release_Install_Namespace),
+        f"{consts.Release_Install_Namespace}",
         "--create-namespace",
         "--output",
         "json",
     ]
     # To set some other helm parameters through file
-    cmd_helm_install.extend(["--set", "global.location={}".format(location)])
-    cmd_helm_install.extend(["--set", "global.azureCloud={}".format(azure_cloud)])
+    cmd_helm_install.extend(["--set", f"global.location={location}"])
+    cmd_helm_install.extend(["--set", f"global.azureCloud={azure_cloud}"])
     if https_proxy:
-        cmd_helm_install.extend(["--set", "global.httpsProxy={}".format(https_proxy)])
+        cmd_helm_install.extend(["--set", f"global.httpsProxy={https_proxy}"])
     if http_proxy:
-        cmd_helm_install.extend(["--set", "global.httpProxy={}".format(http_proxy)])
+        cmd_helm_install.extend(["--set", f"global.httpProxy={http_proxy}"])
     if no_proxy:
-        cmd_helm_install.extend(["--set", "global.noProxy={}".format(no_proxy)])
+        cmd_helm_install.extend(["--set", f"global.noProxy={no_proxy}"])
     if proxy_cert:
-        cmd_helm_install.extend(
-            ["--set-file", "global.proxyCert={}".format(proxy_cert)]
-        )
+        cmd_helm_install.extend(["--set-file", f"global.proxyCert={proxy_cert}"])
 
     if kube_config:
         cmd_helm_install.extend(["--kubeconfig", kube_config])
@@ -453,7 +441,7 @@ def helm_install_release_cluster_diagnostic_checks(
 
     # Change --timeout format for helm client to understand
     onboarding_timeout = onboarding_timeout + "s"
-    cmd_helm_install.extend(["--wait", "--timeout", "{}".format(onboarding_timeout)])
+    cmd_helm_install.extend(["--wait", "--timeout", f"{onboarding_timeout}"])
 
     response_helm_install = Popen(cmd_helm_install, stdout=PIPE, stderr=PIPE)
     _, error_helm_install = response_helm_install.communicate()
@@ -515,7 +503,7 @@ def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, f
                 fault_type=consts.No_Storage_Space_Available_Fault_Type,
                 summary="No space left on device",
             )
-            shutil.rmtree(filepath_with_timestamp, ignore_errors=False, onerror=None)
+            shutil.rmtree(filepath_with_timestamp, ignore_errors=False)
 
     # To handle any exception that may occur during the execution
     except Exception as e:
