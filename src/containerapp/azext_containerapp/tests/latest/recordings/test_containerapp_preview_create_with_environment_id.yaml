@@ -134,7 +134,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000005/sharedKeys?api-version=2020-08-01
   response:
     body:
-      string: '{"primarySharedKey":"csv2CEEUWFcJHD5qFmFCB6mZLtnC79H3SzDoLog9NQ8RtKhHyCJf+cATLAZtQWQFmq1F8aCrzSr9CeSpncA6gg==","secondarySharedKey":"xOcGX7CSQeNBXZr8ZJENTvDUQw+VHH7IwitwWtkadu3kTYvV1zAalNF+B/9eG5ZVRCPFhjVklApBk90D8ozkSg=="}'
+      string: '{"primarySharedKey":"abc123","secondarySharedKey":"abc123"}'
     headers:
       access-control-allow-origin:
       - '*'
@@ -1500,8 +1500,8 @@ interactions:
 - request:
     body: '{"location": "eastus", "tags": null, "properties": {"daprAIInstrumentationKey":
       null, "vnetConfiguration": null, "appLogsConfiguration": {"destination": "log-analytics",
-      "logAnalyticsConfiguration": {"customerId": "7ae28054-f310-41dc-9b3a-b17df68ce166",
-      "sharedKey": "csv2CEEUWFcJHD5qFmFCB6mZLtnC79H3SzDoLog9NQ8RtKhHyCJf+cATLAZtQWQFmq1F8aCrzSr9CeSpncA6gg==",
+      "logAnalyticsConfiguration": {"customerId": "veryFakedCustomerId==",
+      "sharedKey":"abc123",
       "dynamicJsonColumns": false}}, "customDomainConfiguration": null, "workloadProfiles":
       [{"workloadProfileType": "Consumption", "Name": "Consumption"}], "zoneRedundant":
       false}, "identity": {"type": "None", "userAssignedIdentities": null}}'
@@ -3962,7 +3962,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000006/sharedKeys?api-version=2020-08-01
   response:
     body:
-      string: '{"primarySharedKey":"lX/FvJ4tzJhi6TUV7yCGUKTxjUbcLQ6zF2tomvP0gIak+KDQlpgfLnl1Zv5vNK+le0OUUIIX6FSu+2UZx4leGg==","secondarySharedKey":"wJDXQnQ8srBJgPh/9gqfSQZ8t3+2aBRaSTEl3mwX5df+iFOWW1LDnKN1OAklpz2DtE7MYkkeohnuE0jYhwwnBw=="}'
+      string: '{"primarySharedKey":"abc123","secondarySharedKey":"abc123"}'
     headers:
       access-control-allow-origin:
       - '*'
@@ -5328,8 +5328,8 @@ interactions:
 - request:
     body: '{"location": "eastus", "tags": null, "properties": {"daprAIInstrumentationKey":
       null, "vnetConfiguration": null, "appLogsConfiguration": {"destination": "log-analytics",
-      "logAnalyticsConfiguration": {"customerId": "f84f0935-1b76-4d25-9041-12730045a70a",
-      "sharedKey": "lX/FvJ4tzJhi6TUV7yCGUKTxjUbcLQ6zF2tomvP0gIak+KDQlpgfLnl1Zv5vNK+le0OUUIIX6FSu+2UZx4leGg==",
+      "logAnalyticsConfiguration": {"customerId": "veryFakedCustomerId==",
+      "sharedKey":"abc123",
       "dynamicJsonColumns": false}}, "customDomainConfiguration": null, "workloadProfiles":
       [{"workloadProfileType": "Consumption", "Name": "Consumption"}], "zoneRedundant":
       false}, "identity": {"type": "None", "userAssignedIdentities": null}}'

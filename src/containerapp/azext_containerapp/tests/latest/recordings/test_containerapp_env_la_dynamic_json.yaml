@@ -134,7 +134,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000002/sharedKeys?api-version=2020-08-01
   response:
     body:
-      string: '{"primarySharedKey":"ObcHIpgDiteKWjxaA2ihHBe6C0VwTS52yBEEs3VjCL5mV05KX1xinqOhGFj3J6ay/L7CSH7LurCG+rRqho9k0g==","secondarySharedKey":"GIDgC7NsSv3A8KQqxlq0ZAkwnQIcPnYn2z7/zMF2PLOmZqrZH0iTE6cUvUAraVo+6+LyvD8yPCCEsbhdOrR2gQ=="}'
+      string: '{"primarySharedKey":"abc123","secondarySharedKey":"abc123"}'
     headers:
       access-control-allow-origin:
       - '*'
@@ -1500,8 +1500,8 @@ interactions:
 - request:
     body: '{"location": "northcentralusstage", "tags": null, "properties": {"daprAIInstrumentationKey":
       null, "vnetConfiguration": null, "appLogsConfiguration": {"destination": "log-analytics",
-      "logAnalyticsConfiguration": {"customerId": "bb324002-bd66-4cfc-9536-ab60645f2990",
-      "sharedKey": "ObcHIpgDiteKWjxaA2ihHBe6C0VwTS52yBEEs3VjCL5mV05KX1xinqOhGFj3J6ay/L7CSH7LurCG+rRqho9k0g==",
+      "logAnalyticsConfiguration": {"customerId": "veryFakedCustomerId==",
+      "sharedKey":"abc123",
       "dynamicJsonColumns": true}}, "customDomainConfiguration": null, "workloadProfiles":
       [{"workloadProfileType": "Consumption", "Name": "Consumption"}], "zoneRedundant":
       false}, "identity": {"type": "None", "userAssignedIdentities": null}}'
@@ -4678,8 +4678,8 @@ interactions:
 - request:
     body: '{"location": "northcentralusstage", "tags": null, "properties": {"daprAIInstrumentationKey":
       null, "vnetConfiguration": null, "appLogsConfiguration": {"destination": "log-analytics",
-      "logAnalyticsConfiguration": {"customerId": "bb324002-bd66-4cfc-9536-ab60645f2990",
-      "sharedKey": "ObcHIpgDiteKWjxaA2ihHBe6C0VwTS52yBEEs3VjCL5mV05KX1xinqOhGFj3J6ay/L7CSH7LurCG+rRqho9k0g==",
+      "logAnalyticsConfiguration": {"customerId": "veryFakedCustomerId==",
+      "sharedKey":"abc123",
       "dynamicJsonColumns": false}}, "customDomainConfiguration": null, "workloadProfiles":
       [{"workloadProfileType": "Consumption", "Name": "Consumption"}], "zoneRedundant":
       false}, "identity": {"type": "None", "userAssignedIdentities": null}}'
@@ -7910,8 +7910,8 @@ interactions:
 - request:
     body: '{"location": "northcentralusstage", "tags": null, "properties": {"daprAIInstrumentationKey":
       null, "vnetConfiguration": null, "appLogsConfiguration": {"destination": "log-analytics",
-      "logAnalyticsConfiguration": {"customerId": "bb324002-bd66-4cfc-9536-ab60645f2990",
-      "sharedKey": "ObcHIpgDiteKWjxaA2ihHBe6C0VwTS52yBEEs3VjCL5mV05KX1xinqOhGFj3J6ay/L7CSH7LurCG+rRqho9k0g==",
+      "logAnalyticsConfiguration": {"customerId": "veryFakedCustomerId==",
+      "sharedKey":"abc123",
       "dynamicJsonColumns": false}}, "customDomainConfiguration": null, "workloadProfiles":
       [{"workloadProfileType": "Consumption", "Name": "Consumption"}], "zoneRedundant":
       false}, "identity": {"type": "None", "userAssignedIdentities": null}}'

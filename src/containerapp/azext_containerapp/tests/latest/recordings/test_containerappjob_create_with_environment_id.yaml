@@ -134,7 +134,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000005/sharedKeys?api-version=2020-08-01
   response:
     body:
-      string: '{"primarySharedKey":"3br7fptETiQGDcew+zwAl6InHfQ8Nrzb2qgyGIveDo4Ku2XsVzy19vJ8G4WaMcRgap4UUwu4tR1+i47yivGzIA==","secondarySharedKey":"DywSSsaM4clICvNBu1fW1jY9xJ12E1W19PRw/TSWU8uN2I/iFLh7meCYQ/b2NIKFPtFC07VNv1FhZBhoIj2QoA=="}'
+      string: '{"primarySharedKey":"abc123","secondarySharedKey":"abc123"}'
     headers:
       access-control-allow-origin:
       - '*'
@@ -1500,8 +1500,8 @@ interactions:
 - request:
     body: '{"location": "northcentralusstage", "tags": null, "properties": {"daprAIInstrumentationKey":
       null, "vnetConfiguration": null, "appLogsConfiguration": {"destination": "log-analytics",
-      "logAnalyticsConfiguration": {"customerId": "5a305c51-f647-46e4-b3e5-c6b3d336adfd",
-      "sharedKey": "3br7fptETiQGDcew+zwAl6InHfQ8Nrzb2qgyGIveDo4Ku2XsVzy19vJ8G4WaMcRgap4UUwu4tR1+i47yivGzIA==",
+      "logAnalyticsConfiguration": {"customerId": "veryFakedCustomerId==",
+      "sharedKey":"abc123",
       "dynamicJsonColumns": false}}, "customDomainConfiguration": null, "workloadProfiles":
       [{"workloadProfileType": "Consumption", "Name": "Consumption"}], "zoneRedundant":
       false, "peerAuthentication": {"mtls": {"enabled": true}}}, "identity": {"type":
@@ -4179,7 +4179,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000006/sharedKeys?api-version=2020-08-01
   response:
     body:
-      string: '{"primarySharedKey":"6R297syKQj+TDjJvJed/elqOLfbi21LSovceYgxyZsnJa4UGjvYaQLZSeqTuEZwVKYZBzIkBmIuvkhtL7htddw==","secondarySharedKey":"IEsb9jJJx2gJ7pBZSr3OPYSfgeZcJpgTOFzIiw/ReqjL0dU4O/TTa4lr4idLS62Jh9BLqvQ3JfF6ZQlnQAya9w=="}'
+      string: '{"primarySharedKey":"abc123","secondarySharedKey":"abc123"}'
     headers:
       access-control-allow-origin:
       - '*'
@@ -5545,8 +5545,8 @@ interactions:
 - request:
     body: '{"location": "northcentralusstage", "tags": null, "properties": {"daprAIInstrumentationKey":
       null, "vnetConfiguration": null, "appLogsConfiguration": {"destination": "log-analytics",
-      "logAnalyticsConfiguration": {"customerId": "3677de35-6e93-4b23-8a55-d1314d9103d0",
-      "sharedKey": "6R297syKQj+TDjJvJed/elqOLfbi21LSovceYgxyZsnJa4UGjvYaQLZSeqTuEZwVKYZBzIkBmIuvkhtL7htddw==",
+      "logAnalyticsConfiguration": {"customerId": "veryFakedCustomerId==",
+      "sharedKey":"abc123",
       "dynamicJsonColumns": false}}, "customDomainConfiguration": null, "workloadProfiles":
       [{"workloadProfileType": "Consumption", "Name": "Consumption"}], "zoneRedundant":
       false, "peerAuthentication": {"mtls": {"enabled": true}}}, "identity": {"type":

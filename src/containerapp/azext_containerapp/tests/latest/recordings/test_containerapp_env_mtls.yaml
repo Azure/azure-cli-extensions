@@ -134,7 +134,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000003/sharedKeys?api-version=2020-08-01
   response:
     body:
-      string: '{"primarySharedKey":"OmgAYxABAzpzjqVo8/IEcgfCXJJfaQDMUqTfqHgZMYiKPxF2jbgxY1AZHTHS8XysHmaxecWPrdHkk42+YQflRA==","secondarySharedKey":"nTZaKxwKneqBWCZRCBwYMH5bZP7OHTdSX3Gkz9B+3UG+m+SJha8D3EATwg5H2uPptehKRAe+Y9JQS3at89oNUQ=="}'
+      string: '{"primarySharedKey":"abc123","secondarySharedKey":"abc123"}'
     headers:
       access-control-allow-origin:
       - '*'
@@ -1500,8 +1500,8 @@ interactions:
 - request:
     body: '{"location": "northcentralusstage", "tags": null, "properties": {"daprAIInstrumentationKey":
       null, "vnetConfiguration": null, "appLogsConfiguration": {"destination": "log-analytics",
-      "logAnalyticsConfiguration": {"customerId": "fde853a3-9d89-414b-844d-273a9b26fc80",
-      "sharedKey": "OmgAYxABAzpzjqVo8/IEcgfCXJJfaQDMUqTfqHgZMYiKPxF2jbgxY1AZHTHS8XysHmaxecWPrdHkk42+YQflRA==",
+      "logAnalyticsConfiguration": {"customerId": "veryFakedCustomerId==",
+      "sharedKey":"abc123",
       "dynamicJsonColumns": false}}, "customDomainConfiguration": null, "workloadProfiles":
       [{"workloadProfileType": "Consumption", "Name": "Consumption"}], "zoneRedundant":
       false, "peerAuthentication": {"mtls": {"enabled": true}}}, "identity": {"type":

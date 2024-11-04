@@ -890,7 +890,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000003/listCredentials?api-version=2023-11-01-preview
   response:
     body:
-      string: '{"username":"acr000003","passwords":[{"name":"password","value":"MgfBtvvd/aa/CySMIjjzqAljTSvyVvlN/HCbMzi1Tc+ACRDcyqOw"},{"name":"password2","value":"l8DHdbxmy74Vc/8uFdyTMap1KjFU6iyn2MN24tjYWu+ACRB6YzHT"}]}'
+      string: '{"username":"acr000003","passwords":[{"name":"password","value":"abc123"},{"name":"password2","value":"abc123"}]}'
     headers:
       api-supported-versions:
       - 2023-11-01-preview
@@ -6301,7 +6301,7 @@ interactions:
     body: '{"location": "East US", "identity": {"type": "None", "userAssignedIdentities":
       null}, "properties": {"environmentId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/client.env_rg_eastus/providers/Microsoft.App/managedEnvironments/env-eastus",
       "configuration": {"secrets": [{"name": "acr000003azurecrio-acr000003", "value":
-      "MgfBtvvd/aa/CySMIjjzqAljTSvyVvlN/HCbMzi1Tc+ACRDcyqOw"}], "activeRevisionsMode":
+      "abc123"}], "activeRevisionsMode":
       "single", "ingress": {"fqdn": null, "external": true, "targetPort": 80, "transport":
       "auto", "exposedPort": null, "allowInsecure": false, "traffic": null, "customDomains":
       null, "ipSecurityRestrictions": null, "stickySessions": null}, "dapr": null,
