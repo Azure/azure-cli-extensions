@@ -4,15 +4,14 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
-from knack.arguments import CLIArgumentType
+# from knack.arguments import CLIArgumentType
 
 
 def load_arguments(self, _):
 
-    from azure.cli.core.commands.parameters import tags_type
-    from azure.cli.core.commands.validators import get_default_location_from_resource_group
+    # from azure.cli.core.commands.validators import get_default_location_from_resource_group
 
-    ai_service_name_type = CLIArgumentType(options_list='--ai-service-name-name', help='Name of the Ai_service.', id_part='name')
+    # ai_service_name_type = CLIArgumentType(options_list='--ai-service-name-name', help='Name of the Ai_service.', id_part='name')
 
     with self.argument_context('ai_service') as c:
         c.argument('api_version')
@@ -20,3 +19,4 @@ def load_arguments(self, _):
         c.argument('model_name')
         c.argument('model_version')
 
+# End-of-file (EOF)

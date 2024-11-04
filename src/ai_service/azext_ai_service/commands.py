@@ -4,9 +4,8 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
-from azure.cli.core.commands import CliCommandType
-from azext_ai_service._client_factory import cf_ai_service
-
+# from azure.cli.core.commands import CliCommandType
+# from azext_ai_service._client_factory import cf_ai_service
 
 def load_command_table(self, _):
 
@@ -16,3 +15,4 @@ def load_command_table(self, _):
     with self.command_group('ai_service', is_preview=True):
         pass
 
+# End-of-file (EOF)

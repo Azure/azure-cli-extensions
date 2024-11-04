@@ -17,7 +17,7 @@ class Ai_serviceCommandsLoader(AzCommandsLoader):
             operations_tmpl='azext_ai_service.custom#{}',
             client_factory=cf_ai_service)
         super(Ai_serviceCommandsLoader, self).__init__(cli_ctx=cli_ctx,
-                                                  custom_command_type=ai_service_custom)
+                                                       custom_command_type=ai_service_custom)
 
     def load_command_table(self, args):
         from azext_ai_service.commands import load_command_table
