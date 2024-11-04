@@ -1902,14 +1902,14 @@ helps['containerapp sessionpool create'] = """
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
               --container-type CustomContainer --environment MyEnvironment --image MyImage \\
               --cpu 0.5 --memory 1Gi --target-port 80 --registry-server myregistry.azurecr.io \\
-              --registry-identity-id  MyUserIdentityResourceId \\
+              --registry-identity  MyUserIdentityResourceId \\
               --location eastasia
     - name: Create or update a Session Pool with container type CustomContainer with system assigned and user assigned identity.
       text: |
           az containerapp sessionpool create -n mysessionpool -g MyResourceGroup \\
               --container-type CustomContainer --environment MyEnvironment --image MyImage \\
               --cpu 0.5 --memory 1Gi --target-port 80 \\
-              --system-assigned --user-assigned MyUserIdentityResourceId \\
+              --mi-system-assigned --mi-user-assigned MyUserIdentityResourceId \\
               --location eastasia
     - name: Create or update a Session Pool with container type CustomContainer with cooldown period 360s
       text: |

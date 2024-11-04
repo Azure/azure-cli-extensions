@@ -130,13 +130,13 @@ class SessionPoolPreviewDecorator(BaseResource):
         return self.get_param("registry_user")
 
     def get_argument_registry_identity_id(self):
-        return self.get_param("registry_identity_id")
-    
+        return self.get_param("registry_identity")
+
     def get_argument_system_assigned(self):
-        return self.get_param("system_assigned")
+        return self.get_param("mi_system_assigned")
 
     def get_argument_user_assigned(self):
-        return self.get_param("user_assigned")
+        return self.get_param("mi_user_assigned")
 
     # pylint: disable=no-self-use
     def get_environment_client(self):
@@ -202,9 +202,9 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         managed_identity_settings = []
         if self.get_argument_system_assigned():
             managed_identity_setting = {
-                    "identity": "system",
-                    "lifecycle": "main"
-                }
+                "identity": "system",
+                "lifecycle": "main"
+            }
             managed_identity_settings.append(managed_identity_setting)
 
         if self.get_argument_user_assigned():
@@ -212,13 +212,13 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
                 managed_identity_setting = {
                     "identity": x.lower(),
                     "lifecycle": "main"
-                }          
+                }
                 managed_identity_settings.append(managed_identity_setting)
         if managed_identity_settings:
             safe_set(self.session_pool_def, "properties", "managedIdentitySettings", value=managed_identity_settings)
-            
+
     def set_up_managed_identity(self):
-        identity_def = ManagedServiceIdentity
+        identity_def = deepcopy(ManagedServiceIdentity)
         identity_def["type"] = "None"
 
         assign_system_identity = self.get_argument_system_assigned()
@@ -310,10 +310,10 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
                 if secrets_def is None:
                     secrets_def = []
                 registry_def["passwordSecretRef"] = store_as_secret_and_return_secret_ref(secrets_def,
-                                                                                        self.get_argument_registry_user(),
-                                                                                        self.get_argument_registry_server(),
-                                                                                        self.get_argument_registry_pass())
-                
+                                                                                          self.get_argument_registry_user(),
+                                                                                          self.get_argument_registry_server(),
+                                                                                          self.get_argument_registry_pass())
+
             if self.get_argument_registry_identity_id():
                 registry_def["identity"] = self.get_argument_registry_identity_id()
 

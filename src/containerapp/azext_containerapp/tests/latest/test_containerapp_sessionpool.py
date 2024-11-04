@@ -193,7 +193,11 @@ class ContainerappSessionPoolTests(ScenarioTest):
         principal_id = identity_json["principalId"]
         
         env_name = self.create_random_name(prefix='aca-sp-env-registry', length=24)
-        create_containerapp_env(self, env_name, resource_group, location)
+        self.cmd('containerapp env create -g {} -n {} --location {} --logs-destination none'.format(resource_group, env_name, location), expect_failure=False)
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
         acr = self.create_random_name(prefix='acr', length=24)
         image_source = "mcr.microsoft.com/k8se/quickstart:latest"
@@ -213,7 +217,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
         cpu = "0.5"
         memory = "1Gi"
         self.cmd(
-            f'containerapp sessionpool create -g {resource_group} -n {sessionpool_name_custom} --container-type CustomContainer --environment {env_name} --ready-sessions {ready_instances} --image {image_name} --cpu {cpu} --memory {memory} --target-port 80 --registry-server {acr}.azurecr.io --registry-identity-id {user_identity_id} --system-assigned',
+            f'containerapp sessionpool create -g {resource_group} -n {sessionpool_name_custom} -l {location} --container-type CustomContainer --environment {env_name} --ready-sessions {ready_instances} --image {image_name} --cpu {cpu} --memory {memory} --target-port 80 --registry-server {acr}.azurecr.io --registry-identity {user_identity_id} --mi-system-assigned',
             checks=[
                 JMESPathCheck('name', sessionpool_name_custom),
                 JMESPathCheck('properties.containerType', "CustomContainer"),

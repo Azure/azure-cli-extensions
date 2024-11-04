@@ -2865,9 +2865,9 @@ def create_session_pool(cmd,
                         registry_server=None,
                         registry_pass=None,
                         registry_user=None,
-                        user_assigned=None,
-                        registry_identity_id=None,
-                        system_assigned=False):
+                        mi_user_assigned=None,
+                        registry_identity=None,
+                        mi_system_assigned=False):
     raw_parameters = locals()
     session_pool_decorator = SessionPoolCreateDecorator(
         cmd=cmd,
