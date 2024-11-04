@@ -51,7 +51,7 @@ from knack.prompting import prompt_y_n
 
 from msrest.exceptions import DeserializationError
 
-from ._decorator_utils import process_loaded_yaml_for_connected_env_dapr, create_deserializer
+from ._decorator_utils import create_deserializer
 from ._validators import validate_create
 from .containerapp_env_certificate_decorator import ContainerappPreviewEnvCertificateListDecorator, \
     ContainerappEnvCertificatePreviweUploadDecorator
@@ -1861,7 +1861,7 @@ def connected_env_remove_dapr_component(cmd, resource_group_name, dapr_component
 def connected_env_create_or_update_dapr_component(cmd, resource_group_name, environment_name, dapr_component_name, yaml):
     _validate_subscription_registered(cmd, CONTAINER_APPS_RP)
 
-    yaml_dapr_component = process_loaded_yaml_for_connected_env_dapr(load_yaml_file(yaml))
+    yaml_dapr_component = load_yaml_file(yaml)
     if not isinstance(yaml_dapr_component, dict):  # pylint: disable=unidiomatic-typecheck
         raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.')
 
@@ -1878,13 +1878,15 @@ def connected_env_create_or_update_dapr_component(cmd, resource_group_name, envi
     _remove_additional_attributes(daprcomponent_def)
     _remove_dapr_readonly_attributes(daprcomponent_def)
 
-    if not safe_get(daprcomponent_def, "properties", "ignoreErrors"):
-        safe_set(daprcomponent_def, "properties", "ignoreErrors", value=False)
+    if not daprcomponent_def["ignoreErrors"]:
+        daprcomponent_def["ignoreErrors"] = False
+
+    dapr_component_envelope = {"properties": daprcomponent_def}
 
     try:
         r = ConnectedEnvDaprComponentClient.create_or_update(cmd, resource_group_name=resource_group_name,
                                                              environment_name=environment_name,
-                                                             dapr_component_envelope=daprcomponent_def,
+                                                             dapr_component_envelope=dapr_component_envelope,
                                                              name=dapr_component_name)
         return r
     except Exception as e:

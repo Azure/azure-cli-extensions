@@ -2489,7 +2489,7 @@ class ConnectedEnvironmentCollection(_serialization.Model):
         self.next_link = None
 
 
-class ConnectedEnvironmentDaprComponent(ProxyResource):
+class ConnectedEnvironmentDaprComponent(ProxyResource):  # pylint: disable=too-many-instance-attributes
     """Dapr Component.
 
     Variables are only populated by the server, and will be ignored when sending a request.
@@ -2505,9 +2505,32 @@ class ConnectedEnvironmentDaprComponent(ProxyResource):
     :ivar system_data: Azure Resource Manager metadata containing createdBy and modifiedBy
      information.
     :vartype system_data: ~azure.mgmt.appcontainers.models.SystemData
-    :ivar properties: Dapr component properties.
-    :vartype properties:
-     ~azure.mgmt.appcontainers.models.ConnectedEnvironmentDaprComponentProperties
+    :ivar component_type: Component type.
+    :vartype component_type: str
+    :ivar version: Component version.
+    :vartype version: str
+    :ivar ignore_errors: Boolean describing if the component errors are ignores.
+    :vartype ignore_errors: bool
+    :ivar init_timeout: Initialization timeout.
+    :vartype init_timeout: str
+    :ivar secrets: Collection of secrets used by a Dapr component.
+    :vartype secrets: list[~azure.mgmt.appcontainers.models.Secret]
+    :ivar secret_store_component: Name of a Dapr component to retrieve component secrets from.
+    :vartype secret_store_component: str
+    :ivar metadata: Component metadata.
+    :vartype metadata: list[~azure.mgmt.appcontainers.models.DaprMetadata]
+    :ivar scopes: Names of container apps that can use this Dapr component.
+    :vartype scopes: list[str]
+    :ivar service_component_bind: List of container app services that are bound to the Dapr
+     component.
+    :vartype service_component_bind:
+     list[~azure.mgmt.appcontainers.models.DaprComponentServiceBinding]
+    :ivar provisioning_state: Provisioning state of the Connected Environment Dapr Component. Known
+     values are: "Succeeded", "Failed", "Canceled", and "InProgress".
+    :vartype provisioning_state: str or
+     ~azure.mgmt.appcontainers.models.ConnectedEnvironmentDaprComponentProvisioningState
+    :ivar deployment_errors: Any errors that occurred during deployment or deployment validation.
+    :vartype deployment_errors: str
     """
 
     _validation = {
@@ -2515,6 +2538,8 @@ class ConnectedEnvironmentDaprComponent(ProxyResource):
         "name": {"readonly": True},
         "type": {"readonly": True},
         "system_data": {"readonly": True},
+        "provisioning_state": {"readonly": True},
+        "deployment_errors": {"readonly": True},
     }
 
     _attribute_map = {
@@ -2522,19 +2547,67 @@ class ConnectedEnvironmentDaprComponent(ProxyResource):
         "name": {"key": "name", "type": "str"},
         "type": {"key": "type", "type": "str"},
         "system_data": {"key": "systemData", "type": "SystemData"},
-        "properties": {"key": "properties", "type": "ConnectedEnvironmentDaprComponentProperties"},
+        "component_type": {"key": "properties.componentType", "type": "str"},
+        "version": {"key": "properties.version", "type": "str"},
+        "ignore_errors": {"key": "properties.ignoreErrors", "type": "bool"},
+        "init_timeout": {"key": "properties.initTimeout", "type": "str"},
+        "secrets": {"key": "properties.secrets", "type": "[Secret]"},
+        "secret_store_component": {"key": "properties.secretStoreComponent", "type": "str"},
+        "metadata": {"key": "properties.metadata", "type": "[DaprMetadata]"},
+        "scopes": {"key": "properties.scopes", "type": "[str]"},
+        "service_component_bind": {"key": "properties.serviceComponentBind", "type": "[DaprComponentServiceBinding]"},
+        "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
+        "deployment_errors": {"key": "properties.deploymentErrors", "type": "str"},
     }
 
     def __init__(
-        self, *, properties: Optional["_models.ConnectedEnvironmentDaprComponentProperties"] = None, **kwargs: Any
+        self,
+        *,
+        component_type: Optional[str] = None,
+        version: Optional[str] = None,
+        ignore_errors: bool = False,
+        init_timeout: Optional[str] = None,
+        secrets: Optional[List["_models.Secret"]] = None,
+        secret_store_component: Optional[str] = None,
+        metadata: Optional[List["_models.DaprMetadata"]] = None,
+        scopes: Optional[List[str]] = None,
+        service_component_bind: Optional[List["_models.DaprComponentServiceBinding"]] = None,
+        **kwargs: Any
     ) -> None:
         """
-        :keyword properties: Dapr component properties.
-        :paramtype properties:
-         ~azure.mgmt.appcontainers.models.ConnectedEnvironmentDaprComponentProperties
+        :keyword component_type: Component type.
+        :paramtype component_type: str
+        :keyword version: Component version.
+        :paramtype version: str
+        :keyword ignore_errors: Boolean describing if the component errors are ignores.
+        :paramtype ignore_errors: bool
+        :keyword init_timeout: Initialization timeout.
+        :paramtype init_timeout: str
+        :keyword secrets: Collection of secrets used by a Dapr component.
+        :paramtype secrets: list[~azure.mgmt.appcontainers.models.Secret]
+        :keyword secret_store_component: Name of a Dapr component to retrieve component secrets from.
+        :paramtype secret_store_component: str
+        :keyword metadata: Component metadata.
+        :paramtype metadata: list[~azure.mgmt.appcontainers.models.DaprMetadata]
+        :keyword scopes: Names of container apps that can use this Dapr component.
+        :paramtype scopes: list[str]
+        :keyword service_component_bind: List of container app services that are bound to the Dapr
+         component.
+        :paramtype service_component_bind:
+         list[~azure.mgmt.appcontainers.models.DaprComponentServiceBinding]
         """
         super().__init__(**kwargs)
-        self.properties = properties
+        self.component_type = component_type
+        self.version = version
+        self.ignore_errors = ignore_errors
+        self.init_timeout = init_timeout
+        self.secrets = secrets
+        self.secret_store_component = secret_store_component
+        self.metadata = metadata
+        self.scopes = scopes
+        self.service_component_bind = service_component_bind
+        self.provisioning_state = None
+        self.deployment_errors = None
 
 
 class DaprComponentProperties(_serialization.Model):
