@@ -17,7 +17,7 @@ from azure.cli.core.aaz import *
 class Create(AAZCommand):
     """Create NSP logging configuration.
 
-    :example: Create NSP Logging Configuration
+    :example: Create Nsp Logging Configuration
         az network perimeter logging-configuration create --perimeter-name nsp1 --resource-group rg1 --enabled-log-categories "[NspPublicInboundPerimeterRulesDenied,NspPublicOutboundPerimeterRulesDenied]"
     """
 

@@ -17,6 +17,9 @@ from azure.cli.core.aaz import *
 )
 class Delete(AAZCommand):
     """Delete NSP Logging configuration.
+
+    :example: Delete Nsp Logging Configuration Delete
+        az network perimeter logging-configuration delete --resource-group rg1 --perimeter-name nsp1
     """
 
     _aaz_info = {

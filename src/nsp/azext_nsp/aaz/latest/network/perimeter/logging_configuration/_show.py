@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get NSP logging configuration.
+
+    :example: Get Nsp Logging Configuration
+        az network perimeter logging-configuration show --resource-group rg1 --perimeter-name nsp1
     """
 
     _aaz_info = {
