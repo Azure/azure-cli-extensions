@@ -71,19 +71,9 @@ class MaintenanceConfigPreviewDecorator(MaintenanceConfigDecorator):
         if self.get_argument_weekday() is not None:
             self.maintenance_config_def["properties"]["scheduledEntries"][0]["weekDay"] = self.get_argument_weekday()
 
-    def add(self):
+    def create_or_update(self):
         try:
-            return self.client.add(
-                cmd=self.cmd,
-                resource_group_name=self.get_argument_resource_group_name(),
-                environment_name=self.get_argument_environment_name(),
-                maintenance_config_envelope=self.maintenance_config_def)
-        except Exception as e:
-            handle_raw_exception(e)
-
-    def update(self):
-        try:
-            return self.client.update(
+            return self.client.create_or_update(
                 cmd=self.cmd,
                 resource_group_name=self.get_argument_resource_group_name(),
                 environment_name=self.get_argument_environment_name(),

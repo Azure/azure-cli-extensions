@@ -3273,7 +3273,7 @@ def add_maintenance_config(cmd, resource_group_name, env_name, duration, start_h
     )
     maintenance_config_decorator.construct_payload()
     maintenance_config_decorator.validate_arguments()
-    r = maintenance_config_decorator.add()
+    r = maintenance_config_decorator.create_or_update()
     return r
 
 
@@ -3288,7 +3288,7 @@ def update_maintenance_config(cmd, resource_group_name, env_name, duration=None,
     forUpdate = True
     maintenance_config_decorator.construct_payload(forUpdate)
     maintenance_config_decorator.validate_arguments()
-    r = maintenance_config_decorator.update()
+    r = maintenance_config_decorator.create_or_update()
     return r
 
 

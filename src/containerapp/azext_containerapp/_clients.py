@@ -1407,7 +1407,7 @@ class MaintenanceConfigPreviewClient():
         return r.json()
 
     @classmethod
-    def add(cls, cmd, resource_group_name, environment_name, maintenance_config_envelope):
+    def create_or_update(cls, cmd, resource_group_name, environment_name, maintenance_config_envelope):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/microsoft.app/managedenvironments/{}/maintenanceConfigurations/{}?api-version={}"
@@ -1425,24 +1425,6 @@ class MaintenanceConfigPreviewClient():
             operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
             poll_status(cmd, operation_url)
             r = send_raw_request(cmd.cli_ctx, "GET", request_url)
-
-        return r.json()
-
-    @classmethod
-    def update(cls, cmd, resource_group_name, environment_name, maintenance_config_envelope):
-        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
-        sub_id = get_subscription_id(cmd.cli_ctx)
-        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/microsoft.app/managedenvironments/{}/maintenanceConfigurations/{}?api-version={}"
-        request_url = url_fmt.format(
-            management_hostname.strip('/'),
-            sub_id,
-            resource_group_name,
-            environment_name,
-            cls.maintenance_config_name,
-            cls.api_version)
-
-        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(maintenance_config_envelope))
-
         if r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
             response = poll_results(cmd, operation_url)
