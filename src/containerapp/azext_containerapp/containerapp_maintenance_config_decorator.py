@@ -77,8 +77,7 @@ class MaintenanceConfigPreviewDecorator(MaintenanceConfigDecorator):
                 cmd=self.cmd,
                 resource_group_name=self.get_argument_resource_group_name(),
                 environment_name=self.get_argument_environment_name(),
-                maintenance_config_envelope=self.maintenance_config_def,
-                no_wait=self.get_argument_no_wait())
+                maintenance_config_envelope=self.maintenance_config_def)
         except Exception as e:
             handle_raw_exception(e)
 
@@ -88,18 +87,16 @@ class MaintenanceConfigPreviewDecorator(MaintenanceConfigDecorator):
                 cmd=self.cmd,
                 resource_group_name=self.get_argument_resource_group_name(),
                 environment_name=self.get_argument_environment_name(),
-                maintenance_config_envelope=self.maintenance_config_def,
-                no_wait=self.get_argument_no_wait())
+                maintenance_config_envelope=self.maintenance_config_def)
         except Exception as e:
             handle_raw_exception(e)
 
-    def delete(self):
+    def remove(self):
         try:
-            return self.client.delete(
+            return self.client.remove(
                 cmd=self.cmd,
                 resource_group_name=self.get_argument_resource_group_name(),
-                environment_name=self.get_argument_environment_name(),
-                no_wait=self.get_argument_no_wait())
+                environment_name=self.get_argument_environment_name())
         except Exception as e:
             handle_raw_exception(e)
 

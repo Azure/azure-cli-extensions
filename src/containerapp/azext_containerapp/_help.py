@@ -2162,11 +2162,11 @@ helps['containerapp env maintenance-config show'] = """
           az containerapp env maintenance-config show --env-name myEnv -g MyResourceGroup
 """
 
-helps['containerapp env maintenance-config delete'] = """
+helps['containerapp env maintenance-config remove'] = """
     type: command
-    short-summary: Delete Planned Maintenance in a Container App Environment
+    short-summary: Remove Planned Maintenance in a Container App Environment
     examples:
-    - name: Delete Planned Maintenance
+    - name: Remove Planned Maintenance
       text: |
-          az containerapp env maintenance-config delete --env-name myEnv -g MyResourceGroup
+          az containerapp env maintenance-config remove --env-name myEnv -g MyResourceGroup
 """

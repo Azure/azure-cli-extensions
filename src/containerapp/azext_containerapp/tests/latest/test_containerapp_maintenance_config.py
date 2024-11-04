@@ -20,7 +20,7 @@ from .utils import prepare_containerapp_env_for_app_e2e_tests
 
 class ContainerAppMaintenanceConfigTest(ScenarioTest):
     @AllowLargeResponse(8192)
-    @ResourceGroupPreparer(location="westcentralus")
+    @ResourceGroupPreparer(location="eastus")
     def test_containerapp_maintenanceconfig_crudoperations_e2e(self, resource_group):
         
         self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
@@ -39,10 +39,10 @@ class ContainerAppMaintenanceConfigTest(ScenarioTest):
         ])
 
         ## test for CRUD operations on Maintenance Config
-        self.cmd("az containerapp env maintenance-config add --resource-group {} --env-name {} -d {} -w {} -s {}".format(resource_group, env_name, duration, weekday, startHour))
+        self.cmd("az containerapp env maintenance-config add --resource-group {} --environment {} -d {} -w {} -s {}".format(resource_group, env_name, duration, weekday, startHour))
 
         # verify the resource
-        self.cmd("az containerapp env maintenance-config show --resource-group {} --env-name {}".format(resource_group, env_name), checks=[
+        self.cmd("az containerapp env maintenance-config show --resource-group {} --environment {}".format(resource_group, env_name), checks=[
             JMESPathCheck('properties.scheduledEntries[0].durationHours', duration),
             JMESPathCheck('properties.scheduledEntries[0].startHourUtc', startHour),
             JMESPathCheck('properties.scheduledEntries[0].weekDay', weekday),
@@ -52,17 +52,17 @@ class ContainerAppMaintenanceConfigTest(ScenarioTest):
         updatedWeekday = "Tuesday"
 
         # update the MaintenanceConfig, check duration and weekday are updated and start hour remains the same
-        self.cmd("az containerapp env maintenance-config update --resource-group {} --env-name {} -d {} -w {}".format(resource_group, env_name, updatedDuration, updatedWeekday), checks=[
+        self.cmd("az containerapp env maintenance-config update --resource-group {} --environment {} -d {} -w {}".format(resource_group, env_name, updatedDuration, updatedWeekday), checks=[
             JMESPathCheck('properties.scheduledEntries[0].durationHours', updatedDuration),
             JMESPathCheck('properties.scheduledEntries[0].startHourUtc', startHour),
             JMESPathCheck('properties.scheduledEntries[0].weekDay', updatedWeekday),
         ])
 
         # delete the Container App Maintenance Config resource
-        self.cmd("az containerapp env maintenance-config delete --resource-group {} --env-name {}".format(resource_group, env_name))
+        self.cmd("az containerapp env maintenance-config remove --resource-group {} --environment {}".format(resource_group, env_name))
         
-        self.cmd("az containerapp env maintenance-config show --resource-group {} --env-name {}".format(resource_group, env_name), checks=[
+        self.cmd("az containerapp env maintenance-config show --resource-group {} --environment {}".format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
 
-        self.cmd('containerapp env delete -g {} -n {} -y --no-wait'.format(resource_group, env_name))
+        self.cmd('containerapp env delete -g {} -n {} -y'.format(resource_group, env_name))

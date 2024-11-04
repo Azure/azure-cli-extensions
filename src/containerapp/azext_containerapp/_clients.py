@@ -1407,7 +1407,7 @@ class MaintenanceConfigPreviewClient():
         return r.json()
 
     @classmethod
-    def add(cls, cmd, resource_group_name, environment_name, maintenance_config_envelope, no_wait=False):
+    def add(cls, cmd, resource_group_name, environment_name, maintenance_config_envelope):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/microsoft.app/managedenvironments/{}/maintenanceConfigurations/{}?api-version={}"
@@ -1421,9 +1421,7 @@ class MaintenanceConfigPreviewClient():
 
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(maintenance_config_envelope))
 
-        if no_wait:
-            return r.json()
-        elif r.status_code == 201:
+        if r.status_code == 201:
             operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
             poll_status(cmd, operation_url)
             r = send_raw_request(cmd.cli_ctx, "GET", request_url)
@@ -1431,7 +1429,7 @@ class MaintenanceConfigPreviewClient():
         return r.json()
 
     @classmethod
-    def update(cls, cmd, resource_group_name, environment_name, maintenance_config_envelope, no_wait=False):
+    def update(cls, cmd, resource_group_name, environment_name, maintenance_config_envelope):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/microsoft.app/managedenvironments/{}/maintenanceConfigurations/{}?api-version={}"
@@ -1445,9 +1443,7 @@ class MaintenanceConfigPreviewClient():
 
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(maintenance_config_envelope))
 
-        if no_wait:
-            return
-        elif r.status_code == 202:
+        if r.status_code == 202:
             operation_url = r.headers.get(HEADER_LOCATION)
             response = poll_results(cmd, operation_url)
             if response is None:
@@ -1458,7 +1454,7 @@ class MaintenanceConfigPreviewClient():
         return r.json()
 
     @classmethod
-    def delete(cls, cmd, resource_group_name, environment_name, no_wait=False):
+    def remove(cls, cmd, resource_group_name, environment_name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/microsoft.app/managedenvironments/{}/maintenanceConfigurations/{}?api-version={}"
@@ -1472,9 +1468,7 @@ class MaintenanceConfigPreviewClient():
 
         r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
 
-        if no_wait:
-            return  # API doesn't return JSON (it returns no content)
-        elif r.status_code in [200, 201, 202, 204]:
+        if r.status_code in [200, 201, 202, 204]:
             if r.status_code == 202:
                 operation_url = r.headers.get(HEADER_LOCATION)
                 poll_results(cmd, operation_url)

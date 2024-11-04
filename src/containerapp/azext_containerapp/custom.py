@@ -3292,7 +3292,7 @@ def update_maintenance_config(cmd, resource_group_name, env_name, duration=None,
     return r
 
 
-def delete_maintenance_config(cmd, resource_group_name, env_name):
+def remove_maintenance_config(cmd, resource_group_name, env_name):
     raw_parameters = locals()
     maintenance_config_decorator = MaintenanceConfigPreviewDecorator(
         cmd=cmd,
@@ -3300,7 +3300,7 @@ def delete_maintenance_config(cmd, resource_group_name, env_name):
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    r = maintenance_config_decorator.delete()
+    r = maintenance_config_decorator.remove()
     return r
 
 
