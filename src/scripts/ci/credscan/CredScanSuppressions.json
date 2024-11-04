@@ -1,0 +1,299 @@
+{
+  "tool": "Credential Scanner",
+  "suppressions": [
+    {
+      "placeholder": "ManangementGroupServicePrincipal%40123",
+      "_justification": "[ManagementGroups] hard code dummy password"
+    },
+    {
+      "file": [
+        "src\\eventgrid\\azext_eventgrid\\tests\\latest\\recordings\\test_create_domain.yaml",
+        "src\\eventgrid\\azext_eventgrid\\tests\\latest\\recordings\\test_create_topic.yaml"
+      ],
+      "_justification": "false alarm about 'Found General Symmetric Key'"
+    },
+    {
+      "file": [
+        "src\\mixed-reality\\azext_mixed_reality\\tests\\latest\\recordings\\test_spatial_anchors_account_scenario.yaml"
+      ],
+      "_justification": "[MixedReality] Found Azure Shared Access Key / Web Hook Token"
+    },
+    {
+      "placeholder": "aduser",
+      "_justification": "[NetAppFiles] Add suppression for false alarm in comments of _help.py"
+    },
+    {
+      "placeholder": "AZURE_CLIENT_SECRET",
+      "_justification": "[db_up] false alarm about environment variable name"
+    },
+    {
+      "placeholder": "ADPassword",
+      "_justification": "[SQL] false alarm about AuthenticationType enum value"
+    },
+    {
+      "placeholder": "ActiveDirectoryPassword",
+      "_justification": "[DataMigration] false alarm about AuthenticationType enum value"
+    },
+    {
+      "placeholder": "Ovg+o0K/0/2V8upg7AwlyAPCriEcOSXKuBu2Gv/PU70Y7aWDW3C2ZRmw6kYWqPWBaM1GosLkcSZkgsobAlT+Sw==",
+      "_justification": "[ADLS] false alarm on sign value"
+    },
+    {
+      "placeholder": "4CTlhouPm0c3PWuTQ8t6Myh/FYegVUPqXUmdtL2byRytFPlt98L/pw==",
+      "_justification": "verification code in test_eventgrid_commands.py"
+    },
+    {
+      "placeholder": "7jTiaEBVeYjC8X6gPDUhIhAnFRjaxZaGyS3hBbr09bmj3heQNhvrbA==",
+      "_justification": "verification code in test_eventgrid_commands.py"
+    },
+    {
+      "placeholder": "Password123!",
+      "_justification": "dummy password in test_synapse_scenario.py"
+    },
+    {
+      "file": [
+        "src\\timeseriesinsights\\azext_timeseriesinsights\\tests\\latest\\recordings\\test_timeseriesinsights_environment_longterm.yaml",
+        "src\\timeseriesinsights\\azext_timeseriesinsights\\tests\\latest\\recordings\\test_timeseriesinsights_event_source_eventhub.yaml",
+        "src\\timeseriesinsights\\azext_timeseriesinsights\\tests\\latest\\recordings\\test_timeseriesinsights_event_source_iothub.yaml"
+      ],
+      "_justification": "Azure storgae access key"
+    },
+    {
+      "file": [
+        "src\\maintenance\\azext_maintenance\\tests\\latest\\recordings\\test_maintenance_commands.yaml",
+        "src\\maintenance\\azext_maintenance\\tests\\latest\\recordings\\test_maintenance_configuration_create.yaml",
+        "src\\maintenance\\azext_maintenance\\tests\\latest\\recordings\\test_signalr_commands.yaml",
+        "src\\notification-hub\\azext_notification_hub\\tests\\latest\\recordings\\test_notificationhubs.yaml"
+      ],
+      "_justification": "Azure Shared Access Key / Web Hook Token"
+    },
+    {
+      "file": [
+        "src\\eventgrid\\azext_eventgrid\\tests\\latest\\recordings\\test_Partner_scenarios.yaml"
+      ],
+      "_justification": "Found General Symmetric Key"
+    },
+    {
+      "file": [
+        "src\\datafactory\\azext_datafactory\\vendored_sdks\\datafactory\\models\\_data_factory_management_client_enums.py",
+        "src\\datafactory\\azext_datafactory\\vendored_sdks\\datafactory\\models\\_models_py3.py"
+      ],
+      "_justification": "Dummy secrets for one-off resources"
+    },
+    {
+      "file": [
+        "src\\communication\\azext_communication\\tests\\latest\\recordings\\test_communication_scenario.yaml"
+      ],
+      "_justification": "Dummy resources' tokens left during testing Micorosfot.Communication"
+    },
+    {
+      "file": [
+        "src\\application-insights\\azext_applicationinsights\\tests\\latest\\recordings\\test_api_key.yaml"
+      ],
+      "_justification": "random keys for one-off resources"
+    },
+    {
+      "file": [
+        "src\\stream-analytics\\azext_stream_analytics\\_help.py",
+        "src\\appservice-kube\\azext_appservice_kube\\_help.py"
+      ],
+      "_justification": "dummy passwords for one-off resources"
+    },
+    {
+      "file": [
+        "src\\storage-blob-preview\\azext_storage_blob_preview\\tests\\latest\\recordings\\test_storage_blob_incremental_copy.yaml"
+      ],
+      "_justification": "[Storage] response body contains random value recognized as secret in outdated recoding files of storage may remove in the future"
+    },
+    {
+      "file": [
+        "src\\image-gallery\\azext_image_gallery\\vendored_sdks\\azure_mgmt_compute\\models\\_models.py",
+        "src\\image-gallery\\azext_image_gallery\\vendored_sdks\\azure_mgmt_compute\\models\\_models_py3.py"
+      ],
+      "_justification": "Python SDK uses the example of fake password to indicate the format"
+    },
+    {
+      "file": [
+        "src\\aks-preview\\azext_aks_preview\\tests\\latest\\data\\setup_proxy.sh"
+      ],
+      "_justification": "Dummy self-signed certificate + private key used for testing only."
+    },
+    {
+      "file": [
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_container_acr.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_env_dapr_components.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_env_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_env_storage.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_identity_system.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_ingress_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_ingress_traffic_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_logstream.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_update.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_dapr_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_up_image_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_custom_domains_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_revision_label_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\cert.pfx",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\test_containerapp_commands.py",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\test_containerapp_env_commands.py",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_registry_msi.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_update_containers.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_anonymous_registry.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_identity_user.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_registry_identity_user.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_identity_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\recordings\\test_containerapp_scale_create.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_create_basic_no_existing_resources.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_create_with_environment.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_create_with_environment_prompt.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_create_with_ingress_both.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_create_with_ingress_external.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_create_with_ingress_internal.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_create_with_ingress_prompt.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_create_with_registry_all_args.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_create_with_registry_server_arg_only.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_create_with_replicas_global_scale.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_create_with_replicas_replicated_mode.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_create_with_resources_from_both_cpus_and_deploy_cpu.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_create_with_resources_from_deploy_cpu.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_create_with_resources_from_service_cpus.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_create_with_secrets.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_create_with_secrets_and_existing_environment.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_create_with_secrets_and_existing_environment_conflict.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_create_with_transport_arg.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_with_command_list.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_with_command_list_and_entrypoint.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_with_command_string.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_create_with_transport_mapping_arg.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_session_code_interpreter_nodelts_registry_e2e.yaml"
+      ],
+      "_justification": "Dummy resources' keys left during testing Microsoft.App (required for log-analytics to create managedEnvironments)"
+    },
+    {
+      "file":[
+        "src\\diskpool\\README.md",
+        "src\\datamigration\\README.md"
+      ],
+      "_justification": "README file example password"
+    },
+    {
+      "file":[
+        "src\\aks-preview\\azext_aks_preview\\_help.py"
+      ],
+      "_justification": "False positive detection, reported credentital not found."
+    },
+    {
+      "file":[
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\test_containerapp_connected_env_scenario.py",
+        "src\\cosmosdb-preview\\azext_cosmosdb_preview\\tests\\latest\\test_cosmosdb_mongocluster_scenario.py",
+        "src\\devcenter\\azext_devcenter\\tests\\latest\\helper.py",
+        "src\\devcenter\\azext_devcenter\\tests\\latest\\test_devcenter_scenario.py",
+        "src\\image-gallery\\azext_image_gallery\\tests\\latest\\test_image_gallery.py",
+        "src\\scvmm\\azext_scvmm\\tests\\latest\\test_scvmm_scenario.py",
+        "src\\vm-repair\\azext_vm_repair\\tests\\latest\\test_repair_commands.py"
+      ],
+      "_justification": "Fake password for testing."
+    },
+    {
+      "file":[
+        "src\\kusto\\azext_kusto\\tests\\latest\\example_steps.py"
+      ],
+      "_justification": "Fake token for testing."
+    },
+    {
+      "file":[
+        "src\\palo-alto-networks\\azext_palo_alto_networks\\tests\\latest\\test_palo_alto_networks.py",
+        "src\\workloads\\azext_workloads\\tests\\latest\\create_infra_distributed_non_ha_config.json",
+        "src\\workloads\\azext_workloads\\tests\\latest\\InstallPayload.json"
+      ],
+      "_justification": "Fake key for testing."
+    },
+    {
+      "file":[
+        "src\\aks-preview\\azext_aks_preview\\tests\\latest\\recordings\\test_aks_update_with_windows_password.yaml",
+        "src\\application-insights\\azext_applicationinsights\\tests\\latest\\recordings\\test_connect_webapp.yaml",
+        "src\\application-insights\\azext_applicationinsights\\tests\\latest\\recordings\\test_connect_webapp_cross_resource_group.yaml",
+        "src\\appservice-kube\\azext_appservice_kube\\tests\\latest\\recordings\\test_linux_webapp_quick_create_kube.yaml",
+        "src\\appservice-kube\\azext_appservice_kube\\tests\\latest\\recordings\\test_webapp_elastic_scale_min_elastic_instance_count_kube.yaml",
+        "src\\appservice-kube\\azext_appservice_kube\\tests\\latest\\recordings\\test_webapp_elastic_scale_prewarmed_instance_count_kube.yaml",
+        "src\\appservice-kube\\azext_appservice_kube\\tests\\latest\\recordings\\test_win_webapp_quick_create_runtime_kube.yaml",
+        "src\\authV2\\azext_authV2\\tests\\latest\\recordings\\test_authV2_auth.yaml",
+        "src\\authV2\\azext_authV2\\tests\\latest\\recordings\\test_authV2_authclassic.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerappjob_create_with_environment_id.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerappjob_create_with_yaml.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_compose_create_environment_to_target_location.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_create_and_update_with_env_vars_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_create_with_vnet_yaml.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_dev_add_on_binding_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_env_certificate_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_env_certificate_upload_with_certificate_name.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_env_custom_domains.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_env_internal_only_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_env_la_dynamic_json.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_env_logs_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_env_msi_certificate.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_env_msi_custom_domains.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_env_mtls.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_env_p2p_traffic_encryption.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_env_update_custom_domains.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_env_usages.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_get_customdomainverificationid_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_java_component.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_java_component_deprecated.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_managed_service_binding_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_patch_list_and_apply_with_node18_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_patch_list_and_apply_with_python310_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_patch_list_and_apply_with_show_all_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_preview_connected_env_certificate.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_preview_connected_env_certificate_upload_with_certificate_name.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_preview_create_with_environment_id.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_resiliency.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_sessionpool.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_sessionpool_registry.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_session_code_interpreter_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_session_code_interpreter_nodelts_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_up_mooncake.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_up_source_with_default_registry_image.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_container_app_mount_azurefile_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_container_app_mount_nfsazurefile_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_container_app_mount_secret_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_container_app_mount_secret_update_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_dapr_component_resiliency.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_up_source_with_dockerfile_e2e.yaml",
+        "src\\containerapp\\azext_containerapp\\tests\\latest\\recordings\\test_containerapp_up_source_with_multiple_environments_e2e.yaml",
+        "src\\cosmosdb-preview\\azext_cosmosdb_preview\\tests\\latest\\recordings\\test_cosmosdb_collection.yaml",
+        "src\\cosmosdb-preview\\azext_cosmosdb_preview\\tests\\latest\\recordings\\test_cosmosdb_database.yaml",
+        "src\\cosmosdb-preview\\azext_cosmosdb_preview\\tests\\latest\\recordings\\test_cosmosdb_mongocluster_crud.yaml",
+        "src\\cosmosdb-preview\\azext_cosmosdb_preview\\tests\\latest\\recordings\\test_cosmosdb_mongocluster_firewall.yaml",
+        "src\\elastic\\azext_elastic\\tests\\latest\\recordings\\test_elastic_monitor.yaml",
+        "src\\image-gallery\\azext_image_gallery\\tests\\latest\\recordings\\test_community_gallery_operations.yaml",
+        "src\\image-gallery\\azext_image_gallery\\tests\\latest\\recordings\\test_create_vm_with_community_gallery_image.yaml",
+        "src\\image-gallery\\azext_image_gallery\\tests\\latest\\recordings\\test_shared_gallery_community.yaml",
+        "src\\kusto\\azext_kusto\\tests\\latest\\recordings\\test_kusto_Scenario.yaml",
+        "src\\palo-alto-networks\\azext_palo_alto_networks\\tests\\latest\\recordings\\test_palo_alto_firewall_v2.yaml",
+        "src\\purview\\azext_purview\\tests\\latest\\recordings\\test_purview_account.yaml",
+        "src\\quantum\\azext_quantum\\tests\\latest\\recordings\\test_workspace_keys.yaml",
+        "src\\qumulo\\azext_qumulo\\tests\\latest\\recordings\\test_file_system.yaml",
+        "src\\rdbms-connect\\azext_rdbms_connect\\tests\\latest\\recordings\\test_mysql_flexible_server_connect.yaml",
+        "src\\rdbms-connect\\azext_rdbms_connect\\tests\\latest\\recordings\\test_postgres_flexible_server_connect.yaml",
+        "src\\redisenterprise\\azext_redisenterprise\\tests\\latest\\recordings\\test_redisenterprise_scenario1.yaml",
+        "src\\redisenterprise\\azext_redisenterprise\\tests\\latest\\recordings\\test_redisenterprise_scenario2.yaml",
+        "src\\scvmm\\azext_scvmm\\tests\\latest\\recordings\\test_scvmm.yaml",
+        "src\\spring\\azext_spring\\tests\\latest\\recordings\\test_api_portal.yaml",
+        "src\\spring\\azext_spring\\tests\\latest\\recordings\\test_app_crud.yaml",
+        "src\\spring\\azext_spring\\tests\\latest\\recordings\\test_app_crud_1.yaml",
+        "src\\spring\\azext_spring\\tests\\latest\\recordings\\test_app_deploy_container.yaml",
+        "src\\spring\\azext_spring\\tests\\latest\\recordings\\test_app_deploy_container_command.yaml",
+        "src\\spring\\azext_spring\\tests\\latest\\recordings\\test_blue_green_deployment.yaml",
+        "src\\staticwebapp\\azext_staticwebapp\\tests\\latest\\recordings\\test_staticwebapp_dbconnection_cosmosdb.yaml",
+        "src\\vmware\\azext_vmware\\tests\\latest\\recordings\\test_vmware_global_reach_connection.yaml",
+        "src\\workloads\\azext_workloads\\tests\\latest\\recordings\\test_workloads_svi.yaml",
+        "src\\workloads\\azext_workloads\\tests\\latest\\recordings\\test_workloads_svi_install.yaml",
+        "src\\oracle-database\\azext_oracle_database\\tests\\latest\\recordings\\test_oracledatabase_adbs.yaml",
+        "src\\storage-preview\\azext_storage_preview\\tests\\latest\\recordings\\test_storage_account_local_user.yaml"
+      ],
+      "_justification": "Fake credentials for recordings reported by new version credential scanner."
+    }
+  ]
+}
