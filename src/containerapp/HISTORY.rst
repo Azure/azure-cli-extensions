@@ -4,6 +4,7 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp create': Fix Role assignment error when the default Azure Container Registry could not be found
 * 'az containerapp env maintenance-config': Support Add, Update, Show, Delete
 
 1.0.0b4
