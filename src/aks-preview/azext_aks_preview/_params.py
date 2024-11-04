@@ -563,13 +563,6 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
-            "uptime_sla",
-            action="store_true",
-            deprecate_info=c.deprecate(
-                target="--uptime-sla", redirect="--tier", hide=True
-            ),
-        )
-        c.argument(
             "sku", is_preview=True, arg_type=get_enum_type(sku_names)
         )
         c.argument(
@@ -1069,20 +1062,6 @@ def load_arguments(self, _):
             help=(
                 "Space-separated list of key=value pairs for configuring cluster autoscaler. "
                 "Pass an empty string to clear the profile."
-            ),
-        )
-        c.argument(
-            "uptime_sla",
-            action="store_true",
-            deprecate_info=c.deprecate(
-                target="--uptime-sla", redirect="--tier", hide=True
-            ),
-        )
-        c.argument(
-            "no_uptime_sla",
-            action="store_true",
-            deprecate_info=c.deprecate(
-                target="--no-uptime-sla", redirect="--tier", hide=True
             ),
         )
         c.argument(

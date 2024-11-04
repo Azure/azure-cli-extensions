@@ -329,9 +329,6 @@ helps['aks create'] = f"""
           type: string
           short-summary: Restriction level on the managed node resource group.
           long-summary: The restriction level of permissions allowed on the cluster's managed node resource group, supported values are Unrestricted, and ReadOnly (recommended ReadOnly).
-        - name: --uptime-sla
-          type: bool
-          short-summary: --uptime-sla is deprecated. Please use '--tier standard' instead.
         - name: --sku
           type: string
           short-summary: Specify SKU name for managed clusters. '--sku base' enables a base managed cluster. '--sku automatic' enables an automatic managed cluster.
@@ -828,12 +825,6 @@ helps['aks update'] = """
         - name: --max-count
           type: int
           short-summary: Maximum nodes count used for autoscaler, when "--enable-cluster-autoscaler" specified. Please specify the value in the range of [1, 1000]
-        - name: --uptime-sla
-          type: bool
-          short-summary: Enable a standard managed cluster service with a financially backed SLA. --uptime-sla is deprecated. Please use '--tier standard' instead.
-        - name: --no-uptime-sla
-          type: bool
-          short-summary: Change a standard managed cluster to a free one. --no-uptime-sla is deprecated. Please use '--tier free' instead.
         - name: --sku
           type: string
           short-summary: Specify SKU name for managed clusters. '--sku base' enables a base managed cluster. '--sku automatic' enables an automatic managed cluster.
