@@ -134,7 +134,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/clitest.rg000001/providers/Microsoft.OperationalInsights/workspaces/containerapp-env000003/sharedKeys?api-version=2020-08-01
   response:
     body:
-      string: '{"primarySharedKey":"rDZBykacEJ7YQHCRAX8UI6wqs8JJXH1ezSV38TR7lstphI17zwg0BPtyyjoDUDU0j5Rr0n3Zo3SRV8D8WGFpXA==","secondarySharedKey":"z50b9QNRukI3NyhoqmofhPwnCEW9Dbeig1g6PjS/uChLwInPJ3Lp3GjPVXyvY9zb33apMkeLAqtIF2vBazt1HA=="}'
+      string: '{"primarySharedKey":"abc123","secondarySharedKey":"abc123"}'
     headers:
       access-control-allow-origin:
       - '*'
@@ -1501,7 +1501,7 @@ interactions:
     body: '{"location": "eastasia", "tags": null, "properties": {"daprAIInstrumentationKey":
       null, "vnetConfiguration": null, "appLogsConfiguration": {"destination": "log-analytics",
       "logAnalyticsConfiguration": {"customerId": "51251308-4803-4be7-a2d5-6ef0f719b8e0",
-      "sharedKey": "rDZBykacEJ7YQHCRAX8UI6wqs8JJXH1ezSV38TR7lstphI17zwg0BPtyyjoDUDU0j5Rr0n3Zo3SRV8D8WGFpXA==",
+      "sharedKey": "abc123",
       "dynamicJsonColumns": false}}, "customDomainConfiguration": null, "workloadProfiles":
       [{"workloadProfileType": "Consumption", "Name": "Consumption"}], "zoneRedundant":
       false}, "identity": {"type": "None", "userAssignedIdentities": null}}'
@@ -4832,7 +4832,7 @@ interactions:
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.ContainerRegistry/registries/acr000004/listCredentials?api-version=2023-11-01-preview
   response:
     body:
-      string: '{"username":"acr000004","passwords":[{"name":"password","value":"fU2jGbyssyHBwFZMhQM0bRdI4ZNCoPIAVE1khBdDu/+ACRAHyFeK"},{"name":"password2","value":"0azFVRpzhMH6Zl0sdR1n9g0QKGwhp5CQOfXHnP+Dzm+ACRBezH/c"}]}'
+      string: '{"username":"acr000004","passwords":[{"name":"password","value":"***"},{"name":"password2","value":"***"}]}'
     headers:
       api-supported-versions:
       - 2023-11-01-preview
@@ -5569,7 +5569,7 @@ interactions:
       0.5, "memory": "1Gi"}, "volumeMounts": null}], "ingress": {"targetPort": 80},
       "registryCredentials": {"server": "acr000004.azurecr.io", "username": "acr000004",
       "passwordSecretRef": "acr000004azurecrio-acr000004"}}, "secrets": [{"name":
-      "acr000004azurecrio-acr000004", "value": "fU2jGbyssyHBwFZMhQM0bRdI4ZNCoPIAVE1khBdDu/+ACRAHyFeK"}],
+      "acr000004azurecrio-acr000004", "value": "***"}],
       "dynamicPoolConfiguration": {"executionType": "Timed", "cooldownPeriodInSeconds":
       300}, "scaleConfiguration": {"maxConcurrentSessions": 10, "readySessionInstances":
       2}, "sessionNetworkConfiguration": {"status": "EgressDisabled"}}}'
