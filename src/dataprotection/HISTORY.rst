@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+1.5.5
++++++
+* `az dataprotection backup-vault initialize-restoreconfig:` Fixed a bug when initializing a restore object for Vaulted AKS Backups.
+
 1.5.4
 +++++
 * Removed dependency on `msrestazure.tools`
