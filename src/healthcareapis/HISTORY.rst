@@ -3,9 +3,10 @@
 Release History
 ===============
 
-0.5.0
+1.0.0
 ++++++
 * Moved deidservice under healthcareapis
+* Bumped to 1.0.0 following the guidelines: https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md
 
 0.4.0
 ++++++
