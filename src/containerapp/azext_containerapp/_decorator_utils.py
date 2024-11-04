@@ -5,7 +5,6 @@
 # pylint: disable=line-too-long, consider-using-f-string, no-else-return, duplicate-string-formatting-argument, expression-not-assigned, too-many-locals, logging-fstring-interpolation, broad-except, pointless-statement, bare-except
 import sys
 
-from azure.cli.command_modules.containerapp._utils import _to_camel_case
 from azure.cli.core.azclierror import (ValidationError)
 
 from ._constants import RUNTIME_JAVA
@@ -66,7 +65,9 @@ def process_loaded_yaml(yaml_containerapp):
                          "outboundIPAddresses",
                          "workloadProfileName",
                          "latestReadyRevisionName",
-                         "eventStreamEndpoint"]
+                         "eventStreamEndpoint",
+                         "runningStatus",
+                         "deploymentErrors"]
     for nested_property in nested_properties:
         tmp = yaml_containerapp.get(nested_property)
         if nested_property in yaml_containerapp:
@@ -135,17 +136,3 @@ def infer_runtime_option(runtime, enable_java_metrics, enable_java_agent):
     if enable_java_agent is not None:
         return RUNTIME_JAVA
     return None
-
-
-# pylint: disable=protected-access
-def _remove_readonly_attributes_with_class_name(definition, module_path, class_name):
-    from importlib import import_module
-    module = import_module(module_path)
-    class_def = getattr(module, class_name, None)
-    unneeded_properties = [_to_camel_case(key) for key, value in class_def._validation.items() if value.get("readonly")]
-
-    for unneeded_property in unneeded_properties:
-        if unneeded_property in definition:
-            del definition[unneeded_property]
-        elif unneeded_property in definition['properties']:
-            del definition['properties'][unneeded_property]

@@ -25,6 +25,7 @@ from azure.cli.command_modules.containerapp._github_oauth import cache_github_to
 from azure.cli.command_modules.containerapp._utils import (store_as_secret_and_return_secret_ref, parse_env_var_flags,
                                                            _convert_object_from_snake_to_camel_case,
                                                            _object_to_dict, _remove_additional_attributes,
+                                                           _remove_readonly_attributes,
                                                            is_registry_msi_system, validate_container_app_name, AppType,
                                                            safe_set, parse_metadata_flags, parse_auth_flags,
                                                            ensure_workload_profile_supported, _generate_secret_volume_name,
@@ -66,8 +67,8 @@ from ._models import (
 from ._decorator_utils import (create_deserializer,
                                process_loaded_yaml,
                                load_yaml_file,
-                               infer_runtime_option,
-                               _remove_readonly_attributes_with_class_name)
+                               infer_runtime_option
+                               )
 from ._utils import parse_service_bindings, check_unique_bindings, is_registry_msi_system_environment, \
     env_has_managed_identity, create_acrpull_role_assignment_if_needed
 from ._validators import validate_create, validate_runtime
@@ -523,7 +524,7 @@ class ContainerAppUpdateDecorator(BaseContainerAppDecorator):
 
         # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
         _remove_additional_attributes(self.new_containerapp)
-        _remove_readonly_attributes_with_class_name(self.new_containerapp, self.models, 'ContainerApp')
+        _remove_readonly_attributes(self.new_containerapp)
 
         secret_values = self.list_secrets(show_values=True)
         _populate_secret_values(self.new_containerapp, secret_values)
@@ -1175,7 +1176,7 @@ class ContainerAppPreviewCreateDecorator(ContainerAppCreateDecorator):
 
         # Remove "additionalProperties" and read-only attributes that are introduced in the deserialization. Need this since we're not using SDK
         _remove_additional_attributes(self.containerapp_def)
-        _remove_readonly_attributes_with_class_name(self.containerapp_def, self.models, 'ContainerApp')
+        _remove_readonly_attributes(self.containerapp_def)
 
         # Remove extra workloadProfileName introduced in deserialization
         if "workloadProfileName" in self.containerapp_def:
