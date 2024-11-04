@@ -236,7 +236,7 @@ helps['aks create'] = f"""
         - name: --enable-acns
           type: bool
           short-summary: Enable advanced network functionalities on a cluster. Enabling this will incur additional costs.
-        - name: -disable-acns-observability
+        - name: --disable-acns-observability
           type: bool
           short-summary: Used to disable advanced networking observability features on a clusters when enabling advanced networking features with "--enable-acns".
         - name: --disable-acns-security
