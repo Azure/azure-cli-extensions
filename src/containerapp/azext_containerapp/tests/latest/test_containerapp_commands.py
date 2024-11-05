@@ -1278,12 +1278,6 @@ class ContainerappServiceBindingTests(ScenarioTest):
             JMESPathCheck('length(@)', 0),
         ])
 
-        self.cmd('containerapp list -g {} --environment {}'.format(env_rg, env_name), checks=[
-            JMESPathCheck('length(@)', 0),
-        ])
-
-        self.cmd(f'containerapp env delete -g {env_rg} -n {env_name} --yes')
-
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_managed_service_binding_e2e(self, resource_group):

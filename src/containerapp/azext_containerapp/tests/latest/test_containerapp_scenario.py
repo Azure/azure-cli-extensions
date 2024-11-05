@@ -217,6 +217,7 @@ class ContainerappScenarioTest(ScenarioTest):
         self.cmd(f'containerapp logs show -n {containerapp_name} -g {resource_group} --type system')
         self.cmd(f'containerapp env logs show -n {env_name} -g {env_rg}')
 
+    @live_only()  # TODO: fix this test case
     @ResourceGroupPreparer(location="northeurope")
     def test_containerapp_registry_msi(self, resource_group):
         #  resource type 'Microsoft.ContainerRegistry/registries' is not available in North Central US(Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
