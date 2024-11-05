@@ -3,21 +3,20 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+# pylint: disable=line-too-long, broad-except, logging-format-interpolation, too-many-public-methods, too-many-boolean-expressions
 
+from copy import deepcopy
 from typing import Any, Dict
+from knack.log import get_logger
 
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.core.azclierror import CLIInternalError, ValidationError
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
-from ._client_factory import handle_non_404_status_code_exception
-from knack.log import get_logger
 from azure.cli.command_modules.containerapp._utils import safe_set, safe_get
-from copy import deepcopy
-
-from ._models import DotNetComponent as DotNetComponentModel
 
 from ._client_factory import handle_raw_exception
 from ._clients import ManagedEnvironmentPreviewClient
+from ._models import DotNetComponent as DotNetComponentModel
 
 logger = get_logger(__name__)
 

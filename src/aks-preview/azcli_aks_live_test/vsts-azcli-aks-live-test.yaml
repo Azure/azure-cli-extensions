@@ -15,6 +15,11 @@ pr:
 
 variables:
   - group: "AZCLI AKS Live Test"
+  - group: "AKS E2E Deploy Variables"
+  - name: AZCLI_ALT_CLIENT_ID
+    value: $(E2E_DEPLOYMENT_CLIENT_ID)
+  - name: AZCLI_ALT_CLIENT_SECRET
+    value: $(E2E_DEPLOYMENT_CLIENT_SECRET)
   - name: ContainerName
     value: "azcli-aks-live-test"
   - name: REPO_NAME
@@ -54,7 +59,7 @@ jobs:
       condition: succeeded()
       displayName: "Start Container"
     - bash: |
-        docker exec $(ContainerName) /opt/scripts/setup_venv.sh setup-tool y y /az_aks_tool-latest-py3-none-any.whl
+        docker exec $(ContainerName) /opt/scripts/setup_venv.sh setup-tool y
         docker exec $(ContainerName) /opt/scripts/setup_venv.sh setup-az n azure-cli/ azure-cli-extensions/
       condition: succeeded()
       displayName: "Set up Virtual Environment"

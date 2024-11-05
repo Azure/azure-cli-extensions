@@ -12,7 +12,7 @@ from azure.cli.core.aaz import *
 
 
 @register_command(
-    "dynatrace monitor create"
+    "dynatrace monitor create",
 )
 class Create(AAZCommand):
     """Create a monitor resource
@@ -49,7 +49,6 @@ class Create(AAZCommand):
             options=["-n", "--name", "--monitor-name"],
             help="Monitor resource name",
             required=True,
-            id_part="name",
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -181,7 +180,7 @@ class Create(AAZCommand):
             options=["email-address"],
             help="Email of the user used by Dynatrace for contacting them if needed",
             fmt=AAZStrArgFormat(
-                pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}$",
+                pattern="^[A-Za-z0-9._%+-]+@(?:[A-Za-z0-9-]+\\.)+[A-Za-z]{2,}$",
             ),
         )
         user_info.first_name = AAZStrArg(
@@ -642,6 +641,10 @@ class Create(AAZCommand):
             tags.Element = AAZStrType()
 
             return cls._schema_on_200_201
+
+
+class _CreateHelper:
+    """Helper class for Create"""
 
 
 __all__ = ["Create"]

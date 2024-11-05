@@ -1,4 +1,4 @@
-name: Generate Release Version and Comment PR
+name: Release Version Calculation
 
 on:
   workflow_dispatch:
@@ -6,9 +6,6 @@ on:
       types: [opened, labeled, unlabeled, synchronize]
       branches:
         - main
-      paths:
-        - '**.py'
-        - '!**/test_*.py'
 
 permissions: {}
 
@@ -17,75 +14,100 @@ jobs:
     if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip-cal-version') && (!contains(fromJSON('["labeled", "unlabeled"]'), github.event.action) || github.event.label.name != 'release-version-block') }}
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write
+      pull-requests: read
       contents: read
     steps:
-      - name: Set Init Version Message
+      - name: Check Init GH Event
         env:
            action: ${{ toJSON(github.event.action) }}
            label: ${{ toJSON(github.event.label) }}
         run: |
-          echo "message=$(echo 'Suggested init version: 1.0.0b1 for preview release and 1.0.0 for stable release')" >> $GITHUB_ENV
-      - name: Set up Python 3.10
+          echo version cal job start
+      - name: Set up Python 3.11
         uses: actions/setup-python@v3
         with:
-           python-version: "3.10"
+           python-version: "3.11"
       - name: Checkout CLI extension repo
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0 # checkout all branches
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}  # checkout pull request branch
-      - name: Show workdirectory after site cloned
+      - name: Show work directory after site cloned
         run: |
            pwd
            ls
+      - name: Set Default Version Output
+        env:
+          result_path: "./cal_result"
+          output_file: "version_update.txt"
+          remove_labels_file: "labels_removed.txt"
+        run: |
+          set -x
+          mkdir "$result_path"
+          cd "$result_path"
+          echo " - For more info about extension versioning, please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md)" > "$output_file"
+          echo "release-version-block" > "$remove_labels_file"
+          cd ../
+          ls "$result_path"
       - name: Get Diff Files
         env:
           bash_sha: ${{ github.event.pull_request.base.sha }}
           base_branch: ${{ github.event.pull_request.base.ref }}
+          base_repo: ${{ github.event.pull_request.base.repo.clone_url }}
           base_branch_pre: "upstream"
           diff_code_file: "diff_codes.txt"
           diff_sha: ${{ github.event.pull_request.head.sha }}
           diff_branch: ${{ github.event.pull_request.head.ref }}
           repo_full_name: ${{ github.event.pull_request.head.repo.full_name }}
         run: |
-            set -x
-            git --version
-            git log --oneline | head -n 30
-            git branch -a
-            git fetch https://github.com/Azure/azure-cli-extensions.git "$base_branch":"$base_branch_pre"/"$base_branch"
-            git checkout "$base_branch_pre"/"$base_branch"
-            git log --oneline | head -n 30
-            git checkout "$diff_branch"
-            git log --oneline | head -n 30
-            git --no-pager diff --name-only --diff-filter=ACMRT "$base_branch_pre"/"$base_branch"..."$diff_branch" > changed_files
-            cat changed_files
-            cat changed_files | grep azext_ | awk -F"azext_" '{print $1}'| awk -F"/" '{print $2}' | sort | uniq > changed_modules
-            echo "changed_module_list=$(cat changed_files | grep azext_ | awk -F"azext_" '{print $1}'| awk -F"/" '{print $2}' | sort | uniq | xargs)" >> $GITHUB_ENV
-            git --no-pager diff --diff-filter=ACMRT "$base_branch_pre"/"$base_branch"..."$diff_branch" > "$diff_code_file"
-      - name: Display Diff Modules
+          set -x
+          git --version
+          git log --oneline | head -n 10
+          git branch -a
+          git fetch "$base_repo" "$base_branch":"$base_branch_pre"/"$base_branch"
+          git checkout "$base_branch_pre"/"$base_branch"
+          git log --oneline | head -n 10
+          git checkout "$diff_branch"
+          git log --oneline | head -n 10
+          git --no-pager diff --name-only --diff-filter=ACMRT "$base_branch_pre"/"$base_branch"..."$diff_branch"
+          set +e
+          # by default set -e is enabled to run commands, intermediate command failure may cause the whole step to fail. disable it here.
+          git --no-pager diff --name-only --diff-filter=ACMRT "$base_branch_pre"/"$base_branch"..."$diff_branch" | grep -v "/tests/" > changed_files
+          cat changed_files
+          cat changed_files | grep src/ | awk -F"src/" '{print $2}'| grep / | awk -F"/" '{print $1}' | sort | uniq
+          echo "changed_module_list=$(cat changed_files | grep src/ | awk -F"src/" '{print $2}'| grep / | awk -F"/" '{print $1}' | sort | uniq | xargs)" >> $GITHUB_ENV
+          git --no-pager diff --diff-filter=ACMRT "$base_branch_pre"/"$base_branch"..."$diff_branch" > "$diff_code_file"
+      - name: Display PR Diff Modules
         run: |
-            for mod in "$changed_module_list"
-            do
-              echo changed module: "${mod}"
-            done
+          for mod in ${changed_module_list[@]}
+          do
+            echo changed module: "${mod}"
+          done
+          if [ -z "$changed_module_list" ]; then
+            echo "no_changed_mod=true" >> $GITHUB_ENV
+          else
+            echo "no_changed_mod=false" >> $GITHUB_ENV
+          fi
+          echo array length
+          echo ${#changed_module_list[@]}
       - name: Checkout CLI main repo
-        uses: actions/checkout@master
+        if: ${{ env.no_changed_mod == 'false' }}
+        uses: actions/checkout@v4
         with:
            repository: Azure/azure-cli
            path: ./azure-cli
-      - name: Show workdirectory after cli cloned
-        run: |
-           pwd
-           ls
       - name: Move the main repo to the same level as the extension repo
+        if: ${{ env.no_changed_mod == 'false' }}
         run: |
-           mv azure-cli ../
-           cd ../
-           pwd
-           ls
+          pwd
+          ls
+          mv azure-cli ../
+          cd ../
+          pwd
+          ls
       - name: Install azdev
+        if: ${{ env.no_changed_mod == 'false' }}
         run: | 
            python -m pip install --upgrade pip
            set -ev
@@ -99,56 +121,153 @@ jobs:
            az --version
            pip list -v
       - name: Gen Base and Diff Metadata
+        if: ${{ env.no_changed_mod == 'false' }}
         id: get_comment_message
         env:
           pr_label_list: ${{ toJson(github.event.pull_request.labels.*.name) }}
+          pr_user: ${{ github.event.pull_request.user.login }}
           base_branch: ${{ github.event.pull_request.base.ref }}
           base_branch_pre: "upstream"
           diff_code_file: "diff_codes.txt"
           diff_branch: ${{ github.event.pull_request.head.ref }}
           base_meta_path: "./base_meta/"
           diff_meta_path: "./diff_meta/"
+          result_path: "./cal_result"
           output_file: "version_update.txt"
+          add_labels_file: "labels_added.json"
+          remove_labels_file: "labels_removed.txt"
         run: |
-           chmod +x env/bin/activate
-           source ./env/bin/activate
-           set -ev
-           git checkout "$base_branch_pre"/"$base_branch"
-           mkdir "$base_meta_path"
-           for mod in "$changed_module_list"
-           do
-              echo changed module: "${mod}"
-              azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./"$base_meta_path"/ && azdev extension remove "${mod}"
-           done
-           git checkout "$diff_branch"
-           mkdir "$diff_meta_path"
-           for mod in "$changed_module_list"
-           do
-              echo changed module: "${mod}"
-              azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./"$diff_meta_path"/ && azdev extension remove "${mod}"
-           done
-           ls ./"$base_meta_path"/
-           ls ./"$diff_meta_path"/
-           git checkout "$base_branch_pre"/"$base_branch"
-           python scripts/ci/release_version_cal.py
-           # echo "commit_message=$(cat $output_file)" >> $GITHUB_ENV
+          chmod +x env/bin/activate
+          source ./env/bin/activate
+          set -ev
+          git checkout "$base_branch_pre"/"$base_branch"
+          mkdir "$base_meta_path"
+          for mod in ${changed_module_list[@]}
+          do
+            echo changed module: "${mod}"
+            azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./"$base_meta_path"/ && azdev extension remove "${mod}"
+          done
+          git checkout "$diff_branch"
+          mkdir "$diff_meta_path"
+          for mod in ${changed_module_list[@]}
+          do
+            echo changed module: "${mod}"
+            azdev extension add "${mod}" && azdev command-change meta-export "${mod}" --meta-output-path ./"$diff_meta_path"/
+          done
+          ls ./"$base_meta_path"/
+          ls ./"$diff_meta_path"/
+          ls "$result_path"
+          git checkout "$base_branch_pre"/"$base_branch" -- scripts
+          python scripts/ci/release_version_cal.py
+          ls "$result_path"
+          cat "$result_path"/"$remove_labels_file"
+          cat "$result_path"/"$output_file"
+          # echo "commit_message=$(cat $output_file)" >> $GITHUB_ENV
+      - name: Archive pr version cal output
+        uses: actions/upload-artifact@v4
+        with:
+          name: version-cal-output
+          path: |
+            cal_result
+            !cal_result/**/*.md
+  skip-version-cal:
+    if: ${{ contains(github.event.pull_request.labels.*.name, 'skip-cal-version') }}
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+      contents: read
+    steps:
+      - name: Check Init GH Event
+        env:
+          action: ${{ toJSON(github.event.action) }}
+          label: ${{ toJSON(github.event.label) }}
+        run: |
+          echo prepare default version cal output
+      - name: Set Default Version Output
+        env:
+          result_path: "./cal_result"
+          remove_labels_file: "labels_removed.txt"
+        run: |
+          set -x
+          mkdir "$result_path"
+          cd "$result_path"
+          echo "release-version-block" > "$remove_labels_file"
+          cd ../
+          ls "$result_path"
+      - name: Archive pr version cal output
+        uses: actions/upload-artifact@v4
+        with:
+          name: version-cal-output
+          path: |
+            cal_result
+  version-output:
+    needs: [version-cal, skip-version-cal]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Check Init GH Event
+        env:
+          action: ${{ toJSON(github.event.action) }}
+          label: ${{ toJSON(github.event.label) }}
+        run: |
+          echo version output job start
+      - name: Download version cal result
+        uses: actions/download-artifact@v4
+        with:
+          name: version-cal-output
+      - name: Show work directory after result downloaded
+        run: |
+          pwd
+          ls
+      - name: Check comment file existence
+        id: check_comment_file
+        uses: andstor/file-existence-action@v3
+        with:
+          files: "./version_update.txt"
       - name: Comment on the pull request
+        if: steps.check_comment_file.outputs.files_exists == 'true'
         uses: mshick/add-pr-comment@v2
         with:
-           repo-token: ${{ secrets.GITHUB_TOKEN }}
-           message-id: versioncommentbot
-           message-path: |
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          message-id: versioncommentbot
+          message-path: |
             version_update.txt
-           message-failure: |
+          message-failure: |
             Please refer to [Extension version schema](https://github.com/Azure/azure-cli/blob/release/doc/extensions/versioning_guidelines.md) to update release versions.
+      - name: Check add label file existence
+        id: check_add_label_file
+        uses: andstor/file-existence-action@v3
+        with:
+          files: "./labels_added.json"
       - name: Add block release label
-        uses: actions-ecosystem/action-add-labels@v1
-        if: ${{ steps.get_comment_message.outputs.BlockPR == 1 }}
+        if: steps.check_add_label_file.outputs.files_exists == 'true'
+        run: |
+          cat labels_added.json
+          curl -X POST \
+          "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels" \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -d @labels_added.json
+      - name: Check delete label file existence
+        id: check_delete_label_file
+        uses: andstor/file-existence-action@v3
         with:
-          labels: release-version-block
+          files: "./labels_removed.txt"
       - name: Remove block release label
-        uses: mondeja/remove-labels-gh-action@v2
-        if: ${{ steps.get_comment_message.outputs.BlockPR == 0 }}
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          labels: release-version-block
+        if: steps.check_delete_label_file.outputs.files_exists == 'true'
+        run: |
+          for del_lab in `sed 's/[^a-zA-Z0-9_ \-]//g' labels_removed.txt | sort | uniq | xargs`
+          do 
+             curl -X DELETE \
+             "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/labels/${del_lab}" \
+             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}"
+          done
+      - uses: snnaplab/get-labels-action@v1
+      - name: Check real time labels
+        if: contains(fromJSON(env.LABELS), 'release-version-block')
+        run: |
+          echo label: $LABELS
+          echo blocked
+          exit 1

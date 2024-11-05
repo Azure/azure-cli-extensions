@@ -3,6 +3,14 @@
 Release History
 ===============
 
+2.0.0b6
+++++++
+* Added support for Web Application Firewall.
+
+2.0.0b5
+++++++
+* Fix configuration
+
 2.0.0b4
 ++++++
 * Use user-friendly SKU in example command for the deployment.

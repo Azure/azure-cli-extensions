@@ -172,8 +172,9 @@ def flatten_version_table(release_info):
     flattened = []
     for release in release_info:
         isPreview = release.get("isPreview", False)
+        supportPlan = release.get("capabilities", {}).get("supportPlan", {})
         for k, v in release.get("patchVersions", {}).items():
-            item = {"version": k, "upgrades": v.get("upgrades", []), "isPreview": isPreview}
+            item = {"version": k, "upgrades": v.get("upgrades", []), "isPreview": isPreview, "supportPlan": supportPlan}
             flattened.append(item)
     return flattened
 
@@ -181,7 +182,7 @@ def flatten_version_table(release_info):
 def _custom_functions(preview_versions):
     class CustomFunctions(functions.Functions):  # pylint: disable=too-few-public-methods
 
-        @ functions.signature({'types': ['array']})
+        @functions.signature({'types': ['array']})
         def _func_sort_versions(self, versions):
             """Custom JMESPath `sort_versions` function that sorts an array of strings as software versions"""
             try:
@@ -190,7 +191,7 @@ def _custom_functions(preview_versions):
             except (TypeError, ValueError):
                 return versions
 
-        @ functions.signature({'types': ['array']})
+        @functions.signature({'types': ['array']})
         def _func_set_preview_array(self, versions):
             """Custom JMESPath `set_preview_array` function that suffixes preview version"""
             try:
@@ -200,7 +201,7 @@ def _custom_functions(preview_versions):
             except (TypeError, ValueError):
                 return versions
 
-        @ functions.signature({'types': ['string']})
+        @functions.signature({'types': ['string']})
         def _func_set_preview(self, version):
             """Custom JMESPath `set_preview` function that suffixes preview version"""
             try:
@@ -210,7 +211,7 @@ def _custom_functions(preview_versions):
             except (TypeError, ValueError):
                 return version
 
-        @ functions.signature({'types': ['object']})
+        @functions.signature({'types': ['object']})
         def _func_pprint_labels(self, labels):
             """Custom JMESPath `pprint_labels` function that pretty print labels"""
             if not labels:
@@ -257,7 +258,8 @@ def aks_versions_table_format(result):
     parsed = compile_jmes("""[].{
         kubernetesVersion: version,
         isPreview: isPreview,
-        upgrades: upgrades || [`None available`] | sort_versions(@) | join(`, `, @)
+        upgrades: upgrades || [`None available`] | sort_versions(@) | join(`, `, @),
+        supportPlan: supportPlan | join(`, `, @)
     }""")
     # use ordered dicts so headers are predictable
     results = parsed.search(version_table, Options(

@@ -19,7 +19,7 @@ from .custom_preparers import ConnectedClusterPreparer
 
 class ContainerAppUpConnectedEnvImageTest(ScenarioTest):
     def __init__(self, method_name, config_file=None, recording_name=None, recording_processors=None,
-                 replay_processors=None, recording_patches=None, replay_patches=None, random_config_dir=False):
+                 replay_processors=None, recording_patches=None, replay_patches=None, random_config_dir=True):
 
         super().__init__(method_name, config_file, recording_name, recording_processors, replay_processors,
                          recording_patches, replay_patches, random_config_dir)
@@ -34,6 +34,7 @@ class ContainerAppUpConnectedEnvImageTest(ScenarioTest):
     # If the process contains create_extension, it contains _generate_log_analytics_if_not_provided, which cause playback failed.
     # If the process contains create custom location, it will use a random name, which will cause playback failed too.
     # So prepare extension and custom location before execute the `up` command
+    @live_only()  # Remove this after connected k8s issue fixed
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus", random_name_length=15)
     @ConnectedClusterPreparer(location=TEST_LOCATION)

@@ -9,7 +9,7 @@ from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathChec
 class FrontDoorBasicScenarioTests(ScenarioTest):
 
     # @record_only()  # This test requires resources in the specific subscription
-    @ResourceGroupPreparer(location='westus')
+    @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_front_door_basic_scenario(self, resource_group):
         front_endpoint_name = f"{self.create_random_name('clife', 16)}"
         front_endpoint_host_name = f"{front_endpoint_name}.clitest.azfdtest.xyz"
@@ -39,7 +39,7 @@ class FrontDoorBasicScenarioTests(ScenarioTest):
         self.cmd('network front-door frontend-endpoint create -g {rg} -f {front_door} -n {front_endpoint_name} '
                  '--host-name {front_endpoint_host_name} --session-affinity-enabled')
 
-    @ResourceGroupPreparer(location='westus')
+    @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_front_door_check_name_availability(self, resource_group):
         front_door_name = self.create_random_name(prefix='frontdoor', length=20)
         available_checks = [JMESPathCheck('nameAvailability', 'Available')]
@@ -50,7 +50,7 @@ class FrontDoorBasicScenarioTests(ScenarioTest):
         unavailable_checks = [JMESPathCheck('nameAvailability', "Not Available")]
         self.cmd(f'network front-door check-name-availability --name {front_door_name} --resource-type Microsoft.Network/frontdoors', checks=unavailable_checks)
 
-    @ResourceGroupPreparer(location='westus')
+    @ResourceGroupPreparer(location='westus', additional_tags={'owner': 'jingnanxu'})
     def test_front_door_purge_endpoint(self, resource_group):
         front_door_name = self.create_random_name(prefix='frontdoor', length=20)
 

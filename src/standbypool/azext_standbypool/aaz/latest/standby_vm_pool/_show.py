@@ -15,16 +15,16 @@ from azure.cli.core.aaz import *
     "standby-vm-pool show",
 )
 class Show(AAZCommand):
-    """Get a standby virtual machine pool
+    """Get a StandbyVirtualMachinePoolResource
 
     :example: Get standby virtual machine pool
         az standby-vm-pool show --subscription 461fa159-654a-415f-853a-40b801021944 --resource-group myrg --name mypool
     """
 
     _aaz_info = {
-        "version": "2023-12-01-preview",
+        "version": "2024-03-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbyvirtualmachinepools/{}", "2023-12-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.standbypool/standbyvirtualmachinepools/{}", "2024-03-01"],
         ]
     }
 
@@ -45,11 +45,11 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.resource_group = AAZResourceGroupNameArg(
-            help="Name of resource group",
+            help="The resource group",
             required=True,
         )
-        _args_schema.name = AAZStrArg(
-            options=["-n", "--name"],
+        _args_schema.standby_virtual_machine_pool_name = AAZStrArg(
+            options=["-n", "--name", "--standby-virtual-machine-pool-name"],
             help="Name of the standby virtual machine pool",
             required=True,
             id_part="name",
@@ -110,7 +110,7 @@ class Show(AAZCommand):
                     required=True,
                 ),
                 **self.serialize_url_param(
-                    "standbyVirtualMachinePoolName", self.ctx.args.name,
+                    "standbyVirtualMachinePoolName", self.ctx.args.standby_virtual_machine_pool_name,
                     required=True,
                 ),
                 **self.serialize_url_param(
@@ -124,7 +124,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-12-01-preview",
+                    "api-version", "2024-03-01",
                     required=True,
                 ),
             }
@@ -198,6 +198,9 @@ class Show(AAZCommand):
             elasticity_profile.max_ready_capacity = AAZIntType(
                 serialized_name="maxReadyCapacity",
                 flags={"required": True},
+            )
+            elasticity_profile.min_ready_capacity = AAZIntType(
+                serialized_name="minReadyCapacity",
             )
 
             system_data = cls._schema_on_200.system_data

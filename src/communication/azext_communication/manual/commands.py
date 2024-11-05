@@ -124,3 +124,5 @@ def _load_email_command_table(self):
 
     with self.command_group('communication email', client_factory=cf_communication_email) as g:
         g.communication_custom_command('send', 'communication_email_send', email_arguments)
+    with self.command_group('communication email', is_preview=True) as g:
+        g.communication_custom_command('status get', 'communication_email_get_status', email_arguments)

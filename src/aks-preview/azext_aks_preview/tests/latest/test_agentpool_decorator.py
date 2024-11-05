@@ -29,7 +29,6 @@ from azure.cli.command_modules.acs._consts import (
     CONST_DEFAULT_NODE_VM_SIZE,
 )
 from azext_aks_preview._consts import (
-    CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE,
     CONST_DEFAULT_WINDOWS_NODE_VM_SIZE,
 )
 from azure.cli.command_modules.acs.agentpool_decorator import AKSAgentPoolParamDict
@@ -388,6 +387,60 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         ctx_2.attach_agentpool(agentpool_2)
         self.assertEqual(ctx_2.get_skip_gpu_driver_install(), None)
 
+    def common_get_driver_type(self):
+        # default
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"driver_type": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_driver_type(), None)
+        agentpool_1 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.AgentPoolGPUProfile(
+                driver_type="CUDA"
+            )
+        )
+        
+        ctx_1.attach_agentpool(agentpool_1)
+        self.assertEqual(ctx_1.get_driver_type(), "CUDA")
+
+        # default
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"driver_type": None}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_2.get_driver_type(), None)
+        agentpool_2 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.AgentPoolGPUProfile(
+                driver_type="GRID"
+            )
+        )
+        ctx_2.attach_agentpool(agentpool_2)
+        self.assertEqual(ctx_2.get_driver_type(), "GRID")
+
+        # custom
+        ctx_0 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"driver_type": "CUDA"}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_0.get_driver_type(), "CUDA")
+        agentpool_0 = self.create_initialized_agentpool_instance(
+            gpu_profile=self.models.AgentPoolGPUProfile(
+                driver_type=None
+            )
+        )
+
+        ctx_0.attach_agentpool(agentpool_0)
+        self.assertEqual(ctx_0.get_driver_type(), "CUDA")
+
     def common_get_os_sku(self):
         # default
         ctx_1 = AKSPreviewAgentPoolContext(
@@ -570,6 +623,48 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
         )
         ctx_1.attach_agentpool(agentpool_1)
         self.assertEqual(ctx_1.get_disable_vtpm(), True)
+    
+    def common_get_enable_fips_image(self):
+        # default
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"enable_fips_image": False}),
+            self.models,
+            DecoratorMode.CREATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_enable_fips_image(), False)
+        agentpool = self.create_initialized_agentpool_instance(enable_fips=True)
+        ctx_1.attach_agentpool(agentpool)
+        self.assertEqual(ctx_1.get_enable_fips_image(), True)
+        
+        # default
+        ctx_2 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"enable_fips_image": False}),
+            self.models,
+            DecoratorMode.UPDATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_2.get_enable_fips_image(), False)
+        agentpool_2 = self.create_initialized_agentpool_instance(enable_fips=True)
+        ctx_2.attach_agentpool(agentpool_2)
+        # Update takes directly from flag value not from agentpool property
+        self.assertEqual(ctx_2.get_enable_fips_image(), False)
+
+    def common_get_disable_fips_image(self):
+        # default
+        ctx_1 = AKSPreviewAgentPoolContext(
+            self.cmd,
+            AKSAgentPoolParamDict({"disable_fips_image": True}),
+            self.models,
+            DecoratorMode.UPDATE,
+            self.agentpool_decorator_mode,
+        )
+        self.assertEqual(ctx_1.get_disable_fips_image(), True)
+        agentpool_1 = self.create_initialized_agentpool_instance(enable_fips=True)
+        ctx_1.attach_agentpool(agentpool_1)
+        self.assertEqual(ctx_1.get_disable_fips_image(), True)
 
     def common_get_agentpool_windows_profile(self):
         ctx_1 = AKSPreviewAgentPoolContext(
@@ -674,7 +769,7 @@ class AKSPreviewAgentPoolContextCommonTestCase(unittest.TestCase):
             DecoratorMode.CREATE,
             self.agentpool_decorator_mode,
         )
-        self.assertEqual(ctx_5.get_node_vm_size(), CONST_DEFAULT_AUTOMATIC_SKU_NODE_VM_SIZE)
+        self.assertEqual(ctx_5.get_node_vm_size(), "")
 
     def common_get_gateway_prefix_size(self):
         # default
@@ -794,6 +889,9 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
     def test_get_skip_gpu_driver_install(self):
         self.common_get_skip_gpu_driver_install()
 
+    def test_get_driver_type(self):
+        self.common_get_driver_type()
+
     def test_get_enable_secure_boot(self):
         self.common_get_enable_secure_boot()
 
@@ -805,6 +903,12 @@ class AKSPreviewAgentPoolContextStandaloneModeTestCase(
 
     def test_get_disable_vtpm(self):
         self.common_get_disable_vtpm()
+    
+    def common_get_enable_fips_image(self):
+        self.common_get_enable_fips_image()
+    
+    def common_get_disable_fips_image(self):
+        self.common_get_disable_fips_image()
 
     def test_get_agentpool_windows_profile(self):
         self.common_get_agentpool_windows_profile()
@@ -871,6 +975,9 @@ class AKSPreviewAgentPoolContextManagedClusterModeTestCase(
 
     def test_get_enable_vtpm(self):
         self.common_get_enable_vtpm()
+    
+    def common_get_enable_fips_image(self):
+        self.common_get_enable_fips_image()
 
     def test_get_agentpool_windows_profile(self):
         self.common_get_agentpool_windows_profile()
@@ -1681,6 +1788,53 @@ class AKSPreviewAgentPoolUpdateDecoratorCommonTestCase(unittest.TestCase):
         with self.assertRaises(MutuallyExclusiveArgumentError):
             dec_3.update_vtpm(agentpool_2)
 
+    def common_update_fips_image(self):
+        dec_1 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_fips_image": True, "disable_fips_image": False},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        # fail on passing the wrong agentpool object
+        with self.assertRaises(CLIInternalError):
+            dec_1.update_fips_image(None)
+
+        agentpool_1 = self.create_initialized_agentpool_instance(enable_fips=False)
+        dec_1.context.attach_agentpool(agentpool_1)
+        dec_agentpool_1 = dec_1.update_fips_image(agentpool_1)
+        ground_truth_agentpool_1 = self.create_initialized_agentpool_instance(enable_fips=True)
+        self.assertEqual(dec_agentpool_1, ground_truth_agentpool_1)
+
+        dec_2 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_fips_image": False, "disable_fips_image": True},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        # fail on passing the wrong agentpool object
+        with self.assertRaises(CLIInternalError):
+            dec_2.update_fips_image(None)
+        
+        agentpool_2 = self.create_initialized_agentpool_instance(enable_fips=True)
+        dec_2.context.attach_agentpool(agentpool_2)
+        dec_agentpool_2 = dec_2.update_fips_image(agentpool_2)
+        ground_truth_agentpool_2 = self.create_initialized_agentpool_instance(enable_fips=False)
+        self.assertEqual(dec_agentpool_2, ground_truth_agentpool_2)
+
+        # Should error if both set
+        dec_3 = AKSPreviewAgentPoolUpdateDecorator(
+            self.cmd,
+            self.client,
+            {"enable_fips_image": True, "disable_fips_image": True},
+            self.resource_type,
+            self.agentpool_decorator_mode,
+        )
+        dec_3.context.attach_agentpool(agentpool_2)
+        with self.assertRaises(MutuallyExclusiveArgumentError):
+            dec_3.update_fips_image(agentpool_2)
+
 
 class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(
     AKSPreviewAgentPoolUpdateDecoratorCommonTestCase
@@ -1708,6 +1862,9 @@ class AKSPreviewAgentPoolUpdateDecoratorStandaloneModeTestCase(
 
     def test_update_vtpm(self):
         self.common_update_vtpm()
+
+    def test_update_fips_image(self):
+        self.common_update_fips_image()
 
     def test_update_agentpool_profile_preview(self):
         import inspect
@@ -1786,6 +1943,9 @@ class AKSPreviewAgentPoolUpdateDecoratorManagedClusterModeTestCase(
 
     def test_update_vtpm(self):
         self.common_update_vtpm()
+
+    def test_update_fips_image(self):
+        self.common_update_fips_image()
 
     def test_update_agentpool_profile_preview(self):
         import inspect

@@ -17,10 +17,10 @@ def ex_handler_factory(no_throw=False):
             content = json.loads(ex.response.content)
             if 'message' in content:
                 detail = content['message']
+                ex = CLIInternalError(detail)
             elif 'Message' in content:
                 detail = content['Message']
-
-            ex = CLIInternalError(detail)
+                ex = CLIInternalError(detail)
         except Exception:  # pylint: disable=broad-except
             pass
         if no_throw:
@@ -135,8 +135,6 @@ def log_analytics_shared_key_client_factory(cli_ctx):
 
 
 def custom_location_client_factory(cli_ctx, api_version=None, subscription_id=None, **_):
-    from azure.cli.core.profiles import ResourceType
-    from azure.cli.core.commands.client_factory import get_mgmt_service_client
 
     return get_mgmt_service_client(cli_ctx, ResourceType.MGMT_CUSTOMLOCATION, api_version=api_version,
                                    subscription_id=subscription_id).custom_locations

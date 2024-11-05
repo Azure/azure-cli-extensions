@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a new environment or update an existing environment.
 
     :example: Create environment
-        az apic environment create -g api-center-test -s contosoeuap --environment-id public --title "Public cloud" --type "development"
+        az apic environment create -g api-center-test -n contosoeuap --environment-id public --title "Public cloud" --type "development"
     """
 
     _aaz_info = {
@@ -58,8 +58,8 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-n", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,90}$",

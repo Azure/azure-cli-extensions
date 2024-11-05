@@ -19,10 +19,10 @@ class Delete(AAZCommand):
     """Delete specified metadata schema.
 
     :example: Delete Metadata Schema
-        az apic metadata delete --resource-group api-center-test --service-name contoso --name "test1"
+        az apic metadata delete --resource-group api-center-test --service-name contoso --metadata-name "test1"
 
     :example: Delete schema
-        az apic metadata delete -g api-center-test -s contosoeuap --name "approver"
+        az apic metadata delete -g api-center-test -n contosoeuap --metadata-name "approver"
     """
 
     _aaz_info = {
@@ -48,8 +48,8 @@ class Delete(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.metadata_schema_name = AAZStrArg(
-            options=["--name", "--metadata-schema", "--metadata-schema-name"],
+        _args_schema.metadata_name = AAZStrArg(
+            options=["--metadata-name"],
             help="The name of the metadata schema.",
             required=True,
             id_part="child_name_1",
@@ -63,8 +63,8 @@ class Delete(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-n", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -120,7 +120,7 @@ class Delete(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "metadataSchemaName", self.ctx.args.metadata_schema_name,
+                    "metadataSchemaName", self.ctx.args.metadata_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

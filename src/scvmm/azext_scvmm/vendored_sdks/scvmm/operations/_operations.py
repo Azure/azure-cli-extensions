@@ -86,7 +86,7 @@ class Operations(object):
         **kwargs  # type: Any
     ):
         # type: (...) -> Iterable["_models.OperationListResult"]
-        """Returns list of all operations.
+        """List the operations for the provider.
 
         :keyword callable cls: A custom type or function that will be passed the direct response
         :return: An iterator like instance of either OperationListResult or the result of cls(response)

@@ -21,7 +21,8 @@
             "test_aks_disable_addon_gitops"
         ],
         "gpu, no quota": [
-            "test_aks_nodepool_add_with_gpu_instance_profile"
+            "test_aks_nodepool_add_with_gpu_instance_profile",
+            "test_aks_gpu_driver_type"
         ],
         "overlay migration, missing toggle": [
             "test_aks_azure_cni_overlay_migration"
@@ -62,6 +63,14 @@
         ],
         "mixed sku, enabled in staging only": [
             "test_vms_agentpool_type"
+        ],
+        "fqdn policy, enabled in staging only": [
+            "test_aks_update_enable_fqdn_policy",
+            "test_aks_create_with_enable_fqdn_policy",
+            "test_aks_create_with_enable_fqdn_policy_observability",
+            "test_aks_create_with_enable_acns",
+            "test_aks_create_with_enable_acns_complex",
+            "test_aks_update_enable_acns"
         ]
     }
 }

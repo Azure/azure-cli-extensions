@@ -38,6 +38,11 @@ yes_arg_type = CLIArgumentType(
     help='Do not prompt for confirmation.'
 )
 
+new_arg_type = CLIArgumentType(
+    options_list=['--new'],
+    help='Deleting existing users with the same name before creating a new user in database.'
+)
+
 
 def add_auth_block(context, source, target):
     support_auth_types = EX_SUPPORTED_AUTH_TYPE.get(
@@ -68,6 +73,7 @@ def load_arguments(self, _):
             add_local_connection_block(c)
             add_customized_keys_argument(c)
             c.argument('yes', arg_type=yes_arg_type)
+            c.argument('new', arg_type=new_arg_type)
 
     for source in SOURCE_RESOURCES_PARAMS:
         for target in TARGET_RESOURCES_PARAMS:
@@ -85,3 +91,4 @@ def load_arguments(self, _):
                 add_customized_keys_argument(c)
                 add_opt_out_argument(c)
                 c.argument('yes', arg_type=yes_arg_type)
+                c.argument('new', arg_type=new_arg_type)

@@ -4,6 +4,52 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp create': Fix Role assignment error when the default Azure Container Registry could not be found
+* Upgrade api-version to 2024-10-02-preview
+
+1.0.0b4
+++++++
+* 'az containerapp up': Support `--registry-identity`, `--system-assigned`, `--user-assigned`
+* 'az containerapp containerapp create/up': `--registry-server` and `--source` use managed identity for image pull by default
+* 'az containerapp containerapp create': `--registry-server` use managed identity for image pull by default. `--no-wait` will not take effect with system registry identity.
+* 'az containerapp env java-component gateway-for-spring': Support create/update/show/delete Gateway for spring.
+
+1.0.0b3
+++++++
+* Update models to support new properties with --yaml for api-version 2024-02-02-preview
+
+1.0.0b2
+++++++
+* 'az containerapp create': Fix container app create with registry msi
+* 'az containerapp job create': Fix container app job create with registry msi
+
+1.0.0b1
+++++++
+* 'az containerapp sessionpool create': Add NodeLTS container-type.
+* 'az containerapp env java-component': Support --min-replicas and --max-replicas for Java components
+* 'az containerapp env create': Support `--dapr-connection-string` to set application insight connection string
+
+0.3.55
+++++++
+* 'az containerapp create': Support --registry-identity to use Environment identity for ACR authentication.
+* 'az containerapp job create': Support --registry-identity to use Environment identity for ACR authentication.
+* 'az containerapp registry set': Support --identity to use Environment identity for ACR authentication.
+* 'az containerapp job registry set': Support --identity to use Environment identity for ACR authentication.
+
+0.3.54
+++++++
+* 'az containerapp env create/update': Support `--public-network-access` to allow or block public network
+* Update azure cli dependency version >= "2.62.0"
+* Remove GA commands which exist in azure-cli version 2.62.0
+
+0.3.53
+++++++
+* 'az containerapp job update': Support command in extension
+* 'az containerapp job logs show': Support log streaming for job execution
+* 'az containerapp job replica list': Support list replicas of a job execution
+* 'az containerapp env update': Fix logs configuration about removing destination with `--logs-destination none`
+* 'az containerapp auth update': Fix AuthConfigSecretRefNotFound when setting secret
+* 'az containerapp job create/update': Support --scale-rule-identity for scale rule to authenticate to azure resource scaler
 
 0.3.52
 ++++++

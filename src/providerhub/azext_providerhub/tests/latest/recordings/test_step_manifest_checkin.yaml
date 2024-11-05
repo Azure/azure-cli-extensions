@@ -1,0 +1,56 @@
+interactions:
+- request:
+    body: '{"baselineArmManifestLocation": "EastUS2EUAP", "environment": "Canary"}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - providerhub manifest checkin
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '71'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - --provider-namespace --environment
+      User-Agent:
+      - AZURECLI/2.59.0 azsdk-python-core/1.28.0 Python/3.11.0 (Windows-10-10.0.22631-SP0)
+    method: POST
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.ProviderHub/providerRegistrations/Private.VPTest/checkinManifest?api-version=2024-04-01-preview
+  response:
+    body:
+      string: '{"isCheckedIn":true,"statusMessage":"Manifest is successfully merged.
+        Use the Default/Custom rollout (http://aka.ms/rpaasrollout) to roll out the
+        manifest in ARM.","commitId":"c2479b885f8ce82534183eaef1689d9d2ec2e73c"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '218'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Tue, 04 Jun 2024 21:12:51 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-operation-identifier:
+      - tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47,objectId=9506e7c0-c569-479f-9940-1f63cb8ce817/centraluseuap/b72316c6-1c6a-45b2-8da6-34b3b027d50a
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '1199'
+      x-msedge-ref:
+      - 'Ref A: B085E695ACEF422DA05985C3750B07ED Ref B: DM2EDGE0817 Ref C: 2024-06-04T21:12:30Z'
+    status:
+      code: 200
+      message: OK
+version: 1

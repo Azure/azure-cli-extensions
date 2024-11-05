@@ -23,9 +23,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-11-01-preview",
+        "version": "2024-05-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters", "2023-11-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.hdinsight/clusterpools/{}/clusters", "2024-05-01-preview"],
         ]
     }
 
@@ -122,7 +122,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-11-01-preview",
+                    "api-version", "2024-05-01-preview",
                     required=True,
                 ),
             }
@@ -239,7 +239,6 @@ class List(AAZCommand):
             cluster_profile.identity_profile = AAZObjectType(
                 serialized_name="identityProfile",
             )
-            _ListHelper._build_schema_identity_profile_read(cluster_profile.identity_profile)
             cluster_profile.kafka_profile = AAZObjectType(
                 serialized_name="kafkaProfile",
             )
@@ -248,6 +247,9 @@ class List(AAZCommand):
             )
             cluster_profile.log_analytics_profile = AAZObjectType(
                 serialized_name="logAnalyticsProfile",
+            )
+            cluster_profile.managed_identity_profile = AAZObjectType(
+                serialized_name="managedIdentityProfile",
             )
             cluster_profile.oss_version = AAZStrType(
                 serialized_name="ossVersion",
@@ -520,11 +522,21 @@ class List(AAZCommand):
                 flags={"secret": True},
             )
 
-            kafka_profile = cls._schema_on_200.value.Element.properties.cluster_profile.kafka_profile
-            kafka_profile.cluster_identity = AAZObjectType(
-                serialized_name="clusterIdentity",
+            identity_profile = cls._schema_on_200.value.Element.properties.cluster_profile.identity_profile
+            identity_profile.msi_client_id = AAZStrType(
+                serialized_name="msiClientId",
+                flags={"required": True},
             )
-            _ListHelper._build_schema_identity_profile_read(kafka_profile.cluster_identity)
+            identity_profile.msi_object_id = AAZStrType(
+                serialized_name="msiObjectId",
+                flags={"required": True},
+            )
+            identity_profile.msi_resource_id = AAZStrType(
+                serialized_name="msiResourceId",
+                flags={"required": True},
+            )
+
+            kafka_profile = cls._schema_on_200.value.Element.properties.cluster_profile.kafka_profile
             kafka_profile.connectivity_endpoints = AAZObjectType(
                 serialized_name="connectivityEndpoints",
             )
@@ -580,6 +592,32 @@ class List(AAZCommand):
             )
             application_logs.std_out_enabled = AAZBoolType(
                 serialized_name="stdOutEnabled",
+            )
+
+            managed_identity_profile = cls._schema_on_200.value.Element.properties.cluster_profile.managed_identity_profile
+            managed_identity_profile.identity_list = AAZListType(
+                serialized_name="identityList",
+                flags={"required": True},
+            )
+
+            identity_list = cls._schema_on_200.value.Element.properties.cluster_profile.managed_identity_profile.identity_list
+            identity_list.Element = AAZObjectType()
+
+            _element = cls._schema_on_200.value.Element.properties.cluster_profile.managed_identity_profile.identity_list.Element
+            _element.client_id = AAZStrType(
+                serialized_name="clientId",
+                flags={"required": True},
+            )
+            _element.object_id = AAZStrType(
+                serialized_name="objectId",
+                flags={"required": True},
+            )
+            _element.resource_id = AAZStrType(
+                serialized_name="resourceId",
+                flags={"required": True},
+            )
+            _element.type = AAZStrType(
+                flags={"required": True},
             )
 
             prometheus_profile = cls._schema_on_200.value.Element.properties.cluster_profile.prometheus_profile
@@ -793,6 +831,9 @@ class List(AAZCommand):
                 serialized_name="podPrefix",
                 flags={"read_only": True},
             )
+            ssh_profile.vm_size = AAZStrType(
+                serialized_name="vmSize",
+            )
 
             trino_profile = cls._schema_on_200.value.Element.properties.cluster_profile.trino_profile
             trino_profile.catalog_options = AAZObjectType(
@@ -878,9 +919,15 @@ class List(AAZCommand):
             _ListHelper._build_schema_trino_debug_config_read(worker.debug)
 
             compute_profile = cls._schema_on_200.value.Element.properties.compute_profile
+            compute_profile.availability_zones = AAZListType(
+                serialized_name="availabilityZones",
+            )
             compute_profile.nodes = AAZListType(
                 flags={"required": True},
             )
+
+            availability_zones = cls._schema_on_200.value.Element.properties.compute_profile.availability_zones
+            availability_zones.Element = AAZStrType()
 
             nodes = cls._schema_on_200.value.Element.properties.compute_profile.nodes
             nodes.Element = AAZObjectType()
@@ -947,36 +994,6 @@ class _ListHelper:
 
         _schema.cpu = cls._schema_compute_resource_definition_read.cpu
         _schema.memory = cls._schema_compute_resource_definition_read.memory
-
-    _schema_identity_profile_read = None
-
-    @classmethod
-    def _build_schema_identity_profile_read(cls, _schema):
-        if cls._schema_identity_profile_read is not None:
-            _schema.msi_client_id = cls._schema_identity_profile_read.msi_client_id
-            _schema.msi_object_id = cls._schema_identity_profile_read.msi_object_id
-            _schema.msi_resource_id = cls._schema_identity_profile_read.msi_resource_id
-            return
-
-        cls._schema_identity_profile_read = _schema_identity_profile_read = AAZObjectType()
-
-        identity_profile_read = _schema_identity_profile_read
-        identity_profile_read.msi_client_id = AAZStrType(
-            serialized_name="msiClientId",
-            flags={"required": True},
-        )
-        identity_profile_read.msi_object_id = AAZStrType(
-            serialized_name="msiObjectId",
-            flags={"required": True},
-        )
-        identity_profile_read.msi_resource_id = AAZStrType(
-            serialized_name="msiResourceId",
-            flags={"required": True},
-        )
-
-        _schema.msi_client_id = cls._schema_identity_profile_read.msi_client_id
-        _schema.msi_object_id = cls._schema_identity_profile_read.msi_object_id
-        _schema.msi_resource_id = cls._schema_identity_profile_read.msi_resource_id
 
     _schema_trino_debug_config_read = None
 

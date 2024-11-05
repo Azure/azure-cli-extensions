@@ -10,23 +10,30 @@ import unittest
 
 
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, MSGraphNameReplacer, MOCKED_USER_NAME)
-from azure.cli.testsdk .scenario_tests import AllowLargeResponse
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
+
 from .test_definitions import (test_data_source, test_notification_channel, test_dashboard)
+from .recording_processors import ApiKeyServiceAccountTokenReplacer
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 
 class AmgScenarioTest(ScenarioTest):
+    def __init__(self, method_name):
+        super().__init__(method_name, recording_processors=[
+            ApiKeyServiceAccountTokenReplacer()
+        ])
+
 
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
     def test_amg_crud(self, resource_group):
 
         self.kwargs.update({
-            'name': 'clitestamg2',
+            'name': self.create_random_name(prefix='clitestamg', length=23),
             'location': 'westcentralus'
         })
 
-        self.cmd('grafana create -g {rg} -n {name} -l {location} --tags foo=doo --skip-role-assignments', checks=[
+        self.cmd('grafana create -g {rg} -n {name} -l {location} --tags foo=doo --skip-role-assignments True', checks=[
             self.check('tags.foo', 'doo'),
             self.check('name', '{name}')
         ])
@@ -39,20 +46,20 @@ class AmgScenarioTest(ScenarioTest):
         ])
 
         self.cmd('grafana update -g {rg} -n {name} --deterministic-outbound-ip Enabled --api-key Enabled', checks=[
-            self.check('properties.deterministicOutboundIp', 'Enabled'),
+            self.check('properties.deterministicOutboundIP', 'Enabled'),
             self.check('properties.apiKey', 'Enabled'),
             self.check('length(properties.outboundIPs)', 2)
         ])
 
         self.cmd('grafana show -g {rg} -n {name}', checks=[
-            self.check('properties.deterministicOutboundIp', 'Enabled'),
+            self.check('properties.deterministicOutboundIP', 'Enabled'),
             self.check('properties.apiKey', 'Enabled'),
             self.check('length(properties.outboundIPs)', 2)
         ])
 
         self.cmd('grafana update -g {rg} -n {name} --deterministic-outbound-ip Disabled --api-key Disabled --public-network-access Disabled')
         self.cmd('grafana show -g {rg} -n {name}', checks=[
-            self.check('properties.deterministicOutboundIp', 'Disabled'),
+            self.check('properties.deterministicOutboundIP', 'Disabled'),
             self.check('properties.apiKey', 'Disabled'),
             self.check('properties.publicNetworkAccess', 'Disabled'),
             self.check('properties.outboundIPs', None)
@@ -62,11 +69,12 @@ class AmgScenarioTest(ScenarioTest):
         final_count = len(self.cmd('grafana list').get_output_in_json())
         self.assertTrue(final_count, count - 1)
 
+
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
-    def test_api_key_e2e(self, resource_group):
+    def test_amg_api_key_e2e(self, resource_group):
 
         self.kwargs.update({
-            'name': 'clitestamgapikey',
+            'name': self.create_random_name(prefix='clitestamgapikey', length=23),
             'location': 'westcentralus',
             "key": "apikey1",
             "key2": "apikey2"
@@ -93,11 +101,12 @@ class AmgScenarioTest(ScenarioTest):
             number = len(self.cmd('grafana dashboard list -g {rg} -n {name} --api-key ' + api_key).get_output_in_json())
             self.assertTrue(number > 0)
 
+
     @ResourceGroupPreparer(name_prefix='cli_test_amg')
-    def test_service_account_e2e(self, resource_group):
+    def test_amg_service_account_e2e(self, resource_group):
 
         self.kwargs.update({
-            'name': 'clitestserviceaccount',
+            'name': self.create_random_name(prefix='clitestamgsvcacct', length=23),
             'location': 'westcentralus',
             "account": "myServiceAccount",
             "token": "myToken"
@@ -135,13 +144,14 @@ class AmgScenarioTest(ScenarioTest):
             ])
             self.cmd('grafana service-account delete -g {rg} -n {name} --service-account {account}')
 
+
     @AllowLargeResponse(size_kb=3072)
     @ResourceGroupPreparer(name_prefix='cli_test_amg', location='westeurope')
     def test_amg_e2e(self, resource_group):
 
         # Test Instance
         self.kwargs.update({
-            'name': 'clitestamge2e',
+            'name': self.create_random_name(prefix='clitestamge2e', length=23),
             'location': 'westeurope'
         })
 
@@ -289,15 +299,16 @@ class AmgScenarioTest(ScenarioTest):
             final_count = len(self.cmd('grafana list').get_output_in_json())
             self.assertTrue(final_count, count - 1)
 
+
     @AllowLargeResponse(size_kb=3072)
     @ResourceGroupPreparer(name_prefix='cli_test_amg', location='westcentralus')
     def test_amg_backup_restore(self, resource_group):
 
         # Test Instance
         self.kwargs.update({
-            'name': 'clitestbackup',
+            'name': self.create_random_name(prefix='clitestamgbackup', length=23),
             'location': 'westcentralus',
-            'name2': 'clitestbackup2'
+            'name2': self.create_random_name(prefix='clitestamgbackup', length=23)
         })
 
         owner = self._get_signed_in_user()
@@ -433,8 +444,157 @@ class AmgScenarioTest(ScenarioTest):
                 self.check("length([?uid == '{dashboardUid}'])", 1)
             ])
 
+            # Close-out Instance
+            self.cmd('grafana delete -g {rg} -n {name} --yes')
+            self.cmd('grafana delete -g {rg} -n {name2} --yes')
+            final_count = len(self.cmd('grafana list').get_output_in_json())
+            self.assertTrue(final_count, 0)
+
+
+    @AllowLargeResponse(size_kb=10240)
+    @ResourceGroupPreparer(name_prefix='cli_test_amg')
+    def test_amg_private_endpoint(self, resource_group):
+
+        self.kwargs.update({
+            'name': self.create_random_name(prefix='clitestamgmpe', length=23),
+            'location': 'westcentralus',
+            'monitor_name': self.create_random_name(prefix='clitestmon', length=20),
+            'mpe_name': self.create_random_name(prefix='clitestmpe', length=20),
+            'pe_name': self.create_random_name(prefix='clitestpe', length=20),
+            'vnet_name': self.create_random_name(prefix='clitestvnet', length=20),
+            'subnet_name': self.create_random_name(prefix='clitestsubnet', length=20),
+            'conn_name': self.create_random_name(prefix='clitestconn', length=20),
+            'sub': self.get_subscription_id(),
+        })
+
+        owner = self._get_signed_in_user()
+        self.recording_processors.append(MSGraphNameReplacer(owner, MOCKED_USER_NAME))
+
+        with unittest.mock.patch('azext_amg.custom._gen_guid', side_effect=self.create_guid):
+
+            self.cmd('grafana create -g {rg} -n {name} -l {location}')
+
+            self.cmd('monitor account create -n {monitor_name} -g {rg} -l {location}')
+
+            self.cmd('grafana mpe create -g {rg} --workspace-name {name} -n {mpe_name} -l {location} --group-ids prometheusMetrics --private-link-resource-region {location} --private-link-resource-id /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Monitor/accounts/{monitor_name}', checks=[
+                self.check('name', '{mpe_name}'),
+                self.check('connectionState.status', 'Pending')
+            ])
+
+            self.cmd('grafana mpe list -g {rg} --workspace-name {name}', checks=[
+                self.check('length([])', 1)
+            ])
+
+            self.cmd('grafana mpe show -g {rg} --workspace-name {name} -n {mpe_name}', checks=[
+                self.check('name', '{mpe_name}')
+            ])
+
+            out = self.cmd('network private-endpoint-connection list -g {rg} -n {monitor_name} --type Microsoft.Monitor/accounts', checks=[
+                self.check('length([])', 1)
+            ]).get_output_in_json()
+
+            self.kwargs.update({
+                'mpe_id': out[0]['id']
+            })
+
+            self.cmd('network private-endpoint-connection approve --id {mpe_id} -d "Approved" ')
+
+            self.cmd('grafana mpe show -g {rg} --workspace-name {name} -n {mpe_name}', checks=[
+                self.check('connectionState.status', 'Pending')
+            ])
+
+            self.cmd('grafana mpe refresh -g {rg} --workspace-name {name}')
+
+            self.cmd('grafana mpe show -g {rg} --workspace-name {name} -n {mpe_name}', checks=[
+                self.check('connectionState.status', 'Approved')
+            ])
+
+            self.cmd('grafana mpe delete -g {rg} --workspace-name {name} -n {mpe_name} --yes')
+
+            self.cmd('grafana mpe list -g {rg} --workspace-name {name}', checks=[
+                self.check('length([])', 0)
+            ])
+
+            self.cmd('network vnet create -g {rg} -n {vnet_name} -l {location} --subnet-name {subnet_name}')
+
+            self.cmd('network private-endpoint create -g {rg} -n {pe_name} --vnet-name {vnet_name} --subnet {subnet_name} --private-connection-resource-id /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Dashboard/grafana/{name} -l {location} --connection-name {conn_name} --group-id grafana') 
+
+            self.cmd('grafana private-endpoint-connection list -g {rg} --workspace-name {name}', checks=[
+                self.check('length([])', 1)
+            ])
+
+            self.cmd('grafana private-endpoint-connection update --private-link-service-connection-state description="Rejection Message" status="Rejected" -g {rg} --workspace-name {name} -n {conn_name}')
+
+            self.cmd('grafana private-endpoint-connection show -g {rg} --workspace-name {name} -n {conn_name}', checks=[
+                self.check('name', '{conn_name}'),
+                self.check('privateLinkServiceConnectionState.status', 'Rejected'),
+                self.check('privateLinkServiceConnectionState.description', 'Rejection Message')
+            ])
+
+            self.cmd('grafana private-endpoint-connection delete -g {rg} --workspace-name {name} -n {conn_name} --yes')
+
+            self.cmd('grafana private-endpoint-connection list -g {rg} --workspace-name {name}', checks=[
+                self.check('length([])', 0)
+            ])
+
+
+    @AllowLargeResponse(size_kb=3072)
+    @ResourceGroupPreparer(name_prefix='cli_test_amg')
+    def test_amg_integrations_monitor(self, resource_group):
+        self.kwargs.update({
+            'name': self.create_random_name(prefix='clitestamginteg', length=23),
+            'location': 'westcentralus',
+            'monitor_name': self.create_random_name(prefix='clitestamwinteg', length=23)
+        })
+
+        owner = self._get_signed_in_user()
+        self.recording_processors.append(MSGraphNameReplacer(owner, MOCKED_USER_NAME))
+
+        with unittest.mock.patch('azext_amg.custom._gen_guid', side_effect=self.create_guid):
+
+            self.cmd('grafana create -g {rg} -n {name} -l {location}')
+
+            self.cmd('monitor account create -n {monitor_name} -g {rg} -l {location}')
+
+            self.cmd('grafana integrations monitor add -g {rg} -n {name} --monitor-resource-group-name {rg} --monitor-name {monitor_name}')
+
+            monitor_integrations = self.cmd('grafana integrations monitor list -g {rg} -n {name}', checks=[
+                self.check('length([])', 1)
+            ]).get_output_in_json()
+
+            self.cmd(f'role assignment list --scope {monitor_integrations[0]} --role "Monitoring Data Reader"', checks=[
+                self.check('length([])', 1)
+            ])
+
+            self._poll_for_amg_succeeded_state('{rg}', '{name}', timeout=500)  # Wait for workspace to complete 'Updating' provisioning state
+            self.cmd('grafana integrations monitor delete -g {rg} -n {name} --monitor-resource-group-name {rg} --monitor-name {monitor_name}')
+
+            self.cmd('grafana integrations monitor list -g {rg} -n {name}', checks=[
+                self.check('length([])', 0)
+            ])
+
+            self.cmd(f'role assignment list --scope {monitor_integrations[0]} --role "Monitoring Data Reader"', checks=[
+                self.check('length([])', 0)
+            ])
+
+
     def _get_signed_in_user(self):
         account_info = self.cmd('account show').get_output_in_json()
         if account_info['user']['type'] == 'user':
             return account_info['user']['name']
         return None
+    
+
+    def _poll_for_amg_succeeded_state(self, rg, name, timeout):
+        start_time = time.time()
+        interval = 10
+        while time.time() - start_time < timeout:
+            try:
+                result = self.cmd('grafana show -g {rg} -n {name}').get_output_in_json()
+                if result["properties"]['provisioningState'] == 'Succeeded':
+                    return
+                time.sleep(interval)
+                interval *= 2
+            except Exception:
+                raise Exception('Failed to retrieve the AMG provisioning state')
+        raise Exception('Timed out waiting for the AMG to reach the Succeeded provisining state')

@@ -16,7 +16,7 @@ except ImportError:
 
 # TODO: Confirm this is the right version number you want and it matches your
 # HISTORY.rst entry.
-VERSION = '0.1.0rc6'
+VERSION = '1.0.0b1'
 
 # The full list of classifiers is available at
 # https://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -43,7 +43,7 @@ with open('HISTORY.rst', 'r', encoding='utf-8') as f:
     HISTORY = f.read()
 
 setup(
-    name='internet_analyzer',
+    name='internet-analyzer',
     version=VERSION,
     description='Microsoft Azure Command-Line Tools Internet Analyzer Extension',
     # TODO: Update author and email, if applicable

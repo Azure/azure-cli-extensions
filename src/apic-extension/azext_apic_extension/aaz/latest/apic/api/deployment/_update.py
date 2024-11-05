@@ -18,7 +18,7 @@ class Update(AAZCommand):
     """Update existing API deployment.
 
     :example: Update API deployment
-        az apic api deployment update -g api-center-test -s contoso --deployment-id production --title "Production deployment" --api-id echo-api
+        az apic api deployment update -g api-center-test -n contoso --deployment-id production --title "Production deployment" --api-id echo-api
     """
 
     _aaz_info = {
@@ -72,8 +72,8 @@ class Update(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-n", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -130,13 +130,6 @@ class Update(AAZCommand):
             arg_group="Properties",
             help="Server",
             nullable=True,
-        )
-        _args_schema.state = AAZStrArg(
-            options=["--state"],
-            arg_group="Properties",
-            help="State of API deployment.",
-            nullable=True,
-            enum={"active": "active", "inactive": "inactive"},
         )
         _args_schema.title = AAZStrArg(
             options=["--title"],
@@ -417,7 +410,6 @@ class Update(AAZCommand):
                 properties.set_prop("description", AAZStrType, ".description")
                 properties.set_prop("environmentId", AAZStrType, ".environment_id")
                 properties.set_prop("server", AAZObjectType, ".server")
-                properties.set_prop("state", AAZStrType, ".state")
                 properties.set_prop("title", AAZStrType, ".title")
 
             custom_properties = _builder.get(".properties.customProperties")

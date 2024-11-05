@@ -18,7 +18,10 @@ class List(AAZCommand):
     """List a collection of APIs.
 
     :example: List APIs
-        az apic api list -g contoso-resources -s contoso
+        az apic api list -g contoso-resources -n contoso
+
+    :example: List APIs with filter
+        az apic api list -g contoso-resources -n contoso --filter "kind eq 'rest'"
     """
 
     _aaz_info = {
@@ -49,8 +52,8 @@ class List(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-n", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,90}$",

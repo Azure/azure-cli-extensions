@@ -18,10 +18,10 @@ class Show(AAZCommand):
     """Get details of the metadata schema.
 
     :example: Show schema details 1
-        az apic metadata show -g api-center-test -s contosoeuap --name approver
+        az apic metadata show -g api-center-test -n contosoeuap --metadata-name approver
 
     :example: Show schema details 2
-        az apic metadata show --resource-group api-center-test --service-name contoso --name "testchoices"
+        az apic metadata show --resource-group api-center-test --service-name contoso --metadata-name "testchoices"
     """
 
     _aaz_info = {
@@ -47,8 +47,8 @@ class Show(AAZCommand):
         # define Arg Group ""
 
         _args_schema = cls._args_schema
-        _args_schema.metadata_schema_name = AAZStrArg(
-            options=["--name", "--metadata-schema", "--metadata-schema-name"],
+        _args_schema.metadata_name = AAZStrArg(
+            options=["--metadata-name"],
             help="The name of the metadata schema.",
             required=True,
             id_part="child_name_1",
@@ -62,8 +62,8 @@ class Show(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-n", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
@@ -121,7 +121,7 @@ class Show(AAZCommand):
         def url_parameters(self):
             parameters = {
                 **self.serialize_url_param(
-                    "metadataSchemaName", self.ctx.args.metadata_schema_name,
+                    "metadataSchemaName", self.ctx.args.metadata_name,
                     required=True,
                 ),
                 **self.serialize_url_param(

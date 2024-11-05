@@ -26,13 +26,13 @@ def load_arguments(self, _):  # pylint: disable=unused-argument
         )
         c.argument(
             "service_name",
-            options_list=['--service', '-s'],
+            options_list=['--service-name', '-n'],
             help="Service name",
             required=True,
         )
         c.argument(
-            "environment_name",
-            options_list=['--environment-name', '-e'],
-            help="Environemnt name",
+            "environment_id",
+            options_list=['--environment-id'],
+            help="Environemnt id",
             required=False
         )

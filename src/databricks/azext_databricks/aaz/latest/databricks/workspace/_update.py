@@ -34,9 +34,9 @@ class Update(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2023-02-01",
+        "version": "2024-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}", "2023-02-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.databricks/workspaces/{}", "2024-05-01"],
         ]
     }
 
@@ -200,6 +200,111 @@ class Update(AAZCommand):
 
         # define Arg Group "Properties"
 
+        _args_schema = cls._args_schema
+        _args_schema.access_connector = AAZObjectArg(
+            options=["--access-connector"],
+            arg_group="Properties",
+            help="Access Connector Resource that is going to be associated with Databricks Workspace",
+            nullable=True,
+        )
+        _args_schema.default_catalog = AAZObjectArg(
+            options=["--default-catalog"],
+            arg_group="Properties",
+            help="Properties for Default Catalog configuration during workspace creation.",
+            nullable=True,
+        )
+        _args_schema.default_storage_firewall = AAZStrArg(
+            options=["--default-storage-firewall"],
+            arg_group="Properties",
+            help="Gets or Sets Default Storage Firewall configuration information",
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+        _args_schema.enhanced_security_compliance = AAZObjectArg(
+            options=["--enhanced-security-compliance"],
+            arg_group="Properties",
+            help="Contains settings related to the Enhanced Security and Compliance Add-On.",
+            nullable=True,
+        )
+
+        access_connector = cls._args_schema.access_connector
+        access_connector.id = AAZResourceIdArg(
+            options=["id"],
+            help="The resource ID of Azure Databricks Access Connector Resource.",
+        )
+        access_connector.identity_type = AAZStrArg(
+            options=["identity-type"],
+            help="The identity type of the Access Connector Resource.",
+            enum={"SystemAssigned": "SystemAssigned", "UserAssigned": "UserAssigned"},
+        )
+        access_connector.user_assigned_identity_id = AAZResourceIdArg(
+            options=["user-assigned-identity-id"],
+            help="The resource ID of the User Assigned Identity associated with the Access Connector Resource. This is required for type 'UserAssigned' and not valid for type 'SystemAssigned'.",
+            nullable=True,
+        )
+
+        default_catalog = cls._args_schema.default_catalog
+        default_catalog.initial_name = AAZStrArg(
+            options=["initial-name"],
+            help="Specifies the initial Name of default catalog. If not specified, the name of the workspace will be used.",
+            nullable=True,
+        )
+        default_catalog.initial_type = AAZStrArg(
+            options=["initial-type"],
+            help="Defines the initial type of the default catalog. Possible values (case-insensitive):  HiveMetastore, UnityCatalog",
+            nullable=True,
+            enum={"HiveMetastore": "HiveMetastore", "UnityCatalog": "UnityCatalog"},
+        )
+
+        enhanced_security_compliance = cls._args_schema.enhanced_security_compliance
+        enhanced_security_compliance.automatic_cluster_update = AAZObjectArg(
+            options=["automatic-cluster-update"],
+            help="Status of automated cluster updates feature.",
+            nullable=True,
+        )
+        enhanced_security_compliance.compliance_security_profile = AAZObjectArg(
+            options=["compliance-security-profile"],
+            help="Status of Compliance Security Profile feature.",
+            nullable=True,
+        )
+        enhanced_security_compliance.enhanced_security_monitoring = AAZObjectArg(
+            options=["enhanced-security-monitoring"],
+            help="Status of Enhanced Security Monitoring feature.",
+            nullable=True,
+        )
+
+        automatic_cluster_update = cls._args_schema.enhanced_security_compliance.automatic_cluster_update
+        automatic_cluster_update.value = AAZStrArg(
+            options=["value"],
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+
+        compliance_security_profile = cls._args_schema.enhanced_security_compliance.compliance_security_profile
+        compliance_security_profile.compliance_standards = AAZListArg(
+            options=["compliance-standards"],
+            help="Compliance standards associated with the workspace.",
+            nullable=True,
+        )
+        compliance_security_profile.value = AAZStrArg(
+            options=["value"],
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+
+        compliance_standards = cls._args_schema.enhanced_security_compliance.compliance_security_profile.compliance_standards
+        compliance_standards.Element = AAZStrArg(
+            nullable=True,
+            enum={"HIPAA": "HIPAA", "NONE": "NONE", "PCI_DSS": "PCI_DSS"},
+        )
+
+        enhanced_security_monitoring = cls._args_schema.enhanced_security_compliance.enhanced_security_monitoring
+        enhanced_security_monitoring.value = AAZStrArg(
+            options=["value"],
+            nullable=True,
+            enum={"Disabled": "Disabled", "Enabled": "Enabled"},
+        )
+
         # define Arg Group "Sku"
         return cls._args_schema
 
@@ -321,7 +426,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01",
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }
@@ -420,7 +525,7 @@ class Update(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-02-01",
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }
@@ -484,10 +589,25 @@ class Update(AAZCommand):
 
             properties = _builder.get(".properties")
             if properties is not None:
+                properties.set_prop("accessConnector", AAZObjectType, ".access_connector")
+                properties.set_prop("defaultCatalog", AAZObjectType, ".default_catalog")
+                properties.set_prop("defaultStorageFirewall", AAZStrType, ".default_storage_firewall")
                 properties.set_prop("encryption", AAZObjectType)
+                properties.set_prop("enhancedSecurityCompliance", AAZObjectType, ".enhanced_security_compliance")
                 properties.set_prop("parameters", AAZObjectType)
                 properties.set_prop("publicNetworkAccess", AAZStrType, ".public_network_access")
                 properties.set_prop("requiredNsgRules", AAZStrType, ".required_nsg_rules")
+
+            access_connector = _builder.get(".properties.accessConnector")
+            if access_connector is not None:
+                access_connector.set_prop("id", AAZStrType, ".id", typ_kwargs={"flags": {"required": True}})
+                access_connector.set_prop("identityType", AAZStrType, ".identity_type", typ_kwargs={"flags": {"required": True}})
+                access_connector.set_prop("userAssignedIdentityId", AAZStrType, ".user_assigned_identity_id")
+
+            default_catalog = _builder.get(".properties.defaultCatalog")
+            if default_catalog is not None:
+                default_catalog.set_prop("initialName", AAZStrType, ".initial_name")
+                default_catalog.set_prop("initialType", AAZStrType, ".initial_type")
 
             encryption = _builder.get(".properties.encryption")
             if encryption is not None:
@@ -520,6 +640,29 @@ class Update(AAZCommand):
                 key_vault_properties.set_prop("keyName", AAZStrType, ".managed_services_key_name", typ_kwargs={"flags": {"required": True}})
                 key_vault_properties.set_prop("keyVaultUri", AAZStrType, ".managed_services_key_vault", typ_kwargs={"flags": {"required": True}})
                 key_vault_properties.set_prop("keyVersion", AAZStrType, ".managed_services_key_version", typ_kwargs={"flags": {"required": True}})
+
+            enhanced_security_compliance = _builder.get(".properties.enhancedSecurityCompliance")
+            if enhanced_security_compliance is not None:
+                enhanced_security_compliance.set_prop("automaticClusterUpdate", AAZObjectType, ".automatic_cluster_update")
+                enhanced_security_compliance.set_prop("complianceSecurityProfile", AAZObjectType, ".compliance_security_profile")
+                enhanced_security_compliance.set_prop("enhancedSecurityMonitoring", AAZObjectType, ".enhanced_security_monitoring")
+
+            automatic_cluster_update = _builder.get(".properties.enhancedSecurityCompliance.automaticClusterUpdate")
+            if automatic_cluster_update is not None:
+                automatic_cluster_update.set_prop("value", AAZStrType, ".value")
+
+            compliance_security_profile = _builder.get(".properties.enhancedSecurityCompliance.complianceSecurityProfile")
+            if compliance_security_profile is not None:
+                compliance_security_profile.set_prop("complianceStandards", AAZListType, ".compliance_standards")
+                compliance_security_profile.set_prop("value", AAZStrType, ".value")
+
+            compliance_standards = _builder.get(".properties.enhancedSecurityCompliance.complianceSecurityProfile.complianceStandards")
+            if compliance_standards is not None:
+                compliance_standards.set_elements(AAZStrType, ".")
+
+            enhanced_security_monitoring = _builder.get(".properties.enhancedSecurityCompliance.enhancedSecurityMonitoring")
+            if enhanced_security_monitoring is not None:
+                enhanced_security_monitoring.set_prop("value", AAZStrType, ".value")
 
             parameters = _builder.get(".properties.parameters")
             if parameters is not None:
@@ -727,6 +870,9 @@ class _UpdateHelper:
         )
 
         properties = _schema_workspace_read.properties
+        properties.access_connector = AAZObjectType(
+            serialized_name="accessConnector",
+        )
         properties.authorizations = AAZListType()
         properties.created_by = AAZObjectType(
             serialized_name="createdBy",
@@ -736,11 +882,24 @@ class _UpdateHelper:
             serialized_name="createdDateTime",
             flags={"read_only": True},
         )
+        properties.default_catalog = AAZObjectType(
+            serialized_name="defaultCatalog",
+        )
+        properties.default_storage_firewall = AAZStrType(
+            serialized_name="defaultStorageFirewall",
+        )
         properties.disk_encryption_set_id = AAZStrType(
             serialized_name="diskEncryptionSetId",
             flags={"read_only": True},
         )
         properties.encryption = AAZObjectType()
+        properties.enhanced_security_compliance = AAZObjectType(
+            serialized_name="enhancedSecurityCompliance",
+        )
+        properties.is_uc_enabled = AAZBoolType(
+            serialized_name="isUcEnabled",
+            flags={"read_only": True},
+        )
         properties.managed_disk_identity = AAZObjectType(
             serialized_name="managedDiskIdentity",
         )
@@ -784,6 +943,18 @@ class _UpdateHelper:
             flags={"read_only": True},
         )
 
+        access_connector = _schema_workspace_read.properties.access_connector
+        access_connector.id = AAZStrType(
+            flags={"required": True},
+        )
+        access_connector.identity_type = AAZStrType(
+            serialized_name="identityType",
+            flags={"required": True},
+        )
+        access_connector.user_assigned_identity_id = AAZStrType(
+            serialized_name="userAssignedIdentityId",
+        )
+
         authorizations = _schema_workspace_read.properties.authorizations
         authorizations.Element = AAZObjectType()
 
@@ -795,6 +966,14 @@ class _UpdateHelper:
         _element.role_definition_id = AAZStrType(
             serialized_name="roleDefinitionId",
             flags={"required": True},
+        )
+
+        default_catalog = _schema_workspace_read.properties.default_catalog
+        default_catalog.initial_name = AAZStrType(
+            serialized_name="initialName",
+        )
+        default_catalog.initial_type = AAZStrType(
+            serialized_name="initialType",
         )
 
         encryption = _schema_workspace_read.properties.encryption
@@ -860,6 +1039,32 @@ class _UpdateHelper:
             flags={"required": True},
         )
 
+        enhanced_security_compliance = _schema_workspace_read.properties.enhanced_security_compliance
+        enhanced_security_compliance.automatic_cluster_update = AAZObjectType(
+            serialized_name="automaticClusterUpdate",
+        )
+        enhanced_security_compliance.compliance_security_profile = AAZObjectType(
+            serialized_name="complianceSecurityProfile",
+        )
+        enhanced_security_compliance.enhanced_security_monitoring = AAZObjectType(
+            serialized_name="enhancedSecurityMonitoring",
+        )
+
+        automatic_cluster_update = _schema_workspace_read.properties.enhanced_security_compliance.automatic_cluster_update
+        automatic_cluster_update.value = AAZStrType()
+
+        compliance_security_profile = _schema_workspace_read.properties.enhanced_security_compliance.compliance_security_profile
+        compliance_security_profile.compliance_standards = AAZListType(
+            serialized_name="complianceStandards",
+        )
+        compliance_security_profile.value = AAZStrType()
+
+        compliance_standards = _schema_workspace_read.properties.enhanced_security_compliance.compliance_security_profile.compliance_standards
+        compliance_standards.Element = AAZStrType()
+
+        enhanced_security_monitoring = _schema_workspace_read.properties.enhanced_security_compliance.enhanced_security_monitoring
+        enhanced_security_monitoring.value = AAZStrType()
+
         parameters = _schema_workspace_read.properties.parameters
         parameters.aml_workspace_id = AAZObjectType(
             serialized_name="amlWorkspaceId",
@@ -880,7 +1085,6 @@ class _UpdateHelper:
         parameters.enable_no_public_ip = AAZObjectType(
             serialized_name="enableNoPublicIp",
         )
-        cls._build_schema_workspace_custom_boolean_parameter_read(parameters.enable_no_public_ip)
         parameters.encryption = AAZObjectType()
         parameters.load_balancer_backend_pool_name = AAZObjectType(
             serialized_name="loadBalancerBackendPoolName",
@@ -908,6 +1112,7 @@ class _UpdateHelper:
         cls._build_schema_workspace_custom_boolean_parameter_read(parameters.require_infrastructure_encryption)
         parameters.resource_tags = AAZObjectType(
             serialized_name="resourceTags",
+            flags={"read_only": True},
         )
         parameters.storage_account_name = AAZObjectType(
             serialized_name="storageAccountName",
@@ -921,6 +1126,14 @@ class _UpdateHelper:
             serialized_name="vnetAddressPrefix",
         )
         cls._build_schema_workspace_custom_string_parameter_read(parameters.vnet_address_prefix)
+
+        enable_no_public_ip = _schema_workspace_read.properties.parameters.enable_no_public_ip
+        enable_no_public_ip.type = AAZStrType(
+            flags={"read_only": True},
+        )
+        enable_no_public_ip.value = AAZBoolType(
+            flags={"required": True},
+        )
 
         encryption = _schema_workspace_read.properties.parameters.encryption
         encryption.type = AAZStrType(
@@ -941,6 +1154,9 @@ class _UpdateHelper:
         resource_tags = _schema_workspace_read.properties.parameters.resource_tags
         resource_tags.type = AAZStrType(
             flags={"read_only": True},
+        )
+        resource_tags.value = AAZFreeFormDictType(
+            flags={"required": True},
         )
 
         private_endpoint_connections = _schema_workspace_read.properties.private_endpoint_connections

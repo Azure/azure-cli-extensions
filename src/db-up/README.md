@@ -1,4 +1,6 @@
 # Azure CLI DB Up Extension #
+'db-up' extension is now deprecated.
+
 This extension enables single commands to create Azure Database server instances with databases. It currently supports Azure Database for MySQL and PostgreSQL.
 
 ### How to use ###

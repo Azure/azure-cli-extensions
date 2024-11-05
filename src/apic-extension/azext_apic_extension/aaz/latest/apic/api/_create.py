@@ -18,10 +18,10 @@ class Create(AAZCommand):
     """Register a new API or update an existing API.
 
     :example: Create API
-        az apic api create -g contoso-resources -s contoso --api-id echo-api --title "Echo API" --type REST
+        az apic api create -g contoso-resources -n contoso --api-id echo-api --title "Echo API" --type REST
 
     :example: Create API with custom properties
-        az apic api create -g contoso-resources -s contoso --api-id echo-api --title "Echo API" --type REST --custom-properties '{\"public-facing\":true}'
+        az apic api create -g contoso-resources -n contoso --api-id echo-api --title "Echo API" --type REST --custom-properties '{\"public-facing\":true}'
     """
 
     _aaz_info = {
@@ -61,8 +61,8 @@ class Create(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-n", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             fmt=AAZStrArgFormat(
                 pattern="^[a-zA-Z0-9-]{3,90}$",

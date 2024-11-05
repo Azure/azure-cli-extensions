@@ -16,70 +16,30 @@ import json
 import yaml
 import requests
 from knack.log import get_logger
+from knack.util import CLIError
 import chardet
-from azure.cli.core.aaz._arg import AAZStrArg
+from azure.cli.core.aaz._arg import AAZStrArg, AAZBoolArg
 from .command_patches import ImportAPIDefinitionExtension
 from .command_patches import ExportAPIDefinitionExtension
-from .command_patches import CreateMetadataExtension
 from .command_patches import ExportMetadataExtension
-from .aaz.latest.apic.metadata import Update as UpdateMetadataSchema
 
 logger = get_logger(__name__)
 
 
 class ImportSpecificationExtension(ImportAPIDefinitionExtension):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.source_profile = AAZStrArg(
-            options=["--file-name"],
-            help='Name of the file from where to import the spec from.',
-            required=False,
-            registered=True
-        )
-        return args_schema
-
     def pre_operations(self):
         super().pre_operations()
         args = self.ctx.args
-        data = None
-        value = None
-
-        # Load the JSON file
-        if args.source_profile:
-            with open(str(args.source_profile), 'rb') as f:
-                data = f.read()
-                result = chardet.detect(data)
-                encoding = result['encoding']
-
-            if str(args.source_profile).endswith('.yaml') or str(args.source_profile).endswith('.yml'):
-                with open(str(args.source_profile), 'r', encoding=encoding) as f:
-                    content = f.read()
-                    data = yaml.safe_load(content)
-                    if data:
-                        value = content
-
-            if (str(args.source_profile).endswith('.json')):
-                with open(str(args.source_profile), 'r', encoding=encoding) as f:
-                    content = f.read()
-                    data = json.loads(content)
-                    if data:
-                        value = content
-
-        # If any of the fields are None, get them from self.args
-        if value is None:
-            value = args.value
-
-        # Reassign the values to self.args
-        args.value = value
 
         # Check the size of 'value' if format is inline and raise error if value is greater than 3 mb
         if args.format == 'inline':
-            value_size_bytes = sys.getsizeof(args.value)
+            value_size_bytes = sys.getsizeof(str(args.value))
             value_size_mb = value_size_bytes / (1024 * 1024)  # Convert bytes to megabytes
             if value_size_mb > 3:
-                logger.error('The size of "value" is greater than 3 MB. '
-                             'Please use --format "url" to import the specification from a URL for size greater than 3 mb.')
+                raise CLIError(
+                    'The size of "value" is greater than 3 MB. '
+                    'Please use --format "link" to import the specification from a URL for size greater than 3 mb.'
+                )
 
 
 class ExportSpecificationExtension(ExportAPIDefinitionExtension):
@@ -134,88 +94,6 @@ class ExportSpecificationExtension(ExportAPIDefinitionExtension):
                     f.write(results)
 
 
-class CreateMetadataSchemaExtension(CreateMetadataExtension):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.source_profile = AAZStrArg(
-            options=["--file-name"],
-            help='Name of the file from that contains the metadata schema.',
-            required=False,
-            registered=True
-        )
-        return args_schema
-
-    def pre_operations(self):
-        args = self.ctx.args
-        data = None
-        value = args.schema
-
-        # Load the JSON file
-        if args.source_profile:
-            with open(str(args.source_profile), 'rb') as f:
-                data = f.read()
-                result = chardet.detect(data)
-                encoding = result['encoding']
-
-            if os.stat(str(args.source_profile)).st_size == 0:
-                raise ValueError('Metadtata schema file is empty. Please provide a valid metadata schema file.')
-
-            with open(str(args.source_profile), 'r', encoding=encoding) as f:
-                data = json.load(f)
-                if data:
-                    value = json.dumps(data)
-
-        # If any of the fields are None, get them from self.args
-        if value is None:
-            logger.error('Please provide the schema to create the metadata schema'
-                         'through --schema option or through --file-name option via a file.')
-
-        # Reassign the values to self.args
-        self.ctx.args.schema = value
-
-
-class UpdateMetadataSchemaExtension(UpdateMetadataSchema):
-    @classmethod
-    def _build_arguments_schema(cls, *args, **kwargs):
-        args_schema = super()._build_arguments_schema(*args, **kwargs)
-        args_schema.source_profile = AAZStrArg(
-            options=["--file-name"],
-            help='Name of the file from that contains the metadata schema.',
-            required=False,
-            registered=True
-        )
-        return args_schema
-
-    def pre_operations(self):
-        args = self.ctx.args
-        data = None
-        value = args.schema
-
-        # Load the JSON file
-        if args.source_profile:
-            with open(str(args.source_profile), 'rb') as f:
-                rawdata = f.read()
-                result = chardet.detect(rawdata)
-                encoding = result['encoding']
-
-            if os.stat(str(args.source_profile)).st_size == 0:
-                raise ValueError('Metadtata schema file is empty. Please provide a valid metadata schema file.')
-
-            with open(str(args.source_profile), 'r', encoding=encoding) as f:
-                data = json.load(f)
-                if data:
-                    value = json.dumps(data)
-
-        # If any of the fields are None, get them from self.args
-        if value is None:
-            logger.error('Please provide the schema to update the metadata schema '
-                         'through --schema option or through --file-name option via a file.')
-
-        # Reassign the values to self.args
-        self.ctx.args.schema = value
-
-
 class ExportMetadataSchemaExtension(ExportMetadataExtension):
 
     @classmethod
@@ -226,6 +104,12 @@ class ExportMetadataSchemaExtension(ExportMetadataExtension):
             help='Name of the file where to export the metadata schema to.',
             required=True,
             registered=True
+        )
+        args_schema.custom_metadata_only = AAZBoolArg(
+            options=["--custom-metadata-only"],
+            help='Export only custom metadata.',
+            required=False,
+            blank=True
         )
         return args_schema
 
@@ -240,9 +124,14 @@ class ExportMetadataSchemaExtension(ExportMetadataExtension):
             if response_format == 'link':
                 getReponse = requests.get(exportedResults, timeout=10)
                 if getReponse.status_code == 200:
-                    exportedResults = getReponse.content.decode()
+                    content = json.loads(getReponse.content.decode())
+                    # Check if custom metadata only
+                    exportedResults = content.get('properties').get('customProperties', {}) if arguments.custom_metadata_only else content
                 else:
                     logger.error('Error while fetching the results from the link. Status code: %s', getReponse.status_code)
+            else:
+                # Check if custom metadata only
+                exportedResults = json.loads(exportedResults).get('properties').get('customProperties', {}) if arguments.custom_metadata_only else exportedResults
 
             if arguments.source_profile:
                 try:
@@ -268,7 +157,7 @@ class ExportMetadataSchemaExtension(ExportMetadataExtension):
 
 
 # Quick Import
-def register_apic(cmd, api_location, resource_group, service_name, environment_name=None):
+def register_apic(cmd, api_location, resource_group, service_name, environment_id=None):
 
     # Load the JSON file
     if api_location:
@@ -280,6 +169,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             encoding = result['encoding']
 
         # TODO - read other file types later
+        value = None
         if str(api_location).endswith('.yaml') or str(api_location).endswith('.yml'):
             with open(str(api_location), 'r', encoding=encoding) as f:
                 content = f.read()
@@ -315,50 +205,43 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
         if info:
             # Create API and Create API Version
             extracted_api_name = _generate_api_id(info.get('title', 'Default-API')).lower()
-            extracted_api_description = info.get('description', 'API Description')
-            extracted_api_summary = info.get('summary', str(extracted_api_description)[:200])
-            extracted_api_title = info.get('title', 'API Title').replace(" ", "-").lower()
+            extracted_api_description = info.get('description', 'API Description')[:1000]
+            extracted_api_title = info.get('title', 'API Title')
             extracted_api_version = info.get('version', 'v1').replace(".", "-").lower()
             extracted_api_version_title = info.get('version', 'v1').replace(".", "-").lower()
             # TODO -Create API Version lifecycle_stage
 
             # Create API - Get the contact details from info in spec
+            contacts = None
             contact = info.get('contact')
             if contact:
                 extracted_api_contact_email = contact.get('email')
                 extracted_api_contact_name = contact.get('name')
                 extracted_api_contact_url = contact.get('url')
                 contacts = [{'email': extracted_api_contact_email, 'name': extracted_api_contact_name, 'url': extracted_api_contact_url}]
-            else:
-                contacts = None
 
             # Create API - Get the license details from info in spec
+            extracted_api_license = None
             licenseDetails = info.get('license')
             if licenseDetails:
                 extracted_api_license_identifier = licenseDetails.get('identifier')
                 extracted_api_license_name = licenseDetails.get('name')
                 extracted_api_license_url = licenseDetails.get('url')
                 extracted_api_license = {'identifier': extracted_api_license_identifier, 'name': extracted_api_license_name, 'url': extracted_api_license_url}
-            else:
-                extracted_api_license = None
 
             # Create API - Get the terms of service from info in spec
+            extracted_api_terms_of_service = {'url': None}
             extracted_api_terms_of_service_value = info.get('termsOfService')
             if extracted_api_terms_of_service_value:
                 extracted_api_terms_of_service = {'url': extracted_api_terms_of_service_value}
-            else:
-                extracted_api_terms_of_service = {'url': None}
 
-            # Create API - Get the external documentation from info in spec
-            extracted_api_external_documentation = None
-            external_documentation = info.get('externalDocumentation')
+            # Create API - Get the external documentation in spec
+            extracted_api_external_documentation = []
+            external_documentation = data.get('externalDocs')
             if external_documentation:
                 extracted_api_external_documentation_description = external_documentation.get('description')
-                extracted_api_external_documentation_title = external_documentation.get('title')
                 extracted_api_external_documentation_url = external_documentation.get('url')
-                extracted_api_external_documentation = {'description': extracted_api_external_documentation_description, 'title': extracted_api_external_documentation_title, 'url': extracted_api_external_documentation_url}
-            else:
-                extracted_api_external_documentation = None
+                extracted_api_external_documentation.append({'description': extracted_api_external_documentation_description, 'title': 'Title', 'url': extracted_api_external_documentation_url})
 
             # TODO: Create API - custom-properties
             # "The custom metadata defined for API catalog entities. #1
@@ -372,7 +255,6 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                 'service_name': service_name,
                 'workspace_name': 'default',
                 'title': extracted_api_title,
-                'summary': extracted_api_summary,
                 'type': extracted_api_kind,
                 'contacts': contacts,
                 'license': extracted_api_license,
@@ -435,7 +317,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                 'definition_id': extracted_definition_name,
                 'format': 'inline',
                 'specification': specification_details,  # TODO write the correct spec object
-                'source_profile': api_location
+                'value': value
             }
 
             importAPISpecificationResults = ImportSpecificationExtension(cli_ctx=cmd.cli_ctx)(command_args=api_specification_args)
@@ -447,13 +329,13 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
             from .aaz.latest.apic.environment import Show as GetEnvironment
 
             environment_id = None
-            if environment_name:
+            if environment_id:
                 # GET Environment ID
                 environment_args = {
                     'resource_group': resource_group,
                     'service_name': service_name,
                     'workspace_name': 'default',
-                    'environment_id': environment_name
+                    'environment_id': environment_id
                 }
 
                 getEnvironmentResults = GetEnvironment(cli_ctx=cmd.cli_ctx)(command_args=environment_args)
@@ -468,7 +350,7 @@ def register_apic(cmd, api_location, resource_group, service_name, environment_n
                     extracted_deployment_title = server.get('title', default_deployment_title).replace(" ", "-")
                     extracted_deployment_description = server.get('description', default_deployment_title)
                     extracted_definition_id = '/workspaces/default/apis/' + extracted_api_name + '/versions/' + extracted_api_version + '/definitions/' + extracted_definition_name
-                    extracted_environment_id = '/workspaces/default/environments/' + environment_name
+                    extracted_environment_id = '/workspaces/default/environments/' + environment_id
                     extracted_state = server.get('state', 'active')
 
                     extracted_server_urls = []

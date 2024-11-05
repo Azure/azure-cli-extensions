@@ -54,6 +54,11 @@ class UpdateWithBI(_Update):
         )
         _args_schema.backup_instance_name._registered = False
         _args_schema.backup_instance_name._required = False
+
+        _args_schema.tenant_id = AAZStrArg(
+            options=["--tenant-id"],
+            help="Tenant ID for cross-tenant calls"
+        )
         return cls._args_schema
 
     def _execute_operations(self):
@@ -62,10 +67,26 @@ class UpdateWithBI(_Update):
         self.post_operations()
 
     def pre_operations(self):
+        if has_value(self.ctx.args.tenant_id):
+            # ValueError is raised when providing an incorrect tenant ID. Capturing it in a try block does not work.
+            self.ctx.update_aux_tenants(str(self.ctx.args.tenant_id))
+
+        if has_value(self.ctx.args.resource_guard_operation_requests):
+            self.ctx.args.resource_guard_operation_requests = assign_aaz_list_arg(
+                self.ctx.args.resource_guard_operation_requests,
+                self.ctx.args.resource_guard_operation_requests,
+                element_transformer=lambda _, operation:
+                    transform_resource_guard_operation_request(self, _, operation)
+            )
+        backup_instance = self.ctx.args.backup_instance.to_serialized_data()
+        resource_guard_operation_requests_deserialized = self.ctx.args.resource_guard_operation_requests.to_serialized_data()
+        if resource_guard_operation_requests_deserialized != AAZUndefined:
+            backup_instance['properties']['resource_guard_operation_requests'] = resource_guard_operation_requests_deserialized
+
         self.ctx.args.backup_instance_name = self.ctx.args.backup_instance['backup_instance_name']
         self.ctx.set_var(
             "instance",
-            self.ctx.args.backup_instance.to_serialized_data(),
+            backup_instance,
             schema_builder=self.BackupInstancesCreateOrUpdate._build_schema_on_200_201
         )
 

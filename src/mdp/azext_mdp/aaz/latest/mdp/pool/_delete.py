@@ -13,19 +13,19 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "mdp pool delete",
-    is_preview=True,
     confirmation="Are you sure you want to perform this operation?",
 )
 class Delete(AAZCommand):
     """Delete a pool
+
     :example: Delete
         az mdp pool delete --name "cli-contoso-pool" --resource-group "rg1"
     """
 
     _aaz_info = {
-        "version": "2023-12-13-preview",
+        "version": "2024-10-19",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devopsinfrastructure/pools/{}", "2023-12-13-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devopsinfrastructure/pools/{}", "2024-10-19"],
         ]
     }
 
@@ -146,7 +146,7 @@ class Delete(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2023-12-13-preview",
+                    "api-version", "2024-10-19",
                     required=True,
                 ),
             }
@@ -157,6 +157,7 @@ class Delete(AAZCommand):
 
         def on_200_201(self, session):
             pass
+
 
 class _DeleteHelper:
     """Helper class for Delete"""

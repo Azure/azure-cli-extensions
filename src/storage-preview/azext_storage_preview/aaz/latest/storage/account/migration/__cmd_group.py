@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command_group(
     "storage account migration",
-    is_preview=True,
 )
 class __CMDGroup(AAZCommandGroup):
     """Manage Storage Account Migration

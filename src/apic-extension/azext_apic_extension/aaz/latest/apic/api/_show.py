@@ -18,7 +18,7 @@ class Show(AAZCommand):
     """Get details of the API.
 
     :example: Show API details
-        az apic api show -g contoso-resources -s contoso --api-id echo-api
+        az apic api show -g contoso-resources -n contoso --api-id echo-api
     """
 
     _aaz_info = {
@@ -59,8 +59,8 @@ class Show(AAZCommand):
             required=True,
         )
         _args_schema.service_name = AAZStrArg(
-            options=["-s", "--service", "--service-name"],
-            help="The name of the API Center service.",
+            options=["-n", "--service-name"],
+            help="The name of Azure API Center service.",
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(

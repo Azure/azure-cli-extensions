@@ -6,12 +6,13 @@
 # pylint: disable=line-too-long
 # pylint: disable=unnecessary-list-index-lookup
 # pylint: disable=unidiomatic-typecheck
+# pylint: disable=possibly-used-before-assignment
 
 import uuid
 import re
 import json
 from importlib import import_module
-from msrestazure.tools import is_valid_resource_id, parse_resource_id
+from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
 from knack.log import get_logger
 from azure.cli.core.azclierror import (
     RequiredArgumentMissingError,
@@ -36,13 +37,16 @@ critical_operation_map = {"deleteProtection": "/backupFabrics/protectionContaine
                           "disableSoftDelete": "/backupconfig/write",
                           "RecoveryServicesDisableImmutability": "/write#reduceImmutabilityState",
                           "RecoveryServicesStopProtection": "/backupFabrics/protectionContainers/protectedItems/write#stopProtectionWithRetainData",
+                          "RecoveryServicesModifyEncryptionSettings": "/write#modifyEncryptionSettings",
                           "DisableMUA": "/backupResourceGuardProxies/delete",
                           "DeleteBackupInstance": "/backupInstances/delete",
                           "DataProtectionDisableImmutability": "/write#reduceImmutabilityState",
                           "DataProtectionSoftDelete": "/write#reduceSoftDeleteSecurity",
                           "DataProtectionStopProtection": "/backupInstances/stopProtection/action",
                           "DataProtectionSuspendBackup": "/backupInstances/suspendBackups/action",
-                          "DataProtectionRestore": "/backupInstances/restore/action"}
+                          "DataProtectionRestore": "/backupInstances/restore/action",
+                          "DataProtectionModifyEncryptionSettings": "/write#modifyEncryptionSettings",
+                          "DataProtectionModifyBackupInstance": "/backupInstances/write"}
 
 
 datasource_map = {
