@@ -110,3 +110,7 @@ Release History
 2.5.0
 ++++++
 * `az grafana integrations monitor`: support Azure Monitor workspace integration
+
+2.5.1
+++++++
+* `az grafana dashboard import`: validate JSON file content prior to import
