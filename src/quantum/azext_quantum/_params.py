@@ -57,8 +57,8 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     skip_autoadd_type = CLIArgumentType(help='If specified, the plans that offer free credits will not automatically be added.')
     key_type = CLIArgumentType(options_list=['--key-type'], help='The api keys to be regenerated, should be Primary and/or Secondary.')
     enable_key_type = CLIArgumentType(options_list=['--enable-api-key'], help='Enable or disable API key authentication.')
-    job_type_type = CLIArgumentType(options_list=['--type'], help='Job type to be listed.')
-    job_status_type = CLIArgumentType(options_list=['--status'], help='Status of jobs to be listed.')
+    type_type = CLIArgumentType(options_list=['--type'], help='Job type to be listed.')
+    status_type = CLIArgumentType(options_list=['--status'], help='Status of jobs to be listed.')
     created_after_type = CLIArgumentType(options_list=['--created-after'], help='Jobs created after this date/time to be listed.')
     created_before_type = CLIArgumentType(options_list=['--created-before'], help='Jobs created before this date/time to be listed.')
     skip_type = CLIArgumentType(options_list=['--skip'], help='[Purpose of this parameter is not clear]')
@@ -93,9 +93,9 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('item', item_type)
 
     with self.argument_context('quantum job list') as c:
-        c.argument('job_type', job_type_type)
+        c.argument('type', type_type)
         c.argument('provider_id', provider_id_type)
-        c.argument('job_status', job_status_type)
+        c.argument('status', status_type)
         c.argument('created_after', created_after_type)
         c.argument('created_before', created_before_type)
         c.argument('skip', skip_type)
