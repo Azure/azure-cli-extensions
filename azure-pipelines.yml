@@ -87,13 +87,13 @@ jobs:
     name: 'pool-ubuntu-2004'
   strategy:
     matrix:
-      Python38:
-        python.version: '3.8'
       Python39:
         python.version: '3.9'
       Python310:
         python.version: '3.10'
       Python311:
+        python.version: '3.11'
+      Python312:
         python.version: '3.12'
   steps:
     - task: UsePythonVersion@0
@@ -101,8 +101,8 @@ jobs:
       inputs:
         versionSpec: '$(python.version)'
     - template: .azure-pipelines/templates/azdev_setup.yml
-    - bash: pip install wheel==0.30.0
-      displayName: 'Install wheel==0.30.0'
+    - bash: pip install wheel==0.30.0 setuptools==70.0.0
+      displayName: 'PIP Install'
     - bash: |
         #!/usr/bin/env bash
         set -ev
