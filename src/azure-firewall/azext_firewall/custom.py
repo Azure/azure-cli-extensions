@@ -13,7 +13,7 @@ from azure.cli.core.aaz import has_value, register_command
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.azclierror import UserFault, ServiceError, ValidationError, ArgumentUsageError
 from azure.cli.core.commands.client_factory import get_subscription_id
-from msrestazure.tools import resource_id
+from azure.mgmt.core.tools import resource_id
 from ._client_factory import network_client_factory
 from .aaz.latest.network.firewall import Create as _AzureFirewallCreate, Update as _AzureFirewallUpdate, \
     Show as _AzureFirewallShow

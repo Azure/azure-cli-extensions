@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+1.2.1
+++++++
+* Remove ADAL dependencies
+
 1.2.0
 ++++++
 * `network firewall policy rule-collection-group collection rule add/update"`: Add parameter `--http-headers-to-insert`
