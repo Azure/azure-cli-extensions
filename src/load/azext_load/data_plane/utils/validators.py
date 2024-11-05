@@ -383,6 +383,7 @@ def validate_split_csv(namespace):
     else:
         namespace.split_csv = False
 
+
 def validate_disable_public_ip(namespace):
     if namespace.disable_public_ip is None:
         return
