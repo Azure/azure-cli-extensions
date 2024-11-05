@@ -40,7 +40,6 @@ def fetch_diagnostic_checks_results(
     filepath_with_timestamp,
     storage_space_available,
 ):
-    global diagnoser_output
     try:
         # Setting DNS and Outbound Check as working
         dns_check = "Starting"
@@ -463,7 +462,6 @@ def helm_install_release_cluster_diagnostic_checks(
 def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, flag):
     # This function is used to store the output that is obtained throughout the Diagnoser process
 
-    global diagnoser_output
     try:
         # If storage space is available then only we store the output
         if storage_space_available:
