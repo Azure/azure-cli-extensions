@@ -11,45 +11,50 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --user-info --plan-data --dynatrace-environment-properties
+      - -g -n --user-info --plan-data --environment
       User-Agent:
-      - AZURECLI/2.40.0 azsdk-python-azure-mgmt-resource/21.1.0b1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001?api-version=2021-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001?api-version=2022-09-01
   response:
     body:
       string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001",
         "name": "cli_test_dynatrace_monitor_single_sign_on_configurations000001",
-        "type": "Microsoft.Resources/resourceGroups", "location": "eastus2euap", "tags":
-        {"product": "azurecli", "cause": "automation", "date": "2022-09-14T08:37:30Z"},
-        "properties": {"provisioningState": "Succeeded"}}'
+        "type": "Microsoft.Resources/resourceGroups", "location": "eastus", "tags":
+        {"product": "azurecli", "cause": "automation", "test": "test_dynatrace_monitor_single_sign_on_configurations",
+        "date": "2024-10-18T07:16:15Z", "module": "dynatrace"}, "properties": {"provisioningState":
+        "Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '424'
+      - '506'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 08:37:35 GMT
+      - Fri, 18 Oct 2024 07:16:21 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: FAAF1307E7284C75BD00DF8C96CFF565 Ref B: MAA201060515053 Ref C: 2024-10-18T07:16:20Z'
     status:
       code: 200
       message: OK
 - request:
-    body: '{"location": "eastus2euap", "properties": {"dynatraceEnvironmentProperties":
+    body: '{"location": "eastus", "properties": {"dynatraceEnvironmentProperties":
       {"singleSignOnProperties": {"aadDomains": ["abc"]}}, "planData": {"billingCycle":
-      "Monthly", "effectiveDate": "2022-08-19T16:00:00.000Z", "planDetails": "azureportalintegration_privatepreview@TIDhjdtn7tfnxcy",
-      "usageType": "committed"}, "userInfo": {"country": "US", "emailAddress": "agarwald@microsoft.com",
+      "MONTHLY", "effectiveDate": "2024-10-09T18:30:00.000Z", "planDetails": "azureportalintegration_privatepreview@TIDgmz7xq9ge3py",
+      "usageType": "COMMITTED"}, "userInfo": {"country": "US", "emailAddress": "agarwalshiv@microsoft.com",
       "firstName": "Alice", "lastName": "Bobab", "phoneNumber": "1234567890"}}}'
     headers:
       Accept:
@@ -61,61 +66,67 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '459'
+      - '457'
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g -n --user-info --plan-data --dynatrace-environment-properties
+      - -g -n --user-info --plan-data --environment
       User-Agent:
-      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001/providers/Dynatrace.Observability/monitors/monitor000002?api-version=2021-09-01
   response:
     body:
       string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001/providers/Dynatrace.Observability/monitors/monitor000002",
         "name": "monitor000002", "type": "dynatrace.observability/monitors", "location":
-        "eastus2euap", "systemData": {"createdBy": "v-jingszhang@microsoft.com", "createdByType":
-        "User", "createdAt": "2022-09-14T08:37:44.7953005Z", "lastModifiedBy": "v-jingszhang@microsoft.com",
-        "lastModifiedByType": "User", "lastModifiedAt": "2022-09-14T08:37:44.7953005Z"},
+        "eastus", "systemData": {"createdBy": "agarwalshiv@microsoft.com", "createdByType":
+        "User", "createdAt": "2024-10-18T07:16:23.9773117Z", "lastModifiedBy": "agarwalshiv@microsoft.com",
+        "lastModifiedByType": "User", "lastModifiedAt": "2024-10-18T07:16:23.9773117Z"},
         "properties": {"monitoringStatus": "Enabled", "marketplaceSubscriptionStatus":
         "Active", "dynatraceEnvironmentProperties": {"userId": null, "accountInfo":
         null, "environmentInfo": null, "singleSignOnProperties": {"singleSignOnState":
         "Initial", "enterpriseAppId": null, "singleSignOnUrl": null, "aadDomains":
         ["abc"], "provisioningState": "Accepted"}}, "userInfo": null, "planData":
-        {"usageType": "committed", "billingCycle": "Monthly", "planDetails": "azureportalintegration_privatepreview@TIDhjdtn7tfnxcy",
-        "effectiveDate": "2022-08-19T16:00:00Z"}, "liftrResourceCategory": "MonitorLogs",
+        {"usageType": "COMMITTED", "billingCycle": "MONTHLY", "planDetails": "azureportalintegration_privatepreview@TIDgmz7xq9ge3py",
+        "effectiveDate": "2024-10-09T18:30:00Z"}, "liftrResourceCategory": "MonitorLogs",
         "liftrResourcePreference": 0, "provisioningState": "Accepted"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/3e96b3b8-16f6-40d4-b135-1ff77a012f45*D9CDF81CC7A6445B39AD435A6BAD8A606DE750FAA38DD4B064EEC40672B76520?api-version=2021-09-01
+      - https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS/operationStatuses/03e49510-98e9-4fd1-9781-521324e65c21*BB5B28062FF6655D2742C3AA39D8A2175E2A4D8D13F37B4EDB016B68F60F3D1E?api-version=2021-09-01&t=638648325877429608&c=MIIHhzCCBm-gAwIBAgITfAWKQyvXag-zjrQDfwAABYpDKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI0MDE0MzE0WhcNMjUwMzIzMDE0MzE0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANDwk3_kcyceqIl7dgtMLkPtJd0Dkb9mue4uwDFpqUeJaLV0ILbYclblqNCzMKtUostgBu5GVS8MBzN_L23IehFdX5s2G8MFBRyoCv31VkR6xTNcprlL3ApSlAkYLNKWQvNzETl23UISuvkG7qeDh6Bx2DFiOd37MurICLjYCCvXbYPN5hdGA_IniW-OEEwq2bSF3s80KjkyMJcA0SyUADASZFM9vhy05mEs6DRa8avMylzn8ybLp7xnm21jaUxNBKPMilAwIeUIvOpmwW_VU86n3T5Yj-2dJ2D2naHhWtci5pE7z8BGdasl5V1hoQdHsniY-G90XE0Qm6AYpDp7IU0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTnD50c9EnBJkrJcBrQ8YxbiYx5ADAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAUCr0q5wDvmcQmw5la8KMFO7bmmYkEp0jdFoaVgTEKWWk_VmL05UBKDAZNZ1Tect9BahkSSPDLo4PiHocbvdJN0bZ91V_GN9LHUKdy8-oXa6ai_B8HLcUhvpHXnmW8opONEs6mzT0wc1DFAglsuujyzZSFqif-9ARhhAlepT0oH4PAr96rZ0fPR6vkMTKAmprNFJQZbSgiz44FcxGBEctsuaEUxAp_AwQYTICmJQAQPbuoB3tZdUFJXogQBY47e7ZeTDWJ5GiWHKp2xbyASebOD4XFr6SpdmHmwddtWFB3zlcnLZnA32HeK6NpHRe6nMRkzBs1vxE6CdzR8HAcLEOE&s=IOxgyMVHEpMwz8Ec5_YApVlRaZEO79ZVAbIg42JIkNyiRFIsaVLZeRdIiV11P1R9eBE-Q1jX_h93VX6uVN03E9mqlBErnrEB_W8ZFEJNUPQmewM6nJEViGwLHDK6_-CEj7BgKEA1FhmtttMuIzH4Y8szzvTUAPny3cmMcOIBHGI_yhUI6wHFKLesSVrDl3SGjeSpoH1gG0bqOYYTpipPFwwF_IADGNtL0ab0FMrfJiPXp5L3nu6T5jK4MkEYTBELoUoqoFJ9pvSQacUKyff45R48NREml4TuexyXTg4fHV7e18oE3CzOYzfkaKoQZOan8ZVkdXP2A2_0qwT_VE62mw&h=FTjodlbNqGJQ_P47wUwnNVUt6zOWgPWIQHEOhp8ClXQ
       cache-control:
       - no-cache
       content-length:
-      - '1204'
+      - '1197'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 08:37:50 GMT
+      - Fri, 18 Oct 2024 07:16:27 GMT
       etag:
-      - '"a500554d-0000-0300-0000-632192de0000"'
+      - '"af00a01a-0000-0800-0000-67120b4b0000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/3e96b3b8-16f6-40d4-b135-1ff77a012f45*D9CDF81CC7A6445B39AD435A6BAD8A606DE750FAA38DD4B064EEC40672B76520?api-version=2021-09-01
+      - https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS/operationStatuses/03e49510-98e9-4fd1-9781-521324e65c21*BB5B28062FF6655D2742C3AA39D8A2175E2A4D8D13F37B4EDB016B68F60F3D1E?api-version=2021-09-01&t=638648325877429608&c=MIIHhzCCBm-gAwIBAgITfAWKQyvXag-zjrQDfwAABYpDKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI0MDE0MzE0WhcNMjUwMzIzMDE0MzE0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANDwk3_kcyceqIl7dgtMLkPtJd0Dkb9mue4uwDFpqUeJaLV0ILbYclblqNCzMKtUostgBu5GVS8MBzN_L23IehFdX5s2G8MFBRyoCv31VkR6xTNcprlL3ApSlAkYLNKWQvNzETl23UISuvkG7qeDh6Bx2DFiOd37MurICLjYCCvXbYPN5hdGA_IniW-OEEwq2bSF3s80KjkyMJcA0SyUADASZFM9vhy05mEs6DRa8avMylzn8ybLp7xnm21jaUxNBKPMilAwIeUIvOpmwW_VU86n3T5Yj-2dJ2D2naHhWtci5pE7z8BGdasl5V1hoQdHsniY-G90XE0Qm6AYpDp7IU0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTnD50c9EnBJkrJcBrQ8YxbiYx5ADAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAUCr0q5wDvmcQmw5la8KMFO7bmmYkEp0jdFoaVgTEKWWk_VmL05UBKDAZNZ1Tect9BahkSSPDLo4PiHocbvdJN0bZ91V_GN9LHUKdy8-oXa6ai_B8HLcUhvpHXnmW8opONEs6mzT0wc1DFAglsuujyzZSFqif-9ARhhAlepT0oH4PAr96rZ0fPR6vkMTKAmprNFJQZbSgiz44FcxGBEctsuaEUxAp_AwQYTICmJQAQPbuoB3tZdUFJXogQBY47e7ZeTDWJ5GiWHKp2xbyASebOD4XFr6SpdmHmwddtWFB3zlcnLZnA32HeK6NpHRe6nMRkzBs1vxE6CdzR8HAcLEOE&s=IOxgyMVHEpMwz8Ec5_YApVlRaZEO79ZVAbIg42JIkNyiRFIsaVLZeRdIiV11P1R9eBE-Q1jX_h93VX6uVN03E9mqlBErnrEB_W8ZFEJNUPQmewM6nJEViGwLHDK6_-CEj7BgKEA1FhmtttMuIzH4Y8szzvTUAPny3cmMcOIBHGI_yhUI6wHFKLesSVrDl3SGjeSpoH1gG0bqOYYTpipPFwwF_IADGNtL0ab0FMrfJiPXp5L3nu6T5jK4MkEYTBELoUoqoFJ9pvSQacUKyff45R48NREml4TuexyXTg4fHV7e18oE3CzOYzfkaKoQZOan8ZVkdXP2A2_0qwT_VE62mw&h=FTjodlbNqGJQ_P47wUwnNVUt6zOWgPWIQHEOhp8ClXQ
       mise-correlation-id:
-      - 1a3d0805-47f0-425d-923b-20729792a587
+      - 153875fe-2b4f-45f1-b0b1-e15cfe393df5
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:fab059ea-d726-424a-9451-6beb3dc74944
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 4CF96F9A0CCF4FEB83DB001276DB9740 Ref B: MAA201060515011 Ref C: 2024-10-18T07:16:21Z'
     status:
       code: 201
       message: Created
@@ -131,40 +142,40 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --user-info --plan-data --dynatrace-environment-properties
+      - -g -n --user-info --plan-data --environment
       User-Agent:
-      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/3e96b3b8-16f6-40d4-b135-1ff77a012f45*D9CDF81CC7A6445B39AD435A6BAD8A606DE750FAA38DD4B064EEC40672B76520?api-version=2021-09-01
+    uri: https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS/operationStatuses/03e49510-98e9-4fd1-9781-521324e65c21*BB5B28062FF6655D2742C3AA39D8A2175E2A4D8D13F37B4EDB016B68F60F3D1E?api-version=2021-09-01&t=638648325877429608&c=MIIHhzCCBm-gAwIBAgITfAWKQyvXag-zjrQDfwAABYpDKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI0MDE0MzE0WhcNMjUwMzIzMDE0MzE0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANDwk3_kcyceqIl7dgtMLkPtJd0Dkb9mue4uwDFpqUeJaLV0ILbYclblqNCzMKtUostgBu5GVS8MBzN_L23IehFdX5s2G8MFBRyoCv31VkR6xTNcprlL3ApSlAkYLNKWQvNzETl23UISuvkG7qeDh6Bx2DFiOd37MurICLjYCCvXbYPN5hdGA_IniW-OEEwq2bSF3s80KjkyMJcA0SyUADASZFM9vhy05mEs6DRa8avMylzn8ybLp7xnm21jaUxNBKPMilAwIeUIvOpmwW_VU86n3T5Yj-2dJ2D2naHhWtci5pE7z8BGdasl5V1hoQdHsniY-G90XE0Qm6AYpDp7IU0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTnD50c9EnBJkrJcBrQ8YxbiYx5ADAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAUCr0q5wDvmcQmw5la8KMFO7bmmYkEp0jdFoaVgTEKWWk_VmL05UBKDAZNZ1Tect9BahkSSPDLo4PiHocbvdJN0bZ91V_GN9LHUKdy8-oXa6ai_B8HLcUhvpHXnmW8opONEs6mzT0wc1DFAglsuujyzZSFqif-9ARhhAlepT0oH4PAr96rZ0fPR6vkMTKAmprNFJQZbSgiz44FcxGBEctsuaEUxAp_AwQYTICmJQAQPbuoB3tZdUFJXogQBY47e7ZeTDWJ5GiWHKp2xbyASebOD4XFr6SpdmHmwddtWFB3zlcnLZnA32HeK6NpHRe6nMRkzBs1vxE6CdzR8HAcLEOE&s=IOxgyMVHEpMwz8Ec5_YApVlRaZEO79ZVAbIg42JIkNyiRFIsaVLZeRdIiV11P1R9eBE-Q1jX_h93VX6uVN03E9mqlBErnrEB_W8ZFEJNUPQmewM6nJEViGwLHDK6_-CEj7BgKEA1FhmtttMuIzH4Y8szzvTUAPny3cmMcOIBHGI_yhUI6wHFKLesSVrDl3SGjeSpoH1gG0bqOYYTpipPFwwF_IADGNtL0ab0FMrfJiPXp5L3nu6T5jK4MkEYTBELoUoqoFJ9pvSQacUKyff45R48NREml4TuexyXTg4fHV7e18oE3CzOYzfkaKoQZOan8ZVkdXP2A2_0qwT_VE62mw&h=FTjodlbNqGJQ_P47wUwnNVUt6zOWgPWIQHEOhp8ClXQ
   response:
     body:
-      string: '{"id": "/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/3e96b3b8-16f6-40d4-b135-1ff77a012f45*D9CDF81CC7A6445B39AD435A6BAD8A606DE750FAA38DD4B064EEC40672B76520",
-        "name": "3e96b3b8-16f6-40d4-b135-1ff77a012f45*D9CDF81CC7A6445B39AD435A6BAD8A606DE750FAA38DD4B064EEC40672B76520",
+      string: '{"id": "/providers/Dynatrace.Observability/locations/EASTUS/operationStatuses/03e49510-98e9-4fd1-9781-521324e65c21*BB5B28062FF6655D2742C3AA39D8A2175E2A4D8D13F37B4EDB016B68F60F3D1E",
+        "name": "03e49510-98e9-4fd1-9781-521324e65c21*BB5B28062FF6655D2742C3AA39D8A2175E2A4D8D13F37B4EDB016B68F60F3D1E",
         "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001/providers/Dynatrace.Observability/monitors/monitor000002",
-        "status": "Accepted", "startTime": "2022-09-14T08:37:49.9564958Z"}'
+        "status": "Accepted", "startTime": "2024-10-18T07:16:26.605876Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '570'
+      - '564'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 08:38:21 GMT
+      - Fri, 18 Oct 2024 07:16:27 GMT
       etag:
-      - '"020252fd-0000-0300-0000-632192dd0000"'
+      - '"8c0025e4-0000-0800-0000-67120b4b0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 3C6E1B14AB5640E4BA3C41409B48BDBE Ref B: MAA201060515011 Ref C: 2024-10-18T07:16:27Z'
     status:
       code: 200
       message: OK
@@ -180,41 +191,40 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --user-info --plan-data --dynatrace-environment-properties
+      - -g -n --user-info --plan-data --environment
       User-Agent:
-      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/3e96b3b8-16f6-40d4-b135-1ff77a012f45*D9CDF81CC7A6445B39AD435A6BAD8A606DE750FAA38DD4B064EEC40672B76520?api-version=2021-09-01
+    uri: https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS/operationStatuses/03e49510-98e9-4fd1-9781-521324e65c21*BB5B28062FF6655D2742C3AA39D8A2175E2A4D8D13F37B4EDB016B68F60F3D1E?api-version=2021-09-01&t=638648325877429608&c=MIIHhzCCBm-gAwIBAgITfAWKQyvXag-zjrQDfwAABYpDKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI0MDE0MzE0WhcNMjUwMzIzMDE0MzE0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANDwk3_kcyceqIl7dgtMLkPtJd0Dkb9mue4uwDFpqUeJaLV0ILbYclblqNCzMKtUostgBu5GVS8MBzN_L23IehFdX5s2G8MFBRyoCv31VkR6xTNcprlL3ApSlAkYLNKWQvNzETl23UISuvkG7qeDh6Bx2DFiOd37MurICLjYCCvXbYPN5hdGA_IniW-OEEwq2bSF3s80KjkyMJcA0SyUADASZFM9vhy05mEs6DRa8avMylzn8ybLp7xnm21jaUxNBKPMilAwIeUIvOpmwW_VU86n3T5Yj-2dJ2D2naHhWtci5pE7z8BGdasl5V1hoQdHsniY-G90XE0Qm6AYpDp7IU0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTnD50c9EnBJkrJcBrQ8YxbiYx5ADAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAUCr0q5wDvmcQmw5la8KMFO7bmmYkEp0jdFoaVgTEKWWk_VmL05UBKDAZNZ1Tect9BahkSSPDLo4PiHocbvdJN0bZ91V_GN9LHUKdy8-oXa6ai_B8HLcUhvpHXnmW8opONEs6mzT0wc1DFAglsuujyzZSFqif-9ARhhAlepT0oH4PAr96rZ0fPR6vkMTKAmprNFJQZbSgiz44FcxGBEctsuaEUxAp_AwQYTICmJQAQPbuoB3tZdUFJXogQBY47e7ZeTDWJ5GiWHKp2xbyASebOD4XFr6SpdmHmwddtWFB3zlcnLZnA32HeK6NpHRe6nMRkzBs1vxE6CdzR8HAcLEOE&s=IOxgyMVHEpMwz8Ec5_YApVlRaZEO79ZVAbIg42JIkNyiRFIsaVLZeRdIiV11P1R9eBE-Q1jX_h93VX6uVN03E9mqlBErnrEB_W8ZFEJNUPQmewM6nJEViGwLHDK6_-CEj7BgKEA1FhmtttMuIzH4Y8szzvTUAPny3cmMcOIBHGI_yhUI6wHFKLesSVrDl3SGjeSpoH1gG0bqOYYTpipPFwwF_IADGNtL0ab0FMrfJiPXp5L3nu6T5jK4MkEYTBELoUoqoFJ9pvSQacUKyff45R48NREml4TuexyXTg4fHV7e18oE3CzOYzfkaKoQZOan8ZVkdXP2A2_0qwT_VE62mw&h=FTjodlbNqGJQ_P47wUwnNVUt6zOWgPWIQHEOhp8ClXQ
   response:
     body:
-      string: '{"id": "/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/3e96b3b8-16f6-40d4-b135-1ff77a012f45*D9CDF81CC7A6445B39AD435A6BAD8A606DE750FAA38DD4B064EEC40672B76520",
-        "name": "3e96b3b8-16f6-40d4-b135-1ff77a012f45*D9CDF81CC7A6445B39AD435A6BAD8A606DE750FAA38DD4B064EEC40672B76520",
+      string: '{"id": "/providers/Dynatrace.Observability/locations/EASTUS/operationStatuses/03e49510-98e9-4fd1-9781-521324e65c21*BB5B28062FF6655D2742C3AA39D8A2175E2A4D8D13F37B4EDB016B68F60F3D1E",
+        "name": "03e49510-98e9-4fd1-9781-521324e65c21*BB5B28062FF6655D2742C3AA39D8A2175E2A4D8D13F37B4EDB016B68F60F3D1E",
         "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001/providers/Dynatrace.Observability/monitors/monitor000002",
-        "status": "Succeeded", "startTime": "2022-09-14T08:37:49.9564958Z", "endTime":
-        "2022-09-14T08:38:40.2431933Z", "error": {}, "properties": null}'
+        "status": "Accepted", "startTime": "2024-10-18T07:16:26.605876Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '647'
+      - '564'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 08:38:51 GMT
+      - Fri, 18 Oct 2024 07:16:58 GMT
       etag:
-      - '"0202d6fe-0000-0300-0000-632193100000"'
+      - '"8c0025e4-0000-0800-0000-67120b4b0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: F2057847988244E29CE7C3C444E145FA Ref B: MAA201060515011 Ref C: 2024-10-18T07:16:58Z'
     status:
       code: 200
       message: OK
@@ -230,55 +240,254 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --user-info --plan-data --dynatrace-environment-properties
+      - -g -n --user-info --plan-data --environment
       User-Agent:
-      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS/operationStatuses/03e49510-98e9-4fd1-9781-521324e65c21*BB5B28062FF6655D2742C3AA39D8A2175E2A4D8D13F37B4EDB016B68F60F3D1E?api-version=2021-09-01&t=638648325877429608&c=MIIHhzCCBm-gAwIBAgITfAWKQyvXag-zjrQDfwAABYpDKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI0MDE0MzE0WhcNMjUwMzIzMDE0MzE0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANDwk3_kcyceqIl7dgtMLkPtJd0Dkb9mue4uwDFpqUeJaLV0ILbYclblqNCzMKtUostgBu5GVS8MBzN_L23IehFdX5s2G8MFBRyoCv31VkR6xTNcprlL3ApSlAkYLNKWQvNzETl23UISuvkG7qeDh6Bx2DFiOd37MurICLjYCCvXbYPN5hdGA_IniW-OEEwq2bSF3s80KjkyMJcA0SyUADASZFM9vhy05mEs6DRa8avMylzn8ybLp7xnm21jaUxNBKPMilAwIeUIvOpmwW_VU86n3T5Yj-2dJ2D2naHhWtci5pE7z8BGdasl5V1hoQdHsniY-G90XE0Qm6AYpDp7IU0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTnD50c9EnBJkrJcBrQ8YxbiYx5ADAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAUCr0q5wDvmcQmw5la8KMFO7bmmYkEp0jdFoaVgTEKWWk_VmL05UBKDAZNZ1Tect9BahkSSPDLo4PiHocbvdJN0bZ91V_GN9LHUKdy8-oXa6ai_B8HLcUhvpHXnmW8opONEs6mzT0wc1DFAglsuujyzZSFqif-9ARhhAlepT0oH4PAr96rZ0fPR6vkMTKAmprNFJQZbSgiz44FcxGBEctsuaEUxAp_AwQYTICmJQAQPbuoB3tZdUFJXogQBY47e7ZeTDWJ5GiWHKp2xbyASebOD4XFr6SpdmHmwddtWFB3zlcnLZnA32HeK6NpHRe6nMRkzBs1vxE6CdzR8HAcLEOE&s=IOxgyMVHEpMwz8Ec5_YApVlRaZEO79ZVAbIg42JIkNyiRFIsaVLZeRdIiV11P1R9eBE-Q1jX_h93VX6uVN03E9mqlBErnrEB_W8ZFEJNUPQmewM6nJEViGwLHDK6_-CEj7BgKEA1FhmtttMuIzH4Y8szzvTUAPny3cmMcOIBHGI_yhUI6wHFKLesSVrDl3SGjeSpoH1gG0bqOYYTpipPFwwF_IADGNtL0ab0FMrfJiPXp5L3nu6T5jK4MkEYTBELoUoqoFJ9pvSQacUKyff45R48NREml4TuexyXTg4fHV7e18oE3CzOYzfkaKoQZOan8ZVkdXP2A2_0qwT_VE62mw&h=FTjodlbNqGJQ_P47wUwnNVUt6zOWgPWIQHEOhp8ClXQ
+  response:
+    body:
+      string: '{"id": "/providers/Dynatrace.Observability/locations/EASTUS/operationStatuses/03e49510-98e9-4fd1-9781-521324e65c21*BB5B28062FF6655D2742C3AA39D8A2175E2A4D8D13F37B4EDB016B68F60F3D1E",
+        "name": "03e49510-98e9-4fd1-9781-521324e65c21*BB5B28062FF6655D2742C3AA39D8A2175E2A4D8D13F37B4EDB016B68F60F3D1E",
+        "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001/providers/Dynatrace.Observability/monitors/monitor000002",
+        "status": "Accepted", "startTime": "2024-10-18T07:16:26.605876Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '564'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 18 Oct 2024 07:17:28 GMT
+      etag:
+      - '"8c0025e4-0000-0800-0000-67120b4b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: B781E33AFB224A88B7191CFB5E01C520 Ref B: MAA201060515011 Ref C: 2024-10-18T07:17:28Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --user-info --plan-data --environment
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS/operationStatuses/03e49510-98e9-4fd1-9781-521324e65c21*BB5B28062FF6655D2742C3AA39D8A2175E2A4D8D13F37B4EDB016B68F60F3D1E?api-version=2021-09-01&t=638648325877429608&c=MIIHhzCCBm-gAwIBAgITfAWKQyvXag-zjrQDfwAABYpDKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI0MDE0MzE0WhcNMjUwMzIzMDE0MzE0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANDwk3_kcyceqIl7dgtMLkPtJd0Dkb9mue4uwDFpqUeJaLV0ILbYclblqNCzMKtUostgBu5GVS8MBzN_L23IehFdX5s2G8MFBRyoCv31VkR6xTNcprlL3ApSlAkYLNKWQvNzETl23UISuvkG7qeDh6Bx2DFiOd37MurICLjYCCvXbYPN5hdGA_IniW-OEEwq2bSF3s80KjkyMJcA0SyUADASZFM9vhy05mEs6DRa8avMylzn8ybLp7xnm21jaUxNBKPMilAwIeUIvOpmwW_VU86n3T5Yj-2dJ2D2naHhWtci5pE7z8BGdasl5V1hoQdHsniY-G90XE0Qm6AYpDp7IU0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTnD50c9EnBJkrJcBrQ8YxbiYx5ADAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAUCr0q5wDvmcQmw5la8KMFO7bmmYkEp0jdFoaVgTEKWWk_VmL05UBKDAZNZ1Tect9BahkSSPDLo4PiHocbvdJN0bZ91V_GN9LHUKdy8-oXa6ai_B8HLcUhvpHXnmW8opONEs6mzT0wc1DFAglsuujyzZSFqif-9ARhhAlepT0oH4PAr96rZ0fPR6vkMTKAmprNFJQZbSgiz44FcxGBEctsuaEUxAp_AwQYTICmJQAQPbuoB3tZdUFJXogQBY47e7ZeTDWJ5GiWHKp2xbyASebOD4XFr6SpdmHmwddtWFB3zlcnLZnA32HeK6NpHRe6nMRkzBs1vxE6CdzR8HAcLEOE&s=IOxgyMVHEpMwz8Ec5_YApVlRaZEO79ZVAbIg42JIkNyiRFIsaVLZeRdIiV11P1R9eBE-Q1jX_h93VX6uVN03E9mqlBErnrEB_W8ZFEJNUPQmewM6nJEViGwLHDK6_-CEj7BgKEA1FhmtttMuIzH4Y8szzvTUAPny3cmMcOIBHGI_yhUI6wHFKLesSVrDl3SGjeSpoH1gG0bqOYYTpipPFwwF_IADGNtL0ab0FMrfJiPXp5L3nu6T5jK4MkEYTBELoUoqoFJ9pvSQacUKyff45R48NREml4TuexyXTg4fHV7e18oE3CzOYzfkaKoQZOan8ZVkdXP2A2_0qwT_VE62mw&h=FTjodlbNqGJQ_P47wUwnNVUt6zOWgPWIQHEOhp8ClXQ
+  response:
+    body:
+      string: '{"id": "/providers/Dynatrace.Observability/locations/EASTUS/operationStatuses/03e49510-98e9-4fd1-9781-521324e65c21*BB5B28062FF6655D2742C3AA39D8A2175E2A4D8D13F37B4EDB016B68F60F3D1E",
+        "name": "03e49510-98e9-4fd1-9781-521324e65c21*BB5B28062FF6655D2742C3AA39D8A2175E2A4D8D13F37B4EDB016B68F60F3D1E",
+        "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001/providers/Dynatrace.Observability/monitors/monitor000002",
+        "status": "Accepted", "startTime": "2024-10-18T07:16:26.605876Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '564'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 18 Oct 2024 07:17:59 GMT
+      etag:
+      - '"8c0025e4-0000-0800-0000-67120b4b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: A8E01662192A48BA9CE9522A3978FB1E Ref B: MAA201060515011 Ref C: 2024-10-18T07:17:58Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --user-info --plan-data --environment
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS/operationStatuses/03e49510-98e9-4fd1-9781-521324e65c21*BB5B28062FF6655D2742C3AA39D8A2175E2A4D8D13F37B4EDB016B68F60F3D1E?api-version=2021-09-01&t=638648325877429608&c=MIIHhzCCBm-gAwIBAgITfAWKQyvXag-zjrQDfwAABYpDKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI0MDE0MzE0WhcNMjUwMzIzMDE0MzE0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANDwk3_kcyceqIl7dgtMLkPtJd0Dkb9mue4uwDFpqUeJaLV0ILbYclblqNCzMKtUostgBu5GVS8MBzN_L23IehFdX5s2G8MFBRyoCv31VkR6xTNcprlL3ApSlAkYLNKWQvNzETl23UISuvkG7qeDh6Bx2DFiOd37MurICLjYCCvXbYPN5hdGA_IniW-OEEwq2bSF3s80KjkyMJcA0SyUADASZFM9vhy05mEs6DRa8avMylzn8ybLp7xnm21jaUxNBKPMilAwIeUIvOpmwW_VU86n3T5Yj-2dJ2D2naHhWtci5pE7z8BGdasl5V1hoQdHsniY-G90XE0Qm6AYpDp7IU0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTnD50c9EnBJkrJcBrQ8YxbiYx5ADAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAUCr0q5wDvmcQmw5la8KMFO7bmmYkEp0jdFoaVgTEKWWk_VmL05UBKDAZNZ1Tect9BahkSSPDLo4PiHocbvdJN0bZ91V_GN9LHUKdy8-oXa6ai_B8HLcUhvpHXnmW8opONEs6mzT0wc1DFAglsuujyzZSFqif-9ARhhAlepT0oH4PAr96rZ0fPR6vkMTKAmprNFJQZbSgiz44FcxGBEctsuaEUxAp_AwQYTICmJQAQPbuoB3tZdUFJXogQBY47e7ZeTDWJ5GiWHKp2xbyASebOD4XFr6SpdmHmwddtWFB3zlcnLZnA32HeK6NpHRe6nMRkzBs1vxE6CdzR8HAcLEOE&s=IOxgyMVHEpMwz8Ec5_YApVlRaZEO79ZVAbIg42JIkNyiRFIsaVLZeRdIiV11P1R9eBE-Q1jX_h93VX6uVN03E9mqlBErnrEB_W8ZFEJNUPQmewM6nJEViGwLHDK6_-CEj7BgKEA1FhmtttMuIzH4Y8szzvTUAPny3cmMcOIBHGI_yhUI6wHFKLesSVrDl3SGjeSpoH1gG0bqOYYTpipPFwwF_IADGNtL0ab0FMrfJiPXp5L3nu6T5jK4MkEYTBELoUoqoFJ9pvSQacUKyff45R48NREml4TuexyXTg4fHV7e18oE3CzOYzfkaKoQZOan8ZVkdXP2A2_0qwT_VE62mw&h=FTjodlbNqGJQ_P47wUwnNVUt6zOWgPWIQHEOhp8ClXQ
+  response:
+    body:
+      string: '{"id": "/providers/Dynatrace.Observability/locations/EASTUS/operationStatuses/03e49510-98e9-4fd1-9781-521324e65c21*BB5B28062FF6655D2742C3AA39D8A2175E2A4D8D13F37B4EDB016B68F60F3D1E",
+        "name": "03e49510-98e9-4fd1-9781-521324e65c21*BB5B28062FF6655D2742C3AA39D8A2175E2A4D8D13F37B4EDB016B68F60F3D1E",
+        "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001/providers/Dynatrace.Observability/monitors/monitor000002",
+        "status": "Accepted", "startTime": "2024-10-18T07:16:26.605876Z"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '564'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 18 Oct 2024 07:18:29 GMT
+      etag:
+      - '"8c0025e4-0000-0800-0000-67120b4b0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: E476DCE237124CC792C4535904CB1F3E Ref B: MAA201060515011 Ref C: 2024-10-18T07:18:29Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --user-info --plan-data --environment
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS/operationStatuses/03e49510-98e9-4fd1-9781-521324e65c21*BB5B28062FF6655D2742C3AA39D8A2175E2A4D8D13F37B4EDB016B68F60F3D1E?api-version=2021-09-01&t=638648325877429608&c=MIIHhzCCBm-gAwIBAgITfAWKQyvXag-zjrQDfwAABYpDKzANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI0MDE0MzE0WhcNMjUwMzIzMDE0MzE0WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANDwk3_kcyceqIl7dgtMLkPtJd0Dkb9mue4uwDFpqUeJaLV0ILbYclblqNCzMKtUostgBu5GVS8MBzN_L23IehFdX5s2G8MFBRyoCv31VkR6xTNcprlL3ApSlAkYLNKWQvNzETl23UISuvkG7qeDh6Bx2DFiOd37MurICLjYCCvXbYPN5hdGA_IniW-OEEwq2bSF3s80KjkyMJcA0SyUADASZFM9vhy05mEs6DRa8avMylzn8ybLp7xnm21jaUxNBKPMilAwIeUIvOpmwW_VU86n3T5Yj-2dJ2D2naHhWtci5pE7z8BGdasl5V1hoQdHsniY-G90XE0Qm6AYpDp7IU0CAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBTnD50c9EnBJkrJcBrQ8YxbiYx5ADAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAAUCr0q5wDvmcQmw5la8KMFO7bmmYkEp0jdFoaVgTEKWWk_VmL05UBKDAZNZ1Tect9BahkSSPDLo4PiHocbvdJN0bZ91V_GN9LHUKdy8-oXa6ai_B8HLcUhvpHXnmW8opONEs6mzT0wc1DFAglsuujyzZSFqif-9ARhhAlepT0oH4PAr96rZ0fPR6vkMTKAmprNFJQZbSgiz44FcxGBEctsuaEUxAp_AwQYTICmJQAQPbuoB3tZdUFJXogQBY47e7ZeTDWJ5GiWHKp2xbyASebOD4XFr6SpdmHmwddtWFB3zlcnLZnA32HeK6NpHRe6nMRkzBs1vxE6CdzR8HAcLEOE&s=IOxgyMVHEpMwz8Ec5_YApVlRaZEO79ZVAbIg42JIkNyiRFIsaVLZeRdIiV11P1R9eBE-Q1jX_h93VX6uVN03E9mqlBErnrEB_W8ZFEJNUPQmewM6nJEViGwLHDK6_-CEj7BgKEA1FhmtttMuIzH4Y8szzvTUAPny3cmMcOIBHGI_yhUI6wHFKLesSVrDl3SGjeSpoH1gG0bqOYYTpipPFwwF_IADGNtL0ab0FMrfJiPXp5L3nu6T5jK4MkEYTBELoUoqoFJ9pvSQacUKyff45R48NREml4TuexyXTg4fHV7e18oE3CzOYzfkaKoQZOan8ZVkdXP2A2_0qwT_VE62mw&h=FTjodlbNqGJQ_P47wUwnNVUt6zOWgPWIQHEOhp8ClXQ
+  response:
+    body:
+      string: '{"id": "/providers/Dynatrace.Observability/locations/EASTUS/operationStatuses/03e49510-98e9-4fd1-9781-521324e65c21*BB5B28062FF6655D2742C3AA39D8A2175E2A4D8D13F37B4EDB016B68F60F3D1E",
+        "name": "03e49510-98e9-4fd1-9781-521324e65c21*BB5B28062FF6655D2742C3AA39D8A2175E2A4D8D13F37B4EDB016B68F60F3D1E",
+        "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001/providers/Dynatrace.Observability/monitors/monitor000002",
+        "status": "Succeeded", "startTime": "2024-10-18T07:16:26.605876Z", "endTime":
+        "2024-10-18T07:18:59.142988Z", "error": {}, "properties": null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '640'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 18 Oct 2024 07:18:59 GMT
+      etag:
+      - '"8d008011-0000-0800-0000-67120be30000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: F2AFEF810EE948B481CD40A88A313899 Ref B: MAA201060515011 Ref C: 2024-10-18T07:18:59Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --user-info --plan-data --environment
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001/providers/Dynatrace.Observability/monitors/monitor000002?api-version=2021-09-01
   response:
     body:
       string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001/providers/Dynatrace.Observability/monitors/monitor000002",
         "name": "monitor000002", "type": "dynatrace.observability/monitors", "location":
-        "eastus2euap", "systemData": {"createdBy": "v-jingszhang@microsoft.com", "createdByType":
-        "User", "createdAt": "2022-09-14T08:37:44.7953005Z", "lastModifiedBy": "v-jingszhang@microsoft.com",
-        "lastModifiedByType": "User", "lastModifiedAt": "2022-09-14T08:37:44.7953005Z"},
+        "eastus", "systemData": {"createdBy": "agarwalshiv@microsoft.com", "createdByType":
+        "User", "createdAt": "2024-10-18T07:16:23.9773117Z", "lastModifiedBy": "agarwalshiv@microsoft.com",
+        "lastModifiedByType": "User", "lastModifiedAt": "2024-10-18T07:16:23.9773117Z"},
         "properties": {"monitoringStatus": "Enabled", "marketplaceSubscriptionStatus":
-        "Active", "dynatraceEnvironmentProperties": {"userId": "5d539180-2cd0-4ed6-bd7f-ecd8057295a7",
-        "accountInfo": {"accountId": "df877719-854b-4025-8dd7-29d4bf29c23e", "regionId":
-        "eastus"}, "environmentInfo": {"environmentId": "enj85099", "logsIngestionEndpoint":
-        "https://enj85099.sprint.dynatracelabs.com/api/v2/logs/ingest", "landingURL":
-        "https://enj85099.sprint.dynatracelabs.com/"}, "singleSignOnProperties": {"singleSignOnState":
-        "Initial", "aadDomains": ["abc"], "provisioningState": "Accepted"}}, "userInfo":
-        {"firstName": "Alice", "lastName": "Bobab", "emailAddress": "agarwald@microsoft.com",
-        "phoneNumber": "1234567890", "country": "US"}, "planData": {"usageType": "committed",
-        "billingCycle": "Monthly", "planDetails": "azureportalintegration_privatepreview@TIDhjdtn7tfnxcy",
-        "effectiveDate": "2022-08-19T16:00:00Z"}, "liftrResourceCategory": "MonitorLogs",
-        "liftrResourcePreference": 0, "provisioningState": "Succeeded"}}'
+        "Active", "dynatraceEnvironmentProperties": {"userId": "b981c3b0-c401-42ae-b991-8e701005264d",
+        "accountInfo": {"accountId": "fa268e68-e010-458c-b908-bb6022304822", "regionId":
+        "eastus"}, "environmentInfo": {"environmentId": "eli67365", "logsIngestionEndpoint":
+        "https://eli67365.live.dynatrace.com/api/v2/logs/ingest", "landingURL": "https://eli67365.live.dynatrace.com/"},
+        "singleSignOnProperties": {"singleSignOnState": "Initial", "aadDomains": ["abc"],
+        "provisioningState": "Accepted"}}, "userInfo": {"firstName": "Alice", "lastName":
+        "Bobab", "emailAddress": "agarwalshiv@microsoft.com", "phoneNumber": "1234567890",
+        "country": "US"}, "planData": {"usageType": "COMMITTED", "billingCycle": "MONTHLY",
+        "planDetails": "azureportalintegration_privatepreview@TIDgmz7xq9ge3py", "effectiveDate":
+        "2024-10-18T07:18:57.831033Z"}, "liftrResourceCategory": "MonitorLogs", "liftrResourcePreference":
+        0, "provisioningState": "Succeeded"}}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '1561'
+      - '1552'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 08:38:52 GMT
+      - Fri, 18 Oct 2024 07:19:00 GMT
       etag:
-      - '"a5002a52-0000-0300-0000-632193100000"'
+      - '"af00be77-0000-0800-0000-67120be40000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 2058591EB5574DECAF84DAA2D111761A Ref B: MAA201060515011 Ref C: 2024-10-18T07:18:59Z'
     status:
       code: 200
       message: OK
@@ -301,50 +510,56 @@ interactions:
       ParameterSetName:
       - -g --monitor-name -n --aad-domains --single-sign-on-url
       User-Agent:
-      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001/providers/Dynatrace.Observability/monitors/monitor000002/singleSignOnConfigurations/default?api-version=2021-09-01
   response:
     body:
       string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001/providers/Dynatrace.Observability/monitors/monitor000002/singleSignOnConfigurations/default",
         "name": "default", "type": "dynatrace.observability/monitors/singlesignonconfigurations",
-        "systemData": {"createdBy": "v-jingszhang@microsoft.com", "createdByType":
-        "User", "createdAt": "2022-09-14T08:38:53.8976563Z", "lastModifiedBy": "v-jingszhang@microsoft.com",
-        "lastModifiedByType": "User", "lastModifiedAt": "2022-09-14T08:38:53.8976563Z"},
+        "systemData": {"createdBy": "agarwalshiv@microsoft.com", "createdByType":
+        "User", "createdAt": "2024-10-18T07:19:01.1170607Z", "lastModifiedBy": "agarwalshiv@microsoft.com",
+        "lastModifiedByType": "User", "lastModifiedAt": "2024-10-18T07:19:01.1170607Z"},
         "properties": {"singleSignOnState": "Initial", "enterpriseAppId": null, "singleSignOnUrl":
         "https://www.dynatrace.io", "aadDomains": ["mpliftrdt20210811outlook.onmicrosoft.com"],
         "provisioningState": "Accepted"}}'
     headers:
       azure-asyncoperation:
-      - https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/38046889-1ea7-4aa0-a1e2-8758ebfee9f4*E9DEDF4CD829818BE14E4388EB27544FCA2992F7B4C49A63975D570B07B3D8D1?api-version=2021-09-01
+      - https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS/operationStatuses/8f41d146-3f97-4e38-a911-e5bd93a9de19*4470E5F304A21A14CD365554A2F725275DC4953C85A312C740D5CAF900C224DA?api-version=2021-09-01&t=638648327426796364&c=MIIHhzCCBm-gAwIBAgITfAWZnAKDvd4xEuvOGQAABZmcAjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQxMDAzMDg1MDA1WhcNMjUwNDAxMDg1MDA1WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANbsFcaJpKQloFwUPDSK63qAV4_Gh5m2LagG0Kj62uLVJqYJm9Z2rd259DxiZexsVvaA6cy_4GMgYbx0S26ToW6M7U4XDYuGtf5iceHk_uR2l-j59K0z75ltaQTyjzZ5JFPiid5YueZZzakeQyGJ9eMw5Zj97j-8NiArPd4VdGOIj-ktMNqlLFHK7x012HOwhdBIqYh2iUt-0SEXmqFESmRBK2OUctVB-yGWRQXxZo1CKX1R4aDEKnb-yTbSD2IAiKr8AL5x5ccoeX6kca0TktS3G-ncZmhjOBSQLcXScjG9DIuLQAgwmlrw-Fqubep7UWxQxDMl8B6l7vpKE1t-MrECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBRWQsUCIxUfskh8RoPMbk98Jz_QpjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHR64fSdTm75xFWU4g_L3ZBLvpQ0yzVxQgBlg_wr8UjWRYOR2rHWxwk44sfm8W1t9vQBrIOq1x6kEdbdfrMVUeAB_YZfWHQjwGx4wJae16fgSjj6_CpTwePAf5aOUXi72mYCj-qltSdfZeL254zQy3OKLSDXb5Vf12TLz4WqyU4T8Noo787zKYGPOP5TGxp_bLL-s_6j-wGU9r3KoBVrwBDsGpfql6oF44DCM6TBrmtdo0AGb8avJ38fK_DfF1FEieKF-iojTygUMza86MkBBDaDHf51xBkBgSnkqdi3Er7HExrR0TWaACPqGp6b2-YV_BRteF_hME8rYvFOZO3tuX0&s=VmT01NVs3EuXEh1PnFPcnTUvJtymqMdB77S8_qOIUUOlhwoXE0Es8ZVDXxI0ykk0_1WGeu3hC9X2gwg_6c77AcmM3EIjN_BCjQvrXQyF1mIfAcjBm5ywiHKH0pmIenm8Ee2W_phAmeNurM3liCvWTPOMny8WjLt1Nb31xj7i3enTnh3CaEZ5vn-gxUYYxf3zCv8YQzLocdmBi9K8y2W0tjsre_jUgrXm9cuw3m45jzXoTamfSuyyW3Y3LtR54KukTu7aUwsTWLtvqV_xhOEe8iPPdkJqZvChrPnenKh4jaNg_WcXs2hbxjVeU5YrpT8Yx86zt5EamRjY6uCkn8mm1w&h=Kk4KMYqJEylN3w2_UyOWxmmVobobZNNSeRsaf2hbyEw
       cache-control:
       - no-cache
       content-length:
-      - '791'
+      - '789'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 08:38:54 GMT
+      - Fri, 18 Oct 2024 07:19:01 GMT
       etag:
-      - '"f0087736-0000-0300-0000-6321931e0000"'
+      - '"270080e6-0000-0800-0000-67120be60000"'
       expires:
       - '-1'
       location:
-      - https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/38046889-1ea7-4aa0-a1e2-8758ebfee9f4*E9DEDF4CD829818BE14E4388EB27544FCA2992F7B4C49A63975D570B07B3D8D1?api-version=2021-09-01
+      - https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS/operationStatuses/8f41d146-3f97-4e38-a911-e5bd93a9de19*4470E5F304A21A14CD365554A2F725275DC4953C85A312C740D5CAF900C224DA?api-version=2021-09-01&t=638648327426796364&c=MIIHhzCCBm-gAwIBAgITfAWZnAKDvd4xEuvOGQAABZmcAjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQxMDAzMDg1MDA1WhcNMjUwNDAxMDg1MDA1WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANbsFcaJpKQloFwUPDSK63qAV4_Gh5m2LagG0Kj62uLVJqYJm9Z2rd259DxiZexsVvaA6cy_4GMgYbx0S26ToW6M7U4XDYuGtf5iceHk_uR2l-j59K0z75ltaQTyjzZ5JFPiid5YueZZzakeQyGJ9eMw5Zj97j-8NiArPd4VdGOIj-ktMNqlLFHK7x012HOwhdBIqYh2iUt-0SEXmqFESmRBK2OUctVB-yGWRQXxZo1CKX1R4aDEKnb-yTbSD2IAiKr8AL5x5ccoeX6kca0TktS3G-ncZmhjOBSQLcXScjG9DIuLQAgwmlrw-Fqubep7UWxQxDMl8B6l7vpKE1t-MrECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBRWQsUCIxUfskh8RoPMbk98Jz_QpjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHR64fSdTm75xFWU4g_L3ZBLvpQ0yzVxQgBlg_wr8UjWRYOR2rHWxwk44sfm8W1t9vQBrIOq1x6kEdbdfrMVUeAB_YZfWHQjwGx4wJae16fgSjj6_CpTwePAf5aOUXi72mYCj-qltSdfZeL254zQy3OKLSDXb5Vf12TLz4WqyU4T8Noo787zKYGPOP5TGxp_bLL-s_6j-wGU9r3KoBVrwBDsGpfql6oF44DCM6TBrmtdo0AGb8avJ38fK_DfF1FEieKF-iojTygUMza86MkBBDaDHf51xBkBgSnkqdi3Er7HExrR0TWaACPqGp6b2-YV_BRteF_hME8rYvFOZO3tuX0&s=VmT01NVs3EuXEh1PnFPcnTUvJtymqMdB77S8_qOIUUOlhwoXE0Es8ZVDXxI0ykk0_1WGeu3hC9X2gwg_6c77AcmM3EIjN_BCjQvrXQyF1mIfAcjBm5ywiHKH0pmIenm8Ee2W_phAmeNurM3liCvWTPOMny8WjLt1Nb31xj7i3enTnh3CaEZ5vn-gxUYYxf3zCv8YQzLocdmBi9K8y2W0tjsre_jUgrXm9cuw3m45jzXoTamfSuyyW3Y3LtR54KukTu7aUwsTWLtvqV_xhOEe8iPPdkJqZvChrPnenKh4jaNg_WcXs2hbxjVeU5YrpT8Yx86zt5EamRjY6uCkn8mm1w&h=Kk4KMYqJEylN3w2_UyOWxmmVobobZNNSeRsaf2hbyEw
       mise-correlation-id:
-      - 9b5782d2-7350-4cfa-ad65-49e24b99bf1d
+      - d9a4d8c9-7797-4511-8240-47a8416c6d61
       pragma:
       - no-cache
       request-context:
       - appId=cid-v1:fab059ea-d726-424a-9451-6beb3dc74944
       strict-transport-security:
       - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
       x-ms-ratelimit-remaining-subscription-writes:
-      - '1199'
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 372F269922EE41A298985AE2116A95FB Ref B: MAA201060514031 Ref C: 2024-10-18T07:19:00Z'
     status:
       code: 201
       message: Created
@@ -362,39 +577,38 @@ interactions:
       ParameterSetName:
       - -g --monitor-name -n --aad-domains --single-sign-on-url
       User-Agent:
-      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
     method: GET
-    uri: https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/38046889-1ea7-4aa0-a1e2-8758ebfee9f4*E9DEDF4CD829818BE14E4388EB27544FCA2992F7B4C49A63975D570B07B3D8D1?api-version=2021-09-01
+    uri: https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS/operationStatuses/8f41d146-3f97-4e38-a911-e5bd93a9de19*4470E5F304A21A14CD365554A2F725275DC4953C85A312C740D5CAF900C224DA?api-version=2021-09-01&t=638648327426796364&c=MIIHhzCCBm-gAwIBAgITfAWZnAKDvd4xEuvOGQAABZmcAjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQxMDAzMDg1MDA1WhcNMjUwNDAxMDg1MDA1WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANbsFcaJpKQloFwUPDSK63qAV4_Gh5m2LagG0Kj62uLVJqYJm9Z2rd259DxiZexsVvaA6cy_4GMgYbx0S26ToW6M7U4XDYuGtf5iceHk_uR2l-j59K0z75ltaQTyjzZ5JFPiid5YueZZzakeQyGJ9eMw5Zj97j-8NiArPd4VdGOIj-ktMNqlLFHK7x012HOwhdBIqYh2iUt-0SEXmqFESmRBK2OUctVB-yGWRQXxZo1CKX1R4aDEKnb-yTbSD2IAiKr8AL5x5ccoeX6kca0TktS3G-ncZmhjOBSQLcXScjG9DIuLQAgwmlrw-Fqubep7UWxQxDMl8B6l7vpKE1t-MrECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBRWQsUCIxUfskh8RoPMbk98Jz_QpjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHR64fSdTm75xFWU4g_L3ZBLvpQ0yzVxQgBlg_wr8UjWRYOR2rHWxwk44sfm8W1t9vQBrIOq1x6kEdbdfrMVUeAB_YZfWHQjwGx4wJae16fgSjj6_CpTwePAf5aOUXi72mYCj-qltSdfZeL254zQy3OKLSDXb5Vf12TLz4WqyU4T8Noo787zKYGPOP5TGxp_bLL-s_6j-wGU9r3KoBVrwBDsGpfql6oF44DCM6TBrmtdo0AGb8avJ38fK_DfF1FEieKF-iojTygUMza86MkBBDaDHf51xBkBgSnkqdi3Er7HExrR0TWaACPqGp6b2-YV_BRteF_hME8rYvFOZO3tuX0&s=VmT01NVs3EuXEh1PnFPcnTUvJtymqMdB77S8_qOIUUOlhwoXE0Es8ZVDXxI0ykk0_1WGeu3hC9X2gwg_6c77AcmM3EIjN_BCjQvrXQyF1mIfAcjBm5ywiHKH0pmIenm8Ee2W_phAmeNurM3liCvWTPOMny8WjLt1Nb31xj7i3enTnh3CaEZ5vn-gxUYYxf3zCv8YQzLocdmBi9K8y2W0tjsre_jUgrXm9cuw3m45jzXoTamfSuyyW3Y3LtR54KukTu7aUwsTWLtvqV_xhOEe8iPPdkJqZvChrPnenKh4jaNg_WcXs2hbxjVeU5YrpT8Yx86zt5EamRjY6uCkn8mm1w&h=Kk4KMYqJEylN3w2_UyOWxmmVobobZNNSeRsaf2hbyEw
   response:
     body:
-      string: '{"id": "/providers/Dynatrace.Observability/locations/EASTUS2EUAP/operationStatuses/38046889-1ea7-4aa0-a1e2-8758ebfee9f4*E9DEDF4CD829818BE14E4388EB27544FCA2992F7B4C49A63975D570B07B3D8D1",
-        "name": "38046889-1ea7-4aa0-a1e2-8758ebfee9f4*E9DEDF4CD829818BE14E4388EB27544FCA2992F7B4C49A63975D570B07B3D8D1",
+      string: '{"id": "/providers/Dynatrace.Observability/locations/EASTUS/operationStatuses/8f41d146-3f97-4e38-a911-e5bd93a9de19*4470E5F304A21A14CD365554A2F725275DC4953C85A312C740D5CAF900C224DA",
+        "name": "8f41d146-3f97-4e38-a911-e5bd93a9de19*4470E5F304A21A14CD365554A2F725275DC4953C85A312C740D5CAF900C224DA",
         "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001/providers/Dynatrace.Observability/monitors/monitor000002/singleSignOnConfigurations/default",
-        "status": "Succeeded", "startTime": "2022-09-14T08:38:54.2937896Z", "endTime":
-        "2022-09-14T08:38:56.6635035Z", "error": {}, "properties": null}'
+        "status": "Accepted", "startTime": "2024-10-18T07:19:01.4208544Z"}'
     headers:
       cache-control:
       - no-cache
       content-length:
-      - '682'
+      - '600'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 08:39:24 GMT
+      - Fri, 18 Oct 2024 07:19:02 GMT
       etag:
-      - '"020231ff-0000-0300-0000-632193200000"'
+      - '"8d00df11-0000-0800-0000-67120be50000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
+      x-msedge-ref:
+      - 'Ref A: 4CD6CDCD44B44D2794BAF403F880BC2F Ref B: MAA201060514031 Ref C: 2024-10-18T07:19:02Z'
     status:
       code: 200
       message: OK
@@ -412,16 +626,66 @@ interactions:
       ParameterSetName:
       - -g --monitor-name -n --aad-domains --single-sign-on-url
       User-Agent:
-      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/providers/Dynatrace.Observability/locations/EASTUS/operationStatuses/8f41d146-3f97-4e38-a911-e5bd93a9de19*4470E5F304A21A14CD365554A2F725275DC4953C85A312C740D5CAF900C224DA?api-version=2021-09-01&t=638648327426796364&c=MIIHhzCCBm-gAwIBAgITfAWZnAKDvd4xEuvOGQAABZmcAjANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQxMDAzMDg1MDA1WhcNMjUwNDAxMDg1MDA1WjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANbsFcaJpKQloFwUPDSK63qAV4_Gh5m2LagG0Kj62uLVJqYJm9Z2rd259DxiZexsVvaA6cy_4GMgYbx0S26ToW6M7U4XDYuGtf5iceHk_uR2l-j59K0z75ltaQTyjzZ5JFPiid5YueZZzakeQyGJ9eMw5Zj97j-8NiArPd4VdGOIj-ktMNqlLFHK7x012HOwhdBIqYh2iUt-0SEXmqFESmRBK2OUctVB-yGWRQXxZo1CKX1R4aDEKnb-yTbSD2IAiKr8AL5x5ccoeX6kca0TktS3G-ncZmhjOBSQLcXScjG9DIuLQAgwmlrw-Fqubep7UWxQxDMl8B6l7vpKE1t-MrECAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBRWQsUCIxUfskh8RoPMbk98Jz_QpjAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAHR64fSdTm75xFWU4g_L3ZBLvpQ0yzVxQgBlg_wr8UjWRYOR2rHWxwk44sfm8W1t9vQBrIOq1x6kEdbdfrMVUeAB_YZfWHQjwGx4wJae16fgSjj6_CpTwePAf5aOUXi72mYCj-qltSdfZeL254zQy3OKLSDXb5Vf12TLz4WqyU4T8Noo787zKYGPOP5TGxp_bLL-s_6j-wGU9r3KoBVrwBDsGpfql6oF44DCM6TBrmtdo0AGb8avJ38fK_DfF1FEieKF-iojTygUMza86MkBBDaDHf51xBkBgSnkqdi3Er7HExrR0TWaACPqGp6b2-YV_BRteF_hME8rYvFOZO3tuX0&s=VmT01NVs3EuXEh1PnFPcnTUvJtymqMdB77S8_qOIUUOlhwoXE0Es8ZVDXxI0ykk0_1WGeu3hC9X2gwg_6c77AcmM3EIjN_BCjQvrXQyF1mIfAcjBm5ywiHKH0pmIenm8Ee2W_phAmeNurM3liCvWTPOMny8WjLt1Nb31xj7i3enTnh3CaEZ5vn-gxUYYxf3zCv8YQzLocdmBi9K8y2W0tjsre_jUgrXm9cuw3m45jzXoTamfSuyyW3Y3LtR54KukTu7aUwsTWLtvqV_xhOEe8iPPdkJqZvChrPnenKh4jaNg_WcXs2hbxjVeU5YrpT8Yx86zt5EamRjY6uCkn8mm1w&h=Kk4KMYqJEylN3w2_UyOWxmmVobobZNNSeRsaf2hbyEw
+  response:
+    body:
+      string: '{"id": "/providers/Dynatrace.Observability/locations/EASTUS/operationStatuses/8f41d146-3f97-4e38-a911-e5bd93a9de19*4470E5F304A21A14CD365554A2F725275DC4953C85A312C740D5CAF900C224DA",
+        "name": "8f41d146-3f97-4e38-a911-e5bd93a9de19*4470E5F304A21A14CD365554A2F725275DC4953C85A312C740D5CAF900C224DA",
+        "resourceId": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001/providers/Dynatrace.Observability/monitors/monitor000002/singleSignOnConfigurations/default",
+        "status": "Succeeded", "startTime": "2024-10-18T07:19:01.4208544Z", "endTime":
+        "2024-10-18T07:19:06.9383478Z", "error": {}, "properties": null}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '677'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Fri, 18 Oct 2024 07:19:32 GMT
+      etag:
+      - '"8d00e712-0000-0800-0000-67120beb0000"'
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-msedge-ref:
+      - 'Ref A: 006D655D00E345A6BEBB502C56EF381E Ref B: MAA201060514031 Ref C: 2024-10-18T07:19:32Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - dynatrace monitor sso-config create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --monitor-name -n --aad-domains --single-sign-on-url
+      User-Agent:
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001/providers/Dynatrace.Observability/monitors/monitor000002/singleSignOnConfigurations/default?api-version=2021-09-01
   response:
     body:
       string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001/providers/Dynatrace.Observability/monitors/monitor000002/singleSignOnConfigurations/default",
         "name": "default", "type": "dynatrace.observability/monitors/singlesignonconfigurations",
-        "systemData": {"createdBy": "v-jingszhang@microsoft.com", "createdByType":
-        "User", "createdAt": "2022-09-14T08:38:53.8976563Z", "lastModifiedBy": "v-jingszhang@microsoft.com",
-        "lastModifiedByType": "User", "lastModifiedAt": "2022-09-14T08:38:53.8976563Z"},
+        "systemData": {"createdBy": "agarwalshiv@microsoft.com", "createdByType":
+        "User", "createdAt": "2024-10-18T07:19:01.1170607Z", "lastModifiedBy": "agarwalshiv@microsoft.com",
+        "lastModifiedByType": "User", "lastModifiedAt": "2024-10-18T07:19:01.1170607Z"},
         "properties": {"singleSignOnState": "Initial", "singleSignOnUrl": "https://www.dynatrace.io",
         "aadDomains": ["mpliftrdt20210811outlook.onmicrosoft.com"], "provisioningState":
         "Succeeded"}}'
@@ -429,27 +693,29 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '767'
+      - '765'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 08:39:24 GMT
+      - Fri, 18 Oct 2024 07:19:32 GMT
       etag:
-      - '"f0083b37-0000-0300-0000-632193200000"'
+      - '"27009de6-0000-0800-0000-67120beb0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 6DB377064FBB48A288D2761DA07C8558 Ref B: MAA201060514031 Ref C: 2024-10-18T07:19:33Z'
     status:
       code: 200
       message: OK
@@ -467,16 +733,16 @@ interactions:
       ParameterSetName:
       - -g --monitor-name -n
       User-Agent:
-      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001/providers/Dynatrace.Observability/monitors/monitor000002/singleSignOnConfigurations/default?api-version=2021-09-01
   response:
     body:
       string: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001/providers/Dynatrace.Observability/monitors/monitor000002/singleSignOnConfigurations/default",
         "name": "default", "type": "dynatrace.observability/monitors/singlesignonconfigurations",
-        "systemData": {"createdBy": "v-jingszhang@microsoft.com", "createdByType":
-        "User", "createdAt": "2022-09-14T08:38:53.8976563Z", "lastModifiedBy": "v-jingszhang@microsoft.com",
-        "lastModifiedByType": "User", "lastModifiedAt": "2022-09-14T08:38:53.8976563Z"},
+        "systemData": {"createdBy": "agarwalshiv@microsoft.com", "createdByType":
+        "User", "createdAt": "2024-10-18T07:19:01.1170607Z", "lastModifiedBy": "agarwalshiv@microsoft.com",
+        "lastModifiedByType": "User", "lastModifiedAt": "2024-10-18T07:19:01.1170607Z"},
         "properties": {"singleSignOnState": "Initial", "singleSignOnUrl": "https://www.dynatrace.io",
         "aadDomains": ["mpliftrdt20210811outlook.onmicrosoft.com"], "provisioningState":
         "Succeeded"}}'
@@ -484,27 +750,29 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '767'
+      - '765'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 08:39:27 GMT
+      - Fri, 18 Oct 2024 07:19:34 GMT
       etag:
-      - '"f0083b37-0000-0300-0000-632193200000"'
+      - '"27009de6-0000-0800-0000-67120beb0000"'
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 444F24669DA246F7B84E43D72274D8FE Ref B: MAA201060513039 Ref C: 2024-10-18T07:19:34Z'
     status:
       code: 200
       message: OK
@@ -522,16 +790,16 @@ interactions:
       ParameterSetName:
       - -g --monitor-name
       User-Agent:
-      - AZURECLI/2.40.0 (AAZ) azsdk-python-core/1.25.1 Python/3.8.9 (Windows-10-10.0.22000-SP0)
+      - AZURECLI/2.65.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001/providers/Dynatrace.Observability/monitors/monitor000002/singleSignOnConfigurations?api-version=2021-09-01
   response:
     body:
       string: '{"value": [{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_dynatrace_monitor_single_sign_on_configurations000001/providers/Dynatrace.Observability/monitors/monitor000002/singleSignOnConfigurations/default",
         "name": "default", "type": "dynatrace.observability/monitors/singlesignonconfigurations",
-        "systemData": {"createdBy": "v-jingszhang@microsoft.com", "createdByType":
-        "User", "createdAt": "2022-09-14T08:38:53.8976563Z", "lastModifiedBy": "v-jingszhang@microsoft.com",
-        "lastModifiedByType": "User", "lastModifiedAt": "2022-09-14T08:38:53.8976563Z"},
+        "systemData": {"createdBy": "agarwalshiv@microsoft.com", "createdByType":
+        "User", "createdAt": "2024-10-18T07:19:01.1170607Z", "lastModifiedBy": "agarwalshiv@microsoft.com",
+        "lastModifiedByType": "User", "lastModifiedAt": "2024-10-18T07:19:01.1170607Z"},
         "properties": {"singleSignOnState": "Initial", "singleSignOnUrl": "https://www.dynatrace.io",
         "aadDomains": ["mpliftrdt20210811outlook.onmicrosoft.com"], "provisioningState":
         "Succeeded"}}]}'
@@ -539,25 +807,27 @@ interactions:
       cache-control:
       - no-cache
       content-length:
-      - '780'
+      - '778'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Wed, 14 Sep 2022 08:39:29 GMT
+      - Fri, 18 Oct 2024 07:19:35 GMT
       expires:
       - '-1'
       pragma:
       - no-cache
       strict-transport-security:
       - max-age=31536000; includeSubDomains
-      transfer-encoding:
-      - chunked
-      vary:
-      - Accept-Encoding
+      x-cache:
+      - CONFIG_NOCACHE
       x-content-type-options:
       - nosniff
       x-ms-providerhub-traffic:
       - 'True'
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 4362EA33AC084231808FB41320B909FC Ref B: MAA201060514023 Ref C: 2024-10-18T07:19:35Z'
     status:
       code: 200
       message: OK

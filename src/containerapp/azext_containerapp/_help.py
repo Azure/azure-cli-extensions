@@ -1619,6 +1619,83 @@ helps['containerapp env java-component nacos update'] = """
               --configuration PropertyName1=Value1 PropertyName2=Value2
 """
 
+helps['containerapp env java-component gateway-for-spring'] = """
+    type: group
+    short-summary: Commands to manage the Gateway for Spring for the Container Apps environment.
+"""
+
+helps['containerapp env java-component gateway-for-spring create'] = """
+    type: command
+    short-summary: Command to create the Gateway for Spring.
+    examples:
+    - name: Create a Gateway for Spring with default configuration.
+      text: |
+          az containerapp env java-component gateway-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --route-yaml MyRouteYamlFilePath
+    - name: Create a Gateway for Spring with custom configurations.
+      text: |
+          az containerapp env java-component gateway-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --route-yaml MyRouteYamlFilePath \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+    - name: Create a Gateway for Spring with multiple replicas.
+      text: |
+          az containerapp env java-component gateway-for-spring create -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --route-yaml MyRouteYamlFilePath \\
+              --min-replicas 2 --max-replicas 2
+"""
+
+helps['containerapp env java-component gateway-for-spring delete'] = """
+    type: command
+    short-summary: Command to delete the Gateway for Spring.
+    examples:
+    - name: Delete a Gateway for Spring.
+      text: |
+          az containerapp env java-component gateway-for-spring delete -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component gateway-for-spring show'] = """
+    type: command
+    short-summary: Command to show the Gateway for Spring.
+    examples:
+    - name: Show Gateway for Spring.
+      text: |
+          az containerapp env java-component gateway-for-spring show -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment
+"""
+
+helps['containerapp env java-component gateway-for-spring update'] = """
+    type: command
+    short-summary: Command to update the Gateway for Spring.
+    examples:
+    - name: Update a Gateway for Spring with new routes.
+      text: |
+          az containerapp env java-component gateway-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --route-yaml MyRouteYamlFilePath
+    - name: Delete all configurations of the Gateway for Spring.
+      text: |
+          az containerapp env java-component gateway-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration
+    - name: Update a Gateway for Spring with custom configurations.
+      text: |
+          az containerapp env java-component gateway-for-spring update -g MyResourceGroup \\
+              -n MyJavaComponentName \\
+              --environment MyEnvironment \\
+              --configuration PropertyName1=Value1 PropertyName2=Value2
+"""
+
 # Container Apps Telemetry Commands
 
 helps['containerapp env telemetry'] = """

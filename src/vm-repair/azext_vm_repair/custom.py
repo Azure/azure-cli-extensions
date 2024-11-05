@@ -13,7 +13,7 @@ from knack.log import get_logger
 
 from azure.cli.command_modules.vm.custom import get_vm, _is_linux_os
 from azure.cli.command_modules.storage.storage_url_helpers import StorageResourceIdentifier
-from msrestazure.tools import parse_resource_id
+from azure.mgmt.core.tools import parse_resource_id
 from .exceptions import AzCommandError, SkuNotAvailableError, UnmanagedDiskCopyError, WindowsOsNotAvailableError, RunScriptNotFoundForIdError, SkuDoesNotSupportHyperV, ScriptReturnsError, SupportingResourceNotFoundError, CommandCanceledByUserError
 
 from .command_helper_class import command_helper
@@ -25,6 +25,7 @@ from .repair_utils import (
     _list_resource_ids_in_rg,
     _get_repair_resource_tag,
     _fetch_compatible_windows_os_urn,
+    _fetch_compatible_windows_os_urn_v2,
     _fetch_run_script_map,
     _fetch_run_script_path,
     _process_ps_parameters,
@@ -48,19 +49,18 @@ from .repair_utils import (
     _select_distro_linux_Arm64,
     _fetch_vm_security_profile_parameters,
     _fetch_osdisk_security_profile_parameters,
-    _fetch_compatible_windows_os_urn_v2
+    _fetch_compatible_windows_os_urn_v2,
+    _make_public_ip_name
 )
 from .exceptions import AzCommandError, RunScriptNotFoundForIdError, SupportingResourceNotFoundError, CommandCanceledByUserError
 logger = get_logger(__name__)
 
 
-def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False, encrypt_recovery_key=""):
+def create(cmd, vm_name, resource_group_name, repair_password=None, repair_username=None, repair_vm_name=None, copy_disk_name=None, repair_group_name=None, unlock_encrypted_vm=False, enable_nested=False, associate_public_ip=False, distro='ubuntu', yes=False, encrypt_recovery_key="", disable_trusted_launch=False):
     # Breaking change warning
     logger.warning('After the November 2024 release, if the image of the source Windows VM is not found, the \'az vm repair create\' command will default to use a 2022-Datacenter image for the repair VM.')
-    
     # log all the parameters not logging the bitlocker key
-    logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s', vm_name, resource_group_name, repair_password, repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes)
-
+    logger.debug('vm repair create command parameters: vm_name: %s, resource_group_name: %s, repair_password: %s, repair_username: %s, repair_vm_name: %s, copy_disk_name: %s, repair_group_name: %s, unlock_encrypted_vm: %s, enable_nested: %s, associate_public_ip: %s, distro: %s, yes: %s, disable_trusted_launch: %s', vm_name, resource_group_name, repair_password, repair_username, repair_vm_name, copy_disk_name, repair_group_name, unlock_encrypted_vm, enable_nested, associate_public_ip, distro, yes, disable_trusted_launch)
     # Init command helper object
     command = command_helper(logger, cmd, 'vm repair create')
     # Main command calling block
@@ -93,19 +93,24 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             else:
                 os_image_urn = _select_distro_linux(distro)
         else:
+            os_type = 'Windows'
             if encrypt_recovery_key:
+                # Call the new URN matching logic. 
                 os_image_urn = _fetch_compatible_windows_os_urn_v2(source_vm)
             else:
+                # Use the old default to 2022 image logic. 
                 os_image_urn = _fetch_compatible_windows_os_urn(source_vm)
-            os_type = 'Windows'
 
+        # Set public IP address for repair VM
+        public_ip_name = _make_public_ip_name(repair_vm_name, associate_public_ip)
+        
         # Set up base create vm command
         if is_linux:
             create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password} --public-ip-address {option} --custom-data {cloud_init_script}' \
-                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, option=associate_public_ip, cloud_init_script=_get_cloud_init_script())
+                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, option=public_ip_name, cloud_init_script=_get_cloud_init_script())
         else:
             create_repair_vm_command = 'az vm create -g {g} -n {n} --tag {tag} --image {image} --admin-username {username} --admin-password {password} --public-ip-address {option}' \
-                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, option=associate_public_ip)
+                .format(g=repair_group_name, n=repair_vm_name, tag=resource_tag, image=os_image_urn, username=repair_username, password=repair_password, option=public_ip_name)
 
         # Fetch VM size of repair VM
         sku = _fetch_compatible_sku(source_vm, enable_nested)
@@ -118,17 +123,25 @@ def create(cmd, vm_name, resource_group_name, repair_password=None, repair_usern
             zone = source_vm.zones[0]
             create_repair_vm_command += ' --zone {zone}'.format(zone=zone)
 
-        if encrypt_recovery_key:
-            # For confidential VM and Trusted VM security tags some of the SKU expects the right security type, secure_boot_enabled and vtpm_enabled
-            logger.debug('Fetching VM security profile...')
-            vm_security_params = _fetch_vm_security_profile_parameters(source_vm)
-            if vm_security_params:
-                create_repair_vm_command += vm_security_params
-
-            logger.debug('Fetching OS Disk security profile...')
-            osdisk_security_params = _fetch_osdisk_security_profile_parameters(source_vm)
-            if osdisk_security_params:
-                create_repair_vm_command += osdisk_security_params
+        if disable_trusted_launch:  
+            logger.debug('Set security-type to Standard...')  
+            create_repair_vm_command += ' --security-type Standard'  
+        else:  
+            # For confidential VM and Trusted VM security tags some of the SKU expects the right security type, secure_boot_enabled and vtpm_enabled 
+            
+            # Note: I don't think TL VMs have an envrypted disk, so I don't think they need the encrypt_recovery_key parameter. Needs to be investigated and reworked.
+            # TL VMs still have a security profile to copy over though.  
+            if encrypt_recovery_key:  
+                logger.debug('Fetching VM security profile...')  
+                vm_security_params = _fetch_vm_security_profile_parameters(source_vm)  
+                if vm_security_params:  
+                    create_repair_vm_command += vm_security_params  
+        # For confidential VM and Trusted Launch VM security tags on disks, the disk security profile needs to be brought over as well.  
+        if encrypt_recovery_key:  
+            logger.debug('Fetching OS Disk security profile...')  
+            osdisk_security_params = _fetch_osdisk_security_profile_parameters(source_vm)  
+            if osdisk_security_params:  
+                create_repair_vm_command += osdisk_security_params  
 
         # Create new resource group
         existing_rg = _check_existing_rg(repair_group_name)
@@ -336,13 +349,14 @@ def restore(cmd, vm_name, resource_group_name, disk_name=None, repair_vm_id=None
         # Fetch source and repair VM data
         source_vm = get_vm(cmd, resource_group_name, vm_name)
         is_managed = _uses_managed_disk(source_vm)
+        logger.info('Repair VM ID: %s', repair_vm_id)
         if repair_vm_id:
             logger.info('Repair VM ID: %s', repair_vm_id)
             repair_vm_id = parse_resource_id(repair_vm_id)
             repair_vm_name = repair_vm_id['name']
             repair_resource_group = repair_vm_id['resource_group']
         source_disk = None
-
+        
         # MANAGED DISK
         if is_managed:
             source_disk = source_vm.storage_profile.os_disk.name
@@ -435,6 +449,7 @@ def run(cmd, vm_name, resource_group_name, run_id=None, repair_vm_id=None, custo
 
         # If run_on_repair is False, then repair_vm is the source_vm (scripts run directly on source vm)
         if run_on_repair:
+            logger.info('Parsing repair vm id when running on repair VM.')
             repair_vm_id = parse_resource_id(repair_vm_id)
             repair_vm_name = repair_vm_id['name']
             repair_resource_group = repair_vm_id['resource_group']

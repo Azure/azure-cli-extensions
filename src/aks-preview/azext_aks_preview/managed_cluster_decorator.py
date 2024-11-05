@@ -2590,72 +2590,6 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         support_plan = self.raw_param.get("k8s_support_plan")
         return support_plan
 
-    def _get_uptime_sla(self, enable_validation: bool = False) -> bool:
-        """Internal function to obtain the value of uptime_sla.
-
-        Note: Overwritten in aks-preview to add support for the new option tier. Could be removed after updating
-        the dependency on core cli to 2.47.0.
-
-        This function supports the option of enable_validation. When enabled, if both uptime_sla and no_uptime_sla are
-        specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        # read the original value passed by the command
-        uptime_sla = self.raw_param.get("uptime_sla")
-
-        # In create mode, try to read the property value corresponding to the parameter from the `mc` object.
-        if self.decorator_mode == DecoratorMode.CREATE:
-            if (
-                self.mc and
-                self.mc.sku and
-                self.mc.sku.tier is not None
-            ):
-                uptime_sla = self.mc.sku.tier == "Standard"
-        # this parameter does not need dynamic completion
-        # validation
-        if enable_validation:
-            if uptime_sla and self._get_no_uptime_sla(enable_validation=False):
-                raise MutuallyExclusiveArgumentError(
-                    'Cannot specify "--uptime-sla" and "--no-uptime-sla" at the same time.'
-                )
-
-            if uptime_sla and self.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_FREE:
-                raise MutuallyExclusiveArgumentError(
-                    'Cannot specify "--uptime-sla" and "--tier free" at the same time.'
-                )
-
-        return uptime_sla
-
-    def _get_no_uptime_sla(self, enable_validation: bool = False) -> bool:
-        """Internal function to obtain the value of no_uptime_sla.
-
-        Note: Overwritten in aks-preview to add support for the new option tier. Could be removed after updating
-        the dependency on core cli to 2.47.0.
-
-        This function supports the option of enable_validation. When enabled, if both uptime_sla and no_uptime_sla are
-        specified, raise a MutuallyExclusiveArgumentError.
-
-        :return: bool
-        """
-        # read the original value passed by the command
-        no_uptime_sla = self.raw_param.get("no_uptime_sla")
-        # We do not support this option in create mode, therefore we do not read the value from `mc`.
-        # this parameter does not need dynamic completion
-        # validation
-        if enable_validation:
-            if no_uptime_sla and self._get_uptime_sla(enable_validation=False):
-                raise MutuallyExclusiveArgumentError(
-                    'Cannot specify "--uptime-sla" and "--no-uptime-sla" at the same time.'
-                )
-
-            if no_uptime_sla and self.get_tier() == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
-                raise MutuallyExclusiveArgumentError(
-                    'Cannot specify "--no-uptime-sla" and "--tier standard" at the same time.'
-                )
-
-        return no_uptime_sla
-
     def get_tier(self) -> str:
         """Obtain the value of tier.
 
@@ -2667,18 +2601,7 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         if not tier:
             return ""
 
-        tierStr = tier.lower()
-        if tierStr == CONST_MANAGED_CLUSTER_SKU_TIER_FREE and self._get_uptime_sla(enable_validation=False):
-            raise MutuallyExclusiveArgumentError(
-                'Cannot specify "--uptime-sla" and "--tier free" at the same time.'
-            )
-
-        if tierStr == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD and self._get_no_uptime_sla(enable_validation=False):
-            raise MutuallyExclusiveArgumentError(
-                'Cannot specify "--no-uptime-sla" and "--tier standard" at the same time.'
-            )
-
-        return tierStr
+        return tier.lower()
 
     def get_k8s_support_plan(self) -> Union[str, None]:
         """Obtain the value of kubernetes_support_plan.
@@ -3364,7 +3287,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
 
         return mc
 
-    def set_up_azure_container_storage(self, mc: ManagedCluster) -> ManagedCluster:
+    def set_up_azure_container_storage(self, mc: ManagedCluster) -> ManagedCluster:  # pylint: disable=too-many-locals
         """Set up azure container storage for the Managed Cluster object
         :return: ManagedCluster
         """
@@ -3395,16 +3318,15 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             if not mc.agent_pool_profiles:
                 raise UnknownError("Encountered an unexpected error while getting the agent pools from the cluster.")
             agentpool = mc.agent_pool_profiles[0]
-            agentpool_details = []
+            agentpool_details = {}
             pool_details = {}
-            pool_details["name"] = agentpool.name
             pool_details["vm_size"] = agentpool.vm_size
             pool_details["count"] = agentpool.count
             pool_details["os_type"] = agentpool.os_type
             pool_details["mode"] = agentpool.mode
             pool_details["node_taints"] = agentpool.node_taints
             pool_details["zoned"] = agentpool.availability_zones is not None
-            agentpool_details.append(pool_details)
+            agentpool_details[agentpool.name] = pool_details
             # Marking the only agentpool name as the valid nodepool for
             # installing Azure Container Storage during `az aks create`
             nodepool_list = agentpool.name
@@ -3418,6 +3340,16 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY,
                 CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD,
             )
+
+            vm_cache_generated = self.context.get_intermediate(
+                "vm_cache_generated",
+                default_value=False,
+            )
+
+            if not vm_cache_generated:
+                from azext_aks_preview.azurecontainerstorage._helpers import generate_vm_sku_cache_for_region
+                generate_vm_sku_cache_for_region(self.cmd.cli_ctx, self.context.get_location())
+                self.context.set_intermediate("vm_cache_generated", True, overwrite_exists=True)
 
             default_ephemeral_disk_volume_type = CONST_DISK_TYPE_EPHEMERAL_VOLUME_ONLY
             default_ephemeral_disk_nvme_perf_tier = CONST_EPHEMERAL_NVME_PERF_TIER_STANDARD
@@ -3521,7 +3453,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
             # passive Kind should always match sku.name
             mc.kind = "Base"
 
-        if self.context.get_uptime_sla() or tier == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
+        if tier == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
             mc.sku.tier = "Standard"
         if tier == CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM:
             mc.sku.tier = "Premium"
@@ -4224,7 +4156,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
             pool_option = self.context.raw_param.get("storage_pool_option")
             pool_sku = self.context.raw_param.get("storage_pool_sku")
             pool_size = self.context.raw_param.get("storage_pool_size")
-            agentpool_details = []
+            agentpool_details = {}
             from azext_aks_preview.azurecontainerstorage._helpers import get_extension_installed_and_cluster_configs
             (
                 is_extension_installed,
@@ -4242,6 +4174,16 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 mc.agent_pool_profiles,
             )
 
+            vm_cache_generated = self.context.get_intermediate(
+                "vm_cache_generated",
+                default_value=False,
+            )
+
+            if not vm_cache_generated:
+                from azext_aks_preview.azurecontainerstorage._helpers import generate_vm_sku_cache_for_region
+                generate_vm_sku_cache_for_region(self.cmd.cli_ctx, self.context.get_location())
+                self.context.set_intermediate("vm_cache_generated", True, overwrite_exists=True)
+
             if enable_azure_container_storage:
                 from azext_aks_preview.azurecontainerstorage._consts import (
                     CONST_ACSTOR_IO_ENGINE_LABEL_KEY,
@@ -4250,10 +4192,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 labelled_nodepool_arr = []
                 for agentpool in mc.agent_pool_profiles:
                     pool_details = {}
+                    pool_name = agentpool.name
                     pool_details["vm_size"] = agentpool.vm_size
                     pool_details["count"] = agentpool.count
-                    node_name = agentpool.name
-                    pool_details["name"] = node_name
                     pool_details["os_type"] = agentpool.os_type
                     pool_details["mode"] = agentpool.mode
                     pool_details["node_taints"] = agentpool.node_taints
@@ -4262,10 +4203,10 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         node_labels = agentpool.node_labels
                         if node_labels is not None and \
                            node_labels.get(CONST_ACSTOR_IO_ENGINE_LABEL_KEY) is not None and \
-                           node_name is not None:
-                            labelled_nodepool_arr.append(node_name)
+                           pool_name is not None:
+                            labelled_nodepool_arr.append(pool_name)
                         pool_details["node_labels"] = node_labels
-                    agentpool_details.append(pool_details)
+                    agentpool_details[pool_name] = pool_details
 
                 # Incase of a new installation, if the nodepool list is not defined
                 # then check for all the nodepools which are marked with acstor io-engine
@@ -4278,8 +4219,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                         if len(labelled_nodepool_arr) > 0:
                             nodepool_list = ','.join(labelled_nodepool_arr)
                         elif len(agentpool_details) == 1:
-                            pool_detail = agentpool_details[0]
-                            nodepool_list = pool_detail.get("name")
+                            nodepool_list = ','.join(agentpool_details.keys())
 
                 from azext_aks_preview.azurecontainerstorage._validators import (
                     validate_enable_azure_container_storage_params
@@ -5004,9 +4944,9 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         # Premium without LTS is ok (not vice versa)
         if tier == CONST_MANAGED_CLUSTER_SKU_TIER_PREMIUM:
             mc.sku.tier = "Premium"
-        if self.context.get_uptime_sla() or tier == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
+        if tier == CONST_MANAGED_CLUSTER_SKU_TIER_STANDARD:
             mc.sku.tier = "Standard"
-        if self.context.get_no_uptime_sla() or tier == CONST_MANAGED_CLUSTER_SKU_TIER_FREE:
+        if tier == CONST_MANAGED_CLUSTER_SKU_TIER_FREE:
             mc.sku.tier = "Free"
         # backfill the tier to "Free" if it's not set
         if mc.sku.tier is None:

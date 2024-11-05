@@ -4,9 +4,16 @@ Release History
 ===============
 upcoming
 ++++++
+* 'az containerapp create': Fix Role assignment error when the default Azure Container Registry could not be found
+* Upgrade api-version to 2024-10-02-preview
+* 'az containerapp create/update': `--yaml` support property pollingInterval and cooldownPeriod
+
+1.0.0b4
+++++++
 * 'az containerapp up': Support `--registry-identity`, `--system-assigned`, `--user-assigned`
 * 'az containerapp containerapp create/up': `--registry-server` and `--source` use managed identity for image pull by default
 * 'az containerapp containerapp create': `--registry-server` use managed identity for image pull by default. `--no-wait` will not take effect with system registry identity.
+* 'az containerapp env java-component gateway-for-spring': Support create/update/show/delete Gateway for spring.
 
 1.0.0b3
 ++++++
