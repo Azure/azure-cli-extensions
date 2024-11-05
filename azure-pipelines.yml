@@ -102,7 +102,7 @@ jobs:
         versionSpec: '$(python.version)'
     - template: .azure-pipelines/templates/azdev_setup.yml
     - bash: pip install wheel==0.30.0
-      displayName: 'PIP Install'
+      displayName: 'Install wheel==0.30.0'
     - bash: |
         #!/usr/bin/env bash
         set -ev
