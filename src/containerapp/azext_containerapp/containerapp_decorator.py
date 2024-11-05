@@ -67,7 +67,8 @@ from ._models import (
 from ._decorator_utils import (create_deserializer,
                                process_loaded_yaml,
                                load_yaml_file,
-                               infer_runtime_option)
+                               infer_runtime_option
+                               )
 from ._utils import parse_service_bindings, check_unique_bindings, is_registry_msi_system_environment, \
     env_has_managed_identity, create_acrpull_role_assignment_if_needed
 from ._validators import validate_create, validate_runtime
