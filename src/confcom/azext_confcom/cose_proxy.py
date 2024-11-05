@@ -8,7 +8,6 @@ import os
 import stat
 import platform
 from typing import List
-from zipfile import ZipFile
 import requests
 from azext_confcom.errors import eprint
 from azext_confcom.config import (
