@@ -186,13 +186,14 @@ class ContainerappSessionPoolTests(ScenarioTest):
     def test_containerapp_sessionpool_registry_identity(self, resource_group):
         location = TEST_LOCATION
         self.cmd('configure --defaults location={}'.format(location))
+
         user_identity_name = self.create_random_name(prefix='sp-msi1', length=24)
         identity_json = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
         user_identity_id = identity_json["id"]
         principal_id = identity_json["principalId"]
         
         env_name = self.create_random_name(prefix='aca-sp-env-registry', length=24)
-        self.cmd('containerapp env create -g {} -n {} --logs-destination none'.format(resource_group, env_name), expect_failure=False)
+        self.cmd('containerapp env create -g {} -n {} -l {} --logs-destination none'.format(resource_group, env_name, location), expect_failure=False)
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
         while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
             time.sleep(5)
@@ -216,14 +217,14 @@ class ContainerappSessionPoolTests(ScenarioTest):
         cpu = "0.5"
         memory = "1Gi"
         self.cmd(
-            f'containerapp sessionpool create -g {resource_group} -n {sessionpool_name_custom} -l {location} --container-type CustomContainer --environment {env_name} --ready-sessions {ready_instances} --image {image_name} --cpu {cpu} --memory {memory} --target-port 80 --registry-server {acr}.azurecr.io --registry-identity {user_identity_id} --mi-system-assigned',
+            f'containerapp sessionpool create -g {resource_group} -n {sessionpool_name_custom} -l {location} --container-type CustomContainer --environment {env_name} --ready-sessions {ready_instances} --image {image_name} --cpu {cpu} --memory {memory} --target-port 80 --registry-server {acr}.azurecr.io --registry-identity {user_identity_id}',
             checks=[
                 JMESPathCheck('name', sessionpool_name_custom),
                 JMESPathCheck('properties.containerType', "CustomContainer"),
                 JMESPathCheck('properties.customContainerTemplate.containers[0].image', image_name),
                 JMESPathCheck('properties.customContainerTemplate.ingress.targetPort', 80),
                 JMESPathCheck("properties.provisioningState", "Succeeded"),
-                JMESPathCheck("identity.type", "SystemAssigned, UserAssigned"),
+                JMESPathCheck("identity.type", "UserAssigned"),
                 JMESPathCheckExists(f'identity.userAssignedIdentities."{user_identity_id}"'),
                 JMESPathCheck("properties.customContainerTemplate.registryCredentials.identity", user_identity_id),
                 JMESPathCheck("properties.customContainerTemplate.registryCredentials.server", f'{acr}.azurecr.io'),
@@ -239,10 +240,15 @@ class ContainerappSessionPoolTests(ScenarioTest):
         self.cmd('containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom),
                  checks=[JMESPathCheck('properties.provisioningState', "Succeeded")])
 
-        # List Session Pools
-        sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
-        self.assertTrue(len(sessionpool_list) == 1)
-
+        # Update session pool
+        self.cmd(
+            f'containerapp sessionpool create -g {resource_group} -n {sessionpool_name_custom} -l {location} --container-type CustomContainer --environment {env_name} --ready-sessions {ready_instances} --image {image_name} --cpu {cpu} --memory {memory} --target-port 80 --registry-server {acr}.azurecr.io --registry-identity {user_identity_id} --mi-system-assigned',
+            checks=[
+                JMESPathCheck('name', sessionpool_name_custom),
+                JMESPathCheck("properties.provisioningState", "Succeeded"),
+                JMESPathCheck("identity.type", "SystemAssigned, UserAssigned")
+            ])
+        
         self.cmd('containerapp sessionpool delete -g {} -n {} --yes'.format(resource_group, sessionpool_name_custom))
 
         # List Session Pools

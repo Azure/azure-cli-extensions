@@ -228,7 +228,7 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         else:
             assign_user_identities = []
 
-        identity = self.get_argument_registry_identity()
+        identity = self.get_argument_registry_identity_id()
         if identity:
             if is_registry_msi_system(identity):
                 assign_system_identity=True
