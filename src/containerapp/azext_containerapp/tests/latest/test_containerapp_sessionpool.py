@@ -7,7 +7,7 @@ import time
 from azure.cli.command_modules.containerapp._utils import format_location
 
 from azure.cli.testsdk.scenario_tests import AllowLargeResponse
-from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
+from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck, JMESPathCheckExists)
 
 from .common import (TEST_LOCATION, STAGE_LOCATION, write_test_file,
                      clean_up_test_file,
@@ -129,7 +129,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
     def test_containerapp_sessionpool_registry(self, resource_group):
-        location = 'eastasia'
+        location = TEST_LOCATION
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='aca-sp-env-registry', length=24)
@@ -184,16 +184,15 @@ class ContainerappSessionPoolTests(ScenarioTest):
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer()
     def test_containerapp_sessionpool_registry_identity(self, resource_group):
-        location = 'eastasia'
+        location = TEST_LOCATION
         self.cmd('configure --defaults location={}'.format(location))
-
         user_identity_name = self.create_random_name(prefix='sp-msi1', length=24)
         identity_json = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
         user_identity_id = identity_json["id"]
         principal_id = identity_json["principalId"]
         
         env_name = self.create_random_name(prefix='aca-sp-env-registry', length=24)
-        self.cmd('containerapp env create -g {} -n {} --location {} --logs-destination none'.format(resource_group, env_name, location), expect_failure=False)
+        self.cmd('containerapp env create -g {} -n {} --logs-destination none'.format(resource_group, env_name), expect_failure=False)
         containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
         while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
             time.sleep(5)
@@ -222,11 +221,14 @@ class ContainerappSessionPoolTests(ScenarioTest):
                 JMESPathCheck('name', sessionpool_name_custom),
                 JMESPathCheck('properties.containerType', "CustomContainer"),
                 JMESPathCheck('properties.customContainerTemplate.containers[0].image', image_name),
-                JMESPathCheck('properties.customContainerTemplate.containers[0].resources.cpu', cpu),
-                JMESPathCheck('properties.customContainerTemplate.containers[0].resources.memory', memory),
-                JMESPathCheck('properties.customContainerTemplate.registryCredentials.server', f"{acr}.azurecr.io"),
-                JMESPathCheck('properties.customContainerTemplate.containers[0].resources.memory', memory),
                 JMESPathCheck('properties.customContainerTemplate.ingress.targetPort', 80),
+                JMESPathCheck("properties.provisioningState", "Succeeded"),
+                JMESPathCheck("identity.type", "SystemAssigned, UserAssigned"),
+                JMESPathCheckExists(f'identity.userAssignedIdentities."{user_identity_id}"'),
+                JMESPathCheck("properties.customContainerTemplate.registryCredentials.identity", user_identity_id),
+                JMESPathCheck("properties.customContainerTemplate.registryCredentials.server", f'{acr}.azurecr.io'),
+                JMESPathCheck("properties.customContainerTemplate.registryCredentials.username", None),
+                JMESPathCheck("properties.customContainerTemplate.registryCredentials.passwordSecretRef", None),
             ])
 
         sessionpool = self.cmd('containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom)).get_output_in_json()

@@ -28,6 +28,7 @@ from azure.cli.command_modules.containerapp._utils import (parse_env_var_flags, 
                                                            safe_set, safe_get, _ensure_identity_resource_id)
 from azure.cli.command_modules.containerapp._clients import ManagedEnvironmentClient
 from azure.cli.command_modules.containerapp._client_factory import handle_non_404_status_code_exception
+from azure.cli.command_modules.containerapp._utils import is_registry_msi_system
 from azure.cli.core.commands.client_factory import get_subscription_id
 
 from ._models import ManagedServiceIdentity, SessionPool as SessionPoolModel
@@ -227,8 +228,12 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         else:
             assign_user_identities = []
 
-        if self.get_argument_registry_identity_id():
-            assign_user_identities.append(self.get_argument_registry_identity_id())
+        identity = self.get_argument_registry_identity()
+        if identity:
+            if is_registry_msi_system(identity):
+                assign_system_identity=True
+            else:
+                assign_user_identities.append(self.get_argument_registry_identity_id())
 
         if assign_system_identity and assign_user_identities:
             identity_def["type"] = "SystemAssigned, UserAssigned"
