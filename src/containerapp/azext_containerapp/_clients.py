@@ -26,8 +26,8 @@ from knack.log import get_logger
 
 logger = get_logger(__name__)
 
-PREVIEW_API_VERSION = "2024-02-02-preview"
-AUG_PREVIEW_API_VERSION = "2024-08-02-preview"
+PREVIEW_API_VERSION = "2024-10-02-preview"
+SESSION_API_VERSION = "2024-02-02-preview"
 POLLING_TIMEOUT = 1500  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
@@ -552,7 +552,7 @@ class ConnectedEnvCertificateClient():
         return certs_list
 
     @classmethod
-    def create_or_update_certificate(cls, cmd, resource_group_name, name, certificate_name, certificate):
+    def create_or_update_certificate(cls, cmd, resource_group_name, name, certificate_name, certificate, no_wait=False):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/connectedEnvironments/{}/certificates/{}?api-version={}"
@@ -565,6 +565,13 @@ class ConnectedEnvCertificateClient():
             cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(certificate))
+        if no_wait:
+            return r.json()
+        elif r.status_code == 201:
+            operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
+            poll_status(cmd, operation_url)
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+
         return r.json()
 
     @classmethod
@@ -603,7 +610,7 @@ class ConnectedEnvDaprComponentClient():
     api_version = PREVIEW_API_VERSION
 
     @classmethod
-    def create_or_update(cls, cmd, resource_group_name, environment_name, name, dapr_component_envelope):
+    def create_or_update(cls, cmd, resource_group_name, environment_name, name, dapr_component_envelope, no_wait=False):
 
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
@@ -617,6 +624,13 @@ class ConnectedEnvDaprComponentClient():
             cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(dapr_component_envelope))
+
+        if no_wait:
+            return r.json()
+        elif r.status_code == 201:
+            operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
+            poll_status(cmd, operation_url)
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
 
         return r.json()
 
@@ -887,7 +901,7 @@ class BuildClient():
 
 
 class JavaComponentPreviewClient():
-    api_version = AUG_PREVIEW_API_VERSION
+    api_version = PREVIEW_API_VERSION
 
     @classmethod
     def create(cls, cmd, resource_group_name, environment_name, name, java_component_envelope, no_wait=False):
@@ -1004,7 +1018,7 @@ class JavaComponentPreviewClient():
 
 
 class SessionPoolPreviewClient():
-    api_version = PREVIEW_API_VERSION
+    api_version = SESSION_API_VERSION
 
     @classmethod
     def create(cls, cmd, resource_group_name, name, session_pool_envelope, no_wait=False):
@@ -1143,7 +1157,7 @@ class SessionPoolPreviewClient():
 
 
 class SessionCodeInterpreterPreviewClient():
-    api_version = PREVIEW_API_VERSION
+    api_version = SESSION_API_VERSION
 
     @classmethod
     def execute(cls, cmd, identifier, code_interpreter_envelope, session_pool_endpoint, no_wait=False):
@@ -1151,7 +1165,7 @@ class SessionCodeInterpreterPreviewClient():
         request_url = url_fmt.format(
             session_pool_endpoint,
             identifier,
-            PREVIEW_API_VERSION)
+            cls.api_version)
         logger.warning(request_url)
         logger.warning(code_interpreter_envelope)
         r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=json.dumps(code_interpreter_envelope), resource=SESSION_RESOURCE)
@@ -1171,7 +1185,7 @@ class SessionCodeInterpreterPreviewClient():
         request_url = url_fmt.format(
             session_pool_endpoint,
             identifier,
-            PREVIEW_API_VERSION)
+            cls.api_version)
 
         from azure.cli.core._profile import Profile
         profile = Profile(cli_ctx=cmd.cli_ctx)
@@ -1212,7 +1226,7 @@ class SessionCodeInterpreterPreviewClient():
             session_pool_endpoint,
             filename,
             identifier,
-            PREVIEW_API_VERSION)
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
         # print out the file content as bytes decoded as string
@@ -1227,7 +1241,7 @@ class SessionCodeInterpreterPreviewClient():
             session_pool_endpoint,
             filename,
             identifier,
-            PREVIEW_API_VERSION)
+            cls.api_version)
         logger.warning(request_url)
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
 
@@ -1240,7 +1254,7 @@ class SessionCodeInterpreterPreviewClient():
             session_pool_endpoint,
             filename,
             identifier,
-            PREVIEW_API_VERSION)
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "DELETE", request_url, resource=SESSION_RESOURCE)
 
@@ -1262,7 +1276,7 @@ class SessionCodeInterpreterPreviewClient():
             session_pool_endpoint,
             identifier,
             path,
-            PREVIEW_API_VERSION)
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
         return r.json()

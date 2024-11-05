@@ -32,13 +32,15 @@ class ActiveRevisionsMode(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
     .. raw:: html
 
-       <list><item>Multiple: multiple revisions can be active.</item><item>Single: Only one
-    revision can be active at a time. Revision weights can not be used in this mode. If no value if
-    provided, this is the default.</item></list>.
+       <list><item>Single: Only one revision can be active at a time. Traffic weights cannot be
+    used. This is the default.</item><item>Multiple: Multiple revisions can be active, including
+    optional traffic weights and labels.</item><item>Labels: Only revisions with labels are active.
+    Traffic weights can be applied to labels.</item></list>.
     """
 
     MULTIPLE = "Multiple"
     SINGLE = "Single"
+    LABELS = "Labels"
 
 
 class Affinity(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -69,6 +71,7 @@ class BindingType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
 
     DISABLED = "Disabled"
     SNI_ENABLED = "SniEnabled"
+    AUTO = "Auto"
 
 
 class BuilderProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -129,6 +132,15 @@ class CheckNameAvailabilityReason(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     ALREADY_EXISTS = "AlreadyExists"
 
 
+class ConnectedEnvironmentDaprComponentProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Provisioning state of the Connected Environment Dapr Component."""
+
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    CANCELED = "Canceled"
+    IN_PROGRESS = "InProgress"
+
+
 class ConnectedEnvironmentProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Provisioning state of the Kubernetes Environment."""
 
@@ -140,6 +152,15 @@ class ConnectedEnvironmentProvisioningState(str, Enum, metaclass=CaseInsensitive
     INFRASTRUCTURE_SETUP_IN_PROGRESS = "InfrastructureSetupInProgress"
     INFRASTRUCTURE_SETUP_COMPLETE = "InfrastructureSetupComplete"
     SCHEDULED_FOR_DELETE = "ScheduledForDelete"
+
+
+class ConnectedEnvironmentStorageProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Provisioning state of the storage."""
+
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    CANCELED = "Canceled"
+    IN_PROGRESS = "InProgress"
 
 
 class ContainerAppContainerRunningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -166,6 +187,21 @@ class ContainerAppReplicaRunningState(str, Enum, metaclass=CaseInsensitiveEnumMe
     RUNNING = "Running"
     NOT_RUNNING = "NotRunning"
     UNKNOWN = "Unknown"
+
+
+class ContainerAppRunningStatus(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Running status of the Container App."""
+
+    PROGRESSING = "Progressing"
+    """Container App is transitioning between Stopped and Running states."""
+    RUNNING = "Running"
+    """Container App is in Running state."""
+    STOPPED = "Stopped"
+    """Container App is in Stopped state."""
+    SUSPENDED = "Suspended"
+    """Container App Job is in Suspended state."""
+    READY = "Ready"
+    """Container App Job is in Ready state."""
 
 
 class ContainerType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -258,6 +294,18 @@ class ForwardProxyConvention(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     CUSTOM = "Custom"
 
 
+class HttpRouteProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """The current provisioning state."""
+
+    SUCCEEDED = "Succeeded"
+    FAILED = "Failed"
+    CANCELED = "Canceled"
+    WAITING = "Waiting"
+    UPDATING = "Updating"
+    DELETING = "Deleting"
+    PENDING = "Pending"
+
+
 class IdentitySettingsLifeCycle(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     """Use to select the lifecycle stages of a Container App during which the Managed Identity should
     be available.
@@ -321,6 +369,7 @@ class JavaComponentType(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     SPRING_BOOT_ADMIN = "SpringBootAdmin"
     SPRING_CLOUD_EUREKA = "SpringCloudEureka"
     SPRING_CLOUD_CONFIG = "SpringCloudConfig"
+    SPRING_CLOUD_GATEWAY = "SpringCloudGateway"
     NACOS = "Nacos"
 
 
@@ -344,6 +393,14 @@ class JobProvisioningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
     FAILED = "Failed"
     CANCELED = "Canceled"
     DELETING = "Deleting"
+
+
+class JobRunningState(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Current running state of the job."""
+
+    READY = "Ready"
+    PROGRESSING = "Progressing"
+    SUSPENDED = "Suspended"
 
 
 class Kind(str, Enum, metaclass=CaseInsensitiveEnumMeta):
@@ -533,6 +590,20 @@ class UnauthenticatedClientActionV2(str, Enum, metaclass=CaseInsensitiveEnumMeta
     ALLOW_ANONYMOUS = "AllowAnonymous"
     RETURN401 = "Return401"
     RETURN403 = "Return403"
+
+
+class WeekDay(str, Enum, metaclass=CaseInsensitiveEnumMeta):
+    """Day of the week when a managed environment can be patched."""
+
+    MONDAY = "Monday"
+    TUESDAY = "Tuesday"
+    WEDNESDAY = "Wednesday"
+    THURSDAY = "Thursday"
+    FRIDAY = "Friday"
+    SATURDAY = "Saturday"
+    SUNDAY = "Sunday"
+    EVERYDAY = "Everyday"
+    WEEKEND = "Weekend"
 
 
 class WorkflowHealthState(str, Enum, metaclass=CaseInsensitiveEnumMeta):

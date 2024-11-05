@@ -271,7 +271,7 @@ def create_extension_and_custom_location(test_cls, resource_group, connected_clu
         connected_cluster_id = connected_cluster.get('id')
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus"
+            location = "eastasia"
         extension = test_cls.cmd(f'az k8s-extension create'
                                  f' --resource-group {resource_group}'
                                  f' --name containerapp-ext'
@@ -386,7 +386,7 @@ def create_and_verify_containerapp_create_and_update(
         # Ensure that the Container App environment is created
         env_id = None
         if env_name is None:
-            env_id = prepare_containerapp_env_for_app_e2e_tests(test_cls)
+            env_id = prepare_containerapp_env_for_app_e2e_tests(test_cls, location=location)
             env_name = parse_resource_id(env_id).get('name')
 
         if app_name is None:
