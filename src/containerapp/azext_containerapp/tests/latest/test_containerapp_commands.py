@@ -2601,6 +2601,8 @@ properties:
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
             JMESPathCheck("properties.template.scale.minReplicas", 1),
             JMESPathCheck("properties.template.scale.maxReplicas", 3),
+            JMESPathCheck("properties.template.scale.cooldownPeriod", 300),  # default value from RP
+            JMESPathCheck("properties.template.scale.pollingInterval", 30),  # default value from RP
             JMESPathCheck("properties.template.scale.rules[0].name", "http-scale-rule"),
             JMESPathCheck("properties.template.scale.rules[0].http.metadata.concurrentRequests", "50"),
             JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "value"),
@@ -2628,6 +2630,10 @@ properties:
                                               - external: false
                                                 targetPort: 8080
                                                 exposedPort: 1234
+                                          template:
+                                            scale:
+                                              cooldownPeriod: 60
+                                              pollingInterval: 301
                                         """
 
         write_test_file(containerapp_file_name, containerapp_yaml_text)
@@ -2640,6 +2646,23 @@ properties:
             JMESPathCheck("properties.configuration.ingress.additionalPortMappings[1].external", False),
             JMESPathCheck("properties.configuration.ingress.additionalPortMappings[1].targetPort", 8080),
             JMESPathCheck("properties.configuration.ingress.additionalPortMappings[1].exposedPort", 1234),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange",
+                          "1.1.1.1/10"),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
+            JMESPathCheck("properties.environmentId", containerapp_env["id"]),
+            JMESPathCheck("properties.template.terminationGracePeriodSeconds", 90),
+            JMESPathCheck("properties.template.containers[0].name", "nginx"),
+            JMESPathCheck("properties.template.scale.minReplicas", 1),
+            JMESPathCheck("properties.template.scale.maxReplicas", 3),
+            JMESPathCheck("properties.template.scale.cooldownPeriod", 60),
+            JMESPathCheck("properties.template.scale.pollingInterval", 301),
+            JMESPathCheck("properties.template.scale.rules[0].name", "http-scale-rule"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].triggerParameter", "trigger"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].secretRef", "secretref"),
+            JMESPathCheck("properties.template.scale.rules[1].name", "asb-rule"),
+            JMESPathCheck("properties.template.scale.rules[1].custom.type", "azure-servicebus"),
+            JMESPathCheck("properties.template.scale.rules[1].custom.identity", user_identity_id),
         ])
         clean_up_test_file(containerapp_file_name)
 
