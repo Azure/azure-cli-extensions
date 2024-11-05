@@ -125,6 +125,9 @@ class Create(AAZCommand):
             options=["endpoints"],
             help="The list of endpoint dependencies.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         endpoints = cls._args_schema.additional_egress_endpoints.Element.endpoints

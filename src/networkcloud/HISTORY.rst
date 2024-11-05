@@ -3,6 +3,9 @@
 Release History
 ===============
 
+2.0.0b6
+++++++++
+* This is a maintenace update to the internal auto-generation tools (3.0.0) to ensure compatibility with the Python 3.12. 
 
 2.0.0b5
 ++++++++

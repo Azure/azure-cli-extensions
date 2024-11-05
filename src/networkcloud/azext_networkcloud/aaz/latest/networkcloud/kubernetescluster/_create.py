@@ -133,6 +133,9 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="The agent pools that are created with this Kubernetes cluster for running critical system services and workloads. This data in this field is only used during creation, and the field will be empty following the creation of the Kubernetes Cluster. After creation, the management of agent pools is done using the agentPools sub-resource.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _args_schema.kubernetes_version = AAZStrArg(
             options=["--kubernetes-version"],
@@ -157,6 +160,9 @@ class Create(AAZCommand):
             options=["admin-group-object-ids"],
             help="The list of Azure Active Directory group object IDs that will have an administrative role on the Kubernetes cluster.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
 
         admin_group_object_ids = cls._args_schema.aad_configuration.admin_group_object_ids
