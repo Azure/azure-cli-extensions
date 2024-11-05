@@ -1507,12 +1507,10 @@ def executing_diagnoser_job(
             pod_name = each_pod.metadata.name
             if pod_name.startswith(job_name):
                 # Creating a text file with the name of the container and adding that containers logs in it
-                diagnoser_container_log = (
-                    corev1_api_instance.read_namespaced_pod_log(
-                        name=pod_name,
-                        container="azure-arc-diagnoser-container",
-                        namespace="azure-arc",
-                    )
+                diagnoser_container_log = corev1_api_instance.read_namespaced_pod_log(
+                    name=pod_name,
+                    container="azure-arc-diagnoser-container",
+                    namespace="azure-arc",
                 )
 
         # Clearing all the resources after fetching the diagnoser container logs

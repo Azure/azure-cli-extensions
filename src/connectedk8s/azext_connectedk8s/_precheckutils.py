@@ -259,7 +259,8 @@ def executing_cluster_diagnostic_checks_job(
                         logger.debug("Cluster Diagnostic Checks job Failed")
                         w.stop()
                         break
-                    elif job["object"].status.conditions is not None:
+
+                    if job["object"].status.conditions is not None:
                         is_complete = any(
                             condition.type == "Complete"
                             for condition in job["object"].status.conditions
