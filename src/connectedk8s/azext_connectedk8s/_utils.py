@@ -144,8 +144,10 @@ def get_chart_path(
             shutil.rmtree(chart_export_path)
     except OSError:
         logger.warning(
-            f"Unable to cleanup the {chart_folder_name} already present on the machine. In case of failure, please cleanup "
-            f"the directory '{chart_export_path}' and try again."
+            "Unable to cleanup the %s already present on the machine. In case of failure, please cleanup "
+            "the directory '%s' and try again.",
+            chart_folder_name,
+            chart_export_path,
         )
 
     pull_helm_chart(
@@ -1388,9 +1390,10 @@ def try_list_node_fix():
             self._names = names
 
         V1ContainerImage.names = V1ContainerImage.names.setter(names)
-    except Exception as ex:
+    except Exception:
         logger.debug(
-            f"Error while trying to monkey patch the fix for list_node(): {ex}"
+            "Error while trying to monkey patch the fix for list_node()",
+            exc_info=True,
         )
 
 
@@ -1432,7 +1435,8 @@ def check_provider_registrations(
 
             telemetry.set_user_fault()
             logger.warning(
-                f"{consts.Kubernetes_Configuration_Provider_Namespace} provider is not registered"
+                "%s provider is not registered",
+                consts.Kubernetes_Configuration_Provider_Namespace,
             )
         if is_gateway_enabled:
             hc_registration_state = rp_client.get(
@@ -1451,10 +1455,8 @@ def check_provider_registrations(
                 raise ValidationError(err_msg)
     except ValidationError as e:
         raise e
-    except Exception as ex:
-        logger.warning(
-            f"Couldn't check the required provider's registration status. Error: {ex}"
-        )
+    except Exception:
+        logger.exception("Couldn't check the required provider's registration status")
 
 
 def can_create_clusterrolebindings():
@@ -1485,9 +1487,10 @@ def validate_node_api_response(api_instance, node_api_response):
         try:
             node_api_response = api_instance.list_node()
             return node_api_response
-        except Exception as ex:
+        except Exception:
             logger.debug(
-                f"Error occcured while listing nodes on this kubernetes cluster: {ex}"
+                "Error occcured while listing nodes on this kubernetes cluster:",
+                exc_info=True,
             )
             return None
     else:
