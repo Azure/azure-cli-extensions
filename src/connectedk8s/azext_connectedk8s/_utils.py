@@ -361,14 +361,15 @@ def check_cluster_DNS(
                 summary="DNS check failed in the cluster",
             )
             return consts.Diagnostic_Check_Failed, storage_space_available
-        else:
-            if storage_space_available:
-                dns_check_path = os.path.join(filepath_with_timestamp, consts.DNS_Check)
-                with open(dns_check_path, "w+") as dns:
-                    dns.write(
-                        formatted_dns_log + "\nCluster DNS check passed successfully."
-                    )
-            return consts.Diagnostic_Check_Passed, storage_space_available
+
+        if storage_space_available:
+            dns_check_path = os.path.join(filepath_with_timestamp, consts.DNS_Check)
+            with open(dns_check_path, "w+") as dns:
+                dns.write(
+                    formatted_dns_log + "\nCluster DNS check passed successfully."
+                )
+
+        return consts.Diagnostic_Check_Passed, storage_space_available
 
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
@@ -508,40 +509,40 @@ def check_cluster_outbound_connectivity(
                             "passed successfully."
                         )
                 return consts.Diagnostic_Check_Passed, storage_space_available
-            else:
-                outbound_connectivity_failed_warning_message = (
-                    "Error: We found an issue with outbound network connectivity from the cluster to the endpoints "
-                    "required for onboarding.\nPlease ensure to meet the following network requirements "
-                    + consts.Doc_Network_Requirements_Url
-                    + "\nIf your cluster is behind an outbound proxy server, "
-                    " please ensure that you have passed proxy parameters during the onboarding of your cluster.\n"
-                    "For more details visit "
-                    + consts.Doc_Quick_Start_Outbound_Proxy_Url
-                    + " \n"
-                )
-                logger.warning(outbound_connectivity_failed_warning_message)
-                telemetry.set_user_fault()
-                diagnoser_output.append(outbound_connectivity_failed_warning_message)
-                if storage_space_available:
-                    outbound_connectivity_check_path = os.path.join(
-                        filepath_with_timestamp,
-                        consts.Outbound_Network_Connectivity_Check_for_onboarding,
-                    )
-                    with open(outbound_connectivity_check_path, "w+") as outbound:
-                        outbound.write(
-                            "Response code "
-                            + Onboarding_Precheck_Endpoint_outbound_connectivity_response
-                            + "\nWe found an issue with Outbound network connectivity from the cluster "
-                            "required for onboarding."
-                        )
-                telemetry.set_exception(
-                    exception="Outbound network connectivity check failed for onboarding",
-                    fault_type=consts.Outbound_Connectivity_Check_Failed_For_Onboarding,
-                    summary="Outbound network connectivity check for onboarding failed in the cluster",
-                )
-                return consts.Diagnostic_Check_Failed, storage_space_available
 
-        elif outbound_connectivity_check_for == "troubleshoot":
+            outbound_connectivity_failed_warning_message = (
+                "Error: We found an issue with outbound network connectivity from the cluster to the endpoints "
+                "required for onboarding.\nPlease ensure to meet the following network requirements "
+                + consts.Doc_Network_Requirements_Url
+                + "\nIf your cluster is behind an outbound proxy server, "
+                " please ensure that you have passed proxy parameters during the onboarding of your cluster.\n"
+                "For more details visit "
+                + consts.Doc_Quick_Start_Outbound_Proxy_Url
+                + " \n"
+            )
+            logger.warning(outbound_connectivity_failed_warning_message)
+            telemetry.set_user_fault()
+            diagnoser_output.append(outbound_connectivity_failed_warning_message)
+            if storage_space_available:
+                outbound_connectivity_check_path = os.path.join(
+                    filepath_with_timestamp,
+                    consts.Outbound_Network_Connectivity_Check_for_onboarding,
+                )
+                with open(outbound_connectivity_check_path, "w+") as outbound:
+                    outbound.write(
+                        "Response code "
+                        + Onboarding_Precheck_Endpoint_outbound_connectivity_response
+                        + "\nWe found an issue with Outbound network connectivity from the cluster "
+                        "required for onboarding."
+                    )
+            telemetry.set_exception(
+                exception="Outbound network connectivity check failed for onboarding",
+                fault_type=consts.Outbound_Connectivity_Check_Failed_For_Onboarding,
+                summary="Outbound network connectivity check for onboarding failed in the cluster",
+            )
+            return consts.Diagnostic_Check_Failed, storage_space_available
+
+        if outbound_connectivity_check_for == "troubleshoot":
             outbound_connectivity_response = outbound_connectivity_check_log[-1:-4:-1]
             outbound_connectivity_response = outbound_connectivity_response[::-1]
             if (
@@ -1331,8 +1332,9 @@ def flatten(dd, separator=".", prefix=""):
                 for kk, vv in dd.items()
                 for k, v in flatten(vv, separator, kk).items()
             }
-        else:
-            return {prefix: dd}
+
+        return {prefix: dd}
+
     except Exception as e:
         telemetry.set_exception(
             exception=e,
@@ -1542,9 +1544,10 @@ def get_metadata(arm_endpoint, api_version="2022-09-01"):
         response = session.get(metadata_endpoint)
         if response.status_code == 200:
             return response.json()
-        else:
-            msg = f"ARM metadata endpoint '{metadata_endpoint}' returned status code {response.status_code}."
-            raise HttpResponseError(msg)
+
+        msg = f"ARM metadata endpoint '{metadata_endpoint}' returned status code {response.status_code}."
+        raise HttpResponseError(msg)
+
     except Exception as err:
         msg = f"Failed to request ARM metadata {metadata_endpoint}."
         print(msg, file=sys.stderr)
