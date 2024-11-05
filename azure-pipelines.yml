@@ -101,7 +101,7 @@ jobs:
       inputs:
         versionSpec: '$(python.version)'
     - template: .azure-pipelines/templates/azdev_setup.yml
-    - bash: pip install wheel==0.30.0 setuptools==70.0.0
+    - bash: pip install wheel==0.30.0
       displayName: 'PIP Install'
     - bash: |
         #!/usr/bin/env bash
