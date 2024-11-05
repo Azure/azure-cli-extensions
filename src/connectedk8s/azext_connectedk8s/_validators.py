@@ -25,8 +25,9 @@ def example_name_or_id_validator(cmd, namespace):
 def validate_private_link_properties(namespace):
     if not namespace.enable_private_link and namespace.private_link_scope_resource_id:
         err_msg = (
-            "Conflicting private link parameters received. The parameter '--private-link-scope-resource-id' "
-            "should not be set if '--enable-private-link' is passed as null or False."
+            "Conflicting private link parameters received. The parameter "
+            "'--private-link-scope-resource-id' should not be set if '--enable-private-link' is "
+            "passed as null or False."
         )
         raise ArgumentUsageError(err_msg)
     if (
@@ -34,8 +35,8 @@ def validate_private_link_properties(namespace):
         and not namespace.private_link_scope_resource_id
     ):
         err_msg = (
-            "The parameter '--private-link-scope-resource-id' was not provided. It is mandatory to pass this "
-            "parameter for enabling private link on the connected cluster resource."
+            "The parameter '--private-link-scope-resource-id' was not provided. It is mandatory "
+            "to pass this parameter for enabling private link on the connected cluster resource."
         )
         raise ArgumentUsageError(err_msg)
 
@@ -76,5 +77,6 @@ def validate_workload_identity_updates(namespace):
         and namespace.disable_workload_identity is True
     ):
         raise ArgumentUsageError(
-            "Cannot specify both --enable-workload-identity and --disable-workload-identity simultaneously."
+            "Cannot specify both --enable-workload-identity and --disable-workload-identity "
+            "simultaneously."
         )
