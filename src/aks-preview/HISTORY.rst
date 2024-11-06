@@ -2,7 +2,6 @@
 
 Release History
 ===============
-* [BREAKING CHANGE]: `az aks trustedaccess rolebinding create`: Remove deprecated `-r` and `-s` options
 
 Guidance
 ++++++++
