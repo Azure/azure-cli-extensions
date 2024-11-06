@@ -18,6 +18,10 @@ To release a new version, please select a new version number (usually plus 1 to 
 * [BREAKING CHANGE]: Remove advanced container networking service (acns) enablement preview parameters `--enable-advanced-network-observability`, `--disable-advanced-network-observability`, `--enable-fqdn-policy`, `--disable-fqdn-policy`, and `--advanced-networking-observability-tls-management` from `az aks create/update` command.
 * Add advanced container networking service (acns) enablement GA parameters `--disable-acns-observability` and `--disable-acns-security` to `az aks create/update` command.
 
+12.0.0b1
++++++++
+* [BREAKING CHANGE]: `az aks trustedaccess rolebinding create`: Remove deprecated `-r` and `-s` options
+
 11.0.0b1
 +++++++
 * [BREAKING CHANGE]: `az aks create`: Remove AAD-legacy properties `--aad-client-app-id`, `--aad-server-app-id` and `--aad-server-app-secret` when creating cluster.
