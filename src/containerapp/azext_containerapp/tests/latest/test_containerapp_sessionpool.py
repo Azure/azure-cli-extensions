@@ -217,19 +217,19 @@ class ContainerappSessionPoolTests(ScenarioTest):
         cpu = "0.5"
         memory = "1Gi"
         self.cmd(
-            f'containerapp sessionpool create -g {resource_group} -n {sessionpool_name_custom} -l {location} --container-type CustomContainer --environment {env_name} --ready-sessions {ready_instances} --image {image_name} --cpu {cpu} --memory {memory} --target-port 80 --registry-server {acr}.azurecr.io --registry-identity {user_identity_id}',
+            f'containerapp sessionpool create -g {resource_group} -n {sessionpool_name_custom} -l {location} --container-type CustomContainer --environment {env_name} --ready-sessions {ready_instances} --image {image_name} --cpu {cpu} --memory {memory} --target-port 80 --registry-server {acr}.azurecr.io --registry-identity {user_identity_id} --mi-system-assigned',
             checks=[
                 JMESPathCheck('name', sessionpool_name_custom),
                 JMESPathCheck('properties.containerType', "CustomContainer"),
                 JMESPathCheck('properties.customContainerTemplate.containers[0].image', image_name),
                 JMESPathCheck('properties.customContainerTemplate.ingress.targetPort', 80),
                 JMESPathCheck("properties.provisioningState", "Succeeded"),
-                JMESPathCheck("identity.type", "UserAssigned"),
+                JMESPathCheck("identity.type", "SystemAssigned, UserAssigned"),
                 JMESPathCheckExists(f'identity.userAssignedIdentities."{user_identity_id}"'),
                 JMESPathCheck("properties.customContainerTemplate.registryCredentials.identity", user_identity_id),
                 JMESPathCheck("properties.customContainerTemplate.registryCredentials.server", f'{acr}.azurecr.io'),
                 JMESPathCheck("properties.customContainerTemplate.registryCredentials.username", None),
-                JMESPathCheck("properties.customContainerTemplate.registryCredentials.passwordSecretRef", None),
+                JMESPathCheck("properties.customContainerTemplate.registryCredentials.passwordSecretRef", None)
             ])
 
         sessionpool = self.cmd('containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom)).get_output_in_json()
@@ -240,13 +240,15 @@ class ContainerappSessionPoolTests(ScenarioTest):
         self.cmd('containerapp sessionpool show -g {} -n {}'.format(resource_group, sessionpool_name_custom),
                  checks=[JMESPathCheck('properties.provisioningState', "Succeeded")])
 
-        # Update session pool
+        # Update session pool to remove SystemAssigned
         self.cmd(
-            f'containerapp sessionpool create -g {resource_group} -n {sessionpool_name_custom} -l {location} --container-type CustomContainer --environment {env_name} --ready-sessions {ready_instances} --image {image_name} --cpu {cpu} --memory {memory} --target-port 80 --registry-server {acr}.azurecr.io --registry-identity {user_identity_id} --mi-system-assigned',
+            f'containerapp sessionpool create -g {resource_group} -n {sessionpool_name_custom} -l {location} --container-type CustomContainer --environment {env_name} --ready-sessions {ready_instances} --image {image_name} --cpu {cpu} --memory {memory} --target-port 80 --registry-server {acr}.azurecr.io --registry-identity {user_identity_id}',
             checks=[
                 JMESPathCheck('name', sessionpool_name_custom),
                 JMESPathCheck("properties.provisioningState", "Succeeded"),
-                JMESPathCheck("identity.type", "SystemAssigned, UserAssigned")
+                JMESPathCheck("identity.type", "UserAssigned"),
+                JMESPathCheck("properties.managedIdentitySettings[0].identity", user_identity_id),
+                JMESPathCheck("properties.managedIdentitySettings[0].lifecycle", "None"),
             ])
         
         self.cmd('containerapp sessionpool delete -g {} -n {} --yes'.format(resource_group, sessionpool_name_custom))

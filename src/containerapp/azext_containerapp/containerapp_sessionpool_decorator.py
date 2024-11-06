@@ -204,7 +204,7 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         if self.get_argument_system_assigned():
             managed_identity_setting = {
                 "identity": "system",
-                "lifecycle": "main"
+                "lifecycle": "Main"
             }
             managed_identity_settings.append(managed_identity_setting)
 
@@ -212,7 +212,7 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
             for x in self.get_argument_user_assigned():
                 managed_identity_setting = {
                     "identity": x.lower(),
-                    "lifecycle": "main"
+                    "lifecycle": "Main"
                 }
                 managed_identity_settings.append(managed_identity_setting)
         if managed_identity_settings:
