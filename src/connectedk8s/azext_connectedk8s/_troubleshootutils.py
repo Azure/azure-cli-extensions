@@ -33,7 +33,6 @@ def fetch_kubectl_cluster_info(
     kube_context,
 ):
     print(f"Step: {get_utctimestring()}: Capture cluster-info logs")
-    global diagnoser_output
     try:
         # If storage space available then only store the azure-arc events
         if storage_space_available:
@@ -67,6 +66,7 @@ def fetch_kubectl_cluster_info(
                     + error_cluster_info.decode("ascii"),
                 )
                 return consts.Diagnostic_Check_Failed, storage_space_available
+
             output_cluster_info_decoded = output_cluster_info.decode()
             # Converting the output to list and remove the extra message(To further debug and diagnose cluster problems,
             #  use 'kubectl cluster-info dump'.) that gets printed
@@ -81,9 +81,8 @@ def fetch_kubectl_cluster_info(
             )
             with open(cluster_info_path, "w+") as cluster_info:
                 cluster_info.write(str(formatted_cluster_info) + "\n")
-            return consts.Diagnostic_Check_Passed, storage_space_available
-        else:
-            return consts.Diagnostic_Check_Passed, storage_space_available
+
+        return consts.Diagnostic_Check_Passed, storage_space_available
 
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
@@ -133,7 +132,6 @@ def fetch_connected_cluster_resource(
     filepath_with_timestamp, connected_cluster, storage_space_available
 ):
     print(f"Step: {get_utctimestring()}: Fetch connected cluster resource")
-    global diagnoser_output
     try:
         # Path to add the connected_cluster resource
         connected_cluster_resource_file_path = os.path.join(
@@ -215,7 +213,6 @@ def retrieve_arc_agents_logs(
     corev1_api_instance, filepath_with_timestamp, storage_space_available
 ):
     print(f"Step: {get_utctimestring()}: Retrieve arc agents logs")
-    global diagnoser_output
     try:
         if storage_space_available:
             # To retrieve all of the arc agents pods that are present in the Cluster
@@ -306,7 +303,6 @@ def retrieve_arc_agents_event_logs(
     kube_context,
 ):
     print(f"Step: {get_utctimestring()}: Retrieve arc agents event logs")
-    global diagnoser_output
     try:
         # If storage space available then only store the azure-arc events
         if storage_space_available:
@@ -358,9 +354,8 @@ def retrieve_arc_agents_event_logs(
                     # Adding all the individual events
                     for events in events_json["items"]:
                         event_log.write(str(events) + "\n")
-            return consts.Diagnostic_Check_Passed, storage_space_available
-        else:
-            return consts.Diagnostic_Check_Passed, storage_space_available
+
+        return consts.Diagnostic_Check_Passed, storage_space_available
 
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
@@ -410,7 +405,6 @@ def retrieve_deployments_logs(
     appv1_api_instance, filepath_with_timestamp, storage_space_available
 ):
     print(f"Step: {get_utctimestring()}: Retrieve deployments logs")
-    global diagnoser_output
     try:
         if storage_space_available:
             # Creating new Deployment Logs folder in the given timestamp folder
@@ -484,7 +478,6 @@ def retrieve_arc_workload_identity_pod_logs(
     corev1_api_instance, filepath_with_timestamp, storage_space_available
 ):
     print(f"Step: {get_utctimestring()}: Retrieve arc-workload-identity pod logs")
-    global diagnoser_output
     try:
         if storage_space_available:
             # To retrieve all of the arc agents pods that are present in the Cluster
@@ -583,7 +576,6 @@ def retrieve_arc_workload_identity_event_logs(
     kube_context,
 ):
     print(f"Step: {get_utctimestring()}: Retrieve arc agents event logs")
-    global diagnoser_output
     try:
         # If storage space available then only store the azure-arc events
         if storage_space_available:
@@ -635,9 +627,8 @@ def retrieve_arc_workload_identity_event_logs(
                     # Adding all the individual events
                     for events in events_json["items"]:
                         event_log.write(str(events) + "\n")
-            return consts.Diagnostic_Check_Passed, storage_space_available
-        else:
-            return consts.Diagnostic_Check_Passed, storage_space_available
+
+        return consts.Diagnostic_Check_Passed, storage_space_available
 
     # For handling storage or OS exception that may occur during the execution
     except OSError as e:
@@ -689,7 +680,6 @@ def retrieve_arc_workload_identity_deployments_logs(
     print(
         f"Step: {get_utctimestring()}: Retrieve arc-workload-identity deployments logs"
     )
-    global diagnoser_output
     try:
         if storage_space_available:
             # Creating new Deployment Logs folder in the given timestamp folder
@@ -765,7 +755,6 @@ def check_agent_state(
     corev1_api_instance, filepath_with_timestamp, storage_space_available
 ):
     print(f"Step: {get_utctimestring()}: Check agent state")
-    global diagnoser_output
     # If all agents are stuck we will skip the certificates check
     all_agents_stuck = True
     # To check if agents are stuck because of insufficient resource
@@ -930,7 +919,7 @@ def check_agent_state(
                 probable_sufficient_resource_for_agents,
             )
 
-        elif all_agent_containers_ready is False:
+        if all_agent_containers_ready is False:
             logger.warning(
                 "Error: One or more agents in the Azure Arc are not fully running.\n"
             )
@@ -1002,7 +991,6 @@ def check_agent_state(
 
 def check_agent_version(connected_cluster, azure_arc_agent_version):
     print(f"Step: {get_utctimestring()}: Check agent version")
-    global diagnoser_output
     try:
         # If the agent version in the connected cluster resource is none skip the check
         if connected_cluster.agent_version is None:
@@ -1065,7 +1053,6 @@ def check_diagnoser_container(
     kube_context,
 ):
     print(f"Step: {get_utctimestring()}: Check diagnoser container")
-    global diagnoser_output
     try:
         if probable_sufficient_resource_for_agents is False:
             logger.warning(
@@ -1134,14 +1121,15 @@ def check_diagnoser_container(
             and outbound_connectivity_check == consts.Diagnostic_Check_Passed
         ):
             return consts.Diagnostic_Check_Passed, storage_space_available
+
         # If any of the check remain Incomplete than we will return Incomplete
-        elif (
+        if (
             dns_check == consts.Diagnostic_Check_Incomplete
             or outbound_connectivity_check == consts.Diagnostic_Check_Incomplete
         ):
             return consts.Diagnostic_Check_Incomplete, storage_space_available
-        else:
-            return consts.Diagnostic_Check_Failed, storage_space_available
+
+        return consts.Diagnostic_Check_Failed, storage_space_available
 
     # To handle any exception that may occur during the execution
     except Exception as e:
@@ -1175,7 +1163,6 @@ def executing_diagnoser_job(
     kube_config,
     kube_context,
 ):
-    global diagnoser_output
     job_name = "azure-arc-diagnoser-job"
     # CMD command to get helm values in azure arc and converting it to json format
     command = [
@@ -1423,7 +1410,8 @@ def executing_diagnoser_job(
                 "whitelist it and then run the troubleshoot command again.\n"
             )
             return
-        elif is_job_scheduled is False:
+
+        if is_job_scheduled is False:
             logger.warning(
                 "Unable to schedule the diagnoser job in the kubernetes cluster. The possible reasons can "
                 "be presence of a security policy or security context constraint (SCC) or it may happen "
@@ -1436,7 +1424,8 @@ def executing_diagnoser_job(
                 "(SCC) or it may happen because of lack of ResourceQuota.\n"
             )
             return
-        elif is_job_scheduled is True and is_job_complete is False:
+
+        if is_job_scheduled is True and is_job_complete is False:
             logger.warning(
                 "The diagnoser job failed to reach the completed state in the kubernetes cluster.\n"
             )
@@ -1509,22 +1498,21 @@ def executing_diagnoser_job(
                 "The diagnoser job failed to reach the completed state in the kubernetes cluster.\n"
             )
             return
-        else:
-            # Fetching the Diagnoser Container logs
-            all_pods = corev1_api_instance.list_namespaced_pod("azure-arc")
-            # Traversing through all agents
-            for each_pod in all_pods.items:
-                # Fetching the current Pod name and creating a folder with that name inside the timestamp folder
-                pod_name = each_pod.metadata.name
-                if pod_name.startswith(job_name):
-                    # Creating a text file with the name of the container and adding that containers logs in it
-                    diagnoser_container_log = (
-                        corev1_api_instance.read_namespaced_pod_log(
-                            name=pod_name,
-                            container="azure-arc-diagnoser-container",
-                            namespace="azure-arc",
-                        )
-                    )
+
+        # Fetching the Diagnoser Container logs
+        all_pods = corev1_api_instance.list_namespaced_pod("azure-arc")
+        # Traversing through all agents
+        for each_pod in all_pods.items:
+            # Fetching the current Pod name and creating a folder with that name inside the timestamp folder
+            pod_name = each_pod.metadata.name
+            if pod_name.startswith(job_name):
+                # Creating a text file with the name of the container and adding that containers logs in it
+                diagnoser_container_log = corev1_api_instance.read_namespaced_pod_log(
+                    name=pod_name,
+                    container="azure-arc-diagnoser-container",
+                    namespace="azure-arc",
+                )
+
         # Clearing all the resources after fetching the diagnoser container logs
         Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
     # To handle any exception that may occur during the execution
@@ -1550,7 +1538,6 @@ def executing_diagnoser_job(
 
 def check_msi_certificate_presence(corev1_api_instance):
     print(f"Step: {get_utctimestring()}: Check MSI certificate presence")
-    global diagnoser_output
     try:
         # Initializing msi certificate as not present
         msi_cert_present = False
@@ -1606,7 +1593,6 @@ def check_probable_cluster_security_policy(
     kube_context,
 ):
     print(f"Step: {get_utctimestring()}: Check probable cluster security policy")
-    global diagnoser_output
     try:
         # Intializing the kap_pod_present and cluster_connect_feature variable as False
         kap_pod_present = False
@@ -1692,7 +1678,6 @@ def check_probable_cluster_security_policy(
 
 def check_kap_cert(corev1_api_instance):
     print(f"Step: {get_utctimestring()}: Check Kube aad proxy certificate")
-    global diagnoser_output
     try:
         # Initialize the kap_cert_present as False
         kap_cert_present = False
@@ -1749,7 +1734,6 @@ def check_kap_cert(corev1_api_instance):
 
 def check_msi_expiry(connected_cluster):
     print(f"Step: {get_utctimestring()}: Check MSI certificate expiry")
-    global diagnoser_output
     try:
         # Fetch the expiry time of the msi certificate
         Expiry_date = str(
@@ -2501,7 +2485,6 @@ def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, f
     print(f"Step: {get_utctimestring()}: Fetching the CLI output logs")
     # This function is used to store the output that is obtained throughout the Diagnoser process
     print(f"Step: {get_utctimestring()}: Storing the diagnoser output")
-    global diagnoser_output
     try:
         # If storage space is available then only we store the output
         if storage_space_available:

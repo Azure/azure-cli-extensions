@@ -777,9 +777,9 @@ def create_connectedk8s(
                 "resource name or resource group name."
             )
             raise ArgumentUsageError(err_msg, recommendation=reco_msg)
-        else:
-            # cleanup of stuck CRD if release namespace is not present/deleted
-            crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context)
+
+        # cleanup of stuck CRD if release namespace is not present/deleted
+        crd_cleanup_force_delete(kubectl_client_location, kube_config, kube_context)
 
     print(
         f"Step: {utils.get_utctimestring()}: Check if ResourceGroup exists.  Try to create if it doesn't"
@@ -951,16 +951,14 @@ def create_connectedk8s(
         helm_content_values,
     )
 
-    """
-    Long Running Operation for Agent State
-    Agent state is used for feedback of workload identity extension installation
-    Cases for when to poll for agent state:
-        - If OIDC is enabled and self hosted issuer is passed in, extension is not installed.
-          Feedback loop is not enabled, do not poll for agent state.
-        - If OIDC is enabled and self hosted issuer is empty, extension is installed.
-          Need to poll for agent state.
-        - If workload identity is enabled, extension is installed, poll for agent state.
-    """
+    # Long Running Operation for Agent State
+    # Agent state is used for feedback of workload identity extension installation
+    # Cases for when to poll for agent state:
+    #     - If OIDC is enabled and self hosted issuer is passed in, extension is not installed.
+    #       Feedback loop is not enabled, do not poll for agent state.
+    #     - If OIDC is enabled and self hosted issuer is empty, extension is installed.
+    #       Need to poll for agent state.
+    #     - If workload identity is enabled, extension is installed, poll for agent state.
     if (enable_oidc_issuer and self_hosted_issuer == "") or enable_workload_identity:
         print(
             f"Step: {utils.get_utctimestring()}: Wait for Agent State to reach terminal state, with timeout of {consts.Agent_State_Timeout}"
@@ -2304,16 +2302,14 @@ def update_connected_cluster(
     if not arm_properties_unset:
         return patch_cc_response
 
-    """
-    Long Running Operation for Agent State
-    Agent state is used for feedback of workload identity extension installation
-    Cases for when to poll for agent state:
-        - If OIDC is enabled and self hosted issuer is passed in, extension is not installed.
-          Feedback loop is not enabled, do not poll for agent state.
-        - If OIDC is enabled and self hosted issuer is empty, extension is installed.
-          Need to poll for agent state.
-        - If workload identity is enabled, extension is installed, poll for agent state.
-    """
+    # Long Running Operation for Agent State
+    # Agent state is used for feedback of workload identity extension installation
+    # Cases for when to poll for agent state:
+    #     - If OIDC is enabled and self hosted issuer is passed in, extension is not installed.
+    #       Feedback loop is not enabled, do not poll for agent state.
+    #     - If OIDC is enabled and self hosted issuer is empty, extension is installed.
+    #       Need to poll for agent state.
+    #     - If workload identity is enabled, extension is installed, poll for agent state.
     if (enable_oidc_issuer and self_hosted_issuer == "") or enable_workload_identity:
         print(
             f"Step: {utils.get_utctimestring()}: Wait for Agent State to reach terminal state, with timeout of {consts.Agent_State_Timeout}"
@@ -4580,12 +4576,10 @@ def install_kubectl_client():
         with contextlib.suppress(FileExistsError):
             os.makedirs(kubectl_filepath)
 
-        operating_system = platform.system().lower()
         # Setting path depending on the OS being used
-        if operating_system == "windows":
-            kubectl_path = os.path.join(kubectl_filepath, "kubectl.exe")
-        elif operating_system == "linux" or operating_system == "darwin":
-            kubectl_path = os.path.join(kubectl_filepath, "kubectl")
+        operating_system = platform.system().lower()
+        kubectl = "kubectl.exe" if operating_system == "windows" else "kubectl"
+        kubectl_path = os.path.join(kubectl_filepath, kubectl)
 
         if os.path.isfile(kubectl_path):
             return kubectl_path

@@ -40,7 +40,6 @@ def fetch_diagnostic_checks_results(
     filepath_with_timestamp,
     storage_space_available,
 ):
-    global diagnoser_output
     try:
         # Setting DNS and Outbound Check as working
         dns_check = "Starting"
@@ -112,8 +111,8 @@ def fetch_diagnostic_checks_results(
             or outbound_connectivity_check == consts.Diagnostic_Check_Incomplete
         ):
             return consts.Diagnostic_Check_Incomplete, storage_space_available
-        else:
-            return consts.Diagnostic_Check_Failed, storage_space_available
+
+        return consts.Diagnostic_Check_Failed, storage_space_available
 
     # To handle any exception that may occur during the execution
     except Exception as e:
@@ -260,7 +259,8 @@ def executing_cluster_diagnostic_checks_job(
                         logger.debug("Cluster Diagnostic Checks job Failed")
                         w.stop()
                         break
-                    elif job["object"].status.conditions is not None:
+
+                    if job["object"].status.conditions is not None:
                         is_complete = any(
                             condition.type == "Complete"
                             for condition in job["object"].status.conditions
@@ -463,7 +463,6 @@ def helm_install_release_cluster_diagnostic_checks(
 def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, flag):
     # This function is used to store the output that is obtained throughout the Diagnoser process
 
-    global diagnoser_output
     try:
         # If storage space is available then only we store the output
         if storage_space_available:
