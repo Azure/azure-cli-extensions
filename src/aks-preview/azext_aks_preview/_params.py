@@ -582,18 +582,6 @@ def load_arguments(self, _):
         )
         c.argument("enable_aad", action="store_true")
         c.argument("enable_azure_rbac", action="store_true")
-        c.argument(
-            "aad_client_app_id",
-            deprecate_info=c.deprecate(target="--aad-client-app-id", hide=True),
-        )
-        c.argument(
-            "aad_server_app_id",
-            deprecate_info=c.deprecate(target="--aad-server-app-id", hide=True),
-        )
-        c.argument(
-            "aad_server_app_secret",
-            deprecate_info=c.deprecate(target="--aad-server-app-secret", hide=True),
-        )
         c.argument("aad_tenant_id")
         c.argument("aad_admin_group_object_ids")
         c.argument("enable_oidc_issuer", action="store_true")
