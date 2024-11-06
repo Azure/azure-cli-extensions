@@ -45,16 +45,27 @@ knack_logger = knack.log.get_logger(__name__)
 _targets_with_allowed_failure_output = {"microsoft.dft"}
 
 
-# def list(cmd, resource_group_name, workspace_name, location):
-def list(cmd, resource_group_name, workspace_name, location, type=None, provider_id=None,
-         target_id=None, status=None, created_after=None, created_before=None, job_name=None,
+def list(cmd, resource_group_name, workspace_name, location, job_type=None, provider_id=None,
+         target_id=None, job_status=None, created_after=None, created_before=None, job_name=None,
          skip=None, skip_token=None, jobs_per_page=None):
     """
     Get the list of jobs in a Quantum Workspace.
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    return client.list(location)
+    pagination_params = {
+        'type': job_type,
+        'provider': provider_id,
+        'target': target_id, 
+        'status': job_status, 
+        'created_after': created_after, 
+        'created_before': created_before, 
+        'job-name': job_name,
+        'skip': skip, 
+        'skipToken': skip_token, 
+        'num_of_results': jobs_per_page
+    }
+    return client.list(location, pagination_params)
 
 
 def get(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
