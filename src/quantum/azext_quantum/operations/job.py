@@ -56,13 +56,13 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
     pagination_params = {
         'type': job_type,
         'provider': provider_id,
-        'target': target_id, 
-        'status': job_status, 
-        'created_after': created_after, 
-        'created_before': created_before, 
+        'target': target_id,
+        'status': job_status,
+        'created_after': created_after,
+        'created_before': created_before,
         'job-name': job_name,
-        'skip': skip, 
-        'skipToken': skip_token, 
+        'skip': skip,
+        'skipToken': skip_token,
         'num_of_results': jobs_per_page
     }
     return client.list(location, pagination_params)
