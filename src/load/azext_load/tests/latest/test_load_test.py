@@ -317,6 +317,23 @@ class LoadTestScenario(ScenarioTest):
             )
         except Exception as e:
             assert "Invalid disable-public-ip value:" in str(e)
+        
+        # 12 Invalid public IP disabled true in case of public test
+        self.kwargs.update(
+            {
+                "public_ip_disabled": "true",
+                "test_id": LoadTestConstants.INVALID_DISABLED_PUBLIC_IP_TEST_ID
+            })
+        try:
+            self.cmd(
+                "az load test create "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                '--disable-public-ip "{public_ip_disabled}" ',
+            )
+        except Exception as e:
+            assert "InvalidNetworkConfigurationException" in str(e)
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
@@ -621,9 +638,10 @@ class LoadTestScenario(ScenarioTest):
 
         self.kwargs.update(
             {
-                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_PUBLIC_IP_DISABLED,
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_PUBLIC_IP_DISABLED_FALSE,
             }
         )
+        
         # Update test with config having public IP disabled as false
         self.cmd(
             "az load test update "
@@ -643,6 +661,35 @@ class LoadTestScenario(ScenarioTest):
 
         assert self.kwargs["test_id"] == response.get("testId")
         assert not response.get("publicIPDisabled")
+
+        # Update test with config having public IP disabled as true
+        checks = [
+            JMESPathCheck("publicIPDisabled", True),
+        ]
+
+        self.kwargs.update(
+            {
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_PUBLIC_IP_DISABLED_TRUE,
+            }
+        )
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--load-test-config-file "{load_test_config_file}" '
+            "--resource-group {resource_group} "
+            "--subnet-id {subnet_id}",
+            checks=checks,
+        )
+
+        response = self.cmd(
+            "az load test show "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} ",
+        ).get_output_in_json()
+
+        assert response.get("publicIPDisabled")
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)

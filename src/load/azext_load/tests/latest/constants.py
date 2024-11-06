@@ -11,7 +11,8 @@ TEST_RESOURCES_DIR = os.path.join(os.path.dirname(__file__), r"resources")
 class LoadConstants:
     # Test Plan constants
     LOAD_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"config.yaml")
-    LOAD_TEST_CONFIG_FILE_PUBLIC_IP_DISABLED = os.path.join(TEST_RESOURCES_DIR, r"config-disable-public-ip-false.yaml")
+    LOAD_TEST_CONFIG_FILE_PUBLIC_IP_DISABLED_FALSE = os.path.join(TEST_RESOURCES_DIR, r"config-disable-public-ip-false.yaml")
+    LOAD_TEST_CONFIG_FILE_PUBLIC_IP_DISABLED_TRUE = os.path.join(TEST_RESOURCES_DIR, r"config-disable-public-ip-true.yaml")
     INVALID_LOAD_TEST_CONFIG_FILE = os.path.join(
         TEST_RESOURCES_DIR, r"invalid-config.yaml"
     )
@@ -90,6 +91,7 @@ class LoadTestConstants(LoadConstants):
     INVALID_UPDATE_TEST_ID = "invalid-update-test-case"
     INVALID_PF_TEST_ID = "invalid-pf-test-case"
     INVALID_ZIP_COUNT_TEST_ID = "invalid-zip-count-test-case"
+    INVALID_DISABLED_PUBLIC_IP_TEST_ID = "invalid-disable-public-ip-test-case"
 
     DESCRIPTION = r"Sample_test_description"
     DISPLAY_NAME = r"Sample_test_display_name"
