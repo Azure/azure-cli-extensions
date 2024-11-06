@@ -106,20 +106,6 @@ helps['aks create'] = f"""
         - name: --aad-admin-group-object-ids
           type: string
           short-summary: Comma-separated list of aad group object IDs that will be set as cluster admin.
-        - name: --aad-client-app-id
-          type: string
-          short-summary: The ID of an Azure Active Directory client application of type "Native". This
-                         application is for user login via kubectl.
-          long-summary: --aad-client-app-id is deprecated. See https://aka.ms/aks/aad-legacy for details.
-        - name: --aad-server-app-id
-          type: string
-          short-summary: The ID of an Azure Active Directory server application of type "Web app/API". This
-                         application represents the managed cluster's apiserver (Server application).
-          long-summary: --aad-server-app-id is deprecated. See https://aka.ms/aks/aad-legacy for details.
-        - name: --aad-server-app-secret
-          type: string
-          short-summary: The secret of an Azure Active Directory server application.
-          long-summary: --aad-server-app-secret is deprecated. See https://aka.ms/aks/aad-legacy for details.
         - name: --aad-tenant-id
           type: string
           short-summary: The ID of an Azure Active Directory tenant.
@@ -1309,7 +1295,7 @@ helps['aks update'] = """
         text: az aks update -g MyResourceGroup -n MyManagedCluster --api-server-authorized-ip-ranges 0.0.0.0/32
       - name: Update a AKS-managed AAD cluster with tenant ID or admin group object IDs.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
-      - name: Migrate a AKS AAD-Integrated cluster or a non-AAAAD cluster to a AKS-managed AAD cluster.
+      - name: Migrate a AKS AAD-Integrated cluster or a non-AAD cluster to a AKS-managed AAD cluster.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-aad --aad-admin-group-object-ids <id-1,id-2> --aad-tenant-id <id>
       - name: Enable Azure Hybrid User Benefits featture for a kubernetes cluster.
         text: az aks update -g MyResourceGroup -n MyManagedCluster --enable-ahub
