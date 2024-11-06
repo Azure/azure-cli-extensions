@@ -2,6 +2,9 @@
 
 Release History
 ===============
+1.0.1
+++++++
+* Update help message for better readability
 
 1.0.0
 ++++++
