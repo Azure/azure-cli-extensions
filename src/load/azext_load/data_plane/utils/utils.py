@@ -399,7 +399,7 @@ def create_or_update_test_with_config(
             new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
             new_body.pop("keyvaultReferenceIdentityId")
     subnet_id = subnet_id or yaml_test_body.get("subnetId")
-    if disable_public_ip:
+    if disable_public_ip is not None:
         new_body["publicIPDisabled"] = disable_public_ip
     else:
         new_body["publicIPDisabled"] = yaml_test_body.get("publicIPDisabled", False)
