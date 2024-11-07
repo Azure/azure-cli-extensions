@@ -56,31 +56,22 @@ import azext_connectedk8s._precheckutils as precheckutils
 import azext_connectedk8s._troubleshootutils as troubleshootutils
 import azext_connectedk8s._utils as utils
 from azext_connectedk8s._client_factory import (
-    cf_connected_cluster_prev_2023_11_01,
-    cf_connected_cluster_prev_2024_07_01,
     cf_connectedmachine,
     cf_resource_groups,
     resource_providers_client,
 )
 
-from .vendored_sdks.models import (
-    ConnectedCluster,
-    ConnectedClusterIdentity,
-    ListClusterUserCredentialProperties,
-)
-from .vendored_sdks.preview_2022_10_01.models import (
-    ConnectedClusterPatch as ConnectedClusterPatchPreview,
-)
 from .vendored_sdks.preview_2024_07_01.models import (
     ArcAgentProfile,
     ArcAgentryConfigurations,
+    ConnectedCluster,
+    ConnectedClusterIdentity,
+    ConnectedClusterPatch,
     Gateway,
+    ListClusterUserCredentialProperties,
     OidcIssuerProfile,
     SecurityProfile,
     SecurityProfileWorkloadIdentity,
-)
-from .vendored_sdks.preview_2024_07_01.models import (
-    ConnectedCluster as ConnectedCluster2024_07_01_Preview,
 )
 
 logger = get_logger(__name__)
@@ -233,18 +224,6 @@ def create_connectedk8s(
         arc_agentry_configurations = generate_arc_agent_configuration(
             configuration_settings, configuration_protected_settings
         )
-        client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
-
-    # Set preview client if latest preview properties are provided.
-    if (
-        enable_private_link is not None
-        or distribution_version is not None
-        or azure_hybrid_benefit is not None
-        or enable_workload_identity
-        or enable_oidc_issuer
-        or gateway_resource_id != ""
-    ):
-        client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
 
     gateway = None
     if gateway_resource_id != "":
@@ -592,14 +571,12 @@ def create_connectedk8s(
         configmap_rg_name = configmap.data["AZURE_RESOURCE_GROUP"]
         configmap_cluster_name = configmap.data["AZURE_RESOURCE_NAME"]
         if connected_cluster_exists(client, configmap_rg_name, configmap_cluster_name):
-            preview_cluster_resource = None
+            cluster_resource = None
             public_key = None
 
             try:
-                preview_cluster_resource = get_connectedk8s_2023_11_01(
-                    cmd, configmap_rg_name, configmap_cluster_name
-                )
-                public_key = preview_cluster_resource.agent_public_key_certificate
+                cluster_resource = client.get(configmap_rg_name, configmap_cluster_name)
+                public_key = cluster_resource.agent_public_key_certificate
             except Exception as e:  # pylint: disable=broad-except
                 utils.arm_exception_handler(
                     e,
@@ -614,7 +591,7 @@ def create_connectedk8s(
                 # Re-put connected cluster
                 # If cluster is of kind provisioned cluster, there are several properties that cannot be updated
                 validate_existing_provisioned_cluster_for_reput(
-                    preview_cluster_resource,
+                    cluster_resource,
                     kubernetes_distro,
                     kubernetes_infra,
                     enable_private_link,
@@ -963,10 +940,8 @@ def create_connectedk8s(
         print(
             f"Step: {utils.get_utctimestring()}: Wait for Agent State to reach terminal state, with timeout of {consts.Agent_State_Timeout}"
         )
-        if poll_for_agent_state(cmd, resource_group_name, cluster_name):
-            connected_cluster = get_connectedk8s_2024_07_01(
-                cmd, resource_group_name, cluster_name
-            )
+        if poll_for_agent_state(client, resource_group_name, cluster_name):
+            connected_cluster = client.get(resource_group_name, cluster_name)
             print(
                 f"Step: {utils.get_utctimestring()}: Agent state has reached terminal state of {connected_cluster.arc_agent_profile.agent_state}."
             )
@@ -980,7 +955,7 @@ def create_connectedk8s(
 
 
 def poll_for_agent_state(
-    cmd,
+    client,
     resource_group_name,
     cluster_name,
     timeout_minutes=consts.Agent_State_Timeout,
@@ -988,9 +963,7 @@ def poll_for_agent_state(
 ):
     start_time = time.time()
     while True:
-        connected_cluster = get_connectedk8s_2024_07_01(
-            cmd, resource_group_name, cluster_name
-        )
+        connected_cluster = client.get(resource_group_name, cluster_name)
         if (
             connected_cluster.arc_agent_profile.agent_state
             == consts.Agent_State_Succeeded
@@ -1549,7 +1522,7 @@ def generate_request_payload(
                 "Enabled" if enable_private_link is True else "Disabled"
             )
 
-        cc = ConnectedCluster2024_07_01_Preview(
+        cc = ConnectedCluster(
             location=location,
             identity=identity,
             agent_public_key_certificate=public_key,
@@ -1600,7 +1573,7 @@ def generate_reput_request_payload(
 def generate_patch_payload(
     tags, distribution, distribution_version, azure_hybrid_benefit
 ):
-    cc = ConnectedClusterPatchPreview(
+    cc = ConnectedClusterPatch(
         tags=tags,
         distribution=distribution,
         distribution_version=distribution_version,
@@ -1680,29 +1653,10 @@ def get_server_address(kube_config, kube_context):
 
 
 def get_connectedk8s(cmd, client, resource_group_name, cluster_name):
-    # Override preview client to show private link properties, workload identity properties, and cluster kind to
-    # customers
-    client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
-    return client.get(resource_group_name, cluster_name)
-
-
-def get_connectedk8s_2023_11_01(cmd, resource_group_name, cluster_name):
-    # Override preview client to show private link properties and cluster kind to customers
-    client = cf_connected_cluster_prev_2023_11_01(cmd.cli_ctx, None)
-    return client.get(resource_group_name, cluster_name)
-
-
-def get_connectedk8s_2024_07_01(cmd, resource_group_name, cluster_name):
-    # Override preview client to show private link properties, workload identity properties, and cluster kind to
-    # customers
-    client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
     return client.get(resource_group_name, cluster_name)
 
 
 def list_connectedk8s(cmd, client, resource_group_name=None):
-    # Override preview client to show private link properties, workload identity properties, and cluster kind to
-    # customers
-    client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
     if not resource_group_name:
         return client.list_by_subscription()
     return client.list_by_resource_group(resource_group_name)
@@ -1735,13 +1689,11 @@ def delete_connectedk8s(
     logger.warning("This operation might take a while ...\n")
 
     # Check if the cluster is of supported type for deletion
-    preview_cluster_resource = get_connectedk8s_2023_11_01(
-        cmd, resource_group_name, cluster_name
-    )
+    cluster_resource = client.get(resource_group_name, cluster_name)
     if (
-        (preview_cluster_resource is not None)
-        and (preview_cluster_resource.kind is not None)
-        and (preview_cluster_resource.kind.lower() == consts.Provisioned_Cluster_Kind)
+        (cluster_resource is not None)
+        and (cluster_resource.kind is not None)
+        and (cluster_resource.kind.lower() == consts.Provisioned_Cluster_Kind)
     ):
         err_msg = (
             "Deleting a Provisioned Cluster is not supported from the Connected Cluster CLI. Please use the "
@@ -2039,9 +1991,7 @@ def update_connected_cluster(
         )
 
     # Fetch Connected Cluster for agent version
-    connected_cluster = get_connectedk8s_2024_07_01(
-        cmd, resource_group_name, cluster_name
-    )
+    connected_cluster = client.get(resource_group_name, cluster_name)
 
     if (
         (connected_cluster is not None)
@@ -2054,9 +2004,6 @@ def update_connected_cluster(
             + consts.Doc_Provisioned_Cluster_Update_Url
         )
         raise InvalidArgumentValueError(err_msg)
-
-    # Set preview client as most of the patchable fields are available in preview api-version
-    client = cf_connected_cluster_prev_2024_07_01(cmd.cli_ctx, None)
 
     # Patching the connected cluster ARM resource
     arm_properties_unset = (
@@ -2141,7 +2088,7 @@ def update_connected_cluster(
     )
 
     # Fetch Connected Cluster for agent version
-    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
+    connected_cluster = client.get(resource_group_name, cluster_name)
 
     kubernetes_properties = {
         "Context.Default.AzureCLI.KubernetesVersion": kubernetes_version
@@ -2166,9 +2113,7 @@ def update_connected_cluster(
     telemetry.add_extension_event("connectedk8s", kubernetes_properties)
 
     # Get the connected cluster resource using latest api version and generate reput request payload
-    connected_cluster = get_connectedk8s_2024_07_01(
-        cmd, resource_group_name, cluster_name
-    )
+    connected_cluster = client.get(resource_group_name, cluster_name)
 
     # If gateway is enabled
     gateway = None
@@ -2313,10 +2258,8 @@ def update_connected_cluster(
         print(
             f"Step: {utils.get_utctimestring()}: Wait for Agent State to reach terminal state, with timeout of {consts.Agent_State_Timeout}"
         )
-        if poll_for_agent_state(cmd, resource_group_name, cluster_name):
-            connected_cluster = get_connectedk8s_2024_07_01(
-                cmd, resource_group_name, cluster_name
-            )
+        if poll_for_agent_state(client, resource_group_name, cluster_name):
+            connected_cluster = client.get(resource_group_name, cluster_name)
             print(
                 f"Step: {utils.get_utctimestring()}: Agent state has reached terminal state of {connected_cluster.arc_agent_profile.agent_state}."
             )
@@ -2341,9 +2284,7 @@ def upgrade_agents(
     upgrade_timeout="600",
 ):
     # Check if cluster supports upgrading
-    connected_cluster = get_connectedk8s_2023_11_01(
-        cmd, resource_group_name, cluster_name
-    )
+    connected_cluster = client.get(resource_group_name, cluster_name)
 
     if (
         (connected_cluster is not None)
@@ -2483,7 +2424,7 @@ def upgrade_agents(
         raise ClientRequestError(err_msg, recommendation=reco_msg)
 
     # Fetch Connected Cluster for agent version
-    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
+    connected_cluster = client.get(resource_group_name, cluster_name)
 
     kubernetes_properties = {
         "Context.Default.AzureCLI.KubernetesVersion": kubernetes_version
@@ -2806,9 +2747,7 @@ def enable_features(
     )
 
     # Check if cluster is private link enabled
-    connected_cluster = get_connectedk8s_2023_11_01(
-        cmd, resource_group_name, cluster_name
-    )
+    connected_cluster = client.get(resource_group_name, cluster_name)
 
     if (
         (connected_cluster is not None)
@@ -2892,7 +2831,7 @@ def enable_features(
     )
 
     # Fetch Connected Cluster for agent version
-    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
+    connected_cluster = client.get(resource_group_name, cluster_name)
 
     kubernetes_properties = {
         "Context.Default.AzureCLI.KubernetesVersion": kubernetes_version
@@ -3041,9 +2980,7 @@ def disable_features(
     utils.user_confirmation(confirmation_message, yes)
 
     # Fetch Connected Cluster for agent version
-    connected_cluster = get_connectedk8s_2023_11_01(
-        cmd, resource_group_name, cluster_name
-    )
+    connected_cluster = client.get(resource_group_name, cluster_name)
 
     if (
         (connected_cluster is not None)
@@ -3271,7 +3208,7 @@ def disable_cluster_connect(
     helm_client_location,
 ):
     # Fetch Connected Cluster for agent version
-    connected_cluster = get_connectedk8s(cmd, client, resource_group_name, cluster_name)
+    connected_cluster = client.get(resource_group_name, cluster_name)
 
     get_chart_and_disable_features(
         cmd,
@@ -4222,9 +4159,7 @@ def troubleshoot(
         utils.try_list_node_fix()
 
         # Fetch Connected Cluster for agent version
-        connected_cluster = get_connectedk8s(
-            cmd, client, resource_group_name, cluster_name
-        )
+        connected_cluster = client.get(resource_group_name, cluster_name)
 
         # Creating timestamp folder to store all the diagnoser logs
         current_time = time.ctime(time.time())
@@ -4448,9 +4383,6 @@ def troubleshoot(
                 storage_space_available,
             )
 
-        connected_cluster = get_connectedk8s_2024_07_01(
-            cmd, resource_group_name, cluster_name
-        )
         # saving signing key CR snapshot only if oidc issuer prfile is enabled
         if connected_cluster.oidc_issuer_profile.enabled:
             storage_space_available = troubleshootutils.get_signingkey_cr_snapshot(
