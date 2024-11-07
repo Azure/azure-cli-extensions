@@ -45,8 +45,8 @@ class SessionCodeInterpreterPreviewDecorator(BaseResource):
     def get_argument_filename(self):
         return self.get_param('filename')
 
-    def get_argument_filepath(self):
-        return self.get_param('filepath')
+    def get_argument_file(self):
+        return self.get_param('file')
 
     def get_argument_path(self):
         return self.get_param('path')
@@ -110,7 +110,8 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
             return self.client.upload(
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
-                filepath=self.get_argument_filepath(),
+                file=self.get_argument_file(),
+                path=self.get_argument_path(),
                 session_pool_endpoint=self.get_sessionpool_endpoint(),
                 no_wait=self.get_argument_no_wait())
         except Exception as e:
@@ -122,6 +123,7 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
                 filename=self.get_argument_filename(),
+                path=self.get_argument_path(),
                 session_pool_endpoint=self.get_sessionpool_endpoint())
         except Exception as e:
             handle_raw_exception(e)
@@ -132,6 +134,7 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
                 filename=self.get_argument_filename(),
+                path=self.get_argument_path(),
                 session_pool_endpoint=self.get_sessionpool_endpoint())
         except Exception as e:
             handle_raw_exception(e)
@@ -152,6 +155,7 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
                 cmd=self.cmd,
                 identifier=self.get_argument_identifier(),
                 filename=self.get_argument_filename(),
+                path=self.get_argument_path(),
                 session_pool_endpoint=self.get_sessionpool_endpoint(),
                 no_wait=self.get_argument_no_wait())
         except Exception as e:

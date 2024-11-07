@@ -1161,11 +1161,12 @@ class SessionCodeInterpreterPreviewClient():
 
     @classmethod
     def execute(cls, cmd, identifier, code_interpreter_envelope, session_pool_endpoint, no_wait=False):
-        url_fmt = "{}/code/execute?identifier={}&api-version={}"
+        url_fmt = "{}/executions?identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
             identifier,
-            cls.api_version)
+            "2024-10-02-preview")
+            # cls.api_version)
         logger.warning(request_url)
         logger.warning(code_interpreter_envelope)
         r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=json.dumps(code_interpreter_envelope), resource=SESSION_RESOURCE)
@@ -1180,12 +1181,14 @@ class SessionCodeInterpreterPreviewClient():
         return r.json()
 
     @classmethod
-    def upload(cls, cmd, identifier, filepath, session_pool_endpoint, no_wait=False):
-        url_fmt = "{}/files/upload?identifier={}&api-version={}"
+    def upload(cls, cmd, identifier, file, path, session_pool_endpoint, no_wait=False):
+        url_fmt = "{}/files?{}identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
+            "path=" + path + "&" if path is not None else "",
             identifier,
-            cls.api_version)
+            "2024-10-02-preview")
+            # cls.api_version)
 
         from azure.cli.core._profile import Profile
         profile = Profile(cli_ctx=cmd.cli_ctx)
@@ -1194,8 +1197,8 @@ class SessionCodeInterpreterPreviewClient():
         headers = {'Authorization': 'Bearer ' + token}
 
         try:
-            data_file = open(filepath, "rb")
-            file_name = os.path.basename(filepath)
+            data_file = open(file, "rb")
+            file_name = os.path.basename(file)
             files = [("file", (file_name, data_file))]
 
             r = requests.post(
@@ -1220,13 +1223,15 @@ class SessionCodeInterpreterPreviewClient():
         return r.json()
 
     @classmethod
-    def show_file_content(cls, cmd, identifier, filename, session_pool_endpoint):
-        url_fmt = "{}/files/content/{}?identifier={}&api-version={}"
+    def show_file_content(cls, cmd, identifier, filename, path, session_pool_endpoint):
+        url_fmt = "{}/files/{}/content?{}identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
             filename,
+            "path=" + path + "&" if path is not None else "",
             identifier,
-            cls.api_version)
+            "2024-10-02-preview")
+            # cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
         # print out the file content as bytes decoded as string
@@ -1235,26 +1240,30 @@ class SessionCodeInterpreterPreviewClient():
         return json.dumps(r.content.decode())
 
     @classmethod
-    def show_file_metadata(cls, cmd, identifier, filename, session_pool_endpoint):
-        url_fmt = "{}/files/{}?identifier={}&api-version={}"
+    def show_file_metadata(cls, cmd, identifier, filename, path, session_pool_endpoint):
+        url_fmt = "{}/files/{}?{}identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
             filename,
+            "path=" + path + "&" if path is not None else "",
             identifier,
-            cls.api_version)
+            "2024-10-02-preview")
+            # cls.api_version)
         logger.warning(request_url)
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
 
         return r.json()
 
     @classmethod
-    def delete_file(cls, cmd, identifier, filename, session_pool_endpoint, no_wait=False):
-        url_fmt = "{}/files/{}?identifier={}&api-version={}"
+    def delete_file(cls, cmd, identifier, filename, path, session_pool_endpoint, no_wait=False):
+        url_fmt = "{}/files/{}?{}identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
             filename,
+            "path=" + path + "&" if path is not None else "",
             identifier,
-            cls.api_version)
+            "2024-10-02-preview")
+            # cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "DELETE", request_url, resource=SESSION_RESOURCE)
 
@@ -1276,7 +1285,8 @@ class SessionCodeInterpreterPreviewClient():
             session_pool_endpoint,
             identifier,
             path,
-            cls.api_version)
+            "2024-10-02-preview")
+            # cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
         return r.json()
