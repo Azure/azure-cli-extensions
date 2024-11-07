@@ -9,10 +9,10 @@ import requests
 from knack.log import get_logger
 
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
-from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.core.util import should_disable_connection_verify
 from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError, InvalidArgumentValueError, ManualInterrupt
-from ._validators import process_grafana_create_namespace
+from azure.mgmt.authorization import AuthorizationManagementClient
+from azure.mgmt.authorization.models import RoleAssignmentCreateParameters, PrincipalType
 
 from azure.cli.core.aaz import AAZBoolArg, AAZListArg, AAZStrArg
 from .aaz.latest.grafana._create import Create as _GrafanaCreate
@@ -20,7 +20,7 @@ from .aaz.latest.grafana._delete import Delete as _GrafanaDelete
 from .aaz.latest.grafana._update import Update as _GrafanaUpdate
 
 from ._client_factory import cf_amg
-from .utils import get_yes_or_no_option, MGMT_SERVICE_CLIENT_API_VERSION
+from .utils import get_yes_or_no_option
 
 logger = get_logger(__name__)
 
@@ -62,8 +62,6 @@ class GrafanaCreate(_GrafanaCreate):
         if not args.skip_system_assigned_identity:
             args.identity = {"type": "SystemAssigned"}
 
-        process_grafana_create_namespace(self.ctx, self.ctx.args)
-
     # override the output method to create role assignments after instance creation
     def _output(self, *args, **kwargs):
         from azure.cli.core.commands.arm import resolve_role_id
@@ -86,14 +84,12 @@ class GrafanaCreate(_GrafanaCreate):
             grafana_admin_role_id = resolve_role_id(cli_ctx, "Grafana Admin", subscription_scope)
 
             for principal_id in principal_ids:
-                principal_types = {"User", "Group"}
-                _create_role_assignment(cli_ctx, principal_id, principal_types, grafana_admin_role_id,
+                _create_role_assignment(cli_ctx, principal_id, grafana_admin_role_id,
                                         self.ctx.vars.instance.id)
 
             if self.ctx.vars.instance.identity:
                 monitoring_reader_role_id = resolve_role_id(cli_ctx, "Monitoring Reader", subscription_scope)
-                principal_types = {"ServicePrincipal"}
-                _create_role_assignment(cli_ctx, self.ctx.vars.instance.identity.principal_id, {"ServicePrincipal"},
+                _create_role_assignment(cli_ctx, self.ctx.vars.instance.identity.principal_id,
                                         monitoring_reader_role_id, subscription_scope)
 
         result = self.deserialize_output(self.ctx.vars.instance, client_flatten=True)
@@ -163,23 +159,22 @@ def _get_login_account_principal_id(cli_ctx):
     return result[0]['id']
 
 
-def _create_role_assignment(cli_ctx, principal_id, principal_types, role_definition_id, scope):
+def _create_role_assignment(cli_ctx, principal_id, role_definition_id, scope):
     import time
     from azure.core.exceptions import HttpResponseError, ResourceExistsError
 
-    assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
-                                                 api_version=MGMT_SERVICE_CLIENT_API_VERSION).role_assignments
-    RoleAssignmentCreateParameters = get_sdk(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
-                                             'RoleAssignmentCreateParameters', mod='models',
-                                             operation_group='role_assignments')
-    parameters = RoleAssignmentCreateParameters(role_definition_id=role_definition_id,
-                                                principal_id=principal_id, principal_type=principal_types.pop())
+    assignments_client = get_mgmt_service_client(cli_ctx, AuthorizationManagementClient).role_assignments
+    principal_types = [p.value for p in PrincipalType]
+    current_principal_type = principal_types.pop(0)
 
     logger.info("Creating an assignment with a role '%s' on the scope of '%s'", role_definition_id, scope)
     retry_times = 36
     assignment_name = _gen_guid()
     for retry_time in range(0, retry_times):
         try:
+            parameters = RoleAssignmentCreateParameters(role_definition_id=role_definition_id,
+                                                        principal_id=principal_id,
+                                                        principal_type=current_principal_type)
             assignments_client.create(scope=scope, role_assignment_name=assignment_name,
                                       parameters=parameters)
             break
@@ -188,9 +183,11 @@ def _create_role_assignment(cli_ctx, principal_id, principal_types, role_definit
             break
         except HttpResponseError as ex:
             if 'UnmatchedPrincipalType' in ex.message:  # try each principal_type until we get the right one
-                parameters = RoleAssignmentCreateParameters(role_definition_id=role_definition_id,
-                                                            principal_id=principal_id,
-                                                            principal_type=principal_types.pop())
+                logger.debug("Principal type '%s' is not matched", current_principal_type)
+                try:
+                    current_principal_type = principal_types.pop(0)
+                except:
+                    raise CLIInternalError("Failed to create a role assignment. No matching principal types found.")
                 continue
             if 'role assignment already exists' in ex.message:  # Exception from Track-1 SDK
                 logger.info('Role assignment already exists')
@@ -204,8 +201,7 @@ def _create_role_assignment(cli_ctx, principal_id, principal_types, role_definit
 
 
 def _delete_role_assignment(cli_ctx, principal_id, role_definition_id=None, scope=None):
-    assignments_client = get_mgmt_service_client(cli_ctx, ResourceType.MGMT_AUTHORIZATION,
-                                                 api_version=MGMT_SERVICE_CLIENT_API_VERSION).role_assignments
+    assignments_client = get_mgmt_service_client(cli_ctx, AuthorizationManagementClient).role_assignments
     f = f"principalId eq '{principal_id}'"
 
     if role_definition_id and scope:
