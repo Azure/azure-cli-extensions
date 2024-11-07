@@ -246,19 +246,18 @@ def pull_helm_chart(
         )
         _, error_helm_chart_pull = response_helm_chart_pull.communicate()
         if response_helm_chart_pull.returncode != 0:
+            error = error_helm_chart_pull.decode("ascii")
             if i == retry_count - 1:
                 telemetry.set_exception(
-                    exception=error_helm_chart_pull.decode("ascii"),
+                    exception=error,
                     fault_type=consts.Pull_HelmChart_Fault_Type,
                     summary="Unable to pull {} helm charts from the registry".format(
                         chart_name
                     ),
                 )
                 raise CLIInternalError(
-                    "Unable to pull {} helm chart from the registry '{}': ".format(
-                        chart_name, registry_path
-                    )
-                    + error_helm_chart_pull.decode("ascii")
+                    f"Unable to pull {chart_name} helm chart from the registry"
+                    f" '{registry_path}': {error}"
                 )
             time.sleep(retry_delay)
         else:
@@ -743,15 +742,13 @@ def add_helm_repo(kube_config, kube_context, helm_client_location):
     response_helm_repo = Popen(cmd_helm_repo, stdout=PIPE, stderr=PIPE)
     _, error_helm_repo = response_helm_repo.communicate()
     if response_helm_repo.returncode != 0:
+        error = error_helm_repo.decode("ascii")
         telemetry.set_exception(
-            exception=error_helm_repo.decode("ascii"),
+            exception=error,
             fault_type=consts.Add_HelmRepo_Fault_Type,
             summary="Failed to add helm repository",
         )
-        raise CLIInternalError(
-            "Unable to add repository {} to helm: ".format(repo_url)
-            + error_helm_repo.decode("ascii")
-        )
+        raise CLIInternalError(f"Unable to add repository {repo_url} to helm: {error}")
 
 
 def get_helm_registry(cmd, config_dp_endpoint, release_train_custom=None):
@@ -797,8 +794,7 @@ def get_helm_registry(cmd, config_dp_endpoint, release_train_custom=None):
                 summary="Error while fetching helm chart registry path",
             )
             raise CLIInternalError(
-                "Error while fetching helm chart registry path from JSON response: "
-                + str(e)
+                f"Error while fetching helm chart registry path from JSON response: {e}"
             )
     else:
         telemetry.set_exception(
@@ -855,7 +851,7 @@ def get_helm_values(
                 summary="Error while fetching helm values from DP",
             )
             raise CLIInternalError(
-                "Error while fetching helm values from DP from JSON response: " + str(e)
+                f"Error while fetching helm values from DP from JSON response: {e}"
             )
     else:
         telemetry.set_exception(
@@ -931,7 +927,7 @@ def send_request_with_retries(
                     exception=e, fault_type=fault_type, summary=summary
                 )
                 raise CLIInternalError(
-                    "Error while fetching helm chart registry path: " + str(e)
+                    f"Error while fetching helm chart registry path: {e}"
                 )
             time.sleep(retry_delay)
 
@@ -1350,7 +1346,7 @@ def helm_install_release(
         )
         logger.warning(warn_msg)
         raise CLIInternalError(
-            "Unable to install helm release: " + error_helm_install.decode("ascii")
+            f"Unable to install helm release: {helm_install_error_message}"
         )
 
 
@@ -1377,18 +1373,17 @@ def get_release_namespace(
     response_helm_release = Popen(cmd_helm_release, stdout=PIPE, stderr=PIPE)
     output_helm_release, error_helm_release = response_helm_release.communicate()
     if response_helm_release.returncode != 0:
-        if "forbidden" in error_helm_release.decode(
-            "ascii"
-        ) or "Kubernetes cluster unreachable" in error_helm_release.decode("ascii"):
+        error = error_helm_release.decode("ascii")
+        if "forbidden" in error or "Kubernetes cluster unreachable" in error:
             telemetry.set_user_fault()
+
         telemetry.set_exception(
-            exception=error_helm_release.decode("ascii"),
+            exception=error,
             fault_type=consts.List_HelmRelease_Fault_Type,
             summary="Unable to list helm release",
         )
-        raise CLIInternalError(
-            "Helm list release failed: " + error_helm_release.decode("ascii")
-        )
+        raise CLIInternalError(f"Helm list release failed: {error}")
+
     output_helm_release = output_helm_release.decode("ascii")
     try:
         output_helm_release = json.loads(output_helm_release)
@@ -1611,7 +1606,7 @@ def az_cli(args_str):
 #     try:
 #         cli_version = response_cli_version['azure-cli']
 #     except Exception as ex:
-#         raise CLIInternalError("Unable to decode the az cli version installed: {}".format(str(ex)))
+#         raise CLIInternalError(f"Unable to decode the az cli version installed: {ex}")
 #     if version.parse(cli_version) >= version.parse(consts.AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION):
 #         return True
 #     else:
@@ -1623,9 +1618,7 @@ def is_cli_using_msal_auth():
     try:
         cli_version = response_cli_version["azure-cli"]
     except Exception as ex:
-        raise CLIInternalError(
-            "Unable to decode the az cli version installed: {}".format(str(ex))
-        )
+        raise CLIInternalError(f"Unable to decode the az cli version installed: {ex}")
     v1 = cli_version
     v2 = consts.AZ_CLI_ADAL_TO_MSAL_MIGRATE_VERSION
     for i, j in zip(map(int, v1.split(".")), map(int, v2.split("."))):
@@ -1705,22 +1698,15 @@ def helm_update_agent(
     )
     _, error_helm_get_values = response_helm_values_get.communicate()
     if response_helm_values_get.returncode != 0:
-        if "forbidden" in error_helm_get_values.decode(
-            "ascii"
-        ) or "timed out waiting for the condition" in error_helm_get_values.decode(
-            "ascii"
-        ):
+        error = error_helm_get_values.decode("ascii")
+        if "forbidden" in error or "timed out waiting for the condition" in error:
             telemetry.set_user_fault()
             telemetry.set_exception(
-                exception=error_helm_get_values.decode("ascii"),
+                exception=error,
                 fault_type=consts.Get_Helm_Values_Failed,
                 summary="Error while doing helm get values azure-arc",
             )
-            raise CLIInternalError(
-                str.format(
-                    consts.Update_Agent_Failure, error_helm_get_values.decode("ascii")
-                )
-            )
+            raise CLIInternalError(str.format(consts.Update_Agent_Failure, error))
 
     cmd_helm_upgrade = [
         helm_client_location,
@@ -1753,7 +1739,7 @@ def helm_update_agent(
         ):
             telemetry.set_user_fault()
         telemetry.set_exception(
-            exception=error_helm_upgrade.decode("ascii"),
+            exception=helm_upgrade_error_message,
             fault_type=consts.Install_HelmRelease_Fault_Type,
             summary="Unable to install helm release",
         )
@@ -1762,7 +1748,7 @@ def helm_update_agent(
         except OSError:
             pass
         raise CLIInternalError(
-            str.format(consts.Update_Agent_Failure, error_helm_upgrade.decode("ascii"))
+            str.format(consts.Update_Agent_Failure, helm_upgrade_error_message)
         )
 
     logger.info(str.format(consts.Update_Agent_Success, cluster_name))

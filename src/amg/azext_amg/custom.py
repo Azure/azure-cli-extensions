@@ -11,7 +11,7 @@ from knack.log import get_logger
 from azure.cli.core.commands.client_factory import get_mgmt_service_client, get_subscription_id
 from azure.cli.core.profiles import ResourceType, get_sdk
 from azure.cli.core.util import should_disable_connection_verify
-from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError, ManualInterrupt
+from azure.cli.core.azclierror import ArgumentUsageError, CLIInternalError, InvalidArgumentValueError, ManualInterrupt
 from ._validators import process_grafana_create_namespace
 
 from azure.cli.core.aaz import AAZBoolArg, AAZListArg, AAZStrArg
@@ -390,6 +390,9 @@ def import_dashboard(cmd, grafana_name, definition, folder=None, resource_group_
     import copy
     data = _try_load_dashboard_definition(cmd, resource_group_name, grafana_name, definition,
                                           api_key_or_token=api_key_or_token)
+    if data["meta"]["isFolder"]:
+        raise ArgumentUsageError("The provided definition is a folder, not a dashboard")
+
     if "dashboard" in data:
         payload = data
     else:
@@ -877,10 +880,12 @@ def _find_notification_channel(cmd, resource_group_name, grafana_name, notificat
 # For UX: we accept a file path for complex payload such as dashboard/data-source definition
 def _try_load_file_content(file_content):
     import os
-    potentail_file_path = os.path.expanduser(file_content)
-    if os.path.exists(potentail_file_path):
+    potential_file_path = os.path.expanduser(file_content)
+    if os.path.exists(potential_file_path):
         from azure.cli.core.util import read_file_content
-        file_content = read_file_content(potentail_file_path)
+        file_content = read_file_content(potential_file_path)
+    else:
+        raise InvalidArgumentValueError(f"Couldn't find the file '{file_content}'")
     return file_content
 
 
