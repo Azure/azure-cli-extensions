@@ -49,7 +49,7 @@ setup(
     description='Microsoft Azure Command-Line Tools Nexusidentity Extension',
     # TODO: Update author and email, if applicable
     author='Microsoft Corporation',
-    author_email='azpycli@microsoft.com',
+    author_email='jtamma@microsoft.com',
     # TODO: change to your extension source code repo if the code will not be
     # put in azure-cli-extensions repo
     url='https://github.com/Azure/azure-cli-extensions/tree/master/src/nexusidentity',
