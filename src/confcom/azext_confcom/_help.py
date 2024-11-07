@@ -145,7 +145,7 @@ helps[
           type: string
           short-summary: 'Minimum Allowed Software Version Number for the generated policy fragment. This should be a monotonically increasing integer'
 
-        - name: feed
+        - name: --feed -f
           type: string
           short-summary: 'Feed to use for the generated policy fragment. This is typically the same as the image name when using image-attached fragments. It is the location in the remote repository where the fragment will be stored'
 
@@ -160,13 +160,14 @@ helps[
         - name: --algo
           type: string
           short-summary: |
-              'Algorithm used for signing the generated policy fragment. This must be used with --key and --chain. Supported algorithms are {SUPPORTED_ALGOS}'
+            Algorithm used for signing the generated policy fragment. This must be used with --key and --chain.
+            Supported algorithms are {SUPPORTED_ALGOS}
 
-        - name: --fragment-path, -p
+        - name: --fragment-path -p
           type: string
           short-summary: 'Path to an existing policy fragment file to be used with --generate-import. This option allows you to create import statements for the specified fragment without needing to pull it from an OCI registry'
 
-        - name: --generate-import
+        - name: --generate-import -g
           type: boolean
           short-summary: 'Generate an import statement for a policy fragment'
 
@@ -186,7 +187,7 @@ helps[
           type: boolean
           short-summary: 'Output policy in clear text compact JSON instead of default pretty print format'
 
-        - name: --upload-fragment
+        - name: --upload-fragment -u
           type: boolean
           short-summary: 'When enabled, the generated policy fragment will be uploaded to the registry of the image being used'
 
@@ -198,7 +199,7 @@ helps[
         - name: Input an image name to generate a simple fragment
           text: az confcom acifragmentgen --image mcr.microsoft.com/azuredocs/aci-helloworld
         - name: Input a config file to generate a fragment with a custom namespace and debug mode enabled
-          text: az confcom acifragmentgen --config "./config.json" --namespace "my-namespace" --debug-mode
+          text: az confcom acifragmentgen --input "./config.json" --namespace "my-namespace" --debug-mode
         - name: Generate an import statement for a signed local fragment
           text: az confcom acifragmentgen --fragment-path "./fragment.json" --generate-import --minimum-svn 1
         - name: Generate a fragment and COSE sign it with a key and chain

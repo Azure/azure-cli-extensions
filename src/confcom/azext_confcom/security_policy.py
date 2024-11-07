@@ -6,7 +6,7 @@
 import json
 import warnings
 import copy
-from typing import Any, List, Dict, Tuple
+from typing import Any, List, Dict, Tuple, Union
 from enum import Enum, auto
 import deepdiff
 from knack.log import get_logger
@@ -559,7 +559,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                 container_diff = get_container_diff(fragment_image, image_policy)
 
                 # if the rest of the container is good, check the env vars
-                if container_diff == {}:
+                if not container_diff:
                     env_reason_list = compare_env_vars(
                         fragment_image_id,
                         case_insensitive_dict_get(
@@ -572,7 +572,7 @@ class AciPolicy:  # pylint: disable=too-many-instance-attributes
                     )
 
                     # if the env vars are the same, then we can eliminate the container
-                    if env_reason_list == {}:
+                    if not env_reason_list:
                         return True
         return False
 
@@ -819,7 +819,7 @@ def load_policy_from_file(
 
 
 def load_policy_from_image_name(
-    image_names: List[str] | str, debug_mode: bool = False, disable_stdio: bool = False
+    image_names: Union[List[str], str], debug_mode: bool = False, disable_stdio: bool = False
 ) -> AciPolicy:
     # can either take a list of image names or a single image name
     if isinstance(image_names, str):

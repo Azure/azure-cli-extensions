@@ -251,7 +251,8 @@ def acifragmentgen_confcom(
         policy = security_policy.load_policy_from_image_name(
             image_name, debug_mode=debug_mode, disable_stdio=disable_stdio
         )
-    elif input_path:
+    else:
+        # this is using --input
         if not tar_mapping:
             tar_mapping = os_util.load_tar_mapping_from_config_file(input_path)
         policy = security_policy.load_policy_from_config_file(
