@@ -4384,7 +4384,7 @@ def troubleshoot(
             )
 
         # saving signing key CR snapshot only if oidc issuer prfile is enabled
-        if connected_cluster.oidc_issuer_profile.enabled:
+        if connected_cluster.oidc_issuer_profile and connected_cluster.oidc_issuer_profile.enabled:
             storage_space_available = troubleshootutils.get_signingkey_cr_snapshot(
                 corev1_api_instance,
                 kubectl_client_location,
@@ -4396,8 +4396,12 @@ def troubleshoot(
 
         # saving all other workload identity related information if enabled
         if (
-            connected_cluster.oidc_issuer_profile.enabled
-            or connected_cluster.security_profile.workload_identity.enabled
+            connected_cluster.oidc_issuer_profile 
+            and connected_cluster.oidc_issuer_profile.enabled
+        ) or (
+            connected_cluster.security_profile 
+            and connected_cluster.security_profile.workload_identity 
+            and connected_cluster.security_profile.workload_identity.enabled
         ):
             # saving helm values of wiextension release
             storage_space_available = (

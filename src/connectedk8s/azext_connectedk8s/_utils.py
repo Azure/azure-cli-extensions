@@ -185,9 +185,6 @@ def pull_helm_chart(
 ):
     chart_url = registry_path.split(":")[0]
     chart_version = registry_path.split(":")[1]
-    print(
-        f"Step: {get_utctimestring()}: Pulling HelmChart: {chart_url}, Version: {chart_version}"
-    )
 
     if new_path:
         # Version check for stable release train (chart_version will be in X.Y.Z format as opposed to X.Y.Z-NONSTABLE)
@@ -209,6 +206,10 @@ def pull_helm_chart(
         base_path = os.path.dirname(chart_url)
         image_name = os.path.basename(chart_url)
         chart_url = base_path + "/v2/" + image_name
+    
+    print(
+        f"Step: {get_utctimestring()}: Pulling HelmChart: {chart_url}, Version: {chart_version}"
+    )
 
     cmd_helm_chart_pull = [
         helm_client_location,
