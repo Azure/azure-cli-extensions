@@ -9,12 +9,51 @@
 # --------------------------------------------------------------------------
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
+# pylint: disable=too-many-lines
+# pylint: disable=unused-argument
+# pylint: disable=too-many-statements
 
-from .generated.custom import *  # noqa: F403
-try:
-    from .manual.custom import *  # noqa: F403
-except ImportError as e:
-    if e.name.endswith('manual.custom'):
-        pass
-    else:
-        raise e
+from .aaz.latest.connectedmachine.license_profile import Create as _ProfileCreate
+
+
+# hide license-profile-name from user and always set it to be 'Default'
+class SettingsUpdate(_SettingsUpdate):
+    """Update the base Settings of the target resource.
+
+    :example: Sample command for setting update
+        az arcgateway settings update --resource-group myResourceGroup --subscription mySubscription
+        --base-provider Microsoft.HybridCompute --base-resource-type machines
+        --base-resource-name workloadServer --gateway-resource-id myResourceId
+    """
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        # pylint: disable=protected-access
+        args_schema.license-profile-name._required = False
+        args_schema.license-profile-name._registered = False
+
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.license-profile-name = "Default"
+
+class ScopeUpdate(_ScopeUpdate):
+    """Update an Azure Arc PrivateLinkScope. Note: You cannot specify a different value for InstrumentationKey nor AppId in the Put operation.
+
+    :example: Sample command for private-link-scope update
+        az connectedmachine private-link-scope update --location westus --tags Tag1=Value1 --resource-group my-resource-group --scope-name my-privatelinkscope
+    """
+    def connectedmachine_private_link_scope_update_tag(client,
+                                                    resource_group_name,
+                                                    scope_name,
+                                                    tags=None):
+        private_link_scope_tags = {}
+        if tags is not None:
+            private_link_scope_tags['tags'] = tags
+        return client.update_tags(resource_group_name=resource_group_name,
+                                scope_name=scope_name,
+                                private_link_scope_tags=private_link_scope_tags)
+
+
