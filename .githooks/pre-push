@@ -1,5 +1,5 @@
 #!/bin/sh
-":" //; exec .githooks/pre-push.sh   # Run on Unix
+":" //; sh .githooks/pre-push.sh   # Run on Unix
 ":" //; exit                         # Skip rest on Unix
 
 @echo off
