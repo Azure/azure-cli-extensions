@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.2.0
+++++++
+* Added support for disable public IP in test creation and update. This can be done by using --disable-public-ip argument in 'az load test create' and 'az load test update' commands.
+
 1.1.1
 ++++++
 * Fix empty response object on CLI when using 'az load test file upload'
