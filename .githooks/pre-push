@@ -1,0 +1,7 @@
+#!/bin/sh
+":" //; exec .githooks/pre-push.sh   # Run on Unix
+":" //; exit                         # Skip rest on Unix
+
+@echo off
+.githooks\pre-push.bat
+exit /b %errorlevel%
