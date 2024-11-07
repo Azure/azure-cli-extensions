@@ -34,6 +34,14 @@ custom_no_wait = CLIArgumentType(
     help="Do not wait for the long-running operation to finish.",
 )
 
+disable_public_ip = CLIArgumentType(
+    validator=validators.validate_disable_public_ip,
+    options_list=["--disable-public-ip"],
+    type=str,
+    help="Disable the deployment of a public IP address, load balancer, and network security group while testing a private endpoint.",
+)
+
+
 force = CLIArgumentType(
     options_list=["--force"],
     action="store_true",

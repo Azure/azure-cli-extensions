@@ -11,6 +11,8 @@ TEST_RESOURCES_DIR = os.path.join(os.path.dirname(__file__), r"resources")
 class LoadConstants:
     # Test Plan constants
     LOAD_TEST_CONFIG_FILE = os.path.join(TEST_RESOURCES_DIR, r"config.yaml")
+    LOAD_TEST_CONFIG_FILE_PUBLIC_IP_DISABLED_FALSE = os.path.join(TEST_RESOURCES_DIR, r"config-disable-public-ip-false.yaml")
+    LOAD_TEST_CONFIG_FILE_PUBLIC_IP_DISABLED_TRUE = os.path.join(TEST_RESOURCES_DIR, r"config-disable-public-ip-true.yaml")
     INVALID_LOAD_TEST_CONFIG_FILE = os.path.join(
         TEST_RESOURCES_DIR, r"invalid-config.yaml"
     )
@@ -48,6 +50,9 @@ class LoadConstants:
     SPLIT_CSV_TRUE = "true"
     SPLIT_CSV_FALSE = "false"
 
+    DISABLE_PUBLIC_IP_TRUE = "true"
+    DISABLE_PUBLIC_IP_FALSE = "false"
+
     INVALID_SUBNET_ID = r"/subscriptions/invalid/resource/id"
     KEYVAULT_REFERENCE_ID = r"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/sample-rg/providers/microsoft.managedidentity/userassignedidentities/sample-mi"
     # App Component constants
@@ -71,6 +76,7 @@ class LoadConstants:
 class LoadTestConstants(LoadConstants):
     # Test IDs for load test commands
     UPDATE_WITH_CONFIG_TEST_ID = "update-with-config-test-case"
+    CREATE_AND_UPDATE_VNET_TEST_ID = "create-update-vnet-test-case"
     DELETE_TEST_ID = "delete-test-case"
     CREATE_TEST_ID = "create-test-case"
     UPDATE_TEST_ID = "update-test-case"
@@ -85,6 +91,7 @@ class LoadTestConstants(LoadConstants):
     INVALID_UPDATE_TEST_ID = "invalid-update-test-case"
     INVALID_PF_TEST_ID = "invalid-pf-test-case"
     INVALID_ZIP_COUNT_TEST_ID = "invalid-zip-count-test-case"
+    INVALID_DISABLED_PUBLIC_IP_TEST_ID = "invalid-disable-public-ip-test-case"
 
     DESCRIPTION = r"Sample_test_description"
     DISPLAY_NAME = r"Sample_test_display_name"

@@ -382,3 +382,23 @@ def validate_split_csv(namespace):
         namespace.split_csv = True
     else:
         namespace.split_csv = False
+
+
+def validate_disable_public_ip(namespace):
+    if namespace.disable_public_ip is None:
+        return
+    if not isinstance(namespace.disable_public_ip, str):
+        raise InvalidArgumentValueError(
+            f"Invalid disable-public-ip type: {type(namespace.disable_public_ip)}"
+        )
+    if namespace.disable_public_ip.casefold() not in [
+        "true",
+        "false",
+    ]:
+        raise InvalidArgumentValueError(
+            f"Invalid disable-public-ip value: {namespace.disable_public_ip}. Allowed values: true, false"
+        )
+    if namespace.disable_public_ip.casefold() in ["true"]:
+        namespace.disable_public_ip = True
+    else:
+        namespace.disable_public_ip = False

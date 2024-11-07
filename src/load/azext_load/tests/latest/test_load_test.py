@@ -84,6 +84,7 @@ class LoadTestScenario(ScenarioTest):
                 "env": LoadTestConstants.VALID_ENV_RPS,
                 "split_csv": LoadTestConstants.SPLIT_CSV_TRUE,
                 "subnet_id": subnet_id,
+                "disable_public_ip": LoadTestConstants.DISABLE_PUBLIC_IP_TRUE,
             }
         )
 
@@ -98,6 +99,7 @@ class LoadTestScenario(ScenarioTest):
                 "keyvaultReferenceIdentityId", self.kwargs["keyvault_reference_id"]
             ),
             JMESPathCheck("subnetId", self.kwargs["subnet_id"]),
+            JMESPathCheck("publicIPDisabled", True),
             JMESPathCheck("loadTestConfiguration.splitAllCSVs", True),
             JMESPathCheck("environmentVariables.rps", "10"),
         ]
@@ -116,7 +118,8 @@ class LoadTestScenario(ScenarioTest):
             "--secret {secret} "
             "--keyvault-reference-id {keyvault_reference_id} "
             "--subnet-id {subnet_id} "
-            "--split-csv {split_csv} ",
+            "--split-csv {split_csv} "
+            "--disable-public-ip {disable_public_ip} ",
             checks=checks,
         ).get_output_in_json()
 
@@ -199,7 +202,7 @@ class LoadTestScenario(ScenarioTest):
         except Exception as e:
             assert "Invalid Azure Key Vault Certificate URL:" in str(e)
 
-        # 6 Invalid secret check
+        # 4 Invalid secret check
         try:
             self.cmd(
                 "az load test create "
@@ -211,7 +214,7 @@ class LoadTestScenario(ScenarioTest):
         except Exception as e:
             assert "Invalid Azure Key Vault Secret URL:" in str(e)
 
-        # 7 Invalid env check
+        # 5 Invalid env check
         try:
             self.cmd(
                 "az load test create "
@@ -223,7 +226,7 @@ class LoadTestScenario(ScenarioTest):
         except Exception as e:
             assert "Invalid env argument" in str(e)
 
-        # 8 Invalid subnet id check
+        # 6 Invalid subnet id check
         self.kwargs.update(
             {
                 "subnet_id": LoadTestConstants.INVALID_SUBNET_ID,
@@ -240,7 +243,7 @@ class LoadTestScenario(ScenarioTest):
         except Exception as e:
             assert "not a valid Azure subnet resource ID" in str(e)
 
-        # 9 Invalid test plan file
+        # 7 Invalid test plan file
         self.kwargs.update({"test_plan": LoadTestConstants.ADDITIONAL_FILE})
         try:
             self.cmd(
@@ -253,7 +256,7 @@ class LoadTestScenario(ScenarioTest):
         except Exception as e:
             assert "Invalid test plan file extension:" in str(e)
 
-        # 10 Invalid split csv
+        # 8 Invalid split csv
         self.kwargs.update({"split_csv": "Random Text"})
         try:
             self.cmd(
@@ -266,7 +269,7 @@ class LoadTestScenario(ScenarioTest):
         except Exception as e:
             assert "Invalid split-csv value:" in str(e)
 
-        # 11 Invalid PF criteria in config file
+        # 9 Invalid PF criteria in config file
         self.kwargs.update(
             {
                 "test_id": LoadTestConstants.INVALID_PF_TEST_ID,
@@ -284,7 +287,7 @@ class LoadTestScenario(ScenarioTest):
         except Exception as e:
             assert "Invalid failure criteria:" in str(e)
 
-        # 12 Invalid - ZIP artifacts count exceeding limit 5 in config file
+        # 10 Invalid - ZIP artifacts count exceeding limit 5 in config file
         self.kwargs.update(
             {
                 "test_id": LoadTestConstants.INVALID_ZIP_COUNT_TEST_ID,
@@ -301,6 +304,36 @@ class LoadTestScenario(ScenarioTest):
             )
         except Exception as e:
             assert "QuotaExceeded" in str(e)
+
+        # 11 Invalid public IP disabled
+        self.kwargs.update({"public_ip_disabled": "Random"})
+        try:
+            self.cmd(
+                "az load test create "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                '--disable-public-ip "{public_ip_disabled}" ',
+            )
+        except Exception as e:
+            assert "Invalid disable-public-ip value:" in str(e)
+        
+        # 12 Invalid public IP disabled true in case of public test
+        self.kwargs.update(
+            {
+                "public_ip_disabled": "true",
+                "test_id": LoadTestConstants.INVALID_DISABLED_PUBLIC_IP_TEST_ID
+            })
+        try:
+            self.cmd(
+                "az load test create "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                "--resource-group {resource_group} "
+                '--disable-public-ip "{public_ip_disabled}" ',
+            )
+        except Exception as e:
+            assert "InvalidNetworkConfigurationException" in str(e)
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
@@ -552,6 +585,111 @@ class LoadTestScenario(ScenarioTest):
         assert response.get("environmentVariables").get("c") == "5"
         assert response.get("environmentVariables").get("rps") == "1"
         assert not response.get("environmentVariables").get("a")
+
+    @ResourceGroupPreparer(**rg_params)
+    @LoadTestResourcePreparer(**load_params)
+    @VirtualNetworkPreparer(**vnet_params)
+    @StorageAccountPreparer(**sa_params)
+    def test_load_test_create_and_update_vnet(self, rg, load):
+        # GET SUBNET ID
+        result = self.cmd(
+            "az network vnet subnet list --resource-group {resource_group} --vnet-name {virtual_network}"
+        ).get_output_in_json()
+        subnet_id = result[0]["id"]
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.CREATE_AND_UPDATE_VNET_TEST_ID,
+                "display_name": "Create_and_update_vnet_with_config_test",
+                "test_description": "This is a load test created with config specific to vnet",
+                "test_plan": LoadTestConstants.TEST_PLAN,
+                "engine_instances": "5",
+                "subnet_id": subnet_id,
+                "disable_public_ip": LoadTestConstants.DISABLE_PUBLIC_IP_TRUE,
+            }
+        )
+
+        checks = [
+            JMESPathCheck("testId", self.kwargs["test_id"]),
+            JMESPathCheck("loadTestConfiguration.engineInstances", 5),
+            JMESPathCheck("subnetId", subnet_id),
+            JMESPathCheck("publicIPDisabled", True),
+        ]
+
+        # Create load test with disable public ip provided as parameters
+        test = self.cmd(
+            "az load test create "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            "--display-name '{display_name}' "
+            "--description '{test_description}' "
+            '--test-plan "{test_plan}" '
+            "--engine-instances {engine_instances} "
+            "--subnet-id {subnet_id} "
+            "--disable-public-ip {disable_public_ip} ",
+            checks=checks,
+        ).get_output_in_json()
+
+        assert self.kwargs["test_id"] == test.get("testId")
+
+        checks = [
+            JMESPathCheck("publicIPDisabled", False),
+        ]
+
+        self.kwargs.update(
+            {
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_PUBLIC_IP_DISABLED_FALSE,
+            }
+        )
+        
+        # Update test with config having public IP disabled as false
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--load-test-config-file "{load_test_config_file}" '
+            "--resource-group {resource_group} ",
+            checks=checks,
+        )
+
+        response = self.cmd(
+            "az load test show "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} ",
+        ).get_output_in_json()
+
+        assert self.kwargs["test_id"] == response.get("testId")
+        assert not response.get("publicIPDisabled")
+
+        # Update test with config having public IP disabled as true
+        checks = [
+            JMESPathCheck("publicIPDisabled", True),
+        ]
+
+        self.kwargs.update(
+            {
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_PUBLIC_IP_DISABLED_TRUE,
+            }
+        )
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--load-test-config-file "{load_test_config_file}" '
+            "--resource-group {resource_group} "
+            "--subnet-id {subnet_id}",
+            checks=checks,
+        )
+
+        response = self.cmd(
+            "az load test show "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} ",
+        ).get_output_in_json()
+
+        assert response.get("publicIPDisabled")
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)
