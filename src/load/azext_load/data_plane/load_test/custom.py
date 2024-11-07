@@ -40,6 +40,7 @@ def create_test(
     key_vault_reference_identity=None,
     subnet_id=None,
     split_csv=None,
+    disable_public_ip=None,
     custom_no_wait=False,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
@@ -70,6 +71,7 @@ def create_test(
             key_vault_reference_identity=key_vault_reference_identity,
             subnet_id=subnet_id,
             split_csv=split_csv,
+            disable_public_ip=disable_public_ip,
         )
     else:
         yaml = load_yaml(load_test_config_file)
@@ -87,6 +89,7 @@ def create_test(
             key_vault_reference_identity=key_vault_reference_identity,
             subnet_id=subnet_id,
             split_csv=split_csv,
+            disable_public_ip=disable_public_ip,
         )
     logger.debug("Creating test with test ID: %s and body : %s", test_id, body)
     response = client.create_or_update_test(test_id=test_id, body=body)
@@ -119,6 +122,7 @@ def update_test(
     key_vault_reference_identity=None,
     subnet_id=None,
     split_csv=None,
+    disable_public_ip=None,
     custom_no_wait=False,
 ):
     client = get_admin_data_plane_client(cmd, load_test_resource, resource_group_name)
@@ -148,6 +152,7 @@ def update_test(
             key_vault_reference_identity=key_vault_reference_identity,
             subnet_id=subnet_id,
             split_csv=split_csv,
+            disable_public_ip=disable_public_ip,
         )
     else:
         body = create_or_update_test_without_config(
@@ -162,6 +167,7 @@ def update_test(
             key_vault_reference_identity=key_vault_reference_identity,
             subnet_id=subnet_id,
             split_csv=split_csv,
+            disable_public_ip=disable_public_ip,
         )
     logger.info("Updating test with test ID: %s", test_id)
     response = client.create_or_update_test(test_id=test_id, body=body)
