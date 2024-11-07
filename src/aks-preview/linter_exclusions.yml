@@ -90,7 +90,7 @@ aks create:
     enable_imds_restriction:
       rule_exclusions:
         - option_length_too_long
-    advanced_networking_observability_tls_management:
+    disable_acns_observability:
       rule_exclusions:  
         - option_length_too_long
 aks update:
@@ -218,7 +218,7 @@ aks update:
     disable_imds_restriction:
       rule_exclusions:
         - option_length_too_long
-    advanced_networking_observability_tls_management:
+    disable_acns_observability:
       rule_exclusions:  
         - option_length_too_long
 aks delete:

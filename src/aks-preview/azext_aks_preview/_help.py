@@ -219,18 +219,15 @@ helps['aks create'] = f"""
               Used together with the "azure" network plugin.
               Requires either --pod-subnet-id or --network-plugin-mode=overlay.
               This flag is deprecated in favor of --network-dataplane=cilium.
-        - name: --enable-advanced-network-observability
-          type: bool
-          short-summary: Enable advanced network observability functionalities on a cluster. Note that enabling this will incur additional costs.
-        - name: --enable-fqdn-policy
-          type: bool
-          short-summary: Enable advanced network security FQDN functionalities on a cluster. Note that enabling this will incur additional costs.
         - name: --enable-acns
           type: bool
-          short-summary: Enable advanced network functionalities on a cluster. Note that enabling this will incur additional costs.
-        - name: --advanced-networking-observability-tls-management
-          type: string
-          short-summary: Management of TLS certificates for querying network flow logs via the flow log endpoint for Advanced Networking observability clusters. Valid values are "Managed" and "None". If not specified, the default is Managed.
+          short-summary: Enable advanced network functionalities on a cluster. Enabling this will incur additional costs.
+        - name: --disable-acns-observability
+          type: bool
+          short-summary: Used to disable advanced networking observability features on a clusters when enabling advanced networking features with "--enable-acns".
+        - name: --disable-acns-security
+          type: bool
+          short-summary: Used to disable advanced networking security features on a clusters when enabling advanced networking features with "--enable-acns".
         - name: --no-ssh-key -x
           type: string
           short-summary: Do not use or create a local SSH key.
@@ -1205,27 +1202,18 @@ helps['aks update'] = """
         - name: --nodepool-labels
           type: string
           short-summary: The node labels for all node pool. See https://aka.ms/node-labels for syntax of labels.
-        - name: --enable-advanced-network-observability
-          type: bool
-          short-summary: Enable advanced network observability functionalities on a cluster. Note that enabling this will incur additional costs.
-        - name: --disable-advanced-network-observability
-          type: bool
-          short-summary: Disable advanced network observability functionalities on a cluster
-        - name: --advanced-networking-observability-tls-management
-          type: string
-          short-summary: Management of TLS certificates for querying network flow logs via the flow log endpoint for Advanced Networking observability clusters. Valid values are "Managed" and "None". If not specified, the default is Managed.
-        - name: --enable-fqdn-policy
-          type: bool
-          short-summary: Enable advanced network security FQDN functionalities on a cluster. Note that enabling this will incur additional costs.
-        - name: --disable-fqdn-policy
-          type: bool
-          short-summary: Disable advanced network security FQDN functionalities on a cluster
         - name: --enable-acns
           type: bool
-          short-summary: Enable advanced network functionalities on a cluster. Note that enabling this will incur additional costs.
+          short-summary: Enable advanced network functionalities on a cluster. Enabling this will incur additional costs.
         - name: --disable-acns
           type: bool
-          short-summary: Disable advanced network functionalities on a cluster
+          short-summary: Disable all advanced networking functionalities on a cluster.
+        - name: --disable-acns-observability
+          type: bool
+          short-summary: Used to disable advanced networking observability features on a clusters when enabling advanced networking features with "--enable-acns".
+        - name: --disable-acns-security
+          type: bool
+          short-summary: Used to disable advanced networking security features on a clusters when enabling advanced networking features with "--enable-acns".
         - name: --enable-cost-analysis
           type: bool
           short-summary: Enable exporting Kubernetes Namespace and Deployment details to the Cost Analysis views in the Azure portal. For more information see aka.ms/aks/docs/cost-analysis.
