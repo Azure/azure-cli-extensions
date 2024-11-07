@@ -2,6 +2,11 @@
 
 Release History
 ===============
+
+1.0.0
+++++++
+* Remove direct call to `msrestazure`
+
 0.2.13
 ++++++
 * [BREAKING CHANGE] Deprecated non-compliant parameter name '--temporary_resource_group_name'.

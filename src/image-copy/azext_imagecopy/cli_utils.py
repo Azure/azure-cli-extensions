@@ -80,7 +80,7 @@ def prepare_cli_command(cmd, output_as_json=True, tags=None, subscription=None, 
 
 
 def get_storage_account_id_from_blob_path(blob_path, resource_group, subscription_id):
-    from msrestazure.tools import resource_id
+    from azure.mgmt.core.tools import resource_id
 
     logger.debug('Getting storage account id for blob: %s', blob_path)
 
