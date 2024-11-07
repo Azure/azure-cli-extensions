@@ -970,10 +970,11 @@ def create_connectedk8s(
             print(
                 f"Step: {utils.get_utctimestring()}: Agent state has reached terminal state of {connected_cluster.arc_agent_profile.agent_state}."
             )
-        else:
-            raise CLIInternalError(
-                "Timed out waiting for Agent State to reach terminal state."
-            )
+            return connected_cluster
+
+        raise CLIInternalError(
+            "Timed out waiting for Agent State to reach terminal state."
+        )
 
     return put_cc_response
 
@@ -2064,6 +2065,14 @@ def update_connected_cluster(
         and distribution_version is None
         and azure_hybrid_benefit is None
     )
+    proxy_params_unset = (
+        https_proxy == ""
+        and http_proxy == ""
+        and no_proxy == ""
+        and proxy_cert == ""
+        and not disable_proxy
+    )
+
     if not arm_properties_unset:
         patch_cc_response = update_connected_cluster_internal(
             client,
@@ -2075,28 +2084,20 @@ def update_connected_cluster(
             azure_hybrid_benefit,
         )
 
-    proxy_params_unset = (
-        https_proxy == ""
-        and http_proxy == ""
-        and no_proxy == ""
-        and proxy_cert == ""
-        and not disable_proxy
-    )
-
-    # Returning the ARM response if only AHB is being updated
-    arm_properties_only_ahb_set = (
-        tags is None
-        and distribution is None
-        and distribution_version is None
-        and azure_hybrid_benefit is not None
-    )
-    if (
-        proxy_params_unset
-        and auto_upgrade is None
-        and container_log_path is None
-        and arm_properties_only_ahb_set
-    ):
-        return patch_cc_response
+        # Returning the ARM response if only AHB is being updated
+        arm_properties_only_ahb_set = (
+            tags is None
+            and distribution is None
+            and distribution_version is None
+            and azure_hybrid_benefit is not None
+        )
+        if (
+            proxy_params_unset
+            and auto_upgrade is None
+            and container_log_path is None
+            and arm_properties_only_ahb_set
+        ):
+            return patch_cc_response
 
     if (
         proxy_params_unset
@@ -2299,8 +2300,6 @@ def update_connected_cluster(
         release_namespace,
         chart_path,
     )
-    if not arm_properties_unset:
-        return patch_cc_response
 
     # Long Running Operation for Agent State
     # Agent state is used for feedback of workload identity extension installation
@@ -2321,10 +2320,11 @@ def update_connected_cluster(
             print(
                 f"Step: {utils.get_utctimestring()}: Agent state has reached terminal state of {connected_cluster.arc_agent_profile.agent_state}."
             )
-        else:
-            raise CLIInternalError(
-                "Timed out waiting for Agent State to reach terminal state."
-            )
+            return connected_cluster
+
+        raise CLIInternalError(
+            "Timed out waiting for Agent State to reach terminal state."
+        )
 
     return reput_cc_response
 
