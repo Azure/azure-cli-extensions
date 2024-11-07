@@ -127,8 +127,6 @@ from azext_aks_preview._consts import (
     CONST_APP_ROUTING_EXTERNAL_NGINX,
     CONST_APP_ROUTING_INTERNAL_NGINX,
     CONST_APP_ROUTING_NONE_NGINX,
-    CONST_TLS_MANAGEMENT_MANAGED,
-    CONST_TLS_MANAGEMENT_NONE,
     CONST_GPU_DRIVER_TYPE_CUDA,
     CONST_GPU_DRIVER_TYPE_GRID,
 )
@@ -415,11 +413,6 @@ app_routing_nginx_configs = [
     CONST_APP_ROUTING_EXTERNAL_NGINX,
     CONST_APP_ROUTING_INTERNAL_NGINX,
     CONST_APP_ROUTING_NONE_NGINX
-]
-
-tls_management_types = [
-    CONST_TLS_MANAGEMENT_MANAGED,
-    CONST_TLS_MANAGEMENT_NONE,
 ]
 
 gpu_driver_types = [
@@ -818,23 +811,17 @@ def load_arguments(self, _):
             ),
         )
         c.argument(
-            "enable_advanced_network_observability",
-            action="store_true",
-            is_preview=True,
-        )
-        c.argument(
-            "advanced_networking_observability_tls_management",
-            arg_type=get_enum_type(tls_management_types),
-            default=CONST_TLS_MANAGEMENT_MANAGED,
-            is_preview=True,
-        )
-        c.argument(
-            "enable_fqdn_policy",
-            action="store_true",
-            is_preview=True,
-        )
-        c.argument(
             "enable_acns",
+            action="store_true",
+            is_preview=True,
+        )
+        c.argument(
+            "disable_acns_observability",
+            action="store_true",
+            is_preview=True,
+        )
+        c.argument(
+            "disable_acns_security",
             action="store_true",
             is_preview=True,
         )
@@ -1301,37 +1288,22 @@ def load_arguments(self, _):
         c.argument("safeguards_version", help="The deployment safeguards version", is_preview=True)
         c.argument("safeguards_excluded_ns", is_preview=True)
         c.argument(
-            "enable_advanced_network_observability",
-            action="store_true",
-            is_preview=True,
-        )
-        c.argument(
-            "disable_advanced_network_observability",
-            action="store_true",
-            is_preview=True,
-        )
-        c.argument(
-            "advanced_networking_observability_tls_management",
-            arg_type=get_enum_type(tls_management_types),
-            is_preview=True,
-        )
-        c.argument(
-            "enable_fqdn_policy",
-            action="store_true",
-            is_preview=True,
-        )
-        c.argument(
-            "disable_fqdn_policy",
-            action="store_true",
-            is_preview=True,
-        )
-        c.argument(
             "enable_acns",
             action="store_true",
             is_preview=True,
         )
         c.argument(
             "disable_acns",
+            action="store_true",
+            is_preview=True,
+        )
+        c.argument(
+            "disable_acns_observability",
+            action="store_true",
+            is_preview=True,
+        )
+        c.argument(
+            "disable_acns_security",
             action="store_true",
             is_preview=True,
         )

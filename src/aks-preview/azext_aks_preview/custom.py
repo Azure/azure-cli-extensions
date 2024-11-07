@@ -489,10 +489,10 @@ def aks_create(
     enable_addon_autoscaling=False,
     enable_cilium_dataplane=False,
     custom_ca_trust_certificates=None,
-    enable_advanced_network_observability=None,
-    advanced_networking_observability_tls_management=None,
-    enable_fqdn_policy=None,
+    # advanced networking
     enable_acns=None,
+    disable_acns_observability=None,
+    disable_acns_security=None,
     # nodepool
     crg_id=None,
     message_of_the_day=None,
@@ -719,13 +719,11 @@ def aks_update(
     safeguards_level=None,
     safeguards_version=None,
     safeguards_excluded_ns=None,
-    enable_advanced_network_observability=None,
-    disable_advanced_network_observability=None,
-    advanced_networking_observability_tls_management=None,
-    enable_fqdn_policy=None,
-    disable_fqdn_policy=None,
+    # advanced networking
     enable_acns=None,
     disable_acns=None,
+    disable_acns_observability=None,
+    disable_acns_security=None,
     # metrics profile
     enable_cost_analysis=False,
     disable_cost_analysis=False,

@@ -709,97 +709,34 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return bool(self.raw_param.get('enable_cilium_dataplane'))
 
-    def get_enable_advanced_network_observability(self) -> Optional[bool]:
-        """Get the value of enable_advanced_network_observability
+    def get_acns(self) -> Union[bool, None]:
+        """Get the enablement of acns
 
-        :return: bool or None
-        """
-        enable_advanced_network_observability = self.raw_param.get("enable_advanced_network_observability")
-        disable_advanced_network_observability = self.raw_param.get("disable_advanced_network_observability")
-        if enable_advanced_network_observability and disable_advanced_network_observability:
-            raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-advanced-network-observability and "
-                "--disable-advanced-network-observability at the same time."
-            )
-        if enable_advanced_network_observability is False and disable_advanced_network_observability is False:
-            return None
-        if enable_advanced_network_observability is not None:
-            return enable_advanced_network_observability
-        if disable_advanced_network_observability is not None:
-            return not disable_advanced_network_observability
-        return None
-
-    def get_advanced_networking_observability_tls_management(self) -> Union[str, None]:
-        """Obtain the value of advanced_networking_observability_tls_management.
-
-        :return str or None
-        """
-        tls_management = self.raw_param.get("advanced_networking_observability_tls_management")
-        enable_advanced_network_observability = self.raw_param.get("enable_advanced_network_observability")
-        enable_acns = self.raw_param.get("enable_acns")
-        if tls_management is not None:
-            if (
-                self.mc and
-                self.mc.network_profile is not None and
-                self.mc.network_profile.advanced_networking is not None and
-                self.mc.network_profile.advanced_networking.observability is not None and
-                self.mc.network_profile.advanced_networking.observability.enabled
-            ):
-                return tls_management
-            if enable_advanced_network_observability or enable_acns:
-                return tls_management
-            raise ArgumentUsageError(
-                "Cannot set --tls-management without enabling advanced network observability"
-                "(--enable-advanced-network-observability or --enable-acns)."
-            )
-        return tls_management
-
-    def get_enable_fqdn_policy(self) -> Optional[bool]:
-        """Get the value of enable_fqdn_policy
-
-        :return: bool or None
-        """
-        enable_fqdn_policy = self.raw_param.get("enable_fqdn_policy")
-        disable_fqdn_policy = self.raw_param.get("disable_fqdn_policy")
-        if enable_fqdn_policy and disable_fqdn_policy:
-            raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-fqdn-policy and "
-                "--disable-fqdn-policy at the same time."
-            )
-        if enable_fqdn_policy is False and disable_fqdn_policy is False:
-            return None
-        if enable_fqdn_policy is not None:
-            return enable_fqdn_policy
-        if disable_fqdn_policy is not None:
-            return not disable_fqdn_policy
-        return None
-
-    def get_enable_acns(self) -> Optional[bool]:
-        """Get the value of enable_acns
-
-        :return: bool or None
-        """
+        :return: bool or None"""
         enable_acns = self.raw_param.get("enable_acns")
         disable_acns = self.raw_param.get("disable_acns")
-        enable_advanced_network_observability = self.raw_param.get("enable_advanced_network_observability")
-        disable_advanced_network_observability = self.raw_param.get("disable_advanced_network_observability")
-        enable_fqdn_policy = self.raw_param.get("enable_fqdn_policy")
-        disable_fqdn_policy = self.raw_param.get("disable_fqdn_policy")
-
+        disable_acns_observability = self.raw_param.get("disable_acns_observability")
+        disable_acns_security = self.raw_param.get("disable_acns_security")
         if enable_acns and disable_acns:
             raise MutuallyExclusiveArgumentError(
                 "Cannot specify --enable-acns and "
                 "--disable-acns at the same time."
             )
-        if enable_acns and (disable_advanced_network_observability or disable_fqdn_policy):
+        if enable_acns and disable_acns_observability and disable_acns_security:
             raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-acns and "
-                "--disable-advanced-networking-observability or --disable-fqdn-policy at the same time."
+                "Cannot specify --enable-acns with "
+                "--disable-acns-observability and "
+                "--disable-acns-security at the same time."
             )
-        if disable_acns and (enable_advanced_network_observability or enable_fqdn_policy):
-            raise MutuallyExclusiveArgumentError(
-                "Cannot specify --disable-acns and "
-                "--enable-advanced-networking-observability or --enable-fqdn-policy at the same time."
+        if enable_acns is None and disable_acns_observability is not None:
+            raise RequiredArgumentMissingError(
+                "Cannot specify --disable-acns-observability "
+                "without --enable-acns."
+            )
+        if enable_acns is None and disable_acns_security is not None:
+            raise RequiredArgumentMissingError(
+                "Cannot specify --disable-acns-security "
+                "without --enable-acns."
             )
         if enable_acns is False and disable_acns is False:
             return None
@@ -807,6 +744,24 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
             return enable_acns
         if disable_acns is not None:
             return not disable_acns
+        return None
+
+    def get_acns_observability(self) -> Union[bool, None]:
+        """Get the enablement of acns observability
+
+        :return: bool or None"""
+        disable_acns_observability = self.raw_param.get("disable_acns_observability")
+        if disable_acns_observability is not None:
+            return not disable_acns_observability
+        return None
+
+    def get_acns_security(self) -> Union[bool, None]:
+        """Get the enablement of acns security
+
+        :return: bool or None"""
+        disable_acns_security = self.raw_param.get("disable_acns_security")
+        if disable_acns_security is not None:
+            return not disable_acns_security
         return None
 
     def get_load_balancer_managed_outbound_ip_count(self) -> Union[int, None]:
@@ -2940,44 +2895,27 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         else:
             network_profile.network_dataplane = self.context.get_network_dataplane()
 
-        acns = self.context.get_enable_acns()
-        if acns is not None:
-            network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
-                observability=self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
-                    enabled=acns
-                ),
-                security=self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
-                    fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
-                        enabled=acns
-                    )
-                )
+        acns = self.models.AdvancedNetworking()
+        acns_enabled = self.context.get_acns()
+        acns_observability_enabled = self.context.get_acns_observability()
+        acns_security_enabled = self.context.get_acns_security()
+        if acns_enabled is not None:
+            acns.observability = self.models.AdvancedNetworkingObservability(
+                enabled=acns_enabled
             )
-            tls_management = self.context.get_advanced_networking_observability_tls_management()
-            if tls_management is not None:
-                network_profile.advanced_networking.observability.tls_management = tls_management
-
-        advanced_network_observability = self.context.get_enable_advanced_network_observability()
-        if advanced_network_observability is not None:
-            if network_profile.advanced_networking is None:
-                network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
-                )
-            network_profile.advanced_networking.observability = self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
-                enabled=advanced_network_observability
-            )
-            tls_management = self.context.get_advanced_networking_observability_tls_management()
-            if tls_management is not None:
-                network_profile.advanced_networking.observability.tls_management = tls_management
-
-        fqdn_policy = self.context.get_enable_fqdn_policy()
-        if fqdn_policy is not None:
-            if network_profile.advanced_networking is None:
-                network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
-                )
-            network_profile.advanced_networking.security = self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
+            acns.security = self.models.AdvancedNetworkingSecurity(
                 fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
-                    enabled=fqdn_policy
+                    enabled=acns_enabled
                 )
             )
+            if acns_observability_enabled is not None:
+                acns.observability.enabled = acns_observability_enabled
+            if acns_security_enabled is not None:
+                acns.security.fqdn_policy.enabled = acns_security_enabled
+            # Only Cilium dataplane supports ACNS security
+            if network_profile.network_dataplane != CONST_NETWORK_DATAPLANE_CILIUM:
+                acns.security.fqdn_policy.enabled = False
+            network_profile.advanced_networking = acns
 
         return mc
 
@@ -4039,75 +3977,34 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
 
         return mc
 
-    def update_advanced_networking_observability_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update the advanced network observability model of network profile for the ManagedCluster object.
+    def update_acns_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
+        """Update acns of network profile for the ManagedCluster object.
 
         :return: the ManagedCluster object
         """
         self._ensure_mc(mc)
 
-        advanced_network_observability = self.context.get_enable_advanced_network_observability()
-        if advanced_network_observability is not None:
-            if mc.network_profile.advanced_networking is None:
-                mc.network_profile.advanced_networking = self.models.AdvancedNetworking()  # pylint: disable=no-member
-            if mc.network_profile.advanced_networking.observability is None:
-                mc.network_profile.advanced_networking.observability = self.models.AdvancedNetworkingObservability()  # pylint: disable=no-member
-            mc.network_profile.advanced_networking.observability.enabled = advanced_network_observability
-        tls_management = self.context.get_advanced_networking_observability_tls_management()
-        if (
-            mc.network_profile.advanced_networking is not None and
-            mc.network_profile.advanced_networking.observability is not None and
-            tls_management is not None
-        ):
-            mc.network_profile.advanced_networking.observability.tls_management = tls_management
-        return mc
-
-    def update_enable_fqdn_policy_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update enable fqdn policy of network profile for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        fqdn_policy = self.context.get_enable_fqdn_policy()
-        if fqdn_policy is not None:
-            if mc.network_profile.advanced_networking is None:
-                mc.network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
-                )
-            mc.network_profile.advanced_networking.security = self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
+        acns = self.models.AdvancedNetworking()
+        acns_enabled = self.context.get_acns()
+        acns_observability_enabled = self.context.get_acns_observability()
+        acns_security_enabled = self.context.get_acns_security()
+        if acns_enabled is not None:
+            acns.observability = self.models.AdvancedNetworkingObservability(
+                enabled=acns_enabled
+            )
+            acns.security = self.models.AdvancedNetworkingSecurity(
                 fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
-                    enabled=fqdn_policy
+                    enabled=acns_enabled
                 )
             )
-        return mc
-
-    def update_enable_acns_in_network_profile(self, mc: ManagedCluster) -> ManagedCluster:
-        """Update enable fqdn policy of network profile for the ManagedCluster object.
-
-        :return: the ManagedCluster object
-        """
-        self._ensure_mc(mc)
-
-        acns = self.context.get_enable_acns()
-        if acns is not None:
-            # Override anything previously set
-            mc.network_profile.advanced_networking = self.models.AdvancedNetworking(  # pylint: disable=no-member
-                observability=self.models.AdvancedNetworkingObservability(  # pylint: disable=no-member
-                    enabled=acns
-                ),
-                security=self.models.AdvancedNetworkingSecurity(  # pylint: disable=no-member
-                    fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
-                        enabled=acns
-                    )
-                )
-            )
-            tls_management = self.context.get_advanced_networking_observability_tls_management()
-            if (
-                mc.network_profile.advanced_networking is not None and
-                mc.network_profile.advanced_networking.observability is not None and
-                tls_management is not None
-            ):
-                mc.network_profile.advanced_networking.observability.tls_management = tls_management
+            if acns_observability_enabled is not None:
+                acns.observability.enabled = acns_observability_enabled
+            if acns_security_enabled is not None:
+                acns.security.fqdn_policy.enabled = acns_security_enabled
+            # Only Cilium dataplane supports ACNS security
+            if mc.network_profile.network_dataplane != CONST_NETWORK_DATAPLANE_CILIUM:
+                acns.security.fqdn_policy.enabled = False
+            mc.network_profile.advanced_networking = acns
         return mc
 
     # pylint: disable=too-many-statements,too-many-locals,too-many-branches
@@ -5357,12 +5254,8 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         mc = self.update_nodepool_taints_mc(mc)
         # update nodepool initialization taints
         mc = self.update_nodepool_initialization_taints_mc(mc)
-        # update advanced_networking_observability in network_profile
-        mc = self.update_advanced_networking_observability_in_network_profile(mc)
-        # update fqdn policy in network_profile
-        mc = self.update_enable_fqdn_policy_in_network_profile(mc)
         # update acns in network_profile
-        mc = self.update_enable_acns_in_network_profile(mc)
+        mc = self.update_acns_in_network_profile(mc)
         # update kubernetes support plan
         mc = self.update_k8s_support_plan(mc)
         # update AI toolchain operator
