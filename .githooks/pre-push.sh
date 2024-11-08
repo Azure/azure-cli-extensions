@@ -42,6 +42,15 @@ fi
 
 echo "CONFIG_FILE: $CONFIG_FILE"
 
+
+# Fetch upstream/main branch
+echo "\033[0;32mFetching upstream/main branch...\033[0m"
+git fetch upstream main
+if [ $? -ne 0 ]; then
+    echo "\033[0;31mError: Failed to fetch upstream/main branch. Please run 'git remote add upstream https://github.com/Azure/azure-cli-extensions.git' first.\033[0m"
+    exit 1
+fi
+
 # Run command azdev style
 echo "\033[0;32mRunning azdev style...\033[0m"
 azdev style elastic-san

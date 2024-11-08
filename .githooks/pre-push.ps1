@@ -38,9 +38,19 @@ if (-not (Test-Path $configFile)) {
 
 Write-Host "CONFIG_FILE: $configFile"
 
+# Fetch upstream/main branch
+Write-Host "Fetching upstream/main branch..." -ForegroundColor Green
+git fetch upstream main
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Error: Failed to fetch upstream/main branch. Please run 'git remote add upstream https://github.com/Azure/azure-cli-extensions.git' first." -ForegroundColor Red
+    exit 1
+}
+
 # Run command azdev style
 Write-Host "Running azdev style..." -ForegroundColor Green
-azdev style elastic-san
+# get the current branch name
+$currentBranch = git branch --show-current
+azdev style --repo ./ --tgt $currentBranch --src upstream/main
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: azdev style check failed." -ForegroundColor Red
     exit 1
@@ -48,7 +58,7 @@ if ($LASTEXITCODE -ne 0) {
 
 # Run command azdev lint
 Write-Host "Running azdev lint..." -ForegroundColor Green
-azdev linter elastic-san
+azdev linter --repo azure-cli-extensions --src upstream/main
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: azdev lint check failed." -ForegroundColor Red
     exit 1
@@ -56,7 +66,7 @@ if ($LASTEXITCODE -ne 0) {
 
 # Run command azdev test
 Write-Host "Running azdev test..." -ForegroundColor Green
-azdev test elastic-san
+azdev test --repo azure-cli-extensions --src upstream/main
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: azdev test check failed." -ForegroundColor Red
     exit 1
