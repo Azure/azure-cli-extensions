@@ -23,7 +23,11 @@ class ContainerappSessionPoolTests(ScenarioTest):
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='aca-sp-env', length=24)
-        create_containerapp_env(self, env_name, resource_group, location)
+        self.cmd('containerapp env create -g {} -n {} -l {} --logs-destination none'.format(resource_group, env_name, location), expect_failure=False)
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
         # List Session Pools
         sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
@@ -133,7 +137,11 @@ class ContainerappSessionPoolTests(ScenarioTest):
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='aca-sp-env-registry', length=24)
-        create_containerapp_env(self, env_name, resource_group, location)
+        self.cmd('containerapp env create -g {} -n {} -l {} --logs-destination none'.format(resource_group, env_name, location), expect_failure=False)
+        containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env_name)).get_output_in_json()
+        while containerapp_env["properties"]["provisioningState"].lower() in ["waiting", "inprogress"]:
+            time.sleep(5)
+            containerapp_env = self.cmd('containerapp env show -g {} -n {}'.format(resource_group, env)).get_output_in_json()
 
         acr = self.create_random_name(prefix='acr', length=24)
         image_source = "mcr.microsoft.com/k8se/quickstart:latest"
