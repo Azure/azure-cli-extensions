@@ -5,11 +5,11 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long, broad-except, logging-format-interpolation
 
-from azure.cli.core.azclierror import (ValidationError)
 from copy import deepcopy
 from knack.log import get_logger
 from typing import Any, Dict
 
+from azure.cli.core.azclierror import (ValidationError)
 from azure.cli.core.commands import AzCliCommand
 from azure.cli.command_modules.containerapp.base_resource import BaseResource
 
