@@ -130,7 +130,7 @@ class SessionPoolPreviewDecorator(BaseResource):
     def get_argument_registry_user(self):
         return self.get_param("registry_user")
 
-    def get_argument_registry_identity_id(self):
+    def get_argument_registry_identity(self):
         return self.get_param("registry_identity")
 
     def get_argument_system_assigned(self):
@@ -228,12 +228,12 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
         else:
             assign_user_identities = []
 
-        identity = self.get_argument_registry_identity_id()
+        identity = self.get_argument_registry_identity()
         if identity:
             if is_registry_msi_system(identity):
-                assign_system_identity=True
+                assign_system_identity = True
             else:
-                assign_user_identities.append(self.get_argument_registry_identity_id())
+                assign_user_identities.append(self.get_argument_registry_identity())
 
         if assign_system_identity and assign_user_identities:
             identity_def["type"] = "SystemAssigned, UserAssigned"
@@ -319,8 +319,8 @@ class SessionPoolCreateDecorator(SessionPoolPreviewDecorator):
                                                                                           self.get_argument_registry_server(),
                                                                                           self.get_argument_registry_pass())
 
-            if self.get_argument_registry_identity_id():
-                registry_def["identity"] = self.get_argument_registry_identity_id()
+            if self.get_argument_registry_identity():
+                registry_def["identity"] = self.get_argument_registry_identity()
 
         return registry_def, secrets_def
 
