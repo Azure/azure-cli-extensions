@@ -66,7 +66,7 @@ class ContainerAppMaintenanceConfigTest(ScenarioTest):
         ])
 
         # delete the Container App Maintenance Config resource
-        self.cmd("az containerapp env maintenance-config remove --resource-group {} --environment {}".format(resource_group, env_name))
+        self.cmd("az containerapp env maintenance-config remove --resource-group {} --environment {} -y".format(resource_group, env_name))
         
         self.cmd("az containerapp env maintenance-config show --resource-group {} --environment {}".format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),

@@ -3266,7 +3266,7 @@ def set_registry_job(cmd, name, resource_group_name, server, username=None, pass
 # maintenance config
 def add_maintenance_config(cmd, resource_group_name, env_name, duration, start_hour_utc, weekday):
     raw_parameters = locals()
-    maintenance_config_decorator = MaintenanceConfigPreviewDecorator(
+    maintenance_config_decorator = ContainerAppEnvMaintenanceConfigPreviewDecorator(
         cmd=cmd,
         client=MaintenanceConfigPreviewClient,
         raw_parameters=raw_parameters,
@@ -3280,7 +3280,7 @@ def add_maintenance_config(cmd, resource_group_name, env_name, duration, start_h
 
 def update_maintenance_config(cmd, resource_group_name, env_name, duration=None, start_hour_utc=None, weekday=None):
     raw_parameters = locals()
-    maintenance_config_decorator = MaintenanceConfigPreviewDecorator(
+    maintenance_config_decorator = ContainerAppEnvMaintenanceConfigPreviewDecorator(
         cmd=cmd,
         client=MaintenanceConfigPreviewClient,
         raw_parameters=raw_parameters,
