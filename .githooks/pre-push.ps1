@@ -58,7 +58,7 @@ if ($LASTEXITCODE -ne 0) {
 
 # Run command azdev lint
 Write-Host "Running azdev lint..." -ForegroundColor Green
-azdev linter --repo azure-cli-extensions --src upstream/main
+azdev linter --repo ./ --tgt $currentBranch --src upstream/main
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: azdev lint check failed." -ForegroundColor Red
     exit 1
@@ -66,7 +66,7 @@ if ($LASTEXITCODE -ne 0) {
 
 # Run command azdev test
 Write-Host "Running azdev test..." -ForegroundColor Green
-azdev test --repo azure-cli-extensions --src upstream/main
+azdev test --repo ./ --tgt $currentBranch --src upstream/main
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: azdev test check failed." -ForegroundColor Red
     exit 1
