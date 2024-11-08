@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "\033[0;31mRunning pre-push hook in bash ...\033[0m"
+echo "\033[0;32mRunning pre-push hook in bash ...\033[0m"
 
 # Check if in the python environment
 PYTHON_FILE=$(which python)
@@ -43,7 +43,7 @@ fi
 echo "CONFIG_FILE: $CONFIG_FILE"
 
 # Run command azdev style
-echo "Running azdev style..."
+echo "\033[0;32mRunning azdev style...\033[0m"
 azdev style elastic-san
 if [ $? -ne 0 ]; then
     echo "\033[0;31mError: azdev style check failed.\033[0m"
@@ -51,7 +51,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Run command azdev lint
-echo "Running azdev lint..."
+echo "\033[0;32mRunning azdev lint...\033[0m"
 azdev linter elastic-san
 if [ $? -ne 0 ]; then
     echo "\033[0;31mError: azdev lint check failed.\033[0m"
@@ -59,7 +59,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Run command azdev test
-echo "Running azdev test..."
+echo "\033[0;32mRunning azdev test...\033[0m"
 azdev test elastic-san2
 if [ $? -ne 0 ]; then
     echo "\033[0;31mError: azdev test check failed.\033[0m"

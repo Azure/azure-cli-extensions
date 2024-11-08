@@ -1,4 +1,4 @@
-Write-Host "Running pre-push hook in powershell..."
+Write-Host "Running pre-push hook in powershell..." -ForegroundColor Green
 
 # Check if in the python environment
 $pythonPath = (Get-Command python -ErrorAction SilentlyContinue).Path
@@ -39,7 +39,7 @@ if (-not (Test-Path $configFile)) {
 Write-Host "CONFIG_FILE: $configFile"
 
 # Run command azdev style
-Write-Host "Running azdev style..."
+Write-Host "Running azdev style..." -ForegroundColor Green
 azdev style elastic-san
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: azdev style check failed." -ForegroundColor Red
@@ -47,7 +47,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # Run command azdev lint
-Write-Host "Running azdev lint..."
+Write-Host "Running azdev lint..." -ForegroundColor Green
 azdev linter elastic-san
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: azdev lint check failed." -ForegroundColor Red
@@ -55,7 +55,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # Run command azdev test
-Write-Host "Running azdev test..."
+Write-Host "Running azdev test..." -ForegroundColor Green
 azdev test elastic-san
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: azdev test check failed." -ForegroundColor Red
