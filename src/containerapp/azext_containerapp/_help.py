@@ -2133,6 +2133,11 @@ helps['containerapp job registry set'] = """
 """
 
 # Maintenance Config Commands
+helps['containerapp env maintenance-config'] = """
+    type: group
+    short-summary: Commands to manage Planned Maintenance for Container Apps
+"""
+
 helps['containerapp env maintenance-config add'] = """
     type: command
     short-summary: Add Planned Maintenance to a Container App Environment
