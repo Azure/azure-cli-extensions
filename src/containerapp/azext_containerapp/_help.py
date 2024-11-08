@@ -2139,7 +2139,7 @@ helps['containerapp env maintenance-config add'] = """
     examples:
     - name: Configure a Container App Environment to use a Planned Maintenance
       text: |
-          az containerapp env maintenance-config add --env-name myEnv -g MyResourceGroup \\
+          az containerapp env maintenance-config add --environment myEnv -g MyResourceGroup \\
               --duration 10 --start-hour-utc 11 --weekday Sunday
 """
 
@@ -2149,7 +2149,7 @@ helps['containerapp env maintenance-config update'] = """
     examples:
     - name: Update the Planned Maintenance in a Container App Environment
       text: |
-          az containerapp env maintenance-config update --env-name myEnv -g MyResourceGroup \\
+          az containerapp env maintenance-config update --environment myEnv -g MyResourceGroup \\
               --duration 8 --start-hour-utc 12 --weekday Thursday
 """
 
@@ -2159,7 +2159,7 @@ helps['containerapp env maintenance-config show'] = """
     examples:
     - name: Show Planned Maintenance
       text: |
-          az containerapp env maintenance-config show --env-name myEnv -g MyResourceGroup
+          az containerapp env maintenance-config show --environment myEnv -g MyResourceGroup
 """
 
 helps['containerapp env maintenance-config remove'] = """
@@ -2168,5 +2168,5 @@ helps['containerapp env maintenance-config remove'] = """
     examples:
     - name: Remove Planned Maintenance
       text: |
-          az containerapp env maintenance-config remove --env-name myEnv -g MyResourceGroup
+          az containerapp env maintenance-config remove --environment myEnv -g MyResourceGroup
 """

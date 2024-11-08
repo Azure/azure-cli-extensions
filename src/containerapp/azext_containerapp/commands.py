@@ -266,5 +266,5 @@ def load_command_table(self, args):
     with self.command_group('containerapp env maintenance-config', is_preview=True) as g:
         g.custom_command('add', 'add_maintenance_config')
         g.custom_command('update', 'update_maintenance_config')
-        g.custom_command('remove', 'remove_maintenance_config')
+        g.custom_command('remove', 'remove_maintenance_config', confirmation=True)
         g.custom_command('show', 'show_maintenance_config')

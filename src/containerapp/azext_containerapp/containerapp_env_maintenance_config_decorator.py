@@ -19,7 +19,7 @@ from ._client_factory import handle_raw_exception, handle_non_404_status_code_ex
 logger = get_logger(__name__)
 
 
-class MaintenanceConfigDecorator(BaseResource):
+class ContainerappEnvMaintenanceConfigDecorator(BaseResource):
     def __init__(self, cmd: AzCliCommand, client: Any, raw_parameters: Dict, models: str):
         super().__init__(cmd, client, raw_parameters, models)
         self.maintenance_config_def = deepcopy(MaintenanceConfigurationModel)
@@ -41,7 +41,7 @@ class MaintenanceConfigDecorator(BaseResource):
         return self.get_param('duration')
 
 
-class MaintenanceConfigPreviewDecorator(MaintenanceConfigDecorator):
+class ContainerAppEnvMaintenanceConfigPreviewDecorator(ContainerappEnvMaintenanceConfigDecorator):
     def validate_arguments(self):
         if self.get_argument_start_hour_utc() is not None:
             if not (0 <= int(self.get_argument_start_hour_utc()) <= 23):
@@ -51,7 +51,7 @@ class MaintenanceConfigPreviewDecorator(MaintenanceConfigDecorator):
             if not (8 <= int(self.get_argument_duration()) <= 24):
                 raise ValidationError("Duration must be an integer from 8 to 24")
 
-        if self.get_argument_weekday is not None:
+        if self.get_argument_weekday() is not None:
             if self.get_argument_weekday().lower() not in ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]:
                 raise ValidationError("Weekday must be a day of the week")
 

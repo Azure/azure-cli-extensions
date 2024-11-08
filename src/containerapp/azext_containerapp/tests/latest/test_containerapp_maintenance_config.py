@@ -58,6 +58,13 @@ class ContainerAppMaintenanceConfigTest(ScenarioTest):
             JMESPathCheck('properties.scheduledEntries[0].weekDay', updatedWeekday),
         ])
 
+        # update nothing to confirm all properties remain
+        self.cmd("az containerapp env maintenance-config update --resource-group {} --environment {}".format(resource_group, env_name), checks=[
+            JMESPathCheck('properties.scheduledEntries[0].durationHours', updatedDuration),
+            JMESPathCheck('properties.scheduledEntries[0].startHourUtc', startHour),
+            JMESPathCheck('properties.scheduledEntries[0].weekDay', updatedWeekday),
+        ])
+
         # delete the Container App Maintenance Config resource
         self.cmd("az containerapp env maintenance-config remove --resource-group {} --environment {}".format(resource_group, env_name))
         
