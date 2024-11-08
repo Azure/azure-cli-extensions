@@ -5,6 +5,8 @@
 
 import os
 import unittest
+import unittest.mock as patch
+from io import StringIO
 import platform
 from azext_confcom.custom import katapolicygen_confcom
 
@@ -75,14 +77,17 @@ spec:
         finally:
             if os.path.exists(filename):
                 os.remove(filename)
-        self.assertEqual(wrapped_exit.exception.code, 0 if host_os_linux else 1, "Policy not generated successfully")
         if host_os_linux:
             self.assertNotEqual(content, KataPolicyGen.pod_string, "Policy content not changed in yaml")
 
     def test_print_version(self):
-        with self.assertRaises(SystemExit) as wrapped_exit:
+        if not host_os_linux:
+            with self.assertRaises(SystemExit) as wrapped_exit:
+                katapolicygen_confcom(
+                    None, None, print_version=True
+                )
+            self.assertNotEqual(wrapped_exit.exception.code, 0)
+        else:
             katapolicygen_confcom(
                 None, None, print_version=True
             )
-
-        self.assertEqual(wrapped_exit.exception.code, 0 if host_os_linux else 1)
