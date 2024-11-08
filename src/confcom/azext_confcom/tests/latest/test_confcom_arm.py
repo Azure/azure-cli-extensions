@@ -7,7 +7,6 @@ import os
 import unittest
 import json
 import deepdiff
-import docker
 from unittest.mock import patch
 
 from azext_confcom.security_policy import (
@@ -17,7 +16,12 @@ from azext_confcom.security_policy import (
 )
 import azext_confcom.config as config
 from azext_confcom.custom import acipolicygen_confcom
-from azext_confcom.template_util import case_insensitive_dict_get, extract_confidential_properties, extract_containers_from_text, DockerClient
+from azext_confcom.template_util import (
+    case_insensitive_dict_get,
+    decompose_confidential_properties,
+    extract_containers_from_text,
+    DockerClient,
+)
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), ".."))
 
@@ -1250,7 +1254,7 @@ class PolicyGeneratingArmParametersCleanRoom(unittest.TestCase):
                 "metadata": {
                     "description": "Name for the container group"
                 },
-                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
+                "defaultValue":"mcr.microsoft.com/cbl-mariner/base/nginx:1-cm2.0"
             },
             "containername": {
                 "type": "string",
@@ -1355,22 +1359,21 @@ class PolicyGeneratingArmParametersCleanRoom(unittest.TestCase):
     }
     """
         with DockerClient() as client:
-            # client = docker.from_env()
-            original_image = "mcr.microsoft.com/cbl-mariner/distroless/minimal:2.0"
+            original_image = "mcr.microsoft.com/cbl-mariner/base/nginx:1-cm2.0"
             try:
                 client.images.remove(original_image)
             except:
                 # do nothing
                 pass
-            regular_image = load_policy_from_arm_template_str(
-                custom_arm_json_default_value, ""
-            )
-            regular_image[0].populate_policy_content_for_all_images()
+        regular_image = load_policy_from_arm_template_str(
+            custom_arm_json_default_value, ""
+        )
+        regular_image[0].populate_policy_content_for_all_images()
             # create and tag same image to the new name to see if docker will error out that the image is not in a remote repo
-            new_repo = "fakerepo.microsoft.com"
-            new_image_name = "azure-functions"
-            new_tag = "fake-tag"
-
+        new_repo = "fakerepo.microsoft.com"
+        new_image_name = "azure-functions"
+        new_tag = "fake-tag"
+        with DockerClient() as client:
             image = client.images.get(original_image)
             try:
                 client.images.remove(new_repo + "/" + new_image_name + ":" + new_tag)
@@ -1378,8 +1381,6 @@ class PolicyGeneratingArmParametersCleanRoom(unittest.TestCase):
                 # do nothing
                 pass
             image.tag(new_repo + "/" + new_image_name, tag=new_tag)
-
-            # client.close()
 
         clean_room = load_policy_from_arm_template_str(
             custom_arm_json_default_value, self.parameter_file
@@ -1582,8 +1583,7 @@ class PolicyDiff(unittest.TestCase):
         cls.aci_policy.populate_policy_content_for_all_images()
         cls.aci_policy2 = load_policy_from_arm_template_str(cls.custom_json2, "")[0]
         cls.aci_policy2.populate_policy_content_for_all_images()
-        container_start = "containers := "
-        cls.containers = json.loads(extract_containers_from_text(cls.aci_policy.get_serialized_output(OutputType.PRETTY_PRINT), container_start))
+        cls.containers = json.loads(extract_containers_from_text(cls.aci_policy.get_serialized_output(OutputType.PRETTY_PRINT), config.REGO_CONTAINER_START))
 
     def test_policy_diff(self):
         self.aci_policy._existing_cce_policy = self.containers
@@ -2043,8 +2043,7 @@ class MultiplePolicyTemplate(unittest.TestCase):
         cls.aci_policy3.populate_policy_content_for_all_images(faster_hashing=True)
 
     def test_multiple_policies(self):
-        container_start = "containers := "
-        policy2_containers = json.loads(extract_containers_from_text(self.aci_policy2.get_serialized_output(OutputType.PRETTY_PRINT), container_start))
+        policy2_containers = json.loads(extract_containers_from_text(self.aci_policy2.get_serialized_output(OutputType.PRETTY_PRINT), config.REGO_CONTAINER_START))
 
         self.aci_policy._existing_cce_policy = policy2_containers
         is_valid, diff = self.aci_policy.validate_cce_policy()
@@ -2395,6 +2394,149 @@ class PolicyGeneratingDisableStdioAccess(unittest.TestCase):
 
         # see if the remote image and the local one produce the same output
         self.assertFalse(stdio_access)
+
+
+class PolicyGeneratingOmitId(unittest.TestCase):
+
+    custom_arm_json_default_value = """
+    {
+        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+        "contentVersion": "1.0.0.0",
+
+
+        "parameters": {
+            "containergroupname": {
+                "type": "string",
+                "metadata": {
+                    "description": "Name for the container group"
+                },
+                "defaultValue":"simple-container-group"
+            },
+            "image": {
+                "type": "string",
+                "metadata": {
+                    "description": "Name for the container group"
+                },
+                "defaultValue":"mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+            },
+            "containername": {
+                "type": "string",
+                "metadata": {
+                    "description": "Name for the container"
+                },
+                "defaultValue":"simple-container"
+            },
+
+            "port": {
+                "type": "string",
+                "metadata": {
+                    "description": "Port to open on the container and the public IP address."
+                },
+                "defaultValue": "8080"
+            },
+            "cpuCores": {
+                "type": "string",
+                "metadata": {
+                    "description": "The number of CPU cores to allocate to the container."
+                },
+                "defaultValue": "1.0"
+            },
+            "memoryInGb": {
+                "type": "string",
+                "metadata": {
+                    "description": "The amount of memory to allocate to the container in gigabytes."
+                },
+                "defaultValue": "1.5"
+            },
+            "location": {
+                "type": "string",
+                "defaultValue": "[resourceGroup().location]",
+                "metadata": {
+                    "description": "Location for all resources."
+                }
+            }
+        },
+        "resources": [
+            {
+            "name": "[parameters('containergroupname')]",
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "apiVersion": "2023-05-01",
+            "location": "[parameters('location')]",
+
+            "properties": {
+                "containers": [
+                {
+                    "name": "[parameters('containername')]",
+                    "properties": {
+                    "image": "[parameters('image')]",
+                    "environmentVariables": [
+                        {
+                        "name": "PORT",
+                        "value": "80"
+                        }
+                    ],
+
+                    "ports": [
+                        {
+                        "port": "[parameters('port')]"
+                        }
+                    ],
+                    "command": [
+                        "/bin/bash",
+                        "-c",
+                        "while sleep 5; do cat /mnt/input/access.log; done"
+                    ],
+                    "resources": {
+                        "requests": {
+                        "cpu": "[parameters('cpuCores')]",
+                        "memoryInGb": "[parameters('memoryInGb')]"
+                        }
+                    }
+                    }
+                }
+                ],
+
+                "osType": "Linux",
+                "restartPolicy": "OnFailure",
+                "confidentialComputeProperties": {
+                "IsolationType": "SevSnp"
+                },
+                "ipAddress": {
+                "type": "Public",
+                "ports": [
+                    {
+                    "protocol": "Tcp",
+                    "port": "[parameters( 'port' )]"
+                    }
+                ]
+                }
+            }
+            }
+        ],
+        "outputs": {
+            "containerIPv4Address": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups/', parameters('containergroupname'))).ipAddress.ip]"
+            }
+        }
+    }
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.aci_arm_policy = load_policy_from_arm_template_str(
+            cls.custom_arm_json_default_value, ""
+        )[0]
+        cls.aci_arm_policy.populate_policy_content_for_all_images()
+
+    def test_arm_template_omit_id(self):
+        regular_image_json = json.loads(
+            self.aci_arm_policy.get_serialized_output(
+                output_type=OutputType.RAW, rego_boilerplate=False, omit_id=True
+            )
+        )
+
+        self.assertTrue(config.POLICY_FIELD_CONTAINERS_ID not in regular_image_json[0])
 
 
 class PolicyGeneratingAllowElevated(unittest.TestCase):
@@ -2835,10 +2977,7 @@ class PrintExistingPolicy(unittest.TestCase):
 
             self.assertEqual(exc_info.exception.code, 1)
 
-            with self.assertRaises(SystemExit) as exc_info:
-                acipolicygen_confcom(None, "test_template2.json", None, None, None, None, None, print_existing_policy=True)
-
-            self.assertEqual(exc_info.exception.code, 0)
+            acipolicygen_confcom(None, "test_template2.json", None, None, None, None, None, print_existing_policy=True)
         finally:
             # delete test file
             os.remove("test_template.json")
@@ -4841,7 +4980,7 @@ class PolicyGeneratingSecurityContextUserEdgeCases(unittest.TestCase):
         cls.dockerfile_path5 = os.path.join(cls.path, "./Dockerfile5.dockerfile")
         cls.dockerfile_path6 = os.path.join(cls.path, "./Dockerfile6.dockerfile")
 
-        cls.client = docker.from_env()
+        cls.client = DockerClient().get_client()
 
     @classmethod
     def tearDownClass(cls):
@@ -5351,7 +5490,7 @@ class PolicyStopSignal(unittest.TestCase):
         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
         "contentVersion": "1.0.0.0",
         "variables": {
-            "image": "mcr.microsoft.com/cbl-mariner/base/nginx:1.22-cm2.0"
+            "image": "mcr.microsoft.com/azurelinux/base/nginx:1"
         },
 
 
@@ -5478,4 +5617,145 @@ class PolicyStopSignal(unittest.TestCase):
         self.assertTrue(
             3 in
             regular_image_json[0][config.POLICY_FIELD_CONTAINERS_ELEMENTS_SIGNAL_CONTAINER_PROCESSES]
+        )
+
+
+class PolicyZeroSidecar(unittest.TestCase):
+    custom_arm_json = """
+    {
+        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+        "contentVersion": "1.0.0.0",
+        "variables": {
+            "image": "mcr.microsoft.com/cbl-mariner/distroless/python:3.9-nonroot"
+        },
+
+
+        "parameters": {
+            "containergroupname": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the container group"
+            },
+            "defaultValue":"simple-container-group"
+            },
+
+            "containername": {
+            "type": "string",
+            "metadata": {
+                "description": "Name for the container"
+            },
+            "defaultValue":"simple-container"
+            },
+            "port": {
+            "type": "string",
+            "metadata": {
+                "description": "Port to open on the container and the public IP address."
+            },
+            "defaultValue": "80"
+            },
+            "cpuCores": {
+            "type": "string",
+            "metadata": {
+                "description": "The number of CPU cores to allocate to the container."
+            },
+            "defaultValue": "1.0"
+            },
+            "memoryInGb": {
+            "type": "string",
+            "metadata": {
+                "description": "The amount of memory to allocate to the container in gigabytes."
+            },
+            "defaultValue": "1.5"
+            },
+            "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Location for all resources."
+            }
+            }
+        },
+        "resources": [
+            {
+            "name": "[parameters('containergroupname')]",
+            "type": "Microsoft.ContainerInstance/containerGroups",
+            "tags": {
+                "Annotate-zero-sidecar": "true"
+            },
+            "apiVersion": "2022-04-01-preview",
+            "location": "[parameters('location')]",
+            "properties": {
+                "containers": [
+                {
+                    "name": "[parameters('containername')]",
+
+                    "properties": {
+                    "image": "[variables('image')]",
+                    "command": [
+                        "python3"
+                    ],
+                    "ports": [
+                        {
+                        "port": "[parameters('port')]"
+                        }
+                    ],
+                    "resources": {
+                        "requests": {
+                        "cpu": "[parameters('cpuCores')]",
+                        "memoryInGb": "[parameters('memoryInGb')]"
+                        }
+                    }
+
+                }
+                }
+
+                ],
+
+                "osType": "Linux",
+                "restartPolicy": "OnFailure",
+                "confidentialComputeProperties": {
+                "IsolationType": "SevSnp"
+                },
+                "ipAddress": {
+                "type": "Public",
+                "ports": [
+                    {
+                    "protocol": "Tcp",
+                    "port": "[parameters( 'port' )]"
+                    }
+                ]
+                }
+            }
+            }
+        ],
+        "outputs": {
+            "containerIPv4Address": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups/', parameters('containergroupname'))).ipAddress.ip]"
+            }
+        }
+    }
+    """
+    aci_policy = None
+
+    @classmethod
+    def setUpClass(cls):
+
+        cls.aci_arm_policy = load_policy_from_arm_template_str(cls.custom_arm_json, "")[
+            0
+        ]
+        cls.aci_arm_policy.populate_policy_content_for_all_images()
+
+    def test_zero_sidecar(self):
+        content = self.aci_arm_policy.get_serialized_output(
+                output_type=OutputType.DEFAULT
+            )
+
+        _, fragments = decompose_confidential_properties(
+            content
+        )
+
+        # check for the empty fragments section
+        self.assertEqual(
+            fragments, []
         )

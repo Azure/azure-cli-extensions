@@ -490,10 +490,7 @@ LmZyYW1ld29yay5lcnJvcnN9Cg=="""
         with open(filename, "w") as f:
             f.write(template)
 
-        with self.assertRaises(SystemExit) as exc_info:
-            acipolicygen_confcom(None, filename, None, None, None, None, None)
-
-        self.assertEqual(exc_info.exception.code, 0)
+        acipolicygen_confcom(None, filename, None, None, None, None, None)
 
         with open(filename, "r") as f:
             template_with_policy = load_json_from_str(f.read())

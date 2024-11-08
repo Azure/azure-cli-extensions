@@ -9,7 +9,6 @@ from typing import List
 import os
 import sys
 import stat
-from pathlib import Path
 import platform
 import requests
 from knack.log import get_logger
@@ -34,27 +33,24 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
             os.makedirs(bin_folder)
 
         # get the most recent release artifacts from github
-        r = requests.get("https://api.github.com/repos/microsoft/hcsshim/releases")
-        bin_flag = False
-        exe_flag = False
-        # search for dmverity-vhd in the assets from hcsshim releases
+        r = requests.get("https://api.github.com/repos/microsoft/integrity-vhd/releases")
+        r.raise_for_status()
+        needed_assets = ["dmverity-vhd", "dmverity-vhd.exe"]
+        # these should be newest to oldest
         for release in r.json():
-            # these should be newest to oldest
-            for asset in release["assets"]:
-                # download the file if it contains dmverity-vhd
-                if "dmverity-vhd" in asset["name"]:
-                    if "exe" in asset["name"]:
-                        exe_flag = True
-                    else:
-                        bin_flag = True
+            # search for both windows and linux binaries
+            needed_asset_info = [asset for asset in release["assets"] if asset["name"] in needed_assets]
+            if len(needed_asset_info) == len(needed_assets):
+                for asset in needed_asset_info:
                     # get the download url for the dmverity-vhd file
                     exe_url = asset["browser_download_url"]
                     # download the file
                     r = requests.get(exe_url)
+                    r.raise_for_status()
                     # save the file to the bin folder
                     with open(os.path.join(bin_folder, asset["name"]), "wb") as f:
                         f.write(r.content)
-            if bin_flag and exe_flag:
+                # stop iterating through releases
                 break
 
     def __init__(self):
@@ -74,10 +70,10 @@ class SecurityPolicyProxy:  # pylint: disable=too-few-public-methods
             eprint("The extension for MacOS has not been implemented.")
         else:
             eprint(
-                "Unknown target platform. The extension only works with Windows, Linux and MacOS"
+                "Unknown target platform. The extension only works with Windows and Linux"
             )
 
-        self.policy_bin = Path(os.path.join(f"{script_directory}", f"{DEFAULT_LIB}"))
+        self.policy_bin = os.path.join(f"{script_directory}", f"{DEFAULT_LIB}")
 
         # check if the extension binary exists
         if not os.path.exists(self.policy_bin):
