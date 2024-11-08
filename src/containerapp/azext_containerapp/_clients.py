@@ -1178,7 +1178,7 @@ class SessionCodeInterpreterPreviewClient():
         return r.json()
 
     @classmethod
-    def upload(cls, cmd, identifier, file, path, session_pool_endpoint, no_wait=False):
+    def upload(cls, cmd, identifier, filepath, path, session_pool_endpoint, no_wait=False):
         url_fmt = "{}/files?{}identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
@@ -1193,8 +1193,8 @@ class SessionCodeInterpreterPreviewClient():
         headers = {'Authorization': 'Bearer ' + token}
 
         try:
-            data_file = open(file, "rb")
-            file_name = os.path.basename(file)
+            data_file = open(filepath, "rb")
+            file_name = os.path.basename(filepath)
             files = [("file", (file_name, data_file))]
 
             r = requests.post(

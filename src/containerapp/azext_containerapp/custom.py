@@ -2988,7 +2988,7 @@ def upload_session_code_interpreter(cmd,
                                     name,
                                     resource_group_name,
                                     identifier,
-                                    file,
+                                    filepath,
                                     path=None,
                                     session_pool_location=None):
     raw_parameters = locals()
