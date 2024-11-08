@@ -2,7 +2,7 @@
 
 Release History
 ===============
-1.4.0
+1.3.1
 +++++
 * Fix argument regex requirement (fix: https://github.com/Azure/azure-rest-api-specs/pull/31130)
 * Stable version
