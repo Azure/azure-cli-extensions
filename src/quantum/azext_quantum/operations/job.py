@@ -62,9 +62,9 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
         'created_before': created_before,
         'Name': job_name,
         'skip': skip,
-        'num_of_results': jobs_per_page
+        'top': jobs_per_page
     }
-    return client.list(location, pagination_params)
+    return client.list(info.location, pagination_params)
 
 
 def get(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):

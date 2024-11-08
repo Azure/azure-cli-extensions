@@ -54,7 +54,7 @@ def list(cmd, resource_group_name, workspace_name, location):
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     client = cf_providers(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    return client.get_status()
+    return client.list(info.location)
 
 
 def clear(cmd):
