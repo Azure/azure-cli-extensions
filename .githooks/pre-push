@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-":" //; if command -v pwsh >/dev/null 2>&1; then pwsh -ExecutionPolicy Bypass -File .githooks/pre-push.ps1; else sh .githooks/pre-push.sh; fi     # Try PowerShell Core first, then sh on Unix
+":" //; if command -v pwsh >/dev/null 2>&1; then pwsh -ExecutionPolicy Bypass -File .githooks/pre-push.ps1; else sh .githooks/pre-push.sh; fi; exit $?     # Try PowerShell Core first, then sh on Unix
 ":" //; exit                         # Skip rest on Unix
 
 @echo off
