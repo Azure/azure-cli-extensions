@@ -795,6 +795,13 @@ def load_arguments(self, _):
             type=str,
             help="The name " "of the environment.",
         )
+        c.argument(
+            "force",
+            arg_type=get_three_state_flag(),
+            help="Optional to force environment deletion even if the environment definition does not exist. "
+            "This is a best-effort delete, and anything custom that forces resource creation beyond the associated resource group may not be deleted.",
+            is_preview=True,
+        )
 
     with self.argument_context("devcenter dev catalog list") as c:
         c.argument(
