@@ -126,7 +126,6 @@ class CoseSignToolProxy:  # pylint: disable=too-few-public-methods
             arg_list.extend(["-issuer", iss])
 
         call_cose_sign_tool(arg_list, "Error signing the policy fragment")
-
         return True
 
     def create_issuer(self, cert_path: str) -> str:
