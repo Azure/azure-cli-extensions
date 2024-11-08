@@ -68,10 +68,18 @@ spec:
         try:
             with open(filename, "w") as f:
                 f.write(KataPolicyGen.pod_string)
-            with self.assertRaises(SystemExit) as wrapped_exit:
+            if host_os_linux:
                 katapolicygen_confcom(
                     filename, None
                 )
+            else:
+                with self.assertRaises(SystemExit) as wrapped_exit:
+                    katapolicygen_confcom(
+                    filename, None
+                )
+                self.assertNotEqual(wrapped_exit.exception.code, 0)
+                return
+
             with open(filename, "r") as f:
                 content = f.read()
         finally:
@@ -81,13 +89,13 @@ spec:
             self.assertNotEqual(content, KataPolicyGen.pod_string, "Policy content not changed in yaml")
 
     def test_print_version(self):
-        if not host_os_linux:
+        if host_os_linux:
+            katapolicygen_confcom(
+                None, None, print_version=True
+            )
+        else:
             with self.assertRaises(SystemExit) as wrapped_exit:
                 katapolicygen_confcom(
                     None, None, print_version=True
                 )
             self.assertNotEqual(wrapped_exit.exception.code, 0)
-        else:
-            katapolicygen_confcom(
-                None, None, print_version=True
-            )
