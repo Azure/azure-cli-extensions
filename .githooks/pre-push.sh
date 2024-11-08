@@ -34,6 +34,7 @@ azdev style --repo ./ --tgt $currentBranch --src upstream/main
 if [ $? -ne 0 ]; then
     error_msg=$(azdev style --repo ./ --tgt $currentBranch --src upstream/main 2>&1)
     if echo "$error_msg" | grep -q "No modules"; then
+        echo "\033[0;32mPre-push hook passed.\033[0m"
         exit 0
     fi
     echo "\033[0;31mError: azdev style check failed.\033[0m"
