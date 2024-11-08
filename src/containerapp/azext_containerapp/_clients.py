@@ -1157,6 +1157,8 @@ class SessionPoolPreviewClient():
 
 
 class SessionCodeInterpreterPreviewClient():
+    api_version = PREVIEW_API_VERSION
+    
     @classmethod
     def execute(cls, cmd, identifier, code_interpreter_envelope, session_pool_endpoint, no_wait=False):
         url_fmt = "{}/executions?identifier={}&api-version={}"

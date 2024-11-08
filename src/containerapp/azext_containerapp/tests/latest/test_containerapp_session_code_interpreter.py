@@ -51,8 +51,8 @@ class ContainerAppSessionCodeInterperterTests(ScenarioTest):
             identifier_name,
             code),
             checks=[
-            JMESPathCheck('properties.status', 'Success'),
-            JMESPathCheck('properties.stdout', 'Hello world\n')
+            JMESPathCheck('status', 'Succeeded'),
+            JMESPathCheck('result.stdout', 'Hello world\n')
         ])
 
         # upload a file also add session pool location
@@ -64,7 +64,7 @@ class ContainerAppSessionCodeInterperterTests(ScenarioTest):
             txt_file,
             TEST_LOCATION),
             checks=[
-            JMESPathCheck('value[0].properties.filename', 'cert.txt'),
+            JMESPathCheck('name', 'cert.txt'),
         ])
 
         # list files
@@ -89,7 +89,7 @@ class ContainerAppSessionCodeInterperterTests(ScenarioTest):
             identifier_name,
             "cert.txt"),
             checks=[
-            JMESPathCheck('properties.filename', 'cert.txt'),
+            JMESPathCheck('name', 'cert.txt'),
         ])
 
         # delete file
