@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network manager verifier-workspace list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List list of Verifier Workspaces.

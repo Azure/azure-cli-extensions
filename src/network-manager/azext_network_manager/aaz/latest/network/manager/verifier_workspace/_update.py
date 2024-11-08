@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network manager verifier-workspace update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update Verifier Workspace.

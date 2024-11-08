@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network manager ipam-pool get-pool-usage",
-    is_preview=True,
 )
 class GetPoolUsage(AAZCommand):
     """Get the Pool Usage.

@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network manager ipam-pool update",
-    is_preview=True,
 )
 class Update(AAZCommand):
     """Update the Pool resource.

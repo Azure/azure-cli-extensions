@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network manager ipam-pool list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List list of Pool resources at Network Manager level.

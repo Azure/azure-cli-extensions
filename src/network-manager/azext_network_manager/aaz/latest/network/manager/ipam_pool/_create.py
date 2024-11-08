@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network manager ipam-pool create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create the Pool resource.

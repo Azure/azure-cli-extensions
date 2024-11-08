@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network manager ipam-pool static-cidr list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List list of Static CIDR resources at Network Manager level.

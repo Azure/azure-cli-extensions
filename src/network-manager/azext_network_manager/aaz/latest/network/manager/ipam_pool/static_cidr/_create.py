@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network manager ipam-pool static-cidr create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create the Static CIDR resource.

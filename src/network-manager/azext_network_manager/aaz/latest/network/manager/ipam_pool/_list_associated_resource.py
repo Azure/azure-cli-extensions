@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network manager ipam-pool list-associated-resource",
-    is_preview=True,
 )
 class ListAssociatedResource(AAZCommand):
     """List Associated Resource in the Pool.

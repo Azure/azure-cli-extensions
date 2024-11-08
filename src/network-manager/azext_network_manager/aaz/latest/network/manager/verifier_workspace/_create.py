@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network manager verifier-workspace create",
-    is_preview=True,
 )
 class Create(AAZCommand):
     """Create Verifier Workspace.

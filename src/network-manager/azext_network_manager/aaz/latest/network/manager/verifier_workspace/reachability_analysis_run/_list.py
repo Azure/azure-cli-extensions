@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network manager verifier-workspace reachability-analysis-run list",
-    is_preview=True,
 )
 class List(AAZCommand):
     """List list of Reachability Analysis Runs.
