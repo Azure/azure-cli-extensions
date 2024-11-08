@@ -1,5 +1,6 @@
 from typing import Dict
 from random import randint
+from abc import ABC, abstractmethod
 
 
 class DataCollector:
