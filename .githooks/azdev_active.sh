@@ -2,7 +2,7 @@
 
 # Check if in the python environment
 PYTHON_FILE=$(which python)
-echo "Python file path: $PYTHON_FILE"
+echo "PYTHON_PATH: $PYTHON_FILE"
 
 if [ -z "$PYTHON_FILE" ]; then
     echo "\033[0;31mError: Python not found in PATH\033[0m"
@@ -31,7 +31,7 @@ fi
 
 PYTHON_ENV_FOLDER=$(dirname "$PYTHON_ENV_FOLDER")
 
-CONFIG_FILE="$AZDEV_ENV_CONFIG_FOLDER${PYTHON_ENV_FOLDER:2}/config"
+CONFIG_FILE="$AZDEV_ENV_CONFIG_FOLDER${PYTHON_ENV_FOLDER}/config"
 if [ ! -f "$CONFIG_FILE" ]; then
     echo "CONFIG_FILE does not exist: $CONFIG_FILE"
     echo "\033[0;31mError: azdev environment is not completed, please run 'azdev setup' first.\033[0m"

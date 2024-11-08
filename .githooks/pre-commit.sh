@@ -1,9 +1,10 @@
 #!/bin/bash
 echo "\033[0;32mRunning pre-commit hook in bash ...\033[0m"
 
+
 # run azdev_active script
-$scriptPath = Join-Path $PSScriptRoot "azdev_active.sh"
-. $scriptPath
+SCRIPT_PATH="$(dirname "$0")/azdev_active.sh"
+. "$SCRIPT_PATH"
 if [ $? -ne 0 ]; then
     exit 1
 fi
@@ -18,9 +19,9 @@ fi
 has_secrets=0
 for FILE in `git diff --cached --name-only --diff-filter=AM $against` ; do
     # Check if the file contains secrets
-    detected=$(azdev scan -f $FILE | python -c "import sys, json; print(json.load(sys.stdin)['secrets_detected'])")
-    if [ $detected == 'True' ]; then
-      echo "\033[0;31mDetected secrets from "$FILE", You can run 'azdev mask' to remove secrets before commit.\033[0m"
+    detected=$(azdev scan -f "$FILE" | python -c "import sys, json; print(json.load(sys.stdin)['secrets_detected'])")
+    if [ "$detected" = "True" ]; then
+      echo "\033[0;31mDetected secrets from $FILE, You can run 'azdev mask' to remove secrets before commit.\033[0m"
       has_secrets=1
     fi
 done

@@ -1,6 +1,6 @@
 # Check if in the python environment
 $pythonPath = (Get-Command python -ErrorAction SilentlyContinue).Path
-Write-Host "Python file path: $pythonPath"
+Write-Host "PYTHON_PATH: $pythonPath"
 
 if (-not $pythonPath) {
     Write-Host "Error: Python not found in PATH" -ForegroundColor Red

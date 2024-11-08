@@ -3,8 +3,8 @@
 echo "\033[0;32mRunning pre-push hook in bash ...\033[0m"
 
 # run azdev_active script
-scriptPath="${0%/*}/azdev_active.sh"
-. "$scriptPath"
+SCRIPT_PATH="$(dirname "$0")/azdev_active.sh"
+. "$SCRIPT_PATH"
 if [ $? -ne 0 ]; then
     exit 1
 fi
