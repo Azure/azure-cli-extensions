@@ -267,4 +267,4 @@ def load_command_table(self, args):
         g.custom_command('add', 'add_maintenance_config')
         g.custom_command('update', 'update_maintenance_config')
         g.custom_command('remove', 'remove_maintenance_config', confirmation=True)
-        g.custom_command('show', 'show_maintenance_config')
+        g.custom_show_command('show', 'show_maintenance_config')
