@@ -67,6 +67,9 @@ class RunDataExtract(AAZCommand):
             arg_group="BareMetalMachineRunDataExtractsParameters",
             help="The list of curated data extraction commands to be executed directly against the target machine.",
             required=True,
+            fmt=AAZListArgFormat(
+                min_length=1,
+            ),
         )
         _args_schema.limit_time_seconds = AAZIntArg(
             options=["--limit-time-seconds"],
@@ -283,7 +286,7 @@ class _RunDataExtractHelper:
         additional_info.Element = AAZObjectType()
 
         _element = _schema_error_detail_read.additional_info.Element
-        _element.info = AAZObjectType(
+        _element.info = AAZFreeFormDictType(
             flags={"read_only": True},
         )
         _element.type = AAZStrType(

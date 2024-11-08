@@ -1675,21 +1675,26 @@ def cosmosdb_data_transfer_copy_job(client,
 
 def cosmosdb_copy_job(client,
                       resource_group_name,
-                      dest_account,
                       src_account,
+                      dest_account=None,
                       src_cassandra=None,
                       dest_cassandra=None,
                       src_nosql=None,
                       dest_nosql=None,
                       src_mongo=None,
                       dest_mongo=None,
+                      dest_mongo_vcore=None,
                       job_name=None,
                       worker_count=0,
                       host_copy_on_src=False,
                       mode="Offline"):
     job_create_properties = {}
-    is_cross_account = src_account != dest_account
+    if dest_account is None and dest_mongo_vcore is None:
+        raise CLIError('Invalid input: dest_account is a required parameter')
+
+    is_cross_account = False if dest_mongo_vcore is not None else src_account != dest_account
     remote_account_name = dest_account if host_copy_on_src else src_account
+    host_account_name = src_account if (dest_mongo_vcore is not None or host_copy_on_src) else dest_account
 
     source = None
     if src_cassandra is not None:
@@ -1746,6 +1751,11 @@ def cosmosdb_copy_job(client,
         else:
             destination = dest_mongo
 
+    if dest_mongo_vcore is not None:
+        if destination is not None:
+            raise CLIError('Invalid input: multiple destination components')
+        destination = dest_mongo_vcore
+
     if destination is None:
         raise CLIError('destination component is missing')
     job_create_properties['destination'] = destination
@@ -1760,8 +1770,6 @@ def cosmosdb_copy_job(client,
 
     if job_name is None:
         job_name = _gen_guid()
-
-    host_account_name = src_account if host_copy_on_src else dest_account
 
     return client.create(resource_group_name=resource_group_name,
                          account_name=host_account_name,

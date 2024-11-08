@@ -177,7 +177,7 @@ helps[
         text: |-
           az k8s-configuration flux kustomization update --resource-group my-resource-group \\
           --cluster-name mycluster --cluster-type connectedClusters --name myconfig \\
-          --kustomization-name my-kustomization --path ./my/new-path --prune --force
+          --kustomization-name my-kustomization --path ./my/new-path --prune --force --disable-health-check
 """
 
 helps[

@@ -301,7 +301,8 @@ def convert_yaml_to_test(data):
         new_body["secrets"] = parse_secrets(data.get("secrets"))
     if data.get("env"):
         new_body["environmentVariables"] = parse_env(data.get("env"))
-
+    if data.get("publicIPDisabled"):
+        new_body["publicIPDisabled"] = data.get("publicIPDisabled")
     # quick test and split csv not supported currently in CLI
     new_body["loadTestConfiguration"]["quickStartTest"] = False
     if data.get("quickStartTest"):
@@ -365,6 +366,7 @@ def create_or_update_test_with_config(
     key_vault_reference_identity=None,
     subnet_id=None,
     split_csv=None,
+    disable_public_ip=None,
 ):
     logger.info(
         "Creating a request body for create or update test using config and parameters."
@@ -397,6 +399,10 @@ def create_or_update_test_with_config(
             new_body["keyvaultReferenceIdentityType"] = IdentityType.SystemAssigned
             new_body.pop("keyvaultReferenceIdentityId")
     subnet_id = subnet_id or yaml_test_body.get("subnetId")
+    if disable_public_ip is not None:
+        new_body["publicIPDisabled"] = disable_public_ip
+    else:
+        new_body["publicIPDisabled"] = yaml_test_body.get("publicIPDisabled", False)
     if subnet_id:
         if subnet_id.casefold() in ["null", ""]:
             new_body["subnetId"] = None
@@ -485,6 +491,7 @@ def create_or_update_test_without_config(
     key_vault_reference_identity=None,
     subnet_id=None,
     split_csv=None,
+    disable_public_ip=None,
 ):
     logger.info(
         "Creating a request body for test using parameters and old test body (in case of update)."
@@ -549,6 +556,8 @@ def create_or_update_test_without_config(
         new_body["loadTestConfiguration"]["splitAllCSVs"] = body[
             "loadTestConfiguration"
         ]["splitAllCSVs"]
+    if disable_public_ip is not None:
+        new_body["publicIPDisabled"] = disable_public_ip
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body
 
