@@ -3295,7 +3295,7 @@ def update_maintenance_config(cmd, resource_group_name, env_name, duration=None,
 
 def remove_maintenance_config(cmd, resource_group_name, env_name):
     raw_parameters = locals()
-    maintenance_config_decorator = MaintenanceConfigPreviewDecorator(
+    maintenance_config_decorator = ContainerAppEnvMaintenanceConfigPreviewDecorator(
         cmd=cmd,
         client=MaintenanceConfigPreviewClient,
         raw_parameters=raw_parameters,
@@ -3307,7 +3307,7 @@ def remove_maintenance_config(cmd, resource_group_name, env_name):
 
 def show_maintenance_config(cmd, resource_group_name, env_name):
     raw_parameters = locals()
-    maintenance_config_decorator = MaintenanceConfigPreviewDecorator(
+    maintenance_config_decorator = ContainerAppEnvMaintenanceConfigPreviewDecorator(
         cmd=cmd,
         client=MaintenanceConfigPreviewClient,
         raw_parameters=raw_parameters,
