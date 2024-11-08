@@ -27,7 +27,7 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 PREVIEW_API_VERSION = "2024-10-02-preview"
-SESSION_API_VERSION = "2024-02-02-preview"
+# SESSION_API_VERSION = "2024-02-02-preview"
 POLLING_TIMEOUT = 1500  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
@@ -1018,7 +1018,7 @@ class JavaComponentPreviewClient():
 
 
 class SessionPoolPreviewClient():
-    api_version = SESSION_API_VERSION
+    api_version = PREVIEW_API_VERSION
 
     @classmethod
     def create(cls, cmd, resource_group_name, name, session_pool_envelope, no_wait=False):
@@ -1157,16 +1157,13 @@ class SessionPoolPreviewClient():
 
 
 class SessionCodeInterpreterPreviewClient():
-    api_version = SESSION_API_VERSION
-
     @classmethod
     def execute(cls, cmd, identifier, code_interpreter_envelope, session_pool_endpoint, no_wait=False):
         url_fmt = "{}/executions?identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
             identifier,
-            "2024-10-02-preview")
-            # cls.api_version)
+            cls.api_version)
         logger.warning(request_url)
         logger.warning(code_interpreter_envelope)
         r = send_raw_request(cmd.cli_ctx, "POST", request_url, body=json.dumps(code_interpreter_envelope), resource=SESSION_RESOURCE)
@@ -1187,8 +1184,7 @@ class SessionCodeInterpreterPreviewClient():
             session_pool_endpoint,
             "path=" + path + "&" if path is not None else "",
             identifier,
-            "2024-10-02-preview")
-            # cls.api_version)
+            cls.api_version)
 
         from azure.cli.core._profile import Profile
         profile = Profile(cli_ctx=cmd.cli_ctx)
@@ -1230,8 +1226,7 @@ class SessionCodeInterpreterPreviewClient():
             filename,
             "path=" + path + "&" if path is not None else "",
             identifier,
-            "2024-10-02-preview")
-            # cls.api_version)
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
         # print out the file content as bytes decoded as string
@@ -1247,8 +1242,7 @@ class SessionCodeInterpreterPreviewClient():
             filename,
             "path=" + path + "&" if path is not None else "",
             identifier,
-            "2024-10-02-preview")
-            # cls.api_version)
+            cls.api_version)
         logger.warning(request_url)
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
 
@@ -1262,8 +1256,7 @@ class SessionCodeInterpreterPreviewClient():
             filename,
             "path=" + path + "&" if path is not None else "",
             identifier,
-            "2024-10-02-preview")
-            # cls.api_version)
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "DELETE", request_url, resource=SESSION_RESOURCE)
 
@@ -1285,8 +1278,7 @@ class SessionCodeInterpreterPreviewClient():
             session_pool_endpoint,
             identifier,
             path,
-            "2024-10-02-preview")
-            # cls.api_version)
+            cls.api_version)
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
         return r.json()
