@@ -1516,11 +1516,13 @@ def generate_request_payload(
         or arc_agent_profile is not None
     ):
         # Set additional parameters
-        private_link_state = None
+        kwargs = {}
         if enable_private_link is not None:
-            private_link_state = (
-                "Enabled" if enable_private_link is True else "Disabled"
+            kwargs["private_link_state"] = (
+                "Enabled" if enable_private_link else "Disabled"
             )
+        if private_link_scope_resource_id:
+            kwargs["private_link_scope_resource_id"] = private_link_scope_resource_id
 
         cc = ConnectedCluster(
             location=location,
@@ -1529,8 +1531,6 @@ def generate_request_payload(
             tags=tags,
             distribution=kubernetes_distro,
             infrastructure=kubernetes_infra,
-            private_link_scope_resource_id=private_link_scope_resource_id,
-            private_link_state=private_link_state,
             azure_hybrid_benefit=azure_hybrid_benefit,
             distribution_version=distribution_version,
             arc_agent_profile=arc_agent_profile,
@@ -1538,6 +1538,7 @@ def generate_request_payload(
             arc_agentry_configurations=arc_agentry_configurations,
             oidc_issuer_profile=oidc_profile,
             security_profile=security_profile,
+            **kwargs,
         )
 
     return cc
