@@ -8,6 +8,9 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
+# Run command azdev scan
+Write-Host "Running azdev scan..." -ForegroundColor Green
+
 # Check if we have a previous commit to compare against
 if (git rev-parse --verify HEAD 2>$null) {
     $against = "HEAD"

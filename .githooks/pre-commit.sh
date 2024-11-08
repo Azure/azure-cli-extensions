@@ -1,13 +1,15 @@
 #!/bin/bash
 echo "\033[0;32mRunning pre-commit hook in bash ...\033[0m"
 
-
 # run azdev_active script
 SCRIPT_PATH="$(dirname "$0")/azdev_active.sh"
 . "$SCRIPT_PATH"
 if [ $? -ne 0 ]; then
     exit 1
 fi
+
+# Run command azdev scan
+echo "\033[0;32mRunning azdev scan...\033[0m"
 
 if git rev-parse --verify HEAD >/dev/null 2>&1
 then
