@@ -39,4 +39,3 @@ if [ ! -f "$CONFIG_FILE" ]; then
 fi
 
 echo "CONFIG_FILE: $CONFIG_FILE"
-exit 0

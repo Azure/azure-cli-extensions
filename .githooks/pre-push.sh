@@ -33,7 +33,7 @@ echo "\033[0;32mRunning azdev style...\033[0m"
 azdev style --repo ./ --tgt $currentBranch --src upstream/main
 if [ $? -ne 0 ]; then
     error_msg=$(azdev style --repo ./ --tgt $currentBranch --src upstream/main 2>&1)
-    if [[ $error_msg == *"No modules"* ]]; then
+    if echo "$error_msg" | grep -q "No modules"; then
         exit 0
     fi
     echo "\033[0;31mError: azdev style check failed.\033[0m"
