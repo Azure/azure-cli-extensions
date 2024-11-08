@@ -46,10 +46,11 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-# Run command azdev style
-Write-Host "Running azdev style..." -ForegroundColor Green
 # get the current branch name
 $currentBranch = git branch --show-current
+
+# Run command azdev style
+Write-Host "Running azdev style..." -ForegroundColor Green
 azdev style --repo ./ --tgt $currentBranch --src upstream/main
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: azdev style check failed." -ForegroundColor Red
