@@ -33,4 +33,6 @@ if ($hasSecrets -eq 1) {
     Write-Host "Secret detected. If you want to skip that, run add '--no-verify' in the end of 'git commit' command." -ForegroundColor Red
     exit 1
 }
+
+Write-Host "Pre-commit hook passed." -ForegroundColor Green
 exit 0

@@ -29,4 +29,6 @@ if [ $has_secrets -eq 1 ]; then
     echo "\033[0;31mSecret detected. If you want to skip that, run add '--no-verify' in the end of 'git commit' command.\033[0m"
     exit 1
 fi
+
+echo "\033[0;32mPre-commit hook passed.\033[0m"
 exit 0
