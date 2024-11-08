@@ -49,19 +49,23 @@ if ($LASTEXITCODE -ne 0) {
 # get the current branch name
 $currentBranch = git branch --show-current
 
-# Run command azdev style
-Write-Host "Running azdev style..." -ForegroundColor Green
-azdev style --repo ./ --tgt $currentBranch --src upstream/main
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "Error: azdev style check failed." -ForegroundColor Red
-    exit 1
-}
-
 # Run command azdev lint
 Write-Host "Running azdev lint..." -ForegroundColor Green
 azdev linter --repo ./ --tgt $currentBranch --src upstream/main
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: azdev lint check failed." -ForegroundColor Red
+    exit 1
+}
+
+# Run command azdev style
+Write-Host "Running azdev style..." -ForegroundColor Green
+azdev style --repo ./ --tgt $currentBranch --src upstream/main
+if ($LASTEXITCODE -ne 0) {
+    $error_msg = azdev style --repo ./ --tgt $currentBranch --src upstream/main 2>&1
+    if ($error_msg -like "*No modules*") {
+        exit 0
+    }
+    Write-Host "Error: azdev style check failed." -ForegroundColor Red
     exit 1
 }
 
