@@ -81,7 +81,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.install_azure_monitor_agent_enable_status = AAZStrArg(
-            options=["--install-azure-monitor-agent-enable-status"],
+            options=["-i", "--install-azure-monitor-agent-enable-status"],
             arg_group="DevBoxProvisioningSettings",
             help="Whether project catalogs associated with projects in this dev center can be configured to sync catalog items.",
             nullable=True,
@@ -114,7 +114,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.microsoft_hosted_network_enable_status = AAZStrArg(
-            options=["--microsoft-hosted-network-enable-status"],
+            options=["-m", "--microsoft-hosted-network-enable-status"],
             arg_group="NetworkSettings",
             help="Indicates whether pools in this Dev Center can use Microsoft Hosted Networks. Defaults to Enabled if not set.",
             nullable=True,
@@ -125,7 +125,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.project_catalog_item_sync_enable_status = AAZStrArg(
-            options=["--project-catalog-item-sync-enable-status"],
+            options=["-p", "--project-catalog-item-sync-enable-status"],
             arg_group="ProjectCatalogSettings",
             help="Whether project catalogs associated with projects in this dev center can be configured to sync catalog items.",
             nullable=True,
@@ -149,7 +149,7 @@ class Update(AAZCommand):
             nullable=True,
         )
         _args_schema.restricted_resource_types = AAZListArg(
-            options=["--restricted-resource-types"],
+            options=["-r", "--restricted-resource-types"],
             arg_group="Properties",
             help="Indicates the resource types that are restricted from being accessed by a project unless allowed by a project policy. Allowed values are \"Images\", \"AttachedNetworks\", and \"Skus\".",
             nullable=True,

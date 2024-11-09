@@ -168,7 +168,7 @@ class Update(AAZCommand):
             enum={"Disabled": "Disabled", "Enabled": "Enabled"},
         )
         _args_schema.managed_virtual_network_regions = AAZListArg(
-            options=["--managed-virtual-network-regions"],
+            options=["-m", "--managed-virtual-network-regions"],
             arg_group="Properties",
             help="The regions of the managed virtual network (required when managedNetworkType is Managed).",
             nullable=True,
