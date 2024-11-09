@@ -134,6 +134,8 @@ class ContainerappSessionPoolTests(ScenarioTest):
     @ResourceGroupPreparer()
     def test_containerapp_sessionpool_registry(self, resource_group):
         location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastasia"
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='aca-sp-env-registry', length=24)
@@ -193,10 +195,12 @@ class ContainerappSessionPoolTests(ScenarioTest):
     @ResourceGroupPreparer()
     def test_containerapp_sessionpool_registry_identity(self, resource_group):
         location = TEST_LOCATION
+        if format_location(location) == format_location(STAGE_LOCATION):
+            location = "eastasia"
         self.cmd('configure --defaults location={}'.format(location))
 
         user_identity_name = self.create_random_name(prefix='sp-msi1', length=24)
-        identity_json = self.cmd('identity create -g {} -n {}'.format(resource_group, user_identity_name)).get_output_in_json()
+        identity_json = self.cmd('identity create -g {} -n {} -l {}'.format(resource_group, user_identity_name, location)).get_output_in_json()
         user_identity_id = identity_json["id"]
         principal_id = identity_json["principalId"]
         
@@ -211,7 +215,7 @@ class ContainerappSessionPoolTests(ScenarioTest):
         image_source = "mcr.microsoft.com/k8se/quickstart:latest"
         image_name = f"{acr}.azurecr.io/k8se/quickstart:latest"
 
-        acr_resource_id = self.cmd(f'acr create --sku basic -n {acr} -g {resource_group}').get_output_in_json()["id"]
+        acr_resource_id = self.cmd(f'acr create --sku basic -n {acr} -g {resource_group} -l {location}').get_output_in_json()["id"]
         self.cmd(f'acr import -n {acr} --source {image_source}')
         roleAssignmentName = self.create_guid()
         self.cmd(f'role assignment create --role acrpull --assignee {principal_id} --scope {acr_resource_id} --name {roleAssignmentName}')
