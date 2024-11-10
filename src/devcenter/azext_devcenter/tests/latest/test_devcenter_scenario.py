@@ -1671,13 +1671,13 @@ class DevcenterScenarioTest(ScenarioTest):
             '--dev-center "{devcenterName}" '
             '--name "{projectPolicyName}" '
             '--resource-group "{rg}" '
-            '--resource-policies \'[{{"resources": "/subscriptions/974ae608-fbe5-429f-83ae-924a64019bf3/resourceGroups/cli-test/providers/Microsoft.DevCenter/devcenters/cli-test-devcenter/attachednetworks/amlim-nc"}}]\' '
-            '--scopes "[\"/subscriptions/974ae608-fbe5-429f-83ae-924a64019bf3/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project\"]" ',
+            '--resource-policies \'[{{"resources": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/devcenters/cli-test-devcenter/attachednetworks/amlim-nc"}}]\' '
+            '--scopes "[\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project\"]" ',
             checks=[
                 self.check("name", "{projectPolicyName}"),
                 self.check("resourceGroup", "{rg}"),
-                self.check("scopes[0]", "/subscriptions/974ae608-fbe5-429f-83ae-924a64019bf3/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project"),
-                self.check("resourcePolicies[0].resources", "/subscriptions/974ae608-fbe5-429f-83ae-924a64019bf3/resourceGroups/cli-test/providers/Microsoft.DevCenter/devcenters/cli-test-devcenter/attachednetworks/amlim-nc"),
+                self.check("scopes[0]", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project"),
+                self.check("resourcePolicies[0].resources", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/devcenters/cli-test-devcenter/attachednetworks/amlim-nc"),
             ],
         )
 
@@ -1699,8 +1699,8 @@ class DevcenterScenarioTest(ScenarioTest):
             checks=[
                 self.check("name", "{projectPolicyName}"),
                 self.check("resourceGroup", "{rg}"),
-                self.check("scopes[0]", "/subscriptions/974ae608-fbe5-429f-83ae-924a64019bf3/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project"),
-                self.check("resourcePolicies[0].resources", "/subscriptions/974ae608-fbe5-429f-83ae-924a64019bf3/resourceGroups/cli-test/providers/Microsoft.DevCenter/devcenters/cli-test-devcenter/attachednetworks/amlim-nc"),
+                self.check("scopes[0]", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project"),
+                self.check("resourcePolicies[0].resources", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/devcenters/cli-test-devcenter/attachednetworks/amlim-nc"),
             ],
         )
 
@@ -1709,13 +1709,13 @@ class DevcenterScenarioTest(ScenarioTest):
             '--dev-center "{devcenterName}" '
             '--name "{projectPolicyName}" '
             '--resource-group "{rg}" '
-            '--resource-policies \'[{{"resources": "/subscriptions/974ae608-fbe5-429f-83ae-924a64019bf3/resourceGroups/cli-test/providers/Microsoft.DevCenter/devcenters/cli-test-devcenter/attachednetworks/amlim-nc-eastus"}}]\' '
-            '--scopes "[\"/subscriptions/974ae608-fbe5-429f-83ae-924a64019bf3/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project2\"]" ',
+            '--resource-policies \'[{{"resources": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/devcenters/cli-test-devcenter/attachednetworks/amlim-nc-eastus"}}]\' '
+            '--scopes "[\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project2\"]" ',
             checks=[
                 self.check("name", "{projectPolicyName}"),
                 self.check("resourceGroup", "{rg}"),
-                self.check("scopes[0]", "/subscriptions/974ae608-fbe5-429f-83ae-924a64019bf3/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project2"),
-                self.check("resourcePolicies[0].resources", "/subscriptions/974ae608-fbe5-429f-83ae-924a64019bf3/resourceGroups/cli-test/providers/Microsoft.DevCenter/devcenters/cli-test-devcenter/attachednetworks/amlim-nc-eastus"),
+                self.check("scopes[0]", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project2"),
+                self.check("resourcePolicies[0].resources", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/devcenters/cli-test-devcenter/attachednetworks/amlim-nc-eastus"),
             ],
         )
 
