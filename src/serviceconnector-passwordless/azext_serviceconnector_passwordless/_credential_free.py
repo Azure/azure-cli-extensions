@@ -47,6 +47,10 @@ AUTHTYPES = {
 # For other linker, ignore the steps
 def get_enable_mi_for_db_linker_func(yes=False, new=False):
     def enable_mi_for_db_linker(cmd, source_id, target_id, auth_info, client_type, connection_name, *args, **kwargs):
+        # azdev style requires all args to be used, this is a workaround
+        _ = args
+        _ = kwargs
+
         # return if connection is not for db mi
         if auth_info['auth_type'] not in [AUTHTYPES[AUTH_TYPE.SystemIdentity],
                                           AUTHTYPES[AUTH_TYPE.UserIdentity],
