@@ -618,7 +618,6 @@ class PoolCreate(_PoolCreate):
     def _build_arguments_schema(cls, *args, **kwargs):
         args_schema = super()._build_arguments_schema(*args, **kwargs)
         args_schema.license_type._registered = False
-        args_schema.devbox_definition_name._required = True
         args_schema.local_administrator._required = True
         return args_schema
 
@@ -630,10 +629,18 @@ class PoolCreate(_PoolCreate):
             args.network_connection_name
         ):
             args.network_connection_name = "managedNetwork"
+        if args.devbox_definition_type == "Value" and has_value(
+            args.devbox_definition_image_reference.id
+        ):
+            args.devbox_definition_name = str(args.devbox_definition_image_reference.id).rstrip('/').rsplit('/', 1)[-1]
         validate_pool_create(
             args.virtual_network_type,
             args.network_connection_name,
             args.managed_virtual_network_regions,
+            args.devbox_definition_image_reference,
+            args.devbox_definition_sku,
+            args.devbox_definition_type,
+            args.devbox_definition_name
         )
 
     def _cli_arguments_loader(self):

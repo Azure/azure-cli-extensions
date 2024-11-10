@@ -18,7 +18,7 @@ class Create(AAZCommand):
     """Create a project policy.
 
     :example: Create
-        az devcenter admin project-policy create --dev-center-name "Contoso" --project-policy-name "DevOnlyResources" --resource-group "rg1" --resource-policies '[{"resources": "/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff1/resourceGroups/rg1/providers/Microsoft.DevCenter/devcenters/Contoso/attachednetworks/network-westus3"]' --scopes '["/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff1/resourceGroups/rg1/providers/Microsoft.DevCenter/projects/DevProject"]'
+        az devcenter admin project-policy create --dev-center-name "Contoso" --project-policy-name "DevOnlyResources" --resource-group "rg1" --scopes "[\"/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff1/resourceGroups/rg1/providers/Microsoft.DevCenter/projects/DevProject\"] --resource-policies "[{\"resources\": \"/subscriptions/0ac520ee-14c0-480f-b6c9-0a90c58ffff1/resourceGroups/rg1/providers/Microsoft.DevCenter/devcenters/Contoso/attachednetworks/network-westus3\"}]"
     """
 
     _aaz_info = {
