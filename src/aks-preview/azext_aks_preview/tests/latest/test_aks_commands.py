@@ -14899,7 +14899,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         name_prefix="clitest",
         location="westcentralus",
     )
-    def test_aks_artifact_source(self, resource_group, resource_group_location):
+    def test_aks_network_isolated_cluster(self, resource_group, resource_group_location):
         vnet_name = self.create_random_name("clitest", 16)
         aks_subnet_name = "aks-subnet"
         acr_subnet_name = "acr-subnet"
@@ -14908,12 +14908,14 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         acr_name = self.create_random_name("clitest", 16)
         aks_name_1 = self.create_random_name('cliakstest', 16)
         aks_name_2 = self.create_random_name('cliakstest', 16)
+        aks_name_3 = self.create_random_name('cliakstest', 16)
         self.kwargs.update(
             {
                 "resource_group": resource_group,
                 'location': resource_group_location,
                 "aks_name_1": aks_name_1,
                 "aks_name_2": aks_name_2,
+                "aks_name_3": aks_name_3,
                 "vnet_name": vnet_name,
                 "aks_subnet_name": aks_subnet_name,
                 "acr_subnet_name": acr_subnet_name,
@@ -14927,9 +14929,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create virtual network and subnets
         create_vnet = (
             "network vnet create --resource-group {resource_group} --name {vnet_name} "
-            "--address-prefixes 192.168.0.0/16 "
-            "--subnet-name {aks_subnet_name} "
-            "--subnet-prefix 192.168.1.0/24 -o json"
+            "--address-prefixes 192.168.0.0/16 -o json"
         )
         vnet = self.cmd(
             create_vnet, checks=[self.check("newVNet.provisioningState", "Succeeded")]
@@ -14941,6 +14941,12 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "vnet_id": vnet_id,
             }
         )
+        create_aks_subnet = (
+            "network vnet subnet create -n {aks_subnet_name} --resource-group {resource_group} --vnet-name {vnet_name} "
+            "--default-outbound-access false "
+            "--address-prefixes 192.168.1.0/24 -o json"
+        )
+        self.cmd(create_aks_subnet, checks=[self.check("provisioningState", "Succeeded")])
         create_acr_subnet = (
             "network vnet subnet create -n {acr_subnet_name} --resource-group {resource_group} --vnet-name {vnet_name} "
             "--address-prefixes 192.168.2.0/24 --private-endpoint-network-policies Disabled -o json"
@@ -14962,11 +14968,17 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
                 "acr_id": acr_id,
             }
         )
+        # enable anonymous pull for ACR
+        update_acr_cmd = (
+            "acr update --resource-group {resource_group} --name {acr_name} "
+            "--anonymous-pull-enabled true -o json"
+        )
+        self.cmd(update_acr_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
         # enable acr artifact cache
         enable_acr_artifact_cache_cmd = (
             "acr cache create -n aks-mcr -r {acr_name} "
-            "--source-repo \"mcr.microsoft.com/*\" --target-repo \"aks-addon-mcr/*\" -o json"
+            "--source-repo \"mcr.microsoft.com/*\" --target-repo \"*\" -o json"
         )
         self.cmd(enable_acr_artifact_cache_cmd, checks=[self.check("provisioningState", "Succeeded")])
 
@@ -15076,18 +15088,22 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         )
         self.cmd(create_role_assignment_cmd)
 
-        # create AKS cluster to use Cache as artifact source
+        # create AKS cluster to enable network isolated cluster with BYO ACR and outbound type none
         create_cmd_1 = (
             "aks create --resource-group {resource_group} --name {aks_name_1} -c 1 --ssh-key-value={ssh_key_value} "
-            "--network-plugin kubenet --vnet-subnet-id {vnet_id}/subnets/{aks_subnet_name} "
+            "-k 1.30 "
+            "--enable-private-cluster "
+            "--network-plugin azure --vnet-subnet-id {vnet_id}/subnets/{aks_subnet_name} "
             "--assign-identity {cluster_identity_id} "
             "--assign-kubelet-identity {kubelet_identity_id} "
+            "--outbound-type=none "
             "--bootstrap-artifact-source Cache --bootstrap-container-registry-resource-id {acr_id} "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkIsolatedClusterPreview "
             "-o json"
         )
         self.cmd(create_cmd_1, checks=[
             self.check("provisioningState", "Succeeded"),
+            self.check("networkProfile.outboundType", "none"),
             self.check("bootstrapProfile.artifactSource", "Cache"),
             self.check("bootstrapProfile.containerRegistryId", acr_id),
         ])
@@ -15095,7 +15111,9 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # create AKS cluster to use Direct as artifact source
         create_cmd_2 = (
             "aks create --resource-group {resource_group} --name {aks_name_2} -c 1 --ssh-key-value={ssh_key_value} "
-            "--network-plugin kubenet --vnet-subnet-id {vnet_id}/subnets/{aks_subnet_name} "
+            "-k 1.30 "
+            "--enable-private-cluster "
+            "--network-plugin azure --vnet-subnet-id {vnet_id}/subnets/{aks_subnet_name} "
             "--assign-identity {cluster_identity_id} "
             "--assign-kubelet-identity {kubelet_identity_id} "
             "-o json"
@@ -15107,19 +15125,39 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
         # update AKS cluster to use Cache as artifact source
         update_cmd = (
             "aks update --resource-group {resource_group} --name {aks_name_2} "
+            "--outbound-type=none "
             "--bootstrap-artifact-source Cache --bootstrap-container-registry-resource-id {acr_id} "
             "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkIsolatedClusterPreview "
             "-o json"
         )
         self.cmd(update_cmd, checks=[
             self.check("provisioningState", "Succeeded"),
+            self.check("networkProfile.outboundType", "none"),
             self.check("bootstrapProfile.artifactSource", "Cache"),
             self.check("bootstrapProfile.containerRegistryId", acr_id),
+        ])
+
+        # create AKS cluster to enable network isolated cluster with managed ACR and outbound type block
+        create_cmd_3 = (
+            "aks create --resource-group {resource_group} --name {aks_name_3} -c 1 --ssh-key-value={ssh_key_value} "
+            "-k 1.30 "
+            "--enable-private-cluster "
+            "--network-plugin azure "
+            "--outbound-type=block "
+            "--bootstrap-artifact-source Cache "
+            "--aks-custom-headers AKSHTTPCustomFeatures=Microsoft.ContainerService/NetworkIsolatedClusterPreview "
+            "-o json"
+        )
+        self.cmd(create_cmd_3, checks=[
+            self.check("provisioningState", "Succeeded"),
+            self.check("networkProfile.outboundType", "block"),
+            self.check("bootstrapProfile.artifactSource", "Cache"),
         ])
 
         # delete
         self.cmd("aks delete -g {resource_group} -n {aks_name_1} --yes --no-wait", checks=[self.is_empty()])
         self.cmd("aks delete -g {resource_group} -n {aks_name_2} --yes --no-wait", checks=[self.is_empty()])
+        self.cmd("aks delete -g {resource_group} -n {aks_name_3} --yes --no-wait", checks=[self.is_empty()])
 
     @AllowLargeResponse()
     @AKSCustomResourceGroupPreparer(random_name_length=17, name_prefix='clitest', location='westus2')
