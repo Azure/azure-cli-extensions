@@ -125,6 +125,36 @@ from .aaz.latest.devcenter.admin.schedule import (
     Update as _ScheduleUpdate,
     Wait as _ScheduleWait,
 )
+from .aaz.latest.devcenter.admin.image_definition import (
+    List as _ImageDefinitionList,
+    Show as _ImageDefinitionShow,
+    BuildImage as _ImageDefinitionBuildImage,
+)
+from .aaz.latest.devcenter.admin.image_definition_build import (
+    List as _ImageDefinitionBuildList,
+    Show as _ImageDefinitionBuildShow,
+    Cancel as _ImageDefinitionBuildCancel,
+    GetBuildDetail as _ImageDefinitionBuildGetDetail,
+)
+from .aaz.latest.devcenter.admin.project_image import (
+    List as _ProjectImageList,
+    Show as _ProjectImageShow,
+)
+from .aaz.latest.devcenter.admin.project_image_version import (
+    List as _ProjectImageVersionList,
+    Show as _ProjectImageVersionShow,
+)
+from .aaz.latest.devcenter.admin.project_policy import (
+    List as _ProjectPolicyList,
+    Show as _ProjectPolicyShow,
+    Create as _ProjectPolicyCreate,
+    Update as _ProjectPolicyUpdate,
+    Delete as _ProjectPolicyDelete,
+    Wait as _ProjectPolicyWait,
+)
+from .aaz.latest.devcenter.admin.project_sku import (
+    List as _ProjectSkuList,
+)
 from ._validators import (
     validate_attached_network_or_dev_box_def,
     validate_env_name_already_exists,
@@ -142,6 +172,120 @@ def set_configured_defaults(args):
         if arg_name == "dev_center_name":
             arg.configured_default = "dev-center"
     return args
+
+
+class ProjectSkuList(_ProjectSkuList):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectPolicyList(_ProjectPolicyList):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectPolicyShow(_ProjectPolicyShow):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectPolicyCreate(_ProjectPolicyCreate):
+    @classmethod
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+        args_schema.resource_policies._required = True
+        return args_schema
+
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectPolicyUpdate(_ProjectPolicyUpdate):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectPolicyDelete(_ProjectPolicyDelete):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectPolicyWait(_ProjectPolicyWait):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectImageList(_ProjectImageList):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectImageShow(_ProjectImageShow):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectImageVersionList(_ProjectImageVersionList):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ProjectImageVersionShow(_ProjectImageVersionShow):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ImageDefinitionBuildList(_ImageDefinitionBuildList):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ImageDefinitionBuildShow(_ImageDefinitionBuildShow):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ImageDefinitionBuildCancel(_ImageDefinitionBuildCancel):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ImageDefinitionBuildGetDetail(_ImageDefinitionBuildGetDetail):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ImageDefinitionList(_ImageDefinitionList):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ImageDefinitionShow(_ImageDefinitionShow):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
+
+
+class ImageDefinitionBuildImage(_ImageDefinitionBuildImage):
+    def _cli_arguments_loader(self):
+        args = super()._cli_arguments_loader()
+        return set_configured_defaults(args)
 
 
 class AttachedNetworkCreate(_AttachedNetworkCreate):
