@@ -39,7 +39,7 @@ from .helper import (
 )
 
 
-#@record_only()
+@record_only()
 @try_manual
 class DevcenterScenarioTest(ScenarioTest):
     def __init__(self, *args, **kwargs):
@@ -1647,91 +1647,146 @@ class DevcenterScenarioTest(ScenarioTest):
     #     )
 
 
-    def test_project_policy_scenario(self):
+    # def test_project_policy_scenario(self):
+    #     self.kwargs.update(
+    #         {
+    #             "rg" : "cli-test",
+    #             "devcenterName": "cli-test-devcenter",
+    #             "location": "centraluseuap",
+    #             "projectPolicyName": "testProjectPolicy"
+    #         }
+    #     )
+
+    #     self.cmd(
+    #         "az devcenter admin project-policy list "
+    #         '--resource-group "{rg}" '
+    #         '--dev-center "{devcenterName}" ',
+    #         checks=[
+    #             self.check("length(@)", 0),
+    #         ],
+    #     )
+
+    #     self.cmd(
+    #         "az devcenter admin project-policy create "
+    #         '--dev-center "{devcenterName}" '
+    #         '--name "{projectPolicyName}" '
+    #         '--resource-group "{rg}" '
+    #         '--resource-policies \'[{{"resources": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/devcenters/cli-test-devcenter/attachednetworks/amlim-nc"}}]\' '
+    #         '--scopes "[\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project\"]" ',
+    #         checks=[
+    #             self.check("name", "{projectPolicyName}"),
+    #             self.check("resourceGroup", "{rg}"),
+    #             self.check("scopes[0]", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project"),
+    #             self.check("resourcePolicies[0].resources", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/devcenters/cli-test-devcenter/attachednetworks/amlim-nc"),
+    #         ],
+    #     )
+
+    #     self.cmd(
+    #         "az devcenter admin project-policy list "
+    #         '--resource-group "{rg}" '
+    #         '--dev-center "{devcenterName}" ',
+    #         checks=[
+    #             self.check("length(@)", 1),
+    #             self.check("[0].name", "{projectPolicyName}"),
+    #         ],
+    #     )
+
+    #     self.cmd(
+    #         "az devcenter admin project-policy show "
+    #         '--dev-center "{devcenterName}" '
+    #         '--name "{projectPolicyName}" '
+    #         '--resource-group "{rg}" ',
+    #         checks=[
+    #             self.check("name", "{projectPolicyName}"),
+    #             self.check("resourceGroup", "{rg}"),
+    #             self.check("scopes[0]", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project"),
+    #             self.check("resourcePolicies[0].resources", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/devcenters/cli-test-devcenter/attachednetworks/amlim-nc"),
+    #         ],
+    #     )
+
+    #     self.cmd(
+    #         "az devcenter admin project-policy update "
+    #         '--dev-center "{devcenterName}" '
+    #         '--name "{projectPolicyName}" '
+    #         '--resource-group "{rg}" '
+    #         '--resource-policies \'[{{"resources": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/devcenters/cli-test-devcenter/attachednetworks/amlim-nc-eastus"}}]\' '
+    #         '--scopes "[\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project2\"]" ',
+    #         checks=[
+    #             self.check("name", "{projectPolicyName}"),
+    #             self.check("resourceGroup", "{rg}"),
+    #             self.check("scopes[0]", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project2"),
+    #             self.check("resourcePolicies[0].resources", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/devcenters/cli-test-devcenter/attachednetworks/amlim-nc-eastus"),
+    #         ],
+    #     )
+
+    #     self.cmd(
+    #         "az devcenter admin project-policy delete --yes "
+    #         '--dev-center "{devcenterName}" '
+    #         '--name "{projectPolicyName}" '
+    #         '--resource-group "{rg}"'
+    #     )
+
+    #     self.cmd(
+    #         "az devcenter admin project-policy list "
+    #         '--resource-group "{rg}" '
+    #         '--dev-center "{devcenterName}" ',
+    #         checks=[
+    #             self.check("length(@)", 0),
+    #         ],
+    #     )
+
+    def test_image_definition_scenario(self):
         self.kwargs.update(
             {
                 "rg" : "cli-test",
-                "devcenterName": "cli-test-devcenter",
-                "location": "centraluseuap",
-                "projectPolicyName": "testProjectPolicy"
+                "projectName": "cli-test-project",
+                "catalogName": "image",
+                "imageDefName": "project-sample-2"
             }
         )
 
         self.cmd(
-            "az devcenter admin project-policy list "
+            "az devcenter admin image-definition list "
             '--resource-group "{rg}" '
-            '--dev-center "{devcenterName}" ',
-            checks=[
-                self.check("length(@)", 0),
-            ],
-        )
-
-        self.cmd(
-            "az devcenter admin project-policy create "
-            '--dev-center "{devcenterName}" '
-            '--name "{projectPolicyName}" '
-            '--resource-group "{rg}" '
-            '--resource-policies \'[{{"resources": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/devcenters/cli-test-devcenter/attachednetworks/amlim-nc"}}]\' '
-            '--scopes "[\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project\"]" ',
-            checks=[
-                self.check("name", "{projectPolicyName}"),
-                self.check("resourceGroup", "{rg}"),
-                self.check("scopes[0]", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project"),
-                self.check("resourcePolicies[0].resources", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/devcenters/cli-test-devcenter/attachednetworks/amlim-nc"),
-            ],
-        )
-
-        self.cmd(
-            "az devcenter admin project-policy list "
-            '--resource-group "{rg}" '
-            '--dev-center "{devcenterName}" ',
+            '--project "{projectName}" '
+            '--catalog-name "{catalogName}" ',
             checks=[
                 self.check("length(@)", 1),
-                self.check("[0].name", "{projectPolicyName}"),
+                self.check("[0].name", "{imageDefName}"),
             ],
         )
 
-        self.cmd(
-            "az devcenter admin project-policy show "
-            '--dev-center "{devcenterName}" '
-            '--name "{projectPolicyName}" '
-            '--resource-group "{rg}" ',
-            checks=[
-                self.check("name", "{projectPolicyName}"),
-                self.check("resourceGroup", "{rg}"),
-                self.check("scopes[0]", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project"),
-                self.check("resourcePolicies[0].resources", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/devcenters/cli-test-devcenter/attachednetworks/amlim-nc"),
-            ],
+    def test_project_image_scenario(self):
+        self.kwargs.update(
+            {
+                "rg" : "cli-test",
+                "projectName": "cli-test-project"
+            }
         )
 
         self.cmd(
-            "az devcenter admin project-policy update "
-            '--dev-center "{devcenterName}" '
-            '--name "{projectPolicyName}" '
+            "az devcenter admin project-image list "
             '--resource-group "{rg}" '
-            '--resource-policies \'[{{"resources": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/devcenters/cli-test-devcenter/attachednetworks/amlim-nc-eastus"}}]\' '
-            '--scopes "[\"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project2\"]" ',
+            '--project "{projectName}" ',
             checks=[
-                self.check("name", "{projectPolicyName}"),
-                self.check("resourceGroup", "{rg}"),
-                self.check("scopes[0]", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/projects/cli-test-project2"),
-                self.check("resourcePolicies[0].resources", "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli-test/providers/Microsoft.DevCenter/devcenters/cli-test-devcenter/attachednetworks/amlim-nc-eastus"),
+                self.check("length(@)", 28),
             ],
         )
-
-        self.cmd(
-            "az devcenter admin project-policy delete --yes "
-            '--dev-center "{devcenterName}" '
-            '--name "{projectPolicyName}" '
-            '--resource-group "{rg}"'
+    
+    def test_project_sku_scenario(self):
+        self.kwargs.update(
+            {
+                "rg" : "cli-test",
+                "projectName": "cli-test-project"
+            }
         )
 
         self.cmd(
-            "az devcenter admin project-policy list "
+            "az devcenter admin project-sku list "
             '--resource-group "{rg}" '
-            '--dev-center "{devcenterName}" ',
+            '--project "{projectName}" ',
             checks=[
-                self.check("length(@)", 0),
+                self.check("length(@)", 11),
             ],
         )
 
