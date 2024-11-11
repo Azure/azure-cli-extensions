@@ -13,10 +13,11 @@ Write-Host "Running azdev scan..." -ForegroundColor Green
 
 # Check if we have a previous commit to compare against
 if (git rev-parse --verify HEAD 2>$null) {
+    Write-Host "Using HEAD as the previous commit"
     $against = "HEAD"
 }
 else {
-    # Initial commit: diff against an empty tree object
+    Write-Host "Using an empty tree object as the previous commit"
     $against = $(git hash-object -t tree /dev/null)
 }
 

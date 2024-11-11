@@ -13,9 +13,10 @@ echo "\033[0;32mRunning azdev scan...\033[0m"
 
 if git rev-parse --verify HEAD >/dev/null 2>&1
 then
+    echo "Using HEAD as the previous commit"
 	against=HEAD
 else
-	# Initial commit: diff against an empty tree object
+    echo "Using an empty tree object as the previous commit"
 	against=$(git hash-object -t tree /dev/null)
 fi
 has_secrets=0
