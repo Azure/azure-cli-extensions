@@ -104,6 +104,7 @@ secondary_region_map = {
     "southafricawest": "southafricanorth",
     "southcentralus": "northcentralus",
     "southeastasia": "eastasia",
+    "southeastus": "westus3",
     "southindia": "centralindia",
     "swedencentral": "swedensouth",
     "swedensouth": "swedencentral",

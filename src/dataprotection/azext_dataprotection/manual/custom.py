@@ -867,7 +867,13 @@ def dataprotection_backup_instance_initialize_restoreconfig(datasource_type, exc
     if datasource_type != "AzureKubernetesService":
         raise InvalidArgumentValueError("This command is currently not supported for datasource types other than AzureKubernetesService")
 
-    object_type = "KubernetesClusterRestoreCriteria"
+    if staging_resource_group_id is None and staging_storage_account_id is None:
+        object_type = "KubernetesClusterRestoreCriteria"
+    elif staging_storage_account_id is not None and staging_resource_group_id is not None:
+        object_type = "KubernetesClusterVaultTierRestoreCriteria"
+    else:
+        raise InvalidArgumentValueError("Both --staging-resource-group-id and --staging-storage-account-id are manadatory for vaulted tier restore "
+                                        "for AzureKubernetesService. Please either provide or remove both of them.")
 
     if persistent_volume_restore_mode is None:
         persistent_volume_restore_mode = "RestoreWithVolumeData"
