@@ -1018,7 +1018,7 @@ class JavaComponentPreviewClient():
 
 
 class SessionPoolPreviewClient():
-    api_version = SESSION_API_VERSION
+    api_version = PREVIEW_API_VERSION
 
     @classmethod
     def create(cls, cmd, resource_group_name, name, session_pool_envelope, no_wait=False):

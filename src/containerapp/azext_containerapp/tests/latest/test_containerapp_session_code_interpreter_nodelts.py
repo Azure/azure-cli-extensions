@@ -27,8 +27,8 @@ class ContainerAppSessionCodeInterperterNodeLTSTests(ScenarioTest):
 
         # Create PythonLTS SessionPool with default container type which is PythonLTS
         sessionpool_name_pythonlts = self.create_random_name(prefix='sppythonlts', length=24)
-        self.cmd('containerapp sessionpool create -g {} -n {} --cooldown-period {}'.format(
-            resource_group, sessionpool_name_pythonlts, 300), checks=[
+        self.cmd('containerapp sessionpool create -g {} -n {} --cooldown-period {} -l {}'.format(
+            resource_group, sessionpool_name_pythonlts, 300, location), checks=[
             JMESPathCheck('name', sessionpool_name_pythonlts),
             JMESPathCheck('properties.containerType', "PythonLTS"),
             JMESPathCheck('properties.provisioningState', "Succeeded"),
@@ -37,8 +37,8 @@ class ContainerAppSessionCodeInterperterNodeLTSTests(ScenarioTest):
 
         # Create NodeLTS SessionPool
         sessionpool_name_nodelts = self.create_random_name(prefix='spnodelts', length=24)
-        self.cmd('containerapp sessionpool create -g {} -n {} --container-type NodeLTS --cooldown-period {}'.format(
-            resource_group, sessionpool_name_nodelts, 300), checks=[
+        self.cmd('containerapp sessionpool create -g {} -n {} --container-type NodeLTS --cooldown-period {} -l {}'.format(
+            resource_group, sessionpool_name_nodelts, 300, location), checks=[
             JMESPathCheck('name', sessionpool_name_nodelts),
             JMESPathCheck('properties.containerType', "NodeLTS"),
             JMESPathCheck('properties.provisioningState', "Succeeded"),
@@ -69,7 +69,7 @@ class ContainerAppSessionCodeInterperterNodeLTSTests(ScenarioTest):
             resource_group,
             identifier_name,
             txt_file,
-            TEST_LOCATION),
+            location),
             checks=[
             JMESPathCheck('value[0].properties.filename', 'cert.txt'),
         ])

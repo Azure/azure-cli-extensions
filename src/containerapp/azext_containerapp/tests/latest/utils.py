@@ -42,7 +42,7 @@ def create_containerapp_env(test_cls, env_name, resource_group, location=None, s
     logs_workspace_location = location
     if logs_workspace_location is None or format_location(logs_workspace_location) == format_location(STAGE_LOCATION):
         logs_workspace_location = "eastus"
-    logs_workspace_id = test_cls.cmd('monitor log-analytics workspace create -g {} -n {} -l {}'.format(resource_group, logs_workspace_name, logs_workspace_location)).get_output_in_json()["customerId"]
+    logs_workspace_id = test_cls.cmd('monitor log-analytics workspace create -g {} -n {} -l {}'.format(resource_group, logs_workspace_name, logs_workspace_location), expect_failure=False).get_output_in_json()["customerId"]
     logs_workspace_key = test_cls.cmd('monitor log-analytics workspace get-shared-keys -g {} -n {}'.format(resource_group, logs_workspace_name)).get_output_in_json()["primarySharedKey"]
 
     env_command = f'containerapp env create -g {resource_group} -n {env_name} --logs-workspace-id {logs_workspace_id} --logs-workspace-key {logs_workspace_key}'
