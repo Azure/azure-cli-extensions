@@ -398,8 +398,8 @@ def load_arguments(self, _):
     with self.argument_context('containerapp sessionpool') as c:
         c.argument('name', options_list=['--name', '-n'], help="The Session Pool name.")
         c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
-        c.argument('mi_system_assigned', options_list=['--mi-system-assigned'], help='Boolean indicating whether to assign system-assigned identity.', action='store_true')
-        c.argument('mi_user_assigned', options_list=['--mi-user-assigned'], nargs='+', help='Space-separated user identities to be assigned.')
+        c.argument('mi_system_assigned', help='Boolean indicating whether to assign system-assigned identity.', action='store_true')
+        c.argument('mi_user_assigned', nargs='+', help='Space-separated user identities to be assigned.')
 
     with self.argument_context('containerapp sessionpool', arg_group='Configuration') as c:
         c.argument('container_type', arg_type=get_enum_type(["CustomContainer", "PythonLTS", "NodeLTS"]), help="The pool type of the Session Pool, default='PythonLTS'")
