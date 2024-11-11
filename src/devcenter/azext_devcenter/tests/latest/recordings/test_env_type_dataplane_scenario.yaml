@@ -19,7 +19,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli000001?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli000001?api-version=2022-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001","name":"cli000001","type":"Microsoft.Resources/resourceGroups","location":"canadacentral","properties":{"provisioningState":"Succeeded"}}'
@@ -65,7 +65,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli000001?api-version=2022-09-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli000001?api-version=2022-09-01
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001","name":"cli000001","type":"Microsoft.Resources/resourceGroups","location":"canadacentral","properties":{"provisioningState":"Succeeded"}}'
@@ -113,7 +113,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 azsdk-python-azure-mgmt-msi/7.0.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003?api-version=2023-01-31
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003?api-version=2023-01-31
   response:
     body:
       string: '{"location":"canadacentral","tags":{},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003","name":"testid_000003","type":"Microsoft.ManagedIdentity/userAssignedIdentities","properties":{"tenantId":"003b06c3-d471-4452-9686-9e7f3ca85f0a","principalId":"23894f17-7766-49f8-bded-4cd67ddef62f","clientId":"ab65e74b-31f3-43c7-8c82-9a0d625c2536"}}'
@@ -167,14 +167,14 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/devcenters/cli000002?api-version=2024-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/devcenters/cli000002?api-version=2024-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/devcenters/cli000002","name":"cli000002","type":"microsoft.devcenter/devcenters","location":"canadacentral","tags":{"CostCode":"12345"},"systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-09-06T23:13:06.7196786Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-09-06T23:13:06.7196786Z"},"identity":{"principalId":"9dfd6d07-345a-4f6f-a857-c31f2b786e40","tenantId":"003b06c3-d471-4452-9686-9e7f3ca85f0a","type":"SystemAssigned,
         UserAssigned","userAssignedIdentities":{"/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli000001/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testid_000003":{"principalId":"23894f17-7766-49f8-bded-4cd67ddef62f","clientId":"ab65e74b-31f3-43c7-8c82-9a0d625c2536"}}},"properties":{"provisioningState":"Accepted"}}'
     headers:
       azure-asyncoperation:
-      - https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/1cf6e0df-52ac-43ef-8f44-3d14809429ac*4DD6D5CFB220A180C4234539C01380631B8456174BF86A7FB2DD1DE3675A9229?api-version=2024-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/1cf6e0df-52ac-43ef-8f44-3d14809429ac*4DD6D5CFB220A180C4234539C01380631B8456174BF86A7FB2DD1DE3675A9229?api-version=2024-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -228,7 +228,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/1cf6e0df-52ac-43ef-8f44-3d14809429ac*4DD6D5CFB220A180C4234539C01380631B8456174BF86A7FB2DD1DE3675A9229?api-version=2024-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/1cf6e0df-52ac-43ef-8f44-3d14809429ac*4DD6D5CFB220A180C4234539C01380631B8456174BF86A7FB2DD1DE3675A9229?api-version=2024-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/1cf6e0df-52ac-43ef-8f44-3d14809429ac*4DD6D5CFB220A180C4234539C01380631B8456174BF86A7FB2DD1DE3675A9229","name":"1cf6e0df-52ac-43ef-8f44-3d14809429ac*4DD6D5CFB220A180C4234539C01380631B8456174BF86A7FB2DD1DE3675A9229","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/devcenters/cli000002","status":"Accepted","startTime":"2023-09-06T23:13:07.6265207Z"}'
@@ -274,7 +274,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/1cf6e0df-52ac-43ef-8f44-3d14809429ac*4DD6D5CFB220A180C4234539C01380631B8456174BF86A7FB2DD1DE3675A9229?api-version=2024-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/1cf6e0df-52ac-43ef-8f44-3d14809429ac*4DD6D5CFB220A180C4234539C01380631B8456174BF86A7FB2DD1DE3675A9229?api-version=2024-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/1cf6e0df-52ac-43ef-8f44-3d14809429ac*4DD6D5CFB220A180C4234539C01380631B8456174BF86A7FB2DD1DE3675A9229","name":"1cf6e0df-52ac-43ef-8f44-3d14809429ac*4DD6D5CFB220A180C4234539C01380631B8456174BF86A7FB2DD1DE3675A9229","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/devcenters/cli000002","status":"Accepted","startTime":"2023-09-06T23:13:07.6265207Z"}'
@@ -320,7 +320,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/1cf6e0df-52ac-43ef-8f44-3d14809429ac*4DD6D5CFB220A180C4234539C01380631B8456174BF86A7FB2DD1DE3675A9229?api-version=2024-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/1cf6e0df-52ac-43ef-8f44-3d14809429ac*4DD6D5CFB220A180C4234539C01380631B8456174BF86A7FB2DD1DE3675A9229?api-version=2024-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/1cf6e0df-52ac-43ef-8f44-3d14809429ac*4DD6D5CFB220A180C4234539C01380631B8456174BF86A7FB2DD1DE3675A9229","name":"1cf6e0df-52ac-43ef-8f44-3d14809429ac*4DD6D5CFB220A180C4234539C01380631B8456174BF86A7FB2DD1DE3675A9229","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/devcenters/cli000002","status":"Accepted","startTime":"2023-09-06T23:13:07.6265207Z"}'
@@ -366,7 +366,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/1cf6e0df-52ac-43ef-8f44-3d14809429ac*4DD6D5CFB220A180C4234539C01380631B8456174BF86A7FB2DD1DE3675A9229?api-version=2024-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/1cf6e0df-52ac-43ef-8f44-3d14809429ac*4DD6D5CFB220A180C4234539C01380631B8456174BF86A7FB2DD1DE3675A9229?api-version=2024-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/1cf6e0df-52ac-43ef-8f44-3d14809429ac*4DD6D5CFB220A180C4234539C01380631B8456174BF86A7FB2DD1DE3675A9229","name":"1cf6e0df-52ac-43ef-8f44-3d14809429ac*4DD6D5CFB220A180C4234539C01380631B8456174BF86A7FB2DD1DE3675A9229","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/devcenters/cli000002","status":"Succeeded","startTime":"2023-09-06T23:13:07.6265207Z","endTime":"2023-09-06T23:14:48.1699707Z","properties":null}'
@@ -412,7 +412,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/devcenters/cli000002?api-version=2024-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/devcenters/cli000002?api-version=2024-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/devcenters/cli000002","name":"cli000002","type":"microsoft.devcenter/devcenters","location":"canadacentral","tags":{"CostCode":"12345"},"systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-09-06T23:13:06.7196786Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-09-06T23:13:06.7196786Z"},"identity":{"principalId":"9dfd6d07-345a-4f6f-a857-c31f2b786e40","tenantId":"003b06c3-d471-4452-9686-9e7f3ca85f0a","type":"SystemAssigned,
@@ -465,13 +465,13 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/projects/cli000004?api-version=2024-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/projects/cli000004?api-version=2024-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/projects/cli000004","name":"cli000004","type":"microsoft.devcenter/projects","location":"canadacentral","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-09-06T23:15:12.3856837Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-09-06T23:15:12.3856837Z"},"properties":{"provisioningState":"Accepted","devCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/devcenters/cli000002"}}'
     headers:
       azure-asyncoperation:
-      - https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/3a10fa07-2309-422c-b0ee-63c406938f0b*64FD35745A91CBDDA7E34CD2EF29B4A6955C1643518C1F17DF008C54EF6809D7?api-version=2024-10-01-preview
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/3a10fa07-2309-422c-b0ee-63c406938f0b*64FD35745A91CBDDA7E34CD2EF29B4A6955C1643518C1F17DF008C54EF6809D7?api-version=2024-10-01-preview
       cache-control:
       - no-cache
       content-length:
@@ -525,7 +525,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/3a10fa07-2309-422c-b0ee-63c406938f0b*64FD35745A91CBDDA7E34CD2EF29B4A6955C1643518C1F17DF008C54EF6809D7?api-version=2024-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/3a10fa07-2309-422c-b0ee-63c406938f0b*64FD35745A91CBDDA7E34CD2EF29B4A6955C1643518C1F17DF008C54EF6809D7?api-version=2024-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/3a10fa07-2309-422c-b0ee-63c406938f0b*64FD35745A91CBDDA7E34CD2EF29B4A6955C1643518C1F17DF008C54EF6809D7","name":"3a10fa07-2309-422c-b0ee-63c406938f0b*64FD35745A91CBDDA7E34CD2EF29B4A6955C1643518C1F17DF008C54EF6809D7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/projects/cli000004","status":"Accepted","startTime":"2023-09-06T23:15:12.6214435Z"}'
@@ -571,7 +571,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/3a10fa07-2309-422c-b0ee-63c406938f0b*64FD35745A91CBDDA7E34CD2EF29B4A6955C1643518C1F17DF008C54EF6809D7?api-version=2024-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/3a10fa07-2309-422c-b0ee-63c406938f0b*64FD35745A91CBDDA7E34CD2EF29B4A6955C1643518C1F17DF008C54EF6809D7?api-version=2024-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.DevCenter/locations/CANADACENTRAL/operationStatuses/3a10fa07-2309-422c-b0ee-63c406938f0b*64FD35745A91CBDDA7E34CD2EF29B4A6955C1643518C1F17DF008C54EF6809D7","name":"3a10fa07-2309-422c-b0ee-63c406938f0b*64FD35745A91CBDDA7E34CD2EF29B4A6955C1643518C1F17DF008C54EF6809D7","resourceId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/projects/cli000004","status":"Succeeded","startTime":"2023-09-06T23:15:12.6214435Z","endTime":"2023-09-06T23:16:05.4901391Z","properties":null}'
@@ -617,7 +617,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/projects/cli000004?api-version=2024-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/projects/cli000004?api-version=2024-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/projects/cli000004","name":"cli000004","type":"microsoft.devcenter/projects","location":"canadacentral","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-09-06T23:15:12.3856837Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-09-06T23:15:12.3856837Z"},"properties":{"provisioningState":"Succeeded","devCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/devcenters/cli000002","devCenterUri":"https://003b06c3-d471-4452-9686-9e7f3ca85f0a-cli000002.canadacentral.devcenter.azure.com/"}}'
@@ -665,7 +665,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/projects/cli000004?api-version=2024-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/projects/cli000004?api-version=2024-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/projects/cli000004","name":"cli000004","type":"microsoft.devcenter/projects","location":"canadacentral","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-09-06T23:15:12.3856837Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-09-06T23:15:12.3856837Z"},"properties":{"provisioningState":"Succeeded","devCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/devcenters/cli000002","devCenterUri":"https://003b06c3-d471-4452-9686-9e7f3ca85f0a-cli000002.canadacentral.devcenter.azure.com/"}}'
@@ -713,7 +713,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/projects/cli000004?api-version=2024-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/projects/cli000004?api-version=2024-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/projects/cli000004","name":"cli000004","type":"microsoft.devcenter/projects","location":"canadacentral","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-09-06T23:15:12.3856837Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-09-06T23:15:12.3856837Z"},"properties":{"provisioningState":"Succeeded","devCenterId":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/devcenters/cli000002","devCenterUri":"https://003b06c3-d471-4452-9686-9e7f3ca85f0a-cli000002.canadacentral.devcenter.azure.com/"}}'
@@ -867,7 +867,7 @@ interactions:
       - AZURECLI/2.51.0 azsdk-python-azure-mgmt-authorization/3.0.0 Python/3.10.7
         (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/projects/cli000004/providers/Microsoft.Authorization/roleAssignments/6eafbf07-e931-437f-b4ef-d6e6ee990d80?api-version=2022-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/projects/cli000004/providers/Microsoft.Authorization/roleAssignments/6eafbf07-e931-437f-b4ef-d6e6ee990d80?api-version=2022-04-01
   response:
     body:
       string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/18e40d4e-8d2e-438d-97e1-9528336e149c","principalId":"c3c951b7-d307-4c40-9495-70bd562d98d5","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/projects/cli000004","condition":null,"conditionVersion":null,"createdOn":"2023-09-06T23:16:16.5580287Z","updatedOn":"2023-09-06T23:16:16.7870283Z","createdBy":null,"updatedBy":"345ff1ed-a4c2-4499-93e1-7554303e6607","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/projects/cli000004/providers/Microsoft.Authorization/roleAssignments/6eafbf07-e931-437f-b4ef-d6e6ee990d80","type":"Microsoft.Authorization/roleAssignments","name":"6eafbf07-e931-437f-b4ef-d6e6ee990d80"}'
@@ -919,7 +919,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/devcenters/cli000002/environmentTypes/c000005?api-version=2024-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/devcenters/cli000002/environmentTypes/c000005?api-version=2024-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/devcenters/cli000002/environmentTypes/c000005","name":"c000005","type":"microsoft.devcenter/devcenters/environmenttypes","tags":{"val1":"key1"},"systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-09-06T23:19:19.5572917Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-09-06T23:19:19.5572917Z"},"properties":{"provisioningState":"Succeeded"}}'
@@ -985,7 +985,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 (AAZ) azsdk-python-core/1.24.0 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: PUT
-    uri: https://eastus2euap.management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/projects/cli000004/environmentTypes/c000005?api-version=2024-10-01-preview
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/projects/cli000004/environmentTypes/c000005?api-version=2024-10-01-preview
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli000001/providers/Microsoft.DevCenter/projects/cli000004/environmentTypes/c000005","name":"c000005","type":"microsoft.devcenter/projects/environmenttypes","location":"canadacentral","systemData":{"createdBy":"amlim@microsoft.com","createdByType":"User","createdAt":"2023-09-06T23:19:21.1319912Z","lastModifiedBy":"amlim@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2023-09-06T23:19:21.1319912Z"},"identity":{"principalId":"54952633-827b-4be8-82d0-7c0e363ee3ac","tenantId":"003b06c3-d471-4452-9686-9e7f3ca85f0a","type":"SystemAssigned,
@@ -1042,7 +1042,7 @@ interactions:
       User-Agent:
       - AZURECLI/2.51.0 azsdk-python-azure-mgmt-resource/23.1.0b2 Python/3.10.7 (Windows-10-10.0.22621-SP0)
     method: GET
-    uri: https://eastus2euap.management.azure.com/subscriptions?api-version=2019-11-01
+    uri: https://management.azure.com/subscriptions?api-version=2019-11-01
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000","authorizationSource":"RoleBased","managedByTenants":[],"subscriptionId":"f141e9f2-4778-45a4-9aa0-8b31e6469454","tenantId":"003b06c3-d471-4452-9686-9e7f3ca85f0a","displayName":"Project
@@ -1096,7 +1096,7 @@ interactions:
       User-Agent:
       - python/3.10.7 (Windows-10-10.0.22621-SP0) AZURECLI/2.51.0
     method: POST
-    uri: https://eastus2euap.management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
+    uri: https://management.azure.com/providers/Microsoft.ResourceGraph/resources?api-version=2021-03-01
   response:
     body:
       string: '{"totalRecords":1,"count":1,"data":[{"name":"cli000004","devCenterUri":"https://003b06c3-d471-4452-9686-9e7f3ca85f0a-cli000002.canadacentral.devcenter.azure.com/"}],"facets":[],"resultTruncated":"false"}'
