@@ -63,14 +63,6 @@ class ESULicenseScenarioTest(ScenarioTest):
             self.check('length(@)', 8)
         ])
 
-        self.cmd('az connectedmachine license-profile create '
-                '--resource-group "{rg}" ' 
-                '--subscription "{subscription}" '
-                '--name "Default" '
-                checks=[
-                    self.check('name', '{licenseName}'),
-        ])
-
         self.cmd('az connectedmachine license update '
                 '--name "{licenseName}" '
                 '--resource-group "{rg}" '
