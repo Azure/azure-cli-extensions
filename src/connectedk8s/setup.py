@@ -55,6 +55,16 @@ setup(
     classifiers=CLASSIFIERS,
     packages=find_packages(),
     install_requires=DEPENDENCIES,
+    extras_require={
+        "linting": [
+            "mypy>=1.13.0",
+            "ruff>=0.7.2",
+            "types-jmespath>=1.0.2",
+            "types-psutil>=6.1.0",
+            "types-pyyaml>=6.0.12",
+            "types-requests>=2.32.0",
+        ]
+    },
     package_data={
         "azext_connectedk8s": [
             "azext_metadata.json",

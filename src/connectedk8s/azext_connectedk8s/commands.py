@@ -4,6 +4,10 @@
 # --------------------------------------------------------------------------------------------
 
 # pylint: disable=line-too-long
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from azure.cli.core.commands import CliCommandType
 
 from azext_connectedk8s._client_factory import (
@@ -13,8 +17,11 @@ from azext_connectedk8s._client_factory import (
 
 from ._format import connectedk8s_list_table_format, connectedk8s_show_table_format
 
+if TYPE_CHECKING:
+    from azext_connectedk8s import Connectedk8sCommandsLoader
 
-def load_command_table(self, _):
+
+def load_command_table(self: Connectedk8sCommandsLoader, _: list[str] | None) -> None:
     connectedk8s_sdk = CliCommandType(
         operations_tmpl=(
             "azext_connectedk8s.vendored_sdks.preview_2024_07_01.operations#"

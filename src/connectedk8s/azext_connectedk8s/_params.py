@@ -3,8 +3,10 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
+from __future__ import annotations
 
 import os.path
+from typing import TYPE_CHECKING
 
 from argcomplete.completers import FilesCompleter
 from azure.cli.core.commands.parameters import (
@@ -37,10 +39,16 @@ from .action import (
     AddConfigurationSettings,
 )
 
+if TYPE_CHECKING:
+    from knack.commands import CLICommand
+
+    from azext_connectedk8s import Connectedk8sCommandsLoader
+
+
 features_types = CLIArgumentType(nargs="+", choices=CaseInsensitiveList(Feature_Values))
 
 
-def load_arguments(self, _):
+def load_arguments(self: Connectedk8sCommandsLoader, _: CLICommand) -> None:
     pls_arm_id_type = CLIArgumentType(
         options_list=["--private-link-scope-resource-id", "--pls-arm-id"],
         arg_group="PrivateLink",
@@ -96,7 +104,7 @@ def load_arguments(self, _):
             options_list=["--proxy-cert", "--custom-ca-cert"],
             arg_group="Proxy",
             type=file_type,
-            completer=FilesCompleter(),
+            completer=FilesCompleter(),  # type: ignore[no-untyped-call]
             help="Path to the certificate file for proxy or custom Certificate Authority",
         )
         c.argument(
@@ -276,7 +284,7 @@ def load_arguments(self, _):
             options_list=["--proxy-cert", "--custom-ca-cert"],
             arg_group="Proxy",
             type=file_type,
-            completer=FilesCompleter(),
+            completer=FilesCompleter(),  # type: ignore[no-untyped-call]
             help="Path to the certificate file for proxy or custom Certificate Authority",
         )
         c.argument(
@@ -565,7 +573,7 @@ def load_arguments(self, _):
             "path",
             options_list=["--file", "-f"],
             type=file_type,
-            completer=FilesCompleter(),
+            completer=FilesCompleter(),  # type: ignore[no-untyped-call]
             default=os.path.join(os.path.expanduser("~"), ".kube", "config"),
             help="Kubernetes configuration file to update. If not provided, updates the file '~/.kube/config'. Use '-' to print YAML to stdout instead.",
         )

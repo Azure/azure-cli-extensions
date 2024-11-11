@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from __future__ import annotations
 
 import contextlib
 import datetime
@@ -9,6 +10,7 @@ import json
 import os
 import shutil
 from subprocess import PIPE, Popen
+from typing import TYPE_CHECKING
 
 import yaml
 from azure.cli.core import telemetry
@@ -19,19 +21,26 @@ import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as azext_utils
 from azext_connectedk8s._utils import get_utctimestring
 
+if TYPE_CHECKING:
+    from kubernetes.client import AppsV1Api, BatchV1Api, CoreV1Api
+
+    from .vendored_sdks.preview_2024_07_01.models import (
+        ConnectedCluster,
+    )
+
 logger = get_logger(__name__)
 # pylint: disable=unused-argument, too-many-locals, too-many-branches, too-many-statements, line-too-long
 
-diagnoser_output = []
+diagnoser_output: list[str] = []
 
 
 def fetch_kubectl_cluster_info(
-    filepath_with_timestamp,
-    storage_space_available,
-    kubectl_client_location,
-    kube_config,
-    kube_context,
-):
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+    kubectl_client_location: str,
+    kube_config: str | None,
+    kube_context: str | None,
+) -> tuple[str, bool]:
     print(f"Step: {get_utctimestring()}: Capture cluster-info logs")
     try:
         # If storage space available then only store the azure-arc events
@@ -129,40 +138,22 @@ def fetch_kubectl_cluster_info(
 
 
 def fetch_connected_cluster_resource(
-    filepath_with_timestamp, connected_cluster, storage_space_available
-):
+    filepath_with_timestamp: str,
+    connected_cluster: ConnectedCluster,
+    storage_space_available: bool,
+) -> tuple[str, bool]:
     print(f"Step: {get_utctimestring()}: Fetch connected cluster resource")
     try:
         # Path to add the connected_cluster resource
         connected_cluster_resource_file_path = os.path.join(
             filepath_with_timestamp, consts.Connected_Cluster_Resource
         )
-        # Formatting the last_connectivity_time and managed_identity_certificate_expiration_time into
-        #  proper data-time format
-        last_connectivity_time_str = str(connected_cluster.last_connectivity_time)
-        connected_cluster.last_connectivity_time = last_connectivity_time_str
-        managed_identity_certificate_expiration_time_str = str(
-            connected_cluster.managed_identity_certificate_expiration_time
-        )
-        connected_cluster.managed_identity_certificate_expiration_time = (
-            managed_identity_certificate_expiration_time_str
-        )
-
-        # Formatting system_data
-        created_at = str(connected_cluster.system_data.created_at)
-        connected_cluster.system_data.created_at = created_at
-        last_modified_at = str(connected_cluster.system_data.last_modified_at)
-        connected_cluster.system_data.last_modified_at = last_modified_at
-        system_data = str(connected_cluster.system_data)
-        connected_cluster.system_data = system_data
-        # Formatting identity
-        identity = str(connected_cluster.identity)
-        connected_cluster.identity = identity
-
         if storage_space_available:
+            connected_cluster_dict = connected_cluster.as_dict()
             # If storage space is available then only store the connected cluster resource
             with open(connected_cluster_resource_file_path, "w+") as cc:
-                cc.write(str(connected_cluster))
+                json.dump(connected_cluster_dict, cc, indent=2)
+
         return consts.Diagnostic_Check_Passed, storage_space_available
 
     # For handling storage or OS exception that may occur during the execution
@@ -210,8 +201,10 @@ def fetch_connected_cluster_resource(
 
 
 def retrieve_arc_agents_logs(
-    corev1_api_instance, filepath_with_timestamp, storage_space_available
-):
+    corev1_api_instance: CoreV1Api,
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+) -> tuple[str, bool]:
     print(f"Step: {get_utctimestring()}: Retrieve arc agents logs")
     try:
         if storage_space_available:
@@ -296,12 +289,12 @@ def retrieve_arc_agents_logs(
 
 
 def retrieve_arc_agents_event_logs(
-    filepath_with_timestamp,
-    storage_space_available,
-    kubectl_client_location,
-    kube_config,
-    kube_context,
-):
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+    kubectl_client_location: str,
+    kube_config: str | None,
+    kube_context: str | None,
+) -> tuple[str, bool]:
     print(f"Step: {get_utctimestring()}: Retrieve arc agents event logs")
     try:
         # If storage space available then only store the azure-arc events
@@ -402,8 +395,10 @@ def retrieve_arc_agents_event_logs(
 
 
 def retrieve_deployments_logs(
-    appv1_api_instance, filepath_with_timestamp, storage_space_available
-):
+    appv1_api_instance: AppsV1Api,
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+) -> tuple[str, bool]:
     print(f"Step: {get_utctimestring()}: Retrieve deployments logs")
     try:
         if storage_space_available:
@@ -475,8 +470,10 @@ def retrieve_deployments_logs(
 
 
 def retrieve_arc_workload_identity_pod_logs(
-    corev1_api_instance, filepath_with_timestamp, storage_space_available
-):
+    corev1_api_instance: CoreV1Api,
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+) -> tuple[str, bool]:
     print(f"Step: {get_utctimestring()}: Retrieve arc-workload-identity pod logs")
     try:
         if storage_space_available:
@@ -569,12 +566,12 @@ def retrieve_arc_workload_identity_pod_logs(
 
 
 def retrieve_arc_workload_identity_event_logs(
-    filepath_with_timestamp,
-    storage_space_available,
-    kubectl_client_location,
-    kube_config,
-    kube_context,
-):
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+    kubectl_client_location: str,
+    kube_config: str | None,
+    kube_context: str | None,
+) -> tuple[str, bool]:
     print(f"Step: {get_utctimestring()}: Retrieve arc agents event logs")
     try:
         # If storage space available then only store the azure-arc events
@@ -675,8 +672,10 @@ def retrieve_arc_workload_identity_event_logs(
 
 
 def retrieve_arc_workload_identity_deployments_logs(
-    appv1_api_instance, filepath_with_timestamp, storage_space_available
-):
+    appv1_api_instance: AppsV1Api,
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+) -> tuple[str, bool]:
     print(
         f"Step: {get_utctimestring()}: Retrieve arc-workload-identity deployments logs"
     )
@@ -752,8 +751,10 @@ def retrieve_arc_workload_identity_deployments_logs(
 
 
 def check_agent_state(
-    corev1_api_instance, filepath_with_timestamp, storage_space_available
-):
+    corev1_api_instance: CoreV1Api,
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+) -> tuple[str, bool, bool, bool]:
     print(f"Step: {get_utctimestring()}: Check agent state")
     # If all agents are stuck we will skip the certificates check
     all_agents_stuck = True
@@ -989,7 +990,9 @@ def check_agent_state(
     )
 
 
-def check_agent_version(connected_cluster, azure_arc_agent_version):
+def check_agent_version(
+    connected_cluster: ConnectedCluster, azure_arc_agent_version: str
+) -> str:
     print(f"Step: {get_utctimestring()}: Check agent version")
     try:
         # If the agent version in the connected cluster resource is none skip the check
@@ -997,7 +1000,7 @@ def check_agent_version(connected_cluster, azure_arc_agent_version):
             return consts.Diagnostic_Check_Incomplete
 
         # To get user agent version and the latest agent version
-        user_agent_version = connected_cluster.agent_version
+        user_agent_version = connected_cluster.agent_version  # type: ignore[unreachable]
         current_user_version = user_agent_version.split(".")
         latest_agent_version = azure_arc_agent_version.split(".")
         # Comparing if the user version is compatible or not
@@ -1039,19 +1042,19 @@ def check_agent_version(connected_cluster, azure_arc_agent_version):
 
 
 def check_diagnoser_container(
-    corev1_api_instance,
-    batchv1_api_instance,
-    filepath_with_timestamp,
-    storage_space_available,
-    absolute_path,
-    probable_sufficient_resource_for_agents,
-    helm_client_location,
-    kubectl_client_location,
-    release_namespace,
-    probable_pod_security_policy_presence,
-    kube_config,
-    kube_context,
-):
+    corev1_api_instance: CoreV1Api,
+    batchv1_api_instance: BatchV1Api,
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+    absolute_path: str,
+    probable_sufficient_resource_for_agents: bool,
+    helm_client_location: str,
+    kubectl_client_location: str,
+    release_namespace: str,
+    probable_pod_security_policy_presence: str,
+    kube_config: str | None,
+    kube_context: str | None,
+) -> tuple[str, bool]:
     print(f"Step: {get_utctimestring()}: Check diagnoser container")
     try:
         if probable_sufficient_resource_for_agents is False:
@@ -1151,18 +1154,18 @@ def check_diagnoser_container(
 
 
 def executing_diagnoser_job(
-    corev1_api_instance,
-    batchv1_api_instance,
-    filepath_with_timestamp,
-    storage_space_available,
-    absolute_path,
-    helm_client_location,
-    kubectl_client_location,
-    release_namespace,
-    probable_pod_security_policy_presence,
-    kube_config,
-    kube_context,
-):
+    corev1_api_instance: CoreV1Api,
+    batchv1_api_instance: BatchV1Api,
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+    absolute_path: str,
+    helm_client_location: str,
+    kubectl_client_location: str,
+    release_namespace: str,
+    probable_pod_security_policy_presence: str,
+    kube_config: str | None,
+    kube_context: str | None,
+) -> str | None:
     job_name = "azure-arc-diagnoser-job"
     # CMD command to get helm values in azure arc and converting it to json format
     command = [
@@ -1214,7 +1217,7 @@ def executing_diagnoser_job(
                 "An exception has occured while trying to fetch Field:'isProxyEnabled' from get "
                 f"helm values. Exception: {e}\n"
             )
-            return
+            return None
     try:
         is_custom_cert = helm_values_json["global"]["isCustomCert"]
     except Exception as e:
@@ -1235,7 +1238,7 @@ def executing_diagnoser_job(
                 "An exception has occured while trying to fetch Field:'isCustomCert' from get "
                 f"helm values. Exception: {e}\n"
             )
-            return
+            return None
     try:
         proxy_cert = helm_values_json["global"]["proxyCert"]
     except Exception as e:
@@ -1256,7 +1259,7 @@ def executing_diagnoser_job(
                 "An exception has occured while trying to fetch Field:'proxyCert' from get helm "
                 f"values. Exception: {e}\n"
             )
-            return
+            return None
 
     # Depending on the presence of proxy cert using the yaml
     if proxy_cert and (is_custom_cert or is_proxy_enabled):
@@ -1340,7 +1343,7 @@ def executing_diagnoser_job(
                 for ind_error in valid_exception_list:
                     logger.warning(ind_error)
                     diagnoser_output.append(ind_error)
-                return
+                return None
         # Creating the job from yaml file
         try:
             utils.create_from_yaml(k8s_client, yaml_file_path)
@@ -1361,7 +1364,7 @@ def executing_diagnoser_job(
             )
             # Deleting all the stale resources that got created
             Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
-            return
+            return None
         # Watching for diagnoser container to reach in completed stage
         w = watch.Watch()
         is_job_complete = False
@@ -1409,7 +1412,7 @@ def executing_diagnoser_job(
                 "azure-arc-troubleshoot-sa which does not have admin permissions.\nYou can "
                 "whitelist it and then run the troubleshoot command again.\n"
             )
-            return
+            return None
 
         if is_job_scheduled is False:
             logger.warning(
@@ -1423,9 +1426,9 @@ def executing_diagnoser_job(
                 "reasons can be presence of a security policy or security context constraint "
                 "(SCC) or it may happen because of lack of ResourceQuota.\n"
             )
-            return
+            return None
 
-        if is_job_scheduled is True and is_job_complete is False:
+        if is_job_complete is False:
             logger.warning(
                 "The diagnoser job failed to reach the completed state in the kubernetes cluster.\n"
             )
@@ -1497,7 +1500,7 @@ def executing_diagnoser_job(
             diagnoser_output.append(
                 "The diagnoser job failed to reach the completed state in the kubernetes cluster.\n"
             )
-            return
+            return None
 
         # Fetching the Diagnoser Container logs
         all_pods = corev1_api_instance.list_namespaced_pod("azure-arc")
@@ -1531,12 +1534,12 @@ def executing_diagnoser_job(
             "An exception has occured while trying to execute the diagnoser job in the cluster. "
             f"Exception: {e}\n"
         )
-        return
+        return None
 
     return diagnoser_container_log
 
 
-def check_msi_certificate_presence(corev1_api_instance):
+def check_msi_certificate_presence(corev1_api_instance: CoreV1Api) -> str:
     print(f"Step: {get_utctimestring()}: Check MSI certificate presence")
     try:
         # Initializing msi certificate as not present
@@ -1586,12 +1589,12 @@ def check_msi_certificate_presence(corev1_api_instance):
 
 
 def check_probable_cluster_security_policy(
-    corev1_api_instance,
-    helm_client_location,
-    release_namespace,
-    kube_config,
-    kube_context,
-):
+    corev1_api_instance: CoreV1Api,
+    helm_client_location: str,
+    release_namespace: str,
+    kube_config: str | None,
+    kube_context: str | None,
+) -> str:
     print(f"Step: {get_utctimestring()}: Check probable cluster security policy")
     try:
         # Intializing the kap_pod_present and cluster_connect_feature variable as False
@@ -1676,7 +1679,7 @@ def check_probable_cluster_security_policy(
     return consts.Diagnostic_Check_Incomplete
 
 
-def check_kap_cert(corev1_api_instance):
+def check_kap_cert(corev1_api_instance: CoreV1Api) -> str:
     print(f"Step: {get_utctimestring()}: Check Kube aad proxy certificate")
     try:
         # Initialize the kap_cert_present as False
@@ -1732,7 +1735,7 @@ def check_kap_cert(corev1_api_instance):
     return consts.Diagnostic_Check_Incomplete
 
 
-def check_msi_expiry(connected_cluster):
+def check_msi_expiry(connected_cluster: ConnectedCluster) -> str:
     print(f"Step: {get_utctimestring()}: Check MSI certificate expiry")
     try:
         # Fetch the expiry time of the msi certificate
@@ -1781,11 +1784,11 @@ def check_msi_expiry(connected_cluster):
 
 
 def describe_non_ready_agent_log(
-    filepath_with_timestamp,
-    corev1_api_instance,
-    agent_pod_name,
-    storage_space_available,
-):
+    filepath_with_timestamp: str,
+    corev1_api_instance: CoreV1Api,
+    agent_pod_name: str,
+    storage_space_available: bool,
+) -> bool:
     try:
         # To describe pod if its not in running state and storing it if storage is available
         if storage_space_available:
@@ -1850,13 +1853,13 @@ def describe_non_ready_agent_log(
 
 
 def get_secrets_azure_arc(
-    corev1_api_instance,
-    kubectl_client_location,
-    kube_config,
-    kube_context,
-    filepath_with_timestamp,
-    storage_space_available,
-):
+    corev1_api_instance: CoreV1Api,
+    kubectl_client_location: str,
+    kube_config: str | None,
+    kube_context: str | None,
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+) -> bool:
     print(f"Step: {get_utctimestring()}: Fetching secrets in azure arc namespace")
     try:
         if storage_space_available:
@@ -1945,14 +1948,14 @@ def get_secrets_azure_arc(
 
 
 def get_helm_values_azure_arc(
-    corev1_api_instance,
-    helm_client_location,
-    release_namespace,
-    kube_config,
-    kube_context,
-    filepath_with_timestamp,
-    storage_space_available,
-):
+    corev1_api_instance: CoreV1Api,
+    helm_client_location: str,
+    release_namespace: str,
+    kube_config: str | None,
+    kube_context: str | None,
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+) -> bool:
     print(f"Step: {get_utctimestring()}: Fetching helm values of azure-arc release")
     try:
         if storage_space_available:
@@ -1994,8 +1997,8 @@ def get_helm_values_azure_arc(
                 return storage_space_available
 
             # Converting output obtained in json format
-            helmvalues_json = output_kubectl_get_helmvalues.decode("ascii")
-            helmvalues_json = json.loads(helmvalues_json)
+            helmvalues_str = output_kubectl_get_helmvalues.decode("ascii")
+            helmvalues_json = json.loads(helmvalues_str)
 
             # removing onboarding private key
             try:
@@ -2069,14 +2072,14 @@ def get_helm_values_azure_arc(
 
 
 def get_helm_values_arc_workload_identity(
-    corev1_api_instance,
-    helm_client_location,
-    release_namespace,
-    kube_config,
-    kube_context,
-    filepath_with_timestamp,
-    storage_space_available,
-):
+    corev1_api_instance: CoreV1Api,
+    helm_client_location: str,
+    release_namespace: str,
+    kube_config: str | None,
+    kube_context: str | None,
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+) -> bool:
     print(f"Step: {get_utctimestring()}: Fetching helm values of wiextension release")
     try:
         if storage_space_available:
@@ -2177,13 +2180,13 @@ def get_helm_values_arc_workload_identity(
 
 
 def get_metadata_cr_snapshot(
-    corev1_api_instance,
-    kubectl_client_location,
-    kube_config,
-    kube_context,
-    filepath_with_timestamp,
-    storage_space_available,
-):
+    corev1_api_instance: CoreV1Api,
+    kubectl_client_location: str,
+    kube_config: str | None,
+    kube_context: str | None,
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+) -> bool:
     print(f"Step: {get_utctimestring()}: Fetching metadata CR details")
     try:
         if storage_space_available:
@@ -2278,13 +2281,13 @@ def get_metadata_cr_snapshot(
 
 
 def get_kubeaadproxy_cr_snapshot(
-    corev1_api_instance,
-    kubectl_client_location,
-    kube_config,
-    kube_context,
-    filepath_with_timestamp,
-    storage_space_available,
-):
+    corev1_api_instance: CoreV1Api,
+    kubectl_client_location: str,
+    kube_config: str | None,
+    kube_context: str | None,
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+) -> bool:
     print(f"Step: {get_utctimestring()}: Fetching kube-aad-proxy CR details")
     try:
         if storage_space_available:
@@ -2379,13 +2382,13 @@ def get_kubeaadproxy_cr_snapshot(
 
 
 def get_signingkey_cr_snapshot(
-    corev1_api_instance,
-    kubectl_client_location,
-    kube_config,
-    kube_context,
-    filepath_with_timestamp,
-    storage_space_available,
-):
+    corev1_api_instance: CoreV1Api,
+    kubectl_client_location: str,
+    kube_config: str | None,
+    kube_context: str | None,
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+) -> bool:
     print(f"Step: {get_utctimestring()}: Fetching signingkey CR details")
     try:
         if storage_space_available:
@@ -2481,7 +2484,9 @@ def get_signingkey_cr_snapshot(
     return storage_space_available
 
 
-def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, flag):
+def fetching_cli_output_logs(
+    filepath_with_timestamp: str, storage_space_available: bool, flag: int
+) -> str:
     print(f"Step: {get_utctimestring()}: Fetching the CLI output logs")
     # This function is used to store the output that is obtained throughout the Diagnoser process
     print(f"Step: {get_utctimestring()}: Storing the diagnoser output")

@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from __future__ import annotations
 
 import contextlib
 import json
@@ -11,6 +12,7 @@ import subprocess
 import sys
 import time
 from subprocess import PIPE, Popen
+from typing import TYPE_CHECKING, Any
 
 from azure.cli.core import get_default_cli, telemetry
 from azure.cli.core.azclierror import (
@@ -39,13 +41,23 @@ from azext_connectedk8s._client_factory import (
     resource_providers_client,
 )
 
+if TYPE_CHECKING:
+    from azure.cli.core import AzCli
+    from knack.commands import CLICommand
+    from kubernetes.client import BatchV1Api, CoreV1Api, V1NodeList
+    from requests import Response
+
+    from azext_connectedk8s.vendored_sdks.preview_2024_07_01.models import (
+        ConnectedCluster,
+    )
+
 logger = get_logger(__name__)
 
 # pylint: disable=line-too-long
 # pylint: disable=bare-except
 
 
-def validate_connect_rp_location(cmd, location):
+def validate_connect_rp_location(cmd: CLICommand, location: str) -> None:
     subscription_id = (
         os.getenv("AZURE_SUBSCRIPTION_ID")
         if os.getenv("AZURE_ACCESS_TOKEN")
@@ -55,6 +67,7 @@ def validate_connect_rp_location(cmd, location):
     resourceClient = resource_providers_client(
         cmd.cli_ctx, subscription_id=subscription_id
     )
+
     try:
         providerDetails = resourceClient.get("Microsoft.Kubernetes")
     except Exception as e:  # pylint: disable=broad-except
@@ -64,7 +77,7 @@ def validate_connect_rp_location(cmd, location):
             "Failed to fetch resource provider details",
         )
 
-    for resourceTypes in providerDetails.resource_types:
+    for resourceTypes in providerDetails.resource_types:  # type: ignore[attr-defined]
         if resourceTypes.resource_type == "connectedClusters":
             rp_locations = [
                 location.replace(" ", "").lower()
@@ -84,7 +97,9 @@ def validate_connect_rp_location(cmd, location):
             break
 
 
-def validate_custom_token(cmd, resource_group_name, location):
+def validate_custom_token(
+    cmd: CLICommand, resource_group_name: str, location: str | None
+) -> tuple[bool, str | None]:
     print(f"Step: {get_utctimestring()}: Validating custom access token")
     if os.getenv("AZURE_ACCESS_TOKEN"):
         if os.getenv("AZURE_SUBSCRIPTION_ID") is None:
@@ -126,14 +141,14 @@ def validate_custom_token(cmd, resource_group_name, location):
 
 
 def get_chart_path(
-    registry_path,
-    kube_config,
-    kube_context,
-    helm_client_location,
-    chart_folder_name="AzureArcCharts",
-    chart_name="azure-arc-k8sagents",
-    new_path=True,
-):
+    registry_path: str,
+    kube_config: str | None,
+    kube_context: str | None,
+    helm_client_location: str,
+    chart_folder_name: str = "AzureArcCharts",
+    chart_name: str = "azure-arc-k8sagents",
+    new_path: bool = True,
+) -> str:
     print(f"Step: {get_utctimestring()}: Determine Helmchart Export Path")
     # Exporting Helm chart
     chart_export_path = os.path.join(
@@ -165,24 +180,22 @@ def get_chart_path(
     if chart_folder_name == consts.Pre_Onboarding_Helm_Charts_Folder_Name:
         chart_path = helm_chart_path
     else:
-        chart_path = (
-            os.getenv("HELMCHART") if os.getenv("HELMCHART") else helm_chart_path
-        )
+        chart_path = os.getenv("HELMCHART", helm_chart_path)
 
     return chart_path
 
 
 def pull_helm_chart(
-    registry_path,
-    chart_export_path,
-    kube_config,
-    kube_context,
-    helm_client_location,
-    new_path,
-    chart_name="azure-arc-k8sagents",
-    retry_count=5,
-    retry_delay=3,
-):
+    registry_path: str,
+    chart_export_path: str,
+    kube_config: str | None,
+    kube_context: str | None,
+    helm_client_location: str,
+    new_path: bool,
+    chart_name: str = "azure-arc-k8sagents",
+    retry_count: int = 5,
+    retry_delay: int = 3,
+) -> None:
     chart_url = registry_path.split(":")[0]
     chart_version = registry_path.split(":")[1]
 
@@ -206,7 +219,7 @@ def pull_helm_chart(
         base_path = os.path.dirname(chart_url)
         image_name = os.path.basename(chart_url)
         chart_url = base_path + "/v2/" + image_name
-    
+
     print(
         f"Step: {get_utctimestring()}: Pulling HelmChart: {chart_url}, Version: {chart_version}"
     )
@@ -248,15 +261,15 @@ def pull_helm_chart(
 
 
 def save_cluster_diagnostic_checks_pod_description(
-    corev1_api_instance,
-    batchv1_api_instance,
-    helm_client_location,
-    kubectl_client_location,
-    kube_config,
-    kube_context,
-    filepath_with_timestamp,
-    storage_space_available,
-):
+    corev1_api_instance: CoreV1Api,
+    batchv1_api_instance: BatchV1Api,
+    helm_client_location: str,
+    kubectl_client_location: str,
+    kube_config: str | None,
+    kube_context: str | None,
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+) -> None:
     try:
         job_name = "cluster-diagnostic-checks-job"
         all_pods = corev1_api_instance.list_namespaced_pod("azure-arc-release")
@@ -332,8 +345,11 @@ def save_cluster_diagnostic_checks_pod_description(
 
 
 def check_cluster_DNS(
-    dns_check_log, filepath_with_timestamp, storage_space_available, diagnoser_output
-):
+    dns_check_log: str,
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+    diagnoser_output: list[str],
+) -> tuple[str, bool]:
     try:
         if consts.DNS_Check_Result_String not in dns_check_log:
             return consts.Diagnostic_Check_Incomplete, storage_space_available
@@ -418,12 +434,12 @@ def check_cluster_DNS(
 
 
 def check_cluster_outbound_connectivity(
-    outbound_connectivity_check_log,
-    filepath_with_timestamp,
-    storage_space_available,
-    diagnoser_output,
-    outbound_connectivity_check_for="pre-onboarding-inspector",
-):
+    outbound_connectivity_check_log: str,
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+    diagnoser_output: list[str],
+    outbound_connectivity_check_for: str = "pre-onboarding-inspector",
+) -> tuple[str, bool]:
     try:
         if outbound_connectivity_check_for == "pre-onboarding-inspector":
             if (
@@ -640,7 +656,7 @@ def check_cluster_outbound_connectivity(
     return consts.Diagnostic_Check_Incomplete, storage_space_available
 
 
-def create_folder_diagnosticlogs(time_stamp, folder_name):
+def create_folder_diagnosticlogs(time_stamp: str, folder_name: str) -> tuple[str, bool]:
     print(
         f"Step: {get_utctimestring()}: Creating folder for Cluster Diagnostic Checks Logs"
     )
@@ -697,10 +713,12 @@ def create_folder_diagnosticlogs(time_stamp, folder_name):
         return "", False
 
 
-def add_helm_repo(kube_config, kube_context, helm_client_location):
+def add_helm_repo(
+    kube_config: str | None, kube_context: str | None, helm_client_location: str
+) -> None:
     print(f"Step: {get_utctimestring()}: Adding Helm Repo")
-    repo_name = os.getenv("HELMREPONAME")
-    repo_url = os.getenv("HELMREPOURL")
+    repo_name = os.environ["HELMREPONAME"]
+    repo_url = os.environ["HELMREPOURL"]
     cmd_helm_repo = [helm_client_location, "repo", "add", repo_name, repo_url]
     if kube_config:
         cmd_helm_repo.extend(["--kubeconfig", kube_config])
@@ -718,7 +736,9 @@ def add_helm_repo(kube_config, kube_context, helm_client_location):
         raise CLIInternalError(f"Unable to add repository {repo_url} to helm: {error}")
 
 
-def get_helm_registry(cmd, config_dp_endpoint, release_train_custom=None):
+def get_helm_registry(
+    cmd: CLICommand, config_dp_endpoint: str, release_train_custom: str | None = None
+) -> str:
     print(f"Step: {get_utctimestring()}: Getting HelmPackagePath from Arc DataPlane")
     # Setting uri
     api_version = "2019-11-01-preview"
@@ -747,7 +767,8 @@ def get_helm_registry(cmd, config_dp_endpoint, release_train_custom=None):
     )
     if r.content:
         try:
-            return r.json().get("repositoryPath")
+            repository_path: str = r.json().get("repositoryPath")
+            return repository_path
         except Exception as e:
             telemetry.set_exception(
                 exception=e,
@@ -767,22 +788,25 @@ def get_helm_registry(cmd, config_dp_endpoint, release_train_custom=None):
 
 
 def get_helm_values(
-    cmd, config_dp_endpoint, release_train_custom=None, request_body=None
-):
+    cmd: CLICommand,
+    config_dp_endpoint: str,
+    release_train_custom: str | None,
+    connected_cluster: ConnectedCluster,
+) -> dict[str, Any]:
     # Setting uri
     api_version = "2024-07-01-preview"
     chart_location_url_segment = (
         f"azure-arc-k8sagents/GetHelmSettings?api-version={api_version}"
     )
-    release_train = os.getenv("RELEASETRAIN") if os.getenv("RELEASETRAIN") else "stable"
+    release_train = os.getenv("RELEASETRAIN", "stable")
     chart_location_url = f"{config_dp_endpoint}/{chart_location_url_segment}"
-    dp_request_identity = request_body.identity
-    identity = request_body.id
-    request_body = request_body.serialize()
-    request_body["identity"]["tenantId"] = dp_request_identity.tenant_id
-    request_body["identity"]["principalId"] = dp_request_identity.principal_id
-    request_body["id"] = identity
-    request_body = json.dumps(request_body)
+    dp_request_identity = connected_cluster.identity
+    identity = connected_cluster.id
+    request_dict = connected_cluster.serialize()
+    request_dict["identity"]["tenantId"] = dp_request_identity.tenant_id
+    request_dict["identity"]["principalId"] = dp_request_identity.principal_id
+    request_dict["id"] = identity
+    request_body = json.dumps(request_dict)
     if release_train_custom:
         release_train = release_train_custom
     uri_parameters = [f"releaseTrain={release_train}"]
@@ -804,7 +828,8 @@ def get_helm_values(
     )
     if r.content:
         try:
-            return r.json()
+            content: dict[str, Any] = r.json()
+            return content
         except Exception as e:
             telemetry.set_exception(
                 exception=e,
@@ -823,14 +848,14 @@ def get_helm_values(
         raise CLIInternalError("No content was found in helm registry path response.")
 
 
-def health_check_dp(cmd, config_dp_endpoint):
+def health_check_dp(cmd: CLICommand, config_dp_endpoint: str) -> bool:
     # Setting uri
     api_version = "2024-07-01-preview"
     chart_location_url_segment = (
         f"azure-arc-k8sagents/healthCheck?api-version={api_version}"
     )
     chart_location_url = f"{config_dp_endpoint}/{chart_location_url_segment}"
-    uri_parameters = []
+    uri_parameters: list[str] = []
     resource = cmd.cli_ctx.cloud.endpoints.active_directory_resource_id
     headers = None
     if os.getenv("AZURE_ACCESS_TOKEN"):
@@ -858,18 +883,19 @@ def health_check_dp(cmd, config_dp_endpoint):
 
 
 def send_request_with_retries(
-    cli_ctx,
-    method,
-    url,
-    headers,
-    fault_type,
-    summary,
-    uri_parameters=None,
-    resource=None,
-    retry_count=5,
-    retry_delay=3,
-    request_body=None,
-):
+    cli_ctx: AzCli,
+    method: str,
+    url: str,
+    headers: list[str] | None,
+    fault_type: str,
+    summary: str,
+    uri_parameters: list[str] | None = None,
+    resource: str | None = None,
+    retry_count: int = 5,
+    retry_delay: int = 3,
+    request_body: str | None = None,
+) -> Response:
+    response: Response
     for i in range(retry_count):
         try:
             response = send_raw_request(
@@ -892,8 +918,12 @@ def send_request_with_retries(
                 )
             time.sleep(retry_delay)
 
+    assert False
 
-def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
+
+def arm_exception_handler(
+    ex: Exception, fault_type: str, summary: str, return_if_not_found: bool = False
+) -> None:
     if isinstance(ex, AuthenticationError):
         telemetry.set_exception(exception=ex, fault_type=fault_type, summary=summary)
         raise AzureResponseError(
@@ -966,16 +996,16 @@ def arm_exception_handler(ex, fault_type, summary, return_if_not_found=False):
 
 
 def kubernetes_exception_handler(
-    ex,
-    fault_type,
-    summary,
-    error_message="Error occured while connecting to the kubernetes cluster: ",
-    message_for_unauthorized_request="The user does not have required privileges on the "
+    ex: Exception,
+    fault_type: str,
+    summary: str,
+    error_message: str = "Error occured while connecting to the kubernetes cluster: ",
+    message_for_unauthorized_request: str = "The user does not have required privileges on the "
     "kubernetes cluster to deploy Azure Arc enabled Kubernetes agents. Please "
     "ensure you have cluster admin privileges on the cluster to onboard.",
-    message_for_not_found="The requested kubernetes resource was not found.",
-    raise_error=True,
-):
+    message_for_not_found: str = "The requested kubernetes resource was not found.",
+    raise_error: bool = True,
+) -> None:
     telemetry.set_user_fault()
     if isinstance(ex, ApiException):
         status_code = ex.status
@@ -1000,14 +1030,14 @@ def kubernetes_exception_handler(
         logger.debug("Kubernetes Exception", exc_info=True)
 
 
-def validate_infrastructure_type(infra):
+def validate_infrastructure_type(infra: str) -> str | None:
     for s in consts.Infrastructure_Enum_Values[1:]:  # First value is "auto"
         if s.lower() == infra.lower():
             return s
     return None
 
 
-def get_values_file():
+def get_values_file() -> str | None:
     values_file = os.getenv("HELMVALUESPATH")
     if (values_file is not None) and (os.path.isfile(values_file)):
         logger.warning(
@@ -1022,7 +1052,7 @@ def get_values_file():
     return None
 
 
-def ensure_namespace_cleanup():
+def ensure_namespace_cleanup() -> None:
     print(
         f"Step: {get_utctimestring()}: Confirming '{consts.Arc_Namespace}' namespace got deleted."
     )
@@ -1054,13 +1084,13 @@ def ensure_namespace_cleanup():
 
 
 def delete_arc_agents(
-    release_namespace,
-    kube_config,
-    kube_context,
-    helm_client_location,
-    is_arm64_cluster=False,
-    no_hooks=False,
-):
+    release_namespace: str,
+    kube_config: str | None,
+    kube_context: str | None,
+    helm_client_location: str,
+    is_arm64_cluster: bool = False,
+    no_hooks: bool = False,
+) -> None:
     print(f"Step: {get_utctimestring()}: Uninstalling Arc Agents' Helm release")
     if no_hooks:
         cmd_helm_delete = [
@@ -1112,7 +1142,7 @@ def delete_arc_agents(
     cleanup_release_install_namespace_if_exists()
 
 
-def cleanup_release_install_namespace_if_exists():
+def cleanup_release_install_namespace_if_exists() -> None:
     print(
         f"Step: {get_utctimestring()}: Clean up release namespace '{consts.Release_Install_Namespace}'."
     )
@@ -1136,7 +1166,7 @@ def cleanup_release_install_namespace_if_exists():
     # If namespace exists, delete it
     try:
         api_instance.delete_namespace(consts.Release_Install_Namespace)
-    except Exception as ex:
+    except ApiException as ex:
         kubernetes_exception_handler(
             ex,
             consts.Delete_Kubernetes_Helm_Release_Namespace_Fault_Type,
@@ -1149,25 +1179,25 @@ def cleanup_release_install_namespace_if_exists():
 
 # DO NOT use this method for re-put scenarios. This method involves new NS creation for helm release. For re-put scenarios, brownfield scenario needs to be handled where helm release still stays in default NS
 def helm_install_release(
-    resource_manager,
-    chart_path,
-    kubernetes_distro,
-    kubernetes_infra,
-    location,
-    private_key_pem,
-    kube_config,
-    kube_context,
-    no_wait,
-    values_file,
-    cloud_name,
-    enable_custom_locations,
-    custom_locations_oid,
-    helm_client_location,
-    enable_private_link,
-    arm_metadata,
-    onboarding_timeout=consts.DEFAULT_MAX_ONBOARDING_TIMEOUT_HELMVALUE_SECONDS,
-    helm_content_values=None,
-):
+    resource_manager: str,
+    chart_path: str,
+    kubernetes_distro: str,
+    kubernetes_infra: str,
+    location: str,
+    private_key_pem: str,
+    kube_config: str | None,
+    kube_context: str | None,
+    no_wait: bool,
+    values_file: str | None,
+    cloud_name: str,
+    enable_custom_locations: bool,
+    custom_locations_oid: str,
+    helm_client_location: str,
+    enable_private_link: bool | None,
+    arm_metadata: dict[str, Any],
+    helm_content_values: dict[str, Any],
+    onboarding_timeout: str = consts.DEFAULT_MAX_ONBOARDING_TIMEOUT_HELMVALUE_SECONDS,
+) -> None:
     cmd_helm_install = [
         helm_client_location,
         "upgrade",
@@ -1287,8 +1317,11 @@ def helm_install_release(
 
 
 def get_release_namespace(
-    kube_config, kube_context, helm_client_location, release_name="azure-arc"
-):
+    kube_config: str | None,
+    kube_context: str | None,
+    helm_client_location: str,
+    release_name: str = "azure-arc",
+) -> str | None:
     print(f"Step: {get_utctimestring()}: Get namespace of release: {release_name}")
     cmd_helm_release = [
         helm_client_location,
@@ -1316,18 +1349,19 @@ def get_release_namespace(
         )
         raise CLIInternalError(f"Helm list release failed: {error}")
 
-    output_helm_release = output_helm_release.decode("ascii")
+    output_helm_release_str = output_helm_release.decode("ascii")
     try:
-        output_helm_release = json.loads(output_helm_release)
+        output_helm_release_dict = json.loads(output_helm_release_str)
     except json.decoder.JSONDecodeError:
         return None
-    for release in output_helm_release:
+    for release in output_helm_release_dict:
         if release["name"] == release_name:
-            return release["namespace"]
+            namespace: str = release["namespace"]
+            return namespace
     return None
 
 
-def flatten(dd, separator=".", prefix=""):
+def flatten(dd: Any, separator: str = ".", prefix: str = "") -> dict[str, Any]:
     try:
         if isinstance(dd, dict):
             return {
@@ -1349,7 +1383,7 @@ def flatten(dd, separator=".", prefix=""):
         )
 
 
-def check_features_to_update(features_to_update):
+def check_features_to_update(features_to_update: list[str]) -> tuple[bool, bool, bool]:
     update_cluster_connect, update_azure_rbac, update_cl = False, False, False
     for feature in features_to_update:
         if feature == "cluster-connect":
@@ -1361,7 +1395,7 @@ def check_features_to_update(features_to_update):
     return update_cluster_connect, update_azure_rbac, update_cl
 
 
-def user_confirmation(message, yes=False):
+def user_confirmation(message: str, yes: bool = False) -> None:
     if yes:
         return
     try:
@@ -1373,7 +1407,7 @@ def user_confirmation(message, yes=False):
         )
 
 
-def is_guid(guid):
+def is_guid(guid: str) -> bool:
     import uuid
 
     try:
@@ -1383,11 +1417,11 @@ def is_guid(guid):
         return False
 
 
-def try_list_node_fix():
+def try_list_node_fix() -> None:
     try:
         from kubernetes.client.models.v1_container_image import V1ContainerImage
 
-        def names(self, names):
+        def names(self: V1ContainerImage, names: list[str]) -> None:
             self._names = names
 
         V1ContainerImage.names = V1ContainerImage.names.setter(names)
@@ -1399,8 +1433,11 @@ def try_list_node_fix():
 
 
 def check_provider_registrations(
-    cli_ctx, subscription_id, is_gateway_enabled, is_workload_identity_enabled
-):
+    cli_ctx: AzCli,
+    subscription_id: str,
+    is_gateway_enabled: bool,
+    is_workload_identity_enabled: bool,
+) -> None:
     print(f"Step: {get_utctimestring()}: Checking Provider Registrations")
     try:
         rp_client = resource_providers_client(cli_ctx, subscription_id)
@@ -1460,7 +1497,7 @@ def check_provider_registrations(
         logger.exception("Couldn't check the required provider's registration status")
 
 
-def can_create_clusterrolebindings():
+def can_create_clusterrolebindings() -> bool | str:
     try:
         api_instance = kube_client.AuthorizationV1Api()
         access_review = kube_client.V1SelfSubjectAccessReview(
@@ -1473,7 +1510,8 @@ def can_create_clusterrolebindings():
             }
         )
         response = api_instance.create_self_subject_access_review(access_review)
-        return response.status.allowed
+        allowed: bool = response.status.allowed
+        return allowed
     except Exception as ex:
         warn_msg = (
             "Couldn't check for the permission to create clusterrolebindings on this k8s cluster. "
@@ -1483,24 +1521,21 @@ def can_create_clusterrolebindings():
         return "Unknown"
 
 
-def validate_node_api_response(api_instance, node_api_response):
-    if node_api_response is None:
-        try:
-            node_api_response = api_instance.list_node()
-            return node_api_response
-        except Exception:
-            logger.debug(
-                "Error occcured while listing nodes on this kubernetes cluster:",
-                exc_info=True,
-            )
-            return None
-    else:
+def validate_node_api_response(api_instance: CoreV1Api) -> V1NodeList | None:
+    try:
+        node_api_response = api_instance.list_node()
         return node_api_response
+    except Exception:
+        logger.debug(
+            "Error occcured while listing nodes on this kubernetes cluster:",
+            exc_info=True,
+        )
+        return None
 
 
-def az_cli(args_str):
+def az_cli(args_str: str) -> Any:
     args = args_str.split()
-    cli = get_default_cli()
+    cli: AzCli = get_default_cli()
     with open(os.devnull, "w") as devnull:
         cli.invoke(args, out_file=devnull)
     if cli.result.result:
@@ -1522,7 +1557,7 @@ def az_cli(args_str):
 #         return False
 
 
-def is_cli_using_msal_auth():
+def is_cli_using_msal_auth() -> bool:
     response_cli_version = az_cli("version --output json")
     try:
         cli_version = response_cli_version["azure-cli"]
@@ -1537,7 +1572,7 @@ def is_cli_using_msal_auth():
     return len(v1.split(".")) == len(v2.split("."))
 
 
-def get_metadata(arm_endpoint, api_version="2022-09-01"):
+def get_metadata(arm_endpoint: str, api_version: str = "2022-09-01") -> dict[str, Any]:
     metadata_url_suffix = f"/metadata/endpoints?api-version={api_version}"
     metadata_endpoint = None
     try:
@@ -1547,7 +1582,8 @@ def get_metadata(arm_endpoint, api_version="2022-09-01"):
         metadata_endpoint = arm_endpoint + metadata_url_suffix
         response = session.get(metadata_endpoint)
         if response.status_code == 200:
-            return response.json()
+            metadata: dict[str, Any] = response.json()
+            return metadata
 
         msg = f"ARM metadata endpoint '{metadata_endpoint}' returned status code {response.status_code}."
         raise HttpResponseError(msg)
@@ -1561,8 +1597,12 @@ def get_metadata(arm_endpoint, api_version="2022-09-01"):
         )
         arm_exception_handler(err, msg, "Failed to get ARM metadata")
 
+    assert False
 
-def parse_helm_values(helm_content_values, cmd_helm):
+
+def parse_helm_values(
+    helm_content_values: dict[str, Any], cmd_helm: list[str]
+) -> list[str]:
     for helm_param, helm_value in helm_content_values.items():
         if helm_param == "global.proxyCert":
             cmd_helm.extend(["--set-file", f"{helm_param}={helm_value}"])
@@ -1572,20 +1612,20 @@ def parse_helm_values(helm_content_values, cmd_helm):
     return cmd_helm
 
 
-def get_utctimestring():
+def get_utctimestring() -> str:
     return time.strftime("%Y-%m-%dT%H-%M-%SZ", time.gmtime())
 
 
 def helm_update_agent(
-    helm_client_location,
-    kube_config,
-    kube_context,
-    helm_content_values,
-    values_file,
-    cluster_name,
-    release_namespace,
-    chart_path,
-):
+    helm_client_location: str,
+    kube_config: str | None,
+    kube_context: str | None,
+    helm_content_values: dict[str, Any],
+    values_file: str | None,
+    cluster_name: str,
+    release_namespace: str,
+    chart_path: str,
+) -> None:
     cmd_helm_values = [
         helm_client_location,
         "get",

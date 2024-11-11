@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from __future__ import annotations
 
 import base64
 import json
@@ -10,6 +11,7 @@ import platform
 import sys
 import time
 from base64 import b64decode, b64encode
+from typing import TYPE_CHECKING, Any, NoReturn
 
 import requests
 import yaml
@@ -27,14 +29,19 @@ from psutil import (
 
 import azext_connectedk8s._constants as consts
 
+if TYPE_CHECKING:
+    from subprocess import Popen
+
+    from knack.commands import CLICommand
+
 logger = get_logger(__name__)
 
 
-def check_if_port_is_open(port):
+def check_if_port_is_open(port: int) -> bool:
     try:
         connections = net_connections(kind="inet")
         for tup in connections:
-            if int(tup[3][1]) == int(port):
+            if int(tup[3][1]) == port:  # type: ignore[misc]
                 return True
     except Exception as e:
         telemetry.set_exception(
@@ -48,18 +55,27 @@ def check_if_port_is_open(port):
     return False
 
 
-def close_subprocess_and_raise_cli_error(proc_subprocess, msg):
+def close_subprocess_and_raise_cli_error(
+    proc_subprocess: Popen[bytes], msg: str
+) -> NoReturn:
     proc_subprocess.terminate()
     raise CLIInternalError(msg)
 
 
-def check_if_csp_is_running(clientproxy_process):
+def check_if_csp_is_running(clientproxy_process: Popen[bytes]) -> bool:
     return clientproxy_process.poll() is None
 
 
 def make_api_call_with_retries(
-    uri, data, method, tls_verify, fault_type, summary, cli_error, clientproxy_process
-):
+    uri: str,
+    data: dict[str, Any],
+    method: str,
+    tls_verify: bool,
+    fault_type: str,
+    summary: str,
+    cli_error: str,
+    clientproxy_process: Popen[bytes],
+) -> requests.Response:
     for i in range(consts.API_CALL_RETRIES):
         try:
             response = requests.request(method, uri, json=data, verify=tls_verify)
@@ -76,9 +92,12 @@ def make_api_call_with_retries(
                     clientproxy_process, cli_error + str(e)
                 )
 
+    assert False
 
-def fetch_pop_publickey_kid(api_server_port, clientproxy_process):
-    requestbody = {}
+
+def fetch_pop_publickey_kid(
+    api_server_port: int, clientproxy_process: Popen[bytes]
+) -> str:
     poppublickey_uri = f"https://localhost:{api_server_port}/identity/poppublickey"
     # Needed to prevent skip tls warning from printing to the console
     original_stderr = sys.stderr
@@ -87,7 +106,7 @@ def fetch_pop_publickey_kid(api_server_port, clientproxy_process):
 
         get_publickey_response = make_api_call_with_retries(
             poppublickey_uri,
-            requestbody,
+            {},
             "get",
             False,
             consts.Get_PublicKey_Info_Fault_Type,
@@ -98,12 +117,18 @@ def fetch_pop_publickey_kid(api_server_port, clientproxy_process):
 
     sys.stderr = original_stderr
     publickey_info = json.loads(get_publickey_response.text)
-    kid = publickey_info["publicKey"]["kid"]
+    kid: str = publickey_info["publicKey"]["kid"]
 
     return kid
 
 
-def fetch_and_post_at_to_csp(cmd, api_server_port, tenant_id, kid, clientproxy_process):
+def fetch_and_post_at_to_csp(
+    cmd: CLICommand,
+    api_server_port: int,
+    tenant_id: str,
+    kid: str,
+    clientproxy_process: Popen[bytes],
+) -> requests.Response:
     req_cnfJSON = {"kid": kid, "xms_ksl": "sw"}
     req_cnf = base64.urlsafe_b64encode(json.dumps(req_cnfJSON).encode("utf-8")).decode(
         "utf-8"
@@ -160,8 +185,8 @@ def fetch_and_post_at_to_csp(cmd, api_server_port, tenant_id, kid, clientproxy_p
     return post_at_response
 
 
-def insert_token_in_kubeconfig(data, token):
-    b64kubeconfig = data["kubeconfigs"][0]["value"]
+def insert_token_in_kubeconfig(data: dict[str, Any], token: str) -> str:
+    b64kubeconfig: str = data["kubeconfigs"][0]["value"]
     decoded_kubeconfig_str = b64decode(b64kubeconfig).decode("utf-8")
     dict_yaml = yaml.safe_load(decoded_kubeconfig_str)
     dict_yaml["users"][0]["user"]["token"] = token
@@ -170,7 +195,7 @@ def insert_token_in_kubeconfig(data, token):
     return b64kubeconfig
 
 
-def check_process(processName):
+def check_process(processName: str) -> bool:
     """
     Check if there is any running process that contains the given name processName.
     """

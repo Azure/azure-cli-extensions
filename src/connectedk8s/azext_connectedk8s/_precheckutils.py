@@ -2,10 +2,12 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+from __future__ import annotations
 
 import os
 import shutil
 from subprocess import PIPE, Popen
+from typing import TYPE_CHECKING
 
 from azure.cli.core import telemetry
 from azure.cli.core.azclierror import (
@@ -17,29 +19,32 @@ from kubernetes import config, watch
 import azext_connectedk8s._constants as consts
 import azext_connectedk8s._utils as azext_utils
 
+if TYPE_CHECKING:
+    from kubernetes.client import BatchV1Api, CoreV1Api
+
 logger = get_logger(__name__)
 # pylint: disable=unused-argument, too-many-locals, too-many-branches, too-many-statements, line-too-long
 # pylint: disable
 
-diagnoser_output = []
+diagnoser_output: list[str] = []
 
 
 def fetch_diagnostic_checks_results(
-    corev1_api_instance,
-    batchv1_api_instance,
-    helm_client_location,
-    kubectl_client_location,
-    kube_config,
-    kube_context,
-    location,
-    http_proxy,
-    https_proxy,
-    no_proxy,
-    proxy_cert,
-    azure_cloud,
-    filepath_with_timestamp,
-    storage_space_available,
-):
+    corev1_api_instance: CoreV1Api,
+    batchv1_api_instance: BatchV1Api,
+    helm_client_location: str,
+    kubectl_client_location: str,
+    kube_config: str | None,
+    kube_context: str | None,
+    location: str | None,
+    http_proxy: str,
+    https_proxy: str,
+    no_proxy: str,
+    proxy_cert: str,
+    azure_cloud: str,
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+) -> tuple[str, bool]:
     try:
         # Setting DNS and Outbound Check as working
         dns_check = "Starting"
@@ -130,21 +135,21 @@ def fetch_diagnostic_checks_results(
 
 
 def executing_cluster_diagnostic_checks_job(
-    corev1_api_instance,
-    batchv1_api_instance,
-    helm_client_location,
-    kubectl_client_location,
-    kube_config,
-    kube_context,
-    location,
-    http_proxy,
-    https_proxy,
-    no_proxy,
-    proxy_cert,
-    azure_cloud,
-    filepath_with_timestamp,
-    storage_space_available,
-):
+    corev1_api_instance: CoreV1Api,
+    batchv1_api_instance: BatchV1Api,
+    helm_client_location: str,
+    kubectl_client_location: str,
+    kube_config: str | None,
+    kube_context: str | None,
+    location: str | None,
+    http_proxy: str,
+    https_proxy: str,
+    no_proxy: str,
+    proxy_cert: str,
+    azure_cloud: str,
+    filepath_with_timestamp: str,
+    storage_space_available: bool,
+) -> str | None:
     job_name = "cluster-diagnostic-checks-job"
     # Setting the log output as Empty
     cluster_diagnostic_checks_container_log = ""
@@ -201,7 +206,7 @@ def executing_cluster_diagnostic_checks_job(
                         fault_type=consts.Cluster_Diagnostic_Checks_Release_Cleanup_Failed,
                         summary="Error while executing Cluster Diagnostic Checks Job",
                     )
-                    return
+                    return None
 
         chart_path = azext_utils.get_chart_path(
             consts.Cluster_Diagnostic_Checks_Job_Registry_Path,
@@ -311,9 +316,9 @@ def executing_cluster_diagnostic_checks_job(
                 "Cluster diagnostic Job couldn't be scheduled.  Deleting the helm release in the cluster"
             )
             Popen(cmd_helm_delete, stdout=PIPE, stderr=PIPE)
-            return
+            return None
 
-        if is_job_scheduled is True and is_job_complete is False:
+        if is_job_complete is False:
             # Job was scheduled successfully, but didn't complete. We will fetch the logs and delete helm release.
             logger.debug(
                 "Cluster Diagnostic Checks Job Failed.  Fetch results and delete Helm release in the cluster"
@@ -398,18 +403,18 @@ def executing_cluster_diagnostic_checks_job(
 
 
 def helm_install_release_cluster_diagnostic_checks(
-    chart_path,
-    location,
-    http_proxy,
-    https_proxy,
-    no_proxy,
-    proxy_cert,
-    azure_cloud,
-    kube_config,
-    kube_context,
-    helm_client_location,
-    onboarding_timeout="60",
-):
+    chart_path: str,
+    location: str | None,
+    http_proxy: str,
+    https_proxy: str,
+    no_proxy: str,
+    proxy_cert: str,
+    azure_cloud: str,
+    kube_config: str | None,
+    kube_context: str | None,
+    helm_client_location: str,
+    onboarding_timeout: str = "60",
+) -> None:
     cmd_helm_install = [
         helm_client_location,
         "upgrade",
@@ -460,7 +465,9 @@ def helm_install_release_cluster_diagnostic_checks(
         )
 
 
-def fetching_cli_output_logs(filepath_with_timestamp, storage_space_available, flag):
+def fetching_cli_output_logs(
+    filepath_with_timestamp: str, storage_space_available: bool, flag: int
+) -> str:
     # This function is used to store the output that is obtained throughout the Diagnoser process
 
     try:
