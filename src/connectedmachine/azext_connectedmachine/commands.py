@@ -34,3 +34,8 @@ def load_command_table(self, _):
         'connectedmachine private-link-scope', connectedmachine_private_link_scope, client_factory=cf_private_link_scope
     ) as g:
         g.custom_command('update-tag', 'connectedmachine_private_link_scope_update_tag')
+
+
+    with self.command_group("arcgateway settings"):
+        from .custom import SettingsUpdate
+        self.command_table["arcgateway settings update"] = SettingsUpdate(loader=self)
