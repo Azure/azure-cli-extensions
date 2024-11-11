@@ -19,9 +19,9 @@ class GetSyncErrorDetail(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-05-01-preview",
+        "version": "2024-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/catalogs/{}/getsyncerrordetails", "2024-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/catalogs/{}/getsyncerrordetails", "2024-10-01-preview"],
         ]
     }
 
@@ -42,7 +42,7 @@ class GetSyncErrorDetail(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.catalog_name = AAZStrArg(
-            options=["-n", "--name", "--catalog-name"],
+            options=["--catalog-name"],
             help="The name of the catalog.",
             required=True,
             id_part="child_name_1",
@@ -137,7 +137,7 @@ class GetSyncErrorDetail(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-01-preview",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
