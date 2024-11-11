@@ -270,7 +270,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:24 GMT
+      - Mon, 11 Nov 2024 09:10:59 GMT
       expires:
       - '-1'
       pragma:
@@ -284,7 +284,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 8B794F23048C4EAFA3ABCEAED030B007 Ref B: TYO201100116033 Ref C: 2024-11-08T08:24:25Z'
+      - 'Ref A: A9F8F419A96C40F2BD36C4D32CF3659B Ref B: MAA201060513021 Ref C: 2024-11-11T09:10:59Z'
     status:
       code: 200
       message: OK
@@ -316,7 +316,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:25 GMT
+      - Mon, 11 Nov 2024 09:11:00 GMT
       expires:
       - '-1'
       pragma:
@@ -330,7 +330,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: F6148E141E5B4FDCA92A1ADAF4EC902F Ref B: TYO201151001062 Ref C: 2024-11-08T08:24:26Z'
+      - 'Ref A: F1633A311AA247CABB3603D7023B477C Ref B: MAA201060516033 Ref C: 2024-11-11T09:11:00Z'
     status:
       code: 200
       message: OK
@@ -346,7 +346,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --container-type --cooldown-period
+      - -g -n --container-type --cooldown-period -l
       User-Agent:
       - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
     method: GET
@@ -605,7 +605,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:26 GMT
+      - Mon, 11 Nov 2024 09:11:01 GMT
       expires:
       - '-1'
       pragma:
@@ -619,7 +619,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 9AEC992F363848368BB4986A3DBC57E2 Ref B: TYO201151004042 Ref C: 2024-11-08T08:24:27Z'
+      - 'Ref A: 3E922340F39D415FBB29283DE5797D91 Ref B: MAA201060514017 Ref C: 2024-11-11T09:11:01Z'
     status:
       code: 200
       message: OK
@@ -635,7 +635,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --container-type --cooldown-period
+      - -g -n --container-type --cooldown-period -l
       User-Agent:
       - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
     method: GET
@@ -894,7 +894,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:27 GMT
+      - Mon, 11 Nov 2024 09:11:01 GMT
       expires:
       - '-1'
       pragma:
@@ -908,7 +908,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 5D64DCDA9B9142D6BC646FE08AE9B457 Ref B: TYO201151005023 Ref C: 2024-11-08T08:24:27Z'
+      - 'Ref A: 10CE8DF9CA264E82A8DF3789BD09EA6F Ref B: MAA201060516021 Ref C: 2024-11-11T09:11:02Z'
     status:
       code: 200
       message: OK
@@ -917,7 +917,8 @@ interactions:
       "poolManagementType": "Dynamic", "containerType": "NodeLTS", "customContainerTemplate":
       null, "secrets": null, "dynamicPoolConfiguration": {"executionType": "Timed",
       "cooldownPeriodInSeconds": "300"}, "scaleConfiguration": {"maxConcurrentSessions":
-      10, "readySessionInstances": 5}, "sessionNetworkConfiguration": {"status": "EgressDisabled"}}}'
+      10, "readySessionInstances": 5}, "sessionNetworkConfiguration": {"status": "EgressDisabled"}},
+      "identity": {"type": "None", "userAssignedIdentities": null}}'
     headers:
       Accept:
       - '*/*'
@@ -928,11 +929,11 @@ interactions:
       Connection:
       - keep-alive
       Content-Length:
-      - '417'
+      - '479'
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g -n --container-type --cooldown-period
+      - -g -n --container-type --cooldown-period -l
       User-Agent:
       - python/3.12.7 (Windows-11-10.0.26100-SP0) AZURECLI/2.66.0
     method: PUT
@@ -940,7 +941,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000002","name":"spnodelts000002","type":"Microsoft.App/sessionpools","location":"North
-        Central US (Stage)","systemData":{"createdBy":"yitaopan@microsoft.com","createdByType":"User","createdAt":"2024-11-08T08:24:29.6055851Z","lastModifiedBy":"yitaopan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T08:24:29.6055851Z"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000002","managedIdentitySettings":null}}'
+        Central US (Stage)","systemData":{"createdBy":"yitaopan@microsoft.com","createdByType":"User","createdAt":"2024-11-11T09:11:04.8924213Z","lastModifiedBy":"yitaopan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-11T09:11:04.8924213Z"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000002","managedIdentitySettings":null}}'
     headers:
       api-supported-versions:
       - 2023-08-01-preview, 2023-11-02-preview, 2024-02-02-preview, 2024-08-02-preview,
@@ -952,7 +953,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:29 GMT
+      - Mon, 11 Nov 2024 09:11:05 GMT
       expires:
       - '-1'
       pragma:
@@ -968,7 +969,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-resource-requests:
       - '399'
       x-msedge-ref:
-      - 'Ref A: 2C9BEBB559C4455D8BCDC376B4BB93FA Ref B: TYO201151002036 Ref C: 2024-11-08T08:24:28Z'
+      - 'Ref A: B259307B9A734B8D84CCC4A76A922F78 Ref B: MAA201060515029 Ref C: 2024-11-11T09:11:02Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -986,7 +987,7 @@ interactions:
       Connection:
       - keep-alive
       ParameterSetName:
-      - -g -n --container-type --cooldown-period
+      - -g -n --container-type --cooldown-period -l
       User-Agent:
       - python/3.12.7 (Windows-11-10.0.26100-SP0) AZURECLI/2.66.0
     method: GET
@@ -1004,11 +1005,11 @@ interactions:
       content-type:
       - application/json;odata.metadata=minimal;odata.streaming=true;IEEE754Compatible=false;charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:30 GMT
+      - Mon, 11 Nov 2024 09:11:05 GMT
       odata-version:
       - '4.0'
       request-id:
-      - ca51b799-245f-465a-bb17-f629be51db2d
+      - 3fc8dd59-40a5-444f-a519-0563e7e33367
       strict-transport-security:
       - max-age=31536000
       transfer-encoding:
@@ -1016,7 +1017,7 @@ interactions:
       vary:
       - Accept-Encoding
       x-ms-ags-diagnostic:
-      - '{"ServerInfo":{"DataCenter":"Japan East","Slice":"E","Ring":"5","ScaleUnit":"001","RoleInstance":"TYO1EPF00001C74"}}'
+      - '{"ServerInfo":{"DataCenter":"Southeast Asia","Slice":"E","Ring":"5","ScaleUnit":"002","RoleInstance":"SG1PEPF00002016"}}'
       x-ms-resource-unit:
       - '1'
     status:
@@ -1039,14 +1040,14 @@ interactions:
       Content-Type:
       - application/json
       ParameterSetName:
-      - -g -n --container-type --cooldown-period
+      - -g -n --container-type --cooldown-period -l
       User-Agent:
       - python/3.12.7 (Windows-11-10.0.26100-SP0) AZURECLI/2.66.0
     method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000002/providers/Microsoft.Authorization/roleAssignments/a0d5bf64-0715-4c03-a17e-e059c95ceba0?api-version=2022-04-01
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000002/providers/Microsoft.Authorization/roleAssignments/73434696-4ab7-473c-a247-922c5e88843c?api-version=2022-04-01
   response:
     body:
-      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/0fb8eba5-a2bb-4abe-b1c1-49dfad359bb0","principalId":"542743fb-296b-4dd5-83a3-3e0a77786102","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000002","condition":null,"conditionVersion":null,"createdOn":"2024-11-08T08:24:31.9311433Z","updatedOn":"2024-11-08T08:24:32.3501546Z","createdBy":null,"updatedBy":"542743fb-296b-4dd5-83a3-3e0a77786102","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000002/providers/Microsoft.Authorization/roleAssignments/a0d5bf64-0715-4c03-a17e-e059c95ceba0","type":"Microsoft.Authorization/roleAssignments","name":"a0d5bf64-0715-4c03-a17e-e059c95ceba0"}'
+      string: '{"properties":{"roleDefinitionId":"/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleDefinitions/0fb8eba5-a2bb-4abe-b1c1-49dfad359bb0","principalId":"542743fb-296b-4dd5-83a3-3e0a77786102","principalType":"User","scope":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000002","condition":null,"conditionVersion":null,"createdOn":"2024-11-11T09:11:08.0686104Z","updatedOn":"2024-11-11T09:11:08.8536232Z","createdBy":null,"updatedBy":"542743fb-296b-4dd5-83a3-3e0a77786102","delegatedManagedIdentityResourceId":null,"description":null},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000002/providers/Microsoft.Authorization/roleAssignments/73434696-4ab7-473c-a247-922c5e88843c","type":"Microsoft.Authorization/roleAssignments","name":"73434696-4ab7-473c-a247-922c5e88843c"}'
     headers:
       cache-control:
       - no-cache
@@ -1055,7 +1056,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:35 GMT
+      - Mon, 11 Nov 2024 09:11:10 GMT
       expires:
       - '-1'
       pragma:
@@ -1071,7 +1072,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes:
       - '799'
       x-msedge-ref:
-      - 'Ref A: 129ABB2170374C7193B8521D51AB5CB4 Ref B: TYO201100117009 Ref C: 2024-11-08T08:24:31Z'
+      - 'Ref A: 9FF4512B0A0049F4A6DE900EFF4CFC76 Ref B: MAA201060514023 Ref C: 2024-11-11T09:11:06Z'
     status:
       code: 201
       message: Created
@@ -1346,7 +1347,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:36 GMT
+      - Mon, 11 Nov 2024 09:11:11 GMT
       expires:
       - '-1'
       pragma:
@@ -1360,7 +1361,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: BC3F3F096424471AB20674EAD805C0BC Ref B: TYO201151001023 Ref C: 2024-11-08T08:24:36Z'
+      - 'Ref A: 39977C2FE8554665ABFF689D5C35AD4D Ref B: MAA201060516049 Ref C: 2024-11-11T09:11:12Z'
     status:
       code: 200
       message: OK
@@ -1384,7 +1385,7 @@ interactions:
   response:
     body:
       string: '{"value":[{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000002","name":"spnodelts000002","type":"Microsoft.App/sessionpools","location":"North
-        Central US (Stage)","systemData":{"createdBy":"yitaopan@microsoft.com","createdByType":"User","createdAt":"2024-11-08T08:24:29.6055851","lastModifiedBy":"yitaopan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T08:24:29.6055851"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000002","managedIdentitySettings":[]},"identity":{"type":"None"}}]}'
+        Central US (Stage)","systemData":{"createdBy":"yitaopan@microsoft.com","createdByType":"User","createdAt":"2024-11-11T09:11:04.8924213","lastModifiedBy":"yitaopan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-11T09:11:04.8924213"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000002","managedIdentitySettings":[]},"identity":{"type":"None"}}]}'
     headers:
       api-supported-versions:
       - 2023-08-01-preview, 2023-11-02-preview, 2024-02-02-preview, 2024-08-02-preview,
@@ -1396,7 +1397,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:36 GMT
+      - Mon, 11 Nov 2024 09:11:13 GMT
       expires:
       - '-1'
       pragma:
@@ -1412,7 +1413,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 59DA6BED42E44A0CB007B0081A0A450E Ref B: TYO201100115011 Ref C: 2024-11-08T08:24:36Z'
+      - 'Ref A: 57D0310A008D4AF39F157AC17046F0B4 Ref B: MAA201060514011 Ref C: 2024-11-11T09:11:12Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -1689,7 +1690,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:37 GMT
+      - Mon, 11 Nov 2024 09:11:14 GMT
       expires:
       - '-1'
       pragma:
@@ -1703,7 +1704,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 8054F44AEB67463AB2935B1CF6C5E0B8 Ref B: TYO201100116045 Ref C: 2024-11-08T08:24:38Z'
+      - 'Ref A: 261E958ED75E44DD884FC6F0C3E46E82 Ref B: MAA201060516021 Ref C: 2024-11-11T09:11:14Z'
     status:
       code: 200
       message: OK
@@ -1727,7 +1728,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000002","name":"spnodelts000002","type":"Microsoft.App/sessionpools","location":"North
-        Central US (Stage)","systemData":{"createdBy":"yitaopan@microsoft.com","createdByType":"User","createdAt":"2024-11-08T08:24:29.6055851","lastModifiedBy":"yitaopan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T08:24:29.6055851"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000002","managedIdentitySettings":[]},"identity":{"type":"None"}}'
+        Central US (Stage)","systemData":{"createdBy":"yitaopan@microsoft.com","createdByType":"User","createdAt":"2024-11-11T09:11:04.8924213","lastModifiedBy":"yitaopan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-11T09:11:04.8924213"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000002","managedIdentitySettings":[]},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2023-08-01-preview, 2023-11-02-preview, 2024-02-02-preview, 2024-08-02-preview,
@@ -1739,7 +1740,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:39 GMT
+      - Mon, 11 Nov 2024 09:11:16 GMT
       expires:
       - '-1'
       pragma:
@@ -1755,7 +1756,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 90A92304A4A343CFB12E9EDFF1EB6538 Ref B: TYO201100113023 Ref C: 2024-11-08T08:24:39Z'
+      - 'Ref A: 615BBFD49958495F8AE0921278150A1C Ref B: MAA201060515053 Ref C: 2024-11-11T09:11:15Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -1785,8 +1786,8 @@ interactions:
     uri: https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000002/executions?identifier=testidentifier000003&api-version=2024-10-02-preview
   response:
     body:
-      string: '{"$id":"1","id":"273acaaf-169b-450d-a709-bec258d8e8b5","identifier":"testidentifier000003","executionType":"synchronous","status":"Succeeded","result":{"$id":"2","stdout":"Hello
-        world\n","stderr":"","executionResult":"","executionTimeInMilliseconds":51}}'
+      string: '{"$id":"1","id":"e495b95f-2e06-4b22-b637-8b7810a1f689","identifier":"testidentifier000003","executionType":"synchronous","status":"Succeeded","result":{"$id":"2","stdout":"Hello
+        world\n","stderr":"","executionResult":"","executionTimeInMilliseconds":72}}'
     headers:
       api-supported-versions:
       - 2024-10-02-preview
@@ -1795,9 +1796,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:41 GMT
+      - Mon, 11 Nov 2024 09:11:20 GMT
       mise-correlation-id:
-      - 4cd4a61f-0ac5-4280-9371-1281a858de78
+      - 8e8abb66-7003-40ba-a576-1edbfa233801
       server:
       - Microsoft-IIS/10.0
       transfer-encoding:
@@ -1805,21 +1806,21 @@ interactions:
       x-ms-allocation-retries:
       - '0'
       x-ms-allocation-time:
-      - '99.2177'
+      - '2381.8112'
       x-ms-container-execution-duration:
-      - '51'
+      - '72'
       x-ms-execution-read-response-time:
-      - '0.0506'
+      - '0.0543'
       x-ms-execution-request-time:
-      - '45'
+      - '61'
       x-ms-overall-execution-time:
-      - '509.1528'
+      - '813.1044'
       x-ms-preparation-time:
-      - '5.0088'
+      - '5.7131'
       x-ms-session-guid:
-      - 7e8c59d9-77a1-4927-abec-c5e0cd680e53
+      - cb9a1648-b157-4894-94ab-4bbf0003c1e4
       x-ms-total-execution-service-time:
-      - '613.3958'
+      - '3200.6466'
       x-powered-by:
       - ASP.NET
     status:
@@ -2096,7 +2097,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:43 GMT
+      - Mon, 11 Nov 2024 09:11:21 GMT
       expires:
       - '-1'
       pragma:
@@ -2110,13 +2111,13 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 09AEAE65EC82497ABB0EC0D964F009AB Ref B: TYO201151005031 Ref C: 2024-11-08T08:24:43Z'
+      - 'Ref A: E72D51B8EBF3470486BEA38A54FABC8A Ref B: MAA201060514019 Ref C: 2024-11-11T09:11:21Z'
     status:
       code: 200
       message: OK
 - request:
-    body: "--49a4b852e75d58b150587c51d8fd3bd1\r\nContent-Disposition: form-data; name=\"file\";
-      filename=\"cert.txt\"\r\n\r\ntesting\r\n--49a4b852e75d58b150587c51d8fd3bd1--\r\n"
+    body: "--1b5bc34efe5f871ea50b8db5d3937cc7\r\nContent-Disposition: form-data; name=\"file\";
+      filename=\"cert.txt\"\r\n\r\ntesting\r\n--1b5bc34efe5f871ea50b8db5d3937cc7--\r\n"
     headers:
       Accept:
       - '*/*'
@@ -2127,27 +2128,27 @@ interactions:
       Content-Length:
       - '151'
       Content-Type:
-      - multipart/form-data; boundary=49a4b852e75d58b150587c51d8fd3bd1
+      - multipart/form-data; boundary=1b5bc34efe5f871ea50b8db5d3937cc7
       User-Agent:
       - python-requests/2.32.3
     method: POST
     uri: https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000002/files?identifier=testidentifier000003&api-version=2024-10-02-preview
   response:
     body:
-      string: '{"$id":"1","name":"cert.txt","type":"","contentType":"","sizeInBytes":7,"lastModifiedAt":"2024-11-08T08:24:45.227591Z"}'
+      string: '{"$id":"1","name":"cert.txt","type":"","contentType":"","sizeInBytes":7,"lastModifiedAt":"2024-11-11T09:11:23.4190303Z"}'
     headers:
       api-supported-versions:
       - 2024-10-02-preview
       connection:
       - keep-alive
       content-length:
-      - '119'
+      - '120'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:45 GMT
+      - Mon, 11 Nov 2024 09:11:23 GMT
       mise-correlation-id:
-      - d8877ec5-6056-4d1d-b22a-353bcb938c31
+      - db6e1290-4f07-4d5e-9a98-da43a3e00e0f
       server:
       - Microsoft-IIS/10.0
       transfer-encoding:
@@ -2430,7 +2431,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:48 GMT
+      - Mon, 11 Nov 2024 09:11:24 GMT
       expires:
       - '-1'
       pragma:
@@ -2444,7 +2445,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 11450A2217DF48C29872674C3AB59B85 Ref B: TYO201151001009 Ref C: 2024-11-08T08:24:48Z'
+      - 'Ref A: AC36AE48F8A94C6993953AF9F605C5A7 Ref B: MAA201060514039 Ref C: 2024-11-11T09:11:24Z'
     status:
       code: 200
       message: OK
@@ -2468,7 +2469,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000002","name":"spnodelts000002","type":"Microsoft.App/sessionpools","location":"North
-        Central US (Stage)","systemData":{"createdBy":"yitaopan@microsoft.com","createdByType":"User","createdAt":"2024-11-08T08:24:29.6055851","lastModifiedBy":"yitaopan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T08:24:29.6055851"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000002","managedIdentitySettings":[]},"identity":{"type":"None"}}'
+        Central US (Stage)","systemData":{"createdBy":"yitaopan@microsoft.com","createdByType":"User","createdAt":"2024-11-11T09:11:04.8924213","lastModifiedBy":"yitaopan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-11T09:11:04.8924213"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000002","managedIdentitySettings":[]},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2023-08-01-preview, 2023-11-02-preview, 2024-02-02-preview, 2024-08-02-preview,
@@ -2480,7 +2481,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:48 GMT
+      - Mon, 11 Nov 2024 09:11:25 GMT
       expires:
       - '-1'
       pragma:
@@ -2496,7 +2497,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 5E84C7DB11E24B4BB16251D9A31E4443 Ref B: TYO201100114025 Ref C: 2024-11-08T08:24:48Z'
+      - 'Ref A: 639B394258C64CE899CF404B46B6DF95 Ref B: MAA201060515023 Ref C: 2024-11-11T09:11:25Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -2522,20 +2523,20 @@ interactions:
   response:
     body:
       string: '{"$id":"1","value":[{"$id":"2","name":"cert.txt","type":"file","contentType":"text/plain;
-        charset=utf-8","sizeInBytes":7,"lastModifiedAt":"2024-11-08T08:24:45.227591Z"}]}'
+        charset=utf-8","sizeInBytes":7,"lastModifiedAt":"2024-11-11T09:11:23.4190303Z"}]}'
     headers:
       api-supported-versions:
       - 2024-10-02-preview
       connection:
       - keep-alive
       content-length:
-      - '170'
+      - '171'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:50 GMT
+      - Mon, 11 Nov 2024 09:11:27 GMT
       mise-correlation-id:
-      - fb15e169-a4ec-4cad-b8b4-38d96c93e39d
+      - a7af09f0-5515-48f4-903f-54012037c156
       server:
       - Microsoft-IIS/10.0
       transfer-encoding:
@@ -2818,7 +2819,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:50 GMT
+      - Mon, 11 Nov 2024 09:11:28 GMT
       expires:
       - '-1'
       pragma:
@@ -2832,7 +2833,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 3F2F35A0061C4766826EAE632BDBF832 Ref B: TYO201151005009 Ref C: 2024-11-08T08:24:51Z'
+      - 'Ref A: 85B295631BBE4D9C8BFB26C01AF8BEBF Ref B: MAA201060513019 Ref C: 2024-11-11T09:11:28Z'
     status:
       code: 200
       message: OK
@@ -2856,7 +2857,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000002","name":"spnodelts000002","type":"Microsoft.App/sessionpools","location":"North
-        Central US (Stage)","systemData":{"createdBy":"yitaopan@microsoft.com","createdByType":"User","createdAt":"2024-11-08T08:24:29.6055851","lastModifiedBy":"yitaopan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T08:24:29.6055851"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000002","managedIdentitySettings":[]},"identity":{"type":"None"}}'
+        Central US (Stage)","systemData":{"createdBy":"yitaopan@microsoft.com","createdByType":"User","createdAt":"2024-11-11T09:11:04.8924213","lastModifiedBy":"yitaopan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-11T09:11:04.8924213"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000002","managedIdentitySettings":[]},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2023-08-01-preview, 2023-11-02-preview, 2024-02-02-preview, 2024-08-02-preview,
@@ -2868,7 +2869,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:51 GMT
+      - Mon, 11 Nov 2024 09:11:29 GMT
       expires:
       - '-1'
       pragma:
@@ -2884,7 +2885,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: ED3C8154E6C54571B07573BDA03E6E47 Ref B: TYO201100113031 Ref C: 2024-11-08T08:24:51Z'
+      - 'Ref A: BDB2F5340E5A45F7954018BE53F26080 Ref B: MAA201060513023 Ref C: 2024-11-11T09:11:28Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -2920,9 +2921,9 @@ interactions:
       content-type:
       - application/octet-stream
       date:
-      - Fri, 08 Nov 2024 08:24:53 GMT
+      - Mon, 11 Nov 2024 09:11:32 GMT
       mise-correlation-id:
-      - 1a915a67-3aae-4c15-af31-11b293b02a25
+      - 1c14a791-be40-4f79-935a-4c5253382363
       server:
       - Microsoft-IIS/10.0
       x-powered-by:
@@ -3201,7 +3202,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:53 GMT
+      - Mon, 11 Nov 2024 09:11:33 GMT
       expires:
       - '-1'
       pragma:
@@ -3215,7 +3216,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: BBEAAFDD33814EA68B4C5D456210E792 Ref B: TYO201151003031 Ref C: 2024-11-08T08:24:54Z'
+      - 'Ref A: 938D9C4693804EB3A5497F12FE2CE7C0 Ref B: MAA201060514011 Ref C: 2024-11-11T09:11:33Z'
     status:
       code: 200
       message: OK
@@ -3239,7 +3240,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000002","name":"spnodelts000002","type":"Microsoft.App/sessionpools","location":"North
-        Central US (Stage)","systemData":{"createdBy":"yitaopan@microsoft.com","createdByType":"User","createdAt":"2024-11-08T08:24:29.6055851","lastModifiedBy":"yitaopan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T08:24:29.6055851"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000002","managedIdentitySettings":[]},"identity":{"type":"None"}}'
+        Central US (Stage)","systemData":{"createdBy":"yitaopan@microsoft.com","createdByType":"User","createdAt":"2024-11-11T09:11:04.8924213","lastModifiedBy":"yitaopan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-11T09:11:04.8924213"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000002","managedIdentitySettings":[]},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2023-08-01-preview, 2023-11-02-preview, 2024-02-02-preview, 2024-08-02-preview,
@@ -3251,7 +3252,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:54 GMT
+      - Mon, 11 Nov 2024 09:11:35 GMT
       expires:
       - '-1'
       pragma:
@@ -3267,7 +3268,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 78C1FBB4DF9A47FB8A4B92E4A925814F Ref B: TYO201151006052 Ref C: 2024-11-08T08:24:54Z'
+      - 'Ref A: D3A1526E41554C3AA1FC752813180C98 Ref B: MAA201060516009 Ref C: 2024-11-11T09:11:34Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -3292,20 +3293,20 @@ interactions:
     uri: https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000002/files/cert.txt?identifier=testidentifier000003&api-version=2024-10-02-preview
   response:
     body:
-      string: '{"$id":"1","name":"cert.txt","sizeInBytes":7,"lastModifiedAt":"2024-11-08T08:24:45.227591Z"}'
+      string: '{"$id":"1","name":"cert.txt","sizeInBytes":7,"lastModifiedAt":"2024-11-11T09:11:23.4190303Z"}'
     headers:
       api-supported-versions:
       - 2024-10-02-preview
       connection:
       - keep-alive
       content-length:
-      - '92'
+      - '93'
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:56 GMT
+      - Mon, 11 Nov 2024 09:11:36 GMT
       mise-correlation-id:
-      - 95559fb2-7325-4cfe-8329-54e7992fee38
+      - a065b39c-eed0-44e5-98d5-4034c8d2c667
       server:
       - Microsoft-IIS/10.0
       transfer-encoding:
@@ -3588,7 +3589,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:56 GMT
+      - Mon, 11 Nov 2024 09:11:37 GMT
       expires:
       - '-1'
       pragma:
@@ -3602,7 +3603,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 15F09717053642E493F5DE1D8C3C5FF4 Ref B: TYO201100117023 Ref C: 2024-11-08T08:24:57Z'
+      - 'Ref A: 3D7F1BCEC72A4B00AFAA36C4C6C56E38 Ref B: MAA201060513039 Ref C: 2024-11-11T09:11:37Z'
     status:
       code: 200
       message: OK
@@ -3626,7 +3627,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000002","name":"spnodelts000002","type":"Microsoft.App/sessionpools","location":"North
-        Central US (Stage)","systemData":{"createdBy":"yitaopan@microsoft.com","createdByType":"User","createdAt":"2024-11-08T08:24:29.6055851","lastModifiedBy":"yitaopan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T08:24:29.6055851"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000002","managedIdentitySettings":[]},"identity":{"type":"None"}}'
+        Central US (Stage)","systemData":{"createdBy":"yitaopan@microsoft.com","createdByType":"User","createdAt":"2024-11-11T09:11:04.8924213","lastModifiedBy":"yitaopan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-11T09:11:04.8924213"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000002","managedIdentitySettings":[]},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2023-08-01-preview, 2023-11-02-preview, 2024-02-02-preview, 2024-08-02-preview,
@@ -3638,7 +3639,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:24:58 GMT
+      - Mon, 11 Nov 2024 09:11:39 GMT
       expires:
       - '-1'
       pragma:
@@ -3654,7 +3655,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 7D1004EB9CE6486FB10919FB7040E1BE Ref B: TYO201151003040 Ref C: 2024-11-08T08:24:58Z'
+      - 'Ref A: C943B21D595B4099BBB3B36A9C596849 Ref B: MAA201060514033 Ref C: 2024-11-11T09:11:38Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -3688,9 +3689,9 @@ interactions:
       connection:
       - keep-alive
       date:
-      - Fri, 08 Nov 2024 08:24:59 GMT
+      - Mon, 11 Nov 2024 09:11:40 GMT
       mise-correlation-id:
-      - 89cb3d6b-cc31-4cb0-bacd-67b20e00325c
+      - 5af41d80-61b5-46d1-9fab-35fced75e412
       server:
       - Microsoft-IIS/10.0
       x-powered-by:
@@ -3969,7 +3970,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:25:00 GMT
+      - Mon, 11 Nov 2024 09:11:41 GMT
       expires:
       - '-1'
       pragma:
@@ -3981,9 +3982,9 @@ interactions:
       x-content-type-options:
       - nosniff
       x-ms-ratelimit-remaining-subscription-global-reads:
-      - '16499'
+      - '16498'
       x-msedge-ref:
-      - 'Ref A: 41295CB28E594C9187E3FAA89DCA27D0 Ref B: TYO201100117047 Ref C: 2024-11-08T08:25:00Z'
+      - 'Ref A: 04EA7617FD9A4D3CBF30AAFE14FF98E4 Ref B: MAA201060514031 Ref C: 2024-11-11T09:11:41Z'
     status:
       code: 200
       message: OK
@@ -4007,7 +4008,7 @@ interactions:
   response:
     body:
       string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/providers/Microsoft.App/sessionPools/spnodelts000002","name":"spnodelts000002","type":"Microsoft.App/sessionpools","location":"North
-        Central US (Stage)","systemData":{"createdBy":"yitaopan@microsoft.com","createdByType":"User","createdAt":"2024-11-08T08:24:29.6055851","lastModifiedBy":"yitaopan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-08T08:24:29.6055851"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000002","managedIdentitySettings":[]},"identity":{"type":"None"}}'
+        Central US (Stage)","systemData":{"createdBy":"yitaopan@microsoft.com","createdByType":"User","createdAt":"2024-11-11T09:11:04.8924213","lastModifiedBy":"yitaopan@microsoft.com","lastModifiedByType":"User","lastModifiedAt":"2024-11-11T09:11:04.8924213"},"properties":{"environmentId":null,"poolManagementType":"Dynamic","containerType":"NodeLTS","scaleConfiguration":{"maxConcurrentSessions":10},"dynamicPoolConfiguration":{"executionType":"Timed","cooldownPeriodInSeconds":300},"sessionNetworkConfiguration":{"status":"EgressDisabled"},"provisioningState":"Succeeded","poolManagementEndpoint":"https://northcentralusstage.dynamicsessions.io/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/clitest.rg000001/sessionPools/spnodelts000002","managedIdentitySettings":[]},"identity":{"type":"None"}}'
     headers:
       api-supported-versions:
       - 2023-08-01-preview, 2023-11-02-preview, 2024-02-02-preview, 2024-08-02-preview,
@@ -4019,7 +4020,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:25:01 GMT
+      - Mon, 11 Nov 2024 09:11:42 GMT
       expires:
       - '-1'
       pragma:
@@ -4035,7 +4036,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 3EDFDFD92C9F405E9A75367045F1083B Ref B: TYO201100114017 Ref C: 2024-11-08T08:25:01Z'
+      - 'Ref A: A189D0830E6649D89551550DED750368 Ref B: MAA201060515053 Ref C: 2024-11-11T09:11:42Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -4071,9 +4072,9 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:25:02 GMT
+      - Mon, 11 Nov 2024 09:11:44 GMT
       mise-correlation-id:
-      - 12bf322b-6107-4d2d-b55a-097e4de1c698
+      - a617790d-49ed-4f93-809d-7681462f0105
       server:
       - Microsoft-IIS/10.0
       transfer-encoding:
@@ -4114,7 +4115,7 @@ interactions:
       cache-control:
       - no-cache
       date:
-      - Fri, 08 Nov 2024 08:25:06 GMT
+      - Mon, 11 Nov 2024 09:11:49 GMT
       expires:
       - '-1'
       pragma:
@@ -4130,7 +4131,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-deletes:
       - '11999'
       x-msedge-ref:
-      - 'Ref A: CFED1802697D46A483E292237BA121ED Ref B: TYO201151005009 Ref C: 2024-11-08T08:25:03Z'
+      - 'Ref A: 8031F6B9C6A14F1690B199DB3FF7BCDF Ref B: MAA201060514049 Ref C: 2024-11-11T09:11:45Z'
       x-powered-by:
       - ASP.NET
     status:
@@ -4407,7 +4408,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:25:07 GMT
+      - Mon, 11 Nov 2024 09:11:51 GMT
       expires:
       - '-1'
       pragma:
@@ -4421,7 +4422,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: AF3B8CFBADC747E2A24F26E94A392387 Ref B: TYO201100117031 Ref C: 2024-11-08T08:25:07Z'
+      - 'Ref A: A40A8DCCCB03499BBB412D63A8132ED0 Ref B: MAA201060516051 Ref C: 2024-11-11T09:11:51Z'
     status:
       code: 200
       message: OK
@@ -4453,7 +4454,7 @@ interactions:
       content-type:
       - application/json; charset=utf-8
       date:
-      - Fri, 08 Nov 2024 08:25:08 GMT
+      - Mon, 11 Nov 2024 09:11:52 GMT
       expires:
       - '-1'
       pragma:
@@ -4467,7 +4468,7 @@ interactions:
       x-ms-ratelimit-remaining-subscription-global-reads:
       - '16499'
       x-msedge-ref:
-      - 'Ref A: 53A6FFA510C14E5B93F509E0BF93452E Ref B: TYO201151006040 Ref C: 2024-11-08T08:25:08Z'
+      - 'Ref A: 228C51AD135D4B56B34EBD30F71B5EFD Ref B: MAA201060513027 Ref C: 2024-11-11T09:11:52Z'
     status:
       code: 200
       message: OK
