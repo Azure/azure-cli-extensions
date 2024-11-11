@@ -940,10 +940,12 @@ def create_connectedk8s(
         print(
             f"Step: {utils.get_utctimestring()}: Wait for Agent State to reach terminal state, with timeout of {consts.Agent_State_Timeout}"
         )
-        if poll_for_agent_state(client, resource_group_name, cluster_name):
-            connected_cluster = client.get(resource_group_name, cluster_name)
+        terminal, connected_cluster = poll_for_agent_state(
+            client, resource_group_name, cluster_name
+        )
+        if terminal:
             print(
-                f"Step: {utils.get_utctimestring()}: Agent state has reached terminal state of {connected_cluster.arc_agent_profile.agent_state}."
+                f"Step: {utils.get_utctimestring()}: Agent state has reached terminal state."
             )
             return connected_cluster
 
@@ -964,16 +966,21 @@ def poll_for_agent_state(
     start_time = time.time()
     while True:
         connected_cluster = client.get(resource_group_name, cluster_name)
-        if (
-            connected_cluster.arc_agent_profile.agent_state
-            == consts.Agent_State_Succeeded
-            or connected_cluster.arc_agent_profile.agent_state
-            == consts.Agent_State_Failed
+        state = (
+            None
+            if connected_cluster.arc_agent_profile is None
+            else connected_cluster.arc_agent_profile.agent_state
+        )
+        if state is None or state in (
+            consts.Agent_State_Succeeded,
+            consts.Agent_State_Failed,
         ):
-            return True
+            return True, connected_cluster
+
         elapsed_time = time.time() - start_time
         if elapsed_time >= timeout_minutes * 60:
-            return False
+            return False, connected_cluster
+
         time.sleep(interval)
 
 
@@ -2165,7 +2172,24 @@ def update_connected_cluster(
         client, resource_group_name, cluster_name, cc, False
     )
     dp_request_payload = reput_cc_response.result()
-    reput_cc_response = LongRunningOperation(cmd.cli_ctx)(reput_cc_response)
+    _ = LongRunningOperation(cmd.cli_ctx)(reput_cc_response)
+
+    # Before proceeding, we prefer to see agent state settle - updating the helm chart
+    # while things are happening risks race conditions.  Eg
+    # <https://msazure.visualstudio.com/AzureArcPlatform/_workitems/edit/29816874>.
+    #
+    # If we don't see a terminal state, we'll go ahead and update the helm chart anyway,
+    # and throw an error later.
+    print(
+        f"Step: {utils.get_utctimestring()}: Wait for Agent State to reach terminal state, with timeout of {consts.Agent_State_Timeout}"
+    )
+    terminal_agent_state, connected_cluster = poll_for_agent_state(
+        client, resource_group_name, cluster_name
+    )
+    maybe_has = "has" if terminal_agent_state else "has not"
+    print(
+        f"Step: {utils.get_utctimestring()}: Agent state {maybe_has} reached terminal state."
+    )
 
     # Adding helm repo
     if os.getenv("HELMREPONAME") and os.getenv("HELMREPOURL"):
@@ -2247,30 +2271,13 @@ def update_connected_cluster(
         chart_path,
     )
 
-    # Long Running Operation for Agent State
-    # Agent state is used for feedback of workload identity extension installation
-    # Cases for when to poll for agent state:
-    #     - If OIDC is enabled and self hosted issuer is passed in, extension is not installed.
-    #       Feedback loop is not enabled, do not poll for agent state.
-    #     - If OIDC is enabled and self hosted issuer is empty, extension is installed.
-    #       Need to poll for agent state.
-    #     - If workload identity is enabled, extension is installed, poll for agent state.
-    if (enable_oidc_issuer and self_hosted_issuer == "") or enable_workload_identity:
-        print(
-            f"Step: {utils.get_utctimestring()}: Wait for Agent State to reach terminal state, with timeout of {consts.Agent_State_Timeout}"
-        )
-        if poll_for_agent_state(client, resource_group_name, cluster_name):
-            connected_cluster = client.get(resource_group_name, cluster_name)
-            print(
-                f"Step: {utils.get_utctimestring()}: Agent state has reached terminal state of {connected_cluster.arc_agent_profile.agent_state}."
-            )
-            return connected_cluster
-
+    # If we didn't see a terminal agent state, now's the time to throw an error.
+    if not terminal_agent_state:
         raise CLIInternalError(
             "Timed out waiting for Agent State to reach terminal state."
         )
 
-    return reput_cc_response
+    return connected_cluster
 
 
 def upgrade_agents(
@@ -4385,7 +4392,10 @@ def troubleshoot(
             )
 
         # saving signing key CR snapshot only if oidc issuer prfile is enabled
-        if connected_cluster.oidc_issuer_profile and connected_cluster.oidc_issuer_profile.enabled:
+        if (
+            connected_cluster.oidc_issuer_profile
+            and connected_cluster.oidc_issuer_profile.enabled
+        ):
             storage_space_available = troubleshootutils.get_signingkey_cr_snapshot(
                 corev1_api_instance,
                 kubectl_client_location,
@@ -4397,11 +4407,11 @@ def troubleshoot(
 
         # saving all other workload identity related information if enabled
         if (
-            connected_cluster.oidc_issuer_profile 
+            connected_cluster.oidc_issuer_profile
             and connected_cluster.oidc_issuer_profile.enabled
         ) or (
-            connected_cluster.security_profile 
-            and connected_cluster.security_profile.workload_identity 
+            connected_cluster.security_profile
+            and connected_cluster.security_profile.workload_identity
             and connected_cluster.security_profile.workload_identity.enabled
         ):
             # saving helm values of wiextension release
