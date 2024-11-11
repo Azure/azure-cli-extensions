@@ -16,3 +16,9 @@ git config --local core.hooksPath .githooks
 Every time you git commit or git push, please make sure you have activated the python environment and completed the azdev setup.
 
 If you want to skip the verification, you can add `--no-verify` to the git command.
+This option will bypass any pre-commit or pre-push hooks that are configured in the repository, allowing you to commit or push changes without running these checks.
+For example:
+Skipping verification during commit
+git commit -m "your commit message" --no-verify
+Skipping verification during push
+git push origin main --no-verify
