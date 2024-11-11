@@ -3305,7 +3305,7 @@ def remove_maintenance_config(cmd, resource_group_name, env_name):
     return r
 
 
-def show_maintenance_config(cmd, resource_group_name, env_name):
+def list_maintenance_config(cmd, resource_group_name, env_name):
     raw_parameters = locals()
     maintenance_config_decorator = ContainerAppEnvMaintenanceConfigPreviewDecorator(
         cmd=cmd,
@@ -3313,5 +3313,5 @@ def show_maintenance_config(cmd, resource_group_name, env_name):
         raw_parameters=raw_parameters,
         models=CONTAINER_APPS_SDK_MODELS
     )
-    r = maintenance_config_decorator.show()
+    r = maintenance_config_decorator.list()
     return r

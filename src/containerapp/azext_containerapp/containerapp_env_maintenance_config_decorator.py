@@ -57,7 +57,7 @@ class ContainerAppEnvMaintenanceConfigPreviewDecorator(ContainerappEnvMaintenanc
 
     def construct_payload(self, forUpdate=False):
         if forUpdate:
-            self.existing_maintenance_config_def = self.client.show(
+            self.existing_maintenance_config_def = self.client.list(
                 cmd=self.cmd,
                 resource_group_name=self.get_argument_resource_group_name(),
                 environment_name=self.get_argument_environment_name())
@@ -90,9 +90,9 @@ class ContainerAppEnvMaintenanceConfigPreviewDecorator(ContainerappEnvMaintenanc
         except Exception as e:
             handle_raw_exception(e)
 
-    def show(self):
+    def list(self):
         try:
-            return self.client.show(
+            return self.client.list(
                 cmd=self.cmd,
                 resource_group_name=self.get_argument_resource_group_name(),
                 environment_name=self.get_argument_environment_name())

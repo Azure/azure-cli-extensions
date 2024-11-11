@@ -2158,13 +2158,13 @@ helps['containerapp env maintenance-config update'] = """
               --duration 8 --start-hour-utc 12 --weekday Thursday
 """
 
-helps['containerapp env maintenance-config show'] = """
+helps['containerapp env maintenance-config list'] = """
     type: command
-    short-summary: Show Planned Maintenance in a Container App Environment
+    short-summary: List Planned Maintenance in a Container App Environment
     examples:
-    - name: Show Planned Maintenance
+    - name: List Planned Maintenance
       text: |
-          az containerapp env maintenance-config show --environment myEnv -g MyResourceGroup
+          az containerapp env maintenance-config list --environment myEnv -g MyResourceGroup
 """
 
 helps['containerapp env maintenance-config remove'] = """

@@ -42,7 +42,7 @@ class ContainerAppMaintenanceConfigTest(ScenarioTest):
         self.cmd("az containerapp env maintenance-config add --resource-group {} --environment {} -d {} -w {} -s {}".format(resource_group, env_name, duration, weekday, startHour))
 
         # verify the resource
-        self.cmd("az containerapp env maintenance-config show --resource-group {} --environment {}".format(resource_group, env_name), checks=[
+        self.cmd("az containerapp env maintenance-config list --resource-group {} --environment {}".format(resource_group, env_name), checks=[
             JMESPathCheck('properties.scheduledEntries[0].durationHours', duration),
             JMESPathCheck('properties.scheduledEntries[0].startHourUtc', startHour),
             JMESPathCheck('properties.scheduledEntries[0].weekDay', weekday),
@@ -68,7 +68,7 @@ class ContainerAppMaintenanceConfigTest(ScenarioTest):
         # delete the Container App Maintenance Config resource
         self.cmd("az containerapp env maintenance-config remove --resource-group {} --environment {} -y".format(resource_group, env_name))
         
-        self.cmd("az containerapp env maintenance-config show --resource-group {} --environment {}".format(resource_group, env_name), checks=[
+        self.cmd("az containerapp env maintenance-config list --resource-group {} --environment {}".format(resource_group, env_name), checks=[
             JMESPathCheck('length(@)', 0),
         ])
 

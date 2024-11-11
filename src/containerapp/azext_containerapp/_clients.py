@@ -1404,7 +1404,7 @@ class MaintenanceConfigPreviewClient():
     maintenance_config_name = MAINTENANCE_CONFIG_DEFAULT_NAME
 
     @classmethod
-    def show(cls, cmd, resource_group_name, environment_name):
+    def list(cls, cmd, resource_group_name, environment_name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
         sub_id = get_subscription_id(cmd.cli_ctx)
         url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/microsoft.app/managedenvironments/{}/maintenanceConfigurations/{}?api-version={}"
