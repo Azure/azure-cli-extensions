@@ -22,9 +22,9 @@ class Show(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-01-01",
+        "version": "2024-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations/{}/rulecollections/{}/rules/{}", "2022-01-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations/{}/rulecollections/{}/rules/{}", "2024-05-01"],
         ]
     }
 
@@ -45,8 +45,8 @@ class Show(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.configuration_name = AAZStrArg(
-            options=["--configuration-name"],
-            help="The name of the network manager Security Configuration.",
+            options=["--config", "--config-name", "--configuration-name"],
+            help="Name of the network manager security configuration.",
             required=True,
             id_part="child_name_1",
         )
@@ -55,12 +55,15 @@ class Show(AAZCommand):
             help="The name of the network manager.",
             required=True,
             id_part="name",
+            fmt=AAZStrArgFormat(
+                pattern="^[0-9a-zA-Z]([0-9a-zA-Z_.-]{0,62}[0-9a-zA-Z_])?$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
         )
         _args_schema.rule_collection_name = AAZStrArg(
-            options=["--rule-collection-name"],
+            options=["--rc", "--rule-collection-name"],
             help="The name of the network manager security Configuration rule collection.",
             required=True,
             id_part="child_name_2",
@@ -114,7 +117,7 @@ class Show(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -150,7 +153,7 @@ class Show(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2022-01-01",
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }
@@ -183,9 +186,6 @@ class Show(AAZCommand):
             cls._schema_on_200 = AAZObjectType()
 
             _schema_on_200 = cls._schema_on_200
-            _schema_on_200.etag = AAZStrType(
-                flags={"read_only": True},
-            )
             _schema_on_200.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -250,6 +250,10 @@ class Show(AAZCommand):
                 serialized_name="provisioningState",
                 flags={"read_only": True},
             )
+            properties.resource_guid = AAZStrType(
+                serialized_name="resourceGuid",
+                flags={"read_only": True},
+            )
             properties.source_port_ranges = AAZListType(
                 serialized_name="sourcePortRanges",
             )
@@ -275,7 +279,9 @@ class Show(AAZCommand):
             )
 
             properties = cls._schema_on_200.discriminate_by("kind", "Default").properties
-            properties.access = AAZStrType()
+            properties.access = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.description = AAZStrType(
                 flags={"read_only": True},
             )
@@ -286,14 +292,22 @@ class Show(AAZCommand):
             properties.destinations = AAZListType(
                 flags={"read_only": True},
             )
-            properties.direction = AAZStrType()
+            properties.direction = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.flag = AAZStrType()
             properties.priority = AAZIntType(
                 flags={"read_only": True},
             )
-            properties.protocol = AAZStrType()
+            properties.protocol = AAZStrType(
+                flags={"read_only": True},
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.resource_guid = AAZStrType(
+                serialized_name="resourceGuid",
                 flags={"read_only": True},
             )
             properties.source_port_ranges = AAZListType(

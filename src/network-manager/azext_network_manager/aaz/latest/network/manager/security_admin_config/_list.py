@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2022-05-01",
+        "version": "2024-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations", "2022-05-01"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/securityadminconfigurations", "2024-05-01"],
         ]
     }
 
@@ -46,9 +46,12 @@ class List(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.network_manager_name = AAZStrArg(
-            options=["-n", "--name", "--network-manager-name"],
+            options=["-n", "--name", "--manager-name", "--network-manager-name"],
             help="Name of the network manager.",
             required=True,
+            fmt=AAZStrArgFormat(
+                pattern="^[0-9a-zA-Z]([0-9a-zA-Z_.-]{0,62}[0-9a-zA-Z_])?$",
+            ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
             required=True,
@@ -109,7 +112,7 @@ class List(AAZCommand):
 
         @property
         def error_format(self):
-            return "ODataV4Format"
+            return "MgmtErrorFormat"
 
         @property
         def url_parameters(self):
@@ -139,7 +142,7 @@ class List(AAZCommand):
                     "$top", self.ctx.args.top,
                 ),
                 **self.serialize_query_param(
-                    "api-version", "2022-05-01",
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }
@@ -181,9 +184,6 @@ class List(AAZCommand):
             value.Element = AAZObjectType()
 
             _element = cls._schema_on_200.value.Element
-            _element.etag = AAZStrType(
-                flags={"read_only": True},
-            )
             _element.id = AAZStrType(
                 flags={"read_only": True},
             )
@@ -206,8 +206,15 @@ class List(AAZCommand):
                 serialized_name="applyOnNetworkIntentPolicyBasedServices",
             )
             properties.description = AAZStrType()
+            properties.network_group_address_space_aggregation_option = AAZStrType(
+                serialized_name="networkGroupAddressSpaceAggregationOption",
+            )
             properties.provisioning_state = AAZStrType(
                 serialized_name="provisioningState",
+                flags={"read_only": True},
+            )
+            properties.resource_guid = AAZStrType(
+                serialized_name="resourceGuid",
                 flags={"read_only": True},
             )
 

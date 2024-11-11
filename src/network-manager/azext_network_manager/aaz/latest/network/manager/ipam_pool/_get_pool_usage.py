@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network manager ipam-pool get-pool-usage",
-    is_preview=True,
 )
 class GetPoolUsage(AAZCommand):
     """Get the Pool Usage.
@@ -23,9 +22,9 @@ class GetPoolUsage(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-01-01-preview",
+        "version": "2024-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/ipampools/{}/getpoolusage", "2024-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/ipampools/{}/getpoolusage", "2024-05-01"],
         ]
     }
 
@@ -51,7 +50,7 @@ class GetPoolUsage(AAZCommand):
             required=True,
             id_part="name",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]*$",
+                pattern="^[0-9a-zA-Z]([0-9a-zA-Z_.-]{0,62}[0-9a-zA-Z_])?$",
             ),
         )
         _args_schema.pool_name = AAZStrArg(
@@ -60,7 +59,7 @@ class GetPoolUsage(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]*$",
+                pattern="^[0-9a-zA-Z]([0-9a-zA-Z_.-]{0,62}[0-9a-zA-Z_])?$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -137,7 +136,7 @@ class GetPoolUsage(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01-preview",
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }

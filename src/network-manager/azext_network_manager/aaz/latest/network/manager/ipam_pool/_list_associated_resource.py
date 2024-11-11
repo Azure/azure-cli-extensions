@@ -13,7 +13,6 @@ from azure.cli.core.aaz import *
 
 @register_command(
     "network manager ipam-pool list-associated-resource",
-    is_preview=True,
 )
 class ListAssociatedResource(AAZCommand):
     """List Associated Resource in the Pool.
@@ -23,9 +22,9 @@ class ListAssociatedResource(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-01-01-preview",
+        "version": "2024-05-01",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/ipampools/{}/listassociatedresources", "2024-01-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.network/networkmanagers/{}/ipampools/{}/listassociatedresources", "2024-05-01"],
         ]
     }
 
@@ -51,7 +50,7 @@ class ListAssociatedResource(AAZCommand):
             help="The name of the network manager.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]*$",
+                pattern="^[0-9a-zA-Z]([0-9a-zA-Z_.-]{0,62}[0-9a-zA-Z_])?$",
             ),
         )
         _args_schema.pool_name = AAZStrArg(
@@ -59,7 +58,7 @@ class ListAssociatedResource(AAZCommand):
             help="Pool resource name.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9-]*$",
+                pattern="^[0-9a-zA-Z]([0-9a-zA-Z_.-]{0,62}[0-9a-zA-Z_])?$",
             ),
         )
         _args_schema.resource_group = AAZResourceGroupNameArg(
@@ -137,7 +136,7 @@ class ListAssociatedResource(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-01-01-preview",
+                    "api-version", "2024-05-01",
                     required=True,
                 ),
             }
