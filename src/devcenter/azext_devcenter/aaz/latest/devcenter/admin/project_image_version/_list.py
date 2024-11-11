@@ -50,7 +50,7 @@ class List(AAZCommand):
             help="The name of the image.",
             required=True,
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9~][a-zA-Z0-9-.~]{0,151}[a-zA-Z0-9]$",
+                pattern="^[a-zA-Z0-9~][a-zA-Z0-9-._~]{0,151}[a-zA-Z0-9]$",
                 max_length=153,
                 min_length=3,
             ),

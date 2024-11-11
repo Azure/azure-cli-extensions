@@ -50,7 +50,7 @@ class Show(AAZCommand):
             required=True,
             id_part="child_name_1",
             fmt=AAZStrArgFormat(
-                pattern="^[a-zA-Z0-9~][a-zA-Z0-9-.~]{0,151}[a-zA-Z0-9]$",
+                pattern="^[a-zA-Z0-9~][a-zA-Z0-9-._~]{0,151}[a-zA-Z0-9]$",
                 max_length=153,
                 min_length=3,
             ),
