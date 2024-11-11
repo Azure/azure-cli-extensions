@@ -85,11 +85,7 @@ class SessionCodeInterpreterCommandsPreviewDecorator(SessionCodeInterpreterPrevi
     def construct_payload(self):
         self.session_code_interpreter_def["codeInputType"] = "inline"
         self.session_code_interpreter_def["executionType"] = "synchronous"
-
-        if self.get_argument_timeout_in_seconds() is not None:
-            self.session_code_interpreter_def["timeoutInSeconds"] = self.get_argument_timeout_in_seconds()
-        else:
-            self.session_code_interpreter_def["timeoutInSeconds"] = 60
+        self.session_code_interpreter_def["timeoutInSeconds"] = self.get_argument_timeout_in_seconds()
         self.session_code_interpreter_def["code"] = self.get_argument_code()
 
     def execute(self):

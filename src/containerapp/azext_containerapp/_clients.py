@@ -1183,7 +1183,7 @@ class SessionCodeInterpreterPreviewClient():
         url_fmt = "{}/files?{}identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
-            "path=" + path + "&" if path is not None else "",
+            f"path={path}&" if path is not None else "",
             identifier,
             cls.api_version)
 
@@ -1221,11 +1221,12 @@ class SessionCodeInterpreterPreviewClient():
 
     @classmethod
     def show_file_content(cls, cmd, identifier, filename, path, session_pool_endpoint):
+        path, filename = cls.extract_path_from_filename(path, filename)
         url_fmt = "{}/files/{}/content?{}identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
             filename,
-            "path=" + path + "&" if path is not None else "",
+            f"path={path}&" if path is not None else "",
             identifier,
             cls.api_version)
 
@@ -1237,11 +1238,12 @@ class SessionCodeInterpreterPreviewClient():
 
     @classmethod
     def show_file_metadata(cls, cmd, identifier, filename, path, session_pool_endpoint):
+        path, filename = cls.extract_path_from_filename(path, filename)
         url_fmt = "{}/files/{}?{}identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
             filename,
-            "path=" + path + "&" if path is not None else "",
+            f"path={path}&" if path is not None else "",
             identifier,
             cls.api_version)
         logger.warning(request_url)
@@ -1251,11 +1253,12 @@ class SessionCodeInterpreterPreviewClient():
 
     @classmethod
     def delete_file(cls, cmd, identifier, filename, path, session_pool_endpoint, no_wait=False):
+        path, filename = cls.extract_path_from_filename(path, filename)
         url_fmt = "{}/files/{}?{}identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
             filename,
-            "path=" + path + "&" if path is not None else "",
+            f"path={path}&" if path is not None else "",
             identifier,
             cls.api_version)
 
@@ -1283,6 +1286,16 @@ class SessionCodeInterpreterPreviewClient():
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
         return r.json()
+    
+    @classmethod
+    def extract_path_from_filename(cls, path, filename):
+        if '/' not in filename:
+            return path, filename
+        path_in_filename, filename = filename.rsplit('/', 1)
+        if path is None:
+            return path_in_filename, filename
+        else:
+            return path.rstrip("/") + "/" + path_in_filename.lstrip('/'), filename
 
 
 class DotNetComponentPreviewClient():

@@ -10,7 +10,6 @@ from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from azure.cli.testsdk import (ScenarioTest, ResourceGroupPreparer, JMESPathCheck)
 
 from .common import (TEST_LOCATION)
-from .utils import create_containerapp_env
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -20,9 +19,6 @@ class ContainerAppSessionCodeInterperterFilesTests(ScenarioTest):
     def test_containerapp_session_code_interpreter_files_e2e(self, resource_group):
         location = TEST_LOCATION
         self.cmd('configure --defaults location={}'.format(location))
-
-        env_name = self.create_random_name(prefix='aca-sp-env', length=24)
-        create_containerapp_env(self, env_name, resource_group, TEST_LOCATION)
 
         # List Session Pools
         sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
