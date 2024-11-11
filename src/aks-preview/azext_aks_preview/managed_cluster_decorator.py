@@ -2900,21 +2900,20 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         acns_observability_enabled = self.context.get_acns_observability()
         acns_security_enabled = self.context.get_acns_security()
         if acns_enabled is not None:
-            acns.observability = self.models.AdvancedNetworkingObservability(
-                enabled=acns_enabled
-            )
-            acns.security = self.models.AdvancedNetworkingSecurity(
-                fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
-                    enabled=acns_enabled
-                )
-            )
+            acns.enabled = acns_enabled
             if acns_observability_enabled is not None:
-                acns.observability.enabled = acns_observability_enabled
+                acns.observability = self.models.AdvancedNetworkingObservability(
+                    enabled=acns_observability_enabled,
+                )
             if acns_security_enabled is not None:
-                acns.security.fqdn_policy.enabled = acns_security_enabled
+                acns.security = self.models.AdvancedNetworkingSecurity(
+                    enabled=acns_security_enabled,
+                )
             # Only Cilium dataplane supports ACNS security
             if network_profile.network_dataplane != CONST_NETWORK_DATAPLANE_CILIUM:
-                acns.security.fqdn_policy.enabled = False
+                # TODO: add warning or raise error instead of silently disabling
+                if acns.security is not None:
+                    acns.security.enabled = False
             network_profile.advanced_networking = acns
 
         return mc
@@ -3989,21 +3988,20 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         acns_observability_enabled = self.context.get_acns_observability()
         acns_security_enabled = self.context.get_acns_security()
         if acns_enabled is not None:
-            acns.observability = self.models.AdvancedNetworkingObservability(
-                enabled=acns_enabled
-            )
-            acns.security = self.models.AdvancedNetworkingSecurity(
-                fqdn_policy=self.models.AdvancedNetworkingFQDNPolicy(
-                    enabled=acns_enabled
-                )
-            )
+            acns.enabled = acns_enabled
             if acns_observability_enabled is not None:
-                acns.observability.enabled = acns_observability_enabled
+                acns.observability = self.models.AdvancedNetworkingObservability(
+                    enabled=acns_observability_enabled,
+                )
             if acns_security_enabled is not None:
-                acns.security.fqdn_policy.enabled = acns_security_enabled
+                acns.security = self.models.AdvancedNetworkingSecurity(
+                    enabled=acns_security_enabled,
+                )
             # Only Cilium dataplane supports ACNS security
             if mc.network_profile.network_dataplane != CONST_NETWORK_DATAPLANE_CILIUM:
-                acns.security.fqdn_policy.enabled = False
+                # TODO: add warning or raise error instead of silently disabling
+                if acns.security is not None:
+                    acns.security.enabled = False
             mc.network_profile.advanced_networking = acns
         return mc
 
