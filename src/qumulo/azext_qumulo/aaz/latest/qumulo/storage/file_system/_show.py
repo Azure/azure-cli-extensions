@@ -223,7 +223,7 @@ class Show(AAZCommand):
                 serialized_name="marketplaceDetails",
                 flags={"required": True},
             )
-            properties.private_i_ps = AAZListType(
+            properties.private_ips = AAZListType(
                 serialized_name="privateIPs",
             )
             properties.provisioning_state = AAZStrType(
@@ -262,8 +262,8 @@ class Show(AAZCommand):
                 serialized_name="termUnit",
             )
 
-            private_i_ps = cls._schema_on_200.properties.private_i_ps
-            private_i_ps.Element = AAZStrType()
+            private_ips = cls._schema_on_200.properties.private_ips
+            private_ips.Element = AAZStrType()
 
             user_details = cls._schema_on_200.properties.user_details
             user_details.email = AAZStrType(

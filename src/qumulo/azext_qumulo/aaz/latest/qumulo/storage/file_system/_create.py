@@ -101,7 +101,7 @@ class Create(AAZCommand):
             arg_group="Properties",
             help="Marketplace details",
         )
-        _args_schema.private_i_ps = AAZListArg(
+        _args_schema.private_ips = AAZListArg(
             options=["--private-i-ps"],
             arg_group="Properties",
             help="Private IPs of the resource",
@@ -141,8 +141,8 @@ class Create(AAZCommand):
             help="Term Unit",
         )
 
-        private_i_ps = cls._args_schema.private_i_ps
-        private_i_ps.Element = AAZStrArg()
+        private_ips = cls._args_schema.private_ips
+        private_ips.Element = AAZStrArg()
 
         user_details = cls._args_schema.user_details
         user_details.email = AAZStrArg(
@@ -299,7 +299,7 @@ class Create(AAZCommand):
                 properties.set_prop("clusterLoginUrl", AAZStrType, ".cluster_login_url")
                 properties.set_prop("delegatedSubnetId", AAZStrType, ".delegated_subnet_id", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("marketplaceDetails", AAZObjectType, ".marketplace_details", typ_kwargs={"flags": {"required": True}})
-                properties.set_prop("privateIPs", AAZListType, ".private_i_ps")
+                properties.set_prop("privateIPs", AAZListType, ".private_ips")
                 properties.set_prop("storageSku", AAZStrType, ".storage_sku", typ_kwargs={"flags": {"required": True}})
                 properties.set_prop("userDetails", AAZObjectType, ".user_details", typ_kwargs={"flags": {"required": True}})
 
@@ -311,9 +311,9 @@ class Create(AAZCommand):
                 marketplace_details.set_prop("publisherId", AAZStrType, ".publisher_id")
                 marketplace_details.set_prop("termUnit", AAZStrType, ".term_unit")
 
-            private_i_ps = _builder.get(".properties.privateIPs")
-            if private_i_ps is not None:
-                private_i_ps.set_elements(AAZStrType, ".")
+            private_ips = _builder.get(".properties.privateIPs")
+            if private_ips is not None:
+                private_ips.set_elements(AAZStrType, ".")
 
             user_details = _builder.get(".properties.userDetails")
             if user_details is not None:
@@ -413,7 +413,7 @@ class Create(AAZCommand):
                 serialized_name="marketplaceDetails",
                 flags={"required": True},
             )
-            properties.private_i_ps = AAZListType(
+            properties.private_ips = AAZListType(
                 serialized_name="privateIPs",
             )
             properties.provisioning_state = AAZStrType(
@@ -452,8 +452,8 @@ class Create(AAZCommand):
                 serialized_name="termUnit",
             )
 
-            private_i_ps = cls._schema_on_200_201.properties.private_i_ps
-            private_i_ps.Element = AAZStrType()
+            private_ips = cls._schema_on_200_201.properties.private_ips
+            private_ips.Element = AAZStrType()
 
             user_details = cls._schema_on_200_201.properties.user_details
             user_details.email = AAZStrType(
