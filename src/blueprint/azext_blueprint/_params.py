@@ -56,7 +56,6 @@ management_group_type = CLIArgumentType(
 
 
 def load_arguments(self, _):
-    # pass
 
     with self.argument_context('blueprint') as c:
         c.ignore('resource_scope')  # scope is divided into management_group and subscription
