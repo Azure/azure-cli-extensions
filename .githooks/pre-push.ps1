@@ -132,7 +132,7 @@ if ($LASTEXITCODE -ne 0) {
 
 # Run command azdev test
 Write-Host "Running azdev test..." -ForegroundColor Green
-azdev test --repo ./ --src $currentBranch --tgt $mergeBase --discover --no-exitfirst --xml-path test_results.xml
+azdev test --repo ./ --src $currentBranch --tgt $mergeBase --discover --no-exitfirst --xml-path test_results.xml 2>$null
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: azdev test check failed. You can check the test logs in the 'test_results.xml' file." -ForegroundColor Red
     exit 1
