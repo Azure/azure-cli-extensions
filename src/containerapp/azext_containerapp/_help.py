@@ -2145,3 +2145,47 @@ helps['containerapp job registry set'] = """
           az containerapp job registry set -n my-containerapp-job -g MyResourceGroup \\
               --server MyContainerappJobRegistry.azurecr.io --identity system-environment
 """
+
+# Maintenance Config Commands
+helps['containerapp env maintenance-config'] = """
+    type: group
+    short-summary: Commands to manage Planned Maintenance for Container Apps
+"""
+
+helps['containerapp env maintenance-config add'] = """
+    type: command
+    short-summary: Add Planned Maintenance to a Container App Environment
+    examples:
+    - name: Configure a Container App Environment to use a Planned Maintenance
+      text: |
+          az containerapp env maintenance-config add --environment myEnv -g MyResourceGroup \\
+              --duration 10 --start-hour-utc 11 --weekday Sunday
+"""
+
+helps['containerapp env maintenance-config update'] = """
+    type: command
+    short-summary: Update Planned Maintenance in a Container App Environment
+    examples:
+    - name: Update the Planned Maintenance in a Container App Environment
+      text: |
+          az containerapp env maintenance-config update --environment myEnv -g MyResourceGroup \\
+              --duration 8 --start-hour-utc 12 --weekday Thursday
+"""
+
+helps['containerapp env maintenance-config list'] = """
+    type: command
+    short-summary: List Planned Maintenance in a Container App Environment
+    examples:
+    - name: List Planned Maintenance
+      text: |
+          az containerapp env maintenance-config list --environment myEnv -g MyResourceGroup
+"""
+
+helps['containerapp env maintenance-config remove'] = """
+    type: command
+    short-summary: Remove Planned Maintenance in a Container App Environment
+    examples:
+    - name: Remove Planned Maintenance
+      text: |
+          az containerapp env maintenance-config remove --environment myEnv -g MyResourceGroup
+"""
