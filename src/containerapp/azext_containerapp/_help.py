@@ -1984,7 +1984,7 @@ helps['containerapp session code-interpreter upload-file'] = """
     - name: Upload a file to a session.
       text: |
           az containerapp session code-interpreter upload-file -n MySessionPool -g MyResourceGroup --identifier MySession \\
-              --filepath example.txt
+              --filepath example.txt --path /
 """
 
 helps['containerapp session code-interpreter show-file-content'] = """
@@ -1993,7 +1993,7 @@ helps['containerapp session code-interpreter show-file-content'] = """
     examples:
     - name: Show content of file.
       text: az containerapp session code-interpreter show-file-content -n MySessionPool -g MyResourceGroup --identifier MySession \\
-              --filename example.txt
+              --filename example.txt --path /
 """
 
 helps['containerapp session code-interpreter show-file-metadata'] = """
@@ -2002,7 +2002,7 @@ helps['containerapp session code-interpreter show-file-metadata'] = """
     examples:
     - name: Show the meta-data details of a file uploaded to a session.
       text: az containerapp session code-interpreter show-file-metadata -n MySessionPool -g MyResourceGroup --identifier MySession \\
-              --filename example.txt
+              --filename example.txt --path /
 """
 
 helps['containerapp session code-interpreter delete-file'] = """
@@ -2011,7 +2011,7 @@ helps['containerapp session code-interpreter delete-file'] = """
     examples:
     - name: Delete a file .
       text: az containerapp session code-interpreter delete-file -n MySessionPool -g MyResourceGroup --identifier MySession \\
-              --filename example.txt
+              --filename example.txt --path /
 """
 
 helps['containerapp session code-interpreter list-files'] = """
@@ -2020,7 +2020,7 @@ helps['containerapp session code-interpreter list-files'] = """
     examples:
     - name: List files uploaded in a code-interpreter session.
       text: |
-          az containerapp session code-interpreter list-files -n MySessionPool -g MyResourceGroup --identifier MySession
+          az containerapp session code-interpreter list-files -n MySessionPool -g MyResourceGroup --identifier MySession --path /
 """
 
 helps['containerapp java'] = """
