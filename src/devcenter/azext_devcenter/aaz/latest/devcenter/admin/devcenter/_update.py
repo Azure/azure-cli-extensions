@@ -81,7 +81,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.install_azure_monitor_agent_enable_status = AAZStrArg(
-            options=["-i", "--install-azure-monitor-agent-enable-status"],
+            options=["-a", "--install-azure-monitor-agent-enable-status"],
             arg_group="DevBoxProvisioningSettings",
             help="Whether project catalogs associated with projects in this dev center can be configured to sync catalog items.",
             nullable=True,
@@ -125,7 +125,7 @@ class Update(AAZCommand):
 
         _args_schema = cls._args_schema
         _args_schema.project_catalog_item_sync_enable_status = AAZStrArg(
-            options=["-p", "--project-catalog-item-sync-enable-status"],
+            options=["-c", "--project-catalog-item-sync-enable-status"],
             arg_group="ProjectCatalogSettings",
             help="Whether project catalogs associated with projects in this dev center can be configured to sync catalog items.",
             nullable=True,
