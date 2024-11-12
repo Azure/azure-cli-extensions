@@ -2,6 +2,10 @@
 
 Release History
 ===============
+1.1.1
+++++++
+* updating dmverity-vhd version with bugfix for empty image layers
+
 1.1.0
 ++++++
 * adding support for image-attached fragments via `acifragmentgen`
