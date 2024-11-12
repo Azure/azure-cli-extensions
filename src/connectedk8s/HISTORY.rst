@@ -3,6 +3,14 @@
 Release History
 ===============
 
+1.10.2
+++++++
+* Update for disconnected environment scenario.
+
+1.10.1
+++++++
+* Fixed an issue where the proxy settings were not disabled when the 'disable_proxy' parameter was provided in the update command.
+
 1.10.0
 ++++++
 * Add support for Arc Gateway feature using '--gateway-resource-id' and '--disable-gateway' parameters.

@@ -1194,6 +1194,8 @@ def helm_install_release(
     enable_private_link: bool | None,
     arm_metadata: dict[str, Any],
     helm_content_values: dict[str, Any],
+    registry_path: str,
+    aad_identity_principal_id: str,
     onboarding_timeout: str = consts.DEFAULT_MAX_ONBOARDING_TIMEOUT_HELMVALUE_SECONDS,
 ) -> None:
     cmd_helm_install = [
@@ -1238,8 +1240,14 @@ def helm_install_release(
             )
             relay_endpoint = arm_metadata["suffixes"]["relayEndpointSuffix"]
             active_directory = arm_metadata["authentication"]["loginEndpoint"]
+            if not aad_identity_principal_id:
+                raise CLIInternalError("Failed to create the kubeAadEndpoint endpoint. The identity principal ID of "
+                                       "the created connected cluster is empty.")
+            kube_aad_endpoint = f"{aad_identity_principal_id}.k8sproxysvc.connectrp.azs"
             cmd_helm_install.extend(
                 [
+                    "--set",
+                    f"global.kubeAadEndpoint={kube_aad_endpoint}",
                     "--set",
                     f"systemDefaultValues.azureResourceManagerEndpoint={resource_manager}",
                     "--set",
@@ -1252,6 +1260,10 @@ def helm_install_release(
                     f"systemDefaultValues.clusteridentityoperator.his_endpoint_override={his_endpoint}",
                     "--set",
                     f"systemDefaultValues.activeDirectoryEndpoint={active_directory}",
+                    "--set",
+                    "systemDefaultValues.image.repository={}".format(
+                        registry_path.split("/")[0]
+                    ),
                 ]
             )
         else:

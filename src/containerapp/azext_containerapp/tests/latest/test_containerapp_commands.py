@@ -1278,28 +1278,23 @@ class ContainerappServiceBindingTests(ScenarioTest):
             JMESPathCheck('length(@)', 0),
         ])
 
-        self.cmd('containerapp list -g {} --environment {}'.format(env_rg, env_name), checks=[
-            JMESPathCheck('length(@)', 0),
-        ])
-
-        self.cmd(f'containerapp env delete -g {env_rg} -n {env_name} --yes')
-
     @AllowLargeResponse(8192)
     @ResourceGroupPreparer(location="eastus2")
     def test_containerapp_managed_service_binding_e2e(self, resource_group):
         # `mysql flexible-server create`: type 'locations/checkNameAvailability' is not available in North Central US (Stage), if the TEST_LOCATION is "northcentralusstage", use eastus as location
         location = TEST_LOCATION
         if format_location(location) == format_location(STAGE_LOCATION):
-            location = "eastus"
+            location = "eastus2"
         self.cmd('configure --defaults location={}'.format(location))
 
         env_name = self.create_random_name(prefix='containerapp-env', length=24)
         ca_name = self.create_random_name(prefix='containerapp', length=24)
         mysqlserver = "mysqlflexsb"
         postgresqlserver = "postgresqlflexsb"
+        postgresqldb = 'flexibleserverdb'
 
-        mysqlflex_json= self.cmd('mysql flexible-server create --resource-group {} --name {} --public-access {} -y'.format(resource_group, mysqlserver, "None")).output
-        postgresqlflex_json= self.cmd('postgres flexible-server create --resource-group {} --name {} --public-access {} -y'.format(resource_group, postgresqlserver, "None")).output
+        mysqlflex_json= self.cmd('mysql flexible-server create --resource-group {} --name {} --public-access {} -y'.format(resource_group, mysqlserver, "None"), expect_failure=False).output
+        postgresqlflex_json= self.cmd('postgres flexible-server create --resource-group {} --name {} --public-access {} -d {} -y'.format(resource_group, postgresqlserver, "None", postgresqldb), expect_failure=False).output
         mysqlflex_dict = json.loads(mysqlflex_json)
 
         mysqlusername = mysqlflex_dict['username']
@@ -1310,8 +1305,7 @@ class ContainerappServiceBindingTests(ScenarioTest):
         postgresqlflex_dict = json.loads(postgresqlflex_json)
         postgresqlusername = postgresqlflex_dict['username']
         postgresqlpassword = postgresqlflex_dict['password']
-        postgresqldb = postgresqlflex_dict['databaseName']
-        create_containerapp_env(self, env_name, resource_group)
+        create_containerapp_env(self, env_name, resource_group, location=location)
 
         self.cmd('containerapp create -g {} -n {} --environment {} --bind {}:{},database={},username={},password={}'.format(
             resource_group, ca_name, env_name, mysqlserver, flex_binding, mysqldb , mysqlusername, mysqlpassword))
@@ -2607,6 +2601,8 @@ properties:
             JMESPathCheck("properties.template.containers[0].name", "nginx"),
             JMESPathCheck("properties.template.scale.minReplicas", 1),
             JMESPathCheck("properties.template.scale.maxReplicas", 3),
+            JMESPathCheck("properties.template.scale.cooldownPeriod", 300),  # default value from RP
+            JMESPathCheck("properties.template.scale.pollingInterval", 30),  # default value from RP
             JMESPathCheck("properties.template.scale.rules[0].name", "http-scale-rule"),
             JMESPathCheck("properties.template.scale.rules[0].http.metadata.concurrentRequests", "50"),
             JMESPathCheck("properties.template.scale.rules[0].http.metadata.key", "value"),
@@ -2634,6 +2630,10 @@ properties:
                                               - external: false
                                                 targetPort: 8080
                                                 exposedPort: 1234
+                                          template:
+                                            scale:
+                                              cooldownPeriod: 60
+                                              pollingInterval: 301
                                         """
 
         write_test_file(containerapp_file_name, containerapp_yaml_text)
@@ -2646,6 +2646,23 @@ properties:
             JMESPathCheck("properties.configuration.ingress.additionalPortMappings[1].external", False),
             JMESPathCheck("properties.configuration.ingress.additionalPortMappings[1].targetPort", 8080),
             JMESPathCheck("properties.configuration.ingress.additionalPortMappings[1].exposedPort", 1234),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].name", "name"),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].ipAddressRange",
+                          "1.1.1.1/10"),
+            JMESPathCheck("properties.configuration.ingress.ipSecurityRestrictions[0].action", "Allow"),
+            JMESPathCheck("properties.environmentId", containerapp_env["id"]),
+            JMESPathCheck("properties.template.terminationGracePeriodSeconds", 90),
+            JMESPathCheck("properties.template.containers[0].name", "nginx"),
+            JMESPathCheck("properties.template.scale.minReplicas", 1),
+            JMESPathCheck("properties.template.scale.maxReplicas", 3),
+            JMESPathCheck("properties.template.scale.cooldownPeriod", 60),
+            JMESPathCheck("properties.template.scale.pollingInterval", 301),
+            JMESPathCheck("properties.template.scale.rules[0].name", "http-scale-rule"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].triggerParameter", "trigger"),
+            JMESPathCheck("properties.template.scale.rules[0].http.auth[0].secretRef", "secretref"),
+            JMESPathCheck("properties.template.scale.rules[1].name", "asb-rule"),
+            JMESPathCheck("properties.template.scale.rules[1].custom.type", "azure-servicebus"),
+            JMESPathCheck("properties.template.scale.rules[1].custom.identity", user_identity_id),
         ])
         clean_up_test_file(containerapp_file_name)
 

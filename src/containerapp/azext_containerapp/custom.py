@@ -23,7 +23,7 @@ from azure.cli.core.azclierror import (
     ArgumentUsageError,
     MutuallyExclusiveArgumentError)
 from azure.cli.core.commands.client_factory import get_subscription_id
-from azure.cli.command_modules.containerapp.custom import set_secrets, open_containerapp_in_browser, create_deserializer
+from azure.cli.command_modules.containerapp.custom import set_secrets, open_containerapp_in_browser
 from azure.cli.command_modules.containerapp.containerapp_job_decorator import ContainerAppJobDecorator
 from azure.cli.command_modules.containerapp.containerapp_decorator import BaseContainerAppDecorator
 from azure.cli.command_modules.containerapp.containerapp_env_decorator import ContainerAppEnvDecorator
@@ -51,6 +51,7 @@ from knack.prompting import prompt_y_n
 
 from msrest.exceptions import DeserializationError
 
+from ._decorator_utils import create_deserializer
 from ._validators import validate_create
 from .containerapp_env_certificate_decorator import ContainerappPreviewEnvCertificateListDecorator, \
     ContainerappEnvCertificatePreviweUploadDecorator
@@ -83,6 +84,7 @@ from .java_component_decorator import JavaComponentDecorator
 from .containerapp_sessionpool_decorator import SessionPoolPreviewDecorator, SessionPoolCreateDecorator, SessionPoolUpdateDecorator
 from .containerapp_session_code_interpreter_decorator import SessionCodeInterpreterCommandsPreviewDecorator
 from .containerapp_job_registry_decorator import ContainerAppJobRegistryPreviewSetDecorator
+from .containerapp_env_maintenance_config_decorator import ContainerAppEnvMaintenanceConfigPreviewDecorator
 from .dotnet_component_decorator import DotNetComponentDecorator
 from ._client_factory import handle_raw_exception, handle_non_404_status_code_exception
 from ._clients import (
@@ -101,7 +103,8 @@ from ._clients import (
     JavaComponentPreviewClient,
     SessionPoolPreviewClient,
     SessionCodeInterpreterPreviewClient,
-    DotNetComponentPreviewClient
+    DotNetComponentPreviewClient,
+    MaintenanceConfigPreviewClient
 )
 from ._dev_service_utils import DevServiceUtils
 from ._models import (
@@ -1866,8 +1869,8 @@ def connected_env_create_or_update_dapr_component(cmd, resource_group_name, envi
 
     # Deserialize the yaml into a DaprComponent object. Need this since we're not using SDK
     try:
-        deserializer = create_deserializer()
-        daprcomponent_def = deserializer('DaprComponent', yaml_dapr_component)
+        deserializer = create_deserializer(CONTAINER_APPS_SDK_MODELS)
+        daprcomponent_def = deserializer('ConnectedEnvironmentDaprComponent', yaml_dapr_component)
     except DeserializationError as ex:
         raise ValidationError('Invalid YAML provided. Please see https://learn.microsoft.com/en-us/azure/container-apps/dapr-overview?tabs=bicep1%2Cyaml#component-schema for a valid Dapr Component YAML spec.') from ex
 
@@ -2863,7 +2866,10 @@ def create_session_pool(cmd,
                         target_port=None,
                         registry_server=None,
                         registry_pass=None,
-                        registry_user=None):
+                        registry_user=None,
+                        mi_user_assigned=None,
+                        registry_identity=None,
+                        mi_system_assigned=False):
     raw_parameters = locals()
     session_pool_decorator = SessionPoolCreateDecorator(
         cmd=cmd,
@@ -2988,6 +2994,7 @@ def upload_session_code_interpreter(cmd,
                                     resource_group_name,
                                     identifier,
                                     filepath,
+                                    path=None,
                                     session_pool_location=None):
     raw_parameters = locals()
     session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
@@ -3008,6 +3015,7 @@ def show_file_content_session_code_interpreter(cmd,
                                                resource_group_name,
                                                identifier,
                                                filename,
+                                               path=None,
                                                session_pool_location=None):
     raw_parameters = locals()
     session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
@@ -3028,6 +3036,7 @@ def show_file_metadata_session_code_interpreter(cmd,
                                                 resource_group_name,
                                                 identifier,
                                                 filename,
+                                                path=None,
                                                 session_pool_location=None):
     raw_parameters = locals()
     session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
@@ -3068,6 +3077,7 @@ def delete_file_session_code_interpreter(cmd,
                                          resource_group_name,
                                          identifier,
                                          filename,
+                                         path=None,
                                          session_pool_location=None):
     raw_parameters = locals()
     session_code_interpreter_decorator = SessionCodeInterpreterCommandsPreviewDecorator(
@@ -3257,4 +3267,58 @@ def set_registry_job(cmd, name, resource_group_name, server, username=None, pass
     containerapp_job_registry_set_decorator.validate_arguments()
     containerapp_job_registry_set_decorator.construct_payload()
     r = containerapp_job_registry_set_decorator.set()
+    return r
+
+
+# maintenance config
+def add_maintenance_config(cmd, resource_group_name, env_name, duration, start_hour_utc, weekday):
+    raw_parameters = locals()
+    maintenance_config_decorator = ContainerAppEnvMaintenanceConfigPreviewDecorator(
+        cmd=cmd,
+        client=MaintenanceConfigPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    maintenance_config_decorator.construct_payload()
+    maintenance_config_decorator.validate_arguments()
+    r = maintenance_config_decorator.create_or_update()
+    return r
+
+
+def update_maintenance_config(cmd, resource_group_name, env_name, duration=None, start_hour_utc=None, weekday=None):
+    raw_parameters = locals()
+    maintenance_config_decorator = ContainerAppEnvMaintenanceConfigPreviewDecorator(
+        cmd=cmd,
+        client=MaintenanceConfigPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    forUpdate = True
+    maintenance_config_decorator.construct_payload(forUpdate)
+    maintenance_config_decorator.validate_arguments()
+    r = maintenance_config_decorator.create_or_update()
+    return r
+
+
+def remove_maintenance_config(cmd, resource_group_name, env_name):
+    raw_parameters = locals()
+    maintenance_config_decorator = ContainerAppEnvMaintenanceConfigPreviewDecorator(
+        cmd=cmd,
+        client=MaintenanceConfigPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    r = maintenance_config_decorator.remove()
+    return r
+
+
+def list_maintenance_config(cmd, resource_group_name, env_name):
+    raw_parameters = locals()
+    maintenance_config_decorator = ContainerAppEnvMaintenanceConfigPreviewDecorator(
+        cmd=cmd,
+        client=MaintenanceConfigPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    r = maintenance_config_decorator.list()
     return r
