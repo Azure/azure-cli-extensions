@@ -321,13 +321,10 @@ SessionPool = {
 }
 
 SessionCodeInterpreterExecution = {
-    "properties": {
-        "identifier": None,
-        "codeInputType": None,
-        "executionType": None,
-        "code": None,
-        "timeoutInSeconds": None
-    }
+    "codeInputType": None,
+    "executionType": None,
+    "code": None,
+    "timeoutInSeconds": None
 }
 
 DaprComponentResiliency = {

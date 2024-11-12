@@ -27,7 +27,6 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 PREVIEW_API_VERSION = "2024-10-02-preview"
-SESSION_API_VERSION = "2024-02-02-preview"
 POLLING_TIMEOUT = 1500  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
@@ -1158,11 +1157,11 @@ class SessionPoolPreviewClient():
 
 
 class SessionCodeInterpreterPreviewClient():
-    api_version = SESSION_API_VERSION
+    api_version = PREVIEW_API_VERSION
 
     @classmethod
     def execute(cls, cmd, identifier, code_interpreter_envelope, session_pool_endpoint, no_wait=False):
-        url_fmt = "{}/code/execute?identifier={}&api-version={}"
+        url_fmt = "{}/executions?identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
             identifier,
@@ -1181,10 +1180,11 @@ class SessionCodeInterpreterPreviewClient():
         return r.json()
 
     @classmethod
-    def upload(cls, cmd, identifier, filepath, session_pool_endpoint, no_wait=False):
-        url_fmt = "{}/files/upload?identifier={}&api-version={}"
+    def upload(cls, cmd, identifier, filepath, path, session_pool_endpoint, no_wait=False):
+        url_fmt = "{}/files?{}identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
+            f"path={path}&" if path is not None else "",
             identifier,
             cls.api_version)
 
@@ -1221,11 +1221,13 @@ class SessionCodeInterpreterPreviewClient():
         return r.json()
 
     @classmethod
-    def show_file_content(cls, cmd, identifier, filename, session_pool_endpoint):
-        url_fmt = "{}/files/content/{}?identifier={}&api-version={}"
+    def show_file_content(cls, cmd, identifier, filename, path, session_pool_endpoint):
+        path, filename = cls.extract_path_from_filename(path, filename)
+        url_fmt = "{}/files/{}/content?{}identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
             filename,
+            f"path={path}&" if path is not None else "",
             identifier,
             cls.api_version)
 
@@ -1236,11 +1238,13 @@ class SessionCodeInterpreterPreviewClient():
         return json.dumps(r.content.decode())
 
     @classmethod
-    def show_file_metadata(cls, cmd, identifier, filename, session_pool_endpoint):
-        url_fmt = "{}/files/{}?identifier={}&api-version={}"
+    def show_file_metadata(cls, cmd, identifier, filename, path, session_pool_endpoint):
+        path, filename = cls.extract_path_from_filename(path, filename)
+        url_fmt = "{}/files/{}?{}identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
             filename,
+            f"path={path}&" if path is not None else "",
             identifier,
             cls.api_version)
         logger.warning(request_url)
@@ -1249,11 +1253,13 @@ class SessionCodeInterpreterPreviewClient():
         return r.json()
 
     @classmethod
-    def delete_file(cls, cmd, identifier, filename, session_pool_endpoint, no_wait=False):
-        url_fmt = "{}/files/{}?identifier={}&api-version={}"
+    def delete_file(cls, cmd, identifier, filename, path, session_pool_endpoint, no_wait=False):
+        path, filename = cls.extract_path_from_filename(path, filename)
+        url_fmt = "{}/files/{}?{}identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
             filename,
+            f"path={path}&" if path is not None else "",
             identifier,
             cls.api_version)
 
@@ -1281,6 +1287,16 @@ class SessionCodeInterpreterPreviewClient():
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
         return r.json()
+
+    @staticmethod
+    def extract_path_from_filename(path, filename):
+        if '/' not in filename:
+            return path, filename
+        path_in_filename, filename = filename.rsplit('/', 1)
+        if path is None:
+            return path_in_filename, filename
+        else:
+            return path.rstrip("/") + "/" + path_in_filename.lstrip('/'), filename
 
 
 class DotNetComponentPreviewClient():
