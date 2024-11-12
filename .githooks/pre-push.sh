@@ -84,6 +84,25 @@ MERGE_BASE=$(git merge-base HEAD upstream/main)
 # get the current branch name
 currentBranch=$(git branch --show-current)
 
+# Detect changed extensions
+printf "\033[0;32mDetecting changed extensions...\033[0m\n"
+changedFiles=$(git diff --name-only $MERGE_BASE $currentBranch)
+changedExtensions=$(echo "$changedFiles" | grep "^src/" | cut -d'/' -f2 | sort -u)
+
+if [ ! -z "$changedExtensions" ]; then
+    printf "\033[0;32mChanged extensions: %s\033[0m\n" "$(echo $changedExtensions | tr '\n' ', ')"
+    
+    # Add each changed extension using azdev extension add
+    for extension in $changedExtensions; do
+        printf "\033[0;32mAdding extension: %s\033[0m\n" "$extension"
+        azdev extension add "$extension"
+        if [ $? -ne 0 ]; then
+            printf "\033[0;31mError: Failed to add extension %s\033[0m\n" "$extension"
+            exit 1
+        fi
+    done
+fi
+
 # Run command azdev lint
 printf "\033[0;32mRunning azdev lint...\033[0m\n"
 azdev linter --repo ./ --src $currentBranch --tgt $MERGE_BASE 

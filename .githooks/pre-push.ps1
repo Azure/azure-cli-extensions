@@ -85,6 +85,30 @@ $mergeBase = git merge-base HEAD upstream/main
 # get the current branch name
 $currentBranch = git branch --show-current
 
+# detect all extension folder names changed under src/
+$changedFiles = git diff --name-only $mergeBase $currentBranch
+$changedExtensions = $changedFiles | 
+    Where-Object { $_ -like "src/*" } | 
+    ForEach-Object { 
+        $parts = $_ -split '/'
+        if ($parts.Length -gt 1) { $parts[1] }
+    } | 
+    Select-Object -Unique
+
+if ($changedExtensions) {
+    Write-Host "Changed extensions: $($changedExtensions -join ', ')" -ForegroundColor Green
+    
+    # Add each changed extension using azdev extension add
+    foreach ($extension in $changedExtensions) {
+        Write-Host "Adding extension: $extension"
+        azdev extension add $extension
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "Error: Failed to add extension $extension" -ForegroundColor Red
+            exit 1
+        }
+    }
+}
+
 # Run command azdev lint
 Write-Host "Running azdev lint..." -ForegroundColor Green
 azdev linter --repo ./ --src $currentBranch --tgt $mergeBase
