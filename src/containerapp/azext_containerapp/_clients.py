@@ -1287,8 +1287,8 @@ class SessionCodeInterpreterPreviewClient():
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
         return r.json()
     
-    @classmethod
-    def extract_path_from_filename(cls, path, filename):
+    @staticmethod
+    def extract_path_from_filename(path, filename):
         if '/' not in filename:
             return path, filename
         path_in_filename, filename = filename.rsplit('/', 1)
