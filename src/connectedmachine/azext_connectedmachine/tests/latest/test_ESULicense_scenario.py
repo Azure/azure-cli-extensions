@@ -11,6 +11,7 @@
 import os
 from azure.cli.testsdk import ScenarioTest
 from azure.cli.testsdk import ResourceGroupPreparer
+from azure.cli.testsdk.scenario_tests import AllowLargeResponse
 from .example_steps import step_show
 from .example_steps import step_list
 from .example_steps import step_extension_create
@@ -29,14 +30,14 @@ from .. import (
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 class ESULicenseScenarioTest(ScenarioTest):
-
+    @AllowLargeResponse(size_kb=9999)
     @ResourceGroupPreparer(name_prefix='cli_test_esulicense')
     def test_esu_license(self):
         self.kwargs.update({
             'customScriptName': 'custom-test',
             'machine': 'testmachine',
             'rg': 'ytongtest',
-            'location': 'centraluseuap',
+            'location': 'eastus',
             'subscription': '00000000-0000-0000-0000-000000000000',
             'licenseName': 'myESULicense',
         })

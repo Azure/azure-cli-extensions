@@ -35,11 +35,11 @@ class NetworkConfigurationPerimeterScenarioTest(ScenarioTest):
         rand_string = 'test'
         self.kwargs.update({
             'machine': 'testmachine',
-            'rg': 'adrielk_test',
-            'scope': 'adrielScope',
-            'location': 'centraluseuap',
+            'rg': 'ytongtest',
+            'scope': 'myScope3',
+            'location': 'eastus',
             'subscription': '00000000-0000-0000-0000-000000000000',
-            'perimeterName': '00000000-0000-0000-0000-000000000000.adrielScope-00000000-0000-0000-0000-000000000000',
+            'perimeterName': '00000000-0000-0000-0000-000000000000.testAssociation',
         })
 
         # network security perimeter configuration

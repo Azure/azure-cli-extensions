@@ -39,7 +39,7 @@ class PrivateLinkAndPrivateEndpointConnectionScenarioTest(ScenarioTest):
     def test_private_link(self):
         rand_string = 'test4'
         self.kwargs.update({
-            'machine': 'LAPTOP-S0HSJ7FB',
+            'machine': 'testmachine',
             'rg': 'ytongtest',
             'scope': 'scope-' + rand_string,
             'vnet': 'vnet-' + rand_string,

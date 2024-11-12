@@ -41,9 +41,9 @@ class RunCommandScenarioTest(ScenarioTest):
     def test_run_command(self):
         rand_string = 'test'
         self.kwargs.update({
-            'machine': 'testmachine2',
-            'rg': 'ytongtest2',
-            'location': 'eastus2euap',
+            'machine': 'testmachine',
+            'rg': 'ytongtest',
+            'location': 'eastus',
             'subscription': '00000000-0000-0000-0000-000000000000',
             'runcommand': 'myRunCommand',
         })
@@ -68,7 +68,7 @@ class RunCommandScenarioTest(ScenarioTest):
                 '--resource-group "{rg}" '
                 '--machine-name "{machine}"',
                 checks=[
-                    self.check('length(@)', 1)
+                    self.check('length(@)', 2)
                 ])
 
         self.cmd('az connectedmachine run-command show '
