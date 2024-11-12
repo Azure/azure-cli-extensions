@@ -47,11 +47,10 @@ def link_amw_to_amg(cmd, grafana_name, monitor_name, grafana_resource_group_name
     if not skip_role_assignments:
         subscription_scope = '/'.join(monitor['id'].split('/')[0:3])  # /subscriptions/<sub_id>
         monitor_role_id = resolve_role_id(cmd.cli_ctx, "Monitoring Data Reader", subscription_scope)
-        principal_types = {"ServicePrincipal"}
         # assign the Grafana instance the Monitoring Data Reader role on the Azure Monitor workspace
         logger.warning("Azure Monitor workspace of '%s' was linked to the Grafana instance. Now assigning the Grafana"
                        " instance the Monitoring Data Reader role on the Azure Monitor workspace.", monitor['name'])
-        _create_role_assignment(cmd.cli_ctx, principal_id, principal_types, monitor_role_id, monitor['id'])
+        _create_role_assignment(cmd.cli_ctx, principal_id, monitor_role_id, monitor['id'])
 
 
 def unlink_amw_from_amg(cmd, grafana_name, monitor_name, grafana_resource_group_name, monitor_resource_group_name,

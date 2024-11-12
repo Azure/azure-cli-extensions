@@ -597,4 +597,4 @@ class AmgScenarioTest(ScenarioTest):
                 interval *= 2
             except Exception:
                 raise Exception('Failed to retrieve the AMG provisioning state')
-        raise Exception('Timed out waiting for the AMG to reach the Succeeded provisining state')
+        raise Exception('Timed out waiting for the AMG to reach the Succeeded provisioning state')
