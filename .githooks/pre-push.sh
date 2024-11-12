@@ -125,9 +125,9 @@ fi
 
 # Run command azdev test
 printf "\033[0;32mRunning azdev test...\033[0m\n"
-azdev test --repo ./ --src $currentBranch --tgt $MERGE_BASE 
+azdev test --repo ./ --src $currentBranch --tgt $MERGE_BASE --discover --no-exitfirst --xml-path test_results.xml
 if [ $? -ne 0 ]; then
-    printf "\033[0;31mError: azdev test check failed.\033[0m\n"
+    printf "\033[0;31mError: azdev test check failed. You can check the test logs in the 'test_results.xml' file.\033[0m\n"
     exit 1
 fi
 
