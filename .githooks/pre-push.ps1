@@ -7,6 +7,22 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
+# Check if azure-cli is installed in editable mode
+$pipShowOutput = pip show azure-cli 2>&1
+$editableLocation = if ($pipShowOutput) {
+    $match = $pipShowOutput | Select-String "Editable project location: (.+)"
+    if ($match) {
+        $match.Matches.Groups[1].Value
+    }
+}
+if ($editableLocation) {
+    # get the parent of parent directory of the editable location
+    $AZURE_CLI_FOLDER = Split-Path -Parent (Split-Path -Parent $editableLocation)
+}
+
+# Get extension repo paths and join them with spaces
+$Extensions = (azdev extension repo list -o tsv) -join ' '
+
 # Fetch upstream/main branch
 Write-Host "Fetching upstream/main branch..." -ForegroundColor Green
 git fetch upstream main
@@ -15,12 +31,48 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
+if ($AZURE_CLI_FOLDER) {
+    # run git fetch upstream/dev for the AZURE_CLI_FOLDER and check if it is successful
+    Write-Host "Fetching $AZURE_CLI_FOLDER upstream/dev branch..." -ForegroundColor Green
+    git -C $AZURE_CLI_FOLDER fetch upstream dev
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "Error: Failed to fetch $AZURE_CLI_FOLDER upstream/dev branch. Please run 'git -C $AZURE_CLI_FOLDER remote add upstream https://github.com/Azure/azure-cli.git' first." -ForegroundColor Red
+        exit 1
+    }
+
+    # Check if current branch needs rebasing
+    $cliMergeBase = git -C $AZURE_CLI_FOLDER merge-base HEAD upstream/dev
+    $cliUpstreamHead = git -C $AZURE_CLI_FOLDER rev-parse upstream/dev
+    if ($cliMergeBase -ne $cliUpstreamHead) {
+        Write-Host ""
+        Write-Host "Your $AZURE_CLI_FOLDER repo code is not up to date with upstream/dev. Please run the following commands to rebase and setup:" -ForegroundColor Yellow
+        Write-Host "+++++++++++++++++++++++++++++++++++++++++++++++++++++++" -ForegroundColor Yellow
+        Write-Host "git -C $AZURE_CLI_FOLDER rebase upstream/dev" -ForegroundColor Yellow
+        if ($Extensions) {
+            Write-Host "azdev setup -c $AZURE_CLI_FOLDER -r $Extensions" -ForegroundColor Yellow
+        } else {
+            Write-Host "azdev setup -c $AZURE_CLI_FOLDER" -ForegroundColor Yellow
+        }
+        Write-Host "+++++++++++++++++++++++++++++++++++++++++++++++++++++++" -ForegroundColor Yellow
+        Write-Host ""
+        Write-Host "You have 5 seconds to stop the push (Ctrl+C)..." -ForegroundColor Yellow
+        for ($i = 5; $i -gt 0; $i--) {
+            Write-Host "`rTime remaining: $i seconds..." -NoNewline -ForegroundColor Yellow
+            Start-Sleep -Seconds 1
+        }
+        Write-Host "`rContinuing without rebase..."
+    }
+}
+
+# Check if current branch needs rebasing
+$mergeBase = git merge-base HEAD upstream/main
+
 # get the current branch name
 $currentBranch = git branch --show-current
 
 # Run command azdev lint
 Write-Host "Running azdev lint..." -ForegroundColor Green
-azdev linter --repo ./ --src $currentBranch --tgt upstream/main
+azdev linter --repo ./ --src $currentBranch --tgt $mergeBase
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: azdev lint check failed." -ForegroundColor Red
     exit 1
@@ -28,9 +80,9 @@ if ($LASTEXITCODE -ne 0) {
 
 # Run command azdev style
 Write-Host "Running azdev style..." -ForegroundColor Green
-azdev style --repo ./ --src $currentBranch --tgt upstream/main
+azdev style --repo ./ --src $currentBranch --tgt $mergeBase
 if ($LASTEXITCODE -ne 0) {
-    $error_msg = azdev style --repo ./ --src $currentBranch --tgt upstream/main 2>&1
+    $error_msg = azdev style --repo ./ --src $currentBranch --tgt $mergeBase 2>&1
     if ($error_msg -like "*No modules*") {
         Write-Host "Pre-push hook passed." -ForegroundColor Green
         exit 0
@@ -41,11 +93,26 @@ if ($LASTEXITCODE -ne 0) {
 
 # Run command azdev test
 Write-Host "Running azdev test..." -ForegroundColor Green
-azdev test --repo ./ --src $currentBranch --tgt upstream/main
+azdev test --repo ./ --src $currentBranch --tgt $mergeBase
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: azdev test check failed." -ForegroundColor Red
     exit 1
 }
 
 Write-Host "Pre-push hook passed." -ForegroundColor Green
+
+if ($AZURE_CLI_FOLDER) {
+    if ($cliMergeBase -ne $cliUpstreamHead) {
+        Write-Host ""
+        Write-Host "Your $AZURE_CLI_FOLDER repo code is not up to date with upstream/dev. Please run the following commands to rebase and setup:" -ForegroundColor Yellow
+        Write-Host "+++++++++++++++++++++++++++++++++++++++++++++++++++++++" -ForegroundColor Yellow
+        Write-Host "git -C $AZURE_CLI_FOLDER rebase upstream/dev" -ForegroundColor Yellow
+        if ($Extensions) {
+            Write-Host "azdev setup -c $AZURE_CLI_FOLDER -r $Extensions" -ForegroundColor Yellow
+        } else {
+            Write-Host "azdev setup -c $AZURE_CLI_FOLDER" -ForegroundColor Yellow
+        }
+        Write-Host "+++++++++++++++++++++++++++++++++++++++++++++++++++++++" -ForegroundColor Yellow
+    }
+}
 exit 0
