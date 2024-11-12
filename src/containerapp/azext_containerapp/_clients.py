@@ -27,7 +27,6 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 PREVIEW_API_VERSION = "2024-10-02-preview"
-SESSION_API_VERSION = "2024-02-02-preview"
 POLLING_TIMEOUT = 1500  # how many seconds before exiting
 POLLING_SECONDS = 2  # how many seconds between requests
 POLLING_TIMEOUT_FOR_MANAGED_CERTIFICATE = 1500  # how many seconds before exiting
@@ -35,6 +34,7 @@ POLLING_INTERVAL_FOR_MANAGED_CERTIFICATE = 4  # how many seconds between request
 HEADER_AZURE_ASYNC_OPERATION = "azure-asyncoperation"
 HEADER_LOCATION = "location"
 SESSION_RESOURCE = "https://dynamicsessions.io"
+MAINTENANCE_CONFIG_DEFAULT_NAME = "default"
 
 
 class GitHubActionPreviewClient(GitHubActionClient):
@@ -1157,11 +1157,11 @@ class SessionPoolPreviewClient():
 
 
 class SessionCodeInterpreterPreviewClient():
-    api_version = SESSION_API_VERSION
+    api_version = PREVIEW_API_VERSION
 
     @classmethod
     def execute(cls, cmd, identifier, code_interpreter_envelope, session_pool_endpoint, no_wait=False):
-        url_fmt = "{}/code/execute?identifier={}&api-version={}"
+        url_fmt = "{}/executions?identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
             identifier,
@@ -1180,10 +1180,11 @@ class SessionCodeInterpreterPreviewClient():
         return r.json()
 
     @classmethod
-    def upload(cls, cmd, identifier, filepath, session_pool_endpoint, no_wait=False):
-        url_fmt = "{}/files/upload?identifier={}&api-version={}"
+    def upload(cls, cmd, identifier, filepath, path, session_pool_endpoint, no_wait=False):
+        url_fmt = "{}/files?{}identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
+            f"path={path}&" if path is not None else "",
             identifier,
             cls.api_version)
 
@@ -1220,11 +1221,13 @@ class SessionCodeInterpreterPreviewClient():
         return r.json()
 
     @classmethod
-    def show_file_content(cls, cmd, identifier, filename, session_pool_endpoint):
-        url_fmt = "{}/files/content/{}?identifier={}&api-version={}"
+    def show_file_content(cls, cmd, identifier, filename, path, session_pool_endpoint):
+        path, filename = cls.extract_path_from_filename(path, filename)
+        url_fmt = "{}/files/{}/content?{}identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
             filename,
+            f"path={path}&" if path is not None else "",
             identifier,
             cls.api_version)
 
@@ -1235,11 +1238,13 @@ class SessionCodeInterpreterPreviewClient():
         return json.dumps(r.content.decode())
 
     @classmethod
-    def show_file_metadata(cls, cmd, identifier, filename, session_pool_endpoint):
-        url_fmt = "{}/files/{}?identifier={}&api-version={}"
+    def show_file_metadata(cls, cmd, identifier, filename, path, session_pool_endpoint):
+        path, filename = cls.extract_path_from_filename(path, filename)
+        url_fmt = "{}/files/{}?{}identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
             filename,
+            f"path={path}&" if path is not None else "",
             identifier,
             cls.api_version)
         logger.warning(request_url)
@@ -1248,11 +1253,13 @@ class SessionCodeInterpreterPreviewClient():
         return r.json()
 
     @classmethod
-    def delete_file(cls, cmd, identifier, filename, session_pool_endpoint, no_wait=False):
-        url_fmt = "{}/files/{}?identifier={}&api-version={}"
+    def delete_file(cls, cmd, identifier, filename, path, session_pool_endpoint, no_wait=False):
+        path, filename = cls.extract_path_from_filename(path, filename)
+        url_fmt = "{}/files/{}?{}identifier={}&api-version={}"
         request_url = url_fmt.format(
             session_pool_endpoint,
             filename,
+            f"path={path}&" if path is not None else "",
             identifier,
             cls.api_version)
 
@@ -1280,6 +1287,16 @@ class SessionCodeInterpreterPreviewClient():
 
         r = send_raw_request(cmd.cli_ctx, "GET", request_url, resource=SESSION_RESOURCE)
         return r.json()
+
+    @staticmethod
+    def extract_path_from_filename(path, filename):
+        if '/' not in filename:
+            return path, filename
+        path_in_filename, filename = filename.rsplit('/', 1)
+        if path is None:
+            return path_in_filename, filename
+        else:
+            return path.rstrip("/") + "/" + path_in_filename.lstrip('/'), filename
 
 
 class DotNetComponentPreviewClient():
@@ -1396,3 +1413,74 @@ class DotNetComponentPreviewClient():
             dotNet_component_list.append(component)
 
         return dotNet_component_list
+
+
+class MaintenanceConfigPreviewClient():
+    api_version = PREVIEW_API_VERSION
+    maintenance_config_name = MAINTENANCE_CONFIG_DEFAULT_NAME
+
+    @classmethod
+    def list(cls, cmd, resource_group_name, environment_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/microsoft.app/managedenvironments/{}/maintenanceConfigurations/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            environment_name,
+            cls.maintenance_config_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+
+        return r.json()
+
+    @classmethod
+    def create_or_update(cls, cmd, resource_group_name, environment_name, maintenance_config_envelope):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/microsoft.app/managedenvironments/{}/maintenanceConfigurations/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            environment_name,
+            cls.maintenance_config_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "PUT", request_url, body=json.dumps(maintenance_config_envelope))
+
+        if r.status_code == 201:
+            operation_url = r.headers.get(HEADER_AZURE_ASYNC_OPERATION)
+            poll_status(cmd, operation_url)
+            r = send_raw_request(cmd.cli_ctx, "GET", request_url)
+        if r.status_code == 202:
+            operation_url = r.headers.get(HEADER_LOCATION)
+            response = poll_results(cmd, operation_url)
+            if response is None:
+                raise ResourceNotFoundError("Could not find the maintenance config")
+            else:
+                return response
+
+        return r.json()
+
+    @classmethod
+    def remove(cls, cmd, resource_group_name, environment_name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/microsoft.app/managedenvironments/{}/maintenanceConfigurations/{}?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            environment_name,
+            cls.maintenance_config_name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "DELETE", request_url)
+
+        if r.status_code in [200, 201, 202, 204]:
+            if r.status_code == 202:
+                operation_url = r.headers.get(HEADER_LOCATION)
+                poll_results(cmd, operation_url)
