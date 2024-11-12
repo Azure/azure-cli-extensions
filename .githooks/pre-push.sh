@@ -18,11 +18,24 @@ fi
 # Get extension repo paths and join them with spaces
 EXTENSIONS=$(azdev extension repo list -o tsv | tr '\n' ' ')
 
+# Verify if current repo is in extension repo list
+CURRENT_REPO=$(pwd)
+if [[ ! "$EXTENSIONS" =~ "$CURRENT_REPO" ]]; then
+    printf "\033[0;31mThe current repo is not added as an extension repo. Please run the following command to add it:\033[0m\n"
+    printf "\033[0;31m+++++++++++++++++++++++++++++++++++++++++++++++++++++++\033[0m\n"
+    printf "\033[0;31mazdev extension repo add %s\033[0m\n" "$CURRENT_REPO"
+    printf "\033[0;31m+++++++++++++++++++++++++++++++++++++++++++++++++++++++\033[0m\n"
+    exit 1
+fi
+
 # Fetch upstream/main branch
 printf "\033[0;32mFetching upstream/main branch...\033[0m\n"
 git fetch upstream main
 if [ $? -ne 0 ]; then
-    printf "\033[0;31mError: Failed to fetch upstream/main branch. Please run 'git remote add upstream https://github.com/Azure/azure-cli-extensions.git' first.\033[0m\n"
+    printf "\033[0;31mError: Failed to fetch upstream/main branch. Please run the following command to add the upstream remote:\033[0m\n"
+    printf "\033[0;31m+++++++++++++++++++++++++++++++++++++++++++++++++++++++\033[0m\n"
+    printf "\033[0;31mgit remote add upstream https://github.com/Azure/azure-cli-extensions.git\033[0m\n"
+    printf "\033[0;31m+++++++++++++++++++++++++++++++++++++++++++++++++++++++\033[0m\n"
     exit 1
 fi
 
@@ -30,7 +43,10 @@ if [ ! -z "$AZURE_CLI_FOLDER" ]; then
     printf "\033[0;32mFetching %s upstream/dev branch...\033[0m\n" "$AZURE_CLI_FOLDER"
     git -C "$AZURE_CLI_FOLDER" fetch upstream dev
     if [ $? -ne 0 ]; then
-        printf "\033[0;31mError: Failed to fetch %s upstream/dev branch. Please run 'git -C %s remote add upstream https://github.com/Azure/azure-cli.git' first.\033[0m\n" "$AZURE_CLI_FOLDER" "$AZURE_CLI_FOLDER"
+        printf "\033[0;31mError: Failed to fetch %s upstream/dev branch. Please run the following command to add the upstream remote:\033[0m\n" "$AZURE_CLI_FOLDER"
+        printf "\033[0;31m+++++++++++++++++++++++++++++++++++++++++++++++++++++++\033[0m\n"
+        printf "\033[0;31mgit -C %s remote add upstream https://github.com/Azure/azure-cli.git\033[0m\n" "$AZURE_CLI_FOLDER"
+        printf "\033[0;31m+++++++++++++++++++++++++++++++++++++++++++++++++++++++\033[0m\n"
         exit 1
     fi
 
@@ -114,4 +130,3 @@ if [ ! -z "$AZURE_CLI_FOLDER" ]; then
     fi
 fi
 exit 0
-

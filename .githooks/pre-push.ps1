@@ -20,14 +20,26 @@ if ($editableLocation) {
     $AZURE_CLI_FOLDER = Split-Path -Parent (Split-Path -Parent $editableLocation)
 }
 
-# Get extension repo paths and join them with spaces
+$ExtensionRepo = Split-Path -Parent  $PSScriptRoot
+
+# verify if the $ExtensionRepo is in the output of azdev extension repo list
 $Extensions = (azdev extension repo list -o tsv) -join ' '
+if ($Extensions -notlike "*$ExtensionRepo*") {
+    Write-Host "The current repo is not added as an extension repo. Please run the following command to add it:" -ForegroundColor Red
+    Write-Host "+++++++++++++++++++++++++++++++++++++++++++++++++++++++" -ForegroundColor Red
+    Write-Host "azdev extension repo add $ExtensionRepo" -ForegroundColor Red
+    Write-Host "+++++++++++++++++++++++++++++++++++++++++++++++++++++++" -ForegroundColor Red
+    exit 1
+}
 
 # Fetch upstream/main branch
 Write-Host "Fetching upstream/main branch..." -ForegroundColor Green
 git fetch upstream main
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "Error: Failed to fetch upstream/main branch. Please run 'git remote add upstream https://github.com/Azure/azure-cli-extensions.git' first." -ForegroundColor Red
+    Write-Host "Error: Failed to fetch upstream/main branch. Please run the following command to add the upstream remote:" -ForegroundColor Red
+    Write-Host "+++++++++++++++++++++++++++++++++++++++++++++++++++++++" -ForegroundColor Red
+    Write-Host "git remote add upstream https://github.com/Azure/azure-cli-extensions.git" -ForegroundColor Red
+    Write-Host "+++++++++++++++++++++++++++++++++++++++++++++++++++++++" -ForegroundColor Red
     exit 1
 }
 
@@ -36,7 +48,10 @@ if ($AZURE_CLI_FOLDER) {
     Write-Host "Fetching $AZURE_CLI_FOLDER upstream/dev branch..." -ForegroundColor Green
     git -C $AZURE_CLI_FOLDER fetch upstream dev
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "Error: Failed to fetch $AZURE_CLI_FOLDER upstream/dev branch. Please run 'git -C $AZURE_CLI_FOLDER remote add upstream https://github.com/Azure/azure-cli.git' first." -ForegroundColor Red
+        Write-Host "Error: Failed to fetch $AZURE_CLI_FOLDER upstream/dev branch. Please run the following command to add the upstream remote:" -ForegroundColor Red
+        Write-Host "+++++++++++++++++++++++++++++++++++++++++++++++++++++++" -ForegroundColor Red
+        Write-Host "git -C $AZURE_CLI_FOLDER remote add upstream https://github.com/Azure/azure-cli.git" -ForegroundColor Red
+        Write-Host "+++++++++++++++++++++++++++++++++++++++++++++++++++++++" -ForegroundColor Red
         exit 1
     }
 
