@@ -2891,10 +2891,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         else:
             network_profile.network_dataplane = self.context.get_network_dataplane()
 
-        acns = self.models.AdvancedNetworking()
+        acns = None
         (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
         if acns_enabled is not None:
-            acns.enabled = acns_enabled
+            acns.enabled = self.models.AdvancedNetworking(
+                enabled=acns_enabled,
+            )
             if acns_observability_enabled is not None:
                 acns.observability = self.models.AdvancedNetworkingObservability(
                     enabled=acns_observability_enabled,
@@ -3972,10 +3974,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
-        acns = self.models.AdvancedNetworking()
+        acns = None
         (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
         if acns_enabled is not None:
-            acns.enabled = acns_enabled
+            acns.enabled = self.models.AdvancedNetworking(
+                enabled=acns_enabled,
+            )
             if acns_observability_enabled is not None:
                 acns.observability = self.models.AdvancedNetworkingObservability(
                     enabled=acns_observability_enabled,
