@@ -7,6 +7,7 @@ upcoming
 * 'az containerapp create': Fix Role assignment error when the default Azure Container Registry could not be found
 *  Upgrade api-version to 2024-10-02-preview
 * 'az containerapp create/update': `--yaml` support property pollingInterval and cooldownPeriod
+* 'az containerapp env maintenance-config add/update/list/remove': Support environment maintenance config management 
 * 'az containerapp sessionpool create': Support managed identity when create session pool with --mi-system-assigned --mi-user-assigned
 
 1.0.0b4
