@@ -256,7 +256,6 @@ def executing_cluster_diagnostic_checks_job(
                 if job["object"].metadata.name == "cluster-diagnostic-checks-job":
                     is_job_scheduled = True
 
-                if job["object"].metadata.name == "cluster-diagnostic-checks-job":
                     if (
                         job["object"].status.failed is not None
                         and job["object"].status.failed >= 3
@@ -265,17 +264,19 @@ def executing_cluster_diagnostic_checks_job(
                         w.stop()
                         break
 
-                    if job["object"].status.conditions is not None:
-                        is_complete = any(
-                            condition.type == "Complete"
-                            for condition in job["object"].status.conditions
+                    if job["object"].status.conditions is None:
+                        continue
+
+                    is_complete = any(
+                        condition.type == "Complete"
+                        for condition in job["object"].status.conditions
+                    )
+                    if is_complete:
+                        is_job_complete = True
+                        logger.debug(
+                            "Cluster Diagnostic Checks Job reached completed state"
                         )
-                        if is_complete:
-                            is_job_complete = True
-                            logger.debug(
-                                "Cluster Diagnostic Checks Job reached completed state"
-                            )
-                            w.stop()
+                        w.stop()
             except Exception:
                 logger.debug(
                     "Caught Exception, executing Cluster Diagnostic Checks job: ",
@@ -291,8 +292,6 @@ def executing_cluster_diagnostic_checks_job(
             )
             azext_utils.save_cluster_diagnostic_checks_pod_description(
                 corev1_api_instance,
-                batchv1_api_instance,
-                helm_client_location,
                 kubectl_client_location,
                 kube_config,
                 kube_context,
@@ -330,46 +329,35 @@ def executing_cluster_diagnostic_checks_job(
             for each_pod in all_pods.items:
                 # Fetching the current Pod name and creating a folder with that name inside the timestamp folder
                 pod_name = each_pod.metadata.name
-                if pod_name.startswith(job_name):
-                    # Creating a text file with the name of the container and adding that containers logs in it
-                    cluster_diagnostic_checks_container_log = (
-                        corev1_api_instance.read_namespaced_pod_log(
-                            name=pod_name,
-                            container="cluster-diagnostic-checks-container",
-                            namespace="azure-arc-release",
-                        )
-                    )
-                    try:
-                        if storage_space_available:
-                            dns_check_path = os.path.join(
-                                filepath_with_timestamp,
-                                "cluster_diagnostic_checks_job_log.txt",
-                            )
-                            with open(dns_check_path, "w+") as f:
-                                f.write(cluster_diagnostic_checks_container_log)
-                    except OSError as e:
-                        if "[Errno 28]" in str(e):
-                            storage_space_available = False
-                            telemetry.set_exception(
-                                exception=e,
-                                fault_type=consts.No_Storage_Space_Available_Fault_Type,
-                                summary="No space left on device",
-                            )
-                            shutil.rmtree(filepath_with_timestamp, ignore_errors=False)
-                        else:
-                            logger.exception(
-                                "An exception has occured while saving the Cluster "
-                                "Diagnostic Checks Job logs in the local machine."
-                            )
-                            telemetry.set_exception(
-                                exception=e,
-                                fault_type=consts.Cluster_Diagnostic_Checks_Job_Log_Save_Failed,
-                                summary="Error occured while saving the cluster diagnostic "
-                                "checks job logs in the local machine",
-                            )
+                if not pod_name.startswith(job_name):
+                    continue
 
-                    # To handle any exception that may occur during the execution
-                    except Exception as e:
+                # Creating a text file with the name of the container and adding that containers logs in it
+                cluster_diagnostic_checks_container_log = (
+                    corev1_api_instance.read_namespaced_pod_log(
+                        name=pod_name,
+                        container="cluster-diagnostic-checks-container",
+                        namespace="azure-arc-release",
+                    )
+                )
+                try:
+                    if storage_space_available:
+                        dns_check_path = os.path.join(
+                            filepath_with_timestamp,
+                            "cluster_diagnostic_checks_job_log.txt",
+                        )
+                        with open(dns_check_path, "w+") as f:
+                            f.write(cluster_diagnostic_checks_container_log)
+                except OSError as e:
+                    if "[Errno 28]" in str(e):
+                        storage_space_available = False
+                        telemetry.set_exception(
+                            exception=e,
+                            fault_type=consts.No_Storage_Space_Available_Fault_Type,
+                            summary="No space left on device",
+                        )
+                        shutil.rmtree(filepath_with_timestamp, ignore_errors=False)
+                    else:
                         logger.exception(
                             "An exception has occured while saving the Cluster "
                             "Diagnostic Checks Job logs in the local machine."
@@ -377,9 +365,22 @@ def executing_cluster_diagnostic_checks_job(
                         telemetry.set_exception(
                             exception=e,
                             fault_type=consts.Cluster_Diagnostic_Checks_Job_Log_Save_Failed,
-                            summary="Error occured while saving the cluster diagnostic checks "
-                            "job logs in the local machine",
+                            summary="Error occured while saving the cluster diagnostic "
+                            "checks job logs in the local machine",
                         )
+
+                # To handle any exception that may occur during the execution
+                except Exception as e:
+                    logger.exception(
+                        "An exception has occured while saving the Cluster "
+                        "Diagnostic Checks Job logs in the local machine."
+                    )
+                    telemetry.set_exception(
+                        exception=e,
+                        fault_type=consts.Cluster_Diagnostic_Checks_Job_Log_Save_Failed,
+                        summary="Error occured while saving the cluster diagnostic checks "
+                        "job logs in the local machine",
+                    )
 
             telemetry.set_exception(
                 exception="Couldn't complete Cluster Diagnostic Checks Job after scheduling in the cluster",

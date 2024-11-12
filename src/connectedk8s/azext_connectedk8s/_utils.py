@@ -44,7 +44,7 @@ from azext_connectedk8s._client_factory import (
 if TYPE_CHECKING:
     from azure.cli.core import AzCli
     from knack.commands import CLICommand
-    from kubernetes.client import BatchV1Api, CoreV1Api, V1NodeList
+    from kubernetes.client import CoreV1Api, V1NodeList
     from requests import Response
 
     from azext_connectedk8s.vendored_sdks.preview_2024_07_01.models import (
@@ -262,8 +262,6 @@ def pull_helm_chart(
 
 def save_cluster_diagnostic_checks_pod_description(
     corev1_api_instance: CoreV1Api,
-    batchv1_api_instance: BatchV1Api,
-    helm_client_location: str,
     kubectl_client_location: str,
     kube_config: str | None,
     kube_context: str | None,
@@ -1417,21 +1415,6 @@ def is_guid(guid: str) -> bool:
         return False
 
 
-def try_list_node_fix() -> None:
-    try:
-        from kubernetes.client.models.v1_container_image import V1ContainerImage
-
-        def names(self: V1ContainerImage, names: list[str]) -> None:
-            self._names = names
-
-        V1ContainerImage.names = V1ContainerImage.names.setter(names)
-    except Exception:
-        logger.debug(
-            "Error while trying to monkey patch the fix for list_node()",
-            exc_info=True,
-        )
-
-
 def check_provider_registrations(
     cli_ctx: AzCli,
     subscription_id: str,
@@ -1541,7 +1524,7 @@ def az_cli(args_str: str) -> Any:
     if cli.result.result:
         return cli.result.result
     if cli.result.error:
-        raise Exception(cli.result.error)
+        raise CLIInternalError(f"'az ${args_str}' failed: {cli.result.error}")
     return True
 
 

@@ -165,7 +165,7 @@ class AccessTokenCredential:
     def __init__(self, access_token: str) -> None:
         self.access_token = access_token
 
-    def get_token(self, *arg: Any, **kwargs: Any) -> AccessToken:
+    def get_token(self, *arg: Any, **kwargs: Any) -> AccessToken:  # pylint: disable=unused-argument
         import time
 
         # Assume the access token expires in 60 minutes

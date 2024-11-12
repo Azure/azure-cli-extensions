@@ -1458,44 +1458,46 @@ def executing_diagnoser_job(
                 )
                 for each_pod in arc_agents_pod_list.items:
                     pod_name = each_pod.metadata.name
-                    if pod_name.startswith(job_name):
-                        # To retrieve the pod logs which is stuck
-                        cmd_get_diagnoser_job_events[4] = (
-                            "involvedObject.name=" + pod_name
+                    if not pod_name.startswith(job_name):
+                        continue
+
+                    # To retrieve the pod logs which is stuck
+                    cmd_get_diagnoser_job_events[4] = "involvedObject.name=" + pod_name
+                    # Using Popen to execute the command and fetching the output
+                    response_kubectl_get_events = Popen(
+                        cmd_get_diagnoser_job_events, stdout=PIPE, stderr=PIPE
+                    )
+                    output_kubectl_get_events, error_kubectl_get_events = (
+                        response_kubectl_get_events.communicate()
+                    )
+                    if response_kubectl_get_events.returncode != 0:
+                        telemetry.set_exception(
+                            exception=error_kubectl_get_events.decode("ascii"),
+                            fault_type=consts.Kubectl_Get_Events_Failed_Fault_Type,
+                            summary="Error while doing kubectl get events",
                         )
-                        # Using Popen to execute the command and fetching the output
-                        response_kubectl_get_events = Popen(
-                            cmd_get_diagnoser_job_events, stdout=PIPE, stderr=PIPE
+                        logger.warning(
+                            "Error while doing kubectl get events. We were not able to capture events "
+                            "log in arc_diagnostic_logs folder. Exception: %s",
+                            error_kubectl_get_events.decode("ascii"),
                         )
-                        output_kubectl_get_events, error_kubectl_get_events = (
-                            response_kubectl_get_events.communicate()
+                        diagnoser_output.append(
+                            "Error while doing kubectl get events. We were not able to "
+                            "capture events log in arc_diagnostic_logs folder. Exception: "
+                            + error_kubectl_get_events.decode("ascii"),
                         )
-                        if response_kubectl_get_events.returncode != 0:
-                            telemetry.set_exception(
-                                exception=error_kubectl_get_events.decode("ascii"),
-                                fault_type=consts.Kubectl_Get_Events_Failed_Fault_Type,
-                                summary="Error while doing kubectl get events",
-                            )
-                            logger.warning(
-                                "Error while doing kubectl get events. We were not able to capture events "
-                                "log in arc_diagnostic_logs folder. Exception: %s",
-                                error_kubectl_get_events.decode("ascii"),
-                            )
-                            diagnoser_output.append(
-                                "Error while doing kubectl get events. We were not able to "
-                                "capture events log in arc_diagnostic_logs folder. Exception: "
-                                + error_kubectl_get_events.decode("ascii"),
-                            )
-                            return None
-                        # Converting output obtained in json format and fetching the clusterconnect-agent feature
-                        events_json = json.loads(output_kubectl_get_events)
-                        if len(events_json["items"]) != 0:
-                            with open(
-                                unfinished_diagnoser_job_path, "w+"
-                            ) as unfinished_diagnoser_job:
-                                # Adding all the individual events
-                                for events in events_json["items"]:
-                                    unfinished_diagnoser_job.write(str(events) + "\n")
+                        return None
+
+                    # Converting output obtained in json format and fetching the clusterconnect-agent feature
+                    events_json = json.loads(output_kubectl_get_events)
+                    if len(events_json["items"]) != 0:
+                        with open(
+                            unfinished_diagnoser_job_path, "w+"
+                        ) as unfinished_diagnoser_job:
+                            # Adding all the individual events
+                            for events in events_json["items"]:
+                                unfinished_diagnoser_job.write(str(events) + "\n")
+
             Popen(cmd_delete_job, stdout=PIPE, stderr=PIPE)
             diagnoser_output.append(
                 "The diagnoser job failed to reach the completed state in the kubernetes cluster.\n"

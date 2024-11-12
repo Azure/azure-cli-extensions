@@ -50,6 +50,7 @@ from knack.log import get_logger
 from knack.prompting import NoTTYException, prompt_y_n
 from kubernetes import client as kube_client
 from kubernetes import config
+from kubernetes.config.kube_config import KubeConfigMerger
 from packaging import version
 
 import azext_connectedk8s._clientproxyutils as clientproxyutils
@@ -273,7 +274,6 @@ def create_connectedk8s(
     kubernetes_version = check_kube_connection()
 
     print(f"Step: {utils.get_utctimestring()}: Do node validations")
-    utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api()
     node_api_response = utils.validate_node_api_response(api_instance)
     is_arm64_cluster = check_arm64_node(node_api_response)
@@ -600,141 +600,135 @@ def create_connectedk8s(
                 )
 
             if (
-                configmap_rg_name.lower() == resource_group_name.lower()
-                and configmap_cluster_name.lower() == cluster_name.lower()
+                configmap_rg_name.lower() != resource_group_name.lower()
+                or configmap_cluster_name.lower() != cluster_name.lower()
             ):
-                # Re-put connected cluster
-                # If cluster is of kind provisioned cluster, there are several properties that cannot be updated
-                validate_existing_provisioned_cluster_for_reput(
-                    cluster_resource,
-                    kubernetes_distro,
-                    kubernetes_infra,
-                    enable_private_link,
-                    private_link_scope_resource_id,
-                    distribution_version,
-                    azure_hybrid_benefit,
-                    location,
+                telemetry.set_exception(
+                    exception="The kubernetes cluster is already onboarded",
+                    fault_type=consts.Cluster_Already_Onboarded_Fault_Type,
+                    summary="Kubernetes cluster already onboarded",
+                )
+                err_msg = (
+                    "The kubernetes cluster you are trying to onboard is already onboarded to "
+                    f"the resource group '{configmap_rg_name}' with resource name '{configmap_cluster_name}'."
+                )
+                raise ArgumentUsageError(err_msg)
+
+            # Re-put connected cluster
+            # If cluster is of kind provisioned cluster, there are several properties that cannot be updated
+            validate_existing_provisioned_cluster_for_reput(
+                cluster_resource,
+                kubernetes_distro,
+                kubernetes_infra,
+                enable_private_link,
+                private_link_scope_resource_id,
+                distribution_version,
+                azure_hybrid_benefit,
+                location,
+            )
+
+            cc = generate_request_payload(
+                location,
+                public_key,
+                tags,
+                kubernetes_distro,
+                kubernetes_infra,
+                enable_private_link,
+                private_link_scope_resource_id,
+                distribution_version,
+                azure_hybrid_benefit,
+                oidc_profile,
+                security_profile,
+                gateway,
+                arc_agentry_configurations,
+                arc_agent_profile,
+            )
+            cc_poller = create_cc_resource(
+                client, resource_group_name, cluster_name, cc, no_wait
+            )
+            dp_request_payload = cc_poller.result()
+            cc_response: ConnectedCluster = LongRunningOperation(cmd.cli_ctx)(cc_poller)
+            # Disabling cluster-connect if private link is getting enabled
+            if enable_private_link is True:
+                disable_cluster_connect(
+                    cmd,
+                    client,
+                    resource_group_name,
+                    cluster_name,
+                    kube_config,
+                    kube_context,
+                    values_file,
+                    release_namespace,
+                    helm_client_location,
                 )
 
-                cc = generate_request_payload(
-                    location,
-                    public_key,
-                    tags,
-                    kubernetes_distro,
-                    kubernetes_infra,
-                    enable_private_link,
-                    private_link_scope_resource_id,
-                    distribution_version,
-                    azure_hybrid_benefit,
-                    oidc_profile,
-                    security_profile,
-                    gateway,
-                    arc_agentry_configurations,
-                    arc_agent_profile,
+            # Perform helm upgrade if gateway
+            if gateway is not None:
+                # Update arc agent configuration to include protected parameters in dp call
+                arc_agentry_configurations = generate_arc_agent_configuration(
+                    configuration_settings,
+                    redacted_protected_values,
+                    is_dp_call=True,
                 )
-                cc_poller = create_cc_resource(
-                    client, resource_group_name, cluster_name, cc, no_wait
+                dp_request_payload.arc_agentry_configurations = (
+                    arc_agentry_configurations
                 )
-                dp_request_payload = cc_poller.result()
-                cc_response: ConnectedCluster = LongRunningOperation(cmd.cli_ctx)(
-                    cc_poller
+
+                # Perform DP health check
+                _ = utils.health_check_dp(cmd, config_dp_endpoint)
+
+                # Retrieving Helm chart OCI Artifact location
+                helm_values_dp = utils.get_helm_values(
+                    cmd,
+                    config_dp_endpoint,
+                    release_train,
+                    connected_cluster=dp_request_payload,
                 )
-                # Disabling cluster-connect if private link is getting enabled
-                if enable_private_link is True:
-                    disable_cluster_connect(
-                        cmd,
-                        client,
-                        resource_group_name,
-                        cluster_name,
-                        kube_config,
-                        kube_context,
-                        values_file,
-                        release_namespace,
-                        helm_client_location,
+
+                registry_path = (
+                    os.getenv("HELMREGISTRY") or helm_values_dp["repositoryPath"]
+                )
+
+                if registry_path == "":
+                    registry_path = utils.get_helm_registry(
+                        cmd, config_dp_endpoint, release_train
                     )
 
-                # Perform helm upgrade if gateway
-                if gateway is not None:
-                    # Update arc agent configuration to include protected parameters in dp call
-                    arc_agentry_configurations = generate_arc_agent_configuration(
-                        configuration_settings,
-                        redacted_protected_values,
-                        is_dp_call=True,
-                    )
-                    dp_request_payload.arc_agentry_configurations = (
-                        arc_agentry_configurations
-                    )
+                # Get azure-arc agent version for telemetry
+                azure_arc_agent_version = registry_path.split(":")[1]
+                telemetry.add_extension_event(
+                    "connectedk8s",
+                    {"Context.Default.AzureCLI.AgentVersion": azure_arc_agent_version},
+                )
 
-                    # Perform DP health check
-                    _ = utils.health_check_dp(cmd, config_dp_endpoint)
+                # Get helm chart path
+                chart_path = utils.get_chart_path(
+                    registry_path, kube_config, kube_context, helm_client_location
+                )
 
-                    # Retrieving Helm chart OCI Artifact location
-                    helm_values_dp = utils.get_helm_values(
-                        cmd,
-                        config_dp_endpoint,
-                        release_train,
-                        connected_cluster=dp_request_payload,
-                    )
+                helm_content_values = helm_values_dp["helmValuesContent"]
 
-                    registry_path = (
-                        os.getenv("HELMREGISTRY") or helm_values_dp["repositoryPath"]
-                    )
-
-                    if registry_path == "":
-                        registry_path = utils.get_helm_registry(
-                            cmd, config_dp_endpoint, release_train
+                # Substitute any protected helm values as the value for that will be 'redacted-<feature>-<protectedSetting>'
+                for helm_parameter, helm_value in helm_content_values.items():
+                    if "redacted" in helm_value:
+                        _, feature, protectedSetting = helm_value.split(":")
+                        helm_content_values[helm_parameter] = (
+                            configuration_protected_settings[feature][protectedSetting]
                         )
 
-                    # Get azure-arc agent version for telemetry
-                    azure_arc_agent_version = registry_path.split(":")[1]
-                    telemetry.add_extension_event(
-                        "connectedk8s",
-                        {
-                            "Context.Default.AzureCLI.AgentVersion": azure_arc_agent_version
-                        },
-                    )
+                # Perform helm upgrade
+                utils.helm_update_agent(
+                    helm_client_location,
+                    kube_config,
+                    kube_context,
+                    helm_content_values,
+                    values_file,
+                    cluster_name,
+                    release_namespace,
+                    chart_path,
+                )
+            return cc_response
 
-                    # Get helm chart path
-                    chart_path = utils.get_chart_path(
-                        registry_path, kube_config, kube_context, helm_client_location
-                    )
-
-                    helm_content_values = helm_values_dp["helmValuesContent"]
-
-                    # Substitute any protected helm values as the value for that will be 'redacted-<feature>-<protectedSetting>'
-                    for helm_parameter, helm_value in helm_content_values.items():
-                        if "redacted" in helm_value:
-                            _, feature, protectedSetting = helm_value.split(":")
-                            helm_content_values[helm_parameter] = (
-                                configuration_protected_settings[
-                                    feature
-                                ][protectedSetting]
-                            )
-
-                    # Perform helm upgrade
-                    utils.helm_update_agent(
-                        helm_client_location,
-                        kube_config,
-                        kube_context,
-                        helm_content_values,
-                        values_file,
-                        cluster_name,
-                        release_namespace,
-                        chart_path,
-                    )
-                return cc_response
-
-            # else
-            telemetry.set_exception(
-                exception="The kubernetes cluster is already onboarded",
-                fault_type=consts.Cluster_Already_Onboarded_Fault_Type,
-                summary="Kubernetes cluster already onboarded",
-            )
-            err_msg = (
-                "The kubernetes cluster you are trying to onboard is already onboarded to "
-                f"the resource group '{configmap_rg_name}' with resource name '{configmap_cluster_name}'."
-            )
-            raise ArgumentUsageError(err_msg)
         # else case
         logger.warning(
             "Cleaning up the stale arc agents present on the cluster before starting new onboarding."
@@ -1622,11 +1616,7 @@ def get_kubeconfig_node_dict(kube_config: str | None = None) -> ConfigNode:
             os.path.expanduser("~"), ".kube", "config"
         )
     try:
-        kubeconfig_data: dict[str, Any] = (
-            config.kube_config._get_kube_config_loader_for_yaml_file(
-                kube_config
-            )._config
-        )
+        kubeconfig_data = KubeConfigMerger(kube_config).config
     except Exception as ex:
         telemetry.set_exception(
             exception=ex,
@@ -1768,7 +1758,6 @@ def delete_connectedk8s(
     )
 
     print(f"Step: {utils.get_utctimestring()}: Do node validations")
-    utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api()
     node_api_response = utils.validate_node_api_response(api_instance)
     is_arm64_cluster = check_arm64_node(node_api_response)
@@ -2133,8 +2122,6 @@ def update_connected_cluster(
     # if the user had not logged in.
     kubernetes_version = check_kube_connection()
 
-    utils.try_list_node_fix()
-
     # Install helm client
     helm_client_location = install_helm_client()
 
@@ -2371,7 +2358,6 @@ def upgrade_agents(
     # if the user had not logged in.
     kubernetes_version = check_kube_connection()
 
-    utils.try_list_node_fix()
     api_instance = kube_client.CoreV1Api()
 
     # Install helm client
@@ -2869,8 +2855,6 @@ def enable_features(
     # if the user had not logged in.
     kubernetes_version = check_kube_connection()
 
-    utils.try_list_node_fix()
-
     # Install helm client
     helm_client_location = install_helm_client()
 
@@ -3063,8 +3047,6 @@ def disable_features(
     # if the user had not logged in.
     kubernetes_version = check_kube_connection()
 
-    utils.try_list_node_fix()
-
     # Install helm client
     helm_client_location = install_helm_client()
 
@@ -3113,7 +3095,7 @@ def disable_features(
                 helm_values.get("systemDefaultValues").get("customLocations").get("oid")  # type: ignore[union-attr]
             )
             if not disable_cl and cl_enabled is True and cl_oid != "":
-                raise Exception(
+                raise ClientRequestError(
                     "Disabling 'cluster-connect' feature is not allowed when 'custom-locations' feature is enabled"
                 )
         except AttributeError:
@@ -4201,7 +4183,6 @@ def troubleshoot(
         # This check was added to avoid large timeouts when connecting to AAD Enabled AKS clusters
         # if the user had not logged in.
         check_kube_connection()
-        utils.try_list_node_fix()
 
         # Fetch Connected Cluster for agent version
         connected_cluster = client.get(resource_group_name, cluster_name)
