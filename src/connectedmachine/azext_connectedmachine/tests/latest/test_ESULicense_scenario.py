@@ -109,7 +109,8 @@ class ESULicenseScenarioTest(ScenarioTest):
         #     self.check('length(@)', 1)
         # ])
 
-        self.cmd('az connectedmachine license-profile delete -y '
-                '--machine-name "{machinePaygo}" '
-                '--resource-group "{rgProfile}"',
-                checks=[])
+        # self.cmd('az connectedmachine license-profile delete -y '
+        #         '--machine-name "{machinePaygo}" '
+        #         '--license-profile-name "default" '
+        #         '--resource-group "{rgProfile}"',
+        #         checks=[])

@@ -24,7 +24,7 @@ from azext_connectedmachine.generated._client_factory import (
 
 
 connectedmachine_private_link_scope = CliCommandType(
-    operations_tmpl='azext_connectedmachine.vendored_sdks.connectedmachine.operations._private_link_scopes_operations#PrivateLinkScopesOperations.{}',
+    operations_tmpl='azext_connectedmachine.vendored_sdks.connectedmachine.operations._private_link_scopes_operations.PrivateLinkScopesOperations.{}',
     client_factory=cf_private_link_scope,
 )
 
