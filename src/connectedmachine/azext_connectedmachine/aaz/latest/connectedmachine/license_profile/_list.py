@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class List(AAZCommand):
     """List operation to get all license profiles of a non-Azure machine
+
+    :example: List all License Profiles
+        az connectedmachine license-profile list --resource-group myResourceGroup --machine-name myMachine
     """
 
     _aaz_info = {

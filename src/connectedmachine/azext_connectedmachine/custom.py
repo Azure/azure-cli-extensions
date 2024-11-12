@@ -10,11 +10,52 @@
 # pylint: disable=wildcard-import
 # pylint: disable=unused-wildcard-import
 
-from .generated.custom import *  # noqa: F403
-try:
-    from .manual.custom import *  # noqa: F403
-except ImportError as e:
-    if e.name.endswith('manual.custom'):
-        pass
-    else:
-        raise e
+from .aaz.latest.connectedmachine.license_profile import Create as _ProfileCreate
+from .aaz.latest.connectedmachine.license_profile import Update as _ProfileUpdate
+from .aaz.latest.connectedmachine.license_profile import Show as _ProfileShow
+
+# hide license_profile_name from user and always set it to be 'Default', this applies for both license-profile create, update and show
+class ProfileCreate(_ProfileCreate):
+
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        # pylint: disable=protected-access
+        args_schema.license_profile_name._required = False
+        args_schema.license_profile_name._registered = False
+
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.license_profile_name = "Default"
+
+class ProfileUpdate(_ProfileUpdate):
+
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        # pylint: disable=protected-access
+        args_schema.license_profile_name._required = False
+        args_schema.license_profile_name._registered = False
+
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.license_profile_name = "Default"
+
+class ProfileShow(_ProfileShow):
+
+    def _build_arguments_schema(cls, *args, **kwargs):
+        args_schema = super()._build_arguments_schema(*args, **kwargs)
+
+        # pylint: disable=protected-access
+        args_schema.license_profile_name._required = False
+        args_schema.license_profile_name._registered = False
+
+        return args_schema
+
+    def pre_operations(self):
+        args = self.ctx.args
+        args.license_profile_name = "Default"

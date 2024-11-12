@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Create(AAZCommand):
     """Create operation to create a license profile.
+
+    :example: Create a License Profile
+        az connectedmachine license-profile create --resource-group myResourceGroup --machine-name myMachine --location eastus2euap --software-assurance-customer True --assigned-license {LicenseResourceId} --subscription-status Enabled --product-type WindowsServer --product-features "[{name:Hotpatch,subscription-status:Enabled}]"
     """
 
     _aaz_info = {

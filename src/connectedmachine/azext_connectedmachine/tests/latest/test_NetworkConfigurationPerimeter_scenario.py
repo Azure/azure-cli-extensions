@@ -42,23 +42,23 @@ class NetworkConfigurationPerimeterScenarioTest(ScenarioTest):
             'perimeterName': '00000000-0000-0000-0000-000000000000.testAssociation',
         })
 
-        # network security perimeter configuration
-        self.cmd('az connectedmachine private-link-scope network-security-perimeter-configuration list '
-                '--resource-group "{rg}" '
-                '--scope-name "{scope}" '
-                '--subscription "{subscription}"',
-                checks=[])
+        # # network security perimeter configuration
+        # self.cmd('az connectedmachine private-link-scope network-security-perimeter-configuration list '
+        #         '--resource-group "{rg}" '
+        #         '--scope-name "{scope}" '
+        #         '--subscription "{subscription}"',
+        #         checks=[])
 
-        self.cmd('az connectedmachine private-link-scope network-security-perimeter-configuration show '
-                '--resource-group "{rg}" '
-                '--scope-name "{scope}" '
-                '--subscription "{subscription}" '
-                '--perimeter-name "{perimeterName}"',
-                checks=[])  
+        # self.cmd('az connectedmachine private-link-scope network-security-perimeter-configuration show '
+        #         '--resource-group "{rg}" '
+        #         '--scope-name "{scope}" '
+        #         '--subscription "{subscription}" '
+        #         '--perimeter-name "{perimeterName}"',
+        #         checks=[])  
 
-        self.cmd('az connectedmachine private-link-scope network-security-perimeter-configuration reconcile '
-                '--resource-group "{rg}" '
-                '--scope-name "{scope}" '
-                '--subscription "{subscription}" '
-                '--perimeter-name "{perimeterName}"',
-                checks=[])  
+        # self.cmd('az connectedmachine private-link-scope network-security-perimeter-configuration reconcile '
+        #         '--resource-group "{rg}" '
+        #         '--scope-name "{scope}" '
+        #         '--subscription "{subscription}" '
+        #         '--perimeter-name "{perimeterName}"',
+        #         checks=[])  

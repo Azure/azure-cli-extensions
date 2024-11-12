@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Update(AAZCommand):
     """Update operation to update a license profile.
+
+    :example: Update a License Profile
+        az connectedmachine license-profile update --resource-group myResourceGroup --machine-name myMachine --location eastus2euap --software-assurance-customer True --assigned-license {LicenseResourceId} --subscription-status Enabled --product-type WindowsServer --product-features "[{name:Hotpatch,subscription-status:Enabled}]"
     """
 
     _aaz_info = {

@@ -16,6 +16,9 @@ from azure.cli.core.aaz import *
 )
 class Show(AAZCommand):
     """Get information about the view of a license profile.
+
+    :example: Get License Profile
+        az connectedmachine license-profile show --resource-group myResourceGroup --machine-name myMachine
     """
 
     _aaz_info = {

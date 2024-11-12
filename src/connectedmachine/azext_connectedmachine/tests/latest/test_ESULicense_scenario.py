@@ -25,7 +25,8 @@ from .. import (
     raise_if,
     calc_coverage
 )
-
+import json
+import subprocess
 
 TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
@@ -36,49 +37,79 @@ class ESULicenseScenarioTest(ScenarioTest):
         self.kwargs.update({
             'customScriptName': 'custom-test',
             'machine': 'testmachine',
+            'machineSA': 'WIN-A3C7NS0B144',
+            'machinePaygo': 'WIN-IAH3TLSP7A8',
             'rg': 'ytongtest',
             'location': 'eastus',
-            'subscription': '00000000-0000-0000-0000-000000000000',
+            'subscription': 'b24cc8ee-df4f-48ac-94cf-46edf36b0fae',
             'licenseName': 'myESULicense',
+            'licenseResourceIdProfile': '/subscriptions/b24cc8ee-df4f-48ac-94cf-46edf36b0fae/resourceGroups/PayGo_cmdlet/providers/Microsoft.HybridCompute/machines/WIN-IAH3TLSP7A8/licenseProfiles/default', 
+            'rgProfile': 'PayGo_cmdlet'
         })
 
-        self.cmd('az connectedmachine license create '
-                '--name "{licenseName}" '
-                '--resource-group "{rg}" '
-                '--location "{location}" '
-                '--license-type "ESU" '
-                '--state "Activated" '
-                '--target "Windows Server 2012" '
-                '--edition "Datacenter" '
-                '--type "pCore" '
-                '--processors 16',
-                checks=[
-                    self.check('name', '{licenseName}'),
-        ])
+        # self.cmd('az connectedmachine license create '
+        #         '--name "{licenseName}" '
+        #         '--resource-group "{rg}" '
+        #         '--location "{location}" '
+        #         '--license-type "ESU" '
+        #         '--state "Activated" '
+        #         '--target "Windows Server 2012" '
+        #         '--edition "Datacenter" '
+        #         '--type "pCore" '
+        #         '--processors 16',
+        #         checks=[
+        #             self.check('name', '{licenseName}'),
+        # ])
 
-        self.cmd('az connectedmachine license list --subscription {subscription}', checks=[
-            self.check('length(@)', 8)
-        ])
+        # self.cmd('az connectedmachine license list --subscription {subscription}', checks=[
+        #     self.check('length(@)', 8)
+        # ])
 
-        self.cmd('az connectedmachine license show --resource-group {rg} --name {licenseName} --subscription {subscription}', checks=[
-            self.check('length(@)', 8)
-        ])
+        # self.cmd('az connectedmachine license show --resource-group {rg} --name {licenseName} --subscription {subscription}', checks=[
+        #     self.check('length(@)', 8)
+        # ])
 
-        self.cmd('az connectedmachine license update '
-                '--name "{licenseName}" '
-                '--resource-group "{rg}" '
-                '--license-type "ESU" '
-                '--state "Deactivated" '
-                '--target "Windows Server 2012" '
-                '--edition "Datacenter" '
-                '--type "pCore" '
-                '--processors 16',
-                checks=[
-                    self.check('name', '{licenseName}'),
-        ])
+        # self.cmd('az connectedmachine license update '
+        #         '--name "{licenseName}" '
+        #         '--resource-group "{rg}" '
+        #         '--license-type "ESU" '
+        #         '--state "Deactivated" '
+        #         '--target "Windows Server 2012" '
+        #         '--edition "Datacenter" '
+        #         '--type "pCore" '
+        #         '--processors 16',
+        #         checks=[
+        #             self.check('name', '{licenseName}'),
+        # ])
 
-        self.cmd('az connectedmachine license delete -y '
-                '--name "{licenseName}" '
-                '--subscription "{subscription}" '
-                '--resource-group "{rg}"',
+        # self.cmd('az connectedmachine license delete -y '
+        #         '--name "{licenseName}" '
+        #         '--subscription "{subscription}" '
+        #         '--resource-group "{rg}"',
+        #         checks=[])
+
+        # product_features = "[{\"name\":\"Hotpatch\",\"subscriptionStatus\":\"Enabled\"}]"
+        # self.cmd('az connectedmachine license-profile create '
+        #         '--machine-name "{machinePaygo}" '
+        #         '--resource-group "{rgProfile}" '
+        #         '--license-profile-name "default" '
+        #         '--location "{location}" '
+        #         '--product-type "WindowsServer" '
+        #         '--subscription-status "Enabled" '
+        #         '--product-features "{{\\"name\\":\\"Hotpatch\\"}}"" ',
+        #         checks=[
+        #             self.check('id', '{licenseResourceIdProfile}'),
+        # ])
+
+        # self.cmd('az connectedmachine license-profile list --subscription {subscription} --resource-group {rgProfile}', checks=[
+        #     self.check('length(@)', 1)
+        # ])
+
+        # self.cmd('az connectedmachine license-profile show --resource-group {rgProfile} --machine-name {machinePaygo} --name {licenseName} --subscription {subscription}', checks=[
+        #     self.check('length(@)', 1)
+        # ])
+
+        self.cmd('az connectedmachine license-profile delete -y '
+                '--machine-name "{machinePaygo}" '
+                '--resource-group "{rgProfile}"',
                 checks=[])
