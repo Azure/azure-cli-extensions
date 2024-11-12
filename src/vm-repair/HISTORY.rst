@@ -1,6 +1,11 @@
 
 Release History
 ===============
+
+2.0.0
+++++++
+Changed default VM image to 2022-datacenter-smalldisk for better default security. 
+
 1.1.1
 ++++++
 Migrated VM Repair off of the `msrestazure` API to `azure.core` and `azure.mgmt` APIs.
