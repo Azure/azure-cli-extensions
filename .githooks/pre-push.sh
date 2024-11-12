@@ -20,7 +20,7 @@ EXTENSIONS=$(azdev extension repo list -o tsv | tr '\n' ' ')
 
 # Verify if current repo is in extension repo list
 CURRENT_REPO=$(pwd)
-if [[ ! "$EXTENSIONS" =~ "$CURRENT_REPO" ]]; then
+if [ -z "$(echo "$EXTENSIONS" | grep "$CURRENT_REPO")" ]; then
     printf "\033[0;31mThe current repo is not added as an extension repo. Please run the following command to add it:\033[0m\n"
     printf "\033[0;31m+++++++++++++++++++++++++++++++++++++++++++++++++++++++\033[0m\n"
     printf "\033[0;31mazdev extension repo add %s\033[0m\n" "$CURRENT_REPO"
