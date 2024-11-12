@@ -102,7 +102,7 @@ class Create(AAZCommand):
             help="Marketplace details",
         )
         _args_schema.private_ips = AAZListArg(
-            options=["--private-i-ps"],
+            options=["--private-ips"],
             arg_group="Properties",
             help="Private IPs of the resource",
         )
