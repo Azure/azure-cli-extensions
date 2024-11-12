@@ -136,6 +136,9 @@ azdev test --repo ./ --src $currentBranch --tgt $mergeBase --discover --no-exitf
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Error: azdev test check failed. You can check the test logs in the 'test_results.xml' file." -ForegroundColor Red
     exit 1
+} else {
+    # remove the test_results.xml file
+    Remove-Item -Path test_results.xml
 }
 
 Write-Host "Pre-push hook passed." -ForegroundColor Green

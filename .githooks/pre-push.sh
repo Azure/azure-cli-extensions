@@ -129,6 +129,9 @@ azdev test --repo ./ --src $currentBranch --tgt $MERGE_BASE --discover --no-exit
 if [ $? -ne 0 ]; then
     printf "\033[0;31mError: azdev test check failed. You can check the test logs in the 'test_results.xml' file.\033[0m\n"
     exit 1
+else
+    # remove the test_results.xml file
+    rm -f test_results.xml
 fi
 
 printf "\033[0;32mPre-push hook passed.\033[0m\n"
