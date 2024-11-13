@@ -1017,6 +1017,33 @@ def delete_containerappsjob(cmd, name, resource_group_name, no_wait=False):
     return containerapp_job_decorator.delete()
 
 
+def suspend_containerappsjob(cmd, name, resource_group_name):
+    raw_parameters = locals()
+    containerapp_job_decorator = ContainerAppJobDecorator(
+        cmd=cmd,
+        client=ContainerAppsJobPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+    containerapp_job_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+
+    return ContainerAppsJobPreviewClient.suspend(cmd=cmd, resource_group_name=resource_group_name, name=name)
+
+
+def resume_containerappsjob(cmd, name, resource_group_name):
+    raw_parameters = locals()
+    containerapp_job_decorator = ContainerAppJobDecorator(
+        cmd=cmd,
+        client=ContainerAppsJobPreviewClient,
+        raw_parameters=raw_parameters,
+        models=CONTAINER_APPS_SDK_MODELS
+    )
+
+    containerapp_job_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
+
+    return ContainerAppsJobPreviewClient.resume(cmd=cmd, resource_group_name=resource_group_name, name=name)
+
+
 def create_or_update_github_action(cmd,
                                    name,
                                    resource_group_name,

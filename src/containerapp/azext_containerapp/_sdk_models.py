@@ -8354,6 +8354,9 @@ class ContainerAppsJob(TrackedResource):  # pylint: disable=too-many-instance-at
     :ivar provisioning_state: Provisioning state of the Container Apps Job. Known values are:
      "InProgress", "Succeeded", "Failed", "Canceled", and "Deleting".
     :vartype provisioning_state: str or ~azure.mgmt.appcontainers.models.JobProvisioningState
+    :ivar running_status: Running status of the Container Apps Job. Known values are:
+     "Progressing", "Suspended" and "Ready".
+    :vartype running_status: str or ~azure.mgmt.appcontainers.models.JobRunningState
     :ivar environment_id: Resource ID of environment.
     :vartype environment_id: str
     :ivar workload_profile_name: Workload profile name to pin for container apps job execution.
@@ -8375,6 +8378,7 @@ class ContainerAppsJob(TrackedResource):  # pylint: disable=too-many-instance-at
         "system_data": {"readonly": True},
         "location": {"required": True},
         "provisioning_state": {"readonly": True},
+        "running_status": {"readonly": True},
         "outbound_ip_addresses": {"readonly": True},
         "event_stream_endpoint": {"readonly": True},
     }
@@ -8389,6 +8393,7 @@ class ContainerAppsJob(TrackedResource):  # pylint: disable=too-many-instance-at
         "extended_location": {"key": "extendedLocation", "type": "ExtendedLocation"},
         "identity": {"key": "identity", "type": "ManagedServiceIdentity"},
         "provisioning_state": {"key": "properties.provisioningState", "type": "str"},
+        "running_status": {"key": "properties.runningStatus", "type": "str"},
         "environment_id": {"key": "properties.environmentId", "type": "str"},
         "workload_profile_name": {"key": "properties.workloadProfileName", "type": "str"},
         "configuration": {"key": "properties.configuration", "type": "JobConfiguration"},
@@ -8433,6 +8438,7 @@ class ContainerAppsJob(TrackedResource):  # pylint: disable=too-many-instance-at
         self.extended_location = extended_location
         self.identity = identity
         self.provisioning_state = None
+        self.running_status = None
         self.environment_id = environment_id
         self.workload_profile_name = workload_profile_name
         self.configuration = configuration

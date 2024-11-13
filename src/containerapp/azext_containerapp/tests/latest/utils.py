@@ -519,3 +519,10 @@ def _reformat_image(image):
     image = image.split("/")[-1]
     image = image.replace(":","")
     return image
+
+def verify_containerapps_job_provisioning(test_cls, resource_group, job_name, expected_provisioning_state):
+    job = test_cls.cmd(f"containerapp job show -g {resource_group} -n {job_name}").get_output_in_json()
+    while job["properties"]["provisioningState"].lower() == "inprogress":
+        time.sleep(5)
+        job = test_cls.cmd(f"containerapp job show -g {resource_group} -n {job_name}").get_output_in_json()
+    test_cls.assertEqual(job["properties"]["provisioningState"].lower(), expected_provisioning_state)

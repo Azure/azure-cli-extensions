@@ -81,6 +81,38 @@ class ContainerAppsJobPreviewClient(ContainerAppsJobClient):
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
 
+    @classmethod
+    def suspend(cls, cmd, resource_group_name, name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}/suspend?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url)
+        if r.status_code == 202:
+            return
+
+    @classmethod
+    def resume(cls, cmd, resource_group_name, name):
+        management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
+        sub_id = get_subscription_id(cmd.cli_ctx)
+        url_fmt = "{}/subscriptions/{}/resourceGroups/{}/providers/Microsoft.App/jobs/{}/resume?api-version={}"
+        request_url = url_fmt.format(
+            management_hostname.strip('/'),
+            sub_id,
+            resource_group_name,
+            name,
+            cls.api_version)
+
+        r = send_raw_request(cmd.cli_ctx, "POST", request_url)
+        if r.status_code == 202:
+            return
+
 
 class ContainerAppsResiliencyPreviewClient():
     api_version = PREVIEW_API_VERSION

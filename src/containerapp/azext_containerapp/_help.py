@@ -543,6 +543,24 @@ helps['containerapp job stop'] = """
       text: az containerapp job stop -n my-containerapp-job -g MyResourceGroup --execution-name-list MyContainerAppJob-66v9xh0,MyContainerAppJob-66v9xh1
 """
 
+helps['containerapp job suspend'] = """
+    type: command
+    short-summary: Suspend a Container Apps Job.
+    examples:
+    - name: Suspend a job.
+      text: |
+          az containerapp job suspend -n my-containerapp-job -g MyResourceGroup
+"""
+
+helps['containerapp job resume'] = """
+    type: command
+    short-summary: Resume a Container Apps Job.
+    examples:
+    - name: Resume a job.
+      text: |
+          az containerapp job resume -n my-containerapp-job -g MyResourceGroup
+"""
+
 # Certificates Commands
 helps['containerapp env certificate'] = """
     type: group
