@@ -43,6 +43,8 @@ def load_command_table(self, args):
         g.custom_command('create', 'create_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory(), transform=transform_sensitive_values)
         g.custom_command('update', 'update_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory(), transform=transform_sensitive_values)
         g.custom_command('delete', 'delete_containerappsjob', supports_no_wait=True, confirmation=True, exception_handler=ex_handler_factory())
+        g.custom_command('suspend', 'suspend_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory())
+        g.custom_command('resume', 'resume_containerappsjob', supports_no_wait=True, exception_handler=ex_handler_factory())
 
     with self.command_group('containerapp job registry', is_preview=True) as g:
         g.custom_command('set', 'set_registry_job', exception_handler=ex_handler_factory())

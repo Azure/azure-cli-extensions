@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import os
+import time
 
 from azure.cli.command_modules.containerapp._utils import format_location
 from azure.mgmt.core.tools import parse_resource_id
@@ -15,6 +16,7 @@ TEST_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '..'))
 
 from .common import TEST_LOCATION, STAGE_LOCATION
 from .utils import prepare_containerapp_env_for_app_e2e_tests
+from .utils import verify_containerapps_job_provisioning
 
 
 class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
@@ -262,6 +264,62 @@ class ContainerAppJobsCRUDOperationsTest(ScenarioTest):
             JMESPathCheck('properties.configuration.scheduleTriggerConfig.parallelism', 1),
             JMESPathCheck('properties.configuration.scheduleTriggerConfig.replicaCompletionCount', 1),
             JMESPathCheck('properties.configuration.triggerType', "schedule", case_sensitive=False),
+        ])
+
+        # delete the Container App Job resource
+        self.cmd("az containerapp job delete --resource-group {} --name {} --yes".format(resource_group, job))
+
+        # verify the Container App Job resource is deleted
+        jobs_list = self.cmd("az containerapp job list --resource-group {}".format(resource_group)).get_output_in_json()
+        self.assertTrue(len(jobs_list) == 0)
+
+    @AllowLargeResponse(8192)
+    @ResourceGroupPreparer(location="northcentralus")
+    # test for CRUD operations on Container App Job resource with trigger type as manual
+    def test_containerapp_manualjob_suspend_resume_e2e(self, resource_group): 
+        self.cmd('configure --defaults location={}'.format(TEST_LOCATION))
+
+        job = self.create_random_name(prefix='job4', length=24)
+
+        env_id = prepare_containerapp_env_for_app_e2e_tests(self)
+
+        ## test for CRUD operations on Container App Job resource with trigger type as manual
+        # create a Container App Job resource with trigger type as manual
+        self.cmd("az containerapp job create --resource-group {} --name {} --environment {} --trigger-type manual".format(resource_group, job, env_id))
+
+        # verify the container app job resource
+        self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job), checks=[
+            JMESPathCheck('name', job),
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck("properties.runningStatus", "Ready"),
+            JMESPathCheck('properties.configuration.replicaTimeout', 1800),
+            JMESPathCheck('properties.configuration.replicaRetryLimit', 0),
+            JMESPathCheck('properties.configuration.manualTriggerConfig.parallelism', 1),
+            JMESPathCheck('properties.configuration.manualTriggerConfig.replicaCompletionCount', 1),
+            JMESPathCheck('properties.configuration.triggerType', "manual", case_sensitive=False),
+        ])
+        # suspend container app job
+        self.cmd("az containerapp job suspend --resource-group {} --name {}".format(resource_group, job))
+
+        verify_containerapps_job_provisioning(self, resource_group, job, "succeeded")
+
+        # verify the container app job is suspended (running status is suspended)
+        self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job), checks=[
+            JMESPathCheck('name', job),
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck('properties.runningStatus', "Suspended", case_sensitive=False),
+        ])
+
+        # resume container app job
+        self.cmd("az containerapp job resume --resource-group {} --name {}".format(resource_group, job))
+
+        verify_containerapps_job_provisioning(self, resource_group, job, "succeeded")
+
+        # verify the container app job is resumed (running status is ready)
+        self.cmd("az containerapp job show --resource-group {} --name {}".format(resource_group, job), checks=[
+            JMESPathCheck('name', job),
+            JMESPathCheck("properties.provisioningState", "Succeeded"),
+            JMESPathCheck('properties.runningStatus', "Ready", case_sensitive=False),
         ])
 
         # delete the Container App Job resource

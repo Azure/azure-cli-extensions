@@ -395,6 +395,14 @@ def load_arguments(self, _):
     with self.argument_context('containerapp job registry') as c:
         c.argument('identity', help="The managed identity with which to authenticate to the Azure Container Registry (instead of username/password). Use 'system' for a system-defined identity, Use 'system-environment' for an environment level system-defined identity or a resource id for a user-defined environment/containerapp level identity. The managed identity should have been assigned acrpull permissions on the ACR before deployment (use 'az role assignment create --role acrpull ...').")
 
+    with self.argument_context('containerapp job suspend') as c:
+        c.argument('name', name_type, id_part=None, help="The name of the Containerapp job.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+
+    with self.argument_context('containerapp job resume') as c:
+        c.argument('name', name_type, id_part=None, help="The name of the Containerapp job.")
+        c.argument('resource_group_name', arg_type=resource_group_name_type, id_part=None)
+
     with self.argument_context('containerapp env dotnet-component') as c:
         c.argument('dotnet_component_name', options_list=['--name', '-n'], help="The DotNet component name.")
         c.argument('environment_name', options_list=['--environment'], help="The environment name.")
