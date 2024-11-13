@@ -393,7 +393,11 @@ def create_connectedk8s(
         raise ManualInterrupt("Process terminated externally.")
 
     # If the checks didnt pass then stop the onboarding
-    if diagnostic_checks != consts.Diagnostic_Check_Passed and not azure_local_disconnected and not lowbandwidth:
+    if (
+        diagnostic_checks != consts.Diagnostic_Check_Passed
+        and not azure_local_disconnected
+        and not lowbandwidth
+    ):
         if storage_space_available:
             logger.warning(
                 "The pre-check result logs logs have been saved at this path: "
@@ -903,7 +907,7 @@ def create_connectedk8s(
     )
 
     helm_content_values = helm_values_dp["helmValuesContent"]
-    aad_identity_principal_id = put_cc_response.identity.principal_id,
+    aad_identity_principal_id = put_cc_response.identity.principal_id
 
     # Substitute any protected helm values as the value for that will be 'redacted-<feature>-<protectedSetting>'
     for helm_parameter, helm_value in helm_content_values.items():
@@ -2274,7 +2278,9 @@ def update_connected_cluster(
     for helm_parameter, helm_value in helm_content_values.items():
         if "redacted" in helm_value:
             _, feature, protectedSetting = helm_value.split(":")
-            helm_content_values[helm_parameter] = configuration_protected_settings[feature][protectedSetting]
+            helm_content_values[helm_parameter] = configuration_protected_settings[
+                feature
+            ][protectedSetting]
 
     # Disable proxy if disable_proxy flag is set
     if disable_proxy:
@@ -3364,25 +3370,10 @@ def merge_kubernetes_configurations(
         except (KeyError, TypeError):
             continue
 
-    if addition is None:
-        telemetry.set_exception(
-            exception="Failed to load additional configuration",
-            fault_type=consts.Failed_To_Load_K8s_Configuration_Fault_Type,
-            summary="failed to load additional configuration from {}".format(
-                addition_file
-            ),
-        )
-        raise CLIInternalError(
-            f"Failed to load additional configuration from {addition_file}"
-        )
-
-    if existing is None:
-        existing = addition
-    else:
-        handle_merge(existing, addition, "clusters", replace)
-        handle_merge(existing, addition, "users", replace)
-        handle_merge(existing, addition, "contexts", replace)
-        existing["current-context"] = addition["current-context"]
+    handle_merge(existing, addition, "clusters", replace)
+    handle_merge(existing, addition, "users", replace)
+    handle_merge(existing, addition, "contexts", replace)
+    existing["current-context"] = addition["current-context"]
 
     # check that ~/.kube/config is only read- and writable by its owner
     if platform.system() != "Windows":
@@ -3629,12 +3620,12 @@ def client_side_proxy_wrapper(
     # initializations
     user_type = "sat"
     creds = ""
-    dict_file = {
+    dict_file: dict[str, Any] = {
         "server": {
             "httpPort": int(client_proxy_port),
-            "httpsPort": int(api_server_port)
+            "httpsPort": int(api_server_port),
         },
-        "identity": {"tenantID": tenant_id}
+        "identity": {"tenantID": tenant_id},
     }
 
     # if service account token is not passed
@@ -3644,7 +3635,6 @@ def client_side_proxy_wrapper(
         account = Profile().get_subscription(subscription_id)
         user_type = account["user"]["type"]
 
-        dict_file: dict[str, Any]
         if user_type == "user":
             dict_file["identity"]["clientID"] = consts.CLIENTPROXY_CLIENT_ID
         else:
@@ -3704,13 +3694,19 @@ def client_side_proxy_wrapper(
     arm_metadata = utils.get_metadata(cmd.cli_ctx.cloud.endpoints.resource_manager)
     if "dataplaneEndpoints" in arm_metadata:
         dict_file["cloudConfig"] = {}
-        dict_file["cloudConfig"]["resourceManagerEndpoint"] = arm_metadata["resourceManager"]
+        dict_file["cloudConfig"]["resourceManagerEndpoint"] = arm_metadata[
+            "resourceManager"
+        ]
         relay_endpoint_suffix = arm_metadata["suffixes"]["relayEndpointSuffix"]
         if relay_endpoint_suffix[0] == ".":
-            dict_file["cloudConfig"]["serviceBusEndpointSuffix"] = (relay_endpoint_suffix)[1:]
+            dict_file["cloudConfig"]["serviceBusEndpointSuffix"] = (
+                relay_endpoint_suffix
+            )[1:]
         else:
             dict_file["cloudConfig"]["serviceBusEndpointSuffix"] = relay_endpoint_suffix
-        dict_file["cloudConfig"]["activeDirectoryEndpoint"] = arm_metadata["authentication"]["loginEndpoint"]
+        dict_file["cloudConfig"]["activeDirectoryEndpoint"] = arm_metadata[
+            "authentication"
+        ]["loginEndpoint"]
 
     telemetry.set_debug_info("User type is ", user_type)
 
@@ -4545,8 +4541,9 @@ def install_kubectl_client() -> str:
         f"Step: {utils.get_utctimestring()}: Install Kubectl client if it does not exist"
     )
     # Return kubectl client path set by user
-    if os.getenv("KUBECTL_CLIENT_PATH"):
-        return os.getenv("KUBECTL_CLIENT_PATH")
+    kubectl_client_path = os.getenv("KUBECTL_CLIENT_PATH")
+    if kubectl_client_path:
+        return kubectl_client_path
 
     try:
         # Fetching the current directory where the cli installs the kubectl executable

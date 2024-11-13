@@ -256,3 +256,75 @@ stages:
         env:
           ADO_PULL_REQUEST_LATEST_COMMIT: $(System.PullRequest.SourceCommitId)
           ADO_PULL_REQUEST_TARGET_BRANCH: $(System.PullRequest.TargetBranch)
+
+  - job: RuffCheck
+    displayName: "Lint connectedk8s with ruff check"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - task: UsePythonVersion@0
+        displayName: 'Use Python 3.12'
+        inputs:
+          versionSpec: 3.12
+      - bash: |
+          set -ev
+
+          # prepare and activate virtualenv
+          cd src/connectedk8s
+          python -m venv env
+          source ./env/bin/activate
+
+          pip install --upgrade pip
+          pip install azure-cli --editable .[linting]
+
+          ruff check
+
+        displayName: "ruff check"
+
+  - job: RuffFormat
+    displayName: "Check connected8ks formatting with ruff"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - task: UsePythonVersion@0
+        displayName: 'Use Python 3.12'
+        inputs:
+          versionSpec: 3.12
+      - bash: |
+          set -ev
+
+          # prepare and activate virtualenv
+          cd src/connectedk8s
+          python -m venv env
+          source ./env/bin/activate
+
+          pip install --upgrade pip
+          pip install azure-cli --editable .[linting]
+
+          ruff format --check
+
+        displayName: "ruff format check"
+
+  - job: TypeChecking
+    displayName: "Typecheck connected8ks with mypy"
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - task: UsePythonVersion@0
+        displayName: 'Use Python 3.12'
+        inputs:
+          versionSpec: 3.12
+      - bash: |
+          set -ev
+
+          # prepare and activate virtualenv
+          cd src/connectedk8s
+          python -m venv env
+          source ./env/bin/activate
+
+          pip install --upgrade pip
+          pip install azure-cli --editable .[linting]
+
+          mypy
+
+        displayName: "mypy"
