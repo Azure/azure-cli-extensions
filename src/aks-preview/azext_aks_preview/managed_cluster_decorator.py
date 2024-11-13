@@ -2894,7 +2894,7 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         acns = None
         (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
         if acns_enabled is not None:
-            acns.enabled = self.models.AdvancedNetworking(
+            acns = self.models.AdvancedNetworking(
                 enabled=acns_enabled,
             )
             if acns_observability_enabled is not None:
@@ -3977,7 +3977,7 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         acns = None
         (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
         if acns_enabled is not None:
-            acns.enabled = self.models.AdvancedNetworking(
+            acns = self.models.AdvancedNetworking(
                 enabled=acns_enabled,
             )
             if acns_observability_enabled is not None:
