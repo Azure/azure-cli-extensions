@@ -1,0 +1,982 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --subnet-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_vnet_tap_000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001","name":"cli_test_vnet_tap_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_vnet_tap","date":"2024-11-13T04:23:18Z","module":"virtual-network-tap"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '380'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Nov 2024 04:23:24 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 5F20EB1AFC95467B966A622787D4CE44 Ref B: MAA201060515049 Ref C: 2024-11-13T04:23:25Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "properties": {"addressSpace": {"addressPrefixes":
+      ["10.0.0.0/16"]}, "enableDdosProtection": false, "enableVmProtection": false,
+      "subnets": [{"name": "subnet1", "properties": {"addressPrefix": "10.0.0.0/24"}}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '234'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --subnet-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworks/vnet1?api-version=2024-03-01
+  response:
+    body:
+      string: '{"name":"vnet1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworks/vnet1","etag":"W/\"39a96f63-d952-4c0c-bffb-0722cac599cb\"","type":"Microsoft.Network/virtualNetworks","location":"westus","properties":{"provisioningState":"Updating","resourceGuid":"14dcf572-0b0f-4d5e-9a6a-73c23fb5cd76","addressSpace":{"addressPrefixes":["10.0.0.0/16"]},"privateEndpointVNetPolicies":"Disabled","subnets":[{"name":"subnet1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1","etag":"W/\"39a96f63-d952-4c0c-bffb-0722cac599cb\"","properties":{"provisioningState":"Updating","addressPrefix":"10.0.0.0/24","delegations":[],"privateEndpointNetworkPolicies":"Disabled","privateLinkServiceNetworkPolicies":"Enabled"},"type":"Microsoft.Network/virtualNetworks/subnets"}],"virtualNetworkPeerings":[],"enableDdosProtection":false}}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/da900f57-136b-4a6e-8fe3-d03b4ef242d2?api-version=2024-03-01&t=638670686112998128&c=MIIHhzCCBm-gAwIBAgITfAWQ0hCHZtQ3fJ4PSAAABZDSEDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI3MDkwMTAzWhcNMjUwMzI2MDkwMTAzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANt7qVbg97HivqUzi3BPPNiHD4wLqYw03AkBiXDpww3W8iIU6FZbbOXVgCL-rGpnbxPkLEVZ1WtRfvLgR3qDiVRjkSnE2knSE6qtvBRWdqqsD9YiSi5lYW67vgtBA_mHzHNDb0zhZ2iofVE5GjHIKYINZSTo8of54bY_fJe0xenYEq7lMpbffWaoano6LQH1L0hSdzAreTN7T_bTsK7TkXQtx45c1upRueZR1wq4PRd-9AYpkfKHhxnCe5LBeLB-Q88WZbmNxuycYiJZzbEGVcEbg5fYdfYb4QveB2WmK7bCWSEDu7WzRaYN9zfP9ZpVnTHTmRcN-f3uvUzxNBMe26UCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBT07kfCxeuv0whuO9NP27UpdS8ZAzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFB6-4Y-Z7skVWaPi2vBOob5I-JLv_MqkE8tGWMMCFI9McOWBWfeJWV7aA4X4MEwnVfuFzE4mdak49KhEWgAbnGBMMumWJtlE1VDYwoYj3k6VDrhg4K8cRAO24Ezl3_L9yTqPLHhnKpjnjZONChdqvy6tXy9zLDyo9uThhHykSdIVQPaynG83JYpUlN1akyNJVLxae9NCRV251OTh00g9z6gt1b4nk-Nszy6YtF1AoskPTpeZVcsxGTlq3ITXveDCeZrYbQ6EtZf5O8ekTrNsG-8DMSDIgDta1Dud4RchYh74jtodoiwmneC_ZG5VDcpozae4Mh1w3_kD4-E11i1U1U&s=2D26MWiHEAq20YA5cDagmJR6ml5eBMijhMVV03xr6uYYABiKVjF_9xuEjoKgibXT8jfCdzE9KZnD0r7PAq8j5KCwuv8jua81e20paOlxAaK8RYMNPz6mN1WELDeJArQ_FBVMQ2DEF_QXkElN7RhB33nCnGMjglZHCHXJdvYctGfmPmxx1O68birtwe8pReflqhZnFkmjR8XwZyd9su7r4DoTaeu0iMxMZaT3GChdzBxsGedYkKnFnF0PqzSdpYSRKlLnX84b8ot-rZ-LoGRja5uq88YXVkZE56faQ6Ta3gukC0vtdvd0IzC5wpRpE4lF83PVK6TJrnAbuO9ZIdocmQ&h=RjK78eVZBv1j6RiqxWAN2cmSDoUIeRjRS6xl-XDdPaY
+      cache-control:
+      - no-cache
+      content-length:
+      - '1011'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Nov 2024 04:23:30 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 27f28e58-2a9c-4eef-b306-1d44eeea0e65
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 342E2F116C74426997CB069F1FEFED6A Ref B: MAA201060514019 Ref C: 2024-11-13T04:23:26Z'
+    status:
+      code: 201
+      message: ''
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --subnet-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/da900f57-136b-4a6e-8fe3-d03b4ef242d2?api-version=2024-03-01&t=638670686112998128&c=MIIHhzCCBm-gAwIBAgITfAWQ0hCHZtQ3fJ4PSAAABZDSEDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI3MDkwMTAzWhcNMjUwMzI2MDkwMTAzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANt7qVbg97HivqUzi3BPPNiHD4wLqYw03AkBiXDpww3W8iIU6FZbbOXVgCL-rGpnbxPkLEVZ1WtRfvLgR3qDiVRjkSnE2knSE6qtvBRWdqqsD9YiSi5lYW67vgtBA_mHzHNDb0zhZ2iofVE5GjHIKYINZSTo8of54bY_fJe0xenYEq7lMpbffWaoano6LQH1L0hSdzAreTN7T_bTsK7TkXQtx45c1upRueZR1wq4PRd-9AYpkfKHhxnCe5LBeLB-Q88WZbmNxuycYiJZzbEGVcEbg5fYdfYb4QveB2WmK7bCWSEDu7WzRaYN9zfP9ZpVnTHTmRcN-f3uvUzxNBMe26UCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBT07kfCxeuv0whuO9NP27UpdS8ZAzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFB6-4Y-Z7skVWaPi2vBOob5I-JLv_MqkE8tGWMMCFI9McOWBWfeJWV7aA4X4MEwnVfuFzE4mdak49KhEWgAbnGBMMumWJtlE1VDYwoYj3k6VDrhg4K8cRAO24Ezl3_L9yTqPLHhnKpjnjZONChdqvy6tXy9zLDyo9uThhHykSdIVQPaynG83JYpUlN1akyNJVLxae9NCRV251OTh00g9z6gt1b4nk-Nszy6YtF1AoskPTpeZVcsxGTlq3ITXveDCeZrYbQ6EtZf5O8ekTrNsG-8DMSDIgDta1Dud4RchYh74jtodoiwmneC_ZG5VDcpozae4Mh1w3_kD4-E11i1U1U&s=2D26MWiHEAq20YA5cDagmJR6ml5eBMijhMVV03xr6uYYABiKVjF_9xuEjoKgibXT8jfCdzE9KZnD0r7PAq8j5KCwuv8jua81e20paOlxAaK8RYMNPz6mN1WELDeJArQ_FBVMQ2DEF_QXkElN7RhB33nCnGMjglZHCHXJdvYctGfmPmxx1O68birtwe8pReflqhZnFkmjR8XwZyd9su7r4DoTaeu0iMxMZaT3GChdzBxsGedYkKnFnF0PqzSdpYSRKlLnX84b8ot-rZ-LoGRja5uq88YXVkZE56faQ6Ta3gukC0vtdvd0IzC5wpRpE4lF83PVK6TJrnAbuO9ZIdocmQ&h=RjK78eVZBv1j6RiqxWAN2cmSDoUIeRjRS6xl-XDdPaY
+  response:
+    body:
+      string: '{"status":"InProgress"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '23'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Nov 2024 04:23:31 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - e0a67001-5e45-4108-abb2-3fa660e21db6
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: A86DCE32BFF44729B4A02B0827885DE9 Ref B: MAA201060514019 Ref C: 2024-11-13T04:23:31Z'
+    status:
+      code: 200
+      message: ''
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --subnet-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/da900f57-136b-4a6e-8fe3-d03b4ef242d2?api-version=2024-03-01&t=638670686112998128&c=MIIHhzCCBm-gAwIBAgITfAWQ0hCHZtQ3fJ4PSAAABZDSEDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI3MDkwMTAzWhcNMjUwMzI2MDkwMTAzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANt7qVbg97HivqUzi3BPPNiHD4wLqYw03AkBiXDpww3W8iIU6FZbbOXVgCL-rGpnbxPkLEVZ1WtRfvLgR3qDiVRjkSnE2knSE6qtvBRWdqqsD9YiSi5lYW67vgtBA_mHzHNDb0zhZ2iofVE5GjHIKYINZSTo8of54bY_fJe0xenYEq7lMpbffWaoano6LQH1L0hSdzAreTN7T_bTsK7TkXQtx45c1upRueZR1wq4PRd-9AYpkfKHhxnCe5LBeLB-Q88WZbmNxuycYiJZzbEGVcEbg5fYdfYb4QveB2WmK7bCWSEDu7WzRaYN9zfP9ZpVnTHTmRcN-f3uvUzxNBMe26UCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBT07kfCxeuv0whuO9NP27UpdS8ZAzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFB6-4Y-Z7skVWaPi2vBOob5I-JLv_MqkE8tGWMMCFI9McOWBWfeJWV7aA4X4MEwnVfuFzE4mdak49KhEWgAbnGBMMumWJtlE1VDYwoYj3k6VDrhg4K8cRAO24Ezl3_L9yTqPLHhnKpjnjZONChdqvy6tXy9zLDyo9uThhHykSdIVQPaynG83JYpUlN1akyNJVLxae9NCRV251OTh00g9z6gt1b4nk-Nszy6YtF1AoskPTpeZVcsxGTlq3ITXveDCeZrYbQ6EtZf5O8ekTrNsG-8DMSDIgDta1Dud4RchYh74jtodoiwmneC_ZG5VDcpozae4Mh1w3_kD4-E11i1U1U&s=2D26MWiHEAq20YA5cDagmJR6ml5eBMijhMVV03xr6uYYABiKVjF_9xuEjoKgibXT8jfCdzE9KZnD0r7PAq8j5KCwuv8jua81e20paOlxAaK8RYMNPz6mN1WELDeJArQ_FBVMQ2DEF_QXkElN7RhB33nCnGMjglZHCHXJdvYctGfmPmxx1O68birtwe8pReflqhZnFkmjR8XwZyd9su7r4DoTaeu0iMxMZaT3GChdzBxsGedYkKnFnF0PqzSdpYSRKlLnX84b8ot-rZ-LoGRja5uq88YXVkZE56faQ6Ta3gukC0vtdvd0IzC5wpRpE4lF83PVK6TJrnAbuO9ZIdocmQ&h=RjK78eVZBv1j6RiqxWAN2cmSDoUIeRjRS6xl-XDdPaY
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Nov 2024 04:23:42 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 5258a3df-9c79-4124-ae01-8b45050ee767
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: DF15A1F64DCA4267B72E95D05C10391E Ref B: MAA201060514019 Ref C: 2024-11-13T04:23:42Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --subnet-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworks/vnet1?api-version=2024-03-01
+  response:
+    body:
+      string: '{"name":"vnet1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworks/vnet1","etag":"W/\"b1455ad5-3470-4eeb-84ba-2496147cbc4a\"","type":"Microsoft.Network/virtualNetworks","location":"westus","properties":{"provisioningState":"Succeeded","resourceGuid":"14dcf572-0b0f-4d5e-9a6a-73c23fb5cd76","addressSpace":{"addressPrefixes":["10.0.0.0/16"]},"privateEndpointVNetPolicies":"Disabled","subnets":[{"name":"subnet1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1","etag":"W/\"b1455ad5-3470-4eeb-84ba-2496147cbc4a\"","properties":{"provisioningState":"Succeeded","addressPrefix":"10.0.0.0/24","delegations":[],"privateEndpointNetworkPolicies":"Disabled","privateLinkServiceNetworkPolicies":"Enabled"},"type":"Microsoft.Network/virtualNetworks/subnets"}],"virtualNetworkPeerings":[],"enableDdosProtection":false}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1013'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Nov 2024 04:23:43 GMT
+      etag:
+      - W/"b1455ad5-3470-4eeb-84ba-2496147cbc4a"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - ee06351a-d9c3-4f1c-950e-1259c8e2f3b5
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: FC52F91B944D4350B5F02D903C8BD944 Ref B: MAA201060514019 Ref C: 2024-11-13T04:23:43Z'
+    status:
+      code: 200
+      message: ''
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network nic create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --subnet --vnet-name --accelerated-networking --auxiliary-mode --auxiliary-sku
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_vnet_tap_000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001","name":"cli_test_vnet_tap_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_vnet_tap","date":"2024-11-13T04:23:18Z","module":"virtual-network-tap","Creator":"v-ruih@microsoft.com","DateCreated":"2024-11-13T04:23:25Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '450'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Nov 2024 04:23:44 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: CB65D94487B3476CB9B715AB8D17A05B Ref B: MAA201060515033 Ref C: 2024-11-13T04:23:45Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "properties": {"auxiliaryMode": "AcceleratedConnections",
+      "auxiliarySku": "A1", "enableAcceleratedNetworking": true, "ipConfigurations":
+      [{"name": "ipconfig1", "properties": {"privateIPAddressVersion": "IPv4", "privateIPAllocationMethod":
+      "Dynamic", "subnet": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1"}}}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network nic create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '455'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --subnet --vnet-name --accelerated-networking --auxiliary-mode --auxiliary-sku
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/sourcenic?api-version=2022-11-01
+  response:
+    body:
+      string: '{"name":"sourcenic","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/sourcenic","etag":"W/\"0dc130bd-628a-4087-895b-80fab28702f3\"","properties":{"provisioningState":"Succeeded","resourceGuid":"2df2488e-3015-4bc6-9222-f7577c2e554d","ipConfigurations":[{"name":"ipconfig1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/sourcenic/ipConfigurations/ipconfig1","etag":"W/\"0dc130bd-628a-4087-895b-80fab28702f3\"","type":"Microsoft.Network/networkInterfaces/ipConfigurations","properties":{"provisioningState":"Succeeded","privateIPAddress":"10.0.0.4","privateIPAllocationMethod":"Dynamic","subnet":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1"},"primary":true,"privateIPAddressVersion":"IPv4"}}],"dnsSettings":{"dnsServers":[],"appliedDnsServers":[],"internalDomainNameSuffix":"ol03yfapbnpe1gtkopbd5nonog.dx.internal.cloudapp.net"},"enableAcceleratedNetworking":true,"vnetEncryptionSupported":false,"enableIPForwarding":false,"disableTcpStateTracking":false,"hostedWorkloads":[],"tapConfigurations":[],"nicType":"Standard","allowPort25Out":true,"auxiliaryMode":"AcceleratedConnections","auxiliarySku":"A1"},"type":"Microsoft.Network/networkInterfaces","location":"westus","kind":"Regular"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1497'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Nov 2024 04:23:49 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 515d1cbe-7385-48e3-8dd7-1e0470ca1b31
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 38BB938662CF459BA4A1B571CFC52AB2 Ref B: MAA201060514023 Ref C: 2024-11-13T04:23:45Z'
+    status:
+      code: 201
+      message: Created
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network nic create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --subnet --vnet-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_vnet_tap_000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001","name":"cli_test_vnet_tap_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_vnet_tap","date":"2024-11-13T04:23:18Z","module":"virtual-network-tap","Creator":"v-ruih@microsoft.com","DateCreated":"2024-11-13T04:23:25Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '450'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Nov 2024 04:23:50 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 6E051D9D6A3E45A0820EE01CD1E3F048 Ref B: MAA201060513017 Ref C: 2024-11-13T04:23:50Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "properties": {"ipConfigurations": [{"name": "ipconfig1",
+      "properties": {"privateIPAddressVersion": "IPv4", "privateIPAllocationMethod":
+      "Dynamic", "subnet": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1"}}}]}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network nic create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '353'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --subnet --vnet-name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/destnic?api-version=2022-11-01
+  response:
+    body:
+      string: '{"name":"destnic","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/destnic","etag":"W/\"7f69ab63-26e4-4c85-a015-0a66a4887079\"","properties":{"provisioningState":"Succeeded","resourceGuid":"a6e74ddb-ae0b-487b-bdc1-7e6a2d7860dd","ipConfigurations":[{"name":"ipconfig1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/destnic/ipConfigurations/ipconfig1","etag":"W/\"7f69ab63-26e4-4c85-a015-0a66a4887079\"","type":"Microsoft.Network/networkInterfaces/ipConfigurations","properties":{"provisioningState":"Succeeded","privateIPAddress":"10.0.0.5","privateIPAllocationMethod":"Dynamic","subnet":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1"},"primary":true,"privateIPAddressVersion":"IPv4"}}],"dnsSettings":{"dnsServers":[],"appliedDnsServers":[],"internalDomainNameSuffix":"ol03yfapbnpe1gtkopbd5nonog.dx.internal.cloudapp.net"},"vnetEncryptionSupported":false,"enableIPForwarding":false,"disableTcpStateTracking":false,"hostedWorkloads":[],"tapConfigurations":[],"nicType":"Standard","allowPort25Out":true,"auxiliaryMode":"None","auxiliarySku":"None"},"type":"Microsoft.Network/networkInterfaces","location":"westus","kind":"Regular"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1440'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Nov 2024 04:23:54 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 03be6fb3-e4b0-4903-b042-6de7f7b9954f
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: 89D44FDB3D00466AB327DA8D2C8F0314 Ref B: MAA201060516051 Ref C: 2024-11-13T04:23:51Z'
+    status:
+      code: 201
+      message: ''
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network nic ip-config create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --nic-name --name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/destnic?api-version=2022-01-01
+  response:
+    body:
+      string: '{"name":"destnic","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/destnic","etag":"W/\"7f69ab63-26e4-4c85-a015-0a66a4887079\"","properties":{"provisioningState":"Succeeded","resourceGuid":"a6e74ddb-ae0b-487b-bdc1-7e6a2d7860dd","ipConfigurations":[{"name":"ipconfig1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/destnic/ipConfigurations/ipconfig1","etag":"W/\"7f69ab63-26e4-4c85-a015-0a66a4887079\"","type":"Microsoft.Network/networkInterfaces/ipConfigurations","properties":{"provisioningState":"Succeeded","privateIPAddress":"10.0.0.5","privateIPAllocationMethod":"Dynamic","subnet":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1"},"primary":true,"privateIPAddressVersion":"IPv4"}}],"dnsSettings":{"dnsServers":[],"appliedDnsServers":[],"internalDomainNameSuffix":"ol03yfapbnpe1gtkopbd5nonog.dx.internal.cloudapp.net"},"vnetEncryptionSupported":false,"enableIPForwarding":false,"hostedWorkloads":[],"tapConfigurations":[],"nicType":"Standard","allowPort25Out":true,"auxiliaryMode":"None"},"type":"Microsoft.Network/networkInterfaces","location":"westus","kind":"Regular"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '1386'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Nov 2024 04:23:56 GMT
+      etag:
+      - W/"7f69ab63-26e4-4c85-a015-0a66a4887079"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - eff94690-2234-4d83-be0f-c4a174dab245
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 09B56D8E6F67441C9B2D3BEBE389ABAA Ref B: MAA201060515011 Ref C: 2024-11-13T04:23:55Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/destnic",
+      "location": "westus", "properties": {"auxiliaryMode": "None", "dnsSettings":
+      {"dnsServers": []}, "enableIPForwarding": false, "ipConfigurations": [{"id":
+      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/destnic/ipConfigurations/ipconfig1",
+      "name": "ipconfig1", "properties": {"primary": true, "privateIPAddress": "10.0.0.5",
+      "privateIPAddressVersion": "IPv4", "privateIPAllocationMethod": "Dynamic", "subnet":
+      {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1"}},
+      "type": "Microsoft.Network/networkInterfaces/ipConfigurations"}, {"name": "nicipconfig1",
+      "properties": {"primary": false, "privateIPAddressVersion": "IPv4", "privateIPAllocationMethod":
+      "Dynamic", "subnet": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1"}}}],
+      "nicType": "Standard"}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network nic ip-config create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '1229'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g --nic-name --name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/destnic?api-version=2022-01-01
+  response:
+    body:
+      string: '{"name":"destnic","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/destnic","etag":"W/\"64d7b78d-7db3-492b-af13-a858df328620\"","properties":{"provisioningState":"Succeeded","resourceGuid":"a6e74ddb-ae0b-487b-bdc1-7e6a2d7860dd","ipConfigurations":[{"name":"ipconfig1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/destnic/ipConfigurations/ipconfig1","etag":"W/\"64d7b78d-7db3-492b-af13-a858df328620\"","type":"Microsoft.Network/networkInterfaces/ipConfigurations","properties":{"provisioningState":"Succeeded","privateIPAddress":"10.0.0.5","privateIPAllocationMethod":"Dynamic","subnet":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1"},"primary":true,"privateIPAddressVersion":"IPv4"}},{"name":"nicipconfig1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/destnic/ipConfigurations/nicipconfig1","etag":"W/\"64d7b78d-7db3-492b-af13-a858df328620\"","type":"Microsoft.Network/networkInterfaces/ipConfigurations","properties":{"provisioningState":"Succeeded","privateIPAddress":"10.0.0.6","privateIPAllocationMethod":"Dynamic","subnet":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1"},"primary":false,"privateIPAddressVersion":"IPv4"}}],"dnsSettings":{"dnsServers":[],"appliedDnsServers":[],"internalDomainNameSuffix":"ol03yfapbnpe1gtkopbd5nonog.dx.internal.cloudapp.net"},"vnetEncryptionSupported":false,"enableIPForwarding":false,"hostedWorkloads":[],"tapConfigurations":[],"nicType":"Standard","allowPort25Out":true,"auxiliaryMode":"None"},"type":"Microsoft.Network/networkInterfaces","location":"westus","kind":"Regular"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2047'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Nov 2024 04:23:59 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 3bb66eea-4c98-41cc-a4c8-6f697f6de2d7
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: B8CDD44DD86E433A9696954DA4D72E49 Ref B: MAA201060515011 Ref C: 2024-11-13T04:23:56Z'
+    status:
+      code: 200
+      message: ''
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network nic ip-config show
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g --nic-name --name
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/destnic?api-version=2022-01-01
+  response:
+    body:
+      string: '{"name":"destnic","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/destnic","etag":"W/\"64d7b78d-7db3-492b-af13-a858df328620\"","properties":{"provisioningState":"Succeeded","resourceGuid":"a6e74ddb-ae0b-487b-bdc1-7e6a2d7860dd","ipConfigurations":[{"name":"ipconfig1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/destnic/ipConfigurations/ipconfig1","etag":"W/\"64d7b78d-7db3-492b-af13-a858df328620\"","type":"Microsoft.Network/networkInterfaces/ipConfigurations","properties":{"provisioningState":"Succeeded","privateIPAddress":"10.0.0.5","privateIPAllocationMethod":"Dynamic","subnet":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1"},"primary":true,"privateIPAddressVersion":"IPv4"}},{"name":"nicipconfig1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/destnic/ipConfigurations/nicipconfig1","etag":"W/\"64d7b78d-7db3-492b-af13-a858df328620\"","type":"Microsoft.Network/networkInterfaces/ipConfigurations","properties":{"provisioningState":"Succeeded","privateIPAddress":"10.0.0.6","privateIPAllocationMethod":"Dynamic","subnet":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworks/vnet1/subnets/subnet1"},"primary":false,"privateIPAddressVersion":"IPv4"}}],"dnsSettings":{"dnsServers":[],"appliedDnsServers":[],"internalDomainNameSuffix":"ol03yfapbnpe1gtkopbd5nonog.dx.internal.cloudapp.net"},"vnetEncryptionSupported":false,"enableIPForwarding":false,"hostedWorkloads":[],"tapConfigurations":[],"nicType":"Standard","allowPort25Out":true,"auxiliaryMode":"None"},"type":"Microsoft.Network/networkInterfaces","location":"westus","kind":"Regular"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '2047'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Nov 2024 04:24:01 GMT
+      etag:
+      - W/"64d7b78d-7db3-492b-af13-a858df328620"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 9301951d-13bf-4898-8a60-dc20b259097b
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 9F058E2094714E84A4579918A4F2E185 Ref B: MAA201060513011 Ref C: 2024-11-13T04:24:00Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet tap create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --destination
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/cli_test_vnet_tap_000001?api-version=2022-09-01
+  response:
+    body:
+      string: '{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001","name":"cli_test_vnet_tap_000001","type":"Microsoft.Resources/resourceGroups","location":"westus","tags":{"product":"azurecli","cause":"automation","test":"test_vnet_tap","date":"2024-11-13T04:23:18Z","module":"virtual-network-tap","Creator":"v-ruih@microsoft.com","DateCreated":"2024-11-13T04:23:25Z"},"properties":{"provisioningState":"Succeeded"}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '450'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Nov 2024 04:24:01 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 09630D73F0024094AFB2C01FB32F08ED Ref B: MAA201060514019 Ref C: 2024-11-13T04:24:02Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"location": "westus", "properties": {"destinationNetworkInterfaceIPConfiguration":
+      {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/destnic/ipConfigurations/nicipconfig1"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet tap create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '271'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --destination
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworkTaps/tap1?api-version=2024-03-01
+  response:
+    body:
+      string: '{"name":"tap1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworkTaps/tap1","etag":"W/\"64a636c8-c1fa-4af4-9b5d-a4a52f77f5db\"","type":"Microsoft.Network/virtualNetworkTaps","location":"westus","properties":{"provisioningState":"Updating","destinationNetworkInterfaceIPConfiguration":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/destnic/ipConfigurations/nicipconfig1"},"destinationPort":4789}}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2aa1555b-9753-43bf-8417-02cdcdbd995b?api-version=2024-03-01&t=638670686465510818&c=MIIHhzCCBm-gAwIBAgITfAWQ0hCHZtQ3fJ4PSAAABZDSEDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI3MDkwMTAzWhcNMjUwMzI2MDkwMTAzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANt7qVbg97HivqUzi3BPPNiHD4wLqYw03AkBiXDpww3W8iIU6FZbbOXVgCL-rGpnbxPkLEVZ1WtRfvLgR3qDiVRjkSnE2knSE6qtvBRWdqqsD9YiSi5lYW67vgtBA_mHzHNDb0zhZ2iofVE5GjHIKYINZSTo8of54bY_fJe0xenYEq7lMpbffWaoano6LQH1L0hSdzAreTN7T_bTsK7TkXQtx45c1upRueZR1wq4PRd-9AYpkfKHhxnCe5LBeLB-Q88WZbmNxuycYiJZzbEGVcEbg5fYdfYb4QveB2WmK7bCWSEDu7WzRaYN9zfP9ZpVnTHTmRcN-f3uvUzxNBMe26UCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBT07kfCxeuv0whuO9NP27UpdS8ZAzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFB6-4Y-Z7skVWaPi2vBOob5I-JLv_MqkE8tGWMMCFI9McOWBWfeJWV7aA4X4MEwnVfuFzE4mdak49KhEWgAbnGBMMumWJtlE1VDYwoYj3k6VDrhg4K8cRAO24Ezl3_L9yTqPLHhnKpjnjZONChdqvy6tXy9zLDyo9uThhHykSdIVQPaynG83JYpUlN1akyNJVLxae9NCRV251OTh00g9z6gt1b4nk-Nszy6YtF1AoskPTpeZVcsxGTlq3ITXveDCeZrYbQ6EtZf5O8ekTrNsG-8DMSDIgDta1Dud4RchYh74jtodoiwmneC_ZG5VDcpozae4Mh1w3_kD4-E11i1U1U&s=i1oJwLQBwtk9xcUCHrG5VpBZLbrW4yyv7GsFS-8XOm82HXaJTIuphwVPaPNIEdbC-vF0ZlbUzeHWCxDvCYyZDOoeEFhc5j630i0prjvzreTt1GRCq_fU5N63O137KGNz75M1weuXkbGKZpnl5YdFrAySb1jMiTp9zK25LNrYOrph-Q3LMhVyq7O-oz6-Nil4l0ZrmqyP_YKR8IGl3OpkDG6UCj0cgpSrcHFNHiFLxMjxae9LIAHEy5OYhDfANxwYlhdD7H41VZiyUlxdHXg3VukD0ESBQwpjF-wLJxiYyHOPF2woKyHe85NG0-Pfajrz_Kv9UjxEjjXupUXnRsxpLQ&h=qha3krZNOThbs7FBJ5hjsbsfviUmbyDxXpxr8JhoG24
+      cache-control:
+      - no-cache
+      content-length:
+      - '583'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Nov 2024 04:24:06 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 45f0022b-e2de-4305-a675-72ded9179a06
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: DCC7A5C724AB4F939824333C1BB6BF38 Ref B: MAA201060516023 Ref C: 2024-11-13T04:24:03Z'
+    status:
+      code: 201
+      message: ''
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet tap create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --destination
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/2aa1555b-9753-43bf-8417-02cdcdbd995b?api-version=2024-03-01&t=638670686465510818&c=MIIHhzCCBm-gAwIBAgITfAWQ0hCHZtQ3fJ4PSAAABZDSEDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI3MDkwMTAzWhcNMjUwMzI2MDkwMTAzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANt7qVbg97HivqUzi3BPPNiHD4wLqYw03AkBiXDpww3W8iIU6FZbbOXVgCL-rGpnbxPkLEVZ1WtRfvLgR3qDiVRjkSnE2knSE6qtvBRWdqqsD9YiSi5lYW67vgtBA_mHzHNDb0zhZ2iofVE5GjHIKYINZSTo8of54bY_fJe0xenYEq7lMpbffWaoano6LQH1L0hSdzAreTN7T_bTsK7TkXQtx45c1upRueZR1wq4PRd-9AYpkfKHhxnCe5LBeLB-Q88WZbmNxuycYiJZzbEGVcEbg5fYdfYb4QveB2WmK7bCWSEDu7WzRaYN9zfP9ZpVnTHTmRcN-f3uvUzxNBMe26UCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBT07kfCxeuv0whuO9NP27UpdS8ZAzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFB6-4Y-Z7skVWaPi2vBOob5I-JLv_MqkE8tGWMMCFI9McOWBWfeJWV7aA4X4MEwnVfuFzE4mdak49KhEWgAbnGBMMumWJtlE1VDYwoYj3k6VDrhg4K8cRAO24Ezl3_L9yTqPLHhnKpjnjZONChdqvy6tXy9zLDyo9uThhHykSdIVQPaynG83JYpUlN1akyNJVLxae9NCRV251OTh00g9z6gt1b4nk-Nszy6YtF1AoskPTpeZVcsxGTlq3ITXveDCeZrYbQ6EtZf5O8ekTrNsG-8DMSDIgDta1Dud4RchYh74jtodoiwmneC_ZG5VDcpozae4Mh1w3_kD4-E11i1U1U&s=i1oJwLQBwtk9xcUCHrG5VpBZLbrW4yyv7GsFS-8XOm82HXaJTIuphwVPaPNIEdbC-vF0ZlbUzeHWCxDvCYyZDOoeEFhc5j630i0prjvzreTt1GRCq_fU5N63O137KGNz75M1weuXkbGKZpnl5YdFrAySb1jMiTp9zK25LNrYOrph-Q3LMhVyq7O-oz6-Nil4l0ZrmqyP_YKR8IGl3OpkDG6UCj0cgpSrcHFNHiFLxMjxae9LIAHEy5OYhDfANxwYlhdD7H41VZiyUlxdHXg3VukD0ESBQwpjF-wLJxiYyHOPF2woKyHe85NG0-Pfajrz_Kv9UjxEjjXupUXnRsxpLQ&h=qha3krZNOThbs7FBJ5hjsbsfviUmbyDxXpxr8JhoG24
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Nov 2024 04:24:07 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - bc465e7e-0685-4783-b15c-5b521dbff934
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: C3A0B73757904F2F827CD1B8BB3D7AF5 Ref B: MAA201060516023 Ref C: 2024-11-13T04:24:06Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network vnet tap create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --destination
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworkTaps/tap1?api-version=2024-03-01
+  response:
+    body:
+      string: '{"name":"tap1","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworkTaps/tap1","etag":"W/\"f9732d54-4b3c-4b07-b32a-58f3512de7e3\"","type":"Microsoft.Network/virtualNetworkTaps","location":"westus","properties":{"provisioningState":"Succeeded","destinationNetworkInterfaceIPConfiguration":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/destnic/ipConfigurations/nicipconfig1"},"destinationPort":4789}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '584'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Nov 2024 04:24:08 GMT
+      etag:
+      - W/"f9732d54-4b3c-4b07-b32a-58f3512de7e3"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 3c8e4779-3fe5-47a4-8985-da4ceb4e2eb6
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: FB5CB6D1922D49C1BE4D253F3F065F7B Ref B: MAA201060516023 Ref C: 2024-11-13T04:24:07Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: '{"name": "vtapconfig", "properties": {"virtualNetworkTap": {"id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworkTaps/tap1"}}}'
+    headers:
+      Accept:
+      - application/json
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network nic vtap-config create
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '214'
+      Content-Type:
+      - application/json
+      ParameterSetName:
+      - -g -n --nic --vnet-tap
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/sourcenic/tapConfigurations/vtapconfig?api-version=2024-03-01
+  response:
+    body:
+      string: '{"name":"vtapconfig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/sourcenic/tapConfigurations/vtapconfig","etag":"W/\"83afe851-bf31-430a-86de-fd0110416504\"","type":"Microsoft.Network/networkInterfaces/tapConfigurations","properties":{"provisioningState":"Updating","virtualNetworkTap":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworkTaps/tap1"}}}'
+    headers:
+      azure-asyncnotification:
+      - Enabled
+      azure-asyncoperation:
+      - https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/e8e5e671-b657-4007-ba7a-136c0575b85f?api-version=2024-03-01&t=638670686504293838&c=MIIHhzCCBm-gAwIBAgITfAWQ0hCHZtQ3fJ4PSAAABZDSEDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI3MDkwMTAzWhcNMjUwMzI2MDkwMTAzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANt7qVbg97HivqUzi3BPPNiHD4wLqYw03AkBiXDpww3W8iIU6FZbbOXVgCL-rGpnbxPkLEVZ1WtRfvLgR3qDiVRjkSnE2knSE6qtvBRWdqqsD9YiSi5lYW67vgtBA_mHzHNDb0zhZ2iofVE5GjHIKYINZSTo8of54bY_fJe0xenYEq7lMpbffWaoano6LQH1L0hSdzAreTN7T_bTsK7TkXQtx45c1upRueZR1wq4PRd-9AYpkfKHhxnCe5LBeLB-Q88WZbmNxuycYiJZzbEGVcEbg5fYdfYb4QveB2WmK7bCWSEDu7WzRaYN9zfP9ZpVnTHTmRcN-f3uvUzxNBMe26UCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBT07kfCxeuv0whuO9NP27UpdS8ZAzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFB6-4Y-Z7skVWaPi2vBOob5I-JLv_MqkE8tGWMMCFI9McOWBWfeJWV7aA4X4MEwnVfuFzE4mdak49KhEWgAbnGBMMumWJtlE1VDYwoYj3k6VDrhg4K8cRAO24Ezl3_L9yTqPLHhnKpjnjZONChdqvy6tXy9zLDyo9uThhHykSdIVQPaynG83JYpUlN1akyNJVLxae9NCRV251OTh00g9z6gt1b4nk-Nszy6YtF1AoskPTpeZVcsxGTlq3ITXveDCeZrYbQ6EtZf5O8ekTrNsG-8DMSDIgDta1Dud4RchYh74jtodoiwmneC_ZG5VDcpozae4Mh1w3_kD4-E11i1U1U&s=QrD_KF3sB41ahuibi3TZ9u9yD7_VijU4o1sbjl-ET8bs0L1LhxSfU7cdGinteJs68qV8tGhUcQ1HYxLSSVIy1tQOKM562gkH7gjEBhek_is3_bMp2mhJqeslLPHXUl5r8svcYkUIaBNzawI8T8eJlBGdpvKNXNeXXHCcGho1MkmA4hKmGFbEu9OHgQE4FaXKFmPPXGYbB9Epg8KxhcI5KA9_umPqD5iKsr9sEeCoHHoM3VOdcUZ6AoKLXTurEV0bBwy_VvhQZXyhiTwZE5NSztzFYGop_nx3Lf2SsBWnSUkjwUxcGSgR8bqAchlzU0nPvLy8j9WzMMdLETrc90DgUQ&h=y5ysQBs_8FCcdeXF-c8LpTJjtJaNlUySdrsQXrIAwyU
+      cache-control:
+      - no-cache
+      content-length:
+      - '539'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Nov 2024 04:24:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - dcdc0fc8-ef04-452c-8216-2a5ea15e49d9
+      x-ms-ratelimit-remaining-subscription-global-writes:
+      - '2999'
+      x-ms-ratelimit-remaining-subscription-writes:
+      - '199'
+      x-msedge-ref:
+      - 'Ref A: ECCC390132164BF28BEB167E46CB1F0E Ref B: MAA201060516039 Ref C: 2024-11-13T04:24:09Z'
+    status:
+      code: 201
+      message: ''
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network nic vtap-config create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --nic --vnet-tap
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Network/locations/westus/operations/e8e5e671-b657-4007-ba7a-136c0575b85f?api-version=2024-03-01&t=638670686504293838&c=MIIHhzCCBm-gAwIBAgITfAWQ0hCHZtQ3fJ4PSAAABZDSEDANBgkqhkiG9w0BAQsFADBEMRMwEQYKCZImiZPyLGQBGRYDR0JMMRMwEQYKCZImiZPyLGQBGRYDQU1FMRgwFgYDVQQDEw9BTUUgSW5mcmEgQ0EgMDUwHhcNMjQwOTI3MDkwMTAzWhcNMjUwMzI2MDkwMTAzWjBAMT4wPAYDVQQDEzVhc3luY29wZXJhdGlvbnNpZ25pbmdjZXJ0aWZpY2F0ZS5tYW5hZ2VtZW50LmF6dXJlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANt7qVbg97HivqUzi3BPPNiHD4wLqYw03AkBiXDpww3W8iIU6FZbbOXVgCL-rGpnbxPkLEVZ1WtRfvLgR3qDiVRjkSnE2knSE6qtvBRWdqqsD9YiSi5lYW67vgtBA_mHzHNDb0zhZ2iofVE5GjHIKYINZSTo8of54bY_fJe0xenYEq7lMpbffWaoano6LQH1L0hSdzAreTN7T_bTsK7TkXQtx45c1upRueZR1wq4PRd-9AYpkfKHhxnCe5LBeLB-Q88WZbmNxuycYiJZzbEGVcEbg5fYdfYb4QveB2WmK7bCWSEDu7WzRaYN9zfP9ZpVnTHTmRcN-f3uvUzxNBMe26UCAwEAAaOCBHQwggRwMCcGCSsGAQQBgjcVCgQaMBgwCgYIKwYBBQUHAwEwCgYIKwYBBQUHAwIwPQYJKwYBBAGCNxUHBDAwLgYmKwYBBAGCNxUIhpDjDYTVtHiE8Ys-hZvdFs6dEoFghfmRS4WsmTQCAWQCAQcwggHLBggrBgEFBQcBAQSCAb0wggG5MGMGCCsGAQUFBzAChldodHRwOi8vY3JsLm1pY3Jvc29mdC5jb20vcGtpaW5mcmEvQ2VydHMvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmwxLmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MFMGCCsGAQUFBzAChkdodHRwOi8vY3JsMi5hbWUuZ2JsL2FpYS9DTzFQS0lJTlRDQTAxLkFNRS5HQkxfQU1FJTIwSW5mcmElMjBDQSUyMDA1LmNydDBTBggrBgEFBQcwAoZHaHR0cDovL2NybDMuYW1lLmdibC9haWEvQ08xUEtJSU5UQ0EwMS5BTUUuR0JMX0FNRSUyMEluZnJhJTIwQ0ElMjAwNS5jcnQwUwYIKwYBBQUHMAKGR2h0dHA6Ly9jcmw0LmFtZS5nYmwvYWlhL0NPMVBLSUlOVENBMDEuQU1FLkdCTF9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3J0MB0GA1UdDgQWBBT07kfCxeuv0whuO9NP27UpdS8ZAzAOBgNVHQ8BAf8EBAMCBaAwggEmBgNVHR8EggEdMIIBGTCCARWgggERoIIBDYY_aHR0cDovL2NybC5taWNyb3NvZnQuY29tL3BraWluZnJhL0NSTC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMS5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMi5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsMy5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JshjFodHRwOi8vY3JsNC5hbWUuZ2JsL2NybC9BTUUlMjBJbmZyYSUyMENBJTIwMDUuY3JsMIGdBgNVHSAEgZUwgZIwDAYKKwYBBAGCN3sBATBmBgorBgEEAYI3ewICMFgwVgYIKwYBBQUHAgIwSh5IADMAMwBlADAAMQA5ADIAMQAtADQAZAA2ADQALQA0AGYAOABjAC0AYQAwADUANQAtADUAYgBkAGEAZgBmAGQANQBlADMAMwBkMAwGCisGAQQBgjd7AwEwDAYKKwYBBAGCN3sEAjAfBgNVHSMEGDAWgBR61hmFKHlscXYeYPjzS--iBUIWHTAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwDQYJKoZIhvcNAQELBQADggEBAFB6-4Y-Z7skVWaPi2vBOob5I-JLv_MqkE8tGWMMCFI9McOWBWfeJWV7aA4X4MEwnVfuFzE4mdak49KhEWgAbnGBMMumWJtlE1VDYwoYj3k6VDrhg4K8cRAO24Ezl3_L9yTqPLHhnKpjnjZONChdqvy6tXy9zLDyo9uThhHykSdIVQPaynG83JYpUlN1akyNJVLxae9NCRV251OTh00g9z6gt1b4nk-Nszy6YtF1AoskPTpeZVcsxGTlq3ITXveDCeZrYbQ6EtZf5O8ekTrNsG-8DMSDIgDta1Dud4RchYh74jtodoiwmneC_ZG5VDcpozae4Mh1w3_kD4-E11i1U1U&s=QrD_KF3sB41ahuibi3TZ9u9yD7_VijU4o1sbjl-ET8bs0L1LhxSfU7cdGinteJs68qV8tGhUcQ1HYxLSSVIy1tQOKM562gkH7gjEBhek_is3_bMp2mhJqeslLPHXUl5r8svcYkUIaBNzawI8T8eJlBGdpvKNXNeXXHCcGho1MkmA4hKmGFbEu9OHgQE4FaXKFmPPXGYbB9Epg8KxhcI5KA9_umPqD5iKsr9sEeCoHHoM3VOdcUZ6AoKLXTurEV0bBwy_VvhQZXyhiTwZE5NSztzFYGop_nx3Lf2SsBWnSUkjwUxcGSgR8bqAchlzU0nPvLy8j9WzMMdLETrc90DgUQ&h=y5ysQBs_8FCcdeXF-c8LpTJjtJaNlUySdrsQXrIAwyU
+  response:
+    body:
+      string: '{"status":"Succeeded"}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '22'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Nov 2024 04:24:10 GMT
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - a80d94af-638c-48f0-8547-e5d2cf2c93f1
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: 195F368E262C497B89C04C5409FBCB19 Ref B: MAA201060516039 Ref C: 2024-11-13T04:24:10Z'
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      CommandName:
+      - network nic vtap-config create
+      Connection:
+      - keep-alive
+      ParameterSetName:
+      - -g -n --nic --vnet-tap
+      User-Agent:
+      - AZURECLI/2.66.0 azsdk-python-core/1.31.0 Python/3.12.7 (Windows-11-10.0.26100-SP0)
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/sourcenic/tapConfigurations/vtapconfig?api-version=2024-03-01
+  response:
+    body:
+      string: '{"name":"vtapconfig","id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/networkInterfaces/sourcenic/tapConfigurations/vtapconfig","etag":"W/\"8156733b-4c66-4aac-bd2a-bb9595d710fd\"","type":"Microsoft.Network/networkInterfaces/tapConfigurations","properties":{"provisioningState":"Succeeded","virtualNetworkTap":{"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cli_test_vnet_tap_000001/providers/Microsoft.Network/virtualNetworkTaps/tap1"}}}'
+    headers:
+      cache-control:
+      - no-cache
+      content-length:
+      - '540'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Wed, 13 Nov 2024 04:24:11 GMT
+      etag:
+      - W/"8156733b-4c66-4aac-bd2a-bb9595d710fd"
+      expires:
+      - '-1'
+      pragma:
+      - no-cache
+      strict-transport-security:
+      - max-age=31536000; includeSubDomains
+      x-cache:
+      - CONFIG_NOCACHE
+      x-content-type-options:
+      - nosniff
+      x-ms-arm-service-request-id:
+      - 8f3e3e00-c4d7-4d4e-b7ec-8129edbb4f44
+      x-ms-ratelimit-remaining-subscription-global-reads:
+      - '3749'
+      x-msedge-ref:
+      - 'Ref A: AB66B06B00BA4F65A049CA79718A3B16 Ref B: MAA201060516039 Ref C: 2024-11-13T04:24:11Z'
+    status:
+      code: 200
+      message: OK
+version: 1
