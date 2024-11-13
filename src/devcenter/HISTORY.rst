@@ -2,6 +2,11 @@
 
 Release History
 ===============
+6.1.0
+++++++
+* Update control plane API to v2024-10-01-preview
+* Update "az devcenter dev environment delete" to include force delete
+
 6.0.1
 ++++++
 * Update "az devcenter dev environment show-logs-by-operation" to handle escape characters
