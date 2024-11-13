@@ -19,6 +19,9 @@ from azure.cli.testsdk import (
     create_random_name,
     live_only,
 )
+from knack.log import get_logger
+
+logger = get_logger(__name__)
 
 rg_params = {
     "name_prefix": "clitest-load-",
@@ -102,6 +105,7 @@ class LoadTestScenario(ScenarioTest):
             JMESPathCheck("publicIPDisabled", True),
             JMESPathCheck("loadTestConfiguration.splitAllCSVs", True),
             JMESPathCheck("environmentVariables.rps", "10"),
+            JMESPathCheck("autoStopCriteria.autoStopDisabled", True),
         ]
         # Create load test with all parameters
         response = self.cmd(
@@ -334,6 +338,128 @@ class LoadTestScenario(ScenarioTest):
             )
         except Exception as e:
             assert "InvalidNetworkConfigurationException" in str(e)
+
+    @ResourceGroupPreparer(**rg_params)
+    @LoadTestResourcePreparer(**load_params)
+    @VirtualNetworkPreparer(**vnet_params)
+    @StorageAccountPreparer(**sa_params)
+    def test_load_test_autostop(self, rg, load, vnet):
+        self.kwargs.update(
+            {
+                "test_id": LoadTestConstants.CREATE_TEST_ID,
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE,
+                "description": LoadTestConstants.DESCRIPTION,
+                "display_name": LoadTestConstants.DISPLAY_NAME,
+                "engine_instance": LoadTestConstants.ENGINE_INSTANCE,
+            }
+        )
+        checks = [
+            JMESPathCheck("testId", self.kwargs["test_id"]),
+            JMESPathCheck(
+                "loadTestConfiguration.engineInstances", self.kwargs["engine_instance"]
+            ),
+            JMESPathCheck("description", self.kwargs["description"]),
+            JMESPathCheck("displayName", self.kwargs["display_name"]),
+            JMESPathCheck("autoStopCriteria.autoStopDisabled", True),
+        ]
+        # Create load test with autostop disabled thru config file
+        self.cmd(
+            "az load test create "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            "--resource-group {resource_group} "
+            '--load-test-config-file "{load_test_config_file}" '
+            "--description {description} "
+            "--display-name {display_name} "
+            "--engine-instance {engine_instance} ",
+            checks=checks,
+        )
+        # Update load test with autostop criteria thru command line arguments
+        self.kwargs.update(
+            {
+                "autostop_error_rate": LoadTestConstants.AUTOSTOP_ERROR_RATE,
+                "autostop_error_rate_time_window": LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW,
+            }
+        )
+        checks = [
+            JMESPathCheck("autoStopCriteria.autoStopDisabled", False),
+            JMESPathCheck("autoStopCriteria.errorRate", LoadTestConstants.AUTOSTOP_ERROR_RATE),
+            JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", LoadTestConstants.AUTOSTOP_ERROR_RATE_TIME_WINDOW),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--autostop-error-rate {autostop_error_rate} '
+            '--autostop-time-window {autostop_error_rate_time_window} '
+            "--resource-group {resource_group} ",
+            checks=checks,
+        )
+        # Update load test with autostop disabled thru command line arguments
+        self.kwargs.update(
+            {
+                "autostop": LoadTestConstants.AUTOSTOP_DISABLED,
+            }
+        )
+        checks = [
+            JMESPathCheck("autoStopCriteria.autoStopDisabled", True),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--autostop {autostop} '
+            "--resource-group {resource_group} ",
+            checks=checks,
+        )
+        # Update load test with autostop criteria thru config file
+        self.kwargs.update(
+            {
+                "load_test_config_file": LoadTestConstants.LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP,
+            }
+        )
+        checks = [
+            JMESPathCheck("autoStopCriteria.autoStopDisabled", False),
+            JMESPathCheck("autoStopCriteria.errorRate", 85.5),
+            JMESPathCheck("autoStopCriteria.errorRateTimeWindowInSeconds", 120),
+        ]
+        self.cmd(
+            "az load test update "
+            "--test-id {test_id} "
+            "--load-test-resource {load_test_resource} "
+            '--load-test-config-file "{load_test_config_file}" '
+            "--resource-group {resource_group} ",
+            checks=checks,
+        )
+        # Invalid autostop test cases
+        self.kwargs.update({
+                "autostop_error_rate": 110.5,
+            })
+        try:
+            self.cmd(
+                "az load test update "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                '--autostop-error-rate {autostop_error_rate} '
+                "--resource-group {resource_group} ",
+                checks=checks,
+            )
+        except Exception as e:
+            assert "Autostop error rate should be in range of 0.0-100.0" in str(e)
+        self.kwargs.update({
+                "autostop_error_rate_time_window": -1,
+            })
+        try:
+            self.cmd(
+                "az load test update "
+                "--test-id {test_id} "
+                "--load-test-resource {load_test_resource} "
+                '--autostop-time-window {autostop_error_rate_time_window} '
+                "--resource-group {resource_group} ",
+                checks=checks,
+            )
+        except Exception as e:
+            assert "Autostop error rate time window should be greater than 0" in str(e)
 
     @ResourceGroupPreparer(**rg_params)
     @LoadTestResourcePreparer(**load_params)

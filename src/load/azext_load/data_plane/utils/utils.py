@@ -18,7 +18,9 @@ from azure.cli.core.azclierror import (
     CLIInternalError,
 )
 from azure.mgmt.core.tools import is_valid_resource_id, parse_resource_id
+from decimal import Decimal
 from knack.log import get_logger
+import warnings
 
 from .models import IdentityType, AllowedFileTypes
 
@@ -257,6 +259,16 @@ def parse_env(envs):
     return env_dict
 
 
+def create_autostop_criteria_from_args(autostop, error_rate, time_window):
+    if (autostop is None and error_rate is None and time_window is None):
+        return None
+    return {
+        "autoStopDisabled": not autostop if autostop is not None else False,
+        "errorRate": error_rate,
+        "errorRateTimeWindowInSeconds": time_window,
+    }
+
+
 def load_yaml(file_path):
     logger.debug("Loading yaml file: %s", file_path)
     try:
@@ -347,6 +359,24 @@ def convert_yaml_to_test(data):
                 new_body["passFailCriteria"]["passFailMetrics"][metric_id][
                     "requestName"
                 ] = name
+    if data.get("autoStop") is not None:
+        if (isinstance(data["autoStop"], str)):
+            new_body["autoStopCriteria"] = {
+                "autoStopDisabled": True,
+            }
+        else:
+            error_rate = data["autoStop"].get("errorPercentage", Decimal(90.0))
+            time_window = data["autoStop"].get("timeWindow", 60)
+            new_body["autoStopCriteria"] = {
+                "autoStopDisabled": False,
+                "errorRate": error_rate,
+                "errorRateTimeWindowInSeconds": time_window,
+            }
+    if (new_body.get("autoStopCriteria", {}).get("autoStopDisabled") is True):
+        warnings.warn("Auto stop is disabled. Error rate and time window will be ignored.", UserWarning)
+        warnings.warn(
+            "Auto stop is disabled. This can lead to incoming charges for an incorrectly configured test.",
+            UserWarning)
     logger.debug("Converted yaml to test body: %s", new_body)
     return new_body
 
@@ -367,6 +397,7 @@ def create_or_update_test_with_config(
     subnet_id=None,
     split_csv=None,
     disable_public_ip=None,
+    autostop_criteria=None,
 ):
     logger.info(
         "Creating a request body for create or update test using config and parameters."
@@ -473,6 +504,27 @@ def create_or_update_test_with_config(
         new_body["loadTestConfiguration"]["splitAllCSVs"] = yaml_test_body[
             "loadTestConfiguration"
         ]["splitAllCSVs"]
+
+    logger.debug("autostop_criteria: %s", autostop_criteria)
+    logger.debug("yaml_test_body: %s", yaml_test_body["autoStopCriteria"])
+
+    if autostop_criteria is not None:
+        new_body["autoStopCriteria"] = {
+            "autoStopDisabled": autostop_criteria.get("autoStopDisabled", False),
+            "errorRate": autostop_criteria.get("errorRate", Decimal(90.0)),
+            "errorRateTimeWindowInSeconds": autostop_criteria.get("errorRateTimeWindowInSeconds", 60),
+        }
+    elif yaml_test_body.get("autoStopCriteria") is not None:
+        new_body["autoStopCriteria"] = yaml_test_body["autoStopCriteria"]
+    elif body.get("autoStopCriteria") is not None:
+        new_body["autoStopCriteria"] = body["autoStopCriteria"]
+
+    if (new_body.get("autoStopCriteria", {}).get("autoStopDisabled") is True):
+        warnings.warn("Auto stop is disabled. Error rate and time window will be ignored.", UserWarning)
+        warnings.warn(
+            "Auto stop is disabled. This can lead to incoming charges for an incorrectly configured test.",
+            UserWarning)
+
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body
 
@@ -492,6 +544,7 @@ def create_or_update_test_without_config(
     subnet_id=None,
     split_csv=None,
     disable_public_ip=None,
+    autostop_criteria=None,
 ):
     logger.info(
         "Creating a request body for test using parameters and old test body (in case of update)."
@@ -558,6 +611,16 @@ def create_or_update_test_without_config(
         ]["splitAllCSVs"]
     if disable_public_ip is not None:
         new_body["publicIPDisabled"] = disable_public_ip
+
+    if autostop_criteria is not None:
+        new_body["autoStopCriteria"] = {
+            "autoStopDisabled": autostop_criteria.get("autoStopDisabled", False),
+            "errorRate": autostop_criteria.get("errorRate", Decimal(90.0)),
+            "errorRateTimeWindowInSeconds": autostop_criteria.get("errorRateTimeWindowInSeconds", 60),
+        }
+    elif body.get("autoStopCriteria") is not None:
+        new_body["autoStopCriteria"] = body["autoStopCriteria"]
+
     logger.debug("Request body for create or update test: %s", new_body)
     return new_body
 

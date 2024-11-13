@@ -12,6 +12,7 @@ import yaml
 from azure.cli.core.azclierror import InvalidArgumentValueError, FileOperationError
 from azure.mgmt.core.tools import is_valid_resource_id
 from knack.log import get_logger
+from decimal import Decimal
 
 from . import utils
 from .models import AllowedFileTypes, AllowedIntervals, AllowedMetricNamespaces
@@ -402,3 +403,42 @@ def validate_disable_public_ip(namespace):
         namespace.disable_public_ip = True
     else:
         namespace.disable_public_ip = False
+
+
+def validate_autostop_enable_disable(namespace):
+    if namespace.autostop is None:
+        return
+    if not isinstance(namespace.autostop, str) or namespace.autostop.casefold() not in ["enable", "disable"]:
+        raise InvalidArgumentValueError(
+            f"Invalid autostop type: {type(namespace.autostop)}. Allowed values: enable, disable"
+        )
+    if namespace.autostop.casefold() not in ["disable"]:
+        namespace.autostop = True
+    else:
+        namespace.autostop = False
+
+
+def validate_autostop_error_rate_time_window(namespace):
+    if namespace.autostop_error_rate_time_window is None:
+        return
+    if not isinstance(namespace.autostop_error_rate_time_window, int):
+        raise InvalidArgumentValueError(
+            f"Invalid autostop-error-rate-time-window type: {type(namespace.autostop_error_rate_time_window)}"
+        )
+    if namespace.autostop_error_rate_time_window < 1:
+        raise InvalidArgumentValueError(
+            "Autostop error rate time window should be greater than 0"
+        )
+
+
+def validate_autostop_error_rate(namespace):
+    if namespace.autostop_error_rate is None:
+        return
+    if not isinstance(namespace.autostop_error_rate, Decimal):
+        raise InvalidArgumentValueError(
+            f"Invalid autostop-error-rate type: {type(namespace.autostop_error_rate)}"
+        )
+    if namespace.autostop_error_rate < 0.0 or namespace.autostop_error_rate > 100.0:
+        raise InvalidArgumentValueError(
+            "Autostop error rate should be in range of 0.0-100.0"
+        )

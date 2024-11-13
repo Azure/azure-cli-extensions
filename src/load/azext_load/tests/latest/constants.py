@@ -72,6 +72,11 @@ class LoadConstants:
 
     INVALID_SERVER_METRIC_ID = r"/subscriptions/invalid/resource/id"
 
+    LOAD_TEST_CONFIG_FILE_WITH_AUTOSTOP = os.path.join(TEST_RESOURCES_DIR, r"config-autostop-criteria.yaml")
+    AUTOSTOP_DISABLED = "disable"
+    AUTOSTOP_ERROR_RATE = 77.5
+    AUTOSTOP_ERROR_RATE_TIME_WINDOW = 90
+
 
 class LoadTestConstants(LoadConstants):
     # Test IDs for load test commands

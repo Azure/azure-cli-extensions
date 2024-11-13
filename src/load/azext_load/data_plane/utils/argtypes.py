@@ -12,6 +12,7 @@ from azure.cli.core.commands.parameters import (
     quotes,
     resource_group_name_type,
 )
+from decimal import Decimal
 from knack.arguments import CLIArgumentType
 
 quote_text = f"Use {quotes} to clear existing {{}}."
@@ -340,4 +341,25 @@ dimension_filters = CLIArgumentType(
         "* is supported as a wildcard for both key and value. "
         "Example: `--dimension-filters key1=value1 key2=*`, `--dimension-filters *`"
     ),
+)
+
+autostop = CLIArgumentType(
+    validator=validators.validate_autostop_enable_disable,
+    options_list=["--autostop"],
+    type=str,
+    help="Whether auto-stop should be enabled or disabled. The default value is enable.",
+)
+
+autostop_error_rate = CLIArgumentType(
+    options_list=["--autostop-error-rate"],
+    type=Decimal,
+    validator=validators.validate_autostop_error_rate,
+    help="Threshold percentage of errors on which test run should be automatically stopped. Allowed values are in range of 0.0-100.0",
+)
+
+autostop_error_rate_time_window = CLIArgumentType(
+    options_list=["--autostop-time-window"],
+    type=int,
+    validator=validators.validate_autostop_error_rate_time_window,
+    help="Time window during which the error percentage should be evaluated in seconds.",
 )
