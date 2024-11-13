@@ -1016,6 +1016,7 @@ def delete_containerappsjob(cmd, name, resource_group_name, no_wait=False):
 
     return containerapp_job_decorator.delete()
 
+
 def suspend_containerappsjob(cmd, name, resource_group_name):
     raw_parameters = locals()
     containerapp_job_decorator = ContainerAppJobDecorator(
@@ -1027,6 +1028,7 @@ def suspend_containerappsjob(cmd, name, resource_group_name):
     containerapp_job_decorator.validate_subscription_registered(CONTAINER_APPS_RP)
 
     return ContainerAppsJobPreviewClient.suspend(cmd=cmd, resource_group_name=resource_group_name, name=name)
+
 
 def resume_containerappsjob(cmd, name, resource_group_name):
     raw_parameters = locals()

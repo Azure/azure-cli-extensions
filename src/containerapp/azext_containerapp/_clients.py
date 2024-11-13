@@ -80,7 +80,7 @@ class ContainerAppsJobPreviewClient(ContainerAppsJobClient):
 
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         return r.json()
-    
+
     @classmethod
     def suspend(cls, cmd, resource_group_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
@@ -96,7 +96,7 @@ class ContainerAppsJobPreviewClient(ContainerAppsJobClient):
         r = send_raw_request(cmd.cli_ctx, "POST", request_url)
         if r.status_code == 202:
             return
-    
+
     @classmethod
     def resume(cls, cmd, resource_group_name, name):
         management_hostname = cmd.cli_ctx.cloud.endpoints.resource_manager
