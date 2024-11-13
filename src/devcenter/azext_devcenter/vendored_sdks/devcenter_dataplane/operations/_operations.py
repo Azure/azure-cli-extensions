@@ -1737,12 +1737,12 @@ def build_deployment_environments_create_or_update_environment_request(
 
 
 def build_deployment_environments_delete_environment_request(
-    project_name: str, environment_name: str, user_id: str = "me", **kwargs: Any
+    project_name: str, environment_name: str, user_id: str = "me", force: Optional[bool] = None, **kwargs: Any
 ) -> HttpRequest:
     _headers = case_insensitive_dict(kwargs.pop("headers", {}) or {})
     _params = case_insensitive_dict(kwargs.pop("params", {}) or {})
 
-    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-05-01-preview"))
+    api_version: str = kwargs.pop("api_version", _params.pop("api-version", "2024-10-01-preview"))
     accept = _headers.pop("Accept", "application/json")
 
     # Construct URL
@@ -1778,6 +1778,8 @@ def build_deployment_environments_delete_environment_request(
 
     # Construct parameters
     _params["api-version"] = _SERIALIZER.query("api_version", api_version, "str")
+    if force is not None:
+        _params["force"] = _SERIALIZER.query("force", force, "bool")
 
     # Construct headers
     _headers["Accept"] = _SERIALIZER.header("accept", accept, "str")
@@ -8701,7 +8703,7 @@ class DeploymentEnvironmentsOperations:
         return LROPoller(self._client, raw_result, get_long_running_output, polling_method)  # type: ignore
 
     def _delete_environment_initial(
-        self, project_name: str, environment_name: str, user_id: str = "me", **kwargs: Any
+        self, project_name: str, environment_name: str, user_id: str = "me", force: Optional[bool] = None, **kwargs: Any
     ) -> Optional[JSON]:
         error_map = {
             401: ClientAuthenticationError,
@@ -8720,7 +8722,8 @@ class DeploymentEnvironmentsOperations:
             project_name=project_name,
             environment_name=environment_name,
             user_id=user_id,
-            api_version=self._config.api_version,
+            force=force,
+            api_version="2024-10-01-preview", #Overwriting while this is the only route on this version. Will remove when version bump completes.
             headers=_headers,
             params=_params,
         )
@@ -8761,7 +8764,7 @@ class DeploymentEnvironmentsOperations:
 
     @distributed_trace
     def begin_delete_environment(
-        self, project_name: str, environment_name: str, user_id: str = "me", **kwargs: Any
+        self, project_name: str, environment_name: str, user_id: str = "me", force: Optional[bool] = None, **kwargs: Any
     ) -> LROPoller[JSON]:
         """Deletes an environment and all its associated resources.
 
@@ -8772,6 +8775,10 @@ class DeploymentEnvironmentsOperations:
         :param user_id: The AAD object id of the user. If value is 'me', the identity is taken from the
          authentication context. Default value is "me".
         :type user_id: str
+        :keyword force: Optional parameter to force environment deletion even if the environment definition 
+          does not exist. This is a best-effort delete, and anything custom that forces resource creation beyond
+          the associated resource group may not be deleted. Default value is None.
+        :paramtype force: bool
         :keyword str continuation_token: A continuation token to restart a poller from a saved state.
         :keyword polling: By default, your polling method will be LROBasePolling. Pass in False for
          this operation to not poll, or pass in your own initialized polling object for a personal
@@ -8817,6 +8824,7 @@ class DeploymentEnvironmentsOperations:
                 project_name=project_name,
                 environment_name=environment_name,
                 user_id=user_id,
+                force=force,
                 cls=lambda x, y, z: x,
                 headers=_headers,
                 params=_params,

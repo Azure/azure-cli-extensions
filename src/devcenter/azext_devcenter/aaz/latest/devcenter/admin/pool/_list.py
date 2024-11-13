@@ -22,9 +22,9 @@ class List(AAZCommand):
     """
 
     _aaz_info = {
-        "version": "2024-05-01-preview",
+        "version": "2024-10-01-preview",
         "resources": [
-            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools", "2024-05-01-preview"],
+            ["mgmt-plane", "/subscriptions/{}/resourcegroups/{}/providers/microsoft.devcenter/projects/{}/pools", "2024-10-01-preview"],
         ]
     }
 
@@ -126,7 +126,7 @@ class List(AAZCommand):
         def query_parameters(self):
             parameters = {
                 **self.serialize_query_param(
-                    "api-version", "2024-05-01-preview",
+                    "api-version", "2024-10-01-preview",
                     required=True,
                 ),
             }
@@ -197,9 +197,15 @@ class List(AAZCommand):
                 serialized_name="devBoxCount",
                 flags={"read_only": True},
             )
+            properties.dev_box_definition = AAZObjectType(
+                serialized_name="devBoxDefinition",
+            )
             properties.dev_box_definition_name = AAZStrType(
                 serialized_name="devBoxDefinitionName",
                 flags={"required": True},
+            )
+            properties.dev_box_definition_type = AAZStrType(
+                serialized_name="devBoxDefinitionType",
             )
             properties.display_name = AAZStrType(
                 serialized_name="displayName",
@@ -236,9 +242,32 @@ class List(AAZCommand):
             properties.stop_on_disconnect = AAZObjectType(
                 serialized_name="stopOnDisconnect",
             )
+            properties.stop_on_no_connect = AAZObjectType(
+                serialized_name="stopOnNoConnect",
+            )
             properties.virtual_network_type = AAZStrType(
                 serialized_name="virtualNetworkType",
             )
+
+            dev_box_definition = cls._schema_on_200.value.Element.properties.dev_box_definition
+            dev_box_definition.active_image_reference = AAZObjectType(
+                serialized_name="activeImageReference",
+            )
+            _ListHelper._build_schema_image_reference_read(dev_box_definition.active_image_reference)
+            dev_box_definition.image_reference = AAZObjectType(
+                serialized_name="imageReference",
+            )
+            _ListHelper._build_schema_image_reference_read(dev_box_definition.image_reference)
+            dev_box_definition.sku = AAZObjectType()
+
+            sku = cls._schema_on_200.value.Element.properties.dev_box_definition.sku
+            sku.capacity = AAZIntType()
+            sku.family = AAZStrType()
+            sku.name = AAZStrType(
+                flags={"required": True},
+            )
+            sku.size = AAZStrType()
+            sku.tier = AAZStrType()
 
             health_status_details = cls._schema_on_200.value.Element.properties.health_status_details
             health_status_details.Element = AAZObjectType()
@@ -259,6 +288,12 @@ class List(AAZCommand):
                 serialized_name="gracePeriodMinutes",
             )
             stop_on_disconnect.status = AAZStrType()
+
+            stop_on_no_connect = cls._schema_on_200.value.Element.properties.stop_on_no_connect
+            stop_on_no_connect.grace_period_minutes = AAZIntType(
+                serialized_name="gracePeriodMinutes",
+            )
+            stop_on_no_connect.status = AAZStrType()
 
             system_data = cls._schema_on_200.value.Element.system_data
             system_data.created_at = AAZStrType(
@@ -288,6 +323,27 @@ class List(AAZCommand):
 
 class _ListHelper:
     """Helper class for List"""
+
+    _schema_image_reference_read = None
+
+    @classmethod
+    def _build_schema_image_reference_read(cls, _schema):
+        if cls._schema_image_reference_read is not None:
+            _schema.exact_version = cls._schema_image_reference_read.exact_version
+            _schema.id = cls._schema_image_reference_read.id
+            return
+
+        cls._schema_image_reference_read = _schema_image_reference_read = AAZObjectType()
+
+        image_reference_read = _schema_image_reference_read
+        image_reference_read.exact_version = AAZStrType(
+            serialized_name="exactVersion",
+            flags={"read_only": True},
+        )
+        image_reference_read.id = AAZStrType()
+
+        _schema.exact_version = cls._schema_image_reference_read.exact_version
+        _schema.id = cls._schema_image_reference_read.id
 
 
 __all__ = ["List"]

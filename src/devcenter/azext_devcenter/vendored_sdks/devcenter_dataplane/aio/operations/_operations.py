@@ -6227,7 +6227,7 @@ class DeploymentEnvironmentsOperations:
             project_name=project_name,
             environment_name=environment_name,
             user_id=user_id,
-            api_version=self._config.api_version,
+            api_version="2024-10-01-preview", #Overwriting while this is the only route on this version. Will remove when version bump completes.
             headers=_headers,
             params=_params,
         )
