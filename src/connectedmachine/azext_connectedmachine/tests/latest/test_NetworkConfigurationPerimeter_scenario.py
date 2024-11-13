@@ -42,23 +42,33 @@ class NetworkConfigurationPerimeterScenarioTest(ScenarioTest):
             'perimeterName': '00000000-0000-0000-0000-000000000000.testAssociation',
         })
 
-        # # network security perimeter configuration
-        # self.cmd('az connectedmachine private-link-scope network-security-perimeter-configuration list '
-        #         '--resource-group "{rg}" '
-        #         '--scope-name "{scope}" '
-        #         '--subscription "{subscription}"',
-        #         checks=[])
+        # Create a private link scope, NSP and perimeter profile, and associate them
+        # az connectedmachine private-link-scope create --location eastus --resource-group ytongtest --scope-name myScope3
+        # az network perimeter create -n testPerimeter -g ytongtest -l eastus
+        # az network perimeter profile create -n testProfile --perimeter-name testPerimeter -g ytongtest
+        # az network perimeter association create -n testAssociation --perimeter-name testPerimeter -g ytongtest --access-mode Learning 
+        # --private-link-resource "{id:/subscriptions/b24cc8ee-df4f-48ac-94cf-46edf36b0fae/resourceGroups/ytongtest/providers/Microsoft.HybridCompute/privateLinkScopes/myScope3}" 
+        # --profile "{id:/subscriptions/b24cc8ee-df4f-48ac-94cf-46edf36b0fae/resourceGroups/ytongtest/providers/Microsoft.Network/networkSecurityPerimeters/testPerimeter/profiles/testProfile}"
 
-        # self.cmd('az connectedmachine private-link-scope network-security-perimeter-configuration show '
-        #         '--resource-group "{rg}" '
-        #         '--scope-name "{scope}" '
-        #         '--subscription "{subscription}" '
-        #         '--perimeter-name "{perimeterName}"',
-        #         checks=[])  
+        # perimeter name can be found by running the list command, under 'name'
 
-        # self.cmd('az connectedmachine private-link-scope network-security-perimeter-configuration reconcile '
-        #         '--resource-group "{rg}" '
-        #         '--scope-name "{scope}" '
-        #         '--subscription "{subscription}" '
-        #         '--perimeter-name "{perimeterName}"',
-        #         checks=[])  
+        # network security perimeter configuration
+        self.cmd('az connectedmachine private-link-scope network-security-perimeter-configuration list '
+                '--resource-group "{rg}" '
+                '--scope-name "{scope}" '
+                '--subscription "{subscription}"',
+                checks=[])
+
+        self.cmd('az connectedmachine private-link-scope network-security-perimeter-configuration show '
+                '--resource-group "{rg}" '
+                '--scope-name "{scope}" '
+                '--subscription "{subscription}" '
+                '--perimeter-name "{perimeterName}"',
+                checks=[])  
+
+        self.cmd('az connectedmachine private-link-scope network-security-perimeter-configuration reconcile '
+                '--resource-group "{rg}" '
+                '--scope-name "{scope}" '
+                '--subscription "{subscription}" '
+                '--perimeter-name "{perimeterName}"',
+                checks=[])  

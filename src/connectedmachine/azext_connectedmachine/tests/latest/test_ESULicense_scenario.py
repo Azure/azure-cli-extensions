@@ -41,10 +41,11 @@ class ESULicenseScenarioTest(ScenarioTest):
             'machinePaygo': 'WIN-IAH3TLSP7A8',
             'rg': 'ytongtest',
             'location': 'eastus',
-            'subscription': 'b24cc8ee-df4f-48ac-94cf-46edf36b0fae',
+            'subscription': '00000000-0000-0000-0000-000000000000',
             'licenseName': 'myESULicense',
-            'licenseResourceIdProfile': '/subscriptions/b24cc8ee-df4f-48ac-94cf-46edf36b0fae/resourceGroups/PayGo_cmdlet/providers/Microsoft.HybridCompute/machines/WIN-IAH3TLSP7A8/licenseProfiles/default', 
-            'rgProfile': 'PayGo_cmdlet'
+            'licenseResourceIdProfile': '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/PayGo_cmdlet/providers/Microsoft.HybridCompute/machines/WIN-IAH3TLSP7A8/licenseProfiles/default', 
+            'rgProfile': 'PayGo_cmdlet',
+            'productFfeatures': '[{ \'name\':\'Hotpatch\', \'subscriptionStatus\':\'Enabled\'}]'
         })
 
         # self.cmd('az connectedmachine license create '
@@ -88,29 +89,46 @@ class ESULicenseScenarioTest(ScenarioTest):
         #         '--resource-group "{rg}"',
         #         checks=[])
 
-        # product_features = "[{\"name\":\"Hotpatch\",\"subscriptionStatus\":\"Enabled\"}]"
         # self.cmd('az connectedmachine license-profile create '
         #         '--machine-name "{machinePaygo}" '
         #         '--resource-group "{rgProfile}" '
-        #         '--license-profile-name "default" '
         #         '--location "{location}" '
         #         '--product-type "WindowsServer" '
         #         '--subscription-status "Enabled" '
-        #         '--product-features "{{\\"name\\":\\"Hotpatch\\"}}"" ',
+        #         '--product-features "{productFfeatures}"',
         #         checks=[
         #             self.check('id', '{licenseResourceIdProfile}'),
         # ])
 
-        # self.cmd('az connectedmachine license-profile list --subscription {subscription} --resource-group {rgProfile}', checks=[
+        # # test SA service
+        # # self.cmd('az connectedmachine license-profile create '
+        # #         '--machine-name "{machineSA}" '
+        # #         '--resource-group "{rgProfile}" '
+        # #         '--location "{location}" '
+        # #         '--software-assurance-customer True',
+        # #         checks=[
+        # #             self.check('provisioningState', 'Succeeded'),
+        # # ])
+
+        # self.cmd('az connectedmachine license-profile update '
+        #         '--machine-name "{machinePaygo}" '
+        #         '--resource-group "{rgProfile}" '
+        #         '--product-type "WindowsServer" '
+        #         '--subscription-status "Enabled" '
+        #         '--product-features "{productFfeatures}"',
+        #         checks=[
+        #             self.check('id', '{licenseResourceIdProfile}'),
+        # ])
+
+        # self.cmd('az connectedmachine license-profile list --subscription {subscription} --resource-group {rgProfile} --machine-name {machinePaygo}', checks=[
         #     self.check('length(@)', 1)
         # ])
 
-        # self.cmd('az connectedmachine license-profile show --resource-group {rgProfile} --machine-name {machinePaygo} --name {licenseName} --subscription {subscription}', checks=[
-        #     self.check('length(@)', 1)
+        # self.cmd('az connectedmachine license-profile show --resource-group {rgProfile} --machine-name {machinePaygo} --subscription {subscription}', checks=[
+        #     self.check('length(@)', 15)
         # ])
 
         # self.cmd('az connectedmachine license-profile delete -y '
         #         '--machine-name "{machinePaygo}" '
-        #         '--license-profile-name "default" '
         #         '--resource-group "{rgProfile}"',
         #         checks=[])

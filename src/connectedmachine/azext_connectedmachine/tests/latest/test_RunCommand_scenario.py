@@ -48,51 +48,51 @@ class RunCommandScenarioTest(ScenarioTest):
             'runcommand': 'myRunCommand',
         })
 
-        # parameters_string = '''[{"name":"param1","value":"value1"}]'''
-        # self.kwargs['parameters'] = json.dumps(parameters_string)
+        parameters_string = '''[{"name":"param1","value":"value1"}]'''
+        self.kwargs['parameters'] = json.dumps(parameters_string)
 
-        # self.cmd('az connectedmachine run-command create '
-        #         '--resource-group "{rg}" '
-        #         '--location "{location}" '
-        #         '--script "Write-Host Hello World!" '
-        #         '--name "{runcommand}" '
-        #         '--machine-name "{machine}" '
-        #         '--parameters "{parameters}" '
-        #         '--subscription "{subscription}"',
-        #         checks=[
-        #             self.check('type','Microsoft.HybridCompute/machines/runcommands'),
-        #             self.check('instanceView.executionState','Succeeded')
-        #         ])
+        self.cmd('az connectedmachine run-command create '
+                '--resource-group "{rg}" '
+                '--location "{location}" '
+                '--script "Write-Host Hello World!" '
+                '--name "{runcommand}" '
+                '--machine-name "{machine}" '
+                '--parameters "{parameters}" '
+                '--subscription "{subscription}"',
+                checks=[
+                    self.check('type','Microsoft.HybridCompute/machines/runcommands'),
+                    self.check('instanceView.executionState','Succeeded')
+                ])
         
-        # self.cmd('az connectedmachine run-command list '
-        #         '--resource-group "{rg}" '
-        #         '--machine-name "{machine}"',
-        #         checks=[
-        #             self.check('length(@)', 2)
-        #         ])
+        self.cmd('az connectedmachine run-command list '
+                '--resource-group "{rg}" '
+                '--machine-name "{machine}"',
+                checks=[
+                    self.check('length(@)', 1)
+                ])
 
-        # self.cmd('az connectedmachine run-command show '
-        #         '--resource-group "{rg}" '
-        #         '--name "{runcommand}" '
-        #         '--machine-name "{machine}"',
-        #         checks=[
-        #             self.check('type','Microsoft.HybridCompute/machines/runcommands'),
-        #             self.check('instanceView.executionState','Succeeded')
-        #         ])
+        self.cmd('az connectedmachine run-command show '
+                '--resource-group "{rg}" '
+                '--name "{runcommand}" '
+                '--machine-name "{machine}"',
+                checks=[
+                    self.check('type','Microsoft.HybridCompute/machines/runcommands'),
+                    self.check('instanceView.executionState','Succeeded')
+                ])
 
-        # self.cmd('az connectedmachine run-command update '
-        #         '--resource-group "{rg}" '
-        #         '--name "{runcommand}" '
-        #         '--machine-name "{machine}" '
-        #         '--subscription "{subscription}" '
-        #         '--tags Tag1="Value1"',
-        #         checks=[
-        #             self.check('type','Microsoft.HybridCompute/machines/runcommands'),
-        #             self.check('instanceView.executionState','Succeeded')
-        #         ])
+        self.cmd('az connectedmachine run-command update '
+                '--resource-group "{rg}" '
+                '--name "{runcommand}" '
+                '--machine-name "{machine}" '
+                '--subscription "{subscription}" '
+                '--tags Tag1="Value1"',
+                checks=[
+                    self.check('type','Microsoft.HybridCompute/machines/runcommands'),
+                    self.check('instanceView.executionState','Succeeded')
+                ])
 
-        # self.cmd('az connectedmachine run-command delete '
-        #         '--resource-group "{rg}" '
-        #         '--name "{runcommand}" '
-        #         '--machine-name "{machine}" --yes',
-        #         checks=[])
+        self.cmd('az connectedmachine run-command delete '
+                '--resource-group "{rg}" '
+                '--name "{runcommand}" '
+                '--machine-name "{machine}" --yes',
+                checks=[])

@@ -6,37 +6,26 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core import AzCommandsLoader
-from azext_connectedmachine._help import helps  # pylint: disable=unused-import
+from azext_test._help import helps  # pylint: disable=unused-import
 
 
-class connectedmachineCommandsLoader(AzCommandsLoader):
+class TestCommandsLoader(AzCommandsLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.commands import CliCommandType
         custom_command_type = CliCommandType(
-            operations_tmpl='azext_connectedmachine.custom#{}')
+            operations_tmpl='azext_test.custom#{}')
         super().__init__(cli_ctx=cli_ctx,
                          custom_command_type=custom_command_type)
 
     def load_command_table(self, args):
-        from azext_connectedmachine.commands import load_command_table
-        from azure.cli.core.aaz import load_aaz_command_table
-        try:
-            from . import aaz
-        except ImportError:
-            aaz = None
-        if aaz:
-            load_aaz_command_table(
-                loader=self,
-                aaz_pkg_name=aaz.__name__,
-                args=args
-            )
+        from azext_test.commands import load_command_table
         load_command_table(self, args)
         return self.command_table
 
     def load_arguments(self, command):
-        from azext_connectedmachine._params import load_arguments
+        from azext_test._params import load_arguments
         load_arguments(self, command)
 
 
-COMMAND_LOADER_CLS = connectedmachineCommandsLoader
+COMMAND_LOADER_CLS = TestCommandsLoader
