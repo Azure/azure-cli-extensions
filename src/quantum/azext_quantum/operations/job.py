@@ -53,18 +53,45 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
     """
     info = WorkspaceInfo(cmd, resource_group_name, workspace_name, location)
     client = cf_jobs(cmd.cli_ctx, info.subscription, info.resource_group, info.name, info.location)
-    pagination_params = {
-        'JobType': job_type,
-        'Provider': provider_id,
-        'Target': target_id,
-        'Status': job_status,
-        'created_after': created_after,
-        'created_before': created_before,
-        'Name': job_name,
-        'skip': skip,
-        'top': jobs_per_page
-    }
-    return client.list(info.location, pagination_params)
+ 
+    query = ""
+
+    # Constuct a query for the Target ID
+    if target_id is not None:
+        query = "Target eq '" + target_id + "'"
+    # TODO: This should handle a list of Target IDs separated by "or"
+    # Enclose such a query in parentheses
+
+    if len(query) > 0:
+        query += " and "
+
+    # construct a query for the Job Type
+    if job_type is not None:
+        query += "JobType eq '" + job_type + "'"
+    # TODO: This should handle a list of Job Types
+
+
+    # ===== Problem Queries =====
+    # query = "CreationTime ge '2024-11-06'"
+    # query = "Name startswith 'Generate'"
+    # These queries get this error:
+    #    "The Azure Quantum endpoint you called cannot process requests with given filter query parameter. Please provide the correct pagination filter query parameter."
+    # 
+    # query = "State eq 'Succeeded' or State eq 'Failed'"     
+    # The service accepts this query, but no jobs are listed
+    # It doesn't like "Status" either: gets the "cannot process requests with given filter" error
+    # 
+    # "top" doesn't appear to work -- is it implemented?
+    # 
+    # ===========================
+
+    
+    pagination_params = {'filter': query,
+                         'skip': skip,
+                         'top': jobs_per_page,
+                         'orderby': None}         # <--- Tried "Name desc", "Target asc" dName What's the correct syntax for an orderby value?
+
+    return client.list(info.location,  **pagination_params)
 
 
 def get(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
