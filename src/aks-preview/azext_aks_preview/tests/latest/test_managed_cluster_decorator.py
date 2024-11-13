@@ -5443,48 +5443,6 @@ class AKSPreviewManagedClusterCreateDecoratorTestCase(unittest.TestCase):
         )
         self.assertEqual(dec_mc_2, expect_mc_2)
 
-    def test_update_acns_in_network_profile(self):
-        # test update network dataplane
-        dec_1 = AKSPreviewManagedClusterCreateDecorator(
-            self.cmd,
-            self.client,
-            {
-                "enable_acns": True,
-            },
-            CUSTOM_MGMT_AKS_PREVIEW,
-        )
-        mc_1 = self.models.ManagedCluster(
-            location="test_location",
-            network_profile=self.models.ContainerServiceNetworkProfile(
-                network_plugin="azure",
-                network_plugin_mode="overlay",
-                network_dataplane="cilium",
-                pod_cidr="100.64.0.0/16",
-                service_cidr="192.168.0.0/16"
-            ),
-        )
-
-        dec_1.context.attach_mc(mc_1)
-        # fail on passing the wrong mc object
-        with self.assertRaises(CLIInternalError):
-            dec_1.update_acns_in_network_profile(None)
-        dec_mc_1 = dec_1.update_acns_in_network_profile(mc_1)
-
-        ground_truth_mc_1 = self.models.ManagedCluster(
-            location="test_location",
-            network_profile=self.models.ContainerServiceNetworkProfile(
-                network_plugin="azure",
-                network_plugin_mode="overlay",
-                network_dataplane="cilium",
-                pod_cidr="100.64.0.0/16",
-                service_cidr="192.168.0.0/16",
-                advanced_networking=self.models.AdvancedNetworking(
-                    enabled=True,
-                ),
-            ),
-        )
-        self.assertEqual(dec_mc_1, ground_truth_mc_1)
-
 class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
     def setUp(self):
         # manually register CUSTOM_MGMT_AKS_PREVIEW
@@ -8889,6 +8847,48 @@ class AKSPreviewManagedClusterUpdateDecoratorTestCase(unittest.TestCase):
             ),
         )
         self.assertEqual(dec_mc_3, ground_truth_mc_3)
+
+    def test_update_acns_in_network_profile(self):
+        # test update network dataplane
+        dec_1 = AKSPreviewManagedClusterUpdateDecorator(
+            self.cmd,
+            self.client,
+            {
+                "enable_acns": True,
+            },
+            CUSTOM_MGMT_AKS_PREVIEW,
+        )
+        mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16"
+            ),
+        )
+
+        dec_1.context.attach_mc(mc_1)
+        # fail on passing the wrong mc object
+        with self.assertRaises(CLIInternalError):
+            dec_1.update_acns_in_network_profile(None)
+        dec_mc_1 = dec_1.update_acns_in_network_profile(mc_1)
+
+        ground_truth_mc_1 = self.models.ManagedCluster(
+            location="test_location",
+            network_profile=self.models.ContainerServiceNetworkProfile(
+                network_plugin="azure",
+                network_plugin_mode="overlay",
+                network_dataplane="cilium",
+                pod_cidr="100.64.0.0/16",
+                service_cidr="192.168.0.0/16",
+                advanced_networking=self.models.AdvancedNetworking(
+                    enabled=True,
+                ),
+            ),
+        )
+        self.assertEqual(dec_mc_1, ground_truth_mc_1)
 
 if __name__ == "__main__":
     unittest.main()

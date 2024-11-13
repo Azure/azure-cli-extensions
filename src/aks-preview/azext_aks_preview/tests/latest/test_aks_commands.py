@@ -13103,7 +13103,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="westcentralus",
+        location="centraluseuap",
     )
     def test_aks_update_enable_acns(
         self, resource_group, resource_group_location
@@ -13225,7 +13225,7 @@ class AzureKubernetesServiceScenarioTest(ScenarioTest):
     @AKSCustomResourceGroupPreparer(
         random_name_length=17,
         name_prefix="clitest",
-        location="westcentralus",
+        location="eastus2euap",
     )
     def test_aks_create_with_enable_acns(
         self, resource_group, resource_group_location
