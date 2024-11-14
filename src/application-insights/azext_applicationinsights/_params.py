@@ -16,7 +16,6 @@ from ._validators import validate_applications, validate_storage_account_name_or
 
 
 def load_arguments(self, _):
-
     with self.argument_context('monitor app-insights') as c:
         c.argument('application', options_list=['--app', '-a'], id_part='name', help='GUID, app name, or fully-qualified Azure resource name of Application Insights component. The application GUID may be acquired from the API Access menu item on any Application Insights resource in the Azure portal. If using an application name, please specify resource group.')
 
