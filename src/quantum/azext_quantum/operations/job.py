@@ -56,26 +56,36 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
  
     query = ""
 
-    # Construct a filter query for Target ID
-    if target_id is not None:
-        query = _parse_pagination_param_values("Target", query, target_id)
-
-    # Construct a query for Job Type
+    # Construct a filter query for Job Type
     if job_type is not None:
         query = _parse_pagination_param_values("JobType", query, job_type)
 
-    # Construct a query for Job State (CLI argument is --status, not state)
+    # Construct a query for Provider ID
+    if provider_id is not None:
+        query = _parse_pagination_param_values("ProviderId", query, provider_id)
+
+    # Construct a query for Target ID
+    if target_id is not None:
+        query = _parse_pagination_param_values("Target", query, target_id)
+
+    # Construct a query for Job State/Status (CLI argument is --status, not state)
     if job_status is not None:
         query = _parse_pagination_param_values("State", query, job_status)
 
     # TODO:
+    # Construct a "CreationTime ge" query for --created-after
+    # Construct a "CreationTime le" query for --created-before
+    # Construct a single "Name startswith" condition query
+    # Construct an orderby query on only one property [Needs a CLI argument]
+
+    # DEBUG:
     # Get these filters to work... 
     # query = "CreationTime ge '2024-11-06'"
     # query = "Name startswith 'Generate'"
     # They get this error:
     #    "The Azure Quantum endpoint you called cannot process requests with given filter query parameter. Please provide the correct pagination filter query parameter."
     # 
-    # query = "State eq 'Succeeded' or State eq 'Failed'"     
+    # The filter query "State eq 'Succeeded' or State eq 'Failed'" did not have the desired effect.     
     # The service accepts this query, but no jobs are listed
     # It doesn't like "Status" either: That gets the "cannot process requests with given filter" error
     # 
@@ -86,6 +96,10 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
                         'top': jobs_per_page,
                         'orderby': None}         # <--- Tried "Name desc", "Target asc"... What's the correct syntax for an orderby value?
     return client.list(info.location, pagination_params)
+    # print()
+    # print("query = " + query)
+    # print()
+    # return
 
 
 def _parse_pagination_param_values(param_name, query, raw_values):
