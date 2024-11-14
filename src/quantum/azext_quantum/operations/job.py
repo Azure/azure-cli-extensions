@@ -56,42 +56,58 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
  
     query = ""
 
-    # Constuct a query for the Target ID
+    # Construct a filter query for Target ID
     if target_id is not None:
-        query = "Target eq '" + target_id + "'"
-    # TODO: This should handle a list of Target IDs separated by "or"
-    # Enclose such a query in parentheses
+        query = _parse_pagination_param_values("Target", query, target_id)
 
-    if len(query) > 0:
-        query += " and "
-
-    # construct a query for the Job Type
+    # Construct a query for Job Type
     if job_type is not None:
-        query += "JobType eq '" + job_type + "'"
-    # TODO: This should handle a list of Job Types
+        query = _parse_pagination_param_values("JobType", query, job_type)
 
+    # Construct a query for Job State (CLI argument is --status, not state)
+    if job_status is not None:
+        query = _parse_pagination_param_values("State", query, job_status)
 
-    # ===== Problem Queries =====
+    # TODO:
+    # Get these filters to work... 
     # query = "CreationTime ge '2024-11-06'"
     # query = "Name startswith 'Generate'"
-    # These queries get this error:
+    # They get this error:
     #    "The Azure Quantum endpoint you called cannot process requests with given filter query parameter. Please provide the correct pagination filter query parameter."
     # 
     # query = "State eq 'Succeeded' or State eq 'Failed'"     
     # The service accepts this query, but no jobs are listed
-    # It doesn't like "Status" either: gets the "cannot process requests with given filter" error
+    # It doesn't like "Status" either: That gets the "cannot process requests with given filter" error
     # 
-    # "top" doesn't appear to work -- is it implemented?
-    # 
-    # ===========================
+    # "top" doesn't work -- no error, but it has no effect: Is it implemented?
 
-    
     pagination_params = {'filter': query,
-                         'skip': skip,
-                         'top': jobs_per_page,
-                         'orderby': None}         # <--- Tried "Name desc", "Target asc" dName What's the correct syntax for an orderby value?
+                        'skip': skip,
+                        'top': jobs_per_page,
+                        'orderby': None}         # <--- Tried "Name desc", "Target asc"... What's the correct syntax for an orderby value?
+    return client.list(info.location, pagination_params)
 
-    return client.list(info.location,  **pagination_params)
+
+def _parse_pagination_param_values(param_name, query, raw_values):
+    if len(query) > 0:
+        query += " and "
+
+    first_value = True
+    values_list = raw_values.split(",")
+
+    if len(values_list) <= 1:
+        query += param_name + " eq '" + values_list[0] + "'"
+    else:
+        for value in values_list:
+            value = value.strip()
+
+            if first_value:
+                query += "(" + param_name + " eq '" + value + "'"
+                first_value = False
+            else:
+                query += " or " + param_name + " eq '" + value + "'" 
+        query += ")"
+    return query
 
 
 def get(cmd, job_id, resource_group_name=None, workspace_name=None, location=None):
