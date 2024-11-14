@@ -58,7 +58,7 @@ class Update(AAZCommand):
             ),
         )
         _args_schema.machine_name = AAZStrArg(
-            options=["--machine-name"],
+            options=["-m", "--machine-name"],
             help="The name of the hybrid machine.",
             required=True,
             id_part="name",
