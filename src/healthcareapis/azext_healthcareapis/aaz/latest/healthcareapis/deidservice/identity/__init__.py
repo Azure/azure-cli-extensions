@@ -8,17 +8,8 @@
 # pylint: skip-file
 # flake8: noqa
 
-from azure.cli.core.aaz import *
-
-
-@register_command_group(
-    "deidservice",
-    is_preview=True,
-)
-class __CMDGroup(AAZCommandGroup):
-    """Health Data service for providing de-identification of health PHI data (Features: Surrogation, multi-modality)
-    """
-    pass
-
-
-__all__ = ["__CMDGroup"]
+from .__cmd_group import *
+from ._assign import *
+from ._remove import *
+from ._show import *
+from ._wait import *
