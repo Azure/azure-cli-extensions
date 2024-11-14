@@ -62,7 +62,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
     created_after_type = CLIArgumentType(options_list=['--created-after'], help='Jobs created after this date/time to be listed.')
     created_before_type = CLIArgumentType(options_list=['--created-before'], help='Jobs created before this date/time to be listed.')
     skip_type = CLIArgumentType(options_list=['--skip'], help='[Purpose of this parameter is not clear]')
-    skip_token_type = CLIArgumentType(options_list=['--skip-token'], help='The point at which to start the next page in a job list.')
     jobs_per_page_type = CLIArgumentType(options_list=['--jobs-per-page'], help='The number of jobs listed per page.')
 
     with self.argument_context('quantum workspace') as c:
@@ -99,7 +98,6 @@ def load_arguments(self, _):  # pylint: disable=too-many-locals
         c.argument('created_after', created_after_type)
         c.argument('created_before', created_before_type)
         c.argument('skip', skip_type)
-        c.argument('skip_token', skip_token_type)
         c.argument('jobs_per_page', jobs_per_page_type)
 
     with self.argument_context('quantum job submit') as c:

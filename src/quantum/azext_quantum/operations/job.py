@@ -47,7 +47,7 @@ _targets_with_allowed_failure_output = {"microsoft.dft"}
 
 def list(cmd, resource_group_name, workspace_name, location, job_type=None, provider_id=None,
          target_id=None, job_status=None, created_after=None, created_before=None, job_name=None,
-         skip=None, skip_token=None, jobs_per_page=None):
+         skip=None, jobs_per_page=None):
     """
     Get the list of jobs in a Quantum Workspace.
     """
