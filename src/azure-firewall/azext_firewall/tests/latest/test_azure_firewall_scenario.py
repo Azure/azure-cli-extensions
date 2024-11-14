@@ -1044,6 +1044,16 @@ class AzureFirewallScenario(ScenarioTest):
                 self.check("sku.name", "AZFW_Hub")
             ]
         )
+        self.cmd("network firewall delete -n {firewall_name} -g {rg}")
+
+        self.cmd(
+            "network firewall create -n {firewall_name} -g {rg} --vhub {vhub} --sku AZFW_Hub --tier Basic --m-public-ip {m_public_ip_name}",
+            checks=[
+                self.check("name", "{firewall_name}"),
+                self.check("sku.name", "AZFW_Hub"),
+                # self.check("sku.name", "AZFW_Hub")
+            ]
+        )
 
     @AllowLargeResponse(size_kb=10240)
     @ResourceGroupPreparer(name_prefix="cli_test_firewall_with_route_server_", location="eastus2euap")

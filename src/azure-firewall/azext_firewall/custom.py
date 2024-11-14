@@ -191,11 +191,11 @@ class AzureFirewallCreate(_AzureFirewallCreate):
 
     def pre_operations(self):
         args = self.ctx.args
+        if has_value(args.public_ip_count) and has_value(args.m_public_ip):
+            raise CLIError(
+                'usage error: cannot add both --public-ip-count and --m-public-ip at the same time.')
         if has_value(args.sku):
             sku = args.sku.to_serialized_data()
-            if sku.lower() == 'azfw_hub' and not all([args.virtual_hub, args.public_ip_count]):
-                raise CLIError(
-                    'usage error: virtual hub and hub ip addresses are mandatory for azure firewall on virtual hub.')
             if sku.lower() == 'azfw_hub' and has_value(args.allow_active_ftp):
                 raise CLIError('usage error: allow active ftp is not allowed for azure firewall on virtual hub.')
         if has_value(args.firewall_policy) and any([args.enable_dns_proxy, args.dns_servers]):
