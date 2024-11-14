@@ -56,27 +56,18 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
  
     query = ""
 
-    # Construct a filter query for Job Type
-    if job_type is not None:
-        query = _parse_pagination_param_values("JobType", query, job_type)
+    # Construct a the filter query
+    query = _parse_pagination_param_values("JobType", query, job_type)
+    query = _parse_pagination_param_values("ProviderId", query, provider_id)
+    query = _parse_pagination_param_values("Target", query, target_id)
+    query = _parse_pagination_param_values("State", query, job_status)
 
-    # Construct a query for Provider ID
-    if provider_id is not None:
-        query = _parse_pagination_param_values("ProviderId", query, provider_id)
+    query = _parse_pagination_param_values("CreationTime", query, created_after, "ge")
+    query = _parse_pagination_param_values("CreationTime", query, created_before, "le")
+    query = _parse_pagination_param_values("Name", query, job_name, "startswith")
 
-    # Construct a query for Target ID
-    if target_id is not None:
-        query = _parse_pagination_param_values("Target", query, target_id)
-
-    # Construct a query for Job State/Status (CLI argument is --status, not state)
-    if job_status is not None:
-        query = _parse_pagination_param_values("State", query, job_status)
-
-    # TODO:
-    # Construct a "CreationTime ge" query for --created-after
-    # Construct a "CreationTime le" query for --created-before
-    # Construct a single "Name startswith" condition query
-    # Construct an orderby query on only one property [Needs a CLI argument]
+    # TODO?
+    # Construct an orderby query on only one property [Would need a CLI command argument]
 
     # DEBUG:
     # Get these filters to work... 
@@ -96,31 +87,39 @@ def list(cmd, resource_group_name, workspace_name, location, job_type=None, prov
                         'top': jobs_per_page,
                         'orderby': None}         # <--- Tried "Name desc", "Target asc"... What's the correct syntax for an orderby value?
     return client.list(info.location, pagination_params)
+
+    # # FOR DEV TESTING (Comment-out the "return" above)
     # print()
     # print("query = " + query)
     # print()
     # return
 
 
-def _parse_pagination_param_values(param_name, query, raw_values):
-    if len(query) > 0:
-        query += " and "
+def _parse_pagination_param_values(param_name, query, raw_values, logic_operator = None):
+    if raw_values is not None:
+        if len(query) > 0:
+            query += " and "
 
-    first_value = True
-    values_list = raw_values.split(",")
+        if logic_operator is None:
+            logic_operator = "eq"
+        padded_logic_operator = " " + logic_operator + " '"
 
-    if len(values_list) <= 1:
-        query += param_name + " eq '" + values_list[0] + "'"
-    else:
-        for value in values_list:
-            value = value.strip()
 
-            if first_value:
-                query += "(" + param_name + " eq '" + value + "'"
-                first_value = False
-            else:
-                query += " or " + param_name + " eq '" + value + "'" 
-        query += ")"
+        first_value = True
+        values_list = raw_values.split(",")
+
+        if len(values_list) <= 1:
+            query += param_name + padded_logic_operator + values_list[0] + "'"
+        else:
+            for value in values_list:
+                value = value.strip()
+
+                if first_value:
+                    query += "(" + param_name + padded_logic_operator + value + "'"
+                    first_value = False
+                else:
+                    query += " or " + param_name + padded_logic_operator + value + "'" 
+            query += ")"
     return query
 
 
