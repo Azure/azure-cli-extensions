@@ -9,6 +9,39 @@ If there is no rush to release a new version, please just add a description of t
 
 To release a new version, please select a new version number (usually plus 1 to last patch version, X.Y.Z -> Major.Minor.Patch, more details in `\doc <https://semver.org/>`_), and then add a new section named as the new version number in this file, the content should include the new modifications and everything from the *Pending* section. Finally, update the `VERSION` variable in `setup.py` with this new version number.
 
+Pending
++++++++
+* Vendor new SDK and bump API version to 2024-09-02-preview.
+
+13.0.0b1
++++++++
+* [BREAKING CHANGE]: `az aks trustedaccess rolebinding create`: Remove deprecated `-r` and `-s` options.
+
+12.0.0b2
+++++++++
+* `az aks create/update`: Fix storage pool name validation for Azure Container Storage.
+
+12.0.0b1
++++++++
+* [BREAKING CHANGE]: Remove advanced container networking service (acns) enablement preview parameters `--enable-advanced-network-observability`, `--disable-advanced-network-observability`, `--enable-fqdn-policy`, `--disable-fqdn-policy`, and `--advanced-networking-observability-tls-management` from `az aks create/update` command.
+* Add advanced container networking service (acns) enablement GA parameters `--disable-acns-observability` and `--disable-acns-security` to `az aks create/update` command.
+
+11.0.0b1
++++++++
+* [BREAKING CHANGE]: `az aks create`: Remove AAD-legacy properties `--aad-client-app-id`, `--aad-server-app-id` and `--aad-server-app-secret` when creating cluster.
+
+10.0.0b1
+++++++++
+* [BREAKING CHANGE]: `az aks create/update`: Remove `--uptime-sla` and `--no-uptime-sla` options.
+
+9.0.0b8
++++++++
+* Update VM SKU validations to get values from backend API for Azure Container Storage.
+
+9.0.0b7
++++++++
+* Fix bug related to updating the monitoring addon DCR when the non monitoring addon enabled through `az aks enable-addons`.
+
 9.0.0b6
 +++++++
 * Print warning message when new node pool is created with SSH enabled, suggest to create SSH disabled node pool.

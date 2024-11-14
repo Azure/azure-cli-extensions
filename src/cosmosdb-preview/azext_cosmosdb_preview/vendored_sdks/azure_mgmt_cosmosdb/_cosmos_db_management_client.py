@@ -8,6 +8,7 @@
 
 from copy import deepcopy
 from typing import Any, TYPE_CHECKING
+from typing_extensions import Self
 
 from azure.core.pipeline import policies
 from azure.core.rest import HttpRequest, HttpResponse
@@ -21,6 +22,7 @@ from .operations import (
     CassandraClustersOperations,
     CassandraDataCentersOperations,
     CassandraResourcesOperations,
+    ChaosFaultOperations,
     CollectionOperations,
     CollectionPartitionOperations,
     CollectionPartitionRegionOperations,
@@ -72,10 +74,6 @@ if TYPE_CHECKING:
 class CosmosDBManagementClient:  # pylint: disable=client-accepts-api-version-keyword,too-many-instance-attributes
     """Azure Cosmos DB Database Service Resource Provider REST API.
 
-    :ivar network_security_perimeter_configurations:
-     NetworkSecurityPerimeterConfigurationsOperations operations
-    :vartype network_security_perimeter_configurations:
-     azure.mgmt.cosmosdb.operations.NetworkSecurityPerimeterConfigurationsOperations
     :ivar database_accounts: DatabaseAccountsOperations operations
     :vartype database_accounts: azure.mgmt.cosmosdb.operations.DatabaseAccountsOperations
     :ivar operations: Operations operations
@@ -126,6 +124,10 @@ class CosmosDBManagementClient:  # pylint: disable=client-accepts-api-version-ke
     :vartype cassandra_clusters: azure.mgmt.cosmosdb.operations.CassandraClustersOperations
     :ivar cassandra_data_centers: CassandraDataCentersOperations operations
     :vartype cassandra_data_centers: azure.mgmt.cosmosdb.operations.CassandraDataCentersOperations
+    :ivar network_security_perimeter_configurations:
+     NetworkSecurityPerimeterConfigurationsOperations operations
+    :vartype network_security_perimeter_configurations:
+     azure.mgmt.cosmosdb.operations.NetworkSecurityPerimeterConfigurationsOperations
     :ivar notebook_workspaces: NotebookWorkspacesOperations operations
     :vartype notebook_workspaces: azure.mgmt.cosmosdb.operations.NotebookWorkspacesOperations
     :ivar private_endpoint_connections: PrivateEndpointConnectionsOperations operations
@@ -180,13 +182,15 @@ class CosmosDBManagementClient:  # pylint: disable=client-accepts-api-version-ke
     :ivar throughput_pool_account: ThroughputPoolAccountOperations operations
     :vartype throughput_pool_account:
      azure.mgmt.cosmosdb.operations.ThroughputPoolAccountOperations
+    :ivar chaos_fault: ChaosFaultOperations operations
+    :vartype chaos_fault: azure.mgmt.cosmosdb.operations.ChaosFaultOperations
     :param credential: Credential needed for the client to connect to Azure. Required.
     :type credential: ~azure.core.credentials.TokenCredential
-    :param subscription_id: The ID of the target subscription. The value must be an UUID. Required.
+    :param subscription_id: The ID of the target subscription. Required.
     :type subscription_id: str
     :param base_url: Service URL. Default value is "https://management.azure.com".
     :type base_url: str
-    :keyword api_version: Api Version. Default value is "2024-05-15-preview". Note that overriding
+    :keyword api_version: Api Version. Default value is "2024-09-01-preview". Note that overriding
      this default value may result in unsupported behavior.
     :paramtype api_version: str
     :keyword int polling_interval: Default waiting time between two polls for LRO operations if no
@@ -227,9 +231,6 @@ class CosmosDBManagementClient:  # pylint: disable=client-accepts-api-version-ke
         self._serialize = Serializer(client_models)
         self._deserialize = Deserializer(client_models)
         self._serialize.client_side_validation = False
-        self.network_security_perimeter_configurations = NetworkSecurityPerimeterConfigurationsOperations(
-            self._client, self._config, self._serialize, self._deserialize
-        )
         self.database_accounts = DatabaseAccountsOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
@@ -281,6 +282,9 @@ class CosmosDBManagementClient:  # pylint: disable=client-accepts-api-version-ke
             self._client, self._config, self._serialize, self._deserialize
         )
         self.cassandra_data_centers = CassandraDataCentersOperations(
+            self._client, self._config, self._serialize, self._deserialize
+        )
+        self.network_security_perimeter_configurations = NetworkSecurityPerimeterConfigurationsOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
         self.notebook_workspaces = NotebookWorkspacesOperations(
@@ -339,6 +343,7 @@ class CosmosDBManagementClient:  # pylint: disable=client-accepts-api-version-ke
         self.throughput_pool_account = ThroughputPoolAccountOperations(
             self._client, self._config, self._serialize, self._deserialize
         )
+        self.chaos_fault = ChaosFaultOperations(self._client, self._config, self._serialize, self._deserialize)
 
     def _send_request(self, request: HttpRequest, *, stream: bool = False, **kwargs: Any) -> HttpResponse:
         """Runs the network request through the client's chained policies.
@@ -365,7 +370,7 @@ class CosmosDBManagementClient:  # pylint: disable=client-accepts-api-version-ke
     def close(self) -> None:
         self._client.close()
 
-    def __enter__(self) -> "CosmosDBManagementClient":
+    def __enter__(self) -> Self:
         self._client.__enter__()
         return self
 

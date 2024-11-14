@@ -64,6 +64,7 @@ from azext_aks_preview._helpers import (
     get_nodepool_snapshot_by_snapshot_id,
     print_or_merge_credentials,
     process_message_for_run_command,
+    check_is_monitoring_addon_enabled,
 )
 from azext_aks_preview._podidentity import (
     _ensure_managed_identity_operator_permission,
@@ -369,7 +370,6 @@ def aks_create(
     auto_upgrade_channel=None,
     node_os_upgrade_channel=None,
     cluster_autoscaler_profile=None,
-    uptime_sla=False,
     sku=None,
     tier=None,
     fqdn_subdomain=None,
@@ -384,9 +384,6 @@ def aks_create(
     assign_kubelet_identity=None,
     enable_aad=False,
     enable_azure_rbac=False,
-    aad_client_app_id=None,
-    aad_server_app_id=None,
-    aad_server_app_secret=None,
     aad_tenant_id=None,
     aad_admin_group_object_ids=None,
     enable_oidc_issuer=False,
@@ -492,10 +489,10 @@ def aks_create(
     enable_addon_autoscaling=False,
     enable_cilium_dataplane=False,
     custom_ca_trust_certificates=None,
-    enable_advanced_network_observability=None,
-    advanced_networking_observability_tls_management=None,
-    enable_fqdn_policy=None,
+    # advanced networking
     enable_acns=None,
+    disable_acns_observability=None,
+    disable_acns_security=None,
     # nodepool
     crg_id=None,
     message_of_the_day=None,
@@ -609,8 +606,6 @@ def aks_update(
     disable_force_upgrade=False,
     upgrade_override_until=None,
     cluster_autoscaler_profile=None,
-    uptime_sla=False,
-    no_uptime_sla=False,
     sku=None,
     tier=None,
     api_server_authorized_ip_ranges=None,
@@ -724,13 +719,11 @@ def aks_update(
     safeguards_level=None,
     safeguards_version=None,
     safeguards_excluded_ns=None,
-    enable_advanced_network_observability=None,
-    disable_advanced_network_observability=None,
-    advanced_networking_observability_tls_management=None,
-    enable_fqdn_policy=None,
-    disable_fqdn_policy=None,
+    # advanced networking
     enable_acns=None,
     disable_acns=None,
+    disable_acns_observability=None,
+    disable_acns_security=None,
     # metrics profile
     enable_cost_analysis=False,
     disable_cost_analysis=False,
@@ -2146,9 +2139,10 @@ def aks_enable_addons(
         dns_zone_resource_id=dns_zone_resource_id,
         dns_zone_resource_ids=dns_zone_resource_ids,
     )
+
+    is_monitoring_addon_enabled = check_is_monitoring_addon_enabled(addons, instance)
     if (
-        CONST_MONITORING_ADDON_NAME in instance.addon_profiles and
-        instance.addon_profiles[CONST_MONITORING_ADDON_NAME].enabled
+        is_monitoring_addon_enabled
     ):
         if (
             CONST_MONITORING_USING_AAD_MSI_AUTH in
@@ -2201,8 +2195,6 @@ def aks_enable_addons(
                 aad_route=False,
             )
 
-    monitoring = CONST_MONITORING_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
-        CONST_MONITORING_ADDON_NAME].enabled
     ingress_appgw_addon_enabled = CONST_INGRESS_APPGW_ADDON_NAME in instance.addon_profiles and instance.addon_profiles[
         CONST_INGRESS_APPGW_ADDON_NAME].enabled
 
@@ -2211,7 +2203,11 @@ def aks_enable_addons(
     if CONST_VIRTUAL_NODE_ADDON_NAME + os_type in instance.addon_profiles:
         enable_virtual_node = True
 
-    need_post_creation_role_assignment = monitoring or ingress_appgw_addon_enabled or enable_virtual_node
+    need_post_creation_role_assignment = (
+        is_monitoring_addon_enabled or
+        ingress_appgw_addon_enabled or
+        enable_virtual_node
+    )
     if need_post_creation_role_assignment:
         # adding a wait here since we rely on the result for role assignment
         result = LongRunningOperation(cmd.cli_ctx)(

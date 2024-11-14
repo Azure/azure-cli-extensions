@@ -108,7 +108,7 @@ class Scheduled_queryScenarioTest(ScenarioTest):
                  checks=[
                  ])
         self.cmd('monitor scheduled-query delete -g {rg} -n {name1} -y')
-        with self.assertRaisesRegexp(SystemExit, '3'):
+        with self.assertRaisesRegex(SystemExit, '3'):
             self.cmd('monitor scheduled-query show -g {rg} -n {name1}')
 
 
@@ -245,7 +245,7 @@ class Scheduled_queryScenarioTest(ScenarioTest):
                      self.check('criteria.allOf[0].operator', 'Equal')
                  ])
         self.cmd('monitor scheduled-query delete -g {rg} -n {name1} -y')
-        with self.assertRaisesRegexp(SystemExit, '3'):
+        with self.assertRaisesRegex(SystemExit, '3'):
             self.cmd('monitor scheduled-query show -g {rg} -n {name1}')
 
 

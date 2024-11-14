@@ -21,17 +21,14 @@ class ContainerAppSessionCodeInterperterTests(ScenarioTest):
         location = TEST_LOCATION
         self.cmd('configure --defaults location={}'.format(location))
 
-        env_name = self.create_random_name(prefix='aca-sp-env', length=24)
-        create_containerapp_env(self, env_name, resource_group, TEST_LOCATION)
-
         # List Session Pools
         sessionpool_list = self.cmd("containerapp sessionpool list -g {}".format(resource_group)).get_output_in_json()
         self.assertTrue(len(sessionpool_list) == 0)
 
         # Create JupyterPython SessionPool
         sessionpool_name_python = self.create_random_name(prefix='spjupyterpython', length=24)
-        self.cmd('containerapp sessionpool create -g {} -n {} --cooldown-period {}'.format(
-            resource_group, sessionpool_name_python, 300), checks=[
+        self.cmd('containerapp sessionpool create -g {} -n {} --cooldown-period {} -l {}'.format(
+            resource_group, sessionpool_name_python, 300, location), checks=[
             JMESPathCheck('name', sessionpool_name_python),
             JMESPathCheck('properties.containerType', "PythonLTS"),
             JMESPathCheck('properties.provisioningState', "Succeeded"),
@@ -51,8 +48,8 @@ class ContainerAppSessionCodeInterperterTests(ScenarioTest):
             identifier_name,
             code),
             checks=[
-            JMESPathCheck('properties.status', 'Success'),
-            JMESPathCheck('properties.stdout', 'Hello world\n')
+            JMESPathCheck('status', 'Succeeded'),
+            JMESPathCheck('result.stdout', 'Hello world\n')
         ])
 
         # upload a file also add session pool location
@@ -62,9 +59,9 @@ class ContainerAppSessionCodeInterperterTests(ScenarioTest):
             resource_group,
             identifier_name,
             txt_file,
-            TEST_LOCATION),
+            location),
             checks=[
-            JMESPathCheck('value[0].properties.filename', 'cert.txt'),
+            JMESPathCheck('name', 'cert.txt'),
         ])
 
         # list files
@@ -89,7 +86,7 @@ class ContainerAppSessionCodeInterperterTests(ScenarioTest):
             identifier_name,
             "cert.txt"),
             checks=[
-            JMESPathCheck('properties.filename', 'cert.txt'),
+            JMESPathCheck('name', 'cert.txt'),
         ])
 
         # delete file

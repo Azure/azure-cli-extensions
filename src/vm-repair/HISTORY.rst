@@ -1,9 +1,15 @@
 
 Release History
 ===============
+
+2.0.0
+++++++
+Changed default VM image to 2022-datacenter-smalldisk for better default security. 
+
 1.1.1
 ++++++
 Migrated VM Repair off of the `msrestazure` API to `azure.core` and `azure.mgmt` APIs.
+Fixed a bug with `--associate-public-ip` where it was always creating a public IP. Now a private IP will be used if `--associate-public-ip` is not specified.
 
 1.1.0
 ++++++
