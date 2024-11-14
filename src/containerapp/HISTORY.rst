@@ -4,6 +4,9 @@ Release History
 ===============
 upcoming
 ++++++
+
+1.1.0b1
+++++++
 * 'az containerapp create': Fix Role assignment error when the default Azure Container Registry could not be found
 *  Upgrade api-version to 2024-10-02-preview
 * 'az containerapp create/update': `--yaml` support property pollingInterval and cooldownPeriod
