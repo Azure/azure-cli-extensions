@@ -709,42 +709,38 @@ class AKSPreviewManagedClusterContext(AKSManagedClusterContext):
         """
         return bool(self.raw_param.get('enable_cilium_dataplane'))
 
-    def get_acns(self) -> Union[bool, None]:
+    def get_acns_enablement(self) -> Tuple[
+        Union[bool, None],
+        Union[bool, None],
+        Union[bool, None],
+    ]:
         """Get the enablement of acns
-
-        :return: bool or None"""
+        :return: Tuple of 3 elements which can be bool or None
+        """
         enable_acns = self.raw_param.get("enable_acns")
         disable_acns = self.raw_param.get("disable_acns")
-        disable_acns_observability = self.raw_param.get("disable_acns_observability")
-        disable_acns_security = self.raw_param.get("disable_acns_security")
+        if enable_acns is None and disable_acns is None:
+            return None, None, None
         if enable_acns and disable_acns:
             raise MutuallyExclusiveArgumentError(
                 "Cannot specify --enable-acns and "
                 "--disable-acns at the same time."
             )
-        if enable_acns and disable_acns_observability and disable_acns_security:
+        enable_acns = bool(enable_acns) if enable_acns is not None else False
+        disable_acns = bool(disable_acns) if disable_acns is not None else False
+        acns = enable_acns or not disable_acns
+        acns_observability = self.get_acns_observability()
+        acns_security = self.get_acns_security()
+        if acns and (acns_observability is False and acns_security is False):
             raise MutuallyExclusiveArgumentError(
-                "Cannot specify --enable-acns with "
-                "--disable-acns-observability and "
-                "--disable-acns-security at the same time."
+                "Cannot disable both observability and security when enabling ACNS. "
+                "Please enable at least one of them or disable ACNS with --disable-acns."
             )
-        if enable_acns is None and disable_acns_observability is not None:
-            raise RequiredArgumentMissingError(
-                "Cannot specify --disable-acns-observability "
-                "without --enable-acns."
+        if not acns and (acns_observability is not None or acns_security is not None):
+            raise MutuallyExclusiveArgumentError(
+                "--disable-acns does not use any additional acns arguments."
             )
-        if enable_acns is None and disable_acns_security is not None:
-            raise RequiredArgumentMissingError(
-                "Cannot specify --disable-acns-security "
-                "without --enable-acns."
-            )
-        if enable_acns is False and disable_acns is False:
-            return None
-        if enable_acns is not None:
-            return enable_acns
-        if disable_acns is not None:
-            return not disable_acns
-        return None
+        return acns, acns_observability, acns_security
 
     def get_acns_observability(self) -> Union[bool, None]:
         """Get the enablement of acns observability
@@ -2895,12 +2891,12 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
         else:
             network_profile.network_dataplane = self.context.get_network_dataplane()
 
-        acns = self.models.AdvancedNetworking()
-        acns_enabled = self.context.get_acns()
-        acns_observability_enabled = self.context.get_acns_observability()
-        acns_security_enabled = self.context.get_acns_security()
+        acns = None
+        (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
         if acns_enabled is not None:
-            acns.enabled = acns_enabled
+            acns = self.models.AdvancedNetworking(
+                enabled=acns_enabled,
+            )
             if acns_observability_enabled is not None:
                 acns.observability = self.models.AdvancedNetworkingObservability(
                     enabled=acns_observability_enabled,
@@ -2909,11 +2905,6 @@ class AKSPreviewManagedClusterCreateDecorator(AKSManagedClusterCreateDecorator):
                 acns.security = self.models.AdvancedNetworkingSecurity(
                     enabled=acns_security_enabled,
                 )
-            # Only Cilium dataplane supports ACNS security
-            if network_profile.network_dataplane != CONST_NETWORK_DATAPLANE_CILIUM:
-                # TODO: add warning or raise error instead of silently disabling
-                if acns.security is not None:
-                    acns.security.enabled = False
             network_profile.advanced_networking = acns
 
         return mc
@@ -3983,12 +3974,12 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
         """
         self._ensure_mc(mc)
 
-        acns = self.models.AdvancedNetworking()
-        acns_enabled = self.context.get_acns()
-        acns_observability_enabled = self.context.get_acns_observability()
-        acns_security_enabled = self.context.get_acns_security()
+        acns = None
+        (acns_enabled, acns_observability_enabled, acns_security_enabled) = self.context.get_acns_enablement()
         if acns_enabled is not None:
-            acns.enabled = acns_enabled
+            acns = self.models.AdvancedNetworking(
+                enabled=acns_enabled,
+            )
             if acns_observability_enabled is not None:
                 acns.observability = self.models.AdvancedNetworkingObservability(
                     enabled=acns_observability_enabled,
@@ -3997,11 +3988,6 @@ class AKSPreviewManagedClusterUpdateDecorator(AKSManagedClusterUpdateDecorator):
                 acns.security = self.models.AdvancedNetworkingSecurity(
                     enabled=acns_security_enabled,
                 )
-            # Only Cilium dataplane supports ACNS security
-            if mc.network_profile.network_dataplane != CONST_NETWORK_DATAPLANE_CILIUM:
-                # TODO: add warning or raise error instead of silently disabling
-                if acns.security is not None:
-                    acns.security.enabled = False
             mc.network_profile.advanced_networking = acns
         return mc
 
