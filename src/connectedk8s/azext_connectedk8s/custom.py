@@ -1495,7 +1495,10 @@ def generate_arc_agent_configuration(
     configuration_settings: dict[str, Any],
     redacted_protected_settings: dict[str, Any],
     is_dp_call: bool = False,
-) -> list[ArcAgentryConfigurations]:
+) -> list[ArcAgentryConfigurations] | None:
+    if not configuration_settings and not redacted_protected_settings:
+        return None
+
     arc_agentry_configurations = []
 
     for feature in configuration_settings.keys() | redacted_protected_settings.keys():
@@ -1584,7 +1587,7 @@ def generate_reput_request_payload(
     oidc_profile: OidcIssuerProfile | None,
     security_profile: SecurityProfile | None,
     gateway: Gateway | None,
-    arc_agentry_configurations: list[ArcAgentryConfigurations],
+    arc_agentry_configurations: list[ArcAgentryConfigurations] | None,
     arc_agent_profile: ArcAgentProfile | None,
 ) -> ConnectedCluster:
     # Update connected cluster resource object
