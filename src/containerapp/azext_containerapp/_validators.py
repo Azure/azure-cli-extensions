@@ -7,14 +7,13 @@
 from knack.log import get_logger
 from urllib.parse import urlparse
 
-from azure.mgmt.core.tools import is_valid_resource_id
-
-from azure.cli.command_modules.containerapp._utils import is_registry_msi_system, safe_get
-from azure.cli.command_modules.containerapp._validators import _validate_revision_exists, _validate_replica_exists, \
-    _validate_container_exists
 from azure.cli.core.azclierror import (InvalidArgumentValueError,
                                        MutuallyExclusiveArgumentError, RequiredArgumentMissingError,
                                        ResourceNotFoundError, ValidationError)
+from azure.cli.command_modules.containerapp._utils import is_registry_msi_system, safe_get
+from azure.cli.command_modules.containerapp._validators import _validate_revision_exists, _validate_replica_exists, \
+    _validate_container_exists
+from azure.mgmt.core.tools import is_valid_resource_id
 
 from ._clients import ContainerAppPreviewClient
 from ._utils import is_registry_msi_system_environment
