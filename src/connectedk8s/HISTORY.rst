@@ -3,6 +3,11 @@
 Release History
 ===============
 
+1.10.3
+++++++
+* Fixed linting and styling issues, and added type annotations.
+* Fixed the issue where the 'connectedk8s troubleshoot' command did not work when workload identity was not enabled on the cluster.
+
 1.10.2
 ++++++
 * Update for disconnected environment scenario.

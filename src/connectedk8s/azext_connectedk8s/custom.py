@@ -295,7 +295,7 @@ def create_connectedk8s(
         lowbandwidth = True
 
     azure_local_disconnected = False
-    if os.getenv("AZURE_LOCAL_DISCONNECTED") == "true":
+    if os.getenv("AZURE_LOCAL_DISCONNECTED", "").lower() == "true":
         azure_local_disconnected = True
 
     # Install kubectl and helm
